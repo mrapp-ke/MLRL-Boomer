@@ -6,7 +6,7 @@ import re as regex
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from os import makedirs, path
+from pathlib import Path
 from typing import Any, Iterable, List, Optional, Set
 
 from mlrl.testbed.experiments.output.sinks import CsvFileSink
@@ -20,14 +20,14 @@ class Difference(ABC):
     A difference between two files.
     """
 
-    def __init__(self, file: str):
+    def __init__(self, file: Path):
         """
         :param file: The path to the file that has been compared
         """
         self.file = file
 
     def __str__(self) -> str:
-        return 'Found unexpected content in file "' + self.file + '"'
+        return 'Found unexpected content in file "' + str(self.file) + '"'
 
 
 class FileComparison(ABC):
@@ -40,7 +40,7 @@ class FileComparison(ABC):
         A difference between two corresponding lines in files.
         """
 
-        def __init__(self, file: str, line_index: int, expected_line: str, actual_line: str):
+        def __init__(self, file: Path, line_index: int, expected_line: str, actual_line: str):
             """
             :param file:            The path to the file that has been compared
             :param line_index:      The index of the line where the difference occurs
@@ -53,26 +53,26 @@ class FileComparison(ABC):
             self.actual_line = actual_line
 
         def __str__(self) -> str:
-            text = 'Line ' + str(self.line_index + 1) + ' is unexpected according to file "' + self.file + '".\n\n'
+            text = 'Line ' + str(self.line_index + 1) + ' is unexpected according to file "' + str(self.file) + '".\n\n'
             text += 'Expected:\n' + self.expected_line + '\n\n'
             text += 'Actual:\n' + self.actual_line
             return text
 
     @staticmethod
-    def for_file(file: str) -> 'FileComparison':
+    def for_file(file: Path) -> 'FileComparison':
         """
         Creates and returns a new object of type `FileComparison` for a specific file.
 
         :param file:    The path to the file
         :return:        The `FileComparison` that has been created
         """
-        if file.endswith('.' + CsvFileSink.SUFFIX_CSV):
+        if file.suffix == '.' + CsvFileSink.SUFFIX_CSV:
             return CsvFileComparison(file)
 
         with open(file, mode='r', encoding=ENCODING_UTF8) as text_file:
             return TextFileComparison(text_file.readlines())
 
-    def compare_or_overwrite(self, another_file: str, overwrite: bool = False) -> Optional[Difference]:
+    def compare_or_overwrite(self, another_file: Path, overwrite: bool = False) -> Optional[Difference]:
         """
         Compares the file to another file or overwrites the latter with the former.
 
@@ -81,14 +81,14 @@ class FileComparison(ABC):
         :return:                The first difference that has been found or None, if the files are the same
         """
         if overwrite:
-            makedirs(path.dirname(another_file), exist_ok=True)
+            another_file.parent.mkdir(parents=True, exist_ok=True)
             self._write(another_file)
             return None
 
         return self._compare(another_file)
 
     @abstractmethod
-    def _compare(self, another_file: str) -> Optional[Difference]:
+    def _compare(self, another_file: Path) -> Optional[Difference]:
         """
         Must be implemented by subclasses in order to compare to files.
 
@@ -97,7 +97,7 @@ class FileComparison(ABC):
         """
 
     @abstractmethod
-    def _write(self, file: str):
+    def _write(self, file: Path):
         """
         Must be implemented by subclasses in order to write an output file.
 
@@ -122,7 +122,7 @@ class TextFileComparison(FileComparison):
         """
         self.lines = lines
 
-    def _compare(self, another_file: str) -> Optional[Difference]:
+    def _compare(self, another_file: Path) -> Optional[Difference]:
         with open(another_file, 'r', encoding=ENCODING_UTF8) as file:
             expected_lines = file.readlines()
 
@@ -138,7 +138,7 @@ class TextFileComparison(FileComparison):
 
         return None
 
-    def _write(self, file: str):
+    def _write(self, file: Path):
         with open(file, 'w+', encoding=ENCODING_UTF8) as output_file:
             for line in self.lines:
                 line = self.__replace_durations_with_placeholders(line.strip('\n'))
@@ -155,7 +155,7 @@ class CsvFileComparison(FileComparison):
         A difference between two CSV files that have different numbers of rows or columns.
         """
 
-        def __init__(self, file: str, num_expected_rows: int, num_expected_columns: int, num_actual_rows: int,
+        def __init__(self, file: Path, num_expected_rows: int, num_expected_columns: int, num_actual_rows: int,
                      num_actual_columns: int):
             """
             :param file:                    The path to the file that has been compared
@@ -172,7 +172,7 @@ class CsvFileComparison(FileComparison):
 
         def __str__(self) -> str:
             return 'CSV file should have ' + str(self.num_expected_rows) + ' rows and ' + str(
-                self.num_expected_columns) + ' columns according to file "' + self.file + '", but has ' + str(
+                self.num_expected_columns) + ' columns according to file "' + str(self.file) + '", but has ' + str(
                     self.num_actual_rows) + ' rows and ' + str(self.num_actual_columns) + ' columns'
 
     class CellDifferences(Difference):
@@ -204,7 +204,7 @@ class CsvFileComparison(FileComparison):
                                         self.header) + '": Value should be "' + str(
                                             self.expected_value) + '", but is "' + str(self.actual_value) + '"'
 
-        def __init__(self, file: str, different_cells: List[CellDifference]):
+        def __init__(self, file: Path, different_cells: List[CellDifference]):
             """
             :param file:            The path to the file that has been compared
             :param different_cells: A list that contains all cells with unexpected values
@@ -215,14 +215,14 @@ class CsvFileComparison(FileComparison):
         def __str__(self) -> str:
             different_cells = self.different_cells
             text = 'Found ' + str(len(different_cells)) + ' unexpected ' + (
-                'value' if len(different_cells) == 1 else 'values') + ' according to file "' + self.file + '":\n\n'
+                'value' if len(different_cells) == 1 else 'values') + ' according to file "' + str(self.file) + '":\n\n'
 
             for cell in different_cells:
                 text += str(cell) + '\n'
 
             return text
 
-    def __init__(self, file: str):
+    def __init__(self, file: Path):
         """
         :param file: The path to a file
         """
@@ -231,7 +231,7 @@ class CsvFileComparison(FileComparison):
     def __get_duration_column_indices(self, headers: List[Any]) -> Set[int]:
         return {column_index for column_index, header in enumerate(headers) if 'time' in header.lower().split()}
 
-    def _compare(self, another_file: str) -> Optional[Difference]:
+    def _compare(self, another_file: Path) -> Optional[Difference]:
         with open(self.file, mode='r', encoding=ENCODING_UTF8) as actual_file:
             actual_csv_file = csv.reader(actual_file, delimiter=CsvFileSink.DELIMITER, quotechar=CsvFileSink.QUOTE_CHAR)
             num_actual_rows = sum(1 for _ in actual_csv_file)
@@ -277,7 +277,7 @@ class CsvFileComparison(FileComparison):
 
         return None
 
-    def _write(self, file: str):
+    def _write(self, file: Path):
         with open(self.file, 'r', encoding=ENCODING_UTF8) as input_file:
             input_csv_file = csv.reader(input_file, delimiter=CsvFileSink.DELIMITER, quotechar=CsvFileSink.QUOTE_CHAR)
             headers = next(input_csv_file)
