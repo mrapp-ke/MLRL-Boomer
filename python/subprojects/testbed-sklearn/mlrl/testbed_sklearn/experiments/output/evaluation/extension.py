@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write evaluation results to one or several sinks.
 """
 from argparse import Namespace
+from pathlib import Path
 from typing import Set, override
 
 from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import EvaluationResult
@@ -107,7 +108,7 @@ class EvaluationExtension(Extension):
         if save_evaluation_results and result_directory:
             create_directory = OutputExtension.CREATE_DIRS.get_value(args)
             experiment_builder.evaluation_writer.add_sinks(
-                CsvFileSink(directory=result_directory, create_directory=create_directory, options=options))
+                CsvFileSink(directory=Path(result_directory), create_directory=create_directory, options=options))
 
     @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):

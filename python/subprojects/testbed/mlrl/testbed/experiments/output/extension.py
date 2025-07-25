@@ -5,7 +5,7 @@ Provides classes that allow configuring the functionality to write output data t
 """
 from argparse import Namespace
 from datetime import datetime
-from os import listdir, path, unlink
+from pathlib import Path
 from typing import Set, override
 
 from mlrl.testbed.experiments.experiment import Experiment
@@ -24,7 +24,7 @@ class OutputExtension(Extension):
         Deletes all files from a directory before an experiment starts.
         """
 
-        def __init__(self, directory: str):
+        def __init__(self, directory: Path):
             """
             :param directory: The path to the directory from which the files should be deleted
             """
@@ -37,17 +37,14 @@ class OutputExtension(Extension):
             """
             directory = self.directory
 
-            if path.isdir(directory):
-                for file in listdir(directory):
-                    file_path = path.join(directory, file)
-
-                    if path.isfile(file_path):
-                        unlink(file_path)
+            if directory.is_dir():
+                for file_path in directory.iterdir():
+                    if file_path.is_file():
+                        file_path.unlink()
 
     BASE_DIR = StringArgument(
         '--base-dir',
-        default=path.join('experiments',
-                          datetime.now().strftime('%Y-%m-%d_%H-%M')),
+        default=Path('experiments') / datetime.now().strftime('%Y-%m-%d_%H-%M'),
         description='If relative paths to directories, where files should be saved, are given, they are considered '
         + 'relative to the directory specified via this argument.',
     )
@@ -56,7 +53,7 @@ class OutputExtension(Extension):
         '--result-dir',
         default='results',
         description='The path to the directory where experimental results should be saved.',
-        decorator=lambda args, value: path.join(OutputExtension.BASE_DIR.get_value(args), value),
+        decorator=lambda args, value: Path(OutputExtension.BASE_DIR.get_value(args)) / value,
     )
 
     CREATE_DIRS = BoolArgument(
@@ -106,5 +103,5 @@ class OutputExtension(Extension):
         result_directory = self.RESULT_DIR.get_value(args)
 
         if result_directory and self.WIPE_RESULT_DIR.get_value(args):
-            listener = OutputExtension.WipeDirectoryListener(result_directory)
+            listener = OutputExtension.WipeDirectoryListener(Path(result_directory))
             experiment_builder.add_listeners(listener)
