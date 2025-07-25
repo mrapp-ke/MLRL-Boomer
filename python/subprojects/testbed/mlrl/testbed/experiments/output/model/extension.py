@@ -5,6 +5,7 @@ Provides classes that allow configuring the functionality to write models to one
 """
 from argparse import Namespace
 from os import path
+from pathlib import Path
 from typing import Set, override
 
 from mlrl.testbed.experiments.experiment import Experiment
@@ -57,4 +58,4 @@ class ModelOutputExtension(Extension):
             if model_save_dir:
                 create_directory = OutputExtension.CREATE_DIRS.get_value(args)
                 experiment_builder.model_writer.add_sinks(
-                    PickleFileSink(directory=model_save_dir, create_directory=create_directory))
+                    PickleFileSink(directory=Path(model_save_dir), create_directory=create_directory))

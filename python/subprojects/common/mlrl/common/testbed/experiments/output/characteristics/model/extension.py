@@ -5,6 +5,7 @@ Provides classes that allow configuring the functionality to write characteristi
 sinks.
 """
 from argparse import Namespace
+from pathlib import Path
 from typing import List, Set, override
 
 from mlrl.common.testbed.experiments.output.characteristics.model.writer import RuleModelCharacteristicsWriter
@@ -60,7 +61,8 @@ class RuleModelCharacteristicsExtension(Extension):
 
         if value and result_directory:
             return [
-                CsvFileSink(directory=result_directory, create_directory=OutputExtension.CREATE_DIRS.get_value(args))
+                CsvFileSink(directory=Path(result_directory),
+                            create_directory=OutputExtension.CREATE_DIRS.get_value(args))
             ]
         return []
 

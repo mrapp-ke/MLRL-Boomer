@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write rule models to one or several sinks.
 """
 from argparse import Namespace
+from pathlib import Path
 from typing import List, Set, override
 
 from mlrl.common.testbed.experiments.output.model_text.model_text import RuleModelAsText
@@ -74,7 +75,7 @@ class RuleModelAsTextExtension(Extension):
 
         if value and result_directory:
             return [
-                TextFileSink(directory=result_directory,
+                TextFileSink(directory=Path(result_directory),
                              create_directory=OutputExtension.CREATE_DIRS.get_value(args),
                              options=options)
             ]
