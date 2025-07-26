@@ -360,7 +360,7 @@ class FileSearch:
         """
 
         def filter_file(filtered_suffixes: List[str], _: Path, file_name: str):
-            return any(file_name.endswith(suffix) for suffix in filtered_suffixes)
+            return any(file_name.endswith('.' + suffix) for suffix in filtered_suffixes)
 
         return self.add_filters(partial(filter_file, list(suffixes)))
 
