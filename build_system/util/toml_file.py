@@ -6,6 +6,7 @@ Provides utilities for reading and writing TOML files via "toml".
 import tomllib
 
 from functools import cached_property
+from pathlib import Path
 from typing import Any, Dict, override
 
 from core.build_unit import BuildUnit
@@ -17,7 +18,7 @@ class TomlFile(TextFile):
     A TOML file.
     """
 
-    def __init__(self, build_unit: BuildUnit, file: str):
+    def __init__(self, build_unit: BuildUnit, file: Path):
         """
         :param build_unit:  The build unit from which the TOML file is read
         :param file:        The path to the TOML file

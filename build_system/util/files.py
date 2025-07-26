@@ -4,8 +4,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for listing files and directories.
 """
 from functools import partial
-from glob import glob
-from os import path
+from itertools import chain
+from pathlib import Path
 from typing import Any, Callable, List, Optional, Set, override
 
 
@@ -14,7 +14,7 @@ class DirectorySearch:
     Allows to search for subdirectories.
     """
 
-    Filter = Callable[[str, str], bool]
+    Filter = Callable[[Path, str], bool]
 
     def __init__(self):
         self.recursive = False
@@ -49,7 +49,7 @@ class DirectorySearch:
         :return:        The `DirectorySearch` itself
         """
 
-        def filter_directory(filtered_names: Set[str], _: str, directory_name: str):
+        def filter_directory(filtered_names: Set[str], _: Path, directory_name: str):
             return directory_name in filtered_names
 
         return self.add_filters(partial(filter_directory, set(names)))
@@ -74,7 +74,7 @@ class DirectorySearch:
         """
 
         def filter_directory(start: Optional[str], not_start: Optional[str], end: Optional[str], not_end: Optional[str],
-                             substring: Optional[str], not_substring: Optional[str], _: str, directory_name: str):
+                             substring: Optional[str], not_substring: Optional[str], _: Path, directory_name: str):
             return (not start or directory_name.startswith(start)) \
                 and (not not_start or not directory_name.startswith(not_start)) \
                 and (not end or directory_name.endswith(end)) \
@@ -103,7 +103,7 @@ class DirectorySearch:
         :return:        The `DirectorySearch` itself
         """
 
-        def filter_directory(excluded_name: str, _: str, directory_name: str):
+        def filter_directory(excluded_name: str, _: Path, directory_name: str):
             return directory_name == excluded_name
 
         return self.exclude(*[partial(filter_directory, name) for name in names])
@@ -140,7 +140,7 @@ class DirectorySearch:
         return self.exclude(
             partial(filter_directory, starts_with, not_starts_with, ends_with, not_ends_with, contains, not_contains))
 
-    def list(self, *directories: str) -> List[str]:
+    def list(self, *directories: Path) -> List[Path]:
         """
         Lists all subdirectories that can be found in given directories.
 
@@ -149,27 +149,27 @@ class DirectorySearch:
         """
         result = []
 
-        def filter_file(file: str) -> bool:
-            if path.isdir(file):
-                parent = path.dirname(file)
-                file_name = path.basename(file)
+        def filter_file(file: Path) -> bool:
+            if file.is_dir():
+                parent = file.parent
+                file_name = file.name
 
                 if not any(exclude(parent, file_name) for exclude in self.excludes):
                     return True
 
             return False
 
-        def filter_subdirectory(subdirectory: str, filters: List[DirectorySearch.Filter]) -> bool:
-            parent = path.dirname(subdirectory)
-            directory_name = path.basename(subdirectory)
+        def filter_subdirectory(subdirectory: Path, filters: List[DirectorySearch.Filter]) -> bool:
+            parent = subdirectory.parent
+            directory_name = subdirectory.name
 
-            if any(dir_filter(parent, directory_name) for dir_filter in filters):
+            if any(directory_filter(parent, directory_name) for directory_filter in filters):
                 return True
 
             return False
 
         for directory in directories:
-            subdirectories = [file for file in glob(path.join(directory, '*')) if filter_file(file)]
+            subdirectories = [file for file in directory.glob('*') if filter_file(file)]
 
             if self.recursive:
                 result.extend(self.list(*subdirectories))
@@ -189,7 +189,7 @@ class FileSearch:
     Allows to search for files.
     """
 
-    Filter = Callable[[str, str], bool]
+    Filter = Callable[[Path, str], bool]
 
     def __init__(self):
         self.hidden = False
@@ -315,7 +315,7 @@ class FileSearch:
         :return:        The `FileSearch` itself
         """
 
-        def filter_file(filtered_name: str, _: str, file_name: str):
+        def filter_file(filtered_name: str, _: Path, file_name: str):
             return file_name == filtered_name
 
         return self.add_filters(*[partial(filter_file, name) for name in names])
@@ -340,7 +340,7 @@ class FileSearch:
         """
 
         def filter_file(start: Optional[str], not_start: Optional[str], end: Optional[str], not_end: Optional[str],
-                        substring: Optional[str], not_substring: Optional[str], _: str, file_name: str):
+                        substring: Optional[str], not_substring: Optional[str], _: Path, file_name: str):
             return (not start or file_name.startswith(start)) \
                 and (not not_start or not file_name.startswith(not_start)) \
                 and (not end or file_name.endswith(end)) \
@@ -359,8 +359,8 @@ class FileSearch:
         :return:            The `FileSearch` itself
         """
 
-        def filter_file(filtered_suffixes: List[str], _: str, file_name: str):
-            return any(file_name.endswith(suffix) for suffix in filtered_suffixes)
+        def filter_file(filtered_suffixes: List[str], _: Path, file_name: str):
+            return any(file_name.endswith('.' + suffix) for suffix in filtered_suffixes)
 
         return self.add_filters(partial(filter_file, list(suffixes)))
 
@@ -397,12 +397,12 @@ class FileSearch:
         :return:        The `FileSearch` itself
         """
 
-        def filter_file(excluded_name: str, _: str, file_name: str):
+        def filter_file(excluded_name: str, _: Path, file_name: str):
             return file_name == excluded_name
 
         return self.exclude(*[partial(filter_file, name) for name in names])
 
-    def list(self, *directories: str) -> List[str]:
+    def list(self, *directories: Path) -> List[Path]:
         """
         Lists all files that can be found in given directories.
 
@@ -412,10 +412,10 @@ class FileSearch:
         result = []
         subdirectories = self.directory_search.list(*directories) if self.directory_search.recursive else []
 
-        def filter_file(file: str) -> bool:
-            if path.isfile(file) or (path.islink(file) and self.symlinks):
-                parent = path.dirname(file)
-                file_name = path.basename(file)
+        def filter_file(file: Path) -> bool:
+            if file.is_file() or (file.is_symlink() and self.symlinks):
+                parent = file.parent
+                file_name = file.name
 
                 if not self.filters:
                     match = True
@@ -427,11 +427,11 @@ class FileSearch:
 
             return False
 
-        for directory in list(directories) + subdirectories:
-            files = [file for file in glob(path.join(directory, '*')) if filter_file(file)]
+        for directory in chain(directories, subdirectories):
+            files = [file for file in directory.glob('*') if filter_file(file)]
 
             if self.hidden:
-                files.extend([file for file in glob(path.join(directory, '.*')) if filter_file(file)])
+                files.extend([file for file in directory.glob('.*') if filter_file(file)])
 
             result.extend(files)
 

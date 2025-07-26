@@ -135,7 +135,7 @@ class Runners(Workflow):
         try:
             return Runner.parse(runs_on_clause)
         except ValueError as error:
-            raise RuntimeError('Failed to parse runs-on-clause in workflow "' + self.file + '"') from error
+            raise RuntimeError('Failed to parse runs-on-clause in workflow "' + str(self.file) + '"') from error
 
     def __parse_strategy(self, strategy: Dict[Any, Any]) -> Set[Runner]:
         runners = set()
@@ -144,7 +144,7 @@ class Runners(Workflow):
             try:
                 runners.add(Runner.parse(os))
             except ValueError as error:
-                raise RuntimeError('Failed to parse strategy.matrix.os-clause in workflow "' + self.file
+                raise RuntimeError('Failed to parse strategy.matrix.os-clause in workflow "' + str(self.file)
                                    + '"') from error
 
         return runners

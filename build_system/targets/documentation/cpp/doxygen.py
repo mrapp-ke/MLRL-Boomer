@@ -3,7 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow to run the external program "doxygen".
 """
-from os import environ, path
+from os import environ
+from pathlib import Path
 from typing import override
 
 from core.build_unit import BuildUnit
@@ -14,14 +15,14 @@ from util.run import Program
 from targets.documentation.cpp.modules import CppApidocModule
 
 
-def get_doxyfile(build_unit: BuildUnit) -> str:
+def get_doxyfile(build_unit: BuildUnit) -> Path:
     """
     Returns the path to the Doxyfile.
 
     :param build_unit:  The build unit, the Doxyfile belong to
     :return:            The path to the Doxyfile
     """
-    return path.join(build_unit.root_directory, 'Doxyfile')
+    return build_unit.root_directory / 'Doxyfile'
 
 
 class Doxygen(Program):
@@ -33,8 +34,8 @@ class Doxygen(Program):
     def __create_environment(module: CppApidocModule) -> Env:
         env = environ.copy()
         set_env(env, 'DOXYGEN_PROJECT_NAME', 'libmlrl' + module.subproject_name)
-        set_env(env, 'DOXYGEN_INPUT_DIR', module.include_directory)
-        set_env(env, 'DOXYGEN_OUTPUT_DIR', module.output_directory)
+        set_env(env, 'DOXYGEN_INPUT_DIR', str(module.include_directory))
+        set_env(env, 'DOXYGEN_OUTPUT_DIR', str(module.output_directory))
         set_env(env, 'DOXYGEN_PREDEFINED', 'MLRL' + module.subproject_name.upper() + '_API=')
         return env
 
@@ -43,7 +44,7 @@ class Doxygen(Program):
         :param build_unit:  The build unit from which the program should be run
         :param module:      The module, the program should be applied to
         """
-        super().__init__('doxygen', get_doxyfile(build_unit))
+        super().__init__('doxygen', str(get_doxyfile(build_unit)))
         self.module = module
         self.print_arguments(True)
         self.install_program(False)
@@ -64,7 +65,7 @@ class DoxygenUpdate(Program):
         """
         :param build_unit: The build unit from which the program should be run
         """
-        super().__init__('doxygen', '-u', get_doxyfile(build_unit))
+        super().__init__('doxygen', '-u', str(get_doxyfile(build_unit)))
         self.print_arguments(True)
         self.install_program(False)
         self.set_build_unit(build_unit)
@@ -72,4 +73,4 @@ class DoxygenUpdate(Program):
 
     @override
     def _after(self):
-        delete_files(get_doxyfile(self.build_unit) + '.bak')
+        delete_files(get_doxyfile(self.build_unit).with_suffix('.bak'))

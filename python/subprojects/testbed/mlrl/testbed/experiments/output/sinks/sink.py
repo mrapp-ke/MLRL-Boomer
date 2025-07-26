@@ -112,6 +112,7 @@ class TabularFileSink(FileSink, ABC):
         if tabular_data:
             self._write_table_to_file(file_path, state, tabular_data, **kwargs)
 
+    @abstractmethod
     def _write_table_to_file(self, file_path: Path, state: ExperimentState, table: Table, **kwargs):
         """
         Must be implemented by subclasses in order to write tabular output data to a specific file.

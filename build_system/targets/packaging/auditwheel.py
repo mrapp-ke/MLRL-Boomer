@@ -5,7 +5,7 @@ Provides classes that allow to run the external program "auditwheel".
 """
 import shutil
 
-from os import path
+from pathlib import Path
 from typing import override
 
 from core.build_unit import BuildUnit
@@ -20,13 +20,13 @@ class Auditwheel(Program):
     Allows to run the external program "auditwheel".
     """
 
-    def __init__(self, build_unit: BuildUnit, wheel: str):
+    def __init__(self, build_unit: BuildUnit, wheel: Path):
         """
         :param build_unit:  The build unit from which the program should be run
         :param wheel:       The path to the wheel package to be repaired
         """
-        wheel_directory = path.join(path.dirname(wheel), 'wheelhouse')
-        super().__init__('auditwheel', 'repair', wheel, '--wheel-dir', wheel_directory)
+        wheel_directory = wheel.parent / 'wheelhouse'
+        super().__init__('auditwheel', 'repair', str(wheel), '--wheel-dir', str(wheel_directory))
         self.set_build_unit(build_unit)
         self.wheel = wheel
         self.wheel_directory = wheel_directory
@@ -35,7 +35,7 @@ class Auditwheel(Program):
     def _after(self):
         original_wheel = self.wheel
         delete_files(original_wheel)
-        original_directory = path.dirname(original_wheel)
+        original_directory = original_wheel.parent
         wheel_directory = self.wheel_directory
 
         for wheel in FileSearch().list(wheel_directory):

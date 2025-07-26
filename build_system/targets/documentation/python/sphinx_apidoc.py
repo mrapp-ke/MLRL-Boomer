@@ -3,7 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow to run the external program "sphinx-apidoc".
 """
-from os import path
 from typing import override
 
 from core.build_unit import BuildUnit
@@ -24,8 +23,8 @@ class SphinxApidoc(Program):
         :param build_unit:  The build unit from which the program should be run
         :param module:      The module, the program should be applied to
         """
-        super().__init__('sphinx-apidoc', '--separate', '--module-first', '--no-toc', '-o', module.output_directory,
-                         module.source_directory,
+        super().__init__('sphinx-apidoc', '--separate', '--module-first', '--no-toc', '-o',
+                         str(module.output_directory), str(module.source_directory),
                          *['*.' + suffix + '*' for suffix in FileType.extension_module().suffixes],
                          *['*.' + suffix + '*' for suffix in FileType.shared_library().suffixes])
         self.module = module
@@ -40,5 +39,5 @@ class SphinxApidoc(Program):
 
     @override
     def _after(self):
-        root_rst_file = path.join(self.module.output_directory, path.basename(self.module.source_directory) + '.rst')
+        root_rst_file = self.module.output_directory / (self.module.source_directory.name + '.rst')
         delete_files(root_rst_file, accept_missing=False)

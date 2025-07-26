@@ -6,11 +6,13 @@ pre-built packages via "cibuildwheel", because the de facto package manager "hom
 compiled for the specific macOS version the build machine is running, instead of using the proper version for the target
 platform (see https://cibuildwheel.pypa.io/en/stable/faq/#missing-dependencies).
 """
+from pathlib import Path
+
 from core.build_unit import BuildUnit
-from core.targets import PhonyTarget, TargetBuilder
+from core.targets import TargetBuilder
 
 from targets.dependencies.macos.targets import compile_libomp
 
-TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
+TARGETS = TargetBuilder(BuildUnit.for_file(Path(__file__))) \
     .add_phony_target('dependency_libomp').set_functions(compile_libomp) \
     .build()

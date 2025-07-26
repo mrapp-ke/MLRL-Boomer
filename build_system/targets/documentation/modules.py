@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that provide access to a Sphinx documentation.
 """
 from abc import ABC, abstractmethod
+from pathlib import Path
 from typing import List, override
 
 from core.modules import Module, ModuleRegistry
@@ -18,7 +19,7 @@ class ApidocModule(SubprojectModule, ABC):
     generated.
     """
 
-    def __init__(self, output_directory: str):
+    def __init__(self, output_directory: Path):
         """
         :param output_directory: The path to the directory where the API documentation should be stored
         """
@@ -48,8 +49,8 @@ class SphinxModule(Module):
             return isinstance(module, SphinxModule)
 
     def __init__(self,
-                 root_directory: str,
-                 output_directory: str,
+                 root_directory: Path,
+                 output_directory: Path,
                  source_file_search: FileSearch = FileSearch().set_recursive(True)):
         """
         :param root_directory:      The path to the module's root directory
@@ -61,7 +62,7 @@ class SphinxModule(Module):
         self.output_directory = output_directory
         self.source_file_search = source_file_search
 
-    def find_source_files(self) -> List[str]:
+    def find_source_files(self) -> List[Path]:
         """
         Finds and returns all source files of the documentation.
 
@@ -69,7 +70,7 @@ class SphinxModule(Module):
         """
         return self.source_file_search.list(self.root_directory)
 
-    def find_spelling_files(self) -> List[str]:
+    def find_spelling_files(self) -> List[Path]:
         """
         Finds and returns all files that contain information about spelling mistakes found in the documentation.
 
@@ -82,4 +83,4 @@ class SphinxModule(Module):
 
     @override
     def __str__(self) -> str:
-        return 'SphinxModule {root_directory="' + self.root_directory + '"}'
+        return 'SphinxModule {root_directory="' + str(self.root_directory) + '"}'
