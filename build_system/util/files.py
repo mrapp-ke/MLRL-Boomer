@@ -6,7 +6,7 @@ Provides classes for listing files and directories.
 from functools import partial
 from itertools import chain
 from pathlib import Path
-from typing import Any, Callable, List, Optional, Set
+from typing import Any, Callable, List, Optional, Set, override
 
 
 class DirectorySearch:
@@ -557,11 +557,14 @@ class FileType:
                 .set_symlinks(True),
         )
 
+    @override
     def __str__(self) -> str:
         return self.name
 
+    @override
     def __eq__(self, other: Any) -> bool:
         return isinstance(other, type(self)) and self.name == other.name
 
+    @override
     def __hash__(self) -> int:
         return hash(self.name)

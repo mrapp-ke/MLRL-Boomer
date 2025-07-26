@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements targets for compiling Cython code.
 """
 from pathlib import Path
-from typing import List, cast
+from typing import List, cast, override
 
 from core.build_unit import BuildUnit
 from core.modules import Module
@@ -35,16 +35,19 @@ class SetupCython(BuildTarget.Runnable):
     def __init__(self):
         super().__init__(MODULE_FILTER)
 
+    @override
     def run(self, build_unit: BuildUnit, module: Module):
         compilation_module = cast(CompilationModule, module)
         MesonSetup(build_unit, compilation_module, build_options=BUILD_OPTIONS) \
             .add_dependencies('cython') \
             .run()
 
+    @override
     def get_output_files(self, _: BuildUnit, module: Module) -> List[Path]:
         compilation_module = cast(CompilationModule, module)
         return [compilation_module.build_directory]
 
+    @override
     def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[Path]:
         compilation_module = cast(CompilationModule, module)
         Log.info('Removing Cython build files from directory "%s"...', compilation_module.root_directory)
@@ -59,6 +62,7 @@ class CompileCython(PhonyTarget.Runnable):
     def __init__(self):
         super().__init__(MODULE_FILTER)
 
+    @override
     def run(self, build_unit: BuildUnit, module: Module):
         compilation_module = cast(CompilationModule, module)
         Log.info('Compiling Cython code in directory "%s"...', compilation_module.root_directory)
@@ -74,12 +78,14 @@ class InstallCython(BuildTarget.Runnable):
     def __init__(self):
         super().__init__(MODULE_FILTER)
 
+    @override
     def run(self, build_unit: BuildUnit, module: Module):
         compilation_module = cast(CompilationModule, module)
         Log.info('Installing extension modules from directory "%s" into source tree...',
                  compilation_module.root_directory)
         MesonInstall(build_unit, compilation_module).run()
 
+    @override
     def get_clean_files(self, _: BuildUnit, module: Module) -> List[Path]:
         compilation_module = cast(CompilationModule, module)
         Log.info('Removing extension modules installed from directory "%s" from source tree...',

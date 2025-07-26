@@ -5,7 +5,7 @@ Provides classes that allow writing characteristics of models to one or several 
 """
 import logging as log
 
-from typing import List, Optional
+from typing import List, Optional, override
 
 import numpy as np
 
@@ -84,6 +84,7 @@ class RuleModelCharacteristicsWriter(OutputWriter):
             else:
                 raise ValueError('Unsupported type of head: ' + str(type(head)))
 
+        @override
         def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`

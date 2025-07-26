@@ -6,7 +6,7 @@ Provides classes that allow writing textual representations of probability calib
 import logging as log
 
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from typing import List, Optional, override
 
 from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibrationModel, \
     NoProbabilityCalibrationModel
@@ -33,6 +33,7 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
         rule model.
         """
 
+        @override
         def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
@@ -62,6 +63,7 @@ class MarginalProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWrite
         rule model.
         """
 
+        @override
         def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Optional[OutputData]:
             calibration_model = learner.marginal_probability_calibration_model_
             context = Context(include_dataset_type=False)
@@ -100,6 +102,7 @@ class JointProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWriter):
         model.
         """
 
+        @override
         def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Optional[OutputData]:
             calibration_model = learner.joint_probability_calibration_model_
             context = Context(include_dataset_type=False)

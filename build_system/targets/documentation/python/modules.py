@@ -5,7 +5,7 @@ Implements modules that provide access to Python code for which an API documenta
 """
 from os import environ
 from pathlib import Path
-from typing import List
+from typing import List, override
 
 from core.modules import Module, ModuleRegistry
 from util.files import FileSearch, FileType
@@ -24,6 +24,7 @@ class PythonApidocModule(ApidocModule):
         A filter that matches modules of type `PythonApidocModule`.
         """
 
+        @override
         def matches(self, module: Module, module_registry: ModuleRegistry) -> bool:
             return isinstance(module, PythonApidocModule) and SubprojectModule.Filter.from_env(environ).matches(
                 module, module_registry)
@@ -61,14 +62,17 @@ class PythonApidocModule(ApidocModule):
         """
         return self.source_file_search.filter_by_file_type(FileType.python()).list(self.source_directory)
 
+    @override
     @property
     def subproject_name(self) -> str:
         return self.output_directory.name
 
+    @override
     def create_reference(self) -> str:
         rst_file_name = self.source_directory_name + '.' + self.subproject_name.replace('-', '_') + '.rst'
         rst_file_path = Path(self.subproject_name, rst_file_name)
         return 'Package mlrl-' + self.output_directory.name + ' <' + str(rst_file_path) + '>'
 
+    @override
     def __str__(self) -> str:
         return 'PythonApidocModule {root_directory="' + str(self.root_directory) + '"}'

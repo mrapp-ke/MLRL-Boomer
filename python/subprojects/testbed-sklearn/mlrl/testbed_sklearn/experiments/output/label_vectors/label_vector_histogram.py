@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that provide access to unique label vectors.
 """
 from dataclasses import dataclass
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, override
 
 import numpy as np
 
@@ -25,6 +25,7 @@ class LabelVector:
     label_indices: np.ndarray
     frequency: int
 
+    @override
     def __str__(self) -> str:
         return str(self.label_indices)
 

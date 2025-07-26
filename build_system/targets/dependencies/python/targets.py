@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements targets for installing runtime requirements that are required by the project's source code.
 """
 from functools import reduce
-from typing import List, Optional, cast
+from typing import List, Optional, cast, override
 
 from core.build_unit import BuildUnit
 from core.modules import Module
@@ -30,6 +30,7 @@ class InstallPythonDependencies(PhonyTarget.Runnable):
         super().__init__(PythonDependencyModule.Filter())
         self.dependency_type = dependency_type
 
+    @override
     def run_all(self, build_unit: BuildUnit, modules: List[Module]):
         dependency_modules = (cast(PythonDependencyModule, module) for module in modules)
         requirements_files: List[RequirementsFile] = []
@@ -56,6 +57,7 @@ class CheckPythonDependencies(PhonyTarget.Runnable):
         super().__init__(PythonDependencyModule.Filter())
         self.dependency_type = dependency_type
 
+    @override
     def run_all(self, build_unit: BuildUnit, modules: List[Module]):
         Log.info('Checking for outdated dependencies...')
         dependency_modules = (cast(PythonDependencyModule, module) for module in modules)
@@ -91,6 +93,7 @@ class UpdatePythonDependencies(PhonyTarget.Runnable):
         super().__init__(PythonDependencyModule.Filter())
         self.dependency_type = dependency_type
 
+    @override
     def run_all(self, build_unit: BuildUnit, modules: List[Module]):
         Log.info('Updating outdated dependencies...')
         dependency_modules = (cast(PythonDependencyModule, module) for module in modules)

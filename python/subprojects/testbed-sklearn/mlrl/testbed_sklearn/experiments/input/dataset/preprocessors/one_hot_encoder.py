@@ -6,6 +6,7 @@ Provides classes for preprocessing datasets.
 import logging as log
 
 from dataclasses import replace
+from typing import override
 
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder as SkLearnOneHotEncoder
@@ -29,6 +30,7 @@ class OneHotEncoder(Preprocessor):
         def __init__(self):
             self.encoder = None
 
+        @override
         def encode(self, dataset: Dataset) -> Dataset:
             """
             See :func:`mlrl.testbed.experiments.input.dataset.preprocessors.Preprocessor.Encoder.encode`
@@ -56,6 +58,7 @@ class OneHotEncoder(Preprocessor):
             log.debug('No need to apply one-hot encoding, as the dataset does not contain any nominal features.')
             return dataset
 
+    @override
     def create_encoder(self) -> Preprocessor.Encoder:
         """
         See :func:`mlrl.testbed.experiments.input.dataset.preprocessors.Preprocessor.create_encoder`
