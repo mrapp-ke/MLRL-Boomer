@@ -5,6 +5,7 @@ Provides classes that allow configuring the functionality to load datasets.
 """
 from abc import ABC, abstractmethod
 from argparse import Namespace
+from pathlib import Path
 from typing import Set, override
 
 from mlrl.testbed.experiments.input.dataset.dataset import InputDataset
@@ -79,10 +80,10 @@ class DatasetFileExtension(DatasetExtension, ABC):
         See :func:`mlrl.testbed.experiments.input.dataset.extension.DatasetExtension._create_source`
         """
         dataset_directory = self.DATASET_DIRECTORY.get_value(args)
-        return self._create_file_source(dataset_directory, dataset, args)
+        return self._create_file_source(Path(dataset_directory), dataset, args)
 
     @abstractmethod
-    def _create_file_source(self, dataset_directory: str, dataset: InputDataset, args: Namespace) -> FileSource:
+    def _create_file_source(self, dataset_directory: Path, dataset: InputDataset, args: Namespace) -> FileSource:
         """
         Must be implemented by subclasses in order to create the `FileSource`, the dataset should be loaded from.
 

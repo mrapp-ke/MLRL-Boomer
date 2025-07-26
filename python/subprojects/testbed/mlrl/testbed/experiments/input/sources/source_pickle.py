@@ -6,6 +6,7 @@ Provides classes that allow reading input data from files using Python's pickle 
 import logging as log
 import pickle
 
+from pathlib import Path
 from typing import Any, Optional, override
 
 from mlrl.testbed.experiments.input.data import InputData
@@ -19,7 +20,7 @@ class PickleFileSource(FileSource):
     Allows to read input data from a file using Python's pickle mechanism.
     """
 
-    def __init__(self, directory: str):
+    def __init__(self, directory: Path):
         """
         :param directory: The path to the directory of the file
         """
@@ -27,7 +28,7 @@ class PickleFileSource(FileSource):
 
     # pylint: disable=unused-argument
     @override
-    def _read_from_file(self, state: ExperimentState, file_path: str, _: InputData) -> Optional[Any]:
+    def _read_from_file(self, state: ExperimentState, file_path: Path, _: InputData) -> Optional[Any]:
         try:
             with open(file_path, mode='rb') as pickle_file:
                 return pickle.load(pickle_file)

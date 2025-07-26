@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write label vectors to one or several sinks.
 """
 from argparse import Namespace
+from pathlib import Path
 from typing import Set, override
 
 from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vectors import LabelVectors
@@ -66,7 +67,7 @@ class LabelVectorExtension(Extension):
         if save_label_vectors and result_directory:
             create_directory = OutputExtension.CREATE_DIRS.get_value(args)
             experiment_builder.label_vector_writer.add_sinks(
-                CsvFileSink(directory=result_directory, create_directory=create_directory, options=options))
+                CsvFileSink(directory=Path(result_directory), create_directory=create_directory, options=options))
 
     @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):

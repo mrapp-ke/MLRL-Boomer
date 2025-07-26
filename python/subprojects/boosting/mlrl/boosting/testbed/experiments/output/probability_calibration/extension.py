@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write calibration models to one or several sinks.
 """
 from argparse import Namespace
+from pathlib import Path
 from typing import List, Set, override
 
 from mlrl.boosting.testbed.experiments.output.probability_calibration.writer import \
@@ -70,7 +71,7 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
 
         if value and result_directory:
             return [
-                CsvFileSink(directory=result_directory,
+                CsvFileSink(directory=Path(result_directory),
                             create_directory=OutputExtension.CREATE_DIRS.get_value(args),
                             options=options)
             ]
@@ -141,7 +142,7 @@ class JointProbabilityCalibrationModelExtension(Extension):
 
         if value and result_directory:
             sinks.append(
-                CsvFileSink(directory=result_directory,
+                CsvFileSink(directory=Path(result_directory),
                             create_directory=OutputExtension.CREATE_DIRS.get_value(args),
                             options=options))
 

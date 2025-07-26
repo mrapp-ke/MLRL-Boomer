@@ -6,7 +6,7 @@ Provides classes for implementing sinks, output data may be written to.
 import logging as log
 
 from abc import ABC, abstractmethod
-from os import makedirs
+from pathlib import Path
 from typing import override
 
 from mlrl.testbed.experiments.dataset import Dataset
@@ -44,7 +44,7 @@ class FileSink(Sink, ABC):
     An abstract base class for all sinks that write output data to a file.
     """
 
-    def __init__(self, directory: str, suffix: str, options: Options = Options(), create_directory: bool = False):
+    def __init__(self, directory: Path, suffix: str, options: Options = Options(), create_directory: bool = False):
         """
         :param directory:           The path to the directory of the file
         :param suffix:              The suffix of the file
@@ -66,7 +66,7 @@ class FileSink(Sink, ABC):
         directory = self.directory
 
         if self.create_directory:
-            makedirs(directory, exist_ok=True)
+            directory.mkdir(parents=True, exist_ok=True)
 
         file_path = FilePath(directory=directory,
                              file_name=output_data.properties.file_name,
@@ -76,7 +76,7 @@ class FileSink(Sink, ABC):
         self._write_to_file(file_path, state, output_data, **kwargs)
 
     @abstractmethod
-    def _write_to_file(self, file_path: str, state: ExperimentState, output_data: OutputData, **kwargs):
+    def _write_to_file(self, file_path: Path, state: ExperimentState, output_data: OutputData, **kwargs):
         """
         Must be implemented by subclasses in order to write output data to a specific file.
 
@@ -91,7 +91,7 @@ class TabularFileSink(FileSink, ABC):
     An abstract base class for all sinks that write tabular output data to a file.
     """
 
-    def __init__(self, directory: str, suffix: str, options: Options = Options(), create_directory: bool = False):
+    def __init__(self, directory: Path, suffix: str, options: Options = Options(), create_directory: bool = False):
         """
         :param directory:           The path to the directory of the file
         :param suffix:              The suffix of the file
@@ -102,7 +102,7 @@ class TabularFileSink(FileSink, ABC):
         super().__init__(directory=directory, suffix=suffix, options=options, create_directory=create_directory)
 
     @override
-    def _write_to_file(self, file_path: str, state: ExperimentState, output_data: OutputData, **kwargs):
+    def _write_to_file(self, file_path: Path, state: ExperimentState, output_data: OutputData, **kwargs):
         if not isinstance(output_data, TabularOutputData):
             raise RuntimeError('Output data of type "' + type(output_data).__name__
                                + '" cannot be converted into a tabular representation')
@@ -112,7 +112,7 @@ class TabularFileSink(FileSink, ABC):
         if tabular_data:
             self._write_table_to_file(file_path, state, tabular_data, **kwargs)
 
-    def _write_table_to_file(self, file_path: str, state: ExperimentState, table: Table, **kwargs):
+    def _write_table_to_file(self, file_path: Path, state: ExperimentState, table: Table, **kwargs):
         """
         Must be implemented by subclasses in order to write tabular output data to a specific file.
 
@@ -127,7 +127,7 @@ class DatasetFileSink(FileSink, ABC):
     An abstract base class for all sinks that write datasets to a file.
     """
 
-    def __init__(self, directory: str, suffix: str, options: Options = Options(), create_directory: bool = False):
+    def __init__(self, directory: Path, suffix: str, options: Options = Options(), create_directory: bool = False):
         """
         :param directory:           The path to the directory of the file
         :param suffix:              The suffix of the file
@@ -138,7 +138,7 @@ class DatasetFileSink(FileSink, ABC):
         super().__init__(directory=directory, suffix=suffix, options=options, create_directory=create_directory)
 
     @override
-    def _write_to_file(self, file_path: str, state: ExperimentState, output_data: OutputData, **kwargs):
+    def _write_to_file(self, file_path: Path, state: ExperimentState, output_data: OutputData, **kwargs):
         if not isinstance(output_data, DatasetOutputData):
             raise RuntimeError('Output data of type "' + type(output_data).__name__
                                + '" cannot be converted into a dataset')
@@ -148,7 +148,7 @@ class DatasetFileSink(FileSink, ABC):
         if dataset:
             self._write_dataset_to_file(file_path, state, dataset, **kwargs)
 
-    def _write_dataset_to_file(self, file_path: str, state: ExperimentState, dataset: Dataset, **kwargs):
+    def _write_dataset_to_file(self, file_path: Path, state: ExperimentState, dataset: Dataset, **kwargs):
         """
         Must be implemented by subclasses in order to write a dataset to a specific file.
 
