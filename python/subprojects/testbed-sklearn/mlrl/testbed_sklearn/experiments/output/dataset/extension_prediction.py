@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write predictions to one or several sinks.
 """
 from argparse import Namespace
+from pathlib import Path
 from typing import Set, override
 
 from mlrl.testbed_arff.experiments.output.sinks.sink_arff import ArffFileSink
@@ -64,7 +65,7 @@ class PredictionExtension(Extension):
         if save_predictions and result_directory:
             create_directory = OutputExtension.CREATE_DIRS.get_value(args)
             experiment_builder.prediction_writer.add_sinks(
-                ArffFileSink(directory=result_directory, create_directory=create_directory, options=options))
+                ArffFileSink(directory=Path(result_directory), create_directory=create_directory, options=options))
 
     @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):

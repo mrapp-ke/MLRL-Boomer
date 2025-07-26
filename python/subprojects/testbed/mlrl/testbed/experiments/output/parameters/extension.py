@@ -5,6 +5,7 @@ Provides classes that allow configuring the functionality to write algorithmic p
 """
 from argparse import Namespace
 from os import path
+from pathlib import Path
 from typing import Set, override
 
 from mlrl.testbed.experiments.experiment import Experiment
@@ -68,7 +69,7 @@ class ParameterOutputExtension(Extension):
             if parameter_save_dir:
                 create_directory = OutputExtension.CREATE_DIRS.get_value(args)
                 experiment_builder.parameter_writer.add_sinks(
-                    CsvFileSink(directory=parameter_save_dir, create_directory=create_directory))
+                    CsvFileSink(directory=Path(parameter_save_dir), create_directory=create_directory))
 
     @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
