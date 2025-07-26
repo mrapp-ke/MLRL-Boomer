@@ -3,7 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements modules that provide access to Python code that can be built as wheel packages.
 """
-from os import environ, path
+from os import environ
+from pathlib import Path
 from typing import Generator, List, Optional, Set, cast
 
 from core.build_unit import BuildUnit
@@ -34,7 +35,7 @@ class PythonPackageModule(SubprojectModule):
             self.package_name = package_name
 
         def matches(self, module: 'Module', module_registry: 'ModuleRegistry') -> bool:
-            build_unit = BuildUnit.for_file(__file__)
+            build_unit = BuildUnit.for_file(Path(__file__))
             return isinstance(module, PythonPackageModule) and module.get_package_name(build_unit) == self.package_name
 
     class Filter(Module.Filter):
@@ -85,14 +86,14 @@ class PythonPackageModule(SubprojectModule):
             return False
 
         def __init__(self):
-            self.build_unit = BuildUnit.for_file(__file__)
+            self.build_unit = BuildUnit.for_file(Path(__file__))
 
         def matches(self, module: Module, module_registry: ModuleRegistry) -> bool:
             return PythonPackageModule.Filter.TypeFilter().matches(module, module_registry) and (
                 self.__needs_to_be_built(cast(PythonPackageModule, module), module_registry)
                 or self.__is_dependency_to_be_built(cast(PythonPackageModule, module), module_registry))
 
-    def __init__(self, root_directory: str, wheel_directory_name: str):
+    def __init__(self, root_directory: Path, wheel_directory_name: str):
         """
         :param root_directory:          The path to the module's root directory
         :param wheel_directory_name:    The name of the directory that contains wheel packages
@@ -103,18 +104,18 @@ class PythonPackageModule(SubprojectModule):
         self._dependencies: Optional[List[PythonPackageModule]] = None
 
     @property
-    def pyproject_toml_template_file(self) -> str:
+    def pyproject_toml_template_file(self) -> Path:
         """
         The path to the template file that is used for generating a pyproject.toml file.
         """
-        return path.join(self.root_directory, 'pyproject.template.toml')
+        return self.root_directory / 'pyproject.template.toml'
 
     @property
-    def pyproject_toml_file(self) -> str:
+    def pyproject_toml_file(self) -> Path:
         """
         The path to the pyproject.toml file that specifies the meta-data of the package.
         """
-        return path.join(self.root_directory, 'pyproject.toml')
+        return self.root_directory / 'pyproject.toml'
 
     def get_package_name(self, build_unit: BuildUnit) -> str:
         """
@@ -172,13 +173,13 @@ class PythonPackageModule(SubprojectModule):
         yield from dependencies
 
     @property
-    def wheel_directory(self) -> str:
+    def wheel_directory(self) -> Path:
         """
         The path to the directory that contains the wheel packages that have been built for the module.
         """
-        return path.join(self.root_directory, self.wheel_directory_name)
+        return self.root_directory / self.wheel_directory_name
 
-    def find_wheel(self) -> Optional[str]:
+    def find_wheel(self) -> Optional[Path]:
         """
         Finds and returns the wheel package that has been built for the module.
 
@@ -198,11 +199,11 @@ class PythonPackageModule(SubprojectModule):
         """
         True, if the wheel package is a pure Pyton package without extension modules, False otherwise
         """
-        return not path.isfile(path.join(self.root_directory, 'setup.py'))
+        return not (self.root_directory / 'setup.py').is_file()
 
     @property
     def subproject_name(self) -> str:
-        return path.basename(self.root_directory)
+        return self.root_directory.name
 
     def __str__(self) -> str:
-        return 'PythonPackageModule {root_directory="' + self.root_directory + '"}'
+        return 'PythonPackageModule {root_directory="' + str(self.root_directory) + '"}'

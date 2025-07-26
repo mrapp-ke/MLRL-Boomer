@@ -22,6 +22,6 @@ class MdFormat(Program):
         """
         super().__init__('mdformat', '--number', '--wrap', 'no', '--end-of-line', 'lf')
         self.add_conditional_arguments(not enforce_changes, '--check')
-        self.add_arguments(*module.find_source_files())
+        self.add_arguments(*map(str, module.find_source_files()))
         self.set_build_unit(build_unit)
         self.add_dependencies('mdformat-myst', 'mdformat-deflist')

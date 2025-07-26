@@ -19,6 +19,6 @@ class MesonTest(Meson):
         :param build_unit:  The build unit from which the program should be run
         :param module:      The module, the program should be applied to
         """
-        super().__init__(build_unit, 'test', '-C', module.build_directory, '--verbose')
+        super().__init__(build_unit, 'test', '-C', str(module.build_directory), '--verbose')
         self.add_conditional_arguments(module.fail_fast, '--maxfail', '1')
         self.install_program(False)

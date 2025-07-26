@@ -65,7 +65,7 @@ class MesonSetup(Meson):
         :param meson_options:   Options to be passed to meson
         """
         super().__init__(build_unit, 'setup', *get_meson_arguments(build_options), *meson_options,
-                         module.build_directory, module.root_directory)
+                         str(module.build_directory), str(module.root_directory))
         self.add_dependencies('ninja')
 
 
@@ -86,7 +86,7 @@ class MesonConfigure(Meson):
         :param meson_options:   Options to be passed to meson
         """
         super().__init__(build_unit, 'configure', *get_meson_arguments(build_options), *meson_options,
-                         module.build_directory)
+                         str(module.build_directory))
         self.build_options = build_options
 
     def _should_be_skipped(self) -> bool:
@@ -106,7 +106,7 @@ class MesonCompile(Meson):
         :param build_unit:  The build unit from which the program should be run
         :param module:      The module, the program should be applied to
         """
-        super().__init__(build_unit, 'compile', '-C', module.build_directory)
+        super().__init__(build_unit, 'compile', '-C', str(module.build_directory))
 
 
 class MesonInstall(Meson):
@@ -119,5 +119,5 @@ class MesonInstall(Meson):
         :param build_unit:  The build unit from which the program should be run
         :param module:      The module, the program should be applied to
         """
-        super().__init__(build_unit, 'install', '--no-rebuild', '--only-changed', '-C', module.build_directory)
+        super().__init__(build_unit, 'install', '--no-rebuild', '--only-changed', '-C', str(module.build_directory))
         self.install_program(False)

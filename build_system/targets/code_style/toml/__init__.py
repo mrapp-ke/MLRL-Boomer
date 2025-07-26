@@ -3,9 +3,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Defines targets and modules for checking and enforcing code style definitions for TOML files.
 """
+from pathlib import Path
+
 from core.build_unit import BuildUnit
 from core.targets import TargetBuilder
-from util.files import FileSearch, FileType
+from util.files import FileType
 
 from targets.code_style.modules import CodeModule
 from targets.code_style.toml.targets import CheckTomlCodeStyle, EnforceTomlCodeStyle
@@ -15,7 +17,7 @@ FORMAT_TOML = 'format_toml'
 
 TEST_FORMAT_TOML = 'test_format_toml'
 
-TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
+TARGETS = TargetBuilder(BuildUnit.for_file(Path(__file__))) \
     .add_phony_target(FORMAT_TOML).set_runnables(EnforceTomlCodeStyle()) \
     .add_phony_target(TEST_FORMAT_TOML).set_runnables(CheckTomlCodeStyle()) \
     .build()

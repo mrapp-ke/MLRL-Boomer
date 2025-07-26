@@ -3,8 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow to run the external program "yapf".
 """
-from os import path
-
 from core.build_unit import BuildUnit
 from util.run import Program
 
@@ -22,6 +20,6 @@ class Yapf(Program):
         :param module:          The module, the program should be applied to
         :param enforce_changes: True, if changes should be applied to files, False otherwise
         """
-        super().__init__('yapf', '--parallel', '--style=' + path.join(build_unit.root_directory, '.style.yapf'),
-                         '--in-place' if enforce_changes else '--diff', *module.find_source_files())
+        super().__init__('yapf', '--parallel', '--style=' + str(build_unit.root_directory / '.style.yapf'),
+                         '--in-place' if enforce_changes else '--diff', *map(str, module.find_source_files()))
         self.set_build_unit(build_unit)

@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for generating API documentations for C++ code.
 """
+from pathlib import Path
 from typing import List, cast
 
 from core.build_unit import BuildUnit
@@ -32,15 +33,15 @@ class ApidocCpp(BuildTarget.Runnable):
         Doxygen(build_unit, apidoc_module).run()
         BreatheApidoc(build_unit, apidoc_module).run()
 
-    def get_output_files(self, _: BuildUnit, module: Module) -> List[str]:
+    def get_output_files(self, _: BuildUnit, module: Module) -> List[Path]:
         apidoc_module = cast(CppApidocModule, module)
         return [apidoc_module.output_directory]
 
-    def get_input_files(self, _: BuildUnit, module: Module) -> List[str]:
+    def get_input_files(self, _: BuildUnit, module: Module) -> List[Path]:
         apidoc_module = cast(CppApidocModule, module)
         return apidoc_module.find_header_files()
 
-    def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[str]:
+    def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[Path]:
         apidoc_module = cast(CppApidocModule, module)
         Log.info('Removing C++ API documentation for directory "%s"...', apidoc_module.root_directory)
         return super().get_clean_files(build_unit, module)
