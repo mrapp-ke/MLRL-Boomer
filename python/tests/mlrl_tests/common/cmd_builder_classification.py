@@ -1,6 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+from pathlib import Path
 from typing import Optional
 
 from .cmd_builder import CmdBuilder
@@ -15,7 +16,7 @@ class ClassificationCmdBuilder(CmdBuilder):
     """
 
     def __init__(self,
-                 expected_output_dir: str,
+                 expected_output_dir: Path,
                  runnable_module_name: str,
                  runnable_class_name: Optional[str] = None,
                  dataset: str = Dataset.EMOTIONS):
