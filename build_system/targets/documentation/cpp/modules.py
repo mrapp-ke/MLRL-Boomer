@@ -3,7 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements modules that provide access to C++ code for which an API documentation can be generated.
 """
-from os import environ, path
+from os import environ
+from pathlib import Path
 from typing import List
 
 from core.modules import Module, ModuleRegistry
@@ -28,8 +29,8 @@ class CppApidocModule(ApidocModule):
                 module, module_registry)
 
     def __init__(self,
-                 root_directory: str,
-                 output_directory: str,
+                 root_directory: Path,
+                 output_directory: Path,
                  include_directory_name: str,
                  header_file_search: FileSearch = FileSearch().set_recursive(True)):
         """
@@ -46,13 +47,13 @@ class CppApidocModule(ApidocModule):
         self.header_file_search = header_file_search
 
     @property
-    def include_directory(self) -> str:
+    def include_directory(self) -> Path:
         """
         The path to the directory that contains the header files to be included in the API documentation.
         """
-        return path.join(self.root_directory, self.include_directory_name)
+        return self.root_directory / self.include_directory_name
 
-    def find_header_files(self) -> List[str]:
+    def find_header_files(self) -> List[Path]:
         """
         Finds and returns the header files to be included in the API documentation.
 
@@ -62,11 +63,11 @@ class CppApidocModule(ApidocModule):
 
     @property
     def subproject_name(self) -> str:
-        return path.basename(self.root_directory)
+        return self.root_directory.name
 
     def create_reference(self) -> str:
-        return 'Library libmlrl' + self.subproject_name + ' <' + path.join(path.basename(self.output_directory),
-                                                                           'filelist.rst') + '>'
+        return 'Library libmlrl' + self.subproject_name + ' <' + str(Path(self.output_directory.name,
+                                                                          'filelist.rst')) + '>'
 
     def __str__(self) -> str:
-        return 'CppApidocModule {root_directory="' + self.root_directory + '"}'
+        return 'CppApidocModule {root_directory="' + str(self.root_directory) + '"}'

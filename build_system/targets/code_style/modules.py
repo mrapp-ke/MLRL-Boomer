@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements modules that provide access to source code.
 """
+from pathlib import Path
 from typing import List
 
 from core.modules import Module, ModuleRegistry
@@ -31,7 +32,7 @@ class CodeModule(Module):
 
     def __init__(self,
                  file_type: FileType,
-                 root_directory: str,
+                 root_directory: Path,
                  source_file_search: FileSearch = FileSearch().set_recursive(True)):
         """
         :param file_type:           The `FileType` of the source files that belongs to the module
@@ -42,7 +43,7 @@ class CodeModule(Module):
         self.root_directory = root_directory
         self.source_file_search = source_file_search
 
-    def find_source_files(self) -> List[str]:
+    def find_source_files(self) -> List[Path]:
         """
         Finds and returns all source files that belong to the module.
 
@@ -51,4 +52,4 @@ class CodeModule(Module):
         return self.source_file_search.filter_by_file_type(self.file_type).list(self.root_directory)
 
     def __str__(self) -> str:
-        return 'CodeModule {file_type="' + str(self.file_type) + '", root_directory="' + self.root_directory + '"}'
+        return 'CodeModule {file_type="' + str(self.file_type) + '", root_directory="' + str(self.root_directory) + '"}'
