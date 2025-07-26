@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for checking and enforcing code style definitions for C++ files.
 """
-from typing import cast
+from typing import cast, override
 
 from core.build_unit import BuildUnit
 from core.modules import Module
@@ -26,6 +26,7 @@ class CheckCppCodeStyle(PhonyTarget.Runnable):
     def __init__(self):
         super().__init__(MODULE_FILTER)
 
+    @override
     def run(self, build_unit: BuildUnit, module: Module):
         code_module = cast(CodeModule, module)
         Log.info('Checking C++ code style in directory "%s"...', code_module.root_directory)
@@ -41,6 +42,7 @@ class EnforceCppCodeStyle(PhonyTarget.Runnable):
     def __init__(self):
         super().__init__(MODULE_FILTER)
 
+    @override
     def run(self, build_unit: BuildUnit, module: Module):
         code_module = cast(CodeModule, module)
         Log.info('Formatting C++ code in directory "%s"...', code_module.root_directory)

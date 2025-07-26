@@ -277,15 +277,15 @@ The duration in seconds after which the induction of rules should be canceled. T
 `'irep'`
 : Trailing conditions of rules may be pruned on a holdout set, similar to the IREP algorithm.
 
-### `sequential_post_optimization`
+### `post_optimization`
 
-> *Default value = `'false'`.*
+> *Default value = `'None'`.*
 
-`'false'`
+`'None'`
 
-: Sequential post-optimization is not used.
+: No post-optimization is used.
 
-`'true'`
+`'sequential'`
 
 : Each rule in a previously learned model is optimized by being relearned in the context of the other rules. The following options may be provided using the {ref}`bracket notation<bracket-notation>`:
 

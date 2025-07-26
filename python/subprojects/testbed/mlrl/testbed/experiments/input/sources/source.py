@@ -7,7 +7,7 @@ import logging as log
 
 from abc import ABC, abstractmethod
 from os import path
-from typing import Any, Optional
+from typing import Any, Optional, override
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.file_path import FilePath
@@ -67,9 +67,11 @@ class FileSource(Source, ABC):
                         suffix=self.suffix,
                         context=input_data.context).resolve(state)
 
+    @override
     def is_available(self, state: ExperimentState, input_data: InputData) -> bool:
         return path.isfile(self._get_file_path(state, input_data))
 
+    @override
     def read_from_source(self, state: ExperimentState, input_data: InputData):
         file_path = self._get_file_path(state, input_data)
         log.debug('Reading input data from file "%s"...', file_path)
@@ -94,6 +96,7 @@ class DatasetFileSource(FileSource, ABC):
     An abstract base class for all classes that allow to read a dataset from a file.
     """
 
+    @override
     def _read_from_file(self, state: ExperimentState, file_path: str, input_data: InputData) -> Optional[Any]:
         if isinstance(input_data, DatasetInputData):
             return self._read_dataset_from_file(state, file_path, input_data)
@@ -124,6 +127,7 @@ class TabularFileSource(FileSource, ABC):
         """
         super().__init__(directory=directory, suffix=suffix)
 
+    @override
     def _read_from_file(self, _: ExperimentState, file_path: str, input_data: InputData) -> Optional[Any]:
         if isinstance(input_data, TabularInputData):
             return self._read_table_from_file(file_path, input_data)

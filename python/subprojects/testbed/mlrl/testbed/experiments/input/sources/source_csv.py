@@ -5,7 +5,7 @@ Provides classes that allow reading input data from CSV files.
 """
 import csv
 
-from typing import Optional
+from typing import Optional, override
 
 from mlrl.testbed.experiments.input.data import TabularInputData
 from mlrl.testbed.experiments.input.sources.source import TabularFileSource
@@ -25,6 +25,7 @@ class CsvFileSource(TabularFileSource):
         """
         super().__init__(directory=directory, suffix=CsvFileSink.SUFFIX_CSV)
 
+    @override
     def _read_table_from_file(self, file_path: str, input_data: TabularInputData) -> Optional[Table]:
         with open_readable_file(file_path) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=CsvFileSink.DELIMITER, quotechar=CsvFileSink.QUOTE_CHAR)

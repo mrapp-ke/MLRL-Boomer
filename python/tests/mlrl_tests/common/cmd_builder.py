@@ -7,7 +7,7 @@ from typing import List, Optional
 from .datasets import Dataset
 
 from mlrl.common.config.parameters import BINNING_EQUAL_WIDTH, SAMPLING_WITHOUT_REPLACEMENT, \
-    PartitionSamplingParameter, RuleInductionParameter, RulePruningParameter
+    PartitionSamplingParameter, PostOptimizationParameter, RuleInductionParameter, RulePruningParameter
 from mlrl.common.learners import SparsePolicy
 
 from mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension import OPTION_FIRST_FOLD, OPTION_NUM_FOLDS, \
@@ -56,9 +56,17 @@ class CmdBuilder:
         self.num_folds = 0
         self.current_fold = None
         self.args: List[str] = []
+        self.save_evaluation_results(True)
 
     @property
-    def output_dir(self) -> Path:
+    def base_dir(self) -> str:
+        """
+        The base directory.
+        """
+        return path.join('python', 'tests', 'res', 'tmp')
+
+    @property
+    def result_dir(self) -> Path:
         """
         The path to the directory where output files should be stored.
         """
@@ -82,7 +90,8 @@ class CmdBuilder:
         args.extend(('--log-level', 'debug'))
         args.extend(('--data-dir', str(self.DATA_DIR)))
         args.extend(('--dataset', self.dataset))
-        args.extend(('--output-dir', str(self.output_dir)))
+        args.extend(('--base-dir', self.base_dir))
+        args.extend(('--result-dir', self.result_dir))
         return args + self.args
 
     def set_show_help(self, show_help: bool = True):
@@ -105,8 +114,12 @@ class CmdBuilder:
         self.model_dir = model_dir
 
         if model_dir:
+            self.args.append('--load-models')
+            self.args.append(str(True).lower())
             self.args.append('--model-load-dir')
             self.args.append(str(model_dir))
+            self.args.append('--save-models')
+            self.args.append(str(True).lower())
             self.args.append('--model-save-dir')
             self.args.append(str(model_dir))
 
@@ -122,6 +135,8 @@ class CmdBuilder:
         self.parameter_load_dir = parameter_dir
 
         if parameter_dir:
+            self.args.append('--load-parameters')
+            self.args.append(str(True).lower())
             self.args.append('--parameter-load-dir')
             self.args.append(str(parameter_dir))
 
@@ -137,6 +152,8 @@ class CmdBuilder:
         self.parameter_save_dir = parameter_dir
 
         if parameter_dir:
+            self.args.append('--save-parameters')
+            self.args.append(str(True).lower())
             self.args.append('--parameter-save-dir')
             self.args.append(str(parameter_dir))
 
@@ -220,15 +237,15 @@ class CmdBuilder:
         self.args.append(str(print_evaluation).lower())
         return self
 
-    def store_evaluation(self, store_evaluation: bool = True):
+    def save_evaluation_results(self, save_evaluation_results: bool = True):
         """
-        Configures whether the evaluation results should be written into output files or not.
+        Configures whether the evaluation results should be written to output files or not.
 
-        :param store_evaluation:    True, if the evaluation results should be written into output files or not
-        :return:                    The builder itself
+        :param save_evaluation_results: True, if the evaluation results should be written to output files or not
+        :return:                        The builder itself
         """
-        self.args.append('--store-evaluation')
-        self.args.append(str(store_evaluation).lower())
+        self.args.append('--save-evaluation')
+        self.args.append(str(save_evaluation_results).lower())
         return self
 
     def print_parameters(self, print_parameters: bool = True):
@@ -253,15 +270,15 @@ class CmdBuilder:
         self.args.append(str(print_predictions).lower())
         return self
 
-    def store_predictions(self, store_predictions: bool = True):
+    def save_predictions(self, save_predictions: bool = True):
         """
-        Configures whether the predictions should be written into output files or not.
+        Configures whether the predictions should be written to output files or not.
 
-        :param store_predictions:   True, if the predictions should be written into output files, False otherwise
+        :param save_predictions:    True, if the predictions should be written to output files, False otherwise
         :return:                    The builder itself
         """
-        self.args.append('--store-predictions')
-        self.args.append(str(store_predictions).lower())
+        self.args.append('--save-predictions')
+        self.args.append(str(save_predictions).lower())
         return self
 
     def print_ground_truth(self, print_ground_truth: bool = True):
@@ -275,15 +292,15 @@ class CmdBuilder:
         self.args.append(str(print_ground_truth).lower())
         return self
 
-    def store_ground_truth(self, store_ground_truth: bool = True):
+    def save_ground_truth(self, save_ground_truth: bool = True):
         """
-        Configures whether the ground truth should be written into output files or not.
+        Configures whether the ground truth should be written to output files or not.
 
-        :param store_ground_truth:  True, if the ground truth should be written into output files, False otherwise
+        :param save_ground_truth:   True, if the ground truth should be written to output files, False otherwise
         :return:                    The builder itself
         """
-        self.args.append('--store-ground-truth')
-        self.args.append(str(store_ground_truth).lower())
+        self.args.append('--save-ground-truth')
+        self.args.append(str(save_ground_truth).lower())
         return self
 
     def print_prediction_characteristics(self, print_prediction_characteristics: bool = True):
@@ -298,16 +315,16 @@ class CmdBuilder:
         self.args.append(str(print_prediction_characteristics).lower())
         return self
 
-    def store_prediction_characteristics(self, store_prediction_characteristics: bool = True):
+    def save_prediction_characteristics(self, save_prediction_characteristics: bool = True):
         """
-        Configures whether the characteristics of predictions should be written into output files or not.
+        Configures whether the characteristics of predictions should be written to output files or not.
 
-        :param store_prediction_characteristics:    True, if the characteristics of predictions should be written into
-                                                    output files, False otherwise
-        :return:                                    The builder itself
+        :param save_prediction_characteristics: True, if the characteristics of predictions should be written to
+                                                output files, False otherwise
+        :return:                                The builder itself
         """
-        self.args.append('--store-prediction-characteristics')
-        self.args.append(str(store_prediction_characteristics).lower())
+        self.args.append('--save-prediction-characteristics')
+        self.args.append(str(save_prediction_characteristics).lower())
         return self
 
     def print_data_characteristics(self, print_data_characteristics: bool = True):
@@ -321,16 +338,16 @@ class CmdBuilder:
         self.args.append(str(print_data_characteristics).lower())
         return self
 
-    def store_data_characteristics(self, store_data_characteristics: bool = True):
+    def save_data_characteristics(self, save_data_characteristics: bool = True):
         """
-        Configures whether the characteristics of datasets should be written into output files or not.
+        Configures whether the characteristics of datasets should be written to output files or not.
 
-        :param store_data_characteristics:  True, if the characteristics of datasets should be written into output
+        :param save_data_characteristics:   True, if the characteristics of datasets should be written to output
                                             files, False otherwise
         :return:                            The builder itself
         """
-        self.args.append('--store-data-characteristics')
-        self.args.append(str(store_data_characteristics).lower())
+        self.args.append('--save-data-characteristics')
+        self.args.append(str(save_data_characteristics).lower())
         return self
 
     def print_model_characteristics(self, print_model_characteristics: bool = True):
@@ -344,16 +361,16 @@ class CmdBuilder:
         self.args.append(str(print_model_characteristics).lower())
         return self
 
-    def store_model_characteristics(self, store_model_characteristics: bool = True):
+    def save_model_characteristics(self, save_model_characteristics: bool = True):
         """
-        Configures whether the characteristics of models should be written into output files or not.
+        Configures whether the characteristics of models should be written to output files or not.
 
-        :param store_model_characteristics: True, if the characteristics of models should be written into output files,
+        :param save_model_characteristics:  True, if the characteristics of models should be written to output files,
                                             False otherwise
         :return:                            The builder itself
         """
-        self.args.append('--store-model-characteristics')
-        self.args.append(str(store_model_characteristics).lower())
+        self.args.append('--save-model-characteristics')
+        self.args.append(str(save_model_characteristics).lower())
         return self
 
     def print_rules(self, print_rules: bool = True):
@@ -367,16 +384,16 @@ class CmdBuilder:
         self.args.append(str(print_rules).lower())
         return self
 
-    def store_rules(self, store_rules: bool = True):
+    def save_rules(self, save_rules: bool = True):
         """
-        Configures whether textual representations of the rules in a model should be written into output files or not.
+        Configures whether textual representations of the rules in a model should be written to output files or not.
 
-        :param store_rules: True, if textual representations of rules should be written into output files, False
+        :param save_rules:  True, if textual representations of rules should be written to output files, False
                             otherwise
         :return:            The builder itself
         """
-        self.args.append('--store-rules')
-        self.args.append(str(store_rules).lower())
+        self.args.append('--save-rules')
+        self.args.append(str(save_rules).lower())
         return self
 
     def feature_format(self, feature_format: Optional[str] = SparsePolicy.FORCE_SPARSE):
@@ -483,15 +500,18 @@ class CmdBuilder:
 
         return self
 
-    def sequential_post_optimization(self, sequential_post_optimization: bool = True):
+    def post_optimization(self,
+                          post_optimization: Optional[str] = PostOptimizationParameter.POST_OPTIMIZATION_SEQUENTIAL):
         """
-        Configures whether the algorithm should use sequential post-optimization or not.
+        Configures the post-optimization method to be used by the algorithm.
 
-        :param sequential_post_optimization:    True, if sequential post-optimization should be used, False otherwise
-        :return:                                The builder itself
+        :param post_optimization:   The name of the method that should be used for post-optimzation
+        :return:                    The builder itself
         """
-        self.args.append('--sequential-post-optimization')
-        self.args.append(str(sequential_post_optimization).lower())
+        if post_optimization:
+            self.args.append('--post-optimization')
+            self.args.append(post_optimization)
+
         return self
 
     def holdout(self, holdout: Optional[str] = PartitionSamplingParameter.PARTITION_SAMPLING_RANDOM):

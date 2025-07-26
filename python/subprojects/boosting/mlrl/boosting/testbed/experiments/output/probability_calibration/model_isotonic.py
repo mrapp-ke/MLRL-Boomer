@@ -5,7 +5,7 @@ Provides classes for representing models for the calibration of probabilities vi
 """
 
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import List, Optional, override
 
 from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibrationModel, \
     IsotonicProbabilityCalibrationModelVisitor
@@ -44,6 +44,7 @@ class IsotonicRegressionModel(TabularOutputData):
         def __init__(self):
             self.bin_lists = {}
 
+        @override
         def visit_bin(self, list_index: int, threshold: float, probability: float):
             """
             See :func:`mlrl.common.cython.probability_calibration.IsotonicProbabilityCalibrationModelVisitor.visit_bin`
@@ -77,6 +78,7 @@ class IsotonicRegressionModel(TabularOutputData):
         prefix = self.column_title_prefix
         return (prefix + ' ' if prefix else '') + str(list_index + 1) + ' probabilities'
 
+    @override
     def to_text(self, options: Options, **kwargs) -> Optional[str]:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
@@ -104,6 +106,7 @@ class IsotonicRegressionModel(TabularOutputData):
 
         return None
 
+    @override
     def to_table(self, options: Options, **kwargs) -> Optional[Table]:
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`

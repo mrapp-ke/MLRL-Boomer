@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write predictions to one or several sinks.
 """
 from argparse import Namespace
-from typing import Set
+from typing import Set, override
 
 from mlrl.testbed_arff.experiments.output.sinks.sink_arff import ArffFileSink
 
@@ -29,11 +29,10 @@ class PredictionExtension(Extension):
         true_options={OPTION_DECIMALS},
     )
 
-    STORE_PREDICTIONS = BoolArgument(
-        '--store-predictions',
+    SAVE_PREDICTIONS = BoolArgument(
+        '--save-predictions',
         default=False,
-        description='Whether predictions should be written into output files or not. Does only have an effect, if the '
-        + 'argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
+        description='Whether predictions should be written to output files or not.',
         true_options={OPTION_DECIMALS},
     )
 
@@ -43,11 +42,12 @@ class PredictionExtension(Extension):
         """
         super().__init__(OutputExtension(), *dependencies)
 
+    @override
     def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return {self.PRINT_PREDICTIONS, self.STORE_PREDICTIONS}
+        return {self.PRINT_PREDICTIONS, self.SAVE_PREDICTIONS}
 
     def __configure_log_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         print_all = OutputExtension.PRINT_ALL.get_value(args)
@@ -57,15 +57,16 @@ class PredictionExtension(Extension):
             experiment_builder.prediction_writer.add_sinks(LogSink(options=options))
 
     def __configure_arff_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
-        store_all = OutputExtension.STORE_ALL.get_value(args)
-        store_predictions, options = self.STORE_PREDICTIONS.get_value(args, default=store_all)
-        output_directory = OutputExtension.OUTPUT_DIR.get_value(args)
+        save_all = OutputExtension.SAVE_ALL.get_value(args)
+        save_predictions, options = self.SAVE_PREDICTIONS.get_value(args, default=save_all)
+        result_directory = OutputExtension.RESULT_DIR.get_value(args)
 
-        if store_predictions and output_directory:
-            create_output_directory = OutputExtension.CREATE_OUTPUT_DIR.get_value(args)
+        if save_predictions and result_directory:
+            create_directory = OutputExtension.CREATE_DIRS.get_value(args)
             experiment_builder.prediction_writer.add_sinks(
-                ArffFileSink(directory=output_directory, create_directory=create_output_directory, options=options))
+                ArffFileSink(directory=result_directory, create_directory=create_directory, options=options))
 
+    @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`

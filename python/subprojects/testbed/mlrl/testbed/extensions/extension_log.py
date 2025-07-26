@@ -8,7 +8,7 @@ import sys
 
 from argparse import Namespace
 from enum import Enum
-from typing import Set
+from typing import Set, override
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.extensions.extension import Extension
@@ -41,12 +41,14 @@ class LogExtension(Extension):
         description='The log level to be used.',
     )
 
+    @override
     def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
         return {self.LOG_LEVEL}
 
+    @override
     def configure_experiment(self, args: Namespace, _: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`

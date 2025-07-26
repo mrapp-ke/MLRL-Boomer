@@ -5,7 +5,7 @@ Provides utility functions for retrieving information about this Python packages
 """
 from dataclasses import dataclass, field
 from importlib.metadata import requires, version
-from typing import Any, Set
+from typing import Any, Set, override
 
 from packaging.requirements import Requirement
 
@@ -50,14 +50,17 @@ class PackageInfo:
 
         return package_infos
 
+    @override
     def __str__(self) -> str:
         return self.package_name + ' ' + self.package_version
 
+    @override
     def __eq__(self, other: Any) -> bool:
         return isinstance(other, type(self)) \
             and self.package_name == other.package_name \
             and self.package_version == other.package_version
 
+    @override
     def __hash__(self) -> int:
         return hash((self.package_name, self.package_version))
 

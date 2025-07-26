@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing unique label vectors contained in a dataset that are part of output data.
 """
-from typing import Optional
+from typing import Optional, override
 
 import numpy as np
 
@@ -40,6 +40,7 @@ class LabelVectors(TabularOutputData):
         dense_label_vector[label_vector.label_indices] = 1
         return str(dense_label_vector)
 
+    @override
     def to_text(self, options: Options, **kwargs) -> Optional[str]:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
@@ -47,6 +48,7 @@ class LabelVectors(TabularOutputData):
         table = self.to_table(options, **kwargs)
         return table.format() if table else None
 
+    @override
     def to_table(self, options: Options, **kwargs) -> Optional[Table]:
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`

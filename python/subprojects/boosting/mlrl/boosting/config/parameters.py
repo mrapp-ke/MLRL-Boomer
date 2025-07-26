@@ -4,6 +4,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility function for configuring boosting algorithms.
 """
 
+from typing import override
+
 from mlrl.common.config.parameters import BINNING_EQUAL_WIDTH, OPTION_BIN_RATIO, OPTION_MAX_BINS, OPTION_MIN_BINS, \
     OPTION_USE_HOLDOUT_SET, RULE_LEARNER_PARAMETERS, FeatureBinningParameter, FloatParameter, NominalParameter, \
     ParallelRuleRefinementParameter, ParallelStatisticUpdateParameter, PartitionSamplingParameter
@@ -48,6 +50,7 @@ class ExtendedPartitionSamplingParameter(PartitionSamplingParameter):
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
                        + 'depending on whether a holdout set is needed and depending on the loss function')
 
+    @override
     def _configure(self, config, value: str, options: Options):
         if value == AUTOMATIC:
             config.use_automatic_partition_sampling()
@@ -67,6 +70,7 @@ class ExtendedFeatureBinningParameter(FeatureBinningParameter):
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
                        + 'based on the characteristics of the feature matrix')
 
+    @override
     def _configure(self, config, value: str, options: Options):
         if value == AUTOMATIC:
             config.use_automatic_feature_binning()
@@ -86,6 +90,7 @@ class ExtendedParallelRuleRefinementParameter(ParallelRuleRefinementParameter):
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
                        + 'based on ' + 'the parameter ' + RegressionLossParameter().argument_name)
 
+    @override
     def _configure(self, config, value: str, options: Options):
         if value == AUTOMATIC:
             config.use_automatic_parallel_rule_refinement()
@@ -105,6 +110,7 @@ class ExtendedParallelStatisticUpdateParameter(ParallelStatisticUpdateParameter)
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
                        + 'based on ' + 'the parameter ' + RegressionLossParameter().argument_name)
 
+    @override
     def _configure(self, config, value: str, options: Options):
         if value == AUTOMATIC:
             config.use_automatic_parallel_statistic_update()
@@ -123,6 +129,7 @@ class ShrinkageParameter(FloatParameter):
             description='The shrinkage parameter, a.k.a. the learning rate, to be used. Must be in (0, 1].',
             mixin=ConstantShrinkageMixin)
 
+    @override
     def _configure(self, config, value):
         if value == 1.0 and issubclass(type(config), NoPostProcessorMixin):
             config.use_no_post_processor()
@@ -144,6 +151,7 @@ class StatisticTypeParameter(NominalParameter):
         self.add_value(name=self.STATISTIC_TYPE_FLOAT32, mixin=Float32StatisticsMixin)
         self.add_value(name=self.STATISTIC_TYPE_FLOAT64, mixin=Float64StatisticsMixin)
 
+    @override
     def _configure(self, config, value: str, _: Options):
         if value == self.STATISTIC_TYPE_FLOAT32:
             config.use_32_bit_statistics()
@@ -161,6 +169,7 @@ class L1RegularizationParameter(FloatParameter):
                          description='The weight of the L1 regularization. Must be at least 0',
                          mixin=L1RegularizationMixin)
 
+    @override
     def _configure(self, config, value):
         if value == 0.0 and issubclass(type(config), NoL1RegularizationMixin):
             config.use_no_l1_regularization()
@@ -178,6 +187,7 @@ class L2RegularizationParameter(FloatParameter):
                          description='The weight of the L2 regularization. Must be at least 0',
                          mixin=L2RegularizationMixin)
 
+    @override
     def _configure(self, config, value):
         if value == 0.0 and issubclass(type(config), NoL2RegularizationMixin):
             config.use_no_l2_regularization()
@@ -196,6 +206,7 @@ class DefaultRuleParameter(NominalParameter):
         self.add_value(name=BooleanOption.TRUE, mixin=DefaultRuleMixin)
         self.add_value(name=AUTOMATIC, mixin=AutomaticDefaultRuleMixin)
 
+    @override
     def _configure(self, config, value: str, _: Options):
         if value == BooleanOption.FALSE:
             config.use_no_default_rule()
@@ -226,6 +237,7 @@ class StatisticFormatParameter(NominalParameter):
                        + HeadTypeParameter().argument_name + ', ' + DefaultRuleParameter().argument_name + ' and the '
                        + 'characteristics of the label matrix')
 
+    @override
     def _configure(self, config, value: str, _: Options):
         if value == self.STATISTIC_FORMAT_DENSE:
             config.use_dense_statistics()
@@ -253,6 +265,7 @@ class LabelBinningParameter(NominalParameter):
                        + 'based on the parameters ' + RegressionLossParameter().argument_name + ' and '
                        + HeadTypeParameter().argument_name)
 
+    @override
     def _configure(self, config, value: str, options: Options):
         if value == NONE:
             config.use_no_label_binning()
@@ -279,6 +292,7 @@ class RegressionLossParameter(NominalParameter):
         self.add_value(name=self.LOSS_SQUARED_ERROR_DECOMPOSABLE, mixin=DecomposableSquaredErrorLossMixin)
         self.add_value(name=self.LOSS_SQUARED_ERROR_NON_DECOMPOSABLE, mixin=NonDecomposableSquaredErrorLossMixin)
 
+    @override
     def _configure(self, config, value: str, _: Options):
         if value == self.LOSS_SQUARED_ERROR_DECOMPOSABLE:
             config.use_decomposable_squared_error_loss()
@@ -306,6 +320,7 @@ class ClassificationLossParameter(RegressionLossParameter):
         self.add_value(name=self.LOSS_SQUARED_HINGE_DECOMPOSABLE, mixin=DecomposableSquaredHingeLossMixin)
         self.add_value(name=self.LOSS_SQUARED_HINGE_NON_DECOMPOSABLE, mixin=NonDecomposableSquaredHingeLossMixin)
 
+    @override
     def _configure(self, config, value: str, options: Options):
         super()._configure(config, value, options)
 
@@ -357,6 +372,7 @@ class HeadTypeParameter(NominalParameter):
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
                        + 'based on the parameter ' + RegressionLossParameter().argument_name)
 
+    @override
     def _configure(self, config, value: str, options: Options):
         if value == self.HEAD_TYPE_SINGLE:
             config.use_single_output_heads()
@@ -388,6 +404,7 @@ class MarginalProbabilityCalibrationParameter(NominalParameter):
                        mixin=IsotonicMarginalProbabilityCalibrationMixin,
                        options={OPTION_USE_HOLDOUT_SET})
 
+    @override
     def _configure(self, config, value: str, options: Options):
         if value == NONE:
             config.use_no_marginal_probability_calibration()
@@ -409,6 +426,7 @@ class JointProbabilityCalibrationParameter(NominalParameter):
                        mixin=IsotonicJointProbabilityCalibrationMixin,
                        options={OPTION_USE_HOLDOUT_SET})
 
+    @override
     def _configure(self, config, value: str, options: Options):
         if value == NONE:
             config.use_no_joint_probability_calibration()
@@ -445,6 +463,7 @@ class BinaryPredictorParameter(NominalParameter):
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
                        + 'based on the parameter ' + RegressionLossParameter().argument_name)
 
+    @override
     def _configure(self, config, value: str, options: Options):
         if value == self.BINARY_PREDICTOR_OUTPUT_WISE:
             conf = config.use_output_wise_binary_predictor()
@@ -492,6 +511,7 @@ class ProbabilityPredictorParameter(NominalParameter):
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
                        + 'based on the parameter ' + RegressionLossParameter().argument_name)
 
+    @override
     def _configure(self, config, value: str, options: Options):
         if value == self.PROBABILITY_PREDICTOR_OUTPUT_WISE:
             conf = config.use_output_wise_probability_predictor()

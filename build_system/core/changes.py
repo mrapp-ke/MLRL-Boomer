@@ -7,7 +7,7 @@ import json
 
 from functools import cached_property
 from os import path
-from typing import Any, Dict, List, Set
+from typing import Any, Dict, List, Set, override
 
 from core.modules import Module
 from util.io import TextFile, create_directories
@@ -38,6 +38,7 @@ class JsonFile(TextFile):
         """
         self.write_lines(json.dumps(dictionary, indent=4))
 
+    @override
     def write_lines(self, *lines: str):
         super().write_lines(*lines)
 

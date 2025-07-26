@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow writing algorithmic parameters to one or several sinks.
 """
 
-from typing import List, Optional
+from typing import List, Optional, override
 
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.parameters.parameters import OutputParameters
@@ -23,6 +23,7 @@ class ParameterWriter(OutputWriter):
         The extractor to be used by a `ParameterWriter`, by default.
         """
 
+        @override
         def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`

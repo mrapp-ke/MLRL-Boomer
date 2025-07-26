@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to preprocess tabular datasets.
 """
 from argparse import Namespace
-from typing import List, Set
+from typing import List, Set, override
 
 from mlrl.testbed_sklearn.experiments.input.dataset.preprocessors.one_hot_encoder import OneHotEncoder
 
@@ -25,6 +25,7 @@ class PreprocessorExtension(Extension):
         description='Whether one-hot-encoding should be used to encode nominal features or not.',
     )
 
+    @override
     def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`

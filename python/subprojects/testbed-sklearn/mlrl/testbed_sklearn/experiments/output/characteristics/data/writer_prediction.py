@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for writing characteristics of binary predictions to one or several sinks.
 """
-from typing import List, Optional
+from typing import List, Optional, override
 
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics_prediction import \
     PredictionCharacteristics
@@ -26,6 +26,7 @@ class PredictionCharacteristicsWriter(OutputWriter):
         The extractor to be used by a `PredictionCharacteristicsWriter`, by default.
         """
 
+        @override
         def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`

@@ -5,7 +5,7 @@ Provides classes for representing tables.
 """
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Any, Generator, Iterable, Iterator, List, Optional
+from typing import Any, Generator, Iterable, Iterator, List, Optional, override
 
 from tabulate import tabulate
 
@@ -218,13 +218,16 @@ class RowWiseTable(Table):
             """
             self.table = table
 
+        @override
         @property
         def num_columns(self) -> int:
             return self.table.num_columns
 
+        @override
         def __getitem__(self, column_index: int) -> Header:
             return self.table._headers[column_index]
 
+        @override
         def __iter__(self) -> Iterator[Optional[Any]]:
             return iter(self.table._headers)
 
@@ -241,10 +244,12 @@ class RowWiseTable(Table):
             self.table = table
             self.row_index = row_index
 
+        @override
         @property
         def num_columns(self) -> int:
             return self.table.num_columns
 
+        @override
         def __getitem__(self, column_index: int) -> Cell:
             if column_index >= self.num_columns:
                 raise IndexError('Invalid column index: Got ' + str(column_index) + ', but table has only '
@@ -253,6 +258,7 @@ class RowWiseTable(Table):
             row = self.table._rows[self.row_index]
             return row[column_index] if column_index < len(row) else None
 
+        @override
         def __iter__(self) -> Iterator[Cell]:
             for column_index in range(self.num_columns):
                 yield self[column_index]
@@ -270,15 +276,18 @@ class RowWiseTable(Table):
             self.table = table
             self.column_index = column_index
 
+        @override
         @property
         def header(self) -> Optional[Header]:
             header_row = self.table.header_row
             return header_row[self.column_index] if header_row else None
 
+        @override
         @property
         def num_rows(self) -> int:
             return self.table.num_rows
 
+        @override
         def __getitem__(self, row_index: int) -> Cell:
             if row_index >= self.num_rows:
                 raise IndexError('Invalid row index: Got ' + str(row_index) + ', but table has only '
@@ -288,6 +297,7 @@ class RowWiseTable(Table):
             column_index = self.column_index
             return row[column_index] if column_index < len(row) else None
 
+        @override
         def __iter__(self) -> Iterator[Cell]:
             for row_index in range(self.num_rows):
                 yield self[row_index]
@@ -340,35 +350,43 @@ class RowWiseTable(Table):
                         reverse=descending)
         return self
 
+    @override
     @property
     def num_rows(self) -> int:
         return len(self._rows)
 
+    @override
     @property
     def num_columns(self) -> int:
         return self._num_columns
 
+    @override
     @property
     def header_row(self) -> Optional[HeaderRow]:
         return RowWiseTable.HeaderRow(self) if self._headers else None
 
+    @override
     @property
     def alignments(self) -> Optional[List[Alignment]]:
         return self._alignments
 
+    @override
     @property
     def rows(self) -> Generator[Row, None, None]:
         for row_index in range(self.num_rows):
             yield RowWiseTable.Row(self, row_index)
 
+    @override
     @property
     def columns(self) -> Generator[Column, None, None]:
         for column_index in range(self.num_columns):
             yield RowWiseTable.Column(self, column_index)
 
+    @override
     def to_row_wise_table(self) -> 'RowWiseTable':
         return self
 
+    @override
     def to_column_wise_table(self) -> 'ColumnWiseTable':
         table = ColumnWiseTable()
         header_row = self.header_row
@@ -398,13 +416,16 @@ class ColumnWiseTable(Table):
             """
             self.table = table
 
+        @override
         @property
         def num_columns(self) -> int:
             return self.table.num_columns
 
+        @override
         def __getitem__(self, column_index: int) -> Header:
             return self.table._headers[column_index]
 
+        @override
         def __iter__(self) -> Iterator[Header]:
             return iter(self.table._headers)
 
@@ -421,10 +442,12 @@ class ColumnWiseTable(Table):
             self.table = table
             self.row_index = row_index
 
+        @override
         @property
         def num_columns(self) -> int:
             return self.table.num_columns
 
+        @override
         def __getitem__(self, column_index: int) -> Cell:
             if column_index >= self.num_columns:
                 raise IndexError('Invalid column index: Got ' + str(column_index) + ', but table has only '
@@ -434,6 +457,7 @@ class ColumnWiseTable(Table):
             row_index = self.row_index
             return column[row_index] if row_index < len(column) else None
 
+        @override
         def __iter__(self) -> Iterator[Cell]:
             for column_index in range(self.num_columns):
                 yield self[column_index]
@@ -451,15 +475,18 @@ class ColumnWiseTable(Table):
             self.table = table
             self.column_index = column_index
 
+        @override
         @property
         def header(self) -> Optional[Header]:
             header_row = self.table.header_row
             return header_row[self.column_index] if header_row else None
 
+        @override
         @property
         def num_rows(self) -> int:
             return self.table.num_rows
 
+        @override
         def __getitem__(self, row_index: int) -> Cell:
             if row_index >= self.num_rows:
                 raise IndexError('Invalid row index: Got ' + str(row_index) + ', but table has only '
@@ -468,6 +495,7 @@ class ColumnWiseTable(Table):
             column = self.table._columns[self.column_index]
             return column[row_index] if row_index < len(column) else None
 
+        @override
         def __iter__(self) -> Iterator[Cell]:
             for row_index in range(self.num_rows):
                 yield self[row_index]
@@ -537,32 +565,39 @@ class ColumnWiseTable(Table):
 
         return self
 
+    @override
     @property
     def num_rows(self) -> int:
         return self._num_rows
 
+    @override
     @property
     def num_columns(self) -> int:
         return len(self._columns)
 
+    @override
     @property
     def header_row(self) -> Optional[HeaderRow]:
         return ColumnWiseTable.HeaderRow(self) if self._headers else None
 
+    @override
     @property
     def alignments(self) -> Optional[List[Alignment]]:
         return self._alignments
 
+    @override
     @property
     def rows(self) -> Generator[Row, None, None]:
         for row_index in range(self.num_rows):
             yield ColumnWiseTable.Row(self, row_index)
 
+    @override
     @property
     def columns(self) -> Generator[Column, None, None]:
         for column_index in range(self.num_columns):
             yield ColumnWiseTable.Column(self, column_index)
 
+    @override
     def to_row_wise_table(self) -> RowWiseTable:
         table = RowWiseTable(*self._headers, alignments=self._alignments)
 
@@ -571,5 +606,6 @@ class ColumnWiseTable(Table):
 
         return table
 
+    @override
     def to_column_wise_table(self) -> 'ColumnWiseTable':
         return self

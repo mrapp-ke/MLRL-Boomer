@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for implementing different kinds of problem domains.
 """
 from abc import ABC, abstractmethod
+from typing import override
 
 
 class ProblemDomain(ABC):
@@ -33,6 +34,7 @@ class ClassificationProblem(ProblemDomain, ABC):
 
     NAME = 'classification'
 
+    @override
     @property
     def problem_name(self) -> str:
         """
@@ -48,6 +50,7 @@ class RegressionProblem(ProblemDomain, ABC):
 
     NAME = 'regression'
 
+    @override
     @property
     def problem_name(self) -> str:
         """
