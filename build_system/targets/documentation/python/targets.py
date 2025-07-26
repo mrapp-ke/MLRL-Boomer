@@ -4,7 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements targets for generating API documentations for Python code.
 """
 from pathlib import Path
-from typing import List, cast
 from typing import List, cast, override
 
 from core.build_unit import BuildUnit
