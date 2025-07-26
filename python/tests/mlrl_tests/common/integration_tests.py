@@ -13,7 +13,8 @@ from .cmd_runner import CmdRunner
 from .datasets import Dataset
 
 from mlrl.common.config.parameters import BINNING_EQUAL_FREQUENCY, BINNING_EQUAL_WIDTH, SAMPLING_WITH_REPLACEMENT, \
-    SAMPLING_WITHOUT_REPLACEMENT, OutputSamplingParameter, RuleInductionParameter, RulePruningParameter
+    SAMPLING_WITHOUT_REPLACEMENT, OutputSamplingParameter, PostOptimizationParameter, RuleInductionParameter, \
+    RulePruningParameter
 from mlrl.common.learners import SparsePolicy
 
 from mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension import OPTION_FIRST_FOLD, OPTION_LAST_FOLD, \
@@ -76,7 +77,7 @@ class IntegrationTests(ABC):
         builder = self._create_cmd_builder(dataset=dataset.default + ('-predefined' if predefined else '')) \
             .data_split(data_split, options=data_split_options) \
             .print_evaluation() \
-            .store_evaluation()
+            .save_evaluation_results()
         CmdRunner(builder).run(f'evaluation_{data_split}' + ('-predefined' if predefined else '')
                                + (f'_{data_split_options}' if data_split_options else ''))
 
@@ -84,14 +85,14 @@ class IntegrationTests(ABC):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .predict_for_training_data() \
             .print_evaluation() \
-            .store_evaluation()
+            .save_evaluation_results()
         CmdRunner(builder).run('evaluation_training-data')
 
     def test_evaluation_incremental(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .incremental_evaluation() \
             .print_evaluation() \
-            .store_evaluation()
+            .save_evaluation_results()
         CmdRunner(builder).run('evaluation_incremental')
 
     @pytest.mark.parametrize('data_split, data_split_options', [
@@ -121,22 +122,22 @@ class IntegrationTests(ABC):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
-            .store_evaluation(False) \
+            .save_evaluation_results(False) \
             .print_predictions() \
             .print_ground_truth() \
-            .store_predictions() \
-            .store_ground_truth()
+            .save_predictions() \
+            .save_ground_truth()
         CmdRunner(builder).run(f'predictions_{data_split}' + (f'_{data_split_options}' if data_split_options else ''))
 
     def test_predictions_training_data(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .predict_for_training_data() \
             .print_evaluation(False) \
-            .store_evaluation(False) \
+            .save_evaluation_results(False) \
             .print_predictions() \
             .print_ground_truth() \
-            .store_predictions() \
-            .store_ground_truth()
+            .save_predictions() \
+            .save_ground_truth()
         CmdRunner(builder).run('predictions_training-data')
 
     @pytest.mark.parametrize('data_split, data_split_options', [
@@ -151,9 +152,9 @@ class IntegrationTests(ABC):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
-            .store_evaluation(False) \
+            .save_evaluation_results(False) \
             .print_prediction_characteristics() \
-            .store_prediction_characteristics()
+            .save_prediction_characteristics()
         CmdRunner(builder).run(f'prediction-characteristics_{data_split}'
                                + (f'_{data_split_options}' if data_split_options else ''))
 
@@ -161,9 +162,9 @@ class IntegrationTests(ABC):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .predict_for_training_data() \
             .print_evaluation(False) \
-            .store_evaluation(False) \
+            .save_evaluation_results(False) \
             .print_prediction_characteristics() \
-            .store_prediction_characteristics()
+            .save_prediction_characteristics()
         CmdRunner(builder).run('prediction-characteristics_training-data')
 
     @pytest.mark.parametrize('data_split, data_split_options', [
@@ -178,9 +179,9 @@ class IntegrationTests(ABC):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
-            .store_evaluation(False) \
+            .save_evaluation_results(False) \
             .print_data_characteristics() \
-            .store_data_characteristics()
+            .save_data_characteristics()
         CmdRunner(builder).run(f'data-characteristics_{data_split}'
                                + (f'_{data_split_options}' if data_split_options else ''))
 
@@ -196,9 +197,9 @@ class IntegrationTests(ABC):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
-            .store_evaluation(False) \
+            .save_evaluation_results(False) \
             .print_model_characteristics() \
-            .store_model_characteristics()
+            .save_model_characteristics()
         CmdRunner(builder).run(f'model-characteristics_{data_split}'
                                + (f'_{data_split_options}' if data_split_options else ''))
 
@@ -214,9 +215,9 @@ class IntegrationTests(ABC):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
-            .store_evaluation(False) \
+            .save_evaluation_results(False) \
             .print_rules() \
-            .store_rules()
+            .save_rules()
         CmdRunner(builder).run(f'rules_{data_split}' + (f'_{data_split_options}' if data_split_options else ''))
 
     @pytest.mark.parametrize('dataset_name', ['numerical_sparse', 'binary', 'nominal', 'ordinal'])
@@ -258,7 +259,7 @@ class IntegrationTests(ABC):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
-            .store_evaluation(False) \
+            .save_evaluation_results(False) \
             .print_model_characteristics() \
             .print_parameters() \
             .set_parameter_save_dir() \
@@ -310,10 +311,11 @@ class IntegrationTests(ABC):
             .rule_induction(rule_induction)
         CmdRunner(builder).run(f'rule-induction-{rule_induction}')
 
-    def test_sequential_post_optimization(self, dataset: Dataset):
+    @pytest.mark.parametrize('post_optimization', [PostOptimizationParameter.POST_OPTIMIZATION_SEQUENTIAL])
+    def test_post_optimization(self, post_optimization: str, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .sequential_post_optimization()
-        CmdRunner(builder).run('sequential-post-optimization')
+            .post_optimization(post_optimization)
+        CmdRunner(builder).run(f'post-optimization-{post_optimization}')
 
     @pytest.mark.parametrize('feature_binning', [
         BINNING_EQUAL_WIDTH,

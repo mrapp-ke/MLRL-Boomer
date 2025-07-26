@@ -6,7 +6,7 @@ Provides classes that allow configuring the functionality to write label vectors
 import logging as log
 
 from argparse import Namespace
-from typing import List, Optional, Set
+from typing import List, Optional, Set, override
 
 import numpy as np
 
@@ -52,6 +52,7 @@ class LabelVectorSetExtension(Extension):
                 """
                 self.label_vector_histogram = LabelVectorHistogram(num_labels=num_labels)
 
+            @override
             def visit_label_vector(self, label_vector: np.ndarray, frequency: int):
                 """
                 See :func:`mlrl.common.cython.output_space_info.LabelVectorSetVisitor.visit_label_vector`
@@ -59,6 +60,7 @@ class LabelVectorSetExtension(Extension):
                 label_vector = LabelVector(label_indices=label_vector, frequency=frequency)
                 self.label_vector_histogram.unique_label_vectors.append(label_vector)
 
+        @override
         def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
@@ -87,12 +89,14 @@ class LabelVectorSetExtension(Extension):
         """
         super().__init__(OutputExtension(), *dependencies)
 
+    @override
     def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
         return set()
 
+    @override
     def configure_experiment(self, _: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`

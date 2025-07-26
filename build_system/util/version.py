@@ -5,7 +5,7 @@ Provides utilities for dealing with version numbers.
 """
 from dataclasses import dataclass
 from functools import reduce
-from typing import Any, Tuple
+from typing import Any, Tuple, override
 
 
 @dataclass
@@ -57,15 +57,19 @@ class Version:
 
         return Version(tuple(numbers))
 
+    @override
     def __str__(self) -> str:
         return reduce(lambda aggr, number: aggr + ('.' if aggr else '') + str(number), self.numbers, '')
 
+    @override
     def __hash__(self) -> int:
         return hash(self.numbers)
 
+    @override
     def __eq__(self, other: Any) -> bool:
         return isinstance(other, type(self)) and self.numbers == other.numbers
 
+    @override
     def __ne__(self, other: Any) -> bool:
         return not self.__eq__(other)
 

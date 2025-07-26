@@ -2,7 +2,7 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 # pylint: disable=missing-function-docstring
-from typing import Any, Optional
+from typing import Any, Optional, override
 
 import pytest
 
@@ -33,6 +33,7 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
     Defines a series of integration tests for the BOOMER algorithm for classification problems.
     """
 
+    @override
     def _create_cmd_builder(self, dataset: str = Dataset.EMOTIONS) -> Any:
         return BoomerClassifierCmdBuilder(dataset=dataset)
 
@@ -91,10 +92,10 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
         builder = self._create_cmd_builder() \
             .marginal_probability_calibration(marginal_probability_calibration) \
             .print_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
-            .store_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
+            .save_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
             .joint_probability_calibration(joint_probability_calibration) \
             .print_joint_probability_calibration_model(True if joint_probability_calibration else None) \
-            .store_joint_probability_calibration_model(True if joint_probability_calibration else None) \
+            .save_joint_probability_calibration_model(True if joint_probability_calibration else None) \
             .binary_predictor(binary_predictor, options=binary_predictor_options) \
             .print_predictions() \
             .print_ground_truth() \
@@ -135,14 +136,14 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
         builder = self._create_cmd_builder() \
             .marginal_probability_calibration(marginal_probability_calibration) \
             .print_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
-            .store_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
+            .save_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
             .joint_probability_calibration(joint_probability_calibration) \
             .print_joint_probability_calibration_model(True if joint_probability_calibration else None) \
-            .store_joint_probability_calibration_model(True if joint_probability_calibration else None) \
+            .save_joint_probability_calibration_model(True if joint_probability_calibration else None) \
             .binary_predictor(binary_predictor, options=binary_predictor_options) \
             .incremental_evaluation() \
             .print_evaluation() \
-            .store_evaluation() \
+            .save_evaluation_results() \
             .prediction_format(prediction_format)
 
         if marginal_probability_calibration or joint_probability_calibration:
@@ -164,7 +165,7 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
             .prediction_type(PredictionType.SCORES) \
             .incremental_evaluation() \
             .print_evaluation() \
-            .store_evaluation()
+            .save_evaluation_results()
         CmdRunner(builder).run('predictor-score-output-wise_incremental')
 
     @pytest.mark.parametrize(
@@ -179,11 +180,11 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
         builder = self._create_cmd_builder() \
             .marginal_probability_calibration(marginal_probability_calibration) \
             .print_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
-            .store_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
+            .save_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
             .joint_probability_calibration(joint_probability_calibration) \
             .print_joint_probability_calibration_model(True if joint_probability_calibration else None) \
-            .store_joint_probability_calibration_model(True if joint_probability_calibration else None) \
-            .store_evaluation(False) \
+            .save_joint_probability_calibration_model(True if joint_probability_calibration else None) \
+            .save_evaluation_results(False) \
             .prediction_type(PredictionType.PROBABILITIES) \
             .probability_predictor(probability_predictor) \
             .print_predictions() \
@@ -203,15 +204,15 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
         builder = self._create_cmd_builder() \
             .marginal_probability_calibration(marginal_probability_calibration) \
             .print_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
-            .store_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
+            .save_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
             .joint_probability_calibration(joint_probability_calibration) \
             .print_joint_probability_calibration_model(True if joint_probability_calibration else None) \
-            .store_joint_probability_calibration_model(True if joint_probability_calibration else None) \
+            .save_joint_probability_calibration_model(True if joint_probability_calibration else None) \
             .prediction_type(PredictionType.PROBABILITIES) \
             .probability_predictor(probability_predictor) \
             .incremental_evaluation() \
             .print_evaluation() \
-            .store_evaluation() \
+            .save_evaluation_results() \
             .set_model_dir()
         CmdRunner(builder).run(f'predictor-probability-{probability_predictor}_incremental')
 

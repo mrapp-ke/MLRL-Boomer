@@ -5,6 +5,7 @@ Implements modules that provide access to automated tests for Python code.
 """
 from os import environ
 from pathlib import Path
+from typing import override
 
 from core.modules import Module, ModuleRegistry
 
@@ -22,6 +23,7 @@ class PythonTestModule(TestModule, SubprojectModule):
         A filter that matches modules of type `PythonTestModule`.
         """
 
+        @override
         def matches(self, module: Module, module_registry: ModuleRegistry) -> bool:
             return isinstance(module, PythonTestModule) and SubprojectModule.Filter.from_env(environ).matches(
                 module, module_registry)
@@ -34,9 +36,11 @@ class PythonTestModule(TestModule, SubprojectModule):
         self.root_directory = root_directory
         self.result_directory = result_directory
 
+    @override
     @property
     def subproject_name(self) -> str:
         return self.root_directory.name
 
+    @override
     def __str__(self) -> str:
         return 'PythonTestModule {root_directory="' + str(self.root_directory) + '"}'

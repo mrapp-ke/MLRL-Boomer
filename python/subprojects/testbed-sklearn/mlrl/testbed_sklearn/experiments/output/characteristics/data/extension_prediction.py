@@ -5,7 +5,8 @@ Provides classes that allow configuring the functionality to write characteristi
 several sinks.
 """
 from argparse import Namespace
-from typing import Set
+from pathlib import Path
+from typing import Set, override
 
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import OutputCharacteristics
 from mlrl.testbed_sklearn.experiments.prediction.extension import PredictionTypeExtension
@@ -41,12 +42,12 @@ class PredictionCharacteristicsExtension(Extension):
         },
     )
 
-    STORE_PREDICTION_CHARACTERISTICS = BoolArgument(
-        '--store-prediction-characteristics',
+    SAVE_PREDICTION_CHARACTERISTICS = BoolArgument(
+        '--save-prediction-characteristics',
         default=False,
-        description='Whether the characteristics of binary predictions should be written into output files or not. '
-        + 'Does only have an effect if the argument ' + PredictionTypeExtension.PREDICTION_TYPE.name + ' is set to '
-        + PredictionType.BINARY.value + ' and if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
+        description='Whether the characteristics of binary predictions should be written to output files or not. Does '
+        + 'only have an effect if the argument ' + PredictionTypeExtension.PREDICTION_TYPE.name + ' is set to '
+        + PredictionType.BINARY.value + ' and if the argument ' + OutputExtension.RESULT_DIR.name + ' is specified.',
         true_options={
             OutputCharacteristics.OPTION_OUTPUTS, OutputCharacteristics.OPTION_OUTPUT_DENSITY,
             OutputCharacteristics.OPTION_OUTPUT_SPARSITY, OutputCharacteristics.OPTION_LABEL_IMBALANCE_RATIO,
@@ -61,11 +62,12 @@ class PredictionCharacteristicsExtension(Extension):
         """
         super().__init__(OutputExtension(), *dependencies)
 
+    @override
     def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return {self.PRINT_PREDICTION_CHARACTERISTICS, self.STORE_PREDICTION_CHARACTERISTICS}
+        return {self.PRINT_PREDICTION_CHARACTERISTICS, self.SAVE_PREDICTION_CHARACTERISTICS}
 
     def __configure_log_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         print_all = OutputExtension.PRINT_ALL.get_value(args)
@@ -76,16 +78,17 @@ class PredictionCharacteristicsExtension(Extension):
             experiment_builder.prediction_characteristics_writer.add_sinks(LogSink(options))
 
     def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
-        store_all = OutputExtension.STORE_ALL.get_value(args)
-        store_prediction_characteristics, options = self.STORE_PREDICTION_CHARACTERISTICS.get_value(args,
-                                                                                                    default=store_all)
-        output_directory = OutputExtension.OUTPUT_DIR.get_value(args)
+        save_all = OutputExtension.SAVE_ALL.get_value(args)
+        save_prediction_characteristics, options = self.SAVE_PREDICTION_CHARACTERISTICS.get_value(args,
+                                                                                                  default=save_all)
+        result_directory = OutputExtension.RESULT_DIR.get_value(args)
 
-        if store_prediction_characteristics and output_directory:
-            create_output_directory = OutputExtension.CREATE_OUTPUT_DIR.get_value(args)
+        if save_prediction_characteristics and result_directory:
+            create_directory = OutputExtension.CREATE_DIRS.get_value(args)
             experiment_builder.prediction_characteristics_writer.add_sinks(
-                CsvFileSink(directory=output_directory, create_directory=create_output_directory, options=options))
+                CsvFileSink(directory=Path(result_directory), create_directory=create_directory, options=options))
 
+    @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`

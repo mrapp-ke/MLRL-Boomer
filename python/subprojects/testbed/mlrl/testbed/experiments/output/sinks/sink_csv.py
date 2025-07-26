@@ -5,6 +5,9 @@ Provides classes that allow writing output data to CSV files.
 """
 import csv
 
+from pathlib import Path
+from typing import override
+
 from mlrl.testbed.experiments.output.data import OutputValue
 from mlrl.testbed.experiments.output.sinks.sink import TabularFileSink
 from mlrl.testbed.experiments.state import ExperimentState
@@ -25,7 +28,7 @@ class CsvFileSink(TabularFileSink):
 
     QUOTE_CHAR = '"'
 
-    def __init__(self, directory: str, options: Options = Options(), create_directory: bool = False):
+    def __init__(self, directory: Path, options: Options = Options(), create_directory: bool = False):
         """
         :param directory:           The path to the directory of the file
         :param options:             Options to be taken into account
@@ -37,7 +40,8 @@ class CsvFileSink(TabularFileSink):
                          options=options,
                          create_directory=create_directory)
 
-    def _write_table_to_file(self, file_path: str, state: ExperimentState, table: Table, **_):
+    @override
+    def _write_table_to_file(self, file_path: Path, state: ExperimentState, table: Table, **_):
         table = table.to_column_wise_table()
         prediction_result = state.prediction_result
         incremental_prediction = False

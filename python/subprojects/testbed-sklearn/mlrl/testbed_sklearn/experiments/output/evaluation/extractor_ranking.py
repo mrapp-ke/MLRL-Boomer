@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow writing evaluation results according to ranking evaluation measures to one or several sinks.
 """
 from itertools import chain
-from typing import Any
+from typing import Any, override
 
 from sklearn.utils.multiclass import is_multilabel
 
@@ -25,6 +25,7 @@ class RankingEvaluationDataExtractor(EvaluationDataExtractor):
     Obtains evaluation results according to ranking evaluation measures.
     """
 
+    @override
     def _update_measurements(self, measurements: Measurements, index: int, ground_truth: Any, predictions: Any,
                              options: Options):
         ground_truth = enforce_dense(ground_truth, order='C')
