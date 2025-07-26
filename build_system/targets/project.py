@@ -5,7 +5,8 @@ Provides information about the project that is important to the build system.
 """
 from dataclasses import replace
 from functools import reduce
-from os import environ, path
+from os import environ
+from pathlib import Path
 from typing import List, Set
 
 from core.build_unit import BuildUnit
@@ -25,7 +26,7 @@ class Project:
         root_directory: The path to the project's root directory
     """
 
-    root_directory = '.'
+    root_directory = Path('.')
 
     @staticmethod
     def version_file() -> VersionFile:
@@ -34,7 +35,7 @@ class Project:
 
         :return: The file that stores the current version of the project
         """
-        return VersionFile(path.join(Project.BuildSystem.resource_directory, 'versioning', 'version'))
+        return VersionFile(Project.BuildSystem.resource_directory / 'versioning' / 'version')
 
     @staticmethod
     def development_version_file() -> DevelopmentVersionFile:
@@ -43,7 +44,7 @@ class Project:
 
         :return: The file that stores the current development version of the project
         """
-        return DevelopmentVersionFile(path.join(Project.BuildSystem.resource_directory, 'versioning', 'version-dev'))
+        return DevelopmentVersionFile(Project.BuildSystem.resource_directory / 'versioning' / 'version-dev')
 
     @staticmethod
     def version(release: bool = False) -> SemanticVersion:
@@ -81,7 +82,7 @@ class Project:
 
         root_directory = BuildUnit.BUILD_SYSTEM_DIRECTORY
 
-        resource_directory = path.join(root_directory, 'res')
+        resource_directory = root_directory / 'res'
 
         build_directory_name = BuildUnit.BUILD_DIRECTORY_NAME
 
@@ -107,7 +108,7 @@ class Project:
             wheel_metadata_directory_suffix:    The suffix of the directory that contains the metadata of wheel packages
         """
 
-        root_directory = 'python'
+        root_directory = Path('python')
 
         build_directory_name = 'build'
 
@@ -122,7 +123,7 @@ class Project:
 
             :return: The file that stores the Python versions
             """
-            return PythonVersionFile(path.join(Project.Python.root_directory, '.version-python'))
+            return PythonVersionFile(Project.Python.root_directory / '.version-python')
 
         @staticmethod
         def supported_python_versions() -> RequirementVersion:
@@ -157,33 +158,33 @@ class Project:
                 .exclude_subdirectories_by_substrings(ends_with=Project.Python.wheel_metadata_directory_suffix)
 
         @staticmethod
-        def find_subprojects() -> Set[str]:
+        def find_subprojects() -> Set[Path]:
             """
             Finds and returns the paths to all Python subprojects.
 
             :return: A set that contains the paths to all subprojects that have been found
             """
             return {
-                path.dirname(toml_file)
+                toml_file.parent
                 for toml_file in Project.Python.file_search().filter_by_name('pyproject.template.toml').list(
                     Project.Python.root_directory)
             }
 
         @staticmethod
-        def find_test_directories() -> Set[str]:
+        def find_test_directories() -> Set[Path]:
             """
             Finds and returns the names of all directories that contain test files.
 
             :return: A set that contains the names of all directories that have been found
             """
-            test_files: List[str] = []
+            test_files: List[Path] = []
             test_files = reduce(
                 lambda aggr, suffix: aggr + Project.Python.file_search() \
                     .filter_by_substrings(starts_with='test_', ends_with='.' + suffix) \
-                    .list(path.join(Project.Python.root_directory, 'tests')),
+                    .list(Project.Python.root_directory / 'tests'),
                 FileType.python().suffixes,
                 test_files)
-            return {path.dirname(test_file) for test_file in test_files}
+            return {test_file.parent for test_file in test_files}
 
     class Cpp:
         """
@@ -194,7 +195,7 @@ class Project:
             build_directory_name:   The name of the C++ code's build directory
         """
 
-        root_directory = 'cpp'
+        root_directory = Path('cpp')
 
         build_directory_name = 'build'
 
@@ -205,7 +206,7 @@ class Project:
 
             :return: The C++ version that should be used for compilation
             """
-            return VersionTextFile(path.join(Project.Cpp.root_directory, '.version-cpp')).version_string
+            return VersionTextFile(Project.Cpp.root_directory / '.version-cpp').version_string
 
         @staticmethod
         def file_search() -> FileSearch:
@@ -219,16 +220,16 @@ class Project:
                 .exclude_subdirectories_by_name(Project.Cpp.build_directory_name)
 
         @staticmethod
-        def find_subprojects() -> Set[str]:
+        def find_subprojects() -> Set[Path]:
             """
             Finds and returns the paths to all C++ subprojects.
 
             :return: A set that contains the paths to all subprojects that have been found
             """
             return {
-                path.dirname(meson_file)
+                meson_file.parent
                 for meson_file in Project.Cpp.file_search().filter_by_name('meson.build').list(
-                    Project.Cpp.root_directory) if path.dirname(meson_file) != Project.Cpp.root_directory
+                    Project.Cpp.root_directory) if not meson_file.parent.samefile(Project.Cpp.root_directory)
             }
 
     class Documentation:
@@ -239,9 +240,9 @@ class Project:
             root_directory: The path to the documentation's root directory
         """
 
-        root_directory = 'doc'
+        root_directory = Path('doc')
 
-        apidoc_directory = path.join(root_directory, 'developer_guide', 'api')
+        apidoc_directory = root_directory / 'developer_guide' / 'api'
 
         build_directory_name = '_build'
 
@@ -264,7 +265,7 @@ class Project:
             root_directory: The path to the root directory that contains all GitHub-related files
         """
 
-        root_directory = '.github'
+        root_directory = Path('.github')
 
     class Readthedocs:
         """
@@ -274,4 +275,4 @@ class Project:
             root_directory: The path to the root directory that contains all readthedocs-related files
         """
 
-        root_directory = '.readthedocs'
+        root_directory = Path('.readthedocs')
