@@ -106,7 +106,7 @@ If the following are written to output files, they can be loaded and reused in f
 
 Our documentation provides an extensive [user guide](https://mlrl-boomer.readthedocs.io/en/latest/user_guide/testbed/index.html), as well as an [API reference](https://mlrl-boomer.readthedocs.io/en/latest/developer_guide/api/python/testbed/mlrl.testbed.html) for developers.
 
-- Examples of how to save [experimental results](https://mlrl-boomer.readthedocs.io/en/latest/user_guide/testbed/experimental_results.html) to output files.
+- Examples of how to save [experimental results](https://mlrl-boomer.readthedocs.io/en/latest/user_guide/testbed/outputs.html) to output files.
 - Instructions for [using your own algorithms](https://mlrl-boomer.readthedocs.io/en/latest/user_guide/testbed/runnables.html) with the command line API.
 - An overview of available [command line arguments](https://mlrl-boomer.readthedocs.io/en/latest/user_guide/testbed/arguments.html) for controlling experiments.
 
