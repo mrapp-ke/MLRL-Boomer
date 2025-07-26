@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Defines targets and modules for installing Python dependencies that are required by the project.
 """
-from os import path
+from pathlib import Path
 
 from core.build_unit import BuildUnit
 from core.targets import TargetBuilder
@@ -18,7 +18,7 @@ VENV = 'venv'
 
 INSTALL_RUNTIME_DEPENDENCIES = 'install_runtime_dependencies'
 
-TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
+TARGETS = TargetBuilder(BuildUnit.for_file(Path(__file__))) \
     .add_phony_target(VENV).nop() \
     .add_phony_target(INSTALL_RUNTIME_DEPENDENCIES) \
         .depends_on(VENV) \

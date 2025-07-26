@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for compiling Cython code.
 """
-from os import path
+from pathlib import Path
 from typing import List, cast
 
 from core.build_unit import BuildUnit
@@ -22,7 +22,7 @@ MODULE_FILTER = CompilationModule.Filter(FileType.cython())
 
 BUILD_OPTIONS = BuildOptions() \
         .add(ConstantBuildOption('cpp_std', Project.Cpp.cpp_version(),
-                                 *[path.basename(subproject) for subproject in Project.Cpp.find_subprojects()])) \
+                                 *[subproject.name for subproject in Project.Cpp.find_subprojects()])) \
         .add(EnvBuildOption(SubprojectModule.ENV_SUBPROJECTS.lower())) \
         .add(EnvBuildOption('buildtype', default_value='release'))
 
@@ -41,11 +41,11 @@ class SetupCython(BuildTarget.Runnable):
             .add_dependencies('cython') \
             .run()
 
-    def get_output_files(self, _: BuildUnit, module: Module) -> List[str]:
+    def get_output_files(self, _: BuildUnit, module: Module) -> List[Path]:
         compilation_module = cast(CompilationModule, module)
         return [compilation_module.build_directory]
 
-    def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[str]:
+    def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[Path]:
         compilation_module = cast(CompilationModule, module)
         Log.info('Removing Cython build files from directory "%s"...', compilation_module.root_directory)
         return super().get_clean_files(build_unit, compilation_module)
@@ -80,7 +80,7 @@ class InstallCython(BuildTarget.Runnable):
                  compilation_module.root_directory)
         MesonInstall(build_unit, compilation_module).run()
 
-    def get_clean_files(self, _: BuildUnit, module: Module) -> List[str]:
+    def get_clean_files(self, _: BuildUnit, module: Module) -> List[Path]:
         compilation_module = cast(CompilationModule, module)
         Log.info('Removing extension modules installed from directory "%s" from source tree...',
                  compilation_module.root_directory)

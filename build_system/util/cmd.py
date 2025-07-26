@@ -6,7 +6,7 @@ Provides utility functions for running command line programs during the build pr
 import subprocess
 import sys
 
-from os import path
+from pathlib import Path
 from subprocess import CompletedProcess
 from typing import Any
 
@@ -57,10 +57,10 @@ class Command:
                 # such an executable exists. This circumvents situations where the PATH environment variable has not
                 # been updated after activating the virtual environment. This can prevent the executables from being
                 # found or can lead to the wrong executable, from outside the virtual environment, being executed.
-                executable = path.join(sys.prefix, 'Scripts', command.command + '.exe')
+                executable = Path(sys.prefix, 'Scripts', command.command + '.exe')
 
-                if path.isfile(executable):
-                    return executable
+                if executable.is_file():
+                    return str(executable)
 
             return command.command
 

@@ -3,8 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow to run the external program "breathe-apidoc".
 """
-from os import path
-
 from core.build_unit import BuildUnit
 from util.run import Program
 
@@ -22,7 +20,7 @@ class BreatheApidoc(Program):
         :param module:      The module, the program should be applied to
         """
         super().__init__('breathe-apidoc', '--members', '--project', module.subproject_name, '-g', 'file', '-o',
-                         module.output_directory, path.join(module.output_directory, 'xml'))
+                         str(module.output_directory), str(module.output_directory / 'xml'))
         self.module = module
         self.print_arguments(True)
         self.install_program(False)

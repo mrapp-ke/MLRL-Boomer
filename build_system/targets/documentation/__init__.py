@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Defines targets and modules for generating documentations.
 """
-from os import path
+from pathlib import Path
 
 from core.build_unit import BuildUnit
 from core.targets import TargetBuilder
@@ -16,7 +16,7 @@ from targets.project import Project
 
 APIDOC_INDEX = 'apidoc_index'
 
-TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
+TARGETS = TargetBuilder(BuildUnit.for_file(Path(__file__))) \
     .add_phony_target('apidoc') \
         .depends_on(APIDOC_CPP, APIDOC_PYTHON, clean_dependencies=True) \
         .nop() \
@@ -31,7 +31,7 @@ TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
 MODULES = [
     SphinxModule(
         root_directory=Project.Documentation.root_directory,
-        output_directory=path.join(Project.Documentation.root_directory, Project.Documentation.build_directory_name),
+        output_directory=Project.Documentation.root_directory / Project.Documentation.build_directory_name,
         source_file_search=Project.Documentation.file_search(),
     ),
 ]

@@ -7,6 +7,7 @@ import sys
 
 from argparse import ArgumentParser
 from importlib.util import module_from_spec, spec_from_file_location
+from pathlib import Path
 from types import ModuleType
 from typing import List, Optional
 
@@ -34,32 +35,32 @@ def __configure_log(args):
     Log.configure(log_level)
 
 
-def __find_init_files() -> List[str]:
+def __find_init_files() -> List[Path]:
     return FileSearch() \
         .set_recursive(True) \
         .filter_by_name('__init__.py') \
         .list(BuildUnit().root_directory)
 
 
-def __import_source_file(source_file: str) -> ModuleType:
+def __import_source_file(source_file: Path) -> ModuleType:
     try:
-        spec = spec_from_file_location(source_file, source_file)
+        spec = spec_from_file_location(str(source_file), str(source_file))
 
         if spec:
             loader = spec.loader
 
             if loader:
                 module = module_from_spec(spec)
-                sys.modules[source_file] = module
+                sys.modules[str(source_file)] = module
                 loader.exec_module(module)
                 return module
 
         raise FileNotFoundError()
     except FileNotFoundError as error:
-        raise ImportError('Source file "' + source_file + '" not found') from error
+        raise ImportError('Source file "' + str(source_file) + '" not found') from error
 
 
-def __register_modules(init_files: List[str]) -> ModuleRegistry:
+def __register_modules(init_files: List[Path]) -> ModuleRegistry:
     Log.verbose('Registering modules...')
     module_registry = ModuleRegistry()
     num_modules = 0
@@ -83,7 +84,7 @@ def __register_modules(init_files: List[str]) -> ModuleRegistry:
     return module_registry
 
 
-def __register_targets(init_files: List[str]) -> TargetRegistry:
+def __register_targets(init_files: List[Path]) -> TargetRegistry:
     Log.verbose('Registering targets...')
     target_registry = TargetRegistry()
     num_targets = 0
@@ -107,7 +108,7 @@ def __register_targets(init_files: List[str]) -> TargetRegistry:
     return target_registry
 
 
-def __find_default_target(init_files: List[str]) -> Optional[str]:
+def __find_default_target(init_files: List[Path]) -> Optional[str]:
     Log.verbose('Searching for default target...')
     default_targets = []
 

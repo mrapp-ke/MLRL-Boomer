@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for running external programs during the build process.
 """
+from pathlib import Path
 from subprocess import CompletedProcess
 from typing import Any, Set
 
@@ -21,7 +22,7 @@ class Program(Command):
         Allows to customize options for running an external program.
         """
 
-        def __init__(self, build_unit: BuildUnit = BuildUnit.for_file(__file__)):
+        def __init__(self, build_unit: BuildUnit = BuildUnit.for_file(Path(__file__))):
             """
             :param build_unit: The build unit from which the program should be run
             """

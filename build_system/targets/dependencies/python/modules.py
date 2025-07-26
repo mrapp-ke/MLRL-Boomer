@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements modules that provide access to Python requirements files.
 """
 from enum import StrEnum
-from os import path
+from pathlib import Path
 from typing import List, Optional
 
 from core.build_unit import BuildUnit
@@ -39,7 +39,7 @@ class PythonDependencyModule(SubprojectModule):
 
     def __init__(self,
                  dependency_type: DependencyType,
-                 root_directory: str,
+                 root_directory: Path,
                  requirements_file_search: FileSearch = FileSearch()):
         """
         :param dependency_type:             The type of the Python dependencies
@@ -70,17 +70,17 @@ class PythonDependencyModule(SubprojectModule):
             ])
 
         if dependency_type == DependencyType.BUILD_TIME:
-            pyproject_toml_file = path.join(self.root_directory, 'pyproject.template.toml')
+            pyproject_toml_file = self.root_directory / 'pyproject.template.toml'
 
-            if path.isfile(pyproject_toml_file):
+            if pyproject_toml_file.is_file():
                 requirements_files.append(PyprojectTomlFile(build_unit, pyproject_toml_file))
 
         return requirements_files
 
     @property
     def subproject_name(self) -> str:
-        return path.basename(self.root_directory)
+        return self.root_directory.name
 
     def __str__(self) -> str:
         return ('PythonDependencyModule {dependency_type="' + self.dependency_type + '", root_directory="'
-                + self.root_directory + '"}')
+                + str(self.root_directory) + '"}')

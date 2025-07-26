@@ -3,7 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for building and installing wheel packages.
 """
-from os import environ, path
+from os import environ
+from pathlib import Path
 from typing import Dict, List, cast
 
 from core.build_unit import BuildUnit
@@ -34,7 +35,7 @@ class GeneratePyprojectTomlFiles(BuildTarget.Runnable):
         all_dependencies = template_file.dependencies
 
         if all_dependencies:
-            requirements_file = RequirementsTextFile(path.join(path.dirname(template_file.file), 'requirements.txt'))
+            requirements_file = RequirementsTextFile(template_file.file.parent / 'requirements.txt')
 
             for dependency in all_dependencies:
                 package = Package(dependency)
@@ -100,15 +101,15 @@ class GeneratePyprojectTomlFiles(BuildTarget.Runnable):
         pyproject_toml_file = PyprojectTomlFile(build_unit, package_module.pyproject_toml_file)
         pyproject_toml_file.write_lines(*self.__generate_pyproject_toml(template_file))
 
-    def get_input_files(self, _: BuildUnit, module: Module) -> List[str]:
+    def get_input_files(self, _: BuildUnit, module: Module) -> List[Path]:
         package_module = cast(PythonPackageModule, module)
         return [package_module.pyproject_toml_template_file]
 
-    def get_output_files(self, _: BuildUnit, module: Module) -> List[str]:
+    def get_output_files(self, _: BuildUnit, module: Module) -> List[Path]:
         package_module = cast(PythonPackageModule, module)
         return [package_module.pyproject_toml_file]
 
-    def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[str]:
+    def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[Path]:
         package_module = cast(PythonPackageModule, module)
         Log.info('Removing pyproject.toml file from directory "%s"', package_module.root_directory)
         return super().get_clean_files(build_unit, package_module)
@@ -140,7 +141,7 @@ class BuildPythonWheels(BuildTarget.Runnable):
                 if wheel:
                     Auditwheel(build_unit, wheel).run()
 
-    def get_input_files(self, _: BuildUnit, module: Module) -> List[str]:
+    def get_input_files(self, _: BuildUnit, module: Module) -> List[Path]:
         package_module = cast(PythonPackageModule, module)
         file_search = Project.Python.file_search() \
             .set_symlinks(False) \
@@ -153,11 +154,11 @@ class BuildPythonWheels(BuildTarget.Runnable):
             )
         return file_search.list(package_module.root_directory)
 
-    def get_output_files(self, _: BuildUnit, module: Module) -> List[str]:
+    def get_output_files(self, _: BuildUnit, module: Module) -> List[Path]:
         package_module = cast(PythonPackageModule, module)
         return [package_module.wheel_directory]
 
-    def get_clean_files(self, _: BuildUnit, module: Module) -> List[str]:
+    def get_clean_files(self, _: BuildUnit, module: Module) -> List[Path]:
         package_module = cast(PythonPackageModule, module)
         clean_files = []
         Log.info('Removing Python wheels from directory "%s"...', package_module.root_directory)
@@ -181,11 +182,11 @@ class InstallPythonWheels(BuildTarget.Runnable):
         Allows to install wheel packages via the command `pip install`.
         """
 
-        def __init__(self, *wheels: str):
+        def __init__(self, *wheels: Path):
             """
             :param wheels: The paths to the wheel packages to be installed
             """
-            super().__init__('install', '--force-reinstall', '--no-deps', *wheels)
+            super().__init__('install', '--force-reinstall', '--no-deps', *map(str, wheels))
             self.print_arguments(True)
 
     class UninstallCommand(Pip.Command):
@@ -211,12 +212,12 @@ class InstallPythonWheels(BuildTarget.Runnable):
         if wheel:
             InstallPythonWheels.InstallWheelCommand(wheel).run()
 
-    def get_input_files(self, _: BuildUnit, module: Module) -> List[str]:
+    def get_input_files(self, _: BuildUnit, module: Module) -> List[Path]:
         package_module = cast(PythonPackageModule, module)
         wheel = package_module.find_wheel()
         return [wheel] if wheel else []
 
-    def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[str]:
+    def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[Path]:
         package_module = cast(PythonPackageModule, module)
         Log.info('Uninstalling Python packages for directory "%s"...', package_module.root_directory)
         pyproject_toml_file = PyprojectTomlFile(build_unit, package_module.pyproject_toml_template_file)

@@ -68,7 +68,7 @@ class VersionTextFile(TextFile):
         lines = self.lines
 
         if len(lines) != 1:
-            raise ValueError('File "' + self.file + '" must contain exactly one line')
+            raise ValueError('File "' + str(self.file) + '" must contain exactly one line')
 
         return lines[0]
 

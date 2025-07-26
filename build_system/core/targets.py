@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum, auto
 from functools import reduce
-from os import path
+from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from core.build_unit import BuildUnit
@@ -145,7 +145,7 @@ class BuildTarget(Target):
             raise NotImplementedError('Class ' + type(self).__name__ + ' does not implement the "run" method')
 
         # pylint: disable=unused-argument
-        def get_input_files(self, build_unit: BuildUnit, module: Module) -> List[str]:
+        def get_input_files(self, build_unit: BuildUnit, module: Module) -> List[Path]:
             """
             May be overridden by subclasses in order to return the input files required by the target.
 
@@ -156,7 +156,7 @@ class BuildTarget(Target):
             return []
 
         # pylint: disable=unused-argument
-        def get_output_files(self, build_unit: BuildUnit, module: Module) -> List[str]:
+        def get_output_files(self, build_unit: BuildUnit, module: Module) -> List[Path]:
             """
             May be overridden by subclasses in order to return the output files produced by the target.
 
@@ -166,7 +166,7 @@ class BuildTarget(Target):
             """
             return []
 
-        def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[str]:
+        def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[Path]:
             """
             May be overridden by subclasses in order to return the output files produced by the target that must be
             cleaned.
@@ -205,9 +205,9 @@ class BuildTarget(Target):
         def build(self, build_unit: BuildUnit) -> Target:
             return BuildTarget(self.target_name, self.dependencies, self.runnables, build_unit)
 
-    def __get_missing_output_files(self, runnable: Runnable, module: Module) -> Tuple[List[str], List[str]]:
+    def __get_missing_output_files(self, runnable: Runnable, module: Module) -> Tuple[List[Path], List[Path]]:
         output_files = runnable.get_output_files(self.build_unit, module)
-        missing_output_files = [output_file for output_file in output_files if not path.exists(output_file)]
+        missing_output_files = [output_file for output_file in output_files if not output_file.exists()]
 
         if output_files:
             if missing_output_files:
@@ -230,7 +230,7 @@ class BuildTarget(Target):
 
         return output_files, missing_output_files
 
-    def __get_changed_input_files(self, runnable: Runnable, module: Module) -> Tuple[List[str], List[str]]:
+    def __get_changed_input_files(self, runnable: Runnable, module: Module) -> Tuple[List[Path], List[Path]]:
         input_files = runnable.get_input_files(self.build_unit, module)
         changed_input_files = [
             input_file for input_file in input_files if self.change_detection.get_changed_files(module, *input_files)
@@ -268,7 +268,7 @@ class BuildTarget(Target):
         super().__init__(name, dependencies)
         self.runnables = runnables
         self.build_unit = build_unit
-        self.change_detection = ChangeDetection(path.join(BuildUnit().build_directory, self.name + '.json'))
+        self.change_detection = ChangeDetection(BuildUnit().build_directory / (self.name + '.json'))
 
     def run(self, module_registry: ModuleRegistry):
         for runnable in self.runnables:
