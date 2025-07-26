@@ -29,9 +29,7 @@ class CmdBuilder:
 
     EXPECTED_OUTPUT_DIR = RESOURCE_DIR / 'out'
 
-    OUTPUT_DIR = RESOURCE_DIR / 'tmp' / 'results'
-
-    MODEL_DIR = RESOURCE_DIR / 'tmp' / 'models'
+    BASE_DIR = RESOURCE_DIR / 'tmp'
 
     def __init__(self,
                  expected_output_dir: Path,
@@ -59,18 +57,33 @@ class CmdBuilder:
         self.save_evaluation_results(True)
 
     @property
-    def base_dir(self) -> str:
+    def base_dir(self) -> Path:
         """
         The base directory.
         """
-        return path.join('python', 'tests', 'res', 'tmp')
+        return self.BASE_DIR
 
     @property
     def result_dir(self) -> Path:
         """
-        The path to the directory where output files should be stored.
+        The relative path to the directory where experimental results should be saved.
         """
-        return self.OUTPUT_DIR
+        return Path('results')
+
+    @property
+    def resolved_result_dir(self) -> Path:
+        """
+        The path to the directory where experimental results should be saved, resolved against the base directory.
+        """
+        return self.base_dir / self.result_dir
+
+    @property
+    def resolved_model_dir(self) -> Optional[Path]:
+        """
+        The  path to the directory where models should be saved, resolved against the base directory.
+        """
+        model_dir = self.model_dir
+        return self.base_dir / model_dir if model_dir else None
 
     def build(self) -> List[str]:
         """
@@ -90,8 +103,8 @@ class CmdBuilder:
         args.extend(('--log-level', 'debug'))
         args.extend(('--data-dir', str(self.DATA_DIR)))
         args.extend(('--dataset', self.dataset))
-        args.extend(('--base-dir', self.base_dir))
-        args.extend(('--result-dir', self.result_dir))
+        args.extend(('--base-dir', str(self.base_dir)))
+        args.extend(('--result-dir', str(self.result_dir)))
         return args + self.args
 
     def set_show_help(self, show_help: bool = True):
@@ -104,7 +117,7 @@ class CmdBuilder:
         self.show_help = show_help
         return self
 
-    def set_model_dir(self, model_dir: Optional[Path] = MODEL_DIR):
+    def set_model_dir(self, model_dir: Optional[Path] = Path('models')):
         """
         Configures the rule learner to store models in a given directory or load them, if available.
 
@@ -142,7 +155,7 @@ class CmdBuilder:
 
         return self
 
-    def set_parameter_save_dir(self, parameter_dir: Optional[Path] = OUTPUT_DIR):
+    def set_parameter_save_dir(self, parameter_dir: Optional[Path] = Path('results')):
         """
         Configures the rule learner to save parameter settings to a given directory.
 

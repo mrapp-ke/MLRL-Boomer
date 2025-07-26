@@ -22,8 +22,8 @@ class CmdRunner:
 
     def __create_temporary_directories(self):
         builder = self.builder
-        builder.result_dir.mkdir(parents=True, exist_ok=True)
-        model_dir = builder.model_dir
+        builder.resolved_result_dir.mkdir(parents=True, exist_ok=True)
+        model_dir = builder.resolved_model_dir
 
         if model_dir:
             model_dir.mkdir(parents=True, exist_ok=True)
