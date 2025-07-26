@@ -6,7 +6,7 @@ Provides classes that allow writing evaluation results to one or several sinks.
 from abc import ABC, abstractmethod
 from dataclasses import replace
 from functools import reduce
-from typing import Any, List, Optional
+from typing import Any, List, Optional, override
 
 from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import EVALUATION_MEASURE_PREDICTION_TIME, \
     EVALUATION_MEASURE_TRAINING_TIME, EvaluationResult
@@ -29,6 +29,7 @@ class EvaluationDataExtractor(DataExtractor, ABC):
     def __init__(self):
         self.measurements = {}
 
+    @override
     def extract_data(self, state: ExperimentState, sinks: List[Sink]) -> Optional[OutputData]:
         """
         See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`

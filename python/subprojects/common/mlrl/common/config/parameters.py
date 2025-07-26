@@ -6,7 +6,7 @@ Provides utilities that ease the configuration of rule learning algorithms.
 import logging as log
 
 from abc import ABC, abstractmethod
-from typing import Dict, Optional, Set
+from typing import Dict, Optional, Set, override
 
 from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, EqualFrequencyFeatureBinningMixin, \
     EqualWidthFeatureBinningMixin, FeatureSamplingWithoutReplacementMixin, GreedyTopDownRuleInductionMixin, \
@@ -96,9 +96,11 @@ class Parameter(ABC):
         """
         return '--' + self.name.replace('_', '-')
 
+    @override
     def __eq__(self, other):
         return self.name == other.name
 
+    @override
     def __hash__(self):
         return hash(self.name)
 
@@ -127,9 +129,11 @@ class NominalParameter(Parameter, ABC):
             self.options = options
             self.description = description
 
+        @override
         def __eq__(self, other):
             return self.name == other.name
 
+        @override
         def __hash__(self):
             return hash(self.name)
 
@@ -173,6 +177,7 @@ class NominalParameter(Parameter, ABC):
 
         return set(supported_values.keys()) if num_options == 0 else supported_values
 
+    @override
     def configure(self, config, value):
         supported_values = self.__get_supported_values(type(config))
 
@@ -187,6 +192,7 @@ class NominalParameter(Parameter, ABC):
 
             self._configure(config, value, options if options else Options())
 
+    @override
     def as_argument(self, config_type: type) -> Optional[Argument]:
         supported_values = self.__get_supported_values(config_type)
 
@@ -232,10 +238,12 @@ class NumericalParameter(Parameter, ABC):
     def __is_supported(self, config_type: type):
         return issubclass(config_type, self.mixin)
 
+    @override
     def configure(self, config, value):
         if self.__is_supported(type(config)):
             self._configure(config, self.numeric_type(value))
 
+    @override
     def as_argument(self, config_type: type) -> Optional[Argument]:
         if self.__is_supported(config_type):
             return Argument(self.argument_name, type=self.numeric_type, help=self.description)
@@ -273,6 +281,7 @@ class RandomStateParameter(IntParameter):
                          description='The seed to be used by random number generators. Must be at least 1.',
                          mixin=RNGMixin)
 
+    @override
     def _configure(self, config, value):
         config.use_rng().set_random_state(value)
 
@@ -315,6 +324,7 @@ class RuleInductionParameter(NominalParameter):
                            self.OPTION_BEAM_WIDTH, OPTION_RESAMPLE_FEATURES
                        })
 
+    @override
     def _configure(self, config, value: str, options: Options):
         if value == self.RULE_INDUCTION_TOP_DOWN_GREEDY:
             conf = config.use_greedy_top_down_rule_induction()
@@ -353,6 +363,7 @@ class FeatureBinningParameter(NominalParameter):
                        mixin=EqualWidthFeatureBinningMixin,
                        options={OPTION_BIN_RATIO, OPTION_MIN_BINS, OPTION_MAX_BINS})
 
+    @override
     def _configure(self, config, value: str, options: Options):
         if value == NONE:
             config.use_no_feature_binning()
@@ -383,6 +394,7 @@ class OutputSamplingParameter(NominalParameter):
                        options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES})
         self.add_value(name=self.OUTPUT_SAMPLING_ROUND_ROBIN, mixin=RoundRobinOutputSamplingMixin)
 
+    @override
     def _configure(self, config, value: str, options: Options):
         if value == NONE:
             config.use_no_output_sampling()
@@ -417,6 +429,7 @@ class InstanceSamplingParameter(NominalParameter):
                        mixin=ExampleWiseStratifiedInstanceSamplingMixin,
                        options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES})
 
+    @override
     def _configure(self, config, value: str, options: Options):
         if value == NONE:
             config.use_no_instance_sampling()
@@ -457,6 +470,7 @@ class FeatureSamplingParameter(NominalParameter):
                        mixin=FeatureSamplingWithoutReplacementMixin,
                        options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES, self.OPTION_NUM_RETAINED})
 
+    @override
     def _configure(self, config, value: str, options: Options):
         if value == NONE:
             config.use_no_feature_sampling()
@@ -490,6 +504,7 @@ class PartitionSamplingParameter(NominalParameter):
                        mixin=ExampleWiseStratifiedBiPartitionSamplingMixin,
                        options={self.OPTION_HOLDOUT_SET_SIZE})
 
+    @override
     def _configure(self, config, value: str, options: Options):
         if value == NONE:
             config.use_no_partition_sampling()
@@ -566,6 +581,7 @@ class GlobalPruningParameter(NominalParameter):
             return AggregationFunction.MAX
         return AggregationFunction.ARITHMETIC_MEAN
 
+    @override
     def _configure(self, config, value: str, options: Options):
         if value == NONE:
             config.use_no_global_pruning()
@@ -606,6 +622,7 @@ class RulePruningParameter(NominalParameter):
         self.add_value(name=NONE, mixin=NoRulePruningMixin)
         self.add_value(name=self.RULE_PRUNING_IREP, mixin=IrepRulePruningMixin)
 
+    @override
     def _configure(self, config, value: str, _: Options):
         if value == NONE:
             config.use_no_rule_pruning()
@@ -627,6 +644,7 @@ class ParallelRuleRefinementParameter(NominalParameter):
                        mixin=ParallelRuleRefinementMixin,
                        options={OPTION_NUM_PREFERRED_THREADS})
 
+    @override
     def _configure(self, config, value: str, options: Options):
         if value == BooleanOption.FALSE:
             config.use_no_parallel_rule_refinement()
@@ -657,6 +675,7 @@ class ParallelStatisticUpdateParameter(NominalParameter):
                        mixin=ParallelStatisticUpdateMixin,
                        options={OPTION_NUM_PREFERRED_THREADS})
 
+    @override
     def _configure(self, config, value: str, options: Options):
         if value == BooleanOption.FALSE:
             config.use_no_parallel_statistic_update()
@@ -684,6 +703,7 @@ class ParallelPredictionParameter(NominalParameter):
         self.add_value(name=BooleanOption.FALSE, mixin=NoParallelPredictionMixin)
         self.add_value(name=BooleanOption.TRUE, mixin=ParallelPredictionMixin, options={OPTION_NUM_PREFERRED_THREADS})
 
+    @override
     def _configure(self, config, value: str, options: Options):
         if value == BooleanOption.FALSE:
             config.use_no_parallel_prediction()
@@ -711,6 +731,7 @@ class SizeStoppingCriterionParameter(IntParameter):
             + 'should not be restricted',
             mixin=SizeStoppingCriterionMixin)
 
+    @override
     def _configure(self, config, value):
         if value == 0 and issubclass(type(config), NoSizeStoppingCriterionMixin):
             config.use_no_size_stopping_criterion()
@@ -730,6 +751,7 @@ class TimeStoppingCriterionParameter(IntParameter):
             + 'least 1 or 0, if no time limit should be set',
             mixin=TimeStoppingCriterionMixin)
 
+    @override
     def _configure(self, config, value):
         if value == 0 and issubclass(type(config), NoTimeStoppingCriterionMixin):
             config.use_no_time_stopping_criterion()
@@ -737,30 +759,31 @@ class TimeStoppingCriterionParameter(IntParameter):
             config.use_time_stopping_criterion().set_time_limit(value)
 
 
-class SequentialPostOptimizationParameter(NominalParameter):
+class PostOptimizationParameter(NominalParameter):
     """
-    A parameter that allows to configure whether each rule in a previously learned model should be optimized by being
-    relearned in the context of the other rules or not.
+    A parameter that allows to configure the method that should be used for post-optimization of a previously learned
+    model.
     """
+
+    POST_OPTIMIZATION_SEQUENTIAL = 'sequential'
 
     OPTION_NUM_ITERATIONS = 'num_iterations'
 
     OPTION_REFINE_HEADS = 'refine_heads'
 
     def __init__(self):
-        super().__init__(
-            name='sequential_post_optimization',
-            description='Whether each rule in a previously learned model should be optimized by being relearned in the '
-            + 'context of the other rules or not')
-        self.add_value(name=BooleanOption.FALSE, mixin=NoSequentialPostOptimizationMixin)
-        self.add_value(name=BooleanOption.TRUE,
+        super().__init__(name='post_optimization',
+                         description='The method that should be used for post-optimization of a previous learned model')
+        self.add_value(name=NONE, mixin=NoSequentialPostOptimizationMixin)
+        self.add_value(name=self.POST_OPTIMIZATION_SEQUENTIAL,
                        mixin=SequentialPostOptimizationMixin,
                        options={self.OPTION_NUM_ITERATIONS, self.OPTION_REFINE_HEADS, OPTION_RESAMPLE_FEATURES})
 
+    @override
     def _configure(self, config, value: str, options: Options):
-        if value == BooleanOption.FALSE:
+        if value == NONE:
             config.use_no_sequential_post_optimization()
-        elif value == BooleanOption.TRUE:
+        elif value == self.POST_OPTIMIZATION_SEQUENTIAL:
             conf = config.use_sequential_post_optimization()
             conf.set_num_iterations(options.get_int(self.OPTION_NUM_ITERATIONS, conf.get_num_iterations()))
             conf.set_refine_heads(options.get_bool(self.OPTION_REFINE_HEADS, conf.are_heads_refined()))
@@ -782,5 +805,5 @@ RULE_LEARNER_PARAMETERS = {
     ParallelPredictionParameter(),
     SizeStoppingCriterionParameter(),
     TimeStoppingCriterionParameter(),
-    SequentialPostOptimizationParameter()
+    PostOptimizationParameter()
 }

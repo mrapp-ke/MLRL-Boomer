@@ -38,9 +38,7 @@ maxdepth: 1
 datasets
 evaluation
 pre_processing
-model_persistence
-parameter_persistence
-experimental_results
+outputs
 runnables
 arguments
 ```
