@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to read models parameters from a source.
 """
 from argparse import Namespace
+from pathlib import Path
 from typing import Set, override
 
 from mlrl.testbed.experiments.experiment import Experiment
@@ -46,5 +47,5 @@ class ModelInputExtension(Extension):
         model_load_dir = self.MODEL_LOAD_DIR.get_value(args)
 
         if model_load_dir and self.LOAD_MODELS.get_value(args):
-            reader = ModelReader(PickleFileSource(model_load_dir))
+            reader = ModelReader(PickleFileSource(Path(model_load_dir)))
             experiment_builder.add_input_readers(reader)

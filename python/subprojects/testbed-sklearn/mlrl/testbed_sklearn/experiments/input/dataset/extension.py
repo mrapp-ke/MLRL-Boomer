@@ -4,6 +4,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to load datasets from ARFF files.
 """
 from argparse import Namespace
+from pathlib import Path
+from typing import override
 
 from mlrl.testbed_arff.experiments.input.sources import ArffFileSource
 
@@ -18,5 +20,6 @@ class ArffFileExtension(DatasetFileExtension):
     """
 
     # pylint: disable=unused-argument
-    def _create_file_source(self, dataset_directory: str, dataset: InputDataset, args: Namespace) -> FileSource:
+    @override
+    def _create_file_source(self, dataset_directory: Path, dataset: InputDataset, args: Namespace) -> FileSource:
         return ArffFileSource(dataset_directory)

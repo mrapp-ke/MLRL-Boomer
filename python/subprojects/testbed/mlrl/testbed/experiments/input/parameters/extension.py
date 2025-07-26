@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to read algorithmic parameters from a source.
 """
 from argparse import Namespace
+from pathlib import Path
 from typing import Set, override
 
 from mlrl.testbed.experiments.experiment import Experiment
@@ -46,5 +47,5 @@ class ParameterInputExtension(Extension):
         parameter_load_dir = self.PARAMETER_LOAD_DIR.get_value(args)
 
         if parameter_load_dir and self.LOAD_PARAMETERS.get_value(args):
-            reader = ParameterReader(CsvFileSource(parameter_load_dir))
+            reader = ParameterReader(CsvFileSource(Path(parameter_load_dir)))
             experiment_builder.add_input_readers(reader)
