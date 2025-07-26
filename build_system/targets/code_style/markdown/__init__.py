@@ -3,8 +3,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Defines targets and modules for checking and enforcing code style definitions for Markdown files.
 """
+from pathlib import Path
+
 from core.build_unit import BuildUnit
-from core.targets import PhonyTarget, TargetBuilder
+from core.targets import TargetBuilder
 from util.files import FileSearch, FileType
 
 from targets.code_style.markdown.targets import CheckMarkdownCodeStyle, EnforceMarkdownCodeStyle
@@ -15,7 +17,7 @@ FORMAT_MARKDOWN = 'format_md'
 
 TEST_FORMAT_MARKDOWN = 'test_format_md'
 
-TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
+TARGETS = TargetBuilder(BuildUnit.for_file(Path(__file__))) \
     .add_phony_target(FORMAT_MARKDOWN).set_runnables(EnforceMarkdownCodeStyle()) \
     .add_phony_target(TEST_FORMAT_MARKDOWN).set_runnables(CheckMarkdownCodeStyle()) \
     .build()

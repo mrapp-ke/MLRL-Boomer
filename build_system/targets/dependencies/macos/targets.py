@@ -6,7 +6,7 @@ Implements targets for compiling native library dependencies on macOS.
 import platform
 import shutil
 
-from os import path
+from pathlib import Path
 from typing import Any, Optional, Tuple
 
 from core.build_unit import BuildUnit
@@ -69,16 +69,16 @@ def __download_package(github_api: GithubApi, package_name: str) -> Optional[str
     return None
 
 
-def __download_and_extract_package(github_api: GithubApi, package_name: str, extract_to: str) -> Optional[str]:
+def __download_and_extract_package(github_api: GithubApi, package_name: str, extract_to: Path) -> Optional[Path]:
     file_name = __download_package(github_api, package_name=package_name)
 
     if file_name:
         file_name_without_suffix = file_name[:-len(SUFFIX_SRC_TAR_XZ)]
-        extract_directory = path.join(extract_to, file_name_without_suffix)
+        extract_directory = extract_to / file_name_without_suffix
         Log.info('Extracting file "%s" into directory "%s"...', file_name, extract_directory)
         create_directories(extract_directory)
-        TarExtract(file_to_extract=file_name, into_directory=extract_directory).run()
-        return path.join(extract_directory, file_name_without_suffix + SUFFIX_SRC)
+        TarExtract(file_to_extract=Path(file_name), into_directory=extract_directory).run()
+        return extract_directory / (file_name_without_suffix + SUFFIX_SRC)
 
     return None
 
@@ -91,15 +91,15 @@ def compile_libomp(build_unit: BuildUnit):
         Log.error('Target may only be run on macOS!')
 
     github_api = GithubApi(build_unit).set_token_from_env()
-    build_directory = 'libomp'
+    build_directory = Path('libomp')
     cmake_directory = __download_and_extract_package(github_api, package_name='cmake', extract_to=build_directory)
     openmp_directory = __download_and_extract_package(github_api, package_name='openmp', extract_to=build_directory)
 
     if cmake_directory and openmp_directory:
-        shutil.copytree(path.join(cmake_directory, 'Modules'), path.join(openmp_directory, 'cmake'), dirs_exist_ok=True)
+        shutil.copytree(cmake_directory / 'Modules', openmp_directory / 'cmake', dirs_exist_ok=True)
         Log.info('Compiling from source directory "%s"...', openmp_directory)
         args = [
-            '-DCMAKE_INSTALL_PREFIX=' + build_directory,
+            '-DCMAKE_INSTALL_PREFIX=' + str(build_directory),
             '-DCMAKE_INSTALL_LIBDIR=lib',
             '-DCMAKE_BUILD_TYPE=Release',
             '-DCMAKE_FIND_FRAMEWORK=LAST',
@@ -108,8 +108,8 @@ def compile_libomp(build_unit: BuildUnit):
             '-DBUILD_TESTING=OFF',
             '-DLIBOMP_INSTALL_ALIASES=OFF',
         ]
-        cmake_build_directory = path.join(build_directory, 'build', 'shared')
+        cmake_build_directory = build_directory / 'build' / 'shared'
         create_directories(cmake_build_directory)
-        Cmake('-S', openmp_directory, '-B', cmake_build_directory, *args).run()
-        Cmake('--build', cmake_build_directory).run()
-        Cmake('--install', cmake_build_directory).run()
+        Cmake('-S', str(openmp_directory), '-B', str(cmake_build_directory), *args).run()
+        Cmake('--build', str(cmake_build_directory)).run()
+        Cmake('--install', str(cmake_build_directory)).run()

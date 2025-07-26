@@ -140,7 +140,8 @@ class Actions(Workflow):
                     try:
                         actions.add(Action.from_uses_clause(uses_clause))
                     except ValueError as error:
-                        raise RuntimeError('Failed to parse uses-clause in workflow "' + self.file + '"') from error
+                        raise RuntimeError('Failed to parse uses-clause in workflow "' + str(self.file)
+                                           + '"') from error
 
         return actions
 

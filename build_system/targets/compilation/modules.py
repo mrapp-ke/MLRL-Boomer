@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements modules that provide access to source code that must be compiled.
 """
-from os import path
+from pathlib import Path
 from typing import List, Optional, override
 
 from core.modules import Module, ModuleRegistry
@@ -34,9 +34,9 @@ class CompilationModule(Module):
 
     def __init__(self,
                  file_type: FileType,
-                 root_directory: str,
+                 root_directory: Path,
                  build_directory_name: str,
-                 install_directory: Optional[str] = None,
+                 install_directory: Optional[Path] = None,
                  installed_file_search: Optional[FileSearch] = None):
         """
         :param file_type:               The file types of the source files that belongs to the module
@@ -54,13 +54,13 @@ class CompilationModule(Module):
         self.installed_file_search = installed_file_search
 
     @property
-    def build_directory(self) -> str:
+    def build_directory(self) -> Path:
         """
         The path to the directory, where build files should be stored.
         """
-        return path.join(self.root_directory, self.build_directory_name)
+        return self.root_directory / self.build_directory_name
 
-    def find_installed_files(self) -> List[str]:
+    def find_installed_files(self) -> List[Path]:
         """
         Finds and returns all installed files that belong to the module.
 
@@ -69,12 +69,12 @@ class CompilationModule(Module):
         if self.installed_file_search:
             return self.installed_file_search \
                 .set_recursive(True) \
-                .exclude_subdirectories_by_name(path.basename(self.build_directory)) \
+                .exclude_subdirectories_by_name(self.build_directory.name) \
                 .list(self.install_directory)
 
         return []
 
     @override
     def __str__(self) -> str:
-        return 'CompilationModule {file_type="' + str(
-            self.file_type) + '", root_directory=' + self.root_directory + '"}'
+        return 'CompilationModule {file_type="' + str(self.file_type) + '", root_directory=' + str(
+            self.root_directory) + '"}'

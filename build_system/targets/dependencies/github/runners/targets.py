@@ -35,8 +35,8 @@ class CheckGithubRunners(PhonyTarget.Runnable):
 
             for workflow, outdated_runners in outdated_workflows.items():
                 for outdated_runner in outdated_runners:
-                    table.add_row(workflow.file, str(outdated_runner.runner.name), str(outdated_runner.runner.version),
-                                  str(outdated_runner.latest_version))
+                    table.add_row(str(workflow.file), str(outdated_runner.runner.name),
+                                  str(outdated_runner.runner.version), str(outdated_runner.latest_version))
 
             table.sort_rows(0, 1)
             Log.info('The following GitHub-hosted runners are outdated:\n\n%s', str(table))
@@ -62,7 +62,7 @@ class UpdateGithubRunners(PhonyTarget.Runnable):
 
             for workflow, updated_runners in updated_workflows.items():
                 for updated_runner in updated_runners:
-                    table.add_row(workflow.file, updated_runner.updated.name,
+                    table.add_row(str(workflow.file), updated_runner.updated.name,
                                   str(updated_runner.previous.runner.version), str(updated_runner.updated.version))
 
             table.sort_rows(0, 1)

@@ -3,8 +3,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Defines targets and modules for checking and enforcing code style definitions for C++ files.
 """
+from pathlib import Path
+
 from core.build_unit import BuildUnit
-from core.targets import PhonyTarget, TargetBuilder
+from core.targets import TargetBuilder
 from util.files import FileType
 
 from targets.code_style.cpp.targets import CheckCppCodeStyle, EnforceCppCodeStyle
@@ -15,7 +17,7 @@ FORMAT_CPP = 'format_cpp'
 
 TEST_FORMAT_CPP = 'test_format_cpp'
 
-TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
+TARGETS = TargetBuilder(BuildUnit.for_file(Path(__file__))) \
     .add_phony_target(FORMAT_CPP).set_runnables(EnforceCppCodeStyle()) \
     .add_phony_target(TEST_FORMAT_CPP).set_runnables(CheckCppCodeStyle()) \
     .build()

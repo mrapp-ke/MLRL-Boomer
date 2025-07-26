@@ -6,7 +6,7 @@ Provides classes for detecting changes in files.
 import json
 
 from functools import cached_property
-from os import path
+from pathlib import Path
 from typing import Any, Dict, List, Set, override
 
 from core.modules import Module
@@ -59,17 +59,17 @@ class ChangeDetection:
         """
 
         @staticmethod
-        def __checksum(file: str) -> str:
-            return str(path.getmtime(file))
+        def __checksum(file: Path) -> str:
+            return str(file.stat().st_mtime)
 
-        def __init__(self, file: str):
+        def __init__(self, file: Path):
             """
             :param file: The path to the JSON file
             """
             super().__init__(file, accept_missing=True)
-            create_directories(path.dirname(file))
+            create_directories(file.parent)
 
-        def update(self, module_name: str, files: Set[str]):
+        def update(self, module_name: str, files: Set[Path]):
             """
             Updates the checksums of given files.
 
@@ -79,14 +79,14 @@ class ChangeDetection:
             cache = self.json
             module_cache = cache.setdefault(module_name, {})
 
-            for invalid_key in [file for file in module_cache.keys() if file not in files]:
+            for invalid_key in [file for file in module_cache.keys() if Path(file) not in files]:
                 del module_cache[invalid_key]
 
             for file in files:
-                if path.exists(file):
-                    module_cache[file] = self.__checksum(file)
+                if file.exists():
+                    module_cache[str(file)] = self.__checksum(file)
                 elif file in module_cache:
-                    del module_cache[file]
+                    del module_cache[str(file)]
 
             if module_cache:
                 cache[module_name] = module_cache
@@ -98,7 +98,7 @@ class ChangeDetection:
             else:
                 self.delete()
 
-        def has_changed(self, module_name: str, file: str) -> bool:
+        def has_changed(self, module_name: str, file: Path) -> bool:
             """
             Returns whether a file has changed according to the cache or not.
 
@@ -109,13 +109,13 @@ class ChangeDetection:
             module_cache = self.json.get(module_name, {})
             return file not in module_cache or module_cache[file] != self.__checksum(file)
 
-    def __init__(self, cache_file: str):
+    def __init__(self, cache_file: Path):
         """
         :param cache_file: The path to the file that should be used for tracking files
         """
         self.cache_file = ChangeDetection.CacheFile(cache_file)
 
-    def track_files(self, module: Module, *files: str):
+    def track_files(self, module: Module, *files: Path):
         """
         Updates the cache to keep track of given files.
 
@@ -124,7 +124,7 @@ class ChangeDetection:
         """
         self.cache_file.update(str(module), set(files))
 
-    def get_changed_files(self, module: Module, *files: str) -> List[str]:
+    def get_changed_files(self, module: Module, *files: Path) -> List[Path]:
         """
         Filters given files and returns only those that have changed.
 
