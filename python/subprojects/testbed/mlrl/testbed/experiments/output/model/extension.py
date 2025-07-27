@@ -4,7 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write models to one or several sinks.
 """
 from argparse import Namespace
-from os import path
 from pathlib import Path
 from typing import Set, override
 
@@ -25,7 +24,7 @@ class ModelOutputExtension(Extension):
         '--model-save-dir',
         default='models',
         description='The path to the directory where models should be saved.',
-        decorator=lambda args, value: path.join(OutputExtension.BASE_DIR.get_value(args), value),
+        decorator=lambda args, value: Path(OutputExtension.BASE_DIR.get_value(args)) / value,
     )
 
     SAVE_MODELS = BoolArgument(
