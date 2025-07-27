@@ -1,5 +1,5 @@
-mlrl-testbed mlrl.boosting --help
-usage: mlrl-testbed [-r RUNNABLE] [-v] [--base-dir BASE_DIR]
+mlrl-testbed mlrl.boosting --mode single --help
+usage: mlrl-testbed [-r RUNNABLE] [-v] [--mode MODE] [--base-dir BASE_DIR]
                     [--binary-predictor BINARY_PREDICTOR]
                     [--create-dirs CREATE_DIRS] [--data-dir DATA_DIR]
                     [--data-split DATA_SPLIT] [--dataset DATASET]
@@ -83,6 +83,8 @@ options:
                         The Python class name of the program that should be
                         run
   -v, --version         Display information about the program.
+  --mode MODE           The mode of operation to be used. Must be one of
+                        {"batch", "single"}.
   --base-dir BASE_DIR   If relative paths to directories, where files should
                         be saved, are given, they are considered relative to
                         the directory specified via this argument.
