@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that implement a mode of operation for performing multiple experiments.
 """
 import logging as log
+import re as regex
 import sys
 
 from abc import ABC, abstractmethod
@@ -160,7 +161,18 @@ class BatchExperimentMode(Mode):
         for arguments in BatchExperimentMode.__get_args(config_file):
             experiment_builder_factory(BatchExperimentMode.__add_args_to_namespace(namespace, arguments))
             command = ['mlrl-testbed'] + arguments
-            log.info(format_iterable(command, separator=' '))
+            formatted_command = ''
+
+            for i, argument in enumerate(command):
+                if i > 0:
+                    formatted_command += ' '
+
+                    if argument.startswith('-'):
+                        formatted_command += '\\\n    '
+
+                formatted_command += regex.sub(r'({.*})', '\'\\1\'', argument)  # Escape curly braces with single quotes
+
+            log.info('%s\n', formatted_command)
 
     @staticmethod
     def __run_commands(namespace: Namespace, config_file: ConfigFile,
