@@ -10,7 +10,7 @@ from abc import ABC, abstractmethod
 from argparse import Namespace
 from dataclasses import dataclass, field
 from functools import cached_property, reduce
-from typing import Any, Callable, List, Optional, override
+from typing import Any, Callable, Dict, List, Optional, override
 
 import yamale
 
@@ -184,33 +184,63 @@ class BatchExperimentMode(Mode):
 
     @staticmethod
     def __get_args(config_file: ConfigFile) -> List[List[str]]:
+        default_args = BatchExperimentMode.__filter_and_parse_args(sys.argv[2:])
+        dataset_batch_args = (BatchExperimentMode.__filter_and_parse_args(dataset_args)
+                              for dataset_args in config_file.dataset_args)
+        parameter_batch_args = (BatchExperimentMode.__filter_and_parse_args(parameter_args)
+                                for parameter_args in config_file.parameter_args)
         args = []
-        default_args = BatchExperimentMode.__get_default_args()
-        dataset_batch_args = config_file.dataset_args
-        parameter_batch_args = config_file.parameter_args
 
         for dataset_args in dataset_batch_args:
             for parameter_args in parameter_batch_args:
-                args.append(default_args + dataset_args + parameter_args)
+                args_dict = default_args | dataset_args | parameter_args
+                arg_list = [sys.argv[1]]
+
+                for key in sorted(args_dict.keys()):
+                    arg_list.append(key)
+                    value = args_dict.get(key)
+
+                    if value:
+                        arg_list.append(value)
+
+                args.append(arg_list)
 
         return args
 
     @staticmethod
-    def __get_default_args() -> List[str]:
-        default_args = []
-        skip_next = False
+    def __filter_and_parse_args(args: List[str]) -> Dict[str, Optional[str]]:
+        return BatchExperimentMode.__parse_args(
+            BatchExperimentMode.__filter_args(args, *BatchExperimentMode.CONFIG_FILE.names, *Mode.MODE.names,
+                                              BatchExperimentMode.LIST_COMMANDS.name), )
 
-        for arg in sys.argv[1:]:
-            if skip_next:
-                skip_next = False
-            elif arg in BatchExperimentMode.CONFIG_FILE.names:
-                skip_next = True
-            elif arg in Mode.MODE.names:
-                skip_next = True
-            elif arg != BatchExperimentMode.LIST_COMMANDS.name:
-                default_args.append(arg)
+    @staticmethod
+    def __filter_args(args: List[str], *ignored_args: str) -> List[str]:
+        ignored_args_set = set(ignored_args)
+        filtered_args = []
+        skip = False
 
-        return default_args
+        for arg in args:
+            skip = (skip and not arg.startswith('-')) or arg in ignored_args_set
+
+            if not skip:
+                filtered_args.append(arg)
+
+        return filtered_args
+
+    @staticmethod
+    def __parse_args(args: List[str]) -> Dict[str, Optional[str]]:
+        args_dict: Dict[str, Optional[str]] = {}
+        previous_arg = None
+
+        for arg in args:
+            if not previous_arg or arg.startswith('-'):
+                args_dict.setdefault(arg, None)
+                previous_arg = arg
+            else:
+                args_dict[previous_arg] = arg
+                previous_arg = None
+
+        return args_dict
 
     @staticmethod
     def __add_args_to_namespace(namespace: Namespace, args: List[str]) -> Namespace:
@@ -218,7 +248,7 @@ class BatchExperimentMode(Mode):
             arg = args[i]
 
             if arg.startswith('-'):
-                argument_name = arg.lstrip('--').replace('-', '_')
+                argument_name = arg.lstrip('-').replace('-', '_')
                 argument_value = None
 
                 if i + 1 < len(args):
