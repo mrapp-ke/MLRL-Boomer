@@ -55,7 +55,7 @@ class Argument:
         """
         The key of the argument in a `Namespace`.
         """
-        return self.name.lstrip('--').replace('-', '_')
+        return self.name.lstrip('-').replace('-', '_')
 
     def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
         """
