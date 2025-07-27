@@ -24,6 +24,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--create-output-dir CREATE_OUTPUT_DIR]
                     [--predict-for-training-data PREDICT_FOR_TRAINING_DATA]
                     [--prediction-format PREDICTION_FORMAT]
                     [--prediction-type PREDICTION_TYPE]
+                    [--print-all PRINT_ALL]
                     [--print-data-characteristics PRINT_DATA_CHARACTERISTICS]
                     [--print-evaluation PRINT_EVALUATION]
                     [--print-ground-truth PRINT_GROUND_TRUTH]
@@ -39,6 +40,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--create-output-dir CREATE_OUTPUT_DIR]
                     [--rule-pruning RULE_PRUNING]
                     [--sequential-post-optimization SEQUENTIAL_POST_OPTIMIZATION]
                     [--sparse-feature-value SPARSE_FEATURE_VALUE]
+                    [--store-all STORE_ALL]
                     [--store-data-characteristics STORE_DATA_CHARACTERISTICS]
                     [--store-evaluation STORE_EVALUATION]
                     [--store-ground-truth STORE_GROUND_TRUTH]
@@ -188,6 +190,9 @@ options:
                         The type of predictions that should be obtained from
                         the learner. Must be one of {"binary",
                         "probabilities", "scores"}.
+  --print-all PRINT_ALL
+                        Whether all output data should be printed on the
+                        console or not. Must be one of {"false", "true"}.
   --print-data-characteristics PRINT_DATA_CHARACTERISTICS
                         Whether the characteristics of the training data
                         should be printed on the console or not. Must be one
@@ -258,6 +263,9 @@ options:
                         sparse format is used for the representation of the
                         feature matrix, depending on the argument --feature-
                         format.
+  --store-all STORE_ALL
+                        Whether all output data should be written to files or
+                        not. Must be one of {"false", "true"}.
   --store-data-characteristics STORE_DATA_CHARACTERISTICS
                         Whether the characteristics of the training data
                         should be written into output files or not. Does only
