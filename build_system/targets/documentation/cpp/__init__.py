@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Defines targets and modules for generating API documentations for C++ code.
 """
-from os import path
+from pathlib import Path
 
 from core.build_unit import BuildUnit
 from core.targets import TargetBuilder
@@ -16,7 +16,7 @@ APIDOC_CPP = 'apidoc_cpp'
 
 APIDOC_CPP_INDEX = 'apidoc_cpp_index'
 
-TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
+TARGETS = TargetBuilder(BuildUnit.for_file(Path(__file__))) \
     .add_build_target(APIDOC_CPP) \
         .set_runnables(ApidocCpp()) \
     .add_build_target(APIDOC_CPP_INDEX) \
@@ -29,7 +29,7 @@ TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
 MODULES = [
     CppApidocModule(
         root_directory=subproject,
-        output_directory=path.join(Project.Documentation.apidoc_directory, 'cpp', path.basename(subproject)),
+        output_directory=Project.Documentation.apidoc_directory / 'cpp' / subproject.name,
         include_directory_name='include',
-    ) for subproject in Project.Cpp.find_subprojects() if path.isdir(path.join(subproject, 'include'))
+    ) for subproject in Project.Cpp.find_subprojects() if (subproject / 'include').is_dir()
 ]

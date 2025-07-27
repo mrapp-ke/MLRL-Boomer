@@ -6,6 +6,7 @@ Provides classes for installing Python packages via pip.
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from functools import reduce
+from pathlib import Path
 from typing import Any, Dict, Optional, Set, override
 
 from core.build_unit import BuildUnit
@@ -160,7 +161,7 @@ class RequirementsFile(ABC):
 
     @property
     @abstractmethod
-    def path(self) -> str:
+    def path(self) -> Path:
         """
         The path to the file.
         """
@@ -223,7 +224,7 @@ class RequirementsFile(ABC):
 
     @override
     def __str__(self) -> str:
-        return self.path
+        return str(self.path)
 
     @override
     def __eq__(self, other: Any) -> bool:
@@ -241,7 +242,7 @@ class RequirementsTextFile(TextFile, RequirementsFile):
 
     @override
     @property
-    def path(self) -> str:
+    def path(self) -> Path:
         return self.file
 
     @override
@@ -322,7 +323,7 @@ class Pip:
         self.requirements_files = list(requirements_files)
 
     @staticmethod
-    def for_build_unit(build_unit: BuildUnit = BuildUnit.for_file(__file__)):
+    def for_build_unit(build_unit: BuildUnit = BuildUnit.for_file(Path(__file__))):
         """
         Creates and returns a new `Pip` instance for installing packages for a specific build unit.
 

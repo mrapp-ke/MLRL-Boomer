@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from datetime import date
 from enum import Enum, StrEnum, auto
 from functools import cached_property
-from os import path
+from pathlib import Path
 from typing import Dict, List, Optional, override
 
 from core.build_unit import BuildUnit
@@ -121,9 +121,9 @@ class ChangesetFile(TextFile):
     A text file that stores several changesets.
     """
 
-    CHANGELOG_DIRECTORY = path.join(Project.BuildSystem.resource_directory, 'changelog')
+    CHANGELOG_DIRECTORY = Project.BuildSystem.resource_directory / 'changelog'
 
-    def __init__(self, file: str):
+    def __init__(self, file: Path):
         """
         :param file: The path to the text file
         """
@@ -134,33 +134,33 @@ class ChangesetFile(TextFile):
         """
         Creates and returns a `ChangesetFile` that stores the changesets for the next major release.
         """
-        return ChangesetFile(path.join(ChangesetFile.CHANGELOG_DIRECTORY, 'changelog-main.md'))
+        return ChangesetFile(ChangesetFile.CHANGELOG_DIRECTORY / 'changelog-main.md')
 
     @staticmethod
     def feature() -> 'ChangesetFile':
         """
         Creates and returns a `ChangesetFile` that stores the changesets for the next minor release.
         """
-        return ChangesetFile(path.join(ChangesetFile.CHANGELOG_DIRECTORY, 'changelog-feature.md'))
+        return ChangesetFile(ChangesetFile.CHANGELOG_DIRECTORY / 'changelog-feature.md')
 
     @staticmethod
     def bugfix() -> 'ChangesetFile':
         """
         Creates and returns a `ChangesetFile` that stores the changesets for the next bugfix release.
         """
-        return ChangesetFile(path.join(ChangesetFile.CHANGELOG_DIRECTORY, 'changelog-bugfix.md'))
+        return ChangesetFile(ChangesetFile.CHANGELOG_DIRECTORY / 'changelog-bugfix.md')
 
     def __validate_line(self, current_line: Optional[Line], previous_line: Optional[Line]):
         current_line_is_enumeration = current_line and current_line.line_type == LineType.ENUMERATION
 
         if current_line_is_enumeration and not previous_line:
-            raise ValueError('File "' + self.file + '" must start with a top-level header (starting with "'
+            raise ValueError('File "' + str(self.file) + '" must start with a top-level header (starting with "'
                              + Line.PREFIX_HEADER + '")')
 
         if previous_line and previous_line.line_type == LineType.HEADER:
             if not current_line or current_line.line_type == LineType.HEADER:
                 raise ValueError('Header "' + previous_line.line + '" at line ' + str(previous_line.line_number)
-                                 + ' of file "' + self.file + '" is not followed by any content')
+                                 + ' of file "' + str(self.file) + '" is not followed by any content')
 
     @cached_property
     def parsed_lines(self) -> List[Line]:
@@ -293,7 +293,7 @@ class ChangelogFile(TextFile):
     """
 
     def __init__(self):
-        super().__init__('CHANGELOG.md')
+        super().__init__(Path('CHANGELOG.md'))
 
     def add_release(self, release: Release):
         """

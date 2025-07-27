@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for compiling C++ code.
 """
-from os import path
+from pathlib import Path
 from typing import List, cast, override
 
 from core.build_unit import BuildUnit
@@ -22,7 +22,7 @@ MODULE_FILTER = CompilationModule.Filter(FileType.cpp())
 
 BUILD_OPTIONS = BuildOptions() \
         .add(ConstantBuildOption('cpp_std', Project.Cpp.cpp_version(),
-                                 *[path.basename(subproject) for subproject in Project.Cpp.find_subprojects()])) \
+                                 *[subproject.name for subproject in Project.Cpp.find_subprojects()])) \
         .add(EnvBuildOption(SubprojectModule.ENV_SUBPROJECTS.lower())) \
         .add(EnvBuildOption('buildtype', default_value='release')) \
         .add(EnvBuildOption('test_support', 'common')) \
@@ -46,12 +46,12 @@ class SetupCpp(BuildTarget.Runnable):
         MesonSetup(build_unit, compilation_module, *MESON_OPTIONS, build_options=BUILD_OPTIONS).run()
 
     @override
-    def get_output_files(self, _: BuildUnit, module: Module) -> List[str]:
+    def get_output_files(self, _: BuildUnit, module: Module) -> List[Path]:
         compilation_module = cast(CompilationModule, module)
         return [compilation_module.build_directory]
 
     @override
-    def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[str]:
+    def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[Path]:
         compilation_module = cast(CompilationModule, module)
         Log.info('Removing C++ build files from directory "%s"...', compilation_module.root_directory)
         return super().get_clean_files(build_unit, compilation_module)
@@ -89,7 +89,7 @@ class InstallCpp(BuildTarget.Runnable):
         MesonInstall(build_unit, compilation_module).run()
 
     @override
-    def get_clean_files(self, _: BuildUnit, module: Module) -> List[str]:
+    def get_clean_files(self, _: BuildUnit, module: Module) -> List[Path]:
         compilation_module = cast(CompilationModule, module)
         Log.info('Removing shared libraries installed from directory "%s" from source tree...',
                  compilation_module.root_directory)

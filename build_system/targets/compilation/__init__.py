@@ -3,6 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Defines targets for compiling code.
 """
+from pathlib import Path
+
 from core.build_unit import BuildUnit
 from core.targets import TargetBuilder
 
@@ -11,7 +13,7 @@ from targets.compilation.cython import COMPILE_CYTHON, INSTALL_CYTHON
 
 INSTALL = 'install'
 
-TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
+TARGETS = TargetBuilder(BuildUnit.for_file(Path(__file__))) \
     .add_phony_target('compile') \
         .depends_on(COMPILE_CPP, COMPILE_CYTHON, clean_dependencies=True) \
         .nop() \

@@ -3,8 +3,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Defines targets and modules for compiling C++ code.
 """
+from pathlib import Path
+
 from core.build_unit import BuildUnit
-from core.targets import PhonyTarget, TargetBuilder
+from core.targets import TargetBuilder
 from util.files import FileType
 
 from targets.compilation.cpp.targets import CompileCpp, InstallCpp, SetupCpp
@@ -18,7 +20,7 @@ COMPILE_CPP = 'compile_cpp'
 
 INSTALL_CPP = 'install_cpp'
 
-TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
+TARGETS = TargetBuilder(BuildUnit.for_file(Path(__file__))) \
     .add_build_target(SETUP_CPP) \
         .depends_on(INSTALL_RUNTIME_DEPENDENCIES) \
         .set_runnables(SetupCpp()) \

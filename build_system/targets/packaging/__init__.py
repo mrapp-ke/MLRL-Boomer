@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Defines targets and modules for building and install Python wheel packages.
 """
-from os import path
+from pathlib import Path
 
 from core.build_unit import BuildUnit
 from core.targets import TargetBuilder
@@ -19,7 +19,7 @@ BUILD_WHEELS = 'build_wheels'
 
 INSTALL_WHEELS = 'install_wheels'
 
-TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
+TARGETS = TargetBuilder(BuildUnit.for_file(Path(__file__))) \
     .add_build_target(PYPROJECT_TOML) \
         .depends_on(INSTALL) \
         .set_runnables(GeneratePyprojectTomlFiles()) \
