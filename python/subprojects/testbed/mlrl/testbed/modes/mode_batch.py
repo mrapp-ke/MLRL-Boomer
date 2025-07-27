@@ -10,6 +10,7 @@ from abc import ABC, abstractmethod
 from argparse import Namespace
 from dataclasses import dataclass, field
 from functools import cached_property, reduce
+from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, override
 
 import yamale
@@ -192,9 +193,25 @@ class BatchExperimentMode(Mode):
         args = []
 
         for dataset_args in dataset_batch_args:
+            dataset_name = dataset_args['--dataset']
+
+            if not dataset_name:
+                raise RuntimeError('Unable to determine dataset name based on the arguments ' + str(dataset_args))
+
             for parameter_args in parameter_batch_args:
+                module_name = sys.argv[1]
+                output_dir = BatchExperimentMode.__get_output_dir(parameter_args, dataset_name)
+                arg_list = [
+                    module_name,
+                    '--result-dir',
+                    str(output_dir / 'results'),
+                    '--model-save-dir',
+                    str(output_dir / 'models'),
+                    '--parameter-save-dir',
+                    str(output_dir / 'parameters'),
+                ]
+
                 args_dict = default_args | dataset_args | parameter_args
-                arg_list = [sys.argv[1]]
 
                 for key in sorted(args_dict.keys()):
                     arg_list.append(key)
@@ -206,6 +223,12 @@ class BatchExperimentMode(Mode):
                 args.append(arg_list)
 
         return args
+
+    @staticmethod
+    def __get_output_dir(parameters: Dict[str, Optional[str]], dataset_name: str) -> Path:
+        return Path(
+            *map(lambda parameter: parameter[0].lstrip('-') + ('_' + parameter[1]) if parameter[1] else '',
+                 parameters.items()), 'dataset_' + dataset_name)
 
     @staticmethod
     def __filter_and_parse_args(args: List[str]) -> Dict[str, Optional[str]]:
