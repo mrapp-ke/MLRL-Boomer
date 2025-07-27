@@ -31,6 +31,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--binary-predictor BINARY_PREDICTOR]
                     [--predict-for-training-data PREDICT_FOR_TRAINING_DATA]
                     [--prediction-format PREDICTION_FORMAT]
                     [--prediction-type PREDICTION_TYPE]
+                    [--print-all PRINT_ALL]
                     [--print-data-characteristics PRINT_DATA_CHARACTERISTICS]
                     [--print-evaluation PRINT_EVALUATION]
                     [--print-ground-truth PRINT_GROUND_TRUTH]
@@ -51,7 +52,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--binary-predictor BINARY_PREDICTOR]
                     [--shrinkage SHRINKAGE]
                     [--sparse-feature-value SPARSE_FEATURE_VALUE]
                     [--statistic-format STATISTIC_FORMAT]
-                    [--statistic-type STATISTIC_TYPE]
+                    [--statistic-type STATISTIC_TYPE] [--store-all STORE_ALL]
                     [--store-data-characteristics STORE_DATA_CHARACTERISTICS]
                     [--store-evaluation STORE_EVALUATION]
                     [--store-ground-truth STORE_GROUND_TRUTH]
@@ -240,6 +241,9 @@ options:
                         The type of predictions that should be obtained from
                         the learner. Must be one of {"binary",
                         "probabilities", "scores"}.
+  --print-all PRINT_ALL
+                        Whether all output data should be printed on the
+                        console or not. Must be one of {"false", "true"}.
   --print-data-characteristics PRINT_DATA_CHARACTERISTICS
                         Whether the characteristics of the training data
                         should be printed on the console or not. Must be one
@@ -334,6 +338,9 @@ options:
   --statistic-type STATISTIC_TYPE
                         The data type for representing gradients and Hessians.
                         Must be one of {"32-bit", "64-bit"}.
+  --store-all STORE_ALL
+                        Whether all output data should be written to files or
+                        not. Must be one of {"false", "true"}.
   --store-data-characteristics STORE_DATA_CHARACTERISTICS
                         Whether the characteristics of the training data
                         should be written into output files or not. Does only
