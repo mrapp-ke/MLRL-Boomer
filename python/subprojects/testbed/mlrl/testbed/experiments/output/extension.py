@@ -83,7 +83,10 @@ class OutputExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return {self.OUTPUT_DIR, self.CREATE_OUTPUT_DIR, self.WIPE_OUTPUT_DIR, self.EXIT_ON_ERROR}
+        return {
+            self.OUTPUT_DIR, self.CREATE_OUTPUT_DIR, self.WIPE_OUTPUT_DIR, self.EXIT_ON_ERROR, self.PRINT_ALL,
+            self.STORE_ALL
+        }
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
