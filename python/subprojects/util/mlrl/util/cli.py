@@ -66,13 +66,10 @@ class Argument:
         :return:        The value provided by the user or `default`, if no value is available
         """
         value = getattr(args, self.key, None)
-        deecorator = self.decorator
-
-        if deecorator:
-            value = deecorator(args, value)
-
         value = self.default if value is None else value
-        return default if value is None else value
+        value = default if value is None else value
+        decorator = self.decorator
+        return decorator(args, value) if decorator else value
 
     @override
     def __hash__(self) -> int:
