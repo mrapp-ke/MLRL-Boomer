@@ -3,8 +3,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Defines targets and modules for compiling Cython code.
 """
+from pathlib import Path
+
 from core.build_unit import BuildUnit
-from core.targets import PhonyTarget, TargetBuilder
+from core.targets import TargetBuilder
 from util.files import FileType
 
 from targets.compilation.cpp import COMPILE_CPP
@@ -18,7 +20,7 @@ COMPILE_CYTHON = 'compile_cython'
 
 INSTALL_CYTHON = 'install_cython'
 
-TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
+TARGETS = TargetBuilder(BuildUnit.for_file(Path(__file__))) \
     .add_build_target(SETUP_CYTHON) \
         .depends_on(COMPILE_CPP) \
         .set_runnables(SetupCython()) \

@@ -3,7 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements modules that provide access to automated tests for Python code.
 """
-from os import environ, path
+from os import environ
+from pathlib import Path
 from typing import override
 
 from core.modules import Module, ModuleRegistry
@@ -27,7 +28,7 @@ class PythonTestModule(TestModule, SubprojectModule):
             return isinstance(module, PythonTestModule) and SubprojectModule.Filter.from_env(environ).matches(
                 module, module_registry)
 
-    def __init__(self, root_directory: str, result_directory: str):
+    def __init__(self, root_directory: Path, result_directory: Path):
         """
         :param root_directory:      The path to the module's root directory
         :param result_directory:    The path to the directory, where test results should be stored
@@ -38,8 +39,8 @@ class PythonTestModule(TestModule, SubprojectModule):
     @override
     @property
     def subproject_name(self) -> str:
-        return path.basename(self.root_directory)
+        return self.root_directory.name
 
     @override
     def __str__(self) -> str:
-        return 'PythonTestModule {root_directory="' + self.root_directory + '"}'
+        return 'PythonTestModule {root_directory="' + str(self.root_directory) + '"}'

@@ -3,7 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements modules that provide access to Python code for which an API documentation can be generated.
 """
-from os import environ, path
+from os import environ
+from pathlib import Path
 from typing import List, override
 
 from core.modules import Module, ModuleRegistry
@@ -29,8 +30,8 @@ class PythonApidocModule(ApidocModule):
                 module, module_registry)
 
     def __init__(self,
-                 root_directory: str,
-                 output_directory: str,
+                 root_directory: Path,
+                 output_directory: Path,
                  source_directory_name: str,
                  source_file_search: FileSearch = FileSearch().set_recursive(True)):
         """
@@ -47,13 +48,13 @@ class PythonApidocModule(ApidocModule):
         self.source_file_search = source_file_search
 
     @property
-    def source_directory(self) -> str:
+    def source_directory(self) -> Path:
         """
         The path to the directory that contains the Python source files to be included in the API documentation.
         """
-        return path.join(self.root_directory, self.source_directory_name)
+        return self.root_directory / self.source_directory_name
 
-    def find_source_files(self) -> List[str]:
+    def find_source_files(self) -> List[Path]:
         """
         Finds and returns the Python source files to be included in the API documentation.
 
@@ -64,14 +65,14 @@ class PythonApidocModule(ApidocModule):
     @override
     @property
     def subproject_name(self) -> str:
-        return path.basename(self.output_directory)
+        return self.output_directory.name
 
     @override
     def create_reference(self) -> str:
         rst_file_name = self.source_directory_name + '.' + self.subproject_name.replace('-', '_') + '.rst'
-        rst_file_path = path.join(self.subproject_name, rst_file_name)
-        return 'Package mlrl-' + path.basename(self.output_directory) + ' <' + rst_file_path + '>'
+        rst_file_path = Path(self.subproject_name, rst_file_name)
+        return 'Package mlrl-' + self.output_directory.name + ' <' + str(rst_file_path) + '>'
 
     @override
     def __str__(self) -> str:
-        return 'PythonApidocModule {root_directory="' + self.root_directory + '"}'
+        return 'PythonApidocModule {root_directory="' + str(self.root_directory) + '"}'

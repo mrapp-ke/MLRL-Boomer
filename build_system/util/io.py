@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for reading and writing files.
 """
 from functools import cached_property
-from os import makedirs, path, remove
+from pathlib import Path
 from shutil import rmtree
 from typing import Any, List, override
 
@@ -13,25 +13,25 @@ from util.log import Log
 ENCODING_UTF8 = 'utf-8'
 
 
-def read_file(file: str):
+def read_file(file: Path):
     """
     Opens a file to read from.
 
-    :param file: The file to be opened
+    :param file: The path to the file to be opened
     """
     return open(file, mode='r', encoding=ENCODING_UTF8)
 
 
-def write_file(file: str):
+def write_file(file: Path):
     """
     Opens a file to be written to.
 
-    :param file: The file to be opened
+    :param file: The path to the file to be opened
     """
     return open(file, mode='w', encoding=ENCODING_UTF8)
 
 
-def delete_files(*files: str, accept_missing: bool = True):
+def delete_files(*files: Path, accept_missing: bool = True):
     """
     Deletes one or several files or directories.
 
@@ -39,25 +39,25 @@ def delete_files(*files: str, accept_missing: bool = True):
     :param accept_missing:  True, if no error should be raised if the file is missing, False otherwise
     """
     for file in files:
-        if path.isdir(file):
+        if file.is_dir():
             Log.verbose('Deleting directory "%s"...', file)
             rmtree(file)
         else:
-            if not accept_missing or path.isfile(file) or path.islink(file):
+            if not accept_missing or file.is_file() or file.is_symlink():
                 Log.verbose('Deleting file "%s"...', file)
-                remove(file)
+                file.unlink()
 
 
-def create_directories(*directories: str):
+def create_directories(*directories: Path):
     """
     Creates one or several directories, if they do not already exist.
 
     :param directories: The directories to be created
     """
     for directory in directories:
-        if not path.isdir(directory):
+        if not directory.is_dir():
             Log.verbose('Creating directory "%s"...', directory)
-            makedirs(directory)
+            directory.mkdir(parents=True)
 
 
 class TextFile:
@@ -65,7 +65,7 @@ class TextFile:
     Allows to read and write the content of a text file.
     """
 
-    def __init__(self, file: str, accept_missing: bool = False):
+    def __init__(self, file: Path, accept_missing: bool = False):
         """
         :param file:            The path to the text file
         :param accept_missing:  True, if no errors should be raised if the text file is missing, False otherwise
@@ -78,7 +78,7 @@ class TextFile:
         """
         The lines in the text file.
         """
-        if self.accept_missing and not path.isfile(self.file):
+        if self.accept_missing and not self.file.is_file():
             return []
 
         with read_file(self.file) as file:
@@ -113,7 +113,7 @@ class TextFile:
 
     @override
     def __str__(self) -> str:
-        return self.file
+        return str(self.file)
 
     @override
     def __eq__(self, other: Any) -> bool:

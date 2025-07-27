@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utilities for reading and writing pyproject.toml files.
 """
+from pathlib import Path
 from typing import Dict, override
 
 from util.pip import Package, Requirement, RequirementsFile
@@ -16,7 +17,7 @@ class PyprojectTomlFile(TomlFile, RequirementsFile):
 
     @override
     @property
-    def path(self) -> str:
+    def path(self) -> Path:
         return self.file
 
     @override
