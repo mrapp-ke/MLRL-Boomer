@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for providing the text to be shown when the "--version" flag is passed to the command line API.
 """
 from dataclasses import dataclass, field
-from typing import Dict, Iterable, List, Set
+from typing import Dict, Iterable, List, Set, override
 
 from tabulate import tabulate
 
@@ -144,6 +144,7 @@ class RuleLearnerProgramInfo:
 
         return tabulate(rows, tablefmt='plain') if rows else ''
 
+    @override
     def __str__(self) -> str:
         program_info = str(self.program_info)
         package_info = self.__get_package_info()

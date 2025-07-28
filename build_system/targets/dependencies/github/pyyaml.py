@@ -5,7 +5,7 @@ Provides classes for reading the contents of YAML files via "pyyaml".
 """
 from functools import cached_property
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, override
 
 from core.build_unit import BuildUnit
 from util.io import TextFile, read_file
@@ -37,6 +37,7 @@ class YamlFile(TextFile):
             yaml_dict = yaml.load(file.read(), Loader=yaml.CLoader)
             return yaml_dict if yaml_dict else {}
 
+    @override
     def write_lines(self, *lines: str):
         super().write_lines(*lines)
 
