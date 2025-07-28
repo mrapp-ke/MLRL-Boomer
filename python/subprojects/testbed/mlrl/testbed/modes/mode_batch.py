@@ -9,6 +9,7 @@ import sys
 
 from abc import ABC, abstractmethod
 from argparse import Namespace
+from copy import copy
 from dataclasses import dataclass, field
 from functools import cached_property, reduce
 from itertools import chain
@@ -184,20 +185,24 @@ class BatchExperimentMode(Mode):
         args = BatchExperimentMode.__get_args(config_file)
         start_time = Timer.start()
 
-        for i, arguments in enumerate(args):
-            experiment_builder = experiment_builder_factory(
-                BatchExperimentMode.__add_args_to_namespace(namespace, arguments))
+        namespaces = [BatchExperimentMode.__add_args_to_namespace(copy(namespace), arguments) for arguments in args]
+        num_experiments = len(args)
 
+        for experiment_namespace in namespaces:
+            experiment_builder_factory(experiment_namespace)  # For validation
+
+        for i, (experiment_namespace, arguments) in enumerate(zip(namespaces, args)):
             if i == 0:
-                log.info('Running %s %s...', len(args), 'experiments' if len(args) > 1 else 'experiment')
+                log.info('Running %s %s...', num_experiments, 'experiments' if num_experiments > 1 else 'experiment')
 
             command = chain(['mlrl-testbed'], arguments)
-            log.info('Running experiment (%s/%s): "%s"', i + 1, len(args), format_iterable(command, separator=' '))
-            experiment_builder.run()
+            log.info('Running experiment (%s/%s): "%s"', i + 1, num_experiments, format_iterable(command,
+                                                                                                 separator=' '))
+            experiment_builder_factory(experiment_namespace).run()
 
         run_time = Timer.stop(start_time)
-        log.info('Successfully finished %s %s after %s', len(args), 'experiments' if len(args) > 1 else 'experiment',
-                 run_time)
+        log.info('Successfully finished %s %s after %s', num_experiments,
+                 'experiments' if num_experiments > 1 else 'experiment', run_time)
 
     @staticmethod
     def __get_args(config_file: ConfigFile) -> List[List[str]]:
