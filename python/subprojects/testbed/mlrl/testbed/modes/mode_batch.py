@@ -137,7 +137,6 @@ class BatchExperimentMode(Mode):
             return self.file_path
 
     CONFIG_FILE = StringArgument(
-        '-c',
         '--config',
         required=True,
         description='An absolute or relative path to a YAML file that configures the batch of experiments to be run.',

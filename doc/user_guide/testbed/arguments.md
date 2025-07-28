@@ -44,16 +44,16 @@ The arguments given above can be used to integrate any scikit-learn compatible m
 
 ### Mode
 
-MLRL-Testbed supports different modes of operation configurable via the argument `-m` or `--mode`. By default, a single experiment configured via the command line API is run. However, it is also possible to run several experiments at once. In the following, we provide an overview of all available configuration options:
+MLRL-Testbed supports different modes of operation configurable via the argument `--mode`. By default, a single experiment configured via the command line API is run. However, it is also possible to run several experiments at once. In the following, we provide an overview of all available configuration options:
 
-- `-m` or `--mode` (Default value = `single`)
+- `--mode` (Default value = `single`)
 
   - `single` A single experiment is run.
   - `batch` A batch of experiments is run at once.
 
 In {ref}`batch mode <testbed-batch-mode>`, the following mandatory arguments must be given as well:
 
-- `-c` or `--config` An absolute or relative path to a YAML file that defines the batch of experiments to be run.
+- `--config` An absolute or relative path to a YAML file that defines the batch of experiments to be run.
 
 In addition, the batch mode comes with the following optional arguments:
 
