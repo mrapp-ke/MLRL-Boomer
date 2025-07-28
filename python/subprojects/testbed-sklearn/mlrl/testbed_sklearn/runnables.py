@@ -125,13 +125,19 @@ class SkLearnRunnable(Runnable, ABC):
             problem_type = SkLearnRunnable.ProblemDomainExtension.PROBLEM_TYPE.get_value(args)
 
             if problem_type == ClassificationProblem.NAME:
-                return SkLearnClassificationProblem(base_learner=runnable.create_classifier(args),
+                base_learner = runnable.create_classifier(args)
+                # pylint: disable=protected-access
+                base_learner._validate_params()  # type: ignore[union-attr]
+                return SkLearnClassificationProblem(base_learner=base_learner,
                                                     predictor_factory=predictor_factory,
                                                     prediction_type=prediction_type,
                                                     fit_kwargs=fit_kwargs,
                                                     predict_kwargs=predict_kwargs)
 
-            return SkLearnRegressionProblem(base_learner=runnable.create_regressor(args),
+            base_learner = runnable.create_regressor(args)
+            # pylint: disable=protected-access
+            base_learner._validate_params()  # type: ignore[union-attr]
+            return SkLearnRegressionProblem(base_learner=base_learner,
                                             predictor_factory=predictor_factory,
                                             prediction_type=prediction_type,
                                             fit_kwargs=fit_kwargs,
