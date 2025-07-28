@@ -6,7 +6,7 @@ Implements targets for generating documentations.
 from abc import ABC
 from os import environ
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, cast
+from typing import Dict, Iterable, List, Optional, cast, override
 
 from core.build_unit import BuildUnit
 from core.modules import Module
@@ -48,6 +48,7 @@ class ApidocIndex(BuildTarget.Runnable, ABC):
     def __index_file(template: Path) -> Path:
         return template.parent / 'index.md'
 
+    @override
     def run_all(self, _: BuildUnit, modules: List[Module]):
         apidoc_modules = (cast(ApidocModule, module) for module in modules)
 
@@ -64,16 +65,19 @@ class ApidocIndex(BuildTarget.Runnable, ABC):
 
             TextFile(self.__index_file(template), accept_missing=True).write_lines(*new_lines)
 
+    @override
     def get_input_files(self, _: BuildUnit, module: Module) -> List[Path]:
         apidoc_module = cast(ApidocModule, module)
         template = self.__get_template(apidoc_module)
         return [template] if template else []
 
+    @override
     def get_output_files(self, _: BuildUnit, module: Module) -> List[Path]:
         apidoc_module = cast(ApidocModule, module)
         template = self.__get_template(apidoc_module)
         return [self.__index_file(template)] if template else []
 
+    @override
     def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[Path]:
         apidoc_module = cast(ApidocModule, module)
         Log.info('Removing index file referencing API documentation in directory "%s"', apidoc_module.output_directory)
@@ -98,20 +102,24 @@ class BuildDocumentation(BuildTarget.Runnable):
 
         self.sphinx_builder = sphinx_builder
 
+    @override
     def run(self, build_unit: BuildUnit, module: Module):
         sphinx_module = cast(SphinxModule, module)
         Log.info('Building documentation for directory "%s" (using builder "%s")"...', sphinx_module.root_directory,
                  self.sphinx_builder)
         SphinxBuild(build_unit, sphinx_module, builder=self.sphinx_builder).run()
 
+    @override
     def get_input_files(self, _: BuildUnit, module: Module) -> List[Path]:
         sphinx_module = cast(SphinxModule, module)
         return sphinx_module.find_source_files() if self.sphinx_builder == SphinxBuild.BUILDER_HTML else []
 
+    @override
     def get_output_files(self, _: BuildUnit, module: Module) -> List[Path]:
         sphinx_module = cast(SphinxModule, module)
         return [sphinx_module.output_directory] if self.sphinx_builder == SphinxBuild.BUILDER_HTML else []
 
+    @override
     def get_clean_files(self, _: BuildUnit, module: Module) -> List[Path]:
         sphinx_module = cast(SphinxModule, module)
         Log.info('Removing documentation for directory "%s"...', sphinx_module.root_directory)

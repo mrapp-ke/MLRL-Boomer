@@ -4,7 +4,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write calibration models to one or several sinks.
 """
 from argparse import Namespace
-from typing import List, Set
+from pathlib import Path
+from typing import List, Set, override
 
 from mlrl.boosting.testbed.experiments.output.probability_calibration.writer import \
     JointProbabilityCalibrationModelWriter, MarginalProbabilityCalibrationModelWriter
@@ -34,11 +35,11 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
         true_options={OPTION_DECIMALS},
     )
 
-    STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL = BoolArgument(
-        '--store-marginal-probability-calibration-model',
+    SAVE_MARGINAL_PROBABILITY_CALIBRATION_MODEL = BoolArgument(
+        '--save-marginal-probability-calibration-model',
         default=False,
-        description='Whether the model for the calibration of marginal probabilities should be written into an output '
-        + 'file or not. Does only have an effect if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
+        description='Whether the model for the calibration of marginal probabilities should be written to an output '
+        + 'file or not.',
         true_options={OPTION_DECIMALS},
     )
 
@@ -48,11 +49,12 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
         """
         super().__init__(OutputExtension(), *dependencies)
 
+    @override
     def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return {self.PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL, self.STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL}
+        return {self.PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL, self.SAVE_MARGINAL_PROBABILITY_CALIBRATION_MODEL}
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
         value, options = self.PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL.get_value(
@@ -63,18 +65,19 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
         return []
 
     def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
-        value, options = self.STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL.get_value(
-            args, default=OutputExtension.STORE_ALL.get_value(args))
-        output_dir = OutputExtension.OUTPUT_DIR.get_value(args)
+        value, options = self.SAVE_MARGINAL_PROBABILITY_CALIBRATION_MODEL.get_value(
+            args, default=OutputExtension.SAVE_ALL.get_value(args))
+        result_directory = OutputExtension.RESULT_DIR.get_value(args)
 
-        if value and output_dir:
+        if value and result_directory:
             return [
-                CsvFileSink(directory=output_dir,
-                            create_directory=OutputExtension.CREATE_OUTPUT_DIR.get_value(args),
+                CsvFileSink(directory=Path(result_directory),
+                            create_directory=OutputExtension.CREATE_DIRS.get_value(args),
                             options=options)
             ]
         return []
 
+    @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
@@ -100,11 +103,11 @@ class JointProbabilityCalibrationModelExtension(Extension):
         true_options={OPTION_DECIMALS},
     )
 
-    STORE_JOINT_PROBABILITY_CALIBRATION_MODEL = BoolArgument(
-        '--store-joint-probability-calibration-model',
+    SAVE_JOINT_PROBABILITY_CALIBRATION_MODEL = BoolArgument(
+        '--save-joint-probability-calibration-model',
         default=False,
-        description='Whether the model for the calibration of joint probabilities should be written into an output '
-        + 'file or not. Does only have an effect if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
+        description='Whether the model for the calibration of joint probabilities should be written to an output file '
+        + 'or not.',
         true_options={OPTION_DECIMALS},
     )
 
@@ -114,12 +117,14 @@ class JointProbabilityCalibrationModelExtension(Extension):
         """
         super().__init__(OutputExtension(), *dependencies)
 
+    @override
     def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return {self.PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL, self.STORE_JOINT_PROBABILITY_CALIBRATION_MODEL}
+        return {self.PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL, self.SAVE_JOINT_PROBABILITY_CALIBRATION_MODEL}
 
+    @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
@@ -131,14 +136,14 @@ class JointProbabilityCalibrationModelExtension(Extension):
         if value:
             sinks.append(LogSink(options))
 
-        value, options = self.STORE_JOINT_PROBABILITY_CALIBRATION_MODEL.get_value(
-            args, default=OutputExtension.STORE_ALL.get_value(args))
-        output_dir = OutputExtension.OUTPUT_DIR.get_value(args)
+        value, options = self.SAVE_JOINT_PROBABILITY_CALIBRATION_MODEL.get_value(
+            args, default=OutputExtension.SAVE_ALL.get_value(args))
+        result_directory = OutputExtension.RESULT_DIR.get_value(args)
 
-        if value and output_dir:
+        if value and result_directory:
             sinks.append(
-                CsvFileSink(directory=output_dir,
-                            create_directory=OutputExtension.CREATE_OUTPUT_DIR.get_value(args),
+                CsvFileSink(directory=Path(result_directory),
+                            create_directory=OutputExtension.CREATE_DIRS.get_value(args),
                             options=options))
 
         if sinks:

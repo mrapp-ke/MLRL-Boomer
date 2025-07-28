@@ -5,7 +5,7 @@ Provides classes for obtaining predictions from global machine learning models.
 """
 import logging as log
 
-from typing import Any, Generator
+from typing import Any, Generator, override
 
 from mlrl.testbed_sklearn.experiments.prediction.predictor import PredictionFunction, Predictor
 
@@ -41,6 +41,7 @@ class GlobalPredictor(Predictor):
         Provides information about predictions that have been obtained from a global model.
         """
 
+        @override
         @property
         def model_size(self) -> int:
             """
@@ -48,6 +49,7 @@ class GlobalPredictor(Predictor):
             """
             return 0
 
+    @override
     def obtain_predictions(self, learner: Any, dataset: Dataset, dataset_type: DatasetType,
                            **kwargs) -> Generator[PredictionState, None, None]:
         """

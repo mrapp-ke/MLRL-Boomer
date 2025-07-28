@@ -6,7 +6,7 @@ Provides classes that allow reading datasets from ARFF files.
 import logging as log
 
 from functools import cached_property
-from os import path
+from pathlib import Path
 from typing import Any, List, Optional, Set
 from xml.dom import minidom
 
@@ -62,7 +62,7 @@ class ArffFileSource(DatasetFileSource):
             self.relation = relation
 
         @staticmethod
-        def from_file(file_path: str, sparse: bool, dtype: np.dtype) -> 'ArffFileSource.ArffFile':
+        def from_file(file_path: Path, sparse: bool, dtype: np.dtype) -> 'ArffFileSource.ArffFile':
             """
             Loads the content of an ARFF file.
 
@@ -150,7 +150,7 @@ class ArffFileSource(DatasetFileSource):
             self.output_names = output_names if output_names else self.__parse_output_names_from_relation()
 
         @staticmethod
-        def from_file(arff_file: 'ArffFileSource.ArffFile', file_path: str) -> 'ArffFileSource.ArffDataset':
+        def from_file(arff_file: 'ArffFileSource.ArffFile', file_path: Path) -> 'ArffFileSource.ArffDataset':
             """
             Creates and returns an ARFF dataset from given ARFF file and a corresponding Mulan XML file, if available.
 
@@ -159,9 +159,9 @@ class ArffFileSource(DatasetFileSource):
             :param file_path:       The path to the XML file
             :return:                The ARFF dataset that has been created
             """
-            if path.isfile(file_path):
+            if file_path.is_file():
                 log.debug('Parsing meta-data from file \"%s\"...', file_path)
-                xml_doc = minidom.parse(file_path)
+                xml_doc = minidom.parse(str(file_path))
                 tags = xml_doc.getElementsByTagName('label')
                 output_names = {normalize_attribute_name(tag.getAttribute('name')) for tag in tags}
             else:
@@ -214,24 +214,24 @@ class ArffFileSource(DatasetFileSource):
             return matrix[:, :num_outputs] if self.outputs_at_start else matrix[:, -num_outputs:]
 
     @staticmethod
-    def __read_arff_file(file_path: str, dtype: np.dtype) -> ArffFile:
+    def __read_arff_file(file_path: Path, dtype: np.dtype) -> ArffFile:
         try:
             return ArffFileSource.ArffFile.from_file(file_path, sparse=True, dtype=dtype)
         except arff.BadLayout:
             return ArffFileSource.ArffFile.from_file(file_path, sparse=False, dtype=dtype)
 
-    def __init__(self, directory: str):
+    def __init__(self, directory: Path):
         """
         :param directory: The path to the directory of the file
         """
         super().__init__(directory=directory, suffix=ArffFileSink.SUFFIX_ARFF)
 
-    def _read_dataset_from_file(self, state: ExperimentState, file_path: str,
+    def _read_dataset_from_file(self, state: ExperimentState, file_path: Path,
                                 input_data: DatasetInputData) -> Optional[Dataset]:
         properties = input_data.properties
         problem_domain = state.problem_domain
         arff_file = self.__read_arff_file(file_path=file_path, dtype=problem_domain.feature_dtype)
-        xml_file_path = path.join(path.dirname(file_path), properties.file_name + '.' + ArffFileSink.SUFFIX_XML)
+        xml_file_path = file_path.with_name(properties.file_name + '.' + ArffFileSink.SUFFIX_XML)
         arff_dataset = ArffFileSource.ArffDataset.from_file(arff_file=arff_file, file_path=xml_file_path)
         return TabularDataset(x=arff_dataset.feature_matrix.tolil(),
                               y=arff_dataset.output_matrix.astype(problem_domain.output_dtype).tolil(),

@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for testing Python code.
 """
-from typing import cast
+from typing import cast, override
 
 from core.build_unit import BuildUnit
 from core.modules import Module
@@ -22,6 +22,7 @@ class TestPython(PhonyTarget.Runnable):
     def __init__(self):
         super().__init__(PythonTestModule.Filter())
 
+    @override
     def run(self, build_unit: BuildUnit, module: Module):
         test_module = cast(PythonTestModule, module)
         Log.info('Running tests in directory "%s"...', test_module.root_directory)

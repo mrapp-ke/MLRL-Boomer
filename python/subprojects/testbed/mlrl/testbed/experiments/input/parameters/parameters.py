@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing algorithmic parameters that are part of input data.
 """
+from typing import override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.input.data import TabularInputData
@@ -19,6 +20,7 @@ class InputParameters(TabularInputData):
         super().__init__(TabularInputData.Properties(file_name='parameters', has_header=True),
                          Context(include_dataset_type=False, include_prediction_scope=False))
 
+    @override
     def _update_state(self, state: ExperimentState, table: Table):
         parameter_dict: ParameterDict = {}
 

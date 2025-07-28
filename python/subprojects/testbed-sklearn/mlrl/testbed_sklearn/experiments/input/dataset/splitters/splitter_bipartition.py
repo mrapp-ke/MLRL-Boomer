@@ -6,7 +6,7 @@ Provides classes for splitting dataset into distinct training and test datasets.
 import logging as log
 
 from dataclasses import dataclass, replace
-from typing import Any, Generator, Optional
+from typing import Any, Generator, Optional, override
 
 from sklearn.model_selection import train_test_split
 
@@ -40,6 +40,7 @@ class BipartitionSplitter(DatasetSplitter):
             context = dataset_reader.input_data.context
             context.include_dataset_type = True
 
+        @override
         def get_state(self, dataset_type: DatasetType) -> ExperimentState:
             """
             See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.Split.get_state`
@@ -73,6 +74,7 @@ class BipartitionSplitter(DatasetSplitter):
             context = self.splitter.dataset_reader.input_data.context
             context.include_dataset_type = False
 
+        @override
         def get_state(self, dataset_type: DatasetType) -> ExperimentState:
             """
             See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.Split.get_state`
@@ -113,6 +115,7 @@ class BipartitionSplitter(DatasetSplitter):
         context.include_fold = False
         context.include_dataset_type = True
 
+    @override
     def split(self, problem_domain: ProblemDomain) -> Generator[DatasetSplitter.Split, None, None]:
         """
         See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.split`

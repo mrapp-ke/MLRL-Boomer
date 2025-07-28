@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 import shutil
 
 from pathlib import Path
-from typing import List
+from typing import List, override
 
 from setuptools import Extension, find_packages, setup
 from setuptools.command.build_ext import build_ext
@@ -30,6 +30,7 @@ class PrecompiledExtensionBuilder(build_ext):
     Copies pre-compiled extension modules into the build directory.
     """
 
+    @override
     def build_extension(self, ext):
         """
         See :func:`setuptools.command.build_ext.build_extension`
