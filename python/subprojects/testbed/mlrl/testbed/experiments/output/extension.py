@@ -92,7 +92,10 @@ class OutputExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return {self.BASE_DIR, self.RESULT_DIR, self.CREATE_DIRS, self.WIPE_RESULT_DIR, self.EXIT_ON_ERROR}
+        return {
+            self.BASE_DIR, self.RESULT_DIR, self.CREATE_DIRS, self.WIPE_RESULT_DIR, self.EXIT_ON_ERROR, self.PRINT_ALL,
+            self.SAVE_ALL
+        }
 
     @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
