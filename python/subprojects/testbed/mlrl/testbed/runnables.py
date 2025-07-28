@@ -6,8 +6,8 @@ Provides base classes for programs that can be configured via command line argum
 
 from abc import ABC, abstractmethod
 from argparse import Namespace
-from functools import reduce
-from typing import Optional, Set, override
+from functools import cached_property, reduce
+from typing import List, Optional, Set, override
 
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.extensions import Extension
@@ -57,6 +57,13 @@ class Runnable(ABC):
             experiment_builder.set_predict_for_training_dataset(self.PREDICT_FOR_TRAINING_DATA.get_value(args))
             experiment_builder.set_predict_for_test_dataset(self.PREDICT_FOR_TEST_DATA.get_value(args))
 
+    @cached_property
+    def extensions(self) -> List[Extension]:
+        """
+        A list that contains the extensions that should be applied to the runnable sorted in a consistent order.
+        """
+        return sorted(self.get_extensions(), key=lambda extension: type(extension).__name__)
+
     def get_extensions(self) -> Set[Extension]:
         """
         May be overridden by subclasses in order to return the extensions that should be applied to the runnable.
@@ -85,7 +92,7 @@ class Runnable(ABC):
         def configure_experiment(builder_args: Namespace) -> Experiment.Builder:
             experiment_builder = self.create_experiment_builder(builder_args)
 
-            for extension in self.get_extensions():
+            for extension in self.extensions:
                 extension.configure_experiment(builder_args, experiment_builder)
 
                 for dependency in extension.get_dependencies(mode):
@@ -102,7 +109,7 @@ class Runnable(ABC):
         :param cli:     The command line interface to be configured
         :param mode:    The mode of operation
         """
-        arguments = reduce(lambda aggr, extension: aggr | extension.get_arguments(mode), self.get_extensions(), set())
+        arguments = reduce(lambda aggr, extension: aggr | extension.get_arguments(mode), self.extensions, set())
         arguments.update(self.get_algorithmic_arguments(cli.parse_known_args()))
         cli.add_arguments(*sorted(arguments, key=lambda arg: arg.name))
 
