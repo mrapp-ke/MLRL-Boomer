@@ -42,7 +42,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--base-dir BASE_DIR]
                     [--pruning-heuristic PRUNING_HEURISTIC]
                     [--random-state RANDOM_STATE] [--result-dir RESULT_DIR]
                     [--rule-induction RULE_INDUCTION]
-                    [--rule-pruning RULE_PRUNING]
+                    [--rule-pruning RULE_PRUNING] [--save-all SAVE_ALL]
                     [--save-data-characteristics SAVE_DATA_CHARACTERISTICS]
                     [--save-evaluation SAVE_EVALUATION]
                     [--save-ground-truth SAVE_GROUND_TRUTH]
@@ -271,6 +271,8 @@ options:
   --rule-pruning RULE_PRUNING
                         The name of the strategy to be used for pruning
                         individual rules. Must be one of {"irep", "none"}.
+  --save-all SAVE_ALL   Whether all output data should be written to files or
+                        not. Must be one of {"false", "true"}.
   --save-data-characteristics SAVE_DATA_CHARACTERISTICS
                         Whether the characteristics of the training data
                         should be written to output files or not. Must be one
