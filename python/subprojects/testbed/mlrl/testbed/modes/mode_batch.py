@@ -11,8 +11,9 @@ from abc import ABC, abstractmethod
 from argparse import Namespace
 from dataclasses import dataclass, field
 from functools import cached_property, reduce
+from itertools import chain
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, override
+from typing import Any, Callable, Dict, Iterable, List, Optional, override
 
 import yamale
 
@@ -159,19 +160,23 @@ class BatchExperimentMode(Mode):
                         experiment_builder_factory: Experiment.Builder.Factory):
         for arguments in BatchExperimentMode.__get_args(config_file):
             experiment_builder_factory(BatchExperimentMode.__add_args_to_namespace(namespace, arguments))
-            command = ['mlrl-testbed'] + arguments
-            formatted_command = ''
+            command = chain(['mlrl-testbed'], arguments)
+            log.info('%s\n', BatchExperimentMode.__format_command(command))
 
-            for i, argument in enumerate(command):
-                if i > 0:
-                    formatted_command += ' '
+    @staticmethod
+    def __format_command(command: Iterable[str]) -> str:
+        formatted_command = ''
 
-                    if argument.startswith('-'):
-                        formatted_command += '\\\n    '
+        for i, argument in enumerate(command):
+            if i > 0:
+                formatted_command += ' '
 
-                formatted_command += regex.sub(r'({.*})', '\'\\1\'', argument)  # Escape curly braces with single quotes
+                if argument.startswith('-'):
+                    formatted_command += '\\\n    '
 
-            log.info('%s\n', formatted_command)
+            formatted_command += regex.sub(r'({.*})', '\'\\1\'', argument)  # Escape curly braces with single quotes
+
+        return formatted_command
 
     @staticmethod
     def __run_commands(namespace: Namespace, config_file: ConfigFile,
@@ -180,13 +185,13 @@ class BatchExperimentMode(Mode):
         start_time = Timer.start()
 
         for i, arguments in enumerate(args):
-            command = ['mlrl-testbed'] + arguments
             experiment_builder = experiment_builder_factory(
                 BatchExperimentMode.__add_args_to_namespace(namespace, arguments))
 
             if i == 0:
                 log.info('Running %s %s...', len(args), 'experiments' if len(args) > 1 else 'experiment')
 
+            command = chain(['mlrl-testbed'], arguments)
             log.info('Running experiment (%s/%s): "%s"', i + 1, len(args), format_iterable(command, separator=' '))
             experiment_builder.run()
 
