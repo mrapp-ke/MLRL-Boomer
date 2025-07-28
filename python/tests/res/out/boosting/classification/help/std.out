@@ -35,6 +35,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--base-dir BASE_DIR]
                     [--predict-for-training-data PREDICT_FOR_TRAINING_DATA]
                     [--prediction-format PREDICTION_FORMAT]
                     [--prediction-type PREDICTION_TYPE]
+                    [--print-all PRINT_ALL]
                     [--print-data-characteristics PRINT_DATA_CHARACTERISTICS]
                     [--print-evaluation PRINT_EVALUATION]
                     [--print-ground-truth PRINT_GROUND_TRUTH]
@@ -50,7 +51,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--base-dir BASE_DIR]
                     [--problem-type PROBLEM_TYPE]
                     [--random-state RANDOM_STATE] [--result-dir RESULT_DIR]
                     [--rule-induction RULE_INDUCTION]
-                    [--rule-pruning RULE_PRUNING]
+                    [--rule-pruning RULE_PRUNING] [--save-all SAVE_ALL]
                     [--save-data-characteristics SAVE_DATA_CHARACTERISTICS]
                     [--save-evaluation SAVE_EVALUATION]
                     [--save-ground-truth SAVE_GROUND_TRUTH]
@@ -255,6 +256,9 @@ options:
                         The type of predictions that should be obtained from
                         the learner. Must be one of {"binary",
                         "probabilities", "scores"}.
+  --print-all PRINT_ALL
+                        Whether all output data should be printed on the
+                        console or not. Must be one of {"false", "true"}.
   --print-data-characteristics PRINT_DATA_CHARACTERISTICS
                         Whether the characteristics of the training data
                         should be printed on the console or not. Must be one
@@ -328,6 +332,8 @@ options:
   --rule-pruning RULE_PRUNING
                         The name of the strategy to be used for pruning
                         individual rules. Must be one of {"irep", "none"}.
+  --save-all SAVE_ALL   Whether all output data should be written to files or
+                        not. Must be one of {"false", "true"}.
   --save-data-characteristics SAVE_DATA_CHARACTERISTICS
                         Whether the characteristics of the training data
                         should be written to output files or not. Must be one
