@@ -442,6 +442,10 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         :return: The implementation of the rule learner that has been created
         """
 
+    @override
+    def _validate_params(self):
+        self._create_learner()
+
 
 def convert_into_sklearn_compatible_probabilities(probabilities: np.ndarray) -> np.ndarray:
     """
