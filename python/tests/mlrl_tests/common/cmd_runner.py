@@ -1,7 +1,6 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-import shutil
 import subprocess
 
 from functools import reduce
@@ -19,22 +18,6 @@ class CmdRunner:
     """
     Allows to run commands that have been configured via a `CmdBuilder`.
     """
-
-    def __create_temporary_directories(self):
-        builder = self.builder
-        builder.output_dir.mkdir(parents=True, exist_ok=True)
-        model_dir = builder.model_dir
-
-        if model_dir:
-            model_dir.mkdir(parents=True, exist_ok=True)
-
-    def __delete_temporary_directories(self):
-        builder = self.builder
-        shutil.rmtree(builder.output_dir, ignore_errors=True)
-        model_dir = builder.model_dir
-
-        if model_dir:
-            shutil.rmtree(model_dir, ignore_errors=True)
 
     def __format_cmd(self):
         return reduce(lambda aggr, arg: aggr + (' ' + arg if len(aggr) > 0 else arg), self.args, '')
@@ -120,9 +103,6 @@ class CmdRunner:
         """
         builder = self.builder
 
-        # Create temporary directories...
-        self.__create_temporary_directories()
-
         # Run command...
         out = self.__run_cmd()
 
@@ -159,6 +139,3 @@ class CmdRunner:
             self.__compare_or_overwrite_files(FileComparison.for_file(output_file),
                                               test_name=test_name,
                                               file_name=output_file.name)
-
-        # Delete temporary directories...
-        self.__delete_temporary_directories()
