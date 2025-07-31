@@ -6,27 +6,25 @@ on:
       release_branch:
         required: true
         type: string
-      release_version:
-        required: true
-        type: string
-      changelog:
-        required: true
-        type: string
 jobs:
   release:
     name: Publish release on GitHub
     runs-on: ubuntu-24.04
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.release_branch }}
       - name: Generate token
         uses: actions/create-github-app-token@v2
         id: app-token
         with:
           app-id: ${{ secrets.token_app_id }}
           private-key: ${{ secrets.token_app_secret }}
-      - name: Decode changelog and release version
-        run: |
-          echo "CHANGELOG=$(echo "${{ inputs.changelog }}" | base64 --decode)" >> $GITHUB_ENV
-          echo "RELEASE_VERSION="$(echo "${{ inputs.release_version }}" | base64 --decode)" >> $GITHUB_ENV
+      - name: Get release version
+        run: echo "RELEASE_VERSION=$(./build print_version)" >> $GITHUB_ENV
+      - name: Get changelog
+        run: echo "CHANGELOG=$(./build print_latest_changelog)" >> $GITHUB_ENV
       - name: Publish release on GitHub
         uses: softprops/action-gh-release@v2
         with:
