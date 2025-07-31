@@ -26,14 +26,16 @@ jobs:
         with:
           app-id: ${{ secrets.TOKEN_APP_ID }}
           private-key: ${{ secrets.TOKEN_APP_SECRET }}
-      - name: Add changes
-        run: git add . && git reset .readthedocs/**
+      - name: Commit changes
+        run: |
+          git add .
+          git reset .readthedocs/**
+          git commit -m "[Bot] Merge feature into main branch."
       - name: Submit pull request
         id: pull-request
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ steps.app-token.outputs.token }}
-          commit-message: '[Bot] Merge feature into main branch.'
           branch: merge-feature
           title: Merge feature into main branch
           labels: bot

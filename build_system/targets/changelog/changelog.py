@@ -426,13 +426,6 @@ def update_changelog_bugfix(_: BuildUnit):
     __update_changelog(ReleaseType.PATCH, ChangesetFile.bugfix())
 
 
-def print_current_version(_: BuildUnit):
-    """
-    Prints the project's current version.
-    """
-    print(str(Project.version(release=True)))
-
-
 def print_latest_changelog(_: BuildUnit):
     """
     Prints the changelog of the latest release.
