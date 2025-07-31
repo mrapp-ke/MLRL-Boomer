@@ -30,7 +30,7 @@ jobs:
         with:
           pkgs: opencl
           triplet: x64-windows
-          token: ${{ github.token }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Prepare ccache
         uses: hendrikmuhs/ccache-action@v1
         with:
