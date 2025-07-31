@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - bugfix
+    paths-ignore:
+      - .readthedocs/**
 jobs:
   merge_bugfix:
     name: Merge bugfix into feature branch
