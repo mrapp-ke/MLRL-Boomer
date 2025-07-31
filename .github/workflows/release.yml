@@ -21,20 +21,10 @@ jobs:
     uses: ./.github/workflows/template_release.yml
     with:
       release_branch: ${{ github.ref_name }}
-      release_version: ${{ needs.update_changelog.outputs.release_version }}
-      changelog: ${{ needs.update_changelog.outputs.latest_changelog }}
     secrets: inherit
   close_milestone:
     needs: update_changelog
     name: Close milestone
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Decode release version
-        run: echo "RELEASE_VERSION="$(echo "${{ inputs.release_version }}" | base64 --decode)" >> $GITHUB_ENV
-      - name: Close milestone
-        uses: Beakyn/gha-close-milestone@v1.1.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          repository: ${{ github.repository }}
-          milestone-title: ${{ env.RELEASE_VERSION }}
+    uses: ./.github/workflows/template_close_milestone.yml
+    with:
+      release_branch: ${{ github.ref_name }}
