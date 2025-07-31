@@ -273,15 +273,20 @@ class Release:
         return ''
 
     def __str__(self) -> str:
-        release = self.PREFIX_SUB_HEADER + 'Version ' + str(
-            self.version) + ' (' + self.__format_release_date() + ')\n\n'
-        release += 'A ' + self.release_type + ' release that comes with the following changes.\n\n'
-        release += self.__format_disclaimer()
+        changesets = self.changesets
 
-        for i, changeset in enumerate(self.changesets):
-            release += str(changeset) + ('\n' if i < len(self.changesets) else '\n\n')
+        if changesets:
+            release = self.PREFIX_SUB_HEADER + 'Version ' + str(
+                self.version) + ' (' + self.__format_release_date() + ')\n\n'
+            release += 'A ' + self.release_type + ' release that comes with the following changes.\n\n'
+            release += self.__format_disclaimer()
 
-        return release
+            for i, changeset in enumerate(changesets):
+                release += str(changeset) + ('\n' if i < len(changesets) else '\n\n')
+
+            return release
+
+        return ''
 
 
 class ChangelogFile(TextFile):
@@ -299,20 +304,24 @@ class ChangelogFile(TextFile):
         :param release: The release to be added
         """
         formatted_release = str(release)
-        Log.info('Adding new release to changelog file "%s":\n\n%s', self.file, formatted_release)
-        original_lines = self.lines
-        modified_lines = []
-        offset = 0
 
-        for offset, line in enumerate(original_lines):
-            if line.startswith(Release.PREFIX_SUB_HEADER):
-                break
+        if formatted_release:
+            Log.info('Adding new release to changelog file "%s":\n\n%s', self.file, formatted_release)
+            original_lines = self.lines
+            modified_lines = []
+            offset = 0
 
-            modified_lines.append(line)
+            for offset, line in enumerate(original_lines):
+                if line.startswith(Release.PREFIX_SUB_HEADER):
+                    break
 
-        modified_lines.append(formatted_release)
-        modified_lines.extend(original_lines[offset:])
-        self.write_lines(*modified_lines)
+                modified_lines.append(line)
+
+            modified_lines.append(formatted_release)
+            modified_lines.extend(original_lines[offset:])
+            self.write_lines(*modified_lines)
+        else:
+            Log.warning('No changesets found for ' + str(release.release_type) + ' release ' + str(release.version))
 
     @property
     def latest(self) -> str:
