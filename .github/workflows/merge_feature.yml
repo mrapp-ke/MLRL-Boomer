@@ -36,6 +36,7 @@ jobs:
           title: Merge feature into main branch
           labels: bot
           body: Merge branch "feature" into "main".
+          add-paths: !.readthedocs/**
       - name: Enable auto-merge
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
