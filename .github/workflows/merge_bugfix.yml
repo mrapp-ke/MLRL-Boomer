@@ -34,7 +34,7 @@ jobs:
         run: |
           git add .
           git reset .readthedocs/**
-          git commit -m "[Bot] Merge bugfix into feature branch."
+          git commit -m "[Bot] Merge bugfix into feature branch." || true
       - name: Submit pull request
         id: pull-request
         uses: peter-evans/create-pull-request@v7
