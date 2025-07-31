@@ -14,7 +14,13 @@ env:
 jobs:
   windows_build:
     name: Test Windows build
-    runs-on: windows-2025
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - windows-2025
+          - windows-11-arm
     steps:
       - name: Enable support for long paths
         run: git config --system core.longpaths true

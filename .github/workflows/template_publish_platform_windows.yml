@@ -17,7 +17,13 @@ env:
 jobs:
   publish_windows_wheels:
     name: Publish ${{ inputs.subproject }} (Windows)
-    runs-on: windows-2025
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - windows-2025
+          - windows-11-arm
     steps:
       - name: Enable support for long paths
         run: git config --system core.longpaths true
