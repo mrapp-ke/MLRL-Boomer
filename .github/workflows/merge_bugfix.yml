@@ -14,6 +14,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: feature
+      - name: Setup git
+        uses: fregante/setup-git-user@v2
       - name: Reset bugfix branch
         run: |
           export FEATURE_VERSION="$(cat build_system/res/versioning/version)"
@@ -28,12 +30,16 @@ jobs:
           private-key: ${{ secrets.TOKEN_APP_SECRET }}
       - name: Add changes
         run: git add . && git reset .readthedocs/**
+      - name: Commit changes
+        run: |
+          git add .
+          git reset .readthedocs/**
+          git commit -m "[Bot] Merge bugfix into feature branch."
       - name: Submit pull request
         id: pull-request
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ steps.app-token.outputs.token }}
-          commit-message: '[Bot] Merge bugfix into feature branch.'
           branch: merge-bugfix
           title: Merge bugfix into feature branch
           labels: bot
