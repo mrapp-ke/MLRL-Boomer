@@ -158,7 +158,7 @@ As an alternative to storing the models learned by an algorithm, the algorithmic
   - `true` Algorithmic parameters are printed on the console.
   - `false` Algorithmic parameters are not printed on the console.
 
-## Output of Experimental Results
+## Saving Experimental Results
 
 > A more detailed description of the following arguments can be found {ref}`here<experimental-results>`.
 
