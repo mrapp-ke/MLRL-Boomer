@@ -23,12 +23,16 @@ jobs:
         with:
           app-id: ${{ secrets.token_app_id }}
           private-key: ${{ secrets.token_app_secret }}
+      - name: Decode changelog and release version
+        run: |
+          echo "CHANGELOG=$(echo "${{ inputs.changelog }}" | base64 --decode)" >> $GITHUB_ENV
+          echo "RELEASE_VERSION="$(echo "${{ inputs.release_version }}" | base64 --decode)" >> $GITHUB_ENV
       - name: Publish release on GitHub
         uses: softprops/action-gh-release@v2
         with:
           target_commitish: ${{ inputs.release_branch }}
-          name: Version ${{ inputs.release_version }}
-          tag_name: ${{ inputs.release_version }}
-          body: ${{ inputs.changelog }}
+          name: Version ${{ env.RELEASE_VERSION }}
+          tag_name: ${{ env.RELEASE_VERSION }}
+          body: ${{ env.CHANGELOG }}
           make_latest: true
           token: ${{ steps.app-token.outputs.token }}
