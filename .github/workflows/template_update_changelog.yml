@@ -43,7 +43,7 @@ jobs:
       - name: Save release version to output
         id: print-version
         run: |
-          VERSION=$(./build print_version)
+          VERSION=$(./build print_version | base64 )
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
           {
             echo "version<<$EOF"
@@ -53,7 +53,7 @@ jobs:
       - name: Save changelog to output
         id: print-latest-changelog
         run: |-
-          CHANGELOG=$(./build print_latest_changelog)
+          CHANGELOG=$(./build print_latest_changelog | base64 )
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
           {
             echo "changelog<<$EOF"
