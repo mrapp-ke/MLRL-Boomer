@@ -320,15 +320,15 @@ The following parameters provide fine-grain control over the techniques that sho
   `min_improvement` *(Default value = `0.005`)*
   : The minimum improvement in percent that must be reached when comparing the aggregated scores in both buffers for the rule induction to be continued. The given value must be in the range [0, 1].
 
-### `sequential_post_optimization`
+### `post_optimization`
 
-> *Default value = `'false'`.*
+> *Default value = `'None'`.*
 
-`'false'`
+`'None'`
 
-: Sequential post-optimization is not used.
+: No post-optimization is used.
 
-`'true'`
+`'sequential'`
 
 : Each rule in a previously learned model is optimized by being relearned in the context of the other rules. The following options may be provided using the {ref}`bracket notation<bracket-notation>`:
 
