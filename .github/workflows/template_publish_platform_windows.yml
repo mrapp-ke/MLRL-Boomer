@@ -17,7 +17,13 @@ env:
 jobs:
   publish_windows_wheels:
     name: Publish ${{ inputs.subproject }} (Windows)
-    runs-on: windows-2025
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - windows-2025
+          - windows-11-arm
     steps:
       - name: Checkout
         uses: actions/checkout@v4
