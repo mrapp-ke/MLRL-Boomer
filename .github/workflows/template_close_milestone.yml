@@ -1,0 +1,25 @@
+---
+name: Close milestone
+on:
+  workflow_call:
+    inputs:
+      release_branch:
+        required: true
+        type: string
+jobs:
+  release:
+    name: Close milestone
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.release_branch }}
+      - name: Decode release version
+        run: echo "RELEASE_VERSION=$(./build print_version)" >> $GITHUB_ENV
+      - name: Close milestone
+        uses: Beakyn/gha-close-milestone@v1.1.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          repository: ${{ github.repository }}
+          milestone-title: ${{ env.RELEASE_VERSION }}
