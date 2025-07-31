@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - feature
+    paths-ignore:
+      - .readthedocs/**
 jobs:
   merge_feature:
     name: Merge feature into main branch
