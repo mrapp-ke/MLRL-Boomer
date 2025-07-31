@@ -15,12 +15,15 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ inputs.release_branch }}
-      - name: Decode release version
-        run: echo "RELEASE_VERSION=$(./build print_version)" >> $GITHUB_ENV
+      - name: Determine release version
+        uses: juliangruber/read-file-action@v1
+        id: release_version
+        with:
+          path: build_system/res/versioning/version
       - name: Close milestone
         uses: Beakyn/gha-close-milestone@v1.1.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           repository: ${{ github.repository }}
-          milestone-title: ${{ env.RELEASE_VERSION }}
+          milestone-title: ${{ steps.release_version.outputs.content }}
