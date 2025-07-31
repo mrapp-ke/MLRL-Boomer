@@ -3,16 +3,16 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta property="og:title" content="Multi-label Separate-and-Conquer Rule Learning Algorithm" />
+<meta property="og:title" content="Saving and Loading Models" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="user_guide/seco/README.html" />
+<meta property="og:url" content="user_guide/testbed/model_persistence.html" />
 <meta property="og:site_name" content="BOOMER" />
-<meta property="og:description" content="License: MIT PyPI version Documentation Status 🔗 Important links: Documentation| Issue Tracker| Changelog| License This software package provides an implementation of a Multi-label Separate-and-Con..." />
-<meta name="description" content="License: MIT PyPI version Documentation Status 🔗 Important links: Documentation| Issue Tracker| Changelog| License This software package provides an implementation of a Multi-label Separate-and-Con..." />
-    <link href="../../_static/favicon.svg" rel="icon" type="image/svg+xml"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
+<meta property="og:description" content="Because the training of machine learning models can be time-consuming, they are usually trained once and then reused later for making predictions. For this purpose, the package mlrl-testbed provide..." />
+<meta name="description" content="Because the training of machine learning models can be time-consuming, they are usually trained once and then reused later for making predictions. For this purpose, the package mlrl-testbed provide..." />
+    <link href="../../_static/favicon.svg" rel="icon" type="image/svg+xml"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Saving and Loading Parameters" href="parameter_persistence.html" /><link rel="prev" title="Data Pre-Processing" href="pre_processing.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.07.19 -->
-        <title>Multi-label Separate-and-Conquer Rule Learning Algorithm - BOOMER 0.12.2</title>
+        <title>Saving and Loading Models - BOOMER 0.12.2</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=25af2a20" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=4c969af8" />
@@ -187,7 +187,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -213,24 +213,24 @@
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart/testbed.html">Using the Command Line API</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../boosting/index.html">The BOOMER Algorithm</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of The BOOMER Algorithm</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../boosting/parameters.html">Overview of Parameters</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="index.html">The SeCo Algorithm</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of The SeCo Algorithm</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="parameters.html">Overview of Parameters</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../seco/index.html">The SeCo Algorithm</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of The SeCo Algorithm</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../seco/parameters.html">Overview of Parameters</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../testbed/index.html">MLRL-Testbed</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of MLRL-Testbed</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../testbed/datasets.html">Supported Dataset Formats</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../testbed/evaluation.html">Performance Evaluation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../testbed/pre_processing.html">Data Pre-Processing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../testbed/model_persistence.html">Saving and Loading Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../testbed/parameter_persistence.html">Saving and Loading Parameters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../testbed/experimental_results.html">Saving Experimental Results</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../testbed/runnables.html">Using Your Own Algorithms</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../testbed/arguments.html">Overview of Arguments</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">MLRL-Testbed</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of MLRL-Testbed</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="datasets.html">Supported Dataset Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="evaluation.html">Performance Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pre_processing.html">Data Pre-Processing</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Saving and Loading Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parameter_persistence.html">Saving and Loading Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="experimental_results.html">Saving Experimental Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="runnables.html">Using Your Own Algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arguments.html">Overview of Arguments</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
@@ -1000,7 +1000,7 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="../../_sources/user_guide/seco/README.md.txt" title="View this page">
+  <a class="muted-link" href="../../_sources/user_guide/testbed/model_persistence.md.txt" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
@@ -1014,61 +1014,52 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="multi-label-separate-and-conquer-rule-learning-algorithm">
-<h1>Multi-label Separate-and-Conquer Rule Learning Algorithm<a class="headerlink" href="#multi-label-separate-and-conquer-rule-learning-algorithm" title="Link to this heading">¶</a></h1>
-<p><a class="reference external" href="https://opensource.org/licenses/MIT"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" /></a> <a class="reference external" href="https://badge.fury.io/py/mlrl-seco"><img alt="PyPI version" src="https://badge.fury.io/py/mlrl-seco.svg" /></a> <a class="reference external" href="https://mlrl-boomer.readthedocs.io/en/latest/?badge=latest"><img alt="Documentation Status" src="https://readthedocs.org/projects/mlrl-boomer/badge/?version=latest" /></a></p>
-<p><strong>🔗 Important links:</strong> <a class="reference external" href="https://mlrl-boomer.readthedocs.io/en/latest/user_guide/seco/index.html">Documentation</a> | <a class="reference external" href="https://github.com/mrapp-ke/MLRL-Boomer/issues">Issue Tracker</a> | <a class="reference external" href="https://mlrl-boomer.readthedocs.io/en/latest/misc/CHANGELOG.html">Changelog</a> | <a class="reference external" href="https://mlrl-boomer.readthedocs.io/en/latest/misc/LICENSE.html">License</a></p>
-<!-- documentation-start -->
-<p>This software package provides an implementation of a <strong>Multi-label Separate-and-Conquer (SeCo) Rule Learning Algorithm</strong> that integrates with the popular <a class="reference external" href="https://scikit-learn.org">scikit-learn</a> machine learning framework.</p>
-<p>The goal of <a class="reference external" href="https://en.wikipedia.org/wiki/Multi-label_classification">multi-label classification</a> is the automatic assignment of sets of labels to individual data points, for example, the annotation of text documents with topics. The algorithm that is provided by this package uses the SeCo paradigm for learning interpretable rule lists.</p>
-<section id="functionalities">
-<h2>🔧 Functionalities<a class="headerlink" href="#functionalities" title="Link to this heading">¶</a></h2>
-<p>The algorithm that is provided by this project currently supports the following core functionalities to learn a binary classification rules:</p>
+          <section id="saving-and-loading-models">
+<span id="model-persistence"></span><h1>Saving and Loading Models<a class="headerlink" href="#saving-and-loading-models" title="Link to this heading">¶</a></h1>
+<p>Because the training of machine learning models can be time-consuming, they are usually trained once and then reused later for making predictions. For this purpose, the package mlrl-testbed provides means to store models on disk and load them from the created files later on. This requires to specify the path to a directory where models should be saved, as well as a directory from which models should be loaded, via the command line arguments <code class="docutils literal notranslate"><span class="pre">--model-save-dir</span></code> and <code class="docutils literal notranslate"><span class="pre">--model-load-dir</span></code>, respectively:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">BOOMER</label><div class="tab-content docutils">
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>mlrl-testbed mlrl.boosting \
+    --data-dir /path/to/datasets/ \
+    --dataset dataset-name \
+    --model-save-dir /path/to/models \
+    --model-load-dir /path/to/models
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">SeCo</label><div class="tab-content docutils">
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>mlrl-testbed mlrl.seco \
+    --data-dir /path/to/datasets/ \
+    --dataset dataset-name \
+    --model-save-dir /path/to/models \
+    --model-load-dir /path/to/models
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The paths of the directories specified via the arguments <code class="docutils literal notranslate"><span class="pre">--model-save-dir</span></code> and <code class="docutils literal notranslate"><span class="pre">--model-load-dir</span></code> can be either absolute or relative to the working directory. They must not refer to the same directory, which allows saving models to a different directory than the one they are loaded from.</p>
+</div>
+<p>If <a class="reference internal" href="evaluation.html#train-test-split"><span class="std std-ref">train-test splits</span></a> are used for evaluating the predictive performance of models, a single model is fit to the training data and stored in a file:</p>
 <ul class="simple">
-<li><p><strong>A large variety of heuristics is available</strong> to assess the quality of candidate rules.</p></li>
-<li><p><strong>Rules may predict for a single label or multiple ones</strong> (which enables to model local label dependencies).</p></li>
-<li><p><strong>Rules can be constructed via a greedy search or a beam search.</strong> The latter may help to improve the quality of individual rules.</p></li>
-<li><p><strong>Sampling techniques and stratification methods</strong> can be used to learn new rules on a subset of the available training examples, features, or labels.</p></li>
-<li><p><strong>Fine-grained control over the specificity/generality of rules</strong> is provided via hyper-parameters.</p></li>
-<li><p><strong>Incremental reduced error pruning</strong> can be used to remove overly specific conditions from rules and prevent overfitting.</p></li>
-<li><p><strong>Sequential post-optimization</strong> may help to improve the predictive performance of a model by reconstructing each rule in the context of the other rules.</p></li>
-<li><p><strong>Native support for numerical, ordinal, and nominal features</strong> eliminates the need for pre-processing techniques such as one-hot encoding.</p></li>
-<li><p><strong>Handling of missing feature values</strong>, i.e., occurrences of NaN in the feature matrix, is implemented by the algorithm.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">model.pickle</span></code></p></li>
 </ul>
-</section>
-<section id="runtime-and-memory-optimizations">
-<h2>⌚ Runtime and Memory Optimizations<a class="headerlink" href="#runtime-and-memory-optimizations" title="Link to this heading">¶</a></h2>
-<p>In addition, the following features that may speed up training or reduce the memory footprint are currently implemented:</p>
+<p>If a <a class="reference internal" href="evaluation.html#cross-validation"><span class="std std-ref">cross validation</span></a> is performed instead, one model is trained per cross validation fold and all of these models are stored in the specified directory. For example, a 5-fold cross validation results in the following files:</p>
 <ul class="simple">
-<li><p><strong>Sparse feature matrices</strong> can be used for training and prediction. This may speed up training significantly on some datasets.</p></li>
-<li><p><strong>Sparse label matrices</strong> can be used for training. This may reduce the memory footprint in case of large datasets.</p></li>
-<li><p><strong>Sparse prediction matrices</strong> can be used to store predicted labels. This may reduce the memory footprint in case of large datasets.</p></li>
-<li><p><strong>Multi-threading</strong> can be used to parallelize the evaluation of a rule’s potential refinements across several features or to obtain predictions for several examples in parallel.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">model_fold-1.pickle</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">model_fold-2.pickle</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">model_fold-3.pickle</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">model_fold-4.pickle</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">model_fold-5.pickle</span></code></p></li>
 </ul>
-<!-- documentation-end -->
-</section>
-<section id="documentation">
-<h2>📚 Documentation<a class="headerlink" href="#documentation" title="Link to this heading">¶</a></h2>
-<p>Our documentation provides an extensive <a class="reference external" href="https://mlrl-boomer.readthedocs.io/en/latest/user_guide/seco/index.html">user guide</a>, as well as <a class="reference external" href="https://mlrl-boomer.readthedocs.io/en/latest/developer_guide/api/python/seco/mlrl.seco.html">Python</a> and <a class="reference external" href="https://mlrl-boomer.readthedocs.io/en/latest/developer_guide/api/cpp/seco/filelist.html">C++</a> API references for developers. If you are new to the project, you probably want to read about the following topics:</p>
-<ul class="simple">
-<li><p>Instructions for <a class="reference external" href="https://mlrl-boomer.readthedocs.io/en/latest/quickstart/installation.html">installing the software package</a> or <a class="reference external" href="https://mlrl-boomer.readthedocs.io/en/latest/developer_guide/compilation.html">building the project from source</a>.</p></li>
-<li><p>Examples of how to <a class="reference external" href="https://mlrl-boomer.readthedocs.io/en/latest/quickstart/usage.html">use the algorithm</a> in your own Python code or how to use the <a class="reference external" href="https://mlrl-boomer.readthedocs.io/en/latest/quickstart/testbed.html">command line API</a>.</p></li>
-<li><p>An overview of available <a class="reference external" href="https://mlrl-boomer.readthedocs.io/en/latest/user_guide/seco/parameters.html">parameters</a>.</p></li>
-</ul>
-<p>A collection of benchmark datasets that are compatible with the algorithm are provided in a separate <a class="reference external" href="https://github.com/mrapp-ke/Boomer-Datasets">repository</a>.</p>
-<p>For an overview of changes and new features that have been included in past releases, please refer to the <a class="reference external" href="https://mlrl-boomer.readthedocs.io/en/latest/misc/CHANGELOG.html">changelog</a>.</p>
-</section>
-<section id="license">
-<h2>📜 License<a class="headerlink" href="#license" title="Link to this heading">¶</a></h2>
-<p>This project is open source software licensed under the terms of the <a class="reference external" href="https://mlrl-boomer.readthedocs.io/en/latest/misc/LICENSE.html">MIT license</a>. We welcome contributions to the project to enhance its functionality and make it more accessible to a broader audience. A frequently updated list of contributors is available <a class="reference external" href="https://mlrl-boomer.readthedocs.io/en/latest/misc/CONTRIBUTORS.html">here</a>.</p>
-<p>All contributions to the project and discussions on the <a class="reference external" href="https://github.com/mrapp-ke/MLRL-Boomer/issues">issue tracker</a> are expected to follow the <a class="reference external" href="https://mlrl-boomer.readthedocs.io/en/latest/misc/CODE_OF_CONDUCT.html">code of conduct</a>.</p>
-</section>
+<p>When executing the aforementioned command again, the program recognizes the previously stored models in the specified directory. Instead of training them from scratch, the models are then loaded from the respective files, which should be much faster than training them again.</p>
 </section>
 
         </article>
@@ -1076,8 +1067,26 @@
       <footer>
         
         <div class="related-pages">
-          
-          
+          <a class="next-page" href="parameter_persistence.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Saving and Loading Parameters</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="pre_processing.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Data Pre-Processing</div>
+                
+              </div>
+            </a>
         </div>
         <div class="bottom-of-page">
           <div class="left-details">
@@ -1096,30 +1105,8 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer">
+    <aside class="toc-drawer no-toc">
       
-      
-      <div class="toc-sticky toc-scroll">
-        <div class="toc-title-container">
-          <span class="toc-title">
-            On this page
-          </span>
-        </div>
-        <div class="toc-tree-container">
-          <div class="toc-tree">
-            <ul>
-<li><a class="reference internal" href="#">Multi-label Separate-and-Conquer Rule Learning Algorithm</a><ul>
-<li><a class="reference internal" href="#functionalities">🔧 Functionalities</a></li>
-<li><a class="reference internal" href="#runtime-and-memory-optimizations">⌚ Runtime and Memory Optimizations</a></li>
-<li><a class="reference internal" href="#documentation">📚 Documentation</a></li>
-<li><a class="reference internal" href="#license">📜 License</a></li>
-</ul>
-</li>
-</ul>
-
-          </div>
-        </div>
-      </div>
       
       
     </aside>
