@@ -26,6 +26,8 @@ jobs:
         with:
           app-id: ${{ secrets.TOKEN_APP_ID }}
           private-key: ${{ secrets.TOKEN_APP_SECRET }}
+      - name: Add changes
+        run: git add . && git reset .readthedocs/**
       - name: Submit pull request
         id: pull-request
         uses: peter-evans/create-pull-request@v7
