@@ -47,7 +47,7 @@ jobs:
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
           {
             echo "version<<$EOF"
-            printf "%s" "$VERSION"
+            printf "%s\n" "$VERSION"
             echo "$EOF"
           } >> "$GITHUB_OUTPUT"
       - name: Save changelog to output
@@ -57,6 +57,6 @@ jobs:
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
           {
             echo "changelog<<$EOF"
-            printf "%s" "$CHANGELOG"
+            printf "%s\n" "$CHANGELOG"
             echo "$EOF"
           } >> "$GITHUB_OUTPUT"
