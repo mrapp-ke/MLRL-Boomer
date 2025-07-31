@@ -36,6 +36,7 @@ jobs:
           title: Merge bugfix into feature branch
           labels: bot
           body: Merge branch "bugfix" into "feature".
+          add-paths: !.readthedocs/**
       - name: Enable auto-merge
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
