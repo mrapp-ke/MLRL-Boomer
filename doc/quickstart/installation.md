@@ -21,7 +21,7 @@ header-rows: 1
   - ✅
 * - Windows
   - ✅
-  - ❌
+  - ✅
 ```
 
 Examples of how to use the algorithms in your own Python programs can be found in the section {ref}`usage`.
