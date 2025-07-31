@@ -24,13 +24,13 @@ jobs:
       - name: Get release version
         run: echo "RELEASE_VERSION=$(./build print_version)" >> $GITHUB_ENV
       - name: Get changelog
-        run: echo "CHANGELOG=$(./build print_latest_changelog)" >> $GITHUB_ENV
+        run: ./build print_latest_changelog >> changelog.txt
       - name: Publish release on GitHub
         uses: softprops/action-gh-release@v2
         with:
           target_commitish: ${{ inputs.release_branch }}
           name: Version ${{ env.RELEASE_VERSION }}
           tag_name: ${{ env.RELEASE_VERSION }}
-          body: ${{ env.CHANGELOG }}
+          body_path: changelog.txt
           make_latest: true
           token: ${{ steps.app-token.outputs.token }}
