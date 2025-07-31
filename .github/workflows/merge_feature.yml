@@ -26,6 +26,8 @@ jobs:
         with:
           app-id: ${{ secrets.TOKEN_APP_ID }}
           private-key: ${{ secrets.TOKEN_APP_SECRET }}
+      - name: Add changes
+        run: git add . && git reset .readthedocs/**
       - name: Submit pull request
         id: pull-request
         uses: peter-evans/create-pull-request@v7
@@ -36,7 +38,6 @@ jobs:
           title: Merge feature into main branch
           labels: bot
           body: Merge branch "feature" into "main".
-          add-paths: !.readthedocs/**
       - name: Enable auto-merge
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
