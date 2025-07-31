@@ -29,10 +29,12 @@ jobs:
     name: Close milestone
     runs-on: ubuntu-24.04
     steps:
+      - name: Decode release version
+        run: echo "RELEASE_VERSION="$(echo "${{ inputs.release_version }}" | base64 --decode)" >> $GITHUB_ENV
       - name: Close milestone
         uses: Beakyn/gha-close-milestone@v1.1.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           repository: ${{ github.repository }}
-          milestone-title: ${{ needs.update_changelog.outputs.release_version }}
+          milestone-title: ${{ env.RELEASE_VERSION }}
