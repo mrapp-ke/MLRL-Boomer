@@ -21,16 +21,19 @@ jobs:
         with:
           app-id: ${{ secrets.token_app_id }}
           private-key: ${{ secrets.token_app_secret }}
-      - name: Get release version
-        run: echo "RELEASE_VERSION=$(./build print_version)" >> $GITHUB_ENV
+      - name: Determine release version
+        uses: juliangruber/read-file-action@v1
+        id: release_version
+        with:
+          path: build_system/res/versioning/version
       - name: Get changelog
         run: ./build print_latest_changelog >> changelog.txt
       - name: Publish release on GitHub
         uses: softprops/action-gh-release@v2
         with:
           target_commitish: ${{ inputs.release_branch }}
-          name: Version ${{ env.RELEASE_VERSION }}
-          tag_name: ${{ env.RELEASE_VERSION }}
+          name: Version ${{ steps.release_version.outputs.content }}
+          tag_name: ${{ steps.release_version.outputs.content }}
           body_path: changelog.txt
           make_latest: true
           token: ${{ steps.app-token.outputs.token }}
