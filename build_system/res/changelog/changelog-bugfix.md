@@ -4,4 +4,4 @@
 
 # Fixes
 
-- Fixed an issue that prevented the command line arguments `--print-all` and `--store-all` from working properly
+- Fixed an issue that prevented the command line arguments `--print-all` and `--store-all` from working properly.
