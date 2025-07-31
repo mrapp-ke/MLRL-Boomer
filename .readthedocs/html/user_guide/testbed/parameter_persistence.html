@@ -3,16 +3,16 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta property="og:title" content="Overview of Arguments" />
+<meta property="og:title" content="Saving and Loading Parameters" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="user_guide/testbed/arguments.html" />
+<meta property="og:url" content="user_guide/testbed/parameter_persistence.html" />
 <meta property="og:site_name" content="BOOMER" />
-<meta property="og:description" content="In addition to the mandatory arguments that must be provided to the command line API to specify the dataset to be used for training, a wide variety of optional arguments are available as well. In t..." />
-<meta name="description" content="In addition to the mandatory arguments that must be provided to the command line API to specify the dataset to be used for training, a wide variety of optional arguments are available as well. In t..." />
-    <link href="../../_static/favicon.svg" rel="icon" type="image/svg+xml"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="References" href="../references.html" /><link rel="prev" title="Using Your Own Algorithms" href="runnables.html" />
+<meta property="og:description" content="To remember the parameters that have been used for training a model, it might be useful to save them to disk. Similar to saving models, keeping the resulting files allows to load a previously used ..." />
+<meta name="description" content="To remember the parameters that have been used for training a model, it might be useful to save them to disk. Similar to saving models, keeping the resulting files allows to load a previously used ..." />
+    <link href="../../_static/favicon.svg" rel="icon" type="image/svg+xml"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Saving Experimental Results" href="experimental_results.html" /><link rel="prev" title="Saving and Loading Models" href="model_persistence.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.07.19 -->
-        <title>Overview of Arguments - BOOMER 0.12.2</title>
+        <title>Saving and Loading Parameters - BOOMER 0.12.2</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=25af2a20" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=4c969af8" />
@@ -187,7 +187,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -227,10 +227,10 @@
 <li class="toctree-l2"><a class="reference internal" href="evaluation.html">Performance Evaluation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pre_processing.html">Data Pre-Processing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="model_persistence.html">Saving and Loading Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="parameter_persistence.html">Saving and Loading Parameters</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Saving and Loading Parameters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="experimental_results.html">Saving Experimental Results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="runnables.html">Using Your Own Algorithms</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Overview of Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arguments.html">Overview of Arguments</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
@@ -1000,7 +1000,7 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="../../_sources/user_guide/testbed/arguments.md.txt" title="View this page">
+  <a class="muted-link" href="../../_sources/user_guide/testbed/parameter_persistence.md.txt" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
@@ -1014,612 +1014,23 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="overview-of-arguments">
-<span id="arguments"></span><h1>Overview of Arguments<a class="headerlink" href="#overview-of-arguments" title="Link to this heading">¶</a></h1>
-<p>In addition to the mandatory arguments that must be provided to the command line API to specify the dataset to be used for training, a wide variety of optional arguments are available as well. In the following, we provide an overview of these arguments and discuss their respective purposes.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The arguments <code class="docutils literal notranslate"><span class="pre">-h</span></code> or <code class="docutils literal notranslate"><span class="pre">--help</span></code> result in a description of all available command line arguments being printed.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>When running the program with the argument <code class="docutils literal notranslate"><span class="pre">-v</span></code> or <code class="docutils literal notranslate"><span class="pre">--version</span></code>, the version of the software package is printed. The output also includes information about third-party dependencies it uses, the <a class="reference internal" href="../../developer_guide/compilation.html#build-options"><span class="std std-ref">build options</span></a> that have been used for building the package, as well as information about hardware resources it may utilize.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The argument <code class="docutils literal notranslate"><span class="pre">--log-level</span></code> controls the level of detail used for log messages (Default value = <code class="docutils literal notranslate"><span class="pre">info</span></code>). It can be set to the values <code class="docutils literal notranslate"><span class="pre">debug</span></code>, <code class="docutils literal notranslate"><span class="pre">info</span></code>, <code class="docutils literal notranslate"><span class="pre">warn</span></code>, <code class="docutils literal notranslate"><span class="pre">warning</span></code>, <code class="docutils literal notranslate"><span class="pre">error</span></code>, <code class="docutils literal notranslate"><span class="pre">critical</span></code>, <code class="docutils literal notranslate"><span class="pre">fatal</span></code> or <code class="docutils literal notranslate"><span class="pre">notset</span></code>, where the first one provides the greatest level of detail and the last one disables logging entirely.</p>
-</div>
-<section id="basic-usage">
-<span id="arguments-basic-usage"></span><h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>A more detailed description of the following arguments can be found <a class="reference internal" href="../../quickstart/testbed.html#testbed"><span class="std std-ref">here</span></a>.</p>
-</div></blockquote>
-<p>The most basic command for running the program, only including mandatory arguments, is as follows:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>mlrl-testbed &lt;module_or_source_file&gt; --data-dir /path/to/dataset/ --dataset dataset-name
-</pre></div>
-</div>
-<section id="module">
-<h3>Module<a class="headerlink" href="#module" title="Link to this heading">¶</a></h3>
-<p>The program dynamically loads a Python module or source file that provides an integration with a specific machine learning algorithm. To specify the module or source file to be used, the following mandatory arguments must be provided:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">&lt;module_or_source_file&gt;</span></code> The fully qualified name of a Python module, or an absolute or relative path to a Python source file, providing a Python class that extends from <a class="reference internal" href="../../developer_guide/api/python/testbed/mlrl.testbed.runnables.html#mlrl.testbed.runnables.Runnable" title="mlrl.testbed.runnables.Runnable"><code class="xref py py-class docutils literal notranslate"><span class="pre">mlrl.testbed.runnables.Runnable</span></code></a>. The name of the class must be <code class="docutils literal notranslate"><span class="pre">Runnable</span></code>, unless an alternative name is specified via the optional command line argument <code class="docutils literal notranslate"><span class="pre">-r</span></code> or <code class="docutils literal notranslate"><span class="pre">--runnable</span></code>.</p></li>
-</ul>
-<p>The following optional arguments allow additional control over the loading mechanism:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">-r</span></code> or <code class="docutils literal notranslate"><span class="pre">--runnable</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">Runnable</span></code>) The name of the class extending <a class="reference internal" href="../../developer_guide/api/python/testbed/mlrl.testbed.runnables.html#mlrl.testbed.runnables.Runnable" title="mlrl.testbed.runnables.Runnable"><code class="xref py py-class docutils literal notranslate"><span class="pre">mlrl.testbed.runnables.Runnable</span></code></a> that resides within the module or source file specified via the argument <code class="docutils literal notranslate"><span class="pre">&lt;module_or_source_file&gt;</span></code>.</p></li>
-</ul>
-<p>The arguments given above can be used to integrate any scikit-learn compatible machine learning algorithm with mlrl-testbed. You can learn about this <a class="reference internal" href="runnables.html#runnables"><span class="std std-ref">here</span></a>.</p>
-</section>
-<section id="dataset">
-<h3>Dataset<a class="headerlink" href="#dataset" title="Link to this heading">¶</a></h3>
-<p>The following mandatory arguments must always be given to specify the dataset that should be used, as well as the location where it should be loaded from.</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--data-dir</span></code> An absolute or relative path to the directory where the dataset files are located.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--dataset</span></code> The name of the dataset files (without suffix).</p></li>
-</ul>
-<p>Optionally, the following arguments can be used to provide additional information about the dataset.</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--sparse-feature-value</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">0.0</span></code>) The value that should be used for sparse elements in the feature matrix. Does only have an effect if a sparse format is used for the representation of the feature matrix, depending on the parameter <code class="docutils literal notranslate"><span class="pre">--feature-format</span></code>.</p></li>
-</ul>
-</section>
-<section id="problem-type">
-<h3>Problem Type<a class="headerlink" href="#problem-type" title="Link to this heading">¶</a></h3>
-<p>The package mlrl-testbed is able to conduct experiments for classification and regression problems. When dealing with the latter, the type of the machine learning problem must explicitly be specified via the following argument:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--problem-type</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">classification</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">classification</span></code> The dataset is considered as a classification dataset.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">regression</span></code> The dataset is considered as a regression dataset.</p></li>
-</ul>
-</li>
-</ul>
-</section>
-</section>
-<section id="performance-evaluation">
-<h2>Performance Evaluation<a class="headerlink" href="#performance-evaluation" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>A more detailed description of the following arguments can be found <a class="reference internal" href="evaluation.html#evaluation"><span class="std std-ref">here</span></a>.</p>
-</div></blockquote>
-<p>One of the most important capabilities of mlrl-testbed is to train machine learning models and obtain an unbiased estimate of their predictive performance. For this purpose, the available data must be split into training and test data. The former is used to train models and the latter is used for evaluation afterward, whereas the evaluation metrics depend on the type of predictions provided by a model.</p>
-<section id="strategies-for-data-splitting">
-<h3>Strategies for Data Splitting<a class="headerlink" href="#strategies-for-data-splitting" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--data-split</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">train-test</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">train-test</span></code> The available data is split into a single training and test set. Given that <code class="docutils literal notranslate"><span class="pre">dataset-name</span></code> is provided as the value of the argument <code class="docutils literal notranslate"><span class="pre">--dataset</span></code>, the training data must be stored in a file named <code class="docutils literal notranslate"><span class="pre">dataset-name_training.arff</span></code>, whereas the test data must be stored in a file named <code class="docutils literal notranslate"><span class="pre">dataset-name_test.arff</span></code>. If no such files are available, the program searches for a file with the name <code class="docutils literal notranslate"><span class="pre">dataset-name.arff</span></code> and splits it into training and test data automatically. The following options may be specified using the <a class="reference internal" href="../../quickstart/testbed.html#bracket-notation"><span class="std std-ref">bracket notation</span></a>:</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">test_size</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">0.33</span></code>) The fraction of the available data to be included in the test set, if the training and test set are not provided as separate files. Must be in (0, 1).</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">cross-validation</span></code> A cross validation is performed. Given that <code class="docutils literal notranslate"><span class="pre">dataset-name</span></code> is provided as the value of the argument <code class="docutils literal notranslate"><span class="pre">--dataset</span></code>, the data for individual folds must be stored in files named <code class="docutils literal notranslate"><span class="pre">dataset-name_fold-1</span></code>, <code class="docutils literal notranslate"><span class="pre">dataset-name_fold-2</span></code>, etc. If no such files are available, the program searches for a file with the name <code class="docutils literal notranslate"><span class="pre">dataset-name.arff</span></code> and splits it into training and test data for the individual folds automatically. The following options may be specified using the <a class="reference internal" href="../../quickstart/testbed.html#bracket-notation"><span class="std std-ref">bracket notation</span></a>:</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">num_folds</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">10</span></code>) The total number of cross validation folds to be performed. Must be at least 2.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">first_fold</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">1</span></code>) The first cross validation fold to be performed. Must be in [1, <code class="docutils literal notranslate"><span class="pre">num_folds</span></code>].</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">last_fold</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">num_folds</span></code>) The cross validation fold to be performed. Must be at least <code class="docutils literal notranslate"><span class="pre">first_fold</span></code> and in [1, <code class="docutils literal notranslate"><span class="pre">num_folds</span></code>].</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">none</span></code> The available data is not split into separate training and test sets, but the entire data is used for training and evaluation. This strategy should only be used for testing purposes, as the evaluation results will be highly biased and overly optimistic. Given that <code class="docutils literal notranslate"><span class="pre">dataset-name</span></code> is provided as the value of the argument <code class="docutils literal notranslate"><span class="pre">--dataset</span></code>, the data must be stored pin a file named <code class="docutils literal notranslate"><span class="pre">dataset-name.arff</span></code>.</p></li>
-</ul>
-</li>
-</ul>
-</section>
-<section id="types-of-predictions">
-<h3>Types of Predictions<a class="headerlink" href="#types-of-predictions" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">binary</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">scores</span></code> The learner is instructed to predict scores. In this case, ranking measures are used for evaluation.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">probabilities</span></code> The learner is instructed to predict probability estimates. In this case, ranking measures are used for evaluation.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">binary</span></code> The learner is instructed to predict binary labels. In this case, bi-partition evaluation measures are used for evaluation.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--predict-for-training-data</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> Predictions are obtained for the training data.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> Predictions are not obtained for the training data.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--predict-for-test-data</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> Predictions are obtained for the test data.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> Predictions are not obtained for the test data.</p></li>
-</ul>
-</li>
-</ul>
-</section>
-<section id="incremental-evaluation">
-<h3>Incremental Evaluation<a class="headerlink" href="#incremental-evaluation" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--incremental-evaluation</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> Ensemble models are evaluated repeatedly, using only a subset of their ensemble members with increasing size, e.g., the first 100, 200, … rules.</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">min_size</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">0</span></code>) The minimum number of ensemble members to be evaluated. Must be at least 0.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">max_size</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">0</span></code>) The maximum number of ensemble members to be evaluated. Must be greater than <code class="docutils literal notranslate"><span class="pre">min_size</span></code> or 0, if all ensemble members should be evaluated.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">step_size</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">1</span></code>) The number of additional ensemble members to be evaluated at each repetition. Must be at least 1.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> Models are evaluated only once as a whole.</p></li>
-</ul>
-</li>
-</ul>
-</section>
-</section>
-<section id="data-pre-processing">
-<h2>Data Pre-Processing<a class="headerlink" href="#data-pre-processing" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>A more detailed description of the following arguments can be found <a class="reference internal" href="pre_processing.html#pre-processing"><span class="std std-ref">here</span></a>.</p>
-</div></blockquote>
-<p>Depending on the characteristics of a dataset, it might be desirable to apply one of the following pre-processing techniques before training and evaluating machine learning models.</p>
-<section id="one-hot-encoding">
-<h3>One-Hot-Encoding<a class="headerlink" href="#one-hot-encoding" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--one-hot-encoding</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> One-hot-encoding is used to encode nominal features.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> The algorithm’s ability to natively handle nominal features is used.</p></li>
-</ul>
-</li>
-</ul>
-</section>
-</section>
-<section id="saving-and-loading-models">
-<h2>Saving and Loading Models<a class="headerlink" href="#saving-and-loading-models" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>A more detailed description of the following arguments can be found <a class="reference internal" href="model_persistence.html#model-persistence"><span class="std std-ref">here</span></a>.</p>
-</div></blockquote>
-<p>Because the training of models can be time-consuming, it might be desirable to store them on disk for later use. This requires to specify the paths of directories to which models should be saved or loaded from.</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--model-load-dir</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
-<ul>
-<li><p>An absolute or relative path to the directory from which models should be loaded. If such models are found in the specified directory, they are used instead of learning a new model from scratch.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--model-save-dir</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
-<ul>
-<li><p>An absolute or relative path to the directory to which models should be saved once training has completed.</p></li>
-</ul>
-</li>
-</ul>
-</section>
-<section id="saving-and-loading-parameters">
-<h2>Saving and Loading Parameters<a class="headerlink" href="#saving-and-loading-parameters" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>A more detailed description of the following arguments can be found <a class="reference internal" href="parameter_persistence.html#parameter-persistence"><span class="std std-ref">here</span></a>.</p>
-</div></blockquote>
-<p>As an alternative to storing the models learned by an algorithm, the algorithmic parameters used for training can be saved to disk. This may help to remember the configuration used for training a model and enables to reload the same parameter setting for additional experiments.</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--parameter-load-dir</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
-<ul>
-<li><p>An absolute or relative path to the directory from which parameters to be used by the algorithm should be loaded. If such files are found in the specified directory, the specified parameter settings are used instead of the parameters that are provided via command line arguments.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--parameter-save-dir</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
-<ul>
-<li><p>An absolute or relative path to the directory to which <a class="reference external" href="https://en.wikipedia.org/wiki/Comma-separated_values">.csv</a> files that store algorithmic parameters set by the user should be saved.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--print-parameters</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> Algorithmic parameters are printed on the console.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> Algorithmic parameters are not printed on the console.</p></li>
-</ul>
-</li>
-</ul>
-</section>
-<section id="saving-experimental-results">
-<h2>Saving Experimental Results<a class="headerlink" href="#saving-experimental-results" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>A more detailed description of the following arguments can be found <a class="reference internal" href="experimental_results.html#experimental-results"><span class="std std-ref">here</span></a>.</p>
-</div></blockquote>
-<p>To provide valuable insights into the models learned by an algorithm, the predictions they provide, or the data they have been derived from, a wide variety of experimental results can be written to output files or printed on the console. If the results should be written to files, it is necessary to specify an output directory:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--output-dir</span></code> An absolute or relative path to the directory where experimental results should be saved.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--create-output-dir</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> The directories specified via the arguments <code class="docutils literal notranslate"><span class="pre">--output-dir</span></code>, <code class="docutils literal notranslate"><span class="pre">--model-save-dir</span></code> and <code class="docutils literal notranslate"><span class="pre">--parameter-save-dir</span></code> are automatically created if they do not already exist.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> The directories are not created automatically.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--wipe-output-dir</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">auto</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> All files within the directory specified via the argument <code class="docutils literal notranslate"><span class="pre">--output-dir</span></code> are deleted before the experiment starts.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> No files within the directory are deleted, but existing files may be overwritten by the experiment.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--exit-on-error</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> The program exits if an error occurs while writing experimental results.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> Any error that occurs while writing experimental results is logged, but the program continues.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--print-all</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> All output data is printed on the console unless specified otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> No output data is printed on the console by default.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--store-all</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> All output data is written to files.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> No output data is written to files.</p></li>
-</ul>
-</li>
-</ul>
-<section id="evaluation-results">
-<span id="arguments-evaluation-results"></span><h3>Evaluation Results<a class="headerlink" href="#evaluation-results" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--print-evaluation</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> The evaluation results in terms of common metrics are printed on the console. The following options may be specified using the <a class="reference internal" href="../../quickstart/testbed.html#bracket-notation"><span class="std std-ref">bracket notation</span></a>:</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">decimals</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">2</span></code>) The number of decimals to be used for evaluation scores or 0, if the number of decimals should not be restricted.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">percentage</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores should be given as a percentage, if possible, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">enable_all</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if all supported metrics should be used unless specified otherwise, <code class="docutils literal notranslate"><span class="pre">false</span></code> if all metrics should be disabled by default.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">hamming_loss</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the Hamming loss should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">hamming_accuracy</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the Hamming accuracy metric should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">subset_zero_one_loss</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the subset 0/1 loss should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">subset_accuracy</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the subset accuracy metric should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">micro_precision</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the micro-averaged precision metric should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">micro_recall</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the micro-averaged recall metric should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">micro_f1</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the micro-averaged F1-measure should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">micro_jaccard</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the micro-averaged Jaccard metric should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">macro_precision</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the macro-averaged precision metric should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">macro_recall</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the macro-averaged recall metric should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">macro_f1</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the macro-averaged F1-measure should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">macro_jaccard</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the macro-averaged Jaccard metric should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_wise_precision</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the example-wise precision metric should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_wise_recall</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the example-wise recall metric should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_wise_f1</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the example-wise F1-measure should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_wise_jaccard</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the example-wise Jaccard metric should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">accuracy</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the accuracy metric should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with single-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">zero_one_loss</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the 0/1 loss should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with single-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">precision</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the precision metric should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with single-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">recall</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the recall metric should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with single-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">f1</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the F1-measure should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with single-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">jaccard</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the Jaccard metric should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with single-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">mean_absolute_error</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the mean absolute error metric should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">probabilities</span></code> or <code class="docutils literal notranslate"><span class="pre">scores</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">mean_squared_error</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the mean squared error metric should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">probabilities</span></code> or <code class="docutils literal notranslate"><span class="pre">scores</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">mean_absolute_error</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the mean absolute error metric should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">probabilities</span></code> or <code class="docutils literal notranslate"><span class="pre">scores</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">mean_absolute_percentage_error</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the mean absolute percentage error metric should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">probabilities</span></code> or <code class="docutils literal notranslate"><span class="pre">scores</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">rank_loss</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the rank loss should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">probabilities</span></code> or <code class="docutils literal notranslate"><span class="pre">scores</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">coverage_error</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the coverage error metric should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">probabilities</span></code> or <code class="docutils literal notranslate"><span class="pre">scores</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">lrap</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the label ranking average precision metric should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">probabilities</span></code> or <code class="docutils literal notranslate"><span class="pre">scores</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">dcg</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the discounted cumulative gain metric should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">probabilities</span></code> or <code class="docutils literal notranslate"><span class="pre">scores</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ndcg</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the normalized discounted cumulative gain metric should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">probabilities</span></code> or <code class="docutils literal notranslate"><span class="pre">scores</span></code>.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> The evaluation results are not printed on the console.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--store-evaluation</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> The evaluation results in terms of common metrics are written into <a class="reference external" href="https://en.wikipedia.org/wiki/Comma-separated_values">.csv</a> files. Does only have an effect if the parameter <code class="docutils literal notranslate"><span class="pre">--output-dir</span></code> is specified.</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">decimals</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">0</span></code>) The number of decimals to be used for evaluation scores or 0, if the number of decimals should not be restricted.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">percentage</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores should be given as a percentage, if possible, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">enable_all</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if all supported metrics should be used unless specified otherwise, <code class="docutils literal notranslate"><span class="pre">false</span></code> if all metrics should be disabled by default.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">hamming_loss</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the Hamming loss should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">hamming_accuracy</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the Hamming accuracy metric should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">subset_zero_one_loss</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the subset 0/1 loss should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">subset_accuracy</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the subset accuracy metric should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">micro_precision</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the micro-averaged precision metric should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">micro_recall</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the micro-averaged recall metric should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">micro_f1</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the micro-averaged F1-measure should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">micro_jaccard</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the micro-averaged Jaccard metric should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">macro_precision</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the macro-averaged precision metric should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">macro_recall</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the macro-averaged recall metric should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">macro_f1</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the macro-averaged F1-measure should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">macro_jaccard</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the macro-averaged Jaccard metric should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_wise_precision</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the example-wise precision metric should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_wise_recall</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the example-wise recall metric should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_wise_f1</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the example-wise F1-measure should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">example_wise_jaccard</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the example-wise Jaccard metric should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">accuracy</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the accuracy metric should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with single-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">zero_one_loss</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the 0/1 loss should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with single-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">precision</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the precision metric should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with single-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">recall</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the recall metric should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with single-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">f1</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the F1-measure should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with single-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">jaccard</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the Jaccard metric should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with single-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">labels</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">mean_absolute_error</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the mean absolute error metric should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">probabilities</span></code> or <code class="docutils literal notranslate"><span class="pre">scores</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">mean_squared_error</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the mean squared error metric should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">probabilities</span></code> or <code class="docutils literal notranslate"><span class="pre">scores</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">mean_absolute_error</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the mean absolute error metric should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">probabilities</span></code> or <code class="docutils literal notranslate"><span class="pre">scores</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">mean_absolute_percentage_error</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the mean absolute percentage error metric should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">probabilities</span></code> or <code class="docutils literal notranslate"><span class="pre">scores</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">rank_loss</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the rank loss should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">probabilities</span></code> or <code class="docutils literal notranslate"><span class="pre">scores</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">coverage_error</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the coverage error metric should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">probabilities</span></code> or <code class="docutils literal notranslate"><span class="pre">scores</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">lrap</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the label ranking average precision metric should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">probabilities</span></code> or <code class="docutils literal notranslate"><span class="pre">scores</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">dcg</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the discounted cumulative gain metric should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">probabilities</span></code> or <code class="docutils literal notranslate"><span class="pre">scores</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ndcg</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if evaluation scores according to the normalized discounted cumulative gain metric should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. Does only have an effect when dealing with multi-label data and if the parameter <code class="docutils literal notranslate"><span class="pre">--prediction-type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">probabilities</span></code> or <code class="docutils literal notranslate"><span class="pre">scores</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">training_time</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the time that was needed for training should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">prediction_time</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the time that was needed for prediction should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> The evaluation results are not written into <a class="reference external" href="https://en.wikipedia.org/wiki/Comma-separated_values">.csv</a> files.</p></li>
-</ul>
-</li>
-</ul>
-</section>
-<section id="predictions">
-<span id="arguments-predictions"></span><h3>Predictions<a class="headerlink" href="#predictions" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--print-predictions</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> The predictions for individual examples and outputs are printed on the console.</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">decimals</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">2</span></code>) The number of decimals to be used for real-valued predictions or 0, if the number of decimals should not be restricted.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> The predictions are not printed on the console.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--store-predictions</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> Datasets, where the ground truth has been replaced with the predictions of a model, are written into ARFF files. Does only have an effect if the parameter <code class="docutils literal notranslate"><span class="pre">--output-dir</span></code> is specified.</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">decimals</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">0</span></code>) The number of decimals to be used for real-valued predictions or 0, if the number of decimals should not be restricted.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> No datasets containing predictions are written into ARFF files.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--print-ground-truth</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> The ground truth for individual examples and outputs is printed on the console.</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">decimals</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">2</span></code>) The number of decimals to be used for real-valued ground truth or 0, if the number of decimals should not be restricted.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> The ground truth is not printed on the console.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--store-ground-truth</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> Training datasets containing the ground truth are written into ARFF files. Does only have an effect if the parameter <code class="docutils literal notranslate"><span class="pre">--output-dir</span></code> is specified.</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">decimals</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">0</span></code>) The number of decimals to be used for real-valued ground truth or 0, if the number of decimals should not be restricted.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> No dataset containing the ground truth are written into ARFF files.</p></li>
-</ul>
-</li>
-</ul>
-</section>
-<section id="prediction-characteristics">
-<span id="arguments-prediction-characteristics"></span><h3>Prediction Characteristics<a class="headerlink" href="#prediction-characteristics" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--print-prediction-characteristics</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> The characteristics of binary predictions are printed on the console. Does only have an effect if the parameter <code class="docutils literal notranslate"><span class="pre">--predict-probabilities</span></code> is set to <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">decimals</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">2</span></code>) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">percentage</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the characteristics should be given as a percentage, if possible, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">outputs</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the number of outputs should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">output_density</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the density of the ground truth matrix should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">output_sparsity</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the sparsity of the ground truth matrix should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">label_imbalance_ratio</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>, <em>classification only</em>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the label imbalance ratio should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">label_cardinality</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>, <em>classification only</em>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the average label cardinality should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">distinct_label_vectors</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>, <em>classification only</em>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the number of distinct label vectors should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> The characteristics of predictions are not printed on the console.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--store-prediction-characteristics</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> The characteristics of binary predictions are written into <a class="reference external" href="https://en.wikipedia.org/wiki/Comma-separated_values">.csv</a> files. Does only have an effect if the parameter <code class="docutils literal notranslate"><span class="pre">--predict-probabilities</span></code> is set to <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">decimals</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">0</span></code>) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">percentage</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the characteristics should be given as a percentage, if possible, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">outputs</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the number of outputs should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">output_density</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the density of the ground truth matrix should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">output_sparsity</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the sparsity of the ground truth matrix should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">label_imbalance_ratio</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>, <em>classification only</em>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the label imbalance ratio should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">label_cardinality</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>, <em>classification only</em>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the average label cardinality should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">distinct_label_vectors</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>, <em>classification only</em>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the number of distinct label vectors should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> The characteristics of predictions are not written into <a class="reference external" href="https://en.wikipedia.org/wiki/Comma-separated_values">.csv</a> files.</p></li>
-</ul>
-</li>
-</ul>
-</section>
-<section id="data-characteristics">
-<span id="arguments-data-characteristics"></span><h3>Data Characteristics<a class="headerlink" href="#data-characteristics" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--print-data-characteristics</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> The characteristics of the training dataset are printed on the console</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">decimals</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">2</span></code>) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">percentage</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the characteristics should be given as a percentage, if possible, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">outputs</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the number of outputs should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">output_density</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the density of the ground truth matrix should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">output_sparsity</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the sparsity of the ground truth matrix should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">label_imbalance_ratio</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>, <em>classification only</em>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the label imbalance ratio should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">label_cardinality</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>, <em>classification only</em>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the average label cardinality should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">distinct_label_vectors</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>, <em>classification only</em>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the number of distinct label vectors should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">examples</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the number of examples should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">features</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the number of features should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">numerical_features</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the number of numerical features should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">nominal_features</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the number of nominal features should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">feature_density</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the feature density should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">feature_sparsity</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the feature sparsity should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> The characteristics of the training dataset are not printed on the console</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--store-data-characteristics</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> The characteristics of the training dataset are written into a <a class="reference external" href="https://en.wikipedia.org/wiki/Comma-separated_values">.csv</a> file. Does only have an effect if the parameter <code class="docutils literal notranslate"><span class="pre">--output-dir</span></code> is specified.</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">decimals</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">0</span></code>) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">percentage</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the characteristics should be given as a percentage, if possible, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">outputs</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the number of outputs should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">output_density</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the density of the ground truth matrix should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">output_sparsity</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the sparsity of the ground truth matrix should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">label_imbalance_ratio</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>, <em>classification only</em>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the label imbalance ratio should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">label_cardinality</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>, <em>classification only</em>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the average label cardinality should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">distinct_label_vectors</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>, <em>classification only</em>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the number of distinct label vectors should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">examples</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the number of examples should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">features</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the number of features should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">numerical_features</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the number of numerical features should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">nominal_features</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the number of nominal features should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">feature_density</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the feature density should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">feature_sparsity</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the feature sparsity should be stored, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> The characteristics of the training dataset are not written into a <a class="reference external" href="https://en.wikipedia.org/wiki/Comma-separated_values">.csv</a> file.</p></li>
-</ul>
-</li>
-</ul>
-</section>
-<section id="label-vectors">
-<span id="arguments-label-vectors"></span><h3>Label Vectors<a class="headerlink" href="#label-vectors" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--print-label-vectors</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">false</span></code>, <em>classification only</em>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> The unique label vectors contained in the training data are printed on the console. The following options may be specified using the <a class="reference internal" href="../../quickstart/testbed.html#bracket-notation"><span class="std std-ref">bracket notation</span></a>:</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">sparse</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">false</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if a sparse representation of label vectors should be used, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> The unique label vectors contained in the training data are not printed on the console.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--store-label-vectors</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">false</span></code>, <em>classification only</em>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> The unique label vectors contained in the training data are written into a <a class="reference external" href="https://en.wikipedia.org/wiki/Comma-separated_values">.csv</a> file. Does only have an effect if the parameter <code class="docutils literal notranslate"><span class="pre">`--output-dir</span></code> is specified. The following options may be specified using the <a class="reference internal" href="../../quickstart/testbed.html#bracket-notation"><span class="std std-ref">bracket notation</span></a>:</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">sparse</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">false</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if a sparse representation of label vectors should be used, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> The unique label vectors contained in the training data are not written into a <a class="reference external" href="https://en.wikipedia.org/wiki/Comma-separated_values">.csv</a> file.</p></li>
-</ul>
-</li>
-</ul>
-</section>
-<section id="model-characteristics">
-<span id="arguments-model-characteristics"></span><h3>Model Characteristics<a class="headerlink" href="#model-characteristics" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--print-model-characteristics</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> The characteristics of rule models are printed on the console</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> The characteristics of rule models are not printed on the console</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--store-model-characteristics</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> The characteristics of rule models are written into a <a class="reference external" href="https://en.wikipedia.org/wiki/Comma-separated_values">.csv</a> file. Does only have an effect if the parameter <code class="docutils literal notranslate"><span class="pre">--output-dir</span></code> is specified.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> The characteristics of rule models are not written into a <a class="reference external" href="https://en.wikipedia.org/wiki/Comma-separated_values">.csv</a> file.</p></li>
-</ul>
-</li>
-</ul>
-</section>
-<section id="rules">
-<span id="arguments-output-rules"></span><h3>Rules<a class="headerlink" href="#rules" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--print-rules</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> The induced rules are printed on the console. The following options may be specified using the <a class="reference internal" href="../../quickstart/testbed.html#bracket-notation"><span class="std std-ref">bracket notation</span></a>:</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">print_feature_names</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the names of features should be printed instead of their indices, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">print_output_names</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the names of outputs should be printed instead of their indices, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">print_nominal_values</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the names of nominal values should be printed instead of their numerical representation, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">print_bodies</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the bodies of rules should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">print_heads</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the heads of rules should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">decimals_body</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">2</span></code>) The number of decimals to be used for numerical thresholds of conditions in a rule’s body or 0, if the number of decimals should not be restricted.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">decimals_head</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">2</span></code>) The number of decimals to be used for predictions in a rule’s head or 0, if the number of decimals should not be restricted.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> The induced rules are not printed on the console.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--store-rules</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> The induced rules are written into a text file. Does only have an effect if the parameter <code class="docutils literal notranslate"><span class="pre">--output-dir</span></code> is specified. The following options may be specified using the <a class="reference internal" href="../../quickstart/testbed.html#bracket-notation"><span class="std std-ref">bracket notation</span></a>:</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">print_feature_names</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the names of features should be printed instead of their indices, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">print_output_names</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the names of outputs should be printed instead of their indices, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">print_nominal_values</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the names of nominal values should be printed instead of their numerical representation, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">print_bodies</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the bodies of rules should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">print_heads</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">true</span></code>) <code class="docutils literal notranslate"><span class="pre">true</span></code>, if the heads of rules should be printed, <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">decimals_body</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">2</span></code>) The number of decimals to be used for numerical thresholds of conditions in a rule’s body or 0, if the number of decimals should not be restricted.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">decimals_head</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">2</span></code>) The number of decimals to be used for predictions in a rule’s head or 0, if the number of decimals should not be restricted.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> The induced rules are not written into a text file.</p></li>
-</ul>
-</li>
-</ul>
-</section>
-<section id="probability-calibration-models">
-<span id="arguments-probability-calibration-models"></span><h3>Probability Calibration Models<a class="headerlink" href="#probability-calibration-models" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--print-marginal-probability-calibration-model</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> The model for the calibration of marginal probabilities is printed on the console. The following options may be specified using the <a class="reference internal" href="../../quickstart/testbed.html#bracket-notation"><span class="std std-ref">bracket notation</span></a>:</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">decimals</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">2</span></code>) The number of decimals to be used for thresholds and probabilities or 0, if the number of decimals should not be restricted.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> The model for the calibration of marginal probabilities is not printed on the console.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--store-marginal-probability-calibration-model</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> The model for the calibration of marginal probabilities is written into a <a class="reference external" href="https://en.wikipedia.org/wiki/Comma-separated_values">.csv</a> file. Does only have an effect if the parameter <code class="docutils literal notranslate"><span class="pre">--output-dir</span></code> is specified. The following options may be specified using the <a class="reference internal" href="../../quickstart/testbed.html#bracket-notation"><span class="std std-ref">bracket notation</span></a>:</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">decimals</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">0</span></code>) The number of decimals to be used for thresholds and probabilities or 0, if the number of decimals should not be restricted.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> The model for the calibration of marginal probabilities is not written into a <a class="reference external" href="https://en.wikipedia.org/wiki/Comma-separated_values">.csv</a> file.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--print-joint-probability-calibration-model</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> The model for the calibration of joint probabilities is printed on the console. The following options may be specified using the <a class="reference internal" href="../../quickstart/testbed.html#bracket-notation"><span class="std std-ref">bracket notation</span></a>:</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">decimals</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">2</span></code>) The number of decimals to be used for thresholds and probabilities or 0, if the number of decimals should not be restricted.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> The model for the calibration of joint probabilities is not printed on the console.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--store-joint-probability-calibration-model</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> The model for the calibration of joint probabilities is written into a <a class="reference external" href="https://en.wikipedia.org/wiki/Comma-separated_values">.csv</a> file. Does only have an effect if the parameter <code class="docutils literal notranslate"><span class="pre">--output-dir</span></code> is specified. The following options may be specified using the <a class="reference internal" href="../../quickstart/testbed.html#bracket-notation"><span class="std std-ref">bracket notation</span></a>:</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">decimals</span></code> (Default value = <code class="docutils literal notranslate"><span class="pre">2</span></code>) The number of decimals to be used for thresholds and probabilities or 0, if the number of decimals should not be restricted.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> The model for the calibration of joint probabilities is not written into a <a class="reference external" href="https://en.wikipedia.org/wiki/Comma-separated_values">.csv</a> file.</p></li>
-</ul>
-</li>
-</ul>
-</section>
-</section>
-<section id="setting-algorithmic-parameters">
-<span id="id1"></span><h2>Setting Algorithmic Parameters<a class="headerlink" href="#setting-algorithmic-parameters" title="Link to this heading">¶</a></h2>
-<p>In addition to the command line arguments that are discussed above, it is often desirable to not rely on the default configuration of the BOOMER algorithm in an experiment, but to use a custom configuration. For this purpose, all the algorithmic parameters that are discussed in the section <a class="reference internal" href="../boosting/parameters.html#parameters"><span class="std std-ref">Overview of Parameters</span></a> may be set by providing corresponding arguments to the command line API.</p>
-<p>In accordance with the syntax that is typically used by command line programs, the parameter names must be given according to the following syntax that slightly differs from the names that are used by the programmatic Python API:</p>
-<ul class="simple">
-<li><p>All argument names must start with two leading dashes (<code class="docutils literal notranslate"><span class="pre">--</span></code>).</p></li>
-<li><p>Underscores (<code class="docutils literal notranslate"><span class="pre">_</span></code>) must be replaced with dashes (<code class="docutils literal notranslate"><span class="pre">-</span></code>).</p></li>
-</ul>
-<p>For example, the value of the parameter <code class="docutils literal notranslate"><span class="pre">feature_binning</span></code> may be set as follows:</p>
+          <section id="saving-and-loading-parameters">
+<span id="parameter-persistence"></span><h1>Saving and Loading Parameters<a class="headerlink" href="#saving-and-loading-parameters" title="Link to this heading">¶</a></h1>
+<p>To remember the parameters that have been used for training a model, it might be useful to save them to disk. Similar to <a class="reference internal" href="model_persistence.html#model-persistence"><span class="std std-ref">saving models</span></a>, keeping the resulting files allows to load a previously used configuration and reuse it at a later point in time.</p>
+<p>This requires to specify a directory via the command line argument <code class="docutils literal notranslate"><span class="pre">--parameter-save-dir</span></code>, where parameters set via the command line API (see <a class="reference internal" href="arguments.html#setting-algorithmic-parameters"><span class="std std-ref">Setting Algorithmic Parameters</span></a>) should be saved. For example, the following command sets a custom value for a parameter, which is stored in an output file:</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">BOOMER</label><div class="tab-content docutils">
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>mlrl-testbed mlrl.boosting \
     --data-dir /path/to/datasets/ \
     --dataset dataset-name \
-    --feature-binning equal-width
+    --parameter-save-dir /path/to/parameters \
+    --shrinkage 0.5
 </pre></div>
 </div>
 </div>
@@ -1627,18 +1038,36 @@
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>mlrl-testbed mlrl.seco \
     --data-dir /path/to/datasets/ \
     --dataset dataset-name \
-    --feature-binning equal-width
+    --parameter-save-dir /path/to/parameters \
+    --heuristic precision
 </pre></div>
 </div>
 </div>
 </div>
-<p>Some algorithmic parameters, including the parameter <code class="docutils literal notranslate"><span class="pre">feature_binning</span></code>, allow to specify additional options as key-value pairs by using a <a class="reference internal" href="../../quickstart/testbed.html#bracket-notation"><span class="std std-ref">bracket notation</span></a>. This is also supported via the command line API. However, options may not contain any spaces and special characters like <code class="docutils literal notranslate"><span class="pre">{</span></code> or <code class="docutils literal notranslate"><span class="pre">}</span></code> must be escaped by using single-quotes (<code class="docutils literal notranslate"><span class="pre">'</span></code>):</p>
+<p>If <a class="reference internal" href="evaluation.html#train-test-split"><span class="std std-ref">train-test splits</span></a> are used for splitting the available data into training and test sets, a single model is trained and its configuration is saved to a file:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">parameters.csv</span></code></p></li>
+</ul>
+<p>If a <a class="reference internal" href="evaluation.html#cross-validation"><span class="std std-ref">cross validation</span></a> is performed instead, one model is trained per cross validation fold and the configurations of all of these models are stored in the specified directory. For example, a 5-fold cross validation results in the following files:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">parameters_fold-1.csv</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parameters_fold-2.csv</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parameters_fold-3.csv</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parameters_fold-4.csv</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parameters_fold-5.csv</span></code></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only parameters with custom values are included in the output files. Parameters for which the default value is used are not included.</p>
+</div>
+<p>If you want to print all custom parameters that are used by a learning algorithm on the console, you can specify the argument <code class="docutils literal notranslate"><span class="pre">--print-parameters</span> <span class="pre">true</span></code>:</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--1">BOOMER</label><div class="tab-content docutils">
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>mlrl-testbed mlrl.boosting\
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>mlrl-testbed mlrl.boosting \
     --data-dir /path/to/datasets/ \
     --dataset dataset-name \
-    --feature-binning equal-width&#39;{bin_ratio=0.33,min_bins=2,max_bins=64}&#39;
+    --print-parameters true \
+    --shrinkage 0.5
 </pre></div>
 </div>
 </div>
@@ -1646,12 +1075,35 @@
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>mlrl-testbed mlrl.seco \
     --data-dir /path/to/datasets/ \
     --dataset dataset-name \
-    --feature-binning equal-width&#39;{bin_ratio=0.33,min_bins=2,max_bins=64}&#39;
+    --print-parameters true \
+    --heuristic precision
 </pre></div>
 </div>
 </div>
 </div>
-</section>
+<p>Once parameters have been saved to a directory, they can be loaded in subsequent experiments by specifying the command line argument <code class="docutils literal notranslate"><span class="pre">--parameter-load-dir</span></code>. This allows to omit the respective parameters from the command line. If a parameter is included in both, the loaded file and the command line arguments, the latter takes precedence.</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--2-input--1" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--1">BOOMER</label><div class="tab-content docutils">
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>mlrl-testbed mlrl.boosting \
+    --data-dir /path/to/datasets/ \
+    --dataset dataset-name \
+    --parameter-load-dir /path/to/parameters \
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--2-input--2" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--2">SeCo</label><div class="tab-content docutils">
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>mlrl-testbed mlrl.seco \
+    --data-dir /path/to/datasets/ \
+    --dataset dataset-name \
+    --parameter-load-dir /path/to/parameters \
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The paths of the directories that are specified via the arguments <code class="docutils literal notranslate"><span class="pre">--parameter-save-dir</span></code> and <code class="docutils literal notranslate"><span class="pre">--parameter-load-dir</span></code> can be either absolute or relative to the working directory.</p>
+</div>
 </section>
 
         </article>
@@ -1659,23 +1111,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../references.html">
+          <a class="next-page" href="experimental_results.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">References</div>
+                <div class="title">Saving Experimental Results</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="runnables.html">
+          <a class="prev-page" href="model_persistence.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Using Your Own Algorithms</div>
+                <div class="title">Saving and Loading Models</div>
                 
               </div>
             </a>
@@ -1697,56 +1149,8 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer">
+    <aside class="toc-drawer no-toc">
       
-      
-      <div class="toc-sticky toc-scroll">
-        <div class="toc-title-container">
-          <span class="toc-title">
-            On this page
-          </span>
-        </div>
-        <div class="toc-tree-container">
-          <div class="toc-tree">
-            <ul>
-<li><a class="reference internal" href="#">Overview of Arguments</a><ul>
-<li><a class="reference internal" href="#basic-usage">Basic Usage</a><ul>
-<li><a class="reference internal" href="#module">Module</a></li>
-<li><a class="reference internal" href="#dataset">Dataset</a></li>
-<li><a class="reference internal" href="#problem-type">Problem Type</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#performance-evaluation">Performance Evaluation</a><ul>
-<li><a class="reference internal" href="#strategies-for-data-splitting">Strategies for Data Splitting</a></li>
-<li><a class="reference internal" href="#types-of-predictions">Types of Predictions</a></li>
-<li><a class="reference internal" href="#incremental-evaluation">Incremental Evaluation</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#data-pre-processing">Data Pre-Processing</a><ul>
-<li><a class="reference internal" href="#one-hot-encoding">One-Hot-Encoding</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#saving-and-loading-models">Saving and Loading Models</a></li>
-<li><a class="reference internal" href="#saving-and-loading-parameters">Saving and Loading Parameters</a></li>
-<li><a class="reference internal" href="#saving-experimental-results">Saving Experimental Results</a><ul>
-<li><a class="reference internal" href="#evaluation-results">Evaluation Results</a></li>
-<li><a class="reference internal" href="#predictions">Predictions</a></li>
-<li><a class="reference internal" href="#prediction-characteristics">Prediction Characteristics</a></li>
-<li><a class="reference internal" href="#data-characteristics">Data Characteristics</a></li>
-<li><a class="reference internal" href="#label-vectors">Label Vectors</a></li>
-<li><a class="reference internal" href="#model-characteristics">Model Characteristics</a></li>
-<li><a class="reference internal" href="#rules">Rules</a></li>
-<li><a class="reference internal" href="#probability-calibration-models">Probability Calibration Models</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#setting-algorithmic-parameters">Setting Algorithmic Parameters</a></li>
-</ul>
-</li>
-</ul>
-
-          </div>
-        </div>
-      </div>
       
       
     </aside>

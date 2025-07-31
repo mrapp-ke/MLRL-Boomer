@@ -1,176 +1,28 @@
-(testbed-outputs)=
-
-# Saving and Loading Data
-
-The {ref}`command line API <arguments>` of MLRL-Testbed provides a diverse set of options for saving data that is collected during an experiment. In some cases, e.g., models or algorithmic parameters, such data can also be read from input files. Both aspects, saving and loading data, are discussed below.
-
-(model-persistence)=
-
-## Saving and Loading Models
-
-Because the training of machine learning models can be time-consuming, they are usually trained once and then reused later for making predictions. For this purpose, the package mlrl-testbed provides means to store models on disk and load them from the created files later on. This requires to specify the arguments `--save-models` and `--load-models`. Optionally, the path to a directory where models should be saved, as well as a directory from which models should be loaded can be set via the command line arguments `--model-save-dir` and `--model-load-dir`. If not specified manually, the default `models` is used for both.
-
-````{tab} BOOMER
-   ```text
-   mlrl-testbed mlrl.boosting \
-       --data-dir /path/to/datasets/ \
-       --dataset dataset-name \
-       --model-save-dir /path/to/models \
-       --model-load-dir /path/to/models \
-       --save-models true \
-       --load-models true
-   ```
-````
-
-````{tab} SeCo
-   ```text
-   mlrl-testbed mlrl.seco \
-       --data-dir /path/to/datasets/ \
-       --dataset dataset-name \
-       --model-save-dir /path/to/models \
-       --model-load-dir /path/to/models \
-       --save-models true \
-       --load-models true
-   ```
-````
-
-```{note}
-The paths of the directories specified via the arguments `--model-save-dir` and `--model-load-dir` can be either absolute or relative to the working directory. They must not refer to the same directory, which allows saving models to a different directory than the one they are loaded from. 
-```
-
-If {ref}`train-test splits<train-test-split>` are used for evaluating the predictive performance of models, a single model is fit to the training data and stored in a file:
-
-- `model.pickle`
-
-If a {ref}`cross validation<cross-validation>` is performed instead, one model is trained per cross validation fold and all of these models are stored in the specified directory. For example, a 5-fold cross validation results in the following files:
-
-- `model_fold-1.pickle`
-- `model_fold-2.pickle`
-- `model_fold-3.pickle`
-- `model_fold-4.pickle`
-- `model_fold-5.pickle`
-
-When executing the aforementioned command again, the program recognizes the previously stored models in the specified directory. Instead of training them from scratch, the models are then loaded from the respective files, which should be much faster than training them again.
-
-(parameter-persistence)=
-
-## Saving and Loading Parameters
-
-To remember the parameters that have been used for training a model, it might be useful to save them to disk. Similar to {ref}`saving models<model-persistence>`, keeping the resulting files allows to load a previously used configuration and reuse it at a later point in time.
-
-This requires to specify the argument `--save-parameters`. Optionally, the command line argument `--parameter-save-dir`, can be used to specify a directory where algorithmic parameters (see {ref}`setting-algorithmic-parameters`) should be saved. If this argument is not specified, the default value `parameters` is used. For example, the following command sets a custom value for a parameter, which is stored in an output file:
-
-````{tab} BOOMER
-   ```text
-   mlrl-testbed mlrl.boosting \
-       --data-dir /path/to/datasets/ \
-       --dataset dataset-name \
-       --parameter-save-dir /path/to/parameters \
-       --save-parameters true \
-       --shrinkage 0.5
-   ```
-````
-
-````{tab} SeCo
-   ```text
-   mlrl-testbed mlrl.seco \
-       --data-dir /path/to/datasets/ \
-       --dataset dataset-name \
-       --parameter-save-dir /path/to/parameters \
-       --save-parameters true \
-       --heuristic precision
-   ```
-````
-
-If {ref}`train-test splits<train-test-split>` are used for splitting the available data into training and test sets, a single model is trained and its configuration is saved to a file:
-
-- `parameters.csv`
-
-If a {ref}`cross validation<cross-validation>` is performed instead, one model is trained per cross validation fold and the configurations of all of these models are stored in the specified directory. For example, a 5-fold cross validation results in the following files:
-
-- `parameters_fold-1.csv`
-- `parameters_fold-2.csv`
-- `parameters_fold-3.csv`
-- `parameters_fold-4.csv`
-- `parameters_fold-5.csv`
-
-```{note}
-Only parameters with custom values are included in the output files. Parameters for which the default value is used are not included.
-```
-
-If you want to print all custom parameters that are used by a learning algorithm on the console, you can specify the argument `--print-parameters true`:
-
-````{tab} BOOMER
-   ```text
-   mlrl-testbed mlrl.boosting \
-       --data-dir /path/to/datasets/ \
-       --dataset dataset-name \
-       --print-parameters true \
-       --shrinkage 0.5
-   ```
-````
-
-````{tab} SeCo
-   ```text
-   mlrl-testbed mlrl.seco \
-       --data-dir /path/to/datasets/ \
-       --dataset dataset-name \
-       --print-parameters true \
-       --heuristic precision
-   ```
-````
-
-Once parameters have been saved to a directory, they can be loaded in subsequent experiments by using the command line argument `--load-parameters`. The path to the directory, where the input files are located, can be set via the argument `--parameter-load-dir`. If no path is given, `parameters` is used as the default. Loading parameters from input files allows to omit the respective parameters from the command line. If a parameter is included in both, the loaded file and the command line arguments, the latter takes precedence.
-
-````{tab} BOOMER
-   ```text
-   mlrl-testbed mlrl.boosting \
-       --data-dir /path/to/datasets/ \
-       --dataset dataset-name \
-       --parameter-load-dir /path/to/parameters \
-       --load-parameters true
-   ```
-````
-
-````{tab} SeCo
-   ```text
-   mlrl-testbed mlrl.seco \
-       --data-dir /path/to/datasets/ \
-       --dataset dataset-name \
-       --parameter-load-dir /path/to/parameters \
-       --load-parameters true
-   ```
-````
-
-```{note}
-The paths of the directories that are specified via the arguments `--parameter-save-dir` and `--parameter-load-dir` can be either absolute or relative to the working directory.
-```
-
 (experimental-results)=
 
-## Saving Experimental Results
+# Saving Experimental Results
 
 One of the most important features provided by the package mlrl-testbed is the ability to output a wide variety of experimental results that provide valuable insights into the models learned by a machine learning algorithm, the predictions it provides, and the data it has been trained on.
 
-Each of these information can either be printed to the console or saved to output files. The latter requires to provide a directory, where the output files should be saved. As shown in the examples below, the path to this directory can be specified via the argument `--result-dir`. However, this argument is optional. If not given explicitly, the default value `results` is used.
+Each of these information can either be printed to the console or saved to output files. The latter requires to provide a directory, where the output files should be saved. As shown in the examples below, the path to this directory must be specified via the argument `--output-dir`.
 
 ```{note}
 The path to the directory, where experimental results should be saved, can be either absolute or relative to the working directory.
 ```
 
 ```{tip}
-By default, the directory specified via the argument `--result-dir` is created automatically if it does not exist. This functionality can be turned off via the argument `--create-dirs false`. Moreover, all files in the specified directory are usually deleted before an experiment starts. By providing the argument `--wipe-result-dir false`, the deletion of files can be prevented.
+By default, the directory specified via the argument `--output-dir` is created automatically if it does not exist. This functionality can be turned off via the argument `--create-output-dir false`. Moreover, all files in the specified directory are usually deleted before an experiment starts. By providing the argument `--wipe-output-dir false`, the deletion of files can be prevented.
 ```
 
 ```{tip}
-By providing the argument `--save-all true`, the program can be instructed to write all available output data to files. Similarly, the argument `--print-all true` results in all output data being printed on the console.  
+By providing the argument `--store-all true`, the program can be instructed to write all available output data to files. Similarly, the argument `--print-all true` results in all output data being printed on the console.  
 ```
 
 (output-evaluation-results)=
 
-### Evaluation Results
+## Evaluation Results
 
-By default, the predictive performance of all models trained during an experiment is evaluated in terms of commonly used evaluation metrics and the evaluation results are printed to the console. In addition, the evaluation results can also be written to output files. The command line argument `--print-evaluation` can be used to explicitly enable or disable printing the evaluation results:
+By default, the predictive performance of all models trained during an experiment is evaluated in terms of commonly used evaluation metrics and the evaluation results are printed to the console. In addition, if the argument `--output-dir` is given, the evaluation results are also written into output files. The command line argument `--print-evaluation` can be used to explicitly enable or disable printing the evaluation results:
 
 ````{tab} BOOMER
    ```text
@@ -190,15 +42,15 @@ By default, the predictive performance of all models trained during an experimen
    ```
 ````
 
-Accordingly, the argument `--save-evaluation` allows to enable or disable saving the evaluation results to [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files:
+Accordingly, the argument `--store-evaluation` allows to enable or disable saving the evaluation results to [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files:
 
 ````{tab} BOOMER
    ```text
    mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --result-dir /path/to/results/ \
-       --save-evaluation true
+       --output-dir /path/to/results/ \
+       --store-evaluation true
    ```
 ````
 
@@ -207,13 +59,13 @@ Accordingly, the argument `--save-evaluation` allows to enable or disable saving
    mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --result-dir /path/to/results/ \
-       --save-evaluation true
+       --output-dir /path/to/results/ \
+       --store-evaluation true
    ```
 ````
 
 ```{tip}
-The command line arguments ``--print-evaluation`` and ``--save-evaluation`` come with several options for customization described {ref}`here<arguments-evaluation-results>`. It is possible to specify the performance metrics that should be used for evaluation by providing a black- or whitelist. Moreover, one can specify whether performance scores should be given as percentages and the number of decimals used for these scores can be chosen freely.
+The command line arguments ``--print-evaluation`` and ``--store-evaluation`` come with several options for customization described {ref}`here<arguments-evaluation-results>`. It is possible to specify the performance metrics that should be used for evaluation by providing a black- or whitelist. Moreover, one can specify whether performance scores should be given as percentages and the number of decimals used for these scores can be chosen freely.
 ```
 
 The number of models evaluated during an experiment varies depending on the strategy used for splitting the available data into training and test sets. When using {ref}`train-test splits<train-test-split>`, only a single model is evaluated. The performance scores according to different metrics that assess the quality of the model's predictions are saved to a single output file. In addition, when {ref}`evaluating on the training data<evaluating-training-data>`, the performance scores for the model's predictions on the training set are also evaluated and written to a file. As shown below, the names of the output files specify whether predictions for the training or test set have been evaluated:
@@ -236,9 +88,9 @@ When using a {ref}`cross validation<cross-validation>`, a model is trained and e
 
 (output-predictions)=
 
-### Predictions
+## Predictions
 
-In cases where the {ref}`evaluation results<output-evaluation-results>` obtained via the arguments `--print-evaluation` or `--save-evaluation` are not sufficient for a detailed analysis, it may be desired to directly inspect the predictions provided by the evaluated models. They can be printed on the console by proving the argument `--print-predictions`. If the ground truth should also be printed, the argument `--print-ground-truth` must be provided as well:
+In cases where the {ref}`evaluation results<output-evaluation-results>` obtained via the arguments `--print-evaluation` or `--store-evaluation` are not sufficient for a detailed analysis, it may be desired to directly inspect the predictions provided by the evaluated models. They can be printed on the console by proving the argument `--print-predictions`. If the ground truth should also be printed, the argument `--print-ground-truth` must be provided as well:
 
 ````{tab} BOOMER
    ```text
@@ -260,16 +112,16 @@ In cases where the {ref}`evaluation results<output-evaluation-results>` obtained
    ```
 ````
 
-Alternatively, the argument `--save-predictions` and `--save-ground-truth` can be used to save a dataset with the predictions or the ground truth, respectively, to [ARFF](https://waikato.github.io/weka-wiki/formats_and_processing/arff_stable/) files:
+Alternatively, the argument `--store-predictions` and `--store-ground-truth` can be used to save a dataset with the predictions or the ground truth, respectively, to [ARFF](https://waikato.github.io/weka-wiki/formats_and_processing/arff_stable/) files:
 
 ````{tab} BOOMER
    ```text
    mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --result-dir /path/to/results/ \
-       --save-predictions true \
-       --save-ground-truth true
+       --output-dir /path/to/results/ \
+       --store-predictions true \
+       --store-ground-truth true
    ```
 ````
 
@@ -278,17 +130,17 @@ Alternatively, the argument `--save-predictions` and `--save-ground-truth` can b
    mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --result-dir /path/to/results/ \
-       --save-predictions true \
-       --save-ground-truth true
+       --output-dir /path/to/results/ \
+       --store-predictions true \
+       --store-ground-truth true
    ```
 ````
 
 ```{tip}
-Depending on the {ref}`type of predictions<prediction-types>`, the machine learning models used in an experiment are supposed to provide, the predictions stored in the resulting output files are either binary values (if binary predictions are provided), or real values (if scores or probability estimates are provided). When working with real-valued ground truth or predictions, the option ``decimals`` may be supplied to the arguments ``--print-predictions``, ``--save-predictions``, ``--print-ground-truth` and `--save-ground-truth` to specify the number of decimals that should be included in the output (see {ref}`here<arguments-predictions>` for more information).
+Depending on the {ref}`type of predictions<prediction-types>`, the machine learning models used in an experiment are supposed to provide, the predictions stored in the resulting output files are either binary values (if binary predictions are provided), or real values (if scores or probability estimates are provided). When working with real-valued ground truth or predictions, the option ``decimals`` may be supplied to the arguments ``--print-predictions``, ``--store-predictions``, ``--print-ground-truth` and `--store-ground-truth` to specify the number of decimals that should be included in the output (see {ref}`here<arguments-predictions>` for more information).
 ```
 
-When using {ref}`train-test splits<train-test-split>`, a single model is trained and queried for predictions for the test set. These predictions are written to a single output file. When {ref}`evaluating on the training data<evaluating-training-data>`, predictions are also obtained for the training set and written to an additional output file. The names of the output files indicate whether the predictions have been obtained for the training or test set, respectively:
+When using {ref}`train-test splits<train-test-split>`, a single model is trained and queried for predictions for the test set. These predictions are written into a single output file. When {ref}`evaluating on the training data<evaluating-training-data>`, predictions are also obtained for the training set and written into an additional output file. The names of the output files indicate whether the predictions have been obtained for the training or test set, respectively:
 
 - `predictions_train.arff`
 - `predictions_test.arff`
@@ -308,7 +160,7 @@ When using a {ref}`cross validation<cross-validation>` for performance evaluatio
 
 (output-prediction-characteristics)=
 
-### Prediction Characteristics
+## Prediction Characteristics
 
 By using the command line argument `--print-prediction-characteristics`, characteristics regarding a model's predictions can be printed:
 
@@ -330,15 +182,15 @@ By using the command line argument `--print-prediction-characteristics`, charact
    ```
 ````
 
-Alternatively, they statistics can be written to a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file by using the argument `--save-prediction-characteristics`:
+Alternatively, they statistics can be written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file by using the argument `--store-prediction-characteristics`:
 
 ````{tab} BOOMER
    ```text
    mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --result-dir /path/to/results/ \
-       --save-prediction-characteristics true
+       --output-dir /path/to/results/ \
+       --store-prediction-characteristics true
    ```
 ````
 
@@ -347,16 +199,16 @@ Alternatively, they statistics can be written to a [.csv](https://en.wikipedia.o
    mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --result-dir /path/to/results/ \
-       --save-prediction-characteristics true
+       --output-dir /path/to/results/ \
+       --store-prediction-characteristics true
    ```
 ````
 
 ```{tip}
-The output produced by the arguments ``--print-data-characteristics`` and ``--save-data-characteristics`` can be customized via several options described {ref}`here<arguments-prediction-characteristics>`. It is possible to exclude certain statistics from the output, to specify whether they should be given as percentages, and how many decimal places should be used.
+The output produced by the arguments ``--print-data-characteristics`` and ``--store-data-characteristics`` can be customized via several options described {ref}`here<arguments-prediction-characteristics>`. It is possible to exclude certain statistics from the output, to specify whether they should be given as percentages, and how many decimal places should be used.
 ```
 
-The statistics obtained via the arguments given above correspond to the test data for which predictions are obtained from the model. Consequently, they depend on the strategy used for splitting a dataset into training and test sets. When using {ref}`train-test splits<train-test-split>`, predictions for a single test set are obtained and their characteristics are written to a file. In addition, statistics for the training data are written to an additional output file when {ref}`evaluating on the training data<evaluating-training-data>`:
+The statistics obtained via the arguments given above correspond to the test data for which predictions are obtained from the model. Consequently, they depend on the strategy used for splitting a dataset into training and test sets. When using {ref}`train-test splits<train-test-split>`, predictions for a single test set are obtained and their characteristics are written into a file. In addition, statistics for the training data are written into an additional output file when {ref}`evaluating on the training data<evaluating-training-data>`:
 
 - `prediction_characteristics_train.csv`
 - `prediction_characteristics_test.csv`
@@ -382,7 +234,7 @@ When dealing with classification problems, the following statistics are given as
 
 (output-data-characteristics)=
 
-### Data Characteristics
+## Data Characteristics
 
 To obtain insightful statistics regarding the characteristics of a dataset, the command line argument `--print-data-characteristics` may be helpful:
 
@@ -404,14 +256,14 @@ To obtain insightful statistics regarding the characteristics of a dataset, the 
    ```
 ````
 
-If you prefer to write the statistics into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file, the argument `--save-data-characteristics` can be used:
+If you prefer to write the statistics into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file, the argument `--store-data-characteristics` can be used:
 
 ````{tab} BOOMER
    ```text
    mlrl-testbed mlrl.boosting --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --result-dir /path/to/results/ \
-       --save-data-characteristics true
+       --output-dir /path/to/results/ \
+       --store-data-characteristics true
    ```
 ````
 
@@ -420,13 +272,13 @@ If you prefer to write the statistics into a [.csv](https://en.wikipedia.org/wik
    mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --result-dir /path/to/results/ \
-       --save-data-characteristics true
+       --output-dir /path/to/results/ \
+       --store-data-characteristics true
    ```
 ````
 
 ```{tip}
-As shown {ref}`here<arguments-data-characteristics>`, the arguments ``--print-data-characteristics`` and ``--save-data-characteristics`` come with several options that allow to exclude specific statistics from the respective output. It is also possible to specify whether percentages should be preferred for presenting the statistics. Additionally, the number of decimals to be included in the output can be limited.
+As shown {ref}`here<arguments-data-characteristics>`, the arguments ``--print-data-characteristics`` and ``--store-data-characteristics`` come with several options that allow to exclude specific statistics from the respective output. It is also possible to specify whether percentages should be preferred for presenting the statistics. Additionally, the number of decimals to be included in the output can be limited.
 ```
 
 The statistics provided by the previous commands are obtained on the training data and therefore depend on the strategy used for splitting a dataset into training and test sets. If {ref}`train-test splits<train-test-split>` are used, a single training set is used and its characteristics are saved to a file:
@@ -459,7 +311,7 @@ When dealing with classification problems, the following statistics are given as
 
 (output-label-vectors)=
 
-### Label Vectors
+## Label Vectors
 
 We refer to the unique labels combinations present for different examples in a classification dataset as label vectors. They can be printed by using the command line argument `--print-label-vectors`:
 
@@ -480,14 +332,14 @@ We refer to the unique labels combinations present for different examples in a c
    ```
 ````
 
-If you prefer writing the label vectors into an output file, the argument `--save-label-vectors` can be used:
+If you prefer writing the label vectors into an output file, the argument `--store-label-vectors` can be used:
 
 ````{tab} BOOMER
    ```text
    mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --save-label-vectors true
+       --store-label-vectors true
    ```
 ````
 
@@ -496,7 +348,7 @@ If you prefer writing the label vectors into an output file, the argument `--sav
    mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --save-label-vectors true
+       --store-label-vectors true
    ```
 ````
 
@@ -504,7 +356,7 @@ When using {ref}`train-test splits<train-test-split>` for splitting the availabl
 
 - `label_vectors.csv`
 
-When using a {ref}`cross validation<cross-validation>`, several models are trained on different parts of the dataset. The label vectors present in each of these training sets are written to separate output files. For example, the following files result from a 5-fold cross validation:
+When using a {ref}`cross validation<cross-validation>`, several models are trained on different parts of the dataset. The label vectors present in each of these training sets are written into separate output files. For example, the following files result from a 5-fold cross validation:
 
 - `label_vectors_fold-1.csv`
 - `label_vectors_fold-2.csv`
@@ -524,15 +376,9 @@ By setting the option `sparse` to the value `true`, an alternative representatio
 [2 3 4]
 ```
 
-(output-rule-specific)=
-
-### Rule-specific Results
-
-The rule learning algorithms developed by this project extend the functionality of MLRL-Testbed with rule-specific options. In the following, we discuss options for saving experiment results that are specific to this particular type of algorithms. Unless noted otherwise, the following options are available when using the packages [mlrl-boomer](https://pypi.org/project/mlrl-boomer/) and [mlrl-seco](https://pypi.org/project/mlrl-seco/) with MLRL-Testbed.
-
 (output-model-characteristics)=
 
-#### Model Characteristics
+## Model Characteristics
 
 To obtain a quick overview of some statistics that characterize a rule-based model learned by one of the algorithms provided by this project, the command line argument `--print-model-characteristics` can be useful:
 
@@ -554,15 +400,15 @@ To obtain a quick overview of some statistics that characterize a rule-based mod
    ```
 ````
 
-The above command results in a tabular representation of the characteristics being printed on the console. If one intends to write them into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file instead, the argument `--save-model-characteristics` may be used:
+The above command results in a tabular representation of the characteristics being printed on the console. If one intends to write them into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file instead, the argument `--store-model-characteristics` may be used:
 
 ````{tab} BOOMER
    ```text
    mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --result-dir /path/to/results/ \
-       --save-model-characteristics true
+       --output-dir /path/to/results/ \
+       --store-model-characteristics true
    ```
 ````
 
@@ -571,8 +417,8 @@ The above command results in a tabular representation of the characteristics bei
    mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --result-dir /path/to/results/ \
-       --save-model-characteristics true
+       --output-dir /path/to/results/ \
+       --store-model-characteristics true
    ```
 ````
 
@@ -596,7 +442,7 @@ The statistics captured by the previous commands include the following:
 
 (output-rules)=
 
-#### Rules
+## Rules
 
 It is considered one of the advantages of rule-based machine learning models that they capture patterns found in the training data in a human-comprehensible form. This enables to manually inspect the models and reason about their predictive behavior. To help with this task, the package mlrl-testbed allows to output the rules in a model using a textual representation. If the text should be printed on the console, the following command specifying the argument `--print-rules` can be used:
 
@@ -618,15 +464,15 @@ It is considered one of the advantages of rule-based machine learning models tha
    ```
 ````
 
-Alternatively, by using the argument `--save-rules`, a textual representation of models can be written to a text file in the specified output directory:
+Alternatively, by using the argument `--store-rules`, a textual representation of models can be written into a text file in the specified output directory:
 
 ````{tab} BOOMER
    ```text
    mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --result-dir /path/to/results/ \
-       --save-rules true
+       --output-dir /path/to/results/ \
+       --store-rules true
    ```
 ````
 
@@ -635,13 +481,13 @@ Alternatively, by using the argument `--save-rules`, a textual representation of
    mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --result-dir /path/to/results/ \
-       --save-rules true
+       --output-dir /path/to/results/ \
+       --store-rules true
    ```
 ````
 
 ```{tip}
-Both, the ``--print-rules`` and ``--save-rules`` arguments, come with several options that allow to customize the textual representation of models. An overview of these options is provided {ref}`here<arguments-output-rules>`.
+Both, the ``--print-rules`` and ``--store-rules`` arguments, come with several options that allow to customize the textual representation of models. An overview of these options is provided {ref}`here<arguments-output-rules>`.
 ```
 
 When using {ref}`train-test splits<train-test-split>`, only a single model is trained. Consequently, the above command results in a single output file being created:
@@ -676,13 +522,9 @@ Examples that satisfy all conditions in a rule's body are said to be "covered" b
 
 (output-probability-calibration-models)=
 
-#### Probability Calibration Models
+## Probability Calibration Models
 
-```{note}
-Probability calibration models are only supported by the gradient boosting algorithm [mlrl-boomer](https://pypi.org/project/mlrl-boomer/).
-```
-
-The gradient boosting algorithms provided by this project allow to obtain probabilistic predictions. These predictions can optionally be fine-tuned via calibration models to improve the reliability of the probability estimates. We support two types of calibration models for tuning marginal and joint probabilities, respectively. If one needs to inspect these calibration models, the command line arguments `--print-marginal-probability-calibration-model` and `--print-joint-probability-calibration-model` may be helpful:
+Some machine learning algorithms provided by this project allow to obtain probabilistic predictions. These predictions can optionally be fine-tuned via calibration models to improve the reliability of the probability estimates. We support two types of calibration models for tuning marginal and joint probabilities, respectively. If one needs to inspect these calibration models, the command line arguments `--print-marginal-probability-calibration-model` and `--print-joint-probability-calibration-model` may be helpful:
 
 ````{tab} BOOMER
    ```text
@@ -704,15 +546,15 @@ The gradient boosting algorithms provided by this project allow to obtain probab
    ```
 ````
 
-Alternatively, a representations of the calibration models can be written to [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files by using the arguments `--save-marginal-probability-calibration-model` and `--save-joint-probability-calibration-model`
+Alternatively, a representations of the calibration models can be written into [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files by using the arguments `--store-marginal-probability-calibration-model` and `--store-joint-probability-calibration-model`
 
 ````{tab} BOOMER
    ```text
    mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --save-marginal-probability-calibration-model true \
-       --save-joint-probabiliy-calibration-model true
+       --store-marginal-probability-calibration-model true \
+       --store-joint-probabiliy-calibration-model true
    ```
 ````
 
@@ -721,8 +563,8 @@ Alternatively, a representations of the calibration models can be written to [.c
    mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --save-marginal-probability-calibration-model true \
-       --save-joint-probabiliy-calibration-model true
+       --store-marginal-probability-calibration-model true \
+       --store-joint-probabiliy-calibration-model true
    ```
 ````
 
