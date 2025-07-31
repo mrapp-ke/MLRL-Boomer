@@ -430,11 +430,11 @@ def print_current_version(_: BuildUnit):
     """
     Prints the project's current version.
     """
-    return Log.info('%s', str(Project.version(release=True)))
+    print(str(Project.version(release=True)))
 
 
 def print_latest_changelog(_: BuildUnit):
     """
     Prints the changelog of the latest release.
     """
-    Log.info('%s', ChangelogFile().latest)
+    print(ChangelogFile().latest)
