@@ -14,6 +14,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main
+      - name: Setup git
+        uses: fregante/setup-git-user@v2
       - name: Reset feature branch
         run: |
           export MAIN_VERSION="$(cat build_system/res/versioning/version)"
