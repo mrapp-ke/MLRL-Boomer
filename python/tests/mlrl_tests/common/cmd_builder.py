@@ -56,7 +56,7 @@ class CmdBuilder:
         self.num_folds = 0
         self.current_fold = None
         self.args: List[str] = []
-        self.save_evaluation_results(True)
+        self.save_evaluation(True)
 
     @property
     def base_dir(self) -> Path:
@@ -304,15 +304,15 @@ class CmdBuilder:
         self.args.append(str(print_evaluation).lower())
         return self
 
-    def save_evaluation_results(self, save_evaluation_results: bool = True):
+    def save_evaluation(self, save_evaluation: bool = True):
         """
         Configures whether the evaluation results should be written to output files or not.
 
-        :param save_evaluation_results: True, if the evaluation results should be written to output files or not
-        :return:                        The builder itself
+        :param save_evaluation: True, if the evaluation results should be written to output files, False otherwise
+        :return:                The builder itself
         """
         self.args.append('--save-evaluation')
-        self.args.append(str(save_evaluation_results).lower())
+        self.args.append(str(save_evaluation).lower())
         return self
 
     def print_parameters(self, print_parameters: bool = True):

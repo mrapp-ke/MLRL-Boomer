@@ -108,7 +108,7 @@ class IntegrationTests(ABC):
         builder = self._create_cmd_builder(dataset=dataset.default + ('-predefined' if predefined else '')) \
             .data_split(data_split, options=data_split_options) \
             .print_evaluation() \
-            .save_evaluation_results()
+            .save_evaluation()
         CmdRunner(builder).run(f'evaluation_{data_split}' + ('-predefined' if predefined else '')
                                + (f'_{data_split_options}' if data_split_options else ''))
 
@@ -116,14 +116,14 @@ class IntegrationTests(ABC):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .predict_for_training_data() \
             .print_evaluation() \
-            .save_evaluation_results()
+            .save_evaluation()
         CmdRunner(builder).run('evaluation_training-data')
 
     def test_evaluation_incremental(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .incremental_evaluation() \
             .print_evaluation() \
-            .save_evaluation_results()
+            .save_evaluation()
         CmdRunner(builder).run('evaluation_incremental')
 
     @pytest.mark.parametrize('data_split, data_split_options', [
@@ -155,7 +155,7 @@ class IntegrationTests(ABC):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
-            .save_evaluation_results(False) \
+            .save_evaluation(False) \
             .print_predictions() \
             .print_ground_truth() \
             .save_predictions() \
@@ -166,7 +166,7 @@ class IntegrationTests(ABC):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .predict_for_training_data() \
             .print_evaluation(False) \
-            .save_evaluation_results(False) \
+            .save_evaluation(False) \
             .print_predictions() \
             .print_ground_truth() \
             .save_predictions() \
@@ -185,7 +185,7 @@ class IntegrationTests(ABC):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
-            .save_evaluation_results(False) \
+            .save_evaluation(False) \
             .print_prediction_characteristics() \
             .save_prediction_characteristics()
         CmdRunner(builder).run(f'prediction-characteristics_{data_split}'
@@ -195,7 +195,7 @@ class IntegrationTests(ABC):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .predict_for_training_data() \
             .print_evaluation(False) \
-            .save_evaluation_results(False) \
+            .save_evaluation(False) \
             .print_prediction_characteristics() \
             .save_prediction_characteristics()
         CmdRunner(builder).run('prediction-characteristics_training-data')
@@ -212,7 +212,7 @@ class IntegrationTests(ABC):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
-            .save_evaluation_results(False) \
+            .save_evaluation(False) \
             .print_data_characteristics() \
             .save_data_characteristics()
         CmdRunner(builder).run(f'data-characteristics_{data_split}'
@@ -230,7 +230,7 @@ class IntegrationTests(ABC):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
-            .save_evaluation_results(False) \
+            .save_evaluation(False) \
             .print_model_characteristics() \
             .save_model_characteristics()
         CmdRunner(builder).run(f'model-characteristics_{data_split}'
@@ -248,7 +248,7 @@ class IntegrationTests(ABC):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
-            .save_evaluation_results(False) \
+            .save_evaluation(False) \
             .print_rules() \
             .save_rules()
         CmdRunner(builder).run(f'rules_{data_split}' + (f'_{data_split_options}' if data_split_options else ''))
@@ -292,7 +292,7 @@ class IntegrationTests(ABC):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
-            .save_evaluation_results(False) \
+            .save_evaluation(False) \
             .print_model_characteristics() \
             .print_parameters() \
             .save_parameters() \
