@@ -20,14 +20,6 @@ class CmdRunner:
     Allows to run commands that have been configured via a `CmdBuilder`.
     """
 
-    def __create_temporary_directories(self):
-        builder = self.builder
-        builder.resolved_result_dir.mkdir(parents=True, exist_ok=True)
-        model_dir = builder.resolved_model_dir
-
-        if model_dir:
-            model_dir.mkdir(parents=True, exist_ok=True)
-
     def __delete_temporary_directories(self):
         builder = self.builder
         shutil.rmtree(builder.resolved_result_dir, ignore_errors=True)
@@ -120,9 +112,6 @@ class CmdRunner:
         """
         builder = self.builder
 
-        # Create temporary directories...
-        self.__create_temporary_directories()
-
         # Run command...
         out = self.__run_cmd()
 
@@ -155,10 +144,11 @@ class CmdRunner:
             expected_file.unlink()
 
         # Check if all output files have the expected content...
-        for output_file in result_dir.iterdir():
-            self.__compare_or_overwrite_files(FileComparison.for_file(output_file),
-                                              test_name=test_name,
-                                              file_name=output_file.name)
+        if result_dir.is_dir():
+            for output_file in result_dir.iterdir():
+                self.__compare_or_overwrite_files(FileComparison.for_file(output_file),
+                                                  test_name=test_name,
+                                                  file_name=output_file.name)
 
         # Delete temporary directories...
         self.__delete_temporary_directories()
