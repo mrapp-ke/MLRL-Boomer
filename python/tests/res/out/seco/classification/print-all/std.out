@@ -1,9 +1,9 @@
-mlrl-testbed mlrl.seco --log-level debug --data-dir python/tests/res/data --dataset emotions --base-dir python/tests/res/tmp --result-dir results --save-evaluation true --print-all true
-INFO Starting experiment using the classification algorithm "SeCoClassifier"...
-INFO Using separate training and test sets...
-DEBUG Reading input data from file "python/tests/res/data/emotions.arff"...
-DEBUG Parsing meta-data from file "python/tests/res/data/emotions.xml"...
-INFO Data characteristics:
+mlrl-testbed mlrl.seco --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --print-all true
+Starting experiment using the classification algorithm "SeCoClassifier"...
+Using separate training and test sets...
+Reading input data from file "python/tests/res/data/emotions.arff"...
+Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+Data characteristics:
 
 Examples                397
 Features                 72
@@ -19,15 +19,15 @@ Label Imbalance Ratio     1.45
 Label Cardinality         1.85
 Distinct Label Vectors   23
 
-INFO Fitting model to 397 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in <duration>
-INFO Predicting for 196 test examples...
-DEBUG A dense matrix is used to store the feature values of the query examples
-DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data:
+Fitting model to 397 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Predicting for 196 test examples...
+A dense matrix is used to store the feature values of the query examples
+A dense matrix is used to store the predicted labels
+Successfully predicted in <duration>
+Evaluation result for test data:
 
 Example-wise F1         53.72
 Example-wise Jaccard    44.55
@@ -46,8 +46,8 @@ Micro Recall            58.93
 Subset 0/1 Loss         81.63
 Subset Accuracy         18.37
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Ground truth for test data:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Ground truth for test data:
 
 [[1 0 0 0 0 1]
  [1 0 0 0 0 0]
@@ -246,7 +246,7 @@ INFO Ground truth for test data:
  [0 0 1 1 0 0]
  [1 0 0 0 0 1]]
 
-INFO Prediction characteristics for test data:
+Prediction characteristics for test data:
 
 Outputs                  6
 Output Density          32.74
@@ -255,7 +255,7 @@ Label Imbalance Ratio    1.68
 Label Cardinality        1.96
 Distinct Label Vectors  22
 
-INFO Predictions for test data:
+Predictions for test data:
 
 [[1 0 0 0 0 1]
  [1 0 1 0 0 1]
@@ -454,7 +454,7 @@ INFO Predictions for test data:
  [0 0 1 1 0 1]
  [0 0 0 0 0 1]]
 
-INFO Label vectors:
+Label vectors:
 
 ┌─────────┬────────────────┬─────────────┐
 │   Index │ Label vector   │   Frequency │
@@ -484,7 +484,7 @@ INFO Label vectors:
 │      22 │ [0 0 1 0 0 1]  │           1 │
 └─────────┴────────────────┴─────────────┘
 
-INFO Model:
+Model:
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.07} => (quiet-still = 1)
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.06} => (sad-lonely = 1)
@@ -550,7 +550,7 @@ INFO Model:
 {} => (amazed-suprised = 0, happy-pleased = 0, relaxing-calm = 0, quiet-still = 0, sad-lonely = 0, angry-aggresive = 0)
 
 
-INFO Model characteristics:
+Model characteristics:
 
 ┌───────────────────────────────┬─────────┬─────────────────────────┬────────────────────────┬───────────────────────┬──────────────────────┬───────────────────────┬───────────────────────┐
 │ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
@@ -573,4 +573,4 @@ INFO Model characteristics:
 │ Predictions                 │         1 │      1    │         1 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
-INFO Successfully finished after <duration>
+Successfully finished experiment after <duration>

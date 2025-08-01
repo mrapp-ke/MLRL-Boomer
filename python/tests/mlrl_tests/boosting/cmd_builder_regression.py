@@ -14,5 +14,6 @@ class BoomerRegressorCmdBuilder(RegressionCmdBuilder, BoomerCmdBuilderMixin):
 
     def __init__(self, dataset: str = Dataset.ATP7D):
         super().__init__(expected_output_dir=CmdBuilder.EXPECTED_OUTPUT_DIR / 'boosting' / 'regression',
+                         batch_config=CmdBuilder.CONFIG_DIR / 'boosting' / 'regression' / 'batch_config.yml',
                          runnable_module_name='mlrl.boosting',
                          dataset=dataset)
