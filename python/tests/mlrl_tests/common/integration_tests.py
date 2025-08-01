@@ -20,6 +20,8 @@ from mlrl.common.learners import SparsePolicy
 from mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension import OPTION_FIRST_FOLD, OPTION_LAST_FOLD, \
     VALUE_CROSS_VALIDATION, VALUE_TRAIN_TEST
 
+from mlrl.testbed.modes import Mode
+
 from mlrl.util.cli import NONE
 from mlrl.util.options import Options
 
@@ -61,6 +63,20 @@ class IntegrationTests(ABC):
         builder = self._create_cmd_builder() \
             .save_all(True)
         CmdRunner(builder).run('save-all')
+
+    def test_batch_mode(self):
+        builder = self._create_cmd_builder() \
+            .set_mode(Mode.MODE_BATCH) \
+            .save_models() \
+            .load_models() \
+            .save_parameters() \
+            .save_all()
+        CmdRunner(builder).run('batch-mode')
+
+    def test_batch_mode_list(self):
+        builder = self._create_cmd_builder() \
+            .set_mode(Mode.MODE_BATCH, '--list')
+        CmdRunner(builder).run('batch-mode-list')
 
     def test_single_output(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.single_output) \
@@ -113,6 +129,7 @@ class IntegrationTests(ABC):
     @pytest.mark.parametrize('data_split, data_split_options', [
         (VALUE_TRAIN_TEST, Options()),
         (VALUE_TRAIN_TEST, Options()),
+        (VALUE_CROSS_VALIDATION, Options()),
         (VALUE_CROSS_VALIDATION, Options({
             OPTION_FIRST_FOLD: 1,
             OPTION_LAST_FOLD: 1,
@@ -121,7 +138,8 @@ class IntegrationTests(ABC):
     def test_model_persistence(self, data_split: str, data_split_options: Options, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .data_split(data_split, options=data_split_options) \
-            .set_model_dir()
+            .save_models() \
+            .load_models()
         CmdRunner(builder).run(f'model-persistence_{data_split}'
                                + (f'_{data_split_options}' if data_split_options else ''))
 
@@ -277,8 +295,8 @@ class IntegrationTests(ABC):
             .save_evaluation_results(False) \
             .print_model_characteristics() \
             .print_parameters() \
-            .set_parameter_save_dir() \
-            .set_parameter_load_dir()
+            .save_parameters() \
+            .load_parameters()
         CmdRunner(builder).run(f'parameters_{data_split}' + (f'_{data_split_options}' if data_split_options else ''))
 
     @pytest.mark.parametrize('instance_sampling', [

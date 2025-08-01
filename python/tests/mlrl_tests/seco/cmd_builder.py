@@ -18,6 +18,7 @@ class SeCoClassifierCmdBuilder(ClassificationCmdBuilder):
 
     def __init__(self, dataset: str = Dataset.EMOTIONS):
         super().__init__(expected_output_dir=CmdBuilder.EXPECTED_OUTPUT_DIR / 'seco' / 'classification',
+                         batch_config=CmdBuilder.CONFIG_DIR / 'seco' / 'classification' / 'batch_config.yml',
                          runnable_module_name='mlrl.seco',
                          dataset=dataset)
 

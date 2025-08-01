@@ -74,8 +74,9 @@ class BatchExperimentMode(Mode):
                     parameter_values.append(BatchExperimentMode.ConfigFile.ParameterValue(value=value))
                 else:
                     parameter_values.append(
-                        BatchExperimentMode.ConfigFile.ParameterValue(
-                            value=value['value'], additional_arguments=value['additional_arguments']))
+                        BatchExperimentMode.ConfigFile.ParameterValue(value=value['value'],
+                                                                      additional_arguments=value.get(
+                                                                          'additional_arguments', [])))
 
             return parameter_values
 
@@ -103,7 +104,7 @@ class BatchExperimentMode(Mode):
 
             return parameters
 
-        @property
+        @cached_property
         def parameter_args(self) -> List[List[str]]:
             """
             A list that contains the command line arguments corresponding to the algorithmic parameters to be used in
@@ -159,10 +160,16 @@ class BatchExperimentMode(Mode):
     @staticmethod
     def __list_commands(namespace: Namespace, config_file: ConfigFile,
                         experiment_builder_factory: Experiment.Builder.Factory):
-        for arguments in BatchExperimentMode.__get_args(config_file):
+        args = BatchExperimentMode.__get_args(config_file)
+
+        for i, arguments in enumerate(args):
             experiment_builder_factory(BatchExperimentMode.__add_args_to_namespace(namespace, arguments))
             command = chain(['mlrl-testbed'], arguments)
-            log.info('%s\n', BatchExperimentMode.__format_command(command))
+
+            if i > 0:
+                log.info('')
+
+            log.info('%s', BatchExperimentMode.__format_command(command))
 
     @staticmethod
     def __format_command(command: Iterable[str]) -> str:
@@ -196,8 +203,8 @@ class BatchExperimentMode(Mode):
                 log.info('Running %s %s...', num_experiments, 'experiments' if num_experiments > 1 else 'experiment')
 
             command = chain(['mlrl-testbed'], arguments)
-            log.info('Running experiment (%s/%s): "%s"', i + 1, num_experiments, format_iterable(command,
-                                                                                                 separator=' '))
+            log.info('\nRunning experiment (%s / %s): "%s"', i + 1, num_experiments,
+                     format_iterable(command, separator=' '))
             experiment_builder_factory(experiment_namespace).run()
 
         run_time = Timer.stop(start_time)
@@ -206,21 +213,17 @@ class BatchExperimentMode(Mode):
 
     @staticmethod
     def __get_args(config_file: ConfigFile) -> List[List[str]]:
+        module_name = sys.argv[1]
         default_args = BatchExperimentMode.__filter_and_parse_args(sys.argv[2:])
-        dataset_batch_args = (BatchExperimentMode.__filter_and_parse_args(dataset_args)
-                              for dataset_args in config_file.dataset_args)
-        parameter_batch_args = (BatchExperimentMode.__filter_and_parse_args(parameter_args)
-                                for parameter_args in config_file.parameter_args)
         args = []
 
-        for dataset_args in dataset_batch_args:
+        for dataset_args in map(BatchExperimentMode.__filter_and_parse_args, config_file.dataset_args):
             dataset_name = dataset_args['--dataset']
 
             if not dataset_name:
                 raise RuntimeError('Unable to determine dataset name based on the arguments ' + str(dataset_args))
 
-            for parameter_args in parameter_batch_args:
-                module_name = sys.argv[1]
+            for parameter_args in map(BatchExperimentMode.__filter_and_parse_args, config_file.parameter_args):
                 output_dir = BatchExperimentMode.__get_output_dir(parameter_args, dataset_name)
                 arg_list = [
                     module_name,
