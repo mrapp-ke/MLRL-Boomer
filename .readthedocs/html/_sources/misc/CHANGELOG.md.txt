@@ -6,6 +6,14 @@ tocdepth: 2
 
 # Release Notes
 
+## Version 0.12.3 (Aug. 2nd, 2025)
+
+A bugfix release that comes with the following changes.
+
+### Fixes
+
+- Fixed another issue that prevented the command line arguments `--print-all` and `--store-all` from working properly.
+
 ## Version 0.12.2 (Jul. 31st, 2025)
 
 A bugfix release that comes with the following changes.
