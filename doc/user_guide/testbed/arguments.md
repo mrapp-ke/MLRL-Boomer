@@ -40,12 +40,35 @@ The following optional arguments allow additional control over the loading mecha
 
 The arguments given above can be used to integrate any scikit-learn compatible machine learning algorithm with mlrl-testbed. You can learn about this {ref}`here<runnables>`.
 
+(argument-mode)=
+
+### Mode
+
+MLRL-Testbed supports different modes of operation configurable via the argument `--mode`. By default, a single experiment configured via the command line API is run. However, it is also possible to run several experiments at once. In the following, we provide an overview of all available configuration options:
+
+- `--mode` (Default value = `single`)
+
+  - `single` A single experiment is run.
+  - `batch` A batch of experiments is run at once.
+
+In {ref}`batch mode <testbed-batch-mode>`, the following mandatory arguments must be given as well:
+
+- `--config` An absolute or relative path to a YAML file that defines the batch of experiments to be run.
+
+In addition, the batch mode comes with the following optional arguments:
+
+- `--list` Lists the commands for running individual experiments instead of executing them.
+
 ### Dataset
 
 The following mandatory arguments must always be given to specify the dataset that should be used, as well as the location where it should be loaded from.
 
 - `--data-dir` An absolute or relative path to the directory where the dataset files are located.
 - `--dataset` The name of the dataset files (without suffix).
+
+```{note}
+The arguments `--data-dir` and `--dataset` are only available when using the {ref}`mode <argument-mode>` `--mode single` (which is the default). In {ref}`batch mode <testbed-batch-mode>`, datasets are defined via a configuration file.
+```
 
 Optionally, the following arguments can be used to provide additional information about the dataset.
 
@@ -59,6 +82,57 @@ The package mlrl-testbed is able to conduct experiments for classification and r
 
   - `classification` The dataset is considered as a classification dataset.
   - `regression` The dataset is considered as a regression dataset.
+
+(setting-algorithmic-parameters)=
+
+## Setting Algorithmic Parameters
+
+In addition to the command line arguments that are discussed above, it is often desirable to not rely on the default configuration of the BOOMER algorithm in an experiment, but to use a custom configuration. For this purpose, all the algorithmic parameters that are discussed in the section {ref}`parameters` may be set by providing corresponding arguments to the command line API.
+
+In accordance with the syntax that is typically used by command line programs, the parameter names must be given according to the following syntax that slightly differs from the names that are used by the programmatic Python API:
+
+- All argument names must start with two leading dashes (`--`).
+- Underscores (`_`) must be replaced with dashes (`-`).
+
+For example, the value of the parameter `feature_binning` may be set as follows:
+
+````{tab} BOOMER
+   ```text
+   mlrl-testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --feature-binning equal-width
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   mlrl-testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --feature-binning equal-width
+   ```
+````
+
+Some algorithmic parameters, including the parameter `feature_binning`, allow to specify additional options as key-value pairs by using a {ref}`bracket notation<bracket-notation>`. This is also supported via the command line API. However, options may not contain any spaces and special characters like `{` or `}` must be escaped by using single-quotes (`'`):
+
+````{tab} BOOMER
+   ```text
+   mlrl-testbed mlrl.boosting\
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   mlrl-testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
+   ```
+````
 
 ## Performance Evaluation
 
@@ -144,6 +218,10 @@ Because the training of models can be time-consuming, it might be desirable to s
 
   - An absolute or relative path to the directory to which models should be saved once training has completed.
 
+    ```{note}
+    This argument is only available when using the {ref}`mode <argument-mode>` `--mode single` (which is the default). In {ref}`batch mode <testbed-batch-mode>`, a suitable directory is created automatically.
+    ```
+
 - `--save-models` (Default value = `false`)
 
   - `true` Models are saved to output files.
@@ -168,6 +246,10 @@ As an alternative to storing the models learned by an algorithm, the algorithmic
 
   - An absolute or relative path to the directory to which [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files that store algorithmic parameters set by the user should be saved.
 
+    ```{note}
+    This argument is only available when using the {ref}`mode <argument-mode>` `--mode single` (which is the default). In {ref}`batch mode <testbed-batch-mode>`, a suitable directory is created automatically.
+    ```
+
 - `--print-parameters` (Default value = `false`)
 
   - `true` Algorithmic parameters are printed on the console.
@@ -187,6 +269,10 @@ To provide valuable insights into the models learned by an algorithm, the predic
 - `--base-dir` (Default value = `experiments/<yyyy-mm-dd_HH-MM>`, e.g., `experiments/2025-07-13_01-20`, depending on the current date and time) An absolute or relative path to a directory. If relative paths to directories, where files should be saved, are given, they are considered relative to the directory specified via this argument.
 
 - `--result-dir` (Default value = `result`) An absolute or relative path to the directory where experimental results should be saved.
+
+  ```{note}
+  This argument is only available when using the {ref}`mode <argument-mode>` `--mode single` (which is the default). In {ref}`batch mode <testbed-batch-mode>`, a suitable directory is created automatically.
+  ```
 
 - `--create-dirs` (Default value = `true`)
 
@@ -518,54 +604,3 @@ To provide valuable insights into the models learned by an algorithm, the predic
     - `decimals` (Default value = `2`) The number of decimals to be used for thresholds and probabilities or 0, if the number of decimals should not be restricted.
 
   - `false` The model for the calibration of joint probabilities is not written to a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file.
-
-(setting-algorithmic-parameters)=
-
-## Setting Algorithmic Parameters
-
-In addition to the command line arguments that are discussed above, it is often desirable to not rely on the default configuration of the BOOMER algorithm in an experiment, but to use a custom configuration. For this purpose, all the algorithmic parameters that are discussed in the section {ref}`parameters` may be set by providing corresponding arguments to the command line API.
-
-In accordance with the syntax that is typically used by command line programs, the parameter names must be given according to the following syntax that slightly differs from the names that are used by the programmatic Python API:
-
-- All argument names must start with two leading dashes (`--`).
-- Underscores (`_`) must be replaced with dashes (`-`).
-
-For example, the value of the parameter `feature_binning` may be set as follows:
-
-````{tab} BOOMER
-   ```text
-   mlrl-testbed mlrl.boosting \
-       --data-dir /path/to/datasets/ \
-       --dataset dataset-name \
-       --feature-binning equal-width
-   ```
-````
-
-````{tab} SeCo
-   ```text
-   mlrl-testbed mlrl.seco \
-       --data-dir /path/to/datasets/ \
-       --dataset dataset-name \
-       --feature-binning equal-width
-   ```
-````
-
-Some algorithmic parameters, including the parameter `feature_binning`, allow to specify additional options as key-value pairs by using a {ref}`bracket notation<bracket-notation>`. This is also supported via the command line API. However, options may not contain any spaces and special characters like `{` or `}` must be escaped by using single-quotes (`'`):
-
-````{tab} BOOMER
-   ```text
-   mlrl-testbed mlrl.boosting\
-       --data-dir /path/to/datasets/ \
-       --dataset dataset-name \
-       --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
-   ```
-````
-
-````{tab} SeCo
-   ```text
-   mlrl-testbed mlrl.seco \
-       --data-dir /path/to/datasets/ \
-       --dataset dataset-name \
-       --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
-   ```
-````

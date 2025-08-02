@@ -32,4 +32,8 @@ MODULES = [
         file_type=FileType.yaml(),
         root_directory=Project.Github.root_directory,
     ),
+    CodeModule(
+        file_type=FileType.yaml(),
+        root_directory=Project.Python.root_directory,
+    ),
 ]

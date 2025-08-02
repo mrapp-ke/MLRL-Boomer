@@ -48,14 +48,14 @@ class Argument:
         """
         The name of the argument.
         """
-        return next(iter(self.names))
+        return sorted(self.names)[0]
 
     @cached_property
     def key(self) -> str:
         """
         The key of the argument in a `Namespace`.
         """
-        return self.name.lstrip('--').replace('-', '_')
+        return self.name.lstrip('-').replace('-', '_')
 
     def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
         """
@@ -66,13 +66,10 @@ class Argument:
         :return:        The value provided by the user or `default`, if no value is available
         """
         value = getattr(args, self.key, None)
-        deecorator = self.decorator
-
-        if deecorator:
-            value = deecorator(args, value)
-
         value = self.default if value is None else value
-        return default if value is None else value
+        value = default if value is None else value
+        decorator = self.decorator
+        return decorator(args, value) if decorator else value
 
     @override
     def __hash__(self) -> int:
@@ -81,6 +78,19 @@ class Argument:
     @override
     def __eq__(self, other: Any) -> bool:
         return isinstance(other, type(self)) and self.key == other.key
+
+
+class FlagArgument(Argument):
+    """
+    An argument of a command line interface, which can be set by the user as a flag.
+    """
+
+    def __init__(self, name: str, description: Optional[str] = None):
+        """
+        :param name:        The name of the argument
+        :param description: An optional description of the argument
+        """
+        super().__init__(name, default=False, help=description, action='store_true')
 
 
 class StringArgument(Argument):

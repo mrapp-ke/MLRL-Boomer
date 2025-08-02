@@ -12,7 +12,7 @@ from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristic
 from mlrl.testbed_sklearn.experiments.prediction.extension import PredictionTypeExtension
 
 from mlrl.testbed.experiments.experiment import Experiment
-from mlrl.testbed.experiments.output.extension import OutputExtension
+from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.experiments.prediction_type import PredictionType
@@ -45,7 +45,8 @@ class PredictionCharacteristicsExtension(Extension):
         '--save-prediction-characteristics',
         description='Whether the characteristics of binary predictions should be written to output files or not. Does '
         + 'only have an effect if the argument ' + PredictionTypeExtension.PREDICTION_TYPE.name + ' is set to '
-        + PredictionType.BINARY.value + ' and if the argument ' + OutputExtension.RESULT_DIR.name + ' is specified.',
+        + PredictionType.BINARY.value + ' and if the argument ' + ResultDirectoryExtension.RESULT_DIR.name + ' is '
+        + 'specified.',
         true_options={
             OutputCharacteristics.OPTION_OUTPUTS, OutputCharacteristics.OPTION_OUTPUT_DENSITY,
             OutputCharacteristics.OPTION_OUTPUT_SPARSITY, OutputCharacteristics.OPTION_LABEL_IMBALANCE_RATIO,
@@ -58,7 +59,7 @@ class PredictionCharacteristicsExtension(Extension):
         """
         :param dependencies: Other extensions, this extension depends on
         """
-        super().__init__(OutputExtension(), *dependencies)
+        super().__init__(OutputExtension(), ResultDirectoryExtension(), *dependencies)
 
     @override
     def _get_arguments(self) -> Set[Argument]:
@@ -79,7 +80,7 @@ class PredictionCharacteristicsExtension(Extension):
         save_all = OutputExtension.SAVE_ALL.get_value(args)
         save_prediction_characteristics, options = self.SAVE_PREDICTION_CHARACTERISTICS.get_value(args,
                                                                                                   default=save_all)
-        result_directory = OutputExtension.RESULT_DIR.get_value(args)
+        result_directory = ResultDirectoryExtension.RESULT_DIR.get_value(args)
 
         if save_prediction_characteristics and result_directory:
             create_directory = OutputExtension.CREATE_DIRS.get_value(args)

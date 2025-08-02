@@ -1,0 +1,13 @@
+---
+datasets: list(include('dataset'))
+parameters: list(include('parameter'))
+---
+dataset:
+  directory: str()
+  names: any(str(), list(str()))
+parameter:
+  name: str()
+  values: list(any(str(), include('value_object')))
+value_object:
+  value: str()
+  additional_arguments: list(str(), required=False)

@@ -10,7 +10,7 @@ from typing import Set, override
 from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vectors import LabelVectors
 
 from mlrl.testbed.experiments.experiment import Experiment
-from mlrl.testbed.experiments.output.extension import OutputExtension
+from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.extensions.extension import Extension
@@ -41,7 +41,7 @@ class LabelVectorExtension(Extension):
         """
         :param dependencies: Other extensions, this extension depends on
         """
-        super().__init__(OutputExtension(), *dependencies)
+        super().__init__(OutputExtension(), ResultDirectoryExtension(), *dependencies)
 
     @override
     def _get_arguments(self) -> Set[Argument]:
@@ -60,7 +60,7 @@ class LabelVectorExtension(Extension):
     def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         save_all = OutputExtension.SAVE_ALL.get_value(args)
         save_label_vectors, options = self.SAVE_LABEL_VECTORS.get_value(args, default=save_all)
-        result_directory = OutputExtension.RESULT_DIR.get_value(args)
+        result_directory = ResultDirectoryExtension.RESULT_DIR.get_value(args)
 
         if save_label_vectors and result_directory:
             create_directory = OutputExtension.CREATE_DIRS.get_value(args)

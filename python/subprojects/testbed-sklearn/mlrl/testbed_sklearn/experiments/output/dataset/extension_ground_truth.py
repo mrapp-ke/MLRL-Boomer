@@ -10,7 +10,7 @@ from typing import Set, override
 from mlrl.testbed_arff.experiments.output.sinks.sink_arff import ArffFileSink
 
 from mlrl.testbed.experiments.experiment import Experiment
-from mlrl.testbed.experiments.output.extension import OutputExtension
+from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.util.format import OPTION_DECIMALS
@@ -39,7 +39,7 @@ class GroundTruthExtension(Extension):
         """
         :param dependencies: Other extensions, this extension depends on
         """
-        super().__init__(OutputExtension(), *dependencies)
+        super().__init__(OutputExtension(), ResultDirectoryExtension(), *dependencies)
 
     @override
     def _get_arguments(self) -> Set[Argument]:
@@ -58,7 +58,7 @@ class GroundTruthExtension(Extension):
     def __configure_arff_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         save_all = OutputExtension.SAVE_ALL.get_value(args)
         save_ground_truth, options = self.SAVE_GROUND_TRUTH.get_value(args, default=save_all)
-        result_directory = OutputExtension.RESULT_DIR.get_value(args)
+        result_directory = ResultDirectoryExtension.RESULT_DIR.get_value(args)
 
         if save_ground_truth and result_directory:
             create_directory = OutputExtension.CREATE_DIRS.get_value(args)

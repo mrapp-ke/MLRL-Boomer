@@ -6,10 +6,10 @@ package.
 """
 from abc import ABC, abstractmethod
 from argparse import Namespace
-from functools import cached_property
-from typing import Any, Set, override
+from typing import Any, Set, Type, override
 
 from mlrl.testbed.experiments.experiment import Experiment
+from mlrl.testbed.modes import Mode
 
 from mlrl.util.cli import Argument
 
@@ -25,32 +25,57 @@ class Extension(ABC):
         """
         self._dependencies = set(dependencies)
 
-    @cached_property
-    def dependencies(self) -> Set['Extension']:
+    def get_dependencies(self, mode: Mode) -> Set['Extension']:
         """
-        A set that contains all extensions, this extension depends on recursively.
+        Returns a set that contains all extensions, this extension depends on recursively, including only those that
+        support a given mode of operation.
+
+        :param mode:    The mode to be supported
+        :return:        A set that contains all extensions, this extension depends on
         """
-        dependencies = set(self._dependencies)
+        supported_dependencies = {dependency for dependency in self._dependencies if dependency.is_mode_supported(mode)}
+        dependencies = set(supported_dependencies)
 
         for dependency in self._dependencies:
-            for nested_dependency in dependency.dependencies:
+            for nested_dependency in dependency.get_dependencies(mode):
                 dependencies.add(nested_dependency)
 
         return dependencies
 
-    @cached_property
-    def arguments(self) -> Set[Argument]:
+    def get_arguments(self, mode: Mode) -> Set[Argument]:
         """
-        A set that contains the arguments that should be added to the command line API according to this extension, also
-        taking into account dependencies recursively.
+        Returns a set that contains the arguments that should be added to the command line API according to this
+        extension, if it supported a given mode of operation. Dependencies that support the given mode are taken into
+        account recursively.
+
+        :param mode:    The mode to be supported
+        :return:        A set that contains the arguments
         """
-        arguments = self._get_arguments()
+        arguments = self._get_arguments() if self.is_mode_supported(mode) else set()
 
         for dependency in self._dependencies:
-            for argument in dependency.arguments:
+            for argument in dependency.get_arguments(mode):
                 arguments.add(argument)
 
         return arguments
+
+    def get_supported_modes(self) -> Set[Type[Mode]]:
+        """
+        May be overridden by subclasses in order to return the modes of operation supported by this extension.
+
+        :return: A set that contains the supported modes or an empty set, if all modes are supported
+        """
+        return set()
+
+    def is_mode_supported(self, mode: Mode) -> bool:
+        """
+        Returns whether this extension supports a given mode of operation or not.
+
+        :param mode:    The mode to be checked
+        :return:        True, if the extension supports the given mode, False otherwise
+        """
+        supported_modes = self.get_supported_modes()
+        return type(mode) in supported_modes if supported_modes else True
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """

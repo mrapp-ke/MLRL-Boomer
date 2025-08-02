@@ -4,6 +4,11 @@ requires = [
     "setuptools >= 80.9, < 80.10",
 ]
 
+[tool.setuptools.package-data]
+"mlrl.testbed_sklearn" = [
+    "**/*.y*ml",
+]
+
 [project]
 name = "mlrl-testbed-sklearn"
 description = "Adds support for the scikit-learn framework to the package \"mlrl-testbed\""

@@ -6,12 +6,14 @@ Provides classes that allow configuring the functionality to load datasets.
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from pathlib import Path
-from typing import Set, override
+from typing import List, Set, Type, override
 
 from mlrl.testbed.experiments.input.dataset.dataset import InputDataset
 from mlrl.testbed.experiments.input.dataset.reader import DatasetReader
 from mlrl.testbed.experiments.input.sources import FileSource, Source
 from mlrl.testbed.extensions.extension import Extension
+from mlrl.testbed.modes import Mode, SingleExperimentMode
+from mlrl.testbed.modes.mode_batch import BatchExperimentMode
 
 from mlrl.util.cli import Argument, StringArgument
 
@@ -55,6 +57,13 @@ class DatasetExtension(Extension, ABC):
         source = self._create_source(dataset, args)
         return DatasetReader(source=source, input_data=dataset)
 
+    @override
+    def get_supported_modes(self) -> Set[Type[Mode]]:
+        """
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+        """
+        return {SingleExperimentMode}
+
 
 class DatasetFileExtension(DatasetExtension, ABC):
     """
@@ -92,3 +101,34 @@ class DatasetFileExtension(DatasetExtension, ABC):
         :param args:                The command line arguments specified by the user
         :return:                    The `FileSource`, the dataset should be loaded from
         """
+
+    @staticmethod
+    def parse_dataset_args_from_config(config: BatchExperimentMode.ConfigFile) -> List[List[str]]:
+        """
+        Parses and returns the command line arguments for using the datasets specified in a configuration file.
+
+        :param config:  The configuration file that should be parsed
+        :return:        A list that contains the command line arguments that have been parsed
+        """
+        datasets = config.yaml_dict.get('datasets', [])
+
+        if not datasets:
+            raise ValueError('No datasets are specified in the configuration file "' + str(config) + '"')
+
+        dataset_args = []
+
+        for dataset_dict in datasets:
+            names = dataset_dict['names']
+
+            if isinstance(names, str):
+                dataset_names = [names]
+            else:
+                dataset_names = list(names)
+
+            for dataset_name in dataset_names:
+                dataset_args.append([
+                    DatasetFileExtension.DATASET_DIRECTORY.name, dataset_dict['directory'],
+                    DatasetFileExtension.DATASET_NAME.name, dataset_name
+                ])
+
+        return dataset_args
