@@ -24,7 +24,6 @@ class LabelVectorExtension(Extension):
 
     PRINT_LABEL_VECTORS = BoolArgument(
         '--print-label-vectors',
-        default=False,
         description='Whether the unique label vectors contained in the training data should be printed on the console '
         + 'or not.',
         true_options={LabelVectors.OPTION_SPARSE},
@@ -32,7 +31,6 @@ class LabelVectorExtension(Extension):
 
     STORE_LABEL_VECTORS = BoolArgument(
         '--store-label-vectors',
-        default=False,
         description='Whether the unique label vectors contained in the training data should be written into output '
         + 'files or not. Does only have an effect if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is '
         + 'specified.',
