@@ -250,15 +250,15 @@ class CmdBuilder:
         self.args.append(str(print_all).lower())
         return self
 
-    def store_all(self, store_all: bool = True):
+    def save_all(self, save_all: bool = True):
         """
         Configures whether all experimental results should be written to output files or not.
 
-        :param store_all:   True, if the all experimental results should be written to output files, False otherwise
+        :param save_all:    True, if the all experimental results should be written to output files, False otherwise
         :return:            The builder itself
         """
-        self.args.append('--store-all')
-        self.args.append(str(store_all).lower())
+        self.args.append('--save-all')
+        self.args.append(str(save_all).lower())
         return self
 
     def print_evaluation(self, print_evaluation: bool = True):
