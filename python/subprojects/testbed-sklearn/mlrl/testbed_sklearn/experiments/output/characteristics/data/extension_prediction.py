@@ -30,7 +30,6 @@ class PredictionCharacteristicsExtension(Extension):
 
     PRINT_PREDICTION_CHARACTERISTICS = BoolArgument(
         '--print-prediction-characteristics',
-        default=False,
         description='Whether the characteristics of binary predictions should be printed on the console or not. Does '
         + 'only have an effect if the argument ' + PredictionTypeExtension.PREDICTION_TYPE.name + ' is set to '
         + PredictionType.BINARY.value + '.',
@@ -44,7 +43,6 @@ class PredictionCharacteristicsExtension(Extension):
 
     SAVE_PREDICTION_CHARACTERISTICS = BoolArgument(
         '--save-prediction-characteristics',
-        default=False,
         description='Whether the characteristics of binary predictions should be written to output files or not. Does '
         + 'only have an effect if the argument ' + PredictionTypeExtension.PREDICTION_TYPE.name + ' is set to '
         + PredictionType.BINARY.value + ' and if the argument ' + OutputExtension.RESULT_DIR.name + ' is specified.',

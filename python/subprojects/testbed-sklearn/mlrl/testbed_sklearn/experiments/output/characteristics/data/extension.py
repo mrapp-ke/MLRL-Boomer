@@ -28,7 +28,6 @@ class TabularDataCharacteristicExtension(Extension):
 
     PRINT_DATA_CHARACTERISTICS = BoolArgument(
         '--print-data-characteristics',
-        default=False,
         description='Whether the characteristics of the training data should be printed on the console or not.',
         true_options={
             DataCharacteristics.OPTION_EXAMPLES, DataCharacteristics.OPTION_FEATURES,
@@ -43,7 +42,6 @@ class TabularDataCharacteristicExtension(Extension):
 
     SAVE_DATA_CHARACTERISTICS = BoolArgument(
         '--save-data-characteristics',
-        default=False,
         description='Whether the characteristics of the training data should be written to output files or not.',
         true_options={
             DataCharacteristics.OPTION_EXAMPLES, DataCharacteristics.OPTION_FEATURES,

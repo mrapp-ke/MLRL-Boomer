@@ -27,13 +27,11 @@ class RuleModelCharacteristicsExtension(Extension):
 
     PRINT_MODEL_CHARACTERISTICS = BoolArgument(
         '--print-model-characteristics',
-        default=False,
         description='Whether the characteristics of models should be printed on the console or not.',
     )
 
     SAVE_MODEL_CHARACTERISTICS = BoolArgument(
         '--save-model-characteristics',
-        default=False,
         description='Whether the characteristics of models should be written to output files or not.',
     )
 
