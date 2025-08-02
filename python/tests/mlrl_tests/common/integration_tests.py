@@ -52,10 +52,10 @@ class IntegrationTests(ABC):
             .print_all(True)
         CmdRunner(builder).run('print-all')
 
-    def test_store_all(self):
+    def test_save_all(self):
         builder = self._create_cmd_builder() \
-            .store_all(True)
-        CmdRunner(builder).run('store-all')
+            .save_all(True)
+        CmdRunner(builder).run('save-all')
 
     def test_single_output(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.single_output) \
