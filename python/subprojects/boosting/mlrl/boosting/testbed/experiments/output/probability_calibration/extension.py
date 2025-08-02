@@ -28,7 +28,6 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
 
     PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL = BoolArgument(
         '--print-marginal-probability-calibration-model',
-        default=False,
         description='Whether the model for the calibration of marginal probabilities should be printed on the console '
         + 'or not.',
         true_options={OPTION_DECIMALS},
@@ -36,7 +35,6 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
 
     STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL = BoolArgument(
         '--store-marginal-probability-calibration-model',
-        default=False,
         description='Whether the model for the calibration of marginal probabilities should be written into an output '
         + 'file or not. Does only have an effect if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
         true_options={OPTION_DECIMALS},
@@ -94,7 +92,6 @@ class JointProbabilityCalibrationModelExtension(Extension):
 
     PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL = BoolArgument(
         '--print-joint-probability-calibration-model',
-        default=False,
         description='Whether the model for the calibration of joint probabilities should be printed on the console or '
         + 'not.',
         true_options={OPTION_DECIMALS},
@@ -102,7 +99,6 @@ class JointProbabilityCalibrationModelExtension(Extension):
 
     STORE_JOINT_PROBABILITY_CALIBRATION_MODEL = BoolArgument(
         '--store-joint-probability-calibration-model',
-        default=False,
         description='Whether the model for the calibration of joint probabilities should be written into an output '
         + 'file or not. Does only have an effect if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
         true_options={OPTION_DECIMALS},

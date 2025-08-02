@@ -26,7 +26,6 @@ class RuleModelAsTextExtension(Extension):
 
     PRINT_RULES = BoolArgument(
         '--print-rules',
-        default=False,
         description='Whether the induced rules should be printed on the console or not.',
         true_options={
             RuleModelAsText.OPTION_PRINT_FEATURE_NAMES, RuleModelAsText.OPTION_PRINT_OUTPUT_NAMES,
@@ -38,7 +37,6 @@ class RuleModelAsTextExtension(Extension):
 
     STORE_RULES = BoolArgument(
         '--store-rules',
-        default=False,
         description='Whether the induced rules should be written into a text file or not.',
         true_options={
             RuleModelAsText.OPTION_PRINT_FEATURE_NAMES, RuleModelAsText.OPTION_PRINT_OUTPUT_NAMES,
