@@ -28,7 +28,6 @@ class ParameterOutputExtension(Extension):
 
     PRINT_PARAMETERS = BoolArgument(
         '--print-parameters',
-        default=False,
         description='Whether the parameter setting should be printed on the console or not.',
     )
 

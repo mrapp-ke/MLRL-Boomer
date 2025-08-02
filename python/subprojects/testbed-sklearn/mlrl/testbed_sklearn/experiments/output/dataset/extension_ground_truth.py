@@ -24,14 +24,12 @@ class GroundTruthExtension(Extension):
 
     PRINT_GROUND_TRUTH = BoolArgument(
         '--print-ground-truth',
-        default=False,
         description='Whether the ground truth should be printed on the console or not.',
         true_options={OPTION_DECIMALS},
     )
 
     STORE_GROUND_TRUTH = BoolArgument(
         '--store-ground-truth',
-        default=False,
         description='Whether the ground truth should be written into output files or not. Does only have an effect, if '
         + 'the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
         true_options={OPTION_DECIMALS},
