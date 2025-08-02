@@ -25,14 +25,12 @@ class PredictionExtension(Extension):
 
     PRINT_PREDICTIONS = BoolArgument(
         '--print-predictions',
-        default=False,
         description='Whether predictions should be printed on the console or not.',
         true_options={OPTION_DECIMALS},
     )
 
     SAVE_PREDICTIONS = BoolArgument(
         '--save-predictions',
-        default=False,
         description='Whether predictions should be written to output files or not.',
         true_options={OPTION_DECIMALS},
     )
