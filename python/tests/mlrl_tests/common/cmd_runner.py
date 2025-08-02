@@ -20,21 +20,13 @@ class CmdRunner:
     Allows to run commands that have been configured via a `CmdBuilder`.
     """
 
-    def __create_temporary_directories(self):
-        builder = self.builder
-        builder.output_dir.mkdir(parents=True, exist_ok=True)
-        model_dir = builder.model_dir
-
-        if model_dir:
-            model_dir.mkdir(parents=True, exist_ok=True)
-
     def __delete_temporary_directories(self):
         builder = self.builder
-        shutil.rmtree(builder.output_dir, ignore_errors=True)
+        shutil.rmtree(builder.resolved_result_dir, ignore_errors=True)
         model_dir = builder.model_dir
 
         if model_dir:
-            shutil.rmtree(model_dir, ignore_errors=True)
+            shutil.rmtree(builder.resolved_model_dir, ignore_errors=True)
 
     def __format_cmd(self):
         return reduce(lambda aggr, arg: aggr + (' ' + arg if len(aggr) > 0 else arg), self.args, '')
@@ -51,7 +43,7 @@ class CmdRunner:
 
     def __assert_model_files_exist(self):
         builder = self.builder
-        self.__assert_files_exist(directory=builder.model_dir, file_name='model', suffix='pickle')
+        self.__assert_files_exist(directory=builder.resolved_model_dir, file_name='model', suffix='pickle')
 
     def __assert_files_exist(self, directory: Optional[Path], file_name: str, suffix: str):
         if directory:
@@ -120,9 +112,6 @@ class CmdRunner:
         """
         builder = self.builder
 
-        # Create temporary directories...
-        self.__create_temporary_directories()
-
         # Run command...
         out = self.__run_cmd()
 
@@ -136,14 +125,14 @@ class CmdRunner:
 
         # Check if all expected output files have been created...
         self.__assert_model_files_exist()
-        output_dir = builder.output_dir
+        result_dir = builder.resolved_result_dir
         expected_output_dir = builder.expected_output_dir
         stdout_file = Path(expected_output_dir, test_name, stdout_file_name)
         expected_files_to_be_deleted = []
 
         for expected_file in (expected_output_dir / test_name).iterdir():
             if expected_file != stdout_file:
-                output_file = output_dir / expected_file.name
+                output_file = result_dir / expected_file.name
 
                 if self.__should_overwrite_files():
                     if not output_file.is_file():
@@ -155,10 +144,11 @@ class CmdRunner:
             expected_file.unlink()
 
         # Check if all output files have the expected content...
-        for output_file in output_dir.iterdir():
-            self.__compare_or_overwrite_files(FileComparison.for_file(output_file),
-                                              test_name=test_name,
-                                              file_name=output_file.name)
+        if result_dir.is_dir():
+            for output_file in result_dir.iterdir():
+                self.__compare_or_overwrite_files(FileComparison.for_file(output_file),
+                                                  test_name=test_name,
+                                                  file_name=output_file.name)
 
         # Delete temporary directories...
         self.__delete_temporary_directories()

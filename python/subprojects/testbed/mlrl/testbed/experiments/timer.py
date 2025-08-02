@@ -6,6 +6,7 @@ Provides utilities for measuring time.
 from dataclasses import dataclass
 from functools import reduce
 from timeit import default_timer as current_time
+from typing import override
 
 
 class Timer:
@@ -23,6 +24,7 @@ class Timer:
         """
         value: float = 0.0
 
+        @override
         def __str__(self) -> str:
             seconds, millis = divmod(self.value, 1)
             millis = int(millis * 1000)

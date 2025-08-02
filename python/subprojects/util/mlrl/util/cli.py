@@ -8,7 +8,7 @@ import sys
 from argparse import ArgumentError, ArgumentParser, Namespace
 from enum import Enum
 from functools import cached_property
-from typing import Any, Dict, Optional, Set, Type
+from typing import Any, Callable, Dict, Optional, Set, Type, override
 
 from mlrl.util.format import format_enum_values, format_set
 from mlrl.util.options import BooleanOption, parse_enum, parse_param, parse_param_and_options
@@ -21,16 +21,26 @@ class Argument:
     A single argument of a command line interface for which the user can provide a custom value.
     """
 
-    def __init__(self, *names: str, required: bool = False, default: Optional[Any] = None, **kwargs: Any):
+    Decorator = Callable[[Namespace, Optional[Any]], Optional[Any]]
+
+    def __init__(self,
+                 *names: str,
+                 required: bool = False,
+                 default: Optional[Any] = None,
+                 decorator: Optional[Decorator] = None,
+                 **kwargs: Any):
         """
         :param names:       One of several names of the argument
         :param required:    True, if the argument is mandatory, False otherwise
         :param default:     The default value of the argument, if any
+        :param decorator:   An optional decorator function that is given the value provided by the user for this
+                            argument and can modify it
         :param kwargs:      Optional keyword argument to be passed to an `ArgumentParser`
         """
         self.names = set(names)
         self.required = required
         self.default = default
+        self.decorator = decorator
         self.kwargs = dict(kwargs)
 
     @cached_property
@@ -56,12 +66,19 @@ class Argument:
         :return:        The value provided by the user or `default`, if no value is available
         """
         value = getattr(args, self.key, None)
+        deecorator = self.decorator
+
+        if deecorator:
+            value = deecorator(args, value)
+
         value = self.default if value is None else value
         return default if value is None else value
 
+    @override
     def __hash__(self) -> int:
         return hash(self.key)
 
+    @override
     def __eq__(self, other: Any) -> bool:
         return isinstance(other, type(self)) and self.key == other.key
 
@@ -75,15 +92,19 @@ class StringArgument(Argument):
                  *names: str,
                  description: Optional[str] = None,
                  default: Optional[str] = None,
-                 required: bool = False):
+                 required: bool = False,
+                 decorator: Optional[Argument.Decorator] = None):
         """
         :param names:       One or several names of the argument
         :param description: An optional description of the argument
         :param default:     The default value
         :param required:    True, if the argument is mandatory, False otherwise
+        :param decorator:   An optional decorator function that is given the value provided by the user for this
+                            argument and can modify it
         """
-        super().__init__(*names, default=default, help=description, type=str, required=required)
+        super().__init__(*names, default=default, help=description, type=str, required=required, decorator=decorator)
 
+    @override
     def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
         value = super().get_value(args, default=default)
         return None if value is None else str(value)
@@ -98,15 +119,19 @@ class IntArgument(Argument):
                  *names: str,
                  description: Optional[str] = None,
                  default: Optional[int] = None,
-                 required: bool = False):
+                 required: bool = False,
+                 decorator: Optional[Argument.Decorator] = None):
         """
         :param names:       One or several names of the argument
         :param description: An optional description of the argument
         :param default:     The default value
         :param required:    True, if the argument is mandatory, False otherwise
+        :param decorator:   An optional decorator function that is given the value provided by the user for this
+                            argument and can modify it
         """
-        super().__init__(*names, default=default, help=description, type=int, required=required)
+        super().__init__(*names, default=default, help=description, type=int, required=required, decorator=decorator)
 
+    @override
     def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
         value = super().get_value(args, default=default)
 
@@ -126,15 +151,19 @@ class FloatArgument(Argument):
                  *names: str,
                  description: Optional[str] = None,
                  default: Optional[float] = None,
-                 required: bool = False):
+                 required: bool = False,
+                 decorator: Optional[Argument.Decorator] = None):
         """
         :param names:       One or several names of the argument
         :param description: An optional description of the argument
         :param default:     The default value
         :param required:    True, if the argument is mandatory, False otherwise
+        :param decorator:   An optional decorator function that is given the value provided by the user for this
+                            argument and can modify it
         """
-        super().__init__(*names, default=default, help=description, type=float, required=required)
+        super().__init__(*names, default=default, help=description, type=float, required=required, decorator=decorator)
 
+    @override
     def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
         value = super().get_value(args, default=default)
 
@@ -173,7 +202,8 @@ class BoolArgument(Argument):
                  default: Optional[bool] = None,
                  required: bool = False,
                  true_options: Optional[Set[str]] = None,
-                 false_options: Optional[Set[str]] = None):
+                 false_options: Optional[Set[str]] = None,
+                 decorator: Optional[Argument.Decorator] = None):
         """
         :param names:           One or several names of the argument
         :param description:     An optional description of the argument
@@ -181,16 +211,20 @@ class BoolArgument(Argument):
         :param required:        True, if the argument is mandatory, False otherwise
         :param true_options:    The names of options that can be provided by the user in addition to the value "true"
         :param false_options:   The names of options that can be provided by the user in addition to the value "false"
+        :param decorator:       An optional decorator function that is given the value provided by the user for this
+                                argument and can modify it
         """
         super().__init__(*names,
                          default=None if default is None else (BooleanOption.TRUE if default else BooleanOption.FALSE),
                          help=self.__format_description(description,
                                                         bool(true_options) or bool(false_options)),
                          type=str if true_options or false_options else BooleanOption.parse,
-                         required=required)
+                         required=required,
+                         decorator=decorator)
         self.true_options = true_options if true_options else set()
         self.false_options = false_options if false_options else set()
 
+    @override
     def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
         value = super().get_value(args, default=default)
         true_options = self.true_options
@@ -239,7 +273,8 @@ class SetArgument(Argument):
                  values: Set[str] | Dict[str, Set[str]],
                  description: Optional[str] = None,
                  default: Optional[str] = None,
-                 required: bool = False):
+                 required: bool = False,
+                 decorator: Optional[Argument.Decorator] = None):
         """
         :param names:       One or several names of the argument
         :param values:      A set that contains the predefined values or a dictionary that contains the predefined
@@ -248,14 +283,18 @@ class SetArgument(Argument):
         :param description: An optional description of the argument
         :param default:     The default value
         :param required:    True, if the argument is mandatory, False otherwise
+        :param decorator:   An optional decorator function that is given the value provided by the user for this
+                            argument and can modify it
         """
         super().__init__(*names,
                          default=default,
                          help=self.__format_description(description, values),
                          type=str,
-                         required=required)
+                         required=required,
+                         decorator=decorator)
         self.supported_values = values
 
+    @override
     def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
         value = super().get_value(args, default=default)
 
@@ -280,13 +319,16 @@ class EnumArgument(SetArgument):
                  enum: Type[Enum],
                  description: Optional[str] = None,
                  default: Optional[Enum] = None,
-                 required: bool = False):
+                 required: bool = False,
+                 decorator: Optional[Argument.Decorator] = None):
         """
         :param names:       One or several names of the argument
         :param values:      An enum that contains the predefined values
         :param description: An optional description of the argument
         :param default:     The default value
         :param required:    True, if the argument is mandatory, False otherwise
+        :param decorator:   An optional decorator function that is given the value provided by the user for this
+                            argument and can modify it
         """
         super().__init__(
             *names,
@@ -294,9 +336,11 @@ class EnumArgument(SetArgument):
                     for x in enum},
             description=description,
             default=(default.value if isinstance(default.value, str) else default.name.lower()) if default else None,
-            required=required)
+            required=required,
+            decorator=decorator)
         self.enum = enum
 
+    @override
     def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
         value = super().get_value(args, default=default)
         return parse_enum(self.name, value, self.enum) if value else None

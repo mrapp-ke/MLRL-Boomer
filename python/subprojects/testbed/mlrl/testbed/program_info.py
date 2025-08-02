@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for providing the text to be shown when the "--version" flag is passed to the command line API.
 """
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import List, Optional, override
 
 from mlrl.util.format import format_iterable
 
@@ -38,6 +38,7 @@ class ProgramInfo:
 
         return 'Copyright (c)' + text if text else ''
 
+    @override
     def __str__(self) -> str:
         program_info = self.name + ' ' + self.version
         copyright_text = self.__get_copyright_text()

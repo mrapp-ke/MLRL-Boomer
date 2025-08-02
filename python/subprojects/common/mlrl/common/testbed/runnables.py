@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides base classes for programs that can be configured via command line arguments.
 """
 from argparse import Namespace
-from typing import Any, Dict, Optional, Set, Type
+from typing import Any, Dict, Optional, Set, Type, override
 
 from sklearn.base import BaseEstimator, ClassifierMixin as SkLearnClassifierMixin, \
     RegressorMixin as SkLearnRegressorMixin
@@ -57,6 +57,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
             self.max_size = max_size
             self.step_size = step_size
 
+        @override
         def create(self) -> Predictor:
             """
             See :func:`from mlrl.testbed_sklearn.experiments.problem_domain.SkLearnProblem.PredictorFactory.create`
@@ -79,6 +80,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
             true_options={OPTION_MIN_SIZE, OPTION_MAX_SIZE, OPTION_STEP_SIZE},
         )
 
+        @override
         def _get_arguments(self) -> Set[Argument]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
@@ -143,6 +145,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
             + 'on the argument ' + FEATURE_FORMAT.name + '.',
         )
 
+        @override
         def _get_arguments(self) -> Set[Argument]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
@@ -226,6 +229,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
         self.regressor_config_type = regressor_config_type
         self.regressor_parameters = regressor_parameters
 
+    @override
     def get_extensions(self) -> Set[Extension]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_extensions`
@@ -238,6 +242,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
             LabelVectorSetExtension(),
         }
 
+    @override
     def get_algorithmic_arguments(self, known_args: Namespace) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_algorithmic_arguments`

@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utilities for reading and writing pyproject.toml files.
 """
 from pathlib import Path
-from typing import Dict
+from typing import Dict, override
 
 from util.pip import Package, Requirement, RequirementsFile
 from util.toml_file import TomlFile
@@ -15,10 +15,12 @@ class PyprojectTomlFile(TomlFile, RequirementsFile):
     Represents a pyproject.toml file.
     """
 
+    @override
     @property
     def path(self) -> Path:
         return self.file
 
+    @override
     @property
     def requirements_by_package(self) -> Dict[Package, Requirement]:
         requirements = self.toml_dict.get('build-system', {}).get('requires', [])
@@ -27,6 +29,7 @@ class PyprojectTomlFile(TomlFile, RequirementsFile):
             for requirement in [Requirement.parse(requirement.strip('\n').strip()) for requirement in requirements]
         }
 
+    @override
     def update(self, outdated_requirement: Requirement, updated_requirement: Requirement):
         outdated_requirement_string = str(outdated_requirement)
         new_lines = []
