@@ -79,14 +79,16 @@ class ChangeDetection:
             cache = self.json
             module_cache = cache.setdefault(module_name, {})
 
-            for invalid_key in [file for file in module_cache.keys() if Path(file) not in files]:
+            for invalid_key in [key for key in module_cache.keys() if Path(key) not in files]:
                 del module_cache[invalid_key]
 
             for file in files:
+                key = str(file)
+
                 if file.exists():
-                    module_cache[str(file)] = self.__checksum(file)
+                    module_cache[key] = self.__checksum(file)
                 elif file in module_cache:
-                    del module_cache[str(file)]
+                    del module_cache[key]
 
             if module_cache:
                 cache[module_name] = module_cache
@@ -107,7 +109,8 @@ class ChangeDetection:
             :return:            True, if the file has changed, False otherwise
             """
             module_cache = self.json.get(module_name, {})
-            return file not in module_cache or module_cache[file] != self.__checksum(file)
+            key = str(file)
+            return key not in module_cache or module_cache[key] != self.__checksum(file)
 
     def __init__(self, cache_file: Path):
         """
