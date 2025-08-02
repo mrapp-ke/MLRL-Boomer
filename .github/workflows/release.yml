@@ -22,9 +22,3 @@ jobs:
     with:
       release_branch: ${{ github.ref_name }}
     secrets: inherit
-  close_milestone:
-    needs: build_doc
-    name: Close milestone
-    uses: ./.github/workflows/template_close_milestone.yml
-    with:
-      release_branch: ${{ github.ref_name }}
