@@ -3,12 +3,12 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for reading and writing files.
 """
-from os import path
+from pathlib import Path
 
 ENCODING_UTF8 = 'utf-8'
 
 
-def open_readable_file(file_path: str):
+def open_readable_file(file_path: Path):
     """
     Opens a file to be read from.
 
@@ -18,7 +18,7 @@ def open_readable_file(file_path: str):
     return open(file_path, mode='r', newline='', encoding=ENCODING_UTF8)
 
 
-def open_writable_file(file_path: str, append: bool = False):
+def open_writable_file(file_path: Path, append: bool = False):
     """
     Opens a file to be written to.
 
@@ -26,5 +26,5 @@ def open_writable_file(file_path: str, append: bool = False):
     :param append:      True, if new data should be appended to the file, if it already exists, False otherwise
     :return:            The file that has been opened
     """
-    mode = 'a' if append and path.isfile(file_path) else 'w'
+    mode = 'a' if append and file_path.is_file() else 'w'
     return open(file_path, mode=mode, encoding=ENCODING_UTF8)

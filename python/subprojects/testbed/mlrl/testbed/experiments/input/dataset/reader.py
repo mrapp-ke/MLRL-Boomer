@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow reading datasets from a source.
 """
 from dataclasses import replace
-from typing import List, Optional
+from typing import List, Optional, override
 
 from mlrl.testbed.experiments.input.dataset.dataset import InputDataset
 from mlrl.testbed.experiments.input.dataset.preprocessors import Preprocessor
@@ -38,6 +38,7 @@ class DatasetReader(InputReader):
             self.preprocessors.extend(preprocessors)
         return self
 
+    @override
     def read(self, state: ExperimentState) -> ExperimentState:
         """
         See :func:`mlrl.testbed.experiments.input.reader.InputReader.read`

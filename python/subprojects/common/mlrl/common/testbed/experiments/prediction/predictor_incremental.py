@@ -6,7 +6,7 @@ members.
 """
 import logging as log
 
-from typing import Any, Generator
+from typing import Any, Generator, override
 
 from sklearn.base import BaseEstimator
 
@@ -51,6 +51,7 @@ class IncrementalPredictor(Predictor):
             """
             self._model_size = model_size
 
+        @override
         @property
         def model_size(self) -> int:
             """
@@ -71,6 +72,7 @@ class IncrementalPredictor(Predictor):
         self.max_size = max_size
         self.step_size = step_size
 
+    @override
     def obtain_predictions(self, learner: Any, dataset: Dataset, dataset_type: DatasetType,
                            **kwargs) -> Generator[PredictionState, None, None]:
         """

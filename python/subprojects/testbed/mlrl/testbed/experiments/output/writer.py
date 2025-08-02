@@ -6,7 +6,7 @@ Provides classes for writing output data to sinks.
 import logging as log
 
 from abc import ABC, abstractmethod
-from typing import Any, List, Optional
+from typing import Any, List, Optional, override
 
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks import Sink
@@ -114,8 +114,10 @@ class OutputWriter:
         """
         sink.write_to_sink(state, output_data)
 
+    @override
     def __eq__(self, other: Any) -> bool:
         return isinstance(other, type(self))
 
+    @override
     def __hash__(self) -> int:
         return hash(type(self))

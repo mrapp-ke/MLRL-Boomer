@@ -5,7 +5,7 @@ Provides classes that allow writing evaluation results according to classificati
 sinks.
 """
 
-from typing import Any
+from typing import Any, override
 
 import numpy as np
 
@@ -28,6 +28,7 @@ class ClassificationEvaluationDataExtractor(EvaluationDataExtractor):
     Obtains evaluation results according to classification evaluation measures.
     """
 
+    @override
     def _update_measurements(self, measurements: Measurements, index: int, ground_truth: Any, predictions: Any,
                              options: Options):
         if is_multilabel(ground_truth):

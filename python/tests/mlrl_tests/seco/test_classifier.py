@@ -2,7 +2,7 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 # pylint: disable=missing-function-docstring
-from typing import Any, Optional
+from typing import Any, Optional, override
 
 import pytest
 
@@ -27,6 +27,7 @@ class TestSeCoClassifier(ClassificationIntegrationTests):
     Defines a series of integration tests for the separate-and-conquer (SeCo) algorithm for classification problems.
     """
 
+    @override
     def _create_cmd_builder(self, dataset: str = Dataset.EMOTIONS) -> Any:
         return SeCoClassifierCmdBuilder(dataset=dataset)
 

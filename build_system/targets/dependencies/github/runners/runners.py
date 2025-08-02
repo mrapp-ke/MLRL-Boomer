@@ -8,7 +8,7 @@ import re
 
 from dataclasses import dataclass, replace
 from functools import cached_property
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple, override
 from xml.etree import ElementTree
 
 from core.build_unit import BuildUnit
@@ -46,6 +46,7 @@ class RunnerVersion:
         """
         return [] if self.is_latest() else [int(version_number) for version_number in str(self).split(self.SEPARATOR)]
 
+    @override
     def __str__(self) -> str:
         return self.version
 
@@ -107,6 +108,7 @@ class Runner:
         """
         return self.image + (self.SEPARATOR + self.architecture if self.architecture else '')
 
+    @override
     def __str__(self) -> str:
         result = self.image + self.SEPARATOR + str(self.version)
 
@@ -115,9 +117,11 @@ class Runner:
 
         return result
 
+    @override
     def __eq__(self, other: Any) -> bool:
         return isinstance(other, type(self)) and str(self) == str(other)
 
+    @override
     def __hash__(self) -> int:
         return hash(str(self))
 
@@ -184,6 +188,7 @@ class Runners(Workflow):
 
         self.write_lines(*updated_lines)
 
+    @override
     def write_lines(self, *lines: str):
         super().write_lines(*lines)
 
@@ -210,12 +215,15 @@ class RunnerUpdater(Workflows):
         runner: Runner
         latest_version: RunnerVersion
 
+        @override
         def __str__(self) -> str:
             return str(self.runner)
 
+        @override
         def __eq__(self, other: Any) -> bool:
             return isinstance(other, type(self)) and self.runner == other.runner
 
+        @override
         def __hash__(self) -> int:
             return hash(self.runner)
 
@@ -231,12 +239,15 @@ class RunnerUpdater(Workflows):
         previous: 'RunnerUpdater.OutdatedRunner'
         updated: Runner
 
+        @override
         def __str__(self) -> str:
             return str(self.updated)
 
+        @override
         def __eq__(self, other: Any) -> bool:
             return isinstance(other, type(self)) and self.updated == other.updated
 
+        @override
         def __hash__(self) -> int:
             return hash(self.updated)
 
