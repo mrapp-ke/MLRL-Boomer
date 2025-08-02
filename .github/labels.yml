@@ -1,0 +1,40 @@
+---
+ci:
+  - changed-files:
+      - any-glob-to-any-file: github/**
+build-system:
+  - changed-files:
+      - any-glob-to-any-file: build_system/**
+documentation:
+  - changed-files:
+      - any-glob-to-any-file: doc/**
+common:
+  - changed-files:
+      - any-glob-to-any-file:
+          - python/subprojects/common/**
+          - cpp/subprojects/common/**
+boosting:
+  - changed-files:
+      - any-glob-to-any-file:
+          - python/subprojects/boosting/**
+          - cpp/subprojects/boosting/**
+seco:
+  - changed-files:
+      - any-glob-to-any-file:
+          - python/subprojects/seco/**
+          - cpp/subprojects/seco/**
+testbed:
+  - changed-files:
+      - any-glob-to-any-file: python/subprojects/testbed/**
+testbed-arff:
+  - changed-files:
+      - any-glob-to-any-file: python/subprojects/testbed-arff/**
+testbed-sklearn:
+  - changed-files:
+      - any-glob-to-any-file: python/subprojects/testbed-sklearn/**
+util:
+  - changed-files:
+      - any-glob-to-any-file: python/subprojects/util/**
+tests:
+  - changed-files:
+      - any-glob-to-any-file: python/tests/**
