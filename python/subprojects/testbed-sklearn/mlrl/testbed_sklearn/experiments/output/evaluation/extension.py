@@ -55,7 +55,7 @@ class EvaluationExtension(Extension):
         },
     )
 
-    SAVE_EVALUATION_RESULTS = BoolArgument(
+    SAVE_EVALUATION = BoolArgument(
         '--save-evaluation',
         default=False,
         description='Whether evaluation results should be written to output files or not.',
@@ -91,7 +91,7 @@ class EvaluationExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return {self.PRINT_EVALUATION, self.SAVE_EVALUATION_RESULTS}
+        return {self.PRINT_EVALUATION, self.SAVE_EVALUATION}
 
     def __configure_log_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         print_all = OutputExtension.PRINT_ALL.get_value(args)
@@ -102,7 +102,7 @@ class EvaluationExtension(Extension):
 
     def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         save_all = OutputExtension.SAVE_ALL.get_value(args)
-        save_evaluation_results, options = self.SAVE_EVALUATION_RESULTS.get_value(args, default=save_all)
+        save_evaluation_results, options = self.SAVE_EVALUATION.get_value(args, default=save_all)
         result_directory = ResultDirectoryExtension.RESULT_DIR.get_value(args)
 
         if save_evaluation_results and result_directory:
