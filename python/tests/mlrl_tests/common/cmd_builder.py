@@ -209,6 +209,28 @@ class CmdBuilder:
         self.args.append(value)
         return self
 
+    def print_all(self, print_all: bool = True):
+        """
+        Configures whether all experimental results should be printed on the console or not.
+
+        :param print_all:   True, if all experimental results should be printed, False otherwise
+        :return:            The builder itself
+        """
+        self.args.append('--print-all')
+        self.args.append(str(print_all).lower())
+        return self
+
+    def store_all(self, store_all: bool = True):
+        """
+        Configures whether all experimental results should be written to output files or not.
+
+        :param store_all:   True, if the all experimental results should be written to output files, False otherwise
+        :return:            The builder itself
+        """
+        self.args.append('--store-all')
+        self.args.append(str(store_all).lower())
+        return self
+
     def print_evaluation(self, print_evaluation: bool = True):
         """
         Configures whether the evaluation results should be printed on the console or not.

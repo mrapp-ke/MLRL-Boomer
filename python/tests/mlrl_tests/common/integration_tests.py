@@ -46,6 +46,16 @@ class IntegrationTests(ABC):
             .set_show_help()
         CmdRunner(builder).run('help')
 
+    def test_print_all(self):
+        builder = self._create_cmd_builder() \
+            .print_all(True)
+        CmdRunner(builder).run('print-all')
+
+    def test_store_all(self):
+        builder = self._create_cmd_builder() \
+            .store_all(True)
+        CmdRunner(builder).run('store-all')
+
     def test_single_output(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.single_output) \
             .print_evaluation()
