@@ -19,15 +19,12 @@ class Pytest(PythonModule):
 
     @staticmethod
     def __get_marker_arguments(module: PythonTestModule) -> List[str]:
-        markers = list(module.markers)
         test_name = module.test_name
-
-        if test_name is not None:
-            return ['-k', str(test_name)]
+        arguments = ['-k', str(test_name)] if test_name else []
 
         num_blocks = module.num_blocks
         block_index = module.block_index
-        arguments: List[str] = []
+        markers = list(module.markers)
 
         if num_blocks is not None and block_index is not None:
             markers.append('block-' + str(block_index))
