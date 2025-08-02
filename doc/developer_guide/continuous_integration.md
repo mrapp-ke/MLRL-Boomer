@@ -49,3 +49,10 @@ The CI jobs listed below are run periodically to perform different maintenance t
 - {repo-file}`update_github_runners.yml <.github/workflows/update_github_runners.yml>` checks for outdated GitHub runners used in the project's CI workflows. If outdated runners are found, they are automatically updated via a pull request. Manual intervention is only needed if the pull request results in any {ref}`test failures <ci-testing>`.
 - {repo-file}`update_dependencies_build.yml <.github/workflows/update_dependencies_build.yml>` and {repo-file}`update_dependencies_runtime.yml <.github/workflows/update_dependencies_runtime.yml>` search for outdated build- and runtime dependencies in the project's `requirements.txt` or `pyproject.template.toml` files, required by the project's build system and for running its algorithms, respectively. In addition, the latter does also update the supported Python versions, if a new Python release is available. If any changes have been made, a pull request is opened. If all {ref}`necessary checks <ci-testing>` are successful, the pull request is merged. Otherwise, manual intervention is needed.
 - {repo-file}`update_doxyfile.yml <.github/workflows/update_doxyfile.yml>` updates the [Doxygen](https://doxygen.nl) configuration file, required for generating API documentations for C++ code, to stay up-to-date as new versions of this software are released.
+
+## Chore
+
+The following CI jobs do not modify the project's source code, but help with common workflows.
+
+- {repo-file}`chore_set_pull_request_labels <.github/workflows/chore_set_pull_request_labels.yml>` automatically assigns labels to newly opened pull requests, depending on the paths they modify.
+- {repo-file}`chore_set_pull_request_milestone <.github/workflows/chore_set_pull_request_milestone.yml>` sets the milestone of pull requests to the version number of the upcoming release, they will be included in.
