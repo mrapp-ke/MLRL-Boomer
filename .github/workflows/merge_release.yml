@@ -46,40 +46,79 @@ jobs:
           git push origin bugfix
       - name: Update major version
         if: ${{ github.event.release.target_commitish == 'main' }}
+        id: main-release
         run: |
           git switch main
+          export MAIN_VERSION="$(cat build_system/res/versioning/version)"
           ./build increment_major_version
           git add build_system/res/versioning/version
-          git commit -m "[Bot] Update version to $(cat build_system/res/versioning/version)."
+          git commit -m "[Bot] Update version from ${MAIN_VERSION} to $(cat build_system/res/versioning/version)."
           git push origin main
           git switch feature
+          export FEATURE_VERSION="$(cat build_system/res/versioning/version)"
           ./build increment_minor_version
           git add build_system/res/versioning/version
-          git commit -m "[Bot] Update version to $(cat build_system/res/versioning/version)."
+          git commit -m "[Bot] Update version to from ${FEATURE_VERSION} $(cat build_system/res/versioning/version)."
           git push origin feature
           git switch bugfix
+          export BUGFIX_VERSION="$(cat build_system/res/versioning/version)"
           ./build increment_patch_version
           git add build_system/res/versioning/version
-          git commit -m "[Bot] Update version to $(cat build_system/res/versioning/version)."
+          git commit -m "[Bot] Update version from ${BUGFIX_VERSION} to $(cat build_system/res/versioning/version)."
           git push origin bugfix
+          echo "MAIN_VERSION=MAIN_VERSION" >> $GITHUB_OUTPUT
+          echo "FEATURE_VERSION=$FEATURE_VERSION" >> $GITHUB_OUTPUT
+          echo "BUGFIX_VERSION=$BUGFIX_VERSION)" >> $GITHUB_OUTPUT
       - name: Update minor version
         if: ${{ github.event.release.target_commitish == 'feature' }}
+        id: feature-release
         run: |
           git switch feature
+          export FEATURE_VERSION="$(cat build_system/res/versioning/version)"
           ./build increment_minor_version
           git add build_system/res/versioning/version
-          git commit -m "[Bot] Update version to $(cat build_system/res/versioning/version)."
+          git commit -m "[Bot] Update version from ${FEATURE_VERSION} to $(cat build_system/res/versioning/version)."
           git push origin feature
           git switch bugfix
+          export BUGFIX_VERSION="$(cat build_system/res/versioning/version)"
           ./build increment_patch_version
           git add build_system/res/versioning/version
-          git commit -m "[Bot] Update version to $(cat build_system/res/versioning/version)."
+          git commit -m "[Bot] Update version from ${BUGFIX_VERSION} to $(cat build_system/res/versioning/version)."
           git push origin bugfix
+          echo "FEATURE_VERSION=$FEATURE_VERSION" >> $GITHUB_OUTPUT
+          echo "BUGFIX_VERSION=$BUGFIX_VERSION)" >> $GITHUB_OUTPUT
       - name: Update patch version
         if: ${{ github.event.release.target_commitish == 'bugfix' }}
+        id: bugfix-release
         run: |-
           git switch bugfix
+          export BUGFIX_VERSION="$(cat build_system/res/versioning/version)"
           ./build increment_patch_version
           git add build_system/res/versioning/version
-          git commit -m "[Bot] Update version to $(cat build_system/res/versioning/version)."
+          git commit -m "[Bot] Update version from ${BUGFIX_VERSION} to $(cat build_system/res/versioning/version)."
           git push origin bugfix
+          echo "BUGFIX_VERSION=BUGFIX_VERSION" >> $GITHUB_OUTPUT
+      - name: Close major milestone
+        uses: Beakyn/gha-close-milestone@v1.1.1
+        if: ${{ steps.main-release.outputs.MAIN_VERSION }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          repository: ${{ github.repository }}
+          milestone-title: ${{ steps.main-release.outputs.MAIN_VERSION }}
+      - name: Close minor milestone
+        uses: Beakyn/gha-close-milestone@v1.1.1
+        if: ${{ steps.main-release.outputs.FEATURE_VERSION || steps.feature-release.FEATURE_VERSION }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          repository: ${{ github.repository }}
+          milestone-title: ${{ steps.main-release.outputs.FEATURE_VERSION || steps.feature-release.outputs.FEATURE_VERSION }}
+      - name: Close patch milestone
+        uses: Beakyn/gha-close-milestone@v1.1.1
+        if: ${{ steps.main-release.outputs.BUGFIX_VERSION || steps.feature-release.outputs.BUGFIX_VERSION || steps.bugfix-release.outputs.BUGFIX_VERSION }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          repository: ${{ github.repository }}
+          milestone-title: ${{ steps.main-release.outputs.BUGFIX_VERSION || steps.feature-release.outputs.BUGFIX_VERSION || steps.bugfix-release.outputs.BUGFIX_VERSION }}
