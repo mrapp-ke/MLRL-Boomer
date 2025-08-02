@@ -29,7 +29,6 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
 
     PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL = BoolArgument(
         '--print-marginal-probability-calibration-model',
-        default=False,
         description='Whether the model for the calibration of marginal probabilities should be printed on the console '
         + 'or not.',
         true_options={OPTION_DECIMALS},
@@ -37,7 +36,6 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
 
     SAVE_MARGINAL_PROBABILITY_CALIBRATION_MODEL = BoolArgument(
         '--save-marginal-probability-calibration-model',
-        default=False,
         description='Whether the model for the calibration of marginal probabilities should be written to an output '
         + 'file or not.',
         true_options={OPTION_DECIMALS},
@@ -97,7 +95,6 @@ class JointProbabilityCalibrationModelExtension(Extension):
 
     PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL = BoolArgument(
         '--print-joint-probability-calibration-model',
-        default=False,
         description='Whether the model for the calibration of joint probabilities should be printed on the console or '
         + 'not.',
         true_options={OPTION_DECIMALS},
@@ -105,7 +102,6 @@ class JointProbabilityCalibrationModelExtension(Extension):
 
     SAVE_JOINT_PROBABILITY_CALIBRATION_MODEL = BoolArgument(
         '--save-joint-probability-calibration-model',
-        default=False,
         description='Whether the model for the calibration of joint probabilities should be written to an output file '
         + 'or not.',
         true_options={OPTION_DECIMALS},

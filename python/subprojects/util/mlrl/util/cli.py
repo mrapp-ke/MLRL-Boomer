@@ -226,22 +226,24 @@ class BoolArgument(Argument):
 
     @override
     def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
-        value = str(super().get_value(args, default=default)).lower()
+        value = super().get_value(args, default=default)
+        true_options = self.true_options
+        false_options = self.false_options
+        has_options = bool(true_options) or bool(false_options)
 
-        if value:
-            true_options = self.true_options
-            false_options = self.false_options
+        if value is not None:
+            str_value = str(value).lower()
 
-            if true_options or false_options:
-                value, options = parse_param_and_options(self.key, value, {
+            if has_options:
+                str_value, options = parse_param_and_options(self.key, str_value, {
                     str(BooleanOption.TRUE): true_options,
                     str(BooleanOption.FALSE): false_options
                 })
-                return BooleanOption.parse(value), options
+                return BooleanOption.parse(str_value), options
 
-            return BooleanOption.parse(value)
+            return BooleanOption.parse(str_value)
 
-        return None
+        return None, None if has_options else None
 
 
 class SetArgument(Argument):
