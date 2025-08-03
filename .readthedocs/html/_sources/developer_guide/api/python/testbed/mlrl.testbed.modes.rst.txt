@@ -1,0 +1,17 @@
+mlrl.testbed.modes package
+==========================
+
+.. automodule:: mlrl.testbed.modes
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed.modes.mode
+   mlrl.testbed.modes.mode_batch
+   mlrl.testbed.modes.mode_single
