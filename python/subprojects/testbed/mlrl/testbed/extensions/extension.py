@@ -10,10 +10,9 @@ from typing import Any, Set, Type, override
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.modes import Mode
+from mlrl.testbed.modes.mode_batch import BatchMode
 
 from mlrl.util.cli import Argument
-
-from mlrl.testbed.modes.mode_batch import BatchExperimentMode
 
 
 class Extension(ABC):
@@ -88,7 +87,7 @@ class Extension(ABC):
         :param experiment_builder:  A builder that allows to configure the experiment
         """
 
-    def configure_batch_mode(self, args: Namespace, batch_mode: BatchExperimentMode):
+    def configure_batch_mode(self, args: Namespace, batch_mode: BatchMode):
         """
         May be overridden by subclasses in order to configure the batch mode according to the command line arguments
         specified by the user.

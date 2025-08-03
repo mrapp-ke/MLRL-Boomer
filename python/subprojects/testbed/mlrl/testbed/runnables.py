@@ -16,7 +16,7 @@ from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.extensions import Extension
 from mlrl.testbed.extensions.extension_log import LogExtension
 from mlrl.testbed.modes import Mode
-from mlrl.testbed.modes.mode_batch import BatchExperimentMode
+from mlrl.testbed.modes.mode_batch import BatchMode
 from mlrl.testbed.program_info import ProgramInfo
 
 from mlrl.util.cli import Argument, BoolArgument, CommandLineInterface
@@ -126,11 +126,11 @@ class Runnable(Recipe, ABC):
 
         mode.run_experiment(args, RecipeWrapper(self))
 
-    def configure_batch_mode(self, cli: CommandLineInterface) -> BatchExperimentMode:
+    def configure_batch_mode(self, cli: CommandLineInterface) -> BatchMode:
         """
         Configures the batch mode according to the extensions applied to the runnable.
         """
-        batch_mode = BatchExperimentMode(self.create_batch_config_file_factory())
+        batch_mode = BatchMode(self.create_batch_config_file_factory())
         args = cli.parse_known_args()
 
         for extension in self.extensions:
@@ -164,7 +164,7 @@ class Runnable(Recipe, ABC):
         return set()
 
     @abstractmethod
-    def create_batch_config_file_factory(self) -> BatchExperimentMode.ConfigFile.Factory:
+    def create_batch_config_file_factory(self) -> BatchMode.ConfigFile.Factory:
         """
         Must be implemented by subclasses in order to create the factory that allows to create the configuration file
         that configures the batch of experiments to be run in batch mode.
