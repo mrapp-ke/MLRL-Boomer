@@ -11,7 +11,7 @@ from typing import List, Set, override
 from mlrl.common.testbed.experiments.output.characteristics.model.writer import RuleModelCharacteristicsWriter
 
 from mlrl.testbed.experiments.experiment import Experiment
-from mlrl.testbed.experiments.output.extension import OutputExtension
+from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
@@ -39,7 +39,7 @@ class RuleModelCharacteristicsExtension(Extension):
         """
         :param dependencies: Other extensions, this extension depends on
         """
-        super().__init__(OutputExtension(), *dependencies)
+        super().__init__(OutputExtension(), ResultDirectoryExtension(), *dependencies)
 
     @override
     def _get_arguments(self) -> Set[Argument]:
@@ -55,7 +55,7 @@ class RuleModelCharacteristicsExtension(Extension):
 
     def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
         value = self.SAVE_MODEL_CHARACTERISTICS.get_value(args, default=OutputExtension.SAVE_ALL.get_value(args))
-        result_directory = OutputExtension.RESULT_DIR.get_value(args)
+        result_directory = ResultDirectoryExtension.RESULT_DIR.get_value(args)
 
         if value and result_directory:
             return [
