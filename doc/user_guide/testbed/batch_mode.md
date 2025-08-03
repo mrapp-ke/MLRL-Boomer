@@ -51,6 +51,10 @@ parameters:
 
 The YAML file must contain the definition of at least one dataset (a schema file can be found {repo-file}`here <python/subprojects/testbed-sklearn/mlrl/testbed_sklearn/batch_config.schema.yml>`), consisting of the path to the directory where the dataset is located, as well as the name of the dataset (see {ref}`testbed-datasets`). In addition, several parameters and corresponding values can be specified. Each combination of the values given for different parameters will be used in experiments conducted on each available dataset. If two or more parameter values should be set jointly, they can be listed under `additional_arguments`.
 
+```{tip}
+By default, when using a cross validation, a separate experiment is run for each cross validation fold. If a single experiment should perform all folds, the default behavior can be disabled via the argument `--separate-folds false`. 
+```
+
 ## Listing Commands
 
 Before any experiments are started, the given command line arguments and the configuration file are validated. If a problem is found with either of them, you receive immediate feedback in the form of an error message. Nevertheless, we recommend to take a look at the commands that will be run as part of a batch. For this purpose, the flag `--list` can be specified:

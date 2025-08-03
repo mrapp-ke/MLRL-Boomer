@@ -1,0 +1,16 @@
+Rule,conditions,neg. predictions,nominal != operator,nominal == operator,nominal conditions,numerical <= operator,numerical > operator,numerical conditions,ordinal <= operator,ordinal > operator,ordinal conditions,pos. predictions,predictions
+Rule 1 (Default rule),0,6,0,0,0,0,0,0,0,0,0,0,6
+Rule 2,1,0,0,0,0,1,0,1,0,0,0,1,1
+Rule 3,3,0,0,0,0,1,2,3,0,0,0,1,1
+Rule 4,1,0,0,0,0,1,0,1,0,0,0,1,1
+Rule 5,2,0,0,0,0,2,0,2,0,0,0,1,1
+Rule 6,2,0,0,0,0,1,1,2,0,0,0,1,1
+Rule 7,4,0,0,0,0,3,1,4,0,0,0,1,1
+Rule 8,2,0,0,0,0,0,2,2,0,0,0,1,1
+Rule 9,2,0,0,0,0,1,1,2,0,0,0,1,1
+Rule 10,3,0,0,0,0,0,3,3,0,0,0,1,1
+Rule 11,2,0,0,0,0,1,1,2,0,0,0,1,1
+Rule 12,3,0,0,0,0,2,1,3,0,0,0,1,1
+Rule 13,1,0,0,0,0,0,1,1,0,0,0,1,1
+Rule 14,2,0,0,0,0,1,1,2,0,0,0,1,1
+Rule 15,3,0,0,0,0,1,2,3,0,0,0,1,1

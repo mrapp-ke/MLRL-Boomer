@@ -8,6 +8,7 @@ from argparse import Namespace
 from pathlib import Path
 from typing import List, Set, Type, override
 
+from mlrl.testbed.command import ArgumentList
 from mlrl.testbed.experiments.input.dataset.dataset import InputDataset
 from mlrl.testbed.experiments.input.dataset.reader import DatasetReader
 from mlrl.testbed.experiments.input.sources import FileSource, Source
@@ -103,7 +104,7 @@ class DatasetFileExtension(DatasetExtension, ABC):
         """
 
     @staticmethod
-    def parse_dataset_args_from_config(config: BatchExperimentMode.ConfigFile) -> List[List[str]]:
+    def parse_dataset_args_from_config(config: BatchExperimentMode.ConfigFile) -> List[ArgumentList]:
         """
         Parses and returns the command line arguments for using the datasets specified in a configuration file.
 
@@ -126,9 +127,10 @@ class DatasetFileExtension(DatasetExtension, ABC):
                 dataset_names = list(names)
 
             for dataset_name in dataset_names:
-                dataset_args.append([
-                    DatasetFileExtension.DATASET_DIRECTORY.name, dataset_dict['directory'],
-                    DatasetFileExtension.DATASET_NAME.name, dataset_name
-                ])
+                dataset_args.append(
+                    ArgumentList([
+                        DatasetFileExtension.DATASET_DIRECTORY.name, dataset_dict['directory'],
+                        DatasetFileExtension.DATASET_NAME.name, dataset_name
+                    ]))
 
         return dataset_args
