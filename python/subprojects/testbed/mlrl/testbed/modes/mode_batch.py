@@ -270,7 +270,7 @@ class BatchExperimentMode(Mode):
         return argument_list.filter(*BatchExperimentMode.CONFIG_FILE.names, *Mode.MODE.names,
                                     BatchExperimentMode.LIST_COMMANDS.name).to_dict()
 
-    def __init__(self, config_file_factory: Optional[ConfigFile.Factory]):
+    def __init__(self, config_file_factory: Optional[ConfigFile.Factory] = None):
         """
         :param config_file_factory: A factory that allows to create the configuration file that configures the batch of
                                     experiments to be run or None, if no such factory is available
