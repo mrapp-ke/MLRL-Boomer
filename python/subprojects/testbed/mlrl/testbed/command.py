@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for dealing with commands and their arguments.
 """
 from argparse import Namespace
+from copy import copy
 from dataclasses import dataclass
 from itertools import chain
 from typing import Dict, Iterable, List, Optional, override
@@ -96,6 +97,7 @@ class Command(Iterable[str]):
         :return:            The modified namespace
         """
         argument_list = self.argument_list
+        modified_namespace = copy(namespace)
 
         for i, argument in enumerate(argument_list):
             if argument.startswith('-'):
@@ -108,9 +110,9 @@ class Command(Iterable[str]):
                     if not next_argument.startswith('-'):
                         argument_value = next_argument
 
-                setattr(namespace, argument_name, argument_value if argument_value else True)
+                setattr(modified_namespace, argument_name, argument_value if argument_value else True)
 
-        return namespace
+        return modified_namespace
 
     @override
     def __iter__(self):
