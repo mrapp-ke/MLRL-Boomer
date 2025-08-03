@@ -1,6 +1,7 @@
 mlrl-testbed mlrl.boosting --mode batch --help
 usage: mlrl-testbed [-r RUNNABLE] [-v] [--mode MODE] [--config CONFIG]
-                    [--list] [--base-dir BASE_DIR]
+                    [--separate-folds SEPARATE_FOLDS] [--list]
+                    [--base-dir BASE_DIR]
                     [--binary-predictor BINARY_PREDICTOR]
                     [--create-dirs CREATE_DIRS] [--data-split DATA_SPLIT]
                     [--default-rule DEFAULT_RULE]
@@ -84,6 +85,10 @@ options:
                         {"batch", "single"}.
   --config CONFIG       An absolute or relative path to a YAML file that
                         configures the batch of experiments to be run.
+  --separate-folds SEPARATE_FOLDS
+                        Whether separate experiments should be run for the
+                        individual folds of a cross validation or not. Must be
+                        one of {"false", "true"}.
   --list                Lists the commands for running individual experiments
                         instead of executing them.
   --base-dir BASE_DIR   If relative paths to directories, where files should
