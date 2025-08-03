@@ -40,7 +40,7 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
-            .save_evaluation_results(False) \
+            .save_evaluation(False) \
             .print_label_vectors() \
             .save_label_vectors()
         CmdRunner(builder).run(f'label-vectors_{data_split}' + (f'_{data_split_options}' if data_split_options else ''))

@@ -30,6 +30,7 @@ dependencies = [
     "mlrl-testbed-sklearn",
     "mlrl-util",
     "tabulate",
+    "yamale",
 ]
 
 [project.urls]

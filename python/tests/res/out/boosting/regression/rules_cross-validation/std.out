@@ -1,14 +1,14 @@
-mlrl-testbed mlrl.boosting --log-level debug --data-dir python/tests/res/data --dataset atp7d --base-dir python/tests/res/tmp --result-dir results --save-evaluation true --problem-type regression --data-split cross-validation --print-evaluation false --save-evaluation false --print-rules true --save-rules true
-INFO Starting experiment using the regression algorithm "BoomerRegressor"...
-INFO Performing full 10-fold cross validation...
-INFO Fold 1 / 10:
-DEBUG Reading input data from file "python/tests/res/data/atp7d.arff"...
-DEBUG Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
-INFO Fitting model to 266 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the regression scores of the training examples
-INFO Successfully fit model in <duration>
-INFO Model (Fold 1):
+mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --save-evaluation true --problem-type regression --data-split cross-validation --print-evaluation false --save-evaluation false --print-rules true --save-rules true
+Starting experiment using the regression algorithm "BoomerRegressor"...
+Performing full 10-fold cross validation...
+Fold 1 / 10:
+Reading input data from file "python/tests/res/data/atp7d.arff"...
+Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
+Fitting model to 266 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the regression scores of the training examples
+Successfully fit model in <duration>
+Model (Fold 1):
 
 {} => (LBL+ALLminpA+bt7d_000 = 275.56, LBL+ALLminp0+bt7d_000 = 335.45, LBL+aDLminpA+bt7d_000 = 369.96, LBL+aCOminpA+bt7d_000 = 395.42, LBL+aFLminpA+bt7d_000 = 293.82, LBL+aUAminpA+bt7d_000 = 394.12)
 {aUAavgp0 > 653.50 & aMULTminp0 > 389.00} => (LBL+ALLminpA+bt7d_000 = 25.56, LBL+ALLminp0+bt7d_000 = 96.54, LBL+aDLminpA+bt7d_000 = 78.12, LBL+aCOminpA+bt7d_000 = 81.32, LBL+aFLminpA+bt7d_000 = 30.45, LBL+aUAminpA+bt7d_000 = 84.05)
@@ -1012,13 +1012,13 @@ INFO Model (Fold 1):
 {aDLminp4'l2 <= 279.50 & aAAavgp4'l1 <= 493.88 & ALLnumquotesA > 486.50} => (LBL+ALLminpA+bt7d_000 = 0.08, LBL+ALLminp0+bt7d_000 = -0.09, LBL+aDLminpA+bt7d_000 = 0.13, LBL+aCOminpA+bt7d_000 = 0.03, LBL+aFLminpA+bt7d_000 = -0.15, LBL+aUAminpA+bt7d_000 = 0.22)
 
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/rules_fold-1.txt"...
-INFO Fold 2 / 10:
-INFO Fitting model to 266 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the regression scores of the training examples
-INFO Successfully fit model in <duration>
-INFO Model (Fold 2):
+Writing output data to file "python/tests/res/tmp/results/rules_fold-1.txt"...
+Fold 2 / 10:
+Fitting model to 266 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the regression scores of the training examples
+Successfully fit model in <duration>
+Model (Fold 2):
 
 {} => (LBL+ALLminpA+bt7d_000 = 276.97, LBL+ALLminp0+bt7d_000 = 335.85, LBL+aDLminpA+bt7d_000 = 370.63, LBL+aCOminpA+bt7d_000 = 395.86, LBL+aFLminpA+bt7d_000 = 295.45, LBL+aUAminpA+bt7d_000 = 394.66)
 {aUAavgp0 > 991.00} => (LBL+ALLminpA+bt7d_000 = 28.75, LBL+ALLminp0+bt7d_000 = 92.55, LBL+aDLminpA+bt7d_000 = 75.93, LBL+aCOminpA+bt7d_000 = 91.84, LBL+aFLminpA+bt7d_000 = 36.83, LBL+aUAminpA+bt7d_000 = 95.39)
@@ -2022,13 +2022,13 @@ INFO Model (Fold 2):
 {aSYminpA <= 517.00 & aOTHERnumquotesA'l2 > 1163.50 & aAAavgp4 > 482.46} => (LBL+ALLminpA+bt7d_000 = 0.12, LBL+ALLminp0+bt7d_000 = -0.07, LBL+aDLminpA+bt7d_000 = 0.34, LBL+aCOminpA+bt7d_000 = -0.11, LBL+aFLminpA+bt7d_000 = -0.34, LBL+aUAminpA+bt7d_000 = -0.32)
 
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/rules_fold-2.txt"...
-INFO Fold 3 / 10:
-INFO Fitting model to 266 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the regression scores of the training examples
-INFO Successfully fit model in <duration>
-INFO Model (Fold 3):
+Writing output data to file "python/tests/res/tmp/results/rules_fold-2.txt"...
+Fold 3 / 10:
+Fitting model to 266 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the regression scores of the training examples
+Successfully fit model in <duration>
+Model (Fold 3):
 
 {} => (LBL+ALLminpA+bt7d_000 = 275.28, LBL+ALLminp0+bt7d_000 = 333.59, LBL+aDLminpA+bt7d_000 = 368.73, LBL+aCOminpA+bt7d_000 = 396.55, LBL+aFLminpA+bt7d_000 = 292.30, LBL+aUAminpA+bt7d_000 = 395.04)
 {aAAavgpA'l2 <= 645.00 & aUAavgp0 > 653.50 & aAAavgp4 > 565.86} => (LBL+ALLminpA+bt7d_000 = 33.44, LBL+ALLminp0+bt7d_000 = 110.53, LBL+aDLminpA+bt7d_000 = 90.83, LBL+aCOminpA+bt7d_000 = 79.13, LBL+aFLminpA+bt7d_000 = 41.28, LBL+aUAminpA+bt7d_000 = 82.29)
@@ -3032,13 +3032,13 @@ INFO Model (Fold 3):
 {aDLavgp2'l1 <= 476.64 & aOTHERavgp2 <= 484.46 & ALLnumquotes4'l1 <= 375.50 & aDLnumquotes2 > 348.50 & aMULTminp2'l2 > 342.00 & aUSavgp2 > 439.26} => (LBL+ALLminpA+bt7d_000 = 0.14, LBL+ALLminp0+bt7d_000 = -0.32, LBL+aDLminpA+bt7d_000 = -0.38, LBL+aCOminpA+bt7d_000 = 0.20, LBL+aFLminpA+bt7d_000 = -0.22, LBL+aUAminpA+bt7d_000 = 0.07)
 
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/rules_fold-3.txt"...
-INFO Fold 4 / 10:
-INFO Fitting model to 266 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the regression scores of the training examples
-INFO Successfully fit model in <duration>
-INFO Model (Fold 4):
+Writing output data to file "python/tests/res/tmp/results/rules_fold-3.txt"...
+Fold 4 / 10:
+Fitting model to 266 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the regression scores of the training examples
+Successfully fit model in <duration>
+Model (Fold 4):
 
 {} => (LBL+ALLminpA+bt7d_000 = 277.85, LBL+ALLminp0+bt7d_000 = 339.87, LBL+aDLminpA+bt7d_000 = 373.73, LBL+aCOminpA+bt7d_000 = 400.43, LBL+aFLminpA+bt7d_000 = 295.90, LBL+aUAminpA+bt7d_000 = 398.77)
 {aAAavgpA'l2 <= 645.00 & aUAavgp0 > 653.50 & aAAavgp4 > 575.18} => (LBL+ALLminpA+bt7d_000 = 34.21, LBL+ALLminp0+bt7d_000 = 107.84, LBL+aDLminpA+bt7d_000 = 89.99, LBL+aCOminpA+bt7d_000 = 78.12, LBL+aFLminpA+bt7d_000 = 42.06, LBL+aUAminpA+bt7d_000 = 81.05)
@@ -4042,13 +4042,13 @@ INFO Model (Fold 4):
 {aMULTnumquotesA'l2 > 438.00 & aFLminp2'l1 > 335.50} => (LBL+ALLminpA+bt7d_000 = -0.38, LBL+ALLminp0+bt7d_000 = -0.08, LBL+aDLminpA+bt7d_000 = -0.20, LBL+aCOminpA+bt7d_000 = 0.14, LBL+aFLminpA+bt7d_000 = 0.27, LBL+aUAminpA+bt7d_000 = -0.18)
 
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/rules_fold-4.txt"...
-INFO Fold 5 / 10:
-INFO Fitting model to 266 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the regression scores of the training examples
-INFO Successfully fit model in <duration>
-INFO Model (Fold 5):
+Writing output data to file "python/tests/res/tmp/results/rules_fold-4.txt"...
+Fold 5 / 10:
+Fitting model to 266 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the regression scores of the training examples
+Successfully fit model in <duration>
+Model (Fold 5):
 
 {} => (LBL+ALLminpA+bt7d_000 = 276.09, LBL+ALLminp0+bt7d_000 = 337.24, LBL+aDLminpA+bt7d_000 = 372.19, LBL+aCOminpA+bt7d_000 = 400.55, LBL+aFLminpA+bt7d_000 = 294.22, LBL+aUAminpA+bt7d_000 = 399.37)
 {aUAavgp0 > 655.50 & aMULTavgpA > 1715.25} => (LBL+ALLminpA+bt7d_000 = 25.64, LBL+ALLminp0+bt7d_000 = 85.16, LBL+aDLminpA+bt7d_000 = 76.47, LBL+aCOminpA+bt7d_000 = 86.01, LBL+aFLminpA+bt7d_000 = 29.95, LBL+aUAminpA+bt7d_000 = 87.84)
@@ -5052,13 +5052,13 @@ INFO Model (Fold 5):
 {aUSavgp0'l1 <= 689.87 & ALLavgp4'l1 <= 493.84 & aAAavgp4'l1 > 489.62} => (LBL+ALLminpA+bt7d_000 = 0.30, LBL+ALLminp0+bt7d_000 = 0.05, LBL+aDLminpA+bt7d_000 = 0.06, LBL+aCOminpA+bt7d_000 = 0.05, LBL+aFLminpA+bt7d_000 = 0.37, LBL+aUAminpA+bt7d_000 = 0.36)
 
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/rules_fold-5.txt"...
-INFO Fold 6 / 10:
-INFO Fitting model to 266 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the regression scores of the training examples
-INFO Successfully fit model in <duration>
-INFO Model (Fold 6):
+Writing output data to file "python/tests/res/tmp/results/rules_fold-5.txt"...
+Fold 6 / 10:
+Fitting model to 266 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the regression scores of the training examples
+Successfully fit model in <duration>
+Model (Fold 6):
 
 {} => (LBL+ALLminpA+bt7d_000 = 277.83, LBL+ALLminp0+bt7d_000 = 340.59, LBL+aDLminpA+bt7d_000 = 374.47, LBL+aCOminpA+bt7d_000 = 399.58, LBL+aFLminpA+bt7d_000 = 296.78, LBL+aUAminpA+bt7d_000 = 398.03)
 {aAAavgpA'l2 <= 645.24 & aUAavgp0 > 653.50 & aAAavgp4 > 575.18} => (LBL+ALLminpA+bt7d_000 = 32.48, LBL+ALLminp0+bt7d_000 = 107.93, LBL+aDLminpA+bt7d_000 = 90.44, LBL+aCOminpA+bt7d_000 = 79.21, LBL+aFLminpA+bt7d_000 = 39.44, LBL+aUAminpA+bt7d_000 = 81.99)
@@ -6062,13 +6062,13 @@ INFO Model (Fold 6):
 {aMULTminp4'l1 > 2167.50} => (LBL+ALLminpA+bt7d_000 = 0.06, LBL+ALLminp0+bt7d_000 = 0.20, LBL+aDLminpA+bt7d_000 = 0.15, LBL+aCOminpA+bt7d_000 = -0.14, LBL+aFLminpA+bt7d_000 = 0.15, LBL+aUAminpA+bt7d_000 = -0.30)
 
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/rules_fold-6.txt"...
-INFO Fold 7 / 10:
-INFO Fitting model to 267 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the regression scores of the training examples
-INFO Successfully fit model in <duration>
-INFO Model (Fold 7):
+Writing output data to file "python/tests/res/tmp/results/rules_fold-6.txt"...
+Fold 7 / 10:
+Fitting model to 267 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the regression scores of the training examples
+Successfully fit model in <duration>
+Model (Fold 7):
 
 {} => (LBL+ALLminpA+bt7d_000 = 276.79, LBL+ALLminp0+bt7d_000 = 336.95, LBL+aDLminpA+bt7d_000 = 370.82, LBL+aCOminpA+bt7d_000 = 395.88, LBL+aFLminpA+bt7d_000 = 295.85, LBL+aUAminpA+bt7d_000 = 394.49)
 {aAAavgpA'l2 <= 645.00 & aUAavgp0 > 653.50 & aAAavgp4 > 575.18} => (LBL+ALLminpA+bt7d_000 = 33.03, LBL+ALLminp0+bt7d_000 = 113.46, LBL+aDLminpA+bt7d_000 = 91.17, LBL+aCOminpA+bt7d_000 = 80.26, LBL+aFLminpA+bt7d_000 = 39.72, LBL+aUAminpA+bt7d_000 = 83.25)
@@ -7072,13 +7072,13 @@ INFO Model (Fold 7):
 {aDLavgp4'l2 > 615.39} => (LBL+ALLminpA+bt7d_000 = 0.13, LBL+ALLminp0+bt7d_000 = 0.19, LBL+aDLminpA+bt7d_000 = 0.01, LBL+aCOminpA+bt7d_000 = -0.12, LBL+aFLminpA+bt7d_000 = 0.14, LBL+aUAminpA+bt7d_000 = 0.24)
 
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/rules_fold-7.txt"...
-INFO Fold 8 / 10:
-INFO Fitting model to 267 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the regression scores of the training examples
-INFO Successfully fit model in <duration>
-INFO Model (Fold 8):
+Writing output data to file "python/tests/res/tmp/results/rules_fold-7.txt"...
+Fold 8 / 10:
+Fitting model to 267 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the regression scores of the training examples
+Successfully fit model in <duration>
+Model (Fold 8):
 
 {} => (LBL+ALLminpA+bt7d_000 = 276.93, LBL+ALLminp0+bt7d_000 = 336.26, LBL+aDLminpA+bt7d_000 = 373.13, LBL+aCOminpA+bt7d_000 = 398.47, LBL+aFLminpA+bt7d_000 = 295.64, LBL+aUAminpA+bt7d_000 = 397.59)
 {aAAavgpA'l2 <= 645.00 & aUAavgp0 > 653.50 & aAAavgp4 > 575.18} => (LBL+ALLminpA+bt7d_000 = 31.76, LBL+ALLminp0+bt7d_000 = 103.12, LBL+aDLminpA+bt7d_000 = 88.56, LBL+aCOminpA+bt7d_000 = 77.43, LBL+aFLminpA+bt7d_000 = 40.11, LBL+aUAminpA+bt7d_000 = 80.27)
@@ -8082,13 +8082,13 @@ INFO Model (Fold 8):
 {aMULTminp2'l2 <= 265.00} => (LBL+ALLminpA+bt7d_000 = -0.16, LBL+ALLminp0+bt7d_000 = -0.20, LBL+aDLminpA+bt7d_000 = -0.33, LBL+aCOminpA+bt7d_000 = -0.06, LBL+aFLminpA+bt7d_000 = 0.14, LBL+aUAminpA+bt7d_000 = -0.16)
 
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/rules_fold-8.txt"...
-INFO Fold 9 / 10:
-INFO Fitting model to 267 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the regression scores of the training examples
-INFO Successfully fit model in <duration>
-INFO Model (Fold 9):
+Writing output data to file "python/tests/res/tmp/results/rules_fold-8.txt"...
+Fold 9 / 10:
+Fitting model to 267 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the regression scores of the training examples
+Successfully fit model in <duration>
+Model (Fold 9):
 
 {} => (LBL+ALLminpA+bt7d_000 = 276.29, LBL+ALLminp0+bt7d_000 = 339.02, LBL+aDLminpA+bt7d_000 = 372.87, LBL+aCOminpA+bt7d_000 = 401.67, LBL+aFLminpA+bt7d_000 = 295.55, LBL+aUAminpA+bt7d_000 = 400.70)
 {aAAavgpA'l2 <= 645.00 & aUAavgp0 > 653.50 & aAAavgp4 > 575.18} => (LBL+ALLminpA+bt7d_000 = 33.98, LBL+ALLminp0+bt7d_000 = 108.76, LBL+aDLminpA+bt7d_000 = 91.57, LBL+aCOminpA+bt7d_000 = 79.76, LBL+aFLminpA+bt7d_000 = 41.48, LBL+aUAminpA+bt7d_000 = 82.50)
@@ -9092,13 +9092,13 @@ INFO Model (Fold 9):
 {aAAnumquotes4 <= 18.00 & aDLnumquotes2 > 387.00} => (LBL+ALLminpA+bt7d_000 = -0.41, LBL+ALLminp0+bt7d_000 = -0.19, LBL+aDLminpA+bt7d_000 = 0.15, LBL+aCOminpA+bt7d_000 = 0.07, LBL+aFLminpA+bt7d_000 = -0.20, LBL+aUAminpA+bt7d_000 = 0.52)
 
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/rules_fold-9.txt"...
-INFO Fold 10 / 10:
-INFO Fitting model to 267 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the regression scores of the training examples
-INFO Successfully fit model in <duration>
-INFO Model (Fold 10):
+Writing output data to file "python/tests/res/tmp/results/rules_fold-9.txt"...
+Fold 10 / 10:
+Fitting model to 267 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the regression scores of the training examples
+Successfully fit model in <duration>
+Model (Fold 10):
 
 {} => (LBL+ALLminpA+bt7d_000 = 275.04, LBL+ALLminp0+bt7d_000 = 333.66, LBL+aDLminpA+bt7d_000 = 366.22, LBL+aCOminpA+bt7d_000 = 394.81, LBL+aFLminpA+bt7d_000 = 291.68, LBL+aUAminpA+bt7d_000 = 392.99)
 {aUAavgp0 > 650.00 & aMULTavgpA > 1715.25} => (LBL+ALLminpA+bt7d_000 = 21.93, LBL+ALLminp0+bt7d_000 = 84.54, LBL+aDLminpA+bt7d_000 = 75.21, LBL+aCOminpA+bt7d_000 = 86.61, LBL+aFLminpA+bt7d_000 = 24.39, LBL+aUAminpA+bt7d_000 = 88.69)
@@ -10102,5 +10102,5 @@ INFO Model (Fold 10):
 {aMULTminpA'l2 <= 996.00 & aUAminp4'l2 <= 526.00 & ALLnumquotesA'l7 <= 1714.50 & aOTHERavgpA'l1 > 539.57} => (LBL+ALLminpA+bt7d_000 = 0.43, LBL+ALLminp0+bt7d_000 = 0.01, LBL+aDLminpA+bt7d_000 = 0.08, LBL+aCOminpA+bt7d_000 = 0.36, LBL+aFLminpA+bt7d_000 = -0.14, LBL+aUAminpA+bt7d_000 = 0.17)
 
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/rules_fold-10.txt"...
-INFO Successfully finished after <duration>
+Writing output data to file "python/tests/res/tmp/results/rules_fold-10.txt"...
+Successfully finished experiment after <duration>

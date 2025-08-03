@@ -20,7 +20,7 @@ from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vectors import 
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.data import OutputData
-from mlrl.testbed.experiments.output.extension import OutputExtension
+from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor
 from mlrl.testbed.experiments.state import ExperimentState
@@ -87,7 +87,7 @@ class LabelVectorSetExtension(Extension):
         """
         :param dependencies: Other extensions, this extension depends on
         """
-        super().__init__(OutputExtension(), *dependencies)
+        super().__init__(OutputExtension(), ResultDirectoryExtension(), *dependencies)
 
     @override
     def _get_arguments(self) -> Set[Argument]:

@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any, Iterable, List, Optional, Set, override
 
 from mlrl.testbed.experiments.output.sinks import CsvFileSink
+from mlrl.testbed.experiments.output.sinks.sink_pickle import PickleFileSink
 from mlrl.testbed.util.io import ENCODING_UTF8
 
 PLACEHOLDER_DURATION = '<duration>'
@@ -68,6 +69,8 @@ class FileComparison(ABC):
         :param file:    The path to the file
         :return:        The `FileComparison` that has been created
         """
+        if file.suffix == '.' + PickleFileSink.SUFFIX_PICKLE:
+            return PickleFileComparison(file)
         if file.suffix == '.' + CsvFileSink.SUFFIX_CSV:
             return CsvFileComparison(file)
 
@@ -147,6 +150,28 @@ class TextFileComparison(FileComparison):
             for line in self.lines:
                 line = self.__replace_durations_with_placeholders(line.strip('\n'))
                 output_file.write(line + '\n')
+
+
+class PickleFileComparison(FileComparison):
+    """
+    Allows to compare or overwrite pickle files produced by tests.
+    """
+
+    def __init__(self, path: Path):
+        """
+        :param path: The path to a file
+        """
+        self.path = path
+
+    @override
+    def _compare(self, another_file: Path) -> Optional[Difference]:
+        if not another_file.is_file():
+            raise IOError('File "' + str(another_file) + '" does not exist')
+        return None
+
+    @override
+    def _write(self, file: Path):
+        file.touch()
 
 
 class CsvFileComparison(FileComparison):
@@ -244,7 +269,7 @@ class CsvFileComparison(FileComparison):
             actual_csv_file = csv.reader(actual_file, delimiter=CsvFileSink.DELIMITER, quotechar=CsvFileSink.QUOTE_CHAR)
             num_actual_rows = sum(1 for _ in actual_csv_file)
             actual_file.seek(0)
-            num_actual_columns = len(next(actual_csv_file))
+            num_actual_columns = len(next(actual_csv_file)) if num_actual_rows > 0 else 0
 
             with open(another_file, mode='r', encoding=ENCODING_UTF8) as expected_file:
                 expected_csv_file = csv.reader(expected_file,
@@ -252,7 +277,7 @@ class CsvFileComparison(FileComparison):
                                                quotechar=CsvFileSink.QUOTE_CHAR)
                 num_expected_rows = sum(1 for _ in expected_csv_file)
                 expected_file.seek(0)
-                headers = next(expected_csv_file)
+                headers = next(expected_csv_file) if num_expected_rows > 0 else []
                 num_expected_columns = len(headers)
 
                 if num_actual_rows != num_expected_rows or num_actual_columns != num_expected_columns:
@@ -262,26 +287,27 @@ class CsvFileComparison(FileComparison):
                                                                  num_actual_rows=num_actual_rows,
                                                                  num_actual_columns=num_actual_columns)
 
-                actual_file.seek(0)
-                expected_file.seek(0)
-                duration_column_indices = self.__get_duration_column_indices(headers)
-                different_cells = []
+                if num_actual_rows > 0 and num_actual_columns > 0:
+                    actual_file.seek(0)
+                    expected_file.seek(0)
+                    duration_column_indices = self.__get_duration_column_indices(headers)
+                    different_cells = []
 
-                for row_index, (actual_row, expected_row) in enumerate(zip(actual_csv_file, expected_csv_file)):
-                    for column_index, (actual_value, expected_value) in enumerate(zip(actual_row, expected_row)):
-                        if row_index > 0 and column_index in duration_column_indices:
-                            actual_value = PLACEHOLDER_DURATION
+                    for row_index, (actual_row, expected_row) in enumerate(zip(actual_csv_file, expected_csv_file)):
+                        for column_index, (actual_value, expected_value) in enumerate(zip(actual_row, expected_row)):
+                            if row_index > 0 and column_index in duration_column_indices:
+                                actual_value = PLACEHOLDER_DURATION
 
-                        if actual_value != expected_value:
-                            different_cells.append(
-                                CsvFileComparison.CellDifferences.CellDifference(row_index=row_index,
-                                                                                 column_index=column_index,
-                                                                                 expected_value=expected_value,
-                                                                                 actual_value=actual_value,
-                                                                                 header=headers[column_index]))
+                            if actual_value != expected_value:
+                                different_cells.append(
+                                    CsvFileComparison.CellDifferences.CellDifference(row_index=row_index,
+                                                                                     column_index=column_index,
+                                                                                     expected_value=expected_value,
+                                                                                     actual_value=actual_value,
+                                                                                     header=headers[column_index]))
 
-                if different_cells:
-                    return CsvFileComparison.CellDifferences(file=another_file, different_cells=different_cells)
+                    if different_cells:
+                        return CsvFileComparison.CellDifferences(file=another_file, different_cells=different_cells)
 
         return None
 
@@ -289,8 +315,6 @@ class CsvFileComparison(FileComparison):
     def _write(self, file: Path):
         with open(self.file, 'r', encoding=ENCODING_UTF8) as input_file:
             input_csv_file = csv.reader(input_file, delimiter=CsvFileSink.DELIMITER, quotechar=CsvFileSink.QUOTE_CHAR)
-            headers = next(input_csv_file)
-            duration_column_indices = self.__get_duration_column_indices(headers)
 
             with open(file, 'w+', encoding=ENCODING_UTF8) as output_file:
                 output_csv_file = csv.writer(output_file,
@@ -298,10 +322,17 @@ class CsvFileComparison(FileComparison):
                                              quotechar=CsvFileSink.QUOTE_CHAR,
                                              quoting=csv.QUOTE_MINIMAL,
                                              lineterminator='\n')
-                output_csv_file.writerow(headers)
 
-                for row in input_csv_file:
-                    for column_index in duration_column_indices:
-                        row[column_index] = PLACEHOLDER_DURATION
+                try:
+                    headers = next(input_csv_file)
+                    duration_column_indices = self.__get_duration_column_indices(headers)
 
-                    output_csv_file.writerow(row)
+                    output_csv_file.writerow(headers)
+
+                    for row in input_csv_file:
+                        for column_index in duration_column_indices:
+                            row[column_index] = PLACEHOLDER_DURATION
+
+                        output_csv_file.writerow(row)
+                except StopIteration:
+                    pass

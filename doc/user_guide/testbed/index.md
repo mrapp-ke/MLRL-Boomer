@@ -40,6 +40,7 @@ evaluation
 pre_processing
 outputs
 runnables
+batch_mode
 arguments
 ```
 

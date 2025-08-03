@@ -1,19 +1,19 @@
-mlrl-testbed mlrl.boosting --log-level debug --data-dir python/tests/res/data --dataset emotions --base-dir python/tests/res/tmp --result-dir results --save-evaluation true --marginal-probability-calibration isotonic --print-marginal-probability-calibration-model true --save-marginal-probability-calibration-model true --prediction-type probabilities --probability-predictor output-wise --incremental-evaluation true{step_size=50} --print-evaluation true --save-evaluation true --load-models true --model-load-dir models --save-models true --model-save-dir models
-INFO Starting experiment using the classification algorithm "BoomerClassifier"...
-INFO Using separate training and test sets...
-DEBUG Reading input data from file "python/tests/res/data/emotions.arff"...
-DEBUG Parsing meta-data from file "python/tests/res/data/emotions.xml"...
-DEBUG Reading input data from file "models/model.pickle"...
-ERROR Failed to unpickle file "models/model.pickle"
-INFO Fitting model to 397 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in <duration>
-DEBUG A dense matrix is used to store the feature values of the query examples
-DEBUG A dense matrix is used to store the predicted probability estimates
-INFO Predicting for 196 test examples using a model of size 50...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 50:
+mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --marginal-probability-calibration isotonic --print-marginal-probability-calibration-model true --save-marginal-probability-calibration-model true --prediction-type probabilities --probability-predictor output-wise --incremental-evaluation true{step_size=50} --print-evaluation true --save-evaluation true --save-models true --load-models true --model-load-dir models --model-save-dir models
+Starting experiment using the classification algorithm "BoomerClassifier"...
+Using separate training and test sets...
+Reading input data from file "python/tests/res/data/emotions.arff"...
+Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+Reading input data from file "models/model.pickle"...
+Failed to unpickle file "models/model.pickle"
+Fitting model to 397 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+A dense matrix is used to store the feature values of the query examples
+A dense matrix is used to store the predicted probability estimates
+Predicting for 196 test examples using a model of size 50...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 50:
 
 Coverage Error                    3.04
 Discounted Cumulative Gain        1.33
@@ -25,10 +25,10 @@ Median Absolute Error             0.38
 NDCG                             84.24
 Ranking Loss                      0.2
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 100...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 100:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 100...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 100:
 
 Coverage Error                    3.01
 Discounted Cumulative Gain        1.33
@@ -40,10 +40,10 @@ Median Absolute Error             0.36
 NDCG                             84.82
 Ranking Loss                      0.19
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 150...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 150:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 150...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 150:
 
 Coverage Error                    2.95
 Discounted Cumulative Gain        1.35
@@ -55,10 +55,10 @@ Median Absolute Error             0.35
 NDCG                             85.73
 Ranking Loss                      0.18
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 200...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 200:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 200...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 200:
 
 Coverage Error                    2.89
 Discounted Cumulative Gain        1.36
@@ -70,10 +70,10 @@ Median Absolute Error             0.33
 NDCG                             86.17
 Ranking Loss                      0.17
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 250...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 250:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 250...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 250:
 
 Coverage Error                    2.86
 Discounted Cumulative Gain        1.36
@@ -85,10 +85,10 @@ Median Absolute Error             0.32
 NDCG                             86.58
 Ranking Loss                      0.17
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 300...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 300:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 300...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 300:
 
 Coverage Error                    2.82
 Discounted Cumulative Gain        1.37
@@ -100,10 +100,10 @@ Median Absolute Error             0.31
 NDCG                             86.84
 Ranking Loss                      0.16
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 350...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 350:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 350...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 350:
 
 Coverage Error                    2.79
 Discounted Cumulative Gain        1.36
@@ -115,10 +115,10 @@ Median Absolute Error             0.3
 NDCG                             86.83
 Ranking Loss                      0.16
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 400...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 400:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 400...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 400:
 
 Coverage Error                    2.79
 Discounted Cumulative Gain        1.36
@@ -130,10 +130,10 @@ Median Absolute Error             0.29
 NDCG                             86.87
 Ranking Loss                      0.16
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 450...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 450:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 450...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 450:
 
 Coverage Error                    2.8
 Discounted Cumulative Gain        1.37
@@ -145,10 +145,10 @@ Median Absolute Error             0.28
 NDCG                             87.1
 Ranking Loss                      0.16
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 500...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 500:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 500...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 500:
 
 Coverage Error                    2.8
 Discounted Cumulative Gain        1.36
@@ -160,10 +160,10 @@ Median Absolute Error             0.28
 NDCG                             86.78
 Ranking Loss                      0.16
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 550...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 550:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 550...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 550:
 
 Coverage Error                    2.81
 Discounted Cumulative Gain        1.36
@@ -175,10 +175,10 @@ Median Absolute Error             0.27
 NDCG                             86.74
 Ranking Loss                      0.16
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 600...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 600:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 600...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 600:
 
 Coverage Error                    2.8
 Discounted Cumulative Gain        1.36
@@ -190,10 +190,10 @@ Median Absolute Error             0.27
 NDCG                             86.84
 Ranking Loss                      0.16
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 650...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 650:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 650...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 650:
 
 Coverage Error                    2.79
 Discounted Cumulative Gain        1.36
@@ -205,10 +205,10 @@ Median Absolute Error             0.26
 NDCG                             86.97
 Ranking Loss                      0.16
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 700...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 700:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 700...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 700:
 
 Coverage Error                    2.8
 Discounted Cumulative Gain        1.36
@@ -220,10 +220,10 @@ Median Absolute Error             0.26
 NDCG                             86.71
 Ranking Loss                      0.16
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 750...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 750:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 750...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 750:
 
 Coverage Error                    2.78
 Discounted Cumulative Gain        1.37
@@ -235,10 +235,10 @@ Median Absolute Error             0.25
 NDCG                             87.06
 Ranking Loss                      0.16
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 800...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 800:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 800...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 800:
 
 Coverage Error                    2.78
 Discounted Cumulative Gain        1.37
@@ -250,10 +250,10 @@ Median Absolute Error             0.25
 NDCG                             87.27
 Ranking Loss                      0.15
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 850...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 850:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 850...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 850:
 
 Coverage Error                    2.78
 Discounted Cumulative Gain        1.37
@@ -265,10 +265,10 @@ Median Absolute Error             0.24
 NDCG                             87.13
 Ranking Loss                      0.16
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 900...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 900:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 900...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 900:
 
 Coverage Error                    2.81
 Discounted Cumulative Gain        1.36
@@ -280,10 +280,10 @@ Median Absolute Error             0.24
 NDCG                             86.62
 Ranking Loss                      0.16
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 950...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 950:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 950...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 950:
 
 Coverage Error                    2.81
 Discounted Cumulative Gain        1.36
@@ -295,10 +295,10 @@ Median Absolute Error             0.24
 NDCG                             86.89
 Ranking Loss                      0.16
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 1000...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 1000:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 1000...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 1000:
 
 Coverage Error                    2.81
 Discounted Cumulative Gain        1.36
@@ -310,8 +310,8 @@ Median Absolute Error             0.23
 NDCG                             86.91
 Ranking Loss                      0.16
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Marginal probability calibration model:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Marginal probability calibration model:
 
 ┌──────────────────────┬─────────────────────────┐
 │   Label 1 thresholds │   Label 1 probabilities │
@@ -378,6 +378,6 @@ INFO Marginal probability calibration model:
 │               0.9862 │                  1      │
 └──────────────────────┴─────────────────────────┘
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/marginal_probability_calibration_model.csv"...
-DEBUG Writing output data to file "python/tests/res/tmp/models/model.pickle"...
-INFO Successfully finished after <duration>
+Writing output data to file "python/tests/res/tmp/results/marginal_probability_calibration_model.csv"...
+Writing output data to file "python/tests/res/tmp/models/model.pickle"...
+Successfully finished experiment after <duration>

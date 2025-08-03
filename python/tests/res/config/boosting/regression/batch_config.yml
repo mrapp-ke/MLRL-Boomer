@@ -1,0 +1,18 @@
+---
+datasets:
+  - directory: python/tests/res/data
+    names: atp7d
+  - directory: python/tests/res/data
+    names:
+      - atp7d-binary
+parameters:
+  - name: --instance-sampling
+    values:
+      - none
+      - with-replacement{sample_size=0.5}
+  - name: --loss
+    values:
+      - squared-error-decomposable
+      - value: squared-error-decomposable
+        additional_arguments:
+          - --feature-format sparse

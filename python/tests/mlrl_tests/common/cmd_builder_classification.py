@@ -17,10 +17,12 @@ class ClassificationCmdBuilder(CmdBuilder):
 
     def __init__(self,
                  expected_output_dir: Path,
+                 batch_config: Path,
                  runnable_module_name: str,
                  runnable_class_name: Optional[str] = None,
                  dataset: str = Dataset.EMOTIONS):
         super().__init__(expected_output_dir=expected_output_dir,
+                         batch_config=batch_config,
                          runnable_module_name=runnable_module_name,
                          runnable_class_name=runnable_class_name,
                          dataset=dataset)
