@@ -25,6 +25,7 @@ from mlrl.testbed_sklearn.experiments.prediction.predictor import Predictor
 from mlrl.testbed_sklearn.experiments.problem_domain import SkLearnClassificationProblem, SkLearnProblem, \
     SkLearnRegressionProblem
 
+from mlrl.testbed.command import ArgumentList
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.input.dataset.extension import DatasetFileExtension
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
@@ -59,7 +60,7 @@ class SkLearnRunnable(Runnable, ABC):
             super().__init__(file_path, schema_file_path=Path(__file__).parent / 'batch_config.schema.yml')
 
         @property
-        def dataset_args(self) -> List[List[str]]:
+        def dataset_args(self) -> List[ArgumentList]:
             """
             See :func:`from mlrl.testbed.modes.BatchExperimentMode.ConfigFile.dataset_args`
             """
