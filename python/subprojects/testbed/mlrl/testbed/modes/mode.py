@@ -6,7 +6,7 @@ Provides base classes for implementing different modes of operation.
 from abc import ABC, abstractmethod
 from argparse import Namespace
 
-from mlrl.testbed.modes.recipe import Recipe
+from mlrl.testbed.experiments.recipe import Recipe
 
 from mlrl.util.cli import CommandLineInterface, SetArgument
 

@@ -6,8 +6,8 @@ Provides classes that implement a mode of operation for performing a single expe
 from argparse import Namespace
 from typing import override
 
+from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.modes.mode import Mode
-from mlrl.testbed.modes.recipe import Recipe
 
 from mlrl.util.cli import CommandLineInterface
 

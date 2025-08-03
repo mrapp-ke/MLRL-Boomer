@@ -169,21 +169,21 @@ class SkLearnRunnable(Runnable, ABC):
     @override
     def create_problem_domain(self, args: Namespace) -> ProblemDomain:
         """
-        See :func:`mlrl.testbed.modes.recipe.Recipe.create_problem_domain`
+        See :func:`mlrl.testbed.experiments.recipe.Recipe.create_problem_domain`
         """
         return SkLearnRunnable.ProblemDomainExtension.get_problem_domain(args, runnable=self)
 
     @override
     def create_dataset_splitter(self, args: Namespace) -> DatasetSplitter:
         """
-        See :func:`mlrl.testbed.modes.recipe.Recipe.create_dataset_splitter`
+        See :func:`mlrl.testbed.experiments.recipe.Recipe.create_dataset_splitter`
         """
         return DatasetSplitterExtension.get_dataset_splitter(args)
 
     @override
     def create_experiment_builder(self, args: Namespace) -> Experiment.Builder:
         """
-        See :func:`mlrl.testbed.modes.recipe.Recipe.create_experiment_builder`
+        See :func:`mlrl.testbed.experiments.recipe.Recipe.create_experiment_builder`
         """
         return SkLearnExperiment.Builder(problem_domain=self.create_problem_domain(args),
                                          dataset_splitter=self.create_dataset_splitter(args))
@@ -191,7 +191,7 @@ class SkLearnRunnable(Runnable, ABC):
     @override
     def create_batch_config_file_factory(self) -> BatchExperimentMode.ConfigFile.Factory:
         """
-        See :func:`mlrl.testbed.modes.recipe.Recipe.create_batch_config_file_factory`
+        See :func:`mlrl.testbed.experiments.recipe.Recipe.create_batch_config_file_factory`
         """
         # pylint: disable=unnecessary-lambda
         return lambda config_file_path: SkLearnRunnable.BatchConfigFile(config_file_path)
