@@ -14,7 +14,7 @@ from dataclasses import dataclass, field
 from functools import cached_property, reduce
 from itertools import chain
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, List, Optional, override
+from typing import Any, Callable, Dict, Generator, Iterable, List, Optional, override
 
 import yamale
 
@@ -151,15 +151,17 @@ class BatchExperimentMode(Mode):
     )
 
     def __process_commands(self, args: Namespace, config_file: ConfigFile, recipe: Recipe):
+        module_name = sys.argv[1]
+        args_list = list(
+            map(lambda args_dict: [module_name] + self.__args_dict_to_list(args_dict), self.__get_args(config_file)))
+
         if self.LIST_COMMANDS.get_value(args):
-            self.__list_commands(args, config_file, recipe)
+            self.__list_commands(args, args_list, recipe)
         else:
-            self.__run_commands(args, config_file, recipe)
+            self.__run_commands(args, args_list, recipe)
 
     @staticmethod
-    def __list_commands(namespace: Namespace, config_file: ConfigFile, recipe: Recipe):
-        args = BatchExperimentMode.__get_args(config_file)
-
+    def __list_commands(namespace: Namespace, args: List[List[str]], recipe: Recipe):
         for i, arguments in enumerate(args):
             recipe.create_experiment_builder(BatchExperimentMode.__add_args_to_namespace(namespace, arguments))
             command = chain(['mlrl-testbed'], arguments)
@@ -185,8 +187,7 @@ class BatchExperimentMode(Mode):
         return formatted_command
 
     @staticmethod
-    def __run_commands(namespace: Namespace, config_file: ConfigFile, recipe: Recipe):
-        args = BatchExperimentMode.__get_args(config_file)
+    def __run_commands(namespace: Namespace, args: List[List[str]], recipe: Recipe):
         start_time = Timer.start()
 
         namespaces = [BatchExperimentMode.__add_args_to_namespace(copy(namespace), arguments) for arguments in args]
@@ -209,10 +210,8 @@ class BatchExperimentMode(Mode):
                  'experiments' if num_experiments > 1 else 'experiment', run_time)
 
     @staticmethod
-    def __get_args(config_file: ConfigFile) -> List[List[str]]:
-        module_name = sys.argv[1]
+    def __get_args(config_file: ConfigFile) -> Generator[Dict[str, Optional[str]], None, None]:
         default_args = BatchExperimentMode.__filter_and_parse_args(sys.argv[2:])
-        args = []
 
         for dataset_args in map(BatchExperimentMode.__filter_and_parse_args, config_file.dataset_args):
             dataset_name = dataset_args['--dataset']
@@ -222,28 +221,25 @@ class BatchExperimentMode(Mode):
 
             for parameter_args in map(BatchExperimentMode.__filter_and_parse_args, config_file.parameter_args):
                 output_dir = BatchExperimentMode.__get_output_dir(parameter_args, dataset_name)
-                arg_list = [
-                    module_name,
-                    '--result-dir',
-                    str(output_dir / 'results'),
-                    '--model-save-dir',
-                    str(output_dir / 'models'),
-                    '--parameter-save-dir',
-                    str(output_dir / 'parameters'),
-                ]
+                args_dict = default_args | dataset_args | parameter_args | {
+                    '--result-dir': str(output_dir / 'results'),
+                    '--model-save-dir': str(output_dir / 'models'),
+                    '--parameter-save-dir': str(output_dir / 'parameters'),
+                }
+                yield args_dict
 
-                args_dict = default_args | dataset_args | parameter_args
+    @staticmethod
+    def __args_dict_to_list(args_dict: Dict[str, Optional[str]]) -> List[str]:
+        args_list = []
 
-                for key in sorted(args_dict.keys()):
-                    arg_list.append(key)
-                    value = args_dict.get(key)
+        for key in sorted(args_dict.keys()):
+            args_list.append(key)
+            value = args_dict.get(key)
 
-                    if value:
-                        arg_list.append(value)
+            if value:
+                args_list.append(value)
 
-                args.append(arg_list)
-
-        return args
+        return args_list
 
     @staticmethod
     def __get_output_dir(parameters: Dict[str, Optional[str]], dataset_name: str) -> Path:
