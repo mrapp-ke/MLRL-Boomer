@@ -93,6 +93,10 @@ class CmdRunner:
         :param test_name: The name of the directory that stores the output files produced by the command
         """
         builder = self.builder
+        output_dir = builder.base_dir
+
+        # Delete temporary directories...
+        shutil.rmtree(output_dir, ignore_errors=True)
 
         # Run command...
         out = self.__run_cmd()
@@ -106,7 +110,6 @@ class CmdRunner:
         self.__compare_or_overwrite_files(TextFileComparison(stdout), expected_file=expected_output_dir / 'std.out')
 
         # Check if all expected files have been created...
-        output_dir = builder.base_dir
         self.__compare_or_overwrite_output_files(output_dir=output_dir, expected_output_dir=expected_output_dir)
 
         # Delete temporary directories...
