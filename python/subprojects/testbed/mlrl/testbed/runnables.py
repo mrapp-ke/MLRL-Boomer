@@ -126,6 +126,21 @@ class Runnable(Recipe, ABC):
 
         mode.run_experiment(args, RecipeWrapper(self))
 
+    def configure_batch_mode(self, cli: CommandLineInterface) -> BatchExperimentMode:
+        """
+        Configures the batch mode according to the extensions applied to the runnable.
+        """
+        batch_mode = BatchExperimentMode(self.create_batch_config_file_factory())
+        args = cli.parse_known_args()
+
+        for extension in self.extensions:
+            extension.configure_batch_mode(args, batch_mode)
+
+            for dependency in extension.get_dependencies(batch_mode):
+                dependency.configure_batch_mode(args, batch_mode)
+
+        return batch_mode
+
     def configure_arguments(self, cli: CommandLineInterface, mode: Mode):
         """
         Configures the command line interface according to the extensions applied to the runnable.
