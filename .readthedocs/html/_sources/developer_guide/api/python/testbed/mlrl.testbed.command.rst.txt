@@ -1,0 +1,7 @@
+mlrl.testbed.command module
+===========================
+
+.. automodule:: mlrl.testbed.command
+   :members:
+   :show-inheritance:
+   :undoc-members:
