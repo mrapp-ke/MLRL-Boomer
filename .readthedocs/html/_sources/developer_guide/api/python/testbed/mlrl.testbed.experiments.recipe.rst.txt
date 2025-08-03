@@ -1,0 +1,7 @@
+mlrl.testbed.experiments.recipe module
+======================================
+
+.. automodule:: mlrl.testbed.experiments.recipe
+   :members:
+   :show-inheritance:
+   :undoc-members:

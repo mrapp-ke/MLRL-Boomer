@@ -57,6 +57,7 @@ In {ref}`batch mode <testbed-batch-mode>`, the following mandatory arguments mus
 
 In addition, the batch mode comes with the following optional arguments:
 
+- `--separate-folds` (Default value = `true`) Whether separate experiments should be run for the individual folds of a cross validation or not.
 - `--list` Lists the commands for running individual experiments instead of executing them.
 
 ### Dataset
