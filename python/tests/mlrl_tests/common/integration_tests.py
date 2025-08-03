@@ -18,7 +18,7 @@ from mlrl.common.config.parameters import BINNING_EQUAL_FREQUENCY, BINNING_EQUAL
 from mlrl.common.learners import SparsePolicy
 
 from mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension import OPTION_FIRST_FOLD, OPTION_LAST_FOLD, \
-    VALUE_CROSS_VALIDATION, VALUE_TRAIN_TEST
+    OPTION_NUM_FOLDS, VALUE_CROSS_VALIDATION, VALUE_TRAIN_TEST
 
 from mlrl.testbed.modes import Mode
 
@@ -72,6 +72,15 @@ class IntegrationTests(ABC):
             .save_parameters() \
             .save_all()
         CmdRunner(builder).run('batch-mode')
+
+    def test_batch_mode_separate_folds(self):
+        builder = self._create_cmd_builder() \
+            .set_mode(Mode.MODE_BATCH) \
+            .save_models() \
+            .save_parameters() \
+            .save_all() \
+            .data_split(VALUE_CROSS_VALIDATION, options=Options({OPTION_NUM_FOLDS: 2}))
+        CmdRunner(builder).run('batch-mode-separate-folds')
 
     def test_batch_mode_list(self):
         builder = self._create_cmd_builder() \
