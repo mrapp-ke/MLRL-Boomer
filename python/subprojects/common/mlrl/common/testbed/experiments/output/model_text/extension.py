@@ -11,7 +11,7 @@ from mlrl.common.testbed.experiments.output.model_text.model_text import RuleMod
 from mlrl.common.testbed.experiments.output.model_text.writer import RuleModelAsTextWriter
 
 from mlrl.testbed.experiments import Experiment
-from mlrl.testbed.experiments.output.extension import OutputExtension
+from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.experiments.output.sinks.sink_text import TextFileSink
@@ -51,7 +51,7 @@ class RuleModelAsTextExtension(Extension):
         """
         :param dependencies: Other extensions, this extension depends on
         """
-        super().__init__(OutputExtension(), *dependencies)
+        super().__init__(OutputExtension(), ResultDirectoryExtension(), *dependencies)
 
     @override
     def _get_arguments(self) -> Set[Argument]:
@@ -69,7 +69,7 @@ class RuleModelAsTextExtension(Extension):
 
     def __create_text_file_sinks(self, args: Namespace) -> List[Sink]:
         value, options = self.SAVE_RULES.get_value(args, default=OutputExtension.SAVE_ALL.get_value(args))
-        result_directory = OutputExtension.RESULT_DIR.get_value(args)
+        result_directory = ResultDirectoryExtension.RESULT_DIR.get_value(args)
 
         if value and result_directory:
             return [

@@ -103,7 +103,8 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
             .prediction_format(prediction_format)
 
         if marginal_probability_calibration or joint_probability_calibration:
-            builder.set_model_dir()
+            builder.save_models()
+            builder.load_models()
 
         CmdRunner(builder).run(f'predictor-binary-{binary_predictor}'
                                + (f'_{prediction_format}' if prediction_format else '')
@@ -143,11 +144,12 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
             .binary_predictor(binary_predictor, options=binary_predictor_options) \
             .incremental_evaluation() \
             .print_evaluation() \
-            .save_evaluation_results() \
+            .save_evaluation() \
             .prediction_format(prediction_format)
 
         if marginal_probability_calibration or joint_probability_calibration:
-            builder.set_model_dir()
+            builder.save_models()
+            builder.load_models()
 
         CmdRunner(builder).run(f'predictor-binary-{binary_predictor}'
                                + (f'_{prediction_format}' if prediction_format else '')
@@ -165,7 +167,7 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
             .prediction_type(PredictionType.SCORES) \
             .incremental_evaluation() \
             .print_evaluation() \
-            .save_evaluation_results()
+            .save_evaluation()
         CmdRunner(builder).run('predictor-score-output-wise_incremental')
 
     @pytest.mark.parametrize(
@@ -184,13 +186,14 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
             .joint_probability_calibration(joint_probability_calibration) \
             .print_joint_probability_calibration_model(True if joint_probability_calibration else None) \
             .save_joint_probability_calibration_model(True if joint_probability_calibration else None) \
-            .save_evaluation_results(False) \
+            .save_evaluation(False) \
             .prediction_type(PredictionType.PROBABILITIES) \
             .probability_predictor(probability_predictor) \
             .print_predictions() \
             .print_ground_truth() \
             .print_label_vectors(print_label_vectors) \
-            .set_model_dir()
+            .save_models() \
+            .load_models()
         CmdRunner(builder).run(f'predictor-probability-{probability_predictor}')
 
     @pytest.mark.parametrize('probability_predictor, marginal_probability_calibration, joint_probability_calibration', [
@@ -212,8 +215,9 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
             .probability_predictor(probability_predictor) \
             .incremental_evaluation() \
             .print_evaluation() \
-            .save_evaluation_results() \
-            .set_model_dir()
+            .save_evaluation() \
+            .save_models() \
+            .load_models()
         CmdRunner(builder).run(f'predictor-probability-{probability_predictor}_incremental')
 
     @pytest.mark.parametrize('output_format', [
