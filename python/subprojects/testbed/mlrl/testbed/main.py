@@ -114,7 +114,7 @@ def __get_mode(cli: CommandLineInterface, runnable: Optional[Runnable]) -> Mode:
     mode = Mode.MODE.get_value(args)
 
     if mode == Mode.MODE_BATCH:
-        return BatchExperimentMode(runnable.create_batch_config_file_factory() if runnable else None)
+        return runnable.configure_batch_mode(cli) if runnable else BatchExperimentMode()
     return SingleExperimentMode()
 
 
