@@ -8,6 +8,7 @@ from abc import ABC, abstractmethod
 from typing import Generator, Optional
 
 from mlrl.testbed.experiments.dataset_type import DatasetType
+from mlrl.testbed.experiments.fold import FoldingStrategy
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.state import ExperimentState
 
@@ -31,6 +32,12 @@ class DatasetSplitter(ABC):
             :return:                A state that stores the dataset that corresponds to the given `DatasetType` or None,
                                     if not such dataset is available
             """
+
+    def __init__(self, folding_strategy: FoldingStrategy):
+        """
+        :param folding_strategy:
+        """
+        self.folding_strategy = folding_strategy
 
     @abstractmethod
     def split(self, problem_domain: ProblemDomain) -> Generator[Split, None, None]:

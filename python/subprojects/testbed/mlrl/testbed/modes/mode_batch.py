@@ -9,21 +9,22 @@ import sys
 
 from abc import ABC, abstractmethod
 from argparse import Namespace
-from copy import copy
 from dataclasses import dataclass, field
 from functools import cached_property, reduce
-from itertools import chain
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, List, Optional, override
+from typing import Any, Callable, Generator, Iterable, List, Optional, override
 
 import yamale
 
-from mlrl.testbed.experiments import Experiment
+from mlrl.testbed.command import ArgumentDict, ArgumentList, Command
+from mlrl.testbed.experiments.fold import FoldingStrategy
+from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.modes.mode import Mode
 
-from mlrl.util.cli import CommandLineInterface, FlagArgument, StringArgument
+from mlrl.util.cli import BoolArgument, CommandLineInterface, FlagArgument, StringArgument
 from mlrl.util.format import format_iterable
+from mlrl.util.options import Options
 
 
 class BatchExperimentMode(Mode):
@@ -105,23 +106,23 @@ class BatchExperimentMode(Mode):
             return parameters
 
         @cached_property
-        def parameter_args(self) -> List[List[str]]:
+        def parameter_args(self) -> List[ArgumentList]:
             """
             A list that contains the command line arguments corresponding to the algorithmic parameters to be used in
             the different experiments defined in the configuration file.
             """
-            parameter_args: List[List[str]] = [[]]
+            parameter_args: List[ArgumentList] = [ArgumentList()]
 
             for parameter in self.parameters:
                 updated_parameter_args = []
 
-                for args in parameter_args:
+                for argument_list in parameter_args:
                     for parameter_value in parameter.values:
                         additional_arguments: List[str] = []
                         additional_arguments = reduce(lambda aggr, arguments: aggr + arguments.split(),
                                                       parameter_value.additional_arguments, additional_arguments)
-                        updated_parameter_args.append(args + [parameter.name, parameter_value.value]
-                                                      + additional_arguments)
+                        arguments = argument_list + [parameter.name, parameter_value.value] + additional_arguments
+                        updated_parameter_args.append(ArgumentList(arguments))
 
                 parameter_args = updated_parameter_args
 
@@ -129,7 +130,7 @@ class BatchExperimentMode(Mode):
 
         @property
         @abstractmethod
-        def dataset_args(self) -> List[List[str]]:
+        def dataset_args(self) -> List[ArgumentList]:
             """
             A list that contains the command line arguments corresponding to the datasets to be used in the different
             experiments defined in the configuration file.
@@ -145,26 +146,30 @@ class BatchExperimentMode(Mode):
         description='An absolute or relative path to a YAML file that configures the batch of experiments to be run.',
     )
 
+    SEPARATE_FOLDS = BoolArgument(
+        '--separate-folds',
+        default=True,
+        description='Whether separate experiments should be run for the individual folds of a cross validation or not.',
+    )
+
     LIST_COMMANDS = FlagArgument(
         '--list',
         description='Lists the commands for running individual experiments instead of executing them.',
     )
 
-    def __process_commands(self, args: Namespace, config_file: ConfigFile,
-                           experiment_builder_factory: Experiment.Builder.Factory):
-        if self.LIST_COMMANDS.get_value(args):
-            self.__list_commands(args, config_file, experiment_builder_factory)
+    def __process_commands(self, namespace: Namespace, config_file: ConfigFile, recipe: Recipe):
+        separate_folds = self.SEPARATE_FOLDS.get_value(namespace)
+        commands = list(self.__get_commands(namespace, config_file, recipe, separate_folds=separate_folds))
+
+        if self.LIST_COMMANDS.get_value(namespace):
+            self.__list_commands(namespace, commands, recipe)
         else:
-            self.__run_commands(args, config_file, experiment_builder_factory)
+            self.__run_commands(namespace, commands, recipe)
 
     @staticmethod
-    def __list_commands(namespace: Namespace, config_file: ConfigFile,
-                        experiment_builder_factory: Experiment.Builder.Factory):
-        args = BatchExperimentMode.__get_args(config_file)
-
-        for i, arguments in enumerate(args):
-            experiment_builder_factory(BatchExperimentMode.__add_args_to_namespace(namespace, arguments))
-            command = chain(['mlrl-testbed'], arguments)
+    def __list_commands(namespace: Namespace, commands: List[Command], recipe: Recipe):
+        for i, command in enumerate(commands):
+            recipe.create_experiment_builder(command.apply_to_namespace(namespace))
 
             if i > 0:
                 log.info('')
@@ -187,126 +192,83 @@ class BatchExperimentMode(Mode):
         return formatted_command
 
     @staticmethod
-    def __run_commands(namespace: Namespace, config_file: ConfigFile,
-                       experiment_builder_factory: Experiment.Builder.Factory):
-        args = BatchExperimentMode.__get_args(config_file)
+    def __run_commands(namespace: Namespace, commands: List[Command], recipe: Recipe):
         start_time = Timer.start()
 
-        namespaces = [BatchExperimentMode.__add_args_to_namespace(copy(namespace), arguments) for arguments in args]
-        num_experiments = len(args)
+        namespaces = [command.apply_to_namespace(namespace) for command in commands]
+        num_experiments = len(commands)
 
         for experiment_namespace in namespaces:
-            experiment_builder_factory(experiment_namespace)  # For validation
+            recipe.create_experiment_builder(experiment_namespace)  # For validation
 
-        for i, (experiment_namespace, arguments) in enumerate(zip(namespaces, args)):
+        for i, (experiment_namespace, command) in enumerate(zip(namespaces, commands)):
             if i == 0:
                 log.info('Running %s %s...', num_experiments, 'experiments' if num_experiments > 1 else 'experiment')
 
-            command = chain(['mlrl-testbed'], arguments)
             log.info('\nRunning experiment (%s / %s): "%s"', i + 1, num_experiments,
                      format_iterable(command, separator=' '))
-            experiment_builder_factory(experiment_namespace).run()
+            recipe.create_experiment_builder(experiment_namespace).run()
 
         run_time = Timer.stop(start_time)
         log.info('Successfully finished %s %s after %s', num_experiments,
                  'experiments' if num_experiments > 1 else 'experiment', run_time)
 
     @staticmethod
-    def __get_args(config_file: ConfigFile) -> List[List[str]]:
+    def __get_commands(namespace: Namespace,
+                       config_file: ConfigFile,
+                       recipe: Recipe,
+                       separate_folds: bool = False) -> Generator[Command, None, None]:
         module_name = sys.argv[1]
-        default_args = BatchExperimentMode.__filter_and_parse_args(sys.argv[2:])
-        args = []
+        default_args = BatchExperimentMode.__filter_arguments(ArgumentList(sys.argv[2:]))
 
-        for dataset_args in map(BatchExperimentMode.__filter_and_parse_args, config_file.dataset_args):
+        for dataset_args in map(BatchExperimentMode.__filter_arguments, config_file.dataset_args):
             dataset_name = dataset_args['--dataset']
 
             if not dataset_name:
                 raise RuntimeError('Unable to determine dataset name based on the arguments ' + str(dataset_args))
 
-            for parameter_args in map(BatchExperimentMode.__filter_and_parse_args, config_file.parameter_args):
+            for parameter_args in map(BatchExperimentMode.__filter_arguments, config_file.parameter_args):
                 output_dir = BatchExperimentMode.__get_output_dir(parameter_args, dataset_name)
-                arg_list = [
-                    module_name,
-                    '--result-dir',
-                    str(output_dir / 'results'),
-                    '--model-save-dir',
-                    str(output_dir / 'models'),
-                    '--parameter-save-dir',
-                    str(output_dir / 'parameters'),
-                ]
+                argument_dict = ArgumentDict(
+                    default_args | dataset_args | parameter_args | {
+                        '--result-dir': str(output_dir / 'results'),
+                        '--model-save-dir': str(output_dir / 'models'),
+                        '--parameter-save-dir': str(output_dir / 'parameters'),
+                    })
+                command = Command(module_name=module_name, argument_list=argument_dict.to_list())
 
-                args_dict = default_args | dataset_args | parameter_args
+                if separate_folds:
+                    dataset_splitter = recipe.create_dataset_splitter(command.apply_to_namespace(namespace))
+                    folding_strategy = dataset_splitter.folding_strategy
 
-                for key in sorted(args_dict.keys()):
-                    arg_list.append(key)
-                    value = args_dict.get(key)
-
-                    if value:
-                        arg_list.append(value)
-
-                args.append(arg_list)
-
-        return args
+                    if folding_strategy.is_cross_validation_used:
+                        yield from BatchExperimentMode.__separate_folds(folding_strategy, module_name, argument_dict)
+                    else:
+                        yield command
+                else:
+                    yield command
 
     @staticmethod
-    def __get_output_dir(parameters: Dict[str, Optional[str]], dataset_name: str) -> Path:
+    def __separate_folds(folding_strategy: FoldingStrategy, module_name: str,
+                         argument_dict: ArgumentDict) -> Generator[Command, None, None]:
+        options = Options({'num_folds': folding_strategy.num_folds})
+
+        for fold in folding_strategy.folds:
+            options.dictionary['first_fold'] = fold.index + 1
+            options.dictionary['last_fold'] = fold.index + 1
+            argument_dict_per_fold = ArgumentDict(argument_dict | {'--data-split': 'cross-validation' + str(options)})
+            yield Command(module_name=module_name, argument_list=argument_dict_per_fold.to_list())
+
+    @staticmethod
+    def __get_output_dir(argument_dict: ArgumentDict, dataset_name: str) -> Path:
         return Path(
-            *map(lambda parameter: parameter[0].lstrip('-') + ('_' + parameter[1]) if parameter[1] else '',
-                 parameters.items()), 'dataset_' + dataset_name)
+            *map(lambda argument: argument[0].lstrip('-') + ('_' + argument[1]) if argument[1] else '',
+                 argument_dict.items()), 'dataset_' + dataset_name)
 
     @staticmethod
-    def __filter_and_parse_args(args: List[str]) -> Dict[str, Optional[str]]:
-        return BatchExperimentMode.__parse_args(
-            BatchExperimentMode.__filter_args(args, *BatchExperimentMode.CONFIG_FILE.names, *Mode.MODE.names,
-                                              BatchExperimentMode.LIST_COMMANDS.name), )
-
-    @staticmethod
-    def __filter_args(args: List[str], *ignored_args: str) -> List[str]:
-        ignored_args_set = set(ignored_args)
-        filtered_args = []
-        skip = False
-
-        for arg in args:
-            skip = (skip and not arg.startswith('-')) or arg in ignored_args_set
-
-            if not skip:
-                filtered_args.append(arg)
-
-        return filtered_args
-
-    @staticmethod
-    def __parse_args(args: List[str]) -> Dict[str, Optional[str]]:
-        args_dict: Dict[str, Optional[str]] = {}
-        previous_arg = None
-
-        for arg in args:
-            if not previous_arg or arg.startswith('-'):
-                args_dict.setdefault(arg, None)
-                previous_arg = arg
-            else:
-                args_dict[previous_arg] = arg
-                previous_arg = None
-
-        return args_dict
-
-    @staticmethod
-    def __add_args_to_namespace(namespace: Namespace, args: List[str]) -> Namespace:
-        for i in range(1, len(args)):
-            arg = args[i]
-
-            if arg.startswith('-'):
-                argument_name = arg.lstrip('-').replace('-', '_')
-                argument_value = None
-
-                if i + 1 < len(args):
-                    next_arg = args[i + 1]
-
-                    if not next_arg.startswith('-'):
-                        argument_value = next_arg
-
-                setattr(namespace, argument_name, argument_value if argument_value else True)
-
-        return namespace
+    def __filter_arguments(argument_list: ArgumentList) -> ArgumentDict:
+        return argument_list.filter(*BatchExperimentMode.CONFIG_FILE.names, *Mode.MODE.names,
+                                    BatchExperimentMode.LIST_COMMANDS.name).to_dict()
 
     def __init__(self, config_file_factory: Optional[ConfigFile.Factory]):
         """
@@ -317,10 +279,10 @@ class BatchExperimentMode(Mode):
 
     @override
     def configure_arguments(self, cli: CommandLineInterface):
-        cli.add_arguments(self.CONFIG_FILE, self.LIST_COMMANDS)
+        cli.add_arguments(self.CONFIG_FILE, self.SEPARATE_FOLDS, self.LIST_COMMANDS)
 
     @override
-    def run_experiment(self, args: Namespace, experiment_builder_factory: Experiment.Builder.Factory):
+    def run_experiment(self, args: Namespace, recipe: Recipe):
         config_file_path = self.CONFIG_FILE.get_value(args)
 
         if config_file_path:
@@ -328,4 +290,4 @@ class BatchExperimentMode(Mode):
             config_file = config_file_factory(config_file_path) if config_file_factory else None
 
             if config_file:
-                self.__process_commands(args, config_file, experiment_builder_factory)
+                self.__process_commands(args, config_file, recipe)
