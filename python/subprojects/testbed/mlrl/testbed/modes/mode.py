@@ -6,7 +6,7 @@ Provides base classes for implementing different modes of operation.
 from abc import ABC, abstractmethod
 from argparse import Namespace
 
-from mlrl.testbed.experiments import Experiment
+from mlrl.testbed.experiments.recipe import Recipe
 
 from mlrl.util.cli import CommandLineInterface, SetArgument
 
@@ -37,12 +37,11 @@ class Mode(ABC):
         """
 
     @abstractmethod
-    def run_experiment(self, args: Namespace, experiment_builder_factory: Experiment.Builder.Factory):
+    def run_experiment(self, args: Namespace, recipe: Recipe):
         """
         Must be implemented by subclasses in order to run an experiment according to the command line arguments
         specified by the user.
 
-        :param args:                        The command line arguments specified by the user
-        :param experiment_builder_factory:  A factory function that allows to create instance of type
-                                            `Experiment.Builder` that can be used for running experiments
+        :param args:    The command line arguments specified by the user
+        :param recipe:  A `Recipe` that provides access to the ingredients that are needed for setting up experiments
         """
