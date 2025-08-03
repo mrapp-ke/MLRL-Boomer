@@ -14,12 +14,13 @@ from mlrl.testbed.extensions import Extension
 from mlrl.testbed.extensions.extension_log import LogExtension
 from mlrl.testbed.modes import Mode
 from mlrl.testbed.modes.mode_batch import BatchExperimentMode
+from mlrl.testbed.modes.recipe import Recipe
 from mlrl.testbed.program_info import ProgramInfo
 
 from mlrl.util.cli import Argument, BoolArgument, CommandLineInterface
 
 
-class Runnable(ABC):
+class Runnable(Recipe, ABC):
     """
     An abstract base class for all programs that can be configured via the command line API. The programs functionality
     is implemented by individual extensions that are applied to the runnable.
@@ -123,16 +124,6 @@ class Runnable(ABC):
         :return:            A set that contains the arguments that should be added to the command line API
         """
         return set()
-
-    @abstractmethod
-    def create_experiment_builder(self, args: Namespace) -> Experiment.Builder:
-        """
-        Must be implemented by subclasses in order to create the builder that allows to configure the experiment to be
-        run by the program.
-
-        :param args:    The command line arguments specified by the user
-        :return:        The builder that has been created
-        """
 
     @abstractmethod
     def create_batch_config_file_factory(self) -> BatchExperimentMode.ConfigFile.Factory:

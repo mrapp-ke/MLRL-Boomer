@@ -167,31 +167,34 @@ class SkLearnRunnable(Runnable, ABC):
         }
 
     @override
+    def create_problem_domain(self, args: Namespace) -> ProblemDomain:
+        """
+        See :func:`mlrl.testbed.modes.recipe.Recipe.create_problem_domain`
+        """
+        return SkLearnRunnable.ProblemDomainExtension.get_problem_domain(args, runnable=self)
+
+    @override
+    def create_dataset_splitter(self, args: Namespace) -> DatasetSplitter:
+        """
+        See :func:`mlrl.testbed.modes.recipe.Recipe.create_dataset_splitter`
+        """
+        return DatasetSplitterExtension.get_dataset_splitter(args)
+
+    @override
     def create_experiment_builder(self, args: Namespace) -> Experiment.Builder:
         """
-        See :func:`mlrl.testbed.runnables.Runnable.create_experiment_builder`
+        See :func:`mlrl.testbed.modes.recipe.Recipe.create_experiment_builder`
         """
-        dataset_splitter = DatasetSplitterExtension.get_dataset_splitter(args)
-        return self._create_experiment_builder(args, dataset_splitter)
+        return SkLearnExperiment.Builder(problem_domain=self.create_problem_domain(args),
+                                         dataset_splitter=self.create_dataset_splitter(args))
 
     @override
     def create_batch_config_file_factory(self) -> BatchExperimentMode.ConfigFile.Factory:
         """
-        See :func:`mlrl.testbed.runnables.Runnable.create_batch_config_file_factory`
+        See :func:`mlrl.testbed.modes.recipe.Recipe.create_batch_config_file_factory`
         """
         # pylint: disable=unnecessary-lambda
         return lambda config_file_path: SkLearnRunnable.BatchConfigFile(config_file_path)
-
-    def _create_experiment_builder(self, args: Namespace, dataset_splitter: DatasetSplitter) -> Experiment.Builder:
-        """
-        May be overridden by subclasses in order to create the `Experiment` that should be run.
-
-        :param args:                The command line arguments
-        :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
-        :return:                    The `Experiment` that has been created
-        """
-        problem_domain = SkLearnRunnable.ProblemDomainExtension.get_problem_domain(args, runnable=self)
-        return SkLearnExperiment.Builder(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
 
     # pylint: disable=unused-argument
     def create_predictor_factory(self, args: Namespace,
