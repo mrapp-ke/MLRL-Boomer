@@ -18,9 +18,9 @@ from typing import Any, Callable, Dict, Generator, Iterable, List, Optional, ove
 
 import yamale
 
+from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.modes.mode import Mode
-from mlrl.testbed.modes.recipe import Recipe
 
 from mlrl.util.cli import CommandLineInterface, FlagArgument, StringArgument
 from mlrl.util.format import format_iterable

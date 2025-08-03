@@ -266,7 +266,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
     @override
     def create_problem_domain(self, args: Namespace):
         """
-        See :func:`mlrl.testbed.modes.recipe.Recipe.create_problem_domain`
+        See :func:`mlrl.testbed.experiments.recipe.Recipe.create_problem_domain`
         """
         fit_kwargs = RuleLearnerRunnable.RuleLearnerExtension.get_fit_kwargs(args)
         predict_kwargs = RuleLearnerRunnable.RuleLearnerExtension.get_predict_kwargs(args)
@@ -278,7 +278,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
     @override
     def create_experiment_builder(self, args: Namespace) -> Experiment.Builder:
         """
-        See :func:`mlrl.testbed.modes.recipe.Recipe.create_experiment_builder`
+        See :func:`mlrl.testbed.experiments.recipe.Recipe.create_experiment_builder`
         """
         return RuleLearnerExperiment.Builder(problem_domain=self.create_problem_domain(args),
                                              dataset_splitter=self.create_dataset_splitter(args))

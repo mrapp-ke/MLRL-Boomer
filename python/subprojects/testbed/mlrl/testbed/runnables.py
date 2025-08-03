@@ -12,11 +12,11 @@ from typing import List, Optional, Set, override
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
+from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.extensions import Extension
 from mlrl.testbed.extensions.extension_log import LogExtension
 from mlrl.testbed.modes import Mode
 from mlrl.testbed.modes.mode_batch import BatchExperimentMode
-from mlrl.testbed.modes.recipe import Recipe
 from mlrl.testbed.program_info import ProgramInfo
 
 from mlrl.util.cli import Argument, BoolArgument, CommandLineInterface
