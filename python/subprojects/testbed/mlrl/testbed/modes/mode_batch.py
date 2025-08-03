@@ -18,9 +18,9 @@ from typing import Any, Callable, Dict, Iterable, List, Optional, override
 
 import yamale
 
-from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.modes.mode import Mode
+from mlrl.testbed.modes.recipe import Recipe
 
 from mlrl.util.cli import CommandLineInterface, FlagArgument, StringArgument
 from mlrl.util.format import format_iterable
@@ -150,20 +150,18 @@ class BatchExperimentMode(Mode):
         description='Lists the commands for running individual experiments instead of executing them.',
     )
 
-    def __process_commands(self, args: Namespace, config_file: ConfigFile,
-                           experiment_builder_factory: Experiment.Builder.Factory):
+    def __process_commands(self, args: Namespace, config_file: ConfigFile, recipe: Recipe):
         if self.LIST_COMMANDS.get_value(args):
-            self.__list_commands(args, config_file, experiment_builder_factory)
+            self.__list_commands(args, config_file, recipe)
         else:
-            self.__run_commands(args, config_file, experiment_builder_factory)
+            self.__run_commands(args, config_file, recipe)
 
     @staticmethod
-    def __list_commands(namespace: Namespace, config_file: ConfigFile,
-                        experiment_builder_factory: Experiment.Builder.Factory):
+    def __list_commands(namespace: Namespace, config_file: ConfigFile, recipe: Recipe):
         args = BatchExperimentMode.__get_args(config_file)
 
         for i, arguments in enumerate(args):
-            experiment_builder_factory(BatchExperimentMode.__add_args_to_namespace(namespace, arguments))
+            recipe.create_experiment_builder(BatchExperimentMode.__add_args_to_namespace(namespace, arguments))
             command = chain(['mlrl-testbed'], arguments)
 
             if i > 0:
@@ -187,8 +185,7 @@ class BatchExperimentMode(Mode):
         return formatted_command
 
     @staticmethod
-    def __run_commands(namespace: Namespace, config_file: ConfigFile,
-                       experiment_builder_factory: Experiment.Builder.Factory):
+    def __run_commands(namespace: Namespace, config_file: ConfigFile, recipe: Recipe):
         args = BatchExperimentMode.__get_args(config_file)
         start_time = Timer.start()
 
@@ -196,7 +193,7 @@ class BatchExperimentMode(Mode):
         num_experiments = len(args)
 
         for experiment_namespace in namespaces:
-            experiment_builder_factory(experiment_namespace)  # For validation
+            recipe.create_experiment_builder(experiment_namespace)  # For validation
 
         for i, (experiment_namespace, arguments) in enumerate(zip(namespaces, args)):
             if i == 0:
@@ -205,7 +202,7 @@ class BatchExperimentMode(Mode):
             command = chain(['mlrl-testbed'], arguments)
             log.info('\nRunning experiment (%s / %s): "%s"', i + 1, num_experiments,
                      format_iterable(command, separator=' '))
-            experiment_builder_factory(experiment_namespace).run()
+            recipe.create_experiment_builder(experiment_namespace).run()
 
         run_time = Timer.stop(start_time)
         log.info('Successfully finished %s %s after %s', num_experiments,
@@ -320,7 +317,7 @@ class BatchExperimentMode(Mode):
         cli.add_arguments(self.CONFIG_FILE, self.LIST_COMMANDS)
 
     @override
-    def run_experiment(self, args: Namespace, experiment_builder_factory: Experiment.Builder.Factory):
+    def run_experiment(self, args: Namespace, recipe: Recipe):
         config_file_path = self.CONFIG_FILE.get_value(args)
 
         if config_file_path:
@@ -328,4 +325,4 @@ class BatchExperimentMode(Mode):
             config_file = config_file_factory(config_file_path) if config_file_factory else None
 
             if config_file:
-                self.__process_commands(args, config_file, experiment_builder_factory)
+                self.__process_commands(args, config_file, recipe)

@@ -10,6 +10,8 @@ from functools import cached_property, reduce
 from typing import List, Optional, Set, override
 
 from mlrl.testbed.experiments import Experiment
+from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
+from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.extensions import Extension
 from mlrl.testbed.extensions.extension_log import LogExtension
 from mlrl.testbed.modes import Mode
@@ -90,18 +92,33 @@ class Runnable(Recipe, ABC):
         :param args:    The command line arguments specified by the user
         """
 
-        def configure_experiment(builder_args: Namespace) -> Experiment.Builder:
-            experiment_builder = self.create_experiment_builder(builder_args)
+        class RecipeWrapper(Recipe):
 
-            for extension in self.extensions:
-                extension.configure_experiment(builder_args, experiment_builder)
+            def __init__(self, runnable: Runnable):
+                self.runnable = runnable
 
-                for dependency in extension.get_dependencies(mode):
-                    dependency.configure_experiment(builder_args, experiment_builder)
+            @override
+            def create_problem_domain(self, wrapped_args: Namespace) -> ProblemDomain:
+                return self.runnable.create_problem_domain(wrapped_args)
 
-            return experiment_builder
+            @override
+            def create_dataset_splitter(self, wrapped_args: Namespace) -> DatasetSplitter:
+                return self.runnable.create_dataset_splitter(wrapped_args)
 
-        mode.run_experiment(args, configure_experiment)
+            @override
+            def create_experiment_builder(self, wrapped_args: Namespace) -> Experiment.Builder:
+                runnable = self.runnable
+                experiment_builder = runnable.create_experiment_builder(wrapped_args)
+
+                for extension in runnable.extensions:
+                    extension.configure_experiment(wrapped_args, experiment_builder)
+
+                    for dependency in extension.get_dependencies(mode):
+                        dependency.configure_experiment(wrapped_args, experiment_builder)
+
+                return experiment_builder
+
+        mode.run_experiment(args, RecipeWrapper(self))
 
     def configure_arguments(self, cli: CommandLineInterface, mode: Mode):
         """
