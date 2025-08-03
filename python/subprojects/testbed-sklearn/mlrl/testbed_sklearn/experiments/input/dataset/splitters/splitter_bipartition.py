@@ -106,10 +106,10 @@ class BipartitionSplitter(DatasetSplitter):
         :param test_size:       The fraction of the available data to be used as the test set
         :param random_state:    The seed to be used by RNGs. Must be at least 1
         """
+        super().__init__(FoldingStrategy(num_folds=1, first=0, last=1))
         self.dataset_reader = dataset_reader
         self.test_size = test_size
         self.random_state = random_state
-        self.folding_strategy = FoldingStrategy(num_folds=1, first=0, last=1)
         self.cache: Optional[Any] = None
         context = dataset_reader.input_data.context
         context.include_fold = False

@@ -43,8 +43,8 @@ class NoSplitter(DatasetSplitter):
         """
         :param dataset_reader: The reader that should be used for loading datasets
         """
+        super().__init__(FoldingStrategy(num_folds=1, first=0, last=1))
         self.dataset_reader = dataset_reader
-        self.folding_strategy = FoldingStrategy(num_folds=1, first=0, last=1)
         context = dataset_reader.input_data.context
         context.include_dataset_type = False
         context.include_fold = False

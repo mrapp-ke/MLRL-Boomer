@@ -179,9 +179,9 @@ class CrossValidationSplitter(DatasetSplitter):
         :param last_fold:       The index of the last cross validation fold to be performed (exclusive)
         :param random_state:    The seed to be used by RNGs. Must be at least 1
         """
+        super().__init__(FoldingStrategy(num_folds=num_folds, first=first_fold, last=last_fold))
         self.dataset_reader = dataset_reader
         self.random_state = random_state
-        self.folding_strategy = FoldingStrategy(num_folds=num_folds, first=first_fold, last=last_fold)
         self.cache: Optional[Any] = None
         context = dataset_reader.input_data.context
         context.include_dataset_type = False

@@ -10,6 +10,9 @@ from functools import cached_property, reduce
 from typing import List, Optional, Set, override
 
 from mlrl.testbed.experiments import Experiment
+from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
+from mlrl.testbed.experiments.problem_domain import ProblemDomain
+from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.extensions import Extension
 from mlrl.testbed.extensions.extension_log import LogExtension
 from mlrl.testbed.modes import Mode
@@ -19,7 +22,7 @@ from mlrl.testbed.program_info import ProgramInfo
 from mlrl.util.cli import Argument, BoolArgument, CommandLineInterface
 
 
-class Runnable(ABC):
+class Runnable(Recipe, ABC):
     """
     An abstract base class for all programs that can be configured via the command line API. The programs functionality
     is implemented by individual extensions that are applied to the runnable.
@@ -89,18 +92,39 @@ class Runnable(ABC):
         :param args:    The command line arguments specified by the user
         """
 
-        def configure_experiment(builder_args: Namespace) -> Experiment.Builder:
-            experiment_builder = self.create_experiment_builder(builder_args)
+        class RecipeWrapper(Recipe):
+            """
+            A `Recipe` that wraps a `Runnable`.
+            """
 
-            for extension in self.extensions:
-                extension.configure_experiment(builder_args, experiment_builder)
+            def __init__(self, runnable: Runnable):
+                """
+                :param runnable: The `Runnable` to be wrapped
+                """
+                self.runnable = runnable
 
-                for dependency in extension.get_dependencies(mode):
-                    dependency.configure_experiment(builder_args, experiment_builder)
+            @override
+            def create_problem_domain(self, args: Namespace) -> ProblemDomain:
+                return self.runnable.create_problem_domain(args)
 
-            return experiment_builder
+            @override
+            def create_dataset_splitter(self, args: Namespace) -> DatasetSplitter:
+                return self.runnable.create_dataset_splitter(args)
 
-        mode.run_experiment(args, configure_experiment)
+            @override
+            def create_experiment_builder(self, args: Namespace) -> Experiment.Builder:
+                runnable = self.runnable
+                experiment_builder = runnable.create_experiment_builder(args)
+
+                for extension in runnable.extensions:
+                    extension.configure_experiment(args, experiment_builder)
+
+                    for dependency in extension.get_dependencies(mode):
+                        dependency.configure_experiment(args, experiment_builder)
+
+                return experiment_builder
+
+        mode.run_experiment(args, RecipeWrapper(self))
 
     def configure_arguments(self, cli: CommandLineInterface, mode: Mode):
         """
@@ -123,16 +147,6 @@ class Runnable(ABC):
         :return:            A set that contains the arguments that should be added to the command line API
         """
         return set()
-
-    @abstractmethod
-    def create_experiment_builder(self, args: Namespace) -> Experiment.Builder:
-        """
-        Must be implemented by subclasses in order to create the builder that allows to configure the experiment to be
-        run by the program.
-
-        :param args:    The command line arguments specified by the user
-        :return:        The builder that has been created
-        """
 
     @abstractmethod
     def create_batch_config_file_factory(self) -> BatchExperimentMode.ConfigFile.Factory:

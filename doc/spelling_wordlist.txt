@@ -53,6 +53,7 @@ mlrl
 Mulan
 multilabel
 multivariant
+namespace
 NaN
 natively
 nd
