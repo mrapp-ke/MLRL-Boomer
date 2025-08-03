@@ -23,7 +23,7 @@ jobs:
         with:
           path: build_system/res/versioning/version
       - name: Assign milestone to pull request
-        uses: zoispag/action-assign-milestone@v1
+        uses: zoispag/action-assign-milestone@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           milestone: ${{ steps.milestone.outputs.content }}
