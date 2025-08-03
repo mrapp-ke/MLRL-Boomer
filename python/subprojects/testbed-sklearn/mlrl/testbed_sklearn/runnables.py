@@ -192,7 +192,7 @@ class SkLearnRunnable(Runnable, ABC):
     @override
     def create_batch_config_file_factory(self) -> BatchExperimentMode.ConfigFile.Factory:
         """
-        See :func:`mlrl.testbed.experiments.recipe.Recipe.create_batch_config_file_factory`
+        See :func:`mlrl.testbed.runnables.Runnable.create_batch_config_file_factory`
         """
         # pylint: disable=unnecessary-lambda
         return lambda config_file_path: SkLearnRunnable.BatchConfigFile(config_file_path)
