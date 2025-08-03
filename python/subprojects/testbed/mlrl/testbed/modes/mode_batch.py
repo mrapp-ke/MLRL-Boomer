@@ -9,7 +9,6 @@ import sys
 
 from abc import ABC, abstractmethod
 from argparse import Namespace
-from copy import copy
 from dataclasses import dataclass, field
 from functools import cached_property, reduce
 from pathlib import Path
@@ -18,12 +17,14 @@ from typing import Any, Callable, Generator, Iterable, List, Optional, override
 import yamale
 
 from mlrl.testbed.command import ArgumentDict, ArgumentList, Command
+from mlrl.testbed.experiments.fold import FoldingStrategy
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.modes.mode import Mode
 
-from mlrl.util.cli import CommandLineInterface, FlagArgument, StringArgument
+from mlrl.util.cli import BoolArgument, CommandLineInterface, FlagArgument, StringArgument
 from mlrl.util.format import format_iterable
+from mlrl.util.options import Options
 
 
 class BatchExperimentMode(Mode):
@@ -145,18 +146,25 @@ class BatchExperimentMode(Mode):
         description='An absolute or relative path to a YAML file that configures the batch of experiments to be run.',
     )
 
+    SEPARATE_FOLDS = BoolArgument(
+        '--separate-folds',
+        default=True,
+        description='Whether separate experiments should be run for the individual folds of a cross validation or not.',
+    )
+
     LIST_COMMANDS = FlagArgument(
         '--list',
         description='Lists the commands for running individual experiments instead of executing them.',
     )
 
-    def __process_commands(self, args: Namespace, config_file: ConfigFile, recipe: Recipe):
-        commands = list(self.__get_commands(config_file))
+    def __process_commands(self, namespace: Namespace, config_file: ConfigFile, recipe: Recipe):
+        separate_folds = self.SEPARATE_FOLDS.get_value(namespace)
+        commands = list(self.__get_commands(namespace, config_file, recipe, separate_folds=separate_folds))
 
-        if self.LIST_COMMANDS.get_value(args):
-            self.__list_commands(args, commands, recipe)
+        if self.LIST_COMMANDS.get_value(namespace):
+            self.__list_commands(namespace, commands, recipe)
         else:
-            self.__run_commands(args, commands, recipe)
+            self.__run_commands(namespace, commands, recipe)
 
     @staticmethod
     def __list_commands(namespace: Namespace, commands: List[Command], recipe: Recipe):
@@ -187,7 +195,7 @@ class BatchExperimentMode(Mode):
     def __run_commands(namespace: Namespace, commands: List[Command], recipe: Recipe):
         start_time = Timer.start()
 
-        namespaces = [command.apply_to_namespace(copy(namespace)) for command in commands]
+        namespaces = [command.apply_to_namespace(namespace) for command in commands]
         num_experiments = len(commands)
 
         for experiment_namespace in namespaces:
@@ -206,7 +214,10 @@ class BatchExperimentMode(Mode):
                  'experiments' if num_experiments > 1 else 'experiment', run_time)
 
     @staticmethod
-    def __get_commands(config_file: ConfigFile) -> Generator[Command, None, None]:
+    def __get_commands(namespace: Namespace,
+                       config_file: ConfigFile,
+                       recipe: Recipe,
+                       separate_folds: bool = False) -> Generator[Command, None, None]:
         module_name = sys.argv[1]
         default_args = BatchExperimentMode.__filter_arguments(ArgumentList(sys.argv[2:]))
 
@@ -218,13 +229,35 @@ class BatchExperimentMode(Mode):
 
             for parameter_args in map(BatchExperimentMode.__filter_arguments, config_file.parameter_args):
                 output_dir = BatchExperimentMode.__get_output_dir(parameter_args, dataset_name)
-                yield Command(module_name=module_name,
-                              argument_list=ArgumentDict(
-                                  default_args | dataset_args | parameter_args | {
-                                      '--result-dir': str(output_dir / 'results'),
-                                      '--model-save-dir': str(output_dir / 'models'),
-                                      '--parameter-save-dir': str(output_dir / 'parameters'),
-                                  }).to_list())
+                argument_dict = ArgumentDict(
+                    default_args | dataset_args | parameter_args | {
+                        '--result-dir': str(output_dir / 'results'),
+                        '--model-save-dir': str(output_dir / 'models'),
+                        '--parameter-save-dir': str(output_dir / 'parameters'),
+                    })
+                command = Command(module_name=module_name, argument_list=argument_dict.to_list())
+
+                if separate_folds:
+                    dataset_splitter = recipe.create_dataset_splitter(command.apply_to_namespace(namespace))
+                    folding_strategy = dataset_splitter.folding_strategy
+
+                    if folding_strategy.is_cross_validation_used:
+                        yield from BatchExperimentMode.__separate_folds(folding_strategy, module_name, argument_dict)
+                    else:
+                        yield command
+                else:
+                    yield command
+
+    @staticmethod
+    def __separate_folds(folding_strategy: FoldingStrategy, module_name: str,
+                         argument_dict: ArgumentDict) -> Generator[Command, None, None]:
+        options = Options({'num_folds': folding_strategy.num_folds})
+
+        for fold in folding_strategy.folds:
+            options.dictionary['first_fold'] = fold.index + 1
+            options.dictionary['last_fold'] = fold.index + 1
+            argument_dict_per_fold = ArgumentDict(argument_dict | {'--data-split': 'cross-validation' + str(options)})
+            yield Command(module_name=module_name, argument_list=argument_dict_per_fold.to_list())
 
     @staticmethod
     def __get_output_dir(argument_dict: ArgumentDict, dataset_name: str) -> Path:
@@ -246,7 +279,7 @@ class BatchExperimentMode(Mode):
 
     @override
     def configure_arguments(self, cli: CommandLineInterface):
-        cli.add_arguments(self.CONFIG_FILE, self.LIST_COMMANDS)
+        cli.add_arguments(self.CONFIG_FILE, self.SEPARATE_FOLDS, self.LIST_COMMANDS)
 
     @override
     def run_experiment(self, args: Namespace, recipe: Recipe):
