@@ -27,7 +27,7 @@ from mlrl.util.format import format_iterable
 from mlrl.util.options import Options
 
 
-class BatchExperimentMode(Mode):
+class BatchMode(Mode):
     """
     An abstract base class for all modes of operation that perform multiple experiments.
     """
@@ -37,7 +37,7 @@ class BatchExperimentMode(Mode):
         A YAML configuration file that configures the batch of experiments to be run.
         """
 
-        Factory = Callable[[str], 'BatchExperimentMode.ConfigFile']
+        Factory = Callable[[str], 'BatchMode.ConfigFile']
 
         @dataclass
         class Parameter:
@@ -49,7 +49,7 @@ class BatchExperimentMode(Mode):
                 values: One or several values that should be set for the parameter
             """
             name: str
-            values: List['BatchExperimentMode.ConfigFile.ParameterValue']
+            values: List['BatchMode.ConfigFile.ParameterValue']
 
         @dataclass
         class ParameterValue:
@@ -66,18 +66,17 @@ class BatchExperimentMode(Mode):
         @staticmethod
         def __parse_parameter_values(values: List[Any]) -> List[ParameterValue]:
             if isinstance(values, str):
-                return [BatchExperimentMode.ConfigFile.ParameterValue(value=values)]
+                return [BatchMode.ConfigFile.ParameterValue(value=values)]
 
             parameter_values = []
 
             for value in values:
                 if isinstance(value, str):
-                    parameter_values.append(BatchExperimentMode.ConfigFile.ParameterValue(value=value))
+                    parameter_values.append(BatchMode.ConfigFile.ParameterValue(value=value))
                 else:
                     parameter_values.append(
-                        BatchExperimentMode.ConfigFile.ParameterValue(value=value['value'],
-                                                                      additional_arguments=value.get(
-                                                                          'additional_arguments', [])))
+                        BatchMode.ConfigFile.ParameterValue(value=value['value'],
+                                                            additional_arguments=value.get('additional_arguments', [])))
 
             return parameter_values
 
@@ -100,8 +99,7 @@ class BatchExperimentMode(Mode):
 
             for parameter_dict in self.yaml_dict.get('parameters', []):
                 parameter_values = self.__parse_parameter_values(parameter_dict['values'])
-                parameters.append(
-                    BatchExperimentMode.ConfigFile.Parameter(name=parameter_dict['name'], values=parameter_values))
+                parameters.append(BatchMode.ConfigFile.Parameter(name=parameter_dict['name'], values=parameter_values))
 
             return parameters
 
@@ -174,7 +172,7 @@ class BatchExperimentMode(Mode):
             if i > 0:
                 log.info('')
 
-            log.info('%s', BatchExperimentMode.__format_command(command))
+            log.info('%s', BatchMode.__format_command(command))
 
     @staticmethod
     def __format_command(command: Iterable[str]) -> str:
@@ -219,16 +217,16 @@ class BatchExperimentMode(Mode):
                        recipe: Recipe,
                        separate_folds: bool = False) -> Generator[Command, None, None]:
         module_name = sys.argv[1]
-        default_args = BatchExperimentMode.__filter_arguments(ArgumentList(sys.argv[2:]))
+        default_args = BatchMode.__filter_arguments(ArgumentList(sys.argv[2:]))
 
-        for dataset_args in map(BatchExperimentMode.__filter_arguments, config_file.dataset_args):
+        for dataset_args in map(BatchMode.__filter_arguments, config_file.dataset_args):
             dataset_name = dataset_args['--dataset']
 
             if not dataset_name:
                 raise RuntimeError('Unable to determine dataset name based on the arguments ' + str(dataset_args))
 
-            for parameter_args in map(BatchExperimentMode.__filter_arguments, config_file.parameter_args):
-                output_dir = BatchExperimentMode.__get_output_dir(parameter_args, dataset_name)
+            for parameter_args in map(BatchMode.__filter_arguments, config_file.parameter_args):
+                output_dir = BatchMode.__get_output_dir(parameter_args, dataset_name)
                 argument_dict = ArgumentDict(
                     default_args | dataset_args | parameter_args | {
                         '--result-dir': str(output_dir / 'results'),
@@ -242,7 +240,7 @@ class BatchExperimentMode(Mode):
                     folding_strategy = dataset_splitter.folding_strategy
 
                     if folding_strategy.is_cross_validation_used:
-                        yield from BatchExperimentMode.__separate_folds(folding_strategy, module_name, argument_dict)
+                        yield from BatchMode.__separate_folds(folding_strategy, module_name, argument_dict)
                     else:
                         yield command
                 else:
@@ -267,8 +265,8 @@ class BatchExperimentMode(Mode):
 
     @staticmethod
     def __filter_arguments(argument_list: ArgumentList) -> ArgumentDict:
-        return argument_list.filter(*BatchExperimentMode.CONFIG_FILE.names, *Mode.MODE.names,
-                                    BatchExperimentMode.LIST_COMMANDS.name).to_dict()
+        return argument_list.filter(*BatchMode.CONFIG_FILE.names, *Mode.MODE.names,
+                                    BatchMode.LIST_COMMANDS.name).to_dict()
 
     def __init__(self, config_file_factory: Optional[ConfigFile.Factory] = None):
         """

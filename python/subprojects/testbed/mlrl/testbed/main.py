@@ -12,8 +12,8 @@ from importlib.util import module_from_spec, spec_from_file_location
 from typing import Optional
 
 from mlrl.testbed.modes import Mode
-from mlrl.testbed.modes.mode_batch import BatchExperimentMode
-from mlrl.testbed.modes.mode_single import SingleExperimentMode
+from mlrl.testbed.modes.mode_batch import BatchMode
+from mlrl.testbed.modes.mode_single import SingleMode
 from mlrl.testbed.program_info import ProgramInfo
 from mlrl.testbed.runnables import Runnable
 
@@ -114,8 +114,8 @@ def __get_mode(cli: CommandLineInterface, runnable: Optional[Runnable]) -> Mode:
     mode = Mode.MODE.get_value(args)
 
     if mode == Mode.MODE_BATCH:
-        return runnable.configure_batch_mode(cli) if runnable else BatchExperimentMode()
-    return SingleExperimentMode()
+        return runnable.configure_batch_mode(cli) if runnable else BatchMode()
+    return SingleMode()
 
 
 def __get_default_program_info() -> ProgramInfo:
