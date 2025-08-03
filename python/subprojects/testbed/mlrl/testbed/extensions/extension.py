@@ -13,6 +13,8 @@ from mlrl.testbed.modes import Mode
 
 from mlrl.util.cli import Argument
 
+from mlrl.testbed.modes.mode_batch import BatchExperimentMode
+
 
 class Extension(ABC):
     """
@@ -84,6 +86,15 @@ class Extension(ABC):
 
         :param args:                The command line arguments specified by the user
         :param experiment_builder:  A builder that allows to configure the experiment
+        """
+
+    def configure_batch_mode(self, args: Namespace, batch_mode: BatchExperimentMode):
+        """
+        May be overridden by subclasses in order to configure the batch mode according to the command line arguments
+        specified by the user.
+
+        :param args:        The command line arguments specified by the user
+        :param batch_mode:  The batch mode to be configured
         """
 
     @abstractmethod
