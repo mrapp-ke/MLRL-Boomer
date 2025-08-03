@@ -93,28 +93,34 @@ class Runnable(Recipe, ABC):
         """
 
         class RecipeWrapper(Recipe):
+            """
+            A `Recipe` that wraps a `Runnable`.
+            """
 
             def __init__(self, runnable: Runnable):
+                """
+                :param runnable: The `Runnable` to be wrapped
+                """
                 self.runnable = runnable
 
             @override
-            def create_problem_domain(self, wrapped_args: Namespace) -> ProblemDomain:
-                return self.runnable.create_problem_domain(wrapped_args)
+            def create_problem_domain(self, args: Namespace) -> ProblemDomain:
+                return self.runnable.create_problem_domain(args)
 
             @override
-            def create_dataset_splitter(self, wrapped_args: Namespace) -> DatasetSplitter:
-                return self.runnable.create_dataset_splitter(wrapped_args)
+            def create_dataset_splitter(self, args: Namespace) -> DatasetSplitter:
+                return self.runnable.create_dataset_splitter(args)
 
             @override
-            def create_experiment_builder(self, wrapped_args: Namespace) -> Experiment.Builder:
+            def create_experiment_builder(self, args: Namespace) -> Experiment.Builder:
                 runnable = self.runnable
-                experiment_builder = runnable.create_experiment_builder(wrapped_args)
+                experiment_builder = runnable.create_experiment_builder(args)
 
                 for extension in runnable.extensions:
-                    extension.configure_experiment(wrapped_args, experiment_builder)
+                    extension.configure_experiment(args, experiment_builder)
 
                     for dependency in extension.get_dependencies(mode):
-                        dependency.configure_experiment(wrapped_args, experiment_builder)
+                        dependency.configure_experiment(args, experiment_builder)
 
                 return experiment_builder
 
