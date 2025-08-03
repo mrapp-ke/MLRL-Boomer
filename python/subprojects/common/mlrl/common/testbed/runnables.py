@@ -23,7 +23,6 @@ from mlrl.testbed_sklearn.experiments.prediction.predictor import Predictor
 from mlrl.testbed_sklearn.runnables import SkLearnRunnable
 
 from mlrl.testbed.experiments import Experiment
-from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, RegressionProblem
 from mlrl.testbed.extensions.extension import Extension
@@ -264,14 +263,25 @@ class RuleLearnerRunnable(SkLearnRunnable):
 
         return set(filter(None, map(lambda param: param.as_argument(config_type), parameters)))
 
-    def _create_experiment_builder(self, args: Namespace, dataset_splitter: DatasetSplitter) -> Experiment.Builder:
+    @override
+    def create_problem_domain(self, args: Namespace):
+        """
+        See :func:`mlrl.testbed.modes.recipe.Recipe.create_problem_domain`
+        """
         fit_kwargs = RuleLearnerRunnable.RuleLearnerExtension.get_fit_kwargs(args)
         predict_kwargs = RuleLearnerRunnable.RuleLearnerExtension.get_predict_kwargs(args)
-        problem_domain = SkLearnRunnable.ProblemDomainExtension.get_problem_domain(args,
-                                                                                   runnable=self,
-                                                                                   fit_kwargs=fit_kwargs,
-                                                                                   predict_kwargs=predict_kwargs)
-        return RuleLearnerExperiment.Builder(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
+        return SkLearnRunnable.ProblemDomainExtension.get_problem_domain(args,
+                                                                         runnable=self,
+                                                                         fit_kwargs=fit_kwargs,
+                                                                         predict_kwargs=predict_kwargs)
+
+    @override
+    def create_experiment_builder(self, args: Namespace) -> Experiment.Builder:
+        """
+        See :func:`mlrl.testbed.modes.recipe.Recipe.create_experiment_builder`
+        """
+        return RuleLearnerExperiment.Builder(problem_domain=self.create_problem_domain(args),
+                                             dataset_splitter=self.create_dataset_splitter(args))
 
     @override
     def create_classifier(self, args: Namespace) -> Optional[SkLearnClassifierMixin]:
