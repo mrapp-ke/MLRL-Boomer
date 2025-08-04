@@ -5,7 +5,7 @@ Provides classes that provide access to a Sphinx documentation.
 """
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import List
+from typing import List, override
 
 from core.modules import Module, ModuleRegistry
 from util.files import FileSearch
@@ -44,6 +44,7 @@ class SphinxModule(Module):
         A filter that matches modules of type `SphinxModule`.
         """
 
+        @override
         def matches(self, module: Module, _: ModuleRegistry) -> bool:
             return isinstance(module, SphinxModule)
 
@@ -80,5 +81,6 @@ class SphinxModule(Module):
             .filter_by_suffix('spelling') \
             .list(self.output_directory)
 
+    @override
     def __str__(self) -> str:
         return 'SphinxModule {root_directory="' + str(self.root_directory) + '"}'

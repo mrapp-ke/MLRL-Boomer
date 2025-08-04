@@ -2,7 +2,7 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 # pylint: disable=missing-function-docstring
-from typing import Any
+from typing import Any, override
 
 import pytest
 
@@ -22,6 +22,7 @@ class TestBoomerRegressor(RegressionIntegrationTests, BoomerIntegrationTestsMixi
     Defines a series of integration tests for the BOOMER algorithm for regression problems.
     """
 
+    @override
     def _create_cmd_builder(self, dataset: str = Dataset.ATP7D) -> Any:
         return BoomerRegressorCmdBuilder(dataset=dataset)
 

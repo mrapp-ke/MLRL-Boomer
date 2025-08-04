@@ -8,7 +8,7 @@ import sys
 
 from argparse import Namespace
 from enum import Enum
-from typing import Set
+from typing import Set, override
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.extensions.extension import Extension
@@ -41,12 +41,14 @@ class LogExtension(Extension):
         description='The log level to be used.',
     )
 
+    @override
     def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
         return {self.LOG_LEVEL}
 
+    @override
     def configure_experiment(self, args: Namespace, _: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
@@ -56,5 +58,10 @@ class LogExtension(Extension):
         root.setLevel(log_level)
         out_handler = log.StreamHandler(sys.stdout)
         out_handler.setLevel(log_level)
-        out_handler.setFormatter(log.Formatter('%(levelname)s %(message)s'))
+        out_handler.setFormatter(log.Formatter('%(message)s'))
+        existing_handlers = list(root.handlers)
+
+        for existing_handler in existing_handlers:
+            root.removeHandler(existing_handler)
+
         root.addHandler(out_handler)

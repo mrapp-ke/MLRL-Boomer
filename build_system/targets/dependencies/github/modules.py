@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements modules that provide access to GitHub workflows.
 """
 from pathlib import Path
-from typing import List
+from typing import List, override
 
 from core.modules import Module, ModuleRegistry
 from util.files import FileSearch, FileType
@@ -20,6 +20,7 @@ class GithubWorkflowModule(Module):
         A filter that matches modules of type `GithubWorkflowModule`.
         """
 
+        @override
         def matches(self, module: Module, _: ModuleRegistry) -> bool:
             return isinstance(module, GithubWorkflowModule)
 
@@ -39,5 +40,6 @@ class GithubWorkflowModule(Module):
         """
         return self.workflow_file_search.filter_by_file_type(FileType.yaml()).list(self.root_directory)
 
+    @override
     def __str__(self) -> str:
         return 'GithubWorkflowModule {root_directory="' + str(self.root_directory) + '"}'

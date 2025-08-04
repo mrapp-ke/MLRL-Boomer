@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements modules that provide access to automated tests for C++ code.
 """
 from pathlib import Path
+from typing import override
 
 from core.modules import Module, ModuleRegistry
 
@@ -20,6 +21,7 @@ class CppTestModule(TestModule):
         A filter that matches modules of type `CppTestModule`.
         """
 
+        @override
         def matches(self, module: Module, _: ModuleRegistry) -> bool:
             return isinstance(module, CppTestModule)
 
@@ -38,5 +40,6 @@ class CppTestModule(TestModule):
         """
         return self.root_directory / self.build_directory_name
 
+    @override
     def __str__(self) -> str:
         return 'CppTestModule {root_directory="' + str(self.root_directory) + '"}'

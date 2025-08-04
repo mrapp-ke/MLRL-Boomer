@@ -1,9 +1,9 @@
-mlrl-testbed mlrl.boosting --log-level debug --data-dir python/tests/res/data --dataset atp7d --output-dir python/tests/res/tmp/results --problem-type regression --print-all true
-INFO Starting experiment using the regression algorithm "BoomerRegressor"...
-INFO Using separate training and test sets...
-DEBUG Reading input data from file "python/tests/res/data/atp7d.arff"...
-DEBUG Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
-INFO Data characteristics:
+mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --save-evaluation true --problem-type regression --print-all true
+Starting experiment using the regression algorithm "BoomerRegressor"...
+Using separate training and test sets...
+Reading input data from file "python/tests/res/data/atp7d.arff"...
+Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
+Data characteristics:
 
 Examples            198
 Features            411
@@ -16,23 +16,23 @@ Outputs               6
 Output Density      100
 Output Sparsity       0
 
-INFO Fitting model to 198 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the regression scores of the training examples
-INFO Successfully fit model in <duration>
-INFO Predicting for 98 test examples...
-DEBUG A dense matrix is used to store the feature values of the query examples
-DEBUG A dense matrix is used to store the predicted scores
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data:
+Fitting model to 198 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the regression scores of the training examples
+Successfully fit model in <duration>
+Predicting for 98 test examples...
+A dense matrix is used to store the feature values of the query examples
+A dense matrix is used to store the predicted scores
+Successfully predicted in <duration>
+Evaluation result for test data:
 
 Mean Absolute Error               29.91
 Mean Absolute Percentage Error     0.08
 Mean Squared Error              2826.34
 Median Absolute Error             15.83
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Ground truth for test data:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Ground truth for test data:
 
 [[ 334.  440.  460.  463.  334.  463.]
  [ 279.  279.  395.  369.  313.  401.]
@@ -133,13 +133,13 @@ INFO Ground truth for test data:
  [ 279.  279.  301.  366.  283.  366.]
  [ 199.  199.  447.  488.  298.  488.]]
 
-INFO Prediction characteristics for test data:
+Prediction characteristics for test data:
 
 Outputs            6
 Output Density   100
 Output Sparsity    0
 
-INFO Predictions for test data:
+Predictions for test data:
 
 [[359.85 510.21 510.34 486.62 377.7  487.11]
  [278.01 300.33 402.85 374.6  305.17 390.72]
@@ -240,16 +240,16 @@ INFO Predictions for test data:
  [267.26 291.32 309.8  360.89 283.69 360.32]
  [228.4  247.16 457.26 494.6  282.14 503.42]]
 
-ERROR JointProbabilityCalibrationModelWriter.DefaultExtractor expected type of learner to be one of {"ClassificationRuleLearner"}, but learner has type BoomerRegressor
-ERROR LabelVectorSetExtension.LabelVectorSetExtractor expected type of learner to be one of {"ClassificationRuleLearner"}, but learner has type BoomerRegressor
-INFO Label vectors:
+JointProbabilityCalibrationModelWriter.DefaultExtractor expected type of learner to be one of {"ClassificationRuleLearner"}, but learner has type BoomerRegressor
+LabelVectorSetExtension.LabelVectorSetExtractor expected type of learner to be one of {"ClassificationRuleLearner"}, but learner has type BoomerRegressor
+Label vectors:
 
 Index         1
 Label vector  [1 1 1 1 1 1]
 Frequency     198
 
-ERROR MarginalProbabilityCalibrationModelWriter.DefaultExtractor expected type of learner to be one of {"ClassificationRuleLearner"}, but learner has type BoomerRegressor
-INFO Model:
+MarginalProbabilityCalibrationModelWriter.DefaultExtractor expected type of learner to be one of {"ClassificationRuleLearner"}, but learner has type BoomerRegressor
+Model:
 
 {} => (LBL+ALLminpA+bt7d_000 = 275.29, LBL+ALLminp0+bt7d_000 = 329.50, LBL+aDLminpA+bt7d_000 = 364.09, LBL+aCOminpA+bt7d_000 = 387.78, LBL+aFLminpA+bt7d_000 = 291.37, LBL+aUAminpA+bt7d_000 = 386.54)
 {aUAavgp0 > 653.50 & aAAavgp4 > 411.00} => (LBL+ALLminpA+bt7d_000 = 24.20, LBL+ALLminp0+bt7d_000 = 83.89, LBL+aDLminpA+bt7d_000 = 68.96, LBL+aCOminpA+bt7d_000 = 83.28, LBL+aFLminpA+bt7d_000 = 30.76, LBL+aUAminpA+bt7d_000 = 86.85)
@@ -1253,7 +1253,7 @@ INFO Model:
 {aAAnumquotes4'l2 <= 13.50 & ALLminp4'l1 <= 339.00 & ALLnumquotes2'l2 <= 572.00 & aAAavgp2 > 475.25 & aCOnumquotes4 > 158.50 & aFLavgpA'l2 > 329.70} => (LBL+ALLminpA+bt7d_000 = -0.22, LBL+ALLminp0+bt7d_000 = -0.11, LBL+aDLminpA+bt7d_000 = 0.07, LBL+aCOminpA+bt7d_000 = 0.21, LBL+aFLminpA+bt7d_000 = -0.01, LBL+aUAminpA+bt7d_000 = -0.01)
 
 
-INFO Model characteristics:
+Model characteristics:
 
 ┌───────────────────────────────┬─────────┬─────────────────────────┬────────────────────────┬───────────────────────┬──────────────────────┬───────────────────────┬───────────────────────┐
 │ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
@@ -1276,4 +1276,4 @@ INFO Model characteristics:
 │ Predictions                 │         6 │       6   │         6 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
-INFO Successfully finished after <duration>
+Successfully finished experiment after <duration>

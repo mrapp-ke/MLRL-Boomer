@@ -164,7 +164,7 @@ As an alternative to storing the models learned by an algorithm, the algorithmic
 
 To provide valuable insights into the models learned by an algorithm, the predictions they provide, or the data they have been derived from, a wide variety of experimental results can be written to output files or printed on the console. If the results should be written to files, it is necessary to specify an output directory:
 
-- `--output-dir` An absolute or relative path to the directory where experimental results should be saved.
+- `--output-dir` (Default value = `results`) An absolute or relative path to the directory where experimental results should be saved.
 
 - `--create-output-dir` (Default value = `true`)
 
@@ -238,7 +238,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--store-evaluation` (Default value = `true`)
 
-  - `true` The evaluation results in terms of common metrics are written into [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files. Does only have an effect if the parameter `--output-dir` is specified.
+  - `true` The evaluation results in terms of common metrics are written into [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files.
 
     - `decimals` (Default value = `0`) The number of decimals to be used for evaluation scores or 0, if the number of decimals should not be restricted.
     - `percentage` (Default value = `true`) `true`, if evaluation scores should be given as a percentage, if possible, `false` otherwise.
@@ -293,7 +293,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--store-predictions` (Default value = `false`)
 
-  - `true` Datasets, where the ground truth has been replaced with the predictions of a model, are written into ARFF files. Does only have an effect if the parameter `--output-dir` is specified.
+  - `true` Datasets, where the ground truth has been replaced with the predictions of a model, are written into ARFF files.
 
     - `decimals` (Default value = `0`) The number of decimals to be used for real-valued predictions or 0, if the number of decimals should not be restricted.
 
@@ -309,7 +309,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--store-ground-truth` (Default value = `false`)
 
-  - `true` Training datasets containing the ground truth are written into ARFF files. Does only have an effect if the parameter `--output-dir` is specified.
+  - `true` Training datasets containing the ground truth are written into ARFF files.
 
     - `decimals` (Default value = `0`) The number of decimals to be used for real-valued ground truth or 0, if the number of decimals should not be restricted.
 

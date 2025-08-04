@@ -6,10 +6,11 @@ Provides classes for implementing experiments.
 import logging as log
 
 from abc import ABC, abstractmethod
+from argparse import Namespace
 from dataclasses import replace
 from functools import reduce
 from itertools import chain
-from typing import Any, Generator, Iterable, List, Optional, Set
+from typing import Any, Callable, Generator, Iterable, List, Optional, Set, override
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
@@ -32,6 +33,8 @@ class Experiment(ABC):
         """
         An abstract base class for all classes that allow to configure and create instances of an experiment.
         """
+
+        Factory = Callable[[Namespace], 'Experiment.Builder']
 
         def __init__(self, problem_domain: ProblemDomain, dataset_splitter: DatasetSplitter):
             """
@@ -240,6 +243,7 @@ class Experiment(ABC):
         Updates the state of an experiment by invoking the input readers that have been added to an experiment.
         """
 
+        @override
         def on_start(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
             return reduce(lambda current_state, input_reader: input_reader.read(current_state),
                           experiment.input_readers, state)
@@ -249,18 +253,21 @@ class Experiment(ABC):
         Passes the state of an experiment to output writers that have been added to an experiment.
         """
 
+        @override
         def before_training(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
             for output_writer in experiment.pre_training_output_writers:
                 output_writer.write(state)
 
             return state
 
+        @override
         def after_training(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
             for output_writer in experiment.post_training_output_writers:
                 output_writer.write(state)
 
             return state
 
+        @override
         def after_prediction(self, experiment: 'Experiment', state: ExperimentState):
             for output_writer in experiment.prediction_output_writers:
                 output_writer.write(state)
@@ -339,7 +346,7 @@ class Experiment(ABC):
                     listener.after_training(self, training_state)
 
         run_time = Timer.stop(start_time)
-        log.info('Successfully finished after %s', run_time)
+        log.info('Successfully finished experiment after %s', run_time)
 
     @abstractmethod
     def _train(self, learner: Optional[Any], parameters: ParameterDict, dataset: Dataset) -> TrainingState:

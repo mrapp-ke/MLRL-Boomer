@@ -6,7 +6,7 @@ Provides classes for splitting datasets into multiple, equally sized, folds cons
 import logging as log
 
 from dataclasses import dataclass, field, replace
-from typing import Any, Generator, List, Optional, cast
+from typing import Any, Generator, List, Optional, cast, override
 
 from scipy.sparse import vstack
 from sklearn.model_selection import KFold
@@ -93,6 +93,7 @@ class CrossValidationSplitter(DatasetSplitter):
             context.include_dataset_type = False
             context.include_fold = True
 
+        @override
         def get_state(self, dataset_type: DatasetType) -> ExperimentState:
             """
             See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.Split.get_state`
@@ -139,6 +140,7 @@ class CrossValidationSplitter(DatasetSplitter):
             context.include_dataset_type = False
             context.include_fold = False
 
+        @override
         def get_state(self, dataset_type: DatasetType) -> ExperimentState:
             """
             See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.Split.get_state`
@@ -177,14 +179,15 @@ class CrossValidationSplitter(DatasetSplitter):
         :param last_fold:       The index of the last cross validation fold to be performed (exclusive)
         :param random_state:    The seed to be used by RNGs. Must be at least 1
         """
+        super().__init__(FoldingStrategy(num_folds=num_folds, first=first_fold, last=last_fold))
         self.dataset_reader = dataset_reader
         self.random_state = random_state
-        self.folding_strategy = FoldingStrategy(num_folds=num_folds, first=first_fold, last=last_fold)
         self.cache: Optional[Any] = None
         context = dataset_reader.input_data.context
         context.include_dataset_type = False
         context.include_fold = True
 
+    @override
     def split(self, problem_domain: ProblemDomain) -> Generator[DatasetSplitter.Split, None, None]:
         """
         See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.split`

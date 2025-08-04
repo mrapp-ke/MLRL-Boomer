@@ -5,6 +5,7 @@ Provides classes that allow writing datasets to ARFF files.
 """
 import xml.etree.ElementTree as XmlTree
 
+from pathlib import Path
 from typing import Any, List
 from xml.dom import minidom
 
@@ -53,7 +54,7 @@ class ArffFileSink(DatasetFileSink):
             data[keys[0]][num_features + keys[1]] = value
 
     @staticmethod
-    def __write_arff_file(file_path: str, dataset: TabularDataset):
+    def __write_arff_file(file_path: Path, dataset: TabularDataset):
         features = dataset.features
         x_features = [(features[i].name, 'NUMERIC' if features[i].attribute_type == AttributeType.NUMERICAL
                        or features[i].nominal_values is None else features[i].nominal_values)
@@ -77,7 +78,7 @@ class ArffFileSink(DatasetFileSink):
                 }))
 
     @staticmethod
-    def __write_xml_file(file_path: str, dataset: TabularDataset):
+    def __write_xml_file(file_path: Path, dataset: TabularDataset):
         root_element = XmlTree.Element('labels')
         root_element.set('xmlns', 'http://mulan.sourceforge.net/labels')
 
@@ -89,7 +90,7 @@ class ArffFileSink(DatasetFileSink):
             xml_string = minidom.parseString(XmlTree.tostring(root_element)).toprettyxml(encoding=ENCODING_UTF8)
             xml_file.write(xml_string.decode(ENCODING_UTF8))
 
-    def __init__(self, directory: str, options: Options = Options(), create_directory: bool = False):
+    def __init__(self, directory: Path, options: Options = Options(), create_directory: bool = False):
         """
         :param directory:           The path to the directory, where the ARFF file should be located
         :param options:             Options to be taken into account
@@ -102,6 +103,6 @@ class ArffFileSink(DatasetFileSink):
                          create_directory=create_directory)
 
     # pylint: disable=unused-argument
-    def _write_dataset_to_file(self, file_path: str, state: ExperimentState, dataset: Dataset, **_):
+    def _write_dataset_to_file(self, file_path: Path, state: ExperimentState, dataset: Dataset, **_):
         self.__write_arff_file(file_path=file_path, dataset=dataset)
-        self.__write_xml_file(file_path=file_path.rsplit('.', 1)[0] + '.' + self.SUFFIX_XML, dataset=dataset)
+        self.__write_xml_file(file_path=file_path.with_suffix('.' + self.SUFFIX_XML), dataset=dataset)

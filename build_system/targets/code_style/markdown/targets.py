@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for checking and enforcing code style definitions for Markdown files.
 """
-from typing import cast
+from typing import cast, override
 
 from core.build_unit import BuildUnit
 from core.modules import Module
@@ -25,6 +25,7 @@ class CheckMarkdownCodeStyle(PhonyTarget.Runnable):
     def __init__(self):
         super().__init__(MODULE_FILTER)
 
+    @override
     def run(self, build_unit: BuildUnit, module: Module):
         code_module = cast(CodeModule, module)
         Log.info('Checking Markdown code style in the directory "%s"...', code_module.root_directory)
@@ -39,6 +40,7 @@ class EnforceMarkdownCodeStyle(PhonyTarget.Runnable):
     def __init__(self):
         super().__init__(MODULE_FILTER)
 
+    @override
     def run(self, build_unit: BuildUnit, module: Module):
         code_module = cast(CodeModule, module)
         Log.info('Formatting Markdown files in the directory "%s"...', code_module.root_directory)

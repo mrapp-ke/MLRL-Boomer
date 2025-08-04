@@ -7,11 +7,13 @@ from typing import List, Optional
 from .datasets import Dataset
 
 from mlrl.common.config.parameters import BINNING_EQUAL_WIDTH, SAMPLING_WITHOUT_REPLACEMENT, \
-    PartitionSamplingParameter, RuleInductionParameter, RulePruningParameter
+    PartitionSamplingParameter, PostOptimizationParameter, RuleInductionParameter, RulePruningParameter
 from mlrl.common.learners import SparsePolicy
 
 from mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension import OPTION_FIRST_FOLD, OPTION_NUM_FOLDS, \
     VALUE_CROSS_VALIDATION, VALUE_TRAIN_TEST
+
+from mlrl.testbed.modes import Mode
 
 from mlrl.util.options import Options
 
@@ -23,18 +25,13 @@ class CmdBuilder:
 
     RESOURCE_DIR = Path('python', 'tests', 'res')
 
-    DATA_DIR = RESOURCE_DIR / 'data'
-
-    INPUT_DIR = RESOURCE_DIR / 'in'
+    CONFIG_DIR = RESOURCE_DIR / 'config'
 
     EXPECTED_OUTPUT_DIR = RESOURCE_DIR / 'out'
 
-    OUTPUT_DIR = RESOURCE_DIR / 'tmp' / 'results'
-
-    MODEL_DIR = RESOURCE_DIR / 'tmp' / 'models'
-
     def __init__(self,
                  expected_output_dir: Path,
+                 batch_config: Path,
                  runnable_module_name: str,
                  runnable_class_name: Optional[str] = None,
                  dataset: str = Dataset.EMOTIONS):
@@ -42,27 +39,61 @@ class CmdBuilder:
         :param expected_output_dir:     The path to the directory that contains the file with the expected output
         :param runnable_module_name:    The fully qualified name of the runnable to be invoked by the program
                                         'mlrl-testbed'
+        :param batch_config:            The path to the config file that should be used in batch mode
         :param runnable_class_name:     The class name of the runnable to be invoked by the program 'mlrl-testbed'
         :param dataset:                 The name of the dataset
         """
         self.expected_output_dir = expected_output_dir
+        self.batch_config = batch_config
         self.runnable_module_name = runnable_module_name
         self.runnable_class_name = runnable_class_name
+        self.mode: Optional[str] = None
         self.show_help = False
         self.dataset = dataset
-        self.parameter_load_dir: Optional[Path] = None
         self.parameter_save_dir: Optional[Path] = None
-        self.model_dir: Optional[Path] = None
+        self.model_save_dir: Optional[Path] = None
+        self.model_load_dir: Optional[Path] = None
         self.num_folds = 0
         self.current_fold = None
         self.args: List[str] = []
+        self.save_evaluation(True)
 
     @property
-    def output_dir(self) -> Path:
+    def base_dir(self) -> Path:
         """
-        The path to the directory where output files should be stored.
+        The base directory.
         """
-        return self.OUTPUT_DIR
+        return self.RESOURCE_DIR / 'tmp'
+
+    @property
+    def result_dir(self) -> Path:
+        """
+        The relative path to the directory where experimental results should be saved.
+        """
+        return Path('results')
+
+    @property
+    def resolved_result_dir(self) -> Path:
+        """
+        The path to the directory where experimental results should be saved, resolved against the base directory.
+        """
+        return self.base_dir / self.result_dir
+
+    @property
+    def resolved_model_dir(self) -> Optional[Path]:
+        """
+        The  path to the directory where models should be saved, resolved against the base directory.
+        """
+        model_save_dir = self.model_save_dir
+        return self.base_dir / model_save_dir if model_save_dir else None
+
+    @property
+    def resolved_parameter_dir(self) -> Optional[Path]:
+        """
+        The path to the directory where models should be saved, resolved against the base directory.
+        """
+        parameter_save_dir = self.parameter_save_dir
+        return self.base_dir / parameter_save_dir if parameter_save_dir else None
 
     def build(self) -> List[str]:
         """
@@ -75,15 +106,50 @@ class CmdBuilder:
         if self.runnable_class_name:
             args.extend(['-r', self.runnable_class_name])
 
+        if self.mode:
+            args.extend(('--mode', self.mode))
+
         if self.show_help:
             args.append('--help')
             return args
 
         args.extend(('--log-level', 'debug'))
-        args.extend(('--data-dir', str(self.DATA_DIR)))
-        args.extend(('--dataset', self.dataset))
-        args.extend(('--output-dir', str(self.output_dir)))
+        args.extend(('--base-dir', str(self.base_dir)))
+
+        if self.mode == Mode.MODE_BATCH:
+            args.extend(('--config', str(self.batch_config)))
+        else:
+            args.extend(('--data-dir', str(self.RESOURCE_DIR / 'data')))
+            args.extend(('--dataset', self.dataset))
+            args.extend(('--result-dir', str(self.result_dir)))
+
+            if self.model_load_dir:
+                self.args.append('--load-models')
+                self.args.append(str(True).lower())
+                self.args.append('--model-load-dir')
+                self.args.append(str(self.model_load_dir))
+
+            if self.model_save_dir:
+                self.args.append('--model-save-dir')
+                self.args.append(str(self.model_save_dir))
+
+            if self.parameter_save_dir:
+                self.args.append('--parameter-save-dir')
+                self.args.append(str(self.parameter_save_dir))
+
         return args + self.args
+
+    def set_mode(self, mode: Optional[str], *extra_args: str):
+        """
+        Configures the mode of operation to be used.
+
+        :param mode:        The mode of operation to be used
+        :param extra_args:  Additional arguments to be added
+        :return:            The builder itself
+        """
+        self.mode = mode
+        self.args.extend(extra_args)
+        return self
 
     def set_show_help(self, show_help: bool = True):
         """
@@ -95,51 +161,47 @@ class CmdBuilder:
         self.show_help = show_help
         return self
 
-    def set_model_dir(self, model_dir: Optional[Path] = MODEL_DIR):
+    def load_models(self):
         """
-        Configures the rule learner to store models in a given directory or load them, if available.
+        Configures the rule learner to load models from a directory, if available.
 
-        :param model_dir:   The path to the directory where models should be stored
-        :return:            The builder itself
+        :return: The builder itself
         """
-        self.model_dir = model_dir
-
-        if model_dir:
-            self.args.append('--model-load-dir')
-            self.args.append(str(model_dir))
-            self.args.append('--model-save-dir')
-            self.args.append(str(model_dir))
-
+        self.model_load_dir = Path('models')
         return self
 
-    def set_parameter_load_dir(self, parameter_dir: Optional[Path] = INPUT_DIR):
+    def save_models(self):
         """
-        Configures the rule learner to load parameter settings from a given directory, if available.
+        Configures the rule learner to store models in a directory.
 
-        :param parameter_dir:   The path to the directory from which parameter settings should be loaded
-        :return:                The builder itself
+        :return: The builder itself
         """
-        self.parameter_load_dir = parameter_dir
-
-        if parameter_dir:
-            self.args.append('--parameter-load-dir')
-            self.args.append(str(parameter_dir))
-
+        self.model_save_dir = Path('models')
+        self.args.append('--save-models')
+        self.args.append(str(True).lower())
         return self
 
-    def set_parameter_save_dir(self, parameter_dir: Optional[Path] = OUTPUT_DIR):
+    def load_parameters(self):
         """
-        Configures the rule learner to save parameter settings to a given directory.
+        Configures the rule learner to load parameter settings from a directory, if available.
 
-        :param parameter_dir:   The path to the directory to which parameter settings should be saved
-        :return:                The builder itself
+        :return: The builder itself
         """
-        self.parameter_save_dir = parameter_dir
+        self.args.append('--load-parameters')
+        self.args.append(str(True).lower())
+        self.args.append('--parameter-load-dir')
+        self.args.append(str(self.RESOURCE_DIR / 'in'))
+        return self
 
-        if parameter_dir:
-            self.args.append('--parameter-save-dir')
-            self.args.append(str(parameter_dir))
+    def save_parameters(self):
+        """
+        Configures the rule learner to save parameter settings to a directory.
 
+        :return: The builder itself
+        """
+        self.parameter_save_dir = Path('results')
+        self.args.append('--save-parameters')
+        self.args.append(str(True).lower())
         return self
 
     def data_split(self, data_split: Optional[str] = VALUE_TRAIN_TEST, options: Options = Options()):
@@ -220,15 +282,15 @@ class CmdBuilder:
         self.args.append(str(print_all).lower())
         return self
 
-    def store_all(self, store_all: bool = True):
+    def save_all(self, save_all: bool = True):
         """
         Configures whether all experimental results should be written to output files or not.
 
-        :param store_all:   True, if the all experimental results should be written to output files, False otherwise
+        :param save_all:    True, if the all experimental results should be written to output files, False otherwise
         :return:            The builder itself
         """
-        self.args.append('--store-all')
-        self.args.append(str(store_all).lower())
+        self.args.append('--save-all')
+        self.args.append(str(save_all).lower())
         return self
 
     def print_evaluation(self, print_evaluation: bool = True):
@@ -242,15 +304,15 @@ class CmdBuilder:
         self.args.append(str(print_evaluation).lower())
         return self
 
-    def store_evaluation(self, store_evaluation: bool = True):
+    def save_evaluation(self, save_evaluation: bool = True):
         """
-        Configures whether the evaluation results should be written into output files or not.
+        Configures whether the evaluation results should be written to output files or not.
 
-        :param store_evaluation:    True, if the evaluation results should be written into output files or not
-        :return:                    The builder itself
+        :param save_evaluation: True, if the evaluation results should be written to output files, False otherwise
+        :return:                The builder itself
         """
-        self.args.append('--store-evaluation')
-        self.args.append(str(store_evaluation).lower())
+        self.args.append('--save-evaluation')
+        self.args.append(str(save_evaluation).lower())
         return self
 
     def print_parameters(self, print_parameters: bool = True):
@@ -275,15 +337,15 @@ class CmdBuilder:
         self.args.append(str(print_predictions).lower())
         return self
 
-    def store_predictions(self, store_predictions: bool = True):
+    def save_predictions(self, save_predictions: bool = True):
         """
-        Configures whether the predictions should be written into output files or not.
+        Configures whether the predictions should be written to output files or not.
 
-        :param store_predictions:   True, if the predictions should be written into output files, False otherwise
+        :param save_predictions:    True, if the predictions should be written to output files, False otherwise
         :return:                    The builder itself
         """
-        self.args.append('--store-predictions')
-        self.args.append(str(store_predictions).lower())
+        self.args.append('--save-predictions')
+        self.args.append(str(save_predictions).lower())
         return self
 
     def print_ground_truth(self, print_ground_truth: bool = True):
@@ -297,15 +359,15 @@ class CmdBuilder:
         self.args.append(str(print_ground_truth).lower())
         return self
 
-    def store_ground_truth(self, store_ground_truth: bool = True):
+    def save_ground_truth(self, save_ground_truth: bool = True):
         """
-        Configures whether the ground truth should be written into output files or not.
+        Configures whether the ground truth should be written to output files or not.
 
-        :param store_ground_truth:  True, if the ground truth should be written into output files, False otherwise
+        :param save_ground_truth:   True, if the ground truth should be written to output files, False otherwise
         :return:                    The builder itself
         """
-        self.args.append('--store-ground-truth')
-        self.args.append(str(store_ground_truth).lower())
+        self.args.append('--save-ground-truth')
+        self.args.append(str(save_ground_truth).lower())
         return self
 
     def print_prediction_characteristics(self, print_prediction_characteristics: bool = True):
@@ -320,16 +382,16 @@ class CmdBuilder:
         self.args.append(str(print_prediction_characteristics).lower())
         return self
 
-    def store_prediction_characteristics(self, store_prediction_characteristics: bool = True):
+    def save_prediction_characteristics(self, save_prediction_characteristics: bool = True):
         """
-        Configures whether the characteristics of predictions should be written into output files or not.
+        Configures whether the characteristics of predictions should be written to output files or not.
 
-        :param store_prediction_characteristics:    True, if the characteristics of predictions should be written into
-                                                    output files, False otherwise
-        :return:                                    The builder itself
+        :param save_prediction_characteristics: True, if the characteristics of predictions should be written to
+                                                output files, False otherwise
+        :return:                                The builder itself
         """
-        self.args.append('--store-prediction-characteristics')
-        self.args.append(str(store_prediction_characteristics).lower())
+        self.args.append('--save-prediction-characteristics')
+        self.args.append(str(save_prediction_characteristics).lower())
         return self
 
     def print_data_characteristics(self, print_data_characteristics: bool = True):
@@ -343,16 +405,16 @@ class CmdBuilder:
         self.args.append(str(print_data_characteristics).lower())
         return self
 
-    def store_data_characteristics(self, store_data_characteristics: bool = True):
+    def save_data_characteristics(self, save_data_characteristics: bool = True):
         """
-        Configures whether the characteristics of datasets should be written into output files or not.
+        Configures whether the characteristics of datasets should be written to output files or not.
 
-        :param store_data_characteristics:  True, if the characteristics of datasets should be written into output
+        :param save_data_characteristics:   True, if the characteristics of datasets should be written to output
                                             files, False otherwise
         :return:                            The builder itself
         """
-        self.args.append('--store-data-characteristics')
-        self.args.append(str(store_data_characteristics).lower())
+        self.args.append('--save-data-characteristics')
+        self.args.append(str(save_data_characteristics).lower())
         return self
 
     def print_model_characteristics(self, print_model_characteristics: bool = True):
@@ -366,16 +428,16 @@ class CmdBuilder:
         self.args.append(str(print_model_characteristics).lower())
         return self
 
-    def store_model_characteristics(self, store_model_characteristics: bool = True):
+    def save_model_characteristics(self, save_model_characteristics: bool = True):
         """
-        Configures whether the characteristics of models should be written into output files or not.
+        Configures whether the characteristics of models should be written to output files or not.
 
-        :param store_model_characteristics: True, if the characteristics of models should be written into output files,
+        :param save_model_characteristics:  True, if the characteristics of models should be written to output files,
                                             False otherwise
         :return:                            The builder itself
         """
-        self.args.append('--store-model-characteristics')
-        self.args.append(str(store_model_characteristics).lower())
+        self.args.append('--save-model-characteristics')
+        self.args.append(str(save_model_characteristics).lower())
         return self
 
     def print_rules(self, print_rules: bool = True):
@@ -389,16 +451,16 @@ class CmdBuilder:
         self.args.append(str(print_rules).lower())
         return self
 
-    def store_rules(self, store_rules: bool = True):
+    def save_rules(self, save_rules: bool = True):
         """
-        Configures whether textual representations of the rules in a model should be written into output files or not.
+        Configures whether textual representations of the rules in a model should be written to output files or not.
 
-        :param store_rules: True, if textual representations of rules should be written into output files, False
+        :param save_rules:  True, if textual representations of rules should be written to output files, False
                             otherwise
         :return:            The builder itself
         """
-        self.args.append('--store-rules')
-        self.args.append(str(store_rules).lower())
+        self.args.append('--save-rules')
+        self.args.append(str(save_rules).lower())
         return self
 
     def feature_format(self, feature_format: Optional[str] = SparsePolicy.FORCE_SPARSE):
@@ -505,15 +567,18 @@ class CmdBuilder:
 
         return self
 
-    def sequential_post_optimization(self, sequential_post_optimization: bool = True):
+    def post_optimization(self,
+                          post_optimization: Optional[str] = PostOptimizationParameter.POST_OPTIMIZATION_SEQUENTIAL):
         """
-        Configures whether the algorithm should use sequential post-optimization or not.
+        Configures the post-optimization method to be used by the algorithm.
 
-        :param sequential_post_optimization:    True, if sequential post-optimization should be used, False otherwise
-        :return:                                The builder itself
+        :param post_optimization:   The name of the method that should be used for post-optimzation
+        :return:                    The builder itself
         """
-        self.args.append('--sequential-post-optimization')
-        self.args.append(str(sequential_post_optimization).lower())
+        if post_optimization:
+            self.args.append('--post-optimization')
+            self.args.append(post_optimization)
+
         return self
 
     def holdout(self, holdout: Optional[str] = PartitionSamplingParameter.PARTITION_SAMPLING_RANDOM):

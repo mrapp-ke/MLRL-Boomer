@@ -5,7 +5,7 @@ Provides classes that allow to configure build options.
 """
 from abc import ABC, abstractmethod
 from os import environ
-from typing import Any, Iterable, List, Optional
+from typing import Any, Iterable, List, Optional, override
 
 from util.env import get_env
 
@@ -44,9 +44,11 @@ class BuildOption(ABC):
         :return: The value or None, if no value is set
         """
 
+    @override
     def __eq__(self, other: Any) -> bool:
         return isinstance(other, type(self)) and self.keys == other.keys
 
+    @override
     def __hash__(self) -> int:
         return hash(tuple(self.keys))
 
@@ -68,6 +70,7 @@ class ConstantBuildOption(BuildOption):
         super().__init__(name, *subprojects)
         self._value = value
 
+    @override
     @property
     def value(self) -> Optional[str]:
         return self._value
@@ -87,6 +90,7 @@ class EnvBuildOption(BuildOption):
         super().__init__(name, *subprojects)
         self.default_value = default_value
 
+    @override
     @property
     def value(self) -> Optional[str]:
         value = get_env(environ, self.name.upper(), self.default_value)
@@ -115,6 +119,7 @@ class BuildOptions(Iterable[BuildOption]):
         self.build_options.add(build_option)
         return self
 
+    @override
     def __iter__(self):
         return iter(self.build_options)
 
