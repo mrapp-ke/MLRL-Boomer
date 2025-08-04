@@ -84,7 +84,7 @@ class TextualOutputData(OutputData, ABC):
             if self.context.include_fold:
                 folding_strategy = state.folding_strategy
 
-                if folding_strategy.is_cross_validation_used:
+                if folding_strategy and folding_strategy.is_cross_validation_used:
                     fold = state.fold
 
                     if fold:
