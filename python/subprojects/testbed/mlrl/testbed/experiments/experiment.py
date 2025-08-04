@@ -16,6 +16,7 @@ from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.input.reader import InputReader
+from mlrl.testbed.experiments.output.meta_data.writer import MetaDataWriter
 from mlrl.testbed.experiments.output.model.writer import ModelWriter
 from mlrl.testbed.experiments.output.parameters.writer import ParameterWriter
 from mlrl.testbed.experiments.output.writer import OutputWriter
@@ -50,10 +51,12 @@ class Experiment(ABC):
             self.post_training_output_writers: Set[OutputWriter] = set()
             self.prediction_output_writers: Set[OutputWriter] = set()
             self.model_writer = ModelWriter()
+            self.meta_data_writer = MetaDataWriter()
             self.parameter_writer = ParameterWriter()
             self.predict_for_training_dataset = False
             self.predict_for_test_dataset = True
             self.exit_on_error = True
+            self.add_before_start_output_writers(self.meta_data_writer)
             self.add_pre_training_output_writers(self.parameter_writer)
             self.add_post_training_output_writers(self.model_writer)
 
