@@ -32,7 +32,7 @@ from mlrl.testbed.experiments.input.dataset.extension import DatasetFileExtensio
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
 from mlrl.testbed.experiments.input.model.extension import ModelInputExtension
 from mlrl.testbed.experiments.input.parameters.extension import ParameterInputExtension
-from mlrl.testbed.experiments.output.meta_data.meta_data import MetaData
+from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.output.model.extension import ModelOutputDirectoryExtension, ModelOutputExtension
 from mlrl.testbed.experiments.output.parameters.extension import ParameterOutputDirectoryExtension, \
     ParameterOutputExtension

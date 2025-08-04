@@ -11,7 +11,7 @@ from typing import Any, Dict, Optional, Type
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.fold import Fold, FoldingStrategy
-from mlrl.testbed.experiments.output.meta_data import MetaData
+from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.prediction_scope import PredictionScope
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ProblemDomain

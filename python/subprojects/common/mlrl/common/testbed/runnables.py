@@ -25,7 +25,7 @@ from mlrl.testbed_sklearn.runnables import SkLearnRunnable
 
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments import Experiment
-from mlrl.testbed.experiments.output.meta_data import MetaData
+from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, RegressionProblem
 from mlrl.testbed.experiments.state import ExperimentState
