@@ -3,6 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for dealing with commands and their arguments.
 """
+import sys
+
 from argparse import Namespace
 from copy import copy
 from dataclasses import dataclass
@@ -88,6 +90,15 @@ class Command(Iterable[str]):
     """
     module_name: str
     argument_list: ArgumentList
+
+    @staticmethod
+    def from_argv() -> 'Command':
+        """
+        Creates a command from the arguments in `sys.argv`.
+
+        :return: The command that has been created
+        """
+        return Command(module_name=sys.argv[1], argument_list=ArgumentList(sys.argv[2:]))
 
     def apply_to_namespace(self, namespace: Namespace) -> Namespace:
         """

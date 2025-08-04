@@ -19,7 +19,6 @@ from mlrl.testbed.experiments.input.reader import InputReader
 from mlrl.testbed.experiments.output.model.writer import ModelWriter
 from mlrl.testbed.experiments.output.parameters.writer import ParameterWriter
 from mlrl.testbed.experiments.output.writer import OutputWriter
-from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.state import ExperimentState, ParameterDict, PredictionState, TrainingState
 from mlrl.testbed.experiments.timer import Timer
 
@@ -36,13 +35,13 @@ class Experiment(ABC):
 
         Factory = Callable[[Namespace], 'Experiment.Builder']
 
-        def __init__(self, problem_domain: ProblemDomain, dataset_splitter: DatasetSplitter):
+        def __init__(self, initial_state: ExperimentState, dataset_splitter: DatasetSplitter):
             """
-            :param problem_domain:      The problem domain, the experiment should be concerned with
+            :param initial_state:       The initial state of the experiment
             :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
             """
             super().__init__()
-            self.problem_domain = problem_domain
+            self.initial_state = initial_state
             self.dataset_splitter = dataset_splitter
             self.listeners: List[Experiment.Listener] = []
             self.input_readers: Set[InputReader] = set()
@@ -152,7 +151,7 @@ class Experiment(ABC):
                                        self.prediction_output_writers):
                 output_writer.exit_on_error = exit_on_error
 
-            experiment = self._create_experiment(self.problem_domain, self.dataset_splitter)
+            experiment = self._create_experiment(self.initial_state, self.dataset_splitter)
             experiment.listeners.extend(self.listeners)
 
             def sort(objects: Iterable[Any]) -> List[Any]:
@@ -173,11 +172,11 @@ class Experiment(ABC):
                              predict_for_test_dataset=should_predict and self.predict_for_test_dataset)
 
         @abstractmethod
-        def _create_experiment(self, problem_domain: ProblemDomain, dataset_splitter: DatasetSplitter) -> 'Experiment':
+        def _create_experiment(self, initial_state: ExperimentState, dataset_splitter: DatasetSplitter) -> 'Experiment':
             """
             Must be implemented by subclasses in order to create a new experiment.
 
-            :param problem_domain:      The problem domain, the experiment should be concerned with
+            :param initial_state:       The initial state of the experiment
             :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
             :return:                    The experiment that has been created
             """
@@ -285,12 +284,12 @@ class Experiment(ABC):
             for listener in self.listeners:
                 listener.after_prediction(self, new_state)
 
-    def __init__(self, problem_domain: ProblemDomain, dataset_splitter: DatasetSplitter):
+    def __init__(self, initial_state: ExperimentState, dataset_splitter: DatasetSplitter):
         """
-        :param problem_domain:      The problem domain, the experiment is concerned with
+        :param initial_state:       The initial state of the experiment
         :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
         """
-        self.problem_domain = problem_domain
+        self.initial_state = initial_state
         self.dataset_splitter = dataset_splitter
         self.input_readers: List[InputReader] = []
         self.pre_training_output_writers: List[OutputWriter] = []
@@ -311,10 +310,10 @@ class Experiment(ABC):
         :param predict_for_test_dataset:        True, if predictions should be obtained for the test dataset, if
                                                 available, False otherwise
         """
-        problem_domain = self.problem_domain
+        initial_state = self.initial_state
+        problem_domain = initial_state.problem_domain
         log.info('Starting experiment using the %s algorithm "%s"...', problem_domain.problem_name,
                  problem_domain.learner_name)
-        initial_state = ExperimentState(problem_domain=problem_domain)
 
         for listener in self.listeners:
             listener.before_start(self, initial_state)
