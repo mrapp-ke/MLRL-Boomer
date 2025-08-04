@@ -11,7 +11,7 @@ from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.extension import OutputExtension
 from mlrl.testbed.experiments.output.sinks.sink_pickle import PickleFileSink
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import Mode, SingleExperimentMode
+from mlrl.testbed.modes import Mode, SingleMode
 
 from mlrl.util.cli import Argument, BoolArgument, StringArgument
 
@@ -84,4 +84,4 @@ class ModelOutputDirectoryExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleExperimentMode}
+        return {SingleMode}
