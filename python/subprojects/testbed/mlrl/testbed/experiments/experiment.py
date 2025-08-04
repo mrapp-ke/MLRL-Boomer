@@ -310,13 +310,14 @@ class Experiment(ABC):
         problem_domain = self.problem_domain
         log.info('Starting experiment using the %s algorithm "%s"...', problem_domain.problem_name,
                  problem_domain.learner_name)
+        initial_state = ExperimentState(problem_domain=problem_domain)
 
         for listener in self.listeners:
             listener.before_start(self)
 
         start_time = Timer.start()
 
-        for split in self.dataset_splitter.split(problem_domain):
+        for split in self.dataset_splitter.split(initial_state):
             training_state = split.get_state(DatasetType.TRAINING)
 
             if training_state:
