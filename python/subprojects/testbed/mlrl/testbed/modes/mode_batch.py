@@ -22,15 +22,103 @@ from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.modes.mode import Mode
 
-from mlrl.util.cli import BoolArgument, CommandLineInterface, FlagArgument, StringArgument
+from mlrl.util.cli import BoolArgument, CommandLineInterface, FlagArgument, SetArgument, StringArgument
 from mlrl.util.format import format_iterable
 from mlrl.util.options import Options
+
+Batch = List[Command]
 
 
 class BatchMode(Mode):
     """
     An abstract base class for all modes of operation that perform multiple experiments.
     """
+
+    class Runner(ABC):
+        """"
+        An abstract base class for all classes that allow to run experiments.
+        """
+
+        def __init__(self, name: str):
+            """
+            :param name: The name of the runner
+            """
+            self.name = name
+
+        @abstractmethod
+        def run_batch(self, args: Namespace, batch: Batch, recipe: Recipe):
+            """
+            Must be implemented by subclasses in order to run all commands in a given batch.
+
+            :param args:    The command line arguments specified by the user
+            :param batch:   The batch of experiments to be run
+            :param recipe:  A `Recipe` that provides access to the ingredients that are needed for setting up
+                            experiments
+            """
+
+    class LogRunner(Runner):
+        """
+        Allows to log the commands of experiments, instead of executing them.
+        """
+
+        @staticmethod
+        def __format_command(command: Iterable[str]) -> str:
+            formatted_command = ''
+
+            for i, argument in enumerate(command):
+                if i > 0:
+                    formatted_command += ' '
+
+                    if argument.startswith('-'):
+                        formatted_command += '\\\n    '
+
+                formatted_command += regex.sub(r'({.*})', '\'\\1\'', argument)  # Escape curly braces with single quotes
+
+            return formatted_command
+
+        def __init__(self):
+            super().__init__(name='log')
+
+        @override
+        def run_batch(self, args: Namespace, batch: Batch, recipe: Recipe):
+            for i, command in enumerate(batch):
+                recipe.create_experiment_builder(command.apply_to_namespace(args))
+
+                if i > 0:
+                    log.info('')
+
+                log.info('%s', self.__format_command(command))
+
+    class SequentialRunner(Runner):
+        """
+        Allows to run experiments sequentially.
+        """
+
+        def __init__(self):
+            super().__init__(name='sequential')
+
+        @override
+        def run_batch(self, args: Namespace, batch: Batch, recipe: Recipe):
+            start_time = Timer.start()
+
+            namespaces = [command.apply_to_namespace(args) for command in batch]
+            num_experiments = len(batch)
+
+            for experiment_namespace in namespaces:
+                recipe.create_experiment_builder(experiment_namespace)  # For validation
+
+            for i, (experiment_namespace, command) in enumerate(zip(namespaces, batch)):
+                if i == 0:
+                    log.info('Running %s %s...', num_experiments,
+                             'experiments' if num_experiments > 1 else 'experiment')
+
+                log.info('\nRunning experiment (%s / %s): "%s"', i + 1, num_experiments,
+                         format_iterable(command, separator=' '))
+                recipe.create_experiment_builder(experiment_namespace).run()
+
+            run_time = Timer.stop(start_time)
+            log.info('Successfully finished %s %s after %s', num_experiments,
+                     'experiments' if num_experiments > 1 else 'experiment', run_time)
 
     class ConfigFile(ABC):
         """
@@ -155,61 +243,43 @@ class BatchMode(Mode):
         description='Lists the commands for running individual experiments instead of executing them.',
     )
 
+    RUNNER = SetArgument(
+        '--runner',
+        values={},
+        description='The runner to be used for running individual experiments in a batch.',
+    )
+
+    @property
+    def runners(self) -> List[Runner]:
+        """
+        The runners that may be used for running individual experiments in a batch.
+        """
+        return [BatchMode.SequentialRunner()] + self.runners_
+
+    def __create_runner_argument(self) -> SetArgument:
+        runners = self.runners
+        return SetArgument(
+            *self.RUNNER.names,
+            values={runner.name
+                    for runner in runners},
+            default=runners[0].name,
+            description=self.RUNNER.description,
+        )
+
     def __process_commands(self, namespace: Namespace, config_file: ConfigFile, recipe: Recipe):
         separate_folds = self.SEPARATE_FOLDS.get_value(namespace)
-        commands = list(self.__get_commands(namespace, config_file, recipe, separate_folds=separate_folds))
+        batch = list(self.__get_commands(namespace, config_file, recipe, separate_folds=separate_folds))
+        runner = self.__get_runner(namespace)
+        runner.run_batch(namespace, batch, recipe)
 
+    def __get_runner(self, namespace: Namespace) -> 'BatchMode.Runner':
         if self.LIST_COMMANDS.get_value(namespace):
-            self.__list_commands(namespace, commands, recipe)
-        else:
-            self.__run_commands(namespace, commands, recipe)
+            return BatchMode.LogRunner()
 
-    @staticmethod
-    def __list_commands(namespace: Namespace, commands: List[Command], recipe: Recipe):
-        for i, command in enumerate(commands):
-            recipe.create_experiment_builder(command.apply_to_namespace(namespace))
-
-            if i > 0:
-                log.info('')
-
-            log.info('%s', BatchMode.__format_command(command))
-
-    @staticmethod
-    def __format_command(command: Iterable[str]) -> str:
-        formatted_command = ''
-
-        for i, argument in enumerate(command):
-            if i > 0:
-                formatted_command += ' '
-
-                if argument.startswith('-'):
-                    formatted_command += '\\\n    '
-
-            formatted_command += regex.sub(r'({.*})', '\'\\1\'', argument)  # Escape curly braces with single quotes
-
-        return formatted_command
-
-    @staticmethod
-    def __run_commands(namespace: Namespace, commands: List[Command], recipe: Recipe):
-        start_time = Timer.start()
-
-        namespaces = [command.apply_to_namespace(namespace) for command in commands]
-        num_experiments = len(commands)
-
-        for experiment_namespace in namespaces:
-            recipe.create_experiment_builder(experiment_namespace)  # For validation
-
-        for i, (experiment_namespace, command) in enumerate(zip(namespaces, commands)):
-            if i == 0:
-                log.info('Running %s %s...', num_experiments, 'experiments' if num_experiments > 1 else 'experiment')
-
-            log.info('\nRunning experiment (%s / %s): "%s"', i + 1, num_experiments,
-                     format_iterable(command, separator=' '))
-            recipe.create_experiment_builder(experiment_namespace).run()
-
-        run_time = Timer.stop(start_time)
-        log.info('Successfully finished %s %s after %s', num_experiments,
-                 'experiments' if num_experiments > 1 else 'experiment', run_time)
+        runner_argument = self.__create_runner_argument()
+        runner_name = runner_argument.get_value(namespace)
+        runners_by_name = {runner.name: runner for runner in self.runners}
+        return runners_by_name[runner_name]
 
     @staticmethod
     def __get_commands(namespace: Namespace,
@@ -274,10 +344,21 @@ class BatchMode(Mode):
                                     experiments to be run or None, if no such factory is available
         """
         self.config_file_factory_ = config_file_factory
+        self.runners_: List[BatchMode.Runner] = []
+
+    def add_runner(self, runner: 'BatchMode.Runner') -> 'BatchMode':
+        """
+        Adds a runner that may be used in batch mode for running individual experiments in a batch.
+
+        :param runner:  The runner to be added
+        :return:        The batch mode itself
+        """
+        self.runners_.append(runner)
+        return self
 
     @override
     def configure_arguments(self, cli: CommandLineInterface):
-        cli.add_arguments(self.CONFIG_FILE, self.SEPARATE_FOLDS, self.LIST_COMMANDS)
+        cli.add_arguments(self.CONFIG_FILE, self.SEPARATE_FOLDS, self.LIST_COMMANDS, self.__create_runner_argument())
 
     @override
     def run_experiment(self, args: Namespace, recipe: Recipe):
