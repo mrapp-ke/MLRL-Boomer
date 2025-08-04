@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Set, Type, override
 
 from mlrl.testbed.experiments.experiment import Experiment
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.modes import Mode, SingleMode
 
@@ -83,7 +84,7 @@ class ResultDirectoryExtension(Extension):
             self.directory = directory
 
         @override
-        def before_start(self, _: Experiment):
+        def before_start(self, _: Experiment, state: ExperimentState):
             """
             See :func:`mlrl.testbed.experiments.Experiment.Listener.before_start`
             """
@@ -93,6 +94,8 @@ class ResultDirectoryExtension(Extension):
                 for file_path in directory.iterdir():
                     if file_path.is_file():
                         file_path.unlink()
+
+            return state
 
     RESULT_DIR = StringArgument(
         '--result-dir',
