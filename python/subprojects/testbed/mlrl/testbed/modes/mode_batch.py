@@ -23,7 +23,6 @@ from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.modes.mode import Mode
 
 from mlrl.util.cli import BoolArgument, CommandLineInterface, FlagArgument, SetArgument, StringArgument
-from mlrl.util.format import format_iterable
 from mlrl.util.options import Options
 
 Batch = List[Command]
@@ -112,8 +111,7 @@ class BatchMode(Mode):
                     log.info('Running %s %s...', num_experiments,
                              'experiments' if num_experiments > 1 else 'experiment')
 
-                log.info('\nRunning experiment (%s / %s): "%s"', i + 1, num_experiments,
-                         format_iterable(command, separator=' '))
+                log.info('\nRunning experiment (%s / %s): "%s"', i + 1, num_experiments, str(command))
                 recipe.create_experiment_builder(experiment_namespace).run()
 
             run_time = Timer.stop(start_time)
