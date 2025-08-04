@@ -143,6 +143,22 @@ class TabularOutputData(TextualOutputData, ABC):
         """
 
 
+class StructuralOutputData(OutputData, ABC):
+    """
+    An abstract base class for all classes that represent output data that can be converted into a structural
+    representation, e.g., YAML or JSON.
+    """
+
+    @abstractmethod
+    def to_dict(self, options: Options, **kwargs) -> Optional[Dict[Any, Any]]:
+        """
+        Creates and returns a dictionary from the object.
+
+        :param options: Options to be taken into account
+        :return:        The dictionary that has been created
+        """
+
+
 class DatasetOutputData(TextualOutputData, ABC):
     """
     An abstract base class for all classes that represent output data that can be converted into a textual
