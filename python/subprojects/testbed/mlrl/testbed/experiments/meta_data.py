@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes for representing meta-data that is part of output data.
+Provides classes for representing meta-data.
 """
 from dataclasses import dataclass, field
 from datetime import datetime
