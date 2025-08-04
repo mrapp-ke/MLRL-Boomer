@@ -75,6 +75,27 @@ mlrl-testbed custom_runnable.py \
 
 The above command does not only train a model, but also evaluates it according to common measures and prints the evaluation results. It does also demonstrate how algorithmic parameters can be controlled via command line arguments.
 
+It is also possible to run multiple experiments at once by defining the datasets and algorithmic parameters to be used in the different runs in a YAML file:
+
+```
+mlrl-testbed custom_runnable.py --mode batch --config path/to/config.yaml
+```
+
+An exemplary YAML file is shown below. Each combination of the specified parameter values is applied to each dataset defined in the file.
+
+```yaml
+datasets:
+  - directory: path/to/datasets/
+    names:
+      - first-dataset
+      - second-dataset
+parameters:
+  - name: --n-estimators
+    values:
+      - 50
+      - 100
+```
+
 ### 🏁 Advantages
 
 Making use of MLRL-Testbed does not only help with the burdens of training and evaluating machine learning models, it can also help making your own methods and algorithms more accessible to users. This is demonstrated by the rule learning algorithms [mlrl-boomer](https://pypi.org/project/mlrl-boomer/) and [mlrl-seco](https://pypi.org/project/mlrl-seco/) that can easily be run via the command line API described above and even extend it with rule-specific functionalities.

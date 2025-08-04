@@ -1,0 +1,7 @@
+mlrl.testbed.modes.mode module
+==============================
+
+.. automodule:: mlrl.testbed.modes.mode
+   :members:
+   :show-inheritance:
+   :undoc-members:

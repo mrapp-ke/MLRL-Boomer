@@ -30,6 +30,7 @@ Submodules
    mlrl.testbed.experiments.prediction_scope
    mlrl.testbed.experiments.prediction_type
    mlrl.testbed.experiments.problem_domain
+   mlrl.testbed.experiments.recipe
    mlrl.testbed.experiments.state
    mlrl.testbed.experiments.table
    mlrl.testbed.experiments.timer
