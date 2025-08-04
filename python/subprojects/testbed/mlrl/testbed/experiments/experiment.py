@@ -187,12 +187,16 @@ class Experiment(ABC):
         An abstract base class for all listeners that may be informed about certain event during an experiment.
         """
 
-        def before_start(self, experiment: 'Experiment'):
+        # pylint: disable=unused-argument
+        def before_start(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
             """
             May be overridden by subclasses in order to be notified just before the experiment starts.
 
             :param experiment:  The experiment
+            :param state:       The current state of the experiment
+            :return:            An update of the given state
             """
+            return state
 
         # pylint: disable=unused-argument
         def on_start(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
@@ -201,7 +205,7 @@ class Experiment(ABC):
             dataset. May be called multiple times if several datasets are used.
 
             :param experiment:  The experiment
-            :param state:       The initial state of the experiment
+            :param state:       The current state of the experiment
             :return:            An update of the given state
             """
             return state
@@ -313,7 +317,7 @@ class Experiment(ABC):
         initial_state = ExperimentState(problem_domain=problem_domain)
 
         for listener in self.listeners:
-            listener.before_start(self)
+            listener.before_start(self, initial_state)
 
         start_time = Timer.start()
 
