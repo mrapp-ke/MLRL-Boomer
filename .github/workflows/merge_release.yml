@@ -68,7 +68,7 @@ jobs:
           git push origin bugfix
           echo "MAIN_VERSION=MAIN_VERSION" >> $GITHUB_OUTPUT
           echo "FEATURE_VERSION=$FEATURE_VERSION" >> $GITHUB_OUTPUT
-          echo "BUGFIX_VERSION=$BUGFIX_VERSION)" >> $GITHUB_OUTPUT
+          echo "BUGFIX_VERSION=$BUGFIX_VERSION" >> $GITHUB_OUTPUT
       - name: Update minor version
         if: ${{ github.event.release.target_commitish == 'feature' }}
         id: feature-release
@@ -86,7 +86,7 @@ jobs:
           git commit -m "[Bot] Update version from ${BUGFIX_VERSION} to $(cat build_system/res/versioning/version)."
           git push origin bugfix
           echo "FEATURE_VERSION=$FEATURE_VERSION" >> $GITHUB_OUTPUT
-          echo "BUGFIX_VERSION=$BUGFIX_VERSION)" >> $GITHUB_OUTPUT
+          echo "BUGFIX_VERSION=$BUGFIX_VERSION" >> $GITHUB_OUTPUT
       - name: Update patch version
         if: ${{ github.event.release.target_commitish == 'bugfix' }}
         id: bugfix-release
@@ -108,7 +108,7 @@ jobs:
           milestone-title: ${{ steps.main-release.outputs.MAIN_VERSION }}
       - name: Close minor milestone
         uses: Beakyn/gha-close-milestone@v1.1.1
-        if: ${{ steps.main-release.outputs.FEATURE_VERSION || steps.feature-release.FEATURE_VERSION }}
+        if: ${{ steps.main-release.outputs.FEATURE_VERSION || steps.feature-release.outputs.FEATURE_VERSION }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
