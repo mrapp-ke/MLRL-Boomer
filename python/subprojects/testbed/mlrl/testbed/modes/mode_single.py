@@ -12,7 +12,7 @@ from mlrl.testbed.modes.mode import Mode
 from mlrl.util.cli import CommandLineInterface
 
 
-class SingleExperimentMode(Mode):
+class SingleMode(Mode):
     """
     A mode of operation that performs a single experiment.
     """

@@ -1,7 +1,7 @@
 mlrl-testbed mlrl.boosting --mode batch --help
 usage: mlrl-testbed [-r RUNNABLE] [-v] [--mode MODE] [--config CONFIG]
                     [--separate-folds SEPARATE_FOLDS] [--list]
-                    [--base-dir BASE_DIR]
+                    [--runner RUNNER] [--base-dir BASE_DIR]
                     [--binary-predictor BINARY_PREDICTOR]
                     [--create-dirs CREATE_DIRS] [--data-split DATA_SPLIT]
                     [--default-rule DEFAULT_RULE]
@@ -91,6 +91,8 @@ options:
                         one of {"false", "true"}.
   --list                Lists the commands for running individual experiments
                         instead of executing them.
+  --runner RUNNER       The runner to be used for running individual
+                        experiments in a batch. Must be one of {"sequential"}.
   --base-dir BASE_DIR   If relative paths to directories, where files should
                         be saved, are given, they are considered relative to
                         the directory specified via this argument.
