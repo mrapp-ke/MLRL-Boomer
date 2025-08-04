@@ -45,6 +45,7 @@ class Experiment(ABC):
             self.dataset_splitter = dataset_splitter
             self.listeners: List[Experiment.Listener] = []
             self.input_readers: Set[InputReader] = set()
+            self.before_start_output_writers: Set[OutputWriter] = set()
             self.pre_training_output_writers: Set[OutputWriter] = set()
             self.post_training_output_writers: Set[OutputWriter] = set()
             self.prediction_output_writers: Set[OutputWriter] = set()
@@ -74,6 +75,16 @@ class Experiment(ABC):
             :return:                The builder itself
             """
             self.input_readers.update(input_readers)
+            return self
+
+        def add_before_start_output_writers(self, *output_writers: OutputWriter) -> 'Experiment.Builder':
+            """
+            Adds one or several output writers that should be invoked before an experiment is started.
+
+            :param output_writers:  The output writers to be added
+            :return:                The builder itself
+            """
+            self.before_start_output_writers.update(output_writers)
             return self
 
         def add_pre_training_output_writers(self, *output_writers: OutputWriter) -> 'Experiment.Builder':
@@ -158,6 +169,7 @@ class Experiment(ABC):
                 return sorted(objects, key=lambda obj: type(obj).__name__)
 
             experiment.input_readers.extend(sort(self.input_readers))
+            experiment.before_start_output_writers.extend(sort(self.before_start_output_writers))
             experiment.pre_training_output_writers.extend(sort(self.pre_training_output_writers))
             experiment.post_training_output_writers.extend(sort(self.post_training_output_writers))
             experiment.prediction_output_writers.extend(sort(self.prediction_output_writers))
@@ -257,6 +269,13 @@ class Experiment(ABC):
         """
 
         @override
+        def before_start(self, experiment: 'Experiment', state: ExperimentState):
+            for output_writer in experiment.before_start_output_writers:
+                output_writer.write(state)
+
+            return state
+
+        @override
         def before_training(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
             for output_writer in experiment.pre_training_output_writers:
                 output_writer.write(state)
@@ -292,6 +311,7 @@ class Experiment(ABC):
         self.initial_state = initial_state
         self.dataset_splitter = dataset_splitter
         self.input_readers: List[InputReader] = []
+        self.before_start_output_writers: List[OutputWriter] = []
         self.pre_training_output_writers: List[OutputWriter] = []
         self.post_training_output_writers: List[OutputWriter] = []
         self.prediction_output_writers: List[OutputWriter] = []
