@@ -67,7 +67,7 @@ class ExperimentState:
         prediction_result:  The result of the prediction process or None, if no predictions have been obtained yet
     """
     problem_domain: ProblemDomain
-    folding_strategy: FoldingStrategy
+    folding_strategy: Optional[FoldingStrategy] = None
     dataset_type: DatasetType = DatasetType.TRAINING
     dataset: Optional[Dataset] = None
     fold: Optional[Fold] = None
