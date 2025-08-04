@@ -6,6 +6,14 @@ tocdepth: 2
 
 # Release Notes
 
+## Version 0.13.1 (Aug. 4th, 2025)
+
+A bugfix release that comes with the following changes.
+
+### Fixes
+
+- Fixed the release of packages for the Windows platform.
+
 ## Version 0.13.0 (Aug. 4th, 2025)
 
 A feature release that comes with the following changes.
