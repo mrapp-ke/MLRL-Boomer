@@ -1,0 +1,18 @@
+---
+datasets:
+  - directory: python/tests/res/data
+    names: emotions
+  - directory: python/tests/res/data
+    names:
+      - enron
+parameters:
+  - name: --instance-sampling
+    values:
+      - none
+      - with-replacement{sample_size=0.5}
+  - name: --heuristic
+    values:
+      - value: f-measure
+      - value: m-estimate
+        additional_arguments:
+          - --feature-format sparse

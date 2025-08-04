@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow writing the ground truth to one or several sinks.
 """
 
-from typing import List, Optional
+from typing import List, Optional, override
 
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
 from mlrl.testbed_sklearn.experiments.output.dataset.dataset_ground_truth import GroundTruthDataset
@@ -25,6 +25,7 @@ class GroundTruthWriter(OutputWriter):
         The extractor to be used by a `GroundTruthWriter`, by default.
         """
 
+        @override
         def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`

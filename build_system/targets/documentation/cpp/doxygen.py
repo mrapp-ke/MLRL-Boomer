@@ -5,6 +5,7 @@ Provides classes that allow to run the external program "doxygen".
 """
 from os import environ
 from pathlib import Path
+from typing import override
 
 from core.build_unit import BuildUnit
 from util.env import Env, set_env
@@ -50,6 +51,7 @@ class Doxygen(Program):
         self.use_environment(self.__create_environment(module))
         self.set_build_unit(build_unit)
 
+    @override
     def _before(self):
         create_directories(self.module.output_directory)
 
@@ -69,5 +71,6 @@ class DoxygenUpdate(Program):
         self.set_build_unit(build_unit)
         self.build_unit = build_unit
 
+    @override
     def _after(self):
         delete_files(get_doxyfile(self.build_unit).with_suffix('.bak'))

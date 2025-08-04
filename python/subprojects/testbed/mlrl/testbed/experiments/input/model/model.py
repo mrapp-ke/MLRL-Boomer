@@ -5,7 +5,7 @@ Provides classes for representing model that are part of input data.
 """
 import logging as log
 
-from typing import Any
+from typing import Any, override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.input.data import InputData
@@ -21,6 +21,7 @@ class InputModel(InputData):
         super().__init__(InputData.Properties(file_name='model'),
                          Context(include_dataset_type=False, include_prediction_scope=False))
 
+    @override
     def update_state(self, state: ExperimentState, input_data: Any):
         """
         See :func:`mlrl.testbed.experiments.input.data.InputData.update_state`

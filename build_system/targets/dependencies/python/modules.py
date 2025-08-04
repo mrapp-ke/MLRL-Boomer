@@ -5,7 +5,7 @@ Implements modules that provide access to Python requirements files.
 """
 from enum import StrEnum
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, override
 
 from core.build_unit import BuildUnit
 from core.modules import Module, ModuleRegistry
@@ -34,6 +34,7 @@ class PythonDependencyModule(SubprojectModule):
         A filter that matches modules of type `PythonDependencyModule`.
         """
 
+        @override
         def matches(self, module: Module, _: ModuleRegistry) -> bool:
             return isinstance(module, PythonDependencyModule)
 
@@ -77,10 +78,12 @@ class PythonDependencyModule(SubprojectModule):
 
         return requirements_files
 
+    @override
     @property
     def subproject_name(self) -> str:
         return self.root_directory.name
 
+    @override
     def __str__(self) -> str:
         return ('PythonDependencyModule {dependency_type="' + self.dependency_type + '", root_directory="'
                 + str(self.root_directory) + '"}')

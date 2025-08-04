@@ -6,7 +6,7 @@ Provides classes for splitting dataset into distinct training and test datasets.
 import logging as log
 
 from dataclasses import dataclass, replace
-from typing import Any, Generator, Optional
+from typing import Any, Generator, Optional, override
 
 from sklearn.model_selection import train_test_split
 
@@ -40,6 +40,7 @@ class BipartitionSplitter(DatasetSplitter):
             context = dataset_reader.input_data.context
             context.include_dataset_type = True
 
+        @override
         def get_state(self, dataset_type: DatasetType) -> ExperimentState:
             """
             See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.Split.get_state`
@@ -73,6 +74,7 @@ class BipartitionSplitter(DatasetSplitter):
             context = self.splitter.dataset_reader.input_data.context
             context.include_dataset_type = False
 
+        @override
         def get_state(self, dataset_type: DatasetType) -> ExperimentState:
             """
             See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.Split.get_state`
@@ -104,15 +106,16 @@ class BipartitionSplitter(DatasetSplitter):
         :param test_size:       The fraction of the available data to be used as the test set
         :param random_state:    The seed to be used by RNGs. Must be at least 1
         """
+        super().__init__(FoldingStrategy(num_folds=1, first=0, last=1))
         self.dataset_reader = dataset_reader
         self.test_size = test_size
         self.random_state = random_state
-        self.folding_strategy = FoldingStrategy(num_folds=1, first=0, last=1)
         self.cache: Optional[Any] = None
         context = dataset_reader.input_data.context
         context.include_fold = False
         context.include_dataset_type = True
 
+    @override
     def split(self, problem_domain: ProblemDomain) -> Generator[DatasetSplitter.Split, None, None]:
         """
         See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.split`

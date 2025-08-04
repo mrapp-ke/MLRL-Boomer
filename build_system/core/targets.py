@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from enum import Enum, auto
 from functools import reduce
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple, override
 
 from core.build_unit import BuildUnit
 from core.changes import ChangeDetection
@@ -36,9 +36,11 @@ class Target(ABC):
         target_name: str
         clean_dependency: bool = True
 
+        @override
         def __str__(self) -> str:
             return self.target_name
 
+        @override
         def __eq__(self, other) -> bool:
             return isinstance(other, type(self)) and self.target_name == other.target_name
 
@@ -100,6 +102,7 @@ class Target(ABC):
         :param module_registry: The `ModuleRegistry` that can be used by the target for looking up modules
         """
 
+    @override
     def __str__(self) -> str:
         result = type(self).__name__ + '{name="' + self.name + '"'
 
@@ -202,6 +205,7 @@ class BuildTarget(Target):
             self.runnables = list(runnables)
             return self.parent_builder
 
+        @override
         def build(self, build_unit: BuildUnit) -> Target:
             return BuildTarget(self.target_name, self.dependencies, self.runnables, build_unit)
 
@@ -270,6 +274,7 @@ class BuildTarget(Target):
         self.build_unit = build_unit
         self.change_detection = ChangeDetection(BuildUnit().build_directory / (self.name + '.json'))
 
+    @override
     def run(self, module_registry: ModuleRegistry):
         for runnable in self.runnables:
             modules = module_registry.lookup(runnable.module_filter)
@@ -297,6 +302,7 @@ class BuildTarget(Target):
             for i, module in enumerate(modules_to_be_run):
                 self.change_detection.track_files(module, *input_files_per_module[i])
 
+    @override
     def clean(self, module_registry: ModuleRegistry):
         for runnable in self.runnables:
             modules = module_registry.lookup(runnable.module_filter)
@@ -387,6 +393,7 @@ class PhonyTarget(Target):
             self.runnables = list(runnables)
             return self.parent_builder
 
+        @override
         def build(self, build_unit: BuildUnit) -> Target:
 
             def action(module_registry: ModuleRegistry):
@@ -417,6 +424,7 @@ class PhonyTarget(Target):
         super().__init__(name, dependencies)
         self.action = action
 
+    @override
     def run(self, module_registry: ModuleRegistry):
         self.action(module_registry)
 
@@ -544,9 +552,11 @@ class DependencyGraph:
             :return: The copy that has been created
             """
 
+        @override
         def __str__(self) -> str:
             return '[' + self.target.name + ']'
 
+        @override
         def __eq__(self, other) -> bool:
             return isinstance(other, type(self)) and self.target == other.target
 
@@ -555,10 +565,12 @@ class DependencyGraph:
         A node in the dependency graph that runs one or several targets.
         """
 
+        @override
         def execute(self, module_registry: ModuleRegistry):
             Log.verbose('Running target "%s"...', self.target.name)
             self.target.run(module_registry)
 
+        @override
         def copy(self) -> 'DependencyGraph.Node':
             return DependencyGraph.RunNode(self.target)
 
@@ -567,10 +579,12 @@ class DependencyGraph:
         A node in the dependency graph that cleans one or several targets.
         """
 
+        @override
         def execute(self, module_registry: ModuleRegistry):
             Log.verbose('Cleaning target "%s"...', self.target.name)
             self.target.clean(module_registry)
 
+        @override
         def copy(self) -> 'DependencyGraph.Node':
             return DependencyGraph.CleanNode(self.target)
 
@@ -638,6 +652,7 @@ class DependencyGraph:
                 current_node.execute(module_registry)
                 current_node = current_node.child
 
+        @override
         def __str__(self) -> str:
             first_node = self.first
             result = ' → ' + str(first_node)
@@ -758,6 +773,7 @@ class DependencyGraph:
         """
         self.sequence.execute(module_registry)
 
+    @override
     def __str__(self) -> str:
         return str(self.sequence)
 

@@ -6,7 +6,7 @@ Provides utility functions for reading and writing files.
 from functools import cached_property
 from pathlib import Path
 from shutil import rmtree
-from typing import Any, List
+from typing import Any, List, override
 
 from util.log import Log
 
@@ -111,11 +111,14 @@ class TextFile:
         """
         delete_files(self.file, accept_missing=self.accept_missing)
 
+    @override
     def __str__(self) -> str:
         return str(self.file)
 
+    @override
     def __eq__(self, other: Any) -> bool:
         return isinstance(other, type(self)) and self.file == other.file
 
+    @override
     def __hash__(self) -> int:
         return hash(self.file)

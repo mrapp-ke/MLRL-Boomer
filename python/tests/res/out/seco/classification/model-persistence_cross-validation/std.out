@@ -1,16 +1,20 @@
-mlrl-testbed mlrl.seco --log-level debug --data-dir python/tests/res/data --dataset emotions --output-dir python/tests/res/tmp/results --data-split cross-validation --model-load-dir python/tests/res/tmp/models --model-save-dir python/tests/res/tmp/models
-INFO Starting experiment using the classification algorithm "SeCoClassifier"...
-INFO Performing full 10-fold cross validation...
-INFO Fold 1 / 10:
-DEBUG Reading input data from file "python/tests/res/data/emotions.arff"...
-DEBUG Parsing meta-data from file "python/tests/res/data/emotions.xml"...
-DEBUG Reading input data from file "python/tests/res/tmp/models/model_fold-1.pickle"...
-INFO Successfully loaded model
-INFO Predicting for 60 test examples...
-DEBUG A dense matrix is used to store the feature values of the query examples
-DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data (Fold 1):
+mlrl-testbed mlrl.seco --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --data-split cross-validation --save-models true --load-models true --model-load-dir models --model-save-dir models
+Starting experiment using the classification algorithm "SeCoClassifier"...
+Performing full 10-fold cross validation...
+Fold 1 / 10:
+Reading input data from file "python/tests/res/data/emotions.arff"...
+Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+Reading input data from file "models/model_fold-1.pickle"...
+Failed to unpickle file "models/model_fold-1.pickle"
+Fitting model to 533 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Predicting for 60 test examples...
+A dense matrix is used to store the feature values of the query examples
+A dense matrix is used to store the predicted labels
+Successfully predicted in <duration>
+Evaluation result for test data (Fold 1):
 
 Example-wise F1         56.63
 Example-wise Jaccard    46.67
@@ -29,16 +33,20 @@ Micro Recall            59.83
 Subset 0/1 Loss         81.67
 Subset Accuracy         18.33
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-1.csv"...
-DEBUG Writing output data to file "python/tests/res/tmp/models/model_fold-1.pickle"...
-INFO Fold 2 / 10:
-DEBUG Reading input data from file "python/tests/res/tmp/models/model_fold-2.pickle"...
-INFO Successfully loaded model
-INFO Predicting for 60 test examples...
-DEBUG A dense matrix is used to store the feature values of the query examples
-DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data (Fold 2):
+Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-1.csv"...
+Writing output data to file "python/tests/res/tmp/models/model_fold-1.pickle"...
+Fold 2 / 10:
+Reading input data from file "models/model_fold-2.pickle"...
+Failed to unpickle file "models/model_fold-2.pickle"
+Fitting model to 533 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Predicting for 60 test examples...
+A dense matrix is used to store the feature values of the query examples
+A dense matrix is used to store the predicted labels
+Successfully predicted in <duration>
+Evaluation result for test data (Fold 2):
 
 Example-wise F1         51.6
 Example-wise Jaccard    43.44
@@ -57,16 +65,20 @@ Micro Recall            56.67
 Subset 0/1 Loss         81.67
 Subset Accuracy         18.33
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-2.csv"...
-DEBUG Writing output data to file "python/tests/res/tmp/models/model_fold-2.pickle"...
-INFO Fold 3 / 10:
-DEBUG Reading input data from file "python/tests/res/tmp/models/model_fold-3.pickle"...
-INFO Successfully loaded model
-INFO Predicting for 60 test examples...
-DEBUG A dense matrix is used to store the feature values of the query examples
-DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data (Fold 3):
+Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-2.csv"...
+Writing output data to file "python/tests/res/tmp/models/model_fold-2.pickle"...
+Fold 3 / 10:
+Reading input data from file "models/model_fold-3.pickle"...
+Failed to unpickle file "models/model_fold-3.pickle"
+Fitting model to 533 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Predicting for 60 test examples...
+A dense matrix is used to store the feature values of the query examples
+A dense matrix is used to store the predicted labels
+Successfully predicted in <duration>
+Evaluation result for test data (Fold 3):
 
 Example-wise F1         55.61
 Example-wise Jaccard    46.11
@@ -85,16 +97,20 @@ Micro Recall            60.53
 Subset 0/1 Loss         81.67
 Subset Accuracy         18.33
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-3.csv"...
-DEBUG Writing output data to file "python/tests/res/tmp/models/model_fold-3.pickle"...
-INFO Fold 4 / 10:
-DEBUG Reading input data from file "python/tests/res/tmp/models/model_fold-4.pickle"...
-INFO Successfully loaded model
-INFO Predicting for 59 test examples...
-DEBUG A dense matrix is used to store the feature values of the query examples
-DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data (Fold 4):
+Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-3.csv"...
+Writing output data to file "python/tests/res/tmp/models/model_fold-3.pickle"...
+Fold 4 / 10:
+Reading input data from file "models/model_fold-4.pickle"...
+Failed to unpickle file "models/model_fold-4.pickle"
+Fitting model to 534 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Predicting for 59 test examples...
+A dense matrix is used to store the feature values of the query examples
+A dense matrix is used to store the predicted labels
+Successfully predicted in <duration>
+Evaluation result for test data (Fold 4):
 
 Example-wise F1         52.2
 Example-wise Jaccard    43.47
@@ -113,16 +129,20 @@ Micro Recall            55.88
 Subset 0/1 Loss         77.97
 Subset Accuracy         22.03
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-4.csv"...
-DEBUG Writing output data to file "python/tests/res/tmp/models/model_fold-4.pickle"...
-INFO Fold 5 / 10:
-DEBUG Reading input data from file "python/tests/res/tmp/models/model_fold-5.pickle"...
-INFO Successfully loaded model
-INFO Predicting for 59 test examples...
-DEBUG A dense matrix is used to store the feature values of the query examples
-DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data (Fold 5):
+Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-4.csv"...
+Writing output data to file "python/tests/res/tmp/models/model_fold-4.pickle"...
+Fold 5 / 10:
+Reading input data from file "models/model_fold-5.pickle"...
+Failed to unpickle file "models/model_fold-5.pickle"
+Fitting model to 534 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Predicting for 59 test examples...
+A dense matrix is used to store the feature values of the query examples
+A dense matrix is used to store the predicted labels
+Successfully predicted in <duration>
+Evaluation result for test data (Fold 5):
 
 Example-wise F1         58.46
 Example-wise Jaccard    49.15
@@ -141,16 +161,20 @@ Micro Recall            66.96
 Subset 0/1 Loss         79.66
 Subset Accuracy         20.34
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-5.csv"...
-DEBUG Writing output data to file "python/tests/res/tmp/models/model_fold-5.pickle"...
-INFO Fold 6 / 10:
-DEBUG Reading input data from file "python/tests/res/tmp/models/model_fold-6.pickle"...
-INFO Successfully loaded model
-INFO Predicting for 59 test examples...
-DEBUG A dense matrix is used to store the feature values of the query examples
-DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data (Fold 6):
+Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-5.csv"...
+Writing output data to file "python/tests/res/tmp/models/model_fold-5.pickle"...
+Fold 6 / 10:
+Reading input data from file "models/model_fold-6.pickle"...
+Failed to unpickle file "models/model_fold-6.pickle"
+Fitting model to 534 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Predicting for 59 test examples...
+A dense matrix is used to store the feature values of the query examples
+A dense matrix is used to store the predicted labels
+Successfully predicted in <duration>
+Evaluation result for test data (Fold 6):
 
 Example-wise F1         49.98
 Example-wise Jaccard    40.73
@@ -169,16 +193,20 @@ Micro Recall            54.81
 Subset 0/1 Loss         86.44
 Subset Accuracy         13.56
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-6.csv"...
-DEBUG Writing output data to file "python/tests/res/tmp/models/model_fold-6.pickle"...
-INFO Fold 7 / 10:
-DEBUG Reading input data from file "python/tests/res/tmp/models/model_fold-7.pickle"...
-INFO Successfully loaded model
-INFO Predicting for 59 test examples...
-DEBUG A dense matrix is used to store the feature values of the query examples
-DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data (Fold 7):
+Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-6.csv"...
+Writing output data to file "python/tests/res/tmp/models/model_fold-6.pickle"...
+Fold 7 / 10:
+Reading input data from file "models/model_fold-7.pickle"...
+Failed to unpickle file "models/model_fold-7.pickle"
+Fitting model to 534 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Predicting for 59 test examples...
+A dense matrix is used to store the feature values of the query examples
+A dense matrix is used to store the predicted labels
+Successfully predicted in <duration>
+Evaluation result for test data (Fold 7):
 
 Example-wise F1         56.71
 Example-wise Jaccard    47.88
@@ -197,16 +225,20 @@ Micro Recall            56.6
 Subset 0/1 Loss         77.97
 Subset Accuracy         22.03
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-7.csv"...
-DEBUG Writing output data to file "python/tests/res/tmp/models/model_fold-7.pickle"...
-INFO Fold 8 / 10:
-DEBUG Reading input data from file "python/tests/res/tmp/models/model_fold-8.pickle"...
-INFO Successfully loaded model
-INFO Predicting for 59 test examples...
-DEBUG A dense matrix is used to store the feature values of the query examples
-DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data (Fold 8):
+Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-7.csv"...
+Writing output data to file "python/tests/res/tmp/models/model_fold-7.pickle"...
+Fold 8 / 10:
+Reading input data from file "models/model_fold-8.pickle"...
+Failed to unpickle file "models/model_fold-8.pickle"
+Fitting model to 534 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Predicting for 59 test examples...
+A dense matrix is used to store the feature values of the query examples
+A dense matrix is used to store the predicted labels
+Successfully predicted in <duration>
+Evaluation result for test data (Fold 8):
 
 Example-wise F1         57.06
 Example-wise Jaccard    49.21
@@ -225,16 +257,20 @@ Micro Recall            63.55
 Subset 0/1 Loss         76.27
 Subset Accuracy         23.73
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-8.csv"...
-DEBUG Writing output data to file "python/tests/res/tmp/models/model_fold-8.pickle"...
-INFO Fold 9 / 10:
-DEBUG Reading input data from file "python/tests/res/tmp/models/model_fold-9.pickle"...
-INFO Successfully loaded model
-INFO Predicting for 59 test examples...
-DEBUG A dense matrix is used to store the feature values of the query examples
-DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data (Fold 9):
+Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-8.csv"...
+Writing output data to file "python/tests/res/tmp/models/model_fold-8.pickle"...
+Fold 9 / 10:
+Reading input data from file "models/model_fold-9.pickle"...
+Failed to unpickle file "models/model_fold-9.pickle"
+Fitting model to 534 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Predicting for 59 test examples...
+A dense matrix is used to store the feature values of the query examples
+A dense matrix is used to store the predicted labels
+Successfully predicted in <duration>
+Evaluation result for test data (Fold 9):
 
 Example-wise F1         55.76
 Example-wise Jaccard    46.89
@@ -253,16 +289,20 @@ Micro Recall            60.18
 Subset 0/1 Loss         81.36
 Subset Accuracy         18.64
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-9.csv"...
-DEBUG Writing output data to file "python/tests/res/tmp/models/model_fold-9.pickle"...
-INFO Fold 10 / 10:
-DEBUG Reading input data from file "python/tests/res/tmp/models/model_fold-10.pickle"...
-INFO Successfully loaded model
-INFO Predicting for 59 test examples...
-DEBUG A dense matrix is used to store the feature values of the query examples
-DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data (Fold 10):
+Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-9.csv"...
+Writing output data to file "python/tests/res/tmp/models/model_fold-9.pickle"...
+Fold 10 / 10:
+Reading input data from file "models/model_fold-10.pickle"...
+Failed to unpickle file "models/model_fold-10.pickle"
+Fitting model to 534 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Predicting for 59 test examples...
+A dense matrix is used to store the feature values of the query examples
+A dense matrix is used to store the predicted labels
+Successfully predicted in <duration>
+Evaluation result for test data (Fold 10):
 
 Example-wise F1         57.51
 Example-wise Jaccard    50
@@ -281,7 +321,7 @@ Micro Recall            60
 Subset 0/1 Loss         71.19
 Subset Accuracy         28.81
 
-INFO Evaluation result for test data (Average across 10 folds):
+Evaluation result for test data (Average across 10 folds):
 
 Example-wise F1         55.15  ±2.71
 Example-wise Jaccard    46.36  ±2.84
@@ -300,7 +340,7 @@ Micro Recall            59.5   ±3.54
 Subset 0/1 Loss         79.58  ±3.87
 Subset Accuracy         20.42  ±3.87
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-10.csv"...
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-DEBUG Writing output data to file "python/tests/res/tmp/models/model_fold-10.pickle"...
-INFO Successfully finished after <duration>
+Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-10.csv"...
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Writing output data to file "python/tests/res/tmp/models/model_fold-10.pickle"...
+Successfully finished experiment after <duration>

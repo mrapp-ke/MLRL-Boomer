@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides base classes for programs that can be configured via command line arguments.
 """
 from argparse import Namespace
-from typing import Any, Dict, Optional, Set, Type
+from typing import Any, Dict, Optional, Set, Type, override
 
 from sklearn.base import BaseEstimator, ClassifierMixin as SkLearnClassifierMixin, \
     RegressorMixin as SkLearnRegressorMixin
@@ -23,7 +23,6 @@ from mlrl.testbed_sklearn.experiments.prediction.predictor import Predictor
 from mlrl.testbed_sklearn.runnables import SkLearnRunnable
 
 from mlrl.testbed.experiments import Experiment
-from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, RegressionProblem
 from mlrl.testbed.extensions.extension import Extension
@@ -57,6 +56,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
             self.max_size = max_size
             self.step_size = step_size
 
+        @override
         def create(self) -> Predictor:
             """
             See :func:`from mlrl.testbed_sklearn.experiments.problem_domain.SkLearnProblem.PredictorFactory.create`
@@ -79,6 +79,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
             true_options={OPTION_MIN_SIZE, OPTION_MAX_SIZE, OPTION_STEP_SIZE},
         )
 
+        @override
         def _get_arguments(self) -> Set[Argument]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
@@ -143,6 +144,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
             + 'on the argument ' + FEATURE_FORMAT.name + '.',
         )
 
+        @override
         def _get_arguments(self) -> Set[Argument]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
@@ -226,6 +228,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
         self.regressor_config_type = regressor_config_type
         self.regressor_parameters = regressor_parameters
 
+    @override
     def get_extensions(self) -> Set[Extension]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_extensions`
@@ -238,6 +241,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
             LabelVectorSetExtension(),
         }
 
+    @override
     def get_algorithmic_arguments(self, known_args: Namespace) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_algorithmic_arguments`
@@ -259,15 +263,27 @@ class RuleLearnerRunnable(SkLearnRunnable):
 
         return set(filter(None, map(lambda param: param.as_argument(config_type), parameters)))
 
-    def _create_experiment_builder(self, args: Namespace, dataset_splitter: DatasetSplitter) -> Experiment.Builder:
+    @override
+    def create_problem_domain(self, args: Namespace):
+        """
+        See :func:`mlrl.testbed.experiments.recipe.Recipe.create_problem_domain`
+        """
         fit_kwargs = RuleLearnerRunnable.RuleLearnerExtension.get_fit_kwargs(args)
         predict_kwargs = RuleLearnerRunnable.RuleLearnerExtension.get_predict_kwargs(args)
-        problem_domain = SkLearnRunnable.ProblemDomainExtension.get_problem_domain(args,
-                                                                                   runnable=self,
-                                                                                   fit_kwargs=fit_kwargs,
-                                                                                   predict_kwargs=predict_kwargs)
-        return RuleLearnerExperiment.Builder(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
+        return SkLearnRunnable.ProblemDomainExtension.get_problem_domain(args,
+                                                                         runnable=self,
+                                                                         fit_kwargs=fit_kwargs,
+                                                                         predict_kwargs=predict_kwargs)
 
+    @override
+    def create_experiment_builder(self, args: Namespace) -> Experiment.Builder:
+        """
+        See :func:`mlrl.testbed.experiments.recipe.Recipe.create_experiment_builder`
+        """
+        return RuleLearnerExperiment.Builder(problem_domain=self.create_problem_domain(args),
+                                             dataset_splitter=self.create_dataset_splitter(args))
+
+    @override
     def create_classifier(self, args: Namespace) -> Optional[SkLearnClassifierMixin]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.create_classifier`
@@ -280,6 +296,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
                                                                           parameters=self.classifier_parameters)
         return None
 
+    @override
     def create_regressor(self, args: Namespace) -> Optional[SkLearnRegressorMixin]:
         """
         See :func:`mlrl.testbed_sklearn.runnables.SkLearnRunnable.create_regressor`
@@ -292,6 +309,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
                                                                           parameters=self.regressor_parameters)
         return None
 
+    @override
     def create_predictor_factory(self, args, prediction_type: PredictionType) -> SkLearnProblem.PredictorFactory:
         """
         See :func:`mlrl.testbed_sklearn.runnables.SkLearnRunnable.create_predictor_factory`

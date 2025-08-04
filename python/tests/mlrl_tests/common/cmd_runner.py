@@ -7,7 +7,6 @@ import subprocess
 from functools import reduce
 from os import environ
 from pathlib import Path
-from typing import Optional
 
 import pytest
 
@@ -19,22 +18,6 @@ class CmdRunner:
     """
     Allows to run commands that have been configured via a `CmdBuilder`.
     """
-
-    def __create_temporary_directories(self):
-        builder = self.builder
-        builder.output_dir.mkdir(parents=True, exist_ok=True)
-        model_dir = builder.model_dir
-
-        if model_dir:
-            model_dir.mkdir(parents=True, exist_ok=True)
-
-    def __delete_temporary_directories(self):
-        builder = self.builder
-        shutil.rmtree(builder.output_dir, ignore_errors=True)
-        model_dir = builder.model_dir
-
-        if model_dir:
-            shutil.rmtree(model_dir, ignore_errors=True)
 
     def __format_cmd(self):
         return reduce(lambda aggr, arg: aggr + (' ' + arg if len(aggr) > 0 else arg), self.args, '')
@@ -49,46 +32,37 @@ class CmdRunner:
 
         return out
 
-    def __assert_model_files_exist(self):
-        builder = self.builder
-        self.__assert_files_exist(directory=builder.model_dir, file_name='model', suffix='pickle')
-
-    def __assert_files_exist(self, directory: Optional[Path], file_name: str, suffix: str):
-        if directory:
-            builder = self.builder
-            num_folds = builder.num_folds
-
-            if num_folds > 0:
-                current_fold = builder.current_fold
-
-                if current_fold is None:
-                    for i in range(num_folds):
-                        self.__assert_file_exists(directory / self.__get_file_name(file_name, suffix, i + 1))
-                else:
-                    self.__assert_file_exists(directory / self.__get_file_name(file_name, suffix, current_fold))
-            else:
-                self.__assert_file_exists(directory / self.__get_file_name(file_name, suffix))
-
-    @staticmethod
-    def __get_file_name(name: str, suffix: str, fold: Optional[int] = None):
-        if fold is None:
-            return name + '.' + suffix
-        return name + '_fold-' + str(fold) + '.' + suffix
-
     def __assert_file_exists(self, file: Path):
-        """
-        Asserts that a specific file exists.
-
-        :param file: The path to the file that should be checked
-        """
         if not file.is_file():
             pytest.fail('Command "' + self.__format_cmd() + '" is expected to create file "' + str(file)
                         + '", but it does not exist')
 
-    def __compare_or_overwrite_files(self, file_comparison: FileComparison, test_name: str, file_name: str):
-        expected_output_file = self.builder.expected_output_dir / test_name / file_name
+    def __compare_or_overwrite_output_files(self, output_dir: Path, expected_output_dir: Path):
+        expected_files_to_be_deleted = []
+
+        for expected_file in expected_output_dir.rglob('*'):
+            if expected_file.is_file() and expected_file != expected_output_dir / 'std.out':
+                actual_file = output_dir / expected_file.relative_to(expected_output_dir)
+
+                if self.__should_overwrite_files():
+                    if not actual_file.is_file():
+                        expected_files_to_be_deleted.append(expected_file)
+                else:
+                    self.__assert_file_exists(actual_file)
+
+        for expected_file in expected_files_to_be_deleted:
+            expected_file.unlink()
+
+        # Check if all output files have the expected content...
+        if output_dir.is_dir():
+            for actual_file in output_dir.rglob('*'):
+                if actual_file.is_file():
+                    expected_file = expected_output_dir / actual_file.relative_to(output_dir)
+                    self.__compare_or_overwrite_files(FileComparison.for_file(actual_file), expected_file=expected_file)
+
+    def __compare_or_overwrite_files(self, file_comparison: FileComparison, expected_file: Path):
         overwrite = self.__should_overwrite_files()
-        difference = file_comparison.compare_or_overwrite(expected_output_file, overwrite=overwrite)
+        difference = file_comparison.compare_or_overwrite(expected_file, overwrite=overwrite)
 
         if difference:
             pytest.fail('Command "' + self.__format_cmd() + '" resulted in unexpected output: ' + str(difference))
@@ -119,46 +93,24 @@ class CmdRunner:
         :param test_name: The name of the directory that stores the output files produced by the command
         """
         builder = self.builder
+        output_dir = builder.base_dir
 
-        # Create temporary directories...
-        self.__create_temporary_directories()
+        # Delete temporary directories...
+        shutil.rmtree(output_dir, ignore_errors=True)
 
         # Run command...
         out = self.__run_cmd()
 
-        if builder.model_dir:
+        if builder.model_save_dir and builder.model_load_dir:
             out = self.__run_cmd()
 
         # Check if output of the command is as expected...
         stdout = [self.__format_cmd()] + str(out.stdout).splitlines()
-        stdout_file_name = 'std.out'
-        self.__compare_or_overwrite_files(TextFileComparison(stdout), test_name=test_name, file_name=stdout_file_name)
+        expected_output_dir = builder.expected_output_dir / test_name
+        self.__compare_or_overwrite_files(TextFileComparison(stdout), expected_file=expected_output_dir / 'std.out')
 
-        # Check if all expected output files have been created...
-        self.__assert_model_files_exist()
-        output_dir = builder.output_dir
-        expected_output_dir = builder.expected_output_dir
-        stdout_file = Path(expected_output_dir, test_name, stdout_file_name)
-        expected_files_to_be_deleted = []
-
-        for expected_file in (expected_output_dir / test_name).iterdir():
-            if expected_file != stdout_file:
-                output_file = output_dir / expected_file.name
-
-                if self.__should_overwrite_files():
-                    if not output_file.is_file():
-                        expected_files_to_be_deleted.append(expected_file)
-                else:
-                    self.__assert_file_exists(output_file)
-
-        for expected_file in expected_files_to_be_deleted:
-            expected_file.unlink()
-
-        # Check if all output files have the expected content...
-        for output_file in output_dir.iterdir():
-            self.__compare_or_overwrite_files(FileComparison.for_file(output_file),
-                                              test_name=test_name,
-                                              file_name=output_file.name)
+        # Check if all expected files have been created...
+        self.__compare_or_overwrite_output_files(output_dir=output_dir, expected_output_dir=expected_output_dir)
 
         # Delete temporary directories...
-        self.__delete_temporary_directories()
+        shutil.rmtree(output_dir, ignore_errors=True)

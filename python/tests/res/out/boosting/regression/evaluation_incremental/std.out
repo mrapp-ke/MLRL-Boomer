@@ -1,212 +1,212 @@
-mlrl-testbed mlrl.boosting --log-level debug --data-dir python/tests/res/data --dataset atp7d --output-dir python/tests/res/tmp/results --problem-type regression --incremental-evaluation true{step_size=50} --print-evaluation true --store-evaluation true
-INFO Starting experiment using the regression algorithm "BoomerRegressor"...
-INFO Using separate training and test sets...
-DEBUG Reading input data from file "python/tests/res/data/atp7d.arff"...
-DEBUG Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
-INFO Fitting model to 198 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the regression scores of the training examples
-INFO Successfully fit model in <duration>
-DEBUG A dense matrix is used to store the feature values of the query examples
-DEBUG A dense matrix is used to store the predicted scores
-INFO Predicting for 98 test examples using a model of size 50...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 50:
+mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --save-evaluation true --problem-type regression --incremental-evaluation true{step_size=50} --print-evaluation true --save-evaluation true
+Starting experiment using the regression algorithm "BoomerRegressor"...
+Using separate training and test sets...
+Reading input data from file "python/tests/res/data/atp7d.arff"...
+Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
+Fitting model to 198 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the regression scores of the training examples
+Successfully fit model in <duration>
+A dense matrix is used to store the feature values of the query examples
+A dense matrix is used to store the predicted scores
+Predicting for 98 test examples using a model of size 50...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 50:
 
 Mean Absolute Error               38.73
 Mean Absolute Percentage Error     0.11
 Mean Squared Error              3817.27
 Median Absolute Error             24.48
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 98 test examples using a model of size 100...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 100:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 98 test examples using a model of size 100...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 100:
 
 Mean Absolute Error               35.28
 Mean Absolute Percentage Error     0.1
 Mean Squared Error              3352.27
 Median Absolute Error             21.83
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 98 test examples using a model of size 150...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 150:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 98 test examples using a model of size 150...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 150:
 
 Mean Absolute Error               33.19
 Mean Absolute Percentage Error     0.09
 Mean Squared Error              3113.87
 Median Absolute Error             19.63
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 98 test examples using a model of size 200...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 200:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 98 test examples using a model of size 200...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 200:
 
 Mean Absolute Error               31.93
 Mean Absolute Percentage Error     0.09
 Mean Squared Error              3007.98
 Median Absolute Error             18.06
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 98 test examples using a model of size 250...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 250:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 98 test examples using a model of size 250...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 250:
 
 Mean Absolute Error               31.15
 Mean Absolute Percentage Error     0.08
 Mean Squared Error              2922.57
 Median Absolute Error             16.9
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 98 test examples using a model of size 300...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 300:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 98 test examples using a model of size 300...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 300:
 
 Mean Absolute Error               30.81
 Mean Absolute Percentage Error     0.08
 Mean Squared Error              2898.59
 Median Absolute Error             16.63
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 98 test examples using a model of size 350...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 350:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 98 test examples using a model of size 350...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 350:
 
 Mean Absolute Error               30.6
 Mean Absolute Percentage Error     0.08
 Mean Squared Error              2886.61
 Median Absolute Error             16.51
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 98 test examples using a model of size 400...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 400:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 98 test examples using a model of size 400...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 400:
 
 Mean Absolute Error               30.39
 Mean Absolute Percentage Error     0.08
 Mean Squared Error              2875.06
 Median Absolute Error             15.89
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 98 test examples using a model of size 450...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 450:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 98 test examples using a model of size 450...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 450:
 
 Mean Absolute Error               30.25
 Mean Absolute Percentage Error     0.08
 Mean Squared Error              2867.54
 Median Absolute Error             16.04
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 98 test examples using a model of size 500...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 500:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 98 test examples using a model of size 500...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 500:
 
 Mean Absolute Error               30.16
 Mean Absolute Percentage Error     0.08
 Mean Squared Error              2857.21
 Median Absolute Error             16.01
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 98 test examples using a model of size 550...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 550:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 98 test examples using a model of size 550...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 550:
 
 Mean Absolute Error               30.11
 Mean Absolute Percentage Error     0.08
 Mean Squared Error              2851.8
 Median Absolute Error             16.11
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 98 test examples using a model of size 600...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 600:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 98 test examples using a model of size 600...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 600:
 
 Mean Absolute Error               30.08
 Mean Absolute Percentage Error     0.08
 Mean Squared Error              2846.38
 Median Absolute Error             16.06
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 98 test examples using a model of size 650...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 650:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 98 test examples using a model of size 650...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 650:
 
 Mean Absolute Error               30.08
 Mean Absolute Percentage Error     0.08
 Mean Squared Error              2843.95
 Median Absolute Error             16
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 98 test examples using a model of size 700...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 700:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 98 test examples using a model of size 700...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 700:
 
 Mean Absolute Error               30.02
 Mean Absolute Percentage Error     0.08
 Mean Squared Error              2837.29
 Median Absolute Error             16.04
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 98 test examples using a model of size 750...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 750:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 98 test examples using a model of size 750...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 750:
 
 Mean Absolute Error               29.98
 Mean Absolute Percentage Error     0.08
 Mean Squared Error              2833.97
 Median Absolute Error             16.03
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 98 test examples using a model of size 800...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 800:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 98 test examples using a model of size 800...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 800:
 
 Mean Absolute Error               29.95
 Mean Absolute Percentage Error     0.08
 Mean Squared Error              2830.3
 Median Absolute Error             16
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 98 test examples using a model of size 850...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 850:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 98 test examples using a model of size 850...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 850:
 
 Mean Absolute Error               29.94
 Mean Absolute Percentage Error     0.08
 Mean Squared Error              2829.76
 Median Absolute Error             15.99
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 98 test examples using a model of size 900...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 900:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 98 test examples using a model of size 900...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 900:
 
 Mean Absolute Error               29.93
 Mean Absolute Percentage Error     0.08
 Mean Squared Error              2828.22
 Median Absolute Error             15.94
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 98 test examples using a model of size 950...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 950:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 98 test examples using a model of size 950...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 950:
 
 Mean Absolute Error               29.91
 Mean Absolute Percentage Error     0.08
 Mean Squared Error              2826.65
 Median Absolute Error             15.87
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 98 test examples using a model of size 1000...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 1000:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 98 test examples using a model of size 1000...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 1000:
 
 Mean Absolute Error               29.91
 Mean Absolute Percentage Error     0.08
 Mean Squared Error              2826.34
 Median Absolute Error             15.83
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Successfully finished after <duration>
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Successfully finished experiment after <duration>
