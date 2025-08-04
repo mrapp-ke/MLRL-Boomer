@@ -51,14 +51,21 @@ MLRL-Testbed supports different modes of operation configurable via the argument
   - `single` A single experiment is run.
   - `batch` A batch of experiments is run at once.
 
+#### Batch Mode
+
 In {ref}`batch mode <testbed-batch-mode>`, the following mandatory arguments must be given as well:
 
 - `--config` An absolute or relative path to a YAML file that defines the batch of experiments to be run.
 
 In addition, the batch mode comes with the following optional arguments:
 
-- `--separate-folds` (Default value = `true`) Whether separate experiments should be run for the individual folds of a cross validation or not.
 - `--list` Lists the commands for running individual experiments instead of executing them.
+
+- `--separate-folds` (Default value = `true`) Whether separate experiments should be run for the individual folds of a cross validation or not.
+
+- `--runner` (Default value = `sequential`)
+
+  - `sequential` The experiments are run sequentially.
 
 ### Dataset
 

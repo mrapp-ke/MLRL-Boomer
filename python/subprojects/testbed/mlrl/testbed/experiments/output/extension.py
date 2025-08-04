@@ -10,7 +10,7 @@ from typing import Set, Type, override
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import Mode, SingleExperimentMode
+from mlrl.testbed.modes import Mode, SingleMode
 
 from mlrl.util.cli import Argument, BoolArgument, StringArgument
 
@@ -131,4 +131,4 @@ class ResultDirectoryExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleExperimentMode}
+        return {SingleMode}
