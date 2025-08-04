@@ -11,6 +11,8 @@ from dataclasses import dataclass
 from itertools import chain
 from typing import Dict, Iterable, List, Optional, override
 
+from mlrl.util.format import format_iterable
+
 
 class ArgumentList(List[str]):
     """
@@ -128,3 +130,7 @@ class Command(Iterable[str]):
     @override
     def __iter__(self):
         return iter(chain(['mlrl-testbed', self.module_name], self.argument_list))
+
+    @override
+    def __str__(self) -> str:
+        return format_iterable(self, separator=' ')
