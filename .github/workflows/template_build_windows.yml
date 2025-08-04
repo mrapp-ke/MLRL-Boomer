@@ -16,6 +16,8 @@ jobs:
     name: Test Windows build
     runs-on: windows-2025
     steps:
+      - name: Enable support for long paths
+        run: git config --system core.longpaths true
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Python
