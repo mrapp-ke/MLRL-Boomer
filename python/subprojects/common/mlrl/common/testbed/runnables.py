@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides base classes for programs that can be configured via command line arguments.
 """
 from argparse import Namespace
+from datetime import datetime
 from typing import Any, Dict, Optional, Set, Type, override
 
 from sklearn.base import BaseEstimator, ClassifierMixin as SkLearnClassifierMixin, \
@@ -22,9 +23,12 @@ from mlrl.testbed_sklearn.experiments import SkLearnProblem
 from mlrl.testbed_sklearn.experiments.prediction.predictor import Predictor
 from mlrl.testbed_sklearn.runnables import SkLearnRunnable
 
+from mlrl.testbed.command import Command
 from mlrl.testbed.experiments import Experiment
+from mlrl.testbed.experiments.output.meta_data import MetaData
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, RegressionProblem
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.extensions.extension import Extension
 
 from mlrl.util.cli import Argument, BoolArgument, EnumArgument, FloatArgument
@@ -280,7 +284,10 @@ class RuleLearnerRunnable(SkLearnRunnable):
         """
         See :func:`mlrl.testbed.experiments.recipe.Recipe.create_experiment_builder`
         """
-        return RuleLearnerExperiment.Builder(problem_domain=self.create_problem_domain(args),
+        # TODO Use correct meta-data
+        meta_data = MetaData(version='version', timestamp=datetime.now(), command=Command.from_argv())
+        initial_state = ExperimentState(meta_data=meta_data, problem_domain=self.create_problem_domain(args))
+        return RuleLearnerExperiment.Builder(initial_state=initial_state,
                                              dataset_splitter=self.create_dataset_splitter(args))
 
     @override

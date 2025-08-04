@@ -119,7 +119,7 @@ class EvaluationExtension(Extension):
         self.__configure_csv_file_sink(args, experiment_builder)
 
         if experiment_builder.evaluation_writer.sinks:
-            problem_domain = experiment_builder.problem_domain
+            problem_domain = experiment_builder.initial_state.problem_domain
 
             if isinstance(problem_domain, RegressionProblem):
                 extractor = RegressionEvaluationDataExtractor()
