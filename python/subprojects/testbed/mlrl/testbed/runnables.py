@@ -11,6 +11,7 @@ from typing import List, Optional, Set, override
 
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
+from mlrl.testbed.experiments.output.meta_data.extension import MetaDataExtension
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.extensions import Extension
@@ -73,7 +74,11 @@ class Runnable(Recipe, ABC):
 
         :return: A set that contains the extensions to be applied to the runnable
         """
-        return {Runnable.PredictionDatasetExtension(), LogExtension()}
+        return {
+            Runnable.PredictionDatasetExtension(),
+            LogExtension(),
+            MetaDataExtension(),
+        }
 
     def get_program_info(self) -> Optional[ProgramInfo]:
         """
