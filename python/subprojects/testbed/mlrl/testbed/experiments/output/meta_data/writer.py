@@ -6,6 +6,7 @@ Provides classes that allow writing meta-data to one or several sinks.
 from typing import List, Optional, override
 
 from mlrl.testbed.experiments.output.data import OutputData
+from mlrl.testbed.experiments.output.meta_data.meta_data import OutputMetaData
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor, OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
@@ -26,7 +27,7 @@ class MetaDataWriter(OutputWriter):
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
-            return state.meta_data
+            return OutputMetaData(state.meta_data)
 
     def __init__(self, *extractors: DataExtractor):
         """
