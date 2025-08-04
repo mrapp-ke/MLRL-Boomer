@@ -1,8 +1,9 @@
 mlrl-testbed mlrl.seco --mode batch --help
 usage: mlrl-testbed [-r RUNNABLE] [-v] [--mode MODE] [--config CONFIG]
                     [--separate-folds SEPARATE_FOLDS] [--list]
-                    [--base-dir BASE_DIR] [--create-dirs CREATE_DIRS]
-                    [--data-split DATA_SPLIT] [--exit-on-error EXIT_ON_ERROR]
+                    [--runner RUNNER] [--base-dir BASE_DIR]
+                    [--create-dirs CREATE_DIRS] [--data-split DATA_SPLIT]
+                    [--exit-on-error EXIT_ON_ERROR]
                     [--feature-binning FEATURE_BINNING]
                     [--feature-format FEATURE_FORMAT]
                     [--feature-sampling FEATURE_SAMPLING]
@@ -77,6 +78,8 @@ options:
                         one of {"false", "true"}.
   --list                Lists the commands for running individual experiments
                         instead of executing them.
+  --runner RUNNER       The runner to be used for running individual
+                        experiments in a batch. Must be one of {"sequential"}.
   --base-dir BASE_DIR   If relative paths to directories, where files should
                         be saved, are given, they are considered relative to
                         the directory specified via this argument.
