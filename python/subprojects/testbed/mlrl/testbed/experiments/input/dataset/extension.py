@@ -13,8 +13,8 @@ from mlrl.testbed.experiments.input.dataset.dataset import InputDataset
 from mlrl.testbed.experiments.input.dataset.reader import DatasetReader
 from mlrl.testbed.experiments.input.sources import FileSource, Source
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import Mode, SingleExperimentMode
-from mlrl.testbed.modes.mode_batch import BatchExperimentMode
+from mlrl.testbed.modes import Mode, SingleMode
+from mlrl.testbed.modes.mode_batch import BatchMode
 
 from mlrl.util.cli import Argument, StringArgument
 
@@ -63,7 +63,7 @@ class DatasetExtension(Extension, ABC):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleExperimentMode}
+        return {SingleMode}
 
 
 class DatasetFileExtension(DatasetExtension, ABC):
@@ -104,7 +104,7 @@ class DatasetFileExtension(DatasetExtension, ABC):
         """
 
     @staticmethod
-    def parse_dataset_args_from_config(config: BatchExperimentMode.ConfigFile) -> List[ArgumentList]:
+    def parse_dataset_args_from_config(config: BatchMode.ConfigFile) -> List[ArgumentList]:
         """
         Parses and returns the command line arguments for using the datasets specified in a configuration file.
 
