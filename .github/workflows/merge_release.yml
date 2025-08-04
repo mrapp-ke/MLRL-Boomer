@@ -66,7 +66,7 @@ jobs:
           git add build_system/res/versioning/version
           git commit -m "[Bot] Update version from ${BUGFIX_VERSION} to $(cat build_system/res/versioning/version)."
           git push origin bugfix
-          echo "MAIN_VERSION=MAIN_VERSION" >> $GITHUB_OUTPUT
+          echo "MAIN_VERSION=$MAIN_VERSION" >> $GITHUB_OUTPUT
           echo "FEATURE_VERSION=$FEATURE_VERSION" >> $GITHUB_OUTPUT
           echo "BUGFIX_VERSION=$BUGFIX_VERSION" >> $GITHUB_OUTPUT
       - name: Update minor version
@@ -97,7 +97,7 @@ jobs:
           git add build_system/res/versioning/version
           git commit -m "[Bot] Update version from ${BUGFIX_VERSION} to $(cat build_system/res/versioning/version)."
           git push origin bugfix
-          echo "BUGFIX_VERSION=BUGFIX_VERSION" >> $GITHUB_OUTPUT
+          echo "BUGFIX_VERSION=$BUGFIX_VERSION" >> $GITHUB_OUTPUT
       - name: Close major milestone
         uses: Beakyn/gha-close-milestone@v1.1.1
         if: ${{ steps.main-release.outputs.MAIN_VERSION }}
