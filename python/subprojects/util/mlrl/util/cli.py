@@ -302,6 +302,7 @@ class SetArgument(Argument):
                          type=str,
                          required=required,
                          decorator=decorator)
+        self.description = description
         self.supported_values = values
 
     @override
