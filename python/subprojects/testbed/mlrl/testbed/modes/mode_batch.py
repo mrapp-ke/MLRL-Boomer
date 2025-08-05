@@ -81,7 +81,7 @@ class BatchMode(Mode):
         @override
         def run_batch(self, args: Namespace, batch: Batch, recipe: Recipe):
             for i, command in enumerate(batch):
-                recipe.create_experiment_builder(command.apply_to_namespace(args))
+                recipe.create_experiment_builder(command.apply_to_namespace(args), command)
 
                 if i > 0:
                     log.info('')
@@ -103,8 +103,8 @@ class BatchMode(Mode):
             namespaces = [command.apply_to_namespace(args) for command in batch]
             num_experiments = len(batch)
 
-            for experiment_namespace in namespaces:
-                recipe.create_experiment_builder(experiment_namespace)  # For validation
+            for experiment_namespace, command in zip(namespaces, batch):
+                recipe.create_experiment_builder(experiment_namespace, command)  # For validation
 
             for i, (experiment_namespace, command) in enumerate(zip(namespaces, batch)):
                 if i == 0:
@@ -112,7 +112,7 @@ class BatchMode(Mode):
                              'experiments' if num_experiments > 1 else 'experiment')
 
                 log.info('\nRunning experiment (%s / %s): "%s"', i + 1, num_experiments, str(command))
-                recipe.create_experiment_builder(experiment_namespace).run()
+                recipe.create_experiment_builder(experiment_namespace, command).run()
 
             run_time = Timer.stop(start_time)
             log.info('Successfully finished %s %s after %s', num_experiments,

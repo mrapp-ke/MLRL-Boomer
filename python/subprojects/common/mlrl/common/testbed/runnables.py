@@ -4,7 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides base classes for programs that can be configured via command line arguments.
 """
 from argparse import Namespace
-from datetime import datetime
 from typing import Any, Dict, Optional, Set, Type, override
 
 from sklearn.base import BaseEstimator, ClassifierMixin as SkLearnClassifierMixin, \
@@ -280,12 +279,11 @@ class RuleLearnerRunnable(SkLearnRunnable):
                                                                          predict_kwargs=predict_kwargs)
 
     @override
-    def create_experiment_builder(self, args: Namespace) -> Experiment.Builder:
+    def create_experiment_builder(self, args: Namespace, command: Command) -> Experiment.Builder:
         """
         See :func:`mlrl.testbed.experiments.recipe.Recipe.create_experiment_builder`
         """
-        # TODO Use correct meta-data
-        meta_data = MetaData(version='version', timestamp=datetime.now(), command=Command.from_argv())
+        meta_data = MetaData(command=command)
         initial_state = ExperimentState(meta_data=meta_data, problem_domain=self.create_problem_domain(args))
         return RuleLearnerExperiment.Builder(initial_state=initial_state,
                                              dataset_splitter=self.create_dataset_splitter(args))

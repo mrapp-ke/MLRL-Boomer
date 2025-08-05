@@ -5,7 +5,6 @@ Provides classes for running experiments using the scikit-learn framework.
 """
 from abc import ABC, abstractmethod
 from argparse import Namespace
-from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, override
 
@@ -185,12 +184,11 @@ class SkLearnRunnable(Runnable, ABC):
         return DatasetSplitterExtension.get_dataset_splitter(args)
 
     @override
-    def create_experiment_builder(self, args: Namespace) -> Experiment.Builder:
+    def create_experiment_builder(self, args: Namespace, command: Command) -> Experiment.Builder:
         """
         See :func:`mlrl.testbed.experiments.recipe.Recipe.create_experiment_builder`
         """
-        # TODO Use correct meta-data
-        meta_data = MetaData(version='version', timestamp=datetime.now(), command=Command.from_argv())
+        meta_data = MetaData(command=command)
         initial_state = ExperimentState(meta_data=meta_data, problem_domain=self.create_problem_domain(args))
         return SkLearnExperiment.Builder(initial_state=initial_state,
                                          dataset_splitter=self.create_dataset_splitter(args))
