@@ -19,6 +19,7 @@ from mlrl.testbed.experiments.input.reader import InputReader
 from mlrl.testbed.experiments.output.meta_data.writer import MetaDataWriter
 from mlrl.testbed.experiments.output.model.writer import ModelWriter
 from mlrl.testbed.experiments.output.parameters.writer import ParameterWriter
+from mlrl.testbed.experiments.output.sinks import FileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState, ParameterDict, PredictionState, TrainingState
 from mlrl.testbed.experiments.timer import Timer
@@ -67,6 +68,13 @@ class Experiment(ABC):
             """
             return chain(self.before_start_output_writers, self.pre_training_output_writers,
                          self.post_training_output_writers, self.prediction_output_writers)
+
+        @property
+        def has_output_file_writers(self) -> bool:
+            """
+            True, if any output writers that write to output files have been added to the builder, False otherwise.
+            """
+            return any(any(isinstance(sink, FileSink) for sink in writer.sinks) for writer in self.output_writers)
 
         def add_listeners(self, *listeners: 'Experiment.Listener') -> 'Experiment.Builder':
             """
