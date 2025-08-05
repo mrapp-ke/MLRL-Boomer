@@ -9,10 +9,11 @@ from typing import Set, override
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.extension import OutputExtension
-from mlrl.testbed.experiments.output.sinks import YamlFileSink
+from mlrl.testbed.experiments.output.sinks import FileSink, YamlFileSink
 from mlrl.testbed.extensions.extension import Extension
 
-from mlrl.util.cli import Argument, BoolArgument
+from mlrl.util.cli import AUTO, Argument, SetArgument
+from mlrl.util.options import BooleanOption
 
 
 class MetaDataExtension(Extension):
@@ -20,10 +21,12 @@ class MetaDataExtension(Extension):
     An extension that configures the functionality to write meta-data to one or several sinks.
     """
 
-    SAVE_META_DATA = BoolArgument(
+    SAVE_META_DATA = SetArgument(
         '--save-meta-data',
-        default=False,
-        description='Whether meta-data should be saved to output files or not.',
+        default=AUTO,
+        values={AUTO, BooleanOption.TRUE, BooleanOption.FALSE},
+        description='Whether meta-data should be saved to output files or not. If set to "' + AUTO + '", meta-data is '
+        + 'saved whenever other output files are written as well.',
     )
 
     def __init__(self, *dependencies: Extension):
@@ -44,7 +47,11 @@ class MetaDataExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
-        if self.SAVE_META_DATA.get_value(args):
+        save_meta_data = self.SAVE_META_DATA.get_value(args)
+
+        if save_meta_data == BooleanOption.TRUE or (save_meta_data == AUTO and any(
+                any(isinstance(sink, FileSink) for sink in output_writer.sinks)
+                for output_writer in experiment_builder.output_writers)):
             base_dir = OutputExtension.BASE_DIR.get_value(args)
 
             if base_dir:

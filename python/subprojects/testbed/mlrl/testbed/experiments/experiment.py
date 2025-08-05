@@ -60,6 +60,14 @@ class Experiment(ABC):
             self.add_pre_training_output_writers(self.parameter_writer)
             self.add_post_training_output_writers(self.model_writer)
 
+        @property
+        def output_writers(self) -> chain[OutputWriter]:
+            """
+            A generator that provides access to all output writers that have been added to the builder.
+            """
+            return chain(self.before_start_output_writers, self.pre_training_output_writers,
+                         self.post_training_output_writers, self.prediction_output_writers)
+
         def add_listeners(self, *listeners: 'Experiment.Listener') -> 'Experiment.Builder':
             """
             Adds one or several listeners that should be informed about certain events during the experiment.
