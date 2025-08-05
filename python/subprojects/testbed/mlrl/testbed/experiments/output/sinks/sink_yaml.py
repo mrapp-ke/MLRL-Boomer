@@ -21,6 +21,8 @@ class YamlFileSink(FileSink):
     Allows to write structural output data to a YAML file.
     """
 
+    SUFFIX_YAML = 'yml'
+
     def __init__(self, directory: Path, options: Options = Options(), create_directory: bool = False):
         """
         :param directory:           The path to the directory of the file
@@ -28,7 +30,10 @@ class YamlFileSink(FileSink):
         :param create_directory:    True, if the given directory should be created, if it does not exist, False
                                     otherwise
         """
-        super().__init__(directory=directory, suffix='yml', options=options, create_directory=create_directory)
+        super().__init__(directory=directory,
+                         suffix=self.SUFFIX_YAML,
+                         options=options,
+                         create_directory=create_directory)
 
     @override
     def _write_to_file(self, file_path: Path, state: ExperimentState, output_data: OutputData, **kwargs):
