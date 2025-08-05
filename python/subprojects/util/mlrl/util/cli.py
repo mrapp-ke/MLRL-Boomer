@@ -15,6 +15,8 @@ from mlrl.util.options import BooleanOption, parse_enum, parse_param, parse_para
 
 NONE = 'none'
 
+AUTO = 'auto'
+
 
 class Argument:
     """
