@@ -57,6 +57,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--mode MODE] [--config CONFIG]
                     [--save-joint-probability-calibration-model SAVE_JOINT_PROBABILITY_CALIBRATION_MODEL]
                     [--save-label-vectors SAVE_LABEL_VECTORS]
                     [--save-marginal-probability-calibration-model SAVE_MARGINAL_PROBABILITY_CALIBRATION_MODEL]
+                    [--save-meta-data SAVE_META_DATA]
                     [--save-model-characteristics SAVE_MODEL_CHARACTERISTICS]
                     [--save-models SAVE_MODELS]
                     [--save-parameters SAVE_PARAMETERS]
@@ -359,6 +360,11 @@ options:
                         probabilities should be written to an output file or
                         not. Must be one of {"false", "true"}. For additional
                         options refer to the documentation.
+  --save-meta-data SAVE_META_DATA
+                        Whether meta-data should be saved to output files or
+                        not. If set to "auto", meta-data is saved whenever
+                        other output files are written as well. Must be one of
+                        {"auto", "false", "true"}.
   --save-model-characteristics SAVE_MODEL_CHARACTERISTICS
                         Whether the characteristics of models should be
                         written to output files or not. Must be one of

@@ -11,7 +11,8 @@ mlrl-testbed mlrl.boosting \
     --parameter-save-dir instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/parameters \
     --problem-type regression \
     --result-dir instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/results \
-    --save-evaluation true
+    --save-evaluation true \
+    --save-meta-data false
 
 mlrl-testbed mlrl.boosting \
     --base-dir python/tests/res/tmp \
@@ -25,7 +26,8 @@ mlrl-testbed mlrl.boosting \
     --parameter-save-dir instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/parameters \
     --problem-type regression \
     --result-dir instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/results \
-    --save-evaluation true
+    --save-evaluation true \
+    --save-meta-data false
 
 mlrl-testbed mlrl.boosting \
     --base-dir python/tests/res/tmp \
@@ -38,7 +40,8 @@ mlrl-testbed mlrl.boosting \
     --parameter-save-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_squared-error-decomposable/dataset_atp7d/parameters \
     --problem-type regression \
     --result-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_squared-error-decomposable/dataset_atp7d/results \
-    --save-evaluation true
+    --save-evaluation true \
+    --save-meta-data false
 
 mlrl-testbed mlrl.boosting \
     --base-dir python/tests/res/tmp \
@@ -52,7 +55,8 @@ mlrl-testbed mlrl.boosting \
     --parameter-save-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/parameters \
     --problem-type regression \
     --result-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/results \
-    --save-evaluation true
+    --save-evaluation true \
+    --save-meta-data false
 
 mlrl-testbed mlrl.boosting \
     --base-dir python/tests/res/tmp \
@@ -65,7 +69,8 @@ mlrl-testbed mlrl.boosting \
     --parameter-save-dir instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/parameters \
     --problem-type regression \
     --result-dir instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/results \
-    --save-evaluation true
+    --save-evaluation true \
+    --save-meta-data false
 
 mlrl-testbed mlrl.boosting \
     --base-dir python/tests/res/tmp \
@@ -79,7 +84,8 @@ mlrl-testbed mlrl.boosting \
     --parameter-save-dir instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/parameters \
     --problem-type regression \
     --result-dir instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/results \
-    --save-evaluation true
+    --save-evaluation true \
+    --save-meta-data false
 
 mlrl-testbed mlrl.boosting \
     --base-dir python/tests/res/tmp \
@@ -92,7 +98,8 @@ mlrl-testbed mlrl.boosting \
     --parameter-save-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_squared-error-decomposable/dataset_atp7d-binary/parameters \
     --problem-type regression \
     --result-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_squared-error-decomposable/dataset_atp7d-binary/results \
-    --save-evaluation true
+    --save-evaluation true \
+    --save-meta-data false
 
 mlrl-testbed mlrl.boosting \
     --base-dir python/tests/res/tmp \
@@ -106,4 +113,5 @@ mlrl-testbed mlrl.boosting \
     --parameter-save-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/parameters \
     --problem-type regression \
     --result-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/results \
-    --save-evaluation true
+    --save-evaluation true \
+    --save-meta-data false
