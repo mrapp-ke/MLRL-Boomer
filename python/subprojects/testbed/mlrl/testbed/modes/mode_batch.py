@@ -300,6 +300,7 @@ class BatchMode(Mode):
                         '--result-dir': str(output_dir / 'results'),
                         '--model-save-dir': str(output_dir / 'models'),
                         '--parameter-save-dir': str(output_dir / 'parameters'),
+                        '--save-meta-data': str(False).lower(),
                     })
                 command = Command(module_name=module_name, argument_list=argument_dict.to_list())
 
