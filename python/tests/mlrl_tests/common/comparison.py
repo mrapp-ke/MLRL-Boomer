@@ -7,11 +7,12 @@ import re as regex
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable, List, Optional, Set, override
+from typing import Any, Dict, Iterable, List, Optional, Set, override
 
-from mlrl.testbed.experiments.output.sinks import CsvFileSink
-from mlrl.testbed.experiments.output.sinks.sink_pickle import PickleFileSink
-from mlrl.testbed.util.io import ENCODING_UTF8
+import yaml
+
+from mlrl.testbed.experiments.output.sinks import CsvFileSink, PickleFileSink, YamlFileSink
+from mlrl.testbed.util.io import ENCODING_UTF8, open_readable_file, open_writable_file
 
 PLACEHOLDER_DURATION = '<duration>'
 
@@ -69,6 +70,8 @@ class FileComparison(ABC):
         :param file:    The path to the file
         :return:        The `FileComparison` that has been created
         """
+        if file.name == 'metadata.' + YamlFileSink.SUFFIX_YAML:
+            return MetaDataFileComparison(file)
         if file.suffix == '.' + PickleFileSink.SUFFIX_PICKLE:
             return PickleFileComparison(file)
         if file.suffix == '.' + CsvFileSink.SUFFIX_CSV:
@@ -336,3 +339,97 @@ class CsvFileComparison(FileComparison):
                         output_csv_file.writerow(row)
                 except StopIteration:
                     pass
+
+
+class MetaDataFileComparison(FileComparison):
+    """
+    Allows to compare or overwrite metadata.yaml files produced by tests.
+    """
+
+    class MissingField(Difference):
+        """
+        A difference between two YAML files corresponding to a field that is missing from one of the files.
+        """
+
+        def __init__(self, file: Path, missing_field: str):
+            """
+            :param file:            The path to the file that has been compared
+            :param missing_field:   The name of the missing field
+            """
+            super().__init__(file)
+            self.missing_field = missing_field
+
+        @override
+        def __str__(self) -> str:
+            return 'Field "' + self.missing_field + '" is missing from YAML file'
+
+    class FieldDifference(Difference):
+        """
+        A difference between two YAML files with different values for a field.
+        """
+
+        def __init__(self, file: Path, field: str, actual_value: str, expected_value: str):
+            """
+            :param file:            The path to the file that has been compared
+            :param field:           The name of the field
+            :param actual_value:    The actual value for the field
+            :param expected_value:  The expected value for the field
+            """
+            super().__init__(file)
+            self.field = field
+            self.actual_value = actual_value
+            self.expected_value = expected_value
+
+        @override
+        def __str__(self) -> str:
+            return ('Field "' + self.field + '" has unexpected value. Value should be "' + self.expected_value
+                    + '", but is "' + self.actual_value + '"')
+
+    FIELD_VERSION = 'version'
+
+    FIELD_TIMESTAMP = 'timestamp'
+
+    def __load_yaml(self, path: Path) -> Dict[Any, Any]:
+        with open_readable_file(path) as yaml_file:
+            return yaml.safe_load(yaml_file)
+
+    def __write_yaml(self, yaml_dict: Dict[Any, Any], path: Path):
+        with open_writable_file(path) as yaml_file:
+            yaml.dump(yaml_dict, yaml_file)
+
+    def __init__(self, path: Path):
+        """
+        :param path: The path to a file
+        """
+        self.path = path
+
+    @override
+    def _compare(self, another_file: Path) -> Optional[Difference]:
+        yaml_dict = self.__load_yaml(self.path)
+        another_yaml_dict = self.__load_yaml(another_file)
+
+        for key, expected_value in another_yaml_dict.items():
+            if not key in yaml_dict.keys():
+                return MetaDataFileComparison.MissingField(file=another_file, missing_field=key)
+
+            if key not in {self.FIELD_VERSION, self.FIELD_TIMESTAMP}:
+                actual_value = yaml_dict[key]
+
+                if expected_value != actual_value:
+                    return MetaDataFileComparison.FieldDifference(file=another_file,
+                                                                  field=key,
+                                                                  actual_value=actual_value,
+                                                                  expected_value=expected_value)
+
+            return None
+
+        if not another_file.is_file():
+            raise IOError('File "' + str(another_file) + '" does not exist')
+        return None
+
+    @override
+    def _write(self, file: Path):
+        yaml_dict = self.__load_yaml(self.path)
+        yaml_dict[self.FIELD_VERSION] = '<version>'
+        yaml_dict[self.FIELD_TIMESTAMP] = '<timestamp>'
+        self.__write_yaml(yaml_dict, file)
