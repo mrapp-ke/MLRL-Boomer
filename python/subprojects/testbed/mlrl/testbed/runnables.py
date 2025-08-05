@@ -9,6 +9,7 @@ from argparse import Namespace
 from functools import cached_property, reduce
 from typing import List, Optional, Set, override
 
+from mlrl.testbed.command import Command
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.output.meta_data.extension import MetaDataExtension
@@ -117,9 +118,9 @@ class Runnable(Recipe, ABC):
                 return self.runnable.create_dataset_splitter(args)
 
             @override
-            def create_experiment_builder(self, args: Namespace) -> Experiment.Builder:
+            def create_experiment_builder(self, args: Namespace, command: Command) -> Experiment.Builder:
                 runnable = self.runnable
-                experiment_builder = runnable.create_experiment_builder(args)
+                experiment_builder = runnable.create_experiment_builder(args, command)
 
                 for extension in runnable.extensions:
                     extension.configure_experiment(args, experiment_builder)
