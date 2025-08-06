@@ -50,10 +50,13 @@ class FilePath:
                 if not prediction_scope.is_global:
                     file_name += '_model-size-' + str(prediction_scope.model_size)
 
-        if self.context.include_fold and state.folding_strategy.is_cross_validation_used:
-            fold = state.fold
+        if self.context.include_fold:
+            folding_strategy = state.folding_strategy
 
-            if fold:
-                file_name += '_fold-' + str(fold.index + 1)
+            if folding_strategy and folding_strategy.is_cross_validation_used:
+                fold = state.fold
+
+                if fold:
+                    file_name += '_fold-' + str(fold.index + 1)
 
         return self.directory / (file_name + '.' + self.suffix)

@@ -14,7 +14,7 @@ from mlrl.testbed_sklearn.experiments.dataset import AttributeType, TabularDatas
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
-from mlrl.testbed.experiments.problem_domain import ProblemDomain
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.timer import Timer
 
 
@@ -28,8 +28,8 @@ class RuleLearnerExperiment(SkLearnExperiment):
         Allows to configure and create instances of the class `RuleLearnerExperiment`.
         """
 
-        def _create_experiment(self, problem_domain: ProblemDomain, dataset_splitter: DatasetSplitter) -> Experiment:
-            return RuleLearnerExperiment(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
+        def _create_experiment(self, initial_state: ExperimentState, dataset_splitter: DatasetSplitter) -> Experiment:
+            return RuleLearnerExperiment(initial_state=initial_state, dataset_splitter=dataset_splitter)
 
     def _fit(self, estimator: BaseEstimator, dataset: TabularDataset,
              fit_kwargs: Optional[Dict[str, Any]]) -> Timer.Duration:

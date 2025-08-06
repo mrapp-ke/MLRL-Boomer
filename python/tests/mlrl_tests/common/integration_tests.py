@@ -68,7 +68,6 @@ class IntegrationTests(ABC):
         builder = self._create_cmd_builder() \
             .set_mode(Mode.MODE_BATCH) \
             .save_models() \
-            .load_models() \
             .save_parameters() \
             .save_all()
         CmdRunner(builder).run('batch-mode')

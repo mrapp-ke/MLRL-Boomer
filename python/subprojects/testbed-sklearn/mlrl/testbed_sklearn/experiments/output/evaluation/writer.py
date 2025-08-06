@@ -38,9 +38,10 @@ class EvaluationDataExtractor(DataExtractor, ABC):
         prediction_result = state.prediction_result
         dataset_type = state.dataset_type
         dataset = state.dataset
+        folding_strategy = state.folding_strategy
 
-        if training_result and prediction_result and dataset_type and dataset:
-            measurements = self.measurements.setdefault(dataset_type, Measurements(state.folding_strategy.num_folds))
+        if training_result and prediction_result and dataset_type and dataset and folding_strategy:
+            measurements = self.measurements.setdefault(dataset_type, Measurements(folding_strategy.num_folds))
             fold_index = state.fold.index
             options = Options(reduce(lambda aggr, sink: aggr | sink.options.dictionary, sinks, {}))
             training_duration = training_result.training_duration.value
@@ -84,8 +85,9 @@ class EvaluationWriter(OutputWriter, ABC):
         sink.write_to_sink(state, output_data, **{EvaluationResult.KWARG_FOLD: fold.index})
         folding_strategy = state.folding_strategy
 
-        if folding_strategy.is_cross_validation_used \
-                and not folding_strategy.is_subset \
-                and folding_strategy.is_last_fold(fold):
+        if folding_strategy and \
+                folding_strategy.is_cross_validation_used and \
+                not folding_strategy.is_subset and \
+                folding_strategy.is_last_fold(fold):
             new_state = replace(state, fold=None)
             sink.write_to_sink(new_state, output_data)

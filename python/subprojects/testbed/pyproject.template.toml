@@ -29,6 +29,7 @@ classifiers = [
 dependencies = [
     "mlrl-testbed-sklearn",
     "mlrl-util",
+    "pyyaml",
     "tabulate",
     "yamale",
 ]

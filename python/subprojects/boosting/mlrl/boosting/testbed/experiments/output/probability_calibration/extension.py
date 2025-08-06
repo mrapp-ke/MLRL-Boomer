@@ -11,6 +11,7 @@ from mlrl.boosting.testbed.experiments.output.probability_calibration.writer imp
     JointProbabilityCalibrationModelWriter, MarginalProbabilityCalibrationModelWriter
 
 from mlrl.testbed.experiments.experiment import Experiment
+from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
@@ -56,7 +57,7 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
         value, options = self.PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL.get_value(
-            args, default=OutputExtension.PRINT_ALL.get_value(args))
+            args, default=OutputArguments.PRINT_ALL.get_value(args))
 
         if value:
             return [LogSink(options)]
@@ -64,13 +65,13 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
 
     def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
         value, options = self.SAVE_MARGINAL_PROBABILITY_CALIBRATION_MODEL.get_value(
-            args, default=OutputExtension.SAVE_ALL.get_value(args))
-        result_directory = ResultDirectoryExtension.RESULT_DIR.get_value(args)
+            args, default=OutputArguments.SAVE_ALL.get_value(args))
+        result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
         if value and result_directory:
             return [
                 CsvFileSink(directory=Path(result_directory),
-                            create_directory=OutputExtension.CREATE_DIRS.get_value(args),
+                            create_directory=OutputArguments.CREATE_DIRS.get_value(args),
                             options=options)
             ]
         return []
@@ -127,19 +128,19 @@ class JointProbabilityCalibrationModelExtension(Extension):
         """
         sinks = []
         value, options = self.PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL.get_value(
-            args, default=OutputExtension.PRINT_ALL.get_value(args))
+            args, default=OutputArguments.PRINT_ALL.get_value(args))
 
         if value:
             sinks.append(LogSink(options))
 
         value, options = self.SAVE_JOINT_PROBABILITY_CALIBRATION_MODEL.get_value(
-            args, default=OutputExtension.SAVE_ALL.get_value(args))
-        result_directory = ResultDirectoryExtension.RESULT_DIR.get_value(args)
+            args, default=OutputArguments.SAVE_ALL.get_value(args))
+        result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
         if value and result_directory:
             sinks.append(
                 CsvFileSink(directory=Path(result_directory),
-                            create_directory=OutputExtension.CREATE_DIRS.get_value(args),
+                            create_directory=OutputArguments.CREATE_DIRS.get_value(args),
                             options=options))
 
         if sinks:
