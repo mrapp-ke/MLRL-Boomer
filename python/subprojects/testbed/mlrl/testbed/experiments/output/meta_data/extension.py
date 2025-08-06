@@ -8,11 +8,13 @@ from pathlib import Path
 from typing import Set, override
 
 from mlrl.testbed.experiments.experiment import Experiment
+from mlrl.testbed.experiments.output.arguments import OutputArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension
+from mlrl.testbed.experiments.output.meta_data.arguments import MetaDataArguments
 from mlrl.testbed.experiments.output.sinks import YamlFileSink
 from mlrl.testbed.extensions.extension import Extension
 
-from mlrl.util.cli import AUTO, Argument, SetArgument
+from mlrl.util.cli import AUTO, Argument
 from mlrl.util.options import BooleanOption
 
 
@@ -20,14 +22,6 @@ class MetaDataExtension(Extension):
     """
     An extension that configures the functionality to write meta-data to one or several sinks.
     """
-
-    SAVE_META_DATA = SetArgument(
-        '--save-meta-data',
-        default=AUTO,
-        values={AUTO, BooleanOption.TRUE, BooleanOption.FALSE},
-        description='Whether meta-data should be saved to output files or not. If set to "' + AUTO + '", meta-data is '
-        + 'saved whenever other output files are written as well.',
-    )
 
     def __init__(self, *dependencies: Extension):
         """
@@ -40,20 +34,20 @@ class MetaDataExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return {self.SAVE_META_DATA}
+        return {MetaDataArguments.SAVE_META_DATA}
 
     @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
-        save_meta_data = self.SAVE_META_DATA.get_value(args)
+        save_meta_data = MetaDataArguments.SAVE_META_DATA.get_value(args)
 
         if save_meta_data == BooleanOption.TRUE or (save_meta_data == AUTO
                                                     and experiment_builder.has_output_file_writers):
-            base_dir = OutputExtension.BASE_DIR.get_value(args)
+            base_dir = OutputArguments.BASE_DIR.get_value(args)
 
             if base_dir:
-                create_directory = OutputExtension.CREATE_DIRS.get_value(args)
+                create_directory = OutputArguments.CREATE_DIRS.get_value(args)
                 experiment_builder.meta_data_writer.add_sinks(
                     YamlFileSink(directory=Path(base_dir), create_directory=create_directory))

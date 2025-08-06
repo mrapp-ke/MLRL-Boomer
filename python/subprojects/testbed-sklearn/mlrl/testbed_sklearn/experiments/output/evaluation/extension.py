@@ -14,6 +14,7 @@ from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_ranking import
 from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_regression import RegressionEvaluationDataExtractor
 
 from mlrl.testbed.experiments.experiment import Experiment
+from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
@@ -94,19 +95,19 @@ class EvaluationExtension(Extension):
         return {self.PRINT_EVALUATION, self.SAVE_EVALUATION}
 
     def __configure_log_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
-        print_all = OutputExtension.PRINT_ALL.get_value(args)
+        print_all = OutputArguments.PRINT_ALL.get_value(args)
         print_evaluation, options = self.PRINT_EVALUATION.get_value(args, default=print_all)
 
         if print_evaluation:
             experiment_builder.evaluation_writer.add_sinks(LogSink(options))
 
     def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
-        save_all = OutputExtension.SAVE_ALL.get_value(args)
+        save_all = OutputArguments.SAVE_ALL.get_value(args)
         save_evaluation_results, options = self.SAVE_EVALUATION.get_value(args, default=save_all)
-        result_directory = ResultDirectoryExtension.RESULT_DIR.get_value(args)
+        result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
         if save_evaluation_results and result_directory:
-            create_directory = OutputExtension.CREATE_DIRS.get_value(args)
+            create_directory = OutputArguments.CREATE_DIRS.get_value(args)
             experiment_builder.evaluation_writer.add_sinks(
                 CsvFileSink(directory=Path(result_directory), create_directory=create_directory, options=options))
 
