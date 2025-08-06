@@ -11,6 +11,7 @@ from typing import List, Set, override
 from mlrl.common.testbed.experiments.output.characteristics.model.writer import RuleModelCharacteristicsWriter
 
 from mlrl.testbed.experiments.experiment import Experiment
+from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
@@ -49,18 +50,18 @@ class RuleModelCharacteristicsExtension(Extension):
         return {self.PRINT_MODEL_CHARACTERISTICS, self.SAVE_MODEL_CHARACTERISTICS}
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
-        if self.PRINT_MODEL_CHARACTERISTICS.get_value(args, default=OutputExtension.PRINT_ALL.get_value(args)):
+        if self.PRINT_MODEL_CHARACTERISTICS.get_value(args, default=OutputArguments.PRINT_ALL.get_value(args)):
             return [LogSink()]
         return []
 
     def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
-        value = self.SAVE_MODEL_CHARACTERISTICS.get_value(args, default=OutputExtension.SAVE_ALL.get_value(args))
-        result_directory = ResultDirectoryExtension.RESULT_DIR.get_value(args)
+        value = self.SAVE_MODEL_CHARACTERISTICS.get_value(args, default=OutputArguments.SAVE_ALL.get_value(args))
+        result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
         if value and result_directory:
             return [
                 CsvFileSink(directory=Path(result_directory),
-                            create_directory=OutputExtension.CREATE_DIRS.get_value(args))
+                            create_directory=OutputArguments.CREATE_DIRS.get_value(args))
             ]
         return []
 
