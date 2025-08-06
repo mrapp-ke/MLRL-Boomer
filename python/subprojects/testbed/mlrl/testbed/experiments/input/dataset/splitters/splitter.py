@@ -9,7 +9,6 @@ from typing import Generator, Optional
 
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.fold import FoldingStrategy
-from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.state import ExperimentState
 
 
@@ -40,10 +39,10 @@ class DatasetSplitter(ABC):
         self.folding_strategy = folding_strategy
 
     @abstractmethod
-    def split(self, problem_domain: ProblemDomain) -> Generator[Split, None, None]:
+    def split(self, state: ExperimentState) -> Generator[Split, None, None]:
         """
         Returns a generator that generates the individual splits of the dataset into training and test data.
 
-        :param problem_domain:  The problem domain, the dataset is concerned with
-        :return:                The generator
+        :param state: The current state of the experiment
+        :return:      The generator
         """

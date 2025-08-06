@@ -16,10 +16,11 @@ from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.input.reader import InputReader
+from mlrl.testbed.experiments.output.meta_data.writer import MetaDataWriter
 from mlrl.testbed.experiments.output.model.writer import ModelWriter
 from mlrl.testbed.experiments.output.parameters.writer import ParameterWriter
+from mlrl.testbed.experiments.output.sinks import FileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
-from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.state import ExperimentState, ParameterDict, PredictionState, TrainingState
 from mlrl.testbed.experiments.timer import Timer
 
@@ -36,26 +37,44 @@ class Experiment(ABC):
 
         Factory = Callable[[Namespace], 'Experiment.Builder']
 
-        def __init__(self, problem_domain: ProblemDomain, dataset_splitter: DatasetSplitter):
+        def __init__(self, initial_state: ExperimentState, dataset_splitter: DatasetSplitter):
             """
-            :param problem_domain:      The problem domain, the experiment should be concerned with
+            :param initial_state:       The initial state of the experiment
             :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
             """
             super().__init__()
-            self.problem_domain = problem_domain
+            self.initial_state = initial_state
             self.dataset_splitter = dataset_splitter
             self.listeners: List[Experiment.Listener] = []
             self.input_readers: Set[InputReader] = set()
+            self.before_start_output_writers: Set[OutputWriter] = set()
             self.pre_training_output_writers: Set[OutputWriter] = set()
             self.post_training_output_writers: Set[OutputWriter] = set()
             self.prediction_output_writers: Set[OutputWriter] = set()
             self.model_writer = ModelWriter()
+            self.meta_data_writer = MetaDataWriter()
             self.parameter_writer = ParameterWriter()
             self.predict_for_training_dataset = False
             self.predict_for_test_dataset = True
             self.exit_on_error = True
+            self.add_before_start_output_writers(self.meta_data_writer)
             self.add_pre_training_output_writers(self.parameter_writer)
             self.add_post_training_output_writers(self.model_writer)
+
+        @property
+        def output_writers(self) -> chain[OutputWriter]:
+            """
+            A generator that provides access to all output writers that have been added to the builder.
+            """
+            return chain(self.before_start_output_writers, self.pre_training_output_writers,
+                         self.post_training_output_writers, self.prediction_output_writers)
+
+        @property
+        def has_output_file_writers(self) -> bool:
+            """
+            True, if any output writers that write to output files have been added to the builder, False otherwise.
+            """
+            return any(any(isinstance(sink, FileSink) for sink in writer.sinks) for writer in self.output_writers)
 
         def add_listeners(self, *listeners: 'Experiment.Listener') -> 'Experiment.Builder':
             """
@@ -75,6 +94,16 @@ class Experiment(ABC):
             :return:                The builder itself
             """
             self.input_readers.update(input_readers)
+            return self
+
+        def add_before_start_output_writers(self, *output_writers: OutputWriter) -> 'Experiment.Builder':
+            """
+            Adds one or several output writers that should be invoked before an experiment is started.
+
+            :param output_writers:  The output writers to be added
+            :return:                The builder itself
+            """
+            self.before_start_output_writers.update(output_writers)
             return self
 
         def add_pre_training_output_writers(self, *output_writers: OutputWriter) -> 'Experiment.Builder':
@@ -152,13 +181,14 @@ class Experiment(ABC):
                                        self.prediction_output_writers):
                 output_writer.exit_on_error = exit_on_error
 
-            experiment = self._create_experiment(self.problem_domain, self.dataset_splitter)
+            experiment = self._create_experiment(self.initial_state, self.dataset_splitter)
             experiment.listeners.extend(self.listeners)
 
             def sort(objects: Iterable[Any]) -> List[Any]:
                 return sorted(objects, key=lambda obj: type(obj).__name__)
 
             experiment.input_readers.extend(sort(self.input_readers))
+            experiment.before_start_output_writers.extend(sort(self.before_start_output_writers))
             experiment.pre_training_output_writers.extend(sort(self.pre_training_output_writers))
             experiment.post_training_output_writers.extend(sort(self.post_training_output_writers))
             experiment.prediction_output_writers.extend(sort(self.prediction_output_writers))
@@ -173,11 +203,11 @@ class Experiment(ABC):
                              predict_for_test_dataset=should_predict and self.predict_for_test_dataset)
 
         @abstractmethod
-        def _create_experiment(self, problem_domain: ProblemDomain, dataset_splitter: DatasetSplitter) -> 'Experiment':
+        def _create_experiment(self, initial_state: ExperimentState, dataset_splitter: DatasetSplitter) -> 'Experiment':
             """
             Must be implemented by subclasses in order to create a new experiment.
 
-            :param problem_domain:      The problem domain, the experiment should be concerned with
+            :param initial_state:       The initial state of the experiment
             :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
             :return:                    The experiment that has been created
             """
@@ -187,12 +217,16 @@ class Experiment(ABC):
         An abstract base class for all listeners that may be informed about certain event during an experiment.
         """
 
-        def before_start(self, experiment: 'Experiment'):
+        # pylint: disable=unused-argument
+        def before_start(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
             """
             May be overridden by subclasses in order to be notified just before the experiment starts.
 
             :param experiment:  The experiment
+            :param state:       The current state of the experiment
+            :return:            An update of the given state
             """
+            return state
 
         # pylint: disable=unused-argument
         def on_start(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
@@ -201,7 +235,7 @@ class Experiment(ABC):
             dataset. May be called multiple times if several datasets are used.
 
             :param experiment:  The experiment
-            :param state:       The initial state of the experiment
+            :param state:       The current state of the experiment
             :return:            An update of the given state
             """
             return state
@@ -254,6 +288,13 @@ class Experiment(ABC):
         """
 
         @override
+        def before_start(self, experiment: 'Experiment', state: ExperimentState):
+            for output_writer in experiment.before_start_output_writers:
+                output_writer.write(state)
+
+            return state
+
+        @override
         def before_training(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
             for output_writer in experiment.pre_training_output_writers:
                 output_writer.write(state)
@@ -281,14 +322,15 @@ class Experiment(ABC):
             for listener in self.listeners:
                 listener.after_prediction(self, new_state)
 
-    def __init__(self, problem_domain: ProblemDomain, dataset_splitter: DatasetSplitter):
+    def __init__(self, initial_state: ExperimentState, dataset_splitter: DatasetSplitter):
         """
-        :param problem_domain:      The problem domain, the experiment is concerned with
+        :param initial_state:       The initial state of the experiment
         :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
         """
-        self.problem_domain = problem_domain
+        self.initial_state = initial_state
         self.dataset_splitter = dataset_splitter
         self.input_readers: List[InputReader] = []
+        self.before_start_output_writers: List[OutputWriter] = []
         self.pre_training_output_writers: List[OutputWriter] = []
         self.post_training_output_writers: List[OutputWriter] = []
         self.prediction_output_writers: List[OutputWriter] = []
@@ -307,16 +349,17 @@ class Experiment(ABC):
         :param predict_for_test_dataset:        True, if predictions should be obtained for the test dataset, if
                                                 available, False otherwise
         """
-        problem_domain = self.problem_domain
+        initial_state = self.initial_state
+        problem_domain = initial_state.problem_domain
         log.info('Starting experiment using the %s algorithm "%s"...', problem_domain.problem_name,
                  problem_domain.learner_name)
 
         for listener in self.listeners:
-            listener.before_start(self)
+            listener.before_start(self, initial_state)
 
         start_time = Timer.start()
 
-        for split in self.dataset_splitter.split(problem_domain):
+        for split in self.dataset_splitter.split(initial_state):
             training_state = split.get_state(DatasetType.TRAINING)
 
             if training_state:
