@@ -1,0 +1,18 @@
+mlrl.testbed.experiments.output.meta\_data package
+==================================================
+
+.. automodule:: mlrl.testbed.experiments.output.meta_data
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed.experiments.output.meta_data.arguments
+   mlrl.testbed.experiments.output.meta_data.extension
+   mlrl.testbed.experiments.output.meta_data.meta_data
+   mlrl.testbed.experiments.output.meta_data.writer

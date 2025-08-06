@@ -207,6 +207,16 @@ Depending on the characteristics of a dataset, it might be desirable to apply on
   - `true` One-hot-encoding is used to encode nominal features.
   - `false` The algorithm's ability to natively handle nominal features is used.
 
+## Saving Meta-Data
+
+Saving meta-data can help improving the reproducibility of experiments. Among other information, it contains the command that has been used for running an experiment and the version of MLRL-Testbed used.
+
+- `--save-meta-data` (Default value = `auto`)
+
+  - `auto` Meta-data is saved to the directory `-base-dir` only if other output files are written as well.
+  - `true` Meta-data is always saved to the directory `--base-dir`
+  - `false` No meta-data is saved.
+
 ## Saving and Loading Models
 
 > A more detailed description of the following arguments can be found {ref}`here<model-persistence>`.

@@ -17,3 +17,4 @@ Submodules
    mlrl.testbed.experiments.output.sinks.sink_log
    mlrl.testbed.experiments.output.sinks.sink_pickle
    mlrl.testbed.experiments.output.sinks.sink_text
+   mlrl.testbed.experiments.output.sinks.sink_yaml
