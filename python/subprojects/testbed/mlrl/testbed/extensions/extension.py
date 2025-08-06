@@ -112,3 +112,13 @@ class Extension(ABC):
     @override
     def __eq__(self, other: Any) -> bool:
         return isinstance(other, type(self))
+
+
+class NopExtension(Extension):
+    """
+    An extension that does nothing.
+    """
+
+    @override
+    def _get_arguments(self) -> Set[Argument]:
+        return set()
