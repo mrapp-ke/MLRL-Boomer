@@ -10,6 +10,7 @@ from typing import Set, override
 from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vectors import LabelVectors
 
 from mlrl.testbed.experiments.experiment import Experiment
+from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
@@ -51,19 +52,19 @@ class LabelVectorExtension(Extension):
         return {self.PRINT_LABEL_VECTORS, self.SAVE_LABEL_VECTORS}
 
     def __configure_log_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
-        print_all = OutputExtension.PRINT_ALL.get_value(args)
+        print_all = OutputArguments.PRINT_ALL.get_value(args)
         print_label_vectors, options = self.PRINT_LABEL_VECTORS.get_value(args, default=print_all)
 
         if print_label_vectors:
             experiment_builder.label_vector_writer.add_sinks(LogSink(options))
 
     def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
-        save_all = OutputExtension.SAVE_ALL.get_value(args)
+        save_all = OutputArguments.SAVE_ALL.get_value(args)
         save_label_vectors, options = self.SAVE_LABEL_VECTORS.get_value(args, default=save_all)
-        result_directory = ResultDirectoryExtension.RESULT_DIR.get_value(args)
+        result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
         if save_label_vectors and result_directory:
-            create_directory = OutputExtension.CREATE_DIRS.get_value(args)
+            create_directory = OutputArguments.CREATE_DIRS.get_value(args)
             experiment_builder.label_vector_writer.add_sinks(
                 CsvFileSink(directory=Path(result_directory), create_directory=create_directory, options=options))
 

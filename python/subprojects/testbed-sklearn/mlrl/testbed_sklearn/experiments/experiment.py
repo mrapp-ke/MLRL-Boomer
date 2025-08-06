@@ -19,12 +19,10 @@ from mlrl.testbed_sklearn.experiments.output.dataset.writer_ground_truth import 
 from mlrl.testbed_sklearn.experiments.output.dataset.writer_prediction import PredictionWriter
 from mlrl.testbed_sklearn.experiments.output.evaluation.writer import EvaluationWriter
 from mlrl.testbed_sklearn.experiments.output.label_vectors import LabelVectorWriter
-from mlrl.testbed_sklearn.experiments.problem_domain import SkLearnProblem
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
-from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.state import ExperimentState, ParameterDict, PredictionState, TrainingState
 from mlrl.testbed.experiments.timer import Timer
 
@@ -39,12 +37,12 @@ class SkLearnExperiment(Experiment):
         Allows to configure and create instances of the class `SkLearnExperiment`.
         """
 
-        def __init__(self, problem_domain: ProblemDomain, dataset_splitter: DatasetSplitter):
+        def __init__(self, initial_state: ExperimentState, dataset_splitter: DatasetSplitter):
             """
-            :param problem_domain:      The problem domain, the experiment should be concerned with
+            :param initial_state:       The initial state of the experiment
             :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
             """
-            super().__init__(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
+            super().__init__(initial_state=initial_state, dataset_splitter=dataset_splitter)
             self.data_characteristics_writer = DataCharacteristicsWriter()
             self.prediction_characteristics_writer = PredictionCharacteristicsWriter()
             self.ground_truth_writer = GroundTruthWriter()
@@ -60,11 +58,11 @@ class SkLearnExperiment(Experiment):
                 self.evaluation_writer,
             )
 
-        def _create_experiment(self, problem_domain: ProblemDomain, dataset_splitter: DatasetSplitter) -> Experiment:
-            return SkLearnExperiment(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
+        def _create_experiment(self, initial_state: ExperimentState, dataset_splitter: DatasetSplitter) -> Experiment:
+            return SkLearnExperiment(initial_state=initial_state, dataset_splitter=dataset_splitter)
 
     def __create_learner(self, parameters: ParameterDict) -> BaseEstimator:
-        learner = clone(self.problem_domain.base_learner)
+        learner = clone(self.initial_state.problem_domain.base_learner)
 
         if parameters:
             learner.set_params(**parameters)
@@ -91,14 +89,6 @@ class SkLearnExperiment(Experiment):
                     (', '
                      if aggr else '') + '"' + change[0] + '" is "' + change[2] + '" instead of "' + change[1] + '"',
                     changes, ''))
-
-    # pylint: disable=useless-parent-delegation
-    def __init__(self, problem_domain: SkLearnProblem, dataset_splitter: DatasetSplitter):
-        """
-        :param problem_domain:      The problem domain, the experiment is concerned with
-        :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
-        """
-        super().__init__(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
 
     def _fit(self, estimator: BaseEstimator, dataset: TabularDataset,
              fit_kwargs: Optional[Dict[str, Any]]) -> Timer.Duration:
@@ -131,7 +121,7 @@ class SkLearnExperiment(Experiment):
             return TrainingState(learner=learner)
 
         log.info('Fitting model to %s training examples...', dataset.num_examples)
-        training_duration = self._fit(new_learner, dataset, fit_kwargs=self.problem_domain.fit_kwargs)
+        training_duration = self._fit(new_learner, dataset, fit_kwargs=self.initial_state.problem_domain.fit_kwargs)
         log.info('Successfully fit model in %s', training_duration)
         return TrainingState(learner=new_learner, training_duration=training_duration)
 
@@ -141,7 +131,7 @@ class SkLearnExperiment(Experiment):
 
         if dataset and learner:
             try:
-                problem_domain = self.problem_domain
+                problem_domain = self.initial_state.problem_domain
                 predict_kwargs = problem_domain.predict_kwargs
                 predict_kwargs = predict_kwargs if predict_kwargs else {}
                 predictor = problem_domain.predictor_factory.create()
