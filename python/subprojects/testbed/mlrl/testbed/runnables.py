@@ -23,6 +23,12 @@ from mlrl.testbed.program_info import ProgramInfo
 
 from mlrl.util.cli import Argument, BoolArgument, CommandLineInterface
 
+try:
+    from mlrl.testbed_slurm.extension import SlurmExtension
+except ImportError:
+    # Dependency 'mlrl-testbed' is not available, but that's okay since it's optional.
+    from mlrl.testbed.extensions import NopExtension as SlurmExtension
+
 
 class Runnable(Recipe, ABC):
     """
@@ -79,6 +85,7 @@ class Runnable(Recipe, ABC):
             Runnable.PredictionDatasetExtension(),
             LogExtension(),
             MetaDataExtension(),
+            SlurmExtension(),
         }
 
     def get_program_info(self) -> Optional[ProgramInfo]:
