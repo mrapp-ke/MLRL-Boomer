@@ -18,12 +18,18 @@ import yamale
 
 from mlrl.testbed.command import ArgumentDict, ArgumentList, Command
 from mlrl.testbed.experiments.fold import FoldingStrategy
+from mlrl.testbed.experiments.meta_data import MetaData
+from mlrl.testbed.experiments.output.extension import OutputExtension
+from mlrl.testbed.experiments.output.meta_data.extension import MetaDataExtension
+from mlrl.testbed.experiments.output.meta_data.writer import MetaDataWriter
+from mlrl.testbed.experiments.output.sinks import YamlFileSink
 from mlrl.testbed.experiments.recipe import Recipe
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.modes.mode import Mode
 
-from mlrl.util.cli import BoolArgument, CommandLineInterface, FlagArgument, SetArgument, StringArgument
-from mlrl.util.options import Options
+from mlrl.util.cli import AUTO, BoolArgument, CommandLineInterface, FlagArgument, SetArgument, StringArgument
+from mlrl.util.options import BooleanOption, Options
 
 Batch = List[Command]
 
@@ -81,8 +87,6 @@ class BatchMode(Mode):
         @override
         def run_batch(self, args: Namespace, batch: Batch, recipe: Recipe):
             for i, command in enumerate(batch):
-                recipe.create_experiment_builder(command.apply_to_namespace(args), command)
-
                 if i > 0:
                     log.info('')
 
@@ -99,20 +103,15 @@ class BatchMode(Mode):
         @override
         def run_batch(self, args: Namespace, batch: Batch, recipe: Recipe):
             start_time = Timer.start()
-
-            namespaces = [command.apply_to_namespace(args) for command in batch]
             num_experiments = len(batch)
 
-            for experiment_namespace, command in zip(namespaces, batch):
-                recipe.create_experiment_builder(experiment_namespace, command)  # For validation
-
-            for i, (experiment_namespace, command) in enumerate(zip(namespaces, batch)):
+            for i, command in enumerate(batch):
                 if i == 0:
                     log.info('Running %s %s...', num_experiments,
                              'experiments' if num_experiments > 1 else 'experiment')
 
                 log.info('\nRunning experiment (%s / %s): "%s"', i + 1, num_experiments, str(command))
-                recipe.create_experiment_builder(experiment_namespace, command).run()
+                recipe.create_experiment_builder(command.apply_to_namespace(args), command).run()
 
             run_time = Timer.stop(start_time)
             log.info('Successfully finished %s %s after %s', num_experiments,
@@ -264,23 +263,48 @@ class BatchMode(Mode):
             description=self.RUNNER.description,
         )
 
-    def __process_commands(self, namespace: Namespace, config_file: ConfigFile, recipe: Recipe):
-        separate_folds = self.SEPARATE_FOLDS.get_value(namespace)
-        batch = list(self.__get_commands(namespace, config_file, recipe, separate_folds=separate_folds))
-        runner = self.__get_runner(namespace)
-        runner.run_batch(namespace, batch, recipe)
+    def __process_commands(self, args: Namespace, config_file: ConfigFile, recipe: Recipe):
+        separate_folds = self.SEPARATE_FOLDS.get_value(args)
+        batch = list(self.__get_commands(args, config_file, recipe, separate_folds=separate_folds))
 
-    def __get_runner(self, namespace: Namespace) -> 'BatchMode.Runner':
-        if self.LIST_COMMANDS.get_value(namespace):
+        # Validate arguments for individual experiments...
+        has_output_file_writers = False
+
+        for command in batch:
+            experiment_builder = recipe.create_experiment_builder(command.apply_to_namespace(args), command)
+            has_output_file_writers |= experiment_builder.has_output_file_writers
+
+        self.__write_meta_data(args, recipe, batch, has_output_file_writers=has_output_file_writers)
+
+        runner = self.__get_runner(args)
+        runner.run_batch(args, batch, recipe)
+
+    @staticmethod
+    def __write_meta_data(args: Namespace, recipe: Recipe, batch: Batch, has_output_file_writers: bool):
+        save_meta_data = MetaDataExtension.SAVE_META_DATA.get_value(args)
+
+        if save_meta_data == BooleanOption.TRUE or (save_meta_data == AUTO and has_output_file_writers):
+            base_dir = OutputExtension.BASE_DIR.get_value(args)
+
+            if base_dir:
+                create_directory = OutputExtension.CREATE_DIRS.get_value(args)
+                sink = YamlFileSink(directory=Path(base_dir), create_directory=create_directory)
+                batch_command = Command(module_name=sys.argv[1], argument_list=ArgumentList(sys.argv[2:]))
+                meta_data = MetaData(command=batch_command, child_commands=batch)
+                state = ExperimentState(meta_data=meta_data, problem_domain=recipe.create_problem_domain(args))
+                MetaDataWriter().add_sinks(sink).write(state)
+
+    def __get_runner(self, args: Namespace) -> 'BatchMode.Runner':
+        if self.LIST_COMMANDS.get_value(args):
             return BatchMode.LogRunner()
 
         runner_argument = self.__create_runner_argument()
-        runner_name = runner_argument.get_value(namespace)
+        runner_name = runner_argument.get_value(args)
         runners_by_name = {runner.name: runner for runner in self.runners}
         return runners_by_name[runner_name]
 
     @staticmethod
-    def __get_commands(namespace: Namespace,
+    def __get_commands(args: Namespace,
                        config_file: ConfigFile,
                        recipe: Recipe,
                        separate_folds: bool = False) -> Generator[Command, None, None]:
@@ -305,7 +329,7 @@ class BatchMode(Mode):
                 command = Command(module_name=module_name, argument_list=argument_dict.to_list())
 
                 if separate_folds:
-                    dataset_splitter = recipe.create_dataset_splitter(command.apply_to_namespace(namespace))
+                    dataset_splitter = recipe.create_dataset_splitter(command.apply_to_namespace(args))
                     folding_strategy = dataset_splitter.folding_strategy
 
                     if folding_strategy.is_cross_validation_used:
