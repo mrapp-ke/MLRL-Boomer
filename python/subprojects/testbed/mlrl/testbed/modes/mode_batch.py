@@ -19,9 +19,11 @@ import yamale
 from mlrl.testbed.command import ArgumentDict, ArgumentList, Command
 from mlrl.testbed.experiments.fold import FoldingStrategy
 from mlrl.testbed.experiments.meta_data import MetaData
-from mlrl.testbed.experiments.output.extension import OutputExtension
-from mlrl.testbed.experiments.output.meta_data.extension import MetaDataExtension
+from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
+from mlrl.testbed.experiments.output.meta_data.arguments import MetaDataArguments
 from mlrl.testbed.experiments.output.meta_data.writer import MetaDataWriter
+from mlrl.testbed.experiments.output.model.arguments import ModelOutputDirectoryArguments
+from mlrl.testbed.experiments.output.parameters.arguments import ParameterOutputDirectoryArguments
 from mlrl.testbed.experiments.output.sinks import YamlFileSink
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.experiments.state import ExperimentState
@@ -281,13 +283,13 @@ class BatchMode(Mode):
 
     @staticmethod
     def __write_meta_data(args: Namespace, recipe: Recipe, batch: Batch, has_output_file_writers: bool):
-        save_meta_data = MetaDataExtension.SAVE_META_DATA.get_value(args)
+        save_meta_data = MetaDataArguments.SAVE_META_DATA.get_value(args)
 
         if save_meta_data == BooleanOption.TRUE or (save_meta_data == AUTO and has_output_file_writers):
-            base_dir = OutputExtension.BASE_DIR.get_value(args)
+            base_dir = OutputArguments.BASE_DIR.get_value(args)
 
             if base_dir:
-                create_directory = OutputExtension.CREATE_DIRS.get_value(args)
+                create_directory = OutputArguments.CREATE_DIRS.get_value(args)
                 sink = YamlFileSink(directory=Path(base_dir), create_directory=create_directory)
                 batch_command = Command(module_name=sys.argv[1], argument_list=ArgumentList(sys.argv[2:]))
                 meta_data = MetaData(command=batch_command, child_commands=batch)
@@ -321,10 +323,10 @@ class BatchMode(Mode):
                 output_dir = BatchMode.__get_output_dir(parameter_args, dataset_name)
                 argument_dict = ArgumentDict(
                     default_args | dataset_args | parameter_args | {
-                        '--result-dir': str(output_dir / 'results'),
-                        '--model-save-dir': str(output_dir / 'models'),
-                        '--parameter-save-dir': str(output_dir / 'parameters'),
-                        '--save-meta-data': str(False).lower(),
+                        ResultDirectoryArguments.RESULT_DIR.name: str(output_dir / 'results'),
+                        ModelOutputDirectoryArguments.MODEL_SAVE_DIR.name: str(output_dir / 'models'),
+                        ParameterOutputDirectoryArguments.PARAMETER_SAVE_DIR.name: str(output_dir / 'parameters'),
+                        MetaDataArguments.SAVE_META_DATA.name: str(False).lower(),
                     })
                 command = Command(module_name=module_name, argument_list=argument_dict.to_list())
 
