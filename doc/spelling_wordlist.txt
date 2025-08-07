@@ -74,12 +74,16 @@ Rapp
 refactorings
 rng
 runnables
+sbatch
 scikit
 Sechidis
 seco
 sexualized
 sklearn
+Slurm
 socio
+stderr
+stdout
 subclassed
 sublicense
 submodules
