@@ -13,6 +13,7 @@ from uuid import uuid4
 
 from tabulate import tabulate
 
+from mlrl.testbed_slurm.arguments import SlurmArguments
 from mlrl.testbed_slurm.sbatch import Sbatch
 
 from mlrl.testbed.command import Command
@@ -49,27 +50,29 @@ class SlurmRunner(BatchMode.Runner):
 
         return path
 
-    @staticmethod
-    def __submit_command(command: Command):
+    def __submit_command(self, args: Namespace, command: Command):
         sbatch_file = SlurmRunner.__write_sbatch_file(command)
-        job_name = sbatch_file.stem
-        result = Sbatch().script(sbatch_file).run()
-        sbatch_file.unlink()
 
-        if result.ok:
-            job_id = result.output.split(' ')[-1]
-            log.info('Successfully submitted job:\n\n%s',
-                     tabulate([['JOBID', job_id], ['NAME', job_name]], tablefmt='plain'))
+        if SlurmArguments.SAVE_SLURM_SCRIPTS.get_value(args):
+            log.info('Slurm script saved to file "%s"', sbatch_file)
         else:
-            log.error('Submission to Slurm failed:\n%s', result.output)
-            sys.exit(result.exit_code)
+            job_name = sbatch_file.stem
+            result = Sbatch().script(sbatch_file).run()
+            sbatch_file.unlink()
+
+            if result.ok:
+                job_id = result.output.split(' ')[-1]
+                log.info('Successfully submitted job:\n\n%s',
+                         tabulate([['JOBID', job_id], ['NAME', job_name]], tablefmt='plain'))
+            else:
+                log.error('Submission to Slurm failed:\n%s', result.output)
+                sys.exit(result.exit_code)
 
     def __init__(self):
         super().__init__(name='slurm')
 
-    # pylint: disable=unused-argument
     @override
-    def run_batch(self, args: Namespace, batch: Batch, recipe: Recipe):
+    def run_batch(self, args: Namespace, batch: Batch, _: Recipe):
         """
         See :func:`mlrl.testbed.modes.mode_batch.BatchMode.Runner.run_batch`
         """
@@ -81,4 +84,4 @@ class SlurmRunner(BatchMode.Runner):
 
             for i, command in enumerate(batch):
                 log.info('\nSubmitting experiment (%s / %s): "%s"', i + 1, num_experiments, str(command))
-                self.__submit_command(command)
+                self.__submit_command(args, command)
