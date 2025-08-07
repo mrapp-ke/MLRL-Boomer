@@ -6,6 +6,7 @@ Provides classes that allow configuring the functionality to run experiments via
 from argparse import Namespace
 from typing import Set, override
 
+from mlrl.testbed_slurm.arguments import SlurmArguments
 from mlrl.testbed_slurm.runner import SlurmRunner
 
 from mlrl.testbed.extensions.extension import Extension
@@ -31,4 +32,4 @@ class SlurmExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return set()
+        return {SlurmArguments.SAVE_SLURM_SCRIPTS}
