@@ -7,13 +7,18 @@ import logging as log
 import sys
 
 from argparse import Namespace
+from pathlib import Path
 from typing import override
+from uuid import uuid4
+
+from tabulate import tabulate
 
 from mlrl.testbed_slurm.sbatch import Sbatch
 
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.modes.mode_batch import Batch, BatchMode
+from mlrl.testbed.util.io import open_writable_file
 
 
 class SlurmRunner(BatchMode.Runner):
@@ -33,11 +38,28 @@ class SlurmRunner(BatchMode.Runner):
         return True
 
     @staticmethod
+    def __write_sbatch_file(command: Command) -> Path:
+        path = Path('sbatch_' + str(uuid4()).split('-', maxsplit=1)[0] + '.sh')
+
+        with open_writable_file(path) as sbatch_file:
+            sbatch_file.write('\n'.join([
+                '#!/bin/sh',
+                str(command),
+            ]))
+
+        return path
+
+    @staticmethod
     def __submit_command(command: Command):
-        result = Sbatch().wrap(str(command)).run()
+        sbatch_file = SlurmRunner.__write_sbatch_file(command)
+        job_name = sbatch_file.stem
+        result = Sbatch().script(sbatch_file).run()
+        sbatch_file.unlink()
 
         if result.ok:
-            log.info('%s', result.output)
+            job_id = result.output.split(' ')[-1]
+            log.info('Successfully submitted job:\n\n%s',
+                     tabulate([['JOBID', job_id], ['NAME', job_name]], tablefmt='plain'))
         else:
             log.error('Submission to Slurm failed:\n%s', result.output)
             sys.exit(result.exit_code)

@@ -7,6 +7,7 @@ import subprocess
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from pathlib import Path
 from typing import List, override
 
 
@@ -80,14 +81,11 @@ class Sbatch(SlurmCommand):
         self.flag_version = True
         return self
 
-    def wrap(self, command: str) -> 'Sbatch':
+    def script(self, path: Path) -> 'Sbatch':
         """
-        Sets the "--wrap" argument.
-
-        :param command: The command to be run by Slurm
-        :return:        The object itself
+        Sets an absolute or relative path to a batch script that defines the job to be run.
         """
-        self.arguments.append('--wrap="' + command + '"')
+        self.arguments.append(str(path))
         return self
 
     @override
