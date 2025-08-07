@@ -1,22 +1,19 @@
 [build-system]
 build-backend = "setuptools.build_meta"
 requires = [
-    "setuptools >= 80.9, < 80.10",
+    "setuptools >= 80.4, < 80.5",
 ]
 
 [project]
-name = "mlrl-testbed"
-description = "Provides utilities for the training and evaluation of machine learning algorithms"
+name = "mlrl-testbed-slurm"
+description = "Adds support for the Slurm Workload Manager to the package \"mlrl-testbed\""
 license = "MIT"
 readme = "README.md"
 authors = [
     { name = "Michael Rapp", email = "michael.rapp.ml@gmail.com" },
 ]
 keywords = [
-    "machine learning",
-    "multi-label classification",
-    "multi-output regression",
-    "multi-target regression",
+    "slurm",
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -27,15 +24,8 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "mlrl-testbed-sklearn",
-    "mlrl-util",
-    "pyyaml",
-    "tabulate",
-    "yamale",
+    "mlrl-testbed",
 ]
-
-[project.optional-dependencies]
-testbed = ["mlrl-testbed-slurm"]
 
 [project.urls]
 homepage = "https://github.com/mrapp-ke/MLRL-Boomer"
@@ -44,6 +34,3 @@ download = "https://github.com/mrapp-ke/MLRL-Boomer/releases"
 changelog = "https://raw.githubusercontent.com/mrapp-ke/MLRL-Boomer/refs/heads/main/CHANGELOG.md"
 documentation = "https://mlrl-boomer.readthedocs.io/en/latest"
 issues = "https://github.com/mrapp-ke/MLRL-Boomer/issues"
-
-[project.scripts]
-mlrl-testbed = "mlrl.testbed.main:main"
