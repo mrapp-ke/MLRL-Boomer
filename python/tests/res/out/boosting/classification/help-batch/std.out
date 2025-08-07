@@ -93,7 +93,8 @@ options:
   --list                Lists the commands for running individual experiments
                         instead of executing them.
   --runner RUNNER       The runner to be used for running individual
-                        experiments in a batch. Must be one of {"sequential"}.
+                        experiments in a batch. Must be one of {"sequential",
+                        "slurm"}.
   --base-dir BASE_DIR   If relative paths to directories, where files should
                         be saved, are given, they are considered relative to
                         the directory specified via this argument.
