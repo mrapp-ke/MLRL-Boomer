@@ -16,3 +16,8 @@ class SlurmArguments:
         default=False,
         description='Whether the SLURM scripts for running individual experiments in a batch should be saved to the '
         + 'working directory or not.')
+
+    PRINT_SLURM_SCRIPTS = BoolArgument(
+        '--print-slurm-scripts',
+        default=False,
+        description='Whether the SLURM scripts for running individual experiments in a batch should be printed or not.')
