@@ -18,6 +18,8 @@ import yamale
 
 from mlrl.testbed_sklearn.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 
+from mlrl.testbed_slurm.arguments import SlurmArguments
+
 from mlrl.testbed.command import ArgumentDict, ArgumentList, Command
 from mlrl.testbed.experiments.fold import FoldingStrategy
 from mlrl.testbed.experiments.input.dataset.arguments import DatasetArguments
@@ -369,8 +371,14 @@ class BatchMode(Mode):
 
     @staticmethod
     def __filter_arguments(argument_list: ArgumentList) -> ArgumentDict:
+        try:
+            slurm_arguments = list(SlurmArguments.PRINT_SLURM_SCRIPTS.names) + list(
+                SlurmArguments.SAVE_SLURM_SCRIPTS.names)
+        except ImportError:
+            slurm_arguments = []
+
         return argument_list.filter(*BatchMode.CONFIG_FILE.names, *Mode.MODE.names, BatchMode.LIST_COMMANDS.name,
-                                    BatchMode.RUNNER.name).to_dict()
+                                    BatchMode.RUNNER.name, *slurm_arguments).to_dict()
 
     def __init__(self, config_file_factory: Optional[ConfigFile.Factory] = None):
         """
