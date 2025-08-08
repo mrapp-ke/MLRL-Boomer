@@ -19,7 +19,7 @@ from mlrl.testbed_slurm.sbatch import Sbatch
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.modes.mode_batch import Batch, BatchMode
-from mlrl.testbed.util.io import open_writable_file
+from mlrl.testbed.util.io import open_readable_file, open_writable_file
 
 
 class SlurmRunner(BatchMode.Runner):
@@ -50,23 +50,35 @@ class SlurmRunner(BatchMode.Runner):
 
         return path
 
+    @staticmethod
+    def __read_sbatch_file(path: Path) -> str:
+        with open_readable_file(path) as sbatch_file:
+            return sbatch_file.read()
+
     def __submit_command(self, args: Namespace, command: Command):
         sbatch_file = SlurmRunner.__write_sbatch_file(command)
+        save_file = SlurmArguments.SAVE_SLURM_SCRIPTS.get_value(args)
+        print_file = SlurmArguments.PRINT_SLURM_SCRIPTS.get_value(args)
 
-        if SlurmArguments.SAVE_SLURM_SCRIPTS.get_value(args):
+        if save_file:
             log.info('Slurm script saved to file "%s"', sbatch_file)
-        else:
-            job_name = sbatch_file.stem
-            result = Sbatch().script(sbatch_file).run()
+
+        if print_file:
+            log.info('Content of Slurm script is:\n\n%s', self.__read_sbatch_file(sbatch_file))
+
+        job_name = sbatch_file.stem
+        result = Sbatch().script(sbatch_file).run()
+
+        if not save_file:
             sbatch_file.unlink()
 
-            if result.ok:
-                job_id = result.output.split(' ')[-1]
-                log.info('Successfully submitted job:\n\n%s',
-                         tabulate([['JOBID', job_id], ['NAME', job_name]], tablefmt='plain'))
-            else:
-                log.error('Submission to Slurm failed:\n%s', result.output)
-                sys.exit(result.exit_code)
+        if result.ok:
+            job_id = result.output.split(' ')[-1]
+            log.info('Successfully submitted job:\n\n%s',
+                     tabulate([['JOBID', job_id], ['NAME', job_name]], tablefmt='plain'))
+        else:
+            log.error('Submission to Slurm failed:\n%s', result.output)
+            sys.exit(result.exit_code)
 
     def __init__(self):
         super().__init__(name='slurm')
