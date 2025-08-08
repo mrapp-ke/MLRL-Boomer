@@ -4,12 +4,13 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to run experiments via the Slurm Workload Manager.
 """
 from argparse import Namespace
-from typing import Set, override
+from typing import Set, Type, override
 
 from mlrl.testbed_slurm.arguments import SlurmArguments
 from mlrl.testbed_slurm.runner import SlurmRunner
 
 from mlrl.testbed.extensions.extension import Extension
+from mlrl.testbed.modes import Mode
 from mlrl.testbed.modes.mode_batch import BatchMode
 
 from mlrl.util.cli import Argument
@@ -33,3 +34,10 @@ class SlurmExtension(Extension):
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
         return {SlurmArguments.SAVE_SLURM_SCRIPTS, SlurmArguments.PRINT_SLURM_SCRIPTS}
+
+    @override
+    def get_supported_modes(self) -> Set[Type[Mode]]:
+        """
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+        """
+        return {BatchMode}
