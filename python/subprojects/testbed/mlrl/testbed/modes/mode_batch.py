@@ -360,8 +360,8 @@ class BatchMode(Mode):
 
     @staticmethod
     def __filter_arguments(argument_list: ArgumentList) -> ArgumentDict:
-        return argument_list.filter(*BatchMode.CONFIG_FILE.names, *Mode.MODE.names,
-                                    BatchMode.LIST_COMMANDS.name).to_dict()
+        return argument_list.filter(*BatchMode.CONFIG_FILE.names, *Mode.MODE.names, BatchMode.LIST_COMMANDS.name,
+                                    BatchMode.RUNNER.name).to_dict()
 
     def __init__(self, config_file_factory: Optional[ConfigFile.Factory] = None):
         """
