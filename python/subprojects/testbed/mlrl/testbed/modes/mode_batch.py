@@ -174,7 +174,8 @@ class BatchMode(Mode):
 
         def __init__(self, file_path: str, schema_file_path: str):
             """
-            :param file_path: The path to the configuration file
+            :param file_path:           The path to the configuration file
+            :param schema_file_path:    The path to a YAML schema file
             """
             schema = yamale.make_schema(schema_file_path)
             data = yamale.make_data(file_path)
