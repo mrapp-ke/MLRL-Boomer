@@ -34,7 +34,7 @@ This will result in all tests being run and their results being reported. The te
 If you want to execute the tests for the C++ or Python code independently, you can use the build target `tests_cpp` or `tests_python` instead of `tests`.
 ```
 
-```{warning}
+```{important}
 Tests for the C++ code are only executed if the project has been compiled with testing support enabled. As described in the section {ref}`build-options`, testing support is enabled by default if the [GoogleTest](https://github.com/google/googletest) framework is available on the system.
 ```
 
