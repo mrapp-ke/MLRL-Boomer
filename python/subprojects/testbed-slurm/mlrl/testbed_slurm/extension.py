@@ -33,7 +33,7 @@ class SlurmExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return {SlurmArguments.SAVE_SLURM_SCRIPTS, SlurmArguments.PRINT_SLURM_SCRIPTS}
+        return {SlurmArguments.SAVE_SLURM_SCRIPTS, SlurmArguments.PRINT_SLURM_SCRIPTS, SlurmArguments.SLURM_CONFIG_FILE}
 
     @override
     def get_supported_modes(self) -> Set[Type[Mode]]:
