@@ -4,6 +4,11 @@ requires = [
     "setuptools >= 80.4, < 80.5",
 ]
 
+[tool.setuptools.package-data]
+"mlrl.testbed_slurm" = [
+    "**/*.y*ml",
+]
+
 [project]
 name = "mlrl-testbed-slurm"
 description = "Adds support for the Slurm Workload Manager to the package \"mlrl-testbed\""

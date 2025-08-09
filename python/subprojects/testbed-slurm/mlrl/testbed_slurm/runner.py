@@ -8,8 +8,10 @@ import sys
 
 from argparse import Namespace
 from pathlib import Path
-from typing import override
+from typing import List, Optional, override
 from uuid import uuid4
+
+import yamale
 
 from tabulate import tabulate
 
@@ -27,6 +29,56 @@ class SlurmRunner(BatchMode.Runner):
     A `BatchMode.Runner` that allows to run experiments via the Slurm Workload manager.
     """
 
+    class ConfigFile:
+        """
+        A YAML configuration file that configures Slurm jobs to be run.
+        """
+
+        def __init__(self, file_path: str, schema_file_path: str):
+            """
+            :param file_path:           The path to the configuration file
+            :param schema_file_path:    The path to a YAML schema file
+            """
+            schema = yamale.make_schema(schema_file_path)
+            data = yamale.make_data(file_path)
+            yamale.validate(schema, data)
+            self.file_path = file_path
+            self.yaml_dict = data[0][0]
+
+        @property
+        def sbatch_arguments(self) -> List[str]:
+            """
+            The sbatch arguments (starting with #SBATCH) to be passed to a Slurm job.
+            """
+            return [
+                '#SBATCH ' + str(argument) for argument in self.yaml_dict.get('sbatch-arguments', [])
+                if len(argument) > 0 and not argument.isspace()
+            ]
+
+        @property
+        def before_script(self) -> List[str]:
+            """
+            The shell commands to be executed before the experiment is started.
+            """
+            return [
+                line.strip() for line in self.yaml_dict.get('before-script', '').split('\n')
+                if len(line) > 0 and not line.isspace()
+            ]
+
+        @property
+        def after_script(self) -> List[str]:
+            """
+            The shell commands to be executed after the experiment has finished.
+            """
+            return [
+                line.strip() for line in self.yaml_dict.get('after-script', '').split('\n')
+                if len(line) > 0 and not line.isspace()
+            ]
+
+        @override
+        def __str__(self) -> str:
+            return self.file_path
+
     @staticmethod
     def __is_command_available() -> bool:
         sbatch = Sbatch()
@@ -39,14 +91,43 @@ class SlurmRunner(BatchMode.Runner):
         return True
 
     @staticmethod
-    def __write_sbatch_file(command: Command) -> Path:
+    def __read_config_file(args: Namespace) -> Optional[ConfigFile]:
+        config_file_path = SlurmArguments.SLURM_CONFIG_FILE.get_value(args)
+
+        if config_file_path:
+            schema_file_path = Path(__file__).parent / 'slurm_config.schema.yml'
+            return SlurmRunner.ConfigFile(file_path=config_file_path, schema_file_path=str(schema_file_path))
+
+        return None
+
+    @staticmethod
+    def __create_sbatch_script(command: Command, config_file: Optional[ConfigFile]) -> str:
+        content = '#!/bin/sh\n\n'
+
+        if config_file:
+            for argument in config_file.sbatch_arguments:
+                content += argument + '\n'
+
+            if config_file.sbatch_arguments:
+                content += '\n'
+
+            for line in config_file.before_script:
+                content += line + '\n'
+
+        content += str(command) + '\n'
+
+        if config_file and config_file.after_script:
+            for line in config_file.after_script:
+                content += line + '\n'
+
+        return content
+
+    @staticmethod
+    def __write_sbatch_file(command: Command, config_file: Optional[ConfigFile]) -> Path:
         path = Path('sbatch_' + str(uuid4()).split('-', maxsplit=1)[0] + '.sh')
 
         with open_writable_file(path) as sbatch_file:
-            sbatch_file.write('\n'.join([
-                '#!/bin/sh',
-                str(command),
-            ]))
+            sbatch_file.write(SlurmRunner.__create_sbatch_script(command, config_file))
 
         return path
 
@@ -56,7 +137,8 @@ class SlurmRunner(BatchMode.Runner):
             return sbatch_file.read()
 
     def __submit_command(self, args: Namespace, command: Command):
-        sbatch_file = SlurmRunner.__write_sbatch_file(command)
+        slurm_config_file = SlurmRunner.__read_config_file(args)
+        sbatch_file = SlurmRunner.__write_sbatch_file(command, slurm_config_file)
         save_file = SlurmArguments.SAVE_SLURM_SCRIPTS.get_value(args)
         print_file = SlurmArguments.PRINT_SLURM_SCRIPTS.get_value(args)
 
