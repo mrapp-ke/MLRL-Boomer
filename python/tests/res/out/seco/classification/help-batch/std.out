@@ -37,7 +37,9 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--mode MODE] [--config CONFIG]
                     [--print-parameters PRINT_PARAMETERS]
                     [--print-prediction-characteristics PRINT_PREDICTION_CHARACTERISTICS]
                     [--print-predictions PRINT_PREDICTIONS]
-                    [--print-rules PRINT_RULES] [--problem-type PROBLEM_TYPE]
+                    [--print-rules PRINT_RULES]
+                    [--print-slurm-scripts PRINT_SLURM_SCRIPTS]
+                    [--problem-type PROBLEM_TYPE]
                     [--pruning-heuristic PRUNING_HEURISTIC]
                     [--random-state RANDOM_STATE]
                     [--rule-induction RULE_INDUCTION]
@@ -53,6 +55,8 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--mode MODE] [--config CONFIG]
                     [--save-prediction-characteristics SAVE_PREDICTION_CHARACTERISTICS]
                     [--save-predictions SAVE_PREDICTIONS]
                     [--save-rules SAVE_RULES]
+                    [--save-slurm-scripts SAVE_SLURM_SCRIPTS]
+                    [--slurm-config SLURM_CONFIG]
                     [--sparse-feature-value SPARSE_FEATURE_VALUE]
                     [--time-limit TIME_LIMIT] [-h]
                     runnable_module_or_source_file
@@ -250,6 +254,10 @@ options:
                         Whether the induced rules should be printed on the
                         console or not. Must be one of {"false", "true"}. For
                         additional options refer to the documentation.
+  --print-slurm-scripts PRINT_SLURM_SCRIPTS
+                        Whether the SLURM scripts for running individual
+                        experiments in a batch should be printed or not. Must
+                        be one of {"false", "true"}.
   --problem-type PROBLEM_TYPE
                         The type of the machine learning problem to be solved.
                         Must be one of {"classification", "regression"}.
@@ -320,6 +328,13 @@ options:
                         Whether the induced rules should be written to a text
                         file or not. Must be one of {"false", "true"}. For
                         additional options refer to the documentation.
+  --save-slurm-scripts SAVE_SLURM_SCRIPTS
+                        Whether the SLURM scripts for running individual
+                        experiments in a batch should be saved to the working
+                        directory or not. Must be one of {"false", "true"}.
+  --slurm-config SLURM_CONFIG
+                        An absolute or relative path to a YAML file that
+                        configures the Slurm jobs to be run.
   --sparse-feature-value SPARSE_FEATURE_VALUE
                         The value that should be used for sparse elements in
                         the feature matrix. Does only have an effect if a
