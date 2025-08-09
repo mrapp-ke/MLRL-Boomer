@@ -297,7 +297,7 @@ class BatchMode(Mode):
             if base_dir:
                 create_directory = OutputArguments.CREATE_DIRS.get_value(args)
                 sink = YamlFileSink(directory=Path(base_dir), create_directory=create_directory)
-                batch_command = Command(module_name=sys.argv[1], argument_list=ArgumentList(sys.argv[2:]))
+                batch_command = Command.from_argv()
                 meta_data = MetaData(command=batch_command, child_commands=batch)
                 state = ExperimentState(meta_data=meta_data, problem_domain=recipe.create_problem_domain(args))
                 MetaDataWriter().add_sinks(sink).write(state)
@@ -336,7 +336,7 @@ class BatchMode(Mode):
                         ParameterOutputDirectoryArguments.PARAMETER_SAVE_DIR.name: str(output_dir / 'parameters'),
                         MetaDataArguments.SAVE_META_DATA.name: str(False).lower(),
                     })
-                command = Command(module_name=module_name, argument_list=argument_dict.to_list())
+                command = Command.from_dict(module_name=module_name, argument_dict=argument_dict)
 
                 if separate_folds:
                     dataset_splitter = recipe.create_dataset_splitter(command.apply_to_namespace(args))
@@ -362,7 +362,7 @@ class BatchMode(Mode):
                     DatasetSplitterArguments.DATASET_SPLITTER.name:
                         DatasetSplitterArguments.VALUE_CROSS_VALIDATION + str(options)
                 })
-            yield Command(module_name=module_name, argument_list=argument_dict_per_fold.to_list())
+            yield Command.from_dict(module_name=module_name, argument_dict=argument_dict_per_fold)
 
     @staticmethod
     def __get_output_dir(argument_dict: ArgumentDict, dataset_name: str) -> Path:

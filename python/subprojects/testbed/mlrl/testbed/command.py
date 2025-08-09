@@ -3,6 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for dealing with commands and their arguments.
 """
+import sys
+
 from argparse import Namespace
 from copy import copy
 from dataclasses import dataclass
@@ -86,10 +88,43 @@ class Command(Iterable[str]):
 
     Attributes:
         module_name:    The name of the Python module
-        argument_list:  An `ArgumentList` that stores the arguments
+        argument_dict:  An `ArgumentDict` that stores the arguments of the command
+        argument_list:  An `ArgumentList` that stores the arguments of the command
     """
     module_name: str
+    argument_dict: ArgumentDict
     argument_list: ArgumentList
+
+    @staticmethod
+    def from_list(module_name: str, argument_list: ArgumentList) -> 'Command':
+        """
+        Creates and returns a command from a given `ArgumentList`.
+
+        :param module_name:     The name of the Python module
+        :param argument_list:   The `ArgumentList`, the command should be created from
+        :return:                The command that has been created
+        """
+        return Command(module_name=module_name, argument_list=argument_list, argument_dict=argument_list.to_dict())
+
+    @staticmethod
+    def from_dict(module_name: str, argument_dict: ArgumentDict) -> 'Command':
+        """
+        Creates and returns a command from a given `ArgumentDict`.
+
+        :param module_name:     The name of the Python module
+        :param argument_dict:   The `ArgumentDict`, the command should be created from
+        :return:                The command that has been created
+        """
+        return Command(module_name=module_name, argument_dict=argument_dict, argument_list=argument_dict.to_list())
+
+    @staticmethod
+    def from_argv() -> 'Command':
+        """
+        Creates and returns a command from `sys.argv`.
+
+        :return: The command that has been created
+        """
+        return Command.from_list(module_name=sys.argv[1], argument_list=ArgumentList(sys.argv[2:]))
 
     def apply_to_namespace(self, namespace: Namespace) -> Namespace:
         """
