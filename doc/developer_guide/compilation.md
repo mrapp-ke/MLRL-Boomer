@@ -420,7 +420,7 @@ If you need to access this information programmatically in your own Python or C+
 
 ### GPU Support
 
-```{warning}
+```{hint}
 So far, GPU support is still at an early stage of development. No algorithm provided by this project makes use of it yet.
 ```
 
