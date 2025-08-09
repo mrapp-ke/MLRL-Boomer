@@ -126,7 +126,7 @@ By providing the options `first_fold` and `last_fold`, a subset of the folds, in
 
 ### Evaluation on the Training Data
 
-```{warning}
+```{attention}
 The configuration described in this section should only be used for testing purposes, as the evaluation results will be highly biased and overly optimistic.
 ```
 
