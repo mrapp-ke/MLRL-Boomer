@@ -14,14 +14,19 @@ class SlurmArguments:
     SAVE_SLURM_SCRIPTS = BoolArgument(
         '--save-slurm-scripts',
         default=False,
-        description='Whether the SLURM scripts for running individual experiments in a batch should be saved to the '
+        description='Whether the Slurm scripts for running individual experiments in a batch should be saved to the '
         + 'working directory or not.',
     )
+
+    SLURM_SAVE_DIR = StringArgument(
+        '--slurm-save-dir',
+        default='.',
+        description='An absolute or relative path to the directory where Slurm scripts should be saved.')
 
     PRINT_SLURM_SCRIPTS = BoolArgument(
         '--print-slurm-scripts',
         default=False,
-        description='Whether the SLURM scripts for running individual experiments in a batch should be printed or not.',
+        description='Whether the Slurm scripts for running individual experiments in a batch should be printed or not.',
     )
 
     SLURM_CONFIG_FILE = StringArgument(
