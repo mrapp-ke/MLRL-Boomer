@@ -1,40 +1,52 @@
 ---
 ci:
-  - changed-files:
-      - any-glob-to-any-file: .github/**
+  - all:
+      - changed-files:
+          - any-glob-to-any-file: .github/**
 build-system:
-  - changed-files:
-      - any-glob-to-any-file: build_system/**
+  - all:
+      - changed-files:
+          - any-glob-to-any-file: build_system/**
+          - all-globs-to-all-files: '!build_system/res/**'
 documentation:
-  - changed-files:
-      - any-glob-to-any-file: doc/**
+  - all:
+      - changed-files:
+          - any-glob-to-any-file: doc/**
 common:
-  - changed-files:
-      - any-glob-to-any-file:
-          - python/subprojects/common/**
-          - cpp/subprojects/common/**
+  - all:
+      - changed-files:
+          - any-glob-to-any-file:
+              - python/subprojects/common/**
+              - cpp/subprojects/common/**
 boosting:
-  - changed-files:
-      - any-glob-to-any-file:
-          - python/subprojects/boosting/**
-          - cpp/subprojects/boosting/**
+  - all:
+      - changed-files:
+          - any-glob-to-any-file:
+              - python/subprojects/boosting/**
+              - cpp/subprojects/boosting/**
 seco:
-  - changed-files:
-      - any-glob-to-any-file:
-          - python/subprojects/seco/**
-          - cpp/subprojects/seco/**
+  - all:
+      - changed-files:
+          - any-glob-to-any-file:
+              - python/subprojects/seco/**
+              - cpp/subprojects/seco/**
 testbed:
-  - changed-files:
-      - any-glob-to-any-file: python/subprojects/testbed/**
+  - all:
+      - changed-files:
+          - any-glob-to-any-file: python/subprojects/testbed/**
 testbed-arff:
-  - changed-files:
-      - any-glob-to-any-file: python/subprojects/testbed-arff/**
+  - all:
+      - changed-files:
+          - any-glob-to-any-file: python/subprojects/testbed-arff/**
 testbed-sklearn:
-  - changed-files:
-      - any-glob-to-any-file: python/subprojects/testbed-sklearn/**
+  - all:
+      - changed-files:
+          - any-glob-to-any-file: python/subprojects/testbed-sklearn/**
 util:
-  - changed-files:
-      - any-glob-to-any-file: python/subprojects/util/**
+  - all:
+      - changed-files:
+          - any-glob-to-any-file: python/subprojects/util/**
 tests:
-  - changed-files:
-      - any-glob-to-any-file: python/tests/**
+  - all:
+      - changed-files:
+          - any-glob-to-any-file: python/tests/**
