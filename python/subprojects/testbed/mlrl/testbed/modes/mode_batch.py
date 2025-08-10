@@ -18,6 +18,7 @@ import yamale
 
 from mlrl.testbed.command import ArgumentDict, ArgumentList, Command
 from mlrl.testbed.experiments.fold import FoldingStrategy
+from mlrl.testbed.experiments.input.dataset.arguments import DatasetArguments
 from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.meta_data.arguments import MetaDataArguments
@@ -314,7 +315,7 @@ class BatchMode(Mode):
         default_args = BatchMode.__filter_arguments(ArgumentList(sys.argv[2:]))
 
         for dataset_args in map(BatchMode.__filter_arguments, config_file.dataset_args):
-            dataset_name = dataset_args['--dataset']
+            dataset_name = dataset_args[DatasetArguments.DATASET_NAME.name]
 
             if not dataset_name:
                 raise RuntimeError('Unable to determine dataset name based on the arguments ' + str(dataset_args))
