@@ -155,7 +155,7 @@ By using the argument `--print-slurm-scripts`, the content of the scripts can be
    ```
 ````
 
-Alternatively, the argument `--save-slurm-scripts` saves the generated scripts to the current working directory:
+Alternatively, the arguments `--save-slurm-scripts` and `--slurm-save-dir` can be used to save the generated scripts to a specific directory:
 
 ````{tab} BOOMER
    ```text
@@ -164,7 +164,8 @@ Alternatively, the argument `--save-slurm-scripts` saves the generated scripts t
        --config path/to/config.yaml \
        --runner slurm \
        --save-all true \
-       --save-slurm-scripts true
+       --save-slurm-scripts true \
+       --slurm-save-dir path/to/output/
    ```
 ````
 
@@ -175,7 +176,8 @@ Alternatively, the argument `--save-slurm-scripts` saves the generated scripts t
        --config path/to/config.yaml \
        --runner slurm \
        --save-all true \
-       --save-slurm-scripts true
+       --save-slurm-scripts true \
+       --slurm-save-dir path/to/output/
    ```
 ````
 
