@@ -141,32 +141,18 @@ class SlurmRunner(BatchMode.Runner):
         with open_readable_file(path) as sbatch_file:
             return sbatch_file.read()
 
-    def __submit_command(self, args: Namespace, command: Command):
-        slurm_config_file = SlurmRunner.__read_config_file(args)
-        sbatch_file = SlurmRunner.__write_sbatch_file(args, command, slurm_config_file)
-        save_file = SlurmArguments.SAVE_SLURM_SCRIPTS.get_value(args)
-        print_file = SlurmArguments.PRINT_SLURM_SCRIPTS.get_value(args)
+    def __submit_command(self, sbatch_file: Path) -> int:
+        result = Sbatch().script(sbatch_file).run()
 
-        if save_file:
-            log.info('Slurm script saved to file "%s"', sbatch_file)
+        if result.ok:
+            job_name = sbatch_file.stem
+            job_id = result.output.split(' ')[-1]
+            log.info('Successfully submitted job:\n\n%s',
+                     tabulate([['JOBID', job_id], ['NAME', job_name]], tablefmt='plain'))
+            return 0
 
-        if print_file:
-            log.info('Content of Slurm script is:\n\n%s', self.__read_sbatch_file(sbatch_file))
-
-        result = None if save_file or print_file else Sbatch().script(sbatch_file).run()
-
-        if not save_file:
-            sbatch_file.unlink()
-
-        if result:
-            if result.ok:
-                job_name = sbatch_file.stem
-                job_id = result.output.split(' ')[-1]
-                log.info('Successfully submitted job:\n\n%s',
-                         tabulate([['JOBID', job_id], ['NAME', job_name]], tablefmt='plain'))
-            else:
-                log.error('Submission to Slurm failed:\n%s', result.output)
-                sys.exit(result.exit_code)
+        log.error('Submission to Slurm failed:\n%s', result.output)
+        return result.exit_code
 
     def __init__(self):
         super().__init__(name='slurm')
@@ -176,12 +162,28 @@ class SlurmRunner(BatchMode.Runner):
         """
         See :func:`mlrl.testbed.modes.mode_batch.BatchMode.Runner.run_batch`
         """
+        save_file = SlurmArguments.SAVE_SLURM_SCRIPTS.get_value(args)
+        print_file = SlurmArguments.PRINT_SLURM_SCRIPTS.get_value(args)
+        submit_command = not save_file and not print_file and self.__is_command_available()
         num_experiments = len(batch)
+        log.info('Submitting %s %s to Slurm...', num_experiments,
+                 'experiments' if num_experiments > 1 else 'experiment')
 
-        if self.__is_command_available():
-            log.info('Submitting %s %s to Slurm...', num_experiments,
-                     'experiments' if num_experiments > 1 else 'experiment')
+        for i, command in enumerate(batch):
+            log.info('\nSubmitting experiment (%s / %s): "%s"', i + 1, num_experiments, str(command))
+            slurm_config_file = SlurmRunner.__read_config_file(args)
+            sbatch_file = SlurmRunner.__write_sbatch_file(args, command, slurm_config_file)
 
-            for i, command in enumerate(batch):
-                log.info('\nSubmitting experiment (%s / %s): "%s"', i + 1, num_experiments, str(command))
-                self.__submit_command(args, command)
+            if save_file:
+                log.info('Slurm script saved to file "%s"', sbatch_file)
+
+            if print_file:
+                log.info('Content of Slurm script is:\n\n%s', self.__read_sbatch_file(sbatch_file))
+
+            exit_code = self.__submit_command(sbatch_file) if submit_command else 0
+
+            if not save_file:
+                sbatch_file.unlink()
+
+            if exit_code != 0:
+                sys.exit(exit_code)
