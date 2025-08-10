@@ -19,6 +19,7 @@ from mlrl.testbed_slurm.arguments import SlurmArguments
 from mlrl.testbed_slurm.sbatch import Sbatch
 
 from mlrl.testbed.command import Command
+from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.modes.mode_batch import Batch, BatchMode
 from mlrl.testbed.util.io import open_readable_file, open_writable_file
@@ -102,14 +103,17 @@ class SlurmRunner(BatchMode.Runner):
 
     @staticmethod
     def __create_sbatch_script(command: Command, config_file: Optional[ConfigFile]) -> str:
+        base_dir = Path(command.argument_dict[OutputArguments.BASE_DIR.name])
+        result_dir = base_dir / command.argument_dict[ResultDirectoryArguments.RESULT_DIR.name]
         content = '#!/bin/sh\n\n'
+        content += '#SBATCH --output=' + str(result_dir / 'std.out') + '\n'
+        content += '#SBATCH --error=' + str(result_dir / 'std.err') + '\n'
 
         if config_file:
             for argument in config_file.sbatch_arguments:
                 content += argument + '\n'
 
-            if config_file.sbatch_arguments:
-                content += '\n'
+            content += '\n'
 
             for line in config_file.before_script:
                 content += line + '\n'
