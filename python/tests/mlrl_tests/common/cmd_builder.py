@@ -10,8 +10,7 @@ from mlrl.common.config.parameters import BINNING_EQUAL_WIDTH, SAMPLING_WITHOUT_
     PartitionSamplingParameter, PostOptimizationParameter, RuleInductionParameter, RulePruningParameter
 from mlrl.common.learners import SparsePolicy
 
-from mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension import OPTION_FIRST_FOLD, OPTION_NUM_FOLDS, \
-    VALUE_CROSS_VALIDATION, VALUE_TRAIN_TEST
+from mlrl.testbed_sklearn.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 
 from mlrl.testbed.modes import Mode
 
@@ -204,7 +203,9 @@ class CmdBuilder:
         self.args.append(str(True).lower())
         return self
 
-    def data_split(self, data_split: Optional[str] = VALUE_TRAIN_TEST, options: Options = Options()):
+    def data_split(self,
+                   data_split: Optional[str] = DatasetSplitterArguments.VALUE_TRAIN_TEST,
+                   options: Options = Options()):
         """
         Configures the rule learner to use a specific strategy for splitting datasets into training and test datasets.
 
@@ -217,11 +218,11 @@ class CmdBuilder:
         current_fold = None
 
         if data_split:
-            if data_split == VALUE_CROSS_VALIDATION:
-                num_folds = options.get_int(OPTION_NUM_FOLDS, 10)
-                first_fold = options.get_int(OPTION_FIRST_FOLD, 0)
+            if data_split == DatasetSplitterArguments.VALUE_CROSS_VALIDATION:
+                num_folds = options.get_int(DatasetSplitterArguments.OPTION_NUM_FOLDS, 10)
+                first_fold = options.get_int(DatasetSplitterArguments.OPTION_FIRST_FOLD, 0)
 
-                if first_fold > 0 and first_fold == options.get_int(OPTION_FIRST_FOLD, 0):
+                if first_fold > 0 and first_fold == options.get_int(DatasetSplitterArguments.OPTION_FIRST_FOLD, 0):
                     current_fold = first_fold
 
             self.args.append(data_split + (str(options) if options else ''))
