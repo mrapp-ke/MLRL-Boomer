@@ -127,8 +127,9 @@ class SlurmRunner(BatchMode.Runner):
         return content
 
     @staticmethod
-    def __write_sbatch_file(command: Command, config_file: Optional[ConfigFile]) -> Path:
-        path = Path('sbatch_' + str(uuid4()).split('-', maxsplit=1)[0] + '.sh')
+    def __write_sbatch_file(args: Namespace, command: Command, config_file: Optional[ConfigFile]) -> Path:
+        file_name = 'sbatch_' + str(uuid4()).split('-', maxsplit=1)[0] + '.sh'
+        path = Path(SlurmArguments.SLURM_SAVE_DIR.get_value(args)) / file_name
 
         with open_writable_file(path) as sbatch_file:
             sbatch_file.write(SlurmRunner.__create_sbatch_script(command, config_file))
@@ -142,7 +143,7 @@ class SlurmRunner(BatchMode.Runner):
 
     def __submit_command(self, args: Namespace, command: Command):
         slurm_config_file = SlurmRunner.__read_config_file(args)
-        sbatch_file = SlurmRunner.__write_sbatch_file(command, slurm_config_file)
+        sbatch_file = SlurmRunner.__write_sbatch_file(args, command, slurm_config_file)
         save_file = SlurmArguments.SAVE_SLURM_SCRIPTS.get_value(args)
         print_file = SlurmArguments.PRINT_SLURM_SCRIPTS.get_value(args)
 
