@@ -11,6 +11,7 @@ from abc import ABC, abstractmethod
 from argparse import Namespace
 from dataclasses import dataclass, field
 from functools import cached_property, reduce
+from itertools import chain
 from pathlib import Path
 from typing import Any, Callable, Generator, Iterable, List, Optional, override
 
@@ -373,8 +374,9 @@ class BatchMode(Mode):
     @staticmethod
     def __filter_arguments(argument_list: ArgumentList) -> ArgumentDict:
         try:
-            slurm_arguments = list(SlurmArguments.PRINT_SLURM_SCRIPTS.names) + list(
-                SlurmArguments.SAVE_SLURM_SCRIPTS.names)
+            slurm_arguments = list(
+                chain(SlurmArguments.PRINT_SLURM_SCRIPTS.names, SlurmArguments.SAVE_SLURM_SCRIPTS.names,
+                      SlurmArguments.SLURM_SAVE_DIR.names, SlurmArguments.SLURM_CONFIG_FILE.names))
         except ImportError:
             slurm_arguments = []
 
