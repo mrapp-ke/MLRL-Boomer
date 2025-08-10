@@ -315,6 +315,7 @@ class BatchMode(Mode):
                        separate_folds: bool = False) -> Generator[Command, None, None]:
         module_name = sys.argv[1]
         default_args = BatchMode.__filter_arguments(ArgumentList(sys.argv[2:]))
+        base_dir = OutputArguments.BASE_DIR.get_value(args)
 
         for dataset_args in map(BatchMode.__filter_arguments, config_file.dataset_args):
             dataset_name = dataset_args[DatasetArguments.DATASET_NAME.name]
@@ -326,6 +327,7 @@ class BatchMode(Mode):
                 output_dir = BatchMode.__get_output_dir(parameter_args, dataset_name)
                 argument_dict = ArgumentDict(
                     default_args | dataset_args | parameter_args | {
+                        OutputArguments.BASE_DIR.name: str(base_dir),
                         ResultDirectoryArguments.RESULT_DIR.name: str(output_dir / 'results'),
                         ModelOutputDirectoryArguments.MODEL_SAVE_DIR.name: str(output_dir / 'models'),
                         ParameterOutputDirectoryArguments.PARAMETER_SAVE_DIR.name: str(output_dir / 'parameters'),
