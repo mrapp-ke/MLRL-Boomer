@@ -57,6 +57,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--mode MODE] [--config CONFIG]
                     [--save-rules SAVE_RULES]
                     [--save-slurm-scripts SAVE_SLURM_SCRIPTS]
                     [--slurm-config SLURM_CONFIG]
+                    [--slurm-save-dir SLURM_SAVE_DIR]
                     [--sparse-feature-value SPARSE_FEATURE_VALUE]
                     [--time-limit TIME_LIMIT] [-h]
                     runnable_module_or_source_file
@@ -255,7 +256,7 @@ options:
                         console or not. Must be one of {"false", "true"}. For
                         additional options refer to the documentation.
   --print-slurm-scripts PRINT_SLURM_SCRIPTS
-                        Whether the SLURM scripts for running individual
+                        Whether the Slurm scripts for running individual
                         experiments in a batch should be printed or not. Must
                         be one of {"false", "true"}.
   --problem-type PROBLEM_TYPE
@@ -329,12 +330,15 @@ options:
                         file or not. Must be one of {"false", "true"}. For
                         additional options refer to the documentation.
   --save-slurm-scripts SAVE_SLURM_SCRIPTS
-                        Whether the SLURM scripts for running individual
+                        Whether the Slurm scripts for running individual
                         experiments in a batch should be saved to the working
                         directory or not. Must be one of {"false", "true"}.
   --slurm-config SLURM_CONFIG
                         An absolute or relative path to a YAML file that
                         configures the Slurm jobs to be run.
+  --slurm-save-dir SLURM_SAVE_DIR
+                        An absolute or relative path to the directory where
+                        Slurm scripts should be saved.
   --sparse-feature-value SPARSE_FEATURE_VALUE
                         The value that should be used for sparse elements in
                         the feature matrix. Does only have an effect if a
