@@ -152,19 +152,20 @@ class SlurmRunner(BatchMode.Runner):
         if print_file:
             log.info('Content of Slurm script is:\n\n%s', self.__read_sbatch_file(sbatch_file))
 
-        job_name = sbatch_file.stem
-        result = Sbatch().script(sbatch_file).run()
+        result = None if save_file or print_file else Sbatch().script(sbatch_file).run()
 
         if not save_file:
             sbatch_file.unlink()
 
-        if result.ok:
-            job_id = result.output.split(' ')[-1]
-            log.info('Successfully submitted job:\n\n%s',
-                     tabulate([['JOBID', job_id], ['NAME', job_name]], tablefmt='plain'))
-        else:
-            log.error('Submission to Slurm failed:\n%s', result.output)
-            sys.exit(result.exit_code)
+        if result:
+            if result.ok:
+                job_name = sbatch_file.stem
+                job_id = result.output.split(' ')[-1]
+                log.info('Successfully submitted job:\n\n%s',
+                         tabulate([['JOBID', job_id], ['NAME', job_name]], tablefmt='plain'))
+            else:
+                log.error('Submission to Slurm failed:\n%s', result.output)
+                sys.exit(result.exit_code)
 
     def __init__(self):
         super().__init__(name='slurm')
