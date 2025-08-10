@@ -12,8 +12,7 @@ from .integration_tests import IntegrationTests
 
 from mlrl.common.config.parameters import SAMPLING_STRATIFIED_EXAMPLE_WISE, SAMPLING_STRATIFIED_OUTPUT_WISE
 
-from mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension import OPTION_FIRST_FOLD, OPTION_LAST_FOLD, \
-    VALUE_CROSS_VALIDATION, VALUE_TRAIN_TEST
+from mlrl.testbed_sklearn.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 
 from mlrl.util.options import Options
 
@@ -29,12 +28,13 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
         return Dataset()
 
     @pytest.mark.parametrize('data_split, data_split_options', [
-        (VALUE_TRAIN_TEST, Options()),
-        (VALUE_CROSS_VALIDATION, Options()),
-        (VALUE_CROSS_VALIDATION, Options({
-            OPTION_FIRST_FOLD: 1,
-            OPTION_LAST_FOLD: 1,
-        })),
+        (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options()),
+        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION, Options()),
+        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION,
+         Options({
+             DatasetSplitterArguments.OPTION_FIRST_FOLD: 1,
+             DatasetSplitterArguments.OPTION_LAST_FOLD: 1,
+         })),
     ])
     def test_label_vectors(self, data_split: str, data_split_options: Options, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
