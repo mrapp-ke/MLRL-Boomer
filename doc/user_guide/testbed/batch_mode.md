@@ -71,6 +71,7 @@ The previous command prints all commands that will be executed for running indiv
 
 ```text
 mlrl-testbed mlrl.boosting \
+    --base-dir experiments/2025-08-10_02-44
     --result-dir first-parameter_50/second-parameter_true/third-parameter_true/dataset_first-dataset/results \
     --model-save-dir first-parameter_50/second-parameter_true/third-parameter_true/dataset_first-dataset/models \
     --parameter-save-dir first-parameter_50/second-parameter_true/third-parameter_true/dataset_first-dataset/parameters \
