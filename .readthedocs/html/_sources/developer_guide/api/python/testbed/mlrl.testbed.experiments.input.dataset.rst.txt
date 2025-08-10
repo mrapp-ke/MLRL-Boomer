@@ -21,6 +21,7 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   mlrl.testbed.experiments.input.dataset.arguments
    mlrl.testbed.experiments.input.dataset.dataset
    mlrl.testbed.experiments.input.dataset.extension
    mlrl.testbed.experiments.input.dataset.reader
