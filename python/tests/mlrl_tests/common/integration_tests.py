@@ -86,6 +86,12 @@ class IntegrationTests(ABC):
             .set_mode(Mode.MODE_BATCH, '--list')
         CmdRunner(builder).run('batch-mode-list')
 
+    def test_batch_mode_slurm(self):
+        builder = self._create_cmd_builder() \
+            .set_mode(Mode.MODE_BATCH) \
+            .set_runner('slurm')
+        CmdRunner(builder).run('batch-mode-slurm')
+
     def test_single_output(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.single_output) \
             .print_evaluation()
