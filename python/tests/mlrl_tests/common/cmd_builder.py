@@ -47,6 +47,7 @@ class CmdBuilder:
         self.runnable_module_name = runnable_module_name
         self.runnable_class_name = runnable_class_name
         self.mode: Optional[str] = None
+        self.runner: Optional[str] = None
         self.show_help = False
         self.dataset = dataset
         self.parameter_save_dir: Optional[Path] = None
@@ -117,6 +118,13 @@ class CmdBuilder:
 
         if self.mode == Mode.MODE_BATCH:
             args.extend(('--config', str(self.batch_config)))
+
+            if self.runner:
+                args.extend(('--runner', self.runner))
+
+                if self.runner == 'slurm':
+                    args.extend(('--slurm-config', str(self.CONFIG_DIR / 'slurm_config.yml'), '--print-slurm-scripts',
+                                 'true', '--save-slurm-scripts', 'true', '--slurm-save-dir', str(self.base_dir)))
         else:
             args.extend(('--data-dir', str(self.RESOURCE_DIR / 'data')))
             args.extend(('--dataset', self.dataset))
@@ -148,6 +156,16 @@ class CmdBuilder:
         """
         self.mode = mode
         self.args.extend(extra_args)
+        return self
+
+    def set_runner(self, runner: Optional[str] = 'sequential'):
+        """
+        Configures the runner to be used in batch mode.
+
+        :param runner:  The name of the runner to be used
+        :return:        The builder itself
+        """
+        self.runner = runner
         return self
 
     def set_show_help(self, show_help: bool = True):
