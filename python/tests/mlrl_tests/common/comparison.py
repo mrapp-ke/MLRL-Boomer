@@ -16,6 +16,8 @@ from mlrl.testbed.util.io import ENCODING_UTF8, open_readable_file, open_writabl
 
 PLACEHOLDER_DURATION = '<duration>'
 
+PLACEHOLDER_FILE_NAME = '<file>'
+
 
 class Difference(ABC):
     """
@@ -124,6 +126,10 @@ class TextFileComparison(FileComparison):
         return regex.sub(regex_duration + '((, )' + regex_duration + ')*' + '(( and )' + regex_duration + ')?',
                          PLACEHOLDER_DURATION, line)
 
+    @staticmethod
+    def __mask_line(line: str) -> str:
+        return TextFileComparison.__replace_durations_with_placeholders(line.strip('\n'))
+
     def __init__(self, lines: Iterable[str]):
         """
         :param lines: The lines in a file
@@ -136,7 +142,7 @@ class TextFileComparison(FileComparison):
             expected_lines = file.readlines()
 
             for line_index, (actual_line, expected_line) in enumerate(zip(self.lines, expected_lines)):
-                actual_line = self.__replace_durations_with_placeholders(actual_line.strip('\n'))
+                actual_line = self.__mask_line(actual_line)
                 expected_line = expected_line.strip('\n')
 
                 if actual_line != expected_line:
@@ -151,8 +157,7 @@ class TextFileComparison(FileComparison):
     def _write(self, file: Path):
         with open(file, 'w+', encoding=ENCODING_UTF8) as output_file:
             for line in self.lines:
-                line = self.__replace_durations_with_placeholders(line.strip('\n'))
-                output_file.write(line + '\n')
+                output_file.write(self.__mask_line(line) + '\n')
 
 
 class PickleFileComparison(FileComparison):
