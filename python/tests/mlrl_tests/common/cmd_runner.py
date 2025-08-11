@@ -109,10 +109,6 @@ class CmdRunner:
         expected_output_dir = builder.expected_output_dir / test_name
         self.__compare_or_overwrite_files(TextFileComparison(stdout), expected_file=expected_output_dir / 'std.out')
 
-        # Rename selected output files...
-        for i, sbatch_script in enumerate(list(output_dir.rglob('sbatch_*.sh'))):
-            sbatch_script.rename(sbatch_script.with_name(f'sbatch_{i}.sh'))
-
         # Check if all expected files have been created...
         self.__compare_or_overwrite_output_files(output_dir=output_dir, expected_output_dir=expected_output_dir)
 
