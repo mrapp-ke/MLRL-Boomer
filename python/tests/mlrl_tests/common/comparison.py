@@ -127,13 +127,8 @@ class TextFileComparison(FileComparison):
                          PLACEHOLDER_DURATION, line)
 
     @staticmethod
-    def __replace_file_names_with_placeholders(line: str) -> str:
-        return regex.sub('sbatch_.+\\.sh', PLACEHOLDER_FILE_NAME, line)
-
-    @staticmethod
     def __mask_line(line: str) -> str:
-        line = TextFileComparison.__replace_durations_with_placeholders(line.strip('\n'))
-        return TextFileComparison.__replace_file_names_with_placeholders(line)
+        return TextFileComparison.__replace_durations_with_placeholders(line.strip('\n'))
 
     def __init__(self, lines: Iterable[str]):
         """

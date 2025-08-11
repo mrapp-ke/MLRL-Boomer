@@ -9,7 +9,6 @@ import sys
 from argparse import Namespace
 from pathlib import Path
 from typing import List, Optional, override
-from uuid import uuid4
 
 import yamale
 
@@ -127,8 +126,8 @@ class SlurmRunner(BatchMode.Runner):
         return content
 
     @staticmethod
-    def __write_sbatch_file(args: Namespace, command: Command, config_file: Optional[ConfigFile]) -> Path:
-        file_name = 'sbatch_' + str(uuid4()).split('-', maxsplit=1)[0] + '.sh'
+    def __write_sbatch_file(args: Namespace, command: Command, config_file: Optional[ConfigFile],
+                            file_name: str) -> Path:
         path = Path(SlurmArguments.SLURM_SAVE_DIR.get_value(args)) / file_name
 
         with open_writable_file(path) as sbatch_file:
@@ -172,7 +171,10 @@ class SlurmRunner(BatchMode.Runner):
         for i, command in enumerate(batch):
             log.info('\nSubmitting experiment (%s / %s): "%s"', i + 1, num_experiments, str(command))
             slurm_config_file = SlurmRunner.__read_config_file(args)
-            sbatch_file = SlurmRunner.__write_sbatch_file(args, command, slurm_config_file)
+            sbatch_file = SlurmRunner.__write_sbatch_file(args,
+                                                          command,
+                                                          slurm_config_file,
+                                                          file_name=f'sbatch_{i + 1}.sh')
 
             if save_file:
                 log.info('Slurm script saved to file "%s"', sbatch_file)
