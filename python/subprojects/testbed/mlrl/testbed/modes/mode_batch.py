@@ -11,12 +11,15 @@ from abc import ABC, abstractmethod
 from argparse import Namespace
 from dataclasses import dataclass, field
 from functools import cached_property, reduce
+from itertools import chain
 from pathlib import Path
 from typing import Any, Callable, Generator, Iterable, List, Optional, override
 
 import yamale
 
 from mlrl.testbed_sklearn.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
+
+from mlrl.testbed_slurm.arguments import SlurmArguments
 
 from mlrl.testbed.command import ArgumentDict, ArgumentList, Command
 from mlrl.testbed.experiments.fold import FoldingStrategy
@@ -172,7 +175,8 @@ class BatchMode(Mode):
 
         def __init__(self, file_path: str, schema_file_path: str):
             """
-            :param file_path: The path to the configuration file
+            :param file_path:           The path to the configuration file
+            :param schema_file_path:    The path to a YAML schema file
             """
             schema = yamale.make_schema(schema_file_path)
             data = yamale.make_data(file_path)
@@ -294,7 +298,7 @@ class BatchMode(Mode):
             if base_dir:
                 create_directory = OutputArguments.CREATE_DIRS.get_value(args)
                 sink = YamlFileSink(directory=Path(base_dir), create_directory=create_directory)
-                batch_command = Command(module_name=sys.argv[1], argument_list=ArgumentList(sys.argv[2:]))
+                batch_command = Command.from_argv()
                 meta_data = MetaData(command=batch_command, child_commands=batch)
                 state = ExperimentState(meta_data=meta_data, problem_domain=recipe.create_problem_domain(args))
                 MetaDataWriter().add_sinks(sink).write(state)
@@ -333,7 +337,7 @@ class BatchMode(Mode):
                         ParameterOutputDirectoryArguments.PARAMETER_SAVE_DIR.name: str(output_dir / 'parameters'),
                         MetaDataArguments.SAVE_META_DATA.name: str(False).lower(),
                     })
-                command = Command(module_name=module_name, argument_list=argument_dict.to_list())
+                command = Command.from_dict(module_name=module_name, argument_dict=argument_dict)
 
                 if separate_folds:
                     dataset_splitter = recipe.create_dataset_splitter(command.apply_to_namespace(args))
@@ -359,7 +363,7 @@ class BatchMode(Mode):
                     DatasetSplitterArguments.DATASET_SPLITTER.name:
                         DatasetSplitterArguments.VALUE_CROSS_VALIDATION + str(options)
                 })
-            yield Command(module_name=module_name, argument_list=argument_dict_per_fold.to_list())
+            yield Command.from_dict(module_name=module_name, argument_dict=argument_dict_per_fold)
 
     @staticmethod
     def __get_output_dir(argument_dict: ArgumentDict, dataset_name: str) -> Path:
@@ -369,8 +373,15 @@ class BatchMode(Mode):
 
     @staticmethod
     def __filter_arguments(argument_list: ArgumentList) -> ArgumentDict:
+        try:
+            slurm_arguments = list(
+                chain(SlurmArguments.PRINT_SLURM_SCRIPTS.names, SlurmArguments.SAVE_SLURM_SCRIPTS.names,
+                      SlurmArguments.SLURM_SAVE_DIR.names, SlurmArguments.SLURM_CONFIG_FILE.names))
+        except ImportError:
+            slurm_arguments = []
+
         return argument_list.filter(*BatchMode.CONFIG_FILE.names, *Mode.MODE.names, BatchMode.LIST_COMMANDS.name,
-                                    BatchMode.RUNNER.name).to_dict()
+                                    BatchMode.RUNNER.name, *slurm_arguments).to_dict()
 
     def __init__(self, config_file_factory: Optional[ConfigFile.Factory] = None):
         """
