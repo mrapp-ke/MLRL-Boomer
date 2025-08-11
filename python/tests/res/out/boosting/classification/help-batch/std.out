@@ -46,6 +46,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--mode MODE] [--config CONFIG]
                     [--print-prediction-characteristics PRINT_PREDICTION_CHARACTERISTICS]
                     [--print-predictions PRINT_PREDICTIONS]
                     [--print-rules PRINT_RULES]
+                    [--print-slurm-scripts PRINT_SLURM_SCRIPTS]
                     [--probability-predictor PROBABILITY_PREDICTOR]
                     [--problem-type PROBLEM_TYPE]
                     [--random-state RANDOM_STATE]
@@ -57,12 +58,16 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--mode MODE] [--config CONFIG]
                     [--save-joint-probability-calibration-model SAVE_JOINT_PROBABILITY_CALIBRATION_MODEL]
                     [--save-label-vectors SAVE_LABEL_VECTORS]
                     [--save-marginal-probability-calibration-model SAVE_MARGINAL_PROBABILITY_CALIBRATION_MODEL]
+                    [--save-meta-data SAVE_META_DATA]
                     [--save-model-characteristics SAVE_MODEL_CHARACTERISTICS]
                     [--save-models SAVE_MODELS]
                     [--save-parameters SAVE_PARAMETERS]
                     [--save-prediction-characteristics SAVE_PREDICTION_CHARACTERISTICS]
                     [--save-predictions SAVE_PREDICTIONS]
-                    [--save-rules SAVE_RULES] [--shrinkage SHRINKAGE]
+                    [--save-rules SAVE_RULES]
+                    [--save-slurm-scripts SAVE_SLURM_SCRIPTS]
+                    [--shrinkage SHRINKAGE] [--slurm-config SLURM_CONFIG]
+                    [--slurm-save-dir SLURM_SAVE_DIR]
                     [--sparse-feature-value SPARSE_FEATURE_VALUE]
                     [--statistic-format STATISTIC_FORMAT]
                     [--statistic-type STATISTIC_TYPE]
@@ -92,7 +97,8 @@ options:
   --list                Lists the commands for running individual experiments
                         instead of executing them.
   --runner RUNNER       The runner to be used for running individual
-                        experiments in a batch. Must be one of {"sequential"}.
+                        experiments in a batch. Must be one of {"sequential",
+                        "slurm"}.
   --base-dir BASE_DIR   If relative paths to directories, where files should
                         be saved, are given, they are considered relative to
                         the directory specified via this argument.
@@ -308,6 +314,10 @@ options:
                         Whether the induced rules should be printed on the
                         console or not. Must be one of {"false", "true"}. For
                         additional options refer to the documentation.
+  --print-slurm-scripts PRINT_SLURM_SCRIPTS
+                        Whether the Slurm scripts for running individual
+                        experiments in a batch should be printed or not. Must
+                        be one of {"false", "true"}.
   --probability-predictor PROBABILITY_PREDICTOR
                         The name of the strategy to be used for predicting
                         probabilities If set to "auto", the most suitable
@@ -359,6 +369,11 @@ options:
                         probabilities should be written to an output file or
                         not. Must be one of {"false", "true"}. For additional
                         options refer to the documentation.
+  --save-meta-data SAVE_META_DATA
+                        Whether meta-data should be saved to output files or
+                        not. If set to "auto", meta-data is saved whenever
+                        other output files are written as well. Must be one of
+                        {"auto", "false", "true"}.
   --save-model-characteristics SAVE_MODEL_CHARACTERISTICS
                         Whether the characteristics of models should be
                         written to output files or not. Must be one of
@@ -384,9 +399,19 @@ options:
                         Whether the induced rules should be written to a text
                         file or not. Must be one of {"false", "true"}. For
                         additional options refer to the documentation.
+  --save-slurm-scripts SAVE_SLURM_SCRIPTS
+                        Whether the Slurm scripts for running individual
+                        experiments in a batch should be saved to the working
+                        directory or not. Must be one of {"false", "true"}.
   --shrinkage SHRINKAGE
                         The shrinkage parameter, a.k.a. the learning rate, to
                         be used. Must be in (0, 1].
+  --slurm-config SLURM_CONFIG
+                        An absolute or relative path to a YAML file that
+                        configures the Slurm jobs to be run.
+  --slurm-save-dir SLURM_SAVE_DIR
+                        An absolute or relative path to the directory where
+                        Slurm scripts should be saved.
   --sparse-feature-value SPARSE_FEATURE_VALUE
                         The value that should be used for sparse elements in
                         the feature matrix. Does only have an effect if a

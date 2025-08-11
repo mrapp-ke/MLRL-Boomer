@@ -12,6 +12,7 @@ from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristic
 from mlrl.testbed_sklearn.experiments.prediction.extension import PredictionTypeExtension
 
 from mlrl.testbed.experiments.experiment import Experiment
+from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
@@ -45,7 +46,7 @@ class PredictionCharacteristicsExtension(Extension):
         '--save-prediction-characteristics',
         description='Whether the characteristics of binary predictions should be written to output files or not. Does '
         + 'only have an effect if the argument ' + PredictionTypeExtension.PREDICTION_TYPE.name + ' is set to '
-        + PredictionType.BINARY.value + ' and if the argument ' + ResultDirectoryExtension.RESULT_DIR.name + ' is '
+        + PredictionType.BINARY.value + ' and if the argument ' + ResultDirectoryArguments.RESULT_DIR.name + ' is '
         + 'specified.',
         true_options={
             OutputCharacteristics.OPTION_OUTPUTS, OutputCharacteristics.OPTION_OUTPUT_DENSITY,
@@ -69,7 +70,7 @@ class PredictionCharacteristicsExtension(Extension):
         return {self.PRINT_PREDICTION_CHARACTERISTICS, self.SAVE_PREDICTION_CHARACTERISTICS}
 
     def __configure_log_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
-        print_all = OutputExtension.PRINT_ALL.get_value(args)
+        print_all = OutputArguments.PRINT_ALL.get_value(args)
         print_prediction_characteristics, options = self.PRINT_PREDICTION_CHARACTERISTICS.get_value(args,
                                                                                                     default=print_all)
 
@@ -77,13 +78,13 @@ class PredictionCharacteristicsExtension(Extension):
             experiment_builder.prediction_characteristics_writer.add_sinks(LogSink(options))
 
     def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
-        save_all = OutputExtension.SAVE_ALL.get_value(args)
+        save_all = OutputArguments.SAVE_ALL.get_value(args)
         save_prediction_characteristics, options = self.SAVE_PREDICTION_CHARACTERISTICS.get_value(args,
                                                                                                   default=save_all)
-        result_directory = ResultDirectoryExtension.RESULT_DIR.get_value(args)
+        result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
         if save_prediction_characteristics and result_directory:
-            create_directory = OutputExtension.CREATE_DIRS.get_value(args)
+            create_directory = OutputArguments.CREATE_DIRS.get_value(args)
             experiment_builder.prediction_characteristics_writer.add_sinks(
                 CsvFileSink(directory=Path(result_directory), create_directory=create_directory, options=options))
 

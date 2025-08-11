@@ -47,6 +47,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--mode MODE] [--base-dir BASE_DIR]
                     [--save-evaluation SAVE_EVALUATION]
                     [--save-ground-truth SAVE_GROUND_TRUTH]
                     [--save-label-vectors SAVE_LABEL_VECTORS]
+                    [--save-meta-data SAVE_META_DATA]
                     [--save-model-characteristics SAVE_MODEL_CHARACTERISTICS]
                     [--save-models SAVE_MODELS]
                     [--save-parameters SAVE_PARAMETERS]
@@ -293,6 +294,11 @@ options:
                         training data should be written to output files or
                         not. Must be one of {"false", "true"}. For additional
                         options refer to the documentation.
+  --save-meta-data SAVE_META_DATA
+                        Whether meta-data should be saved to output files or
+                        not. If set to "auto", meta-data is saved whenever
+                        other output files are written as well. Must be one of
+                        {"auto", "false", "true"}.
   --save-model-characteristics SAVE_MODEL_CHARACTERISTICS
                         Whether the characteristics of models should be
                         written to output files or not. Must be one of

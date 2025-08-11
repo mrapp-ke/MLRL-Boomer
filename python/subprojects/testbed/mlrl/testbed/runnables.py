@@ -9,8 +9,10 @@ from argparse import Namespace
 from functools import cached_property, reduce
 from typing import List, Optional, Set, override
 
+from mlrl.testbed.command import Command
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
+from mlrl.testbed.experiments.output.meta_data.extension import MetaDataExtension
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.extensions import Extension
@@ -20,6 +22,12 @@ from mlrl.testbed.modes.mode_batch import BatchMode
 from mlrl.testbed.program_info import ProgramInfo
 
 from mlrl.util.cli import Argument, BoolArgument, CommandLineInterface
+
+try:
+    from mlrl.testbed_slurm.extension import SlurmExtension
+except ImportError:
+    # Dependency 'mlrl-testbed' is not available, but that's okay since it's optional.
+    from mlrl.testbed.extensions import NopExtension as SlurmExtension
 
 
 class Runnable(Recipe, ABC):
@@ -73,7 +81,12 @@ class Runnable(Recipe, ABC):
 
         :return: A set that contains the extensions to be applied to the runnable
         """
-        return {Runnable.PredictionDatasetExtension(), LogExtension()}
+        return {
+            Runnable.PredictionDatasetExtension(),
+            LogExtension(),
+            MetaDataExtension(),
+            SlurmExtension(),
+        }
 
     def get_program_info(self) -> Optional[ProgramInfo]:
         """
@@ -112,9 +125,9 @@ class Runnable(Recipe, ABC):
                 return self.runnable.create_dataset_splitter(args)
 
             @override
-            def create_experiment_builder(self, args: Namespace) -> Experiment.Builder:
+            def create_experiment_builder(self, args: Namespace, command: Command) -> Experiment.Builder:
                 runnable = self.runnable
-                experiment_builder = runnable.create_experiment_builder(args)
+                experiment_builder = runnable.create_experiment_builder(args, command)
 
                 for extension in runnable.extensions:
                     extension.configure_experiment(args, experiment_builder)

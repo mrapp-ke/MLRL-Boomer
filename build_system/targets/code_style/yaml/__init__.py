@@ -35,5 +35,6 @@ MODULES = [
     CodeModule(
         file_type=FileType.yaml(),
         root_directory=Project.Python.root_directory,
+        source_file_search=Project.Python.file_search().exclude_by_name('metadata.yml'),
     ),
 ]

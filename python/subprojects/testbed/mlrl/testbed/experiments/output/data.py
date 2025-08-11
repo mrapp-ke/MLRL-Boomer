@@ -84,7 +84,7 @@ class TextualOutputData(OutputData, ABC):
             if self.context.include_fold:
                 folding_strategy = state.folding_strategy
 
-                if folding_strategy.is_cross_validation_used:
+                if folding_strategy and folding_strategy.is_cross_validation_used:
                     fold = state.fold
 
                     if fold:
@@ -140,6 +140,22 @@ class TabularOutputData(TextualOutputData, ABC):
 
         :param options: Options to be taken into account
         :return:        The tabular representation that has been created
+        """
+
+
+class StructuralOutputData(OutputData, ABC):
+    """
+    An abstract base class for all classes that represent output data that can be converted into a structural
+    representation, e.g., YAML or JSON.
+    """
+
+    @abstractmethod
+    def to_dict(self, options: Options, **kwargs) -> Optional[Dict[Any, Any]]:
+        """
+        Creates and returns a dictionary from the object.
+
+        :param options: Options to be taken into account
+        :return:        The dictionary that has been created
         """
 
 

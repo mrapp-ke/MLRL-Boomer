@@ -1,0 +1,4 @@
+---
+sbatch-arguments: any(list(str(), min=1), null())
+before-script: any(str(), null())
+after-script: any(str(), null())

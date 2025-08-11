@@ -26,10 +26,8 @@ from mlrl.boosting.cython.learner_classification import AutomaticBinaryPredictor
     NonDecomposableSquaredHingeLossMixin, OutputWiseBinaryPredictorMixin, OutputWiseProbabilityPredictorMixin, \
     SparseStatisticsMixin
 
-from mlrl.util.cli import NONE
+from mlrl.util.cli import AUTO, NONE
 from mlrl.util.options import BooleanOption, Options
-
-AUTOMATIC = 'auto'
 
 PROBABILITY_CALIBRATION_ISOTONIC = 'isotonic'
 
@@ -45,14 +43,14 @@ class ExtendedPartitionSamplingParameter(PartitionSamplingParameter):
 
     def __init__(self):
         super().__init__()
-        self.add_value(name=AUTOMATIC,
+        self.add_value(name=AUTO,
                        mixin=AutomaticPartitionSamplingMixin,
-                       description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
+                       description='If set to "' + AUTO + '", the most suitable strategy is chosen automatically '
                        + 'depending on whether a holdout set is needed and depending on the loss function')
 
     @override
     def _configure(self, config, value: str, options: Options):
-        if value == AUTOMATIC:
+        if value == AUTO:
             config.use_automatic_partition_sampling()
         else:
             super()._configure(config, value, options)
@@ -65,14 +63,14 @@ class ExtendedFeatureBinningParameter(FeatureBinningParameter):
 
     def __init__(self):
         super().__init__()
-        self.add_value(name=AUTOMATIC,
+        self.add_value(name=AUTO,
                        mixin=AutomaticFeatureBinningMixin,
-                       description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
-                       + 'based on the characteristics of the feature matrix')
+                       description='If set to "' + AUTO + '", the most suitable strategy is chosen automatically based '
+                       + 'on the characteristics of the feature matrix')
 
     @override
     def _configure(self, config, value: str, options: Options):
-        if value == AUTOMATIC:
+        if value == AUTO:
             config.use_automatic_feature_binning()
         else:
             super()._configure(config, value, options)
@@ -85,14 +83,14 @@ class ExtendedParallelRuleRefinementParameter(ParallelRuleRefinementParameter):
 
     def __init__(self):
         super().__init__()
-        self.add_value(name=AUTOMATIC,
+        self.add_value(name=AUTO,
                        mixin=AutomaticParallelRuleRefinementMixin,
-                       description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
-                       + 'based on ' + 'the parameter ' + RegressionLossParameter().argument_name)
+                       description='If set to "' + AUTO + '", the most suitable strategy is chosen automatically based '
+                       + 'on ' + 'the parameter ' + RegressionLossParameter().argument_name)
 
     @override
     def _configure(self, config, value: str, options: Options):
-        if value == AUTOMATIC:
+        if value == AUTO:
             config.use_automatic_parallel_rule_refinement()
         else:
             super()._configure(config, value, options)
@@ -105,14 +103,14 @@ class ExtendedParallelStatisticUpdateParameter(ParallelStatisticUpdateParameter)
 
     def __init__(self):
         super().__init__()
-        self.add_value(name=AUTOMATIC,
+        self.add_value(name=AUTO,
                        mixin=AutomaticParallelStatisticUpdateMixin,
-                       description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
-                       + 'based on ' + 'the parameter ' + RegressionLossParameter().argument_name)
+                       description='If set to "' + AUTO + '", the most suitable strategy is chosen automatically based '
+                       + 'on ' + 'the parameter ' + RegressionLossParameter().argument_name)
 
     @override
     def _configure(self, config, value: str, options: Options):
-        if value == AUTOMATIC:
+        if value == AUTO:
             config.use_automatic_parallel_statistic_update()
         else:
             super()._configure(config, value, options)
@@ -204,7 +202,7 @@ class DefaultRuleParameter(NominalParameter):
         super().__init__(name='default_rule', description='Whether a default rule should be induced or not')
         self.add_value(name=BooleanOption.FALSE, mixin=NoDefaultRuleMixin)
         self.add_value(name=BooleanOption.TRUE, mixin=DefaultRuleMixin)
-        self.add_value(name=AUTOMATIC, mixin=AutomaticDefaultRuleMixin)
+        self.add_value(name=AUTO, mixin=AutomaticDefaultRuleMixin)
 
     @override
     def _configure(self, config, value: str, _: Options):
@@ -212,7 +210,7 @@ class DefaultRuleParameter(NominalParameter):
             config.use_no_default_rule()
         elif value == BooleanOption.TRUE:
             config.use_default_rule()
-        elif value == AUTOMATIC:
+        elif value == AUTO:
             config.use_automatic_default_rule()
 
 
@@ -230,10 +228,10 @@ class StatisticFormatParameter(NominalParameter):
                          description='The format to be used for the representation of gradients and Hessians')
         self.add_value(name=self.STATISTIC_FORMAT_DENSE, mixin=DenseStatisticsMixin)
         self.add_value(name=self.STATISTIC_FORMAT_SPARSE, mixin=SparseStatisticsMixin)
-        self.add_value(name=AUTOMATIC,
+        self.add_value(name=AUTO,
                        mixin=AutomaticStatisticsMixin,
-                       description='If set to "' + AUTOMATIC + '", the most suitable format is chosen automatically '
-                       + 'based on the parameters ' + RegressionLossParameter().argument_name + ', '
+                       description='If set to "' + AUTO + '", the most suitable format is chosen automatically based '
+                       + 'on the parameters ' + RegressionLossParameter().argument_name + ', '
                        + HeadTypeParameter().argument_name + ', ' + DefaultRuleParameter().argument_name + ' and the '
                        + 'characteristics of the label matrix')
 
@@ -243,7 +241,7 @@ class StatisticFormatParameter(NominalParameter):
             config.use_dense_statistics()
         elif value == self.STATISTIC_FORMAT_SPARSE:
             config.use_sparse_statistics()
-        elif value == AUTOMATIC:
+        elif value == AUTO:
             config.use_automatic_statistics()
 
 
@@ -259,10 +257,10 @@ class LabelBinningParameter(NominalParameter):
         self.add_value(name=BINNING_EQUAL_WIDTH,
                        mixin=EqualWidthLabelBinningMixin,
                        options={OPTION_BIN_RATIO, OPTION_MIN_BINS, OPTION_MAX_BINS})
-        self.add_value(name=AUTOMATIC,
+        self.add_value(name=AUTO,
                        mixin=AutomaticLabelBinningMixin,
-                       description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
-                       + 'based on the parameters ' + RegressionLossParameter().argument_name + ' and '
+                       description='If set to "' + AUTO + '", the most suitable strategy is chosen automatically based '
+                       + 'on the parameters ' + RegressionLossParameter().argument_name + ' and '
                        + HeadTypeParameter().argument_name)
 
     @override
@@ -274,7 +272,7 @@ class LabelBinningParameter(NominalParameter):
             conf.set_bin_ratio(options.get_float(OPTION_BIN_RATIO, conf.get_bin_ratio()))
             conf.set_min_bins(options.get_int(OPTION_MIN_BINS, conf.get_min_bins()))
             conf.set_max_bins(options.get_int(OPTION_MAX_BINS, conf.get_max_bins()))
-        elif value == AUTOMATIC:
+        elif value == AUTO:
             config.use_automatic_label_binning()
 
 
@@ -367,10 +365,10 @@ class HeadTypeParameter(NominalParameter):
                        mixin=DynamicPartialHeadMixin,
                        options={self.OPTION_THRESHOLD, self.OPTION_EXPONENT})
         self.add_value(name=self.HEAD_TYPE_COMPLETE, mixin=CompleteHeadMixin)
-        self.add_value(name=AUTOMATIC,
+        self.add_value(name=AUTO,
                        mixin=AutomaticHeadMixin,
-                       description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
-                       + 'based on the parameter ' + RegressionLossParameter().argument_name)
+                       description='If set to "' + AUTO + '", the most suitable strategy is chosen automatically based '
+                       + 'on the parameter ' + RegressionLossParameter().argument_name)
 
     @override
     def _configure(self, config, value: str, options: Options):
@@ -387,7 +385,7 @@ class HeadTypeParameter(NominalParameter):
             conf.set_exponent(options.get_float(self.OPTION_EXPONENT, conf.get_exponent()))
         elif value == self.HEAD_TYPE_COMPLETE:
             config.use_complete_heads()
-        elif value == AUTOMATIC:
+        elif value == AUTO:
             config.use_automatic_heads()
 
 
@@ -458,9 +456,9 @@ class BinaryPredictorParameter(NominalParameter):
         self.add_value(name=self.BINARY_PREDICTOR_GFM,
                        mixin=GfmBinaryPredictorMixin,
                        options={OPTION_USE_PROBABILITY_CALIBRATION_MODEL})
-        self.add_value(name=AUTOMATIC,
+        self.add_value(name=AUTO,
                        mixin=AutomaticBinaryPredictorMixin,
-                       description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
+                       description='If set to "' + AUTO + '", the most suitable strategy is chosen automatically '
                        + 'based on the parameter ' + RegressionLossParameter().argument_name)
 
     @override
@@ -484,7 +482,7 @@ class BinaryPredictorParameter(NominalParameter):
             conf.set_use_probability_calibration_model(
                 options.get_bool(OPTION_USE_PROBABILITY_CALIBRATION_MODEL,
                                  conf.is_probability_calibration_model_used()))
-        elif value == AUTOMATIC:
+        elif value == AUTO:
             config.use_automatic_binary_predictor()
 
 
@@ -506,10 +504,10 @@ class ProbabilityPredictorParameter(NominalParameter):
         self.add_value(name=self.PROBABILITY_PREDICTOR_MARGINALIZED,
                        mixin=MarginalizedProbabilityPredictorMixin,
                        options={OPTION_USE_PROBABILITY_CALIBRATION_MODEL})
-        self.add_value(name=AUTOMATIC,
+        self.add_value(name=AUTO,
                        mixin=AutomaticProbabilityPredictorMixin,
-                       description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
-                       + 'based on the parameter ' + RegressionLossParameter().argument_name)
+                       description='If set to "' + AUTO + '", the most suitable strategy is chosen automatically based '
+                       + 'on the parameter ' + RegressionLossParameter().argument_name)
 
     @override
     def _configure(self, config, value: str, options: Options):
@@ -523,7 +521,7 @@ class ProbabilityPredictorParameter(NominalParameter):
             conf.set_use_probability_calibration_model(
                 options.get_bool(OPTION_USE_PROBABILITY_CALIBRATION_MODEL,
                                  conf.is_probability_calibration_model_used()))
-        elif value == AUTOMATIC:
+        elif value == AUTO:
             config.use_automatic_probability_predictor()
 
 

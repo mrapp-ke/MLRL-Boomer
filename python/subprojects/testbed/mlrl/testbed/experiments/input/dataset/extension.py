@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import List, Set, Type, override
 
 from mlrl.testbed.command import ArgumentList
+from mlrl.testbed.experiments.input.dataset.arguments import DatasetArguments
 from mlrl.testbed.experiments.input.dataset.dataset import InputDataset
 from mlrl.testbed.experiments.input.dataset.reader import DatasetReader
 from mlrl.testbed.experiments.input.sources import FileSource, Source
@@ -24,18 +25,12 @@ class DatasetExtension(Extension, ABC):
     An abstract base class for all extensions that configure the functionality to load datasets.
     """
 
-    DATASET_NAME = StringArgument(
-        '--dataset',
-        required=True,
-        description='The name of the dataset.',
-    )
-
     @override
     def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return {self.DATASET_NAME}
+        return {DatasetArguments.DATASET_NAME}
 
     @abstractmethod
     def _create_source(self, dataset: InputDataset, args: Namespace) -> Source:
@@ -54,7 +49,7 @@ class DatasetExtension(Extension, ABC):
         :param args:    The command line arguments specified by the user
         :return:        The `DatasetReader` to be used
         """
-        dataset = InputDataset(name=self.DATASET_NAME.get_value(args))
+        dataset = InputDataset(name=DatasetArguments.DATASET_NAME.get_value(args))
         source = self._create_source(dataset, args)
         return DatasetReader(source=source, input_data=dataset)
 
@@ -130,7 +125,7 @@ class DatasetFileExtension(DatasetExtension, ABC):
                 dataset_args.append(
                     ArgumentList([
                         DatasetFileExtension.DATASET_DIRECTORY.name, dataset_dict['directory'],
-                        DatasetFileExtension.DATASET_NAME.name, dataset_name
+                        DatasetArguments.DATASET_NAME.name, dataset_name
                     ]))
 
         return dataset_args

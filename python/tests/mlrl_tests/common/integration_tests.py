@@ -17,8 +17,7 @@ from mlrl.common.config.parameters import BINNING_EQUAL_FREQUENCY, BINNING_EQUAL
     RulePruningParameter
 from mlrl.common.learners import SparsePolicy
 
-from mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension import OPTION_FIRST_FOLD, OPTION_LAST_FOLD, \
-    OPTION_NUM_FOLDS, VALUE_CROSS_VALIDATION, VALUE_TRAIN_TEST
+from mlrl.testbed_sklearn.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 
 from mlrl.testbed.modes import Mode
 
@@ -68,7 +67,6 @@ class IntegrationTests(ABC):
         builder = self._create_cmd_builder() \
             .set_mode(Mode.MODE_BATCH) \
             .save_models() \
-            .load_models() \
             .save_parameters() \
             .save_all()
         CmdRunner(builder).run('batch-mode')
@@ -79,13 +77,20 @@ class IntegrationTests(ABC):
             .save_models() \
             .save_parameters() \
             .save_all() \
-            .data_split(VALUE_CROSS_VALIDATION, options=Options({OPTION_NUM_FOLDS: 2}))
+            .data_split(DatasetSplitterArguments.VALUE_CROSS_VALIDATION,
+                        options=Options({DatasetSplitterArguments.OPTION_NUM_FOLDS: 2}))
         CmdRunner(builder).run('batch-mode-separate-folds')
 
     def test_batch_mode_list(self):
         builder = self._create_cmd_builder() \
             .set_mode(Mode.MODE_BATCH, '--list')
         CmdRunner(builder).run('batch-mode-list')
+
+    def test_batch_mode_slurm(self):
+        builder = self._create_cmd_builder() \
+            .set_mode(Mode.MODE_BATCH) \
+            .set_runner('slurm')
+        CmdRunner(builder).run('batch-mode-slurm')
 
     def test_single_output(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.single_output) \
@@ -104,14 +109,15 @@ class IntegrationTests(ABC):
 
     @pytest.mark.parametrize('data_split, data_split_options, predefined', [
         (NONE, Options(), False),
-        (VALUE_TRAIN_TEST, Options(), False),
-        (VALUE_TRAIN_TEST, Options(), True),
-        (VALUE_CROSS_VALIDATION, Options(), False),
-        (VALUE_CROSS_VALIDATION, Options(), True),
-        (VALUE_CROSS_VALIDATION, Options({
-            OPTION_FIRST_FOLD: 1,
-            OPTION_LAST_FOLD: 1,
-        }), False),
+        (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options(), False),
+        (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options(), True),
+        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION, Options(), False),
+        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION, Options(), True),
+        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION,
+         Options({
+             DatasetSplitterArguments.OPTION_FIRST_FOLD: 1,
+             DatasetSplitterArguments.OPTION_LAST_FOLD: 1,
+         }), False),
     ])
     def test_evaluation(self, data_split: str, data_split_options: Options, predefined: bool, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default + ('-predefined' if predefined else '')) \
@@ -136,13 +142,14 @@ class IntegrationTests(ABC):
         CmdRunner(builder).run('evaluation_incremental')
 
     @pytest.mark.parametrize('data_split, data_split_options', [
-        (VALUE_TRAIN_TEST, Options()),
-        (VALUE_TRAIN_TEST, Options()),
-        (VALUE_CROSS_VALIDATION, Options()),
-        (VALUE_CROSS_VALIDATION, Options({
-            OPTION_FIRST_FOLD: 1,
-            OPTION_LAST_FOLD: 1,
-        })),
+        (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options()),
+        (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options()),
+        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION, Options()),
+        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION,
+         Options({
+             DatasetSplitterArguments.OPTION_FIRST_FOLD: 1,
+             DatasetSplitterArguments.OPTION_LAST_FOLD: 1,
+         })),
     ])
     def test_model_persistence(self, data_split: str, data_split_options: Options, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
@@ -153,12 +160,13 @@ class IntegrationTests(ABC):
                                + (f'_{data_split_options}' if data_split_options else ''))
 
     @pytest.mark.parametrize('data_split, data_split_options', [
-        (VALUE_TRAIN_TEST, Options()),
-        (VALUE_CROSS_VALIDATION, Options()),
-        (VALUE_CROSS_VALIDATION, Options({
-            OPTION_FIRST_FOLD: 1,
-            OPTION_LAST_FOLD: 1,
-        })),
+        (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options()),
+        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION, Options()),
+        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION,
+         Options({
+             DatasetSplitterArguments.OPTION_FIRST_FOLD: 1,
+             DatasetSplitterArguments.OPTION_LAST_FOLD: 1,
+         })),
     ])
     def test_predictions(self, data_split: str, data_split_options: Options, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
@@ -183,12 +191,13 @@ class IntegrationTests(ABC):
         CmdRunner(builder).run('predictions_training-data')
 
     @pytest.mark.parametrize('data_split, data_split_options', [
-        (VALUE_TRAIN_TEST, Options()),
-        (VALUE_CROSS_VALIDATION, Options()),
-        (VALUE_CROSS_VALIDATION, Options({
-            OPTION_FIRST_FOLD: 1,
-            OPTION_LAST_FOLD: 1,
-        })),
+        (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options()),
+        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION, Options()),
+        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION,
+         Options({
+             DatasetSplitterArguments.OPTION_FIRST_FOLD: 1,
+             DatasetSplitterArguments.OPTION_LAST_FOLD: 1,
+         })),
     ])
     def test_prediction_characteristics(self, data_split: str, data_split_options: Options, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
@@ -210,12 +219,13 @@ class IntegrationTests(ABC):
         CmdRunner(builder).run('prediction-characteristics_training-data')
 
     @pytest.mark.parametrize('data_split, data_split_options', [
-        (VALUE_TRAIN_TEST, Options()),
-        (VALUE_CROSS_VALIDATION, Options()),
-        (VALUE_CROSS_VALIDATION, Options({
-            OPTION_FIRST_FOLD: 1,
-            OPTION_LAST_FOLD: 1,
-        })),
+        (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options()),
+        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION, Options()),
+        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION,
+         Options({
+             DatasetSplitterArguments.OPTION_FIRST_FOLD: 1,
+             DatasetSplitterArguments.OPTION_LAST_FOLD: 1,
+         })),
     ])
     def test_data_characteristics(self, data_split: str, data_split_options: Options, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
@@ -228,12 +238,13 @@ class IntegrationTests(ABC):
                                + (f'_{data_split_options}' if data_split_options else ''))
 
     @pytest.mark.parametrize('data_split, data_split_options', [
-        (VALUE_TRAIN_TEST, Options()),
-        (VALUE_CROSS_VALIDATION, Options()),
-        (VALUE_CROSS_VALIDATION, Options({
-            OPTION_FIRST_FOLD: 1,
-            OPTION_LAST_FOLD: 1,
-        })),
+        (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options()),
+        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION, Options()),
+        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION,
+         Options({
+             DatasetSplitterArguments.OPTION_FIRST_FOLD: 1,
+             DatasetSplitterArguments.OPTION_LAST_FOLD: 1,
+         })),
     ])
     def test_model_characteristics(self, data_split: str, data_split_options: Options, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
@@ -246,12 +257,13 @@ class IntegrationTests(ABC):
                                + (f'_{data_split_options}' if data_split_options else ''))
 
     @pytest.mark.parametrize('data_split, data_split_options', [
-        (VALUE_TRAIN_TEST, Options()),
-        (VALUE_CROSS_VALIDATION, Options()),
-        (VALUE_CROSS_VALIDATION, Options({
-            OPTION_FIRST_FOLD: 1,
-            OPTION_LAST_FOLD: 1,
-        })),
+        (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options()),
+        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION, Options()),
+        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION,
+         Options({
+             DatasetSplitterArguments.OPTION_FIRST_FOLD: 1,
+             DatasetSplitterArguments.OPTION_LAST_FOLD: 1,
+         })),
     ])
     def test_rules(self, data_split: str, data_split_options: Options, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
@@ -290,12 +302,13 @@ class IntegrationTests(ABC):
         CmdRunner(builder).run(f'prediction-format-{prediction_format}')
 
     @pytest.mark.parametrize('data_split, data_split_options', [
-        (VALUE_TRAIN_TEST, Options()),
-        (VALUE_CROSS_VALIDATION, Options()),
-        (VALUE_CROSS_VALIDATION, Options({
-            OPTION_FIRST_FOLD: 1,
-            OPTION_LAST_FOLD: 1
-        })),
+        (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options()),
+        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION, Options()),
+        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION,
+         Options({
+             DatasetSplitterArguments.OPTION_FIRST_FOLD: 1,
+             DatasetSplitterArguments.OPTION_LAST_FOLD: 1
+         })),
     ])
     def test_parameters(self, data_split: str, data_split_options: Options, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
