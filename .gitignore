@@ -11,7 +11,8 @@
 # Visual Studio Code
 .vscode/
 
-# Folders commonly used for experiments
+# Folders and files commonly used for experiments
 /data/
 /experiments/
 /config/
+/sbatch_*.sh

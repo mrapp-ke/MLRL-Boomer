@@ -53,6 +53,8 @@ MLRL-Testbed supports different modes of operation configurable via the argument
 
 #### Batch Mode
 
+> A more detailed description of the following arguments can be found {ref}`here<testbed-batch-mode>`.
+
 In {ref}`batch mode <testbed-batch-mode>`, the following mandatory arguments must be given as well:
 
 - `--config` An absolute or relative path to a YAML file that defines the batch of experiments to be run.
@@ -66,6 +68,26 @@ In addition, the batch mode comes with the following optional arguments:
 - `--runner` (Default value = `sequential`)
 
   - `sequential` The experiments are run sequentially.
+
+```{important}
+The following arguments are only available if the optional package [mlrl-testbed-slurm](https://pypi.org/project/mlrl-testbed-slurm/) is installed.
+```
+
+If the package [mlrl-testbed-slurm](https://pypi.org/project/mlrl-testbed-slurm/) that brings support for the [Slurm Workload Manager](https://wikipedia.org/wiki/Slurm_Workload_Manager) is installed, the following arguments are available as well:
+
+- `--slurm-config` (Optional) An absolute or relative path to a YAML file that customizes the Slurm scripts for running jobs.
+
+- `--print-slurm-scripts` (Default value = `false`)
+
+  - `true` The content of the generated Slurm scripts are printed on the console.
+  - `false` The content of the generated Slurm scripts are not printed.
+
+- `--save-slurm-scripts` (Default value = `false`)
+
+  - `true` Slurm scripts are saved to output files.
+  - `false` Slurm scripts are not saved to output files.
+
+- `--slurm-save-dir` (Default value = `.`) An absolute or relative path to the directory where Slurm scripts should be saved.
 
 ### Dataset
 
