@@ -32,6 +32,8 @@ The package [mlrl-testbed-sklearn](https://pypi.org/project/mlrl-testbed-sklearn
 pip install mlrl-testbed-sklearn
 ```
 
+Optionally, support for the [Slurm Workload Manager](https://wikipedia.org/wiki/Slurm_Workload_Manager) can be installed via the package [mlrl-testbed-slurm](https://pypi.org/project/mlrl-testbed-slurm/).
+
 ### 💡 Example
 
 By writing just a small amount of code, any scikit-learn compatible [estimator](https://scikit-learn.org/stable/glossary.html#term-estimators) can be integrated with MLRL-Testbed and used in experiments. For example, the following code integrates scikit-learn's [RandomForestClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier):

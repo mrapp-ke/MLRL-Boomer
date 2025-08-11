@@ -10,8 +10,9 @@ from .cmd_builder import BoomerCmdBuilderMixin
 
 from mlrl.common.config.parameters import BINNING_EQUAL_WIDTH
 
-from mlrl.boosting.config.parameters import AUTOMATIC, PROBABILITY_CALIBRATION_ISOTONIC
+from mlrl.boosting.config.parameters import PROBABILITY_CALIBRATION_ISOTONIC
 
+from mlrl.util.cli import AUTO
 from mlrl.util.options import Options
 
 
@@ -53,7 +54,7 @@ class BoomerClassifierCmdBuilder(ClassificationCmdBuilder, BoomerCmdBuilderMixin
 
         return self
 
-    def binary_predictor(self, binary_predictor: Optional[str] = AUTOMATIC, options: Options = Options()):
+    def binary_predictor(self, binary_predictor: Optional[str] = AUTO, options: Options = Options()):
         """
         Configures the algorithm to use a specific method for predicting binary labels.
 
@@ -67,7 +68,7 @@ class BoomerClassifierCmdBuilder(ClassificationCmdBuilder, BoomerCmdBuilderMixin
 
         return self
 
-    def probability_predictor(self, probability_predictor: Optional[str] = AUTOMATIC):
+    def probability_predictor(self, probability_predictor: Optional[str] = AUTO):
         """
         Configures the algorithm to use a specific method for predicting probabilities.
 

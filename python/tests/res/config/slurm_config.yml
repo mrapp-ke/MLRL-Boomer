@@ -1,0 +1,10 @@
+---
+sbatch-arguments:
+  - --time=2:30:00
+  - --cpus-per-tasks=1
+before-script: |
+  python -m venv .venv
+  . .venv/bin/activate
+  python -m pip install mlrl-testbed-sklearn
+after-script: |-
+  deactivate

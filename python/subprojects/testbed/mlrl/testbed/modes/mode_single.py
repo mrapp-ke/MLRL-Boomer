@@ -6,6 +6,7 @@ Provides classes that implement a mode of operation for performing a single expe
 from argparse import Namespace
 from typing import override
 
+from mlrl.testbed.command import Command
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.modes.mode import Mode
 
@@ -23,5 +24,6 @@ class SingleMode(Mode):
 
     @override
     def run_experiment(self, args: Namespace, recipe: Recipe):
-        experiment_builder = recipe.create_experiment_builder(args)
+        command = Command.from_argv()
+        experiment_builder = recipe.create_experiment_builder(args, command)
         experiment_builder.run()

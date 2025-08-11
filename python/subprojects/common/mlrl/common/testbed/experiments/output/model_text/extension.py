@@ -11,6 +11,7 @@ from mlrl.common.testbed.experiments.output.model_text.model_text import RuleMod
 from mlrl.common.testbed.experiments.output.model_text.writer import RuleModelAsTextWriter
 
 from mlrl.testbed.experiments import Experiment
+from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
@@ -61,20 +62,20 @@ class RuleModelAsTextExtension(Extension):
         return {self.PRINT_RULES, self.SAVE_RULES}
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
-        value, options = self.PRINT_RULES.get_value(args, default=OutputExtension.PRINT_ALL.get_value(args))
+        value, options = self.PRINT_RULES.get_value(args, default=OutputArguments.PRINT_ALL.get_value(args))
 
         if value:
             return [LogSink(options)]
         return []
 
     def __create_text_file_sinks(self, args: Namespace) -> List[Sink]:
-        value, options = self.SAVE_RULES.get_value(args, default=OutputExtension.SAVE_ALL.get_value(args))
-        result_directory = ResultDirectoryExtension.RESULT_DIR.get_value(args)
+        value, options = self.SAVE_RULES.get_value(args, default=OutputArguments.SAVE_ALL.get_value(args))
+        result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
         if value and result_directory:
             return [
                 TextFileSink(directory=Path(result_directory),
-                             create_directory=OutputExtension.CREATE_DIRS.get_value(args),
+                             create_directory=OutputArguments.CREATE_DIRS.get_value(args),
                              options=options)
             ]
         return []
