@@ -1,0 +1,7 @@
+mlrl.testbed\_slurm.extension module
+====================================
+
+.. automodule:: mlrl.testbed_slurm.extension
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+mlrl.testbed\_slurm.sbatch module
+=================================
+
+.. automodule:: mlrl.testbed_slurm.sbatch
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+mlrl.testbed\_slurm.arguments module
+====================================
+
+.. automodule:: mlrl.testbed_slurm.arguments
+   :members:
+   :show-inheritance:
+   :undoc-members:
