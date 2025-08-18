@@ -53,6 +53,7 @@ class BoomerClassifier(ProbabilisticClassificationRuleLearner):
         shrinkage: float | None = 0.3,
         l1_regularization_weight: float | None = None,
         l2_regularization_weight: float | None = None,
+        quantization: str | None = None,
         parallel_rule_refinement: str | None = None,
         parallel_statistic_update: str | None = None,
         parallel_prediction: str | None = None,
@@ -141,6 +142,9 @@ class BoomerClassifier(ProbabilisticClassificationRuleLearner):
                                                     used to shrink the weight of individual rules. Must be in (0, 1]
         :param l1_regularization_weight:            The weight of the L1 regularization. Must be at least 0
         :param l2_regularization_weight:            The weight of the L2 regularization. Must be at least 0
+        :param quantization:                        The method that should be used for quantizing gradients and
+                                                    Hessians. Must be one 'stochastic' or 'none', if no quantization
+                                                    should be used
         :param parallel_rule_refinement:            Whether potential refinements of rules should be searched for in
                                                     parallel or not. Must be 'true', 'false' or 'auto', if the most
                                                     suitable strategy should be chosen automatically depending on the
@@ -182,6 +186,7 @@ class BoomerClassifier(ProbabilisticClassificationRuleLearner):
         self.shrinkage = shrinkage
         self.l1_regularization_weight = l1_regularization_weight
         self.l2_regularization_weight = l2_regularization_weight
+        self.quantization = quantization
         self.parallel_rule_refinement = parallel_rule_refinement
         self.parallel_statistic_update = parallel_statistic_update
         self.parallel_prediction = parallel_prediction
