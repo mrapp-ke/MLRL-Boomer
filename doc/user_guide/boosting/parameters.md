@@ -554,6 +554,21 @@ The following parameters can be used to control various approximation and optimi
 `'64-bit'`
 : 64-bit floating point values are used for representing gradients and Hessians.
 
+### `quantization`
+
+> *Default value = `'none'`.*
+
+`'none'`
+
+: No quantization is used.
+
+`'stochastic'`
+
+: Gradients and Hessians are quantized using a stochastic rounding strategy. The following options may be provided using the {ref}`bracket notation<bracket-notation>`:
+
+  `num_bits` *(Default value = `4`)*
+  : The number of bits to be used for quantized gradients and Hessians. The given value must be at least 1.
+
 ## Probability Calibration
 
 The following parameters enable to learn calibration models that should be included in a model and may result in more accurate probability estimates being predicted.
