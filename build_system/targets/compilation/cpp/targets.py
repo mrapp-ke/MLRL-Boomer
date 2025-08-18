@@ -69,6 +69,7 @@ class CompileCpp(PhonyTarget.Runnable):
     def run(self, build_unit: BuildUnit, module: Module):
         compilation_module = cast(CompilationModule, module)
         Log.info('Compiling C++ code in directory "%s"...', compilation_module.root_directory)
+        MesonSetup(build_unit, compilation_module, '--reconfigure', *MESON_OPTIONS, build_options=BUILD_OPTIONS).run()
         MesonConfigure(build_unit, compilation_module, *MESON_OPTIONS, build_options=BUILD_OPTIONS).run()
         MesonCompile(build_unit, compilation_module).run()
 
