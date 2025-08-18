@@ -10,8 +10,7 @@ from mlrl.common.config.parameters import BINNING_EQUAL_WIDTH, SAMPLING_WITHOUT_
     PartitionSamplingParameter, PostOptimizationParameter, RuleInductionParameter, RulePruningParameter
 from mlrl.common.learners import SparsePolicy
 
-from mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension import OPTION_FIRST_FOLD, OPTION_NUM_FOLDS, \
-    VALUE_CROSS_VALIDATION, VALUE_TRAIN_TEST
+from mlrl.testbed_sklearn.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 
 from mlrl.testbed.modes import Mode
 
@@ -48,6 +47,7 @@ class CmdBuilder:
         self.runnable_module_name = runnable_module_name
         self.runnable_class_name = runnable_class_name
         self.mode: Optional[str] = None
+        self.runner: Optional[str] = None
         self.show_help = False
         self.dataset = dataset
         self.parameter_save_dir: Optional[Path] = None
@@ -118,6 +118,13 @@ class CmdBuilder:
 
         if self.mode == Mode.MODE_BATCH:
             args.extend(('--config', str(self.batch_config)))
+
+            if self.runner:
+                args.extend(('--runner', self.runner))
+
+                if self.runner == 'slurm':
+                    args.extend(('--slurm-config', str(self.CONFIG_DIR / 'slurm_config.yml'), '--print-slurm-scripts',
+                                 'true', '--save-slurm-scripts', 'true', '--slurm-save-dir', str(self.base_dir)))
         else:
             args.extend(('--data-dir', str(self.RESOURCE_DIR / 'data')))
             args.extend(('--dataset', self.dataset))
@@ -149,6 +156,16 @@ class CmdBuilder:
         """
         self.mode = mode
         self.args.extend(extra_args)
+        return self
+
+    def set_runner(self, runner: Optional[str] = 'sequential'):
+        """
+        Configures the runner to be used in batch mode.
+
+        :param runner:  The name of the runner to be used
+        :return:        The builder itself
+        """
+        self.runner = runner
         return self
 
     def set_show_help(self, show_help: bool = True):
@@ -204,7 +221,9 @@ class CmdBuilder:
         self.args.append(str(True).lower())
         return self
 
-    def data_split(self, data_split: Optional[str] = VALUE_TRAIN_TEST, options: Options = Options()):
+    def data_split(self,
+                   data_split: Optional[str] = DatasetSplitterArguments.VALUE_TRAIN_TEST,
+                   options: Options = Options()):
         """
         Configures the rule learner to use a specific strategy for splitting datasets into training and test datasets.
 
@@ -217,11 +236,11 @@ class CmdBuilder:
         current_fold = None
 
         if data_split:
-            if data_split == VALUE_CROSS_VALIDATION:
-                num_folds = options.get_int(OPTION_NUM_FOLDS, 10)
-                first_fold = options.get_int(OPTION_FIRST_FOLD, 0)
+            if data_split == DatasetSplitterArguments.VALUE_CROSS_VALIDATION:
+                num_folds = options.get_int(DatasetSplitterArguments.OPTION_NUM_FOLDS, 10)
+                first_fold = options.get_int(DatasetSplitterArguments.OPTION_FIRST_FOLD, 0)
 
-                if first_fold > 0 and first_fold == options.get_int(OPTION_FIRST_FOLD, 0):
+                if first_fold > 0 and first_fold == options.get_int(DatasetSplitterArguments.OPTION_FIRST_FOLD, 0):
                     current_fold = first_fold
 
             self.args.append(data_split + (str(options) if options else ''))

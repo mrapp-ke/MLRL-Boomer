@@ -25,17 +25,19 @@ from mlrl.testbed_sklearn.experiments.prediction.predictor import Predictor
 from mlrl.testbed_sklearn.experiments.problem_domain import SkLearnClassificationProblem, SkLearnProblem, \
     SkLearnRegressionProblem
 
-from mlrl.testbed.command import ArgumentList
+from mlrl.testbed.command import ArgumentList, Command
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.input.dataset.extension import DatasetFileExtension
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
 from mlrl.testbed.experiments.input.model.extension import ModelInputExtension
 from mlrl.testbed.experiments.input.parameters.extension import ParameterInputExtension
+from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.output.model.extension import ModelOutputDirectoryExtension, ModelOutputExtension
 from mlrl.testbed.experiments.output.parameters.extension import ParameterOutputDirectoryExtension, \
     ParameterOutputExtension
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.modes.mode_batch import BatchMode
 from mlrl.testbed.runnables import Runnable
@@ -182,11 +184,13 @@ class SkLearnRunnable(Runnable, ABC):
         return DatasetSplitterExtension.get_dataset_splitter(args)
 
     @override
-    def create_experiment_builder(self, args: Namespace) -> Experiment.Builder:
+    def create_experiment_builder(self, args: Namespace, command: Command) -> Experiment.Builder:
         """
         See :func:`mlrl.testbed.experiments.recipe.Recipe.create_experiment_builder`
         """
-        return SkLearnExperiment.Builder(problem_domain=self.create_problem_domain(args),
+        meta_data = MetaData(command=command)
+        initial_state = ExperimentState(meta_data=meta_data, problem_domain=self.create_problem_domain(args))
+        return SkLearnExperiment.Builder(initial_state=initial_state,
                                          dataset_splitter=self.create_dataset_splitter(args))
 
     @override

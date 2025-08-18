@@ -29,9 +29,13 @@ classifiers = [
 dependencies = [
     "mlrl-testbed-sklearn",
     "mlrl-util",
+    "pyyaml",
     "tabulate",
     "yamale",
 ]
+
+[project.optional-dependencies]
+testbed = ["mlrl-testbed-slurm"]
 
 [project.urls]
 homepage = "https://github.com/mrapp-ke/MLRL-Boomer"

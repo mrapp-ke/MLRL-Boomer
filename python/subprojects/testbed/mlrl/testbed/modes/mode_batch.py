@@ -11,20 +11,33 @@ from abc import ABC, abstractmethod
 from argparse import Namespace
 from dataclasses import dataclass, field
 from functools import cached_property, reduce
+from itertools import chain
 from pathlib import Path
 from typing import Any, Callable, Generator, Iterable, List, Optional, override
 
 import yamale
 
+from mlrl.testbed_sklearn.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
+
+from mlrl.testbed_slurm.arguments import SlurmArguments
+
 from mlrl.testbed.command import ArgumentDict, ArgumentList, Command
 from mlrl.testbed.experiments.fold import FoldingStrategy
+from mlrl.testbed.experiments.input.dataset.arguments import DatasetArguments
+from mlrl.testbed.experiments.meta_data import MetaData
+from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
+from mlrl.testbed.experiments.output.meta_data.arguments import MetaDataArguments
+from mlrl.testbed.experiments.output.meta_data.writer import MetaDataWriter
+from mlrl.testbed.experiments.output.model.arguments import ModelOutputDirectoryArguments
+from mlrl.testbed.experiments.output.parameters.arguments import ParameterOutputDirectoryArguments
+from mlrl.testbed.experiments.output.sinks import YamlFileSink
 from mlrl.testbed.experiments.recipe import Recipe
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.modes.mode import Mode
 
-from mlrl.util.cli import BoolArgument, CommandLineInterface, FlagArgument, SetArgument, StringArgument
-from mlrl.util.format import format_iterable
-from mlrl.util.options import Options
+from mlrl.util.cli import AUTO, BoolArgument, CommandLineInterface, FlagArgument, SetArgument, StringArgument
+from mlrl.util.options import BooleanOption, Options
 
 Batch = List[Command]
 
@@ -82,8 +95,6 @@ class BatchMode(Mode):
         @override
         def run_batch(self, args: Namespace, batch: Batch, recipe: Recipe):
             for i, command in enumerate(batch):
-                recipe.create_experiment_builder(command.apply_to_namespace(args))
-
                 if i > 0:
                     log.info('')
 
@@ -100,21 +111,15 @@ class BatchMode(Mode):
         @override
         def run_batch(self, args: Namespace, batch: Batch, recipe: Recipe):
             start_time = Timer.start()
-
-            namespaces = [command.apply_to_namespace(args) for command in batch]
             num_experiments = len(batch)
 
-            for experiment_namespace in namespaces:
-                recipe.create_experiment_builder(experiment_namespace)  # For validation
-
-            for i, (experiment_namespace, command) in enumerate(zip(namespaces, batch)):
+            for i, command in enumerate(batch):
                 if i == 0:
                     log.info('Running %s %s...', num_experiments,
                              'experiments' if num_experiments > 1 else 'experiment')
 
-                log.info('\nRunning experiment (%s / %s): "%s"', i + 1, num_experiments,
-                         format_iterable(command, separator=' '))
-                recipe.create_experiment_builder(experiment_namespace).run()
+                log.info('\nRunning experiment (%s / %s): "%s"', i + 1, num_experiments, str(command))
+                recipe.create_experiment_builder(command.apply_to_namespace(args), command).run()
 
             run_time = Timer.stop(start_time)
             log.info('Successfully finished %s %s after %s', num_experiments,
@@ -170,7 +175,8 @@ class BatchMode(Mode):
 
         def __init__(self, file_path: str, schema_file_path: str):
             """
-            :param file_path: The path to the configuration file
+            :param file_path:           The path to the configuration file
+            :param schema_file_path:    The path to a YAML schema file
             """
             schema = yamale.make_schema(schema_file_path)
             data = yamale.make_data(file_path)
@@ -266,31 +272,57 @@ class BatchMode(Mode):
             description=self.RUNNER.description,
         )
 
-    def __process_commands(self, namespace: Namespace, config_file: ConfigFile, recipe: Recipe):
-        separate_folds = self.SEPARATE_FOLDS.get_value(namespace)
-        batch = list(self.__get_commands(namespace, config_file, recipe, separate_folds=separate_folds))
-        runner = self.__get_runner(namespace)
-        runner.run_batch(namespace, batch, recipe)
+    def __process_commands(self, args: Namespace, config_file: ConfigFile, recipe: Recipe):
+        separate_folds = self.SEPARATE_FOLDS.get_value(args)
+        batch = list(self.__get_commands(args, config_file, recipe, separate_folds=separate_folds))
 
-    def __get_runner(self, namespace: Namespace) -> 'BatchMode.Runner':
-        if self.LIST_COMMANDS.get_value(namespace):
+        # Validate arguments for individual experiments...
+        has_output_file_writers = False
+
+        for command in batch:
+            experiment_builder = recipe.create_experiment_builder(command.apply_to_namespace(args), command)
+            has_output_file_writers |= experiment_builder.has_output_file_writers
+
+        self.__write_meta_data(args, recipe, batch, has_output_file_writers=has_output_file_writers)
+
+        runner = self.__get_runner(args)
+        runner.run_batch(args, batch, recipe)
+
+    @staticmethod
+    def __write_meta_data(args: Namespace, recipe: Recipe, batch: Batch, has_output_file_writers: bool):
+        save_meta_data = MetaDataArguments.SAVE_META_DATA.get_value(args)
+
+        if save_meta_data == BooleanOption.TRUE or (save_meta_data == AUTO and has_output_file_writers):
+            base_dir = OutputArguments.BASE_DIR.get_value(args)
+
+            if base_dir:
+                create_directory = OutputArguments.CREATE_DIRS.get_value(args)
+                sink = YamlFileSink(directory=Path(base_dir), create_directory=create_directory)
+                batch_command = Command.from_argv()
+                meta_data = MetaData(command=batch_command, child_commands=batch)
+                state = ExperimentState(meta_data=meta_data, problem_domain=recipe.create_problem_domain(args))
+                MetaDataWriter().add_sinks(sink).write(state)
+
+    def __get_runner(self, args: Namespace) -> 'BatchMode.Runner':
+        if self.LIST_COMMANDS.get_value(args):
             return BatchMode.LogRunner()
 
         runner_argument = self.__create_runner_argument()
-        runner_name = runner_argument.get_value(namespace)
+        runner_name = runner_argument.get_value(args)
         runners_by_name = {runner.name: runner for runner in self.runners}
         return runners_by_name[runner_name]
 
     @staticmethod
-    def __get_commands(namespace: Namespace,
+    def __get_commands(args: Namespace,
                        config_file: ConfigFile,
                        recipe: Recipe,
                        separate_folds: bool = False) -> Generator[Command, None, None]:
         module_name = sys.argv[1]
         default_args = BatchMode.__filter_arguments(ArgumentList(sys.argv[2:]))
+        base_dir = OutputArguments.BASE_DIR.get_value(args)
 
         for dataset_args in map(BatchMode.__filter_arguments, config_file.dataset_args):
-            dataset_name = dataset_args['--dataset']
+            dataset_name = dataset_args[DatasetArguments.DATASET_NAME.name]
 
             if not dataset_name:
                 raise RuntimeError('Unable to determine dataset name based on the arguments ' + str(dataset_args))
@@ -299,14 +331,16 @@ class BatchMode(Mode):
                 output_dir = BatchMode.__get_output_dir(parameter_args, dataset_name)
                 argument_dict = ArgumentDict(
                     default_args | dataset_args | parameter_args | {
-                        '--result-dir': str(output_dir / 'results'),
-                        '--model-save-dir': str(output_dir / 'models'),
-                        '--parameter-save-dir': str(output_dir / 'parameters'),
+                        OutputArguments.BASE_DIR.name: str(base_dir),
+                        ResultDirectoryArguments.RESULT_DIR.name: str(output_dir / 'results'),
+                        ModelOutputDirectoryArguments.MODEL_SAVE_DIR.name: str(output_dir / 'models'),
+                        ParameterOutputDirectoryArguments.PARAMETER_SAVE_DIR.name: str(output_dir / 'parameters'),
+                        MetaDataArguments.SAVE_META_DATA.name: str(False).lower(),
                     })
-                command = Command(module_name=module_name, argument_list=argument_dict.to_list())
+                command = Command.from_dict(module_name=module_name, argument_dict=argument_dict)
 
                 if separate_folds:
-                    dataset_splitter = recipe.create_dataset_splitter(command.apply_to_namespace(namespace))
+                    dataset_splitter = recipe.create_dataset_splitter(command.apply_to_namespace(args))
                     folding_strategy = dataset_splitter.folding_strategy
 
                     if folding_strategy.is_cross_validation_used:
@@ -319,13 +353,17 @@ class BatchMode(Mode):
     @staticmethod
     def __separate_folds(folding_strategy: FoldingStrategy, module_name: str,
                          argument_dict: ArgumentDict) -> Generator[Command, None, None]:
-        options = Options({'num_folds': folding_strategy.num_folds})
+        options = Options({DatasetSplitterArguments.OPTION_NUM_FOLDS: folding_strategy.num_folds})
 
         for fold in folding_strategy.folds:
-            options.dictionary['first_fold'] = fold.index + 1
-            options.dictionary['last_fold'] = fold.index + 1
-            argument_dict_per_fold = ArgumentDict(argument_dict | {'--data-split': 'cross-validation' + str(options)})
-            yield Command(module_name=module_name, argument_list=argument_dict_per_fold.to_list())
+            options.dictionary[DatasetSplitterArguments.OPTION_FIRST_FOLD] = fold.index + 1
+            options.dictionary[DatasetSplitterArguments.OPTION_LAST_FOLD] = fold.index + 1
+            argument_dict_per_fold = ArgumentDict(
+                argument_dict | {
+                    DatasetSplitterArguments.DATASET_SPLITTER.name:
+                        DatasetSplitterArguments.VALUE_CROSS_VALIDATION + str(options)
+                })
+            yield Command.from_dict(module_name=module_name, argument_dict=argument_dict_per_fold)
 
     @staticmethod
     def __get_output_dir(argument_dict: ArgumentDict, dataset_name: str) -> Path:
@@ -335,8 +373,15 @@ class BatchMode(Mode):
 
     @staticmethod
     def __filter_arguments(argument_list: ArgumentList) -> ArgumentDict:
+        try:
+            slurm_arguments = list(
+                chain(SlurmArguments.PRINT_SLURM_SCRIPTS.names, SlurmArguments.SAVE_SLURM_SCRIPTS.names,
+                      SlurmArguments.SLURM_SAVE_DIR.names, SlurmArguments.SLURM_CONFIG_FILE.names))
+        except ImportError:
+            slurm_arguments = []
+
         return argument_list.filter(*BatchMode.CONFIG_FILE.names, *Mode.MODE.names, BatchMode.LIST_COMMANDS.name,
-                                    BatchMode.RUNNER.name).to_dict()
+                                    BatchMode.RUNNER.name, *slurm_arguments).to_dict()
 
     def __init__(self, config_file_factory: Optional[ConfigFile.Factory] = None):
         """

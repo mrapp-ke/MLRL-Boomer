@@ -1,4 +1,5 @@
 mlrl-testbed mlrl.boosting --mode batch --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/boosting/classification/batch_config.yml --save-evaluation true --list
+Writing output data to file "python/tests/res/tmp/metadata.yml"...
 mlrl-testbed mlrl.boosting \
     --base-dir python/tests/res/tmp \
     --data-dir python/tests/res/data \
@@ -9,7 +10,8 @@ mlrl-testbed mlrl.boosting \
     --model-save-dir instance-sampling_none/loss_logistic-decomposable/dataset_emotions/models \
     --parameter-save-dir instance-sampling_none/loss_logistic-decomposable/dataset_emotions/parameters \
     --result-dir instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results \
-    --save-evaluation true
+    --save-evaluation true \
+    --save-meta-data false
 
 mlrl-testbed mlrl.boosting \
     --base-dir python/tests/res/tmp \
@@ -22,7 +24,8 @@ mlrl-testbed mlrl.boosting \
     --model-save-dir instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/models \
     --parameter-save-dir instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/parameters \
     --result-dir instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results \
-    --save-evaluation true
+    --save-evaluation true \
+    --save-meta-data false
 
 mlrl-testbed mlrl.boosting \
     --base-dir python/tests/res/tmp \
@@ -34,7 +37,8 @@ mlrl-testbed mlrl.boosting \
     --model-save-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_logistic-decomposable/dataset_emotions/models \
     --parameter-save-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_logistic-decomposable/dataset_emotions/parameters \
     --result-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_logistic-decomposable/dataset_emotions/results \
-    --save-evaluation true
+    --save-evaluation true \
+    --save-meta-data false
 
 mlrl-testbed mlrl.boosting \
     --base-dir python/tests/res/tmp \
@@ -47,7 +51,8 @@ mlrl-testbed mlrl.boosting \
     --model-save-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/models \
     --parameter-save-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/parameters \
     --result-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results \
-    --save-evaluation true
+    --save-evaluation true \
+    --save-meta-data false
 
 mlrl-testbed mlrl.boosting \
     --base-dir python/tests/res/tmp \
@@ -59,7 +64,8 @@ mlrl-testbed mlrl.boosting \
     --model-save-dir instance-sampling_none/loss_logistic-decomposable/dataset_enron/models \
     --parameter-save-dir instance-sampling_none/loss_logistic-decomposable/dataset_enron/parameters \
     --result-dir instance-sampling_none/loss_logistic-decomposable/dataset_enron/results \
-    --save-evaluation true
+    --save-evaluation true \
+    --save-meta-data false
 
 mlrl-testbed mlrl.boosting \
     --base-dir python/tests/res/tmp \
@@ -72,7 +78,8 @@ mlrl-testbed mlrl.boosting \
     --model-save-dir instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/models \
     --parameter-save-dir instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/parameters \
     --result-dir instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results \
-    --save-evaluation true
+    --save-evaluation true \
+    --save-meta-data false
 
 mlrl-testbed mlrl.boosting \
     --base-dir python/tests/res/tmp \
@@ -84,7 +91,8 @@ mlrl-testbed mlrl.boosting \
     --model-save-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_logistic-decomposable/dataset_enron/models \
     --parameter-save-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_logistic-decomposable/dataset_enron/parameters \
     --result-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_logistic-decomposable/dataset_enron/results \
-    --save-evaluation true
+    --save-evaluation true \
+    --save-meta-data false
 
 mlrl-testbed mlrl.boosting \
     --base-dir python/tests/res/tmp \
@@ -97,4 +105,5 @@ mlrl-testbed mlrl.boosting \
     --model-save-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_logistic-decomposable/feature-format_sparse/dataset_enron/models \
     --parameter-save-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_logistic-decomposable/feature-format_sparse/dataset_enron/parameters \
     --result-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results \
-    --save-evaluation true
+    --save-evaluation true \
+    --save-meta-data false

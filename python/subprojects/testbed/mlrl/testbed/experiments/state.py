@@ -11,6 +11,7 @@ from typing import Any, Dict, Optional, Type
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.fold import Fold, FoldingStrategy
+from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.prediction_scope import PredictionScope
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
@@ -57,6 +58,7 @@ class ExperimentState:
     Represents the state of an experiment.
 
     Attributes:
+        meta_data:          Meta-data about the command that has been used for running the experiment
         problem_domain:     The problem domain, the experiment is concerned with
         folding_strategy:   The strategy that is used for creating different folds of the dataset during the experiment
         dataset_type:       The type of the dataset used in the experiment
@@ -66,8 +68,9 @@ class ExperimentState:
         training_result:    The result of the training process or None, if no model has been trained yet
         prediction_result:  The result of the prediction process or None, if no predictions have been obtained yet
     """
+    meta_data: MetaData
     problem_domain: ProblemDomain
-    folding_strategy: FoldingStrategy
+    folding_strategy: Optional[FoldingStrategy] = None
     dataset_type: DatasetType = DatasetType.TRAINING
     dataset: Optional[Dataset] = None
     fold: Optional[Fold] = None

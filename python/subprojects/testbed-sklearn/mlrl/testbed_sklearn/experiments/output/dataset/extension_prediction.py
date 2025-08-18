@@ -10,6 +10,7 @@ from typing import Set, override
 from mlrl.testbed_arff.experiments.output.sinks.sink_arff import ArffFileSink
 
 from mlrl.testbed.experiments.experiment import Experiment
+from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.extensions.extension import Extension
@@ -49,19 +50,19 @@ class PredictionExtension(Extension):
         return {self.PRINT_PREDICTIONS, self.SAVE_PREDICTIONS}
 
     def __configure_log_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
-        print_all = OutputExtension.PRINT_ALL.get_value(args)
+        print_all = OutputArguments.PRINT_ALL.get_value(args)
         print_predictions, options = self.PRINT_PREDICTIONS.get_value(args, default=print_all)
 
         if print_predictions:
             experiment_builder.prediction_writer.add_sinks(LogSink(options=options))
 
     def __configure_arff_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
-        save_all = OutputExtension.SAVE_ALL.get_value(args)
+        save_all = OutputArguments.SAVE_ALL.get_value(args)
         save_predictions, options = self.SAVE_PREDICTIONS.get_value(args, default=save_all)
-        result_directory = ResultDirectoryExtension.RESULT_DIR.get_value(args)
+        result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
         if save_predictions and result_directory:
-            create_directory = OutputExtension.CREATE_DIRS.get_value(args)
+            create_directory = OutputArguments.CREATE_DIRS.get_value(args)
             experiment_builder.prediction_writer.add_sinks(
                 ArffFileSink(directory=Path(result_directory), create_directory=create_directory, options=options))
 

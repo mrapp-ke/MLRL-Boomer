@@ -17,7 +17,6 @@ from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.fold import Fold, FoldingStrategy
 from mlrl.testbed.experiments.input.dataset import DatasetReader
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
-from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.state import ExperimentState
 
 
@@ -43,12 +42,12 @@ class CrossValidationSplitter(DatasetSplitter):
                 """
                 self.datasets = [None for _ in range(num_folds)]
 
-        def __get_training_dataset(self, state: ExperimentState) -> TabularDataset:
+        def __get_training_dataset(self, folding_strategy: FoldingStrategy, state: ExperimentState) -> TabularDataset:
             splitter = self.splitter
             cache = splitter.cache
             training_dataset = None
 
-            for fold_index in range(state.folding_strategy.num_folds):
+            for fold_index in range(folding_strategy.num_folds):
                 if fold_index != state.fold.index:
                     dataset = cache.datasets[fold_index] if cache else None
 
@@ -100,14 +99,15 @@ class CrossValidationSplitter(DatasetSplitter):
             """
             state = replace(self.state, dataset_type=dataset_type)
             splitter = self.splitter
+            folding_strategy = splitter.folding_strategy
 
             if not splitter.cache:
-                splitter.cache = CrossValidationSplitter.PredefinedSplit.Cache(state.folding_strategy.num_folds)
+                splitter.cache = CrossValidationSplitter.PredefinedSplit.Cache(folding_strategy.num_folds)
 
             if dataset_type == DatasetType.TEST:
                 dataset = self.__get_test_dataset(state)
             else:
-                dataset = self.__get_training_dataset(state)
+                dataset = self.__get_training_dataset(folding_strategy, state)
 
             return replace(state, dataset=dataset)
 
@@ -147,6 +147,7 @@ class CrossValidationSplitter(DatasetSplitter):
             """
             state = replace(self.state, dataset_type=dataset_type)
             splitter = self.splitter
+            folding_strategy = splitter.folding_strategy
             dataset_reader = splitter.dataset_reader
             cache = splitter.cache
 
@@ -154,8 +155,7 @@ class CrossValidationSplitter(DatasetSplitter):
                 state = dataset_reader.read(state)
                 dataset = state.dataset
                 cache = CrossValidationSplitter.DynamicSplit.Cache()
-                splits = KFold(n_splits=state.folding_strategy.num_folds,
-                               random_state=splitter.random_state,
+                splits = KFold(n_splits=folding_strategy.num_folds, random_state=splitter.random_state,
                                shuffle=True).split(dataset.x, dataset.y)
 
                 for training_examples, test_examples in splits:
@@ -188,7 +188,7 @@ class CrossValidationSplitter(DatasetSplitter):
         context.include_fold = True
 
     @override
-    def split(self, problem_domain: ProblemDomain) -> Generator[DatasetSplitter.Split, None, None]:
+    def split(self, state: ExperimentState) -> Generator[DatasetSplitter.Split, None, None]:
         """
         See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.split`
         """
@@ -201,7 +201,7 @@ class CrossValidationSplitter(DatasetSplitter):
             + ' of' if folding_strategy.is_subset else 'full', num_folds)
 
         # Check if predefined folds are available...
-        state = ExperimentState(problem_domain=problem_domain, folding_strategy=folding_strategy)
+        state = replace(state, folding_strategy=folding_strategy)
         predefined_splits_available = all(
             self.dataset_reader.is_available(replace(state, fold=Fold(fold_index))) for fold_index in range(num_folds))
 
