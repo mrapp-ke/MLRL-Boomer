@@ -38,14 +38,14 @@ jobs:
           private-key: ${{ secrets.token_app_secret }}
       - name: Checkout
         if: ${{ inputs.overwrite_output_files == true }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
           token: ${{ steps.app-token.outputs.token }}
           ref: ${{ github.head_ref }}
       - name: Checkout
         if: ${{ inputs.overwrite_output_files != true }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup git
         if: ${{ inputs.overwrite_output_files == true }}
         uses: fregante/setup-git-user@v2
