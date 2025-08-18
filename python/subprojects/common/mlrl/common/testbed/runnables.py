@@ -22,9 +22,12 @@ from mlrl.testbed_sklearn.experiments import SkLearnProblem
 from mlrl.testbed_sklearn.experiments.prediction.predictor import Predictor
 from mlrl.testbed_sklearn.runnables import SkLearnRunnable
 
+from mlrl.testbed.command import Command
 from mlrl.testbed.experiments import Experiment
+from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, RegressionProblem
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.extensions.extension import Extension
 
 from mlrl.util.cli import Argument, BoolArgument, EnumArgument, FloatArgument
@@ -276,11 +279,13 @@ class RuleLearnerRunnable(SkLearnRunnable):
                                                                          predict_kwargs=predict_kwargs)
 
     @override
-    def create_experiment_builder(self, args: Namespace) -> Experiment.Builder:
+    def create_experiment_builder(self, args: Namespace, command: Command) -> Experiment.Builder:
         """
         See :func:`mlrl.testbed.experiments.recipe.Recipe.create_experiment_builder`
         """
-        return RuleLearnerExperiment.Builder(problem_domain=self.create_problem_domain(args),
+        meta_data = MetaData(command=command)
+        initial_state = ExperimentState(meta_data=meta_data, problem_domain=self.create_problem_domain(args))
+        return RuleLearnerExperiment.Builder(initial_state=initial_state,
                                              dataset_splitter=self.create_dataset_splitter(args))
 
     @override
