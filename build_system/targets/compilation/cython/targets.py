@@ -66,6 +66,7 @@ class CompileCython(PhonyTarget.Runnable):
     def run(self, build_unit: BuildUnit, module: Module):
         compilation_module = cast(CompilationModule, module)
         Log.info('Compiling Cython code in directory "%s"...', compilation_module.root_directory)
+        MesonSetup(build_unit, compilation_module, '--reconfigure', build_options=BUILD_OPTIONS).run()
         MesonConfigure(build_unit, compilation_module, build_options=BUILD_OPTIONS).run()
         MesonCompile(build_unit, compilation_module).run()
 
