@@ -20,7 +20,7 @@ jobs:
     runs-on: macos-15
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Determine supported Python versions
         uses: juliangruber/read-file-action@v1
         id: python_version
