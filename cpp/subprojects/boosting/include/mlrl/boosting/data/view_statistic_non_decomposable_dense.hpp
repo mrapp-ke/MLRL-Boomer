@@ -35,6 +35,11 @@ namespace boosting {
             virtual ~DenseNonDecomposableStatisticView() override {}
 
             /**
+             * The type of the gradients and Hessians.
+             */
+            typedef StatisticType value_type;
+
+            /**
              * An iterator that provides read-only access to the gradients.
              */
             using gradient_const_iterator = AllocatedCContiguousView<StatisticType>::value_const_iterator;
