@@ -7,10 +7,51 @@
 #include "mlrl/boosting/data/view_statistic_non_decomposable_dense.hpp"
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 #include "mlrl/common/data/view_matrix_sparse_set.hpp"
+#include "mlrl/common/indices/index_vector_complete.hpp"
+#include "mlrl/common/indices/index_vector_partial.hpp"
 
+#include <functional>
 #include <memory>
 
 namespace boosting {
+
+    /**
+     * Defines an interfaces for all matrices for storing quantized statistics that are backed by a view.
+     */
+    template<typename View>
+    class IQuantizationMatrix {
+        public:
+
+            virtual ~IQuantizationMatrix() {}
+
+            /**
+             * Quantifies all statistics that corresponds to the available outputs.
+             *
+             * @param outputIndices A reference to an object of type `ICompleteIndexVector` that stores the indices of
+             *                      the output for which the statistics should be quantized
+             */
+            virtual void quantize(const CompleteIndexVector& outputIndices) = 0;
+
+            /**
+             * Quantifies all statistics that correspond to a certain subset of the outputs.
+             *
+             * @param outputIndices A reference to an object of type `IPartialIndexVector` that stores the indices of
+             *                      the output for which the statistics should be quantized
+             */
+            virtual void quantize(const PartialIndexVector& outputIndices) = 0;
+
+            /**
+             * The type of the view, the matrix is backed by.
+             */
+            typedef View view_type;
+
+            /**
+             * Returns the view, the matrix is backed by.
+             *
+             * @return A reference to an object of type `view_type`
+             */
+            virtual const view_type& getView() const = 0;
+    };
 
     /**
      * Defines an interface for all classes that implement a method for quantizing statistics about the quality of
@@ -20,6 +61,59 @@ namespace boosting {
         public:
 
             virtual ~IQuantization() {}
+
+            /**
+             * A visitor function for handling quantization matrices that are backed by a view of the type
+             * `CContiguousView`.
+             */
+            template<typename StatisticType>
+            using DenseDecomposableMatrixVisitor =
+              std::function<void(const IQuantizationMatrix<CContiguousView<Statistic<StatisticType>>>&)>;
+
+            /**
+             * A visitor function for handling quantization matrices that are backed by a view of the type
+             * `SparseSetView`.
+             */
+            template<typename StatisticType>
+            using SparseDecomposableMatrixVisitor =
+              std::function<void(const IQuantizationMatrix<SparseSetView<Statistic<StatisticType>>>&)>;
+
+            /**
+             * A visitor function for handling quantization matrices that are backed by a view of the type
+             * `DenseNonDecomposableStatisticView`.
+             */
+            template<typename StatisticType>
+            using DenseNonDecomposableMatrixVisitor =
+              std::function<void(const IQuantizationMatrix<DenseNonDecomposableStatisticView<StatisticType>>&)>;
+
+            /**
+             * Invokes one of the given visitor functions, depending on which one is able to handle the type of the
+             * matrix that is used for storing quantized scores.
+             *
+             * @param denseDecomposable32BitVisitor     The visitor function for handling quantization matrices that are
+             *                                          backed by a view of the type
+             *                                          `CContiguousView<Statistic<float32>>`
+             * @param denseDecomposable64BitVisitor     The visitor function for handling quantization matrices that are
+             *                                          backed by a view of the type
+             *                                          `CContiguousView<Statistic<float64>>`
+             * @param sparseDecomposable32BitVisitor    The visitor function for handling quantization matrices that are
+             *                                          backed by a view of the type `SparseSetView<Statistic<float32>>`
+             * @param sparseDecomposable64BitVisitor    The visitor function for handling quantization matrices that are
+             *                                          backed by a view of the type `SparseSetView<Statistic<float64>>`
+             * @param denseNonDecomposable32BitVisitor  The visitor function for handling quantization matrices that are
+             *                                          backed by a view of the type
+             *                                          `DenseNonDecomposableStatisticView<float32>`
+             * @param denseNonDecomposable64BitVisitor  The visitor function for handling quantization matrices that are
+             *                                          backed by a view of the type
+             *                                          `DenseNonDecomposableStatisticView<float64>`
+             */
+            virtual void visitQuantizationMatrix(
+              DenseDecomposableMatrixVisitor<float32> denseDecomposable32BitVisitor,
+              DenseDecomposableMatrixVisitor<float64> denseDecomposable64BitVisitor,
+              SparseDecomposableMatrixVisitor<float32> sparseDecomposable32BitVisitor,
+              SparseDecomposableMatrixVisitor<float64> sparseDecomposable64BitVisitor,
+              DenseNonDecomposableMatrixVisitor<float32> denseNonDecomposable32BitVisitor,
+              DenseNonDecomposableMatrixVisitor<float64> denseNonDecomposable64BitVisitor) = 0;
     };
 
     /**
