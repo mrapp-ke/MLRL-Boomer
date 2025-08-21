@@ -41,18 +41,22 @@ namespace boosting {
 
         std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> statisticsPtr;
         auto denseDecomposable32BitVisitor =
-          [&](const IQuantizationMatrix<DenseDecomposableStatisticView<float32>>& ptr) {
+          [&](std::unique_ptr<IQuantizationMatrix<DenseDecomposableStatisticView<float32>>>& quantizationMatrixPtr) {
             statisticsPtr =
-              std::make_unique<DenseDecomposableStatistics<Loss, OutputMatrix, EvaluationMeasure, VectorMath>>(
-                std::move(quantizationPtr), std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory,
-                outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
+              std::make_unique<DenseDecomposableStatistics<Loss, OutputMatrix,
+                                                           IQuantizationMatrix<DenseDecomposableStatisticView<float32>>,
+                                                           EvaluationMeasure, VectorMath>>(
+                std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
+                std::move(statisticMatrixPtr), std::move(quantizationMatrixPtr), std::move(scoreMatrixPtr));
         };
         auto denseDecomposable64BitVisitor =
-          [&](const IQuantizationMatrix<DenseDecomposableStatisticView<float64>>& ptr) {
+          [&](std::unique_ptr<IQuantizationMatrix<DenseDecomposableStatisticView<float64>>>& quantizationMatrixPtr) {
             statisticsPtr =
-              std::make_unique<DenseDecomposableStatistics<Loss, OutputMatrix, EvaluationMeasure, VectorMath>>(
-                std::move(quantizationPtr), std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory,
-                outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
+              std::make_unique<DenseDecomposableStatistics<Loss, OutputMatrix,
+                                                           IQuantizationMatrix<DenseDecomposableStatisticView<float64>>,
+                                                           EvaluationMeasure, VectorMath>>(
+                std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
+                std::move(statisticMatrixPtr), std::move(quantizationMatrixPtr), std::move(scoreMatrixPtr));
         };
         quantizationPtr->visitQuantizationMatrix(denseDecomposable32BitVisitor, denseDecomposable64BitVisitor, {}, {},
                                                  {}, {});
