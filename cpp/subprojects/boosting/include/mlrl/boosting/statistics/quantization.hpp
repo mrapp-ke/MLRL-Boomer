@@ -35,7 +35,7 @@ namespace boosting {
              */
             template<typename StatisticType>
             using DenseDecomposableMatrixVisitor =
-              std::function<void(const IQuantizationMatrix<CContiguousView<Statistic<StatisticType>>>&)>;
+              std::function<void(std::unique_ptr<IQuantizationMatrix<CContiguousView<Statistic<StatisticType>>>>&)>;
 
             /**
              * A visitor function for handling quantization matrices that are backed by a view of the type
@@ -43,15 +43,15 @@ namespace boosting {
              */
             template<typename StatisticType>
             using SparseDecomposableMatrixVisitor =
-              std::function<void(const IQuantizationMatrix<SparseSetView<Statistic<StatisticType>>>&)>;
+              std::function<void(std::unique_ptr<IQuantizationMatrix<SparseSetView<Statistic<StatisticType>>>>&)>;
 
             /**
              * A visitor function for handling quantization matrices that are backed by a view of the type
              * `DenseNonDecomposableStatisticView`.
              */
             template<typename StatisticType>
-            using DenseNonDecomposableMatrixVisitor =
-              std::function<void(const IQuantizationMatrix<DenseNonDecomposableStatisticView<StatisticType>>&)>;
+            using DenseNonDecomposableMatrixVisitor = std::function<void(
+              std::unique_ptr<IQuantizationMatrix<DenseNonDecomposableStatisticView<StatisticType>>>&)>;
 
             /**
              * Invokes one of the given visitor functions, depending on which one is able to handle the type of the

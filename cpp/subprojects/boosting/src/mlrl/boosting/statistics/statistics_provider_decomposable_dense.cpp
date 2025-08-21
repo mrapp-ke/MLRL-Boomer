@@ -35,15 +35,19 @@ namespace boosting {
         }
 
         std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> statisticsPtr;
-        auto denseDecomposable32BitVisitor = [&](const IQuantizationMatrix<CContiguousView<Statistic<float32>>>& ptr) {
-            statisticsPtr = std::make_unique<DenseDecomposableStatistics<Loss, OutputMatrix, EvaluationMeasure>>(
-              std::move(quantizationPtr), std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory,
-              outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
+        auto denseDecomposable32BitVisitor =
+          [&](std::unique_ptr<IQuantizationMatrix<CContiguousView<Statistic<float32>>>>& quantizationMatrixPtr) {
+            statisticsPtr = std::make_unique<DenseDecomposableStatistics<
+              Loss, OutputMatrix, IQuantizationMatrix<CContiguousView<Statistic<float32>>>, EvaluationMeasure>>(
+              std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
+              std::move(statisticMatrixPtr), std::move(quantizationMatrixPtr), std::move(scoreMatrixPtr));
         };
-        auto denseDecomposable64BitVisitor = [&](const IQuantizationMatrix<CContiguousView<Statistic<float64>>>& ptr) {
-            statisticsPtr = std::make_unique<DenseDecomposableStatistics<Loss, OutputMatrix, EvaluationMeasure>>(
-              std::move(quantizationPtr), std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory,
-              outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
+        auto denseDecomposable64BitVisitor =
+          [&](std::unique_ptr<IQuantizationMatrix<CContiguousView<Statistic<float64>>>>& quantizationMatrixPtr) {
+            statisticsPtr = std::make_unique<DenseDecomposableStatistics<
+              Loss, OutputMatrix, IQuantizationMatrix<CContiguousView<Statistic<float64>>>, EvaluationMeasure>>(
+              std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
+              std::move(statisticMatrixPtr), std::move(quantizationMatrixPtr), std::move(scoreMatrixPtr));
         };
         quantizationPtr->visitQuantizationMatrix(denseDecomposable32BitVisitor, denseDecomposable64BitVisitor, {}, {},
                                                  {}, {});

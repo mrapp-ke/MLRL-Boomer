@@ -9,20 +9,20 @@ namespace boosting {
             std::unique_ptr<IQuantizationMatrix<CContiguousView<Statistic<StatisticType>>>> quantizationMatrixPtr_;
 
             static inline void visitInternally(
-              const IQuantizationMatrix<CContiguousView<Statistic<float32>>>& quantizationMatrix,
+              std::unique_ptr<IQuantizationMatrix<CContiguousView<Statistic<float32>>>>& quantizationMatrixPtr,
               std::optional<DenseDecomposableMatrixVisitor<float32>> denseDecomposable32BitVisitor,
               std::optional<DenseDecomposableMatrixVisitor<float64>> denseDecomposable64BitVisitor) {
                 if (denseDecomposable32BitVisitor) {
-                    (*denseDecomposable32BitVisitor)(quantizationMatrix);
+                    (*denseDecomposable32BitVisitor)(quantizationMatrixPtr);
                 }
             }
 
             static inline void visitInternally(
-              const IQuantizationMatrix<CContiguousView<Statistic<float64>>>& quantizationMatrix,
+              std::unique_ptr<IQuantizationMatrix<CContiguousView<Statistic<float64>>>>& quantizationMatrixPtr,
               std::optional<DenseDecomposableMatrixVisitor<float32>> denseDecomposable32BitVisitor,
               std::optional<DenseDecomposableMatrixVisitor<float64>> denseDecomposable64BitVisitor) {
                 if (denseDecomposable64BitVisitor) {
-                    (*denseDecomposable64BitVisitor)(quantizationMatrix);
+                    (*denseDecomposable64BitVisitor)(quantizationMatrixPtr);
                 }
             }
 
@@ -39,7 +39,7 @@ namespace boosting {
               std::optional<SparseDecomposableMatrixVisitor<float64>> sparseDecomposable64BitVisitor,
               std::optional<DenseNonDecomposableMatrixVisitor<float32>> denseNonDecomposable32BitVisitor,
               std::optional<DenseNonDecomposableMatrixVisitor<float64>> denseNonDecomposable64BitVisitor) override {
-                visitInternally(*quantizationMatrixPtr_, denseDecomposable32BitVisitor, denseDecomposable64BitVisitor);
+                visitInternally(quantizationMatrixPtr_, denseDecomposable32BitVisitor, denseDecomposable64BitVisitor);
             }
     };
 
@@ -48,20 +48,20 @@ namespace boosting {
         private:
 
             static inline void visitInternally(
-              const IQuantizationMatrix<SparseSetView<Statistic<float32>>>& quantizationMatrix,
+              std::unique_ptr<IQuantizationMatrix<SparseSetView<Statistic<float32>>>>& quantizationMatrixPtr,
               std::optional<SparseDecomposableMatrixVisitor<float32>> sparseDecomposable32BitVisitor,
               std::optional<SparseDecomposableMatrixVisitor<float64>> sparseDecomposable64BitVisitor) {
                 if (sparseDecomposable32BitVisitor) {
-                    (*sparseDecomposable32BitVisitor)(quantizationMatrix);
+                    (*sparseDecomposable32BitVisitor)(quantizationMatrixPtr);
                 }
             }
 
             static inline void visitInternally(
-              const IQuantizationMatrix<SparseSetView<Statistic<float64>>>& quantizationMatrix,
+              std::unique_ptr<IQuantizationMatrix<SparseSetView<Statistic<float64>>>>& quantizationMatrixPtr,
               std::optional<SparseDecomposableMatrixVisitor<float32>> sparseDecomposable32BitVisitor,
               std::optional<SparseDecomposableMatrixVisitor<float64>> sparseDecomposable64BitVisitor) {
                 if (sparseDecomposable64BitVisitor) {
-                    (*sparseDecomposable64BitVisitor)(quantizationMatrix);
+                    (*sparseDecomposable64BitVisitor)(quantizationMatrixPtr);
                 }
             }
 
@@ -80,8 +80,7 @@ namespace boosting {
               std::optional<SparseDecomposableMatrixVisitor<float64>> sparseDecomposable64BitVisitor,
               std::optional<DenseNonDecomposableMatrixVisitor<float32>> denseNonDecomposable32BitVisitor,
               std::optional<DenseNonDecomposableMatrixVisitor<float64>> denseNonDecomposable64BitVisitor) override {
-                visitInternally(*quantizationMatrixPtr_, sparseDecomposable32BitVisitor,
-                                sparseDecomposable64BitVisitor);
+                visitInternally(quantizationMatrixPtr_, sparseDecomposable32BitVisitor, sparseDecomposable64BitVisitor);
             }
     };
 
@@ -90,20 +89,20 @@ namespace boosting {
         private:
 
             static inline void visitInternally(
-              const IQuantizationMatrix<DenseNonDecomposableStatisticView<float32>>& quantizationMatrix,
+              std::unique_ptr<IQuantizationMatrix<DenseNonDecomposableStatisticView<float32>>>& quantizationMatrixPtr,
               std::optional<DenseNonDecomposableMatrixVisitor<float32>> denseNonDecomposable32BitVisitor,
               std::optional<DenseNonDecomposableMatrixVisitor<float64>> denseNonDecomposable64BitVisitor) {
                 if (denseNonDecomposable32BitVisitor) {
-                    (*denseNonDecomposable32BitVisitor)(quantizationMatrix);
+                    (*denseNonDecomposable32BitVisitor)(quantizationMatrixPtr);
                 }
             }
 
             static inline void visitInternally(
-              const IQuantizationMatrix<DenseNonDecomposableStatisticView<float64>>& quantizationMatrix,
+              std::unique_ptr<IQuantizationMatrix<DenseNonDecomposableStatisticView<float64>>>& quantizationMatrixPtr,
               std::optional<DenseNonDecomposableMatrixVisitor<float32>> denseNonDecomposable32BitVisitor,
               std::optional<DenseNonDecomposableMatrixVisitor<float64>> denseNonDecomposable64BitVisitor) {
                 if (denseNonDecomposable64BitVisitor) {
-                    (*denseNonDecomposable64BitVisitor)(quantizationMatrix);
+                    (*denseNonDecomposable64BitVisitor)(quantizationMatrixPtr);
                 }
             }
 
@@ -124,7 +123,7 @@ namespace boosting {
               std::optional<SparseDecomposableMatrixVisitor<float64>> sparseDecomposable64BitVisitor,
               std::optional<DenseNonDecomposableMatrixVisitor<float32>> denseNonDecomposable32BitVisitor,
               std::optional<DenseNonDecomposableMatrixVisitor<float64>> denseNonDecomposable64BitVisitor) override {
-                visitInternally(*quantizationMatrixPtr_, denseNonDecomposable32BitVisitor,
+                visitInternally(quantizationMatrixPtr_, denseNonDecomposable32BitVisitor,
                                 denseNonDecomposable64BitVisitor);
             }
     };

@@ -18,12 +18,15 @@ namespace boosting {
      * affected gradients and Hessians via a loss function that operates on the scores that are predicted by the updated
      * model and the corresponding ground truth of the training examples.
      *
-     * @tparam OutputMatrix     The type of the matrix that provides access to the ground truth of the training examples
-     * @tparam StatisticMatrix  The type of the matrix that provides access to the gradients and Hessians
-     * @tparam ScoreMatrix      The type of the matrix that is used to store predicted scores
-     * @tparam Loss             The type of the loss function that is used to calculate gradients and Hessians
+     * @tparam OutputMatrix       The type of the matrix that provides access to the ground truth of the training
+     * examples
+     * @tparam StatisticMatrix    The type of the matrix that provides access to the gradients and Hessians
+     * @tparam QuantizationMatrix The type of the matrix that provides access to quantized gradients and Hessians
+     * @tparam ScoreMatrix        The type of the matrix that is used to store predicted scores
+     * @tparam Loss               The type of the loss function that is used to calculate gradients and Hessians
      */
-    template<typename OutputMatrix, typename StatisticMatrix, typename ScoreMatrix, typename Loss>
+    template<typename OutputMatrix, typename StatisticMatrix, typename QuantizationMatrix, typename ScoreMatrix,
+             typename Loss>
     class AbstractBoostingStatisticsState : public IStatisticsState<typename ScoreMatrix::value_type> {
         private:
 
@@ -158,6 +161,12 @@ namespace boosting {
             std::unique_ptr<StatisticMatrix> statisticMatrixPtr;
 
             /**
+             * An unique pointer to an object of template type `QuantizationMatrix` that stores quantized gradients and
+             * Hessians.
+             */
+            std::unique_ptr<QuantizationMatrix> quantizationMatrixPtr;
+
+            /**
              * An unique pointer to an object of template type `ScoreMatrix` that stores the currently predicted scores.
              */
             std::unique_ptr<ScoreMatrix> scoreMatrixPtr;
@@ -199,6 +208,8 @@ namespace boosting {
              *                              access to the ground truth of the training examples
              * @param statisticMatrixPtr    An unique pointer to an object of template type `StatisticMatrix` that
              *                              stores the gradients and Hessians
+             * @param quantizationMatrixPtr An unique pointer to an object of template type `QuantizationMatrix` that
+             *                              stores quantized gradients and Hessians
              * @param scoreMatrixPtr        An unique pointer to an object of template type `ScoreMatrix` that stores
              *                              the currently predicted scores
              * @param lossFunctionPtr       An unique pointer to the an object of template type `Loss` that should be
@@ -206,10 +217,12 @@ namespace boosting {
              */
             AbstractBoostingStatisticsState(const OutputMatrix& outputMatrix,
                                             std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
+                                            std::unique_ptr<QuantizationMatrix> quantizationMatrixPtr,
                                             std::unique_ptr<ScoreMatrix> scoreMatrixPtr,
                                             std::unique_ptr<Loss> lossFunctionPtr)
                 : outputMatrix(outputMatrix), statisticMatrixPtr(std::move(statisticMatrixPtr)),
-                  scoreMatrixPtr(std::move(scoreMatrixPtr)), lossFunctionPtr(std::move(lossFunctionPtr)) {}
+                  quantizationMatrixPtr(std::move(quantizationMatrixPtr)), scoreMatrixPtr(std::move(scoreMatrixPtr)),
+                  lossFunctionPtr(std::move(lossFunctionPtr)) {}
 
             virtual ~AbstractBoostingStatisticsState() {}
 
