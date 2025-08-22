@@ -125,9 +125,7 @@ class CompletePrediction final : public VectorDecorator<AllocatedVector<ScoreTyp
           const IStatistics& statistics,
           const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const override;
 
-        void applyPrediction(uint32 statisticIndex) override;
-
-        void revertPrediction(uint32 statisticIndex) override;
+        std::unique_ptr<IStatisticsUpdate::ITransaction> updateStatistics() override;
 
         std::unique_ptr<IHead> createHead() const override;
 };
