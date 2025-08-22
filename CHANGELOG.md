@@ -6,6 +6,24 @@ tocdepth: 2
 
 # Release Notes
 
+## Version 0.14.0 (Aug. 22nd, 2025)
+
+A feature release that comes with the following changes.
+
+```{warning}
+This release comes with API changes. For an updated overview of the available parameters and command line arguments, please refer to the [documentation](https://mlrl-boomer.readthedocs.io/en/0.14.0).
+```
+
+### API Changes
+
+- In batch mode, the argument `--base-dir` is now passed to individual experiments by default.
+- The command line argument `--save-meta-data` has been added. It allows to control if meta-data should be written to output files.
+- A new package [mlrl-testbed-slurm](https://pypi.org/project/mlrl-testbed-slurm/) has been added to the project. It is an extension that adds support for the Slurm Workload Manager to the package "mlrl-testbed".
+
+### Fixes
+
+- When using the argument `--runner` in batch mode, it is not passed down to the individual experiments anymore.
+
 ## Version 0.13.1 (Aug. 4th, 2025)
 
 A bugfix release that comes with the following changes.
