@@ -166,18 +166,24 @@ namespace boosting {
             /**
              * Quantifies all statistics that corresponds to the available outputs.
              *
-             * @param outputIndices A reference to an object of type `ICompleteIndexVector` that stores the indices of
-             *                      the output for which the statistics should be quantized
+             * @param outputIndicesBegin  A `CompleteIndexVector::const_iterator` to the start of the indices of the
+             *                            outputs for which the statistics should be quantized
+             * @param outputIndicesEnd    A `CompleteIndexVector::const_iterator` to the end of the indices of the
+             *                            outputs for which the statistics should be quantized
              */
-            virtual void quantize(const CompleteIndexVector& outputIndices) = 0;
+            virtual void quantize(CompleteIndexVector::const_iterator outputIndicesBegin,
+                                  CompleteIndexVector::const_iterator outputIndicesEnd) = 0;
 
             /**
              * Quantifies all statistics that correspond to a certain subset of the outputs.
              *
-             * @param outputIndices A reference to an object of type `IPartialIndexVector` that stores the indices of
-             *                      the output for which the statistics should be quantized
+             * @param outputIndicesBegin  A `PartialIndexVector::const_iterator` to the start of the indices of the
+             *                            outputs for which the statistics should be quantized
+             * @param outputIndicesEnd    A `PartialIndexVector::const_iterator` to the end of the indices of the
+             *                            outputs for which the statistics should be quantized
              */
-            virtual void quantize(const PartialIndexVector& outputIndices) = 0;
+            virtual void quantize(PartialIndexVector::const_iterator outputIndicesBegin,
+                                  PartialIndexVector::const_iterator outputIndicesEnd) = 0;
 
             /**
              * The type of the view, the matrix is backed by.

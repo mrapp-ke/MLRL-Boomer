@@ -122,11 +122,13 @@ namespace boosting {
                 : view_(view), matrix_(AllocatedCContiguousView<Statistic<StatisticType>>(view.numRows, view.numCols)) {
             }
 
-            void quantize(const CompleteIndexVector& outputIndices) override {
+            void quantize(CompleteIndexVector::const_iterator outputIndicesBegin,
+                          CompleteIndexVector::const_iterator outputIndicesEnd) override {
                 // TODO Implement
             }
 
-            void quantize(const PartialIndexVector& outputIndices) override {
+            void quantize(PartialIndexVector::const_iterator outputIndicesBegin,
+                          PartialIndexVector::const_iterator outputIndicesEnd) override {
                 // TODO Implement
             }
 

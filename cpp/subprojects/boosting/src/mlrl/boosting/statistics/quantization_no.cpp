@@ -139,9 +139,11 @@ namespace boosting {
 
             NoQuantizationMatrix(const View& view) : view_(view) {}
 
-            void quantize(const CompleteIndexVector& outputIndices) override {}
+            void quantize(CompleteIndexVector::const_iterator outputIndicesBegin,
+                          CompleteIndexVector::const_iterator outputIndicesEnd) override {}
 
-            void quantize(const PartialIndexVector& outputIndices) override {}
+            void quantize(PartialIndexVector::const_iterator outputIndicesBegin,
+                          PartialIndexVector::const_iterator outputIndicesEnd) override {}
 
             const typename IQuantizationMatrix<View>::view_type& getView() const override {
                 return view_;
