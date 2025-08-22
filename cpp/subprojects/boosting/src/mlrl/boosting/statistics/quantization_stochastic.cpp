@@ -9,7 +9,7 @@ namespace boosting {
         private:
 
             static inline void visitInternally(
-              std::unique_ptr<IQuantizationMatrix<CContiguousView<Statistic<float32>>>>& quantizationMatrixPtr,
+              std::unique_ptr<IQuantizationMatrix<DenseDecomposableStatisticView<float32>>>& quantizationMatrixPtr,
               std::optional<DenseDecomposableMatrixVisitor<float32>> denseDecomposable32BitVisitor,
               std::optional<DenseDecomposableMatrixVisitor<float64>> denseDecomposable64BitVisitor,
               std::optional<SparseDecomposableMatrixVisitor<float32>> sparseDecomposable32BitVisitor,
@@ -22,7 +22,7 @@ namespace boosting {
             }
 
             static inline void visitInternally(
-              std::unique_ptr<IQuantizationMatrix<CContiguousView<Statistic<float64>>>>& quantizationMatrixPtr,
+              std::unique_ptr<IQuantizationMatrix<DenseDecomposableStatisticView<float64>>>& quantizationMatrixPtr,
               std::optional<DenseDecomposableMatrixVisitor<float32>> denseDecomposable32BitVisitor,
               std::optional<DenseDecomposableMatrixVisitor<float64>> denseDecomposable64BitVisitor,
               std::optional<SparseDecomposableMatrixVisitor<float32>> sparseDecomposable32BitVisitor,
@@ -86,12 +86,12 @@ namespace boosting {
                 }
             }
 
-            std::unique_ptr<IQuantizationMatrix<CContiguousView<Statistic<StatisticType>>>> quantizationMatrixPtr_;
+            std::unique_ptr<IQuantizationMatrix<DenseDecomposableStatisticView<StatisticType>>> quantizationMatrixPtr_;
 
         public:
 
             StochasticQuantization(
-              std::unique_ptr<IQuantizationMatrix<CContiguousView<Statistic<StatisticType>>>> quantizationMatrixPtr)
+              std::unique_ptr<IQuantizationMatrix<DenseDecomposableStatisticView<StatisticType>>> quantizationMatrixPtr)
                 : quantizationMatrixPtr_(std::move(quantizationMatrixPtr)) {}
 
             void visitQuantizationMatrix(
@@ -108,7 +108,8 @@ namespace boosting {
     };
 
     template<typename View, typename StatisticType>
-    class StochasticQuantizationMatrix final : public IQuantizationMatrix<CContiguousView<Statistic<StatisticType>>> {
+    class StochasticQuantizationMatrix final
+        : public IQuantizationMatrix<DenseDecomposableStatisticView<StatisticType>> {
         private:
 
             const View& view_;
@@ -136,22 +137,22 @@ namespace boosting {
                 // TODO Implement
             }
 
-            const typename IQuantizationMatrix<CContiguousView<Statistic<StatisticType>>>::view_type& getView()
+            const typename IQuantizationMatrix<DenseDecomposableStatisticView<StatisticType>>::view_type& getView()
               const override {
                 return matrix_.getView();
             }
 
             std::unique_ptr<IQuantization> create(
-              const CContiguousView<Statistic<float32>>& statisticMatrix) const override {
-                return std::make_unique<StochasticQuantization<CContiguousView<Statistic<float32>>, float32>>(
-                  std::make_unique<StochasticQuantizationMatrix<CContiguousView<Statistic<float32>>, float32>>(
+              const DenseDecomposableStatisticView<float32>& statisticMatrix) const override {
+                return std::make_unique<StochasticQuantization<DenseDecomposableStatisticView<float32>, float32>>(
+                  std::make_unique<StochasticQuantizationMatrix<DenseDecomposableStatisticView<float32>, float32>>(
                     statisticMatrix, rngPtr_, numBits_));
             }
 
             std::unique_ptr<IQuantization> create(
-              const CContiguousView<Statistic<float64>>& statisticMatrix) const override {
-                return std::make_unique<StochasticQuantization<CContiguousView<Statistic<float64>>, float64>>(
-                  std::make_unique<StochasticQuantizationMatrix<CContiguousView<Statistic<float64>>, float64>>(
+              const DenseDecomposableStatisticView<float64>& statisticMatrix) const override {
+                return std::make_unique<StochasticQuantization<DenseDecomposableStatisticView<float64>, float64>>(
+                  std::make_unique<StochasticQuantizationMatrix<DenseDecomposableStatisticView<float64>, float64>>(
                     statisticMatrix, rngPtr_, numBits_));
             }
 
@@ -197,16 +198,16 @@ namespace boosting {
                 : rngFactoryPtr_(std::move(rngFactoryPtr)), numBits_(numBits) {}
 
             std::unique_ptr<IQuantization> create(
-              const CContiguousView<Statistic<float32>>& statisticMatrix) const override {
-                return std::make_unique<StochasticQuantization<CContiguousView<Statistic<float32>>, float32>>(
-                  std::make_unique<StochasticQuantizationMatrix<CContiguousView<Statistic<float32>>, float32>>(
+              const DenseDecomposableStatisticView<float32>& statisticMatrix) const override {
+                return std::make_unique<StochasticQuantization<DenseDecomposableStatisticView<float32>, float32>>(
+                  std::make_unique<StochasticQuantizationMatrix<DenseDecomposableStatisticView<float32>, float32>>(
                     statisticMatrix, rngFactoryPtr_->create(), numBits_));
             }
 
             std::unique_ptr<IQuantization> create(
-              const CContiguousView<Statistic<float64>>& statisticMatrix) const override {
-                return std::make_unique<StochasticQuantization<CContiguousView<Statistic<float64>>, float64>>(
-                  std::make_unique<StochasticQuantizationMatrix<CContiguousView<Statistic<float64>>, float64>>(
+              const DenseDecomposableStatisticView<float64>& statisticMatrix) const override {
+                return std::make_unique<StochasticQuantization<DenseDecomposableStatisticView<float64>, float64>>(
+                  std::make_unique<StochasticQuantizationMatrix<DenseDecomposableStatisticView<float64>, float64>>(
                     statisticMatrix, rngFactoryPtr_->create(), numBits_));
             }
 
