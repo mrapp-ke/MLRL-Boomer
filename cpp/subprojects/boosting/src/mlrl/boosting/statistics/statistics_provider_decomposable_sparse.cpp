@@ -15,7 +15,8 @@ namespace boosting {
      * @tparam StatisticType the type of the gradients and Hessians
      */
     template<typename StatisticType>
-    class SparseDecomposableStatisticMatrix final : public MatrixDecorator<SparseSetView<Statistic<StatisticType>>> {
+    class SparseDecomposableStatisticMatrix final
+        : public MatrixDecorator<SparseDecomposableStatisticView<StatisticType>> {
         public:
 
             /**
@@ -23,8 +24,8 @@ namespace boosting {
              * @param numCols   The number of columns in the matrix
              */
             SparseDecomposableStatisticMatrix(uint32 numRows, uint32 numCols)
-                : MatrixDecorator<SparseSetView<Statistic<StatisticType>>>(
-                    SparseSetView<Statistic<StatisticType>>(numRows, numCols)) {}
+                : MatrixDecorator<SparseDecomposableStatisticView<StatisticType>>(
+                    SparseDecomposableStatisticView<StatisticType>(numRows, numCols)) {}
     };
 
     static inline void visitScoreMatrixInternally(
@@ -333,7 +334,7 @@ namespace boosting {
         const Loss* lossRawPtr = lossPtr.get();
         const OutputMatrix* outputMatrixPtr = &outputMatrix;
         const SparseSetView<statistic_type>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();
-        SparseSetView<Statistic<statistic_type>>* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
+        SparseDecomposableStatisticView<statistic_type>* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
 
 #if MULTI_THREADING_SUPPORT_ENABLED
     #pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(outputMatrixPtr) \
@@ -347,16 +348,16 @@ namespace boosting {
 
         std::unique_ptr<IDecomposableStatistics<ISparseDecomposableRuleEvaluationFactory>> statisticsPtr;
         auto sparseDecomposable32BitVisitor =
-          [&](std::unique_ptr<IQuantizationMatrix<SparseSetView<Statistic<float32>>>>& quantizationMatrixPtr) {
+          [&](std::unique_ptr<IQuantizationMatrix<SparseDecomposableStatisticView<float32>>>& quantizationMatrixPtr) {
             statisticsPtr = std::make_unique<SparseDecomposableStatistics<
-              Loss, OutputMatrix, IQuantizationMatrix<SparseSetView<Statistic<float32>>>, EvaluationMeasure>>(
+              Loss, OutputMatrix, IQuantizationMatrix<SparseDecomposableStatisticView<float32>>, EvaluationMeasure>>(
               std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
               std::move(statisticMatrixPtr), std::move(quantizationMatrixPtr), std::move(scoreMatrixPtr));
         };
         auto sparseDecomposable64BitVisitor =
-          [&](std::unique_ptr<IQuantizationMatrix<SparseSetView<Statistic<float64>>>>& quantizationMatrixPtr) {
+          [&](std::unique_ptr<IQuantizationMatrix<SparseDecomposableStatisticView<float64>>>& quantizationMatrixPtr) {
             statisticsPtr = std::make_unique<SparseDecomposableStatistics<
-              Loss, OutputMatrix, IQuantizationMatrix<SparseSetView<Statistic<float64>>>, EvaluationMeasure>>(
+              Loss, OutputMatrix, IQuantizationMatrix<SparseDecomposableStatisticView<float64>>, EvaluationMeasure>>(
               std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
               std::move(statisticMatrixPtr), std::move(quantizationMatrixPtr), std::move(scoreMatrixPtr));
         };
