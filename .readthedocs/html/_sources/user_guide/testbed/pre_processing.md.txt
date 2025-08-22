@@ -6,7 +6,7 @@ Depending on the dataset at hand, it might be desirable to apply pre-processing 
 
 ## One-Hot-Encoding
 
-```{warning}
+```{important}
 When using the algorithms provided by this project, the use of one-hot-encoding is typically not advised, as they can deal with nominal and binary features in a more efficient way. However, as argued below, it might still be useful for a fair comparison with machine learning approaches that cannot deal with such features.
 ```
 

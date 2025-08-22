@@ -1,0 +1,18 @@
+mlrl.testbed\_slurm package
+===========================
+
+.. automodule:: mlrl.testbed_slurm
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed_slurm.arguments
+   mlrl.testbed_slurm.extension
+   mlrl.testbed_slurm.runner
+   mlrl.testbed_slurm.sbatch

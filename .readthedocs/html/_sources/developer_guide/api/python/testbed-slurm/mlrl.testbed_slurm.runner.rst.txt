@@ -1,0 +1,7 @@
+mlrl.testbed\_slurm.runner module
+=================================
+
+.. automodule:: mlrl.testbed_slurm.runner
+   :members:
+   :show-inheritance:
+   :undoc-members:
