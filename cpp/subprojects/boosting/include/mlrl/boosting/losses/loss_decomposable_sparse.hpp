@@ -3,9 +3,8 @@
  */
 #pragma once
 
-#include "mlrl/boosting/data/statistic.hpp"
+#include "mlrl/boosting/data/view_statistic_decomposable_sparse.hpp"
 #include "mlrl/boosting/losses/loss_decomposable.hpp"
-#include "mlrl/common/data/view_matrix_sparse_set.hpp"
 #include "mlrl/common/measures/measure_evaluation_sparse.hpp"
 
 #include <memory>
@@ -40,14 +39,13 @@ namespace boosting {
              *                      scores
              * @param indicesBegin  A `CompleteIndexVector::const_iterator` to the beginning of the label indices
              * @param indicesEnd    A `CompleteIndexVector::const_iterator` to the end of the label indices
-             * @param statisticView A reference to an object of type `SparseSetView` to be updated
+             * @param statisticView A reference to an object of type `SparseDecomposableStatisticView` to be updated
              */
-            virtual void updateDecomposableStatistics(uint32 exampleIndex,
-                                                      const CContiguousView<const uint8>& labelMatrix,
-                                                      const SparseSetView<StatisticType>& scoreMatrix,
-                                                      CompleteIndexVector::const_iterator indicesBegin,
-                                                      CompleteIndexVector::const_iterator indicesEnd,
-                                                      SparseSetView<Statistic<StatisticType>>& statisticView) const = 0;
+            virtual void updateDecomposableStatistics(
+              uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+              const SparseSetView<StatisticType>& scoreMatrix, CompleteIndexVector::const_iterator indicesBegin,
+              CompleteIndexVector::const_iterator indicesEnd,
+              SparseDecomposableStatisticView<StatisticType>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -60,14 +58,13 @@ namespace boosting {
              *                      scores
              * @param indicesBegin  A `PartialIndexVector::const_iterator` to the beginning of the label indices
              * @param indicesEnd    A `PartialIndexVector::const_iterator` to the end of the label indices
-             * @param statisticView A reference to an object of type `SparseSetView` to be updated
+             * @param statisticView A reference to an object of type `SparseDecomposableStatisticView` to be updated
              */
-            virtual void updateDecomposableStatistics(uint32 exampleIndex,
-                                                      const CContiguousView<const uint8>& labelMatrix,
-                                                      const SparseSetView<StatisticType>& scoreMatrix,
-                                                      PartialIndexVector::const_iterator indicesBegin,
-                                                      PartialIndexVector::const_iterator indicesEnd,
-                                                      SparseSetView<Statistic<StatisticType>>& statisticView) const = 0;
+            virtual void updateDecomposableStatistics(
+              uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+              const SparseSetView<StatisticType>& scoreMatrix, PartialIndexVector::const_iterator indicesBegin,
+              PartialIndexVector::const_iterator indicesEnd,
+              SparseDecomposableStatisticView<StatisticType>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -80,13 +77,12 @@ namespace boosting {
              *                      scores
              * @param indicesBegin  A `CompleteIndexVector::const_iterator` to the beginning of the label indices
              * @param indicesEnd    A `CompleteIndexVector::const_iterator` to the end of the label indices
-             * @param statisticView A reference to an object of type `SparseSetView` to be updated
+             * @param statisticView A reference to an object of type `SparseDecomposableStatisticView` to be updated
              */
-            virtual void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                                      const SparseSetView<StatisticType>& scoreMatrix,
-                                                      CompleteIndexVector::const_iterator indicesBegin,
-                                                      CompleteIndexVector::const_iterator indicesEnd,
-                                                      SparseSetView<Statistic<StatisticType>>& statisticView) const = 0;
+            virtual void updateDecomposableStatistics(
+              uint32 exampleIndex, const BinaryCsrView& labelMatrix, const SparseSetView<StatisticType>& scoreMatrix,
+              CompleteIndexVector::const_iterator indicesBegin, CompleteIndexVector::const_iterator indicesEnd,
+              SparseDecomposableStatisticView<StatisticType>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -99,13 +95,12 @@ namespace boosting {
              *                      scores
              * @param indicesBegin  A `PartialIndexVector::const_iterator` to the beginning of the label indices
              * @param indicesEnd    A `PartialIndexVector::const_iterator` to the end of the label indices
-             * @param statisticView A reference to an object of type `SparseSetView` to be updated
+             * @param statisticView A reference to an object of type `SparseDecomposableStatisticView` to be updated
              */
-            virtual void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                                      const SparseSetView<StatisticType>& scoreMatrix,
-                                                      PartialIndexVector::const_iterator indicesBegin,
-                                                      PartialIndexVector::const_iterator indicesEnd,
-                                                      SparseSetView<Statistic<StatisticType>>& statisticView) const = 0;
+            virtual void updateDecomposableStatistics(
+              uint32 exampleIndex, const BinaryCsrView& labelMatrix, const SparseSetView<StatisticType>& scoreMatrix,
+              PartialIndexVector::const_iterator indicesBegin, PartialIndexVector::const_iterator indicesEnd,
+              SparseDecomposableStatisticView<StatisticType>& statisticView) const = 0;
     };
 
     /**
