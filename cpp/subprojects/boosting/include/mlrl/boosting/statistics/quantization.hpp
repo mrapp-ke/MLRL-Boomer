@@ -3,10 +3,9 @@
  */
 #pragma once
 
-#include "mlrl/boosting/data/statistic.hpp"
+#include "mlrl/boosting/data/view_statistic_decomposable_sparse.hpp"
 #include "mlrl/boosting/data/view_statistic_non_decomposable_dense.hpp"
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
-#include "mlrl/common/data/view_matrix_sparse_set.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 
@@ -39,11 +38,11 @@ namespace boosting {
 
             /**
              * A visitor function for handling quantization matrices that are backed by a view of the type
-             * `SparseSetView`.
+             * `SparseDecomposableStatisticView`.
              */
             template<typename StatisticType>
-            using SparseDecomposableMatrixVisitor =
-              std::function<void(std::unique_ptr<IQuantizationMatrix<SparseSetView<Statistic<StatisticType>>>>&)>;
+            using SparseDecomposableMatrixVisitor = std::function<void(
+              std::unique_ptr<IQuantizationMatrix<SparseDecomposableStatisticView<StatisticType>>>&)>;
 
             /**
              * A visitor function for handling quantization matrices that are backed by a view of the type
@@ -65,10 +64,10 @@ namespace boosting {
              *                                          `CContiguousView<Statistic<float64>>`
              * @param sparseDecomposable32BitVisitor    An optional visitor function for handling quantization matrices
              *                                          that are backed by a view of the type
-             *                                          `SparseSetView<Statistic<float32>>`
+             *                                          `SparseDecomposableStatisticView<float32>>`
              * @param sparseDecomposable64BitVisitor    An optional visitor function for handling quantization matrices
              *                                          that are backed by a view of the type
-             *                                          `SparseSetView<Statistic<float64>>`
+             *                                          `SparseDecomposableStatisticView<float64>>`
              * @param denseNonDecomposable32BitVisitor  An optional visitor function for handling quantization matrices
              *                                          that are backed by a view of the type
              *                                          `DenseNonDecomposableStatisticView<float32>`
@@ -116,22 +115,22 @@ namespace boosting {
             /**
              * Creates and returns a new object of type `IQuantization`.
              *
-             * @param statisticMatrix   A reference to an object of type `SparseSetView<Statistic<float32>>` that stores
-             *                          the statistics to be quantized
+             * @param statisticMatrix   A reference to an object of type `SparseDecomposableStatisticView<float32>>`
+             *                          that stores the statistics to be quantized
              * @return                  An unique pointer to an object of type `IQuantization` that has been created
              */
             virtual std::unique_ptr<IQuantization> create(
-              const SparseSetView<Statistic<float32>>& statisticMatrix) const = 0;
+              const SparseDecomposableStatisticView<float32>& statisticMatrix) const = 0;
 
             /**
              * Creates and returns a new object of type `IQuantization`.
              *
-             * @param statisticMatrix   A reference to an object of type `SparseSetView<Statistic<float64>>` that stores
-             *                          the statistics to be quantized
+             * @param statisticMatrix   A reference to an object of type `SparseDecomposableStatisticView<float64>>`
+             *                          that stores the statistics to be quantized
              * @return                  An unique pointer to an object of type `IQuantization` that has been created
              */
             virtual std::unique_ptr<IQuantization> create(
-              const SparseSetView<Statistic<float64>>& statisticMatrix) const = 0;
+              const SparseDecomposableStatisticView<float64>& statisticMatrix) const = 0;
 
             /**
              * Creates and returns a new object of type `IQuantization`.
