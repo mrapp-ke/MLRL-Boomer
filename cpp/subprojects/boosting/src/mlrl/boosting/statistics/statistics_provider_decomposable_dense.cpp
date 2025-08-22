@@ -22,7 +22,7 @@ namespace boosting {
         const Loss* lossRawPtr = lossPtr.get();
         const OutputMatrix* outputMatrixPtr = &outputMatrix;
         const CContiguousView<statistic_type>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();
-        CContiguousView<Statistic<statistic_type>>* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
+        DenseDecomposableStatisticView<statistic_type>* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
 
 #if MULTI_THREADING_SUPPORT_ENABLED
     #pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(outputMatrixPtr) \
@@ -36,16 +36,16 @@ namespace boosting {
 
         std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> statisticsPtr;
         auto denseDecomposable32BitVisitor =
-          [&](std::unique_ptr<IQuantizationMatrix<CContiguousView<Statistic<float32>>>>& quantizationMatrixPtr) {
+          [&](std::unique_ptr<IQuantizationMatrix<DenseDecomposableStatisticView<float32>>>& quantizationMatrixPtr) {
             statisticsPtr = std::make_unique<DenseDecomposableStatistics<
-              Loss, OutputMatrix, IQuantizationMatrix<CContiguousView<Statistic<float32>>>, EvaluationMeasure>>(
+              Loss, OutputMatrix, IQuantizationMatrix<DenseDecomposableStatisticView<float32>>, EvaluationMeasure>>(
               std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
               std::move(statisticMatrixPtr), std::move(quantizationMatrixPtr), std::move(scoreMatrixPtr));
         };
         auto denseDecomposable64BitVisitor =
-          [&](std::unique_ptr<IQuantizationMatrix<CContiguousView<Statistic<float64>>>>& quantizationMatrixPtr) {
+          [&](std::unique_ptr<IQuantizationMatrix<DenseDecomposableStatisticView<float64>>>& quantizationMatrixPtr) {
             statisticsPtr = std::make_unique<DenseDecomposableStatistics<
-              Loss, OutputMatrix, IQuantizationMatrix<CContiguousView<Statistic<float64>>>, EvaluationMeasure>>(
+              Loss, OutputMatrix, IQuantizationMatrix<DenseDecomposableStatisticView<float64>>, EvaluationMeasure>>(
               std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
               std::move(statisticMatrixPtr), std::move(quantizationMatrixPtr), std::move(scoreMatrixPtr));
         };

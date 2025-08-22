@@ -337,7 +337,7 @@ namespace boosting {
                 uint32 numCols = this->statePtr_->statisticMatrixPtr->getNumCols();
                 std::unique_ptr<DenseDecomposableStatisticMatrix<statistic_type>> decomposableStatisticMatrixPtr =
                   std::make_unique<DenseDecomposableStatisticMatrix<statistic_type>>(numRows, numCols);
-                CContiguousView<Statistic<statistic_type>>* decomposableStatisticMatrixRawPtr =
+                DenseDecomposableStatisticView<statistic_type>* decomposableStatisticMatrixRawPtr =
                   &decomposableStatisticMatrixPtr->getView();
                 DenseNonDecomposableStatisticView<statistic_type>* NonDecomposableStatisticViewRawPtr =
                   &this->statePtr_->statisticMatrixPtr->getView();
@@ -348,7 +348,7 @@ namespace boosting {
       schedule(dynamic) num_threads(numThreads)
 #endif
                 for (int64 i = 0; i < numRows; i++) {
-                    typename CContiguousView<Statistic<statistic_type>>::value_iterator iterator =
+                    typename DenseDecomposableStatisticView<statistic_type>::value_iterator iterator =
                       decomposableStatisticMatrixRawPtr->values_begin(i);
                     typename DenseNonDecomposableStatisticView<statistic_type>::gradient_const_iterator
                       gradientIterator = NonDecomposableStatisticViewRawPtr->gradients_cbegin(i);

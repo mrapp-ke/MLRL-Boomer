@@ -167,7 +167,7 @@ namespace boosting {
               uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
               const CContiguousView<StatisticType>& scoreMatrix, CompleteIndexVector::const_iterator indicesBegin,
               CompleteIndexVector::const_iterator indicesEnd,
-              CContiguousView<Statistic<StatisticType>>& statisticView) const override {
+              DenseDecomposableStatisticView<StatisticType>& statisticView) const override {
                 updateDecomposableStatisticsInternally(
                   scoreMatrix.values_cbegin(exampleIndex), labelMatrix.values_cbegin(exampleIndex),
                   statisticView.values_begin(exampleIndex), labelMatrix.numCols, &binaryConversionFunction);
@@ -177,7 +177,7 @@ namespace boosting {
               uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
               const CContiguousView<StatisticType>& scoreMatrix, PartialIndexVector::const_iterator indicesBegin,
               PartialIndexVector::const_iterator indicesEnd,
-              CContiguousView<Statistic<StatisticType>>& statisticView) const override {
+              DenseDecomposableStatisticView<StatisticType>& statisticView) const override {
                 updateDecomposableStatisticsInternally(
                   scoreMatrix.values_cbegin(exampleIndex), labelMatrix.values_cbegin(exampleIndex),
                   statisticView.values_begin(exampleIndex), labelMatrix.numCols, &binaryConversionFunction);
@@ -186,7 +186,7 @@ namespace boosting {
             virtual void updateDecomposableStatistics(
               uint32 exampleIndex, const BinaryCsrView& labelMatrix, const CContiguousView<StatisticType>& scoreMatrix,
               CompleteIndexVector::const_iterator indicesBegin, CompleteIndexVector::const_iterator indicesEnd,
-              CContiguousView<Statistic<StatisticType>>& statisticView) const override {
+              DenseDecomposableStatisticView<StatisticType>& statisticView) const override {
                 auto groundTruthIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                              labelMatrix.indices_cend(exampleIndex));
                 updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), groundTruthIterator,
@@ -197,7 +197,7 @@ namespace boosting {
             virtual void updateDecomposableStatistics(
               uint32 exampleIndex, const BinaryCsrView& labelMatrix, const CContiguousView<StatisticType>& scoreMatrix,
               PartialIndexVector::const_iterator indicesBegin, PartialIndexVector::const_iterator indicesEnd,
-              CContiguousView<Statistic<StatisticType>>& statisticView) const override {
+              DenseDecomposableStatisticView<StatisticType>& statisticView) const override {
                 auto groundTruthIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                              labelMatrix.indices_cend(exampleIndex));
                 updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), groundTruthIterator,
@@ -205,33 +205,31 @@ namespace boosting {
                                                        &binaryConversionFunction);
             }
 
-            void updateDecomposableStatistics(uint32 exampleIndex,
-                                              const CContiguousView<const float32>& regressionMatrix,
-                                              const CContiguousView<StatisticType>& scoreMatrix,
-                                              CompleteIndexVector::const_iterator indicesBegin,
-                                              CompleteIndexVector::const_iterator indicesEnd,
-                                              CContiguousView<Statistic<StatisticType>>& statisticView) const override {
+            void updateDecomposableStatistics(
+              uint32 exampleIndex, const CContiguousView<const float32>& regressionMatrix,
+              const CContiguousView<StatisticType>& scoreMatrix, CompleteIndexVector::const_iterator indicesBegin,
+              CompleteIndexVector::const_iterator indicesEnd,
+              DenseDecomposableStatisticView<StatisticType>& statisticView) const override {
                 updateDecomposableStatisticsInternally(
                   scoreMatrix.values_cbegin(exampleIndex), regressionMatrix.values_cbegin(exampleIndex),
                   statisticView.values_begin(exampleIndex), regressionMatrix.numCols, &scoreConversionFunction);
             }
 
-            void updateDecomposableStatistics(uint32 exampleIndex,
-                                              const CContiguousView<const float32>& regressionMatrix,
-                                              const CContiguousView<StatisticType>& scoreMatrix,
-                                              PartialIndexVector::const_iterator indicesBegin,
-                                              PartialIndexVector::const_iterator indicesEnd,
-                                              CContiguousView<Statistic<StatisticType>>& statisticView) const override {
+            void updateDecomposableStatistics(
+              uint32 exampleIndex, const CContiguousView<const float32>& regressionMatrix,
+              const CContiguousView<StatisticType>& scoreMatrix, PartialIndexVector::const_iterator indicesBegin,
+              PartialIndexVector::const_iterator indicesEnd,
+              DenseDecomposableStatisticView<StatisticType>& statisticView) const override {
                 updateDecomposableStatisticsInternally(
                   scoreMatrix.values_cbegin(exampleIndex), regressionMatrix.values_cbegin(exampleIndex),
                   statisticView.values_begin(exampleIndex), regressionMatrix.numCols, &binaryConversionFunction);
             }
 
-            void updateDecomposableStatistics(uint32 exampleIndex, const CsrView<const float32>& regressionMatrix,
-                                              const CContiguousView<StatisticType>& scoreMatrix,
-                                              CompleteIndexVector::const_iterator indicesBegin,
-                                              CompleteIndexVector::const_iterator indicesEnd,
-                                              CContiguousView<Statistic<StatisticType>>& statisticView) const override {
+            void updateDecomposableStatistics(
+              uint32 exampleIndex, const CsrView<const float32>& regressionMatrix,
+              const CContiguousView<StatisticType>& scoreMatrix, CompleteIndexVector::const_iterator indicesBegin,
+              CompleteIndexVector::const_iterator indicesEnd,
+              DenseDecomposableStatisticView<StatisticType>& statisticView) const override {
                 auto groundTruthIterator = createSparseForwardIterator(
                   regressionMatrix.indices_cbegin(exampleIndex), regressionMatrix.indices_cend(exampleIndex),
                   regressionMatrix.values_cbegin(exampleIndex), regressionMatrix.values_cend(exampleIndex));
@@ -240,11 +238,11 @@ namespace boosting {
                                                        regressionMatrix.numCols, &scoreConversionFunction);
             }
 
-            void updateDecomposableStatistics(uint32 exampleIndex, const CsrView<const float32>& regressionMatrix,
-                                              const CContiguousView<StatisticType>& scoreMatrix,
-                                              PartialIndexVector::const_iterator indicesBegin,
-                                              PartialIndexVector::const_iterator indicesEnd,
-                                              CContiguousView<Statistic<StatisticType>>& statisticView) const override {
+            void updateDecomposableStatistics(
+              uint32 exampleIndex, const CsrView<const float32>& regressionMatrix,
+              const CContiguousView<StatisticType>& scoreMatrix, PartialIndexVector::const_iterator indicesBegin,
+              PartialIndexVector::const_iterator indicesEnd,
+              DenseDecomposableStatisticView<StatisticType>& statisticView) const override {
                 auto groundTruthIterator = createSparseForwardIterator(
                   regressionMatrix.indices_cbegin(exampleIndex), regressionMatrix.indices_cend(exampleIndex),
                   regressionMatrix.values_cbegin(exampleIndex), regressionMatrix.values_cend(exampleIndex));

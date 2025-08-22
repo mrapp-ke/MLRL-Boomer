@@ -3,9 +3,9 @@
  */
 #pragma once
 
+#include "mlrl/boosting/data/view_statistic_decomposable_dense.hpp"
 #include "mlrl/boosting/data/view_statistic_decomposable_sparse.hpp"
 #include "mlrl/boosting/data/view_statistic_non_decomposable_dense.hpp"
-#include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 
@@ -34,7 +34,7 @@ namespace boosting {
              */
             template<typename StatisticType>
             using DenseDecomposableMatrixVisitor =
-              std::function<void(std::unique_ptr<IQuantizationMatrix<CContiguousView<Statistic<StatisticType>>>>&)>;
+              std::function<void(std::unique_ptr<IQuantizationMatrix<DenseDecomposableStatisticView<StatisticType>>>&)>;
 
             /**
              * A visitor function for handling quantization matrices that are backed by a view of the type
@@ -58,10 +58,10 @@ namespace boosting {
              *
              * @param denseDecomposable32BitVisitor     An optional visitor function for handling quantization matrices
              *                                          that are backed by a view of the type
-             *                                          `CContiguousView<Statistic<float32>>`
+             *                                          `DenseDecomposableStatisticView<float32>`
              * @param denseDecomposable64BitVisitor     An optional visitor function for handling quantization matrices
              *                                          that are backed by a view of the type
-             *                                          `CContiguousView<Statistic<float64>>`
+             *                                          `DenseDecomposableStatisticView<float64>`
              * @param sparseDecomposable32BitVisitor    An optional visitor function for handling quantization matrices
              *                                          that are backed by a view of the type
              *                                          `SparseDecomposableStatisticView<float32>>`
@@ -95,22 +95,22 @@ namespace boosting {
             /**
              * Creates and returns a new object of type `IQuantization`.
              *
-             * @param statisticMatrix   A reference to an object of type `CContiguousView<Statistic<float32>>` that
+             * @param statisticMatrix   A reference to an object of type `DenseDecomposableStatisticView<float32>` that
              *                          stores the statistics to be quantized
              * @return                  An unique pointer to an object of type `IQuantization` that has been created
              */
             virtual std::unique_ptr<IQuantization> create(
-              const CContiguousView<Statistic<float32>>& statisticMatrix) const = 0;
+              const DenseDecomposableStatisticView<float32>& statisticMatrix) const = 0;
 
             /**
              * Creates and returns a new object of type `IQuantization`.
              *
-             * @param statisticMatrix   A reference to an object of type `CContiguousView<Statistic<float64>>` that
+             * @param statisticMatrix   A reference to an object of type `DenseDecomposableStatisticView<float64>` that
              *                          stores the statistics to be quantized
              * @return                  An unique pointer to an object of type `IQuantization` that has been created
              */
             virtual std::unique_ptr<IQuantization> create(
-              const CContiguousView<Statistic<float64>>& statisticMatrix) const = 0;
+              const DenseDecomposableStatisticView<float64>& statisticMatrix) const = 0;
 
             /**
              * Creates and returns a new object of type `IQuantization`.
