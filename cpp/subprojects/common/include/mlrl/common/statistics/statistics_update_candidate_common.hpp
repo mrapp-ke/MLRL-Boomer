@@ -27,6 +27,36 @@ class AbstractStatisticsUpdateCandidate : public IStatisticsUpdateCandidate {
         class StatisticsUpdate final : public IStatisticsUpdate {
             private:
 
+                /**
+                 * A transaction that allows to jointly update multiple statistics.
+                 */
+                class Transaction final : public IStatisticsUpdate::ITransaction {
+                    private:
+
+                        StatisticsUpdate& update_;
+
+                    public:
+
+                        /**
+                         * @param update The `StatisticsUpdate`, the transaction has been created from
+                         */
+                        Transaction(StatisticsUpdate& update) : update_(update) {}
+
+                        void applyPrediction(uint32 statisticIndex) override {
+                            update_.state_.update(statisticIndex, update_.scoresBegin_, update_.scoresEnd_,
+                                                  update_.indicesBegin_, update_.indicesEnd_);
+                        }
+
+                        void revertPrediction(uint32 statisticIndex) override {
+                            update_.state_.revert(statisticIndex, update_.scoresBegin_, update_.scoresEnd_,
+                                                  update_.indicesBegin_, update_.indicesEnd_);
+                        }
+
+                        void commit() override {
+                            update_.state_.onUpdate(update_.indicesBegin_, update_.indicesEnd_);
+                        }
+                };
+
                 State& state_;
 
                 typename IndexVector::const_iterator indicesBegin_;
@@ -57,12 +87,8 @@ class AbstractStatisticsUpdateCandidate : public IStatisticsUpdateCandidate {
                     : state_(state), indicesBegin_(indicesBegin), indicesEnd_(indicesEnd), scoresBegin_(scoresBegin),
                       scoresEnd_(scoresEnd) {}
 
-                void applyPrediction(uint32 statisticIndex) override {
-                    state_.update(statisticIndex, scoresBegin_, scoresEnd_, indicesBegin_, indicesEnd_);
-                }
-
-                void revertPrediction(uint32 statisticIndex) override {
-                    state_.revert(statisticIndex, scoresBegin_, scoresEnd_, indicesBegin_, indicesEnd_);
+                std::unique_ptr<IStatisticsUpdate::ITransaction> updateStatistics() override {
+                    return std::make_unique<Transaction>(*this);
                 }
         };
 
