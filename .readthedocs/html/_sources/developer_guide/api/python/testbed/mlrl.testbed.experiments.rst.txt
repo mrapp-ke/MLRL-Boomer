@@ -27,6 +27,7 @@ Submodules
    mlrl.testbed.experiments.experiment
    mlrl.testbed.experiments.file_path
    mlrl.testbed.experiments.fold
+   mlrl.testbed.experiments.meta_data
    mlrl.testbed.experiments.prediction_scope
    mlrl.testbed.experiments.prediction_type
    mlrl.testbed.experiments.problem_domain
