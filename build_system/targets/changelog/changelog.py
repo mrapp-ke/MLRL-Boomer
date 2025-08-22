@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, override
 
 from core.build_unit import BuildUnit
+from util.format import format_iterable
 from util.io import TextFile
 from util.log import Log
 
@@ -377,6 +378,10 @@ def __merge_changesets(*changeset_files: ChangesetFile) -> List[Changeset]:
 
 def __update_changelog(release_type: ReleaseType, *changeset_files: ChangesetFile):
     merged_changesets = __merge_changesets(*changeset_files)
+
+    if not merged_changesets:
+        Log.error('No changesets found in the files %s', format_iterable(changeset_files, delimiter='"'))
+
     new_release = Release(version=Project.version(release=True),
                           release_date=date.today(),
                           release_type=release_type,
