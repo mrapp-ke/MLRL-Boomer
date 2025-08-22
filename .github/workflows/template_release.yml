@@ -26,6 +26,8 @@ jobs:
         id: release_version
         with:
           path: build_system/res/versioning/version
+      - name: Create virtual environment
+        run: ./build venv
       - name: Get changelog
         run: ./build print_latest_changelog >> changelog.txt
       - name: Publish release on GitHub
