@@ -82,6 +82,7 @@ class IStatisticsState {
                             typename View<ScoreType>::const_iterator scoresEnd,
                             PartialIndexVector::const_iterator indicesBegin,
                             PartialIndexVector::const_iterator indicesEnd) = 0;
+
         /**
          * Creates and returns a new object of type `IStatisticsUpdateCandidate` that can be used to update this state.
          *
@@ -90,4 +91,23 @@ class IStatisticsState {
          *                      created
          */
         virtual std::unique_ptr<IStatisticsUpdateCandidate> createUpdateCandidate(const IScoreVector& scoreVector) = 0;
+
+        /**
+         * May be overridden by subclasses in order to be notified when statistics for all outputs have been updated.
+         *
+         * @param indicesBegin  An iterator to the beginning of the affected output indices
+         * @param indicesEnd    An iterator to the end of the affected output indices
+         */
+        virtual void onUpdate(CompleteIndexVector::const_iterator indicesBegin,
+                              CompleteIndexVector::const_iterator indicesEnd) {}
+
+        /**
+         * May be overridden by subclasses in order to be notified when statistics for a subset of the outputs have been
+         * updated.
+         *
+         * @param indicesBegin  An iterator to the beginning of the affected output indices
+         * @param indicesEnd    An iterator to the end of the affected output indices
+         */
+        virtual void onUpdate(PartialIndexVector::const_iterator indicesBegin,
+                              PartialIndexVector::const_iterator indicesEnd) {}
 };
