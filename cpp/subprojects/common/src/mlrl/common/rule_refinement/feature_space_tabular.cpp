@@ -275,34 +275,40 @@ class TabularFeatureSpace final : public IFeatureSpace {
                     IStatistics& statistics = featureSpace_.statisticsProvider_.get();
                     uint32 numStatistics = statistics.getNumStatistics();
                     const CoverageMask* coverageMaskPtr = &coverageMask_;
-                    IPrediction* predictionPtr = &prediction;
+                    std::unique_ptr<IStatisticsUpdate::ITransaction> transactionPtr = prediction.updateStatistics();
+                    IStatisticsUpdate::ITransaction* transaction = transactionPtr.get();
 
 #if MULTI_THREADING_SUPPORT_ENABLED
-    #pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) firstprivate(predictionPtr) \
+    #pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) firstprivate(transaction) \
       schedule(dynamic) num_threads(featureSpace_.multiThreadingSettings_.numThreads)
 #endif
                     for (int64 i = 0; i < numStatistics; i++) {
                         if ((*coverageMaskPtr)[i]) {
-                            predictionPtr->applyPrediction(i);
+                            transaction->applyPrediction(i);
                         }
                     }
+
+                    transactionPtr->commit();
                 }
 
                 void revertPrediction(IPrediction& prediction) override {
                     IStatistics& statistics = featureSpace_.statisticsProvider_.get();
                     uint32 numStatistics = statistics.getNumStatistics();
                     const CoverageMask* coverageMaskPtr = &coverageMask_;
-                    IPrediction* predictionPtr = &prediction;
+                    std::unique_ptr<IStatisticsUpdate::ITransaction> transactionPtr = prediction.updateStatistics();
+                    IStatisticsUpdate::ITransaction* transaction = transactionPtr.get();
 
 #if MULTI_THREADING_SUPPORT_ENABLED
-    #pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) firstprivate(predictionPtr) \
+    #pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) firstprivate(transaction) \
       schedule(dynamic) num_threads(featureSpace_.multiThreadingSettings_.numThreads)
 #endif
                     for (int64 i = 0; i < numStatistics; i++) {
                         if ((*coverageMaskPtr)[i]) {
-                            predictionPtr->revertPrediction(i);
+                            transaction->revertPrediction(i);
                         }
                     }
+
+                    transactionPtr->commit();
                 }
         };
 

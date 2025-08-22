@@ -248,8 +248,18 @@ namespace boosting {
             }
 
             std::unique_ptr<IStatisticsUpdateCandidate> createUpdateCandidate(
-              const IScoreVector& scoreVector) override {
+              const IScoreVector& scoreVector) override final {
                 return createUpdateCandidateInternally(*this, scoreVector);
+            }
+
+            void onUpdate(CompleteIndexVector::const_iterator indicesBegin,
+                          CompleteIndexVector::const_iterator indicesEnd) override final {
+                quantizationMatrixPtr->quantize(indicesBegin, indicesEnd);
+            }
+
+            void onUpdate(PartialIndexVector::const_iterator indicesBegin,
+                          PartialIndexVector::const_iterator indicesEnd) override final {
+                quantizationMatrixPtr->quantize(indicesBegin, indicesEnd);
             }
     };
 

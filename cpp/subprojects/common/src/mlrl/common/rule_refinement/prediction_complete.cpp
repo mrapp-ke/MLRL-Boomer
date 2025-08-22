@@ -135,13 +135,8 @@ std::unique_ptr<IStatisticsSubset> CompletePrediction<ScoreType>::createStatisti
 }
 
 template<typename ScoreType>
-void CompletePrediction<ScoreType>::applyPrediction(uint32 statisticIndex) {
-    statisticsUpdatePtr_->applyPrediction(statisticIndex);
-}
-
-template<typename ScoreType>
-void CompletePrediction<ScoreType>::revertPrediction(uint32 statisticIndex) {
-    statisticsUpdatePtr_->revertPrediction(statisticIndex);
+std::unique_ptr<IStatisticsUpdate::ITransaction> CompletePrediction<ScoreType>::updateStatistics() {
+    return statisticsUpdatePtr_->updateStatistics();
 }
 
 template<typename ScoreType>
