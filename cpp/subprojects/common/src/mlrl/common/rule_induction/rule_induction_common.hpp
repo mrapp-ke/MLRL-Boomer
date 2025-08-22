@@ -89,11 +89,13 @@ class AbstractRuleInduction : public IRuleInduction {
             std::unique_ptr<IEvaluatedPrediction> defaultPredictionPtr;
             ScoreProcessor scoreProcessor(defaultPredictionPtr);
             scoreProcessor.processScores(*updateCandidatePtr);
+            std::unique_ptr<IStatisticsUpdate::ITransaction> transactionPtr = defaultPredictionPtr->updateStatistics();
 
             for (uint32 i = 0; i < numStatistics; i++) {
-                defaultPredictionPtr->applyPrediction(i);
+                transactionPtr->applyPrediction(i);
             }
 
+            transactionPtr->commit();
             modelBuilder.setDefaultRule(defaultPredictionPtr);
         }
 
