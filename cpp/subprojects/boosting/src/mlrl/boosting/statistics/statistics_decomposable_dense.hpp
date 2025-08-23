@@ -67,20 +67,22 @@ namespace boosting {
      * @tparam Loss                 The type of the loss function
      * @tparam OutputMatrix         The type of the matrix that provides access to the ground truth of the training
      *                              examples
+     * @tparam QuantizationMatrix   The type of the matrix that provides access to quantized gradients and Hessians
      * @tparam EvaluationMeasure    The type of the evaluation that should be used to access the quality of predictions
      */
-    template<typename Loss, typename OutputMatrix, typename EvaluationMeasure>
+    template<typename Loss, typename OutputMatrix, typename QuantizationMatrix, typename EvaluationMeasure>
     class DenseDecomposableStatistics final
-        : public AbstractDecomposableStatistics<OutputMatrix,
-                                                DenseDecomposableStatisticMatrix<typename Loss::statistic_type>,
-                                                NumericCContiguousMatrix<typename Loss::statistic_type>, Loss,
-                                                EvaluationMeasure, IDecomposableRuleEvaluationFactory> {
+        : public AbstractDecomposableStatistics<
+            OutputMatrix, DenseDecomposableStatisticMatrix<typename Loss::statistic_type>, QuantizationMatrix,
+            NumericCContiguousMatrix<typename Loss::statistic_type>, Loss, EvaluationMeasure,
+            IDecomposableRuleEvaluationFactory> {
         private:
 
             typedef typename Loss::statistic_type statistic_type;
 
             typedef DecomposableBoostingStatisticsState<OutputMatrix, DenseDecomposableStatisticMatrix<statistic_type>,
-                                                        NumericCContiguousMatrix<statistic_type>, Loss>
+                                                        QuantizationMatrix, NumericCContiguousMatrix<statistic_type>,
+                                                        Loss>
               StatisticsState;
 
             template<typename WeightVector, typename IndexVector>
@@ -107,6 +109,8 @@ namespace boosting {
              *                              access to the ground truth of the training examples
              * @param statisticMatrixPtr    An unique pointer to an object of type `DenseDecomposableStatisticMatrix`
              *                              that provides access to the gradients and Hessians
+             * @param quantizationMatrixPtr An unique pointer to an object of template type `QuantizationMatrix` that
+             *                              provides access to quantized gradients and Hessians
              * @param scoreMatrixPtr        An unique pointer to an object of type `NumericCContiguousMatrix` that
              *                              stores the currently predicted scores
              */
@@ -114,12 +118,13 @@ namespace boosting {
               std::unique_ptr<Loss> lossPtr, std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
               const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory, const OutputMatrix& outputMatrix,
               std::unique_ptr<DenseDecomposableStatisticMatrix<statistic_type>> statisticMatrixPtr,
+              std::unique_ptr<QuantizationMatrix> quantizationMatrixPtr,
               std::unique_ptr<NumericCContiguousMatrix<statistic_type>> scoreMatrixPtr)
                 : AbstractDecomposableStatistics<OutputMatrix, DenseDecomposableStatisticMatrix<statistic_type>,
-                                                 NumericCContiguousMatrix<statistic_type>, Loss, EvaluationMeasure,
-                                                 IDecomposableRuleEvaluationFactory>(
+                                                 QuantizationMatrix, NumericCContiguousMatrix<statistic_type>, Loss,
+                                                 EvaluationMeasure, IDecomposableRuleEvaluationFactory>(
                     std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
-                    std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
+                    std::move(statisticMatrixPtr), std::move(quantizationMatrixPtr), std::move(scoreMatrixPtr)) {}
 
             /**
              * @see `IStatistics::createSubset`

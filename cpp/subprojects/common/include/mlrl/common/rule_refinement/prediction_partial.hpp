@@ -111,6 +111,14 @@ class PartialPrediction final : public VectorDecorator<ResizableVector<ScoreType
         index_const_iterator indices_cend() const;
 
         /**
+         * Returns a reference to the `PartialIndexVector` that stores the indices for which the rule predicts.
+         *
+         * @return A reference to an object of type `PartialIndexVector` that stores the indices for which the rule
+         *         predicts
+         */
+        const PartialIndexVector& getIndexVector() const;
+
+        /**
          * Sets whether the scores that are stored by this prediction are sorted in increasing order by the
          * corresponding output indices, or not.
          *
@@ -168,9 +176,7 @@ class PartialPrediction final : public VectorDecorator<ResizableVector<ScoreType
           const IStatistics& statistics,
           const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const override;
 
-        void applyPrediction(uint32 statisticIndex) override;
-
-        void revertPrediction(uint32 statisticIndex) override;
+        std::unique_ptr<IStatisticsUpdate::ITransaction> updateStatistics() override;
 
         std::unique_ptr<IHead> createHead() const override;
 };
