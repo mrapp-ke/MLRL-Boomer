@@ -49,11 +49,14 @@ class NoSplitter(DatasetSplitter):
         context.include_fold = False
 
     @override
-    def split(self, state: ExperimentState) -> Generator[DatasetSplitter.Split, None, None]:
+    def split(self, state: ExperimentState, enable_logging: bool) -> Generator[DatasetSplitter.Split, None, None]:
         """
         See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.split`
         """
-        log.warning('Not using separate training and test sets. The model will be evaluated on the training data...')
+        if enable_logging:
+            log.warning(
+                'Not using separate training and test sets. The model will be evaluated on the training data...')
+
         folding_strategy = self.folding_strategy
         state = replace(state, folding_strategy=folding_strategy)
         state = self.dataset_reader.read(state)

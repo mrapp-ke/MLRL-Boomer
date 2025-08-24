@@ -211,16 +211,22 @@ class Experiment(ABC):
             experiment.prediction_output_writers.extend(sort(self.prediction_output_writers))
             return experiment
 
-        def run(self, train_model: bool = True):
+        def run(self, train_model: bool = True, measure_runtime: bool = True, enable_logging: bool = True):
             """
             Creates and runs a new experiment according to the specified configuration.
 
-            :param train_model: True, if a model should be trained, False otherwise
+            :param train_model:     True, if a model should be trained, False otherwise
+            :param measure_runtime: True, if the runtime of the experiment should be measured and logged, False
+                                    otherwise
+            :param enable_logging:  True, if log messages regarding the progress of the experiment should be written,
+                                    False otherwise
             """
             should_predict = any(bool(output_writer.sinks) for output_writer in self.prediction_output_writers)
             self.build().run(train_model=train_model,
                              predict_for_training_dataset=should_predict and self.predict_for_training_dataset,
-                             predict_for_test_dataset=should_predict and self.predict_for_test_dataset)
+                             predict_for_test_dataset=should_predict and self.predict_for_test_dataset,
+                             measure_runtime=measure_runtime,
+                             enable_logging=enable_logging)
 
         @abstractmethod
         def _create_experiment(self, initial_state: ExperimentState, dataset_splitter: DatasetSplitter) -> 'Experiment':
@@ -359,7 +365,8 @@ class Experiment(ABC):
             Experiment.OutputWriterListener(),
         ]
 
-    def run(self, train_model: bool, predict_for_training_dataset: bool, predict_for_test_dataset: bool):
+    def run(self, train_model: bool, predict_for_training_dataset: bool, predict_for_test_dataset: bool,
+            measure_runtime: bool, enable_logging: bool) -> Timer.Duration:
         """
         Runs the experiment.
 
@@ -368,18 +375,25 @@ class Experiment(ABC):
                                                 otherwise
         :param predict_for_test_dataset:        True, if predictions should be obtained for the test dataset, if
                                                 available, False otherwise
+        :param measure_runtime:                 True, if the runtime of the experiment should be measured and logged,
+                                                False otherwise
+        :param enable_logging:                  True, if log messages regarding the progress of the experiment should be
+                                                written, False otherwise
+        :return:                                The runtime of the experiment
         """
         initial_state = self.initial_state
-        problem_domain = initial_state.problem_domain
-        log.info('Starting experiment using the %s algorithm "%s"...', problem_domain.problem_name,
-                 problem_domain.learner_name)
+
+        if enable_logging:
+            problem_domain = initial_state.problem_domain
+            log.info('Starting experiment using the %s algorithm "%s"...', problem_domain.problem_name,
+                     problem_domain.learner_name)
 
         for listener in self.listeners:
             listener.before_start(self, initial_state)
 
-        start_time = Timer.start()
+        start_time = Timer.start() if measure_runtime else None
 
-        for split in self.dataset_splitter.split(initial_state):
+        for split in self.dataset_splitter.split(initial_state, enable_logging=enable_logging):
             training_state = split.get_state(DatasetType.TRAINING)
 
             if training_state:
@@ -409,8 +423,12 @@ class Experiment(ABC):
                 for listener in self.listeners:
                     listener.after_training(self, training_state)
 
-        run_time = Timer.stop(start_time)
-        log.info('Successfully finished experiment after %s', run_time)
+        run_time = Timer.stop(start_time) if start_time else Timer.Duration()
+
+        if start_time and enable_logging:
+            log.info('Successfully finished experiment after %s', run_time)
+
+        return run_time
 
     @abstractmethod
     def _train(self, learner: Optional[Any], parameters: ParameterDict, dataset: Dataset) -> TrainingState:

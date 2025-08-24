@@ -188,17 +188,18 @@ class CrossValidationSplitter(DatasetSplitter):
         context.include_fold = True
 
     @override
-    def split(self, state: ExperimentState) -> Generator[DatasetSplitter.Split, None, None]:
+    def split(self, state: ExperimentState, enable_logging: bool) -> Generator[DatasetSplitter.Split, None, None]:
         """
         See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.split`
         """
         folding_strategy = self.folding_strategy
         num_folds = folding_strategy.num_folds
 
-        log.info(
-            'Performing %s %s-fold cross validation...', 'fold ' + str(folding_strategy.first + 1) +
-            (' to ' + str(folding_strategy.last) if folding_strategy.num_folds_in_subset > 1 else '')
-            + ' of' if folding_strategy.is_subset else 'full', num_folds)
+        if enable_logging:
+            log.info(
+                'Performing %s %s-fold cross validation...', 'fold ' + str(folding_strategy.first + 1) +
+                (' to ' + str(folding_strategy.last) if folding_strategy.num_folds_in_subset > 1 else '')
+                + ' of' if folding_strategy.is_subset else 'full', num_folds)
 
         # Check if predefined folds are available...
         state = replace(state, folding_strategy=folding_strategy)

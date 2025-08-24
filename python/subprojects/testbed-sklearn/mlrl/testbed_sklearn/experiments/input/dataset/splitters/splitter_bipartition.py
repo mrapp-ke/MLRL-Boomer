@@ -115,11 +115,13 @@ class BipartitionSplitter(DatasetSplitter):
         context.include_dataset_type = True
 
     @override
-    def split(self, state: ExperimentState) -> Generator[DatasetSplitter.Split, None, None]:
+    def split(self, state: ExperimentState, enable_logging: bool) -> Generator[DatasetSplitter.Split, None, None]:
         """
         See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.split`
         """
-        log.info('Using separate training and test sets...')
+        if enable_logging:
+            log.info('Using separate training and test sets...')
+
         dataset_reader = self.dataset_reader
         folding_strategy = self.folding_strategy
         state = replace(state, folding_strategy=folding_strategy)

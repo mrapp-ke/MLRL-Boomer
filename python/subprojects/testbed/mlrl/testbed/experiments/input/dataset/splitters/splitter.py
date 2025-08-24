@@ -39,10 +39,12 @@ class DatasetSplitter(ABC):
         self.folding_strategy = folding_strategy
 
     @abstractmethod
-    def split(self, state: ExperimentState) -> Generator[Split, None, None]:
+    def split(self, state: ExperimentState, enable_logging: bool) -> Generator[Split, None, None]:
         """
         Returns a generator that generates the individual splits of the dataset into training and test data.
 
-        :param state: The current state of the experiment
-        :return:      The generator
+        :param state:           The current state of the experiment
+        :param enable_logging:  True, if log messages regarding the splits of the dataset should be written, False
+                                otherwise
+        :return:                The generator
         """
