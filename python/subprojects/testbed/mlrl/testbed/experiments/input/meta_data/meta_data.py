@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing meta-data that is part of input data.
 """
 from datetime import datetime
+from pathlib import Path
 from typing import Any, Dict, override
 
 from mlrl.testbed.command import Command
@@ -20,6 +21,8 @@ class InputMetaData(StructuralInputData):
     """
     Represents meta-data that is part of input data.
     """
+
+    SCHEMA_FILE_PATH = Path(__file__).parent / 'metadata.schema.yml'
 
     def __init__(self):
         super().__init__(StructuralInputData.Properties(file_name=OutputMetaData.FILENAME),
