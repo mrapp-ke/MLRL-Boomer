@@ -211,12 +211,15 @@ class Experiment(ABC):
             experiment.prediction_output_writers.extend(sort(self.prediction_output_writers))
             return experiment
 
-        def run(self):
+        def run(self, train_model: bool = True):
             """
             Creates and runs a new experiment according to the specified configuration.
+
+            :param train_model: True, if a model should be trained, False otherwise
             """
             should_predict = any(bool(output_writer.sinks) for output_writer in self.prediction_output_writers)
-            self.build().run(predict_for_training_dataset=should_predict and self.predict_for_training_dataset,
+            self.build().run(train_model=train_model,
+                             predict_for_training_dataset=should_predict and self.predict_for_training_dataset,
                              predict_for_test_dataset=should_predict and self.predict_for_test_dataset)
 
         @abstractmethod
@@ -356,10 +359,11 @@ class Experiment(ABC):
             Experiment.OutputWriterListener(),
         ]
 
-    def run(self, predict_for_training_dataset: bool, predict_for_test_dataset: bool):
+    def run(self, train_model: bool, predict_for_training_dataset: bool, predict_for_test_dataset: bool):
         """
         Runs the experiment.
 
+        :param train_model:                     True, if a model should be trained, False otherwise
         :param predict_for_training_dataset:    True, if predictions should be obtained for the training dataset, False
                                                 otherwise
         :param predict_for_test_dataset:        True, if predictions should be obtained for the test dataset, if
@@ -385,21 +389,22 @@ class Experiment(ABC):
                 for listener in self.listeners:
                     training_state = listener.before_training(self, training_state)
 
-                # Train model...
-                training_result = self._train(
-                    learner=training_state.training_result.learner if training_state.training_result else None,
-                    parameters=training_state.parameters,
-                    dataset=training_state.dataset)
-                training_state = replace(training_state, training_result=training_result)
-                test_state = split.get_state(DatasetType.TEST)
+                # Train model, if necessary...
+                if train_model:
+                    training_result = self._train(
+                        learner=training_state.training_result.learner if training_state.training_result else None,
+                        parameters=training_state.parameters,
+                        dataset=training_state.dataset)
+                    training_state = replace(training_state, training_result=training_result)
+                    test_state = split.get_state(DatasetType.TEST)
 
-                # Obtain and evaluate predictions for training data, if necessary...
-                if predict_for_training_dataset or (predict_for_test_dataset and not test_state):
-                    self.__predict(training_state)
+                    # Obtain and evaluate predictions for training data, if necessary...
+                    if predict_for_training_dataset or (predict_for_test_dataset and not test_state):
+                        self.__predict(training_state)
 
-                # Obtain and evaluate predictions for test data, if necessary...
-                if test_state and predict_for_test_dataset:
-                    self.__predict(replace(test_state, training_result=training_result))
+                    # Obtain and evaluate predictions for test data, if necessary...
+                    if test_state and predict_for_test_dataset:
+                        self.__predict(replace(test_state, training_result=training_result))
 
                 for listener in self.listeners:
                     listener.after_training(self, training_state)
