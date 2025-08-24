@@ -7,7 +7,7 @@ import logging as log
 
 from dataclasses import replace
 from functools import reduce
-from typing import Any, Dict, Generator, Optional
+from typing import Any, Dict, Generator, Optional, override
 
 from sklearn.base import BaseEstimator, clone
 
@@ -58,6 +58,7 @@ class SkLearnExperiment(Experiment):
                 self.evaluation_writer,
             )
 
+        @override
         def _create_experiment(self, initial_state: ExperimentState, dataset_splitter: DatasetSplitter) -> Experiment:
             return SkLearnExperiment(initial_state=initial_state, dataset_splitter=dataset_splitter)
 
@@ -112,6 +113,7 @@ class SkLearnExperiment(Experiment):
                 return self._fit(estimator, dataset.enforce_dense_outputs(), fit_kwargs)
             raise error
 
+    @override
     def _train(self, learner: Optional[Any], parameters: ParameterDict, dataset: Dataset) -> TrainingState:
         new_learner = self.__create_learner(parameters=parameters)
 
@@ -125,6 +127,7 @@ class SkLearnExperiment(Experiment):
         log.info('Successfully fit model in %s', training_duration)
         return TrainingState(learner=new_learner, training_duration=training_duration)
 
+    @override
     def _predict(self, state: ExperimentState) -> Generator[PredictionState, None, None]:
         dataset = state.dataset_as(self, TabularDataset)
         learner = state.learner_as(self, BaseEstimator)
