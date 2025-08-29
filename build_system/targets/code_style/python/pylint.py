@@ -14,6 +14,10 @@ class PyLint(Program):
     Allows to run the external program "pylint".
     """
 
+    ENABLED_EXTENSIONS = [
+        "useless-suppression",
+    ]
+
     def __init__(self, build_unit: BuildUnit, module: CodeModule):
         """
         :param build_unit:  The build unit from which the program should be run
@@ -22,3 +26,6 @@ class PyLint(Program):
         super().__init__('pylint', *map(str, module.find_source_files()), '--jobs=0', '--ignore=build',
                          '--rcfile=' + str(build_unit.root_directory / '.pylintrc.toml'), '--score=n')
         self.set_build_unit(build_unit)
+
+        for extension in self.ENABLED_EXTENSIONS:
+            self.add_arguments('--enable=' + extension, '--fail-on=' + extension)
