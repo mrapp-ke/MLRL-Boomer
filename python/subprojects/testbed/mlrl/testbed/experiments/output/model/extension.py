@@ -25,7 +25,6 @@ class ModelOutputExtension(Extension):
 
     SAVE_MODELS = BoolArgument(
         '--save-models',
-        default=False,
         description='Whether models should be saved to output files or not.',
     )
 

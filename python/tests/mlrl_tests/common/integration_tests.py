@@ -66,16 +66,12 @@ class IntegrationTests(ABC):
     def test_batch_mode(self):
         builder = self._create_cmd_builder() \
             .set_mode(Mode.MODE_BATCH) \
-            .save_models() \
-            .save_parameters() \
             .save_all()
         CmdRunner(builder).run('batch-mode')
 
     def test_batch_mode_separate_folds(self):
         builder = self._create_cmd_builder() \
             .set_mode(Mode.MODE_BATCH) \
-            .save_models() \
-            .save_parameters() \
             .save_all() \
             .data_split(DatasetSplitterArguments.VALUE_CROSS_VALIDATION,
                         options=Options({DatasetSplitterArguments.OPTION_NUM_FOLDS: 2}))

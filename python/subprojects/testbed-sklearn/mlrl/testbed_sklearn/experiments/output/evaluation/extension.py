@@ -58,7 +58,6 @@ class EvaluationExtension(Extension):
 
     SAVE_EVALUATION = BoolArgument(
         '--save-evaluation',
-        default=False,
         description='Whether evaluation results should be written to output files or not.',
         true_options={
             EvaluationResult.OPTION_ENABLE_ALL, EvaluationResult.OPTION_HAMMING_LOSS,
