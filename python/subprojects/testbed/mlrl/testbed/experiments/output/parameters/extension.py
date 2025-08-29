@@ -83,7 +83,9 @@ class ParameterOutputDirectoryExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
-        if ParameterOutputExtension.SAVE_PARAMETERS.get_value(args):
+        save_all = OutputArguments.SAVE_ALL.get_value(args)
+
+        if ParameterOutputExtension.SAVE_PARAMETERS.get_value(args, default=save_all):
             parameter_save_dir = ParameterOutputDirectoryArguments.PARAMETER_SAVE_DIR.get_value(args)
 
             if parameter_save_dir:
