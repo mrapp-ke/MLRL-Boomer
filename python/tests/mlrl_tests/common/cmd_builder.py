@@ -80,6 +80,13 @@ class CmdBuilder:
         return self.base_dir / self.result_dir
 
     @property
+    def model_dir(self) -> Path:
+        """
+        The relative path to the directory where models should be saved.
+        """
+        return Path('models')
+
+    @property
     def resolved_model_dir(self) -> Optional[Path]:
         """
         The  path to the directory where models should be saved, resolved against the base directory.
@@ -193,7 +200,7 @@ class CmdBuilder:
 
         :return: The builder itself
         """
-        self.model_save_dir = Path('models')
+        self.model_save_dir = self.model_dir
         self.args.append('--save-models')
         self.args.append(str(True).lower())
         return self
@@ -216,7 +223,7 @@ class CmdBuilder:
 
         :return: The builder itself
         """
-        self.parameter_save_dir = Path('results')
+        self.parameter_save_dir = self.result_dir
         self.args.append('--save-parameters')
         self.args.append(str(True).lower())
         return self
@@ -308,6 +315,8 @@ class CmdBuilder:
         :param save_all:    True, if the all experimental results should be written to output files, False otherwise
         :return:            The builder itself
         """
+        self.parameter_save_dir = self.result_dir
+        self.model_save_dir = self.model_dir
         self.args.append('--save-all')
         self.args.append(str(save_all).lower())
         return self
