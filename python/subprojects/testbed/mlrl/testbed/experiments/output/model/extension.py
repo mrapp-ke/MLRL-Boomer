@@ -66,7 +66,9 @@ class ModelOutputDirectoryExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
-        if ModelOutputExtension.SAVE_MODELS.get_value(args):
+        save_all = OutputArguments.SAVE_ALL.get_value(args)
+
+        if ModelOutputExtension.SAVE_MODELS.get_value(args, default=save_all):
             model_save_dir = ModelOutputDirectoryArguments.MODEL_SAVE_DIR.get_value(args)
 
             if model_save_dir:
