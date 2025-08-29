@@ -31,7 +31,6 @@ class ParameterOutputExtension(Extension):
 
     SAVE_PARAMETERS = BoolArgument(
         '--save-parameters',
-        default=False,
         description='Whether the parameter setting should be written to output files or not.',
     )
 
