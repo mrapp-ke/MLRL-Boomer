@@ -21,6 +21,9 @@ class Source(ABC):
     An abstract base class for all sources, input data may be read from.
     """
 
+    def __init__(self):
+        self.exit_on_missing_input = True
+
     @abstractmethod
     def is_available(self, state: ExperimentState, input_data: InputData) -> bool:
         """
@@ -51,6 +54,7 @@ class FileSource(Source, ABC):
         :param directory:   The path to the directory of the file
         :param suffix:      The suffix of the file
         """
+        super().__init__()
         self.directory = directory
         self.suffix = suffix
 
@@ -75,10 +79,16 @@ class FileSource(Source, ABC):
     def read_from_source(self, state: ExperimentState, input_data: InputData):
         file_path = self._get_file_path(state, input_data)
         log.debug('Reading input data from file "%s"...', file_path)
-        data = self._read_from_file(state, file_path, input_data)
 
-        if data:
-            input_data.update_state(state, data)
+        if file_path.is_file():
+            data = self._read_from_file(state, file_path, input_data)
+
+            if data:
+                input_data.update_state(state, data)
+        elif self.exit_on_missing_input:
+            raise IOError(f'The file "{file_path}" does not exist')
+        else:
+            log.error('The file "%s" does not exist', file_path)
 
     @abstractmethod
     def _read_from_file(self, state: ExperimentState, file_path: Path, input_data: InputData) -> Optional[Any]:
