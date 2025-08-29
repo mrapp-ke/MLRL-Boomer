@@ -35,7 +35,6 @@ class PickleFileSink(FileSink):
                          options=options,
                          create_directory=create_directory)
 
-    # pylint: disable=unused-argument
     @override
     def _write_to_file(self, file_path: Path, state: ExperimentState, output_data: OutputData, **_):
         if isinstance(output_data, OutputModel):
