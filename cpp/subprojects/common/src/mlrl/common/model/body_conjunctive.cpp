@@ -304,6 +304,9 @@ bool ConjunctiveBody::covers(View<uint32>::const_iterator indicesBegin, View<uin
                                        tmpArray2, n);
 }
 
-void ConjunctiveBody::visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor) const {
-    conjunctiveBodyVisitor(*this);
+void ConjunctiveBody::visit(std::optional<EmptyBodyVisitor> emptyBodyVisitor,
+                            std::optional<ConjunctiveBodyVisitor> conjunctiveBodyVisitor) const {
+    if (conjunctiveBodyVisitor) {
+        (*conjunctiveBodyVisitor)(*this);
+    }
 }
