@@ -113,7 +113,6 @@ class EvaluationResult(TabularOutputData):
             rotated_table = RowWiseTable()
 
             for column_index in range(0, table.num_columns, 2 if fold is None else 1):
-                # pylint: disable=unsubscriptable-object
                 header = header_row[column_index] if header_row else None
 
                 if not header or header.option_key not in {self.OPTION_TRAINING_TIME, self.OPTION_PREDICTION_TIME}:

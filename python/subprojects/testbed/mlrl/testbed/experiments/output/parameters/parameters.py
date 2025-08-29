@@ -37,7 +37,6 @@ class OutputParameters(TabularOutputData):
             return table.to_column_wise_table().sort_by_headers().format()
         return None
 
-    # pylint: disable=unused-argument
     @override
     def to_table(self, options: Options, **_) -> Optional[Table]:
         """
