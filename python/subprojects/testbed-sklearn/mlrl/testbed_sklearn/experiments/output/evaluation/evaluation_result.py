@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes for writing predictions to one or several sinks.
+Provides classes for representing evaluation results that are part of output data.
 """
 from itertools import tee
 from typing import Optional, override
