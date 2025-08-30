@@ -26,9 +26,8 @@ class PickleFileSource(FileSource):
         """
         super().__init__(directory=directory, suffix=PickleFileSink.SUFFIX_PICKLE)
 
-    # pylint: disable=unused-argument
     @override
-    def _read_from_file(self, state: ExperimentState, file_path: Path, _: InputData) -> Optional[Any]:
+    def _read_from_file(self, state: ExperimentState, file_path: Path, input_data: InputData) -> Optional[Any]:
         try:
             with open(file_path, mode='rb') as pickle_file:
                 return pickle.load(pickle_file)
