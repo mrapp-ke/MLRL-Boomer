@@ -199,7 +199,7 @@ class Table(ABC):
             alignments = map(lambda alignment: alignment.value, self.alignments) if self.alignments else None
             return tabulate(rows, headers=headers, tablefmt='simple_outline', colalign=alignments)
 
-        return ''
+        return '<no data available>'
 
 
 class RowWiseTable(Table):
