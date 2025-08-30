@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes that allow configuring the functionality to read algorithmic parameters from a source.
+Provides classes that allow configuring the functionality to read algorithmic parameters from one or several sources.
 """
 from argparse import Namespace
 from pathlib import Path
@@ -18,7 +18,7 @@ from mlrl.util.cli import Argument, BoolArgument, StringArgument
 
 class ParameterInputExtension(Extension):
     """
-    An extension that configures the functionality to read algorithmic parameters from a source.
+    An extension that configures the functionality to read algorithmic parameters from one or several sources.
     """
 
     PARAMETER_LOAD_DIR = StringArgument(

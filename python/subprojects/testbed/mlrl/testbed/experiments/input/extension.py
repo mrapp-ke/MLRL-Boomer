@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes that allow configuring the functionality to read input data from a source.
+Provides classes that allow configuring the functionality to read input data from one or several sources.
 """
 from argparse import Namespace
 from typing import Set, override
@@ -15,7 +15,7 @@ from mlrl.util.cli import Argument
 
 class InputExtension(Extension):
     """
-    An extension that configures the functionality to read input data from a source.
+    An extension that configures the functionality to read input data from one or several sources.
     """
 
     @override
