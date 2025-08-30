@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes that allow reading datasets from a source.
+Provides classes that allow reading datasets from one or several sources.
 """
 from dataclasses import replace
 from typing import List, Optional, override
@@ -15,15 +15,15 @@ from mlrl.testbed.experiments.state import ExperimentState
 
 class DatasetReader(InputReader):
     """
-    Allows reading a dataset from a source.
+    Allows reading a dataset from one or several sources.
     """
 
-    def __init__(self, source: Source, input_data: InputDataset):
+    def __init__(self, input_data: InputDataset, *sources: Source):
         """
-        :param source:      The source, the input dataset should be read from
         :param input_data:  The dataset that should be read
+        :param sources:     The sources, the input dataset should be read from
         """
-        super().__init__(source=source, input_data=input_data)
+        super().__init__(input_data, *sources)
         self.preprocessors: List[Preprocessor] = []
         self.encoders: Optional[List[Preprocessor.Encoder]] = None
 
