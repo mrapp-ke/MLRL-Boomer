@@ -73,7 +73,6 @@ class ClassifierMixin(SkLearnBaseEstimator, SkLearnClassifierMixin, SkLearnMulti
 
     KWARG_PREDICT_SCORES = 'predict_scores'
 
-    # pylint: disable=attribute-defined-outside-init
     def fit(self, x, y, **kwargs):
         """
         Fits a model to given training examples and their corresponding ground truth labels.
@@ -239,7 +238,6 @@ class RegressorMixin(SkLearnBaseEstimator, SkLearnRegressorMixin, SkLearnMultiOu
     A mixin for all machine learning algorithms that can be applied to regression problems.
     """
 
-    # pylint: disable=attribute-defined-outside-init
     def fit(self, x, y, **kwargs):
         """
         Fits a model to given training examples and their corresponding ground truth regression scores.
