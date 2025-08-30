@@ -42,7 +42,6 @@ class SubprojectModule(Module, ABC):
             subproject_names = set(get_env_array(env, SubprojectModule.ENV_SUBPROJECTS))
             return SubprojectModule.Filter(subproject_names)
 
-        # pylint: disable=unused-argument
         @override
         def matches(self, module: Module, module_registry: ModuleRegistry) -> bool:
             """
