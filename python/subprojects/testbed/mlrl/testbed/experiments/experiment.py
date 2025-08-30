@@ -339,7 +339,6 @@ class Experiment(ABC):
             Experiment.OutputWriterListener(),
         ]
 
-    # pylint: disable=too-many-branches
     def run(self, predict_for_training_dataset: bool, predict_for_test_dataset: bool):
         """
         Runs the experiment.

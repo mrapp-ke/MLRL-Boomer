@@ -29,7 +29,6 @@ class OutputDataset(DatasetOutputData, ABC):
         super().__init__(properties=properties, context=context)
         self.dataset = dataset
 
-    # pylint: disable=unused-argument
     @override
     def to_dataset(self, options: Options, **_) -> Optional[Dataset]:
         """
