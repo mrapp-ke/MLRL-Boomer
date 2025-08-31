@@ -4,6 +4,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--mode MODE] [--config CONFIG]
                     [--runner RUNNER] [--base-dir BASE_DIR]
                     [--create-dirs CREATE_DIRS] [--data-split DATA_SPLIT]
                     [--exit-on-error EXIT_ON_ERROR]
+                    [--exit-on-missing-input EXIT_ON_MISSING_INPUT]
                     [--feature-binning FEATURE_BINNING]
                     [--feature-format FEATURE_FORMAT]
                     [--feature-sampling FEATURE_SAMPLING]
@@ -103,6 +104,10 @@ options:
                         Whether the program should exit if an error occurs
                         while writing experimental results or not. Must be one
                         of {"false", "true"}.
+  --exit-on-missing-input EXIT_ON_MISSING_INPUT
+                        Whether the program should exit if an error occurs
+                        while reading input data or not. Must be one of
+                        {"false", "true"}.
   --feature-binning FEATURE_BINNING
                         The name of the strategy to be used for feature
                         binning. Must be one of {"equal-frequency", "equal-
