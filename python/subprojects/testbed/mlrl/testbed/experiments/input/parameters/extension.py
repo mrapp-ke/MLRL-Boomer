@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Set, override
 
 from mlrl.testbed.experiments.experiment import Experiment
+from mlrl.testbed.experiments.input.extension import InputExtension
 from mlrl.testbed.experiments.input.parameters.reader import ParameterReader
 from mlrl.testbed.experiments.input.sources.source_csv import CsvFileSource
 from mlrl.testbed.extensions.extension import Extension
@@ -31,6 +32,12 @@ class ParameterInputExtension(Extension):
         default=False,
         description='Whether parameters should be loaded from input files or not.',
     )
+
+    def __init__(self, *dependencies: Extension):
+        """
+        :param dependencies: Other extensions, this extension depends on
+        """
+        super().__init__(InputExtension(), *dependencies)
 
     @override
     def _get_arguments(self) -> Set[Argument]:
