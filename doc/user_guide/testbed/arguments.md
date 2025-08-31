@@ -245,6 +245,11 @@ MLRL-Testbed allows saving data gathered during experiments to output files or p
   - `true` The program exits if an error occurs while writing output data.
   - `false` Any error that occurs while writing output data is logged, but the program continues.
 
+- `--exit-on-missing-input` (Default value = `false`)
+
+  - `true` The program exits if an error occurs while reading input data.
+  - `false` Any error that occurs while reading input data is logged, but the program continues.
+
 - `--print-all` (Default value = `false`)
 
   - `true` All output data is printed on the console unless specified otherwise.
