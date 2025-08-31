@@ -12,6 +12,7 @@ from mlrl.testbed.command import ArgumentList
 from mlrl.testbed.experiments.input.dataset.arguments import DatasetArguments
 from mlrl.testbed.experiments.input.dataset.dataset import InputDataset
 from mlrl.testbed.experiments.input.dataset.reader import DatasetReader
+from mlrl.testbed.experiments.input.extension import InputExtension
 from mlrl.testbed.experiments.input.sources import FileSource, Source
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.modes import Mode, SingleMode
@@ -24,6 +25,12 @@ class DatasetExtension(Extension, ABC):
     """
     An abstract base class for all extensions that configure the functionality to load datasets.
     """
+
+    def __init__(self, *dependencies: Extension):
+        """
+        :param dependencies: Other extensions, this extension depends on
+        """
+        super().__init__(InputExtension(), *dependencies)
 
     @override
     def _get_arguments(self) -> Set[Argument]:

@@ -57,6 +57,7 @@ class Experiment(ABC):
             self.predict_for_training_dataset = False
             self.predict_for_test_dataset = True
             self.exit_on_error = True
+            self.exit_on_missing_input = False
             self.add_before_start_output_writers(self.meta_data_writer)
             self.add_pre_training_output_writers(self.parameter_writer)
             self.add_post_training_output_writers(self.model_writer)
@@ -169,6 +170,16 @@ class Experiment(ABC):
             self.exit_on_error = exit_on_error
             return self
 
+        def set_exit_on_missing_input(self, exit_on_missing_input: bool) -> 'Experiment.Builder':
+            """
+            Sets whether the program should exit if an error occurs while reading input data.
+
+            :param exit_on_missing_input:   Tue, if the program should be aborted if an error occurs, False otherwise
+            :return:                        The builder itself
+            """
+            self.exit_on_missing_input = exit_on_missing_input
+            return self
+
         def build(self) -> 'Experiment':
             """
             Creates and returns a new experiment according to the specified configuration.
@@ -180,6 +191,11 @@ class Experiment(ABC):
             for output_writer in chain(self.pre_training_output_writers, self.post_training_output_writers,
                                        self.prediction_output_writers):
                 output_writer.exit_on_error = exit_on_error
+
+            exit_on_missing_input = self.exit_on_missing_input
+
+            for input_reader in self.input_readers:
+                input_reader.source.exit_on_missing_input = exit_on_missing_input
 
             experiment = self._create_experiment(self.initial_state, self.dataset_splitter)
             experiment.listeners.extend(self.listeners)
