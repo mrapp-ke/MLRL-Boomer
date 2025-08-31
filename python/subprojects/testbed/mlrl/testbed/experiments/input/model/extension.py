@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Set, override
 
 from mlrl.testbed.experiments.experiment import Experiment
+from mlrl.testbed.experiments.input.extension import InputExtension
 from mlrl.testbed.experiments.input.model.reader import ModelReader
 from mlrl.testbed.experiments.input.sources.source_pickle import PickleFileSource
 from mlrl.testbed.extensions.extension import Extension
@@ -31,6 +32,12 @@ class ModelInputExtension(Extension):
         default=False,
         description='Whether models should be loaded from input files or not.',
     )
+
+    def __init__(self, *dependencies: Extension):
+        """
+        :param dependencies: Other extensions, this extension depends on
+        """
+        super().__init__(InputExtension(), *dependencies)
 
     @override
     def _get_arguments(self) -> Set[Argument]:
