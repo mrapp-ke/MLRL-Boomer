@@ -195,7 +195,8 @@ class Experiment(ABC):
             exit_on_missing_input = self.exit_on_missing_input
 
             for input_reader in self.input_readers:
-                input_reader.source.exit_on_missing_input = exit_on_missing_input
+                for source in input_reader.sources:
+                    source.exit_on_missing_input = exit_on_missing_input
 
             experiment = self._create_experiment(self.initial_state, self.dataset_splitter)
             experiment.listeners.extend(self.listeners)

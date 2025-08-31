@@ -6,7 +6,7 @@ Provides classes that allow configuring the functionality to load datasets.
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from pathlib import Path
-from typing import List, Set, Type, override
+from typing import List, Sequence, Set, Type, override
 
 from mlrl.testbed.command import ArgumentList
 from mlrl.testbed.experiments.input.dataset.arguments import DatasetArguments
@@ -40,13 +40,13 @@ class DatasetExtension(Extension, ABC):
         return {DatasetArguments.DATASET_NAME}
 
     @abstractmethod
-    def _create_source(self, dataset: InputDataset, args: Namespace) -> Source:
+    def _create_sources(self, dataset: InputDataset, args: Namespace) -> Sequence[Source]:
         """
-        Must be implemented by subclasses in order to create the `Source`, the dataset should be loaded from.
+        Must be implemented by subclasses in order to create one or several sources, the dataset should be loaded from.
 
         :param dataset: The dataset that should be loaded
         :param args:    The command line arguments specified by the user
-        :return:        The `Source`, the dataset should be loaded from
+        :return:        A list that contains the sources, the dataset should be loaded from
         """
 
     def get_dataset_reader(self, args: Namespace) -> DatasetReader:
@@ -57,8 +57,8 @@ class DatasetExtension(Extension, ABC):
         :return:        The `DatasetReader` to be used
         """
         dataset = InputDataset(name=DatasetArguments.DATASET_NAME.get_value(args))
-        source = self._create_source(dataset, args)
-        return DatasetReader(source=source, input_data=dataset)
+        sources = self._create_sources(dataset, args)
+        return DatasetReader(dataset, *sources)
 
     @override
     def get_supported_modes(self) -> Set[Type[Mode]]:
@@ -87,22 +87,23 @@ class DatasetFileExtension(DatasetExtension, ABC):
         return super()._get_arguments() | {self.DATASET_DIRECTORY}
 
     @override
-    def _create_source(self, dataset: InputDataset, args: Namespace) -> Source:
+    def _create_sources(self, dataset: InputDataset, args: Namespace) -> Sequence[Source]:
         """
-        See :func:`mlrl.testbed.experiments.input.dataset.extension.DatasetExtension._create_source`
+        See :func:`mlrl.testbed.experiments.input.dataset.extension.DatasetExtension._create_sources`
         """
         dataset_directory = self.DATASET_DIRECTORY.get_value(args)
-        return self._create_file_source(Path(dataset_directory), dataset, args)
+        return self._create_file_sources(Path(dataset_directory), dataset, args)
 
     @abstractmethod
-    def _create_file_source(self, dataset_directory: Path, dataset: InputDataset, args: Namespace) -> FileSource:
+    def _create_file_sources(self, dataset_directory: Path, dataset: InputDataset,
+                             args: Namespace) -> Sequence[FileSource]:
         """
-        Must be implemented by subclasses in order to create the `FileSource`, the dataset should be loaded from.
+        Must be implemented by subclasses in order to create one or several sources, the dataset should be loaded from.
 
         :param dataset_directory:   The path to the directory, the dataset should be loaded from
         :param dataset:             The dataset that should be loaded
         :param args:                The command line arguments specified by the user
-        :return:                    The `FileSource`, the dataset should be loaded from
+        :return:                    A list that contains the sources, the dataset should be loaded from
         """
 
     @staticmethod

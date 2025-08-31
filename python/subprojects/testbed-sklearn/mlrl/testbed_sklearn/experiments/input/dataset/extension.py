@@ -5,7 +5,7 @@ Provides classes that allow configuring the functionality to load datasets from 
 """
 from argparse import Namespace
 from pathlib import Path
-from typing import override
+from typing import Sequence, override
 
 from mlrl.testbed_arff.experiments.input.sources import ArffFileSource
 
@@ -21,5 +21,6 @@ class ArffFileExtension(DatasetFileExtension):
 
     # pylint: disable=unused-argument
     @override
-    def _create_file_source(self, dataset_directory: Path, dataset: InputDataset, args: Namespace) -> FileSource:
-        return ArffFileSource(dataset_directory)
+    def _create_file_sources(self, dataset_directory: Path, dataset: InputDataset,
+                             args: Namespace) -> Sequence[FileSource]:
+        return [ArffFileSource(dataset_directory)]

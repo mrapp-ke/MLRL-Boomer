@@ -35,12 +35,13 @@ class Source(ABC):
         """
 
     @abstractmethod
-    def read_from_source(self, state: ExperimentState, input_data: InputData):
+    def read_from_source(self, state: ExperimentState, input_data: InputData) -> bool:
         """
         Must be implemented by subclasses in order to read input data from the source.
 
         :param state:       The state that should be used to store the input data
         :param input_data:  The input data that should be read
+        :return:            True, if any input data has been read, False otherwise
         """
 
 
@@ -76,7 +77,7 @@ class FileSource(Source, ABC):
         return self._get_file_path(state, input_data).is_file()
 
     @override
-    def read_from_source(self, state: ExperimentState, input_data: InputData):
+    def read_from_source(self, state: ExperimentState, input_data: InputData) -> bool:
         file_path = self._get_file_path(state, input_data)
         log.debug('Reading input data from file "%s"...', file_path)
 
@@ -85,10 +86,13 @@ class FileSource(Source, ABC):
 
             if data:
                 input_data.update_state(state, data)
+                return True
         elif self.exit_on_missing_input:
             raise IOError(f'The file "{file_path}" does not exist')
         else:
             log.error('The file "%s" does not exist', file_path)
+
+        return False
 
     @abstractmethod
     def _read_from_file(self, state: ExperimentState, file_path: Path, input_data: InputData) -> Optional[Any]:
