@@ -14,6 +14,8 @@ In the following, we provide an overview of scientific publications that are con
 
 If you use the BOOMER algorithm in a scientific publication, we would appreciate citations to one of the following papers that discuss different aspects of its underlying ideas and concepts.
 
+(references-rapp2020boomer)=
+
 ### Learning Gradient Boosted Multi-label Classification Rules
 
 The algorithm was first published in the following [paper](https://doi.org/10.1007/978-3-030-67664-3_8). A preprint version is publicly available on [arxiv.org](https://arxiv.org/pdf/2006.13346).
@@ -31,6 +33,8 @@ The algorithm was first published in the following [paper](https://doi.org/10.10
 }
 ```
 
+(references-rapp2021gblb)=
+
 ### Gradient-based Label Binning in Multi-label Classification
 
 Gradient-based label binning (GBLB), which is an extension to the original algorithm, was proposed in the following [paper](https://doi.org/10.1007/978-3-030-86523-8_28). A preprint version is available on [arxiv.org](https://arxiv.org/pdf/2106.11690).
@@ -47,6 +51,8 @@ Gradient-based label binning (GBLB), which is an extension to the original algor
     publisher={Springer}
 }
 ```
+
+(references-rapp2021boomer)=
 
 ### BOOMER – An Algorithm for Learning Gradient Boosted Multi-label Classification Rules
 
@@ -66,6 +72,8 @@ A technical report on the implementation of the BOOMER algorithm was published f
 }
 ```
 
+(references-rapp2022phdthesis)=
+
 ### Multi-label Rule Learning
 
 An extensive discussion of the BOOMER algorithm, including a presentation of the conceptual framework it is based on, as well as a detailed explanation of several implementation details, can be found in the following [Ph.D. thesis](https://doi.org/10.26083/tuprints-00022099).
@@ -80,6 +88,8 @@ An extensive discussion of the BOOMER algorithm, including a presentation of the
     school={Technische Universit{\"a}t Darmstadt}
 }
 ```
+
+(references-rapp2023)=
 
 ### On the Efficient Implementation of Classification Rule Learning
 
