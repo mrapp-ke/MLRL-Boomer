@@ -6,7 +6,7 @@ The BOOMER algorithm and the SeCo algorithm provided by this project are publish
 
 ## Fitting an Estimator
 
-Whereas the SeCo algorithm is restricted to [classification](https://en.wikipedia.org/wiki/Multi-label_classification) problems, the BOOMER algorithm can also be used for solving [regression](https://en.wikipedia.org/wiki/Regression_analysis) problems. In the following, we demonstrate the use of these algorithms.
+Whereas the SeCo algorithm is restricted to {ref}`classification problems <user-guide-classification>`, the BOOMER algorithm can also be used for solving {ref}`regression problems <user-guide-regression>`. In the following, we demonstrate the use of these algorithms.
 
 ### Classification Problems
 

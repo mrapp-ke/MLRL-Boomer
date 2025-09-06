@@ -58,6 +58,8 @@ Jiashuai
 José
 Ke
 kln
+labelings
+labelset
 lapack
 laplace
 Lavrač
