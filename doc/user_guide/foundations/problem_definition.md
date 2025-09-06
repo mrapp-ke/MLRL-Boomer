@@ -51,7 +51,7 @@ that assigns constant values to *numerical*, *ordinal*, or *nominal* attributes 
 The methods implemented by this project treat single- and multi-label classification, as well as single- and multi-output regression, as a supervised learning problem, i.e., a model is fit to the examples in a given training dataset
 
 ```{math}
-\mathcal{D} = \{ ( x_n, y_n ) | 1 \leq n \leq N \} \cup \mathcal \times \mathcal{Y}
+\mathcal{D} = \{ ( x_n, y_n ) | 1 \leq n \leq N \} \subset \mathcal{X} \times \mathcal{Y}
 ```
 
 for which the true labels, in case of classification problems, or target scores, in the case of regression problems, are known. In general, we refer to this information as the *ground truth*. The goal is to learn a model $f : \mathcal{X} \rightarrow \mathcal{Y}$ that maps from the feature space $\mathcal{X}$ to the output space $\mathcal{Y}$. A model of this kind can be considered as a predictive function that provides a prediction $\boldsymbol{\hat{y}} = f ( x )$ for any given example. In this documentation, we denote the binary label vector or vector of real-valued regression scores that is predicted by a model as
