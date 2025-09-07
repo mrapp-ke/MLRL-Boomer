@@ -35,7 +35,7 @@ jobs:
         id: python_version
         run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ steps.python_version.outputs.python_version }}
           check-latest: true
