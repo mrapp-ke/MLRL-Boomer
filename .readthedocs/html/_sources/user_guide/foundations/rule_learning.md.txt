@@ -44,6 +44,8 @@ for the representation of rules. We mostly use conjunctive rules, where the body
   - ∅
 ```
 
+(user-guide-trees)=
+
 ## Rules vs. Decision Trees
 
 Rule models and [decision trees](https://en.wikipedia.org/wiki/Decision_tree) are closely related, as both use logical clauses to test for the properties of given examples and to determine a prediction. In fact, each decision tree can be transformed into an equivalent rule-based model by viewing the paths in a tree, from the root node to each one of its leaves, as individual rules. However, unlike in decision trees, the individual rules in a rule-based model must not necessarily be non-overlapping. If an example satisfies the conditions in a rule's body, it is said to be *covered* by the rule. In such a case, the prediction provided by the rule's head applies to the example. Depending on its conditions, a rule covers an axis-aligned, hyper-rectangular region of the *feature space*, i.e., the space of all possible examples. In contrast to decision trees, which are global models that provide a prediction for each given example, a single rule is a local model that only applies to examples it covers. For this reason, many rule learning approaches use a *default rule* that does not contain any conditions in its body and therefore applied to all examples. It is meant to provide a default prediction, usually corresponding to the majority class, i.e., the class that occurs most often in the training data, for examples not covered by another rule. As a result of these conceptual similarities and differences, rules can be considered a more general concept class than the more commonly used decision trees. Compared to tree-based models, they provide additional flexibility when it comes to the selection of rules to be included in a model.
@@ -52,11 +54,15 @@ Rule models and [decision trees](https://en.wikipedia.org/wiki/Decision_tree) ar
 
 When it comes to techniques and algorithms for rule induction, one needs to distinguish between *descriptive* and *predictive rule learning*. The former is used to describe learning techniques aimed at discovering interesting patterns in unlabeled data. It allows extracting frequent patterns of co-occurring feature values, also referred to as [association rules](https://en.wikipedia.org/wiki/Association_rule_learning), from a given dataset. In contrast, predictive rule learning methods, which this project focuses on, aim to derive a model from labeled training data which can afterward be used for obtaining predictions. As discussed below, most of these approaches are based on the ideas of so-called *covering algorithms*.
 
+(user-guide-covering)=
+
 ### Covering Algorithms
 
 One of the most commonly used strategies for the induction of predictive rules is the separate-and-conquer (SeCo) paradigm as described by Fürnkranz.[^fuernkranz1999] Methods that are based on this particular covering algorithm, such as the {ref}`SeCo algorithm <user-guide-seco>` developed by this project, learn a set of rules by following an iterative procedure. At first, a new rule that covers a subset of the given training examples is induced. Afterward, the examples it covers are removed from the training set, and the algorithm proceeds by learning the next rule. Ultimately, the training procedure finishes as soon as no examples are left or if a certain stopping criterion is met. The SeCo strategy results in an ordered list of rules, commonly referred to as a *decision list*. Because it was learned on a subset of the training data, where examples covered by previously induced rules have already been removed, each rule in the list depends on its predecessors. Given an example to predict for, the dependence between rules is taken into account by processing the rules in a decision list in the order of their induction.
 
 Similar to the construction of decision trees, individual rules are usually built by a covering algorithm in a top-down fashion, where the rule is successively refined by adding new conditions to its initially empty body. As a result of adding a new condition, the rule covers fewer examples and becomes more specific. To strive for a balance between too general and overly specific rules, it is essential to avoid the problem of under- or overfitting the data.[^janssen2008] It is crucial to use a suitable evaluation measure for comparing the quality of potential refinements to achieve a good trade-off between the *coverage* and *consistency* of a rule. In the rule learning literature, measures that guide the rule refinement process are often referred to as *heuristics*. Traditionally, the development, analysis, and empirical evaluation of reliable heuristics have played an important role in research on predictive rule learning and a large number of different heuristics have consequently been proposed in the past.[^fuernkranz2005][^fuernkranz2012][^janssen2010]
+
+(user-guide-boosting)=
 
 ### Boosting Algorithms
 
