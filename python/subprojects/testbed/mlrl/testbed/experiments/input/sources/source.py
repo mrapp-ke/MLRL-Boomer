@@ -7,11 +7,11 @@ import logging as log
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, Optional, override
+from typing import Any, Dict, Optional, override
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.file_path import FilePath
-from mlrl.testbed.experiments.input.data import DatasetInputData, InputData, TabularInputData
+from mlrl.testbed.experiments.input.data import DatasetInputData, InputData, StructuralInputData, TabularInputData
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
 
@@ -148,4 +148,26 @@ class TabularFileSource(FileSource, ABC):
         :param file_path:   The path to the file from which the input data should be read
         :param input_data:  The tabular input data that should be read
         :return:            A table that has been read from the file
+        """
+
+
+class StructuralFileSource(FileSource, ABC):
+    """
+    An abstract base class for all classes that allow to read structural input data from a file.
+    """
+
+    @override
+    def _read_from_file(self, _: ExperimentState, file_path: Path, input_data: InputData) -> Optional[Any]:
+        if isinstance(input_data, StructuralInputData):
+            return self._read_dictionary_from_file(file_path, input_data)
+        return None
+
+    @abstractmethod
+    def _read_dictionary_from_file(self, file_path: Path, input_data: StructuralInputData) -> Optional[Dict[Any, Any]]:
+        """
+        Must be implemented by subclasses in order to read structural input data from a specific file.
+
+        :param file_path:   The path to the file from which the input data should be read
+        :param input_data:  The structural input data that should be read
+        :return:            A dictionary that has been read from the file
         """
