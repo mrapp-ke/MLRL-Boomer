@@ -16,6 +16,8 @@ from mlrl.testbed.util.io import ENCODING_UTF8, open_readable_file, open_writabl
 
 PLACEHOLDER_DURATION = '<duration>'
 
+PLACEHOLDER_TIMESTAMP = '<timestamp>'
+
 PLACEHOLDER_FILE_NAME = '<file>'
 
 
@@ -127,8 +129,15 @@ class TextFileComparison(FileComparison):
                          PLACEHOLDER_DURATION, line)
 
     @staticmethod
+    def __replace_timestamps_with_placeholders(line: str) -> str:
+        regex_timestamp = r'\d\d\d\d-\d\d-\d\d_\d\d-\d\d'
+        return regex.sub(regex_timestamp, PLACEHOLDER_TIMESTAMP, line)
+
+    @staticmethod
     def __mask_line(line: str) -> str:
-        return TextFileComparison.__replace_durations_with_placeholders(line.strip('\n'))
+        masked_line = TextFileComparison.__replace_durations_with_placeholders(line.strip('\n'))
+        masked_line = TextFileComparison.__replace_timestamps_with_placeholders(masked_line)
+        return masked_line
 
     def __init__(self, lines: Iterable[str]):
         """
