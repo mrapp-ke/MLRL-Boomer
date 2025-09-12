@@ -103,6 +103,14 @@ class IntegrationTests(ABC):
             .print_evaluation(False)
         CmdRunner(builder).run('meka-format')
 
+    def test_meta_data(self):
+        builder = self._create_cmd_builder() \
+            .print_evaluation(False) \
+            .save_evaluation(False) \
+            .print_meta_data() \
+            .save_meta_data()
+        CmdRunner(builder).run('meta_data')
+
     @pytest.mark.parametrize('data_split, data_split_options, predefined', [
         (NONE, Options(), False),
         (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options(), False),
