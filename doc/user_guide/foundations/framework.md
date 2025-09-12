@@ -48,6 +48,8 @@ The different types of rules discussed so far focus on the prediction for a sing
 
 In particular, in a {ref}`multi-label classification setting <user-guide-mlc>`, multi-output heads are a natural choice for the representation of co-occurrences of labels that hold for certain regions of the feature space. This pattern, frequently found in multi-label data, can easily be modeled by rules such as $\hat{𝑝}_1, \hat{𝑝}_2 \leftarrow 𝑐_1$. Accordingly, local exclusions of labels can also be expressed through multi-label heads, e.g., by learning rules of the form $\hat{𝑝}_1, \neg \hat{𝑝}_2 \leftarrow 𝑐_1$. The induction of binary multi-output heads is often implemented as a post-processing step. For example, they can be constructed from association rules by merging the single-output heads of rules that cover overlapping regions of the feature space.[^li2008][^thabtah2007][^thabtah2006] In contrast, our algorithms support the native induction of rules with multiple predictions in the head. However, naive implementations of such an approach can be computationally expensive, as the number of output combinations that must be considered for each rule grows exponentially with the number of available outputs. To overcome this limitation, pruning techniques that enable to omit unpromising solutions, rather than taking all possible combinations of outputs into account, have been proposed.[^mencia2018][^klein2019] They are also used by our {ref}`SeCo algorithm <user-guide-seco>`.
 
+(user-guide-model-assemblage)=
+
 ## Assemblage of Rule Models
 
 We aim at learning predictive models that consist of several {ref}`(multi-output) rules <user-guide-rules>`. Without loss of generality, we assume that the rules are given in a particular order. This enables us to account for methods where the prediction for unseen examples depends on the order of the rules, as is the case with {ref}`covering algorithms<user-guide-covering>`. We denote a rule-based model, consisting of $T$ rules, as a sequence
@@ -58,11 +60,15 @@ F = ( f_1, \dots, F_T ).
 
 All rules in a model are usually of the same form. For example, an algorithm that aims at the induction of probabilistic single-output rules does typically not produce rules that provide deterministic predictions or are concerned with more than a single output.
 
+(user-guide-default-rule)=
+
 ### Default Rules
 
 Unlike decision trees, which cover the entire feature space (see {ref}`here <user-guide-trees>`), individual rules only provide predictions for a particular region of the feature space for which the conditions in their bodies are satisfied. Rule-based models typically include a default rule to account for cases where no other rule does cover an example. It does not contain any conditions in its body and covers all examples for which a model may predict.
 
 The predictions of a default rule may be deterministic or probabilistic (see {ref}`here <user-guide-predictions>`), depending on the type of predictions provided by the other rules in the model. However, a default rule is always supposed to predict for all available labels, regardless of whether the other rules provide partial or complete predictions. The {ref}`SeCo algorithm <user-guide-seco>` employs binary default rules that predict a label as irrelevant unless most training examples are associated with the respective label.[^klein2019][^rapp2018] In cases like these, where the order of the rules matters for prediction, the default rule comes last, i.e., the other rules take precedence.
+
+(user-guide-sequential-rule-induction)=
 
 ### Sequential Rule Induction
 
@@ -98,9 +104,13 @@ class: only-dark
 ---
 ```
 
+(user-guide-post-optimization)=
+
 ### Post-Optimization
 
 An optional post-processing step may be conducted after the induction of new rules has stopped. Initially, at each iteration of the rule induction process, information about the current model is taken into account to construct a new rule. However, only after the rule induction has been completed, the model’s performance can be verified as a whole. Consequently, this last stage of training enables to carry out optimizations that aim at fine-tuning a model globally. This may include the removal or addition of entire rules, as well as modifications to existing ones. Our algorithms support the post-optimization strategy, successfully employed by RIPPER[^cohen1995], where individual rules are relearned in the context of all preceding and following rules.
+
+(user-guide-rule-induction)=
 
 ## Induction of Single Rules
 
