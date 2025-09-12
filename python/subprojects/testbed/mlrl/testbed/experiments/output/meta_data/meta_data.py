@@ -29,7 +29,7 @@ class OutputMetaData(StructuralOutputData):
         """
         :param meta_data: The meta-data
         """
-        super().__init__(OutputData.Properties(name='Meta data', file_name='metadata'),
+        super().__init__(OutputData.Properties(name='Meta-data of the experiment', file_name='metadata'),
                          Context(include_dataset_type=False, include_prediction_scope=False))
         self.meta_data = meta_data
 
