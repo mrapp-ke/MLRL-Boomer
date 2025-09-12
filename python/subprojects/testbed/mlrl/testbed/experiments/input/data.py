@@ -5,7 +5,7 @@ Provides classes for representing input data.
 """
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any, override
+from typing import Any, Dict, override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.state import ExperimentState
@@ -94,4 +94,27 @@ class TabularInputData(InputData, ABC):
 
         :param state:   The state to be updated
         :param table:   A table
+        """
+
+
+class StructuralInputData(InputData, ABC):
+    """
+    An abstract base class for all classes that represent input data that can be converted into a structural
+    representation, e.g., YAML or JSON.
+    """
+
+    @override
+    def update_state(self, state: ExperimentState, input_data: Any):
+        """
+        See :func:`mlrl.testbed.experiments.input.data.InputData.update_state`
+        """
+        self._update_state(state, input_data)
+
+    @abstractmethod
+    def _update_state(self, state: ExperimentState, dictionary: Dict[Any, Any]):
+        """
+        Must be implemented by subclasses in order to update the state of an experiment based on structural input data.
+
+        :param state:       The state to be updated
+        :param dictionary:  A dictionary
         """
