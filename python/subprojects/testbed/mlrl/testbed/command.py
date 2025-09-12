@@ -11,6 +11,7 @@ from dataclasses import dataclass
 from itertools import chain
 from typing import Dict, Iterable, List, Optional, override
 
+from mlrl.util.cli import Argument
 from mlrl.util.format import format_iterable
 
 
@@ -138,7 +139,7 @@ class Command(Iterable[str]):
 
         for i, argument in enumerate(argument_list):
             if argument.startswith('-'):
-                argument_name = argument.lstrip('-').replace('-', '_')
+                argument_name = Argument.argument_name_to_key(argument)
                 argument_value = None
 
                 if i + 1 < len(argument_list):

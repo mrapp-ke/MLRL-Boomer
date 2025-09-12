@@ -45,6 +45,16 @@ class Argument:
         self.decorator = decorator
         self.kwargs = dict(kwargs)
 
+    @staticmethod
+    def argument_name_to_key(name: str) -> str:
+        """
+        Converts the name of an argument into its key.
+
+        :param name:    The name of the argument
+        :return:        The key of the argument
+        """
+        return name.lstrip('-').replace('-', '_')
+
     @cached_property
     def name(self) -> str:
         """
@@ -57,7 +67,7 @@ class Argument:
         """
         The key of the argument in a `Namespace`.
         """
-        return self.name.lstrip('-').replace('-', '_')
+        return self.argument_name_to_key(self.name)
 
     def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
         """
