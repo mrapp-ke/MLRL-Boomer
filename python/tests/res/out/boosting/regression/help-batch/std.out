@@ -42,6 +42,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--mode MODE] [--config CONFIG]
                     [--print-joint-probability-calibration-model PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL]
                     [--print-label-vectors PRINT_LABEL_VECTORS]
                     [--print-marginal-probability-calibration-model PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL]
+                    [--print-meta-data PRINT_META_DATA]
                     [--print-model-characteristics PRINT_MODEL_CHARACTERISTICS]
                     [--print-parameters PRINT_PARAMETERS]
                     [--print-prediction-characteristics PRINT_PREDICTION_CHARACTERISTICS]
@@ -298,6 +299,9 @@ options:
                         probabilities should be printed on the console or not.
                         Must be one of {"false", "true"}. For additional
                         options refer to the documentation.
+  --print-meta-data PRINT_META_DATA
+                        Whether meta-data should be printed on the console or
+                        not. Must be one of {"false", "true"}.
   --print-model-characteristics PRINT_MODEL_CHARACTERISTICS
                         Whether the characteristics of models should be
                         printed on the console or not. Must be one of
