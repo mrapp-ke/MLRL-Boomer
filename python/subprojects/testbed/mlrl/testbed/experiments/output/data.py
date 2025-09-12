@@ -3,6 +3,8 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing output data.
 """
+import json
+
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, replace
 from typing import Any, Dict, Iterable, List, Optional, Type, override
@@ -143,7 +145,7 @@ class TabularOutputData(TextualOutputData, ABC):
         """
 
 
-class StructuralOutputData(OutputData, ABC):
+class StructuralOutputData(TextualOutputData, ABC):
     """
     An abstract base class for all classes that represent output data that can be converted into a structural
     representation, e.g., YAML or JSON.
@@ -157,6 +159,11 @@ class StructuralOutputData(OutputData, ABC):
         :param options: Options to be taken into account
         :return:        The dictionary that has been created
         """
+
+    @override
+    def to_text(self, options: Options, **kwargs) -> Optional[str]:
+        dictionary = self.to_dict(options, **kwargs)
+        return None if dictionary is None else json.dumps(dictionary, indent=4)
 
 
 class DatasetOutputData(TextualOutputData, ABC):
