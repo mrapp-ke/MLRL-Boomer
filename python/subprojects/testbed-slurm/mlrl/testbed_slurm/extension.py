@@ -10,8 +10,7 @@ from mlrl.testbed_slurm.arguments import SlurmArguments
 from mlrl.testbed_slurm.runner import SlurmRunner
 
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import Mode
-from mlrl.testbed.modes.mode_batch import BatchMode
+from mlrl.testbed.modes import BatchMode, Mode
 
 from mlrl.util.cli import Argument
 

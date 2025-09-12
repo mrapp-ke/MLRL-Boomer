@@ -39,7 +39,7 @@ from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes.mode_batch import BatchMode
+from mlrl.testbed.modes import BatchMode
 from mlrl.testbed.runnables import Runnable
 
 from mlrl.util.cli import Argument, SetArgument

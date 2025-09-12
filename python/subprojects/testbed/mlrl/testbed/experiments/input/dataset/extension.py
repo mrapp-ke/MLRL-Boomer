@@ -15,8 +15,7 @@ from mlrl.testbed.experiments.input.dataset.reader import DatasetReader
 from mlrl.testbed.experiments.input.extension import InputExtension
 from mlrl.testbed.experiments.input.sources import FileSource, Source
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import Mode, SingleMode
-from mlrl.testbed.modes.mode_batch import BatchMode
+from mlrl.testbed.modes import BatchMode, Mode, SingleMode
 
 from mlrl.util.cli import Argument, StringArgument
 
