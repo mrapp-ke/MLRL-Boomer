@@ -18,7 +18,7 @@ The algorithm that is provided by this project currently supports the following 
 - **Rules may predict for a single label or multiple ones** (which enables to model local label dependencies).
 - **Rules can be constructed via a greedy search or a beam search.** The latter may help to improve the quality of individual rules.
 - **Sampling techniques and stratification methods** can be used to learn new rules on a subset of the available training examples, features, or labels.
-- **Fine-grained control over the specificity/generality of rules** is provided via hyper-parameters.
+- **Fine-grained control over the specificity/generality of rules** is provided via hyperparameters.
 - **Incremental reduced error pruning** can be used to remove overly specific conditions from rules and prevent overfitting.
 - **Sequential post-optimization** may help to improve the predictive performance of a model by reconstructing each rule in the context of the other rules.
 - **Native support for numerical, ordinal, and nominal features** eliminates the need for pre-processing techniques such as one-hot encoding.
