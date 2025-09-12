@@ -40,7 +40,7 @@ class OutputMetaData(StructuralOutputData):
         """
         meta_data = self.meta_data
         dictionary: Dict[Any, Any] = {
-            self.ATTRIBUTE_VERSION: meta_data.version,
+            self.ATTRIBUTE_VERSION: str(meta_data.version),
             self.ATTRIBUTE_TIMESTAMP: meta_data.formatted_timestamp,
             self.ATTRIBUTE_COMMAND: str(meta_data.command),
         }
