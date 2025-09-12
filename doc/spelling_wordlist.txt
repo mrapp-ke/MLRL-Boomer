@@ -61,6 +61,7 @@ Hendrik
 hpp
 Hüllermeier
 HwR
+hyperparameter
 hyperparameters
 Indurkhya
 interpretability
@@ -72,6 +73,7 @@ Jiashuai
 José
 Ke
 kln
+Kotłowski
 Krzysztof
 labelings
 labelset
@@ -124,6 +126,7 @@ preprocessors
 programmatically
 Prokhorenkova
 pRSL
+pseudocode
 Qinbin
 Qiwei
 Rapp
@@ -142,6 +145,7 @@ sexualized
 Shi
 Sholom
 sklearn
+Słowiński
 Slurm
 socio
 stderr
@@ -176,6 +180,7 @@ Weiwei
 whl
 Widmer
 Willem
+Wojciech
 wra
 XGBoost
 Xorshift
