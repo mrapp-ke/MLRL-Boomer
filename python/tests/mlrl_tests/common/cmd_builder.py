@@ -321,6 +321,28 @@ class CmdBuilder:
         self.args.append(str(save_all).lower())
         return self
 
+    def print_meta_data(self, print_meta_data: bool = True):
+        """
+        Configures whether the meta-data of the experiment should be printed on the console or not.
+
+        :param print_meta_data: True, if the meta-data should be printed, False otherwise
+        :return:                The builder itself
+        """
+        self.args.append('--print-meta-data')
+        self.args.append(str(print_meta_data).lower())
+        return self
+
+    def save_meta_data(self, save_meta_data: bool = True):
+        """
+        Configures whether the meta-data of the experiment should be written to output files or not.
+
+        :param save_meta_data:  True, if the meta-data should be written to output files, False otherwise
+        :return:                The builder itself
+        """
+        self.args.append('--save-meta-data')
+        self.args.append(str(save_meta_data).lower())
+        return self
+
     def print_evaluation(self, print_evaluation: bool = True):
         """
         Configures whether the evaluation results should be printed on the console or not.
