@@ -264,10 +264,15 @@ MLRL-Testbed allows saving data gathered during experiments to output files or p
 
 Saving meta-data can help improving the reproducibility of experiments. Among other information, it contains the command that has been used for running an experiment and the version of MLRL-Testbed used.
 
+- `--print-meta-data` (Default value = `false`)
+
+  - `true` The meta-data is printed on the console.
+  - `false` The meta-data is not printed on the console.
+
 - `--save-meta-data` (Default value = `auto`)
 
-  - `auto` Meta-data is saved to the directory `-base-dir` only if other output files are written as well.
-  - `true` Meta-data is always saved to the directory `--base-dir`
+  - `auto` The meta-data is saved to the directory `-base-dir` only if other output files are written as well.
+  - `true` The meta-data is always saved to the directory `--base-dir`
   - `false` No meta-data is saved.
 
 ### Models

@@ -16,6 +16,10 @@ from mlrl.testbed.util.io import ENCODING_UTF8, open_readable_file, open_writabl
 
 PLACEHOLDER_DURATION = '<duration>'
 
+PLACEHOLDER_TIMESTAMP = '<timestamp>'
+
+PLACEHOLDER_VERSION = '<version>'
+
 PLACEHOLDER_FILE_NAME = '<file>'
 
 
@@ -127,8 +131,21 @@ class TextFileComparison(FileComparison):
                          PLACEHOLDER_DURATION, line)
 
     @staticmethod
+    def __replace_timestamps_with_placeholders(line: str) -> str:
+        regex_timestamp = r'"\d\d\d\d-\d\d-\d\d_\d\d-\d\d"'
+        return regex.sub(regex_timestamp, '"' + PLACEHOLDER_TIMESTAMP + '"', line)
+
+    @staticmethod
+    def __replace_versions_with_placeholders(line: str) -> str:
+        regex_version = r'"\d+.\d+.\d+"'
+        return regex.sub(regex_version, '"' + PLACEHOLDER_VERSION + '"', line)
+
+    @staticmethod
     def __mask_line(line: str) -> str:
-        return TextFileComparison.__replace_durations_with_placeholders(line.strip('\n'))
+        masked_line = TextFileComparison.__replace_durations_with_placeholders(line.strip('\n'))
+        masked_line = TextFileComparison.__replace_timestamps_with_placeholders(masked_line)
+        masked_line = TextFileComparison.__replace_versions_with_placeholders(masked_line)
+        return masked_line
 
     def __init__(self, lines: Iterable[str]):
         """
@@ -435,6 +452,6 @@ class MetaDataFileComparison(FileComparison):
     @override
     def _write(self, file: Path):
         yaml_dict = self.__load_yaml(self.path)
-        yaml_dict[self.FIELD_VERSION] = '<version>'
-        yaml_dict[self.FIELD_TIMESTAMP] = '<timestamp>'
+        yaml_dict[self.FIELD_VERSION] = PLACEHOLDER_VERSION
+        yaml_dict[self.FIELD_TIMESTAMP] = PLACEHOLDER_TIMESTAMP
         self.__write_yaml(yaml_dict, file)
