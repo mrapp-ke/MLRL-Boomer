@@ -1,0 +1,7 @@
+mlrl.util.version module
+========================
+
+.. automodule:: mlrl.util.version
+   :members:
+   :show-inheritance:
+   :undoc-members:
