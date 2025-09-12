@@ -119,6 +119,17 @@ class Command(Iterable[str]):
         return Command(module_name=module_name, argument_dict=argument_dict, argument_list=argument_dict.to_list())
 
     @staticmethod
+    def from_string(string: str) -> 'Command':
+        """
+        Creates and returns a command from a given string.
+
+        @param string:  The string, the command should be created from
+        :return:        The command that has been created
+        """
+        args = string.split()
+        return Command.from_list(args[1], ArgumentList(args[2:]))
+
+    @staticmethod
     def from_argv() -> 'Command':
         """
         Creates and returns a command from `sys.argv`.
