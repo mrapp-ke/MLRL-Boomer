@@ -1,8 +1,8 @@
 mlrl-testbed mlrl.seco --mode single --help
-usage: mlrl-testbed [-r RUNNABLE] [-v] [--mode MODE] [--base-dir BASE_DIR]
-                    [--create-dirs CREATE_DIRS] [--data-dir DATA_DIR]
-                    [--data-split DATA_SPLIT] [--dataset DATASET]
-                    [--exit-on-error EXIT_ON_ERROR]
+usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE]
+                    [--base-dir BASE_DIR] [--create-dirs CREATE_DIRS]
+                    [--data-dir DATA_DIR] [--data-split DATA_SPLIT]
+                    [--dataset DATASET] [--exit-on-error EXIT_ON_ERROR]
                     [--exit-on-missing-input EXIT_ON_MISSING_INPUT]
                     [--feature-binning FEATURE_BINNING]
                     [--feature-format FEATURE_FORMAT]
@@ -14,8 +14,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--mode MODE] [--base-dir BASE_DIR]
                     [--lift-function LIFT_FUNCTION]
                     [--load-models LOAD_MODELS]
                     [--load-parameters LOAD_PARAMETERS]
-                    [--log-level LOG_LEVEL] [--max-rules MAX_RULES]
-                    [--model-load-dir MODEL_LOAD_DIR]
+                    [--max-rules MAX_RULES] [--model-load-dir MODEL_LOAD_DIR]
                     [--model-save-dir MODEL_SAVE_DIR]
                     [--one-hot-encoding ONE_HOT_ENCODING]
                     [--output-format OUTPUT_FORMAT]
@@ -73,6 +72,9 @@ options:
                         The Python class name of the program that should be
                         run
   -v, --version         Display information about the program.
+  --log-level LOG_LEVEL
+                        The log level to be used. Must be one of {"critical",
+                        "debug", "error", "info", "notset", "warn"}.
   --mode MODE           The mode of operation to be used. Must be one of
                         {"batch", "single"}.
   --base-dir BASE_DIR   If relative paths to directories, where files should
@@ -147,9 +149,6 @@ options:
   --load-parameters LOAD_PARAMETERS
                         Whether parameters should be loaded from input files
                         or not. Must be one of {"false", "true"}.
-  --log-level LOG_LEVEL
-                        The log level to be used. Must be one of {"critical",
-                        "debug", "error", "info", "notset", "warn"}.
   --max-rules MAX_RULES
                         The maximum number of rules to be induced. Must be at
                         least 1 or 0, if the number of rules should not be

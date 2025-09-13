@@ -1,7 +1,7 @@
 mlrl-testbed mlrl.boosting --mode batch --help
-usage: mlrl-testbed [-r RUNNABLE] [-v] [--mode MODE] [--config CONFIG]
-                    [--separate-folds SEPARATE_FOLDS] [--list]
-                    [--runner RUNNER] [--base-dir BASE_DIR]
+usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE]
+                    [--config CONFIG] [--separate-folds SEPARATE_FOLDS]
+                    [--list] [--runner RUNNER] [--base-dir BASE_DIR]
                     [--binary-predictor BINARY_PREDICTOR]
                     [--create-dirs CREATE_DIRS] [--data-split DATA_SPLIT]
                     [--default-rule DEFAULT_RULE]
@@ -19,8 +19,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--mode MODE] [--config CONFIG]
                     [--l2-regularization-weight L2_REGULARIZATION_WEIGHT]
                     [--label-binning LABEL_BINNING]
                     [--load-models LOAD_MODELS]
-                    [--load-parameters LOAD_PARAMETERS]
-                    [--log-level LOG_LEVEL] [--loss LOSS]
+                    [--load-parameters LOAD_PARAMETERS] [--loss LOSS]
                     [--marginal-probability-calibration MARGINAL_PROBABILITY_CALIBRATION]
                     [--max-rules MAX_RULES] [--model-load-dir MODEL_LOAD_DIR]
                     [--one-hot-encoding ONE_HOT_ENCODING]
@@ -88,6 +87,9 @@ options:
                         The Python class name of the program that should be
                         run
   -v, --version         Display information about the program.
+  --log-level LOG_LEVEL
+                        The log level to be used. Must be one of {"critical",
+                        "debug", "error", "info", "notset", "warn"}.
   --mode MODE           The mode of operation to be used. Must be one of
                         {"batch", "single"}.
   --config CONFIG       An absolute or relative path to a YAML file that
@@ -196,9 +198,6 @@ options:
   --load-parameters LOAD_PARAMETERS
                         Whether parameters should be loaded from input files
                         or not. Must be one of {"false", "true"}.
-  --log-level LOG_LEVEL
-                        The log level to be used. Must be one of {"critical",
-                        "debug", "error", "info", "notset", "warn"}.
   --loss LOSS           The name of the loss function to be minimized during
                         training. Must be one of {"logistic-decomposable",
                         "logistic-non-decomposable", "squared-error-
