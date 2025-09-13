@@ -16,7 +16,7 @@ from mlrl.testbed.experiments.output.meta_data.extension import MetaDataExtensio
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.extensions import Extension
-from mlrl.testbed.modes import BatchMode, Mode, SingleMode
+from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
 from mlrl.testbed.program_info import ProgramInfo
 
 from mlrl.util.cli import Argument, BoolArgument, CommandLineInterface
@@ -159,6 +159,23 @@ class Runnable(Recipe, ABC):
                 dependency.configure_batch_mode(args, batch_mode)
 
         return batch_mode
+
+    def configure_run_mode(self, cli: CommandLineInterface) -> RunMode:
+        """
+        Configures the run mode according to the extensions applied to the runnable.
+
+        :param cli: The command line interface to be configured
+        """
+        run_mode = RunMode()
+        args = cli.parse_known_args()
+
+        for extension in self.extensions:
+            extension.configure_run_mode(args, run_mode)
+
+            for dependency in extension.get_dependencies(run_mode):
+                dependency.configure_run_mode(args, run_mode)
+
+        return run_mode
 
     def configure_arguments(self, cli: CommandLineInterface, mode: Mode):
         """
