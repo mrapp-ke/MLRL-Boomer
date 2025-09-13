@@ -14,7 +14,7 @@ from mlrl.testbed.experiments.output.parameters.arguments import ParameterOutput
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes.mode_single import Mode, SingleMode
+from mlrl.testbed.modes import Mode, SingleMode
 
 from mlrl.util.cli import Argument, BoolArgument
 
