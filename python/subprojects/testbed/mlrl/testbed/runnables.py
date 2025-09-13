@@ -141,6 +141,8 @@ class Runnable(Recipe, ABC):
     def configure_batch_mode(self, cli: CommandLineInterface) -> BatchMode:
         """
         Configures the batch mode according to the extensions applied to the runnable.
+
+        :param cli: The command line interface to be configured
         """
         batch_mode = BatchMode(self.create_batch_config_file_factory())
         args = cli.parse_known_args()
