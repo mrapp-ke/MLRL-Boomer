@@ -10,7 +10,7 @@ from mlrl.testbed.command import Command
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.modes.mode import Mode
 
-from mlrl.util.cli import CommandLineInterface
+from mlrl.util.cli import Argument, CommandLineInterface
 
 
 class SingleMode(Mode):
@@ -19,8 +19,8 @@ class SingleMode(Mode):
     """
 
     @override
-    def configure_arguments(self, cli: CommandLineInterface):
-        pass
+    def configure_arguments(self, cli: CommandLineInterface, *arguments: Argument):
+        cli.add_arguments(*arguments)
 
     @override
     def run_experiment(self, args: Namespace, recipe: Recipe):
