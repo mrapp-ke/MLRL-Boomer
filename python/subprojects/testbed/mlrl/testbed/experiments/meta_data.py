@@ -24,7 +24,7 @@ class MetaData:
         version:        The version of MLRL-Testbed used for running the command
         timestamp:      The date and time when the command was run
     """
-    command: Command
+    command: Command = field(default_factory=Command.from_argv)
     child_commands: List[Command] = field(default_factory=list)
     version: Version = field(default_factory=lambda: Version.parse(version('mlrl-testbed'), skip_on_error=True))
     timestamp: datetime = datetime.now()

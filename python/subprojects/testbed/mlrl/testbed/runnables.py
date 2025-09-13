@@ -16,7 +16,7 @@ from mlrl.testbed.experiments.output.meta_data.extension import MetaDataExtensio
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.extensions import Extension
-from mlrl.testbed.modes import BatchMode, Mode, SingleMode
+from mlrl.testbed.modes import BatchMode, Mode, ReadMode, SingleMode
 from mlrl.testbed.program_info import ProgramInfo
 
 from mlrl.util.cli import Argument, BoolArgument, CommandLineInterface
@@ -159,6 +159,15 @@ class Runnable(Recipe, ABC):
                 dependency.configure_batch_mode(args, batch_mode)
 
         return batch_mode
+
+    # pylint: disable=unused-argument
+    def configure_read_mode(self, cli: CommandLineInterface) -> ReadMode:
+        """
+        Configures the read mode according to the extensions applied to the runnable.
+
+        :param cli: The command line interface to be configured
+        """
+        return ReadMode()
 
     def configure_arguments(self, cli: CommandLineInterface, mode: Mode):
         """
