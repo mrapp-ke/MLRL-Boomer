@@ -8,7 +8,7 @@ from argparse import Namespace
 
 from mlrl.testbed.experiments.recipe import Recipe
 
-from mlrl.util.cli import CommandLineInterface, SetArgument
+from mlrl.util.cli import Argument, CommandLineInterface, SetArgument
 
 
 class Mode(ABC):
@@ -28,12 +28,14 @@ class Mode(ABC):
     )
 
     @abstractmethod
-    def configure_arguments(self, cli: CommandLineInterface):
+    def configure_arguments(self, cli: CommandLineInterface, *arguments: Argument):
         """
         Must be implemented by subclasses in order to configure the command line interface according to the mode of
         operation.
 
-        :param cli: The command line interface to be configured
+        :param cli:         The command line interface to be configured
+        :param arguments:   The arguments that should be added to the command line interface according to the registered
+                            extensions, including algorithmic parameters
         """
 
     @abstractmethod

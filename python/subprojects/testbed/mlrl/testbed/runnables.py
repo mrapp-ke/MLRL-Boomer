@@ -141,6 +141,8 @@ class Runnable(Recipe, ABC):
     def configure_batch_mode(self, cli: CommandLineInterface) -> BatchMode:
         """
         Configures the batch mode according to the extensions applied to the runnable.
+
+        :param cli: The command line interface to be configured
         """
         batch_mode = BatchMode(self.create_batch_config_file_factory())
         args = cli.parse_known_args()
@@ -162,7 +164,7 @@ class Runnable(Recipe, ABC):
         """
         arguments = reduce(lambda aggr, extension: aggr | extension.get_arguments(mode), self.extensions, set())
         arguments.update(self.get_algorithmic_arguments(cli.parse_known_args()))
-        cli.add_arguments(*sorted(arguments, key=lambda arg: arg.name))
+        mode.configure_arguments(cli, *sorted(arguments, key=lambda arg: arg.name))
 
     # pylint: disable=unused-argument
     def get_algorithmic_arguments(self, known_args: Namespace) -> Set[Argument]:
