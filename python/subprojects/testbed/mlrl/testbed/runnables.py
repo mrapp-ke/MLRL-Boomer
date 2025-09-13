@@ -164,7 +164,7 @@ class Runnable(Recipe, ABC):
         """
         arguments = reduce(lambda aggr, extension: aggr | extension.get_arguments(mode), self.extensions, set())
         arguments.update(self.get_algorithmic_arguments(cli.parse_known_args()))
-        cli.add_arguments(*sorted(arguments, key=lambda arg: arg.name))
+        mode.configure_arguments(cli, *sorted(arguments, key=lambda arg: arg.name))
 
     # pylint: disable=unused-argument
     def get_algorithmic_arguments(self, known_args: Namespace) -> Set[Argument]:
