@@ -13,7 +13,7 @@ from mlrl.testbed.experiments.output.extension import OutputExtension
 from mlrl.testbed.experiments.output.model.arguments import ModelOutputDirectoryArguments
 from mlrl.testbed.experiments.output.sinks.sink_pickle import PickleFileSink
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import Mode, SingleMode
+from mlrl.testbed.modes import BatchMode, Mode, SingleMode
 
 from mlrl.util.cli import Argument, BoolArgument
 
@@ -40,6 +40,13 @@ class ModelOutputExtension(Extension):
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
         return {self.SAVE_MODELS}
+
+    @override
+    def get_supported_modes(self) -> Set[Type[Mode]]:
+        """
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+        """
+        return {SingleMode, BatchMode}
 
 
 class ModelOutputDirectoryExtension(Extension):

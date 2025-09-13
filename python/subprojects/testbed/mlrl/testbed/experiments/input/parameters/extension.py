@@ -5,13 +5,14 @@ Provides classes that allow configuring the functionality to read algorithmic pa
 """
 from argparse import Namespace
 from pathlib import Path
-from typing import Set, override
+from typing import Set, Type, override
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.extension import InputExtension
 from mlrl.testbed.experiments.input.parameters.reader import ParameterReader
 from mlrl.testbed.experiments.input.sources.source_csv import CsvFileSource
 from mlrl.testbed.extensions.extension import Extension
+from mlrl.testbed.modes import BatchMode, Mode, SingleMode
 
 from mlrl.util.cli import Argument, BoolArgument, StringArgument
 
@@ -56,3 +57,10 @@ class ParameterInputExtension(Extension):
         if parameter_load_dir and self.LOAD_PARAMETERS.get_value(args):
             reader = ParameterReader(CsvFileSource(Path(parameter_load_dir)))
             experiment_builder.add_input_readers(reader)
+
+    @override
+    def get_supported_modes(self) -> Set[Type[Mode]]:
+        """
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+        """
+        return {SingleMode, BatchMode}
