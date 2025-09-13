@@ -1,5 +1,6 @@
 mlrl-testbed mlrl.boosting --mode single --help
-usage: mlrl-testbed [-r RUNNABLE] [-v] [--mode MODE] [--base-dir BASE_DIR]
+usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE]
+                    [--base-dir BASE_DIR]
                     [--binary-predictor BINARY_PREDICTOR]
                     [--create-dirs CREATE_DIRS] [--data-dir DATA_DIR]
                     [--data-split DATA_SPLIT] [--dataset DATASET]
@@ -18,8 +19,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--mode MODE] [--base-dir BASE_DIR]
                     [--l2-regularization-weight L2_REGULARIZATION_WEIGHT]
                     [--label-binning LABEL_BINNING]
                     [--load-models LOAD_MODELS]
-                    [--load-parameters LOAD_PARAMETERS]
-                    [--log-level LOG_LEVEL] [--loss LOSS]
+                    [--load-parameters LOAD_PARAMETERS] [--loss LOSS]
                     [--marginal-probability-calibration MARGINAL_PROBABILITY_CALIBRATION]
                     [--max-rules MAX_RULES] [--model-load-dir MODEL_LOAD_DIR]
                     [--model-save-dir MODEL_SAVE_DIR]
@@ -86,6 +86,9 @@ options:
                         The Python class name of the program that should be
                         run
   -v, --version         Display information about the program.
+  --log-level LOG_LEVEL
+                        The log level to be used. Must be one of {"critical",
+                        "debug", "error", "info", "notset", "warn"}.
   --mode MODE           The mode of operation to be used. Must be one of
                         {"batch", "single"}.
   --base-dir BASE_DIR   If relative paths to directories, where files should
@@ -186,9 +189,6 @@ options:
   --load-parameters LOAD_PARAMETERS
                         Whether parameters should be loaded from input files
                         or not. Must be one of {"false", "true"}.
-  --log-level LOG_LEVEL
-                        The log level to be used. Must be one of {"critical",
-                        "debug", "error", "info", "notset", "warn"}.
   --loss LOSS           The name of the loss function to be minimized during
                         training. Must be one of {"logistic-decomposable",
                         "logistic-non-decomposable", "squared-error-
