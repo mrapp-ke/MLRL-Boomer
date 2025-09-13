@@ -134,13 +134,6 @@ class TabularFileSource(FileSource, ABC):
     An abstract base class for all classes that allow to read tabular input data from a file.
     """
 
-    def __init__(self, directory: Path, suffix: str):
-        """
-        :param directory:   The path to the directory of the file
-        :param suffix:      The suffix of the file
-        """
-        super().__init__(directory=directory, suffix=suffix)
-
     @override
     def _read_from_file(self, _: ExperimentState, file_path: Path, input_data: InputData) -> Optional[Any]:
         if isinstance(input_data, TabularInputData):
