@@ -135,10 +135,11 @@ def main():
     program_info = runnable.get_program_info() if runnable else __get_default_program_info()
     cli = CommandLineInterface(argument_parser, version_text=str(program_info) if program_info else None)
     mode = __get_mode(cli, runnable)
-    mode.configure_arguments(cli)
 
     if runnable:
         runnable.configure_arguments(cli, mode)
+    else:
+        mode.configure_arguments(cli)
 
     argument_parser.add_argument('-h',
                                  '--help',

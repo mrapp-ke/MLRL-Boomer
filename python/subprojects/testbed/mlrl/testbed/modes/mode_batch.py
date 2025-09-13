@@ -36,7 +36,7 @@ from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.modes.mode import Mode
 
-from mlrl.util.cli import AUTO, BoolArgument, CommandLineInterface, FlagArgument, SetArgument, StringArgument
+from mlrl.util.cli import AUTO, Argument, BoolArgument, CommandLineInterface, FlagArgument, SetArgument, StringArgument
 from mlrl.util.options import BooleanOption, Options
 
 Batch = List[Command]
@@ -402,8 +402,9 @@ class BatchMode(Mode):
         return self
 
     @override
-    def configure_arguments(self, cli: CommandLineInterface):
-        cli.add_arguments(self.CONFIG_FILE, self.SEPARATE_FOLDS, self.LIST_COMMANDS, self.__create_runner_argument())
+    def configure_arguments(self, cli: CommandLineInterface, *arguments: Argument):
+        cli.add_arguments(self.CONFIG_FILE, self.SEPARATE_FOLDS, self.LIST_COMMANDS, self.__create_runner_argument(),
+                          *arguments)
 
     @override
     def run_experiment(self, args: Namespace, recipe: Recipe):
