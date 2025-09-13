@@ -5,13 +5,14 @@ Provides classes that allow configuring the functionality to read models paramet
 """
 from argparse import Namespace
 from pathlib import Path
-from typing import Set, override
+from typing import Set, Type, override
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.extension import InputExtension
 from mlrl.testbed.experiments.input.model.reader import ModelReader
 from mlrl.testbed.experiments.input.sources.source_pickle import PickleFileSource
 from mlrl.testbed.extensions.extension import Extension
+from mlrl.testbed.modes import BatchMode, Mode, SingleMode
 
 from mlrl.util.cli import Argument, BoolArgument, StringArgument
 
@@ -56,3 +57,10 @@ class ModelInputExtension(Extension):
         if model_load_dir and self.LOAD_MODELS.get_value(args):
             reader = ModelReader(PickleFileSource(Path(model_load_dir)))
             experiment_builder.add_input_readers(reader)
+
+    @override
+    def get_supported_modes(self) -> Set[Type[Mode]]:
+        """
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+        """
+        return {SingleMode, BatchMode}

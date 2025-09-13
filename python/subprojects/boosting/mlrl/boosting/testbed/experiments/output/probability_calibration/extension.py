@@ -5,7 +5,7 @@ Provides classes that allow configuring the functionality to write calibration m
 """
 from argparse import Namespace
 from pathlib import Path
-from typing import List, Set, override
+from typing import List, Set, Type, override
 
 from mlrl.boosting.testbed.experiments.output.probability_calibration.writer import \
     JointProbabilityCalibrationModelWriter, MarginalProbabilityCalibrationModelWriter
@@ -17,6 +17,7 @@ from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.extensions.extension import Extension
+from mlrl.testbed.modes import BatchMode, Mode, SingleMode
 from mlrl.testbed.util.format import OPTION_DECIMALS
 
 from mlrl.util.cli import Argument, BoolArgument
@@ -87,6 +88,13 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
             writer = MarginalProbabilityCalibrationModelWriter().add_sinks(*sinks)
             experiment_builder.add_post_training_output_writers(writer)
 
+    @override
+    def get_supported_modes(self) -> Set[Type[Mode]]:
+        """
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+        """
+        return {SingleMode, BatchMode}
+
 
 class JointProbabilityCalibrationModelExtension(Extension):
     """
@@ -146,3 +154,10 @@ class JointProbabilityCalibrationModelExtension(Extension):
         if sinks:
             writer = JointProbabilityCalibrationModelWriter().add_sinks(*sinks)
             experiment_builder.add_post_training_output_writers(writer)
+
+    @override
+    def get_supported_modes(self) -> Set[Type[Mode]]:
+        """
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+        """
+        return {SingleMode, BatchMode}

@@ -5,7 +5,7 @@ Provides classes that allow configuring the functionality to write rule models t
 """
 from argparse import Namespace
 from pathlib import Path
-from typing import List, Set, override
+from typing import List, Set, Type, override
 
 from mlrl.common.testbed.experiments.output.model_text.model_text import RuleModelAsText
 from mlrl.common.testbed.experiments.output.model_text.writer import RuleModelAsTextWriter
@@ -17,6 +17,7 @@ from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.experiments.output.sinks.sink_text import TextFileSink
 from mlrl.testbed.extensions import Extension
+from mlrl.testbed.modes import BatchMode, Mode, SingleMode
 
 from mlrl.util.cli import Argument, BoolArgument
 
@@ -90,3 +91,10 @@ class RuleModelAsTextExtension(Extension):
         if sinks:
             writer = RuleModelAsTextWriter().add_sinks(*sinks)
             experiment_builder.add_post_training_output_writers(writer)
+
+    @override
+    def get_supported_modes(self) -> Set[Type[Mode]]:
+        """
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+        """
+        return {SingleMode, BatchMode}
