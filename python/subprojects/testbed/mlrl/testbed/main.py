@@ -11,9 +11,7 @@ from importlib.metadata import version
 from importlib.util import module_from_spec, spec_from_file_location
 from typing import Optional
 
-from mlrl.testbed.modes import Mode
-from mlrl.testbed.modes.mode_batch import BatchMode
-from mlrl.testbed.modes.mode_single import SingleMode
+from mlrl.testbed.modes import BatchMode, Mode, SingleMode
 from mlrl.testbed.program_info import ProgramInfo
 from mlrl.testbed.runnables import Runnable
 

@@ -17,8 +17,7 @@ from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.extensions import Extension
 from mlrl.testbed.extensions.extension_log import LogExtension
-from mlrl.testbed.modes import Mode
-from mlrl.testbed.modes.mode_batch import BatchMode
+from mlrl.testbed.modes import BatchMode, Mode
 from mlrl.testbed.program_info import ProgramInfo
 
 from mlrl.util.cli import Argument, BoolArgument, CommandLineInterface
