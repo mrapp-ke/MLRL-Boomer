@@ -86,6 +86,14 @@ class CompletePrediction final : public VectorDecorator<AllocatedVector<ScoreTyp
          */
         index_const_iterator indices_cend() const;
 
+        /**
+         * Returns a reference to the `CompleteIndexVector` that stores the indices for which the rule predicts.
+         *
+         * @return A reference to an object of type `CompleteIndexVector` that stores the indices for which the rule
+         *         predicts
+         */
+        const CompleteIndexVector& getIndexVector() const;
+
         uint32 getNumElements() const override;
 
         void sort() override;
@@ -125,9 +133,7 @@ class CompletePrediction final : public VectorDecorator<AllocatedVector<ScoreTyp
           const IStatistics& statistics,
           const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const override;
 
-        void applyPrediction(uint32 statisticIndex) override;
-
-        void revertPrediction(uint32 statisticIndex) override;
+        std::unique_ptr<IStatisticsUpdate::ITransaction> updateStatistics() override;
 
         std::unique_ptr<IHead> createHead() const override;
 };

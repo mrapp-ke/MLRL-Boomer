@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/boosting/statistics/quantization.hpp"
 #include "mlrl/boosting/statistics/statistics.hpp"
 
 #include <memory>
