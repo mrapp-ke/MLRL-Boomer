@@ -16,7 +16,6 @@ from mlrl.testbed.experiments.output.meta_data.extension import MetaDataExtensio
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.extensions import Extension
-from mlrl.testbed.extensions.extension_log import LogExtension
 from mlrl.testbed.modes import BatchMode, Mode
 from mlrl.testbed.program_info import ProgramInfo
 
@@ -82,7 +81,6 @@ class Runnable(Recipe, ABC):
         """
         return {
             Runnable.PredictionDatasetExtension(),
-            LogExtension(),
             MetaDataExtension(),
             SlurmExtension(),
         }
