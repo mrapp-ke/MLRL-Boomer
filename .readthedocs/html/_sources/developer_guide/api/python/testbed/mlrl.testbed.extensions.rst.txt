@@ -13,4 +13,3 @@ Submodules
    :maxdepth: 4
 
    mlrl.testbed.extensions.extension
-   mlrl.testbed.extensions.extension_log
