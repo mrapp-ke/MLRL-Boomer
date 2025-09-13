@@ -9,8 +9,7 @@ from argparse import Namespace
 from typing import Any, Set, Type, override
 
 from mlrl.testbed.experiments.experiment import Experiment
-from mlrl.testbed.modes import Mode
-from mlrl.testbed.modes.mode_batch import BatchMode
+from mlrl.testbed.modes import BatchMode, Mode
 
 from mlrl.util.cli import Argument
 
