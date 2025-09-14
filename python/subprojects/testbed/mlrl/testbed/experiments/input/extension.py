@@ -10,6 +10,7 @@ from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.arguments import InputArguments
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.modes import BatchMode, Mode, SingleMode
+from mlrl.testbed.modes.mode_run import RunMode
 
 from mlrl.util.cli import Argument
 
@@ -38,4 +39,4 @@ class InputExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode, BatchMode}
+        return {SingleMode, BatchMode, RunMode}
