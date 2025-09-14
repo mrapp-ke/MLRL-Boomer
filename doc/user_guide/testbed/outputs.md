@@ -4,6 +4,50 @@
 
 The {ref}`command line API <arguments>` of MLRL-Testbed provides a diverse set of options for saving data that is collected during an experiment. In some cases, e.g., models or algorithmic parameters, such data can also be read from input files. Both aspects, saving and loading data, are discussed below.
 
+(meta-data)=
+
+## Saving Meta-Data
+
+Saving meta-data can help improving the reproducibility of experiments. Among other information, it contains the command that has been used for running an experiment and the version of MLRL-Testbed used. By default, a `metadata.yml` file containing this information is saved to the directory specified via the argument `--base-dir`, if any other output data is saved as well. To explicitly enforce saving meta-data, the argument `--save-meta-data` can be used:
+
+````{tab} BOOMER
+   ```text
+   mlrl-testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --save-meta-data true
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   mlrl-testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --save-meta-data true
+   ```
+````
+
+Alternatively, the meta-data can be printed via the command line argument `--print-meta-data`:
+
+````{tab} BOOMER
+   ```text
+   mlrl-testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --print-meta-data true
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   mlrl-testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --print-meta-data true
+   ```
+````
+
 (model-persistence)=
 
 ## Saving and Loading Models
