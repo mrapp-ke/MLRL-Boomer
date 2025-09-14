@@ -5,7 +5,7 @@ Provides classes that allow configuring the functionality to write predictions t
 """
 from argparse import Namespace
 from pathlib import Path
-from typing import Set, override
+from typing import Set, Type, override
 
 from mlrl.testbed_arff.experiments.output.sinks.sink_arff import ArffFileSink
 
@@ -14,6 +14,7 @@ from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDir
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.extensions.extension import Extension
+from mlrl.testbed.modes import BatchMode, Mode, SingleMode
 from mlrl.testbed.util.format import OPTION_DECIMALS
 
 from mlrl.util.cli import Argument, BoolArgument
@@ -73,3 +74,10 @@ class PredictionExtension(Extension):
         """
         self.__configure_log_sink(args, experiment_builder)
         self.__configure_arff_file_sink(args, experiment_builder)
+
+    @override
+    def get_supported_modes(self) -> Set[Type[Mode]]:
+        """
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+        """
+        return {SingleMode, BatchMode}
