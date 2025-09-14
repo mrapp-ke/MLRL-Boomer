@@ -29,7 +29,7 @@ from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, RegressionProblem
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import BatchMode, Mode, SingleMode
+from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
 
 from mlrl.util.cli import Argument, BoolArgument, EnumArgument, FloatArgument
 from mlrl.util.validation import assert_greater, assert_greater_or_equal
@@ -95,7 +95,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
             """
             See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
             """
-            return {SingleMode, BatchMode}
+            return {SingleMode, BatchMode, RunMode}
 
         @staticmethod
         def get_predictor_factory(args: Namespace, prediction_type: PredictionType) -> SkLearnProblem.PredictorFactory:

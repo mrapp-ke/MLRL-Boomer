@@ -14,7 +14,7 @@ from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDir
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import BatchMode, Mode, SingleMode
+from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
 from mlrl.testbed.util.format import OPTION_DECIMALS
 
 from mlrl.util.cli import Argument, BoolArgument
@@ -80,4 +80,4 @@ class GroundTruthExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode, BatchMode}
+        return {SingleMode, BatchMode, RunMode}

@@ -1,6 +1,6 @@
 command: mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp
-  --data-dir python/tests/res/data --dataset atp7d --result-dir results --save-evaluation
-  true --problem-type regression --data-split cross-validation --save-models true
+  --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type
+  regression --save-evaluation true --data-split cross-validation --save-models true
   --load-models true --model-load-dir models --model-save-dir models
 timestamp: <timestamp>
 version: <version>

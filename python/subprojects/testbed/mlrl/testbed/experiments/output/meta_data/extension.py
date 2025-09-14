@@ -14,7 +14,7 @@ from mlrl.testbed.experiments.output.meta_data.arguments import MetaDataArgument
 from mlrl.testbed.experiments.output.sinks import YamlFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import BatchMode, Mode, SingleMode
+from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
 
 from mlrl.util.cli import AUTO, Argument
 from mlrl.util.options import BooleanOption
@@ -71,4 +71,4 @@ class MetaDataExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode, BatchMode}
+        return {SingleMode, BatchMode, RunMode}
