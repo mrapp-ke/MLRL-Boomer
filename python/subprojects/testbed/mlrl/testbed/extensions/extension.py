@@ -59,13 +59,13 @@ class Extension(ABC):
 
         return arguments
 
+    @abstractmethod
     def get_supported_modes(self) -> Set[Type[Mode]]:
         """
-        May be overridden by subclasses in order to return the modes of operation supported by this extension.
+        Must be implemented by subclasses in order to return the modes of operation supported by this extension.
 
         :return: A set that contains the supported modes or an empty set, if all modes are supported
         """
-        return set()
 
     def is_mode_supported(self, mode: Mode) -> bool:
         """
@@ -120,4 +120,11 @@ class NopExtension(Extension):
 
     @override
     def _get_arguments(self) -> Set[Argument]:
+        return set()
+
+    @override
+    def get_supported_modes(self) -> Set[Type[Mode]]:
+        """
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+        """
         return set()

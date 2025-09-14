@@ -14,7 +14,7 @@ from mlrl.testbed.experiments.output.parameters.arguments import ParameterOutput
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import Mode, SingleMode
+from mlrl.testbed.modes import BatchMode, Mode, SingleMode
 
 from mlrl.util.cli import Argument, BoolArgument
 
@@ -57,6 +57,13 @@ class ParameterOutputExtension(Extension):
 
         if print_parameters:
             experiment_builder.parameter_writer.add_sinks(LogSink())
+
+    @override
+    def get_supported_modes(self) -> Set[Type[Mode]]:
+        """
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+        """
+        return {SingleMode, BatchMode}
 
 
 class ParameterOutputDirectoryExtension(Extension):

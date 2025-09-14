@@ -11,7 +11,7 @@ from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import Mode, SingleMode
+from mlrl.testbed.modes import BatchMode, Mode, SingleMode
 
 from mlrl.util.cli import Argument
 
@@ -37,6 +37,13 @@ class OutputExtension(Extension):
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
         experiment_builder.set_exit_on_error(OutputArguments.EXIT_ON_ERROR.get_value(args))
+
+    @override
+    def get_supported_modes(self) -> Set[Type[Mode]]:
+        """
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+        """
+        return {SingleMode, BatchMode}
 
 
 class ResultDirectoryExtension(Extension):
