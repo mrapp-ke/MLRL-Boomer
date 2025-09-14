@@ -6,7 +6,7 @@ sinks.
 """
 from argparse import Namespace
 from pathlib import Path
-from typing import List, Set, override
+from typing import List, Set, Type, override
 
 from mlrl.common.testbed.experiments.output.characteristics.model.writer import RuleModelCharacteristicsWriter
 
@@ -17,6 +17,7 @@ from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.extensions.extension import Extension
+from mlrl.testbed.modes import BatchMode, Mode, SingleMode
 
 from mlrl.util.cli import Argument, BoolArgument
 
@@ -75,3 +76,10 @@ class RuleModelCharacteristicsExtension(Extension):
         if sinks:
             writer = RuleModelCharacteristicsWriter().add_sinks(*sinks)
             experiment_builder.add_post_training_output_writers(writer)
+
+    @override
+    def get_supported_modes(self) -> Set[Type[Mode]]:
+        """
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+        """
+        return {SingleMode, BatchMode}

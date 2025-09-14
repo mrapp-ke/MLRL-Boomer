@@ -5,7 +5,7 @@ Provides classes that allow configuring the functionality to write evaluation re
 """
 from argparse import Namespace
 from pathlib import Path
-from typing import Set, override
+from typing import Set, Type, override
 
 from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import EvaluationResult
 from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_classification import \
@@ -21,6 +21,7 @@ from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, RegressionProblem
 from mlrl.testbed.extensions.extension import Extension
+from mlrl.testbed.modes import BatchMode, Mode, SingleMode
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
 from mlrl.util.cli import Argument, BoolArgument
@@ -131,3 +132,10 @@ class EvaluationExtension(Extension):
                 extractor = ClassificationEvaluationDataExtractor()
 
             experiment_builder.evaluation_writer.extractors.append(extractor)
+
+    @override
+    def get_supported_modes(self) -> Set[Type[Mode]]:
+        """
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+        """
+        return {SingleMode, BatchMode}

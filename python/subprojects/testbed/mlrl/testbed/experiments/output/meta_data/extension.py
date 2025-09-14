@@ -5,7 +5,7 @@ Provides classes that allow configuring the functionality to write meta-data to 
 """
 from argparse import Namespace
 from pathlib import Path
-from typing import Set, override
+from typing import Set, Type, override
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.arguments import OutputArguments
@@ -14,6 +14,7 @@ from mlrl.testbed.experiments.output.meta_data.arguments import MetaDataArgument
 from mlrl.testbed.experiments.output.sinks import YamlFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.extensions.extension import Extension
+from mlrl.testbed.modes import BatchMode, Mode, SingleMode
 
 from mlrl.util.cli import AUTO, Argument
 from mlrl.util.options import BooleanOption
@@ -64,3 +65,10 @@ class MetaDataExtension(Extension):
         """
         self.__configure_log_sink(args, experiment_builder)
         self.__configure_yaml_file_sink(args, experiment_builder)
+
+    @override
+    def get_supported_modes(self) -> Set[Type[Mode]]:
+        """
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+        """
+        return {SingleMode, BatchMode}

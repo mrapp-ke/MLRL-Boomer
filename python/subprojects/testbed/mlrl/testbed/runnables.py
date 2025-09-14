@@ -7,7 +7,7 @@ Provides base classes for programs that can be configured via command line argum
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from functools import cached_property, reduce
-from typing import List, Optional, Set, override
+from typing import List, Optional, Set, Type, override
 
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments import Experiment
@@ -16,7 +16,7 @@ from mlrl.testbed.experiments.output.meta_data.extension import MetaDataExtensio
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.extensions import Extension
-from mlrl.testbed.modes import BatchMode, Mode
+from mlrl.testbed.modes import BatchMode, Mode, SingleMode
 from mlrl.testbed.program_info import ProgramInfo
 
 from mlrl.util.cli import Argument, BoolArgument, CommandLineInterface
@@ -65,6 +65,13 @@ class Runnable(Recipe, ABC):
             """
             experiment_builder.set_predict_for_training_dataset(self.PREDICT_FOR_TRAINING_DATA.get_value(args))
             experiment_builder.set_predict_for_test_dataset(self.PREDICT_FOR_TEST_DATA.get_value(args))
+
+        @override
+        def get_supported_modes(self) -> Set[Type[Mode]]:
+            """
+            See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+            """
+            return {SingleMode, BatchMode}
 
     @cached_property
     def extensions(self) -> List[Extension]:
