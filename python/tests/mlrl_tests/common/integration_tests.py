@@ -46,6 +46,7 @@ class IntegrationTests(ABC):
     @pytest.mark.parametrize('mode', [
         'single',
         'batch',
+        'read',
     ])
     def test_help(self, mode: str):
         builder = self._create_cmd_builder() \

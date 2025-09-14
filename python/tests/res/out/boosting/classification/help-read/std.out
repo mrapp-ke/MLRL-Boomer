@@ -1,0 +1,27 @@
+mlrl-testbed mlrl.boosting --mode read --help
+usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE]
+                    [--input-dir INPUT_DIR] [-h]
+                    runnable_module_or_source_file
+
+A command line utility for training and evaluating machine learning algorithms
+
+positional arguments:
+  runnable_module_or_source_file
+                        The Python module or source file of the program that
+                        should be run
+
+options:
+  -r, --runnable RUNNABLE
+                        The Python class name of the program that should be
+                        run
+  -v, --version         Display information about the program.
+  --log-level LOG_LEVEL
+                        The log level to be used. Must be one of {"critical",
+                        "debug", "error", "info", "notset", "warn"}.
+  --mode MODE           The mode of operation to be used. Must be one of
+                        {"batch", "read", "single"}.
+  --input-dir INPUT_DIR
+                        An absolute or relative path to a directory that
+                        contains a metadata.yml file that has been created
+                        when running one or several experiments in the past.
+  -h, --help            Show this help message and exit
