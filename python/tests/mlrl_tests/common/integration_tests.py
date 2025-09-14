@@ -46,6 +46,7 @@ class IntegrationTests(ABC):
     @pytest.mark.parametrize('mode', [
         'single',
         'batch',
+        'run',
     ])
     def test_help(self, mode: str):
         builder = self._create_cmd_builder() \
@@ -55,12 +56,12 @@ class IntegrationTests(ABC):
 
     def test_print_all(self):
         builder = self._create_cmd_builder() \
-            .print_all(True)
+            .print_all()
         CmdRunner(builder).run('print-all')
 
     def test_save_all(self):
         builder = self._create_cmd_builder() \
-            .save_all(True)
+            .save_all()
         CmdRunner(builder).run('save-all')
 
     def test_batch_mode(self):
@@ -87,6 +88,17 @@ class IntegrationTests(ABC):
             .set_mode(Mode.MODE_BATCH) \
             .set_runner('slurm')
         CmdRunner(builder).run('batch-mode-slurm')
+
+    def test_run_mode(self):
+        test_name = 'run-mode'
+        builder = self._create_cmd_builder() \
+            .save_meta_data()
+        CmdRunner(builder).run(test_name, wipe_after=False)
+        builder = self._create_cmd_builder() \
+            .set_mode(Mode.MODE_RUN) \
+            .save_all() \
+            .print_all()
+        CmdRunner(builder).run(test_name, wipe_before=False)
 
     def test_single_output(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.single_output) \
