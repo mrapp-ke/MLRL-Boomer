@@ -29,6 +29,7 @@ from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, RegressionProblem
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.extensions.extension import Extension
+from mlrl.testbed.modes import BatchMode, Mode, SingleMode
 
 from mlrl.util.cli import Argument, BoolArgument, EnumArgument, FloatArgument
 from mlrl.util.validation import assert_greater, assert_greater_or_equal
@@ -88,6 +89,13 @@ class RuleLearnerRunnable(SkLearnRunnable):
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
             """
             return {self.INCREMENTAL_EVALUATION}
+
+        @override
+        def get_supported_modes(self) -> Set[Type[Mode]]:
+            """
+            See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+            """
+            return {SingleMode, BatchMode}
 
         @staticmethod
         def get_predictor_factory(args: Namespace, prediction_type: PredictionType) -> SkLearnProblem.PredictorFactory:
@@ -153,6 +161,13 @@ class RuleLearnerRunnable(SkLearnRunnable):
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
             """
             return {self.FEATURE_FORMAT, self.OUTPUT_FORMAT, self.PREDICTION_FORMAT, self.SPARSE_FEATURE_VALUE}
+
+        @override
+        def get_supported_modes(self) -> Set[Type[Mode]]:
+            """
+            See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+            """
+            return {SingleMode, BatchMode}
 
         @staticmethod
         def get_estimator(args: Namespace, estimator_type: Type[BaseEstimator],
