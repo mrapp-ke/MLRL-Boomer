@@ -5,7 +5,6 @@ Provides classes that implement a mode of operation for performing multiple expe
 """
 import logging as log
 import re as regex
-import sys
 
 from abc import ABC, abstractmethod
 from argparse import Namespace
@@ -317,8 +316,8 @@ class BatchMode(Mode):
                        config_file: ConfigFile,
                        recipe: Recipe,
                        separate_folds: bool = False) -> Generator[Command, None, None]:
-        module_name = sys.argv[1]
-        default_args = BatchMode.__filter_arguments(ArgumentList(sys.argv[2:]))
+        command = Command.from_argv()
+        default_args = BatchMode.__filter_arguments(command.argument_list)
         base_dir = OutputArguments.BASE_DIR.get_value(args)
 
         for dataset_args in map(BatchMode.__filter_arguments, config_file.dataset_args):
@@ -337,14 +336,14 @@ class BatchMode(Mode):
                         ParameterOutputDirectoryArguments.PARAMETER_SAVE_DIR.name: str(output_dir / 'parameters'),
                         MetaDataArguments.SAVE_META_DATA.name: str(False).lower(),
                     })
-                command = Command.from_dict(module_name=module_name, argument_dict=argument_dict)
+                command = Command.from_dict(module_name=command.module_name, argument_dict=argument_dict)
 
                 if separate_folds:
                     dataset_splitter = recipe.create_dataset_splitter(command.apply_to_namespace(args))
                     folding_strategy = dataset_splitter.folding_strategy
 
                     if folding_strategy.is_cross_validation_used:
-                        yield from BatchMode.__separate_folds(folding_strategy, module_name, argument_dict)
+                        yield from BatchMode.__separate_folds(folding_strategy, command.module_name, argument_dict)
                     else:
                         yield command
                 else:
