@@ -184,7 +184,7 @@ def main():
     if runnable:
         runnable.configure_arguments(cli, mode)
     else:
-        mode.configure_arguments(cli)
+        mode.configure_arguments(cli, extension_arguments=[], algorithmic_arguments=[])
 
     argument_parser.add_argument('-h',
                                  '--help',

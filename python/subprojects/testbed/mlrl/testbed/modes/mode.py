@@ -5,6 +5,7 @@ Provides base classes for implementing different modes of operation.
 """
 from abc import ABC, abstractmethod
 from argparse import Namespace
+from typing import List
 
 from mlrl.testbed.experiments.recipe import Recipe
 
@@ -28,14 +29,17 @@ class Mode(ABC):
     )
 
     @abstractmethod
-    def configure_arguments(self, cli: CommandLineInterface, *arguments: Argument):
+    def configure_arguments(self, cli: CommandLineInterface, extension_arguments: List[Argument],
+                            algorithmic_arguments: List[Argument]):
         """
         Must be implemented by subclasses in order to configure the command line interface according to the mode of
         operation.
 
-        :param cli:         The command line interface to be configured
-        :param arguments:   The arguments that should be added to the command line interface according to the registered
-                            extensions, including algorithmic parameters
+        :param cli:                     The command line interface to be configured
+        :param extension_arguments:     The arguments that should be added to the command line interface according to
+                                        the registered extensions
+        :param algorithmic_arguments:   The arguments that should be added to the command line interface for configuring
+                                        the algorithm's hyperparameters
         """
 
     @abstractmethod
