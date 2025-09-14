@@ -167,9 +167,12 @@ class Runnable(Recipe, ABC):
         :param cli:     The command line interface to be configured
         :param mode:    The mode of operation
         """
-        arguments = reduce(lambda aggr, extension: aggr | extension.get_arguments(mode), self.extensions, set())
-        arguments.update(self.get_algorithmic_arguments(cli.parse_known_args()))
-        mode.configure_arguments(cli, *sorted(arguments, key=lambda arg: arg.name))
+        extension_arguments: Set[Argument] = reduce(lambda aggr, extension: aggr | extension.get_arguments(mode),
+                                                    self.extensions, set())
+        algorithmic_arguments = self.get_algorithmic_arguments(cli.parse_known_args())
+        mode.configure_arguments(cli,
+                                 extension_arguments=sorted(extension_arguments, key=lambda arg: arg.name),
+                                 algorithmic_arguments=sorted(algorithmic_arguments, key=lambda arg: arg.name))
 
     # pylint: disable=unused-argument
     def get_algorithmic_arguments(self, known_args: Namespace) -> Set[Argument]:
