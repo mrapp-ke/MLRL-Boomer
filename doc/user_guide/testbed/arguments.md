@@ -89,6 +89,14 @@ If the package [mlrl-testbed-slurm](https://pypi.org/project/mlrl-testbed-slurm/
 
 - `--slurm-save-dir` (Default value = `.`) An absolute or relative path to the directory where Slurm scripts should be saved.
 
+#### Read Mode
+
+> A more detailed description of the following arguments can be found {ref}`here<testbed-read-mode>`.
+
+In {ref}`read mode <testbed-read-mode>`, the following mandatory arguments must be specified:
+
+- `--input-dir` An absolute or relative path to a directory that contains a `metadata.yml` file that has been saved by a previous experiment.
+
 ### Dataset
 
 The following mandatory arguments must always be given to specify the dataset that should be used, as well as the location where it should be loaded from.
