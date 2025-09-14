@@ -12,7 +12,7 @@ from mlrl.testbed.experiments.input.extension import InputExtension
 from mlrl.testbed.experiments.input.model.reader import ModelReader
 from mlrl.testbed.experiments.input.sources.source_pickle import PickleFileSource
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import BatchMode, Mode, SingleMode
+from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
 
 from mlrl.util.cli import Argument, BoolArgument, StringArgument
 
@@ -63,4 +63,4 @@ class ModelInputExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode, BatchMode}
+        return {SingleMode, BatchMode, RunMode}

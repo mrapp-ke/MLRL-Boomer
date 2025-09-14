@@ -71,7 +71,7 @@ class Runnable(Recipe, ABC):
             """
             See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
             """
-            return {SingleMode, BatchMode}
+            return {SingleMode, BatchMode, RunMode}
 
     @cached_property
     def extensions(self) -> List[Extension]:
