@@ -1,5 +1,5 @@
 command: mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp
-  --data-dir python/tests/res/data --dataset atp7d-nominal --result-dir results --save-evaluation
-  true --problem-type regression --feature-format sparse
+  --data-dir python/tests/res/data --dataset atp7d-nominal --result-dir results --problem-type
+  regression --save-evaluation true --feature-format sparse
 timestamp: <timestamp>
 version: <version>

@@ -17,6 +17,8 @@ class OutputMetaData(StructuralOutputData):
     Represents meta-data that is part of output data.
     """
 
+    FILENAME = 'metadata'
+
     ATTRIBUTE_VERSION = 'version'
 
     ATTRIBUTE_TIMESTAMP = 'timestamp'
@@ -29,7 +31,7 @@ class OutputMetaData(StructuralOutputData):
         """
         :param meta_data: The meta-data
         """
-        super().__init__(OutputData.Properties(name='Meta-data of the experiment', file_name='metadata'),
+        super().__init__(OutputData.Properties(name='Meta-data of the experiment', file_name=self.FILENAME),
                          Context(include_dataset_type=False, include_prediction_scope=False))
         self.meta_data = meta_data
 

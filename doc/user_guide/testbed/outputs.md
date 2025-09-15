@@ -8,7 +8,7 @@ The {ref}`command line API <arguments>` of MLRL-Testbed provides a diverse set o
 
 ## Saving Meta-Data
 
-Saving meta-data can help improving the reproducibility of experiments. Among other information, it contains the command that has been used for running an experiment and the version of MLRL-Testbed used. By default, a `metadata.yml` file containing this information is saved to the directory specified via the argument `--base-dir`, if any other output data is saved as well. To explicitly enforce saving meta-data, the argument `--save-meta-data` can be used:
+Saving meta-data can help improving the reproducibility of experiments. Among other information, it contains the command that has been used for running an experiment and the version of MLRL-Testbed used. Based on this information the experiment can be re-run later using the {ref}`run mode <testbed-run-mode>`. By default, a `metadata.yml` file is saved to the directory specified via the argument `--base-dir`, if any other output data is saved as well. To explicitly enforce saving meta-data, the argument `--save-meta-data` can be used:
 
 ````{tab} BOOMER
    ```text
