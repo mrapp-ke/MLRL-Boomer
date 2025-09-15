@@ -21,9 +21,11 @@ class Mode(ABC):
 
     MODE_BATCH = 'batch'
 
+    MODE_RUN = 'run'
+
     MODE = SetArgument(
         '--mode',
-        values={MODE_SINGLE, MODE_BATCH},
+        values={MODE_SINGLE, MODE_BATCH, MODE_RUN},
         description='The mode of operation to be used.',
         default=MODE_SINGLE,
     )

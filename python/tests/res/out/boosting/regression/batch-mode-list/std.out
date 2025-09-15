@@ -1,4 +1,4 @@
-mlrl-testbed mlrl.boosting --mode batch --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/boosting/regression/batch_config.yml --save-evaluation true --problem-type regression --list
+mlrl-testbed mlrl.boosting --mode batch --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/boosting/regression/batch_config.yml --problem-type regression --save-evaluation true --list
 Writing output data to file "python/tests/res/tmp/metadata.yml"...
 mlrl-testbed mlrl.boosting \
     --base-dir python/tests/res/tmp \
