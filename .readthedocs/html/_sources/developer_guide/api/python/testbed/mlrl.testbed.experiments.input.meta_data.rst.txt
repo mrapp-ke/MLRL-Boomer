@@ -1,0 +1,16 @@
+mlrl.testbed.experiments.input.meta\_data package
+=================================================
+
+.. automodule:: mlrl.testbed.experiments.input.meta_data
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed.experiments.input.meta_data.meta_data
+   mlrl.testbed.experiments.input.meta_data.reader

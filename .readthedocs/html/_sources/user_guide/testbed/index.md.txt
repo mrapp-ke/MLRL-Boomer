@@ -41,6 +41,7 @@ pre_processing
 outputs
 runnables
 batch_mode
+run_mode
 arguments
 ```
 
