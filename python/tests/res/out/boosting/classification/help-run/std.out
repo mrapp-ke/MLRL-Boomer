@@ -17,6 +17,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE]
                     [--print-data-characteristics PRINT_DATA_CHARACTERISTICS]
                     [--print-evaluation PRINT_EVALUATION]
                     [--print-ground-truth PRINT_GROUND_TRUTH]
+                    [--print-joint-probability-calibration-model PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL]
                     [--print-label-vectors PRINT_LABEL_VECTORS]
                     [--print-marginal-probability-calibration-model PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL]
                     [--print-meta-data PRINT_META_DATA]
@@ -29,6 +30,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE]
                     [--save-data-characteristics SAVE_DATA_CHARACTERISTICS]
                     [--save-evaluation SAVE_EVALUATION]
                     [--save-ground-truth SAVE_GROUND_TRUTH]
+                    [--save-joint-probability-calibration-model SAVE_JOINT_PROBABILITY_CALIBRATION_MODEL]
                     [--save-label-vectors SAVE_LABEL_VECTORS]
                     [--save-marginal-probability-calibration-model SAVE_MARGINAL_PROBABILITY_CALIBRATION_MODEL]
                     [--save-meta-data SAVE_META_DATA]
@@ -124,6 +126,11 @@ options:
                         Whether the ground truth should be printed on the
                         console or not. Must be one of {"false", "true"}. For
                         additional options refer to the documentation.
+  --print-joint-probability-calibration-model PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL
+                        Whether the model for the calibration of joint
+                        probabilities should be printed on the console or not.
+                        Must be one of {"false", "true"}. For additional
+                        options refer to the documentation.
   --print-label-vectors PRINT_LABEL_VECTORS
                         Whether the unique label vectors contained in the
                         training data should be printed on the console or not.
@@ -176,6 +183,11 @@ options:
                         Whether the ground truth should be written to output
                         files or not. Must be one of {"false", "true"}. For
                         additional options refer to the documentation.
+  --save-joint-probability-calibration-model SAVE_JOINT_PROBABILITY_CALIBRATION_MODEL
+                        Whether the model for the calibration of joint
+                        probabilities should be written to an output file or
+                        not. Must be one of {"false", "true"}. For additional
+                        options refer to the documentation.
   --save-label-vectors SAVE_LABEL_VECTORS
                         Whether the unique label vectors contained in the
                         training data should be written to output files or
