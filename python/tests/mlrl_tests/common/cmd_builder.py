@@ -124,7 +124,8 @@ class CmdBuilder:
             args.append('--help')
             return args
 
-        base_dir = self.base_dir / self.RERUN_DIR if self.mode == Mode.MODE_RUN else self.base_dir
+        rerun = self.mode in {Mode.MODE_RUN, Mode.MODE_READ}
+        base_dir = self.base_dir / self.RERUN_DIR if rerun else self.base_dir
 
         args.extend(('--log-level', 'debug'))
         args.extend(('--base-dir', str(base_dir)))
@@ -139,7 +140,7 @@ class CmdBuilder:
                     args.extend(('--slurm-config', str(self.CONFIG_DIR / 'slurm_config.yml'), '--print-slurm-scripts',
                                  'true', '--save-slurm-scripts', 'true', '--slurm-save-dir', str(base_dir)))
         else:
-            if self.mode == Mode.MODE_RUN:
+            if rerun:
                 args.extend(('--input-dir', str(self.base_dir)))
             else:
                 args.extend(('--data-dir', str(self.RESOURCE_DIR / 'data')))
@@ -147,7 +148,7 @@ class CmdBuilder:
 
             args.extend(('--result-dir', str(self.result_dir)))
 
-            if self.model_load_dir and self.mode != Mode.MODE_RUN:
+            if self.model_load_dir and not rerun:
                 self.args.append('--load-models')
                 self.args.append(str(True).lower())
                 self.args.append('--model-load-dir')
@@ -161,7 +162,7 @@ class CmdBuilder:
                 self.args.append('--parameter-save-dir')
                 self.args.append(str(self.parameter_save_dir))
 
-        if self.problem_type and self.mode != Mode.MODE_RUN:
+        if self.problem_type and not rerun:
             args.extend(('--problem-type', self.problem_type))
 
         return args + self.args

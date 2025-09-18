@@ -90,7 +90,7 @@ options:
                         The log level to be used. Must be one of {"critical",
                         "debug", "error", "info", "notset", "warn"}.
   --mode MODE           The mode of operation to be used. Must be one of
-                        {"batch", "run", "single"}.
+                        {"batch", "read", "run", "single"}.
   --base-dir BASE_DIR   If relative paths to directories, where files should
                         be saved, are given, they are considered relative to
                         the directory specified via this argument.

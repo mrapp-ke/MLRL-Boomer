@@ -202,6 +202,7 @@ Mean Absolute Percentage Error     0.08
 Mean Squared Error              2710.9
 Median Absolute Error             18.24
 
+Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-10.csv"...
 Evaluation result for test data (Average across 10 folds):
 
 Mean Absolute Error               25.07  ±5.25
@@ -209,7 +210,6 @@ Mean Absolute Percentage Error     0.07  ±0.01
 Mean Squared Error              2007.91  ±951.23
 Median Absolute Error             13.82  ±1.88
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-10.csv"...
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Writing output data to file "python/tests/res/tmp/models/model_fold-10.pickle"...
 Successfully finished experiment after <duration>
