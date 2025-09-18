@@ -36,6 +36,28 @@ class InputData(ABC):
         """
 
 
+class TextualInputData(InputData, ABC):
+    """
+    An abstract base class for all classes that represent input data that can be converted into a textual
+    representation.
+    """
+
+    @override
+    def update_state(self, state: ExperimentState, input_data: Any):
+        """
+        See :func:`mlrl.testbed.experiments.input.data.InputData.update_state`
+        """
+
+    @abstractmethod
+    def _update_state(self, state: ExperimentState, text: str):
+        """
+        Must be implemented by subclasses in order to update the state of an experiment based on textual input data.
+
+        :param state:   The state to be updated
+        :param text:    A text
+        """
+
+
 class DatasetInputData(InputData, ABC):
     """
     An abstract base class for all classes that represent input data that can be converted into a dataset.
