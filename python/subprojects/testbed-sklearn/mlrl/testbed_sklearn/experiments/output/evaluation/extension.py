@@ -20,7 +20,7 @@ from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, RegressionProblem
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
+from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
 from mlrl.util.cli import Argument, BoolArgument
@@ -31,54 +31,60 @@ class EvaluationExtension(Extension):
     An extension that configures the functionality to write evaluation results to one or several sinks.
     """
 
-    PRINT_EVALUATION = BoolArgument(
-        '--print-evaluation',
-        default=True,
-        description='Whether the evaluation results should be printed on the console or not.',
-        true_options={
-            EvaluationResult.OPTION_ENABLE_ALL, EvaluationResult.OPTION_HAMMING_LOSS,
-            EvaluationResult.OPTION_HAMMING_ACCURACY, EvaluationResult.OPTION_SUBSET_ZERO_ONE_LOSS,
-            EvaluationResult.OPTION_SUBSET_ACCURACY, EvaluationResult.OPTION_MICRO_PRECISION,
-            EvaluationResult.OPTION_MICRO_RECALL, EvaluationResult.OPTION_MICRO_F1,
-            EvaluationResult.OPTION_MICRO_JACCARD, EvaluationResult.OPTION_MACRO_PRECISION,
-            EvaluationResult.OPTION_MACRO_RECALL, EvaluationResult.OPTION_MACRO_F1,
-            EvaluationResult.OPTION_MACRO_JACCARD, EvaluationResult.OPTION_EXAMPLE_WISE_PRECISION,
-            EvaluationResult.OPTION_EXAMPLE_WISE_RECALL, EvaluationResult.OPTION_EXAMPLE_WISE_F1,
-            EvaluationResult.OPTION_EXAMPLE_WISE_JACCARD, EvaluationResult.OPTION_ACCURACY,
-            EvaluationResult.OPTION_ZERO_ONE_LOSS, EvaluationResult.OPTION_PRECISION, EvaluationResult.OPTION_RECALL,
-            EvaluationResult.OPTION_F1, EvaluationResult.OPTION_JACCARD, EvaluationResult.OPTION_MEAN_ABSOLUTE_ERROR,
-            EvaluationResult.OPTION_MEAN_SQUARED_ERROR, EvaluationResult.OPTION_MEDIAN_ABSOLUTE_ERROR,
-            EvaluationResult.OPTION_MEAN_ABSOLUTE_PERCENTAGE_ERROR, EvaluationResult.OPTION_RANK_LOSS,
-            EvaluationResult.OPTION_COVERAGE_ERROR, EvaluationResult.OPTION_LABEL_RANKING_AVERAGE_PRECISION,
-            EvaluationResult.OPTION_DISCOUNTED_CUMULATIVE_GAIN,
-            EvaluationResult.OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, EvaluationResult.OPTION_TRAINING_TIME,
-            EvaluationResult.OPTION_PREDICTION_TIME, OPTION_DECIMALS, OPTION_PERCENTAGE
-        },
-    )
+    @staticmethod
+    def __create_argument_print_evaluation(mode: Mode) -> BoolArgument:
+        return BoolArgument(
+            '--print-evaluation',
+            default=True,
+            description='Whether the evaluation results should be printed on the console or not.',
+            true_options=None if isinstance(mode, ReadMode) else {
+                EvaluationResult.OPTION_ENABLE_ALL, EvaluationResult.OPTION_HAMMING_LOSS,
+                EvaluationResult.OPTION_HAMMING_ACCURACY, EvaluationResult.OPTION_SUBSET_ZERO_ONE_LOSS,
+                EvaluationResult.OPTION_SUBSET_ACCURACY, EvaluationResult.OPTION_MICRO_PRECISION,
+                EvaluationResult.OPTION_MICRO_RECALL, EvaluationResult.OPTION_MICRO_F1,
+                EvaluationResult.OPTION_MICRO_JACCARD, EvaluationResult.OPTION_MACRO_PRECISION,
+                EvaluationResult.OPTION_MACRO_RECALL, EvaluationResult.OPTION_MACRO_F1,
+                EvaluationResult.OPTION_MACRO_JACCARD, EvaluationResult.OPTION_EXAMPLE_WISE_PRECISION,
+                EvaluationResult.OPTION_EXAMPLE_WISE_RECALL, EvaluationResult.OPTION_EXAMPLE_WISE_F1,
+                EvaluationResult.OPTION_EXAMPLE_WISE_JACCARD, EvaluationResult.OPTION_ACCURACY,
+                EvaluationResult.OPTION_ZERO_ONE_LOSS, EvaluationResult.OPTION_PRECISION,
+                EvaluationResult.OPTION_RECALL, EvaluationResult.OPTION_F1, EvaluationResult.OPTION_JACCARD,
+                EvaluationResult.OPTION_MEAN_ABSOLUTE_ERROR, EvaluationResult.OPTION_MEAN_SQUARED_ERROR,
+                EvaluationResult.OPTION_MEDIAN_ABSOLUTE_ERROR, EvaluationResult.OPTION_MEAN_ABSOLUTE_PERCENTAGE_ERROR,
+                EvaluationResult.OPTION_RANK_LOSS, EvaluationResult.OPTION_COVERAGE_ERROR,
+                EvaluationResult.OPTION_LABEL_RANKING_AVERAGE_PRECISION,
+                EvaluationResult.OPTION_DISCOUNTED_CUMULATIVE_GAIN,
+                EvaluationResult.OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, EvaluationResult.OPTION_TRAINING_TIME,
+                EvaluationResult.OPTION_PREDICTION_TIME, OPTION_DECIMALS, OPTION_PERCENTAGE
+            },
+        )
 
-    SAVE_EVALUATION = BoolArgument(
-        '--save-evaluation',
-        description='Whether evaluation results should be written to output files or not.',
-        true_options={
-            EvaluationResult.OPTION_ENABLE_ALL, EvaluationResult.OPTION_HAMMING_LOSS,
-            EvaluationResult.OPTION_HAMMING_ACCURACY, EvaluationResult.OPTION_SUBSET_ZERO_ONE_LOSS,
-            EvaluationResult.OPTION_SUBSET_ACCURACY, EvaluationResult.OPTION_MICRO_PRECISION,
-            EvaluationResult.OPTION_MICRO_RECALL, EvaluationResult.OPTION_MICRO_F1,
-            EvaluationResult.OPTION_MICRO_JACCARD, EvaluationResult.OPTION_MACRO_PRECISION,
-            EvaluationResult.OPTION_MACRO_RECALL, EvaluationResult.OPTION_MACRO_F1,
-            EvaluationResult.OPTION_MACRO_JACCARD, EvaluationResult.OPTION_EXAMPLE_WISE_PRECISION,
-            EvaluationResult.OPTION_EXAMPLE_WISE_RECALL, EvaluationResult.OPTION_EXAMPLE_WISE_F1,
-            EvaluationResult.OPTION_EXAMPLE_WISE_JACCARD, EvaluationResult.OPTION_ACCURACY,
-            EvaluationResult.OPTION_ZERO_ONE_LOSS, EvaluationResult.OPTION_PRECISION, EvaluationResult.OPTION_RECALL,
-            EvaluationResult.OPTION_F1, EvaluationResult.OPTION_JACCARD, EvaluationResult.OPTION_MEAN_ABSOLUTE_ERROR,
-            EvaluationResult.OPTION_MEAN_SQUARED_ERROR, EvaluationResult.OPTION_MEDIAN_ABSOLUTE_ERROR,
-            EvaluationResult.OPTION_MEAN_ABSOLUTE_PERCENTAGE_ERROR, EvaluationResult.OPTION_RANK_LOSS,
-            EvaluationResult.OPTION_COVERAGE_ERROR, EvaluationResult.OPTION_LABEL_RANKING_AVERAGE_PRECISION,
-            EvaluationResult.OPTION_DISCOUNTED_CUMULATIVE_GAIN,
-            EvaluationResult.OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, EvaluationResult.OPTION_TRAINING_TIME,
-            EvaluationResult.OPTION_PREDICTION_TIME, OPTION_DECIMALS, OPTION_PERCENTAGE
-        },
-    )
+    @staticmethod
+    def __create_argument_save_evaluation(mode: Mode) -> BoolArgument:
+        return BoolArgument(
+            '--save-evaluation',
+            description='Whether evaluation results should be written to output files or not.',
+            true_options=None if isinstance(mode, ReadMode) else {
+                EvaluationResult.OPTION_ENABLE_ALL, EvaluationResult.OPTION_HAMMING_LOSS,
+                EvaluationResult.OPTION_HAMMING_ACCURACY, EvaluationResult.OPTION_SUBSET_ZERO_ONE_LOSS,
+                EvaluationResult.OPTION_SUBSET_ACCURACY, EvaluationResult.OPTION_MICRO_PRECISION,
+                EvaluationResult.OPTION_MICRO_RECALL, EvaluationResult.OPTION_MICRO_F1,
+                EvaluationResult.OPTION_MICRO_JACCARD, EvaluationResult.OPTION_MACRO_PRECISION,
+                EvaluationResult.OPTION_MACRO_RECALL, EvaluationResult.OPTION_MACRO_F1,
+                EvaluationResult.OPTION_MACRO_JACCARD, EvaluationResult.OPTION_EXAMPLE_WISE_PRECISION,
+                EvaluationResult.OPTION_EXAMPLE_WISE_RECALL, EvaluationResult.OPTION_EXAMPLE_WISE_F1,
+                EvaluationResult.OPTION_EXAMPLE_WISE_JACCARD, EvaluationResult.OPTION_ACCURACY,
+                EvaluationResult.OPTION_ZERO_ONE_LOSS, EvaluationResult.OPTION_PRECISION,
+                EvaluationResult.OPTION_RECALL, EvaluationResult.OPTION_F1, EvaluationResult.OPTION_JACCARD,
+                EvaluationResult.OPTION_MEAN_ABSOLUTE_ERROR, EvaluationResult.OPTION_MEAN_SQUARED_ERROR,
+                EvaluationResult.OPTION_MEDIAN_ABSOLUTE_ERROR, EvaluationResult.OPTION_MEAN_ABSOLUTE_PERCENTAGE_ERROR,
+                EvaluationResult.OPTION_RANK_LOSS, EvaluationResult.OPTION_COVERAGE_ERROR,
+                EvaluationResult.OPTION_LABEL_RANKING_AVERAGE_PRECISION,
+                EvaluationResult.OPTION_DISCOUNTED_CUMULATIVE_GAIN,
+                EvaluationResult.OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, EvaluationResult.OPTION_TRAINING_TIME,
+                EvaluationResult.OPTION_PREDICTION_TIME, OPTION_DECIMALS, OPTION_PERCENTAGE
+            },
+        )
 
     def __init__(self, *dependencies: Extension):
         """
@@ -87,22 +93,24 @@ class EvaluationExtension(Extension):
         super().__init__(OutputExtension(), ResultDirectoryExtension(), *dependencies)
 
     @override
-    def _get_arguments(self, _: Mode) -> Set[Argument]:
+    def _get_arguments(self, mode: Mode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return {self.PRINT_EVALUATION, self.SAVE_EVALUATION}
+        return {self.__create_argument_print_evaluation(mode), self.__create_argument_save_evaluation(mode)}
 
-    def __configure_log_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
+    def __configure_log_sink(self, args: Namespace, experiment_builder: Experiment.Builder, mode: Mode):
         print_all = OutputArguments.PRINT_ALL.get_value(args)
-        print_evaluation, options = self.PRINT_EVALUATION.get_value(args, default=print_all)
+        print_evaluation, options = self.__create_argument_print_evaluation(mode).get_value_and_options(
+            args, default=print_all)
 
         if print_evaluation:
             experiment_builder.evaluation_writer.add_sinks(LogSink(options))
 
-    def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
+    def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder, mode: Mode):
         save_all = OutputArguments.SAVE_ALL.get_value(args)
-        save_evaluation_results, options = self.SAVE_EVALUATION.get_value(args, default=save_all)
+        save_evaluation_results, options = self.__create_argument_save_evaluation(mode).get_value_and_options(
+            args, default=save_all)
         base_dir = OutputArguments.BASE_DIR.get_value(args)
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
@@ -112,12 +120,12 @@ class EvaluationExtension(Extension):
                 CsvFileSink(directory=base_dir / result_directory, create_directory=create_directory, options=options))
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: Mode):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, mode: Mode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
-        self.__configure_log_sink(args, experiment_builder)
-        self.__configure_csv_file_sink(args, experiment_builder)
+        self.__configure_log_sink(args, experiment_builder, mode)
+        self.__configure_csv_file_sink(args, experiment_builder, mode)
 
         if experiment_builder.evaluation_writer.sinks:
             problem_domain = experiment_builder.initial_state.problem_domain
@@ -138,4 +146,4 @@ class EvaluationExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode, BatchMode, RunMode}
+        return {SingleMode, BatchMode, ReadMode, RunMode}
