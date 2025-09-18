@@ -6,6 +6,7 @@ Provides classes that allow writing output data to text files.
 from pathlib import Path
 from typing import override
 
+from mlrl.testbed.experiments.input.sources import TextFileSource
 from mlrl.testbed.experiments.output.data import OutputData, TextualOutputData
 from mlrl.testbed.experiments.output.sinks.sink import FileSink
 from mlrl.testbed.experiments.state import ExperimentState
@@ -26,7 +27,10 @@ class TextFileSink(FileSink):
         :param create_directory:    True, if the given directory should be created, if it does not exist, False
                                     otherwise
         """
-        super().__init__(directory=directory, suffix='txt', options=options, create_directory=create_directory)
+        super().__init__(directory=directory,
+                         suffix=TextFileSource.SUFFIX_TEXT,
+                         options=options,
+                         create_directory=create_directory)
 
     @override
     def _write_to_file(self, file_path: Path, state: ExperimentState, output_data: OutputData, **kwargs):
