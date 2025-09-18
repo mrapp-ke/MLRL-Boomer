@@ -311,6 +311,7 @@ Micro Recall            59.29
 Subset 0/1 Loss         85
 Subset Accuracy         15
 
+Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-10.csv"...
 Evaluation result for test data (Average across 10 folds):
 
 Example-wise F1         54.73  ±2.51
@@ -330,6 +331,5 @@ Micro Recall            58.16  ±3.85
 Subset 0/1 Loss         79.07  ±3.73
 Subset Accuracy         20.93  ±3.73
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-10.csv"...
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Successfully finished experiment after <duration>
