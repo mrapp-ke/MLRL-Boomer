@@ -15,8 +15,6 @@ import numpy as np
 
 from scipy.sparse import coo_array, csc_array, sparray
 
-from mlrl.testbed_arff.experiments.output.sinks.sink_arff import ArffFileSink
-
 from mlrl.testbed_sklearn.experiments.dataset import Attribute, AttributeType, TabularDataset
 
 from mlrl.testbed.experiments.dataset import Dataset
@@ -45,6 +43,10 @@ class ArffFileSource(DatasetFileSource):
     """
     Allows to read a dataset from an ARFF file.
     """
+
+    SUFFIX_ARFF = 'arff'
+
+    SUFFIX_XML = 'xml'
 
     class ArffFile:
         """
@@ -224,14 +226,14 @@ class ArffFileSource(DatasetFileSource):
         """
         :param directory: The path to the directory of the file
         """
-        super().__init__(directory=directory, suffix=ArffFileSink.SUFFIX_ARFF)
+        super().__init__(directory=directory, suffix=self.SUFFIX_ARFF)
 
     def _read_dataset_from_file(self, state: ExperimentState, file_path: Path,
                                 input_data: DatasetInputData) -> Optional[Dataset]:
         properties = input_data.properties
         problem_domain = state.problem_domain
         arff_file = self.__read_arff_file(file_path=file_path, dtype=problem_domain.feature_dtype)
-        xml_file_path = file_path.with_name(properties.file_name + '.' + ArffFileSink.SUFFIX_XML)
+        xml_file_path = file_path.with_name(properties.file_name + '.' + self.SUFFIX_XML)
         arff_dataset = ArffFileSource.ArffDataset.from_file(arff_file=arff_file, file_path=xml_file_path)
         return TabularDataset(x=arff_dataset.feature_matrix.tolil(),
                               y=arff_dataset.output_matrix.astype(problem_domain.output_dtype).tolil(),
