@@ -55,7 +55,7 @@ options:
                         The log level to be used. Must be one of {"critical",
                         "debug", "error", "info", "notset", "warn"}.
   --mode MODE           The mode of operation to be used. Must be one of
-                        {"batch", "run", "single"}.
+                        {"batch", "read", "run", "single"}.
   --input-dir INPUT_DIR
                         An absolute or relative path to a directory that
                         contains a metadata.yml file that has been created
