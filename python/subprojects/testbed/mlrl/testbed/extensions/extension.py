@@ -10,6 +10,7 @@ from typing import Any, Set, Type, override
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.modes import BatchMode, Mode, RunMode
+from mlrl.testbed.modes.mode_read import ReadMode
 
 from mlrl.util.cli import Argument
 
@@ -93,6 +94,15 @@ class Extension(ABC):
 
         :param args:        The command line arguments specified by the user
         :param batch_mode:  The batch mode to be configured
+        """
+
+    def configure_read_mode(self, args: Namespace, read_mode: ReadMode):
+        """
+        May be overridden by subclasses in order to configure the read mode according to the command line arguments
+        specified by the user.
+
+        :param args:        The command line arguments specified by the user
+        :param read_mode:   The read mode to be configured
         """
 
     def configure_run_mode(self, args: Namespace, run_mode: RunMode):
