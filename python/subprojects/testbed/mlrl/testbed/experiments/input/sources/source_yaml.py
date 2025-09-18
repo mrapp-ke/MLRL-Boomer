@@ -12,7 +12,6 @@ import yaml
 
 from mlrl.testbed.experiments.input.data import StructuralInputData
 from mlrl.testbed.experiments.input.sources.source import StructuralFileSource
-from mlrl.testbed.experiments.output.sinks import YamlFileSink
 from mlrl.testbed.util.io import open_readable_file
 
 
@@ -21,12 +20,14 @@ class YamlFileSource(StructuralFileSource):
     Allows to read structural input data from a YAML file.
     """
 
+    SUFFIX_YAML = 'yml'
+
     def __init__(self, directory: Path, schema_file_path: Optional[Path] = None):
         """
         :param directory:           The path to the directory of the file
         :param schema_file_path:    An optional path to a YAML schema file
         """
-        super().__init__(directory=directory, suffix=YamlFileSink.SUFFIX_YAML)
+        super().__init__(directory=directory, suffix=self.SUFFIX_YAML)
         self.schema_file_path = schema_file_path
 
     @override
