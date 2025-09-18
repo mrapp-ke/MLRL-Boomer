@@ -5,8 +5,10 @@ Provides classes that allow writing output data to the log.
 """
 import logging as log
 
-from typing import override
+from pathlib import Path
+from typing import Optional, override
 
+from mlrl.testbed.experiments.input.sources import Source
 from mlrl.testbed.experiments.output.data import OutputData, TextualOutputData
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.state import ExperimentState
@@ -29,3 +31,7 @@ class LogSink(Sink):
                 context = output_data.get_context(type(self))
                 title = TextualOutputData.Title(title=output_data.properties.name, context=context)
                 log.info('%s:\n\n%s\n', title.format(state), text)
+
+    @override
+    def create_source(self, _: Path) -> Optional[Source]:
+        return None
