@@ -8,6 +8,7 @@ import csv
 from pathlib import Path
 from typing import override
 
+from mlrl.testbed.experiments.input.sources import CsvFileSource
 from mlrl.testbed.experiments.output.data import OutputValue
 from mlrl.testbed.experiments.output.sinks.sink import TabularFileSink
 from mlrl.testbed.experiments.state import ExperimentState
@@ -22,12 +23,6 @@ class CsvFileSink(TabularFileSink):
     Allows to write tabular output data to a CSV file.
     """
 
-    SUFFIX_CSV = 'csv'
-
-    DELIMITER = ','
-
-    QUOTE_CHAR = '"'
-
     def __init__(self, directory: Path, options: Options = Options(), create_directory: bool = False):
         """
         :param directory:           The path to the directory of the file
@@ -36,7 +31,7 @@ class CsvFileSink(TabularFileSink):
                                     otherwise
         """
         super().__init__(directory=directory,
-                         suffix=self.SUFFIX_CSV,
+                         suffix=CsvFileSource.SUFFIX_CSV,
                          options=options,
                          create_directory=create_directory)
 
@@ -58,8 +53,8 @@ class CsvFileSink(TabularFileSink):
 
         with open_writable_file(file_path, append=incremental_prediction) as csv_file:
             csv_writer = csv.writer(csv_file,
-                                    delimiter=self.DELIMITER,
-                                    quotechar=self.QUOTE_CHAR,
+                                    delimiter=CsvFileSource.DELIMITER,
+                                    quotechar=CsvFileSource.QUOTE_CHAR,
                                     quoting=csv.QUOTE_MINIMAL)
 
             if csv_file.tell() == 0:
