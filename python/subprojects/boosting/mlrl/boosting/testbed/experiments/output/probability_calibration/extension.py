@@ -14,7 +14,7 @@ from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDir
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, Sink
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
+from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
 from mlrl.testbed.util.format import OPTION_DECIMALS
 
 from mlrl.util.cli import Argument, BoolArgument
@@ -54,7 +54,7 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
         return {self.PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL, self.SAVE_MARGINAL_PROBABILITY_CALIBRATION_MODEL}
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
-        value, options = self.PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL.get_value(
+        value, options = self.PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL.get_value_and_options(
             args, default=OutputArguments.PRINT_ALL.get_value(args))
 
         if value:
@@ -62,7 +62,7 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
         return []
 
     def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
-        value, options = self.SAVE_MARGINAL_PROBABILITY_CALIBRATION_MODEL.get_value(
+        value, options = self.SAVE_MARGINAL_PROBABILITY_CALIBRATION_MODEL.get_value_and_options(
             args, default=OutputArguments.SAVE_ALL.get_value(args))
         base_dir = OutputArguments.BASE_DIR.get_value(args)
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
@@ -91,7 +91,7 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode, BatchMode, RunMode}
+        return {SingleMode, BatchMode, ReadMode, RunMode}
 
 
 class JointProbabilityCalibrationModelExtension(Extension):
@@ -133,13 +133,13 @@ class JointProbabilityCalibrationModelExtension(Extension):
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
         sinks = []
-        value, options = self.PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL.get_value(
+        value, options = self.PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL.get_value_and_options(
             args, default=OutputArguments.PRINT_ALL.get_value(args))
 
         if value:
             sinks.append(LogSink(options))
 
-        value, options = self.SAVE_JOINT_PROBABILITY_CALIBRATION_MODEL.get_value(
+        value, options = self.SAVE_JOINT_PROBABILITY_CALIBRATION_MODEL.get_value_and_options(
             args, default=OutputArguments.SAVE_ALL.get_value(args))
         base_dir = OutputArguments.BASE_DIR.get_value(args)
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
@@ -159,4 +159,4 @@ class JointProbabilityCalibrationModelExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode, BatchMode, RunMode}
+        return {SingleMode, BatchMode, ReadMode, RunMode}

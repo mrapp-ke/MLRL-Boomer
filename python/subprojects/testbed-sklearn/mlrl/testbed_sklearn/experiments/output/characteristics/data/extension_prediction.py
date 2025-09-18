@@ -16,7 +16,7 @@ from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDir
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
+from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
 from mlrl.util.cli import Argument, BoolArgument
@@ -70,16 +70,16 @@ class PredictionCharacteristicsExtension(Extension):
 
     def __configure_log_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         print_all = OutputArguments.PRINT_ALL.get_value(args)
-        print_prediction_characteristics, options = self.PRINT_PREDICTION_CHARACTERISTICS.get_value(args,
-                                                                                                    default=print_all)
+        print_prediction_characteristics, options = self.PRINT_PREDICTION_CHARACTERISTICS.get_value_and_options(
+            args, default=print_all)
 
         if print_prediction_characteristics:
             experiment_builder.prediction_characteristics_writer.add_sinks(LogSink(options))
 
     def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         save_all = OutputArguments.SAVE_ALL.get_value(args)
-        save_prediction_characteristics, options = self.SAVE_PREDICTION_CHARACTERISTICS.get_value(args,
-                                                                                                  default=save_all)
+        save_prediction_characteristics, options = self.SAVE_PREDICTION_CHARACTERISTICS.get_value_and_options(
+            args, default=save_all)
         base_dir = OutputArguments.BASE_DIR.get_value(args)
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
@@ -101,4 +101,4 @@ class PredictionCharacteristicsExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode, BatchMode, RunMode}
+        return {SingleMode, BatchMode, ReadMode, RunMode}

@@ -107,7 +107,8 @@ class RuleLearnerRunnable(SkLearnRunnable):
             :param prediction_type: The type of the predictions
             :return:                The `SkLearnProblem.PredictorFactory` that should be used
             """
-            value, options = RuleLearnerRunnable.IncrementalPredictionExtension.INCREMENTAL_EVALUATION.get_value(args)
+            incremental_evaluation_argument = RuleLearnerRunnable.IncrementalPredictionExtension.INCREMENTAL_EVALUATION
+            value, options = incremental_evaluation_argument.get_value_and_options(args)
 
             if value:
                 min_size = options.get_int(OPTION_MIN_SIZE, 0)
