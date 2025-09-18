@@ -46,7 +46,7 @@ class InputData(ABC):
         """
 
 
-class DatasetInputData(InputData):
+class DatasetInputData(InputData, ABC):
     """
     An abstract base class for all classes that represent input data that can be converted into a dataset.
     """
