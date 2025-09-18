@@ -6,6 +6,7 @@ Provides classes for reading input data.
 from dataclasses import replace
 from typing import Any, override
 
+from mlrl.testbed.experiments.input.data import InputData
 from mlrl.testbed.experiments.input.sources import Source
 from mlrl.testbed.experiments.state import ExperimentState
 
@@ -16,7 +17,7 @@ class InputReader:
     order until any input data can successfully be read.
     """
 
-    def __init__(self, input_data: Any, *sources: Source):
+    def __init__(self, input_data: InputData, *sources: Source):
         """
         :param sources:     The sources, the input data should be read from
         :param input_data:  The input data that should be read
