@@ -13,7 +13,7 @@ from typing import List, override
 from mlrl.testbed.command import ArgumentDict, Command
 from mlrl.testbed.experiments.input.meta_data.meta_data import InputMetaData
 from mlrl.testbed.experiments.input.meta_data.reader import MetaDataReader
-from mlrl.testbed.experiments.input.sources.source_yaml import YamlFileSource
+from mlrl.testbed.experiments.input.sources import YamlFileSource
 from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.experiments.state import ExperimentState
