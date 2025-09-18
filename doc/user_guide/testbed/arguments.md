@@ -50,6 +50,7 @@ MLRL-Testbed supports different modes of operation configurable via the argument
 
   - `single` A single experiment is run.
   - `batch` A batch of experiments is run at once.
+  - `run` A previously run experiment can be run again.
 
 #### Batch Mode
 
