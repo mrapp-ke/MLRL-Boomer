@@ -9,8 +9,7 @@ from typing import Set, Type, override
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.arguments import InputArguments
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import BatchMode, Mode, SingleMode
-from mlrl.testbed.modes.mode_run import RunMode
+from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
 
 from mlrl.util.cli import Argument
 
