@@ -11,8 +11,8 @@ from typing import Any, Dict, Iterable, List, Optional, Set, override
 
 import yaml
 
+from mlrl.testbed.experiments.input.sources import CsvFileSource, PickleFileSource, YamlFileSource
 from mlrl.testbed.experiments.output.meta_data.meta_data import OutputMetaData
-from mlrl.testbed.experiments.output.sinks import CsvFileSink, PickleFileSink, YamlFileSink
 from mlrl.testbed.util.io import ENCODING_UTF8, open_readable_file, open_writable_file
 
 PLACEHOLDER_DURATION = '<duration>'
@@ -77,11 +77,11 @@ class FileComparison(ABC):
         :param file:    The path to the file
         :return:        The `FileComparison` that has been created
         """
-        if file.name == OutputMetaData.FILENAME + '.' + YamlFileSink.SUFFIX_YAML:
+        if file.name == OutputMetaData.FILENAME + '.' + YamlFileSource.SUFFIX_YAML:
             return MetaDataFileComparison(file)
-        if file.suffix == '.' + PickleFileSink.SUFFIX_PICKLE:
+        if file.suffix == '.' + PickleFileSource.SUFFIX_PICKLE:
             return PickleFileComparison(file)
-        if file.suffix == '.' + CsvFileSink.SUFFIX_CSV:
+        if file.suffix == '.' + CsvFileSource.SUFFIX_CSV:
             return CsvFileComparison(file)
 
         with open(file, mode='r', encoding=ENCODING_UTF8) as text_file:
@@ -292,15 +292,17 @@ class CsvFileComparison(FileComparison):
     @override
     def _compare(self, another_file: Path) -> Optional[Difference]:
         with open(self.file, mode='r', encoding=ENCODING_UTF8) as actual_file:
-            actual_csv_file = csv.reader(actual_file, delimiter=CsvFileSink.DELIMITER, quotechar=CsvFileSink.QUOTE_CHAR)
+            actual_csv_file = csv.reader(actual_file,
+                                         delimiter=CsvFileSource.DELIMITER,
+                                         quotechar=CsvFileSource.QUOTE_CHAR)
             num_actual_rows = sum(1 for _ in actual_csv_file)
             actual_file.seek(0)
             num_actual_columns = len(next(actual_csv_file)) if num_actual_rows > 0 else 0
 
             with open(another_file, mode='r', encoding=ENCODING_UTF8) as expected_file:
                 expected_csv_file = csv.reader(expected_file,
-                                               delimiter=CsvFileSink.DELIMITER,
-                                               quotechar=CsvFileSink.QUOTE_CHAR)
+                                               delimiter=CsvFileSource.DELIMITER,
+                                               quotechar=CsvFileSource.QUOTE_CHAR)
                 num_expected_rows = sum(1 for _ in expected_csv_file)
                 expected_file.seek(0)
                 headers = next(expected_csv_file) if num_expected_rows > 0 else []
@@ -340,12 +342,14 @@ class CsvFileComparison(FileComparison):
     @override
     def _write(self, file: Path):
         with open(self.file, 'r', encoding=ENCODING_UTF8) as input_file:
-            input_csv_file = csv.reader(input_file, delimiter=CsvFileSink.DELIMITER, quotechar=CsvFileSink.QUOTE_CHAR)
+            input_csv_file = csv.reader(input_file,
+                                        delimiter=CsvFileSource.DELIMITER,
+                                        quotechar=CsvFileSource.QUOTE_CHAR)
 
             with open(file, 'w+', encoding=ENCODING_UTF8) as output_file:
                 output_csv_file = csv.writer(output_file,
-                                             delimiter=CsvFileSink.DELIMITER,
-                                             quotechar=CsvFileSink.QUOTE_CHAR,
+                                             delimiter=CsvFileSource.DELIMITER,
+                                             quotechar=CsvFileSource.QUOTE_CHAR,
                                              quoting=csv.QUOTE_MINIMAL,
                                              lineterminator='\n')
 
