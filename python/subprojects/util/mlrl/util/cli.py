@@ -9,10 +9,10 @@ from argparse import ArgumentError, ArgumentParser, Namespace
 from enum import Enum
 from functools import cached_property
 from pathlib import Path
-from typing import Any, Dict, Optional, Set, Type, override
+from typing import Any, Dict, Optional, Set, Tuple, Type, override
 
 from mlrl.util.format import format_enum_values, format_set
-from mlrl.util.options import BooleanOption, parse_enum, parse_param, parse_param_and_options
+from mlrl.util.options import BooleanOption, Options, parse_enum, parse_param, parse_param_and_options
 
 NONE = 'none'
 
@@ -71,6 +71,25 @@ class Argument:
         value = getattr(args, self.key, None)
         value = self.default if value is None else value
         return default if value is None else value
+
+    def get_value_and_options(self, args: Namespace, default: Optional[Any] = None) -> Tuple[Optional[Any], Options]:
+        """
+        Returns the value provided by the user for this argument.
+
+        :param args:    A `Namespace` that provides access to the values provided by the user
+        :param default: The default value to be returned if no value is available
+        :return:        The value provided by the user or `default`, if no value is available
+        """
+        value = self.get_value(args, default=default)
+
+        if value is None:
+            return None, Options()
+
+        try:
+            unpacked_value, options = value
+            return unpacked_value, options
+        except TypeError:
+            return value, Options()
 
     @override
     def __hash__(self) -> int:

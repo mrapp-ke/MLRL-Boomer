@@ -51,14 +51,14 @@ class GroundTruthExtension(Extension):
 
     def __configure_log_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         print_all = OutputArguments.PRINT_ALL.get_value(args)
-        print_ground_truth, options = self.PRINT_GROUND_TRUTH.get_value(args, default=print_all)
+        print_ground_truth, options = self.PRINT_GROUND_TRUTH.get_value_and_options(args, default=print_all)
 
         if print_ground_truth:
             experiment_builder.ground_truth_writer.add_sinks(LogSink(options=options))
 
     def __configure_arff_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         save_all = OutputArguments.SAVE_ALL.get_value(args)
-        save_ground_truth, options = self.SAVE_GROUND_TRUTH.get_value(args, default=save_all)
+        save_ground_truth, options = self.SAVE_GROUND_TRUTH.get_value_and_options(args, default=save_all)
         base_dir = OutputArguments.BASE_DIR.get_value(args)
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 

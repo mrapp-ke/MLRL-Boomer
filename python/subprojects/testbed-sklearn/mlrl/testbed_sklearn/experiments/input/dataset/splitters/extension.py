@@ -69,7 +69,7 @@ class DatasetSplitterExtension(Extension):
         """
         dataset_reader = ArffFileExtension().get_dataset_reader(args)
         dataset_reader.add_preprocessors(*PreprocessorExtension.get_preprocessors(args))
-        dataset_splitter, options = DatasetSplitterArguments.DATASET_SPLITTER.get_value(args)
+        dataset_splitter, options = DatasetSplitterArguments.DATASET_SPLITTER.get_value_and_options(args)
 
         if dataset_splitter == DatasetSplitterArguments.VALUE_CROSS_VALIDATION:
             num_folds = options.get_int(DatasetSplitterArguments.OPTION_NUM_FOLDS, 10)
