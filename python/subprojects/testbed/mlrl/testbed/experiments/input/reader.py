@@ -43,6 +43,7 @@ class InputReader:
         """
         for source in self.sources:
             new_state = replace(state)
+
             if source.read_from_source(new_state, self.input_data):
                 return new_state
 
