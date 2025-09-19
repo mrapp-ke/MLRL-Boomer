@@ -78,7 +78,7 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
         return []
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: Mode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
@@ -130,7 +130,7 @@ class JointProbabilityCalibrationModelExtension(Extension):
         return {self.PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL, self.SAVE_JOINT_PROBABILITY_CALIBRATION_MODEL}
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: Mode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
