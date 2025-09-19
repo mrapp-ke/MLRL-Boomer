@@ -47,7 +47,7 @@ class ModelInputExtension(Extension):
         return {self.MODEL_LOAD_DIR, self.LOAD_MODELS}
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: Mode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """

@@ -57,7 +57,7 @@ class MetaDataExtension(Extension):
                     YamlFileSink(directory=base_dir, create_directory=create_directory))
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: Mode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
