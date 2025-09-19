@@ -9,14 +9,15 @@ from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristic
     PredictionCharacteristics
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.matrix_label import LabelMatrix
 
+from mlrl.testbed.experiments.input.data import TabularInputData
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks import Sink
-from mlrl.testbed.experiments.output.writer import DataExtractor, OutputWriter
+from mlrl.testbed.experiments.output.writer import DataExtractor, ResultWriter, TabularDataExtractor
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.state import ExperimentState
 
 
-class PredictionCharacteristicsWriter(OutputWriter):
+class PredictionCharacteristicsWriter(ResultWriter):
     """
     Allows to write the characteristics of binary predictions to one or several sinks.
     """
@@ -44,4 +45,9 @@ class PredictionCharacteristicsWriter(OutputWriter):
         """
         :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
         """
-        super().__init__(*extractors, PredictionCharacteristicsWriter.DefaultExtractor())
+        super().__init__(TabularDataExtractor(properties=PredictionCharacteristics.PROPERTIES,
+                                              context=PredictionCharacteristics.CONTEXT),
+                         *extractors,
+                         PredictionCharacteristicsWriter.DefaultExtractor(),
+                         input_data=TabularInputData(properties=PredictionCharacteristics.PROPERTIES,
+                                                     context=PredictionCharacteristics.CONTEXT))
