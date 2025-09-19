@@ -63,9 +63,10 @@ class GroundTruthExtension(Extension):
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
         if save_ground_truth and result_directory:
+            base_dir = Path(OutputArguments.BASE_DIR.get_value(args))
             create_directory = OutputArguments.CREATE_DIRS.get_value(args)
             experiment_builder.ground_truth_writer.add_sinks(
-                ArffFileSink(directory=Path(result_directory), create_directory=create_directory, options=options))
+                ArffFileSink(directory=base_dir / result_directory, create_directory=create_directory, options=options))
 
     @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
