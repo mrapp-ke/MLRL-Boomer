@@ -55,7 +55,6 @@ class ResultDirectoryArguments:
         '--result-dir',
         default='results',
         description='The path to the directory where experimental results should be saved.',
-        decorator=lambda args, value: Path(OutputArguments.BASE_DIR.get_value(args)) / value,
     )
 
     WIPE_RESULT_DIR = BoolArgument(
