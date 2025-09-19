@@ -3,7 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing unique label vectors that are contained in a dataset to one or several sinks.
 """
-
 from typing import List, Optional, override
 
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
