@@ -10,6 +10,7 @@ from mlrl.boosting.testbed.experiments.output.probability_calibration.writer imp
     JointProbabilityCalibrationModelWriter, MarginalProbabilityCalibrationModelWriter
 
 from mlrl.testbed.experiments.experiment import Experiment
+from mlrl.testbed.experiments.input.sources.source_csv import CsvFileSource
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, Sink
@@ -58,7 +59,7 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
             args, default=OutputArguments.PRINT_ALL.get_value(args))
 
         if value:
-            return [LogSink(options)]
+            return [LogSink(options=options, source_factory=CsvFileSource)]
         return []
 
     def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
@@ -137,7 +138,7 @@ class JointProbabilityCalibrationModelExtension(Extension):
             args, default=OutputArguments.PRINT_ALL.get_value(args))
 
         if value:
-            sinks.append(LogSink(options))
+            sinks.append(LogSink(options=options, source_factory=CsvFileSource))
 
         value, options = self.SAVE_JOINT_PROBABILITY_CALIBRATION_MODEL.get_value_and_options(
             args, default=OutputArguments.SAVE_ALL.get_value(args))

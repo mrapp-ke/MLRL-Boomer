@@ -11,10 +11,11 @@ from typing import Any, List, Optional, override
 from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import EVALUATION_MEASURE_PREDICTION_TIME, \
     EVALUATION_MEASURE_TRAINING_TIME, EvaluationResult
 
+from mlrl.testbed.experiments.input.data import TabularInputData
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.evaluation.measurements import Measurements
 from mlrl.testbed.experiments.output.sinks import Sink
-from mlrl.testbed.experiments.output.writer import DataExtractor, OutputWriter
+from mlrl.testbed.experiments.output.writer import DataExtractor, ResultWriter, TabularDataExtractor
 from mlrl.testbed.experiments.state import ExperimentState
 
 from mlrl.util.options import Options
@@ -74,10 +75,19 @@ class EvaluationDataExtractor(DataExtractor, ABC):
         """
 
 
-class EvaluationWriter(OutputWriter, ABC):
+class EvaluationWriter(ResultWriter, ABC):
     """
     An abstract base class for all classes that allow writing evaluation results to one or several sinks.
     """
+
+    def __init__(self, *extractors: EvaluationDataExtractor):
+        """
+        :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
+        """
+        super().__init__(TabularDataExtractor(properties=EvaluationResult.PROPERTIES, context=EvaluationResult.CONTEXT),
+                         *extractors,
+                         input_data=TabularInputData(properties=EvaluationResult.PROPERTIES,
+                                                     context=EvaluationResult.CONTEXT))
 
     @override
     def _write_to_sink(self, sink: Sink, state: ExperimentState, output_data: OutputData):

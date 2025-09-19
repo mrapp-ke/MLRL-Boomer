@@ -14,13 +14,14 @@ from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 from mlrl.common.testbed.experiments.output.characteristics.model.characteristics import BodyStatistics, \
     HeadStatistics, RuleModelCharacteristics, RuleModelStatistics, RuleStatistics
 
+from mlrl.testbed.experiments.input.data import TabularInputData
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks import Sink
-from mlrl.testbed.experiments.output.writer import DataExtractor, OutputWriter
+from mlrl.testbed.experiments.output.writer import DataExtractor, ResultWriter, TabularDataExtractor
 from mlrl.testbed.experiments.state import ExperimentState
 
 
-class RuleModelCharacteristicsWriter(OutputWriter):
+class RuleModelCharacteristicsWriter(ResultWriter):
     """
     Allows writing the characteristics of a model to one or several sinks.
     """
@@ -107,4 +108,9 @@ class RuleModelCharacteristicsWriter(OutputWriter):
         """
         :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
         """
-        super().__init__(*extractors, RuleModelCharacteristicsWriter.DefaultExtractor())
+        super().__init__(TabularDataExtractor(properties=RuleModelCharacteristics.PROPERTIES,
+                                              context=RuleModelCharacteristics.CONTEXT),
+                         *extractors,
+                         RuleModelCharacteristicsWriter.DefaultExtractor(),
+                         input_data=TabularInputData(properties=RuleModelCharacteristics.PROPERTIES,
+                                                     context=RuleModelCharacteristics.CONTEXT))

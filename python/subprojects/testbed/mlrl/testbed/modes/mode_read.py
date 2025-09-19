@@ -72,4 +72,12 @@ class ReadMode(InputMode):
             log.info('\nReading experimental results of experiment (%s / %s)...', i + 1, num_experiments)
             log.info('The command "%s" has been used originally for running this experiment', str(command))
             experiment_builder = recipe.create_experiment_builder(command.apply_to_namespace(args), command)
+
+            for output_writer in experiment_builder.output_writers:
+                input_reader = output_writer.create_input_reader(command.apply_to_namespace(Namespace()),
+                                                                 input_directory)
+
+                if input_reader and input_reader.sources:
+                    experiment_builder.add_input_readers(input_reader)
+
             ReadMode.Procedure().conduct_experiment(experiment_builder.build())

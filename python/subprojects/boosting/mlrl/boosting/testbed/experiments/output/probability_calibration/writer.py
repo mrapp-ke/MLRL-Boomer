@@ -17,13 +17,14 @@ from mlrl.boosting.testbed.experiments.output.probability_calibration.model_no i
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
+from mlrl.testbed.experiments.input.data import TabularInputData
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks import Sink
-from mlrl.testbed.experiments.output.writer import DataExtractor, OutputWriter
+from mlrl.testbed.experiments.output.writer import DataExtractor, ResultWriter, TabularDataExtractor
 from mlrl.testbed.experiments.state import ExperimentState
 
 
-class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
+class ProbabilityCalibrationModelWriter(ResultWriter, ABC):
     """
     Allows writing textual representations of probability calibration models to one or several sinks.
     """
@@ -58,6 +59,11 @@ class MarginalProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWrite
     sinks.
     """
 
+    PROPERTIES = TabularProperties(name='Marginal probability calibration model',
+                                   file_name='marginal_probability_calibration_model')
+
+    CONTEXT = Context(include_dataset_type=False)
+
     class DefaultExtractor(ProbabilityCalibrationModelWriter.DefaultExtractor):
         """
         Extracts isotonic regression models for the calibration of marginal probabilities that are stores as part of a
@@ -67,18 +73,16 @@ class MarginalProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWrite
         @override
         def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Optional[OutputData]:
             calibration_model = learner.marginal_probability_calibration_model_
-            context = Context(include_dataset_type=False)
-            properties = TabularProperties(name='Marginal probability calibration model',
-                                           file_name='marginal_probability_calibration_model')
 
             if isinstance(calibration_model, IsotonicProbabilityCalibrationModel):
                 return IsotonicRegressionModel(calibration_model=calibration_model,
-                                               properties=properties,
-                                               context=context,
+                                               properties=MarginalProbabilityCalibrationModelWriter.PROPERTIES,
+                                               context=MarginalProbabilityCalibrationModelWriter.CONTEXT,
                                                column_title_prefix='Label')
 
             if isinstance(calibration_model, NoProbabilityCalibrationModel):
-                return NoCalibrationModel(properties=properties, context=context)
+                return NoCalibrationModel(properties=MarginalProbabilityCalibrationModelWriter.PROPERTIES,
+                                          context=MarginalProbabilityCalibrationModelWriter.CONTEXT)
 
             log.error('%s expected type of calibration model to be %s, but calibration model has type %s',
                       type(self).__name__, IsotonicProbabilityCalibrationModel.__name__,
@@ -89,13 +93,21 @@ class MarginalProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWrite
         """
         :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
         """
-        super().__init__(*extractors, MarginalProbabilityCalibrationModelWriter.DefaultExtractor())
+        super().__init__(TabularDataExtractor(properties=self.PROPERTIES, context=self.CONTEXT),
+                         *extractors,
+                         MarginalProbabilityCalibrationModelWriter.DefaultExtractor(),
+                         input_data=TabularInputData(properties=self.PROPERTIES, context=self.CONTEXT))
 
 
 class JointProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWriter):
     """
     Allows writing textual representations of models for the calibration of joint probabilities to one or several sinks.
     """
+
+    PROPERTIES = TabularProperties(name='Joint probability calibration model',
+                                   file_name='joint_probability_calibration_model')
+
+    CONTEXT = Context(include_dataset_type=False)
 
     class DefaultExtractor(ProbabilityCalibrationModelWriter.DefaultExtractor):
         """
@@ -106,18 +118,16 @@ class JointProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWriter):
         @override
         def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Optional[OutputData]:
             calibration_model = learner.joint_probability_calibration_model_
-            context = Context(include_dataset_type=False)
-            properties = TabularProperties(name='Joint probability calibration model',
-                                           file_name='joint_probability_calibration_model')
 
             if isinstance(calibration_model, IsotonicProbabilityCalibrationModel):
                 return IsotonicRegressionModel(calibration_model=calibration_model,
-                                               properties=properties,
-                                               context=context,
+                                               properties=JointProbabilityCalibrationModelWriter.PROPERTIES,
+                                               context=JointProbabilityCalibrationModelWriter.CONTEXT,
                                                column_title_prefix='Label vector')
 
             if isinstance(calibration_model, NoProbabilityCalibrationModel):
-                return NoCalibrationModel(properties=properties, context=context)
+                return NoCalibrationModel(properties=JointProbabilityCalibrationModelWriter.PROPERTIES,
+                                          context=JointProbabilityCalibrationModelWriter.CONTEXT)
 
             log.error('%s expected type of calibration model to be %s, but calibration model has type %s',
                       type(self).__name__, IsotonicProbabilityCalibrationModel.__name__,
@@ -128,4 +138,7 @@ class JointProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWriter):
         """
         :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
         """
-        super().__init__(*extractors, JointProbabilityCalibrationModelWriter.DefaultExtractor())
+        super().__init__(TabularDataExtractor(properties=self.PROPERTIES, context=self.CONTEXT),
+                         *extractors,
+                         JointProbabilityCalibrationModelWriter.DefaultExtractor(),
+                         input_data=TabularInputData(properties=self.PROPERTIES, context=self.CONTEXT))
