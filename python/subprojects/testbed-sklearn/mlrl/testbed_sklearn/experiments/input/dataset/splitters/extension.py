@@ -33,7 +33,7 @@ class DatasetSplitterExtension(Extension):
         super().__init__(PreprocessorExtension(), ArffFileExtension(), *dependencies)
 
     @override
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, _: Mode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
