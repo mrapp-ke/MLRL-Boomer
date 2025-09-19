@@ -74,8 +74,9 @@ class RuleModelAsTextExtension(Extension):
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
         if value and result_directory:
+            base_dir = Path(OutputArguments.BASE_DIR.get_value(args))
             return [
-                TextFileSink(directory=Path(result_directory),
+                TextFileSink(directory=base_dir / result_directory,
                              create_directory=OutputArguments.CREATE_DIRS.get_value(args),
                              options=options)
             ]

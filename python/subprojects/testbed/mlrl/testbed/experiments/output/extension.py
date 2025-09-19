@@ -91,7 +91,8 @@ class ResultDirectoryExtension(Extension):
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
         if result_directory and ResultDirectoryArguments.WIPE_RESULT_DIR.get_value(args):
-            listener = ResultDirectoryExtension.WipeDirectoryListener(Path(result_directory))
+            base_dir = Path(OutputArguments.BASE_DIR.get_value(args))
+            listener = ResultDirectoryExtension.WipeDirectoryListener(base_dir / result_directory)
             experiment_builder.add_listeners(listener)
 
     @override
