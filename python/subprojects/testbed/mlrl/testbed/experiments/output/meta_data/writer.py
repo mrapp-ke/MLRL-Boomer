@@ -3,8 +3,12 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing meta-data to one or several sinks.
 """
+from argparse import Namespace
+from pathlib import Path
 from typing import List, Optional, override
 
+from mlrl.testbed.experiments.input.meta_data.reader import MetaDataReader
+from mlrl.testbed.experiments.input.reader import InputReader
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.meta_data.meta_data import OutputMetaData
 from mlrl.testbed.experiments.output.sinks import Sink
@@ -34,3 +38,7 @@ class MetaDataWriter(OutputWriter):
         :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
         """
         super().__init__(*extractors, MetaDataWriter.DefaultExtractor())
+
+    @override
+    def create_input_reader(self, _: Namespace, input_directory: Path) -> Optional[InputReader]:
+        return MetaDataReader(*self.create_sources(input_directory))
