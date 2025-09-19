@@ -37,8 +37,12 @@ class CsvFileSource(TabularFileSource):
             csv_reader = csv.reader(csv_file, delimiter=self.DELIMITER, quotechar=self.QUOTE_CHAR)
             properties = input_data.properties
             has_header = isinstance(properties, TabularInputData.Properties) and properties.has_header
-            header_row = next(csv_reader) if has_header else []
-            table = RowWiseTable(*header_row)
+
+            try:
+                header_row = next(csv_reader) if has_header else []
+                table = RowWiseTable(*header_row)
+            except StopIteration:
+                table = RowWiseTable()
 
             for row in csv_reader:
                 table.add_row(*row)
