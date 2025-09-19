@@ -5,7 +5,6 @@ Provides classes that allow configuring the functionality to write characteristi
 several sinks.
 """
 from argparse import Namespace
-from pathlib import Path
 from typing import Set, Type, override
 
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import OutputCharacteristics
@@ -82,10 +81,10 @@ class PredictionCharacteristicsExtension(Extension):
         save_all = OutputArguments.SAVE_ALL.get_value(args)
         save_prediction_characteristics, options = self.SAVE_PREDICTION_CHARACTERISTICS.get_value(args,
                                                                                                   default=save_all)
+        base_dir = OutputArguments.BASE_DIR.get_value(args)
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
-        if save_prediction_characteristics and result_directory:
-            base_dir = Path(OutputArguments.BASE_DIR.get_value(args))
+        if save_prediction_characteristics and base_dir and result_directory:
             create_directory = OutputArguments.CREATE_DIRS.get_value(args)
             experiment_builder.prediction_characteristics_writer.add_sinks(
                 CsvFileSink(directory=base_dir / result_directory, create_directory=create_directory, options=options))

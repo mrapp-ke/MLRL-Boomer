@@ -4,7 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write models to one or several sinks.
 """
 from argparse import Namespace
-from pathlib import Path
 from typing import Set, Type, override
 
 from mlrl.testbed.experiments.experiment import Experiment
@@ -75,10 +74,10 @@ class ModelOutputDirectoryExtension(Extension):
         save_all = OutputArguments.SAVE_ALL.get_value(args)
 
         if ModelOutputExtension.SAVE_MODELS.get_value(args, default=save_all):
+            base_dir = OutputArguments.BASE_DIR.get_value(args)
             model_save_dir = ModelOutputDirectoryArguments.MODEL_SAVE_DIR.get_value(args)
 
-            if model_save_dir:
-                base_dir = Path(OutputArguments.BASE_DIR.get_value(args))
+            if base_dir and model_save_dir:
                 create_directory = OutputArguments.CREATE_DIRS.get_value(args)
                 experiment_builder.model_writer.add_sinks(
                     PickleFileSink(directory=base_dir / model_save_dir, create_directory=create_directory))

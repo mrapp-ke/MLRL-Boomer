@@ -19,7 +19,7 @@ from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.modes.mode import Mode
 
-from mlrl.util.cli import Argument, CommandLineInterface, StringArgument
+from mlrl.util.cli import Argument, CommandLineInterface, PathArgument
 from mlrl.util.format import format_iterable
 
 
@@ -28,7 +28,7 @@ class RunMode(Mode):
     An abstract base class for all modes of operation for re-running experiments based on their meta-data.
     """
 
-    INPUT_DIR = StringArgument(
+    INPUT_DIR = PathArgument(
         '--input-dir',
         required=True,
         description='An absolute or relative path to a directory that contains a metadata.yml file that has been '
@@ -72,7 +72,7 @@ class RunMode(Mode):
         input_directory = self.INPUT_DIR.get_value(args)
 
         if input_directory:
-            meta_data = self.__read_meta_data(args, recipe, Path(input_directory))
+            meta_data = self.__read_meta_data(args, recipe, input_directory)
             self.__check_version(meta_data)
 
             meta_data_command = meta_data.command
