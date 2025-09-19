@@ -8,6 +8,7 @@ import sys
 from argparse import ArgumentError, ArgumentParser, Namespace
 from enum import Enum
 from functools import cached_property
+from pathlib import Path
 from typing import Any, Callable, Dict, Optional, Set, Type, override
 
 from mlrl.util.format import format_enum_values, format_set
@@ -130,6 +131,32 @@ class StringArgument(Argument):
     def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
         value = super().get_value(args, default=default)
         return None if value is None else str(value)
+
+
+class PathArgument(StringArgument):
+    """
+    An argument of a command line interface for which the user can provide a custom string value.
+    """
+
+    def __init__(self,
+                 *names: str,
+                 description: Optional[str] = None,
+                 default: Optional[str] = None,
+                 required: bool = False):
+        """
+        :param names:       One or several names of the argument
+        :param description: An optional description of the argument
+        :param default:     The default value
+        :param required:    True, if the argument is mandatory, False otherwise
+        :param decorator:   An optional decorator function that is given the value provided by the user for this
+                            argument and can modify it
+        """
+        super().__init__(*names, description=description, default=default, required=required)
+
+    @override
+    def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
+        value = super().get_value(args, default=default)
+        return None if value is None else Path(value)
 
 
 class IntArgument(Argument):
