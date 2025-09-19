@@ -59,7 +59,7 @@ class Runnable(Recipe, ABC):
             return {self.PREDICT_FOR_TRAINING_DATA, self.PREDICT_FOR_TEST_DATA}
 
         @override
-        def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
+        def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: Mode):
             """
             See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
             """
@@ -137,10 +137,10 @@ class Runnable(Recipe, ABC):
                 experiment_builder = runnable.create_experiment_builder(args, command)
 
                 for extension in runnable.get_supported_extensions(mode):
-                    extension.configure_experiment(args, experiment_builder)
+                    extension.configure_experiment(args, experiment_builder, mode)
 
                     for dependency in extension.get_dependencies(mode):
-                        dependency.configure_experiment(args, experiment_builder)
+                        dependency.configure_experiment(args, experiment_builder, mode)
 
                 return experiment_builder
 
