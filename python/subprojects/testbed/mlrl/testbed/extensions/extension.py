@@ -51,7 +51,7 @@ class Extension(ABC):
         :param mode:    The mode to be supported
         :return:        A set that contains the arguments
         """
-        arguments = self._get_arguments() if self.is_mode_supported(mode) else set()
+        arguments = self._get_arguments(mode) if self.is_mode_supported(mode) else set()
 
         for dependency in self._dependencies:
             for argument in dependency.get_arguments(mode):
@@ -105,12 +105,13 @@ class Extension(ABC):
         """
 
     @abstractmethod
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, mode: Mode) -> Set[Argument]:
         """
         Must be implemented by subclasses in order to return the arguments that should be added to the command line API
         according to this extension.
 
-        :return: A set that contains the arguments that should be added to the command line API
+        :mode:      The mode of operation
+        :return:    A set that contains the arguments that should be added to the command line API
         """
 
 
@@ -120,7 +121,7 @@ class NopExtension(Extension):
     """
 
     @override
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, _: Mode) -> Set[Argument]:
         return set()
 
     @override
