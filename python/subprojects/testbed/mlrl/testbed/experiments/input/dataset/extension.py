@@ -17,7 +17,7 @@ from mlrl.testbed.experiments.input.sources import FileSource, Source
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.modes import BatchMode, Mode, SingleMode
 
-from mlrl.util.cli import Argument, StringArgument
+from mlrl.util.cli import Argument, PathArgument
 
 
 class DatasetExtension(Extension, ABC):
@@ -72,7 +72,7 @@ class DatasetFileExtension(DatasetExtension, ABC):
     An abstract base class for all extensions that configure the functionality to load datasets from files.
     """
 
-    DATASET_DIRECTORY = StringArgument(
+    DATASET_DIRECTORY = PathArgument(
         '--data-dir',
         required=True,
         description='The path to the directory where the dataset files are located.',
@@ -91,7 +91,7 @@ class DatasetFileExtension(DatasetExtension, ABC):
         See :func:`mlrl.testbed.experiments.input.dataset.extension.DatasetExtension._create_sources`
         """
         dataset_directory = self.DATASET_DIRECTORY.get_value(args)
-        return self._create_file_sources(Path(dataset_directory), dataset, args)
+        return self._create_file_sources(dataset_directory, dataset, args)
 
     @abstractmethod
     def _create_file_sources(self, dataset_directory: Path, dataset: InputDataset,

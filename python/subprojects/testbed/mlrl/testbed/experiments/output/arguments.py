@@ -6,7 +6,7 @@ Defines command line arguments for configuring the functionality to write output
 from datetime import datetime
 from pathlib import Path
 
-from mlrl.util.cli import BoolArgument, StringArgument
+from mlrl.util.cli import BoolArgument, PathArgument
 
 
 class OutputArguments:
@@ -14,7 +14,7 @@ class OutputArguments:
     Defines command line arguments for configuring the functionality to write output data to one or several sinks.
     """
 
-    BASE_DIR = StringArgument(
+    BASE_DIR = PathArgument(
         '--base-dir',
         default=Path('experiments') / datetime.now().strftime('%Y-%m-%d_%H-%M'),
         description='If relative paths to directories, where files should be saved, are given, they are considered '
@@ -51,7 +51,7 @@ class ResultDirectoryArguments:
     Defines command line arguments for configuring the directory to which experimental results should be written.
     """
 
-    RESULT_DIR = StringArgument(
+    RESULT_DIR = PathArgument(
         '--result-dir',
         default='results',
         description='The path to the directory where experimental results should be saved.',
