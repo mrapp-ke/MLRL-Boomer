@@ -4,7 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write meta-data to one or several sinks.
 """
 from argparse import Namespace
-from pathlib import Path
 from typing import Set, Type, override
 
 from mlrl.testbed.experiments.experiment import Experiment
@@ -56,7 +55,7 @@ class MetaDataExtension(Extension):
             if base_dir:
                 create_directory = OutputArguments.CREATE_DIRS.get_value(args)
                 experiment_builder.meta_data_writer.add_sinks(
-                    YamlFileSink(directory=Path(base_dir), create_directory=create_directory))
+                    YamlFileSink(directory=base_dir, create_directory=create_directory))
 
     @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):

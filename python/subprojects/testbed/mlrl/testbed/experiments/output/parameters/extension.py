@@ -4,7 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write algorithmic parameters to one or several sinks.
 """
 from argparse import Namespace
-from pathlib import Path
 from typing import Set, Type, override
 
 from mlrl.testbed.experiments.experiment import Experiment
@@ -92,10 +91,10 @@ class ParameterOutputDirectoryExtension(Extension):
         save_all = OutputArguments.SAVE_ALL.get_value(args)
 
         if ParameterOutputExtension.SAVE_PARAMETERS.get_value(args, default=save_all):
+            base_dir = OutputArguments.BASE_DIR.get_value(args)
             parameter_save_dir = ParameterOutputDirectoryArguments.PARAMETER_SAVE_DIR.get_value(args)
 
-            if parameter_save_dir:
-                base_dir = Path(OutputArguments.BASE_DIR.get_value(args))
+            if base_dir and parameter_save_dir:
                 create_directory = OutputArguments.CREATE_DIRS.get_value(args)
                 experiment_builder.parameter_writer.add_sinks(
                     CsvFileSink(directory=base_dir / parameter_save_dir, create_directory=create_directory))

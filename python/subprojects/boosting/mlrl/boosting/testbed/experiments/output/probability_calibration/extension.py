@@ -4,7 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write calibration models to one or several sinks.
 """
 from argparse import Namespace
-from pathlib import Path
 from typing import List, Set, Type, override
 
 from mlrl.boosting.testbed.experiments.output.probability_calibration.writer import \
@@ -67,10 +66,10 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
     def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
         value, options = self.SAVE_MARGINAL_PROBABILITY_CALIBRATION_MODEL.get_value(
             args, default=OutputArguments.SAVE_ALL.get_value(args))
+        base_dir = OutputArguments.BASE_DIR.get_value(args)
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
-        if value and result_directory:
-            base_dir = Path(OutputArguments.BASE_DIR.get_value(args))
+        if value and base_dir and result_directory:
             return [
                 CsvFileSink(directory=base_dir / result_directory,
                             create_directory=OutputArguments.CREATE_DIRS.get_value(args),
@@ -144,10 +143,10 @@ class JointProbabilityCalibrationModelExtension(Extension):
 
         value, options = self.SAVE_JOINT_PROBABILITY_CALIBRATION_MODEL.get_value(
             args, default=OutputArguments.SAVE_ALL.get_value(args))
+        base_dir = OutputArguments.BASE_DIR.get_value(args)
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
-        if value and result_directory:
-            base_dir = Path(OutputArguments.BASE_DIR.get_value(args))
+        if value and base_dir and result_directory:
             sinks.append(
                 CsvFileSink(directory=base_dir / result_directory,
                             create_directory=OutputArguments.CREATE_DIRS.get_value(args),
