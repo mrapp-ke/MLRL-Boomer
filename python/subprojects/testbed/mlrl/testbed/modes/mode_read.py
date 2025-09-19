@@ -17,6 +17,8 @@ from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.modes.mode import InputMode
 
+from mlrl.util.cli import Argument
+
 
 class ReadMode(InputMode):
     """
@@ -60,6 +62,14 @@ class ReadMode(InputMode):
 
             return state
 
+    def __init__(self, *read_mode_arguments: Argument):
+        """
+        :param read_mode_arguments: The arguments that can be specified by the user in read mode
+        """
+        self._read_mode_arguments = set(argument_name
+                                        for argument_names in map(lambda arg: arg.names, read_mode_arguments)
+                                        for argument_name in argument_names)
+
     @override
     def _run_experiment(self, args: Namespace, recipe: Recipe, meta_data: MetaData, input_directory: Path):
         batch = meta_data.child_commands if meta_data.child_commands else [meta_data.command]
@@ -71,7 +81,8 @@ class ReadMode(InputMode):
         for i, command in enumerate(batch):
             log.info('\nReading experimental results of experiment (%s / %s)...', i + 1, num_experiments)
             log.info('The command "%s" has been used originally for running this experiment', str(command))
-            experiment_builder = recipe.create_experiment_builder(command.apply_to_namespace(args), command)
+            experiment_builder = recipe.create_experiment_builder(
+                command.apply_to_namespace(args, ignore=self._read_mode_arguments), command)
 
             for output_writer in experiment_builder.output_writers:
                 input_reader = output_writer.create_input_reader(command.apply_to_namespace(Namespace()),
