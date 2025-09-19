@@ -169,7 +169,9 @@ class Runnable(Recipe, ABC):
 
         :param cli: The command line interface to be configured
         """
-        read_mode = ReadMode()
+        extensions = self.get_extensions()
+        read_mode = ReadMode(
+            *reduce(lambda aggr, extension: aggr | extension.get_arguments(ReadMode()), extensions, set()))
         args = cli.parse_known_args()
 
         for extension in self.get_supported_extensions(read_mode):
