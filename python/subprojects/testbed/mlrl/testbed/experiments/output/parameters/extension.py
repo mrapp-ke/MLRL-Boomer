@@ -95,9 +95,10 @@ class ParameterOutputDirectoryExtension(Extension):
             parameter_save_dir = ParameterOutputDirectoryArguments.PARAMETER_SAVE_DIR.get_value(args)
 
             if parameter_save_dir:
+                base_dir = Path(OutputArguments.BASE_DIR.get_value(args))
                 create_directory = OutputArguments.CREATE_DIRS.get_value(args)
                 experiment_builder.parameter_writer.add_sinks(
-                    CsvFileSink(directory=Path(parameter_save_dir), create_directory=create_directory))
+                    CsvFileSink(directory=base_dir / parameter_save_dir, create_directory=create_directory))
 
     @override
     def get_supported_modes(self) -> Set[Type[Mode]]:

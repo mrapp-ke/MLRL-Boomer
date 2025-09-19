@@ -70,8 +70,9 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
         if value and result_directory:
+            base_dir = Path(OutputArguments.BASE_DIR.get_value(args))
             return [
-                CsvFileSink(directory=Path(result_directory),
+                CsvFileSink(directory=base_dir / result_directory,
                             create_directory=OutputArguments.CREATE_DIRS.get_value(args),
                             options=options)
             ]
@@ -146,8 +147,9 @@ class JointProbabilityCalibrationModelExtension(Extension):
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
         if value and result_directory:
+            base_dir = Path(OutputArguments.BASE_DIR.get_value(args))
             sinks.append(
-                CsvFileSink(directory=Path(result_directory),
+                CsvFileSink(directory=base_dir / result_directory,
                             create_directory=OutputArguments.CREATE_DIRS.get_value(args),
                             options=options))
 
