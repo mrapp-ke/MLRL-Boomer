@@ -88,10 +88,10 @@ class ResultDirectoryExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
+        base_dir = OutputArguments.BASE_DIR.get_value(args)
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
-        if result_directory and ResultDirectoryArguments.WIPE_RESULT_DIR.get_value(args):
-            base_dir = Path(OutputArguments.BASE_DIR.get_value(args))
+        if base_dir and result_directory and ResultDirectoryArguments.WIPE_RESULT_DIR.get_value(args):
             listener = ResultDirectoryExtension.WipeDirectoryListener(base_dir / result_directory)
             experiment_builder.add_listeners(listener)
 

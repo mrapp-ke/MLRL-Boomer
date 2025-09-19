@@ -296,7 +296,7 @@ class BatchMode(Mode):
 
             if base_dir:
                 create_directory = OutputArguments.CREATE_DIRS.get_value(args)
-                sink = YamlFileSink(directory=Path(base_dir), create_directory=create_directory)
+                sink = YamlFileSink(directory=base_dir, create_directory=create_directory)
                 batch_command = Command.from_argv()
                 meta_data = MetaData(command=batch_command, child_commands=batch)
                 state = ExperimentState(meta_data=meta_data, problem_domain=recipe.create_problem_domain(args))
