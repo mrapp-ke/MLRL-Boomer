@@ -32,7 +32,7 @@ class OutputExtension(Extension):
         }
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: Mode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
@@ -84,7 +84,7 @@ class ResultDirectoryExtension(Extension):
         return {ResultDirectoryArguments.RESULT_DIR, ResultDirectoryArguments.WIPE_RESULT_DIR}
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: Mode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
