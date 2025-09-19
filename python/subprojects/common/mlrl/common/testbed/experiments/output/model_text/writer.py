@@ -13,13 +13,14 @@ from mlrl.common.testbed.experiments.output.model_text.model_text import RuleMod
 
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
 
+from mlrl.testbed.experiments.input.data import TextualInputData
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks import Sink
-from mlrl.testbed.experiments.output.writer import DataExtractor, OutputWriter
+from mlrl.testbed.experiments.output.writer import DataExtractor, ResultWriter, TextualDataExtractor
 from mlrl.testbed.experiments.state import ExperimentState
 
 
-class RuleModelAsTextWriter(OutputWriter):
+class RuleModelAsTextWriter(ResultWriter):
     """
     Allows to write textual representations of models to one or several sinks.
     """
@@ -53,4 +54,8 @@ class RuleModelAsTextWriter(OutputWriter):
         """
         :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
         """
-        super().__init__(*extractors, RuleModelAsTextWriter.DefaultExtractor())
+        super().__init__(TextualDataExtractor(properties=RuleModelAsText.PROPERTIES, context=RuleModelAsText.CONTEXT),
+                         *extractors,
+                         RuleModelAsTextWriter.DefaultExtractor(),
+                         input_data=TextualInputData(properties=RuleModelAsText.PROPERTIES,
+                                                     context=RuleModelAsText.CONTEXT))
