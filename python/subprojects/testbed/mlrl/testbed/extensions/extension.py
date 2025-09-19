@@ -77,13 +77,14 @@ class Extension(ABC):
         supported_modes = self.get_supported_modes()
         return type(mode) in supported_modes if supported_modes else True
 
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, mode: Mode):
         """
         May be overridden by subclasses in order to configure an experiment according to the command line arguments
         specified by the user.
 
         :param args:                The command line arguments specified by the user
         :param experiment_builder:  A builder that allows to configure the experiment
+        :param mode:                The mode of operation
         """
 
     def configure_batch_mode(self, args: Namespace, batch_mode: BatchMode):
