@@ -97,8 +97,9 @@ class LabelVectorSetExtension(Extension):
         """
         return set()
 
+    # pylint: disable=unused-argument
     @override
-    def configure_experiment(self, _: Namespace, experiment_builder: Experiment.Builder):
+    def configure_experiment(self, _: Namespace, experiment_builder: Experiment.Builder, mode: Mode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
