@@ -27,4 +27,4 @@ class TabularProperties(Properties):
     Attributes:
         has_header: True, if the tabular data has a header, False otherwise
     """
-    has_header: bool
+    has_header: bool = True
