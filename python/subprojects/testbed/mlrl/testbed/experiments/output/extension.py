@@ -77,23 +77,25 @@ class ResultDirectoryExtension(Extension):
             return state
 
     @override
-    def _get_arguments(self, _: Mode) -> Set[Argument]:
+    def _get_arguments(self, mode: Mode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return {ResultDirectoryArguments.RESULT_DIR, ResultDirectoryArguments.WIPE_RESULT_DIR}
+        return {ResultDirectoryArguments.RESULT_DIR} if isinstance(
+            mode, ReadMode) else {ResultDirectoryArguments.RESULT_DIR, ResultDirectoryArguments.WIPE_RESULT_DIR}
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: Mode):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, mode: Mode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
-        base_dir = OutputArguments.BASE_DIR.get_value(args)
-        result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
+        if not isinstance(mode, ReadMode):
+            base_dir = OutputArguments.BASE_DIR.get_value(args)
+            result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
-        if base_dir and result_directory and ResultDirectoryArguments.WIPE_RESULT_DIR.get_value(args):
-            listener = ResultDirectoryExtension.WipeDirectoryListener(base_dir / result_directory)
-            experiment_builder.add_listeners(listener)
+            if base_dir and result_directory and ResultDirectoryArguments.WIPE_RESULT_DIR.get_value(args):
+                listener = ResultDirectoryExtension.WipeDirectoryListener(base_dir / result_directory)
+                experiment_builder.add_listeners(listener)
 
     @override
     def get_supported_modes(self) -> Set[Type[Mode]]:
