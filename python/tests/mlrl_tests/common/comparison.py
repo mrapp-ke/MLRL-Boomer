@@ -11,8 +11,8 @@ from typing import Any, Dict, Iterable, List, Optional, Set, override
 
 import yaml
 
+from mlrl.testbed.experiments.input.meta_data.meta_data import InputMetaData
 from mlrl.testbed.experiments.input.sources import CsvFileSource, PickleFileSource, YamlFileSource
-from mlrl.testbed.experiments.output.meta_data.meta_data import OutputMetaData
 from mlrl.testbed.util.io import ENCODING_UTF8, open_readable_file, open_writable_file
 
 PLACEHOLDER_DURATION = '<duration>'
@@ -77,7 +77,7 @@ class FileComparison(ABC):
         :param file:    The path to the file
         :return:        The `FileComparison` that has been created
         """
-        if file.name == OutputMetaData.FILENAME + '.' + YamlFileSource.SUFFIX_YAML:
+        if file.name == InputMetaData.FILENAME + '.' + YamlFileSource.SUFFIX_YAML:
             return MetaDataFileComparison(file)
         if file.suffix == '.' + PickleFileSource.SUFFIX_PICKLE:
             return PickleFileComparison(file)

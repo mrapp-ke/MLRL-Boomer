@@ -11,7 +11,8 @@ from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vector_histogra
     LabelVectorHistogram
 
 from mlrl.testbed.experiments.context import Context
-from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
+from mlrl.testbed.experiments.data import TabularProperties
+from mlrl.testbed.experiments.output.data import TabularOutputData
 from mlrl.testbed.experiments.table import RowWiseTable, Table
 
 from mlrl.util.options import Options
@@ -28,8 +29,8 @@ class LabelVectors(TabularOutputData):
         """
         :param label_vector_histogram: The histogram that stores unique label vectors and their respective frequency
         """
-        super().__init__(OutputData.Properties(name='Label vectors', file_name='label_vectors'),
-                         Context(include_dataset_type=False))
+        super().__init__(properties=TabularProperties(name='Label vectors', file_name='label_vectors'),
+                         context=Context(include_dataset_type=False))
         self.label_vector_histogram = label_vector_histogram
 
     def __format_label_vector(self, label_vector: LabelVector, sparse: bool) -> str:
