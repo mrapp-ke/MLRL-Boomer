@@ -6,7 +6,7 @@ Provides classes for representing evaluation results that are part of output dat
 from itertools import tee
 from typing import Optional, override
 
-from mlrl.testbed.experiments.data import Properties
+from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
 from mlrl.testbed.experiments.output.evaluation.measurements import Measurements
 from mlrl.testbed.experiments.output.sinks import CsvFileSink
@@ -95,7 +95,7 @@ class EvaluationResult(TabularOutputData):
         """
         :param measurements: The measurements according to different evaluation measures
         """
-        super().__init__(Properties(name='Evaluation result', file_name='evaluation'))
+        super().__init__(TabularProperties(name='Evaluation result', file_name='evaluation'))
         self.get_context(CsvFileSink).include_prediction_scope = False
         self.measurements = measurements
 
