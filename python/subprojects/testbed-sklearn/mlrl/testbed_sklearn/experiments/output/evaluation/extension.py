@@ -13,6 +13,7 @@ from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_ranking import
 from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_regression import RegressionEvaluationDataExtractor
 
 from mlrl.testbed.experiments.experiment import Experiment
+from mlrl.testbed.experiments.input.sources.source_csv import CsvFileSource
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink
@@ -97,7 +98,7 @@ class EvaluationExtension(Extension):
         print_evaluation, options = self.PRINT_EVALUATION.get_value_and_options(args, default=print_all)
 
         if print_evaluation:
-            experiment_builder.evaluation_writer.add_sinks(LogSink(options))
+            experiment_builder.evaluation_writer.add_sinks(LogSink(options=options, source_factory=CsvFileSource))
 
     def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         save_all = OutputArguments.SAVE_ALL.get_value(args)

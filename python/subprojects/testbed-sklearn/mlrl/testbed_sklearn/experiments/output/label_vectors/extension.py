@@ -7,6 +7,7 @@ from argparse import Namespace
 from typing import Set, Type, override
 
 from mlrl.testbed.experiments.experiment import Experiment
+from mlrl.testbed.experiments.input.sources import CsvFileSource
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink
@@ -51,7 +52,7 @@ class LabelVectorExtension(Extension):
         print_label_vectors = self.PRINT_LABEL_VECTORS.get_value(args, default=print_all)
 
         if print_label_vectors:
-            experiment_builder.label_vector_writer.add_sinks(LogSink())
+            experiment_builder.label_vector_writer.add_sinks(LogSink(source_factory=CsvFileSource))
 
     def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         save_all = OutputArguments.SAVE_ALL.get_value(args)

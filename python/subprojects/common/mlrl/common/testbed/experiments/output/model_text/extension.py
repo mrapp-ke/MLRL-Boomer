@@ -10,6 +10,7 @@ from mlrl.common.testbed.experiments.output.model_text.model_text import RuleMod
 from mlrl.common.testbed.experiments.output.model_text.writer import RuleModelAsTextWriter
 
 from mlrl.testbed.experiments import Experiment
+from mlrl.testbed.experiments.input.sources import TextFileSource
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks import LogSink, Sink, TextFileSink
@@ -68,7 +69,7 @@ class RuleModelAsTextExtension(Extension):
             args, default=OutputArguments.PRINT_ALL.get_value(args))
 
         if value:
-            return [LogSink(options)]
+            return [LogSink(options=options, source_factory=TextFileSource)]
         return []
 
     def __create_text_file_sinks(self, args: Namespace, mode: Mode) -> List[Sink]:
