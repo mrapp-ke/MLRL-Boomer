@@ -295,14 +295,17 @@ class RuleLearnerRunnable(SkLearnRunnable):
                                                                          predict_kwargs=predict_kwargs)
 
     @override
-    def create_experiment_builder(self, args: Namespace, command: Command) -> Experiment.Builder:
+    def create_experiment_builder(self,
+                                  args: Namespace,
+                                  command: Command,
+                                  load_dataset: bool = True) -> Experiment.Builder:
         """
         See :func:`mlrl.testbed.experiments.recipe.Recipe.create_experiment_builder`
         """
         meta_data = MetaData(command=command)
         initial_state = ExperimentState(meta_data=meta_data, problem_domain=self.create_problem_domain(args))
         return RuleLearnerExperiment.Builder(initial_state=initial_state,
-                                             dataset_splitter=self.create_dataset_splitter(args))
+                                             dataset_splitter=self.create_dataset_splitter(args, load_dataset))
 
     @override
     def create_classifier(self, args: Namespace) -> Optional[SkLearnClassifierMixin]:
