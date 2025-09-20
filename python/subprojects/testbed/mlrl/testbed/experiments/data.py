@@ -17,3 +17,14 @@ class Properties:
     """
     name: str
     file_name: str
+
+
+@dataclass
+class TabularProperties(Properties):
+    """
+    The properties of tabular input or output data.
+
+    Attributes:
+        has_header: True, if the tabular data has a header, False otherwise
+    """
+    has_header: bool
