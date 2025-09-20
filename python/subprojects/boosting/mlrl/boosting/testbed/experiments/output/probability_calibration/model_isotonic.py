@@ -11,7 +11,8 @@ from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibr
     IsotonicProbabilityCalibrationModelVisitor
 
 from mlrl.testbed.experiments.context import Context
-from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
+from mlrl.testbed.experiments.data import TabularProperties
+from mlrl.testbed.experiments.output.data import TabularOutputData
 from mlrl.testbed.experiments.table import ColumnWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, format_number
 
@@ -55,7 +56,7 @@ class IsotonicRegressionModel(TabularOutputData):
 
     def __init__(self,
                  calibration_model: IsotonicProbabilityCalibrationModel,
-                 properties: OutputData.Properties,
+                 properties: TabularProperties,
                  context: Context = Context(),
                  column_title_prefix: Optional[str] = None):
         """

@@ -12,7 +12,7 @@ import numpy as np
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
 
 from mlrl.testbed.experiments.context import Context
-from mlrl.testbed.experiments.output.data import OutputData
+from mlrl.testbed.experiments.data import Properties
 from mlrl.testbed.experiments.output.dataset.dataset import OutputDataset
 from mlrl.testbed.util.format import OPTION_DECIMALS
 
@@ -24,7 +24,7 @@ class TabularOutputDataset(OutputDataset):
     Represents a tabular dataset that is part of output data.
     """
 
-    def __init__(self, dataset: TabularDataset, properties: OutputData.Properties, context: Context = Context()):
+    def __init__(self, dataset: TabularDataset, properties: Properties, context: Context = Context()):
         """
         :param dataset:     A tabular dataset
         :param properties:  The properties of the output data

@@ -6,10 +6,11 @@ Provides classes for representing output data.
 import json
 
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, replace
+from dataclasses import replace
 from typing import Any, Dict, Iterable, List, Optional, Type, override
 
 from mlrl.testbed.experiments.context import Context
+from mlrl.testbed.experiments.data import Properties, TabularProperties
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
@@ -22,18 +23,6 @@ class OutputData(ABC):
     """
     An abstract class for all classes that represent output data.
     """
-
-    @dataclass
-    class Properties:
-        """
-        Properties of output data.
-
-        Attributes:
-            name:       A name to be included in log messages
-            file_name:  A file name to be used for writing into output files
-        """
-        name: str
-        file_name: str
 
     def __init__(self, properties: Properties, context: Context = Context()):
         """
@@ -134,6 +123,14 @@ class TabularOutputData(TextualOutputData, ABC):
     An abstract class for all classes that represent output data that can be converted into a textual, as well as a
     tabular, representation.
     """
+
+    def __init__(self, properties: TabularProperties, context: Context = Context()):
+        """
+        :param properties:  The properties of the output data
+        :param context:     A `Context` to be used by default for finding a suitable sink this output data can be
+                            written to
+        """
+        super().__init__(properties=properties, context=context)
 
     @abstractmethod
     def to_table(self, options: Options, **kwargs) -> Optional[Table]:

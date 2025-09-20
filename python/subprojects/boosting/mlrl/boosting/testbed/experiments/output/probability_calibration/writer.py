@@ -16,6 +16,7 @@ from mlrl.boosting.testbed.experiments.output.probability_calibration.model_isot
 from mlrl.boosting.testbed.experiments.output.probability_calibration.model_no import NoCalibrationModel
 
 from mlrl.testbed.experiments.context import Context
+from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor, OutputWriter
@@ -67,8 +68,8 @@ class MarginalProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWrite
         def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Optional[OutputData]:
             calibration_model = learner.marginal_probability_calibration_model_
             context = Context(include_dataset_type=False)
-            properties = OutputData.Properties(name='Marginal probability calibration model',
-                                               file_name='marginal_probability_calibration_model')
+            properties = TabularProperties(name='Marginal probability calibration model',
+                                           file_name='marginal_probability_calibration_model')
 
             if isinstance(calibration_model, IsotonicProbabilityCalibrationModel):
                 return IsotonicRegressionModel(calibration_model=calibration_model,
@@ -106,8 +107,8 @@ class JointProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWriter):
         def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Optional[OutputData]:
             calibration_model = learner.joint_probability_calibration_model_
             context = Context(include_dataset_type=False)
-            properties = OutputData.Properties(name='Joint probability calibration model',
-                                               file_name='joint_probability_calibration_model')
+            properties = TabularProperties(name='Joint probability calibration model',
+                                           file_name='joint_probability_calibration_model')
 
             if isinstance(calibration_model, IsotonicProbabilityCalibrationModel):
                 return IsotonicRegressionModel(calibration_model=calibration_model,

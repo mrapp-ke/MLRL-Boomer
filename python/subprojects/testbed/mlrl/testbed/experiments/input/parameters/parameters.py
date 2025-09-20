@@ -6,6 +6,7 @@ Provides classes for representing algorithmic parameters that are part of input 
 from typing import override
 
 from mlrl.testbed.experiments.context import Context
+from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.input.data import TabularInputData
 from mlrl.testbed.experiments.state import ExperimentState, ParameterDict
 from mlrl.testbed.experiments.table import Table
@@ -16,9 +17,12 @@ class InputParameters(TabularInputData):
     Represents algorithmic parameters, set by the user, that are part of input data.
     """
 
+    PROPERTIES = TabularProperties(name='Custom parameters', file_name='parameters', has_header=True)
+
+    CONTEXT = Context(include_dataset_type=False, include_prediction_scope=False)
+
     def __init__(self):
-        super().__init__(TabularInputData.Properties(file_name='parameters', has_header=True),
-                         Context(include_dataset_type=False, include_prediction_scope=False))
+        super().__init__(properties=self.PROPERTIES, context=self.CONTEXT)
 
     @override
     def _update_state(self, state: ExperimentState, table: Table):
