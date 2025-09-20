@@ -5,8 +5,7 @@ Provides classes for representing models that are part of output data.
 """
 from typing import Any, Optional, override
 
-from mlrl.testbed.experiments.context import Context
-from mlrl.testbed.experiments.data import Properties
+from mlrl.testbed.experiments.input.model.model import InputModel
 from mlrl.testbed.experiments.output.data import ObjectOutputData
 
 from mlrl.util.options import Options
@@ -21,8 +20,7 @@ class OutputModel(ObjectOutputData):
         """
         :param learner: The learner that stores the model
         """
-        super().__init__(Properties(name='Model', file_name='model'),
-                         Context(include_dataset_type=False, include_prediction_scope=False))
+        super().__init__(properties=InputModel.PROPERTIES, context=InputModel.CONTEXT)
         self.learner = learner
 
     @override

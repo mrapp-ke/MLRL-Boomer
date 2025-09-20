@@ -7,6 +7,7 @@ from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
 from mlrl.testbed_sklearn.experiments.output.dataset.dataset import TabularOutputDataset
 
 from mlrl.testbed.experiments.data import Properties
+from mlrl.testbed.experiments.input.dataset import InputDataset
 
 
 class GroundTruthDataset(TabularOutputDataset):
@@ -18,4 +19,4 @@ class GroundTruthDataset(TabularOutputDataset):
         """
         :param dataset: A tabular dataset
         """
-        super().__init__(dataset=dataset, properties=Properties(name='Ground truth', file_name='ground_truth'))
+        super().__init__(dataset=dataset, properties=Properties(name=InputDataset.NAME, file_name='ground_truth'))

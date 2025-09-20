@@ -8,6 +8,7 @@ import logging as log
 from typing import Any, override
 
 from mlrl.testbed.experiments.context import Context
+from mlrl.testbed.experiments.data import Properties
 from mlrl.testbed.experiments.input.data import InputData
 from mlrl.testbed.experiments.state import ExperimentState, TrainingState
 
@@ -17,9 +18,12 @@ class InputModel(InputData):
     Represents a model is are part of input data.
     """
 
+    PROPERTIES = Properties(name='Model', file_name='model')
+
+    CONTEXT = Context(include_dataset_type=False, include_prediction_scope=False)
+
     def __init__(self):
-        super().__init__(InputData.Properties(file_name='model'),
-                         Context(include_dataset_type=False, include_prediction_scope=False))
+        super().__init__(properties=self.PROPERTIES, context=self.CONTEXT)
 
     @override
     def update_state(self, state: ExperimentState, input_data: Any):

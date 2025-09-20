@@ -36,7 +36,7 @@ class CsvFileSource(TabularFileSource):
         with open_readable_file(file_path) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=self.DELIMITER, quotechar=self.QUOTE_CHAR)
             properties = input_data.properties
-            has_header = isinstance(properties, TabularInputData.Properties) and properties.has_header
+            has_header = isinstance(properties, TabularInputData.TabularProperties) and properties.has_header
 
             try:
                 header_row = next(csv_reader) if has_header else []

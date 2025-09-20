@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from typing import Any, Dict, override
 
 from mlrl.testbed.experiments.context import Context
+from mlrl.testbed.experiments.data import Properties
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
 
@@ -16,16 +17,6 @@ class InputData(ABC):
     """
     An abstract base class for all classes that represent input data.
     """
-
-    @dataclass
-    class Properties:
-        """
-        Properties of input data.
-
-        Attributes:
-            file_name: A file name to be used for reading from input files
-        """
-        file_name: str
 
     def __init__(self, properties: Properties, context: Context = Context()):
         """
@@ -66,7 +57,7 @@ class TabularInputData(InputData, ABC):
     """
 
     @dataclass
-    class Properties(InputData.Properties):
+    class TabularProperties(Properties):
         """
         Properties of tabular input data.
 
