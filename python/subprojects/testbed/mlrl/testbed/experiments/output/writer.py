@@ -8,7 +8,12 @@ import logging as log
 from abc import ABC, abstractmethod
 from typing import Any, List, Optional, override
 
-from mlrl.testbed.experiments.output.data import OutputData
+from mlrl.testbed.experiments.context import Context
+from mlrl.testbed.experiments.data import Properties, TabularProperties
+from mlrl.testbed.experiments.input.data import TabularInputData, TextualInputData
+from mlrl.testbed.experiments.input.reader import InputReader
+from mlrl.testbed.experiments.input.sources import Source
+from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData, TextualOutputData
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.state import ExperimentState
 
@@ -27,6 +32,66 @@ class DataExtractor(ABC):
         :param sinks:   The sinks to which the extracted data should be written
         :return:        The output data that has been extracted or None, if no output data has been extracted
         """
+
+
+class TextualDataExtractor(DataExtractor):
+    """
+    Uses `TextualInputData` that has previously been loaded via an input reader.
+    """
+
+    def __init__(self, properties: Properties, context: Context):
+        """
+        :param properties:  The properties of the input data
+        :param context:     The context of the input data
+        """
+        self.properties = properties
+        self.context = context
+
+    @override
+    def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
+        """
+        See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
+        """
+        properties = self.properties
+        context = self.context
+        input_data = TextualInputData(properties=properties, context=context)
+        input_data_key = input_data.get_key(state)
+        extra = state.extras.get(input_data_key)
+
+        if extra:
+            return TextualOutputData.from_text(properties=properties, context=context, text=extra)
+
+        return None
+
+
+class TabularDataExtractor(DataExtractor):
+    """
+    Uses `TabularInputData` that has previously been loaded via an input reader.
+    """
+
+    def __init__(self, properties: TabularProperties, context: Context):
+        """
+        :param properties:  The properties of the input data
+        :param context:     The context of the input data
+        """
+        self.properties = properties
+        self.context = context
+
+    @override
+    def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
+        """
+        See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
+        """
+        properties = self.properties
+        context = self.context
+        input_data = TabularInputData(properties=properties, context=context)
+        input_data_key = input_data.get_key(state)
+        extra = state.extras.get(input_data_key)
+
+        if extra:
+            return TabularOutputData.from_table(properties=properties, context=context, table=extra)
+
+        return None
 
 
 class OutputWriter:
