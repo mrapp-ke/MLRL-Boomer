@@ -12,7 +12,7 @@ from mlrl.common.testbed.experiments.output.characteristics.model.statistics imp
     RuleModelStatistics, RuleStatistics
 
 from mlrl.testbed.experiments.context import Context
-from mlrl.testbed.experiments.data import Properties
+from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.output.data import TabularOutputData
 from mlrl.testbed.experiments.table import Alignment, RowWiseTable, Table
 from mlrl.testbed.util.format import format_number, format_percentage
@@ -30,8 +30,8 @@ class RuleModelCharacteristics(TabularOutputData):
         """
         :param statistics: The statistics of a rule model
         """
-        super().__init__(Properties(name='Model characteristics', file_name='model_characteristics'),
-                         Context(include_dataset_type=False))
+        super().__init__(properties=TabularProperties(name='Model characteristics', file_name='model_characteristics'),
+                         context=Context(include_dataset_type=False))
         self.statistics = statistics
 
     # pylint: disable=unused-argument
