@@ -8,8 +8,9 @@ from abc import ABC
 from typing import Optional, override
 
 from mlrl.testbed.experiments.context import Context
+from mlrl.testbed.experiments.data import Properties
 from mlrl.testbed.experiments.dataset import Dataset
-from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData
+from mlrl.testbed.experiments.output.data import DatasetOutputData
 
 from mlrl.util.options import Options
 
@@ -19,7 +20,7 @@ class OutputDataset(DatasetOutputData, ABC):
     An abstract base class for all classes that represent a dataset that is part of output data.
     """
 
-    def __init__(self, dataset: Dataset, properties: OutputData.Properties, context: Context = Context()):
+    def __init__(self, dataset: Dataset, properties: Properties, context: Context = Context()):
         """
         :param dataset:     A dataset
         :param properties:  The properties of the output data

@@ -6,7 +6,8 @@ Provides classes for representing algorithmic parameters that are part of output
 from typing import Optional, override
 
 from mlrl.testbed.experiments.context import Context
-from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
+from mlrl.testbed.experiments.data import Properties
+from mlrl.testbed.experiments.output.data import TabularOutputData
 from mlrl.testbed.experiments.state import ParameterDict
 from mlrl.testbed.experiments.table import RowWiseTable, Table
 
@@ -22,7 +23,7 @@ class OutputParameters(TabularOutputData):
         """
         :param parameter_dict: A dictionary that stores the parameters of a learner
         """
-        super().__init__(OutputData.Properties(name='Custom parameters', file_name='parameters'),
+        super().__init__(Properties(name='Custom parameters', file_name='parameters'),
                          Context(include_dataset_type=False))
         self.custom_parameters = {key: value for key, value in parameter_dict.items() if value is not None}
 
