@@ -1,18 +1,11 @@
-mlrl-testbed mlrl.seco --mode run --help
+mlrl-testbed mlrl.seco --mode read --help
 usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE]
                     [--input-dir INPUT_DIR] [--base-dir BASE_DIR]
                     [--create-dirs CREATE_DIRS]
                     [--exit-on-error EXIT_ON_ERROR]
                     [--exit-on-missing-input EXIT_ON_MISSING_INPUT]
-                    [--incremental-evaluation INCREMENTAL_EVALUATION]
-                    [--load-models LOAD_MODELS]
-                    [--load-parameters LOAD_PARAMETERS]
-                    [--model-load-dir MODEL_LOAD_DIR]
                     [--model-save-dir MODEL_SAVE_DIR]
-                    [--parameter-load-dir PARAMETER_LOAD_DIR]
                     [--parameter-save-dir PARAMETER_SAVE_DIR]
-                    [--predict-for-test-data PREDICT_FOR_TEST_DATA]
-                    [--predict-for-training-data PREDICT_FOR_TRAINING_DATA]
                     [--print-all PRINT_ALL]
                     [--print-data-characteristics PRINT_DATA_CHARACTERISTICS]
                     [--print-evaluation PRINT_EVALUATION]
@@ -75,58 +68,30 @@ options:
                         Whether the program should exit if an error occurs
                         while reading input data or not. Must be one of
                         {"false", "true"}.
-  --incremental-evaluation INCREMENTAL_EVALUATION
-                        Whether models should be evaluated repeatedly, using
-                        only a subset of the induced rules with increasing
-                        size, or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
-  --load-models LOAD_MODELS
-                        Whether models should be loaded from input files or
-                        not. Must be one of {"false", "true"}.
-  --load-parameters LOAD_PARAMETERS
-                        Whether parameters should be loaded from input files
-                        or not. Must be one of {"false", "true"}.
-  --model-load-dir MODEL_LOAD_DIR
-                        The path to the directory from which models should be
-                        loaded.
   --model-save-dir MODEL_SAVE_DIR
                         The path to the directory where models should be
                         saved.
-  --parameter-load-dir PARAMETER_LOAD_DIR
-                        The path to the directory from which parameters to be
-                        used by the algorithm should be loaded.
   --parameter-save-dir PARAMETER_SAVE_DIR
                         The path to the directory where configuration files,
                         which specify the parameters used by the algorithm,
                         should be saved.
-  --predict-for-test-data PREDICT_FOR_TEST_DATA
-                        Whether predictions should be obtained for the test
-                        data or not. Must be one of {"false", "true"}.
-  --predict-for-training-data PREDICT_FOR_TRAINING_DATA
-                        Whether predictions should be obtained for the
-                        training data or not. Must be one of {"false",
-                        "true"}.
   --print-all PRINT_ALL
                         Whether all output data should be printed on the
                         console or not. Must be one of {"false", "true"}.
   --print-data-characteristics PRINT_DATA_CHARACTERISTICS
                         Whether the characteristics of the training data
                         should be printed on the console or not. Must be one
-                        of {"false", "true"}. For additional options refer to
-                        the documentation.
+                        of {"false", "true"}.
   --print-evaluation PRINT_EVALUATION
                         Whether the evaluation results should be printed on
                         the console or not. Must be one of {"false", "true"}.
-                        For additional options refer to the documentation.
   --print-ground-truth PRINT_GROUND_TRUTH
                         Whether the ground truth should be printed on the
-                        console or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        console or not. Must be one of {"false", "true"}.
   --print-label-vectors PRINT_LABEL_VECTORS
                         Whether the unique label vectors contained in the
                         training data should be printed on the console or not.
-                        Must be one of {"false", "true"}. For additional
-                        options refer to the documentation.
+                        Must be one of {"false", "true"}.
   --print-meta-data PRINT_META_DATA
                         Whether meta-data should be printed on the console or
                         not. Must be one of {"false", "true"}.
@@ -141,16 +106,13 @@ options:
                         Whether the characteristics of binary predictions
                         should be printed on the console or not. Does only
                         have an effect if the argument --prediction-type is
-                        set to binary. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        set to binary. Must be one of {"false", "true"}.
   --print-predictions PRINT_PREDICTIONS
                         Whether predictions should be printed on the console
-                        or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        or not. Must be one of {"false", "true"}.
   --print-rules PRINT_RULES
                         Whether the induced rules should be printed on the
-                        console or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        console or not. Must be one of {"false", "true"}.
   --result-dir RESULT_DIR
                         The path to the directory where experimental results
                         should be saved.
@@ -159,21 +121,17 @@ options:
   --save-data-characteristics SAVE_DATA_CHARACTERISTICS
                         Whether the characteristics of the training data
                         should be written to output files or not. Must be one
-                        of {"false", "true"}. For additional options refer to
-                        the documentation.
+                        of {"false", "true"}.
   --save-evaluation SAVE_EVALUATION
                         Whether evaluation results should be written to output
-                        files or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        files or not. Must be one of {"false", "true"}.
   --save-ground-truth SAVE_GROUND_TRUTH
                         Whether the ground truth should be written to output
-                        files or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        files or not. Must be one of {"false", "true"}.
   --save-label-vectors SAVE_LABEL_VECTORS
                         Whether the unique label vectors contained in the
                         training data should be written to output files or
-                        not. Must be one of {"false", "true"}. For additional
-                        options refer to the documentation.
+                        not. Must be one of {"false", "true"}.
   --save-meta-data SAVE_META_DATA
                         Whether meta-data should be saved to output files or
                         not. If set to "auto", meta-data is saved whenever
@@ -194,16 +152,13 @@ options:
                         should be written to output files or not. Does only
                         have an effect if the argument --prediction-type is
                         set to binary and if the argument --result-dir is
-                        specified. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        specified. Must be one of {"false", "true"}.
   --save-predictions SAVE_PREDICTIONS
                         Whether predictions should be written to output files
-                        or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        or not. Must be one of {"false", "true"}.
   --save-rules SAVE_RULES
                         Whether the induced rules should be written to a text
-                        file or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        file or not. Must be one of {"false", "true"}.
   --wipe-result-dir WIPE_RESULT_DIR
                         Whether all files in the directory specified via the
                         argument --result-dir should be deleted before an

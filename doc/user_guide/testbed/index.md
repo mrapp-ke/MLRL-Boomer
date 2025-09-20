@@ -42,6 +42,7 @@ outputs
 runnables
 batch_mode
 run_mode
+read_mode
 arguments
 ```
 

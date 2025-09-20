@@ -6,8 +6,11 @@ Provides classes for writing output data to sinks.
 import logging as log
 
 from abc import ABC, abstractmethod
+from argparse import Namespace
+from pathlib import Path
 from typing import Any, List, Optional, override
 
+from mlrl.testbed.experiments.input.reader import InputReader
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.state import ExperimentState
@@ -116,6 +119,18 @@ class OutputWriter:
         :param output_data: The output data that should be written to the sink
         """
         sink.write_to_sink(state, output_data)
+
+    @abstractmethod
+    def create_input_reader(self, args: Namespace, input_directory: Path) -> Optional[InputReader]:
+        """
+        May be overridden by subclasses in order to create an `InputReader` that can read the data produced by this
+        output writer.
+
+        :param args:            The command line arguments specified by the user
+        :param input_directory: The directory, the data should be read from
+        :return:                The `InputReader` that has been created or None, if no such reader is available
+        """
+        return None
 
     @override
     def __eq__(self, other: Any) -> bool:

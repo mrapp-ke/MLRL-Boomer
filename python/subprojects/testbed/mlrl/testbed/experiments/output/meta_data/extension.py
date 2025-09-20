@@ -13,7 +13,7 @@ from mlrl.testbed.experiments.output.meta_data.arguments import MetaDataArgument
 from mlrl.testbed.experiments.output.sinks import YamlFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
+from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
 
 from mlrl.util.cli import AUTO, Argument
 from mlrl.util.options import BooleanOption
@@ -31,7 +31,7 @@ class MetaDataExtension(Extension):
         super().__init__(OutputExtension(), *dependencies)
 
     @override
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, _: Mode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
@@ -45,11 +45,12 @@ class MetaDataExtension(Extension):
             experiment_builder.meta_data_writer.add_sinks(LogSink())
 
     @staticmethod
-    def __configure_yaml_file_sink(args: Namespace, experiment_builder: Experiment.Builder):
+    def __configure_yaml_file_sink(args: Namespace, experiment_builder: Experiment.Builder, mode: Mode):
         save_meta_data = MetaDataArguments.SAVE_META_DATA.get_value(args)
 
         if save_meta_data == BooleanOption.TRUE or (save_meta_data == AUTO
-                                                    and experiment_builder.has_output_file_writers):
+                                                    and experiment_builder.has_output_file_writers
+                                                    and not isinstance(mode, ReadMode)):
             base_dir = OutputArguments.BASE_DIR.get_value(args)
 
             if base_dir:
@@ -58,16 +59,16 @@ class MetaDataExtension(Extension):
                     YamlFileSink(directory=base_dir, create_directory=create_directory))
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, mode: Mode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
         self.__configure_log_sink(args, experiment_builder)
-        self.__configure_yaml_file_sink(args, experiment_builder)
+        self.__configure_yaml_file_sink(args, experiment_builder, mode)
 
     @override
     def get_supported_modes(self) -> Set[Type[Mode]]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode, BatchMode, RunMode}
+        return {SingleMode, BatchMode, ReadMode, RunMode}

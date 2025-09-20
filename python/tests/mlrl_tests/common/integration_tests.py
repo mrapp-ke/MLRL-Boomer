@@ -46,6 +46,7 @@ class IntegrationTests(ABC):
     @pytest.mark.parametrize('mode', [
         'single',
         'batch',
+        'read',
         'run',
     ])
     def test_help(self, mode: str):

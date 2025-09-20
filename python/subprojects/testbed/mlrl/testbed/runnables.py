@@ -16,7 +16,7 @@ from mlrl.testbed.experiments.output.meta_data.extension import MetaDataExtensio
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.extensions import Extension
-from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
+from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
 from mlrl.testbed.program_info import ProgramInfo
 
 from mlrl.util.cli import Argument, BoolArgument, CommandLineInterface
@@ -52,14 +52,14 @@ class Runnable(Recipe, ABC):
         )
 
         @override
-        def _get_arguments(self) -> Set[Argument]:
+        def _get_arguments(self, _: Mode) -> Set[Argument]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
             """
             return {self.PREDICT_FOR_TRAINING_DATA, self.PREDICT_FOR_TEST_DATA}
 
         @override
-        def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
+        def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: Mode):
             """
             See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
             """
@@ -134,10 +134,10 @@ class Runnable(Recipe, ABC):
                 experiment_builder = runnable.create_experiment_builder(args, command)
 
                 for extension in runnable.extensions:
-                    extension.configure_experiment(args, experiment_builder)
+                    extension.configure_experiment(args, experiment_builder, mode)
 
                     for dependency in extension.get_dependencies(mode):
-                        dependency.configure_experiment(args, experiment_builder)
+                        dependency.configure_experiment(args, experiment_builder, mode)
 
                 return experiment_builder
 
@@ -159,6 +159,24 @@ class Runnable(Recipe, ABC):
                 dependency.configure_batch_mode(args, batch_mode)
 
         return batch_mode
+
+    def configure_read_mode(self, cli: CommandLineInterface) -> ReadMode:
+        """
+        Configures the read mode according to the extensions applied to the runnable.
+
+        :param cli: The command line interface to be configured
+        """
+        read_mode = ReadMode(
+            *reduce(lambda aggr, extension: aggr | extension.get_arguments(ReadMode()), self.extensions, set()))
+        args = cli.parse_known_args()
+
+        for extension in self.extensions:
+            extension.configure_read_mode(args, read_mode)
+
+            for dependency in extension.get_dependencies(read_mode):
+                dependency.configure_read_mode(args, read_mode)
+
+        return read_mode
 
     def configure_run_mode(self, cli: CommandLineInterface) -> RunMode:
         """
