@@ -10,6 +10,7 @@ from typing import List, Set, Type, override
 from mlrl.common.testbed.experiments.output.characteristics.model.writer import RuleModelCharacteristicsWriter
 
 from mlrl.testbed.experiments.experiment import Experiment
+from mlrl.testbed.experiments.input.sources.source_csv import CsvFileSource
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, Sink
@@ -49,7 +50,7 @@ class RuleModelCharacteristicsExtension(Extension):
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
         if self.PRINT_MODEL_CHARACTERISTICS.get_value(args, default=OutputArguments.PRINT_ALL.get_value(args)):
-            return [LogSink()]
+            return [LogSink(source_factory=CsvFileSource)]
         return []
 
     def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
