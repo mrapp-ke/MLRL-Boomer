@@ -4,11 +4,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE]
                     [--create-dirs CREATE_DIRS]
                     [--exit-on-error EXIT_ON_ERROR]
                     [--exit-on-missing-input EXIT_ON_MISSING_INPUT]
-                    [--load-models LOAD_MODELS]
-                    [--load-parameters LOAD_PARAMETERS]
-                    [--model-load-dir MODEL_LOAD_DIR]
                     [--model-save-dir MODEL_SAVE_DIR]
-                    [--parameter-load-dir PARAMETER_LOAD_DIR]
                     [--parameter-save-dir PARAMETER_SAVE_DIR]
                     [--print-all PRINT_ALL]
                     [--print-data-characteristics PRINT_DATA_CHARACTERISTICS]
@@ -76,21 +72,9 @@ options:
                         Whether the program should exit if an error occurs
                         while reading input data or not. Must be one of
                         {"false", "true"}.
-  --load-models LOAD_MODELS
-                        Whether models should be loaded from input files or
-                        not. Must be one of {"false", "true"}.
-  --load-parameters LOAD_PARAMETERS
-                        Whether parameters should be loaded from input files
-                        or not. Must be one of {"false", "true"}.
-  --model-load-dir MODEL_LOAD_DIR
-                        The path to the directory from which models should be
-                        loaded.
   --model-save-dir MODEL_SAVE_DIR
                         The path to the directory where models should be
                         saved.
-  --parameter-load-dir PARAMETER_LOAD_DIR
-                        The path to the directory from which parameters to be
-                        used by the algorithm should be loaded.
   --parameter-save-dir PARAMETER_SAVE_DIR
                         The path to the directory where configuration files,
                         which specify the parameters used by the algorithm,
