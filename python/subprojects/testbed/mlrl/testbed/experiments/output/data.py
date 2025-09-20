@@ -108,6 +108,28 @@ class TextualOutputData(OutputData, ABC):
             return self.title + self.__format_dataset_type(state) + self.__format_prediction_scope(
                 state) + self.__format_fold(state)
 
+    @staticmethod
+    def from_text(properties: Properties, context: Context, text: str) -> 'TextualOutputData':
+        """
+        Creates and returns `TextualOutputData` from a given text.
+
+        :param properties:  The properties to be used
+        :param context:     The context to be used
+        :param text:        The text to be used
+        :return:            The `TextualOutputData` that has been created
+        """
+
+        class TextOutputData(TextualOutputData):
+            """
+            Output data that consists of a text.
+            """
+
+            @override
+            def to_text(self, options: Options, **kwargs) -> Optional[str]:
+                return text
+
+        return TextOutputData(properties=properties, context=context)
+
     @abstractmethod
     def to_text(self, options: Options, **kwargs) -> Optional[str]:
         """
