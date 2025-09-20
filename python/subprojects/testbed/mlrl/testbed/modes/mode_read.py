@@ -81,8 +81,8 @@ class ReadMode(InputMode):
         for i, command in enumerate(batch):
             log.info('\nReading experimental results of experiment (%s / %s)...', i + 1, num_experiments)
             log.info('The command "%s" has been used originally for running this experiment', str(command))
-            experiment_builder = recipe.create_experiment_builder(
-                command.apply_to_namespace(args, ignore=self._read_mode_arguments), command)
+            command_args = command.apply_to_namespace(args, ignore=self._read_mode_arguments)
+            experiment_builder = recipe.create_experiment_builder(command_args, command, load_dataset=False)
 
             for output_writer in experiment_builder.output_writers:
                 input_reader = output_writer.create_input_reader(command.apply_to_namespace(Namespace()),

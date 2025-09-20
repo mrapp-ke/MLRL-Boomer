@@ -38,15 +38,18 @@ class NoSplitter(DatasetSplitter):
             """
             return self.state if dataset_type == DatasetType.TRAINING else None
 
-    def __init__(self, dataset_reader: DatasetReader):
+    def __init__(self, dataset_reader: Optional[DatasetReader]):
         """
-        :param dataset_reader: The reader that should be used for loading datasets
+        :param dataset_reader:  The reader that should be used for loading datasets or None, if datasets should not be
+                                loaded
         """
         super().__init__(FoldingStrategy(num_folds=1, first=0, last=1))
         self.dataset_reader = dataset_reader
-        context = dataset_reader.input_data.context
-        context.include_dataset_type = False
-        context.include_fold = False
+
+        if dataset_reader:
+            context = dataset_reader.input_data.context
+            context.include_dataset_type = False
+            context.include_fold = False
 
     @override
     def split(self, state: ExperimentState) -> Generator[DatasetSplitter.Split, None, None]:
@@ -56,7 +59,11 @@ class NoSplitter(DatasetSplitter):
         log.warning('Not using separate training and test sets. The model will be evaluated on the training data...')
         folding_strategy = self.folding_strategy
         state = replace(state, folding_strategy=folding_strategy)
-        state = self.dataset_reader.read(state)
+        dataset_reader = self.dataset_reader
+
+        if dataset_reader:
+            state = dataset_reader.read(state)
+
         state = replace(state, dataset_type=DatasetType.TRAINING)
 
         for fold in folding_strategy.folds:

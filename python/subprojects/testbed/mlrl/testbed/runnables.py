@@ -128,13 +128,16 @@ class Runnable(Recipe, ABC):
                 return self.runnable.create_problem_domain(args)
 
             @override
-            def create_dataset_splitter(self, args: Namespace) -> DatasetSplitter:
-                return self.runnable.create_dataset_splitter(args)
+            def create_dataset_splitter(self, args: Namespace, load_dataset: bool = True) -> DatasetSplitter:
+                return self.runnable.create_dataset_splitter(args, load_dataset)
 
             @override
-            def create_experiment_builder(self, args: Namespace, command: Command) -> Experiment.Builder:
+            def create_experiment_builder(self,
+                                          args: Namespace,
+                                          command: Command,
+                                          load_dataset: bool = True) -> Experiment.Builder:
                 runnable = self.runnable
-                experiment_builder = runnable.create_experiment_builder(args, command)
+                experiment_builder = runnable.create_experiment_builder(args, command, load_dataset)
 
                 for extension in runnable.get_supported_extensions(mode):
                     extension.configure_experiment(args, experiment_builder, mode)
