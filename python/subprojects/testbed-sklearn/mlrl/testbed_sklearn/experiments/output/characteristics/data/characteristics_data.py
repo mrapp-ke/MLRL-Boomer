@@ -28,6 +28,10 @@ class DataCharacteristics(TabularOutputData):
     Represents characteristics of a tabular dataset that are part of output data.
     """
 
+    PROPERTIES = TabularProperties(file_name='data_characteristics', name='Data characteristics')
+
+    CONTEXT = Context(include_dataset_type=False)
+
     OPTION_EXAMPLES = 'examples'
 
     OPTION_FEATURES = 'features'
@@ -47,8 +51,7 @@ class DataCharacteristics(TabularOutputData):
         :param problem_domain:  The problem domain, the dataset is concerned with
         :param dataset:         The dataset
         """
-        super().__init__(properties=TabularProperties(file_name='data_characteristics', name='Data characteristics'),
-                         context=Context(include_dataset_type=False))
+        super().__init__(properties=self.PROPERTIES, context=self.CONTEXT)
         self.feature_matrix = FeatureMatrix(dataset=dataset)
 
         if isinstance(problem_domain, ClassificationProblem):

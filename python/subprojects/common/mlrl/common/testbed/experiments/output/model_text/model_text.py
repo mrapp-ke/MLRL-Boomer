@@ -11,7 +11,7 @@ from mlrl.common.cython.rule_model import Body, CompleteHead, ConjunctiveBody, E
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
 
 from mlrl.testbed.experiments.context import Context
-from mlrl.testbed.experiments.data import TabularProperties
+from mlrl.testbed.experiments.data import Properties
 from mlrl.testbed.experiments.output.data import TextualOutputData
 from mlrl.testbed.util.format import format_number
 
@@ -22,6 +22,10 @@ class RuleModelAsText(TextualOutputData):
     """
     A textual representation of a rule model.
     """
+
+    PROPERTIES = Properties(name='Model', file_name='rules')
+
+    CONTEXT = Context(include_dataset_type=False)
 
     OPTION_PRINT_FEATURE_NAMES = 'print_feature_names'
 
@@ -166,8 +170,7 @@ class RuleModelAsText(TextualOutputData):
         :param model:   The rule model
         :param dataset: The dataset on which the model has been trained
         """
-        super().__init__(properties=TabularProperties(name='Model', file_name='rules'),
-                         context=Context(include_dataset_type=False))
+        super().__init__(properties=self.PROPERTIES, context=self.CONTEXT)
         self.model = model
         self.dataset = dataset
 
