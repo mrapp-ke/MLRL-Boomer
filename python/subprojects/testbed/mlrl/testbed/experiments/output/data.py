@@ -154,6 +154,32 @@ class TabularOutputData(TextualOutputData, ABC):
         """
         super().__init__(properties=properties, context=context)
 
+    @staticmethod
+    def from_table(properties: TabularProperties, context: Context, table: Table) -> 'TabularOutputData':
+        """
+        Creates and returns `TabularOutputData` from a given table.
+
+        :param properties:  The properties to be used
+        :param context:     The context to be used
+        :param table:       The table to be used
+        :return:            The `TabularOutputData` that has been created
+        """
+
+        class TableOutputData(TabularOutputData):
+            """
+            Output data that consists of a table.
+            """
+
+            @override
+            def to_text(self, options: Options, **kwargs) -> Optional[str]:
+                return table.format()
+
+            @override
+            def to_table(self, options: Options, **kwargs) -> Optional[Table]:
+                return table
+
+        return TableOutputData(properties=properties, context=context)
+
     @abstractmethod
     def to_table(self, options: Options, **kwargs) -> Optional[Table]:
         """
