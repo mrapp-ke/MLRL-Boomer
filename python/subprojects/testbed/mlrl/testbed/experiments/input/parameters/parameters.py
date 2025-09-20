@@ -17,7 +17,7 @@ class InputParameters(TabularInputData):
     """
 
     def __init__(self):
-        super().__init__(TabularInputData.Properties(file_name='parameters', has_header=True),
+        super().__init__(TabularInputData.TabularProperties(name='Parameters', file_name='parameters', has_header=True),
                          Context(include_dataset_type=False, include_prediction_scope=False))
 
     @override
