@@ -59,16 +59,21 @@ class DatasetSplitterExtension(Extension):
         return random_state
 
     @staticmethod
-    def get_dataset_splitter(args: Namespace) -> DatasetSplitter:
+    def get_dataset_splitter(args: Namespace, load_dataset: bool = True) -> DatasetSplitter:
         """
         Returns the `DatasetSplitter` to be used for splitting datasets into training and test datasets according to the
         configuration.
 
-        :param args:    The command line arguments specified by the user
-        :return:        The `DatasetSplitter` to be used
+        :param args:            The command line arguments specified by the user
+        :param load_dataset:    True, if the dataset should be loaded, False otherwise
+        :return:                The `DatasetSplitter` to be used
         """
-        dataset_reader = ArffFileExtension().get_dataset_reader(args)
-        dataset_reader.add_preprocessors(*PreprocessorExtension.get_preprocessors(args))
+        if load_dataset:
+            dataset_reader = ArffFileExtension().get_dataset_reader(args)
+            dataset_reader.add_preprocessors(*PreprocessorExtension.get_preprocessors(args))
+        else:
+            dataset_reader = None
+
         dataset_splitter, options = DatasetSplitterArguments.DATASET_SPLITTER.get_value_and_options(args)
 
         if dataset_splitter == DatasetSplitterArguments.VALUE_CROSS_VALIDATION:
