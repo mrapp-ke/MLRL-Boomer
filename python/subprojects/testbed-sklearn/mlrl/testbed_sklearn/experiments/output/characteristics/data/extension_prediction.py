@@ -11,6 +11,7 @@ from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristic
 from mlrl.testbed_sklearn.experiments.prediction.extension import PredictionTypeExtension
 
 from mlrl.testbed.experiments.experiment import Experiment
+from mlrl.testbed.experiments.input.sources import CsvFileSource
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink
@@ -74,7 +75,8 @@ class PredictionCharacteristicsExtension(Extension):
             args, default=print_all)
 
         if print_prediction_characteristics:
-            experiment_builder.prediction_characteristics_writer.add_sinks(LogSink(options))
+            experiment_builder.prediction_characteristics_writer.add_sinks(
+                LogSink(options=options, source_factory=CsvFileSource))
 
     def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         save_all = OutputArguments.SAVE_ALL.get_value(args)
