@@ -6,8 +6,9 @@ Provides classes for representing meta-data that is part of output data.
 from typing import Any, Dict, Optional, override
 
 from mlrl.testbed.experiments.context import Context
+from mlrl.testbed.experiments.data import Properties
 from mlrl.testbed.experiments.meta_data import MetaData
-from mlrl.testbed.experiments.output.data import OutputData, StructuralOutputData
+from mlrl.testbed.experiments.output.data import StructuralOutputData
 
 from mlrl.util.options import Options
 
@@ -31,7 +32,7 @@ class OutputMetaData(StructuralOutputData):
         """
         :param meta_data: The meta-data
         """
-        super().__init__(OutputData.Properties(name='Meta-data of the experiment', file_name=self.FILENAME),
+        super().__init__(Properties(name='Meta-data of the experiment', file_name=self.FILENAME),
                          Context(include_dataset_type=False, include_prediction_scope=False))
         self.meta_data = meta_data
 
