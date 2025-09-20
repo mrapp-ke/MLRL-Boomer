@@ -184,21 +184,24 @@ class SkLearnRunnable(Runnable, ABC):
         return SkLearnRunnable.ProblemDomainExtension.get_problem_domain(args, runnable=self)
 
     @override
-    def create_dataset_splitter(self, args: Namespace) -> DatasetSplitter:
+    def create_dataset_splitter(self, args: Namespace, load_dataset: bool = True) -> DatasetSplitter:
         """
         See :func:`mlrl.testbed.experiments.recipe.Recipe.create_dataset_splitter`
         """
-        return DatasetSplitterExtension.get_dataset_splitter(args)
+        return DatasetSplitterExtension.get_dataset_splitter(args, load_dataset)
 
     @override
-    def create_experiment_builder(self, args: Namespace, command: Command) -> Experiment.Builder:
+    def create_experiment_builder(self,
+                                  args: Namespace,
+                                  command: Command,
+                                  load_dataset: bool = True) -> Experiment.Builder:
         """
         See :func:`mlrl.testbed.experiments.recipe.Recipe.create_experiment_builder`
         """
         meta_data = MetaData(command=command)
         initial_state = ExperimentState(meta_data=meta_data, problem_domain=self.create_problem_domain(args))
         return SkLearnExperiment.Builder(initial_state=initial_state,
-                                         dataset_splitter=self.create_dataset_splitter(args))
+                                         dataset_splitter=self.create_dataset_splitter(args, load_dataset))
 
     @override
     def create_batch_config_file_factory(self) -> BatchMode.ConfigFile.Factory:
