@@ -25,6 +25,67 @@ from mlrl.testbed.experiments.state import ExperimentState, ParameterDict, Predi
 from mlrl.testbed.experiments.timer import Timer
 
 
+class ExperimentListener(ABC):
+    """
+    An abstract base class for all listeners that may be informed about certain event during an experiment.
+    """
+
+    # pylint: disable=unused-argument
+    def before_start(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
+        """
+        May be overridden by subclasses in order to be notified just before the experiment starts.
+
+        :param experiment:  The experiment
+        :param state:       The current state of the experiment
+        :return:            An update of the given state
+        """
+        return state
+
+    # pylint: disable=unused-argument
+    def on_start(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
+        """
+        May be overridden by subclasses in order to be notified when an experiment has been started on a specific
+        dataset. May be called multiple times if several datasets are used.
+
+        :param experiment:  The experiment
+        :param state:       The current state of the experiment
+        :return:            An update of the given state
+        """
+        return state
+
+    # pylint: disable=unused-argument
+    def before_training(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
+        """
+        May be overridden by subclasses in order to be notified before a machine learning model is trained.
+
+        :param experiment:  The experiment
+        :param state:       The current state of the experiment
+        :return:            An update of the given state
+        """
+        return state
+
+    # pylint: disable=unused-argument
+    def after_training(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
+        """
+        May be overridden by subclasses in order to be notified after a machine learning model has been trained.
+
+        :param experiment:  The experiment
+        :param state:       The current state of the experiment
+        :return:            An update of the given state
+        """
+        return state
+
+    def after_prediction(self, experiment: 'Experiment', state: ExperimentState):
+        """
+        May be overridden by subclasses in order to be notified after predictions for a dataset have been obtained
+        from a machine learning model. May be called multiple times if predictions are obtained for several
+        datasets.
+
+        :param experiment:  The experiment
+        :param state:       The current state of the experiment
+        """
+
+
 class Experiment(ABC):
     """
     An abstract base class for all experiments that train and evaluate a machine learning model.
@@ -45,7 +106,7 @@ class Experiment(ABC):
             super().__init__()
             self.initial_state = initial_state
             self.dataset_splitter = dataset_splitter
-            self.listeners: List[Experiment.Listener] = []
+            self.listeners: List[ExperimentListener] = []
             self.input_readers: Set[InputReader] = set()
             self.before_start_output_writers: Set[OutputWriter] = set()
             self.pre_training_output_writers: Set[OutputWriter] = set()
@@ -77,7 +138,7 @@ class Experiment(ABC):
             """
             return any(any(isinstance(sink, FileSink) for sink in writer.sinks) for writer in self.output_writers)
 
-        def add_listeners(self, *listeners: 'Experiment.Listener') -> 'Experiment.Builder':
+        def add_listeners(self, *listeners: ExperimentListener) -> 'Experiment.Builder':
             """
             Adds one or several listeners that should be informed about certain events during the experiment.
 
@@ -229,67 +290,7 @@ class Experiment(ABC):
             :return:                    The experiment that has been created
             """
 
-    class Listener(ABC):
-        """
-        An abstract base class for all listeners that may be informed about certain event during an experiment.
-        """
-
-        # pylint: disable=unused-argument
-        def before_start(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
-            """
-            May be overridden by subclasses in order to be notified just before the experiment starts.
-
-            :param experiment:  The experiment
-            :param state:       The current state of the experiment
-            :return:            An update of the given state
-            """
-            return state
-
-        # pylint: disable=unused-argument
-        def on_start(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
-            """
-            May be overridden by subclasses in order to be notified when an experiment has been started on a specific
-            dataset. May be called multiple times if several datasets are used.
-
-            :param experiment:  The experiment
-            :param state:       The current state of the experiment
-            :return:            An update of the given state
-            """
-            return state
-
-        # pylint: disable=unused-argument
-        def before_training(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
-            """
-            May be overridden by subclasses in order to be notified before a machine learning model is trained.
-
-            :param experiment:  The experiment
-            :param state:       The current state of the experiment
-            :return:            An update of the given state
-            """
-            return state
-
-        # pylint: disable=unused-argument
-        def after_training(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
-            """
-            May be overridden by subclasses in order to be notified after a machine learning model has been trained.
-
-            :param experiment:  The experiment
-            :param state:       The current state of the experiment
-            :return:            An update of the given state
-            """
-            return state
-
-        def after_prediction(self, experiment: 'Experiment', state: ExperimentState):
-            """
-            May be overridden by subclasses in order to be notified after predictions for a dataset have been obtained
-            from a machine learning model. May be called multiple times if predictions are obtained for several
-            datasets.
-
-            :param experiment:  The experiment
-            :param state:       The current state of the experiment
-            """
-
-    class InputReaderListener(Listener):
+    class InputReaderListener(ExperimentListener):
         """
         Updates the state of an experiment by invoking the input readers that have been added to an experiment.
         """
@@ -299,7 +300,7 @@ class Experiment(ABC):
             return reduce(lambda current_state, input_reader: input_reader.read(current_state),
                           experiment.input_readers, state)
 
-    class OutputWriterListener(Listener):
+    class OutputWriterListener(ExperimentListener):
         """
         Passes the state of an experiment to output writers that have been added to an experiment.
         """
