@@ -338,8 +338,38 @@ class Experiment(ABC):
 
             return state
 
+    class TrainingProcedure(ABC):
+        """
+        An abstract base class for all classes that allow to fit a learner to a training dataset.
+        """
+
+        @abstractmethod
+        def train(self, learner: Optional[Any], parameters: ParameterDict, dataset: Dataset) -> TrainingState:
+            """
+            Fits a learner to a training dataset.
+
+            :param learner: An existing learner or None, if a new learner must be trained from scratch
+            :param dataset: The training dataset
+            :return:        A `TrainingState` that stores the result of the training process
+            """
+
+    class PredictionProcedure(ABC):
+        """
+        An abstract base class for all classes that allow to obtain predictions for given query examples from a
+        previously trained learner.
+        """
+
+        @abstractmethod
+        def predict(self, state: ExperimentState) -> Generator[PredictionState, None, None]:
+            """
+            Obtains predictions for given query examples from a previously trained learner.
+
+            :param state:   The current state of the experiment
+            :return:        The `PredictionState` that stores the result of the prediction process
+            """
+
     def __predict(self, state: ExperimentState):
-        prediction_results = self._predict(state)
+        prediction_results = self.prediction_procedure.predict(state)
 
         for prediction_result in prediction_results:
             new_state = replace(state, prediction_result=prediction_result)
@@ -347,13 +377,18 @@ class Experiment(ABC):
             for listener in self.listeners:
                 new_state = listener.after_prediction(new_state)
 
-    def __init__(self, initial_state: ExperimentState, dataset_splitter: DatasetSplitter):
+    def __init__(self, initial_state: ExperimentState, dataset_splitter: DatasetSplitter,
+                 training_procedure: TrainingProcedure, prediction_procedure: PredictionProcedure):
         """
-        :param initial_state:       The initial state of the experiment
-        :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
+        :param initial_state:           The initial state of the experiment
+        :param dataset_splitter:        The method to be used for splitting the dataset into training and test datasets
+        :param training_procedure:      The procedure that allows to fit a learner
+        :param prediction_procedure:    The procedure that allows to obtain predictions from a learner
         """
         self.initial_state = initial_state
         self.dataset_splitter = dataset_splitter
+        self.training_procedure = training_procedure
+        self.prediction_procedure = prediction_procedure
         self.input_readers: List[InputReader] = []
         self.before_start_output_writers: List[OutputWriter] = []
         self.pre_training_output_writers: List[OutputWriter] = []
@@ -394,7 +429,7 @@ class Experiment(ABC):
                     training_state = listener.before_training(training_state)
 
                 # Train model...
-                training_result = self._train(
+                training_result = self.training_procedure.train(
                     learner=training_state.training_result.learner if training_state.training_result else None,
                     parameters=training_state.parameters,
                     dataset=training_state.dataset)
@@ -414,23 +449,3 @@ class Experiment(ABC):
 
         run_time = Timer.stop(start_time)
         log.info('Successfully finished experiment after %s', run_time)
-
-    @abstractmethod
-    def _train(self, learner: Optional[Any], parameters: ParameterDict, dataset: Dataset) -> TrainingState:
-        """
-        Must be implemented by subclasses in order to fit a learner to a training dataset.
-
-        :param learner: An existing learner or None, if a new learner must be trained from scratch
-        :param dataset: The training dataset
-        :return:        A `TrainingState` that stores the result of the training process
-        """
-
-    @abstractmethod
-    def _predict(self, state: ExperimentState) -> Generator[PredictionState, None, None]:
-        """
-        Must be implemented by subclasses in order to obtain predictions for given query examples from a previously
-        trained learner.
-
-        :param state:   The current state of the experiment
-        :return:        The `PredictionState` that stores the result of the prediction process
-        """
