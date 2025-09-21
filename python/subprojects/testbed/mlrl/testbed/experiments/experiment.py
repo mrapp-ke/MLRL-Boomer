@@ -270,8 +270,11 @@ class Experiment(ABC):
             Creates and runs a new experiment according to the specified configuration.
             """
             should_predict = any(bool(output_writer.sinks) for output_writer in self.prediction_output_writers)
-            self.build().run(predict_for_training_dataset=should_predict and self.predict_for_training_dataset,
-                             predict_for_test_dataset=should_predict and self.predict_for_test_dataset)
+            procedure = DefaultProcedure(
+                predict_for_training_dataset=should_predict and self.predict_for_training_dataset,
+                predict_for_test_dataset=should_predict and self.predict_for_test_dataset,
+            )
+            procedure.conduct_experiment(self.build())
 
         @abstractmethod
         def _create_experiment(self, initial_state: ExperimentState, dataset_splitter: DatasetSplitter) -> 'Experiment':
@@ -368,15 +371,6 @@ class Experiment(ABC):
             :return:        The `PredictionState` that stores the result of the prediction process
             """
 
-    def __predict(self, state: ExperimentState):
-        prediction_results = self.prediction_procedure.predict(state)
-
-        for prediction_result in prediction_results:
-            new_state = replace(state, prediction_result=prediction_result)
-
-            for listener in self.listeners:
-                new_state = listener.after_prediction(new_state)
-
     def __init__(self, initial_state: ExperimentState, dataset_splitter: DatasetSplitter,
                  training_procedure: TrainingProcedure, prediction_procedure: PredictionProcedure):
         """
@@ -398,57 +392,6 @@ class Experiment(ABC):
             Experiment.InputReaderListener(self),
             Experiment.OutputWriterListener(self),
         ]
-
-    def run(self, predict_for_training_dataset: bool, predict_for_test_dataset: bool):
-        """
-        Runs the experiment.
-
-        :param predict_for_training_dataset:    True, if predictions should be obtained for the training dataset, False
-                                                otherwise
-        :param predict_for_test_dataset:        True, if predictions should be obtained for the test dataset, if
-                                                available, False otherwise
-        """
-        initial_state = self.initial_state
-        problem_domain = initial_state.problem_domain
-        log.info('Starting experiment using the %s algorithm "%s"...', problem_domain.problem_name,
-                 problem_domain.learner_name)
-
-        for listener in self.listeners:
-            initial_state = listener.before_start(initial_state)
-
-        start_time = Timer.start()
-
-        for split in self.dataset_splitter.split(initial_state):
-            training_state = split.get_state(DatasetType.TRAINING)
-
-            if training_state:
-                for listener in self.listeners:
-                    training_state = listener.on_start(training_state)
-
-                for listener in self.listeners:
-                    training_state = listener.before_training(training_state)
-
-                # Train model...
-                training_result = self.training_procedure.train(
-                    learner=training_state.training_result.learner if training_state.training_result else None,
-                    parameters=training_state.parameters,
-                    dataset=training_state.dataset)
-                training_state = replace(training_state, training_result=training_result)
-                test_state = split.get_state(DatasetType.TEST)
-
-                # Obtain and evaluate predictions for training data, if necessary...
-                if predict_for_training_dataset or (predict_for_test_dataset and not test_state):
-                    self.__predict(training_state)
-
-                # Obtain and evaluate predictions for test data, if necessary...
-                if test_state and predict_for_test_dataset:
-                    self.__predict(replace(test_state, training_result=training_result))
-
-                for listener in self.listeners:
-                    training_state = listener.after_training(training_state)
-
-        run_time = Timer.stop(start_time)
-        log.info('Successfully finished experiment after %s', run_time)
 
 
 class ExperimentalProcedure(ABC):
@@ -497,4 +440,89 @@ class ExperimentalProcedure(ABC):
         :param state:       The current state of the experiment
         :return:            An updated state
         """
+        return state
+
+
+class DefaultProcedure(ExperimentalProcedure):
+    """
+    Implements the default procedure for conducting experiments.
+    """
+
+    EXTRA_START_TIME = 'start_time'
+
+    @staticmethod
+    def __predict(experiment: Experiment, state: ExperimentState):
+        prediction_results = experiment.prediction_procedure.predict(state)
+
+        for prediction_result in prediction_results:
+            new_state = replace(state, prediction_result=prediction_result)
+
+            for listener in experiment.listeners:
+                new_state = listener.after_prediction(new_state)
+
+    def __init__(self, predict_for_training_dataset: bool, predict_for_test_dataset: bool):
+        """
+        :param predict_for_training_dataset:
+        :param predict_for_test_dataset:
+        """
+        self.predict_for_training_dataset = predict_for_training_dataset
+        self.predict_for_test_dataset = predict_for_test_dataset
+
+    @override
+    def _before_experiment(self, experiment: Experiment, state: ExperimentState) -> ExperimentState:
+        problem_domain = state.problem_domain
+        log.info('Starting experiment using the %s algorithm "%s"...', problem_domain.problem_name,
+                 problem_domain.learner_name)
+
+        for listener in experiment.listeners:
+            state = listener.before_start(state)
+
+        state.extras[self.EXTRA_START_TIME] = Timer.start()
+        return state
+
+    @override
+    def _conduct_experiment(self, experiment: Experiment, state: ExperimentState) -> ExperimentState:
+        listeners = experiment.listeners
+
+        for split in experiment.dataset_splitter.split(state):
+            training_state = split.get_state(DatasetType.TRAINING)
+
+            if training_state:
+                for listener in listeners:
+                    training_state = listener.on_start(training_state)
+
+                for listener in listeners:
+                    training_state = listener.before_training(training_state)
+
+                # Train model...
+                training_result = experiment.training_procedure.train(
+                    learner=training_state.training_result.learner if training_state.training_result else None,
+                    parameters=training_state.parameters,
+                    dataset=training_state.dataset)
+                training_state = replace(training_state, training_result=training_result)
+                test_state = split.get_state(DatasetType.TEST)
+
+                # Obtain and evaluate predictions for training data, if necessary...
+                if self.predict_for_training_dataset or (self.predict_for_test_dataset and not test_state):
+                    self.__predict(experiment, training_state)
+
+                # Obtain and evaluate predictions for test data, if necessary...
+                if test_state and self.predict_for_test_dataset:
+                    self.__predict(experiment, replace(test_state, training_result=training_result))
+
+                for listener in listeners:
+                    training_state = listener.after_training(training_state)
+
+        return state
+
+    @override
+    def _after_experiment(self, experiment: Experiment, state: ExperimentState) -> ExperimentState:
+        start_time = state.extras.get(self.EXTRA_START_TIME)
+
+        if start_time:
+            run_time = Timer.stop(start_time)
+            log.info('Successfully finished experiment after %s', run_time)
+        else:
+            log.info('Successfully finished experiment')
+
         return state
