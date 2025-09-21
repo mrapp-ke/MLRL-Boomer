@@ -7,7 +7,7 @@ from argparse import Namespace
 from pathlib import Path
 from typing import Set, Type, override
 
-from mlrl.testbed.experiments.experiment import Experiment
+from mlrl.testbed.experiments.experiment import Experiment, ExperimentListener
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.extensions.extension import Extension
@@ -51,7 +51,7 @@ class ResultDirectoryExtension(Extension):
     An extension that configures the directory to which experimental results should be written.
     """
 
-    class WipeDirectoryListener(Experiment.Listener):
+    class WipeDirectoryListener(ExperimentListener):
         """
         Deletes all files from a directory before an experiment starts.
         """
@@ -63,9 +63,9 @@ class ResultDirectoryExtension(Extension):
             self.directory = directory
 
         @override
-        def before_start(self, _: Experiment, state: ExperimentState):
+        def before_start(self, state: ExperimentState):
             """
-            See :func:`mlrl.testbed.experiments.Experiment.Listener.before_start`
+            See :func:`mlrl.testbed.experiments.ExperimentListener.before_start`
             """
             directory = self.directory
 

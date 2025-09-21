@@ -25,6 +25,60 @@ from mlrl.testbed.experiments.state import ExperimentState, ParameterDict, Predi
 from mlrl.testbed.experiments.timer import Timer
 
 
+class ExperimentListener(ABC):
+    """
+    An abstract base class for all listeners that may be informed about certain event during an experiment.
+    """
+
+    def before_start(self, state: ExperimentState) -> ExperimentState:
+        """
+        May be overridden by subclasses in order to be notified just before the experiment starts.
+
+        :param state:   The current state of the experiment
+        :return:        An update of the given state
+        """
+        return state
+
+    def on_start(self, state: ExperimentState) -> ExperimentState:
+        """
+        May be overridden by subclasses in order to be notified when an experiment has been started on a specific
+        dataset. May be called multiple times if several datasets are used.
+
+        :param state:   The current state of the experiment
+        :return:        An update of the given state
+        """
+        return state
+
+    def before_training(self, state: ExperimentState) -> ExperimentState:
+        """
+        May be overridden by subclasses in order to be notified before a machine learning model is trained.
+
+        :param state:   The current state of the experiment
+        :return:        An update of the given state
+        """
+        return state
+
+    def after_training(self, state: ExperimentState) -> ExperimentState:
+        """
+        May be overridden by subclasses in order to be notified after a machine learning model has been trained.
+
+        :param state:   The current state of the experiment
+        :return:        An update of the given state
+        """
+        return state
+
+    def after_prediction(self, state: ExperimentState) -> ExperimentState:
+        """
+        May be overridden by subclasses in order to be notified after predictions for a dataset have been obtained
+        from a machine learning model. May be called multiple times if predictions are obtained for several
+        datasets.
+
+        :param state:   The current state of the experiment
+        :return:        An update of the given state
+        """
+        return state
+
+
 class Experiment(ABC):
     """
     An abstract base class for all experiments that train and evaluate a machine learning model.
@@ -45,7 +99,7 @@ class Experiment(ABC):
             super().__init__()
             self.initial_state = initial_state
             self.dataset_splitter = dataset_splitter
-            self.listeners: List[Experiment.Listener] = []
+            self.listeners: List[ExperimentListener] = []
             self.input_readers: Set[InputReader] = set()
             self.before_start_output_writers: Set[OutputWriter] = set()
             self.pre_training_output_writers: Set[OutputWriter] = set()
@@ -77,7 +131,7 @@ class Experiment(ABC):
             """
             return any(any(isinstance(sink, FileSink) for sink in writer.sinks) for writer in self.output_writers)
 
-        def add_listeners(self, *listeners: 'Experiment.Listener') -> 'Experiment.Builder':
+        def add_listeners(self, *listeners: ExperimentListener) -> 'Experiment.Builder':
             """
             Adds one or several listeners that should be informed about certain events during the experiment.
 
@@ -216,8 +270,11 @@ class Experiment(ABC):
             Creates and runs a new experiment according to the specified configuration.
             """
             should_predict = any(bool(output_writer.sinks) for output_writer in self.prediction_output_writers)
-            self.build().run(predict_for_training_dataset=should_predict and self.predict_for_training_dataset,
-                             predict_for_test_dataset=should_predict and self.predict_for_test_dataset)
+            procedure = DefaultProcedure(
+                predict_for_training_dataset=should_predict and self.predict_for_training_dataset,
+                predict_for_test_dataset=should_predict and self.predict_for_test_dataset,
+            )
+            procedure.conduct_experiment(self.build())
 
         @abstractmethod
         def _create_experiment(self, initial_state: ExperimentState, dataset_splitter: DatasetSplitter) -> 'Experiment':
@@ -229,164 +286,216 @@ class Experiment(ABC):
             :return:                    The experiment that has been created
             """
 
-    class Listener(ABC):
-        """
-        An abstract base class for all listeners that may be informed about certain event during an experiment.
-        """
-
-        # pylint: disable=unused-argument
-        def before_start(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
-            """
-            May be overridden by subclasses in order to be notified just before the experiment starts.
-
-            :param experiment:  The experiment
-            :param state:       The current state of the experiment
-            :return:            An update of the given state
-            """
-            return state
-
-        # pylint: disable=unused-argument
-        def on_start(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
-            """
-            May be overridden by subclasses in order to be notified when an experiment has been started on a specific
-            dataset. May be called multiple times if several datasets are used.
-
-            :param experiment:  The experiment
-            :param state:       The current state of the experiment
-            :return:            An update of the given state
-            """
-            return state
-
-        # pylint: disable=unused-argument
-        def before_training(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
-            """
-            May be overridden by subclasses in order to be notified before a machine learning model is trained.
-
-            :param experiment:  The experiment
-            :param state:       The current state of the experiment
-            :return:            An update of the given state
-            """
-            return state
-
-        # pylint: disable=unused-argument
-        def after_training(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
-            """
-            May be overridden by subclasses in order to be notified after a machine learning model has been trained.
-
-            :param experiment:  The experiment
-            :param state:       The current state of the experiment
-            :return:            An update of the given state
-            """
-            return state
-
-        def after_prediction(self, experiment: 'Experiment', state: ExperimentState):
-            """
-            May be overridden by subclasses in order to be notified after predictions for a dataset have been obtained
-            from a machine learning model. May be called multiple times if predictions are obtained for several
-            datasets.
-
-            :param experiment:  The experiment
-            :param state:       The current state of the experiment
-            """
-
-    class InputReaderListener(Listener):
+    class InputReaderListener(ExperimentListener):
         """
         Updates the state of an experiment by invoking the input readers that have been added to an experiment.
         """
 
-        @override
-        def on_start(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
-            return reduce(lambda current_state, input_reader: input_reader.read(current_state),
-                          experiment.input_readers, state)
+        def __init__(self, experiment: 'Experiment'):
+            """
+            :param experiment The experiment
+            """
+            self.experiment = experiment
 
-    class OutputWriterListener(Listener):
+        @override
+        def on_start(self, state: ExperimentState) -> ExperimentState:
+            return reduce(lambda current_state, input_reader: input_reader.read(current_state),
+                          self.experiment.input_readers, state)
+
+    class OutputWriterListener(ExperimentListener):
         """
         Passes the state of an experiment to output writers that have been added to an experiment.
         """
 
+        def __init__(self, experiment: 'Experiment'):
+            """
+            :param experiment The experiment
+            """
+            self.experiment = experiment
+
         @override
-        def before_start(self, experiment: 'Experiment', state: ExperimentState):
-            for output_writer in experiment.before_start_output_writers:
+        def before_start(self, state: ExperimentState):
+            for output_writer in self.experiment.before_start_output_writers:
                 output_writer.write(state)
 
             return state
 
         @override
-        def before_training(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
-            for output_writer in experiment.pre_training_output_writers:
+        def before_training(self, state: ExperimentState) -> ExperimentState:
+            for output_writer in self.experiment.pre_training_output_writers:
                 output_writer.write(state)
 
             return state
 
         @override
-        def after_training(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
-            for output_writer in experiment.post_training_output_writers:
+        def after_training(self, state: ExperimentState) -> ExperimentState:
+            for output_writer in self.experiment.post_training_output_writers:
                 output_writer.write(state)
 
             return state
 
         @override
-        def after_prediction(self, experiment: 'Experiment', state: ExperimentState):
-            for output_writer in experiment.prediction_output_writers:
+        def after_prediction(self, state: ExperimentState):
+            for output_writer in self.experiment.prediction_output_writers:
                 output_writer.write(state)
 
-    def __predict(self, state: ExperimentState):
-        prediction_results = self._predict(state)
+            return state
 
-        for prediction_result in prediction_results:
-            new_state = replace(state, prediction_result=prediction_result)
-
-            for listener in self.listeners:
-                listener.after_prediction(self, new_state)
-
-    def __init__(self, initial_state: ExperimentState, dataset_splitter: DatasetSplitter):
+    class TrainingProcedure(ABC):
         """
-        :param initial_state:       The initial state of the experiment
-        :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
+        An abstract base class for all classes that allow to fit a learner to a training dataset.
+        """
+
+        @abstractmethod
+        def train(self, learner: Optional[Any], parameters: ParameterDict, dataset: Dataset) -> TrainingState:
+            """
+            Fits a learner to a training dataset.
+
+            :param learner: An existing learner or None, if a new learner must be trained from scratch
+            :param dataset: The training dataset
+            :return:        A `TrainingState` that stores the result of the training process
+            """
+
+    class PredictionProcedure(ABC):
+        """
+        An abstract base class for all classes that allow to obtain predictions for given query examples from a
+        previously trained learner.
+        """
+
+        @abstractmethod
+        def predict(self, state: ExperimentState) -> Generator[PredictionState, None, None]:
+            """
+            Obtains predictions for given query examples from a previously trained learner.
+
+            :param state:   The current state of the experiment
+            :return:        The `PredictionState` that stores the result of the prediction process
+            """
+
+    def __init__(self, initial_state: ExperimentState, dataset_splitter: DatasetSplitter,
+                 training_procedure: TrainingProcedure, prediction_procedure: PredictionProcedure):
+        """
+        :param initial_state:           The initial state of the experiment
+        :param dataset_splitter:        The method to be used for splitting the dataset into training and test datasets
+        :param training_procedure:      The procedure that allows to fit a learner
+        :param prediction_procedure:    The procedure that allows to obtain predictions from a learner
         """
         self.initial_state = initial_state
         self.dataset_splitter = dataset_splitter
+        self.training_procedure = training_procedure
+        self.prediction_procedure = prediction_procedure
         self.input_readers: List[InputReader] = []
         self.before_start_output_writers: List[OutputWriter] = []
         self.pre_training_output_writers: List[OutputWriter] = []
         self.post_training_output_writers: List[OutputWriter] = []
         self.prediction_output_writers: List[OutputWriter] = []
         self.listeners = [
-            Experiment.InputReaderListener(),
-            Experiment.OutputWriterListener(),
+            Experiment.InputReaderListener(self),
+            Experiment.OutputWriterListener(self),
         ]
 
-    def run(self, predict_for_training_dataset: bool, predict_for_test_dataset: bool):
-        """
-        Runs the experiment.
 
-        :param predict_for_training_dataset:    True, if predictions should be obtained for the training dataset, False
-                                                otherwise
-        :param predict_for_test_dataset:        True, if predictions should be obtained for the test dataset, if
-                                                available, False otherwise
+class ExperimentalProcedure(ABC):
+    """
+    An abstract base class for all classes that implement procedures for conducting experiments.
+    """
+
+    def conduct_experiment(self, experiment: Experiment) -> ExperimentState:
         """
-        initial_state = self.initial_state
-        problem_domain = initial_state.problem_domain
+        Conducts a given experiment.
+
+        :param experiment:  The experiment to be conducted
+        :return:            The final state of the experiment
+        """
+        state = self._before_experiment(experiment, experiment.initial_state)
+        state = self._conduct_experiment(experiment, state)
+        return self._after_experiment(experiment, state)
+
+    # pylint: disable=unused-argument
+    def _before_experiment(self, experiment: Experiment, state: ExperimentState) -> ExperimentState:
+        """
+        May be overridden by subclasses in order to perform an operation before an experiment starts.
+
+        :param experiment:  The experiment
+        :param state:       The current state of the experiment
+        :return:            An updated state
+        """
+        return state
+
+    @abstractmethod
+    def _conduct_experiment(self, experiment: Experiment, state: ExperimentState) -> ExperimentState:
+        """
+        Must be implemented by subclasses in order to conduct an experiment.
+
+        :param experiment:  The experiment
+        :param state:       The current state of the experiment
+        :return:            An updated state
+        """
+
+    # pylint: disable=unused-argument
+    def _after_experiment(self, experiment: Experiment, state: ExperimentState) -> ExperimentState:
+        """
+        May be overridden by subclasses in order to perform an operation after an experiment has been completed.
+
+        :param experiment:  The experiment
+        :param state:       The current state of the experiment
+        :return:            An updated state
+        """
+        return state
+
+
+class DefaultProcedure(ExperimentalProcedure):
+    """
+    Implements the default procedure for conducting experiments.
+    """
+
+    EXTRA_START_TIME = 'start_time'
+
+    @staticmethod
+    def __predict(experiment: Experiment, state: ExperimentState):
+        prediction_results = experiment.prediction_procedure.predict(state)
+
+        for prediction_result in prediction_results:
+            new_state = replace(state, prediction_result=prediction_result)
+
+            for listener in experiment.listeners:
+                new_state = listener.after_prediction(new_state)
+
+    def __init__(self, predict_for_training_dataset: bool, predict_for_test_dataset: bool):
+        """
+        :param predict_for_training_dataset:
+        :param predict_for_test_dataset:
+        """
+        self.predict_for_training_dataset = predict_for_training_dataset
+        self.predict_for_test_dataset = predict_for_test_dataset
+
+    @override
+    def _before_experiment(self, experiment: Experiment, state: ExperimentState) -> ExperimentState:
+        problem_domain = state.problem_domain
         log.info('Starting experiment using the %s algorithm "%s"...', problem_domain.problem_name,
                  problem_domain.learner_name)
 
-        for listener in self.listeners:
-            listener.before_start(self, initial_state)
+        for listener in experiment.listeners:
+            state = listener.before_start(state)
 
-        start_time = Timer.start()
+        state.extras[self.EXTRA_START_TIME] = Timer.start()
+        return state
 
-        for split in self.dataset_splitter.split(initial_state):
+    @override
+    def _conduct_experiment(self, experiment: Experiment, state: ExperimentState) -> ExperimentState:
+        listeners = experiment.listeners
+
+        for split in experiment.dataset_splitter.split(state):
             training_state = split.get_state(DatasetType.TRAINING)
 
             if training_state:
-                for listener in self.listeners:
-                    training_state = listener.on_start(self, training_state)
+                for listener in listeners:
+                    training_state = listener.on_start(training_state)
 
-                for listener in self.listeners:
-                    training_state = listener.before_training(self, training_state)
+                for listener in listeners:
+                    training_state = listener.before_training(training_state)
 
                 # Train model...
-                training_result = self._train(
+                training_result = experiment.training_procedure.train(
                     learner=training_state.training_result.learner if training_state.training_result else None,
                     parameters=training_state.parameters,
                     dataset=training_state.dataset)
@@ -394,35 +503,26 @@ class Experiment(ABC):
                 test_state = split.get_state(DatasetType.TEST)
 
                 # Obtain and evaluate predictions for training data, if necessary...
-                if predict_for_training_dataset or (predict_for_test_dataset and not test_state):
-                    self.__predict(training_state)
+                if self.predict_for_training_dataset or (self.predict_for_test_dataset and not test_state):
+                    self.__predict(experiment, training_state)
 
                 # Obtain and evaluate predictions for test data, if necessary...
-                if test_state and predict_for_test_dataset:
-                    self.__predict(replace(test_state, training_result=training_result))
+                if test_state and self.predict_for_test_dataset:
+                    self.__predict(experiment, replace(test_state, training_result=training_result))
 
-                for listener in self.listeners:
-                    listener.after_training(self, training_state)
+                for listener in listeners:
+                    training_state = listener.after_training(training_state)
 
-        run_time = Timer.stop(start_time)
-        log.info('Successfully finished experiment after %s', run_time)
+        return state
 
-    @abstractmethod
-    def _train(self, learner: Optional[Any], parameters: ParameterDict, dataset: Dataset) -> TrainingState:
-        """
-        Must be implemented by subclasses in order to fit a learner to a training dataset.
+    @override
+    def _after_experiment(self, experiment: Experiment, state: ExperimentState) -> ExperimentState:
+        start_time = state.extras.get(self.EXTRA_START_TIME)
 
-        :param learner: An existing learner or None, if a new learner must be trained from scratch
-        :param dataset: The training dataset
-        :return:        A `TrainingState` that stores the result of the training process
-        """
+        if start_time:
+            run_time = Timer.stop(start_time)
+            log.info('Successfully finished experiment after %s', run_time)
+        else:
+            log.info('Successfully finished experiment')
 
-    @abstractmethod
-    def _predict(self, state: ExperimentState) -> Generator[PredictionState, None, None]:
-        """
-        Must be implemented by subclasses in order to obtain predictions for given query examples from a previously
-        trained learner.
-
-        :param state:   The current state of the experiment
-        :return:        The `PredictionState` that stores the result of the prediction process
-        """
+        return state

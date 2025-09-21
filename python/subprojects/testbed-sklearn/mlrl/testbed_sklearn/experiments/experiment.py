@@ -19,6 +19,7 @@ from mlrl.testbed_sklearn.experiments.output.dataset.writer_ground_truth import 
 from mlrl.testbed_sklearn.experiments.output.dataset.writer_prediction import PredictionWriter
 from mlrl.testbed_sklearn.experiments.output.evaluation.writer import EvaluationWriter
 from mlrl.testbed_sklearn.experiments.output.label_vectors import LabelVectorWriter
+from mlrl.testbed_sklearn.experiments.problem_domain import SkLearnProblem
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.experiment import Experiment
@@ -62,86 +63,142 @@ class SkLearnExperiment(Experiment):
         def _create_experiment(self, initial_state: ExperimentState, dataset_splitter: DatasetSplitter) -> Experiment:
             return SkLearnExperiment(initial_state=initial_state, dataset_splitter=dataset_splitter)
 
-    def __create_learner(self, parameters: ParameterDict) -> BaseEstimator:
-        learner = clone(self.initial_state.problem_domain.base_learner)
+    class TrainingProcedure(Experiment.TrainingProcedure):
+        """
+        Allows to fit a scikit-learn estimator to a training dataset.
+        """
 
-        if parameters:
-            learner.set_params(**parameters)
-            log.info('Successfully applied parameter setting: %s', parameters)
+        def __create_learner(self, parameters: ParameterDict) -> BaseEstimator:
+            learner = clone(self.base_learner)
 
-        return learner
+            if parameters:
+                learner.set_params(**parameters)
+                log.info('Successfully applied parameter setting: %s', parameters)
 
-    @staticmethod
-    def __check_for_parameter_changes(expected_parameters: Dict[str, Any], actual_parameters: Dict[str, Any]):
-        changes = []
+            return learner
 
-        for key, expected_value in expected_parameters.items():
-            expected_value = str(expected_value)
-            actual_value = str(actual_parameters[key])
+        @staticmethod
+        def __check_for_parameter_changes(expected_parameters: Dict[str, Any], actual_parameters: Dict[str, Any]):
+            changes = []
 
-            if actual_value != expected_value:
-                changes.append((key, expected_value, actual_value))
+            for key, expected_value in expected_parameters.items():
+                expected_value = str(expected_value)
+                actual_value = str(actual_parameters[key])
 
-        if changes:
-            log.warning(
-                'The loaded model\'s values for the following parameters differ from the expected configuration: %s',
-                reduce(
+                if actual_value != expected_value:
+                    changes.append((key, expected_value, actual_value))
+
+            if changes:
+                formatted_changes = reduce(
                     lambda aggr, change: aggr +
                     (', '
                      if aggr else '') + '"' + change[0] + '" is "' + change[2] + '" instead of "' + change[1] + '"',
-                    changes, ''))
+                    changes, '')
+                log.warning(
+                    'The loaded model\'s values for the following parameters differ from the expected configuration: '
+                    + '%s', formatted_changes)
 
-    def _fit(self, estimator: BaseEstimator, dataset: TabularDataset,
-             fit_kwargs: Optional[Dict[str, Any]]) -> Timer.Duration:
-        """
-        May be overridden by subclasses in order to fit a scikit-learn estimator to a dataset.
+        def __init__(self, base_learner: BaseEstimator, fit_kwargs: Optional[Dict[str, Any]] = None):
+            """
+            :param base_learner:    A sklearn estimator to be used in the experiment
+            :param fit_kwargs:      Optional keyword arguments to be passed to the learner when fitting a model
+            """
+            self.base_learner = base_learner
+            self.fit_kwargs = fit_kwargs
 
-        :param estimator:   A scikit-learn estimator
-        :param fit_kwargs:  Optional keyword arguments to be passed to the estimator
+        @override
+        def train(self, learner: Optional[Any], parameters: ParameterDict, dataset: Dataset) -> TrainingState:
+            """
+            See :func:`mlrl.testbed.experiments.experiment.Experiment.TrainingProcedure.train`
+            """
+            new_learner = self.__create_learner(parameters=parameters)
 
-        """
-        fit_kwargs = fit_kwargs if fit_kwargs else {}
+            # Use existing model, if possible, otherwise train a new model...
+            if isinstance(learner, type(new_learner)):
+                self.__check_for_parameter_changes(expected_parameters=parameters,
+                                                   actual_parameters=learner.get_params())
+                return TrainingState(learner=learner)
 
-        try:
-            start_time = Timer.start()
-            estimator.fit(dataset.x, dataset.y, **fit_kwargs)
-            return Timer.stop(start_time)
-        except ValueError as error:
-            if dataset.has_sparse_features:
-                return self._fit(estimator, dataset.enforce_dense_features(), fit_kwargs)
-            if dataset.has_sparse_outputs:
-                return self._fit(estimator, dataset.enforce_dense_outputs(), fit_kwargs)
-            raise error
+            log.info('Fitting model to %s training examples...', dataset.num_examples)
+            training_duration = self._fit(new_learner, dataset, fit_kwargs=self.fit_kwargs)
+            log.info('Successfully fit model in %s', training_duration)
+            return TrainingState(learner=new_learner, training_duration=training_duration)
 
-    @override
-    def _train(self, learner: Optional[Any], parameters: ParameterDict, dataset: Dataset) -> TrainingState:
-        new_learner = self.__create_learner(parameters=parameters)
+        def _fit(self, estimator: BaseEstimator, dataset: TabularDataset,
+                 fit_kwargs: Optional[Dict[str, Any]]) -> Timer.Duration:
+            """
+            May be overridden by subclasses in order to fit a scikit-learn estimator to a dataset.
 
-        # Use existing model, if possible, otherwise train a new model...
-        if isinstance(learner, type(new_learner)):
-            self.__check_for_parameter_changes(expected_parameters=parameters, actual_parameters=learner.get_params())
-            return TrainingState(learner=learner)
+            :param estimator:   A scikit-learn estimator
+            :param fit_kwargs:  Optional keyword arguments to be passed to the estimator
 
-        log.info('Fitting model to %s training examples...', dataset.num_examples)
-        training_duration = self._fit(new_learner, dataset, fit_kwargs=self.initial_state.problem_domain.fit_kwargs)
-        log.info('Successfully fit model in %s', training_duration)
-        return TrainingState(learner=new_learner, training_duration=training_duration)
+            """
+            fit_kwargs = fit_kwargs if fit_kwargs else {}
 
-    @override
-    def _predict(self, state: ExperimentState) -> Generator[PredictionState, None, None]:
-        dataset = state.dataset_as(self, TabularDataset)
-        learner = state.learner_as(self, BaseEstimator)
-
-        if dataset and learner:
             try:
-                problem_domain = self.initial_state.problem_domain
-                predict_kwargs = problem_domain.predict_kwargs
-                predict_kwargs = predict_kwargs if predict_kwargs else {}
-                predictor = problem_domain.predictor_factory.create()
-                dataset_type = state.dataset_type
-                yield from predictor.obtain_predictions(learner, dataset, dataset_type, **predict_kwargs)
+                start_time = Timer.start()
+                estimator.fit(dataset.x, dataset.y, **fit_kwargs)
+                return Timer.stop(start_time)
             except ValueError as error:
                 if dataset.has_sparse_features:
-                    yield self._predict(replace(state, dataset=dataset.enforce_dense_features()))
-
+                    return self._fit(estimator, dataset.enforce_dense_features(), fit_kwargs)
+                if dataset.has_sparse_outputs:
+                    return self._fit(estimator, dataset.enforce_dense_outputs(), fit_kwargs)
                 raise error
+
+    class PredictionProcedure(Experiment.PredictionProcedure):
+        """
+        Allows to obtain predictions from a scikit-learn estimator.
+        """
+
+        def __init__(self, problem_domain: SkLearnProblem):
+            """
+            :param problem_domain: The problem domain
+            """
+            self.problem_domain = problem_domain
+
+        @override
+        def predict(self, state: ExperimentState) -> Generator[PredictionState, None, None]:
+            """
+            See :func:`mlrl.testbed.experiments.experiment.Experiment.PredictionProcedure.predict`
+            """
+            dataset = state.dataset_as(self, TabularDataset)
+            learner = state.learner_as(self, BaseEstimator)
+
+            if dataset and learner:
+                try:
+                    problem_domain = self.problem_domain
+                    predict_kwargs = problem_domain.predict_kwargs
+                    predict_kwargs = predict_kwargs if predict_kwargs else {}
+                    predictor = problem_domain.predictor_factory.create()
+                    dataset_type = state.dataset_type
+                    yield from predictor.obtain_predictions(learner, dataset, dataset_type, **predict_kwargs)
+                except ValueError as error:
+                    if dataset.has_sparse_features:
+                        yield self.predict(replace(state, dataset=dataset.enforce_dense_features()))
+
+                    raise error
+
+    def __init__(self,
+                 initial_state: ExperimentState,
+                 dataset_splitter: DatasetSplitter,
+                 training_procedure: Optional[TrainingProcedure] = None,
+                 prediction_procedure: Optional[PredictionProcedure] = None):
+        """
+        :param initial_state:           The initial state of the experiment
+        :param dataset_splitter:        The method to be used for splitting the dataset into training and test datasets
+        :param training_procedure:      The procedure that allows to fit a learner or None, if the default procedure
+                                        should be used
+        :param prediction_procedure:    The procedure that allows to obtain predictions from a learner or None, if the
+                                        default procedure should be used
+        """
+        super().__init__(
+            initial_state=initial_state,
+            dataset_splitter=dataset_splitter,
+            training_procedure=training_procedure if training_procedure else SkLearnExperiment.TrainingProcedure(
+                base_learner=initial_state.problem_domain.base_learner,
+                fit_kwargs=initial_state.problem_domain.fit_kwargs,
+            ),
+            prediction_procedure=prediction_procedure if prediction_procedure else
+            SkLearnExperiment.PredictionProcedure(problem_domain=initial_state.problem_domain),
+        )
