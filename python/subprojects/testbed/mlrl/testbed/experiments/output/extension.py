@@ -63,7 +63,7 @@ class ResultDirectoryExtension(Extension):
             self.directory = directory
 
         @override
-        def before_start(self, _: Experiment, state: ExperimentState):
+        def before_start(self, state: ExperimentState):
             """
             See :func:`mlrl.testbed.experiments.ExperimentListener.before_start`
             """
