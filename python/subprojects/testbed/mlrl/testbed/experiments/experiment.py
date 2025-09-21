@@ -449,3 +449,52 @@ class Experiment(ABC):
 
         run_time = Timer.stop(start_time)
         log.info('Successfully finished experiment after %s', run_time)
+
+
+class ExperimentalProcedure(ABC):
+    """
+    An abstract base class for all classes that implement procedures for conducting experiments.
+    """
+
+    def conduct_experiment(self, experiment: Experiment) -> ExperimentState:
+        """
+        Conducts a given experiment.
+
+        :param experiment:  The experiment to be conducted
+        :return:            The final state of the experiment
+        """
+        state = self._before_experiment(experiment, experiment.initial_state)
+        state = self._conduct_experiment(experiment, state)
+        return self._after_experiment(experiment, state)
+
+    # pylint: disable=unused-argument
+    def _before_experiment(self, experiment: Experiment, state: ExperimentState) -> ExperimentState:
+        """
+        May be overridden by subclasses in order to perform an operation before an experiment starts.
+
+        :param experiment:  The experiment
+        :param state:       The current state of the experiment
+        :return:            An updated state
+        """
+        return state
+
+    @abstractmethod
+    def _conduct_experiment(self, experiment: Experiment, state: ExperimentState) -> ExperimentState:
+        """
+        Must be implemented by subclasses in order to conduct an experiment.
+
+        :param experiment:  The experiment
+        :param state:       The current state of the experiment
+        :return:            An updated state
+        """
+
+    # pylint: disable=unused-argument
+    def _after_experiment(self, experiment: Experiment, state: ExperimentState) -> ExperimentState:
+        """
+        May be overridden by subclasses in order to perform an operation after an experiment has been completed.
+
+        :param experiment:  The experiment
+        :param state:       The current state of the experiment
+        :return:            An updated state
+        """
+        return state
