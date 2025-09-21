@@ -12,9 +12,7 @@ from mlrl.common.testbed.experiments.output.model_text.writer import RuleModelAs
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
-from mlrl.testbed.experiments.output.sinks.sink import Sink
-from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
-from mlrl.testbed.experiments.output.sinks.sink_text import TextFileSink
+from mlrl.testbed.experiments.output.sinks import LogSink, Sink, TextFileSink
 from mlrl.testbed.extensions import Extension
 from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
 

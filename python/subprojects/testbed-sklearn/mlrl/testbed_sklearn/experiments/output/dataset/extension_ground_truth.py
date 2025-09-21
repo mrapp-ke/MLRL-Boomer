@@ -6,12 +6,12 @@ Provides classes that allow configuring the functionality to write ground truth 
 from argparse import Namespace
 from typing import Set, Type, override
 
-from mlrl.testbed_arff.experiments.output.sinks.sink_arff import ArffFileSink
+from mlrl.testbed_arff.experiments.output.sinks import ArffFileSink
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
-from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
+from mlrl.testbed.experiments.output.sinks import LogSink
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
 from mlrl.testbed.util.format import OPTION_DECIMALS

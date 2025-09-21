@@ -10,8 +10,7 @@ from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.arguments import OutputArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension
 from mlrl.testbed.experiments.output.parameters.arguments import ParameterOutputDirectoryArguments
-from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
-from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
+from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
 
