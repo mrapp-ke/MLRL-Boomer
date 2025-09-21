@@ -10,7 +10,7 @@ from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.arguments import OutputArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension
 from mlrl.testbed.experiments.output.model.arguments import ModelOutputDirectoryArguments
-from mlrl.testbed.experiments.output.sinks.sink_pickle import PickleFileSink
+from mlrl.testbed.experiments.output.sinks import PickleFileSink
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
 
