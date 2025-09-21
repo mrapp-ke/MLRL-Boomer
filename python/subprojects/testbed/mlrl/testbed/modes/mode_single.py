@@ -27,4 +27,4 @@ class SingleMode(Mode):
     def run_experiment(self, args: Namespace, recipe: Recipe):
         command = Command.from_argv()
         experiment_builder = recipe.create_experiment_builder(args, command)
-        experiment_builder.run()
+        experiment_builder.run(args)

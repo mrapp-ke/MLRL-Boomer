@@ -118,7 +118,7 @@ class BatchMode(Mode):
                              'experiments' if num_experiments > 1 else 'experiment')
 
                 log.info('\nRunning experiment (%s / %s): "%s"', i + 1, num_experiments, str(command))
-                recipe.create_experiment_builder(command.apply_to_namespace(args), command).run()
+                recipe.create_experiment_builder(command.apply_to_namespace(args), command).run(args)
 
             run_time = Timer.stop(start_time)
             log.info('Successfully finished %s %s after %s', num_experiments,
