@@ -15,8 +15,7 @@ from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_regression imp
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
-from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
-from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
+from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, RegressionProblem
 from mlrl.testbed.extensions.extension import Extension
