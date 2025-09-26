@@ -43,7 +43,7 @@ class GroundTruthExtension(Extension):
         super().__init__(OutputExtension(), ResultDirectoryExtension(), *dependencies)
 
     @override
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, _: Mode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
@@ -51,14 +51,14 @@ class GroundTruthExtension(Extension):
 
     def __configure_log_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         print_all = OutputArguments.PRINT_ALL.get_value(args)
-        print_ground_truth, options = self.PRINT_GROUND_TRUTH.get_value(args, default=print_all)
+        print_ground_truth, options = self.PRINT_GROUND_TRUTH.get_value_and_options(args, default=print_all)
 
         if print_ground_truth:
             experiment_builder.ground_truth_writer.add_sinks(LogSink(options=options))
 
     def __configure_arff_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         save_all = OutputArguments.SAVE_ALL.get_value(args)
-        save_ground_truth, options = self.SAVE_GROUND_TRUTH.get_value(args, default=save_all)
+        save_ground_truth, options = self.SAVE_GROUND_TRUTH.get_value_and_options(args, default=save_all)
         base_dir = OutputArguments.BASE_DIR.get_value(args)
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
@@ -68,7 +68,7 @@ class GroundTruthExtension(Extension):
                 ArffFileSink(directory=base_dir / result_directory, create_directory=create_directory, options=options))
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: Mode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """

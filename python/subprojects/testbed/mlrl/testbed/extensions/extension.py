@@ -10,6 +10,7 @@ from typing import Any, Set, Type, override
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.modes import BatchMode, Mode, RunMode
+from mlrl.testbed.modes.mode_read import ReadMode
 
 from mlrl.util.cli import Argument
 
@@ -51,7 +52,7 @@ class Extension(ABC):
         :param mode:    The mode to be supported
         :return:        A set that contains the arguments
         """
-        arguments = self._get_arguments() if self.is_mode_supported(mode) else set()
+        arguments = self._get_arguments(mode) if self.is_mode_supported(mode) else set()
 
         for dependency in self._dependencies:
             for argument in dependency.get_arguments(mode):
@@ -77,13 +78,14 @@ class Extension(ABC):
         supported_modes = self.get_supported_modes()
         return type(mode) in supported_modes if supported_modes else True
 
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, mode: Mode):
         """
         May be overridden by subclasses in order to configure an experiment according to the command line arguments
         specified by the user.
 
         :param args:                The command line arguments specified by the user
         :param experiment_builder:  A builder that allows to configure the experiment
+        :param mode:                The mode of operation
         """
 
     def configure_batch_mode(self, args: Namespace, batch_mode: BatchMode):
@@ -93,6 +95,15 @@ class Extension(ABC):
 
         :param args:        The command line arguments specified by the user
         :param batch_mode:  The batch mode to be configured
+        """
+
+    def configure_read_mode(self, args: Namespace, read_mode: ReadMode):
+        """
+        May be overridden by subclasses in order to configure the read mode according to the command line arguments
+        specified by the user.
+
+        :param args:        The command line arguments specified by the user
+        :param read_mode:   The read mode to be configured
         """
 
     def configure_run_mode(self, args: Namespace, run_mode: RunMode):
@@ -105,12 +116,13 @@ class Extension(ABC):
         """
 
     @abstractmethod
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, mode: Mode) -> Set[Argument]:
         """
         Must be implemented by subclasses in order to return the arguments that should be added to the command line API
         according to this extension.
 
-        :return: A set that contains the arguments that should be added to the command line API
+        :mode:      The mode of operation
+        :return:    A set that contains the arguments that should be added to the command line API
         """
 
     @override
@@ -128,7 +140,7 @@ class NopExtension(Extension):
     """
 
     @override
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, _: Mode) -> Set[Argument]:
         return set()
 
     @override

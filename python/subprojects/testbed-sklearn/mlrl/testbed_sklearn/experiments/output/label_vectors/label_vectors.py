@@ -23,14 +23,17 @@ class LabelVectors(TabularOutputData):
     Represents unique label vectors contained in a dataset that are part of output data.
     """
 
+    PROPERTIES = TabularProperties(name='Label vectors', file_name='label_vectors')
+
+    CONTEXT = Context(include_dataset_type=False)
+
     OPTION_SPARSE = 'sparse'
 
     def __init__(self, label_vector_histogram: LabelVectorHistogram):
         """
         :param label_vector_histogram: The histogram that stores unique label vectors and their respective frequency
         """
-        super().__init__(properties=TabularProperties(name='Label vectors', file_name='label_vectors'),
-                         context=Context(include_dataset_type=False))
+        super().__init__(properties=self.PROPERTIES, context=self.CONTEXT)
         self.label_vector_histogram = label_vector_histogram
 
     def __format_label_vector(self, label_vector: LabelVector, sparse: bool) -> str:

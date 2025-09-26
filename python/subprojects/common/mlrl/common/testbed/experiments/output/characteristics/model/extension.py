@@ -10,11 +10,12 @@ from typing import List, Set, Type, override
 from mlrl.common.testbed.experiments.output.characteristics.model.writer import RuleModelCharacteristicsWriter
 
 from mlrl.testbed.experiments.experiment import Experiment
+from mlrl.testbed.experiments.input.sources.source_csv import CsvFileSource
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, Sink
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
+from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
 
 from mlrl.util.cli import Argument, BoolArgument
 
@@ -41,7 +42,7 @@ class RuleModelCharacteristicsExtension(Extension):
         super().__init__(OutputExtension(), ResultDirectoryExtension(), *dependencies)
 
     @override
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, _: Mode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
@@ -49,7 +50,7 @@ class RuleModelCharacteristicsExtension(Extension):
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
         if self.PRINT_MODEL_CHARACTERISTICS.get_value(args, default=OutputArguments.PRINT_ALL.get_value(args)):
-            return [LogSink()]
+            return [LogSink(source_factory=CsvFileSource)]
         return []
 
     def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
@@ -65,7 +66,7 @@ class RuleModelCharacteristicsExtension(Extension):
         return []
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: Mode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
@@ -80,4 +81,4 @@ class RuleModelCharacteristicsExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode, BatchMode, RunMode}
+        return {SingleMode, BatchMode, ReadMode, RunMode}

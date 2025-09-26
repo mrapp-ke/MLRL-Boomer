@@ -12,7 +12,7 @@ from mlrl.testbed.experiments.output.extension import OutputExtension
 from mlrl.testbed.experiments.output.model.arguments import ModelOutputDirectoryArguments
 from mlrl.testbed.experiments.output.sinks import PickleFileSink
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
+from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
 
 from mlrl.util.cli import Argument, BoolArgument
 
@@ -34,7 +34,7 @@ class ModelOutputExtension(Extension):
         super().__init__(OutputExtension(), *dependencies)
 
     @override
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, _: Mode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
@@ -45,7 +45,7 @@ class ModelOutputExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode, BatchMode, RunMode}
+        return {SingleMode, BatchMode, ReadMode, RunMode}
 
 
 class ModelOutputDirectoryExtension(Extension):
@@ -60,14 +60,14 @@ class ModelOutputDirectoryExtension(Extension):
         super().__init__(OutputExtension(), *dependencies)
 
     @override
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, _: Mode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
         return {ModelOutputDirectoryArguments.MODEL_SAVE_DIR}
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: Mode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
@@ -87,4 +87,4 @@ class ModelOutputDirectoryExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode, RunMode}
+        return {SingleMode, ReadMode, RunMode}

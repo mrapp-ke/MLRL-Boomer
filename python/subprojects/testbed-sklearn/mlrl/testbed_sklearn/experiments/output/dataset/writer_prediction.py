@@ -3,7 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing predictions to one or several sinks.
 """
-
 from dataclasses import replace
 from typing import List, Optional, override
 

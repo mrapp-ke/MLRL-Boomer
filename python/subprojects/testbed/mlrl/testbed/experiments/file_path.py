@@ -4,6 +4,7 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing paths to files.
 """
 from pathlib import Path
+from typing import Optional
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.state import ExperimentState
@@ -14,11 +15,11 @@ class FilePath:
     The path to a file, data can be written to or read from.
     """
 
-    def __init__(self, directory: Path, file_name: str, suffix: str, context: Context):
+    def __init__(self, directory: Path, file_name: str, suffix: Optional[str], context: Context):
         """
         :param directory:   The path to the directory, where the file is located
         :param file_name:   The name of the file
-        :param suffix:      The suffix of the file (with leading dot)
+        :param suffix:      The suffix of the file (without leading dot) or None, if the suffix is unspecified
         :param context:     A `Context` to be used to determine the path
         """
         self.directory = directory
@@ -59,4 +60,5 @@ class FilePath:
                 if fold:
                     file_name += '_fold-' + str(fold.index + 1)
 
-        return self.directory / (file_name + '.' + self.suffix)
+        path = self.directory / Path(file_name)
+        return path.with_suffix('.' + self.suffix) if self.suffix else path

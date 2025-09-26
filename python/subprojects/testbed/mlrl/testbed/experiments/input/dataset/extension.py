@@ -32,7 +32,7 @@ class DatasetExtension(Extension, ABC):
         super().__init__(InputExtension(), *dependencies)
 
     @override
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, _: Mode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
@@ -79,11 +79,11 @@ class DatasetFileExtension(DatasetExtension, ABC):
     )
 
     @override
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, mode: Mode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return super()._get_arguments() | {self.DATASET_DIRECTORY}
+        return super()._get_arguments(mode) | {self.DATASET_DIRECTORY}
 
     @override
     def _create_sources(self, dataset: InputDataset, args: Namespace) -> Sequence[Source]:
