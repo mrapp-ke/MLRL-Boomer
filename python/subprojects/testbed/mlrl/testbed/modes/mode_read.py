@@ -10,6 +10,8 @@ from dataclasses import replace
 from pathlib import Path
 from typing import override
 
+from mlrl.testbed_sklearn.experiments.output.dataset.arguments_ground_truth import GroundTruthArguments
+
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.experiment import Experiment, ExperimentalProcedure
 from mlrl.testbed.experiments.meta_data import MetaData
@@ -81,7 +83,10 @@ class ReadMode(InputMode):
         for i, command in enumerate(batch):
             log.info('\nReading experimental results of experiment (%s / %s)...', i + 1, num_experiments)
             log.info('The command "%s" has been used originally for running this experiment', str(command))
-            command_args = command.apply_to_namespace(args, ignore=self._read_mode_arguments)
+            command_args = command.apply_to_namespace(args,
+                                                      ignore=self._read_mode_arguments
+                                                      | GroundTruthArguments.PRINT_GROUND_TRUTH.names
+                                                      | GroundTruthArguments.SAVE_GROUND_TRUTH.names)
             experiment_builder = recipe.create_experiment_builder(command_args, command, load_dataset=False)
 
             for output_writer in experiment_builder.output_writers:
