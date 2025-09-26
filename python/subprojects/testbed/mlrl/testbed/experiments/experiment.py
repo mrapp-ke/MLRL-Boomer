@@ -388,7 +388,7 @@ class Experiment(ABC):
         self.pre_training_output_writers: List[OutputWriter] = []
         self.post_training_output_writers: List[OutputWriter] = []
         self.prediction_output_writers: List[OutputWriter] = []
-        self.listeners = [
+        self.listeners: List[ExperimentListener] = [
             Experiment.InputReaderListener(self),
             Experiment.OutputWriterListener(self),
         ]
