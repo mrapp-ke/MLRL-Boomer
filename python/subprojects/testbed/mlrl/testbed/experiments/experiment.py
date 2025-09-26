@@ -351,9 +351,10 @@ class Experiment(ABC):
             """
             Fits a learner to a training dataset.
 
-            :param learner: An existing learner or None, if a new learner must be trained from scratch
-            :param dataset: The training dataset
-            :return:        A `TrainingState` that stores the result of the training process
+            :param learner:     An existing learner or None, if a new learner must be trained from scratch
+            :param parameters:  The algorithmic parameters to be used
+            :param dataset:     The training dataset
+            :return:            A `TrainingState` that stores the result of the training process
             """
 
     class PredictionProcedure(ABC):
@@ -462,8 +463,10 @@ class DefaultProcedure(ExperimentalProcedure):
 
     def __init__(self, predict_for_training_dataset: bool, predict_for_test_dataset: bool):
         """
-        :param predict_for_training_dataset:
-        :param predict_for_test_dataset:
+        :param predict_for_training_dataset:    True, if predictions should be obtained for the training dataset, False
+                                                otherwise
+        :param predict_for_test_dataset:        True, if predictions should be obtained for the test dataset, False
+                                                otherwise
         """
         self.predict_for_training_dataset = predict_for_training_dataset
         self.predict_for_test_dataset = predict_for_test_dataset
