@@ -29,36 +29,32 @@ class PredictionCharacteristicsExtension(Extension):
     sinks.
     """
 
-    @staticmethod
-    def __create_argument_print_prediction_characteristics(mode: Mode) -> BoolArgument:
-        return BoolArgument(
-            '--print-prediction-characteristics',
-            description='Whether the characteristics of binary predictions should be printed on the console or not. '
-            + 'Does only have an effect if the argument ' + PredictionTypeExtension.PREDICTION_TYPE.name + ' is set to '
-            + PredictionType.BINARY.value + '.',
-            true_options=None if isinstance(mode, ReadMode) else {
-                OutputCharacteristics.OPTION_OUTPUTS, OutputCharacteristics.OPTION_OUTPUT_DENSITY,
-                OutputCharacteristics.OPTION_OUTPUT_SPARSITY, OutputCharacteristics.OPTION_LABEL_IMBALANCE_RATIO,
-                OutputCharacteristics.OPTION_LABEL_CARDINALITY, OutputCharacteristics.OPTION_DISTINCT_LABEL_VECTORS,
-                OPTION_DECIMALS, OPTION_PERCENTAGE
-            },
-        )
+    PRINT_PREDICTION_CHARACTERISTICS = BoolArgument(
+        '--print-prediction-characteristics',
+        description='Whether the characteristics of binary predictions should be printed on the console or not. Does '
+        + 'only have an effect if the argument ' + PredictionTypeExtension.PREDICTION_TYPE.name + ' is set to '
+        + PredictionType.BINARY.value + '.',
+        true_options={
+            OutputCharacteristics.OPTION_OUTPUTS, OutputCharacteristics.OPTION_OUTPUT_DENSITY,
+            OutputCharacteristics.OPTION_OUTPUT_SPARSITY, OutputCharacteristics.OPTION_LABEL_IMBALANCE_RATIO,
+            OutputCharacteristics.OPTION_LABEL_CARDINALITY, OutputCharacteristics.OPTION_DISTINCT_LABEL_VECTORS,
+            OPTION_DECIMALS, OPTION_PERCENTAGE
+        },
+    )
 
-    @staticmethod
-    def __create_argument_save_prediction_characteristics(mode: Mode) -> BoolArgument:
-        return BoolArgument(
-            '--save-prediction-characteristics',
-            description='Whether the characteristics of binary predictions should be written to output files or not. '
-            + 'Does only have an effect if the argument ' + PredictionTypeExtension.PREDICTION_TYPE.name + ' is set to '
-            + PredictionType.BINARY.value + ' and if the argument ' + ResultDirectoryArguments.RESULT_DIR.name + ' is '
-            + 'specified.',
-            true_options=None if isinstance(mode, ReadMode) else {
-                OutputCharacteristics.OPTION_OUTPUTS, OutputCharacteristics.OPTION_OUTPUT_DENSITY,
-                OutputCharacteristics.OPTION_OUTPUT_SPARSITY, OutputCharacteristics.OPTION_LABEL_IMBALANCE_RATIO,
-                OutputCharacteristics.OPTION_LABEL_CARDINALITY, OutputCharacteristics.OPTION_DISTINCT_LABEL_VECTORS,
-                OPTION_DECIMALS, OPTION_PERCENTAGE
-            },
-        )
+    SAVE_PREDICTION_CHARACTERISTICS = BoolArgument(
+        '--save-prediction-characteristics',
+        description='Whether the characteristics of binary predictions should be written to output files or not. Does '
+        + 'only have an effect if the argument ' + PredictionTypeExtension.PREDICTION_TYPE.name + ' is set to '
+        + PredictionType.BINARY.value + ' and if the argument ' + ResultDirectoryArguments.RESULT_DIR.name + ' is '
+        + 'specified.',
+        true_options={
+            OutputCharacteristics.OPTION_OUTPUTS, OutputCharacteristics.OPTION_OUTPUT_DENSITY,
+            OutputCharacteristics.OPTION_OUTPUT_SPARSITY, OutputCharacteristics.OPTION_LABEL_IMBALANCE_RATIO,
+            OutputCharacteristics.OPTION_LABEL_CARDINALITY, OutputCharacteristics.OPTION_DISTINCT_LABEL_VECTORS,
+            OPTION_DECIMALS, OPTION_PERCENTAGE
+        },
+    )
 
     def __init__(self, *dependencies: Extension):
         """
@@ -67,28 +63,25 @@ class PredictionCharacteristicsExtension(Extension):
         super().__init__(OutputExtension(), ResultDirectoryExtension(), *dependencies)
 
     @override
-    def _get_arguments(self, mode: Mode) -> Set[Argument]:
+    def _get_arguments(self, _: Mode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return {
-            self.__create_argument_print_prediction_characteristics(mode),
-            self.__create_argument_save_prediction_characteristics(mode),
-        }
+        return {self.PRINT_PREDICTION_CHARACTERISTICS, self.SAVE_PREDICTION_CHARACTERISTICS}
 
-    def __configure_log_sink(self, args: Namespace, experiment_builder: Experiment.Builder, mode: Mode):
+    def __configure_log_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         print_all = OutputArguments.PRINT_ALL.get_value(args)
-        print_prediction_characteristics, options = self.__create_argument_print_prediction_characteristics(
-            mode).get_value_and_options(args, default=print_all)
+        print_prediction_characteristics, options = self.PRINT_PREDICTION_CHARACTERISTICS.get_value_and_options(
+            args, default=print_all)
 
         if print_prediction_characteristics:
             experiment_builder.prediction_characteristics_writer.add_sinks(
                 LogSink(options=options, source_factory=CsvFileSource))
 
-    def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder, mode: Mode):
+    def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         save_all = OutputArguments.SAVE_ALL.get_value(args)
-        save_prediction_characteristics, options = self.__create_argument_save_prediction_characteristics(
-            mode).get_value_and_options(args, default=save_all)
+        save_prediction_characteristics, options = self.SAVE_PREDICTION_CHARACTERISTICS.get_value_and_options(
+            args, default=save_all)
         base_dir = OutputArguments.BASE_DIR.get_value(args)
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
@@ -98,12 +91,12 @@ class PredictionCharacteristicsExtension(Extension):
                 CsvFileSink(directory=base_dir / result_directory, create_directory=create_directory, options=options))
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, mode: Mode):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: Mode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
-        self.__configure_log_sink(args, experiment_builder, mode)
-        self.__configure_csv_file_sink(args, experiment_builder, mode)
+        self.__configure_log_sink(args, experiment_builder)
+        self.__configure_csv_file_sink(args, experiment_builder)
 
     @override
     def get_supported_modes(self) -> Set[Type[Mode]]:

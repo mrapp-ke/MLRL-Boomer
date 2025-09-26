@@ -24,21 +24,17 @@ class PredictionExtension(Extension):
     An extension that configures the functionality to write predictions to one or several sinks.
     """
 
-    @staticmethod
-    def __create_argument_print_predictions(mode: Mode) -> BoolArgument:
-        return BoolArgument(
-            '--print-predictions',
-            description='Whether predictions should be printed on the console or not.',
-            true_options=None if isinstance(mode, ReadMode) else {OPTION_DECIMALS},
-        )
+    PRINT_PREDICTIONS = BoolArgument(
+        '--print-predictions',
+        description='Whether predictions should be printed on the console or not.',
+        true_options={OPTION_DECIMALS},
+    )
 
-    @staticmethod
-    def __create_argument_save_predictions(mode: Mode) -> BoolArgument:
-        return BoolArgument(
-            '--save-predictions',
-            description='Whether predictions should be written to output files or not.',
-            true_options=None if isinstance(mode, ReadMode) else {OPTION_DECIMALS},
-        )
+    SAVE_PREDICTIONS = BoolArgument(
+        '--save-predictions',
+        description='Whether predictions should be written to output files or not.',
+        true_options={OPTION_DECIMALS},
+    )
 
     def __init__(self, *dependencies: Extension):
         """
@@ -47,24 +43,22 @@ class PredictionExtension(Extension):
         super().__init__(OutputExtension(), ResultDirectoryExtension(), *dependencies)
 
     @override
-    def _get_arguments(self, mode: Mode) -> Set[Argument]:
+    def _get_arguments(self, _: Mode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return {self.__create_argument_print_predictions(mode), self.__create_argument_save_predictions(mode)}
+        return {self.PRINT_PREDICTIONS, self.SAVE_PREDICTIONS}
 
-    def __configure_log_sink(self, args: Namespace, experiment_builder: Experiment.Builder, mode: Mode):
+    def __configure_log_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         print_all = OutputArguments.PRINT_ALL.get_value(args)
-        print_predictions, options = self.__create_argument_print_predictions(mode).get_value_and_options(
-            args, default=print_all)
+        print_predictions, options = self.PRINT_PREDICTIONS.get_value_and_options(args, default=print_all)
 
         if print_predictions:
             experiment_builder.prediction_writer.add_sinks(LogSink(options=options))
 
-    def __configure_arff_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder, mode: Mode):
+    def __configure_arff_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         save_all = OutputArguments.SAVE_ALL.get_value(args)
-        save_predictions, options = self.__create_argument_save_predictions(mode).get_value_and_options(
-            args, default=save_all)
+        save_predictions, options = self.SAVE_PREDICTIONS.get_value_and_options(args, default=save_all)
         base_dir = OutputArguments.BASE_DIR.get_value(args)
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
@@ -74,12 +68,12 @@ class PredictionExtension(Extension):
                 ArffFileSink(directory=base_dir / result_directory, create_directory=create_directory, options=options))
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, mode: Mode):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: Mode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
-        self.__configure_log_sink(args, experiment_builder, mode)
-        self.__configure_arff_file_sink(args, experiment_builder, mode)
+        self.__configure_log_sink(args, experiment_builder)
+        self.__configure_arff_file_sink(args, experiment_builder)
 
     @override
     def get_supported_modes(self) -> Set[Type[Mode]]:
