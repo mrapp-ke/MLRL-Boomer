@@ -91,12 +91,14 @@ class ExperimentState:
         """
         dataset = self.dataset
 
-        if any(isinstance(dataset, dataset_type) for dataset_type in types):
-            return dataset
+        if dataset:
+            if any(isinstance(dataset, dataset_type) for dataset_type in types):
+                return dataset
 
-        log.error('%s expected type of dataset to be one of %s, but dataset has type %s',
-                  type(caller).__qualname__, format_set(map(lambda dataset_type: dataset_type.__name__, types)),
-                  type(dataset).__name__)
+            log.error('%s expected type of dataset to be one of %s, but dataset has type %s',
+                      type(caller).__qualname__, format_set(map(lambda dataset_type: dataset_type.__name__, types)),
+                      type(dataset).__name__)
+
         return None
 
     def learner_as(self, caller: Any, *types: Type[Any]) -> Optional[Any]:
