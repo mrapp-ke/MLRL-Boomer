@@ -79,14 +79,6 @@ class DatasetInputData(InputData):
     Input data that can be converted into a dataset.
     """
 
-    @override
-    def update_state(self, state: ExperimentState, input_data: Any):
-        """
-        See :func:`mlrl.testbed.experiments.input.data.InputData.update_state`
-        """
-        super().update_state(state, input_data)
-        state.dataset = input_data
-
 
 class TabularInputData(InputData):
     """
