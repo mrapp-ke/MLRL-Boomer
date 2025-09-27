@@ -139,9 +139,16 @@ class ArffFileSource(DatasetFileSource):
             if index >= 0:
                 parameter_value = parameter_value[:index]
 
-            num_outputs = int(parameter_value)
+            integer_value = int(parameter_value)
+            num_outputs = abs(integer_value)
             attributes = arff_file.attributes
-            return {normalize_attribute_name(attributes[i].name) for i in range(num_outputs)}
+
+            if integer_value < 0:
+                outputs = attributes[(len(attributes) - num_outputs):]
+            else:
+                outputs = attributes[:num_outputs]
+
+            return {normalize_attribute_name(output.name) for output in outputs}
 
         def __init__(self, arff_file: 'ArffFileSource.ArffFile', output_names: Optional[Set[str]]):
             """
