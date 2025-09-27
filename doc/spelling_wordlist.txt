@@ -129,6 +129,7 @@ pRSL
 pseudocode
 Qinbin
 Qiwei
+quantizing
 Rapp
 refactorings
 Rijsbergen

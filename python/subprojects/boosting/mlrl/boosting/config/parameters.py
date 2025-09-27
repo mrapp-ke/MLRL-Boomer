@@ -16,7 +16,8 @@ from mlrl.boosting.cython.learner import AutomaticFeatureBinningMixin, Automatic
     AutomaticParallelRuleRefinementMixin, AutomaticParallelStatisticUpdateMixin, CompleteHeadMixin, \
     ConstantShrinkageMixin, DecomposableSquaredErrorLossMixin, DynamicPartialHeadMixin, FixedPartialHeadMixin, \
     Float32StatisticsMixin, Float64StatisticsMixin, L1RegularizationMixin, L2RegularizationMixin, \
-    NoL1RegularizationMixin, NoL2RegularizationMixin, NonDecomposableSquaredErrorLossMixin, SingleOutputHeadMixin
+    NoL1RegularizationMixin, NoL2RegularizationMixin, NonDecomposableSquaredErrorLossMixin, NoQuantizationMixin, \
+    SingleOutputHeadMixin, StochasticQuantizationMixin
 from mlrl.boosting.cython.learner_classification import AutomaticBinaryPredictorMixin, AutomaticDefaultRuleMixin, \
     AutomaticLabelBinningMixin, AutomaticPartitionSamplingMixin, AutomaticProbabilityPredictorMixin, \
     AutomaticStatisticsMixin, DecomposableLogisticLossMixin, DecomposableSquaredHingeLossMixin, DenseStatisticsMixin, \
@@ -243,6 +244,30 @@ class StatisticFormatParameter(NominalParameter):
             config.use_sparse_statistics()
         elif value == AUTO:
             config.use_automatic_statistics()
+
+
+class QuantizationParameter(NominalParameter):
+    """
+    A parameter that allows to configure the method to be used for quantizing gradients and Hessians.
+    """
+
+    QUANTIZATION_STOCHASTIC = 'stochastic'
+
+    OPTION_NUM_BITS = 'num_bits'
+
+    def __init__(self):
+        super().__init__(name='quantization', description='The method to be used for quantizing gradients and Hessians')
+        self.add_value(name=NONE, mixin=NoQuantizationMixin)
+        self.add_value(name=self.QUANTIZATION_STOCHASTIC,
+                       mixin=StochasticQuantizationMixin,
+                       options={self.OPTION_NUM_BITS})
+
+    def _configure(self, config, value: str, options: Options):
+        if value == NONE:
+            config.use_no_quantization()
+        elif value == self.QUANTIZATION_STOCHASTIC:
+            conf = config.use_stochastic_quantization()
+            conf.set_num_bits(options.get_int(self.OPTION_NUM_BITS, conf.get_num_bits()))
 
 
 class LabelBinningParameter(NominalParameter):
