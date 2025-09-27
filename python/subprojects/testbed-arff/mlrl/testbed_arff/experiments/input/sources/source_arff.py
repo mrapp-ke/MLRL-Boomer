@@ -136,23 +136,27 @@ class ArffFileSource(DatasetFileSource):
             parameter_name = '-C '
             arff_file = self.arff_file
             relation = arff_file.relation
-            index = relation.index(parameter_name)
-            parameter_value = relation[index + len(parameter_name):]
-            index = parameter_value.find(' ')
+            index = relation.find(parameter_name)
 
             if index >= 0:
-                parameter_value = parameter_value[:index]
+                parameter_value = relation[index + len(parameter_name):]
+                index = parameter_value.find(' ')
 
-            integer_value = int(parameter_value)
-            num_outputs = abs(integer_value)
-            attributes = arff_file.attributes
+                if index >= 0:
+                    parameter_value = parameter_value[:index]
 
-            if integer_value < 0:
-                outputs = attributes[(len(attributes) - num_outputs):]
-            else:
-                outputs = attributes[:num_outputs]
+                integer_value = int(parameter_value)
+                num_outputs = abs(integer_value)
+                attributes = arff_file.attributes
 
-            return {normalize_attribute_name(output.name) for output in outputs}
+                if integer_value < 0:
+                    outputs = attributes[(len(attributes) - num_outputs):]
+                else:
+                    outputs = attributes[:num_outputs]
+
+                return {normalize_attribute_name(output.name) for output in outputs}
+
+            return set()
 
         def __init__(self, arff_file: 'ArffFileSource.ArffFile', output_names: Optional[Set[str]]):
             """
