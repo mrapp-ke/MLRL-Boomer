@@ -635,7 +635,7 @@ class CmdBuilder:
         """
         Configures the post-optimization method to be used by the algorithm.
 
-        :param post_optimization:   The name of the method that should be used for post-optimzation
+        :param post_optimization:   The name of the method that should be used for post-optimization
         :return:                    The builder itself
         """
         if post_optimization:
