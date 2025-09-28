@@ -100,7 +100,7 @@ class Experiment(ABC):
             self.initial_state = initial_state
             self.dataset_splitter = dataset_splitter
             self.listeners: List[ExperimentListener] = []
-            self.input_readers: Set[InputReader] = set()
+            self.input_readers: List[InputReader] = []
             self.before_start_output_writers: Set[OutputWriter] = set()
             self.pre_training_output_writers: Set[OutputWriter] = set()
             self.post_training_output_writers: Set[OutputWriter] = set()
@@ -148,7 +148,7 @@ class Experiment(ABC):
             :param input_readers:   The input readers to be added
             :return:                The builder itself
             """
-            self.input_readers.update(input_readers)
+            self.input_readers.extend(input_readers)
             return self
 
         def add_before_start_output_writers(self, *output_writers: OutputWriter) -> 'Experiment.Builder':
