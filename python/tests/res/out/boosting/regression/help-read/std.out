@@ -82,14 +82,17 @@ options:
   --print-data-characteristics PRINT_DATA_CHARACTERISTICS
                         Whether the characteristics of the training data
                         should be printed on the console or not. Must be one
-                        of {"false", "true"}.
+                        of {"false", "true"}. For additional options refer to
+                        the documentation.
   --print-evaluation PRINT_EVALUATION
                         Whether the evaluation results should be printed on
                         the console or not. Must be one of {"false", "true"}.
+                        For additional options refer to the documentation.
   --print-joint-probability-calibration-model PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL
                         Whether the model for the calibration of joint
                         probabilities should be printed on the console or not.
-                        Must be one of {"false", "true"}.
+                        Must be one of {"false", "true"}. For additional
+                        options refer to the documentation.
   --print-label-vectors PRINT_LABEL_VECTORS
                         Whether the unique label vectors contained in the
                         training data should be printed on the console or not.
@@ -97,7 +100,8 @@ options:
   --print-marginal-probability-calibration-model PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL
                         Whether the model for the calibration of marginal
                         probabilities should be printed on the console or not.
-                        Must be one of {"false", "true"}.
+                        Must be one of {"false", "true"}. For additional
+                        options refer to the documentation.
   --print-meta-data PRINT_META_DATA
                         Whether meta-data should be printed on the console or
                         not. Must be one of {"false", "true"}.
@@ -112,10 +116,12 @@ options:
                         Whether the characteristics of binary predictions
                         should be printed on the console or not. Does only
                         have an effect if the argument --prediction-type is
-                        set to binary. Must be one of {"false", "true"}.
+                        set to binary. Must be one of {"false", "true"}. For
+                        additional options refer to the documentation.
   --print-predictions PRINT_PREDICTIONS
                         Whether predictions should be printed on the console
-                        or not. Must be one of {"false", "true"}.
+                        or not. Must be one of {"false", "true"}. For
+                        additional options refer to the documentation.
   --print-rules PRINT_RULES
                         Whether the induced rules should be printed on the
                         console or not. Must be one of {"false", "true"}.
@@ -127,14 +133,17 @@ options:
   --save-data-characteristics SAVE_DATA_CHARACTERISTICS
                         Whether the characteristics of the training data
                         should be written to output files or not. Must be one
-                        of {"false", "true"}.
+                        of {"false", "true"}. For additional options refer to
+                        the documentation.
   --save-evaluation SAVE_EVALUATION
                         Whether evaluation results should be written to output
-                        files or not. Must be one of {"false", "true"}.
+                        files or not. Must be one of {"false", "true"}. For
+                        additional options refer to the documentation.
   --save-joint-probability-calibration-model SAVE_JOINT_PROBABILITY_CALIBRATION_MODEL
                         Whether the model for the calibration of joint
                         probabilities should be written to an output file or
-                        not. Must be one of {"false", "true"}.
+                        not. Must be one of {"false", "true"}. For additional
+                        options refer to the documentation.
   --save-label-vectors SAVE_LABEL_VECTORS
                         Whether the unique label vectors contained in the
                         training data should be written to output files or
@@ -142,7 +151,8 @@ options:
   --save-marginal-probability-calibration-model SAVE_MARGINAL_PROBABILITY_CALIBRATION_MODEL
                         Whether the model for the calibration of marginal
                         probabilities should be written to an output file or
-                        not. Must be one of {"false", "true"}.
+                        not. Must be one of {"false", "true"}. For additional
+                        options refer to the documentation.
   --save-meta-data SAVE_META_DATA
                         Whether meta-data should be saved to output files or
                         not. If set to "auto", meta-data is saved whenever
@@ -163,10 +173,12 @@ options:
                         should be written to output files or not. Does only
                         have an effect if the argument --prediction-type is
                         set to binary and if the argument --result-dir is
-                        specified. Must be one of {"false", "true"}.
+                        specified. Must be one of {"false", "true"}. For
+                        additional options refer to the documentation.
   --save-predictions SAVE_PREDICTIONS
                         Whether predictions should be written to output files
-                        or not. Must be one of {"false", "true"}.
+                        or not. Must be one of {"false", "true"}. For
+                        additional options refer to the documentation.
   --save-rules SAVE_RULES
                         Whether the induced rules should be written to a text
                         file or not. Must be one of {"false", "true"}.
