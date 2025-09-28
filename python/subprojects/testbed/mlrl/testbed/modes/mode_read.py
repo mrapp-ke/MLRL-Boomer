@@ -91,4 +91,4 @@ class ReadMode(InputMode):
                 if input_reader and input_reader.sources:
                     experiment_builder.add_input_readers(input_reader)
 
-            ReadMode.Procedure().conduct_experiment(experiment_builder.build())
+            ReadMode.Procedure().conduct_experiment(experiment_builder.build(command_args))

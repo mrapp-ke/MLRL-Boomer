@@ -9,6 +9,7 @@ from argparse import Namespace
 from functools import reduce
 from typing import List, Optional, Set, Type, override
 
+from mlrl.testbed.arguments import PredictionDatasetArguments
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
@@ -19,7 +20,7 @@ from mlrl.testbed.extensions import Extension
 from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
 from mlrl.testbed.program_info import ProgramInfo
 
-from mlrl.util.cli import Argument, BoolArgument, CommandLineInterface
+from mlrl.util.cli import Argument, CommandLineInterface
 
 try:
     from mlrl.testbed_slurm.extension import SlurmExtension
@@ -39,32 +40,25 @@ class Runnable(Recipe, ABC):
         An extension that configures the functionality to predict for different datasets.
         """
 
-        PREDICT_FOR_TRAINING_DATA = BoolArgument(
-            '--predict-for-training-data',
-            default=False,
-            description='Whether predictions should be obtained for the training data or not.',
-        )
-
-        PREDICT_FOR_TEST_DATA = BoolArgument(
-            '--predict-for-test-data',
-            default=True,
-            description='Whether predictions should be obtained for the test data or not.',
-        )
-
         @override
         def _get_arguments(self, _: Mode) -> Set[Argument]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
             """
-            return {self.PREDICT_FOR_TRAINING_DATA, self.PREDICT_FOR_TEST_DATA}
+            return {
+                PredictionDatasetArguments.PREDICT_FOR_TRAINING_DATA,
+                PredictionDatasetArguments.PREDICT_FOR_TEST_DATA,
+            }
 
         @override
         def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: Mode):
             """
             See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
             """
-            experiment_builder.set_predict_for_training_dataset(self.PREDICT_FOR_TRAINING_DATA.get_value(args))
-            experiment_builder.set_predict_for_test_dataset(self.PREDICT_FOR_TEST_DATA.get_value(args))
+            experiment_builder.set_predict_for_training_dataset(
+                PredictionDatasetArguments.PREDICT_FOR_TRAINING_DATA.get_value(args))
+            experiment_builder.set_predict_for_test_dataset(
+                PredictionDatasetArguments.PREDICT_FOR_TEST_DATA.get_value(args))
 
         @override
         def get_supported_modes(self) -> Set[Type[Mode]]:
