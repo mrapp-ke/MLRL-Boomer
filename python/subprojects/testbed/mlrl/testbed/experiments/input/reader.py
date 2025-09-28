@@ -4,7 +4,6 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for reading input data.
 """
 from dataclasses import replace
-from typing import Any, override
 
 from mlrl.testbed.experiments.input.data import InputData
 from mlrl.testbed.experiments.input.sources import Source
@@ -48,11 +47,3 @@ class InputReader:
                 return new_state
 
         return state
-
-    @override
-    def __eq__(self, other: Any) -> bool:
-        return isinstance(other, type(self))
-
-    @override
-    def __hash__(self) -> int:
-        return hash(type(self))
