@@ -6,7 +6,7 @@ Provides base classes for programs that can be configured via command line argum
 
 from abc import ABC, abstractmethod
 from argparse import Namespace
-from functools import cached_property, reduce
+from functools import reduce
 from typing import List, Optional, Set, Type, override
 
 from mlrl.testbed.command import Command
@@ -73,24 +73,17 @@ class Runnable(Recipe, ABC):
             """
             return {SingleMode, BatchMode, RunMode}
 
-    @cached_property
-    def extensions(self) -> List[Extension]:
-        """
-        A list that contains the extensions that should be applied to the runnable sorted in a consistent order.
-        """
-        return sorted(self.get_extensions(), key=lambda extension: type(extension).__name__)
-
-    def get_extensions(self) -> Set[Extension]:
+    def get_extensions(self) -> List[Extension]:
         """
         May be overridden by subclasses in order to return the extensions that should be applied to the runnable.
 
         :return: A set that contains the extensions to be applied to the runnable
         """
-        return {
+        return [
             Runnable.PredictionDatasetExtension(),
             MetaDataExtension(),
             SlurmExtension(),
-        }
+        ]
 
     def get_program_info(self) -> Optional[ProgramInfo]:
         """
@@ -133,7 +126,7 @@ class Runnable(Recipe, ABC):
                 runnable = self.runnable
                 experiment_builder = runnable.create_experiment_builder(args, command)
 
-                for extension in runnable.extensions:
+                for extension in runnable.get_extensions():
                     extension.configure_experiment(args, experiment_builder)
 
                     for dependency in extension.get_dependencies(mode):
@@ -152,7 +145,7 @@ class Runnable(Recipe, ABC):
         batch_mode = BatchMode(self.create_batch_config_file_factory())
         args = cli.parse_known_args()
 
-        for extension in self.extensions:
+        for extension in self.get_extensions():
             extension.configure_batch_mode(args, batch_mode)
 
             for dependency in extension.get_dependencies(batch_mode):
@@ -169,7 +162,7 @@ class Runnable(Recipe, ABC):
         run_mode = RunMode()
         args = cli.parse_known_args()
 
-        for extension in self.extensions:
+        for extension in self.get_extensions():
             extension.configure_run_mode(args, run_mode)
 
             for dependency in extension.get_dependencies(run_mode):
@@ -185,7 +178,7 @@ class Runnable(Recipe, ABC):
         :param mode:    The mode of operation
         """
         extension_arguments: Set[Argument] = reduce(lambda aggr, extension: aggr | extension.get_arguments(mode),
-                                                    self.extensions, set())
+                                                    self.get_extensions(), set())
         algorithmic_arguments = self.get_algorithmic_arguments(cli.parse_known_args())
         mode.configure_arguments(cli,
                                  extension_arguments=sorted(extension_arguments, key=lambda arg: arg.name),
