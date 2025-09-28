@@ -154,11 +154,11 @@ class SkLearnRunnable(Runnable, ABC):
                                             predict_kwargs=predict_kwargs)
 
     @override
-    def get_extensions(self) -> Set[Extension]:
+    def get_extensions(self) -> List[Extension]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_extensions`
         """
-        return super().get_extensions() | {
+        return [
             SkLearnRunnable.ProblemDomainExtension(),
             DatasetSplitterExtension(),
             PredictionTypeExtension(),
@@ -174,7 +174,7 @@ class SkLearnRunnable(Runnable, ABC):
             PredictionExtension(),
             GroundTruthExtension(),
             PredictionCharacteristicsExtension(),
-        }
+        ] + super().get_extensions()
 
     @override
     def create_problem_domain(self, args: Namespace) -> ProblemDomain:

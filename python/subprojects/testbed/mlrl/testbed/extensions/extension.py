@@ -6,7 +6,7 @@ package.
 """
 from abc import ABC, abstractmethod
 from argparse import Namespace
-from typing import Any, Set, Type, override
+from typing import Set, Type, override
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.modes import BatchMode, Mode, RunMode
@@ -112,14 +112,6 @@ class Extension(ABC):
 
         :return: A set that contains the arguments that should be added to the command line API
         """
-
-    @override
-    def __hash__(self) -> int:
-        return hash(type(self))
-
-    @override
-    def __eq__(self, other: Any) -> bool:
-        return isinstance(other, type(self))
 
 
 class NopExtension(Extension):
