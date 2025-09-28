@@ -8,10 +8,10 @@ import logging as log
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from dataclasses import replace
-from functools import reduce
 from itertools import chain
 from typing import Any, Callable, Generator, Iterable, List, Optional, Set, override
 
+from mlrl.testbed.arguments import PredictionDatasetArguments
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
@@ -234,11 +234,12 @@ class Experiment(ABC):
             self.exit_on_missing_input = exit_on_missing_input
             return self
 
-        def build(self) -> 'Experiment':
+        def build(self, args: Namespace) -> 'Experiment':
             """
             Creates and returns a new experiment according to the specified configuration.
 
-            :return: The experiment that has been created
+            :param args:    The command line arguments specified by the user
+            :return:        The experiment that has been created
             """
             exit_on_error = self.exit_on_error
 
@@ -252,7 +253,7 @@ class Experiment(ABC):
                 for source in input_reader.sources:
                     source.exit_on_missing_input = exit_on_missing_input
 
-            experiment = self._create_experiment(self.initial_state, self.dataset_splitter)
+            experiment = self._create_experiment(args, self.initial_state, self.dataset_splitter)
             experiment.listeners.extend(self.listeners)
 
             def sort(objects: Iterable[Any]) -> List[Any]:
@@ -265,22 +266,26 @@ class Experiment(ABC):
             experiment.prediction_output_writers.extend(sort(self.prediction_output_writers))
             return experiment
 
-        def run(self):
+        def run(self, args: Namespace):
             """
             Creates and runs a new experiment according to the specified configuration.
+
+            :param args: The command line arguments specified by the user
             """
             should_predict = any(bool(output_writer.sinks) for output_writer in self.prediction_output_writers)
             procedure = DefaultProcedure(
                 predict_for_training_dataset=should_predict and self.predict_for_training_dataset,
                 predict_for_test_dataset=should_predict and self.predict_for_test_dataset,
             )
-            procedure.conduct_experiment(self.build())
+            procedure.conduct_experiment(self.build(args))
 
         @abstractmethod
-        def _create_experiment(self, initial_state: ExperimentState, dataset_splitter: DatasetSplitter) -> 'Experiment':
+        def _create_experiment(self, args: Namespace, initial_state: ExperimentState,
+                               dataset_splitter: DatasetSplitter) -> 'Experiment':
             """
             Must be implemented by subclasses in order to create a new experiment.
 
+            :param args:                The command line arguments specified by the user
             :param initial_state:       The initial state of the experiment
             :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
             :return:                    The experiment that has been created
@@ -291,16 +296,51 @@ class Experiment(ABC):
         Updates the state of an experiment by invoking the input readers that have been added to an experiment.
         """
 
-        def __init__(self, experiment: 'Experiment'):
+        def __init__(self, experiment: 'Experiment', args: Namespace):
             """
-            :param experiment The experiment
+            :param experiment:  The experiment
+            :param args:        The command line arguments specified by the user
             """
             self.experiment = experiment
+            self.args = args
 
         @override
         def on_start(self, state: ExperimentState) -> ExperimentState:
-            return reduce(lambda current_state, input_reader: input_reader.read(current_state),
-                          self.experiment.input_readers, state)
+            original_dataset_type = state.dataset_type
+
+            for input_reader in self.experiment.input_readers:
+                input_data = input_reader.input_data
+                context = input_data.context
+                dataset_types: List[DatasetType] = []
+
+                if context.include_dataset_type:
+                    args = self.args
+                    predict_for_training_dataset = PredictionDatasetArguments.PREDICT_FOR_TRAINING_DATA.get_value(args)
+
+                    if predict_for_training_dataset:
+                        dataset_types.append(DatasetType.TRAINING)
+
+                    predict_for_test_dataset = PredictionDatasetArguments.PREDICT_FOR_TEST_DATA.get_value(args)
+
+                    if predict_for_test_dataset:
+                        dataset_types.append(DatasetType.TEST)
+                else:
+                    dataset_types.append(original_dataset_type)
+
+                for dataset_type in dataset_types:
+                    state.dataset_type = dataset_type
+
+                    if not context.include_dataset_type:
+                        state = input_reader.read(state)
+                    else:
+                        if any(source.is_available(state, input_data) for source in input_reader.sources):
+                            state = input_reader.read(state)
+                        elif len(dataset_types) == 1 and dataset_types[0] == DatasetType.TEST:
+                            state.dataset_type = DatasetType.TRAINING
+                            state = input_reader.read(state)
+
+            state.dataset_type = original_dataset_type
+            return state
 
     class OutputWriterListener(ExperimentListener):
         """
@@ -372,9 +412,10 @@ class Experiment(ABC):
             :return:        The `PredictionState` that stores the result of the prediction process
             """
 
-    def __init__(self, initial_state: ExperimentState, dataset_splitter: DatasetSplitter,
+    def __init__(self, args: Namespace, initial_state: ExperimentState, dataset_splitter: DatasetSplitter,
                  training_procedure: TrainingProcedure, prediction_procedure: PredictionProcedure):
         """
+        :param args:                    The command line arguments specified by the user
         :param initial_state:           The initial state of the experiment
         :param dataset_splitter:        The method to be used for splitting the dataset into training and test datasets
         :param training_procedure:      The procedure that allows to fit a learner
@@ -390,7 +431,7 @@ class Experiment(ABC):
         self.post_training_output_writers: List[OutputWriter] = []
         self.prediction_output_writers: List[OutputWriter] = []
         self.listeners: List[ExperimentListener] = [
-            Experiment.InputReaderListener(self),
+            Experiment.InputReaderListener(self, args),
             Experiment.OutputWriterListener(self),
         ]
 
