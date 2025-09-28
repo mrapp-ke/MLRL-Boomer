@@ -3,19 +3,19 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for writing characteristics of datasets to one or several sinks.
 """
-
 from typing import List, Optional, override
 
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics_data import DataCharacteristics
 
+from mlrl.testbed.experiments.input.data import TabularInputData
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks import Sink
-from mlrl.testbed.experiments.output.writer import DataExtractor, OutputWriter
+from mlrl.testbed.experiments.output.writer import DataExtractor, ResultWriter, TabularDataExtractor
 from mlrl.testbed.experiments.state import ExperimentState
 
 
-class DataCharacteristicsWriter(OutputWriter):
+class DataCharacteristicsWriter(ResultWriter):
     """
     Allows writing characteristics of a dataset to one or several sinks.
     """
@@ -37,4 +37,9 @@ class DataCharacteristicsWriter(OutputWriter):
         """
         :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
         """
-        super().__init__(*extractors, DataCharacteristicsWriter.DefaultExtractor())
+        super().__init__(TabularDataExtractor(properties=DataCharacteristics.PROPERTIES,
+                                              context=DataCharacteristics.CONTEXT),
+                         *extractors,
+                         DataCharacteristicsWriter.DefaultExtractor(),
+                         input_data=TabularInputData(properties=DataCharacteristics.PROPERTIES,
+                                                     context=DataCharacteristics.CONTEXT))

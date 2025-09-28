@@ -13,13 +13,14 @@ from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_ranking import
 from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_regression import RegressionEvaluationDataExtractor
 
 from mlrl.testbed.experiments.experiment import Experiment
+from mlrl.testbed.experiments.input.sources.source_csv import CsvFileSource
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, RegressionProblem
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
+from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
 from mlrl.util.cli import Argument, BoolArgument
@@ -86,7 +87,7 @@ class EvaluationExtension(Extension):
         super().__init__(OutputExtension(), ResultDirectoryExtension(), *dependencies)
 
     @override
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, _: Mode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
@@ -94,14 +95,14 @@ class EvaluationExtension(Extension):
 
     def __configure_log_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         print_all = OutputArguments.PRINT_ALL.get_value(args)
-        print_evaluation, options = self.PRINT_EVALUATION.get_value(args, default=print_all)
+        print_evaluation, options = self.PRINT_EVALUATION.get_value_and_options(args, default=print_all)
 
         if print_evaluation:
-            experiment_builder.evaluation_writer.add_sinks(LogSink(options))
+            experiment_builder.evaluation_writer.add_sinks(LogSink(options=options, source_factory=CsvFileSource))
 
     def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         save_all = OutputArguments.SAVE_ALL.get_value(args)
-        save_evaluation_results, options = self.SAVE_EVALUATION.get_value(args, default=save_all)
+        save_evaluation_results, options = self.SAVE_EVALUATION.get_value_and_options(args, default=save_all)
         base_dir = OutputArguments.BASE_DIR.get_value(args)
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
@@ -111,7 +112,7 @@ class EvaluationExtension(Extension):
                 CsvFileSink(directory=base_dir / result_directory, create_directory=create_directory, options=options))
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: Mode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
@@ -137,4 +138,4 @@ class EvaluationExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode, BatchMode, RunMode}
+        return {SingleMode, BatchMode, ReadMode, RunMode}

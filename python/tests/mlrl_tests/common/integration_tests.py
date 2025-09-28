@@ -46,6 +46,7 @@ class IntegrationTests(ABC):
     @pytest.mark.parametrize('mode', [
         'single',
         'batch',
+        'read',
         'run',
     ])
     def test_help(self, mode: str):
@@ -116,12 +117,18 @@ class IntegrationTests(ABC):
         CmdRunner(builder).run('meka-format')
 
     def test_meta_data(self):
+        test_name = 'meta_data'
         builder = self._create_cmd_builder() \
             .print_evaluation(False) \
             .save_evaluation(False) \
             .print_meta_data() \
             .save_meta_data()
-        CmdRunner(builder).run('meta_data')
+        CmdRunner(builder).run(test_name, wipe_after=False)
+        builder = self._create_cmd_builder() \
+            .set_mode(Mode.MODE_READ) \
+            .print_meta_data() \
+            .save_meta_data()
+        CmdRunner(builder).run(test_name, wipe_before=False)
 
     @pytest.mark.parametrize('data_split, data_split_options, predefined', [
         (NONE, Options(), False),
@@ -185,6 +192,7 @@ class IntegrationTests(ABC):
          })),
     ])
     def test_predictions(self, data_split: str, data_split_options: Options, dataset: Dataset):
+        test_name = f'predictions_{data_split}' + (f'_{data_split_options}' if data_split_options else '')
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
@@ -193,9 +201,15 @@ class IntegrationTests(ABC):
             .print_ground_truth() \
             .save_predictions() \
             .save_ground_truth()
-        CmdRunner(builder).run(f'predictions_{data_split}' + (f'_{data_split_options}' if data_split_options else ''))
+        CmdRunner(builder).run(test_name, wipe_after=False)
+        builder = self._create_cmd_builder() \
+            .set_mode(Mode.MODE_READ) \
+            .print_predictions() \
+            .save_predictions()
+        CmdRunner(builder).run(test_name, wipe_before=False)
 
     def test_predictions_training_data(self, dataset: Dataset):
+        test_name = 'predictions_training-data'
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .predict_for_training_data() \
             .print_evaluation(False) \
@@ -204,7 +218,12 @@ class IntegrationTests(ABC):
             .print_ground_truth() \
             .save_predictions() \
             .save_ground_truth()
-        CmdRunner(builder).run('predictions_training-data')
+        CmdRunner(builder).run(test_name, wipe_after=False)
+        builder = self._create_cmd_builder() \
+            .set_mode(Mode.MODE_READ) \
+            .print_predictions() \
+            .save_predictions()
+        CmdRunner(builder).run(test_name, wipe_before=False)
 
     @pytest.mark.parametrize('data_split, data_split_options', [
         (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options()),

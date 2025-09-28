@@ -3,26 +3,35 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing predictions to one or several sinks.
 """
-
 from dataclasses import replace
-from typing import List, Optional, override
+from typing import Any, List, Optional, override
 
 import numpy as np
 
 from mlrl.testbed_sklearn.experiments.dataset import Attribute, AttributeType, TabularDataset
 from mlrl.testbed_sklearn.experiments.output.dataset.dataset_prediction import PredictionDataset
 
-from mlrl.testbed.experiments.output.data import OutputData
+from mlrl.testbed.experiments.input.data import DatasetInputData
+from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData
 from mlrl.testbed.experiments.output.sinks import Sink
-from mlrl.testbed.experiments.output.writer import DataExtractor, OutputWriter
+from mlrl.testbed.experiments.output.writer import DataExtractor, DatasetExtractor, ResultWriter
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem
 from mlrl.testbed.experiments.state import ExperimentState
 
 
-class PredictionWriter(OutputWriter):
+class PredictionWriter(ResultWriter):
     """
     Allows to write predictions to one or several sinks.
     """
+
+    class PredictionExtractor(DatasetExtractor):
+        """
+        Uses `DatasetInputData` that has previously been loaded via an input reader.
+        """
+
+        @override
+        def _create_output_data(self, data: Any) -> Optional[DatasetOutputData]:
+            return PredictionDataset(data)
 
     class DefaultExtractor(DataExtractor):
         """
@@ -60,4 +69,9 @@ class PredictionWriter(OutputWriter):
         """
         :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
         """
-        super().__init__(*extractors, PredictionWriter.DefaultExtractor())
+        super().__init__(PredictionWriter.PredictionExtractor(properties=PredictionDataset.PROPERTIES,
+                                                              context=PredictionDataset.CONTEXT),
+                         *extractors,
+                         PredictionWriter.DefaultExtractor(),
+                         input_data=DatasetInputData(properties=PredictionDataset.PROPERTIES,
+                                                     context=PredictionDataset.CONTEXT))

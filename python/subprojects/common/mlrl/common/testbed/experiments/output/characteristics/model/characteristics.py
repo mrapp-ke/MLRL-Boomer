@@ -26,12 +26,15 @@ class RuleModelCharacteristics(TabularOutputData):
     Represents characteristics of a rule model that are part of output data.
     """
 
+    PROPERTIES = TabularProperties(name='Model characteristics', file_name='model_characteristics')
+
+    CONTEXT = Context(include_dataset_type=False)
+
     def __init__(self, statistics: RuleModelStatistics):
         """
         :param statistics: The statistics of a rule model
         """
-        super().__init__(properties=TabularProperties(name='Model characteristics', file_name='model_characteristics'),
-                         context=Context(include_dataset_type=False))
+        super().__init__(properties=self.PROPERTIES, context=self.CONTEXT)
         self.statistics = statistics
 
     # pylint: disable=unused-argument
