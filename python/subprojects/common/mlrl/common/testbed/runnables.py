@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides base classes for programs that can be configured via command line arguments.
 """
 from argparse import Namespace
-from typing import Any, Dict, Optional, Set, Type, override
+from typing import Any, Dict, List, Optional, Set, Type, override
 
 from sklearn.base import BaseEstimator, ClassifierMixin as SkLearnClassifierMixin, \
     RegressorMixin as SkLearnRegressorMixin
@@ -247,17 +247,17 @@ class RuleLearnerRunnable(SkLearnRunnable):
         self.regressor_parameters = regressor_parameters
 
     @override
-    def get_extensions(self) -> Set[Extension]:
+    def get_extensions(self) -> List[Extension]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_extensions`
         """
-        return super().get_extensions() | {
+        return [
             RuleLearnerRunnable.IncrementalPredictionExtension(),
             RuleLearnerRunnable.RuleLearnerExtension(),
             RuleModelAsTextExtension(),
             RuleModelCharacteristicsExtension(),
             LabelVectorSetExtension(),
-        }
+        ] + super().get_extensions()
 
     @override
     def get_algorithmic_arguments(self, known_args: Namespace) -> Set[Argument]:
