@@ -6,7 +6,7 @@
 #include "mlrl/common/data/vector_sparse_array_binary.hpp"
 #include "mlrl/common/statistics/statistics_state.hpp"
 #include "mlrl/common/statistics/statistics_update_candidate_common.hpp"
-#include "mlrl/seco/data/view_statistic_decomposable_dense.hpp"
+#include "mlrl/seco/data/matrix_statistic_decomposable_dense.hpp"
 
 #include <memory>
 
@@ -71,7 +71,7 @@ namespace seco {
              * A reference to an object of template type `LabelMatrix` that provides access to the labels of the
              * training examples.
              */
-            DenseDecomposableStatisticView<LabelMatrix, CoverageMatrix> statisticView;
+            DenseDecomposableStatisticMatrix<LabelMatrix, CoverageMatrix> statisticView;
 
             /**
              * @param labelMatrix               A reference to an object of template type `LabelMatrix` that provides
