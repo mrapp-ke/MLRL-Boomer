@@ -16,14 +16,14 @@ namespace seco {
         private:
 
             template<typename WeightVector, typename IndexVector, typename StatisticType>
-            using StatisticsSubset = StatisticsSubset<CoverageStatisticsState<LabelMatrix, DenseCoverageMatrix>,
-                                                      DenseConfusionMatrixVector<StatisticType>,
-                                                      IDecomposableRuleEvaluationFactory, WeightVector, IndexVector>;
+            using StatisticsSubset = StatisticsSubset<
+              CoverageStatisticsState<DenseDecomposableStatisticMatrix<LabelMatrix, DenseCoverageMatrix>>,
+              DenseConfusionMatrixVector<StatisticType>, IDecomposableRuleEvaluationFactory, WeightVector, IndexVector>;
 
             template<typename WeightVector, typename StatisticType>
-            using WeightedStatistics = WeightedStatistics<CoverageStatisticsState<LabelMatrix, DenseCoverageMatrix>,
-                                                          DenseConfusionMatrixVector<StatisticType>,
-                                                          IDecomposableRuleEvaluationFactory, WeightVector>;
+            using WeightedStatistics = WeightedStatistics<
+              CoverageStatisticsState<DenseDecomposableStatisticMatrix<LabelMatrix, DenseCoverageMatrix>>,
+              DenseConfusionMatrixVector<StatisticType>, IDecomposableRuleEvaluationFactory, WeightVector>;
 
         public:
 
