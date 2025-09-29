@@ -20,24 +20,22 @@ namespace seco {
         return !isEqualToZero(weights[statisticIndex]);
     }
 
-    template<typename LabelMatrix, typename CoverageMatrix, typename StatisticVector, typename IndexVector>
-    static inline void addStatisticToSubsetInternally(const EqualWeightVector& weights, const LabelMatrix& labelMatrix,
-                                                      const BinarySparseArrayVector& majorityLabelVector,
-                                                      const CoverageMatrix& coverageMatrix, StatisticVector& vector,
+    template<typename StatisticView, typename StatisticVector, typename IndexVector>
+    static inline void addStatisticToSubsetInternally(const EqualWeightVector& weights,
+                                                      const StatisticView& statisticView, StatisticVector& vector,
                                                       const IndexVector& outputIndices, uint32 statisticIndex) {
-        vector.addToSubset(statisticIndex, labelMatrix, majorityLabelVector.cbegin(), majorityLabelVector.cend(),
-                           coverageMatrix, outputIndices, 1);
+        vector.addToSubset(statisticIndex, statisticView.labelMatrix, statisticView.majorityLabelVector.cbegin(),
+                           statisticView.majorityLabelVector.cend(), statisticView.coverageMatrix, outputIndices, 1);
     }
 
-    template<typename WeightVector, typename LabelMatrix, typename CoverageMatrix, typename StatisticVector,
-             typename IndexVector>
-    static inline void addStatisticToSubsetInternally(const WeightVector& weights, const LabelMatrix& labelMatrix,
-                                                      const BinarySparseArrayVector& majorityLabelVector,
-                                                      const CoverageMatrix& coverageMatrix, StatisticVector& vector,
-                                                      const IndexVector& outputIndices, uint32 statisticIndex) {
+    template<typename WeightVector, typename StatisticView, typename StatisticVector, typename IndexVector>
+    static inline void addStatisticToSubsetInternally(const WeightVector& weights, const StatisticView& statisticView,
+                                                      StatisticVector& vector, const IndexVector& outputIndices,
+                                                      uint32 statisticIndex) {
         typename WeightVector::weight_type weight = weights[statisticIndex];
-        vector.addToSubset(statisticIndex, labelMatrix, majorityLabelVector.cbegin(), majorityLabelVector.cend(),
-                           coverageMatrix, outputIndices, weight);
+        vector.addToSubset(statisticIndex, statisticView.labelMatrix, statisticView.majorityLabelVector.cbegin(),
+                           statisticView.majorityLabelVector.cend(), statisticView.coverageMatrix, outputIndices,
+                           weight);
     }
 
     /**
@@ -124,9 +122,8 @@ namespace seco {
              * @see `IStatisticsSubset::addToSubset`
              */
             void addToSubset(uint32 statisticIndex) override final {
-                addStatisticToSubsetInternally(
-                  weights_, state_.statisticMatrixPtr->labelMatrix, *state_.statisticMatrixPtr->majorityLabelVectorPtr,
-                  *state_.statisticMatrixPtr->coverageMatrixPtr, sumVector_, outputIndices_, statisticIndex);
+                addStatisticToSubsetInternally(weights_, state_.statisticMatrixPtr->getView(), sumVector_,
+                                               outputIndices_, statisticIndex);
             }
 
             /**
@@ -215,42 +212,34 @@ namespace seco {
             }
     };
 
-    template<typename LabelMatrix, typename CoverageMatrix, typename StatisticVector>
-    static inline void addStatisticInternally(const EqualWeightVector& weights, const LabelMatrix& labelMatrix,
-                                              const BinarySparseArrayVector& majorityLabelVector,
-                                              const CoverageMatrix& coverageMatrix, StatisticVector& vector,
-                                              uint32 statisticIndex) {
-        vector.add(statisticIndex, labelMatrix, majorityLabelVector.cbegin(), majorityLabelVector.cend(),
-                   coverageMatrix, 1);
+    template<typename StatisticView, typename StatisticVector>
+    static inline void addStatisticInternally(const EqualWeightVector& weights, const StatisticView& statisticView,
+                                              StatisticVector& statisticVector, uint32 statisticIndex) {
+        statisticVector.add(statisticIndex, statisticView.labelMatrix, statisticView.majorityLabelVector.cbegin(),
+                            statisticView.majorityLabelVector.cend(), statisticView.coverageMatrix, 1);
     }
 
-    template<typename WeightVector, typename LabelMatrix, typename CoverageMatrix, typename StatisticVector>
-    static inline void addStatisticInternally(const WeightVector& weights, const LabelMatrix& labelMatrix,
-                                              const BinarySparseArrayVector& majorityLabelVector,
-                                              const CoverageMatrix& coverageMatrix, StatisticVector& vector,
-                                              uint32 statisticIndex) {
+    template<typename WeightVector, typename StatisticView, typename StatisticVector>
+    static inline void addStatisticInternally(const WeightVector& weights, const StatisticView& statisticView,
+                                              StatisticVector& statisticVector, uint32 statisticIndex) {
         typename WeightVector::weight_type weight = weights[statisticIndex];
-        vector.add(statisticIndex, labelMatrix, majorityLabelVector.cbegin(), majorityLabelVector.cend(),
-                   coverageMatrix, weight);
+        statisticVector.add(statisticIndex, statisticView.labelMatrix, statisticView.majorityLabelVector.cbegin(),
+                            statisticView.majorityLabelVector.cend(), statisticView.coverageMatrix, weight);
     }
 
-    template<typename LabelMatrix, typename CoverageMatrix, typename StatisticVector>
-    static inline void removeStatisticInternally(const EqualWeightVector& weights, const LabelMatrix& labelMatrix,
-                                                 const BinarySparseArrayVector& majorityLabelVector,
-                                                 const CoverageMatrix& coverageMatrix, StatisticVector& vector,
-                                                 uint32 statisticIndex) {
-        vector.remove(statisticIndex, labelMatrix, majorityLabelVector.cbegin(), majorityLabelVector.cend(),
-                      coverageMatrix, 1);
+    template<typename StatisticView, typename StatisticVector>
+    static inline void removeStatisticInternally(const EqualWeightVector& weights, const StatisticView& statisticView,
+                                                 StatisticVector& statisticVector, uint32 statisticIndex) {
+        statisticVector.remove(statisticIndex, statisticView.labelMatrix, statisticView.majorityLabelVector.cbegin(),
+                               statisticView.majorityLabelVector.cend(), statisticView.coverageMatrix, 1);
     }
 
-    template<typename WeightVector, typename LabelMatrix, typename CoverageMatrix, typename StatisticVector>
-    static inline void removeStatisticInternally(const WeightVector& weights, const LabelMatrix& labelMatrix,
-                                                 const BinarySparseArrayVector& majorityLabelVector,
-                                                 const CoverageMatrix& coverageMatrix, StatisticVector& vector,
-                                                 uint32 statisticIndex) {
+    template<typename WeightVector, typename StatisticView, typename StatisticVector>
+    static inline void removeStatisticInternally(const WeightVector& weights, const StatisticView& statisticView,
+                                                 StatisticVector& statisticVector, uint32 statisticIndex) {
         typename WeightVector::weight_type weight = weights[statisticIndex];
-        vector.remove(statisticIndex, labelMatrix, majorityLabelVector.cbegin(), majorityLabelVector.cend(),
-                      coverageMatrix, weight);
+        statisticVector.remove(statisticIndex, statisticView.labelMatrix, statisticView.majorityLabelVector.cbegin(),
+                               statisticView.majorityLabelVector.cend(), statisticView.coverageMatrix, weight);
     }
 
     /**
@@ -320,9 +309,7 @@ namespace seco {
                                 // (weighted
                                 // by the given weight) from the total sum of confusion matrices...
                                 uint32 statisticIndex = *it;
-                                removeStatisticInternally(this->weights_, this->state_.statisticMatrixPtr->labelMatrix,
-                                                          *this->state_.statisticMatrixPtr->majorityLabelVectorPtr,
-                                                          *this->state_.statisticMatrixPtr->coverageMatrixPtr,
+                                removeStatisticInternally(this->weights_, this->state_.statisticMatrixPtr->getView(),
                                                           *totalCoverableSumVectorPtr_, statisticIndex);
                             }
                         }
@@ -463,18 +450,16 @@ namespace seco {
              * @see `IWeightedStatistics::addCoveredStatistic`
              */
             void addCoveredStatistic(uint32 statisticIndex) override {
-                addStatisticInternally(weights_, state_.statisticMatrixPtr->labelMatrix,
-                                       *state_.statisticMatrixPtr->majorityLabelVectorPtr,
-                                       *state_.statisticMatrixPtr->coverageMatrixPtr, subsetSumVector_, statisticIndex);
+                addStatisticInternally(weights_, state_.statisticMatrixPtr->getView(), subsetSumVector_,
+                                       statisticIndex);
             }
 
             /**
              * @see `IWeightedStatistics::removeCoveredStatistic`
              */
             void removeCoveredStatistic(uint32 statisticIndex) override {
-                removeStatisticInternally(
-                  weights_, state_.statisticMatrixPtr->labelMatrix, *state_.statisticMatrixPtr->majorityLabelVectorPtr,
-                  *state_.statisticMatrixPtr->coverageMatrixPtr, subsetSumVector_, statisticIndex);
+                removeStatisticInternally(weights_, state_.statisticMatrixPtr->getView(), subsetSumVector_,
+                                          statisticIndex);
             }
 
             /**
