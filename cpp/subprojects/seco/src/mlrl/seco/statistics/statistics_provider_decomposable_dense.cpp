@@ -12,19 +12,21 @@ namespace seco {
      */
     template<typename LabelMatrix>
     class DenseDecomposableStatistics final
-        : public AbstractDecomposableStatistics<DenseDecomposableStatisticMatrix<LabelMatrix, DenseCoverageMatrix>,
+        : public AbstractDecomposableStatistics<DenseDecomposableStatisticMatrix<LabelMatrix>,
                                                 IDecomposableRuleEvaluationFactory> {
         private:
 
             template<typename WeightVector, typename IndexVector, typename StatisticType>
-            using StatisticsSubset = StatisticsSubset<
-              CoverageStatisticsState<DenseDecomposableStatisticMatrix<LabelMatrix, DenseCoverageMatrix>>,
-              DenseConfusionMatrixVector<StatisticType>, IDecomposableRuleEvaluationFactory, WeightVector, IndexVector>;
+            using StatisticsSubset =
+              StatisticsSubset<CoverageStatisticsState<DenseDecomposableStatisticMatrix<LabelMatrix>>,
+                               DenseConfusionMatrixVector<StatisticType>, IDecomposableRuleEvaluationFactory,
+                               WeightVector, IndexVector>;
 
             template<typename WeightVector, typename StatisticType>
-            using WeightedStatistics = WeightedStatistics<
-              CoverageStatisticsState<DenseDecomposableStatisticMatrix<LabelMatrix, DenseCoverageMatrix>>,
-              DenseConfusionMatrixVector<StatisticType>, IDecomposableRuleEvaluationFactory, WeightVector>;
+            using WeightedStatistics =
+              WeightedStatistics<CoverageStatisticsState<DenseDecomposableStatisticMatrix<LabelMatrix>>,
+                                 DenseConfusionMatrixVector<StatisticType>, IDecomposableRuleEvaluationFactory,
+                                 WeightVector>;
 
         public:
 
@@ -43,9 +45,9 @@ namespace seco {
                                         std::unique_ptr<DenseCoverageMatrix> coverageMatrixPtr,
                                         std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr,
                                         const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory)
-                : AbstractDecomposableStatistics<DenseDecomposableStatisticMatrix<LabelMatrix, DenseCoverageMatrix>,
+                : AbstractDecomposableStatistics<DenseDecomposableStatisticMatrix<LabelMatrix>,
                                                  IDecomposableRuleEvaluationFactory>(
-                    std::make_unique<DenseDecomposableStatisticMatrix<LabelMatrix, DenseCoverageMatrix>>(
+                    std::make_unique<DenseDecomposableStatisticMatrix<LabelMatrix>>(
                       labelMatrix, std::move(majorityLabelVectorPtr), std::move(coverageMatrixPtr)),
                     ruleEvaluationFactory) {}
 

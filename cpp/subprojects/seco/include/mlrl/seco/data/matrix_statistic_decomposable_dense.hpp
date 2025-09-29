@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/vector_sparse_array_binary.hpp"
+#include "mlrl/seco/data/matrix_coverage_dense.hpp"
 #include "mlrl/seco/util/dll_exports.hpp"
 
 #include <memory>
@@ -14,11 +15,9 @@ namespace seco {
      * Implements row-wise read and write access to confusion matrices that are stored in pre-allocated C-contiguous
      * arrays.
      *
-     * @tparam LabelMatrix      The type of the matrix that provides access to the labels of the training examples
-     * @tparam CoverageMatrix   The type of the matrix that is used to store how often individual examples and labels
-     *                          have been covered
+     * @tparam LabelMatrix The type of the matrix that provides access to the labels of the training examples
      */
-    template<typename LabelMatrix, typename CoverageMatrix>
+    template<typename LabelMatrix>
     class MLRLSECO_API DenseDecomposableStatisticMatrix {
         public:
 
@@ -33,11 +32,11 @@ namespace seco {
                      *                              provides access to the labels of the training examples
                      * @param majorityLabelVector   A reference to an object of type `BinarySparseArrayVector` that
                      *                              stores the predictions of the default rule
-                     * @param coverageMatrix        A reference to an object of template type `CoverageMatrix` that
-                     *                              stores how often individual examples and labels have been covered
+                     * @param coverageMatrix        A reference to an object of type `DenseCoverageMatrix` that stores
+                     *                              how often individual examples and labels have been covered
                      */
                     View(const LabelMatrix& labelMatrix, const BinarySparseArrayVector& majorityLabelVector,
-                         CoverageMatrix& coverageMatrix)
+                         DenseCoverageMatrix& coverageMatrix)
                         : labelMatrix(labelMatrix), majorityLabelVector(majorityLabelVector),
                           coverageMatrix(coverageMatrix) {}
 
@@ -54,10 +53,10 @@ namespace seco {
                     const BinarySparseArrayVector& majorityLabelVector;
 
                     /**
-                     * A reference to an object of template type `CoverageMatrix` that stores how often individual
+                     * A reference to an object of template type `DenseCoverageMatrix` that stores how often individual
                      * examples and labels have been covered.
                      */
-                    CoverageMatrix& coverageMatrix;
+                    DenseCoverageMatrix& coverageMatrix;
             };
 
             /**
@@ -73,10 +72,10 @@ namespace seco {
             const std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr;
 
             /**
-             * An unique pointer to an object of template type `CoverageMatrix` that stores how often individual
-             * examples and labels have been covered.
+             * An unique pointer to an object of type `DenseCoverageMatrix` that stores how often individual examples
+             * and labels have been covered.
              */
-            std::unique_ptr<CoverageMatrix> coverageMatrixPtr;
+            std::unique_ptr<DenseCoverageMatrix> coverageMatrixPtr;
 
         public:
 
@@ -85,12 +84,12 @@ namespace seco {
              *                                  access to the labels of the training examples
              * @param majorityLabelVectorPtr    An unique pointer to an object of type `BinarySparseArrayVector` that
              *                                  stores the predictions of the default rule
-             * @param coverageMatrixPtr         An unique pointer to an object of template type `CoverageMatrix` that
-             *                                  stores how often individual examples and labels have been covered
+             * @param coverageMatrixPtr         An unique pointer to an object of template type `DenseCoverageMatrix`
+             *                                  that stores how often individual examples and labels have been covered
              */
             DenseDecomposableStatisticMatrix(const LabelMatrix& labelMatrix,
                                              std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr,
-                                             std::unique_ptr<CoverageMatrix> coverageMatrixPtr);
+                                             std::unique_ptr<DenseCoverageMatrix> coverageMatrixPtr);
 
             /**
              * Returns the number of rows in the matrix.
