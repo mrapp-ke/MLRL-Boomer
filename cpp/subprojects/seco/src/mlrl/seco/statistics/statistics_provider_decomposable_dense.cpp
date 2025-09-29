@@ -12,7 +12,8 @@ namespace seco {
      */
     template<typename LabelMatrix>
     class DenseDecomposableStatistics final
-        : public AbstractDecomposableStatistics<LabelMatrix, DenseCoverageMatrix, IDecomposableRuleEvaluationFactory> {
+        : public AbstractDecomposableStatistics<DenseDecomposableStatisticMatrix<LabelMatrix, DenseCoverageMatrix>,
+                                                IDecomposableRuleEvaluationFactory> {
         private:
 
             template<typename WeightVector, typename IndexVector, typename StatisticType>
@@ -42,7 +43,8 @@ namespace seco {
                                         std::unique_ptr<DenseCoverageMatrix> coverageMatrixPtr,
                                         std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr,
                                         const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory)
-                : AbstractDecomposableStatistics<LabelMatrix, DenseCoverageMatrix, IDecomposableRuleEvaluationFactory>(
+                : AbstractDecomposableStatistics<DenseDecomposableStatisticMatrix<LabelMatrix, DenseCoverageMatrix>,
+                                                 IDecomposableRuleEvaluationFactory>(
                     std::make_unique<DenseDecomposableStatisticMatrix<LabelMatrix, DenseCoverageMatrix>>(
                       labelMatrix, std::move(majorityLabelVectorPtr), std::move(coverageMatrixPtr)),
                     ruleEvaluationFactory) {}
