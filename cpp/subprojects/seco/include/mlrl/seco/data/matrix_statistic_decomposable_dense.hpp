@@ -19,7 +19,7 @@ namespace seco {
      *                          have been covered
      */
     template<typename LabelMatrix, typename CoverageMatrix>
-    class MLRLSECO_API DenseDecomposableStatisticView {
+    class MLRLSECO_API DenseDecomposableStatisticMatrix {
         public:
 
             /**
@@ -50,9 +50,9 @@ namespace seco {
              * @param coverageMatrixPtr         An unique pointer to an object of template type `CoverageMatrix` that
              *                                  stores how often individual examples and labels have been covered
              */
-            DenseDecomposableStatisticView(const LabelMatrix& labelMatrix,
-                                           std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr,
-                                           std::unique_ptr<CoverageMatrix> coverageMatrixPtr);
+            DenseDecomposableStatisticMatrix(const LabelMatrix& labelMatrix,
+                                             std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr,
+                                             std::unique_ptr<CoverageMatrix> coverageMatrixPtr);
     };
 
 }
