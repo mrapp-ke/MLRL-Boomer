@@ -15,15 +15,13 @@ namespace seco {
     /**
      * Represents the current state of a sequential covering process and allows to update it.
      *
-     * The state consists of coverage matrix keeps track of how often individual examples and labels have been covered
-     * by the rules in a model. When the model has been modified, this state can be updated accordingly by updating the
-     * coverage.
+     * The state consists of coverage matrices and keeps track of how often individual examples and labels have been
+     * covered by the rules in a model. When the model has been modified, this state can be updated accordingly by
+     * updating the coverage.
      *
-     * @tparam LabelMatrix      The type of the matrix that provides access to the labels of the training examples
-     * @tparam CoverageMatrix   The type of the matrix that is used to store how often individual examples and labels
-     *                          have been covered
+     * @tparam StatisticMatrix The type of the matrix that provides access to the confusion matrices
      */
-    template<typename LabelMatrix, typename CoverageMatrix>
+    template<typename StatisticMatrix>
     class CoverageStatisticsState final : public IStatisticsState<uint8> {
         private:
 
@@ -34,21 +32,21 @@ namespace seco {
             class UpdateCandidate final : public AbstractStatisticsUpdateCandidate {
                 private:
 
-                    CoverageStatisticsState<LabelMatrix, CoverageMatrix>& state_;
+                    CoverageStatisticsState<StatisticMatrix>& state_;
 
                 protected:
 
                     void invokeVisitor(BitVisitor<CompleteIndexVector> visitor,
                                        const BitScoreVector<CompleteIndexVector>& scoreVector) const override {
-                        StatisticsUpdateFactory<CoverageStatisticsState<LabelMatrix, CoverageMatrix>>
-                          statisticsUpdateFactory(state_);
+                        StatisticsUpdateFactory<CoverageStatisticsState<StatisticMatrix>> statisticsUpdateFactory(
+                          state_);
                         visitor(scoreVector, statisticsUpdateFactory);
                     }
 
                     void invokeVisitor(BitVisitor<PartialIndexVector> visitor,
                                        const BitScoreVector<PartialIndexVector>& scoreVector) const override {
-                        StatisticsUpdateFactory<CoverageStatisticsState<LabelMatrix, CoverageMatrix>>
-                          statisticsUpdateFactory(state_);
+                        StatisticsUpdateFactory<CoverageStatisticsState<StatisticMatrix>> statisticsUpdateFactory(
+                          state_);
                         visitor(scoreVector, statisticsUpdateFactory);
                     }
 
@@ -60,8 +58,7 @@ namespace seco {
                      * @param scoreVector   A reference to an object of type `IScoreVector` that stores the calculated
                      *                      scores
                      */
-                    UpdateCandidate(CoverageStatisticsState<LabelMatrix, CoverageMatrix>& state,
-                                    const IScoreVector& scoreVector)
+                    UpdateCandidate(CoverageStatisticsState<StatisticMatrix>& state, const IScoreVector& scoreVector)
                         : AbstractStatisticsUpdateCandidate(scoreVector), state_(state) {}
             };
 
@@ -71,7 +68,7 @@ namespace seco {
              * A reference to an object of template type `LabelMatrix` that provides access to the labels of the
              * training examples.
              */
-            DenseDecomposableStatisticMatrix<LabelMatrix, CoverageMatrix> statisticView;
+            std::unique_ptr<StatisticMatrix> statisticMatrixPtr;
 
             /**
              * @param labelMatrix               A reference to an object of template type `LabelMatrix` that provides
@@ -81,40 +78,39 @@ namespace seco {
              * @param majorityLabelVectorPtr    An unique pointer to an object of type `BinarySparseArrayVector` that
              *                                  stores the predictions of the default rule
              */
-            CoverageStatisticsState(const LabelMatrix& labelMatrix, std::unique_ptr<CoverageMatrix> coverageMatrixPtr,
-                                    std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr)
-                : statisticView(labelMatrix, std::move(majorityLabelVectorPtr), std::move(coverageMatrixPtr)) {}
+            CoverageStatisticsState(std::unique_ptr<StatisticMatrix> statisticMatrixPtr)
+                : statisticMatrixPtr(std::move(statisticMatrixPtr)) {}
 
             void update(uint32 statisticIndex, View<uint8>::const_iterator scoresBegin,
                         View<uint8>::const_iterator scoresEnd, CompleteIndexVector::const_iterator indicesBegin,
                         CompleteIndexVector::const_iterator indicesEnd) override {
-                statisticView.coverageMatrixPtr->increaseCoverage(
-                  statisticIndex, statisticView.majorityLabelVectorPtr->cbegin(),
-                  statisticView.majorityLabelVectorPtr->cend(), scoresBegin, scoresEnd, indicesBegin, indicesEnd);
+                statisticMatrixPtr->coverageMatrixPtr->increaseCoverage(
+                  statisticIndex, statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
+                  statisticMatrixPtr->majorityLabelVectorPtr->cend(), scoresBegin, scoresEnd, indicesBegin, indicesEnd);
             }
 
             void update(uint32 statisticIndex, View<uint8>::const_iterator scoresBegin,
                         View<uint8>::const_iterator scoresEnd, PartialIndexVector::const_iterator indicesBegin,
                         PartialIndexVector::const_iterator indicesEnd) override {
-                statisticView.coverageMatrixPtr->increaseCoverage(
-                  statisticIndex, statisticView.majorityLabelVectorPtr->cbegin(),
-                  statisticView.majorityLabelVectorPtr->cend(), scoresBegin, scoresEnd, indicesBegin, indicesEnd);
+                statisticMatrixPtr->coverageMatrixPtr->increaseCoverage(
+                  statisticIndex, statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
+                  statisticMatrixPtr->majorityLabelVectorPtr->cend(), scoresBegin, scoresEnd, indicesBegin, indicesEnd);
             }
 
             void revert(uint32 statisticIndex, View<uint8>::const_iterator scoresBegin,
                         View<uint8>::const_iterator scoresEnd, CompleteIndexVector::const_iterator indicesBegin,
                         CompleteIndexVector::const_iterator indicesEnd) override {
-                statisticView.coverageMatrixPtr->decreaseCoverage(
-                  statisticIndex, statisticView.majorityLabelVectorPtr->cbegin(),
-                  statisticView.majorityLabelVectorPtr->cend(), scoresBegin, scoresEnd, indicesBegin, indicesEnd);
+                statisticMatrixPtr->coverageMatrixPtr->decreaseCoverage(
+                  statisticIndex, statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
+                  statisticMatrixPtr->majorityLabelVectorPtr->cend(), scoresBegin, scoresEnd, indicesBegin, indicesEnd);
             }
 
             void revert(uint32 statisticIndex, View<uint8>::const_iterator scoresBegin,
                         View<uint8>::const_iterator scoresEnd, PartialIndexVector::const_iterator indicesBegin,
                         PartialIndexVector::const_iterator indicesEnd) override {
-                statisticView.coverageMatrixPtr->decreaseCoverage(
-                  statisticIndex, statisticView.majorityLabelVectorPtr->cbegin(),
-                  statisticView.majorityLabelVectorPtr->cend(), scoresBegin, scoresEnd, indicesBegin, indicesEnd);
+                statisticMatrixPtr->coverageMatrixPtr->decreaseCoverage(
+                  statisticIndex, statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
+                  statisticMatrixPtr->majorityLabelVectorPtr->cend(), scoresBegin, scoresEnd, indicesBegin, indicesEnd);
             }
 
             std::unique_ptr<IStatisticsUpdateCandidate> createUpdateCandidate(
