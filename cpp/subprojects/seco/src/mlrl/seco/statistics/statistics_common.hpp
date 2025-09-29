@@ -463,7 +463,7 @@ namespace seco {
             }
 
             /**
-             * @see `IStatisticsSpace::createSubset`
+             * @see `IWeightedStatistics::createSubset`
              */
             std::unique_ptr<IResettableStatisticsSubset> createSubset(
               const BinaryDokVector& excludedStatisticIndices,
@@ -473,7 +473,7 @@ namespace seco {
             }
 
             /**
-             * @see `IStatisticsSpace::createSubset`
+             * @see `IWeightedStatistics::createSubset`
              */
             std::unique_ptr<IResettableStatisticsSubset> createSubset(
               const BinaryDokVector& excludedStatisticIndices, const PartialIndexVector& outputIndices) const override {
