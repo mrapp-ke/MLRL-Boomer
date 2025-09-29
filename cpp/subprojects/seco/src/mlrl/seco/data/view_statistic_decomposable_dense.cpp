@@ -6,7 +6,7 @@
 namespace seco {
 
     template<typename LabelMatrix, typename CoverageMatrix>
-    DenseConfusionMatrixView<LabelMatrix, CoverageMatrix>::DenseConfusionMatrixView(
+    DenseDecomposableStatisticView<LabelMatrix, CoverageMatrix>::DenseDecomposableStatisticView(
       const LabelMatrix& labelMatrix, std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr,
       std::unique_ptr<CoverageMatrix> coverageMatrixPtr)
         : labelMatrix(labelMatrix), majorityLabelVectorPtr(std::move(majorityLabelVectorPtr)),

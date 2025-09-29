@@ -124,8 +124,9 @@ namespace seco {
              * @see `IStatisticsSubset::addToSubset`
              */
             void addToSubset(uint32 statisticIndex) override final {
-                addStatisticToSubsetInternally(weights_, state_.labelMatrix, *state_.majorityLabelVectorPtr,
-                                               *state_.coverageMatrixPtr, sumVector_, outputIndices_, statisticIndex);
+                addStatisticToSubsetInternally(
+                  weights_, state_.statisticView.labelMatrix, *state_.statisticView.majorityLabelVectorPtr,
+                  *state_.statisticView.coverageMatrixPtr, sumVector_, outputIndices_, statisticIndex);
             }
 
             /**
@@ -133,8 +134,8 @@ namespace seco {
              */
             std::unique_ptr<IStatisticsUpdateCandidate> calculateScores() override final {
                 const IScoreVector& scoreVector = ruleEvaluationPtr_->calculateScores(
-                  state_.majorityLabelVectorPtr->cbegin(), state_.majorityLabelVectorPtr->cend(), totalSumVector_,
-                  sumVector_);
+                  state_.statisticView.majorityLabelVectorPtr->cbegin(),
+                  state_.statisticView.majorityLabelVectorPtr->cend(), totalSumVector_, sumVector_);
                 return state_.createUpdateCandidate(scoreVector);
             }
     };
@@ -208,8 +209,9 @@ namespace seco {
                 : AbstractStatisticsSubset<State, StatisticVector, RuleEvaluationFactory, WeightVector, IndexVector>(
                     state, *totalSumVectorPtr, ruleEvaluationFactory, weights, outputIndices),
                   totalSumVectorPtr_(std::move(totalSumVectorPtr)) {
-                initializeStatisticVector(weights, state.labelMatrix, *state.majorityLabelVectorPtr,
-                                          *state.coverageMatrixPtr, *totalSumVectorPtr_);
+                initializeStatisticVector(weights, state.statisticView.labelMatrix,
+                                          *state.statisticView.majorityLabelVectorPtr,
+                                          *state.statisticView.coverageMatrixPtr, *totalSumVectorPtr_);
             }
     };
 
@@ -318,9 +320,10 @@ namespace seco {
                                 // (weighted
                                 // by the given weight) from the total sum of confusion matrices...
                                 uint32 statisticIndex = *it;
-                                removeStatisticInternally(
-                                  this->weights_, this->state_.labelMatrix, *this->state_.majorityLabelVectorPtr,
-                                  *this->state_.coverageMatrixPtr, *totalCoverableSumVectorPtr_, statisticIndex);
+                                removeStatisticInternally(this->weights_, this->state_.statisticView.labelMatrix,
+                                                          *this->state_.statisticView.majorityLabelVectorPtr,
+                                                          *this->state_.statisticView.coverageMatrixPtr,
+                                                          *totalCoverableSumVectorPtr_, statisticIndex);
                             }
                         }
                     }
@@ -346,8 +349,9 @@ namespace seco {
                      */
                     std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresAccumulated() override {
                         const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(
-                          this->state_.majorityLabelVectorPtr->cbegin(), this->state_.majorityLabelVectorPtr->cend(),
-                          this->totalSumVector_, *accumulatedSumVectorPtr_);
+                          this->state_.statisticView.majorityLabelVectorPtr->cbegin(),
+                          this->state_.statisticView.majorityLabelVectorPtr->cend(), this->totalSumVector_,
+                          *accumulatedSumVectorPtr_);
                         return this->state_.createUpdateCandidate(scoreVector);
                     }
 
@@ -358,8 +362,8 @@ namespace seco {
                         tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(),
                                               this->outputIndices_, this->sumVector_.cbegin(), this->sumVector_.cend());
                         const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(
-                          this->state_.majorityLabelVectorPtr->cbegin(), this->state_.majorityLabelVectorPtr->cend(),
-                          this->totalSumVector_, tmpVector_);
+                          this->state_.statisticView.majorityLabelVectorPtr->cbegin(),
+                          this->state_.statisticView.majorityLabelVectorPtr->cend(), this->totalSumVector_, tmpVector_);
                         return this->state_.createUpdateCandidate(scoreVector);
                     }
 
@@ -371,8 +375,8 @@ namespace seco {
                                               this->outputIndices_, accumulatedSumVectorPtr_->cbegin(),
                                               accumulatedSumVectorPtr_->cend());
                         const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(
-                          this->state_.majorityLabelVectorPtr->cbegin(), this->state_.majorityLabelVectorPtr->cend(),
-                          this->totalSumVector_, tmpVector_);
+                          this->state_.statisticView.majorityLabelVectorPtr->cbegin(),
+                          this->state_.statisticView.majorityLabelVectorPtr->cend(), this->totalSumVector_, tmpVector_);
                         return this->state_.createUpdateCandidate(scoreVector);
                     }
             };
@@ -406,12 +410,14 @@ namespace seco {
             WeightedStatistics(State& state, const RuleEvaluationFactory& ruleEvaluationFactory,
                                const WeightVector& weights)
                 : weights_(weights), ruleEvaluationFactory_(ruleEvaluationFactory),
-                  totalSumVector_(state.labelMatrix.numCols, true), subsetSumVector_(state.labelMatrix.numCols, true),
-                  state_(state) {
-                initializeStatisticVector(weights, state_.labelMatrix, *state_.majorityLabelVectorPtr,
-                                          *state.coverageMatrixPtr, totalSumVector_);
-                initializeStatisticVector(weights, state_.labelMatrix, *state_.majorityLabelVectorPtr,
-                                          *state.coverageMatrixPtr, subsetSumVector_);
+                  totalSumVector_(state.statisticView.labelMatrix.numCols, true),
+                  subsetSumVector_(state.statisticView.labelMatrix.numCols, true), state_(state) {
+                initializeStatisticVector(weights, state_.statisticView.labelMatrix,
+                                          *state_.statisticView.majorityLabelVectorPtr,
+                                          *state.statisticView.coverageMatrixPtr, totalSumVector_);
+                initializeStatisticVector(weights, state_.statisticView.labelMatrix,
+                                          *state_.statisticView.majorityLabelVectorPtr,
+                                          *state.statisticView.coverageMatrixPtr, subsetSumVector_);
             }
 
             /**
@@ -426,14 +432,14 @@ namespace seco {
              * @see `IStatisticsSpace::getNumStatistics`
              */
             uint32 getNumStatistics() const override {
-                return state_.labelMatrix.numRows;
+                return state_.statisticView.labelMatrix.numRows;
             }
 
             /**
              * @see `IStatisticsSpace::getNumOutputs`
              */
             uint32 getNumOutputs() const override {
-                return state_.labelMatrix.numCols;
+                return state_.statisticView.labelMatrix.numCols;
             }
 
             /**
@@ -455,16 +461,18 @@ namespace seco {
              * @see `IWeightedStatistics::addCoveredStatistic`
              */
             void addCoveredStatistic(uint32 statisticIndex) override {
-                addStatisticInternally(weights_, state_.labelMatrix, *state_.majorityLabelVectorPtr,
-                                       *state_.coverageMatrixPtr, subsetSumVector_, statisticIndex);
+                addStatisticInternally(weights_, state_.statisticView.labelMatrix,
+                                       *state_.statisticView.majorityLabelVectorPtr,
+                                       *state_.statisticView.coverageMatrixPtr, subsetSumVector_, statisticIndex);
             }
 
             /**
              * @see `IWeightedStatistics::removeCoveredStatistic`
              */
             void removeCoveredStatistic(uint32 statisticIndex) override {
-                removeStatisticInternally(weights_, state_.labelMatrix, *state_.majorityLabelVectorPtr,
-                                          *state_.coverageMatrixPtr, subsetSumVector_, statisticIndex);
+                removeStatisticInternally(weights_, state_.statisticView.labelMatrix,
+                                          *state_.statisticView.majorityLabelVectorPtr,
+                                          *state_.statisticView.coverageMatrixPtr, subsetSumVector_, statisticIndex);
             }
 
             /**
@@ -526,21 +534,21 @@ namespace seco {
              * @see `ICoverageStatistics::getSumOfUncoveredWeights`
              */
             float64 getSumOfUncoveredWeights() const override final {
-                return statePtr_->coverageMatrixPtr->getSumOfUncoveredWeights();
+                return statePtr_->statisticView.coverageMatrixPtr->getSumOfUncoveredWeights();
             }
 
             /**
              * @see `IStatistics::getNumStatistics`
              */
             uint32 getNumStatistics() const override final {
-                return statePtr_->labelMatrix.numRows;
+                return statePtr_->statisticView.labelMatrix.numRows;
             }
 
             /**
              * @see `IStatistics::getNumOutputs`
              */
             uint32 getNumOutputs() const override final {
-                return statePtr_->labelMatrix.numCols;
+                return statePtr_->statisticView.labelMatrix.numCols;
             }
 
             /**
