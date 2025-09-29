@@ -5,30 +5,29 @@
 
 namespace seco {
 
-    template<typename LabelMatrix, typename CoverageMatrix>
-    DenseDecomposableStatisticMatrix<LabelMatrix, CoverageMatrix>::DenseDecomposableStatisticMatrix(
+    template<typename LabelMatrix>
+    DenseDecomposableStatisticMatrix<LabelMatrix>::DenseDecomposableStatisticMatrix(
       const LabelMatrix& labelMatrix, std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr,
-      std::unique_ptr<CoverageMatrix> coverageMatrixPtr)
+      std::unique_ptr<DenseCoverageMatrix> coverageMatrixPtr)
         : labelMatrix(labelMatrix), majorityLabelVectorPtr(std::move(majorityLabelVectorPtr)),
           coverageMatrixPtr(std::move(coverageMatrixPtr)) {}
 
-    template<typename LabelMatrix, typename CoverageMatrix>
-    uint32 DenseDecomposableStatisticMatrix<LabelMatrix, CoverageMatrix>::getNumRows() const {
+    template<typename LabelMatrix>
+    uint32 DenseDecomposableStatisticMatrix<LabelMatrix>::getNumRows() const {
         return labelMatrix.numRows;
     }
 
-    template<typename LabelMatrix, typename CoverageMatrix>
-    uint32 DenseDecomposableStatisticMatrix<LabelMatrix, CoverageMatrix>::getNumCols() const {
+    template<typename LabelMatrix>
+    uint32 DenseDecomposableStatisticMatrix<LabelMatrix>::getNumCols() const {
         return labelMatrix.numCols;
     }
 
-    template<typename LabelMatrix, typename CoverageMatrix>
-    DenseDecomposableStatisticMatrix<LabelMatrix, CoverageMatrix>::View
-      DenseDecomposableStatisticMatrix<LabelMatrix, CoverageMatrix>::getView() {
-        return DenseDecomposableStatisticMatrix<LabelMatrix, CoverageMatrix>::View(labelMatrix, *majorityLabelVectorPtr,
-                                                                                   *coverageMatrixPtr);
+    template<typename LabelMatrix>
+    DenseDecomposableStatisticMatrix<LabelMatrix>::View DenseDecomposableStatisticMatrix<LabelMatrix>::getView() {
+        return DenseDecomposableStatisticMatrix<LabelMatrix>::View(labelMatrix, *majorityLabelVectorPtr,
+                                                                   *coverageMatrixPtr);
     }
 
-    template class DenseDecomposableStatisticMatrix<CContiguousView<const uint8>, DenseCoverageMatrix>;
-    template class DenseDecomposableStatisticMatrix<BinaryCsrView, DenseCoverageMatrix>;
+    template class DenseDecomposableStatisticMatrix<CContiguousView<const uint8>>;
+    template class DenseDecomposableStatisticMatrix<BinaryCsrView>;
 }
