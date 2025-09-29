@@ -12,6 +12,13 @@ namespace seco {
         : labelMatrix(labelMatrix), majorityLabelVectorPtr(std::move(majorityLabelVectorPtr)),
           coverageMatrixPtr(std::move(coverageMatrixPtr)) {}
 
+    template<typename LabelMatrix, typename CoverageMatrix>
+    DenseDecomposableStatisticMatrix<LabelMatrix, CoverageMatrix>::View
+      DenseDecomposableStatisticMatrix<LabelMatrix, CoverageMatrix>::getView() {
+        return DenseDecomposableStatisticMatrix<LabelMatrix, CoverageMatrix>::View(labelMatrix, *majorityLabelVectorPtr,
+                                                                                   *coverageMatrixPtr);
+    }
+
     template class DenseDecomposableStatisticMatrix<CContiguousView<const uint8>, DenseCoverageMatrix>;
     template class DenseDecomposableStatisticMatrix<BinaryCsrView, DenseCoverageMatrix>;
 }
