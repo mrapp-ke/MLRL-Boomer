@@ -23,6 +23,44 @@ namespace seco {
         public:
 
             /**
+             * A view that provides access to the data structures, a `DenseDecomposableStatisticMatrix` is backed by.
+             */
+            struct View {
+                public:
+
+                    /**
+                     * @param labelMatrix           A reference to an object of template type `LabelMatrix` that
+                     *                              provides access to the labels of the training examples
+                     * @param majorityLabelVector   A reference to an object of type `BinarySparseArrayVector` that
+                     *                              stores the predictions of the default rule
+                     * @param coverageMatrix        A reference to an object of template type `CoverageMatrix` that
+                     *                              stores how often individual examples and labels have been covered
+                     */
+                    View(const LabelMatrix& labelMatrix, const BinarySparseArrayVector& majorityLabelVector,
+                         CoverageMatrix& coverageMatrix)
+                        : labelMatrix(labelMatrix), majorityLabelVector(majorityLabelVector),
+                          coverageMatrix(coverageMatrix) {}
+
+                    /**
+                     * A reference to an object of template type `LabelMatrix` that provides access to the labels of the
+                     * training examples.
+                     */
+                    const LabelMatrix& labelMatrix;
+
+                    /**
+                     * A reference to an object of type `BinarySparseArrayVector` that stores the predictions of the
+                     * default rule.
+                     */
+                    const BinarySparseArrayVector& majorityLabelVector;
+
+                    /**
+                     * A reference to an object of template type `CoverageMatrix` that stores how often individual
+                     * examples and labels have been covered.
+                     */
+                    CoverageMatrix& coverageMatrix;
+            };
+
+            /**
              * A reference to an object of template type `LabelMatrix` that provides access to the labels of the
              * training examples.
              */
@@ -53,6 +91,13 @@ namespace seco {
             DenseDecomposableStatisticMatrix(const LabelMatrix& labelMatrix,
                                              std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr,
                                              std::unique_ptr<CoverageMatrix> coverageMatrixPtr);
+
+            /**
+             * Returns a reference to the view, that provides access to the data structures this matrix is backed by.
+             *
+             * @return A reference to an object of type `View`
+             */
+            View getView();
     };
 
 }
