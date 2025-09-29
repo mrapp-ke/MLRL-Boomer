@@ -93,6 +93,20 @@ namespace seco {
                                              std::unique_ptr<CoverageMatrix> coverageMatrixPtr);
 
             /**
+             * Returns the number of rows in the matrix.
+             *
+             * @return The number of rows in the matrix
+             */
+            uint32 getNumRows() const;
+
+            /**
+             * Returns the number of columns in the matrix.
+             *
+             * @return The number of columns in the matrix
+             */
+            uint32 getNumCols() const;
+
+            /**
              * Returns a reference to the view, that provides access to the data structures this matrix is backed by.
              *
              * @return A reference to an object of type `View`

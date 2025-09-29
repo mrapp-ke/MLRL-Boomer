@@ -434,14 +434,14 @@ namespace seco {
              * @see `IStatisticsSpace::getNumStatistics`
              */
             uint32 getNumStatistics() const override {
-                return state_.statisticMatrixPtr->labelMatrix.numRows;
+                return state_.statisticMatrixPtr->getNumRows();
             }
 
             /**
              * @see `IStatisticsSpace::getNumOutputs`
              */
             uint32 getNumOutputs() const override {
-                return state_.statisticMatrixPtr->labelMatrix.numCols;
+                return state_.statisticMatrixPtr->getNumCols();
             }
 
             /**
@@ -543,14 +543,14 @@ namespace seco {
              * @see `IStatistics::getNumStatistics`
              */
             uint32 getNumStatistics() const override final {
-                return statePtr_->statisticMatrixPtr->labelMatrix.numRows;
+                return statePtr_->statisticMatrixPtr->getNumRows();
             }
 
             /**
              * @see `IStatistics::getNumOutputs`
              */
             uint32 getNumOutputs() const override final {
-                return statePtr_->statisticMatrixPtr->labelMatrix.numCols;
+                return statePtr_->statisticMatrixPtr->getNumCols();
             }
 
             /**
