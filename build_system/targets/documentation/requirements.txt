@@ -1,4 +1,4 @@
-furo == 2025.7.19
+furo == 2025.9.25
 myst-parser >= 4.0, < 4.1
 sphinx >= 8.2, < 8.3
 sphinx-copybutton >= 0.5, < 0.6
