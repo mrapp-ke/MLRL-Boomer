@@ -45,17 +45,15 @@ namespace seco {
              *                                  calculating the predictions of rules, as well as corresponding quality
              *                                  scores
              */
-            AbstractDecomposableStatistics(const LabelMatrix& labelMatrix,
-                                           std::unique_ptr<CoverageMatrix> coverageMatrixPtr,
-                                           std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr,
-                                           const RuleEvaluationFactory& ruleEvaluationFactory)
+            AbstractDecomposableStatistics(
+              std::unique_ptr<DenseDecomposableStatisticMatrix<LabelMatrix, CoverageMatrix>> statisticMatrixPtr,
+              const RuleEvaluationFactory& ruleEvaluationFactory)
                 : AbstractStatistics<
                     CoverageStatisticsState<DenseDecomposableStatisticMatrix<LabelMatrix, CoverageMatrix>>,
                     RuleEvaluationFactory>(
                     std::make_unique<
                       CoverageStatisticsState<DenseDecomposableStatisticMatrix<LabelMatrix, CoverageMatrix>>>(
-                      std::make_unique<DenseDecomposableStatisticMatrix<LabelMatrix, CoverageMatrix>>(
-                        labelMatrix, std::move(majorityLabelVectorPtr), std::move(coverageMatrixPtr))),
+                      std::move(statisticMatrixPtr)),
                     ruleEvaluationFactory) {}
 
             /**

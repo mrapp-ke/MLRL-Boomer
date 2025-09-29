@@ -43,7 +43,8 @@ namespace seco {
                                         std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr,
                                         const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory)
                 : AbstractDecomposableStatistics<LabelMatrix, DenseCoverageMatrix, IDecomposableRuleEvaluationFactory>(
-                    labelMatrix, std::move(coverageMatrixPtr), std::move(majorityLabelVectorPtr),
+                    std::make_unique<DenseDecomposableStatisticMatrix<LabelMatrix, DenseCoverageMatrix>>(
+                      labelMatrix, std::move(majorityLabelVectorPtr), std::move(coverageMatrixPtr)),
                     ruleEvaluationFactory) {}
 
             /**
