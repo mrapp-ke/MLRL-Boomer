@@ -34,7 +34,7 @@ namespace boosting {
              typename EvaluationMeasure, typename NonDecomposableRuleEvaluationFactory,
              typename DecomposableRuleEvaluationFactory>
     class AbstractNonDecomposableStatistics
-        : public AbstractStatistics<
+        : public AbstractBoostingStatistics<
             NonDecomposableBoostingStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, Loss>, EvaluationMeasure,
             NonDecomposableRuleEvaluationFactory>,
           virtual public INonDecomposableStatistics<NonDecomposableRuleEvaluationFactory,
@@ -64,7 +64,7 @@ namespace boosting {
                                               const OutputMatrix& outputMatrix,
                                               std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
                                               std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
-                : AbstractStatistics<
+                : AbstractBoostingStatistics<
                     NonDecomposableBoostingStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, Loss>,
                     EvaluationMeasure, NonDecomposableRuleEvaluationFactory>(
                     std::make_unique<
