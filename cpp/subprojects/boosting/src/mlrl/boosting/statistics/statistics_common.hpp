@@ -466,13 +466,9 @@ namespace boosting {
      *                                  scores
      */
     template<typename State, typename EvaluationMeasure, typename RuleEvaluationFactory>
-    class AbstractStatistics : virtual public IBoostingStatistics {
+    class AbstractBoostingStatistics : public AbstractStatistics<State>,
+                                       virtual public IBoostingStatistics {
         protected:
-
-            /**
-             * An unique pointer to the state of the training process.
-             */
-            const std::unique_ptr<State> statePtr_;
 
             /**
              * An unique pointer to the evaluation measure that should be used to assess the quality of predictions for
@@ -498,31 +494,19 @@ namespace boosting {
              *                              allows to create instances of the class that should be used for calculating
              *                              the predictions of rules, as well as their overall quality
              */
-            AbstractStatistics(std::unique_ptr<State> statePtr, std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
-                               const RuleEvaluationFactory& ruleEvaluationFactory)
-                : statePtr_(std::move(statePtr)), evaluationMeasurePtr_(std::move(evaluationMeasurePtr)),
+            AbstractBoostingStatistics(std::unique_ptr<State> statePtr,
+                                       std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
+                                       const RuleEvaluationFactory& ruleEvaluationFactory)
+                : AbstractStatistics<State>(std::move(statePtr)),
+                  evaluationMeasurePtr_(std::move(evaluationMeasurePtr)),
                   ruleEvaluationFactory_(&ruleEvaluationFactory) {}
-
-            /**
-             * @see `IStatistics::getNumStatistics`
-             */
-            uint32 getNumStatistics() const override final {
-                return statePtr_->statisticMatrixPtr->getNumRows();
-            }
-
-            /**
-             * @see `IStatistics::getNumOutputs`
-             */
-            uint32 getNumOutputs() const override final {
-                return statePtr_->statisticMatrixPtr->getNumCols();
-            }
 
             /**
              * @see `IStatistics::evaluatePrediction`
              */
             float64 evaluatePrediction(uint32 statisticIndex) const override final {
-                return evaluationMeasurePtr_->evaluate(statisticIndex, statePtr_->outputMatrix,
-                                                       statePtr_->scoreMatrixPtr->getView());
+                return evaluationMeasurePtr_->evaluate(statisticIndex, this->statePtr_->outputMatrix,
+                                                       this->statePtr_->scoreMatrixPtr->getView());
             }
     };
 

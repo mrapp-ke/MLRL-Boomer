@@ -472,13 +472,9 @@ namespace seco {
      *                                  scores
      */
     template<typename State, typename RuleEvaluationFactory>
-    class AbstractStatistics : virtual public ICoverageStatistics {
+    class AbstractCoverageStatistics : public AbstractStatistics<State>,
+                                       virtual public ICoverageStatistics {
         protected:
-
-            /**
-             * An unique pointer to the state of the training process.
-             */
-            const std::unique_ptr<State> statePtr_;
 
             /**
              * A pointer to an object of template type `RuleEvaluationFactory` that allows to create instances of the
@@ -495,28 +491,15 @@ namespace seco {
              *                              allows to create instances of the class that should be used for calculating
              *                              the predictions of rules, as well as their overall quality
              */
-            AbstractStatistics(std::unique_ptr<State> statePtr, const RuleEvaluationFactory& ruleEvaluationFactory)
-                : statePtr_(std::move(statePtr)), ruleEvaluationFactory_(&ruleEvaluationFactory) {}
+            AbstractCoverageStatistics(std::unique_ptr<State> statePtr,
+                                       const RuleEvaluationFactory& ruleEvaluationFactory)
+                : AbstractStatistics<State>(std::move(statePtr)), ruleEvaluationFactory_(&ruleEvaluationFactory) {}
 
             /**
              * @see `ICoverageStatistics::getSumOfUncoveredWeights`
              */
             float64 getSumOfUncoveredWeights() const override final {
-                return statePtr_->statisticMatrixPtr->coverageMatrixPtr->getSumOfUncoveredWeights();
-            }
-
-            /**
-             * @see `IStatistics::getNumStatistics`
-             */
-            uint32 getNumStatistics() const override final {
-                return statePtr_->statisticMatrixPtr->getNumRows();
-            }
-
-            /**
-             * @see `IStatistics::getNumOutputs`
-             */
-            uint32 getNumOutputs() const override final {
-                return statePtr_->statisticMatrixPtr->getNumCols();
+                return this->statePtr_->statisticMatrixPtr->coverageMatrixPtr->getSumOfUncoveredWeights();
             }
 
             /**
