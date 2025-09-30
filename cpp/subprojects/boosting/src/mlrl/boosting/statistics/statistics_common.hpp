@@ -137,12 +137,13 @@ namespace boosting {
      *                                  statistics
      */
     template<typename State, typename StatisticVector, typename RuleEvaluationFactory, typename WeightVector>
-    class AbstractStatisticsSpace : virtual public IStatisticsSpace {
+    class AbstractBoostingStatisticsSpace : public AbstractStatisticsSpace<State>,
+                                            virtual public IStatisticsSpace {
         protected:
 
             /**
              * An abstract base class for all subsets of the gradients and Hessians that are stored by an instance of
-             * the class `AbstractStatisticsSpace`.
+             * the class `AbstractBoostingStatisticsSpace`.
              *
              * @tparam IndexVector The type of the vector that provides access to the indices of the outputs that are
              *                     included in the subset
@@ -168,14 +169,14 @@ namespace boosting {
                 public:
 
                     /**
-                     * @param statistics        A reference to an object of type `AbstractStatisticsSpace` that stores
-                     *                          the gradients and Hessians
+                     * @param statistics        A reference to an object of type `AbstractBoostingStatisticsSpace` that
+                     *                          stores the gradients and Hessians
                      * @param totalSumVector    A reference to an object of template type `StatisticVector` that stores
                      *                          the total sums of gradients and Hessians
                      * @param outputIndices     A reference to an object of template type `IndexVector` that provides
                      *                          access to the indices of the outputs that are included in the subset
                      */
-                    AbstractStatisticsSubset(const AbstractStatisticsSpace& statistics,
+                    AbstractStatisticsSubset(const AbstractBoostingStatisticsSpace& statistics,
                                              const StatisticVector& totalSumVector, const IndexVector& outputIndices)
                         : StatisticsSubset<State, StatisticVector, RuleEvaluationFactory, WeightVector, IndexVector>(
                             statistics.state_, statistics.ruleEvaluationFactory_, statistics.weights_, outputIndices),
@@ -230,11 +231,6 @@ namespace boosting {
         protected:
 
             /**
-             * A reference to an object of template type `State` that represents the state of the training process.
-             */
-            State& state_;
-
-            /**
              * A reference to an object of template type `RuleEvaluationFactory` that is used to create instances of the
              * class that is used for calculating the predictions of rules, as well as their overall quality.
              */
@@ -257,23 +253,10 @@ namespace boosting {
              * @param weights               A reference to an object of template type `WeightVector` that provides
              *                              access to the weights of individual statistics
              */
-            AbstractStatisticsSpace(State& state, const RuleEvaluationFactory& ruleEvaluationFactory,
-                                    const WeightVector& weights)
-                : state_(state), ruleEvaluationFactory_(ruleEvaluationFactory), weights_(weights) {}
-
-            /**
-             * @see `IStatisticsSpace::getNumStatistics`
-             */
-            uint32 getNumStatistics() const override final {
-                return state_.statisticMatrixPtr->getNumRows();
-            }
-
-            /**
-             * @see `IStatisticsSpace::getNumOutputs`
-             */
-            uint32 getNumOutputs() const override final {
-                return state_.statisticMatrixPtr->getNumCols();
-            }
+            AbstractBoostingStatisticsSpace(State& state, const RuleEvaluationFactory& ruleEvaluationFactory,
+                                            const WeightVector& weights)
+                : AbstractStatisticsSpace<State>(state), ruleEvaluationFactory_(ruleEvaluationFactory),
+                  weights_(weights) {}
     };
 
     template<typename StatisticView, typename StatisticVector>
@@ -317,7 +300,7 @@ namespace boosting {
     template<typename State, typename StatisticVector, typename RuleEvaluationFactory, typename WeightVector>
     class WeightedStatistics final
         : virtual public IWeightedStatistics,
-          public AbstractStatisticsSpace<State, StatisticVector, RuleEvaluationFactory, WeightVector> {
+          public AbstractBoostingStatisticsSpace<State, StatisticVector, RuleEvaluationFactory, WeightVector> {
         private:
 
             /**
@@ -329,8 +312,8 @@ namespace boosting {
              */
             template<typename IndexVector>
             class StatisticsSubset final
-                : public AbstractStatisticsSpace<State, StatisticVector, RuleEvaluationFactory,
-                                                 WeightVector>::template AbstractStatisticsSubset<IndexVector> {
+                : public AbstractBoostingStatisticsSpace<State, StatisticVector, RuleEvaluationFactory,
+                                                         WeightVector>::template AbstractStatisticsSubset<IndexVector> {
                 private:
 
                     std::unique_ptr<StatisticVector> totalCoverableSumVectorPtr_;
@@ -351,7 +334,7 @@ namespace boosting {
                      */
                     StatisticsSubset(const WeightedStatistics& statistics, const StatisticVector& totalSumVector,
                                      const BinaryDokVector& excludedStatisticIndices, const IndexVector& outputIndices)
-                        : AbstractStatisticsSpace<State, StatisticVector, RuleEvaluationFactory, WeightVector>::
+                        : AbstractBoostingStatisticsSpace<State, StatisticVector, RuleEvaluationFactory, WeightVector>::
                             template AbstractStatisticsSubset<IndexVector>(statistics, totalSumVector, outputIndices) {
                         if (excludedStatisticIndices.getNumIndices() > 0) {
                             // Create a vector for storing the totals sums of gradients and Hessians, if necessary...
@@ -385,7 +368,7 @@ namespace boosting {
              */
             WeightedStatistics(State& state, const RuleEvaluationFactory& ruleEvaluationFactory,
                                const WeightVector& weights)
-                : AbstractStatisticsSpace<State, StatisticVector, RuleEvaluationFactory, WeightVector>(
+                : AbstractBoostingStatisticsSpace<State, StatisticVector, RuleEvaluationFactory, WeightVector>(
                     state, ruleEvaluationFactory, weights),
                   totalSumVectorPtr_(std::make_unique<StatisticVector>(state.statisticMatrixPtr->getNumCols(), true)) {
                 uint32 numStatistics = weights.getNumElements();
@@ -399,7 +382,7 @@ namespace boosting {
              * @param statistics A reference to an object of type `WeightedStatistics` to be copied
              */
             WeightedStatistics(const WeightedStatistics& statistics)
-                : AbstractStatisticsSpace<State, StatisticVector, RuleEvaluationFactory, WeightVector>(
+                : AbstractBoostingStatisticsSpace<State, StatisticVector, RuleEvaluationFactory, WeightVector>(
                     statistics.state_, statistics.ruleEvaluationFactory_, statistics.weights_),
                   totalSumVectorPtr_(std::make_unique<StatisticVector>(*statistics.totalSumVectorPtr_)) {}
 
