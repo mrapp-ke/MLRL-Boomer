@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/common/sampling/weight_vector_equal.hpp"
 #include "mlrl/common/statistics/statistics_update_candidate.hpp"
 
 /**
@@ -50,4 +51,96 @@ class IStatisticsSubset {
          *         overall quality
          */
         virtual std::unique_ptr<IStatisticsUpdateCandidate> calculateScores() = 0;
+};
+
+/**
+ * An abstract base class for all classes that provide access to a subset of the statistics and allows to calculate the
+ * scores to be predicted by rules that cover such a subset.
+ *
+ * @tparam State            The type of the state of the training process
+ * @tparam StatisticVector  The type of the vector that is used to store the sums of statistics
+ * @tparam WeightVector     The type of the vector that provides access to the weights of individual statistics
+ * @tparam IndexVector      The type of the vector that provides access to the indices of the outputs that are included
+ *                          in the subset
+ */
+template<typename State, typename StatisticVector, typename WeightVector, typename IndexVector>
+class AbstractStatisticsSubset : virtual public IStatisticsSubset {
+    private:
+
+        static inline bool hasNonZeroWeightInternally(const EqualWeightVector& weights, uint32 statisticIndex) {
+            return true;
+        }
+
+        template<typename Weights>
+        static inline bool hasNonZeroWeightInternally(const Weights& weights, uint32 statisticIndex) {
+            return !isEqualToZero(weights[statisticIndex]);
+        }
+
+        template<typename StatisticView>
+        static inline void addStatisticToSubsetInternally(const EqualWeightVector& weights,
+                                                          const StatisticView& statisticView, StatisticVector& vector,
+                                                          const IndexVector& outputIndices, uint32 statisticIndex) {
+            vector.addToSubset(statisticView, statisticIndex, outputIndices);
+        }
+
+        template<typename StatisticView, typename Weights>
+        static inline void addStatisticToSubsetInternally(const Weights& weights, const StatisticView& statisticView,
+                                                          StatisticVector& vector, const IndexVector& outputIndices,
+                                                          uint32 statisticIndex) {
+            typename WeightVector::weight_type weight = weights[statisticIndex];
+            vector.addToSubset(statisticView, statisticIndex, outputIndices, weight);
+        }
+
+    protected:
+
+        /**
+         * A reference to an object of template type `State` that represents the state of the training process.
+         */
+        State& state_;
+
+        /**
+         * An object of template type `StatisticVector` that stores the sums of statistics.
+         */
+        StatisticVector sumVector_;
+
+        /**
+         * A reference to an object of template type `WeightVector` that provides access to the weights of individual
+         * statistics.
+         */
+        const WeightVector& weights_;
+
+        /**
+         * A reference to an object of template type `IndexVector` that provides access to the indices of the outputs
+         * that are included in the subset.
+         */
+        const IndexVector& outputIndices_;
+
+    public:
+
+        /**
+         * @param state         A reference to an object of template type `State` that represents the state of the
+         *                      training process
+         * @param weights       A reference to an object of template type `WeightVector` that provides access to the
+         *                      weights of individual statistics
+         * @param outputIndices A reference to an object of template type `IndexVector` that provides access to the
+         *                      indices of the outputs that are included in the subset
+         */
+        AbstractStatisticsSubset(State& state, const WeightVector& weights, const IndexVector& outputIndices)
+            : state_(state), sumVector_(outputIndices.getNumElements(), true), weights_(weights),
+              outputIndices_(outputIndices) {}
+
+        /**
+         * @see `IStatisticsSubset::hasNonZeroWeight`
+         */
+        bool hasNonZeroWeight(uint32 statisticIndex) const override final {
+            return this->hasNonZeroWeightInternally(weights_, statisticIndex);
+        }
+
+        /**
+         * @see `IStatisticsSubset::addToSubset`
+         */
+        void addToSubset(uint32 statisticIndex) override final {
+            this->addStatisticToSubsetInternally(weights_, state_.statisticMatrixPtr->getView(), sumVector_,
+                                                 outputIndices_, statisticIndex);
+        }
 };

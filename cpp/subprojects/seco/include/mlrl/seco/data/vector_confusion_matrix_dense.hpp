@@ -104,7 +104,7 @@ namespace seco {
              * @param weight    The weight, the confusion matrix elements should be multiplied by
              */
             void addToSubset(const DenseDecomposableStatisticMatrix<CContiguousView<const uint8>>::View& view,
-                             uint32 row, const CompleteIndexVector& indices, StatisticType weight);
+                             uint32 row, const CompleteIndexVector& indices, StatisticType weight = 1);
 
             /**
              * Adds certain confusion matrix elements in a specific row of a view, whose positions are given as a
@@ -118,7 +118,7 @@ namespace seco {
              * @param weight    The weight, the confusion matrix elements should be multiplied by
              */
             void addToSubset(const DenseDecomposableStatisticMatrix<BinaryCsrView>::View& view, uint32 row,
-                             const CompleteIndexVector& indices, StatisticType weight);
+                             const CompleteIndexVector& indices, StatisticType weight = 1);
 
             /**
              * Adds certain confusion matrix elements in a specific row of a view, whose positions are given as a
@@ -133,7 +133,7 @@ namespace seco {
              * @param weight    The weight, the confusion matrix elements should be multiplied by
              */
             void addToSubset(const DenseDecomposableStatisticMatrix<CContiguousView<const uint8>>::View& view,
-                             uint32 row, const PartialIndexVector& indices, StatisticType weight);
+                             uint32 row, const PartialIndexVector& indices, StatisticType weight = 1);
 
             /**
              * Adds certain confusion matrix elements in a specific row of a view, whose positions are given as a
@@ -147,7 +147,7 @@ namespace seco {
              * @param weight    The weight, the confusion matrix elements should be multiplied by
              */
             void addToSubset(const DenseDecomposableStatisticMatrix<BinaryCsrView>::View& view, uint32 row,
-                             const PartialIndexVector& indices, StatisticType weight);
+                             const PartialIndexVector& indices, StatisticType weight = 1);
 
             /**
              * Sets the confusion matrix elements in this vector to the difference `first - second` between the elements
