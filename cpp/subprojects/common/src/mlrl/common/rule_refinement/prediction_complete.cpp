@@ -58,6 +58,11 @@ typename CompletePrediction<ScoreType>::index_const_iterator CompletePrediction<
 }
 
 template<typename ScoreType>
+const CompleteIndexVector& CompletePrediction<ScoreType>::getIndexVector() const {
+    return indexVector_;
+}
+
+template<typename ScoreType>
 uint32 CompletePrediction<ScoreType>::getNumElements() const {
     return VectorDecorator<AllocatedVector<ScoreType>>::getNumElements();
 }
@@ -135,13 +140,8 @@ std::unique_ptr<IStatisticsSubset> CompletePrediction<ScoreType>::createStatisti
 }
 
 template<typename ScoreType>
-void CompletePrediction<ScoreType>::applyPrediction(uint32 statisticIndex) {
-    statisticsUpdatePtr_->applyPrediction(statisticIndex);
-}
-
-template<typename ScoreType>
-void CompletePrediction<ScoreType>::revertPrediction(uint32 statisticIndex) {
-    statisticsUpdatePtr_->revertPrediction(statisticIndex);
+std::unique_ptr<IStatisticsUpdate::ITransaction> CompletePrediction<ScoreType>::updateStatistics() {
+    return statisticsUpdatePtr_->updateStatistics();
 }
 
 template<typename ScoreType>

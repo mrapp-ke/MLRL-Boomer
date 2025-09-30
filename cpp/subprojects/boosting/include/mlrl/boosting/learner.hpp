@@ -20,6 +20,9 @@
 #include "mlrl/boosting/rule_evaluation/regularization_no.hpp"
 #include "mlrl/boosting/rule_model_assemblage/default_rule_auto.hpp"
 #include "mlrl/boosting/sampling/partition_sampling_auto.hpp"
+#include "mlrl/boosting/statistics/quantization.hpp"
+#include "mlrl/boosting/statistics/quantization_no.hpp"
+#include "mlrl/boosting/statistics/quantization_stochastic.hpp"
 #include "mlrl/boosting/statistics/statistic_format.hpp"
 #include "mlrl/boosting/statistics/statistic_format_auto.hpp"
 #include "mlrl/boosting/statistics/statistic_format_dense.hpp"
@@ -85,6 +88,15 @@ namespace boosting {
              *         configuration of the statistics
              */
             virtual SharedProperty<IRegressionStatisticsConfig> getRegressionStatisticsConfig() = 0;
+
+            /**
+             * Returns a `Property` that allows to access the `IQuantizationConfig` that stores the configuration of the
+             * method for quantizing statistics about the quality of predictions for the training examples.
+             *
+             * @return A `Property` that allows to access the `IQuantizationConfig` that stores the configuration of the
+             *         method for quantizing statistics about the quality of predictions for the training examples
+             */
+            virtual Property<IQuantizationConfig> getQuantizationConfig() = 0;
 
             /**
              * Returns a `Property` that allows to access the `IRegularizationConfig` that stores the configuration of
@@ -341,6 +353,48 @@ namespace boosting {
     };
 
     /**
+     * Defines an interface for all classes that allow to configure a rule learner to not quantize statistics about the
+     * quality of predictions for the training examples.
+     */
+    class MLRLBOOSTING_API INoQuantizationMixin : public virtual IBoostedRuleLearnerConfig {
+        public:
+
+            virtual ~INoQuantizationMixin() override {}
+
+            /**
+             * Configures the rule learner to not quantize statistics about the quality of predictions for the training
+             * examples.
+             */
+            virtual void useNoQuantization() {
+                this->getQuantizationConfig().set(std::make_unique<NoQuantizationConfig>());
+            }
+    };
+
+    /**
+     * Defines an interface for all classes that allow to configure a rule learner to quantize statistics using a
+     * stochastic rounding strategy.
+     */
+    class MLRLBOOSTING_API IStochasticQuantizationMixin : public virtual IBoostedRuleLearnerConfig {
+        public:
+
+            virtual ~IStochasticQuantizationMixin() override {}
+
+            /**
+             * Configures the rule learner to quantize statistics about the quality of predictions for the training
+             * examples using a stochastic rounding strategy.
+             *
+             * @return A reference to an object of type `IStochasticQuantizationConfig` that allows further
+             *         configuration of the quantization method
+             */
+            virtual IStochasticQuantizationConfig& useStochasticQuantization() {
+                auto ptr = std::make_unique<StochasticQuantizationConfig>(this->getRNGConfig());
+                IStochasticQuantizationConfig& ref = *ptr;
+                this->getQuantizationConfig().set(std::move(ptr));
+                return ref;
+            }
+    };
+
+    /**
      * Defines an interface for all classes that allow to configure a rule learner to not use L1 regularization.
      */
     class MLRLBOOSTING_API INoL1RegularizationMixin : public virtual IBoostedRuleLearnerConfig {
@@ -464,8 +518,9 @@ namespace boosting {
              */
             virtual void useCompleteHeads() {
                 this->getHeadConfig().set(std::make_unique<CompleteHeadConfig>(
-                  this->getLabelBinningConfig(), this->getParallelStatisticUpdateConfig(),
-                  this->getL1RegularizationConfig(), this->getL2RegularizationConfig()));
+                  this->getQuantizationConfig(), this->getLabelBinningConfig(),
+                  this->getParallelStatisticUpdateConfig(), this->getL1RegularizationConfig(),
+                  this->getL2RegularizationConfig()));
             }
     };
 
@@ -486,8 +541,9 @@ namespace boosting {
              *         the rule heads
              */
             virtual IFixedPartialHeadConfig& useFixedPartialHeads() {
-                auto ptr = std::make_unique<FixedPartialHeadConfig>(this->getLabelBinningConfig(),
-                                                                    this->getParallelStatisticUpdateConfig());
+                auto ptr =
+                  std::make_unique<FixedPartialHeadConfig>(this->getQuantizationConfig(), this->getLabelBinningConfig(),
+                                                           this->getParallelStatisticUpdateConfig());
                 IFixedPartialHeadConfig& ref = *ptr;
                 this->getHeadConfig().set(std::move(ptr));
                 return ref;
@@ -512,7 +568,8 @@ namespace boosting {
              *         the rule heads
              */
             virtual IDynamicPartialHeadConfig& useDynamicPartialHeads() {
-                auto ptr = std::make_unique<DynamicPartialHeadConfig>(this->getLabelBinningConfig(),
+                auto ptr = std::make_unique<DynamicPartialHeadConfig>(this->getQuantizationConfig(),
+                                                                      this->getLabelBinningConfig(),
                                                                       this->getParallelStatisticUpdateConfig());
                 IDynamicPartialHeadConfig& ref = *ptr;
                 this->getHeadConfig().set(std::move(ptr));
@@ -534,8 +591,9 @@ namespace boosting {
              */
             virtual void useSingleOutputHeads() {
                 this->getHeadConfig().set(std::make_unique<SingleOutputHeadConfig>(
-                  this->getLabelBinningConfig(), this->getParallelStatisticUpdateConfig(),
-                  this->getL1RegularizationConfig(), this->getL2RegularizationConfig()));
+                  this->getQuantizationConfig(), this->getLabelBinningConfig(),
+                  this->getParallelStatisticUpdateConfig(), this->getL1RegularizationConfig(),
+                  this->getL2RegularizationConfig()));
             }
     };
 
@@ -553,8 +611,9 @@ namespace boosting {
              */
             virtual void useAutomaticHeads() {
                 this->getHeadConfig().set(std::make_unique<AutomaticHeadConfig>(
-                  this->getLossConfig(), this->getLabelBinningConfig(), this->getParallelStatisticUpdateConfig(),
-                  this->getL1RegularizationConfig(), this->getL2RegularizationConfig()));
+                  this->getQuantizationConfig(), this->getLossConfig(), this->getLabelBinningConfig(),
+                  this->getParallelStatisticUpdateConfig(), this->getL1RegularizationConfig(),
+                  this->getL2RegularizationConfig()));
             }
     };
 
@@ -646,6 +705,7 @@ namespace boosting {
                                                       virtual public IFloat64StatisticsMixin,
                                                       virtual public INoL1RegularizationMixin,
                                                       virtual public INoL2RegularizationMixin,
+                                                      virtual public INoQuantizationMixin,
                                                       virtual public INoLabelBinningMixin {
         public:
 
@@ -659,6 +719,7 @@ namespace boosting {
                 this->use64BitStatistics();
                 this->useNoL1Regularization();
                 this->useNoL2Regularization();
+                this->useNoQuantization();
                 this->useNoLabelBinning();
             }
     };

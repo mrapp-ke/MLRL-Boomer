@@ -14,24 +14,47 @@
 class IStatisticsUpdate {
     public:
 
+        /**
+         * A transaction for jointly updating multiple statistics.
+         */
+        class ITransaction {
+            public:
+
+                virtual ~ITransaction() {}
+
+                /**
+                 * Updates a specific statistic. The affected statistic is in an undefined state until the function
+                 * `commit` is called.
+                 *
+                 * This function must be called for each statistic that is covered by a new rule before learning the
+                 * next rule.
+                 *
+                 * @param statisticIndex The index of the statistic that should be updated
+                 */
+                virtual void applyPrediction(uint32 statisticIndex) = 0;
+
+                /**
+                 * Reverts a specific statistic that has previously been updated via the function `applyPrediction`. The
+                 * affected statistic is in an undefined state until the function `commit` is called.
+                 *
+                 * @param statisticIndex The index of the statistic that should be updated
+                 */
+                virtual void revertPrediction(uint32 statisticIndex) = 0;
+
+                /**
+                 * Applies any updates provided via the functions `applyPrediction` or `revertPrediction`.
+                 */
+                virtual void commit() = 0;
+        };
+
         virtual ~IStatisticsUpdate() {}
 
         /**
-         * Updates a specific statistic.
+         * Creates and returns an object of type `ITransaction` that allows updating multiple statistics.
          *
-         * This function must be called for each statistic that is covered by a new rule before learning the
-         * next rule.
-         *
-         * @param statisticIndex The index of the statistic that should be updated
+         * @return An unique pointer to an object of type `ITransaction` that has been created
          */
-        virtual void applyPrediction(uint32 statisticIndex) = 0;
-
-        /**
-         * Reverts a specific statistic that has previously been updated via the function `applyPrediction`.
-         *
-         * @param statisticIndex The index of the statistic that should be updated
-         */
-        virtual void revertPrediction(uint32 statisticIndex) = 0;
+        virtual std::unique_ptr<ITransaction> updateStatistics() = 0;
 };
 
 /**
