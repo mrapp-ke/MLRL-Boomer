@@ -38,8 +38,8 @@ namespace boosting {
      * A subset of gradients and Hessians that are calculated according to a loss function and are accessible via a
      * view.
      *
-     * @tparam State                    The type of the state of the boosting process
-     * @tparam StatisticVector          The type of the vector that is used to store the sums of gradients and Hessians
+     * @tparam State                    The type of the state of the training process
+     * @tparam StatisticVector          The type of the vector that is used to store the sums of statistics
      * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
      *                                  used for calculating the predictions of rules, as well as corresponding quality
      *                                  scores
@@ -54,12 +54,12 @@ namespace boosting {
         protected:
 
             /**
-             * An object of template type `StatisticVector` that stores the sums of gradients and Hessians.
+             * An object of template type `StatisticVector` that stores the sums of statistics.
              */
             StatisticVector sumVector_;
 
             /**
-             * A reference to an object of template type `State` that represents the state of the boosting process.
+             * A reference to an object of template type `State` that represents the state of the training process.
              */
             State& state_;
 
@@ -76,7 +76,7 @@ namespace boosting {
             const IndexVector& outputIndices_;
 
             /**
-             * An unique pointer to an object of type `IRuleEvaluation` that is used to calculate the predictions of
+             * An unique pointer to an object of type `IRuleEvaluation` that is used for calculating the predictions of
              * rules, as well as their overall quality.
              */
             const std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr_;
@@ -85,10 +85,10 @@ namespace boosting {
 
             /**
              * @param state                 A reference to an object of template type `State` that represents the state
-             *                              of the boosting process
+             *                              of the training process
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
-             *                              allows to create instances of the class that is used for calculating the
-             *                              predictions of rules, as well as their overall quality
+             *                              allows to create instances of the class that should be used for calculating
+             *                              the predictions of rules, as well as their overall quality
              * @param weights               A reference to an object of template type `WeightVector` that provides
              *                              access to the weights of individual statistics
              * @param outputIndices         A reference to an object of template type `IndexVector` that provides access
@@ -128,8 +128,8 @@ namespace boosting {
      * An abstract base class for all statistics that provide access to gradients and Hessians that are calculated
      * according to a loss function.
      *
-     * @tparam State                    The type of the state of the boosting process
-     * @tparam StatisticVector          The type of the vectors that are used to store gradients and Hessians
+     * @tparam State                    The type of the state of the training process
+     * @tparam StatisticVector          The type of the vectors that are used to store statistics
      * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
      *                                  used for calculating the predictions of rules, as well as corresponding quality
      *                                  scores
@@ -230,7 +230,7 @@ namespace boosting {
         protected:
 
             /**
-             * A reference to an object of template type `State` that represents the state of the boosting process.
+             * A reference to an object of template type `State` that represents the state of the training process.
              */
             State& state_;
 
@@ -250,7 +250,7 @@ namespace boosting {
 
             /**
              * @param state                 A reference to an object of template type `State` that represents the state
-             *                              of the boosting process
+             *                              of the training process
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
              *                              allows to create instances of the class that should be used for calculating
              *                              the predictions of rules, as well as their overall quality
@@ -306,8 +306,8 @@ namespace boosting {
      * Provides access to weighted gradients and Hessians that are calculated according to a loss function and allows to
      * update the gradients and Hessians after a new rule has been learned.
      *
-     * @tparam State                    The type of the state of the boosting process
-     * @tparam StatisticVector          The type of the vectors that are used to store gradients and Hessians
+     * @tparam State                    The type of the state of the training process
+     * @tparam StatisticVector          The type of the vectors that are used to store statistics
      * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
      *                                  used for calculating the predictions of rules, as well as corresponding quality
      *                                  scores
@@ -321,7 +321,7 @@ namespace boosting {
         private:
 
             /**
-             * Provides access to a subset of the gradients and Hessians that are stored by an instance of the class
+             * Provides access to a subset of the statistics that are stored by an instance of the class
              * `WeightedStatistics`.
              *
              * @tparam IndexVector The type of the vector that provides access to the indices of the outputs that are
@@ -339,7 +339,7 @@ namespace boosting {
 
                     /**
                      * @param statistics                A reference to an object of type `WeightedStatistics` that
-                     *                                  stores the gradients and Hessians
+                     *                                  stores the statistics
                      * @param totalSumVector            A reference to an object of template type `StatisticVector` that
                      *                                  stores the total sums of gradients and Hessians
                      * @param excludedStatisticIndices  A reference to an object of type `BinaryDokVector` that provides
@@ -376,7 +376,7 @@ namespace boosting {
 
             /**
              * @param state                 A reference to an object of template type `State` that represents the state
-             *                              of the boosting process
+             *                              of the training process
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
              *                              allows to create instances of the class that should be used for calculating
              *                              the predictions of rules, as well as their overall quality
@@ -458,7 +458,7 @@ namespace boosting {
      * An abstract base class for all statistics that provide access to gradients and Hessians that are calculated
      * according to a loss function.
      *
-     * @tparam State                    The type of the state of the boosting process
+     * @tparam State                    The type of the state of the training process
      * @tparam EvaluationMeasure        The type of the evaluation measure that is used to assess the quality of
      *                                  predictions for a specific statistic
      * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
@@ -470,7 +470,7 @@ namespace boosting {
         protected:
 
             /**
-             * An unique pointer to the state of the boosting process.
+             * An unique pointer to the state of the training process.
              */
             const std::unique_ptr<State> statePtr_;
 
@@ -490,7 +490,7 @@ namespace boosting {
 
             /**
              * @param statePtr              An unique pointer to an object of template type `State` that represents the
-             *                              state of the boosting process and allows to update it
+             *                              state of the training process and allows to update it
              * @param evaluationMeasurePtr  An unique pointer to an object of template type `EvaluationMeasure` that
              *                              implements the evaluation measure that should be used to assess the quality
              *                              of predictions for a specific statistic
