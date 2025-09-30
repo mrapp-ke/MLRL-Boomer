@@ -75,85 +75,68 @@ namespace seco {
     }
 
     template<typename StatisticType>
-    void DenseConfusionMatrixVector<StatisticType>::add(uint32 exampleIndex,
-                                                        const CContiguousView<const uint8>& labelMatrix,
-                                                        View<uint32>::const_iterator majorityLabelIndicesBegin,
-                                                        View<uint32>::const_iterator majorityLabelIndicesEnd,
-                                                        const DenseCoverageMatrix& coverageMatrix,
-                                                        StatisticType weight) {
-        addInternally(*this, labelMatrix.values_cbegin(exampleIndex), majorityLabelIndicesBegin,
-                      majorityLabelIndicesEnd, coverageMatrix.values_cbegin(exampleIndex), weight,
+    void DenseConfusionMatrixVector<StatisticType>::add(
+      const DenseDecomposableStatisticMatrix<CContiguousView<const uint8>>::View& view, uint32 row,
+      StatisticType weight) {
+        addInternally(*this, view.labelMatrix.values_cbegin(row), view.majorityLabelVector.cbegin(),
+                      view.majorityLabelVector.cend(), view.coverageMatrix.values_cbegin(row), weight,
                       this->getNumElements());
     }
 
     template<typename StatisticType>
-    void DenseConfusionMatrixVector<StatisticType>::add(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                                        View<uint32>::const_iterator majorityLabelIndicesBegin,
-                                                        View<uint32>::const_iterator majorityLabelIndicesEnd,
-                                                        const DenseCoverageMatrix& coverageMatrix,
-                                                        StatisticType weight) {
-        auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
-                                                               labelMatrix.indices_cend(exampleIndex));
-        addInternally(*this, labelIterator, majorityLabelIndicesBegin, majorityLabelIndicesEnd,
-                      coverageMatrix.values_cbegin(exampleIndex), weight, this->getNumElements());
+    void DenseConfusionMatrixVector<StatisticType>::add(
+      const DenseDecomposableStatisticMatrix<BinaryCsrView>::View& view, uint32 row, StatisticType weight) {
+        auto labelIterator =
+          createBinarySparseForwardIterator(view.labelMatrix.indices_cbegin(row), view.labelMatrix.indices_cend(row));
+        addInternally(*this, labelIterator, view.majorityLabelVector.cbegin(), view.majorityLabelVector.cend(),
+                      view.coverageMatrix.values_cbegin(row), weight, this->getNumElements());
     }
 
     template<typename StatisticType>
-    void DenseConfusionMatrixVector<StatisticType>::remove(uint32 exampleIndex,
-                                                           const CContiguousView<const uint8>& labelMatrix,
-                                                           View<uint32>::const_iterator majorityLabelIndicesBegin,
-                                                           View<uint32>::const_iterator majorityLabelIndicesEnd,
-                                                           const DenseCoverageMatrix& coverageMatrix,
-                                                           StatisticType weight) {
-        removeInternally(*this, labelMatrix.values_cbegin(exampleIndex), majorityLabelIndicesBegin,
-                         majorityLabelIndicesEnd, coverageMatrix.values_cbegin(exampleIndex), weight,
+    void DenseConfusionMatrixVector<StatisticType>::remove(
+      const DenseDecomposableStatisticMatrix<CContiguousView<const uint8>>::View& view, uint32 row,
+      StatisticType weight) {
+        removeInternally(*this, view.labelMatrix.values_cbegin(row), view.majorityLabelVector.cbegin(),
+                         view.majorityLabelVector.cend(), view.coverageMatrix.values_cbegin(row), weight,
                          this->getNumElements());
     }
 
     template<typename StatisticType>
-    void DenseConfusionMatrixVector<StatisticType>::remove(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                                           View<uint32>::const_iterator majorityLabelIndicesBegin,
-                                                           View<uint32>::const_iterator majorityLabelIndicesEnd,
-                                                           const DenseCoverageMatrix& coverageMatrix,
-                                                           StatisticType weight) {
-        auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
-                                                               labelMatrix.indices_cend(exampleIndex));
-        removeInternally(*this, labelIterator, majorityLabelIndicesBegin, majorityLabelIndicesEnd,
-                         coverageMatrix.values_cbegin(exampleIndex), weight, this->getNumElements());
+    void DenseConfusionMatrixVector<StatisticType>::remove(
+      const DenseDecomposableStatisticMatrix<BinaryCsrView>::View& view, uint32 row, StatisticType weight) {
+        auto labelIterator =
+          createBinarySparseForwardIterator(view.labelMatrix.indices_cbegin(row), view.labelMatrix.indices_cend(row));
+        removeInternally(*this, labelIterator, view.majorityLabelVector.cbegin(), view.majorityLabelVector.cend(),
+                         view.coverageMatrix.values_cbegin(row), weight, this->getNumElements());
     }
 
     template<typename StatisticType>
     void DenseConfusionMatrixVector<StatisticType>::addToSubset(
-      uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
-      View<uint32>::const_iterator majorityLabelIndicesBegin, View<uint32>::const_iterator majorityLabelIndicesEnd,
-      const DenseCoverageMatrix& coverageMatrix, const CompleteIndexVector& indices, StatisticType weight) {
-        addInternally(*this, labelMatrix.values_cbegin(exampleIndex), majorityLabelIndicesBegin,
-                      majorityLabelIndicesEnd, coverageMatrix.values_cbegin(exampleIndex), weight,
+      const DenseDecomposableStatisticMatrix<CContiguousView<const uint8>>::View& view, uint32 row,
+      const CompleteIndexVector& indices, StatisticType weight) {
+        addInternally(*this, view.labelMatrix.values_cbegin(row), view.majorityLabelVector.cbegin(),
+                      view.majorityLabelVector.cend(), view.coverageMatrix.values_cbegin(row), weight,
                       this->getNumElements());
     }
 
     template<typename StatisticType>
-    void DenseConfusionMatrixVector<StatisticType>::addToSubset(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                                                View<uint32>::const_iterator majorityLabelIndicesBegin,
-                                                                View<uint32>::const_iterator majorityLabelIndicesEnd,
-                                                                const DenseCoverageMatrix& coverageMatrix,
-                                                                const CompleteIndexVector& indices,
-                                                                StatisticType weight) {
-        auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
-                                                               labelMatrix.indices_cend(exampleIndex));
-        addInternally(*this, labelIterator, majorityLabelIndicesBegin, majorityLabelIndicesEnd,
-                      coverageMatrix.values_cbegin(exampleIndex), weight, this->getNumElements());
+    void DenseConfusionMatrixVector<StatisticType>::addToSubset(
+      const DenseDecomposableStatisticMatrix<BinaryCsrView>::View& view, uint32 row, const CompleteIndexVector& indices,
+      StatisticType weight) {
+        auto labelIterator =
+          createBinarySparseForwardIterator(view.labelMatrix.indices_cbegin(row), view.labelMatrix.indices_cend(row));
+        addInternally(*this, labelIterator, view.majorityLabelVector.cbegin(), view.majorityLabelVector.cend(),
+                      view.coverageMatrix.values_cbegin(row), weight, this->getNumElements());
     }
 
     template<typename StatisticType>
     void DenseConfusionMatrixVector<StatisticType>::addToSubset(
-      uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
-      View<uint32>::const_iterator majorityLabelIndicesBegin, View<uint32>::const_iterator majorityLabelIndicesEnd,
-      const DenseCoverageMatrix& coverageMatrix, const PartialIndexVector& indices, StatisticType weight) {
-        auto majorityIterator = createBinarySparseForwardIterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
-        typename DenseCoverageMatrix::value_const_iterator coverageIterator =
-          coverageMatrix.values_cbegin(exampleIndex);
-        CContiguousView<const uint8>::value_const_iterator labelIterator = labelMatrix.values_cbegin(exampleIndex);
+      const DenseDecomposableStatisticMatrix<CContiguousView<const uint8>>::View& view, uint32 row,
+      const PartialIndexVector& indices, StatisticType weight) {
+        auto majorityIterator =
+          createBinarySparseForwardIterator(view.majorityLabelVector.cbegin(), view.majorityLabelVector.cend());
+        typename DenseCoverageMatrix::value_const_iterator coverageIterator = view.coverageMatrix.values_cbegin(row);
+        CContiguousView<const uint8>::value_const_iterator labelIterator = view.labelMatrix.values_cbegin(row);
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
         uint32 numElements = indices.getNumElements();
         uint32 previousIndex = 0;
@@ -175,17 +158,14 @@ namespace seco {
     }
 
     template<typename StatisticType>
-    void DenseConfusionMatrixVector<StatisticType>::addToSubset(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                                                View<uint32>::const_iterator majorityLabelIndicesBegin,
-                                                                View<uint32>::const_iterator majorityLabelIndicesEnd,
-                                                                const DenseCoverageMatrix& coverageMatrix,
-                                                                const PartialIndexVector& indices,
-                                                                StatisticType weight) {
-        auto majorityIterator = createBinarySparseForwardIterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
-        typename DenseCoverageMatrix::value_const_iterator coverageIterator =
-          coverageMatrix.values_cbegin(exampleIndex);
-        BinaryCsrView::index_const_iterator labelIndexIterator = labelMatrix.indices_cbegin(exampleIndex);
-        BinaryCsrView::index_const_iterator labelIndicesEnd = labelMatrix.indices_cend(exampleIndex);
+    void DenseConfusionMatrixVector<StatisticType>::addToSubset(
+      const DenseDecomposableStatisticMatrix<BinaryCsrView>::View& view, uint32 row, const PartialIndexVector& indices,
+      StatisticType weight) {
+        auto majorityIterator =
+          createBinarySparseForwardIterator(view.majorityLabelVector.cbegin(), view.majorityLabelVector.cend());
+        typename DenseCoverageMatrix::value_const_iterator coverageIterator = view.coverageMatrix.values_cbegin(row);
+        BinaryCsrView::index_const_iterator labelIndexIterator = view.labelMatrix.indices_cbegin(row);
+        BinaryCsrView::index_const_iterator labelIndicesEnd = view.labelMatrix.indices_cend(row);
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
         uint32 numElements = indices.getNumElements();
         uint32 previousIndex = 0;
