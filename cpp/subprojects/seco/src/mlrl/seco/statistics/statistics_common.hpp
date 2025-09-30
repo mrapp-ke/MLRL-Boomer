@@ -239,7 +239,8 @@ namespace seco {
      *                                  statistics
      */
     template<typename State, typename StatisticVector, typename RuleEvaluationFactory, typename WeightVector>
-    class WeightedStatistics final : virtual public IWeightedStatistics {
+    class WeightedStatistics final : public AbstractStatisticsSpace<State>,
+                                     virtual public IWeightedStatistics {
         private:
 
             /**
@@ -363,13 +364,6 @@ namespace seco {
 
             StatisticVector subsetSumVector_;
 
-        protected:
-
-            /**
-             * A reference to an object of template type `State` that represents the state of the training process.
-             */
-            State& state_;
-
         public:
 
             /**
@@ -383,34 +377,21 @@ namespace seco {
              */
             WeightedStatistics(State& state, const RuleEvaluationFactory& ruleEvaluationFactory,
                                const WeightVector& weights)
-                : weights_(weights), ruleEvaluationFactory_(ruleEvaluationFactory),
+                : AbstractStatisticsSpace<State>(state), weights_(weights),
+                  ruleEvaluationFactory_(ruleEvaluationFactory),
                   totalSumVector_(state.statisticMatrixPtr->labelMatrix.numCols, true),
-                  subsetSumVector_(state.statisticMatrixPtr->labelMatrix.numCols, true), state_(state) {
-                initializeStatisticVector(weights, state_.statisticMatrixPtr->getView(), totalSumVector_);
-                initializeStatisticVector(weights, state_.statisticMatrixPtr->getView(), subsetSumVector_);
+                  subsetSumVector_(state.statisticMatrixPtr->labelMatrix.numCols, true) {
+                initializeStatisticVector(weights, state.statisticMatrixPtr->getView(), totalSumVector_);
+                initializeStatisticVector(weights, state.statisticMatrixPtr->getView(), subsetSumVector_);
             }
 
             /**
              * @param statistics A reference to an object of type `WeightedStatistics` to be copied
              */
             WeightedStatistics(const WeightedStatistics& statistics)
-                : weights_(statistics.weights_), ruleEvaluationFactory_(statistics.ruleEvaluationFactory_),
-                  totalSumVector_(statistics.totalSumVector_), subsetSumVector_(statistics.subsetSumVector_),
-                  state_(statistics.state_) {}
-
-            /**
-             * @see `IStatisticsSpace::getNumStatistics`
-             */
-            uint32 getNumStatistics() const override {
-                return state_.statisticMatrixPtr->getNumRows();
-            }
-
-            /**
-             * @see `IStatisticsSpace::getNumOutputs`
-             */
-            uint32 getNumOutputs() const override {
-                return state_.statisticMatrixPtr->getNumCols();
-            }
+                : AbstractStatisticsSpace<State>(statistics.state_), weights_(statistics.weights_),
+                  ruleEvaluationFactory_(statistics.ruleEvaluationFactory_),
+                  totalSumVector_(statistics.totalSumVector_), subsetSumVector_(statistics.subsetSumVector_) {}
 
             /**
              * @see `IWeightedStatistics::copy`
@@ -431,7 +412,7 @@ namespace seco {
              * @see `IWeightedStatistics::addCoveredStatistic`
              */
             void addCoveredStatistic(uint32 statisticIndex) override {
-                addStatisticInternally(weights_, state_.statisticMatrixPtr->getView(), subsetSumVector_,
+                addStatisticInternally(weights_, this->state_.statisticMatrixPtr->getView(), subsetSumVector_,
                                        statisticIndex);
             }
 
@@ -439,7 +420,7 @@ namespace seco {
              * @see `IWeightedStatistics::removeCoveredStatistic`
              */
             void removeCoveredStatistic(uint32 statisticIndex) override {
-                removeStatisticInternally(weights_, state_.statisticMatrixPtr->getView(), subsetSumVector_,
+                removeStatisticInternally(weights_, this->state_.statisticMatrixPtr->getView(), subsetSumVector_,
                                           statisticIndex);
             }
 
