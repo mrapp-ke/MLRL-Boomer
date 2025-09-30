@@ -10,30 +10,6 @@
 
 namespace boosting {
 
-    static inline bool hasNonZeroWeightInternally(const EqualWeightVector& weights, uint32 statisticIndex) {
-        return true;
-    }
-
-    template<typename WeightVector>
-    static inline bool hasNonZeroWeightInternally(const WeightVector& weights, uint32 statisticIndex) {
-        return !isEqualToZero(weights[statisticIndex]);
-    }
-
-    template<typename StatisticView, typename StatisticVector, typename IndexVector>
-    static inline void addStatisticToSubsetInternally(const EqualWeightVector& weights,
-                                                      const StatisticView& statisticView, StatisticVector& vector,
-                                                      const IndexVector& outputIndices, uint32 statisticIndex) {
-        vector.addToSubset(statisticView, statisticIndex, outputIndices);
-    }
-
-    template<typename WeightVector, typename StatisticView, typename StatisticVector, typename IndexVector>
-    static inline void addStatisticToSubsetInternally(const WeightVector& weights, const StatisticView& statisticView,
-                                                      StatisticVector& vector, const IndexVector& outputIndices,
-                                                      uint32 statisticIndex) {
-        typename WeightVector::weight_type weight = weights[statisticIndex];
-        vector.addToSubset(statisticView, statisticIndex, outputIndices, weight);
-    }
-
     /**
      * A subset of gradients and Hessians that are calculated according to a loss function and are accessible via a
      * view.
@@ -50,30 +26,8 @@ namespace boosting {
      */
     template<typename State, typename StatisticVector, typename RuleEvaluationFactory, typename WeightVector,
              typename IndexVector>
-    class StatisticsSubset : virtual public IStatisticsSubset {
+    class StatisticsSubset : public AbstractStatisticsSubset<State, StatisticVector, WeightVector, IndexVector> {
         protected:
-
-            /**
-             * An object of template type `StatisticVector` that stores the sums of statistics.
-             */
-            StatisticVector sumVector_;
-
-            /**
-             * A reference to an object of template type `State` that represents the state of the training process.
-             */
-            State& state_;
-
-            /**
-             * A reference to an object of template type `WeightVector` that provides access to the weights of
-             * individual statistics.
-             */
-            const WeightVector& weights_;
-
-            /**
-             * A reference to an object of template type `IndexVector` that provides access to the indices of the
-             * outputs that are included in the subset.
-             */
-            const IndexVector& outputIndices_;
 
             /**
              * An unique pointer to an object of type `IRuleEvaluation` that is used for calculating the predictions of
@@ -96,31 +50,16 @@ namespace boosting {
              */
             StatisticsSubset(State& state, const RuleEvaluationFactory& ruleEvaluationFactory,
                              const WeightVector& weights, const IndexVector& outputIndices)
-                : sumVector_(outputIndices.getNumElements(), true), state_(state), weights_(weights),
-                  outputIndices_(outputIndices),
-                  ruleEvaluationPtr_(ruleEvaluationFactory.create(sumVector_, outputIndices)) {}
-
-            /**
-             * @see `IStatisticsSubset::hasNonZeroWeight`
-             */
-            bool hasNonZeroWeight(uint32 statisticIndex) const override final {
-                return hasNonZeroWeightInternally(weights_, statisticIndex);
-            }
-
-            /**
-             * @see `IStatisticsSubset::addToSubset`
-             */
-            void addToSubset(uint32 statisticIndex) override final {
-                addStatisticToSubsetInternally(weights_, state_.statisticMatrixPtr->getView(), sumVector_,
-                                               outputIndices_, statisticIndex);
-            }
+                : AbstractStatisticsSubset<State, StatisticVector, WeightVector, IndexVector>(state, weights,
+                                                                                              outputIndices),
+                  ruleEvaluationPtr_(ruleEvaluationFactory.create(this->sumVector_, outputIndices)) {}
 
             /**
              * @see `IStatisticsSubset::calculateScores`
              */
             std::unique_ptr<IStatisticsUpdateCandidate> calculateScores() override final {
-                const IScoreVector& scoreVector = ruleEvaluationPtr_->calculateScores(sumVector_);
-                return state_.createUpdateCandidate(scoreVector);
+                const IScoreVector& scoreVector = ruleEvaluationPtr_->calculateScores(this->sumVector_);
+                return this->state_.createUpdateCandidate(scoreVector);
             }
     };
 

@@ -11,30 +11,6 @@
 
 namespace seco {
 
-    static inline bool hasNonZeroWeightInternally(const EqualWeightVector& weights, uint32 statisticIndex) {
-        return true;
-    }
-
-    template<typename WeightVector>
-    static inline bool hasNonZeroWeightInternally(const WeightVector& weights, uint32 statisticIndex) {
-        return !isEqualToZero(weights[statisticIndex]);
-    }
-
-    template<typename StatisticView, typename StatisticVector, typename IndexVector>
-    static inline void addStatisticToSubsetInternally(const EqualWeightVector& weights,
-                                                      const StatisticView& statisticView, StatisticVector& vector,
-                                                      const IndexVector& outputIndices, uint32 statisticIndex) {
-        vector.addToSubset(statisticView, statisticIndex, outputIndices, 1);
-    }
-
-    template<typename WeightVector, typename StatisticView, typename StatisticVector, typename IndexVector>
-    static inline void addStatisticToSubsetInternally(const WeightVector& weights, const StatisticView& statisticView,
-                                                      StatisticVector& vector, const IndexVector& outputIndices,
-                                                      uint32 statisticIndex) {
-        typename WeightVector::weight_type weight = weights[statisticIndex];
-        vector.addToSubset(statisticView, statisticIndex, outputIndices, weight);
-    }
-
     /**
      * An abstract base class for all subsets of confusion matrices.
      *
@@ -50,35 +26,14 @@ namespace seco {
      */
     template<typename State, typename StatisticVector, typename RuleEvaluationFactory, typename WeightVector,
              typename IndexVector>
-    class AbstractStatisticsSubset : virtual public IStatisticsSubset {
+    class AbstractCoverageStatisticsSubset
+        : public AbstractStatisticsSubset<State, StatisticVector, WeightVector, IndexVector> {
         protected:
-
-            /**
-             * An object of template type `StatisticVector` that stores the sums of statistics.
-             */
-            StatisticVector sumVector_;
-
-            /**
-             * A reference to an object of template type `State` that represents the state of the training process.
-             */
-            State& state_;
 
             /**
              * A reference to an object of template type `StatisticVector` that stores the total sums of statistics.
              */
             const StatisticVector& totalSumVector_;
-
-            /**
-             * A reference to an object of template type `WeightVector` that provides access to the weights of
-             * individual statistics.
-             */
-            const WeightVector& weights_;
-
-            /**
-             * A reference to an object of template type `IndexVector` that provides access to the indices of the
-             * outputs that are included in the subset.
-             */
-            const IndexVector& outputIndices_;
 
             /**
              * An unique pointer to an object of type `IRuleEvaluation` that is used for calculating the predictions of
@@ -101,36 +56,22 @@ namespace seco {
              * @param outputIndices         A reference to an object of template type `IndexVector` that provides access
              *                              to the indices of the outputs that are included in the subset
              */
-            AbstractStatisticsSubset(State& state, const StatisticVector& totalSumVector,
-                                     const RuleEvaluationFactory& ruleEvaluationFactory, const WeightVector& weights,
-                                     const IndexVector& outputIndices)
-                : sumVector_(outputIndices.getNumElements(), true), state_(state), totalSumVector_(totalSumVector),
-                  weights_(weights), outputIndices_(outputIndices),
-                  ruleEvaluationPtr_(ruleEvaluationFactory.create(sumVector_, outputIndices)) {}
-
-            /**
-             * @see `IStatisticsSubset::hasNonZeroWeight`
-             */
-            bool hasNonZeroWeight(uint32 statisticIndex) const override final {
-                return hasNonZeroWeightInternally(weights_, statisticIndex);
-            }
-
-            /**
-             * @see `IStatisticsSubset::addToSubset`
-             */
-            void addToSubset(uint32 statisticIndex) override final {
-                addStatisticToSubsetInternally(weights_, state_.statisticMatrixPtr->getView(), sumVector_,
-                                               outputIndices_, statisticIndex);
-            }
+            AbstractCoverageStatisticsSubset(State& state, const StatisticVector& totalSumVector,
+                                             const RuleEvaluationFactory& ruleEvaluationFactory,
+                                             const WeightVector& weights, const IndexVector& outputIndices)
+                : AbstractStatisticsSubset<State, StatisticVector, WeightVector, IndexVector>(state, weights,
+                                                                                              outputIndices),
+                  totalSumVector_(totalSumVector),
+                  ruleEvaluationPtr_(ruleEvaluationFactory.create(this->sumVector_, outputIndices)) {}
 
             /**
              * @see `IStatisticsSubset::calculateScores`
              */
             std::unique_ptr<IStatisticsUpdateCandidate> calculateScores() override final {
                 const IScoreVector& scoreVector = ruleEvaluationPtr_->calculateScores(
-                  state_.statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
-                  state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), totalSumVector_, sumVector_);
-                return state_.createUpdateCandidate(scoreVector);
+                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
+                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), totalSumVector_, this->sumVector_);
+                return this->state_.createUpdateCandidate(scoreVector);
             }
     };
 
@@ -171,7 +112,8 @@ namespace seco {
     template<typename State, typename StatisticVector, typename RuleEvaluationFactory, typename WeightVector,
              typename IndexVector>
     class StatisticsSubset final
-        : public AbstractStatisticsSubset<State, StatisticVector, RuleEvaluationFactory, WeightVector, IndexVector> {
+        : public AbstractCoverageStatisticsSubset<State, StatisticVector, RuleEvaluationFactory, WeightVector,
+                                                  IndexVector> {
         private:
 
             const std::unique_ptr<StatisticVector> totalSumVectorPtr_;
@@ -194,8 +136,9 @@ namespace seco {
             StatisticsSubset(std::unique_ptr<StatisticVector> totalSumVectorPtr, State& state,
                              const RuleEvaluationFactory& ruleEvaluationFactory, const WeightVector& weights,
                              const IndexVector& outputIndices)
-                : AbstractStatisticsSubset<State, StatisticVector, RuleEvaluationFactory, WeightVector, IndexVector>(
-                    state, *totalSumVectorPtr, ruleEvaluationFactory, weights, outputIndices),
+                : AbstractCoverageStatisticsSubset<State, StatisticVector, RuleEvaluationFactory, WeightVector,
+                                                   IndexVector>(state, *totalSumVectorPtr, ruleEvaluationFactory,
+                                                                weights, outputIndices),
                   totalSumVectorPtr_(std::move(totalSumVectorPtr)) {
                 initializeStatisticVector(weights, state.statisticMatrixPtr->getView(), *totalSumVectorPtr_);
             }
@@ -253,8 +196,8 @@ namespace seco {
             template<typename IndexVector>
             class StatisticsSubset final
                 : virtual public IResettableStatisticsSubset,
-                  public AbstractStatisticsSubset<State, StatisticVector, RuleEvaluationFactory, WeightVector,
-                                                  IndexVector> {
+                  public AbstractCoverageStatisticsSubset<State, StatisticVector, RuleEvaluationFactory, WeightVector,
+                                                          IndexVector> {
                 private:
 
                     const StatisticVector* subsetSumVector_;
@@ -279,10 +222,10 @@ namespace seco {
                      */
                     StatisticsSubset(const WeightedStatistics& statistics,
                                      const BinaryDokVector& excludedStatisticIndices, const IndexVector& outputIndices)
-                        : AbstractStatisticsSubset<State, StatisticVector, RuleEvaluationFactory, WeightVector,
-                                                   IndexVector>(statistics.state_, statistics.totalSumVector_,
-                                                                statistics.ruleEvaluationFactory_, statistics.weights_,
-                                                                outputIndices),
+                        : AbstractCoverageStatisticsSubset<State, StatisticVector, RuleEvaluationFactory, WeightVector,
+                                                           IndexVector>(statistics.state_, statistics.totalSumVector_,
+                                                                        statistics.ruleEvaluationFactory_,
+                                                                        statistics.weights_, outputIndices),
                           subsetSumVector_(&statistics.subsetSumVector_), tmpVector_(outputIndices.getNumElements()) {
                         if (excludedStatisticIndices.getNumIndices() > 0) {
                             // Allocate a vector for storing the totals sums of confusion matrices, if necessary...
