@@ -5,7 +5,6 @@
 
 #include "mlrl/common/data/vector_sparse_array_binary.hpp"
 #include "mlrl/seco/data/matrix_coverage_dense.hpp"
-#include "mlrl/seco/util/dll_exports.hpp"
 
 #include <memory>
 
@@ -18,7 +17,7 @@ namespace seco {
      * @tparam LabelMatrix The type of the matrix that provides access to the labels of the training examples
      */
     template<typename LabelMatrix>
-    class MLRLSECO_API DenseDecomposableStatisticMatrix {
+    class DenseDecomposableStatisticMatrix {
         public:
 
             /**
