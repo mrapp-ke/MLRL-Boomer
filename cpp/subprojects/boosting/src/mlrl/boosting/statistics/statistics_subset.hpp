@@ -65,6 +65,19 @@ namespace boosting {
             }
     };
 
+    template<typename StatisticView, typename StatisticVector>
+    static inline void removeStatisticInternally2(const EqualWeightVector& weights, const StatisticView& statisticView,
+                                                  StatisticVector& statisticVector, uint32 statisticIndex) {
+        statisticVector.remove(statisticView, statisticIndex);
+    }
+
+    template<typename WeightVector, typename StatisticView, typename StatisticVector>
+    static inline void removeStatisticInternally2(const WeightVector& weights, const StatisticView& statisticView,
+                                                  StatisticVector& statisticVector, uint32 statisticIndex) {
+        typename WeightVector::weight_type weight = weights[statisticIndex];
+        statisticVector.remove(statisticView, statisticIndex, weight);
+    }
+
     /**
      * A subsets of gradients and Hessians that can be reset multiple times.
      *
@@ -80,7 +93,7 @@ namespace boosting {
      */
     template<typename State, typename StatisticVector, typename WeightVector, typename IndexVector,
              typename RuleEvaluationFactory>
-    class ResettableBoostingStatisticsSubset
+    class ResettableBoostingStatisticsSubset final
         : public BoostingStatisticsSubset<State, StatisticVector, WeightVector, IndexVector, RuleEvaluationFactory>,
           virtual public IResettableStatisticsSubset {
         private:
@@ -88,6 +101,8 @@ namespace boosting {
             StatisticVector tmpVector_;
 
             std::unique_ptr<StatisticVector> accumulatedSumVectorPtr_;
+
+            std::unique_ptr<StatisticVector> totalCoverableSumVectorPtr_;
 
         protected:
 
@@ -100,25 +115,43 @@ namespace boosting {
         public:
 
             /**
-             * @param state                 A reference to an object of template type `State` that represents the state
-             *                              of the training process
-             * @param weights               A reference to an object of template type `WeightVector` that provides
-             *                              access to the weights of individual statistics
-             * @param outputIndices         A reference to an object of template type `IndexVector` that provides access
-             *                              to the indices of the outputs that are included in the subset
-             * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
-             *                              allows to create instances of the class that should be used for calculating
-             *                              the predictions of rules, as well as their overall quality
-             * @param totalSumVector        A reference to an object of template type `StatisticVector` that stores the
-             *                              total sums of gradients and Hessians
+             * @param state                     A reference to an object of template type `State` that represents the
+             *                                  state of the training process
+             * @param weights                   A reference to an object of template type `WeightVector` that provides
+             *                                  access to the weights of individual statistics
+             * @param outputIndices             A reference to an object of template type `IndexVector` that provides
+             *                                  access to the indices of the outputs that are included in the subset
+             * @param ruleEvaluationFactory     A reference to an object of template type `RuleEvaluationFactory` that
+             *                                  allows to create instances of the class that should be used for
+             *                                  calculating the predictions of rules, as well as their overall quality
+             * @param totalSumVector            A reference to an object of template type `StatisticVector` that stores
+             *                                  the total sums of gradients and Hessians
+             * @param excludedStatisticIndices  A reference to an object of type `BinaryDokVector` that provides access
+             *                                  to the indices of the statistics that should be excluded from the subset
              */
             ResettableBoostingStatisticsSubset(State& state, const WeightVector& weights,
                                                const IndexVector& outputIndices,
                                                const RuleEvaluationFactory& ruleEvaluationFactory,
-                                               const StatisticVector& totalSumVector)
+                                               const StatisticVector& totalSumVector,
+                                               const BinaryDokVector& excludedStatisticIndices)
                 : BoostingStatisticsSubset<State, StatisticVector, WeightVector, IndexVector, RuleEvaluationFactory>(
                     state, weights, outputIndices, ruleEvaluationFactory),
-                  tmpVector_(outputIndices.getNumElements()), totalSumVector_(&totalSumVector) {}
+                  tmpVector_(outputIndices.getNumElements()), totalSumVector_(&totalSumVector) {
+                if (excludedStatisticIndices.getNumIndices() > 0) {
+                    // Create a vector for storing the totals sums of gradients and Hessians, if necessary...
+                    totalCoverableSumVectorPtr_ = std::make_unique<StatisticVector>(*this->totalSumVector_);
+                    this->totalSumVector_ = totalCoverableSumVectorPtr_.get();
+
+                    for (auto it = excludedStatisticIndices.indices_cbegin();
+                         it != excludedStatisticIndices.indices_cend(); it++) {
+                        // Subtract the gradients and Hessians of the example at the given index (weighted by the given
+                        // weight) from the total sums of gradients and Hessians...
+                        uint32 statisticIndex = *it;
+                        removeStatisticInternally2(this->weights_, this->state_.statisticMatrixPtr->getView(),
+                                                   *totalCoverableSumVectorPtr_, statisticIndex);
+                    }
+                }
+            }
 
             /**
              * @see `IResettableStatisticsSubset::resetSubset`
