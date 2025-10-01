@@ -35,11 +35,9 @@ namespace seco {
             /**
              * Adds all confusion matrix elements in another vector to this vector.
              *
-             * @param begin A `const_iterator` to the beginning of the other vector
-             * @param end   A `const_iterator` to the end of the other vector
+             * @param other A reference to an object of type `DenseConfusionMatrixVector` to be copied
              */
-            void add(typename View<ConfusionMatrix<StatisticType>>::const_iterator begin,
-                     typename View<ConfusionMatrix<StatisticType>>::const_iterator end);
+            void add(const DenseConfusionMatrixVector<StatisticType>& other);
 
             /**
              * Adds the confusion matrix elements that correspond to an example at a specific index to this vector. The

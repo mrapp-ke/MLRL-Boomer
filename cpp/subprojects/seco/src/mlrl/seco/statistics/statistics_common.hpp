@@ -253,7 +253,7 @@ namespace seco {
                             accumulatedSumVectorPtr_ = std::make_unique<StatisticVector>(this->sumVector_);
                         } else {
                             // Add the confusion matrix for each output to the accumulated confusion matrix...
-                            accumulatedSumVectorPtr_->add(this->sumVector_.cbegin(), this->sumVector_.cend());
+                            accumulatedSumVectorPtr_->add(this->sumVector_);
                         }
 
                         // Reset the confusion matrix for each output to zero...
