@@ -5,75 +5,12 @@
 
 #include "mlrl/common/data/vector_sparse_array_binary.hpp"
 #include "mlrl/seco/statistics/statistics.hpp"
+#include "statistics_subset.hpp"
 
 #include <memory>
 #include <utility>
 
 namespace seco {
-
-    /**
-     * An abstract base class for all subsets of confusion matrices.
-     *
-     * @tparam State                    The type of the state of the training process
-     * @tparam StatisticVector          The type of the vector that is used to store the sums of statistics
-     * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
-     *                                  used for calculating the predictions of rules, as well as corresponding quality
-     *                                  scores
-     * @tparam WeightVector             The type of the vector that provides access to the weights of individual
-     *                                  statistics
-     * @tparam IndexVector              The type of the vector that provides access to the indices of the outputs that
-     *                                  are included in the subset
-     */
-    template<typename State, typename StatisticVector, typename RuleEvaluationFactory, typename WeightVector,
-             typename IndexVector>
-    class AbstractCoverageStatisticsSubset
-        : public AbstractStatisticsSubset<State, StatisticVector, WeightVector, IndexVector> {
-        protected:
-
-            /**
-             * A reference to an object of template type `StatisticVector` that stores the total sums of statistics.
-             */
-            const StatisticVector& totalSumVector_;
-
-            /**
-             * An unique pointer to an object of type `IRuleEvaluation` that is used for calculating the predictions of
-             * rules, as well as their overall quality.
-             */
-            const std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr_;
-
-        public:
-
-            /**
-             * @param state                 A reference to an object of template type `State` that represents the state
-             *                              of the training process
-             * @param totalSumVector        A reference to an object of template type `StatisticVector` that stores the
-             *                              total sums of statistics
-             * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
-             *                              allows to create instances of the class that should be used for calculating
-             *                              the predictions of rules, as well as their overall quality
-             * @param weights               A reference to an object of template type `WeightVector` that provides
-             *                              access to the weights of individual statistics
-             * @param outputIndices         A reference to an object of template type `IndexVector` that provides access
-             *                              to the indices of the outputs that are included in the subset
-             */
-            AbstractCoverageStatisticsSubset(State& state, const StatisticVector& totalSumVector,
-                                             const RuleEvaluationFactory& ruleEvaluationFactory,
-                                             const WeightVector& weights, const IndexVector& outputIndices)
-                : AbstractStatisticsSubset<State, StatisticVector, WeightVector, IndexVector>(state, weights,
-                                                                                              outputIndices),
-                  totalSumVector_(totalSumVector),
-                  ruleEvaluationPtr_(ruleEvaluationFactory.create(this->sumVector_, outputIndices)) {}
-
-            /**
-             * @see `IStatisticsSubset::calculateScores`
-             */
-            std::unique_ptr<IStatisticsUpdateCandidate> calculateScores() override final {
-                const IScoreVector& scoreVector = ruleEvaluationPtr_->calculateScores(
-                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
-                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), totalSumVector_, this->sumVector_);
-                return this->state_.createUpdateCandidate(scoreVector);
-            }
-    };
 
     template<typename StatisticView, typename StatisticVector>
     static inline void initializeStatisticVector(const EqualWeightVector& weights, const StatisticView& statisticView,
@@ -95,54 +32,6 @@ namespace seco {
             statisticVector.add(statisticView, i, weight);
         }
     }
-
-    /**
-     * A subset of confusion matrices.
-     *
-     * @tparam State                    The type of the state of the training process
-     * @tparam StatisticVector          The type of the vectors that are used to store statistics
-     * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
-     *                                  used for calculating the predictions of rules, as well as corresponding quality
-     *                                  scores
-     * @tparam WeightVector             The type of the vector that provides access to the weights of individual
-     *                                  statistics
-     * @tparam IndexVector              The type of the vector that provides access to the indices of the outputs that
-     *                                  are included in the subset
-     */
-    template<typename State, typename StatisticVector, typename RuleEvaluationFactory, typename WeightVector,
-             typename IndexVector>
-    class StatisticsSubset final
-        : public AbstractCoverageStatisticsSubset<State, StatisticVector, RuleEvaluationFactory, WeightVector,
-                                                  IndexVector> {
-        private:
-
-            const std::unique_ptr<StatisticVector> totalSumVectorPtr_;
-
-        public:
-
-            /**
-             * @param totalSumVectorPtr     An unique pointer to an object of template type `StatisticVector` that
-             *                              stores the total sums of statistics
-             * @param state                 A reference to an object of template type `State` that represents the state
-             *                              of the training process
-             * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
-             *                              allows to create instances of the class that should be used for calculating
-             *                              the predictions of rules, as well as their overall quality
-             * @param weights               A reference to an object of template type `WeightVector` that provides
-             *                              access to the weights of individual statistics
-             * @param outputIndices         A reference to an object of template type `IndexVector` that provides access
-             *                              to the indices of the outputs that are included in the subset
-             */
-            StatisticsSubset(std::unique_ptr<StatisticVector> totalSumVectorPtr, State& state,
-                             const RuleEvaluationFactory& ruleEvaluationFactory, const WeightVector& weights,
-                             const IndexVector& outputIndices)
-                : AbstractCoverageStatisticsSubset<State, StatisticVector, RuleEvaluationFactory, WeightVector,
-                                                   IndexVector>(state, *totalSumVectorPtr, ruleEvaluationFactory,
-                                                                weights, outputIndices),
-                  totalSumVectorPtr_(std::move(totalSumVectorPtr)) {
-                initializeStatisticVector(weights, state.statisticMatrixPtr->getView(), *totalSumVectorPtr_);
-            }
-    };
 
     template<typename StatisticView, typename StatisticVector>
     static inline void addStatisticInternally(const EqualWeightVector& weights, const StatisticView& statisticView,
@@ -194,10 +83,9 @@ namespace seco {
              *                     included in the subset
              */
             template<typename IndexVector>
-            class StatisticsSubset final
-                : virtual public IResettableStatisticsSubset,
-                  public AbstractCoverageStatisticsSubset<State, StatisticVector, RuleEvaluationFactory, WeightVector,
-                                                          IndexVector> {
+            class StatisticsSubset final : virtual public IResettableStatisticsSubset,
+                                           public AbstractCoverageStatisticsSubset<State, StatisticVector, WeightVector,
+                                                                                   IndexVector, RuleEvaluationFactory> {
                 private:
 
                     const StatisticVector* subsetSumVector_;
@@ -222,10 +110,10 @@ namespace seco {
                      */
                     StatisticsSubset(const WeightedStatistics& statistics,
                                      const BinaryDokVector& excludedStatisticIndices, const IndexVector& outputIndices)
-                        : AbstractCoverageStatisticsSubset<State, StatisticVector, RuleEvaluationFactory, WeightVector,
-                                                           IndexVector>(statistics.state_, statistics.totalSumVector_,
-                                                                        statistics.ruleEvaluationFactory_,
-                                                                        statistics.weights_, outputIndices),
+                        : AbstractCoverageStatisticsSubset<State, StatisticVector, WeightVector, IndexVector,
+                                                           RuleEvaluationFactory>(
+                            statistics.state_, statistics.weights_, outputIndices, statistics.ruleEvaluationFactory_,
+                            statistics.totalSumVector_),
                           subsetSumVector_(&statistics.subsetSumVector_), tmpVector_(outputIndices.getNumElements()) {
                         if (excludedStatisticIndices.getNumIndices() > 0) {
                             // Allocate a vector for storing the totals sums of confusion matrices, if necessary...
