@@ -4,64 +4,12 @@
 #pragma once
 
 #include "mlrl/boosting/statistics/statistics.hpp"
+#include "statistics_subset.hpp"
 
 #include <memory>
 #include <utility>
 
 namespace boosting {
-
-    /**
-     * A subset of gradients and Hessians that are calculated according to a loss function and are accessible via a
-     * view.
-     *
-     * @tparam State                    The type of the state of the training process
-     * @tparam StatisticVector          The type of the vector that is used to store the sums of statistics
-     * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
-     *                                  used for calculating the predictions of rules, as well as corresponding quality
-     *                                  scores
-     * @tparam WeightVector             The type of the vector that provides access to the weights of individual
-     *                                  statistics
-     * @tparam IndexVector              The type of the vector that provides access to the indices of the outputs that
-     *                                  are included in the subset
-     */
-    template<typename State, typename StatisticVector, typename RuleEvaluationFactory, typename WeightVector,
-             typename IndexVector>
-    class StatisticsSubset : public AbstractStatisticsSubset<State, StatisticVector, WeightVector, IndexVector> {
-        protected:
-
-            /**
-             * An unique pointer to an object of type `IRuleEvaluation` that is used for calculating the predictions of
-             * rules, as well as their overall quality.
-             */
-            const std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr_;
-
-        public:
-
-            /**
-             * @param state                 A reference to an object of template type `State` that represents the state
-             *                              of the training process
-             * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
-             *                              allows to create instances of the class that should be used for calculating
-             *                              the predictions of rules, as well as their overall quality
-             * @param weights               A reference to an object of template type `WeightVector` that provides
-             *                              access to the weights of individual statistics
-             * @param outputIndices         A reference to an object of template type `IndexVector` that provides access
-             *                              to the indices of the outputs that are included in the subset
-             */
-            StatisticsSubset(State& state, const RuleEvaluationFactory& ruleEvaluationFactory,
-                             const WeightVector& weights, const IndexVector& outputIndices)
-                : AbstractStatisticsSubset<State, StatisticVector, WeightVector, IndexVector>(state, weights,
-                                                                                              outputIndices),
-                  ruleEvaluationPtr_(ruleEvaluationFactory.create(this->sumVector_, outputIndices)) {}
-
-            /**
-             * @see `IStatisticsSubset::calculateScores`
-             */
-            std::unique_ptr<IStatisticsUpdateCandidate> calculateScores() override final {
-                const IScoreVector& scoreVector = ruleEvaluationPtr_->calculateScores(this->sumVector_);
-                return this->state_.createUpdateCandidate(scoreVector);
-            }
-    };
 
     /**
      * An abstract base class for all statistics that provide access to gradients and Hessians that are calculated
@@ -88,9 +36,9 @@ namespace boosting {
              *                     included in the subset
              */
             template<typename IndexVector>
-            class AbstractStatisticsSubset
-                : public StatisticsSubset<State, StatisticVector, RuleEvaluationFactory, WeightVector, IndexVector>,
-                  virtual public IResettableStatisticsSubset {
+            class AbstractStatisticsSubset : public BoostingStatisticsSubset<State, StatisticVector, WeightVector,
+                                                                             IndexVector, RuleEvaluationFactory>,
+                                             virtual public IResettableStatisticsSubset {
                 private:
 
                     StatisticVector tmpVector_;
@@ -117,8 +65,9 @@ namespace boosting {
                      */
                     AbstractStatisticsSubset(const AbstractBoostingStatisticsSpace& statistics,
                                              const StatisticVector& totalSumVector, const IndexVector& outputIndices)
-                        : StatisticsSubset<State, StatisticVector, RuleEvaluationFactory, WeightVector, IndexVector>(
-                            statistics.state_, statistics.ruleEvaluationFactory_, statistics.weights_, outputIndices),
+                        : BoostingStatisticsSubset<State, StatisticVector, WeightVector, IndexVector,
+                                                   RuleEvaluationFactory>(
+                            statistics.state_, statistics.weights_, outputIndices, statistics.ruleEvaluationFactory_),
                           tmpVector_(outputIndices.getNumElements()), totalSumVector_(&totalSumVector) {}
 
                     /**
