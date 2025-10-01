@@ -55,57 +55,9 @@ namespace boosting {
                                      virtual public IWeightedStatistics {
         private:
 
-            /**
-             * Provides access to a subset of the statistics that are stored by an instance of the class
-             * `WeightedStatistics`.
-             *
-             * @tparam IndexVector The type of the vector that provides access to the indices of the outputs that are
-             *                     included in the subset
-             */
             template<typename IndexVector>
-            class StatisticsSubset final
-                : public ResettableBoostingStatisticsSubset<State, StatisticVector, WeightVector, IndexVector,
-                                                            RuleEvaluationFactory> {
-                private:
-
-                    std::unique_ptr<StatisticVector> totalCoverableSumVectorPtr_;
-
-                public:
-
-                    /**
-                     * @param statistics                A reference to an object of type `WeightedStatistics` that
-                     *                                  stores the statistics
-                     * @param totalSumVector            A reference to an object of template type `StatisticVector` that
-                     *                                  stores the total sums of gradients and Hessians
-                     * @param excludedStatisticIndices  A reference to an object of type `BinaryDokVector` that provides
-                     *                                  access to the indices of the statistics that should be excluded
-                     *                                  from the subset
-                     * @param outputIndices             A reference to an object of template type `IndexVector` that
-                     *                                  provides access to the indices of the outputs that are included
-                     *                                  in the subset
-                     */
-                    StatisticsSubset(const WeightedStatistics& statistics, const StatisticVector& totalSumVector,
-                                     const BinaryDokVector& excludedStatisticIndices, const IndexVector& outputIndices)
-                        : ResettableBoostingStatisticsSubset<State, StatisticVector, WeightVector, IndexVector,
-                                                             RuleEvaluationFactory>(
-                            statistics.state_, statistics.weights_, outputIndices, statistics.ruleEvaluationFactory_,
-                            totalSumVector) {
-                        if (excludedStatisticIndices.getNumIndices() > 0) {
-                            // Create a vector for storing the totals sums of gradients and Hessians, if necessary...
-                            totalCoverableSumVectorPtr_ = std::make_unique<StatisticVector>(*this->totalSumVector_);
-                            this->totalSumVector_ = totalCoverableSumVectorPtr_.get();
-
-                            for (auto it = excludedStatisticIndices.indices_cbegin();
-                                 it != excludedStatisticIndices.indices_cend(); it++) {
-                                // Subtract the gradients and Hessians of the example at the given index (weighted by
-                                // the given weight) from the total sums of gradients and Hessians...
-                                uint32 statisticIndex = *it;
-                                removeStatisticInternally(this->weights_, this->state_.statisticMatrixPtr->getView(),
-                                                          *totalCoverableSumVectorPtr_, statisticIndex);
-                            }
-                        }
-                    }
-            };
+            using StatisticsSubset = ResettableBoostingStatisticsSubset<State, StatisticVector, WeightVector,
+                                                                        IndexVector, RuleEvaluationFactory>;
 
             const WeightVector& weights_;
 
@@ -181,8 +133,9 @@ namespace boosting {
             std::unique_ptr<IResettableStatisticsSubset> createSubset(
               const BinaryDokVector& excludedStatisticIndices,
               const CompleteIndexVector& outputIndices) const override {
-                return std::make_unique<StatisticsSubset<CompleteIndexVector>>(*this, *totalSumVectorPtr_,
-                                                                               excludedStatisticIndices, outputIndices);
+                return std::make_unique<StatisticsSubset<CompleteIndexVector>>(
+                  this->state_, weights_, outputIndices, ruleEvaluationFactory_, *totalSumVectorPtr_,
+                  excludedStatisticIndices);
             }
 
             /**
@@ -190,8 +143,9 @@ namespace boosting {
              */
             std::unique_ptr<IResettableStatisticsSubset> createSubset(
               const BinaryDokVector& excludedStatisticIndices, const PartialIndexVector& outputIndices) const override {
-                return std::make_unique<StatisticsSubset<PartialIndexVector>>(*this, *totalSumVectorPtr_,
-                                                                              excludedStatisticIndices, outputIndices);
+                return std::make_unique<StatisticsSubset<PartialIndexVector>>(
+                  this->state_, weights_, outputIndices, ruleEvaluationFactory_, *totalSumVectorPtr_,
+                  excludedStatisticIndices);
             }
     };
 }
