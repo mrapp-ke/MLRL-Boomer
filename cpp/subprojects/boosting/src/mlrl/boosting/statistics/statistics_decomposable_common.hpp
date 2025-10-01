@@ -4,8 +4,8 @@
 #pragma once
 
 #include "mlrl/boosting/statistics/statistics_decomposable.hpp"
-#include "statistics_common.hpp"
 #include "statistics_state_decomposable.hpp"
+#include "statistics_weighted.hpp"
 
 namespace boosting {
 
