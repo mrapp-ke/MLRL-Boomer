@@ -5,7 +5,7 @@
 
 #include "mlrl/boosting/statistics/statistics.hpp"
 #include "statistics.hpp"
-#include "statistics_space.hpp"
+#include "statistics_subset.hpp"
 
 #include <memory>
 #include <utility>
@@ -51,9 +51,8 @@ namespace boosting {
      *                                  statistics
      */
     template<typename State, typename StatisticVector, typename RuleEvaluationFactory, typename WeightVector>
-    class WeightedStatistics final
-        : virtual public IWeightedStatistics,
-          public AbstractBoostingStatisticsSpace<State, StatisticVector, WeightVector, RuleEvaluationFactory> {
+    class WeightedStatistics final : public AbstractStatisticsSpace<State>,
+                                     virtual public IWeightedStatistics {
         private:
 
             /**
@@ -65,8 +64,8 @@ namespace boosting {
              */
             template<typename IndexVector>
             class StatisticsSubset final
-                : public AbstractBoostingStatisticsSpace<State, StatisticVector, WeightVector, RuleEvaluationFactory>::
-                    template AbstractStatisticsSubset<IndexVector> {
+                : public ResettableBoostingStatisticsSubset<State, StatisticVector, WeightVector, IndexVector,
+                                                            RuleEvaluationFactory> {
                 private:
 
                     std::unique_ptr<StatisticVector> totalCoverableSumVectorPtr_;
@@ -87,8 +86,10 @@ namespace boosting {
                      */
                     StatisticsSubset(const WeightedStatistics& statistics, const StatisticVector& totalSumVector,
                                      const BinaryDokVector& excludedStatisticIndices, const IndexVector& outputIndices)
-                        : AbstractBoostingStatisticsSpace<State, StatisticVector, WeightVector, RuleEvaluationFactory>::
-                            template AbstractStatisticsSubset<IndexVector>(statistics, totalSumVector, outputIndices) {
+                        : ResettableBoostingStatisticsSubset<State, StatisticVector, WeightVector, IndexVector,
+                                                             RuleEvaluationFactory>(
+                            statistics.state_, statistics.weights_, outputIndices, statistics.ruleEvaluationFactory_,
+                            totalSumVector) {
                         if (excludedStatisticIndices.getNumIndices() > 0) {
                             // Create a vector for storing the totals sums of gradients and Hessians, if necessary...
                             totalCoverableSumVectorPtr_ = std::make_unique<StatisticVector>(*this->totalSumVector_);
@@ -106,6 +107,10 @@ namespace boosting {
                     }
             };
 
+            const WeightVector& weights_;
+
+            const RuleEvaluationFactory& ruleEvaluationFactory_;
+
             const std::unique_ptr<StatisticVector> totalSumVectorPtr_;
 
         public:
@@ -121,8 +126,8 @@ namespace boosting {
              */
             WeightedStatistics(State& state, const RuleEvaluationFactory& ruleEvaluationFactory,
                                const WeightVector& weights)
-                : AbstractBoostingStatisticsSpace<State, StatisticVector, WeightVector, RuleEvaluationFactory>(
-                    state, ruleEvaluationFactory, weights),
+                : AbstractStatisticsSpace<State>(state), weights_(weights),
+                  ruleEvaluationFactory_(ruleEvaluationFactory),
                   totalSumVectorPtr_(std::make_unique<StatisticVector>(state.statisticMatrixPtr->getNumCols(), true)) {
                 uint32 numStatistics = weights.getNumElements();
 
@@ -135,8 +140,8 @@ namespace boosting {
              * @param statistics A reference to an object of type `WeightedStatistics` to be copied
              */
             WeightedStatistics(const WeightedStatistics& statistics)
-                : AbstractBoostingStatisticsSpace<State, StatisticVector, WeightVector, RuleEvaluationFactory>(
-                    statistics.state_, statistics.ruleEvaluationFactory_, statistics.weights_),
+                : AbstractStatisticsSpace<State>(statistics.state_), weights_(statistics.weights_),
+                  ruleEvaluationFactory_(statistics.ruleEvaluationFactory_),
                   totalSumVectorPtr_(std::make_unique<StatisticVector>(*statistics.totalSumVectorPtr_)) {}
 
             /**
