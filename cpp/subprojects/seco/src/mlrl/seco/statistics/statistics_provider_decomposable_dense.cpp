@@ -18,9 +18,9 @@ namespace seco {
 
             template<typename WeightVector, typename IndexVector, typename StatisticType>
             using StatisticsSubset =
-              StatisticsSubset<CoverageStatisticsState<DenseDecomposableStatisticMatrix<LabelMatrix>>,
-                               DenseConfusionMatrixVector<StatisticType>, IDecomposableRuleEvaluationFactory,
-                               WeightVector, IndexVector>;
+              CoverageStatisticsSubset<CoverageStatisticsState<DenseDecomposableStatisticMatrix<LabelMatrix>>,
+                                       DenseConfusionMatrixVector<StatisticType>, WeightVector, IndexVector,
+                                       IDecomposableRuleEvaluationFactory>;
 
             template<typename WeightVector, typename StatisticType>
             using WeightedStatistics =
@@ -59,8 +59,8 @@ namespace seco {
                 std::unique_ptr<DenseConfusionMatrixVector<uint32>> totalSumVectorPtr =
                   std::make_unique<DenseConfusionMatrixVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<StatisticsSubset<EqualWeightVector, CompleteIndexVector, uint32>>(
-                  std::move(totalSumVectorPtr), *this->statePtr_, *this->ruleEvaluationFactory_, weights,
-                  outputIndices);
+                  *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
+                  std::move(totalSumVectorPtr));
             }
 
             /**
@@ -71,8 +71,8 @@ namespace seco {
                 std::unique_ptr<DenseConfusionMatrixVector<uint32>> totalSumVectorPtr =
                   std::make_unique<DenseConfusionMatrixVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<StatisticsSubset<EqualWeightVector, PartialIndexVector, uint32>>(
-                  std::move(totalSumVectorPtr), *this->statePtr_, *this->ruleEvaluationFactory_, weights,
-                  outputIndices);
+                  *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
+                  std::move(totalSumVectorPtr));
             }
 
             /**
@@ -83,8 +83,8 @@ namespace seco {
                 std::unique_ptr<DenseConfusionMatrixVector<uint32>> totalSumVectorPtr =
                   std::make_unique<DenseConfusionMatrixVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<StatisticsSubset<BitWeightVector, CompleteIndexVector, uint32>>(
-                  std::move(totalSumVectorPtr), *this->statePtr_, *this->ruleEvaluationFactory_, weights,
-                  outputIndices);
+                  *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
+                  std::move(totalSumVectorPtr));
             }
 
             /**
@@ -95,8 +95,8 @@ namespace seco {
                 std::unique_ptr<DenseConfusionMatrixVector<uint32>> totalSumVectorPtr =
                   std::make_unique<DenseConfusionMatrixVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<StatisticsSubset<BitWeightVector, PartialIndexVector, uint32>>(
-                  std::move(totalSumVectorPtr), *this->statePtr_, *this->ruleEvaluationFactory_, weights,
-                  outputIndices);
+                  *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
+                  std::move(totalSumVectorPtr));
             }
 
             /**
@@ -107,8 +107,8 @@ namespace seco {
                 std::unique_ptr<DenseConfusionMatrixVector<uint32>> totalSumVectorPtr =
                   std::make_unique<DenseConfusionMatrixVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<StatisticsSubset<DenseWeightVector<uint16>, CompleteIndexVector, uint32>>(
-                  std::move(totalSumVectorPtr), *this->statePtr_, *this->ruleEvaluationFactory_, weights,
-                  outputIndices);
+                  *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
+                  std::move(totalSumVectorPtr));
             }
 
             /**
@@ -119,8 +119,8 @@ namespace seco {
                 std::unique_ptr<DenseConfusionMatrixVector<uint32>> totalSumVectorPtr =
                   std::make_unique<DenseConfusionMatrixVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<StatisticsSubset<DenseWeightVector<uint16>, PartialIndexVector, uint32>>(
-                  std::move(totalSumVectorPtr), *this->statePtr_, *this->ruleEvaluationFactory_, weights,
-                  outputIndices);
+                  *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
+                  std::move(totalSumVectorPtr));
             }
 
             /**
@@ -131,8 +131,8 @@ namespace seco {
                 std::unique_ptr<DenseConfusionMatrixVector<float32>> totalSumVectorPtr =
                   std::make_unique<DenseConfusionMatrixVector<float32>>(this->getNumOutputs(), true);
                 return std::make_unique<StatisticsSubset<DenseWeightVector<float32>, CompleteIndexVector, float32>>(
-                  std::move(totalSumVectorPtr), *this->statePtr_, *this->ruleEvaluationFactory_, weights,
-                  outputIndices);
+                  *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
+                  std::move(totalSumVectorPtr));
             }
 
             /**
@@ -143,8 +143,8 @@ namespace seco {
                 std::unique_ptr<DenseConfusionMatrixVector<float32>> totalSumVectorPtr =
                   std::make_unique<DenseConfusionMatrixVector<float32>>(this->getNumOutputs(), true);
                 return std::make_unique<StatisticsSubset<DenseWeightVector<float32>, PartialIndexVector, float32>>(
-                  std::move(totalSumVectorPtr), *this->statePtr_, *this->ruleEvaluationFactory_, weights,
-                  outputIndices);
+                  *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
+                  std::move(totalSumVectorPtr));
             }
 
             /**
@@ -157,8 +157,8 @@ namespace seco {
                   std::make_unique<DenseConfusionMatrixVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<
                   StatisticsSubset<OutOfSampleWeightVector<EqualWeightVector>, CompleteIndexVector, uint32>>(
-                  std::move(totalSumVectorPtr), *this->statePtr_, *this->ruleEvaluationFactory_, weights,
-                  outputIndices);
+                  *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
+                  std::move(totalSumVectorPtr));
             }
 
             /**
@@ -171,8 +171,8 @@ namespace seco {
                   std::make_unique<DenseConfusionMatrixVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<
                   StatisticsSubset<OutOfSampleWeightVector<EqualWeightVector>, PartialIndexVector, uint32>>(
-                  std::move(totalSumVectorPtr), *this->statePtr_, *this->ruleEvaluationFactory_, weights,
-                  outputIndices);
+                  *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
+                  std::move(totalSumVectorPtr));
             }
 
             /**
@@ -185,8 +185,8 @@ namespace seco {
                   std::make_unique<DenseConfusionMatrixVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<
                   StatisticsSubset<OutOfSampleWeightVector<BitWeightVector>, CompleteIndexVector, uint32>>(
-                  std::move(totalSumVectorPtr), *this->statePtr_, *this->ruleEvaluationFactory_, weights,
-                  outputIndices);
+                  *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
+                  std::move(totalSumVectorPtr));
             }
 
             /**
@@ -199,8 +199,8 @@ namespace seco {
                   std::make_unique<DenseConfusionMatrixVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<
                   StatisticsSubset<OutOfSampleWeightVector<BitWeightVector>, PartialIndexVector, uint32>>(
-                  std::move(totalSumVectorPtr), *this->statePtr_, *this->ruleEvaluationFactory_, weights,
-                  outputIndices);
+                  *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
+                  std::move(totalSumVectorPtr));
             }
 
             /**
@@ -213,8 +213,8 @@ namespace seco {
                   std::make_unique<DenseConfusionMatrixVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<
                   StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<uint16>>, CompleteIndexVector, uint32>>(
-                  std::move(totalSumVectorPtr), *this->statePtr_, *this->ruleEvaluationFactory_, weights,
-                  outputIndices);
+                  *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
+                  std::move(totalSumVectorPtr));
             }
 
             /**
@@ -227,8 +227,8 @@ namespace seco {
                   std::make_unique<DenseConfusionMatrixVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<
                   StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<uint16>>, PartialIndexVector, uint32>>(
-                  std::move(totalSumVectorPtr), *this->statePtr_, *this->ruleEvaluationFactory_, weights,
-                  outputIndices);
+                  *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
+                  std::move(totalSumVectorPtr));
             }
 
             /**
@@ -241,8 +241,8 @@ namespace seco {
                   std::make_unique<DenseConfusionMatrixVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<
                   StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<float32>>, CompleteIndexVector, uint32>>(
-                  std::move(totalSumVectorPtr), *this->statePtr_, *this->ruleEvaluationFactory_, weights,
-                  outputIndices);
+                  *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
+                  std::move(totalSumVectorPtr));
             }
 
             /**
@@ -255,8 +255,8 @@ namespace seco {
                   std::make_unique<DenseConfusionMatrixVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<
                   StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<float32>>, PartialIndexVector, uint32>>(
-                  std::move(totalSumVectorPtr), *this->statePtr_, *this->ruleEvaluationFactory_, weights,
-                  outputIndices);
+                  *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
+                  std::move(totalSumVectorPtr));
             }
 
             /**
