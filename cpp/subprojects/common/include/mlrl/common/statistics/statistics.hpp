@@ -305,7 +305,7 @@ class AbstractStatistics : virtual public IStatistics {
          * @param statePtr An unique pointer to an object of template type `State` that represents the state of the
          *                 training process and allows to update it
          */
-        AbstractStatistics(std::unique_ptr<State> statePtr) : statePtr_(std::move(statePtr)) {}
+        explicit AbstractStatistics(std::unique_ptr<State> statePtr) : statePtr_(std::move(statePtr)) {}
 
         /**
          * @see `IStatistics::getNumStatistics`

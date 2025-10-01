@@ -48,7 +48,7 @@ class AbstractStatisticsSpace : virtual public IStatisticsSpace {
          * @param state A reference to an object of template type `State` that represents the state of the training
          *              process
          */
-        AbstractStatisticsSpace(State& state) : state_(state) {}
+        explicit AbstractStatisticsSpace(State& state) : state_(state) {}
 
         /**
          * @see `IStatisticsSpace::getNumStatistics`
