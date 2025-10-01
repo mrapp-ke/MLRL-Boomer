@@ -63,7 +63,7 @@ namespace boosting {
 
             const RuleEvaluationFactory& ruleEvaluationFactory_;
 
-            const std::unique_ptr<StatisticVector> totalSumVectorPtr_;
+            StatisticVector totalSumVector_;
 
         public:
 
@@ -80,11 +80,11 @@ namespace boosting {
                                const WeightVector& weights)
                 : AbstractStatisticsSpace<State>(state), weights_(weights),
                   ruleEvaluationFactory_(ruleEvaluationFactory),
-                  totalSumVectorPtr_(std::make_unique<StatisticVector>(state.statisticMatrixPtr->getNumCols(), true)) {
+                  totalSumVector_(state.statisticMatrixPtr->getNumCols(), true) {
                 uint32 numStatistics = weights.getNumElements();
 
                 for (uint32 i = 0; i < numStatistics; i++) {
-                    addStatisticInternally(weights, state.statisticMatrixPtr->getView(), *totalSumVectorPtr_, i);
+                    addStatisticInternally(weights, state.statisticMatrixPtr->getView(), totalSumVector_, i);
                 }
             }
 
@@ -94,7 +94,7 @@ namespace boosting {
             WeightedStatistics(const WeightedStatistics& statistics)
                 : AbstractStatisticsSpace<State>(statistics.state_), weights_(statistics.weights_),
                   ruleEvaluationFactory_(statistics.ruleEvaluationFactory_),
-                  totalSumVectorPtr_(std::make_unique<StatisticVector>(*statistics.totalSumVectorPtr_)) {}
+                  totalSumVector_(statistics.totalSumVector_) {}
 
             /**
              * @see `IWeightedStatistics::copy`
@@ -108,14 +108,14 @@ namespace boosting {
              * @see `IWeightedStatistics::resetCoveredStatistics`
              */
             void resetCoveredStatistics() override {
-                totalSumVectorPtr_->clear();
+                totalSumVector_.clear();
             }
 
             /**
              * @see `IWeightedStatistics::addCoveredStatistic`
              */
             void addCoveredStatistic(uint32 statisticIndex) override {
-                addStatisticInternally(this->weights_, this->state_.statisticMatrixPtr->getView(), *totalSumVectorPtr_,
+                addStatisticInternally(this->weights_, this->state_.statisticMatrixPtr->getView(), totalSumVector_,
                                        statisticIndex);
             }
 
@@ -123,8 +123,8 @@ namespace boosting {
              * @see `IWeightedStatistics::removeCoveredStatistic`
              */
             void removeCoveredStatistic(uint32 statisticIndex) override {
-                removeStatisticInternally(this->weights_, this->state_.statisticMatrixPtr->getView(),
-                                          *totalSumVectorPtr_, statisticIndex);
+                removeStatisticInternally(this->weights_, this->state_.statisticMatrixPtr->getView(), totalSumVector_,
+                                          statisticIndex);
             }
 
             /**
@@ -133,9 +133,9 @@ namespace boosting {
             std::unique_ptr<IResettableStatisticsSubset> createSubset(
               const BinaryDokVector& excludedStatisticIndices,
               const CompleteIndexVector& outputIndices) const override {
-                return std::make_unique<StatisticsSubset<CompleteIndexVector>>(
-                  this->state_, weights_, outputIndices, ruleEvaluationFactory_, *totalSumVectorPtr_,
-                  excludedStatisticIndices);
+                return std::make_unique<StatisticsSubset<CompleteIndexVector>>(this->state_, weights_, outputIndices,
+                                                                               ruleEvaluationFactory_, totalSumVector_,
+                                                                               excludedStatisticIndices);
             }
 
             /**
@@ -143,9 +143,9 @@ namespace boosting {
              */
             std::unique_ptr<IResettableStatisticsSubset> createSubset(
               const BinaryDokVector& excludedStatisticIndices, const PartialIndexVector& outputIndices) const override {
-                return std::make_unique<StatisticsSubset<PartialIndexVector>>(
-                  this->state_, weights_, outputIndices, ruleEvaluationFactory_, *totalSumVectorPtr_,
-                  excludedStatisticIndices);
+                return std::make_unique<StatisticsSubset<PartialIndexVector>>(this->state_, weights_, outputIndices,
+                                                                              ruleEvaluationFactory_, totalSumVector_,
+                                                                              excludedStatisticIndices);
             }
     };
 }
