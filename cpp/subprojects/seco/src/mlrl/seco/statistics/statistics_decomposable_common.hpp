@@ -5,8 +5,8 @@
 
 #include "mlrl/common/data/vector_sparse_array_binary.hpp"
 #include "mlrl/seco/statistics/statistics_decomposable.hpp"
-#include "statistics_common.hpp"
 #include "statistics_state.hpp"
+#include "statistics_weighted.hpp"
 
 #include <memory>
 #include <utility>
