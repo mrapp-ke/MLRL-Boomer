@@ -3,6 +3,8 @@
  */
 #pragma once
 
+#include "mlrl/common/statistics/statistics.hpp"
+
 namespace boosting {
 
     /**
