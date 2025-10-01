@@ -3,7 +3,6 @@
  */
 #pragma once
 
-#include "mlrl/common/data/vector_sparse_array_binary.hpp"
 #include "mlrl/seco/statistics/statistics.hpp"
 #include "statistics.hpp"
 #include "statistics_subset.hpp"
