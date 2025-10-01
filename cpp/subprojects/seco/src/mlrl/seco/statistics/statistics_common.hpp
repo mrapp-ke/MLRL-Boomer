@@ -81,7 +81,7 @@ namespace seco {
         uint32 numStatistics = weights.getNumElements();
 
         for (uint32 i = 0; i < numStatistics; i++) {
-            statisticVector.add(statisticView, i, 1);
+            statisticVector.add(statisticView, i);
         }
     }
 
@@ -147,7 +147,7 @@ namespace seco {
     template<typename StatisticView, typename StatisticVector>
     static inline void addStatisticInternally(const EqualWeightVector& weights, const StatisticView& statisticView,
                                               StatisticVector& statisticVector, uint32 statisticIndex) {
-        statisticVector.add(statisticView, statisticIndex, 1);
+        statisticVector.add(statisticView, statisticIndex);
     }
 
     template<typename WeightVector, typename StatisticView, typename StatisticVector>
@@ -160,7 +160,7 @@ namespace seco {
     template<typename StatisticView, typename StatisticVector>
     static inline void removeStatisticInternally(const EqualWeightVector& weights, const StatisticView& statisticView,
                                                  StatisticVector& statisticVector, uint32 statisticIndex) {
-        statisticVector.remove(statisticView, statisticIndex, 1);
+        statisticVector.remove(statisticView, statisticIndex);
     }
 
     template<typename WeightVector, typename StatisticView, typename StatisticVector>
