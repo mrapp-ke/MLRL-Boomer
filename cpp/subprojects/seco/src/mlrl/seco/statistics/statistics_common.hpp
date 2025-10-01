@@ -76,117 +76,9 @@ namespace seco {
                                      virtual public IWeightedStatistics {
         private:
 
-            /**
-             * Provides access to a subset of the statistics that are stored by an instance of the class
-             * `WeightedStatistics`.
-             *
-             * @tparam IndexVector The type of the vector that provides access to the indices of the outputs that are
-             *                     included in the subset
-             */
             template<typename IndexVector>
-            class StatisticsSubset final : virtual public IResettableStatisticsSubset,
-                                           public AbstractCoverageStatisticsSubset<State, StatisticVector, WeightVector,
-                                                                                   IndexVector, RuleEvaluationFactory> {
-                private:
-
-                    const StatisticVector* subsetSumVector_;
-
-                    StatisticVector tmpVector_;
-
-                    std::unique_ptr<StatisticVector> accumulatedSumVectorPtr_;
-
-                    std::unique_ptr<StatisticVector> totalCoverableSumVectorPtr_;
-
-                public:
-
-                    /**
-                     * @param statistics                A reference to an object of type `WeightedStatistics` that
-                     *                                  stores the statistics
-                     * @param excludedStatisticIndices  A reference to an object of type `BinaryDokVector` that provides
-                     *                                  access to the indices of the statistics that should be excluded
-                     *                                  from the subset
-                     * @param outputIndices             A reference to an object of template type `IndexVector` that
-                     *                                  provides access to the indices of the outputs that are included
-                     *                                  in the subset
-                     */
-                    StatisticsSubset(const WeightedStatistics& statistics,
-                                     const BinaryDokVector& excludedStatisticIndices, const IndexVector& outputIndices)
-                        : AbstractCoverageStatisticsSubset<State, StatisticVector, WeightVector, IndexVector,
-                                                           RuleEvaluationFactory>(
-                            statistics.state_, statistics.weights_, outputIndices, statistics.ruleEvaluationFactory_,
-                            statistics.totalSumVector_),
-                          subsetSumVector_(&statistics.subsetSumVector_), tmpVector_(outputIndices.getNumElements()) {
-                        if (excludedStatisticIndices.getNumIndices() > 0) {
-                            // Allocate a vector for storing the totals sums of confusion matrices, if necessary...
-                            totalCoverableSumVectorPtr_ = std::make_unique<StatisticVector>(*subsetSumVector_);
-                            subsetSumVector_ = totalCoverableSumVectorPtr_.get();
-
-                            for (auto it = excludedStatisticIndices.indices_cbegin();
-                                 it != excludedStatisticIndices.indices_cend(); it++) {
-                                // For each output, subtract the confusion matrices of the example at the given index
-                                // (weighted
-                                // by the given weight) from the total sum of confusion matrices...
-                                uint32 statisticIndex = *it;
-                                removeStatisticInternally(this->weights_, this->state_.statisticMatrixPtr->getView(),
-                                                          *totalCoverableSumVectorPtr_, statisticIndex);
-                            }
-                        }
-                    }
-
-                    /**
-                     * @see `IResettableStatisticsSubset::resetSubset`
-                     */
-                    void resetSubset() override {
-                        if (!accumulatedSumVectorPtr_) {
-                            // Allocate a vector for storing the accumulated confusion matrices, if necessary...
-                            accumulatedSumVectorPtr_ = std::make_unique<StatisticVector>(this->sumVector_);
-                        } else {
-                            // Add the confusion matrix for each output to the accumulated confusion matrix...
-                            accumulatedSumVectorPtr_->add(this->sumVector_);
-                        }
-
-                        // Reset the confusion matrix for each output to zero...
-                        this->sumVector_.clear();
-                    }
-
-                    /**
-                     * @see `IResettableStatisticsSubset::calculateScoresAccumulated`
-                     */
-                    std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresAccumulated() override {
-                        const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(
-                          this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
-                          this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), this->totalSumVector_,
-                          *accumulatedSumVectorPtr_);
-                        return this->state_.createUpdateCandidate(scoreVector);
-                    }
-
-                    /**
-                     * @see `IResettableStatisticsSubset::calculateScoresUncovered`
-                     */
-                    std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresUncovered() override {
-                        tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(),
-                                              this->outputIndices_, this->sumVector_.cbegin(), this->sumVector_.cend());
-                        const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(
-                          this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
-                          this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), this->totalSumVector_,
-                          tmpVector_);
-                        return this->state_.createUpdateCandidate(scoreVector);
-                    }
-
-                    /**
-                     * @see `IResettableStatisticsSubset::calculateScoresUncoveredAccumulated`
-                     */
-                    std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresUncoveredAccumulated() override {
-                        tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(),
-                                              this->outputIndices_, accumulatedSumVectorPtr_->cbegin(),
-                                              accumulatedSumVectorPtr_->cend());
-                        const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(
-                          this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
-                          this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), this->totalSumVector_,
-                          tmpVector_);
-                        return this->state_.createUpdateCandidate(scoreVector);
-                    }
-            };
+            using StatisticsSubset = ResettableCoverageStatisticsSubset<State, StatisticVector, WeightVector,
+                                                                        IndexVector, RuleEvaluationFactory>;
 
             const WeightVector& weights_;
 
@@ -262,8 +154,9 @@ namespace seco {
             std::unique_ptr<IResettableStatisticsSubset> createSubset(
               const BinaryDokVector& excludedStatisticIndices,
               const CompleteIndexVector& outputIndices) const override {
-                return std::make_unique<StatisticsSubset<CompleteIndexVector>>(*this, excludedStatisticIndices,
-                                                                               outputIndices);
+                return std::make_unique<StatisticsSubset<CompleteIndexVector>>(
+                  this->state_, weights_, outputIndices, ruleEvaluationFactory_, totalSumVector_, subsetSumVector_,
+                  excludedStatisticIndices);
             }
 
             /**
@@ -271,8 +164,9 @@ namespace seco {
              */
             std::unique_ptr<IResettableStatisticsSubset> createSubset(
               const BinaryDokVector& excludedStatisticIndices, const PartialIndexVector& outputIndices) const override {
-                return std::make_unique<StatisticsSubset<PartialIndexVector>>(*this, excludedStatisticIndices,
-                                                                              outputIndices);
+                return std::make_unique<StatisticsSubset<PartialIndexVector>>(
+                  this->state_, weights_, outputIndices, ruleEvaluationFactory_, totalSumVector_, subsetSumVector_,
+                  excludedStatisticIndices);
             }
     };
 }
