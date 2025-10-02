@@ -145,7 +145,7 @@ namespace boosting {
             /**
              * @see `IResettableStatisticsSubset::resetSubset`
              */
-            void resetSubset() override final {
+            void resetSubset() override {
                 if (!accumulatedSumVectorPtr_) {
                     // Create a vector for storing the accumulated sums of gradients and Hessians, if necessary...
                     accumulatedSumVectorPtr_ = std::make_unique<StatisticVector>(this->sumVector_);
@@ -161,7 +161,7 @@ namespace boosting {
             /**
              * @see `IResettableStatisticsSubset::calculateScoresAccumulated`
              */
-            std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresAccumulated() override final {
+            std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresAccumulated() override {
                 const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(*accumulatedSumVectorPtr_);
                 return this->state_.createUpdateCandidate(scoreVector);
             }
@@ -169,7 +169,7 @@ namespace boosting {
             /**
              * @see `IResettableStatisticsSubset::calculateScoresUncovered`
              */
-            std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresUncovered() override final {
+            std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresUncovered() override {
                 tmpVector_.difference(*totalSumVector_, this->outputIndices_, this->sumVector_);
                 const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(tmpVector_);
                 return this->state_.createUpdateCandidate(scoreVector);
@@ -178,7 +178,7 @@ namespace boosting {
             /**
              * @see `IResettableStatisticsSubset::calculateScoresUncoveredAccumulated`
              */
-            std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresUncoveredAccumulated() override final {
+            std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresUncoveredAccumulated() override {
                 tmpVector_.difference(*totalSumVector_, this->outputIndices_, *accumulatedSumVectorPtr_);
                 const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(tmpVector_);
                 return this->state_.createUpdateCandidate(scoreVector);
