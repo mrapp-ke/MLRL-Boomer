@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/common/statistics/statistics_weighted.hpp"
 #include "mlrl/seco/statistics/statistics.hpp"
 #include "statistics.hpp"
 #include "statistics_subset.hpp"
@@ -11,53 +12,6 @@
 #include <utility>
 
 namespace seco {
-
-    template<typename StatisticView, typename StatisticVector>
-    static inline void initializeStatisticVector(const EqualWeightVector& weights, const StatisticView& statisticView,
-                                                 StatisticVector& statisticVector) {
-        uint32 numStatistics = weights.getNumElements();
-
-        for (uint32 i = 0; i < numStatistics; i++) {
-            statisticVector.add(statisticView, i);
-        }
-    }
-
-    template<typename WeightVector, typename StatisticView, typename StatisticVector>
-    static inline void initializeStatisticVector(const WeightVector& weights, const StatisticView& statisticView,
-                                                 StatisticVector& statisticVector) {
-        uint32 numStatistics = weights.getNumElements();
-
-        for (uint32 i = 0; i < numStatistics; i++) {
-            typename WeightVector::weight_type weight = weights[i];
-            statisticVector.add(statisticView, i, weight);
-        }
-    }
-
-    template<typename StatisticView, typename StatisticVector>
-    static inline void addStatisticInternally(const EqualWeightVector& weights, const StatisticView& statisticView,
-                                              StatisticVector& statisticVector, uint32 statisticIndex) {
-        statisticVector.add(statisticView, statisticIndex);
-    }
-
-    template<typename WeightVector, typename StatisticView, typename StatisticVector>
-    static inline void addStatisticInternally(const WeightVector& weights, const StatisticView& statisticView,
-                                              StatisticVector& statisticVector, uint32 statisticIndex) {
-        typename WeightVector::weight_type weight = weights[statisticIndex];
-        statisticVector.add(statisticView, statisticIndex, weight);
-    }
-
-    template<typename StatisticView, typename StatisticVector>
-    static inline void removeStatisticInternally(const EqualWeightVector& weights, const StatisticView& statisticView,
-                                                 StatisticVector& statisticVector, uint32 statisticIndex) {
-        statisticVector.remove(statisticView, statisticIndex);
-    }
-
-    template<typename WeightVector, typename StatisticView, typename StatisticVector>
-    static inline void removeStatisticInternally(const WeightVector& weights, const StatisticView& statisticView,
-                                                 StatisticVector& statisticVector, uint32 statisticIndex) {
-        typename WeightVector::weight_type weight = weights[statisticIndex];
-        statisticVector.remove(statisticView, statisticIndex, weight);
-    }
 
     /**
      * An abstract base class for all statistics that provide access to the elements of weighted confusion matrices.
@@ -71,19 +25,14 @@ namespace seco {
      *                                  statistics
      */
     template<typename State, typename StatisticVector, typename RuleEvaluationFactory, typename WeightVector>
-    class WeightedStatistics final : public AbstractStatisticsSpace<State>,
-                                     virtual public IWeightedStatistics {
+    class WeightedStatistics final : public AbstractWeightedStatistics<State, StatisticVector, WeightVector> {
         private:
 
             template<typename IndexVector>
             using StatisticsSubset = ResettableCoverageStatisticsSubset<State, StatisticVector, WeightVector,
                                                                         IndexVector, RuleEvaluationFactory>;
 
-            const WeightVector& weights_;
-
             const RuleEvaluationFactory& ruleEvaluationFactory_;
-
-            StatisticVector totalSumVector_;
 
             StatisticVector subsetSumVector_;
 
@@ -100,21 +49,18 @@ namespace seco {
              */
             WeightedStatistics(State& state, const RuleEvaluationFactory& ruleEvaluationFactory,
                                const WeightVector& weights)
-                : AbstractStatisticsSpace<State>(state), weights_(weights),
+                : AbstractWeightedStatistics<State, StatisticVector, WeightVector>(state, weights),
                   ruleEvaluationFactory_(ruleEvaluationFactory),
-                  totalSumVector_(state.statisticMatrixPtr->labelMatrix.numCols, true),
-                  subsetSumVector_(state.statisticMatrixPtr->labelMatrix.numCols, true) {
-                initializeStatisticVector(weights, state.statisticMatrixPtr->getView(), totalSumVector_);
-                initializeStatisticVector(weights, state.statisticMatrixPtr->getView(), subsetSumVector_);
+                  subsetSumVector_(state.statisticMatrixPtr->getNumCols(), true) {
+                this->initializeSumVector(weights, state.statisticMatrixPtr->getView(), subsetSumVector_);
             }
 
             /**
-             * @param statistics A reference to an object of type `WeightedStatistics` to be copied
+             * @param other A reference to an object of type `WeightedStatistics` to be copied
              */
-            WeightedStatistics(const WeightedStatistics& statistics)
-                : AbstractStatisticsSpace<State>(statistics.state_), weights_(statistics.weights_),
-                  ruleEvaluationFactory_(statistics.ruleEvaluationFactory_),
-                  totalSumVector_(statistics.totalSumVector_), subsetSumVector_(statistics.subsetSumVector_) {}
+            WeightedStatistics(const WeightedStatistics& other)
+                : AbstractWeightedStatistics<State, StatisticVector, WeightVector>(other),
+                  ruleEvaluationFactory_(other.ruleEvaluationFactory_), subsetSumVector_(other.subsetSumVector_) {}
 
             /**
              * @see `IWeightedStatistics::copy`
@@ -125,37 +71,14 @@ namespace seco {
             }
 
             /**
-             * @see `IWeightedStatistics::resetCoveredStatistics`
-             */
-            void resetCoveredStatistics() override {
-                subsetSumVector_.clear();
-            }
-
-            /**
-             * @see `IWeightedStatistics::addCoveredStatistic`
-             */
-            void addCoveredStatistic(uint32 statisticIndex) override {
-                addStatisticInternally(weights_, this->state_.statisticMatrixPtr->getView(), subsetSumVector_,
-                                       statisticIndex);
-            }
-
-            /**
-             * @see `IWeightedStatistics::removeCoveredStatistic`
-             */
-            void removeCoveredStatistic(uint32 statisticIndex) override {
-                removeStatisticInternally(weights_, this->state_.statisticMatrixPtr->getView(), subsetSumVector_,
-                                          statisticIndex);
-            }
-
-            /**
              * @see `IWeightedStatistics::createSubset`
              */
             std::unique_ptr<IResettableStatisticsSubset> createSubset(
               const BinaryDokVector& excludedStatisticIndices,
               const CompleteIndexVector& outputIndices) const override {
                 return std::make_unique<StatisticsSubset<CompleteIndexVector>>(
-                  this->state_, weights_, outputIndices, ruleEvaluationFactory_, totalSumVector_, subsetSumVector_,
-                  excludedStatisticIndices);
+                  this->state_, this->weights_, outputIndices, ruleEvaluationFactory_, subsetSumVector_,
+                  this->totalSumVector_, excludedStatisticIndices);
             }
 
             /**
@@ -164,8 +87,8 @@ namespace seco {
             std::unique_ptr<IResettableStatisticsSubset> createSubset(
               const BinaryDokVector& excludedStatisticIndices, const PartialIndexVector& outputIndices) const override {
                 return std::make_unique<StatisticsSubset<PartialIndexVector>>(
-                  this->state_, weights_, outputIndices, ruleEvaluationFactory_, totalSumVector_, subsetSumVector_,
-                  excludedStatisticIndices);
+                  this->state_, this->weights_, outputIndices, ruleEvaluationFactory_, subsetSumVector_,
+                  this->totalSumVector_, excludedStatisticIndices);
             }
     };
 }
