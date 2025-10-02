@@ -6,6 +6,7 @@
 #include "mlrl/boosting/rule_evaluation/rule_evaluation.hpp"
 #include "mlrl/common/statistics/statistics_space.hpp"
 #include "mlrl/common/statistics/statistics_subset.hpp"
+#include "mlrl/common/util/unique_ptr.hpp"
 
 #include <memory>
 #include <utility>
@@ -91,9 +92,9 @@ namespace boosting {
 
             StatisticVector tmpVector_;
 
-            std::unique_ptr<StatisticVector> accumulatedSumVectorPtr_;
+            util::lazy_unique_ptr<StatisticVector> accumulatedSumVectorPtr_;
 
-            std::unique_ptr<StatisticVector> totalCoverableSumVectorPtr_;
+            util::lazy_unique_ptr<StatisticVector> totalCoverableSumVectorPtr_;
 
         public:
 
@@ -119,10 +120,15 @@ namespace boosting {
                                                const BinaryDokVector& excludedStatisticIndices)
                 : BoostingStatisticsSubset<State, StatisticVector, WeightVector, IndexVector, RuleEvaluationFactory>(
                     state, weights, outputIndices, ruleEvaluationFactory),
-                  totalSumVector_(&totalSumVector), tmpVector_(outputIndices.getNumElements()) {
+                  totalSumVector_(&totalSumVector), tmpVector_(outputIndices.getNumElements()),
+                  accumulatedSumVectorPtr_([this] {
+                      return std::make_unique<StatisticVector>(this->sumVector_);
+                  }),
+                  totalCoverableSumVectorPtr_([this] {
+                      return std::make_unique<StatisticVector>(*totalSumVector_);
+                  }) {
                 if (excludedStatisticIndices.getNumIndices() > 0) {
                     // Create a vector for storing the total sums of statistics, if necessary...
-                    totalCoverableSumVectorPtr_ = std::make_unique<StatisticVector>(*totalSumVector_);
                     totalSumVector_ = totalCoverableSumVectorPtr_.get();
 
                     for (auto it = excludedStatisticIndices.indices_cbegin();
@@ -140,13 +146,8 @@ namespace boosting {
              * @see `IResettableStatisticsSubset::resetSubset`
              */
             void resetSubset() override {
-                if (!accumulatedSumVectorPtr_) {
-                    // Create a vector for storing the accumulated sums of statistics, if necessary...
-                    accumulatedSumVectorPtr_ = std::make_unique<StatisticVector>(this->sumVector_);
-                } else {
-                    // Add the sums of statistics to the accumulated sums of statistics...
-                    accumulatedSumVectorPtr_->add(this->sumVector_);
-                }
+                // Add the sums of statistics to the accumulated sums of statistics...
+                accumulatedSumVectorPtr_->add(this->sumVector_);
 
                 // Reset the sums of statistics to zero...
                 this->sumVector_.clear();

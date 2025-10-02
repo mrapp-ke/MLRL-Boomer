@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/statistics/statistics_subset.hpp"
+#include "mlrl/common/util/unique_ptr.hpp"
 #include "mlrl/seco/rule_evaluation/rule_evaluation.hpp"
 
 #include <memory>
@@ -152,9 +153,9 @@ namespace seco {
 
             StatisticVector tmpVector_;
 
-            std::unique_ptr<StatisticVector> accumulatedSumVectorPtr_;
+            util::lazy_unique_ptr<StatisticVector> accumulatedSumVectorPtr_;
 
-            std::unique_ptr<StatisticVector> totalCoverableSumVectorPtr_;
+            util::lazy_unique_ptr<StatisticVector> totalCoverableSumVectorPtr_;
 
         public:
 
@@ -185,10 +186,15 @@ namespace seco {
                 : AbstractCoverageStatisticsSubset<State, StatisticVector, WeightVector, IndexVector,
                                                    RuleEvaluationFactory>(state, weights, outputIndices,
                                                                           ruleEvaluationFactory, subsetSumVector),
-                  totalSumVector_(&totalSumVector), tmpVector_(outputIndices.getNumElements()) {
+                  totalSumVector_(&totalSumVector), tmpVector_(outputIndices.getNumElements()),
+                  accumulatedSumVectorPtr_([this] {
+                      return std::make_unique<StatisticVector>(this->sumVector_);
+                  }),
+                  totalCoverableSumVectorPtr_([this] {
+                      return std::make_unique<StatisticVector>(*totalSumVector_);
+                  }) {
                 if (excludedStatisticIndices.getNumIndices() > 0) {
                     // Create a vector for storing the total sums of statistics, if necessary...
-                    totalCoverableSumVectorPtr_ = std::make_unique<StatisticVector>(*totalSumVector_);
                     totalSumVector_ = totalCoverableSumVectorPtr_.get();
 
                     for (auto it = excludedStatisticIndices.indices_cbegin();
@@ -206,15 +212,10 @@ namespace seco {
              * @see `IResettableStatisticsSubset::resetSubset`
              */
             void resetSubset() override {
-                if (!accumulatedSumVectorPtr_) {
-                    // Allocate a vector for storing the accumulated confusion matrices, if necessary...
-                    accumulatedSumVectorPtr_ = std::make_unique<StatisticVector>(this->sumVector_);
-                } else {
-                    // Add the confusion matrix for each output to the accumulated confusion matrix...
-                    accumulatedSumVectorPtr_->add(this->sumVector_);
-                }
+                // Add the sums of statistics to the accumulated sums of statistics...
+                accumulatedSumVectorPtr_->add(this->sumVector_);
 
-                // Reset the confusion matrix for each output to zero...
+                // Reset the sums of statistics to zero...
                 this->sumVector_.clear();
             }
 
