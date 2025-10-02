@@ -16,13 +16,13 @@ namespace seco {
      *
      * @tparam State                    The type of the state of the training process
      * @tparam StatisticVector          The type of the vector that is used to store the sums of statistics
-     * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
-     *                                  used for calculating the predictions of rules, as well as corresponding quality
-     *                                  scores
      * @tparam WeightVector             The type of the vector that provides access to the weights of individual
      *                                  statistics
      * @tparam IndexVector              The type of the vector that provides access to the indices of the outputs that
      *                                  are included in the subset
+     * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
+     *                                  used for calculating the predictions of rules, as well as corresponding quality
+     *                                  scores
      */
     template<typename State, typename StatisticVector, typename WeightVector, typename IndexVector,
              typename RuleEvaluationFactory>
