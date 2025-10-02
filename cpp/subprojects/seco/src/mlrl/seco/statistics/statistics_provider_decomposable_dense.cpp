@@ -56,11 +56,11 @@ namespace seco {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
                                                             const EqualWeightVector& weights) const override {
-                std::unique_ptr<DenseConfusionMatrixVector<uint32>> totalSumVectorPtr =
+                std::unique_ptr<DenseConfusionMatrixVector<uint32>> subsetSumVectorPtr =
                   std::make_unique<DenseConfusionMatrixVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<StatisticsSubset<EqualWeightVector, CompleteIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
-                  std::move(totalSumVectorPtr));
+                  std::move(subsetSumVectorPtr));
             }
 
             /**
@@ -68,11 +68,11 @@ namespace seco {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
                                                             const EqualWeightVector& weights) const override {
-                std::unique_ptr<DenseConfusionMatrixVector<uint32>> totalSumVectorPtr =
+                std::unique_ptr<DenseConfusionMatrixVector<uint32>> subsetSumVectorPtr =
                   std::make_unique<DenseConfusionMatrixVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<StatisticsSubset<EqualWeightVector, PartialIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
-                  std::move(totalSumVectorPtr));
+                  std::move(subsetSumVectorPtr));
             }
 
             /**
@@ -80,11 +80,11 @@ namespace seco {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
                                                             const BitWeightVector& weights) const override {
-                std::unique_ptr<DenseConfusionMatrixVector<uint32>> totalSumVectorPtr =
+                std::unique_ptr<DenseConfusionMatrixVector<uint32>> subsetSumVectorPtr =
                   std::make_unique<DenseConfusionMatrixVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<StatisticsSubset<BitWeightVector, CompleteIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
-                  std::move(totalSumVectorPtr));
+                  std::move(subsetSumVectorPtr));
             }
 
             /**
@@ -92,11 +92,11 @@ namespace seco {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
                                                             const BitWeightVector& weights) const override {
-                std::unique_ptr<DenseConfusionMatrixVector<uint32>> totalSumVectorPtr =
+                std::unique_ptr<DenseConfusionMatrixVector<uint32>> subsetSumVectorPtr =
                   std::make_unique<DenseConfusionMatrixVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<StatisticsSubset<BitWeightVector, PartialIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
-                  std::move(totalSumVectorPtr));
+                  std::move(subsetSumVectorPtr));
             }
 
             /**
@@ -104,11 +104,11 @@ namespace seco {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
                                                             const DenseWeightVector<uint16>& weights) const override {
-                std::unique_ptr<DenseConfusionMatrixVector<uint32>> totalSumVectorPtr =
+                std::unique_ptr<DenseConfusionMatrixVector<uint32>> subsetSumVectorPtr =
                   std::make_unique<DenseConfusionMatrixVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<StatisticsSubset<DenseWeightVector<uint16>, CompleteIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
-                  std::move(totalSumVectorPtr));
+                  std::move(subsetSumVectorPtr));
             }
 
             /**
@@ -116,11 +116,11 @@ namespace seco {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
                                                             const DenseWeightVector<uint16>& weights) const override {
-                std::unique_ptr<DenseConfusionMatrixVector<uint32>> totalSumVectorPtr =
+                std::unique_ptr<DenseConfusionMatrixVector<uint32>> subsetSumVectorPtr =
                   std::make_unique<DenseConfusionMatrixVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<StatisticsSubset<DenseWeightVector<uint16>, PartialIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
-                  std::move(totalSumVectorPtr));
+                  std::move(subsetSumVectorPtr));
             }
 
             /**
@@ -128,11 +128,11 @@ namespace seco {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
                                                             const DenseWeightVector<float32>& weights) const override {
-                std::unique_ptr<DenseConfusionMatrixVector<float32>> totalSumVectorPtr =
+                std::unique_ptr<DenseConfusionMatrixVector<float32>> subsetSumVectorPtr =
                   std::make_unique<DenseConfusionMatrixVector<float32>>(this->getNumOutputs(), true);
                 return std::make_unique<StatisticsSubset<DenseWeightVector<float32>, CompleteIndexVector, float32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
-                  std::move(totalSumVectorPtr));
+                  std::move(subsetSumVectorPtr));
             }
 
             /**
@@ -140,11 +140,11 @@ namespace seco {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
                                                             const DenseWeightVector<float32>& weights) const override {
-                std::unique_ptr<DenseConfusionMatrixVector<float32>> totalSumVectorPtr =
+                std::unique_ptr<DenseConfusionMatrixVector<float32>> subsetSumVectorPtr =
                   std::make_unique<DenseConfusionMatrixVector<float32>>(this->getNumOutputs(), true);
                 return std::make_unique<StatisticsSubset<DenseWeightVector<float32>, PartialIndexVector, float32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
-                  std::move(totalSumVectorPtr));
+                  std::move(subsetSumVectorPtr));
             }
 
             /**
@@ -153,12 +153,12 @@ namespace seco {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const CompleteIndexVector& outputIndices,
               const OutOfSampleWeightVector<EqualWeightVector>& weights) const override {
-                std::unique_ptr<DenseConfusionMatrixVector<uint32>> totalSumVectorPtr =
+                std::unique_ptr<DenseConfusionMatrixVector<uint32>> subsetSumVectorPtr =
                   std::make_unique<DenseConfusionMatrixVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<
                   StatisticsSubset<OutOfSampleWeightVector<EqualWeightVector>, CompleteIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
-                  std::move(totalSumVectorPtr));
+                  std::move(subsetSumVectorPtr));
             }
 
             /**
@@ -167,12 +167,12 @@ namespace seco {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const PartialIndexVector& outputIndices,
               const OutOfSampleWeightVector<EqualWeightVector>& weights) const override {
-                std::unique_ptr<DenseConfusionMatrixVector<uint32>> totalSumVectorPtr =
+                std::unique_ptr<DenseConfusionMatrixVector<uint32>> subsetSumVectorPtr =
                   std::make_unique<DenseConfusionMatrixVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<
                   StatisticsSubset<OutOfSampleWeightVector<EqualWeightVector>, PartialIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
-                  std::move(totalSumVectorPtr));
+                  std::move(subsetSumVectorPtr));
             }
 
             /**
@@ -181,12 +181,12 @@ namespace seco {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const CompleteIndexVector& outputIndices,
               const OutOfSampleWeightVector<BitWeightVector>& weights) const override {
-                std::unique_ptr<DenseConfusionMatrixVector<uint32>> totalSumVectorPtr =
+                std::unique_ptr<DenseConfusionMatrixVector<uint32>> subsetSumVectorPtr =
                   std::make_unique<DenseConfusionMatrixVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<
                   StatisticsSubset<OutOfSampleWeightVector<BitWeightVector>, CompleteIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
-                  std::move(totalSumVectorPtr));
+                  std::move(subsetSumVectorPtr));
             }
 
             /**
@@ -195,12 +195,12 @@ namespace seco {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const PartialIndexVector& outputIndices,
               const OutOfSampleWeightVector<BitWeightVector>& weights) const override {
-                std::unique_ptr<DenseConfusionMatrixVector<uint32>> totalSumVectorPtr =
+                std::unique_ptr<DenseConfusionMatrixVector<uint32>> subsetSumVectorPtr =
                   std::make_unique<DenseConfusionMatrixVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<
                   StatisticsSubset<OutOfSampleWeightVector<BitWeightVector>, PartialIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
-                  std::move(totalSumVectorPtr));
+                  std::move(subsetSumVectorPtr));
             }
 
             /**
@@ -209,12 +209,12 @@ namespace seco {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const CompleteIndexVector& outputIndices,
               const OutOfSampleWeightVector<DenseWeightVector<uint16>>& weights) const override {
-                std::unique_ptr<DenseConfusionMatrixVector<uint32>> totalSumVectorPtr =
+                std::unique_ptr<DenseConfusionMatrixVector<uint32>> subsetSumVectorPtr =
                   std::make_unique<DenseConfusionMatrixVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<
                   StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<uint16>>, CompleteIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
-                  std::move(totalSumVectorPtr));
+                  std::move(subsetSumVectorPtr));
             }
 
             /**
@@ -223,12 +223,12 @@ namespace seco {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const PartialIndexVector& outputIndices,
               const OutOfSampleWeightVector<DenseWeightVector<uint16>>& weights) const override {
-                std::unique_ptr<DenseConfusionMatrixVector<uint32>> totalSumVectorPtr =
+                std::unique_ptr<DenseConfusionMatrixVector<uint32>> subsetSumVectorPtr =
                   std::make_unique<DenseConfusionMatrixVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<
                   StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<uint16>>, PartialIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
-                  std::move(totalSumVectorPtr));
+                  std::move(subsetSumVectorPtr));
             }
 
             /**
@@ -237,12 +237,12 @@ namespace seco {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const CompleteIndexVector& outputIndices,
               const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const override {
-                std::unique_ptr<DenseConfusionMatrixVector<uint32>> totalSumVectorPtr =
+                std::unique_ptr<DenseConfusionMatrixVector<uint32>> subsetSumVectorPtr =
                   std::make_unique<DenseConfusionMatrixVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<
                   StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<float32>>, CompleteIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
-                  std::move(totalSumVectorPtr));
+                  std::move(subsetSumVectorPtr));
             }
 
             /**
@@ -251,12 +251,12 @@ namespace seco {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const PartialIndexVector& outputIndices,
               const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const override {
-                std::unique_ptr<DenseConfusionMatrixVector<uint32>> totalSumVectorPtr =
+                std::unique_ptr<DenseConfusionMatrixVector<uint32>> subsetSumVectorPtr =
                   std::make_unique<DenseConfusionMatrixVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<
                   StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<float32>>, PartialIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
-                  std::move(totalSumVectorPtr));
+                  std::move(subsetSumVectorPtr));
             }
 
             /**
