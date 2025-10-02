@@ -149,19 +149,6 @@ namespace seco {
             }
     };
 
-    template<typename StatisticView, typename StatisticVector>
-    static inline void removeStatisticInternally2(const EqualWeightVector& weights, const StatisticView& statisticView,
-                                                  StatisticVector& statisticVector, uint32 statisticIndex) {
-        statisticVector.remove(statisticView, statisticIndex);
-    }
-
-    template<typename WeightVector, typename StatisticView, typename StatisticVector>
-    static inline void removeStatisticInternally2(const WeightVector& weights, const StatisticView& statisticView,
-                                                  StatisticVector& statisticVector, uint32 statisticIndex) {
-        typename WeightVector::weight_type weight = weights[statisticIndex];
-        statisticVector.remove(statisticView, statisticIndex, weight);
-    }
-
     /**
      * A subset of confusion matrices that can be reset multiple times.
      *
@@ -182,6 +169,20 @@ namespace seco {
                                                   RuleEvaluationFactory>,
           virtual public IResettableStatisticsSubset {
         private:
+
+            template<typename StatisticView>
+            static inline void removeStatisticInternally(const EqualWeightVector& weights,
+                                                         const StatisticView& statisticView,
+                                                         StatisticVector& statisticVector, uint32 statisticIndex) {
+                statisticVector.remove(statisticView, statisticIndex);
+            }
+
+            template<typename Weights, typename StatisticView>
+            static inline void removeStatisticInternally(const Weights& weights, const StatisticView& statisticView,
+                                                         StatisticVector& statisticVector, uint32 statisticIndex) {
+                typename Weights::weight_type weight = weights[statisticIndex];
+                statisticVector.remove(statisticView, statisticIndex, weight);
+            }
 
             const StatisticVector* totalSumVector_;
 
@@ -231,8 +232,8 @@ namespace seco {
                         // For each output, subtract the confusion matrices of the example at the given index (weighted
                         // by the given weight) from the total sum of confusion matrices...
                         uint32 statisticIndex = *it;
-                        removeStatisticInternally2(this->weights_, this->state_.statisticMatrixPtr->getView(),
-                                                   *totalCoverableSumVectorPtr_, statisticIndex);
+                        removeStatisticInternally(weights, state.statisticMatrixPtr->getView(),
+                                                  *totalCoverableSumVectorPtr_, statisticIndex);
                     }
                 }
             }
