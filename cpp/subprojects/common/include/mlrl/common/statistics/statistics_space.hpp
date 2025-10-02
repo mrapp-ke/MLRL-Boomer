@@ -50,6 +50,8 @@ class AbstractStatisticsSpace : virtual public IStatisticsSpace {
          */
         explicit AbstractStatisticsSpace(State& state) : state_(state) {}
 
+        virtual ~AbstractStatisticsSpace() override {}
+
         /**
          * @see `IStatisticsSpace::getNumStatistics`
          */

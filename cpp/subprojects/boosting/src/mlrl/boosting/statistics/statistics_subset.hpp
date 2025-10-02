@@ -56,6 +56,8 @@ namespace boosting {
                                                                                               outputIndices),
                   ruleEvaluationPtr_(ruleEvaluationFactory.create(this->sumVector_, outputIndices)) {}
 
+            virtual ~BoostingStatisticsSubset() override {}
+
             /**
              * @see `IStatisticsSubset::calculateScores`
              */

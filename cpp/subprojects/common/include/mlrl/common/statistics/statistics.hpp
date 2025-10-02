@@ -307,6 +307,8 @@ class AbstractStatistics : virtual public IStatistics {
          */
         explicit AbstractStatistics(std::unique_ptr<State> statePtr) : statePtr_(std::move(statePtr)) {}
 
+        virtual ~AbstractStatistics() override {}
+
         /**
          * @see `IStatistics::getNumStatistics`
          */

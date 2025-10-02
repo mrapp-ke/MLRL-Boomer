@@ -65,6 +65,8 @@ namespace seco {
                   ruleEvaluationPtr_(ruleEvaluationFactory.create(this->sumVector_, outputIndices)),
                   totalSumVector_(totalSumVector) {}
 
+            virtual ~AbstractCoverageStatisticsSubset() override {}
+
             /**
              * @see `IStatisticsSubset::calculateScores`
              */

@@ -54,6 +54,8 @@ namespace boosting {
                   evaluationMeasurePtr_(std::move(evaluationMeasurePtr)),
                   ruleEvaluationFactory_(&ruleEvaluationFactory) {}
 
+            virtual ~AbstractBoostingStatistics() override {}
+
             /**
              * @see `IStatistics::evaluatePrediction`
              */
