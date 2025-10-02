@@ -224,6 +224,30 @@ static inline void removeStatisticsFromVector(StatisticVector& statisticVector, 
 }
 
 /**
+ * Removes the statistics at specific rows of a view from a given vector. The statistics are weighted according to given
+ * weights.
+ *
+ * @tparam StatisticVector  The type of the vector to be modified
+ * @tparam WeightVector     The type of the vector that provides access to the weights of statistics
+ * @tparam StatisticView    The type of the view that provides access to the statistics
+ * @tparam IndexIterator    The type of the iterator that allows to access the indices of the rows
+ * @param statisticVector   A reference to an object of template type `StatisticVector` to be modified
+ * @param weights           A reference to an object of template type `WeightVector` that provides access to the weights
+ * @param statisticView     A reference to an object of template type `StatisticView` that provides access to the
+ *                          statistics
+ * @param indicesBegin      An iterator to the binning of the indices
+ * @param indicesEnd        An iterator to the end of the indices
+ */
+template<typename StatisticVector, typename WeightVector, typename StatisticView, typename IndexIterator>
+static inline void removeStatisticsFromVector(StatisticVector& statisticVector, const WeightVector& weights,
+                                              const StatisticView& statisticView, IndexIterator indicesBegin,
+                                              IndexIterator indicesEnd) {
+    for (auto it = indicesBegin; it != indicesEnd; it++) {
+        removeStatisticsFromVector(statisticVector, weights, statisticView, *it);
+    }
+}
+
+/**
  * Initializes a given vector by setting its element for each output to the weighted sum of the statistics in a specific
  * view.
  *
