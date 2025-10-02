@@ -129,6 +129,8 @@ class AbstractStatisticsSubset : virtual public IStatisticsSubset {
             : state_(state), sumVector_(outputIndices.getNumElements(), true), weights_(weights),
               outputIndices_(outputIndices) {}
 
+        virtual ~AbstractStatisticsSubset() override {}
+
         /**
          * @see `IStatisticsSubset::hasNonZeroWeight`
          */

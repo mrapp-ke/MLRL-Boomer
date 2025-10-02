@@ -40,6 +40,8 @@ namespace seco {
                                        const RuleEvaluationFactory& ruleEvaluationFactory)
                 : AbstractStatistics<State>(std::move(statePtr)), ruleEvaluationFactory_(&ruleEvaluationFactory) {}
 
+            virtual ~AbstractCoverageStatistics() override {}
+
             /**
              * @see `ICoverageStatistics::getSumOfUncoveredWeights`
              */
