@@ -132,13 +132,13 @@ namespace seco {
      *
      * @tparam State                    The type of the state of the training process
      * @tparam StatisticVector          The type of the vector that is used to store the sums of statistics
-     * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
-     *                                  used for calculating the predictions of rules, as well as corresponding quality
-     *                                  scores
      * @tparam WeightVector             The type of the vector that provides access to the weights of individual
      *                                  statistics
      * @tparam IndexVector              The type of the vector that provides access to the indices of the outputs that
      *                                  are included in the subset
+     * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
+     *                                  used for calculating the predictions of rules, as well as corresponding quality
+     *                                  scores
      */
     template<typename State, typename StatisticVector, typename WeightVector, typename IndexVector,
              typename RuleEvaluationFactory>
@@ -187,14 +187,14 @@ namespace seco {
                                                                           ruleEvaluationFactory, subsetSumVector),
                   totalSumVector_(&totalSumVector), tmpVector_(outputIndices.getNumElements()) {
                 if (excludedStatisticIndices.getNumIndices() > 0) {
-                    // Allocate a vector for storing the totals sums of confusion matrices, if necessary...
+                    // Create a vector for storing the total sums of statistics, if necessary...
                     totalCoverableSumVectorPtr_ = std::make_unique<StatisticVector>(*totalSumVector_);
                     totalSumVector_ = totalCoverableSumVectorPtr_.get();
 
                     for (auto it = excludedStatisticIndices.indices_cbegin();
                          it != excludedStatisticIndices.indices_cend(); it++) {
-                        // For each output, subtract the confusion matrices of the example at the given index (weighted
-                        // by the given weight) from the total sum of confusion matrices...
+                        // For each output, subtract the statistics of the example at the given index (weighted by the
+                        // given weight) from the total sum of statistics...
                         uint32 statisticIndex = *it;
                         removeStatisticsFromVector(*totalCoverableSumVectorPtr_, weights,
                                                    state.statisticMatrixPtr->getView(), statisticIndex);

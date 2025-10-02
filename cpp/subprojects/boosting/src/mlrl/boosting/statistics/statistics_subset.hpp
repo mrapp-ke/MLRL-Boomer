@@ -114,7 +114,7 @@ namespace boosting {
              *                                  allows to create instances of the class that should be used for
              *                                  calculating the predictions of rules, as well as their overall quality
              * @param totalSumVector            A reference to an object of template type `StatisticVector` that stores
-             *                                  the total sums of gradients and Hessians
+             *                                  the total sums of statistics
              * @param excludedStatisticIndices  A reference to an object of type `BinaryDokVector` that provides access
              *                                  to the indices of the statistics that should be excluded from the subset
              */
@@ -127,14 +127,14 @@ namespace boosting {
                     state, weights, outputIndices, ruleEvaluationFactory),
                   tmpVector_(outputIndices.getNumElements()), totalSumVector_(&totalSumVector) {
                 if (excludedStatisticIndices.getNumIndices() > 0) {
-                    // Create a vector for storing the totals sums of gradients and Hessians, if necessary...
                     totalCoverableSumVectorPtr_ = std::make_unique<StatisticVector>(*this->totalSumVector_);
                     this->totalSumVector_ = totalCoverableSumVectorPtr_.get();
+                    // Create a vector for storing the total sums of statistics, if necessary...
 
                     for (auto it = excludedStatisticIndices.indices_cbegin();
                          it != excludedStatisticIndices.indices_cend(); it++) {
-                        // Subtract the gradients and Hessians of the example at the given index (weighted by the given
-                        // weight) from the total sums of gradients and Hessians...
+                        // For each output, subtract the statistics of the example at the given index (weighted by the
+                        // given weight) from the total sum of statistics...
                         uint32 statisticIndex = *it;
                         removeStatisticsFromVector(*totalCoverableSumVectorPtr_, weights,
                                                    state.statisticMatrixPtr->getView(), statisticIndex);
@@ -147,14 +147,14 @@ namespace boosting {
              */
             void resetSubset() override {
                 if (!accumulatedSumVectorPtr_) {
-                    // Create a vector for storing the accumulated sums of gradients and Hessians, if necessary...
+                    // Create a vector for storing the accumulated sums of statistics, if necessary...
                     accumulatedSumVectorPtr_ = std::make_unique<StatisticVector>(this->sumVector_);
                 } else {
-                    // Add the sums of gradients and Hessians to the accumulated sums of gradients and Hessians...
+                    // Add the sums of statistics to the accumulated sums of statistics...
                     accumulatedSumVectorPtr_->add(this->sumVector_);
                 }
 
-                // Reset the sums of gradients and Hessians to zero...
+                // Reset the sums of statistics to zero...
                 this->sumVector_.clear();
             }
 
