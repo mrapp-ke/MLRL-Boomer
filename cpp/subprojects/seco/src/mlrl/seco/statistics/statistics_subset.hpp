@@ -197,14 +197,11 @@ namespace seco {
                     // Create a vector for storing the total sums of statistics, if necessary...
                     totalSumVector_ = totalCoverableSumVectorPtr_.get();
 
-                    for (auto it = excludedStatisticIndices.indices_cbegin();
-                         it != excludedStatisticIndices.indices_cend(); it++) {
-                        // For each output, subtract the statistics of the example at the given index (weighted by the
-                        // given weight) from the total sum of statistics...
-                        uint32 statisticIndex = *it;
-                        removeStatisticsFromVector(*totalCoverableSumVectorPtr_, weights,
-                                                   state.statisticMatrixPtr->getView(), statisticIndex);
-                    }
+                    // For each output, subtract the statistics of the example at the given index (weighted by the given
+                    // weight) from the total sum of statistics...
+                    removeStatisticsFromVector(
+                      *totalCoverableSumVectorPtr_, weights, state.statisticMatrixPtr->getView(),
+                      excludedStatisticIndices.indices_cbegin(), excludedStatisticIndices.indices_cend());
                 }
             }
 
