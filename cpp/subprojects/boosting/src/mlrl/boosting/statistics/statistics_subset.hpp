@@ -127,9 +127,9 @@ namespace boosting {
                     state, weights, outputIndices, ruleEvaluationFactory),
                   tmpVector_(outputIndices.getNumElements()), totalSumVector_(&totalSumVector) {
                 if (excludedStatisticIndices.getNumIndices() > 0) {
-                    totalCoverableSumVectorPtr_ = std::make_unique<StatisticVector>(*this->totalSumVector_);
-                    this->totalSumVector_ = totalCoverableSumVectorPtr_.get();
                     // Create a vector for storing the total sums of statistics, if necessary...
+                    totalCoverableSumVectorPtr_ = std::make_unique<StatisticVector>(*totalSumVector_);
+                    totalSumVector_ = totalCoverableSumVectorPtr_.get();
 
                     for (auto it = excludedStatisticIndices.indices_cbegin();
                          it != excludedStatisticIndices.indices_cend(); it++) {
