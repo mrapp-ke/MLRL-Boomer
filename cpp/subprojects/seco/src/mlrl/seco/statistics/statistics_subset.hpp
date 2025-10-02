@@ -205,10 +205,9 @@ namespace seco {
              *                                  calculating the predictions of rules, as well as their overall quality
              * @param subsetSumVector           A reference to an object of template type `StatisticVector` that stores
              *                                  the sums of statistics available at the current iteration of the
-             * covering
+             *                                  covering algorithm
              * @param totalSumVector            A reference to an object of template type `StatisticVector` that stores
              *                                  the total sums of statistics
-             *                                  algorithm
              * @param excludedStatisticIndices  A reference to an object of type `BinaryDokVector` that provides access
              *                                  to the indices of the statistics that should be excluded from the subset
              */
