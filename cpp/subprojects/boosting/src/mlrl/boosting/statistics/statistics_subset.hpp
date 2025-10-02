@@ -67,19 +67,6 @@ namespace boosting {
             }
     };
 
-    template<typename StatisticView, typename StatisticVector>
-    static inline void removeStatisticInternally2(const EqualWeightVector& weights, const StatisticView& statisticView,
-                                                  StatisticVector& statisticVector, uint32 statisticIndex) {
-        statisticVector.remove(statisticView, statisticIndex);
-    }
-
-    template<typename WeightVector, typename StatisticView, typename StatisticVector>
-    static inline void removeStatisticInternally2(const WeightVector& weights, const StatisticView& statisticView,
-                                                  StatisticVector& statisticVector, uint32 statisticIndex) {
-        typename WeightVector::weight_type weight = weights[statisticIndex];
-        statisticVector.remove(statisticView, statisticIndex, weight);
-    }
-
     /**
      * A subsets of gradients and Hessians that can be reset multiple times.
      *
@@ -99,6 +86,20 @@ namespace boosting {
         : public BoostingStatisticsSubset<State, StatisticVector, WeightVector, IndexVector, RuleEvaluationFactory>,
           virtual public IResettableStatisticsSubset {
         private:
+
+            template<typename StatisticView>
+            static inline void removeStatisticInternally(const EqualWeightVector& weights,
+                                                         const StatisticView& statisticView,
+                                                         StatisticVector& statisticVector, uint32 statisticIndex) {
+                statisticVector.remove(statisticView, statisticIndex);
+            }
+
+            template<typename Weights, typename StatisticView>
+            static inline void removeStatisticInternally(const Weights& weights, const StatisticView& statisticView,
+                                                         StatisticVector& statisticVector, uint32 statisticIndex) {
+                typename Weights::weight_type weight = weights[statisticIndex];
+                statisticVector.remove(statisticView, statisticIndex, weight);
+            }
 
             StatisticVector tmpVector_;
 
@@ -149,8 +150,8 @@ namespace boosting {
                         // Subtract the gradients and Hessians of the example at the given index (weighted by the given
                         // weight) from the total sums of gradients and Hessians...
                         uint32 statisticIndex = *it;
-                        removeStatisticInternally2(this->weights_, this->state_.statisticMatrixPtr->getView(),
-                                                   *totalCoverableSumVectorPtr_, statisticIndex);
+                        removeStatisticInternally(weights, state.statisticMatrixPtr->getView(),
+                                                  *totalCoverableSumVectorPtr_, statisticIndex);
                     }
                 }
             }
