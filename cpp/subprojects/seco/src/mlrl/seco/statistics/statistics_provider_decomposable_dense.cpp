@@ -25,8 +25,8 @@ namespace seco {
             template<typename WeightVector, typename StatisticType>
             using WeightedStatistics =
               WeightedStatistics<CoverageStatisticsState<DenseDecomposableStatisticMatrix<LabelMatrix>>,
-                                 DenseConfusionMatrixVector<StatisticType>, IDecomposableRuleEvaluationFactory,
-                                 WeightVector>;
+                                 DenseConfusionMatrixVector<StatisticType>, WeightVector,
+                                 IDecomposableRuleEvaluationFactory>;
 
         public:
 

@@ -19,13 +19,13 @@ namespace boosting {
      *
      * @tparam State                    The type of the state of the training process
      * @tparam StatisticVector          The type of the vectors that are used to store statistics
+     * @tparam WeightVector             The type of the vector that provides access to the weights of individual
+     *                                  statistics
      * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
      *                                  used for calculating the predictions of rules, as well as corresponding quality
      *                                  scores
-     * @tparam WeightVector             The type of the vector that provides access to the weights of individual
-     *                                  statistics
      */
-    template<typename State, typename StatisticVector, typename RuleEvaluationFactory, typename WeightVector>
+    template<typename State, typename StatisticVector, typename WeightVector, typename RuleEvaluationFactory>
     class WeightedStatistics final : public AbstractWeightedStatistics<State, StatisticVector, WeightVector> {
         private:
 
@@ -63,7 +63,7 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> copy() const override {
                 return std::make_unique<
-                  WeightedStatistics<State, StatisticVector, RuleEvaluationFactory, WeightVector>>(*this);
+                  WeightedStatistics<State, StatisticVector, WeightVector, RuleEvaluationFactory>>(*this);
             }
 
             /**

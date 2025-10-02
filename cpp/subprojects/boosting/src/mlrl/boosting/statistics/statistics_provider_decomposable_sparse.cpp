@@ -70,7 +70,7 @@ namespace boosting {
             template<typename WeightVector, typename WeightType>
             using WeightedStatistics =
               WeightedStatistics<StatisticsState, SparseDecomposableStatisticVector<statistic_type, WeightType>,
-                                 ISparseDecomposableRuleEvaluationFactory, WeightVector>;
+                                 WeightVector, ISparseDecomposableRuleEvaluationFactory>;
 
         public:
 

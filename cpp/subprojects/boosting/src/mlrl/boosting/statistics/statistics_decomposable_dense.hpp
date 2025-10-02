@@ -90,8 +90,8 @@ namespace boosting {
 
             template<typename WeightVector>
             using WeightedStatistics =
-              WeightedStatistics<StatisticsState, DenseDecomposableStatisticVector<statistic_type>,
-                                 IDecomposableRuleEvaluationFactory, WeightVector>;
+              WeightedStatistics<StatisticsState, DenseDecomposableStatisticVector<statistic_type>, WeightVector,
+                                 IDecomposableRuleEvaluationFactory>;
 
         public:
 
