@@ -39,7 +39,7 @@ namespace seco {
             /**
              * A reference to an object of template type `StatisticVector` that stores the total sums of statistics.
              */
-            const StatisticVector& totalSumVector_;
+            const StatisticVector& subsetSumVector_;
 
         public:
 
@@ -53,17 +53,18 @@ namespace seco {
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
              *                              allows to create instances of the class that should be used for calculating
              *                              the predictions of rules, as well as their overall quality
-             * @param totalSumVector        A reference to an object of template type `StatisticVector` that stores the
-             *                              total sums of statistics
+             * @param subsetSumVector       A reference to an object of template type `StatisticVector` that stores the
+             *                              sums of the statistics available at the current iteration of the covering
+             *                              algorithm
              */
             AbstractCoverageStatisticsSubset(State& state, const WeightVector& weights,
                                              const IndexVector& outputIndices,
                                              const RuleEvaluationFactory& ruleEvaluationFactory,
-                                             const StatisticVector& totalSumVector)
+                                             const StatisticVector& subsetSumVector)
                 : AbstractStatisticsSubset<State, StatisticVector, WeightVector, IndexVector>(state, weights,
                                                                                               outputIndices),
                   ruleEvaluationPtr_(ruleEvaluationFactory.create(this->sumVector_, outputIndices)),
-                  totalSumVector_(totalSumVector) {}
+                  subsetSumVector_(subsetSumVector) {}
 
             virtual ~AbstractCoverageStatisticsSubset() override {}
 
@@ -73,7 +74,7 @@ namespace seco {
             std::unique_ptr<IStatisticsUpdateCandidate> calculateScores() override final {
                 const IScoreVector& scoreVector = ruleEvaluationPtr_->calculateScores(
                   this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
-                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), totalSumVector_, this->sumVector_);
+                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), subsetSumVector_, this->sumVector_);
                 return this->state_.createUpdateCandidate(scoreVector);
             }
     };
@@ -97,7 +98,7 @@ namespace seco {
                                                                                    IndexVector, RuleEvaluationFactory> {
         private:
 
-            const std::unique_ptr<StatisticVector> totalSumVectorPtr_;
+            const std::unique_ptr<StatisticVector> subsetSumVectorPtr_;
 
             template<typename StatisticView>
             static inline void initializeStatisticVector(const EqualWeightVector& weights,
@@ -133,17 +134,18 @@ namespace seco {
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
              *                              allows to create instances of the class that should be used for calculating
              *                              the predictions of rules, as well as their overall quality
-             * @param totalSumVectorPtr     An unique pointer to an object of template type `StatisticVector` that
-             *                              stores the total sums of statistics
+             * @param subsetSumVectorPtr    An unique pointer to an object of template type `StatisticVector` that
+             *                              stores the sums of the statistics available at the current iteration of the
+             *                              covering algorithm
              */
             CoverageStatisticsSubset(State& state, const WeightVector& weights, const IndexVector& outputIndices,
                                      const RuleEvaluationFactory& ruleEvaluationFactory,
-                                     std::unique_ptr<StatisticVector> totalSumVectorPtr)
+                                     std::unique_ptr<StatisticVector> subsetSumVectorPtr)
                 : AbstractCoverageStatisticsSubset<State, StatisticVector, WeightVector, IndexVector,
                                                    RuleEvaluationFactory>(state, weights, outputIndices,
-                                                                          ruleEvaluationFactory, *totalSumVectorPtr),
-                  totalSumVectorPtr_(std::move(totalSumVectorPtr)) {
-                this->initializeStatisticVector(weights, state.statisticMatrixPtr->getView(), *totalSumVectorPtr_);
+                                                                          ruleEvaluationFactory, *subsetSumVectorPtr),
+                  subsetSumVectorPtr_(std::move(subsetSumVectorPtr)) {
+                this->initializeStatisticVector(weights, state.statisticMatrixPtr->getView(), *subsetSumVectorPtr_);
             }
     };
 
@@ -181,7 +183,7 @@ namespace seco {
           virtual public IResettableStatisticsSubset {
         private:
 
-            const StatisticVector* subsetSumVector_;
+            const StatisticVector* totalSumVector_;
 
             StatisticVector tmpVector_;
 
@@ -201,10 +203,11 @@ namespace seco {
              * @param ruleEvaluationFactory     A reference to an object of template type `RuleEvaluationFactory` that
              *                                  allows to create instances of the class that should be used for
              *                                  calculating the predictions of rules, as well as their overall quality
+             * @param subsetSumVector           A reference to an object of template type `StatisticVector` that stores
+             *                                  the sums of statistics available at the current iteration of the
+             * covering
              * @param totalSumVector            A reference to an object of template type `StatisticVector` that stores
              *                                  the total sums of statistics
-             * @param subsetSumVector           A reference to an object of template type `StatisticVector` that stores
-             *                                  the sums of statistics available at a certain iteration of a covering
              *                                  algorithm
              * @param excludedStatisticIndices  A reference to an object of type `BinaryDokVector` that provides access
              *                                  to the indices of the statistics that should be excluded from the subset
@@ -212,17 +215,17 @@ namespace seco {
             ResettableCoverageStatisticsSubset(State& state, const WeightVector& weights,
                                                const IndexVector& outputIndices,
                                                const RuleEvaluationFactory& ruleEvaluationFactory,
-                                               const StatisticVector& totalSumVector,
                                                const StatisticVector& subsetSumVector,
+                                               const StatisticVector& totalSumVector,
                                                const BinaryDokVector& excludedStatisticIndices)
                 : AbstractCoverageStatisticsSubset<State, StatisticVector, WeightVector, IndexVector,
                                                    RuleEvaluationFactory>(state, weights, outputIndices,
-                                                                          ruleEvaluationFactory, totalSumVector),
-                  subsetSumVector_(&subsetSumVector), tmpVector_(outputIndices.getNumElements()) {
+                                                                          ruleEvaluationFactory, subsetSumVector),
+                  totalSumVector_(&totalSumVector), tmpVector_(outputIndices.getNumElements()) {
                 if (excludedStatisticIndices.getNumIndices() > 0) {
                     // Allocate a vector for storing the totals sums of confusion matrices, if necessary...
-                    totalCoverableSumVectorPtr_ = std::make_unique<StatisticVector>(*subsetSumVector_);
-                    subsetSumVector_ = totalCoverableSumVectorPtr_.get();
+                    totalCoverableSumVectorPtr_ = std::make_unique<StatisticVector>(*totalSumVector_);
+                    totalSumVector_ = totalCoverableSumVectorPtr_.get();
 
                     for (auto it = excludedStatisticIndices.indices_cbegin();
                          it != excludedStatisticIndices.indices_cend(); it++) {
@@ -257,7 +260,7 @@ namespace seco {
             std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresAccumulated() override {
                 const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(
                   this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
-                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), this->totalSumVector_,
+                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), this->subsetSumVector_,
                   *accumulatedSumVectorPtr_);
                 return this->state_.createUpdateCandidate(scoreVector);
             }
@@ -266,11 +269,11 @@ namespace seco {
              * @see `IResettableStatisticsSubset::calculateScoresUncovered`
              */
             std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresUncovered() override {
-                tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(), this->outputIndices_,
+                tmpVector_.difference(totalSumVector_->cbegin(), totalSumVector_->cend(), this->outputIndices_,
                                       this->sumVector_.cbegin(), this->sumVector_.cend());
                 const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(
                   this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
-                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), this->totalSumVector_, tmpVector_);
+                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), this->subsetSumVector_, tmpVector_);
                 return this->state_.createUpdateCandidate(scoreVector);
             }
 
@@ -278,11 +281,11 @@ namespace seco {
              * @see `IResettableStatisticsSubset::calculateScoresUncoveredAccumulated`
              */
             std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresUncoveredAccumulated() override {
-                tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(), this->outputIndices_,
+                tmpVector_.difference(totalSumVector_->cbegin(), totalSumVector_->cend(), this->outputIndices_,
                                       accumulatedSumVectorPtr_->cbegin(), accumulatedSumVectorPtr_->cend());
                 const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(
                   this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
-                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), this->totalSumVector_, tmpVector_);
+                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), this->subsetSumVector_, tmpVector_);
                 return this->state_.createUpdateCandidate(scoreVector);
             }
     };
