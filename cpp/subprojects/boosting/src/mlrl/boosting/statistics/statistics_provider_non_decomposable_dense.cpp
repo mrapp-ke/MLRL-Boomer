@@ -280,8 +280,8 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
               const EqualWeightVector& weights) const override {
-                return std::make_unique<WeightedStatistics<EqualWeightVector>>(*this->statePtr_,
-                                                                               *this->ruleEvaluationFactory_, weights);
+                return std::make_unique<WeightedStatistics<EqualWeightVector>>(*this->statePtr_, weights,
+                                                                               *this->ruleEvaluationFactory_);
             }
 
             /**
@@ -289,8 +289,8 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
               const BitWeightVector& weights) const override {
-                return std::make_unique<WeightedStatistics<BitWeightVector>>(*this->statePtr_,
-                                                                             *this->ruleEvaluationFactory_, weights);
+                return std::make_unique<WeightedStatistics<BitWeightVector>>(*this->statePtr_, weights,
+                                                                             *this->ruleEvaluationFactory_);
             }
 
             /**
@@ -298,8 +298,8 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
               const DenseWeightVector<uint16>& weights) const override {
-                return std::make_unique<WeightedStatistics<DenseWeightVector<uint16>>>(
-                  *this->statePtr_, *this->ruleEvaluationFactory_, weights);
+                return std::make_unique<WeightedStatistics<DenseWeightVector<uint16>>>(*this->statePtr_, weights,
+                                                                                       *this->ruleEvaluationFactory_);
             }
 
             /**
@@ -307,8 +307,8 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
               const DenseWeightVector<float32>& weights) const override {
-                return std::make_unique<WeightedStatistics<DenseWeightVector<float32>>>(
-                  *this->statePtr_, *this->ruleEvaluationFactory_, weights);
+                return std::make_unique<WeightedStatistics<DenseWeightVector<float32>>>(*this->statePtr_, weights,
+                                                                                        *this->ruleEvaluationFactory_);
             }
 
             /**

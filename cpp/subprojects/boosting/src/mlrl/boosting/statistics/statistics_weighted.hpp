@@ -40,14 +40,14 @@ namespace boosting {
             /**
              * @param state                 A reference to an object of template type `State` that represents the state
              *                              of the training process
+             * @param weights               A reference to an object of template type `WeightVector` that provides
+             *                              access to the weights of individual statistics
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
              *                              allows to create instances of the class that should be used for calculating
              *                              the predictions of rules, as well as their overall quality
-             * @param weights               A reference to an object of template type `WeightVector` that provides
-             *                              access to the weights of individual statistics
              */
-            WeightedStatistics(State& state, const RuleEvaluationFactory& ruleEvaluationFactory,
-                               const WeightVector& weights)
+            WeightedStatistics(State& state, const WeightVector& weights,
+                               const RuleEvaluationFactory& ruleEvaluationFactory)
                 : AbstractWeightedStatistics<State, StatisticVector, WeightVector>(state, weights),
                   ruleEvaluationFactory_(ruleEvaluationFactory) {}
 
