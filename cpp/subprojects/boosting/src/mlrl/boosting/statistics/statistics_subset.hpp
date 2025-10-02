@@ -87,19 +87,13 @@ namespace boosting {
           virtual public IResettableStatisticsSubset {
         private:
 
+            const StatisticVector* totalSumVector_;
+
             StatisticVector tmpVector_;
 
             std::unique_ptr<StatisticVector> accumulatedSumVectorPtr_;
 
             std::unique_ptr<StatisticVector> totalCoverableSumVectorPtr_;
-
-        protected:
-
-            /**
-             * A pointer to an object of template type `StatisticVector` that stores the total sum of all
-             * gradients and Hessians.
-             */
-            const StatisticVector* totalSumVector_;
 
         public:
 
@@ -125,7 +119,7 @@ namespace boosting {
                                                const BinaryDokVector& excludedStatisticIndices)
                 : BoostingStatisticsSubset<State, StatisticVector, WeightVector, IndexVector, RuleEvaluationFactory>(
                     state, weights, outputIndices, ruleEvaluationFactory),
-                  tmpVector_(outputIndices.getNumElements()), totalSumVector_(&totalSumVector) {
+                  totalSumVector_(&totalSumVector), tmpVector_(outputIndices.getNumElements()) {
                 if (excludedStatisticIndices.getNumIndices() > 0) {
                     // Create a vector for storing the total sums of statistics, if necessary...
                     totalCoverableSumVectorPtr_ = std::make_unique<StatisticVector>(*totalSumVector_);
