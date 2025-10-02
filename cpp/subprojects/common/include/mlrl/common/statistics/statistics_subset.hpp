@@ -146,3 +146,101 @@ class AbstractStatisticsSubset : virtual public IStatisticsSubset {
                                                  outputIndices_, statisticIndex);
         }
 };
+
+/**
+ * Adds the statistics at a specific row of a view to a given vector. The statistics are weighted according to given
+ * weights.
+ *
+ * @tparam StatisticVector  The type of the vector to be modified
+ * @tparam StatisticView    The type of the view that provides access to the statistics
+ * @param statisticVector   A reference to an object of template type `StatisticVector` to be modified
+ * @param weights           A reference to an object of type `EqualWeightVector` that provides access to the weights
+ * @param statisticView     A reference to an object of template type `StatisticView` that provides access to the
+ *                          statistics
+ * @param row               The index of the row in the view to be added to the vector
+ */
+template<typename StatisticVector, typename StatisticView>
+static inline void addStatisticsToVector(StatisticVector& statisticVector, const EqualWeightVector& weights,
+                                         const StatisticView& statisticView, uint32 row) {
+    statisticVector.add(statisticView, row);
+}
+
+/**
+ * Adds the statistics at a specific row of a view to a given vector. The statistics are weighted according to given
+ * weights.
+ *
+ * @tparam StatisticVector  The type of the vector to be modified
+ * @tparam WeightVector     The type of the vector that provides access to the weights of statistics
+ * @tparam StatisticView    The type of the view that provides access to the statistics
+ * @param statisticVector   A reference to an object of template type `StatisticVector` to be modified
+ * @param weights           A reference to an object of template type `WeightVector` that provides access to the weights
+ * @param statisticView     A reference to an object of template type `StatisticView` that provides access to the
+ *                          statistics
+ * @param row               The index of the row in the view to be added to the vector
+ */
+template<typename StatisticVector, typename WeightVector, typename StatisticView>
+static inline void addStatisticsToVector(StatisticVector& statisticVector, const WeightVector& weights,
+                                         const StatisticView& statisticView, uint32 row) {
+    typename WeightVector::weight_type weight = weights[row];
+    statisticVector.add(statisticView, row, weight);
+}
+
+/**
+ * Removes the statistics at a specific row of a view from a given vector. The statistics are weighted according to
+ * given weights.
+ *
+ * @tparam StatisticVector  The type of the vector to be modified
+ * @tparam StatisticView    The type of the view that provides access to the statistics
+ * @param statisticVector   A reference to an object of template type `StatisticVector` to be modified
+ * @param weights           A reference to an object of type `EqualWeightVector` that provides access to the weights
+ * @param statisticView     A reference to an object of template type `StatisticView` that provides access to the
+ *                          statistics
+ * @param row               The index of the row in the view to be removed from the vector
+ */
+template<typename StatisticVector, typename StatisticView>
+static inline void removeStatisticsFromVector(StatisticVector& statisticVector, const EqualWeightVector& weights,
+                                              const StatisticView& statisticView, uint32 row) {
+    statisticVector.remove(statisticView, row);
+}
+
+/**
+ * Removes the statistics at a specific row of a view from a given vector. The statistics are weighted according to
+ * given weights.
+ *
+ * @tparam StatisticVector  The type of the vector to be modified
+ * @tparam WeightVector     The type of the vector that provides access to the weights of statistics
+ * @tparam StatisticView    The type of the view that provides access to the statistics
+ * @param statisticVector   A reference to an object of template type `StatisticVector` to be modified
+ * @param weights           A reference to an object of template type `WeightVector` that provides access to the weights
+ * @param statisticView     A reference to an object of template type `StatisticView` that provides access to the
+ *                          statistics
+ * @param row               The index of the row in the view to be removed from the vector
+ */
+template<typename StatisticVector, typename WeightVector, typename StatisticView>
+static inline void removeStatisticsFromVector(StatisticVector& statisticVector, const WeightVector& weights,
+                                              const StatisticView& statisticView, uint32 row) {
+    typename WeightVector::weight_type weight = weights[row];
+    statisticVector.remove(statisticView, row, weight);
+}
+
+/**
+ * Initializes a given vector by setting its element for each output to the weighted sum of the statistics in a specific
+ * view.
+ *
+ * @tparam StatisticVector  The type of the vector to be initialized
+ * @tparam WeightVector     The type of the vector that provides access to the weights of statistics
+ * @tparam StatisticView    The type of the view that provides access to the statistics
+ * @param statisticVector   A reference to an object of template type `StatisticVector` to be initialized
+ * @param weights           A reference to an object of template type `WeightVector` that provides access to the weights
+ * @param statisticView     A reference to an object of template type `StatisticView` that provides access to the
+ *                          statistics
+ */
+template<typename StatisticVector, typename WeightVector, typename StatisticView>
+static inline void setVectorToWeightedSumOfStatistics(StatisticVector& statisticVector, const WeightVector& weights,
+                                                      const StatisticView& statisticView) {
+    uint32 numStatistics = weights.getNumElements();
+
+    for (uint32 i = 0; i < numStatistics; i++) {
+        addStatisticsToVector(statisticVector, weights, statisticView, i);
+    }
+}

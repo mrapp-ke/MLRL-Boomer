@@ -52,7 +52,7 @@ namespace seco {
                 : AbstractWeightedStatistics<State, StatisticVector, WeightVector>(state, weights),
                   ruleEvaluationFactory_(ruleEvaluationFactory),
                   subsetSumVector_(state.statisticMatrixPtr->getNumCols(), true) {
-                this->initializeSumVector(weights, state.statisticMatrixPtr->getView(), subsetSumVector_);
+                setVectorToWeightedSumOfStatistics(subsetSumVector_, weights, state.statisticMatrixPtr->getView());
             }
 
             /**

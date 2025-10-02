@@ -100,28 +100,6 @@ namespace seco {
 
             const std::unique_ptr<StatisticVector> subsetSumVectorPtr_;
 
-            template<typename StatisticView>
-            static inline void initializeStatisticVector(const EqualWeightVector& weights,
-                                                         const StatisticView& statisticView,
-                                                         StatisticVector& statisticVector) {
-                uint32 numStatistics = weights.getNumElements();
-
-                for (uint32 i = 0; i < numStatistics; i++) {
-                    statisticVector.add(statisticView, i);
-                }
-            }
-
-            template<typename Weights, typename StatisticView>
-            static inline void initializeStatisticVector(const Weights& weights, const StatisticView& statisticView,
-                                                         StatisticVector& statisticVector) {
-                uint32 numStatistics = weights.getNumElements();
-
-                for (uint32 i = 0; i < numStatistics; i++) {
-                    typename Weights::weight_type weight = weights[i];
-                    statisticVector.add(statisticView, i, weight);
-                }
-            }
-
         public:
 
             /**
@@ -145,7 +123,7 @@ namespace seco {
                                                    RuleEvaluationFactory>(state, weights, outputIndices,
                                                                           ruleEvaluationFactory, *subsetSumVectorPtr),
                   subsetSumVectorPtr_(std::move(subsetSumVectorPtr)) {
-                this->initializeStatisticVector(weights, state.statisticMatrixPtr->getView(), *subsetSumVectorPtr_);
+                setVectorToWeightedSumOfStatistics(*subsetSumVectorPtr_, weights, state.statisticMatrixPtr->getView());
             }
     };
 
@@ -169,20 +147,6 @@ namespace seco {
                                                   RuleEvaluationFactory>,
           virtual public IResettableStatisticsSubset {
         private:
-
-            template<typename StatisticView>
-            static inline void removeStatisticInternally(const EqualWeightVector& weights,
-                                                         const StatisticView& statisticView,
-                                                         StatisticVector& statisticVector, uint32 statisticIndex) {
-                statisticVector.remove(statisticView, statisticIndex);
-            }
-
-            template<typename Weights, typename StatisticView>
-            static inline void removeStatisticInternally(const Weights& weights, const StatisticView& statisticView,
-                                                         StatisticVector& statisticVector, uint32 statisticIndex) {
-                typename Weights::weight_type weight = weights[statisticIndex];
-                statisticVector.remove(statisticView, statisticIndex, weight);
-            }
 
             const StatisticVector* totalSumVector_;
 
@@ -232,8 +196,8 @@ namespace seco {
                         // For each output, subtract the confusion matrices of the example at the given index (weighted
                         // by the given weight) from the total sum of confusion matrices...
                         uint32 statisticIndex = *it;
-                        removeStatisticInternally(weights, state.statisticMatrixPtr->getView(),
-                                                  *totalCoverableSumVectorPtr_, statisticIndex);
+                        removeStatisticsFromVector(*totalCoverableSumVectorPtr_, weights,
+                                                   state.statisticMatrixPtr->getView(), statisticIndex);
                     }
                 }
             }
