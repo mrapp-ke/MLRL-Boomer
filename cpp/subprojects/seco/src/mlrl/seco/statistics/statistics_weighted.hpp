@@ -6,7 +6,7 @@
 #include "mlrl/common/statistics/statistics_weighted.hpp"
 #include "mlrl/seco/statistics/statistics.hpp"
 #include "statistics.hpp"
-#include "statistics_subset.hpp"
+#include "statistics_subset_resettable.hpp"
 
 #include <memory>
 #include <utility>
