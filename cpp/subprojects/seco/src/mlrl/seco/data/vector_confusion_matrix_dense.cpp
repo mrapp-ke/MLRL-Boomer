@@ -68,10 +68,8 @@ namespace seco {
     }
 
     template<typename StatisticType>
-    void DenseConfusionMatrixVector<StatisticType>::add(
-      typename View<ConfusionMatrix<StatisticType>>::const_iterator begin,
-      typename View<ConfusionMatrix<StatisticType>>::const_iterator end) {
-        util::addToView(this->begin(), begin, this->getNumElements());
+    void DenseConfusionMatrixVector<StatisticType>::add(const DenseConfusionMatrixVector<StatisticType>& other) {
+        util::addToView(this->begin(), other.cbegin(), this->getNumElements());
     }
 
     template<typename StatisticType>

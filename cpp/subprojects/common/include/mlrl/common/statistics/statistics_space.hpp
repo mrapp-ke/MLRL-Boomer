@@ -27,3 +27,42 @@ class IStatisticsSpace {
          */
         virtual uint32 getNumOutputs() const = 0;
 };
+
+/**
+ * An abstract base class for all classes that provide access to the statistics space.
+ *
+ * @tparam State The type of the state of the training process
+ */
+template<typename State>
+class AbstractStatisticsSpace : virtual public IStatisticsSpace {
+    protected:
+
+        /**
+         * A reference to an object of template type `State` that represents the state of the training process.
+         */
+        State& state_;
+
+    public:
+
+        /**
+         * @param state A reference to an object of template type `State` that represents the state of the training
+         *              process
+         */
+        explicit AbstractStatisticsSpace(State& state) : state_(state) {}
+
+        virtual ~AbstractStatisticsSpace() override {}
+
+        /**
+         * @see `IStatisticsSpace::getNumStatistics`
+         */
+        uint32 getNumStatistics() const override final {
+            return state_.statisticMatrixPtr->getNumRows();
+        }
+
+        /**
+         * @see `IStatisticsSpace::getNumOutputs`
+         */
+        uint32 getNumOutputs() const override final {
+            return state_.statisticMatrixPtr->getNumCols();
+        }
+};

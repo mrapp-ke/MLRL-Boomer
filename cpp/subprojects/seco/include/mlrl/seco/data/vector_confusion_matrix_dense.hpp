@@ -35,11 +35,9 @@ namespace seco {
             /**
              * Adds all confusion matrix elements in another vector to this vector.
              *
-             * @param begin A `const_iterator` to the beginning of the other vector
-             * @param end   A `const_iterator` to the end of the other vector
+             * @param other A reference to an object of type `DenseConfusionMatrixVector` to be copied
              */
-            void add(typename View<ConfusionMatrix<StatisticType>>::const_iterator begin,
-                     typename View<ConfusionMatrix<StatisticType>>::const_iterator end);
+            void add(const DenseConfusionMatrixVector<StatisticType>& other);
 
             /**
              * Adds the confusion matrix elements that correspond to an example at a specific index to this vector. The
@@ -52,7 +50,7 @@ namespace seco {
              * @param weight    The weight, the confusion matrix elements should be multiplied by
              */
             void add(const DenseDecomposableStatisticMatrix<CContiguousView<const uint8>>::View& view, uint32 row,
-                     StatisticType weight);
+                     StatisticType weight = 1);
 
             /**
              * Adds the confusion matrix elements that correspond to an example at a specific index to this vector. The
@@ -64,7 +62,7 @@ namespace seco {
              * @param weight    The weight, the confusion matrix elements should be multiplied by
              */
             void add(const DenseDecomposableStatisticMatrix<BinaryCsrView>::View& view, uint32 row,
-                     StatisticType weight);
+                     StatisticType weight = 1);
 
             /**
              * Removes the confusion matrix elements at a specific row of a view from this vector.  The confusion matrix
@@ -77,7 +75,7 @@ namespace seco {
              * @param weight    The weight, the confusion matrix elements should be multiplied by
              */
             void remove(const DenseDecomposableStatisticMatrix<CContiguousView<const uint8>>::View& view, uint32 row,
-                        StatisticType weight);
+                        StatisticType weight = 1);
 
             /**
              * Removes the confusion matrix elements at a specific row of a view from this vector. The confusion matrix
@@ -89,7 +87,7 @@ namespace seco {
              * @param weight    The weight, the confusion matrix elements should be multiplied by
              */
             void remove(const DenseDecomposableStatisticMatrix<BinaryCsrView>::View& view, uint32 row,
-                        StatisticType weight);
+                        StatisticType weight = 1);
 
             /**
              * Adds certain confusion matrix elements in a specific row of a view, whose positions are given as a
@@ -104,7 +102,7 @@ namespace seco {
              * @param weight    The weight, the confusion matrix elements should be multiplied by
              */
             void addToSubset(const DenseDecomposableStatisticMatrix<CContiguousView<const uint8>>::View& view,
-                             uint32 row, const CompleteIndexVector& indices, StatisticType weight);
+                             uint32 row, const CompleteIndexVector& indices, StatisticType weight = 1);
 
             /**
              * Adds certain confusion matrix elements in a specific row of a view, whose positions are given as a
@@ -118,7 +116,7 @@ namespace seco {
              * @param weight    The weight, the confusion matrix elements should be multiplied by
              */
             void addToSubset(const DenseDecomposableStatisticMatrix<BinaryCsrView>::View& view, uint32 row,
-                             const CompleteIndexVector& indices, StatisticType weight);
+                             const CompleteIndexVector& indices, StatisticType weight = 1);
 
             /**
              * Adds certain confusion matrix elements in a specific row of a view, whose positions are given as a
@@ -133,7 +131,7 @@ namespace seco {
              * @param weight    The weight, the confusion matrix elements should be multiplied by
              */
             void addToSubset(const DenseDecomposableStatisticMatrix<CContiguousView<const uint8>>::View& view,
-                             uint32 row, const PartialIndexVector& indices, StatisticType weight);
+                             uint32 row, const PartialIndexVector& indices, StatisticType weight = 1);
 
             /**
              * Adds certain confusion matrix elements in a specific row of a view, whose positions are given as a
@@ -147,7 +145,7 @@ namespace seco {
              * @param weight    The weight, the confusion matrix elements should be multiplied by
              */
             void addToSubset(const DenseDecomposableStatisticMatrix<BinaryCsrView>::View& view, uint32 row,
-                             const PartialIndexVector& indices, StatisticType weight);
+                             const PartialIndexVector& indices, StatisticType weight = 1);
 
             /**
              * Sets the confusion matrix elements in this vector to the difference `first - second` between the elements
