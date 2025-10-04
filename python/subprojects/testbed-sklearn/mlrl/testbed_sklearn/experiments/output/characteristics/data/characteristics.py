@@ -9,6 +9,7 @@ from typing import Any, Callable, List, Optional, Tuple, override
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties
 from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
+from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain
 from mlrl.testbed.experiments.table import RowWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
@@ -119,3 +120,16 @@ LABEL_CHARACTERISTICS = OUTPUT_CHARACTERISTICS + [
         function=lambda x: x.num_distinct_label_vectors,
     )
 ]
+
+
+def get_output_characteristics(problem_domain: ProblemDomain) -> List[Characteristic]:
+    """
+    Returns the output characteristics to be used, depending on the problem domain.
+
+    :param problem_domain:  The problem domain
+    :return:                A list that stores the output characteristics
+    """
+    if isinstance(problem_domain, ClassificationProblem):
+        return LABEL_CHARACTERISTICS
+
+    return OUTPUT_CHARACTERISTICS
