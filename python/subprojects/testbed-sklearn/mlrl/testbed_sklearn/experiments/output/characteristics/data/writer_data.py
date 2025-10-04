@@ -7,8 +7,7 @@ from itertools import chain
 from typing import List, Optional, override
 
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
-from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import LABEL_CHARACTERISTICS, \
-    OUTPUT_CHARACTERISTICS
+from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import get_output_characteristics
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics_data import FEATURE_CHARACTERISTICS, \
     DataCharacteristics
 
@@ -16,8 +15,8 @@ from mlrl.testbed.experiments.input.data import TabularInputData
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor, ResultWriter, TabularDataExtractor
-from mlrl.testbed.experiments.problem_domain import ClassificationProblem
 from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.util.format import parse_number
 
 from mlrl.util.options import Options
 
@@ -42,15 +41,10 @@ class DataCharacteristicsWriter(ResultWriter):
             if tabular_output_data:
                 table = tabular_output_data.to_table(Options()).to_column_wise_table()
                 columns_by_name = {column.header: column for column in table.columns}
-                problem_domain = state.problem_domain
                 feature_characteristics = FEATURE_CHARACTERISTICS
-
-                if isinstance(problem_domain, ClassificationProblem):
-                    output_characteristics = LABEL_CHARACTERISTICS
-                else:
-                    output_characteristics = OUTPUT_CHARACTERISTICS
-
-                values = [(characteristic, columns_by_name[characteristic.name][0])
+                output_characteristics = get_output_characteristics(state.problem_domain)
+                values = [(characteristic,
+                           parse_number(columns_by_name[characteristic.name][0], percentage=characteristic.percentage))
                           for characteristic in chain(feature_characteristics, output_characteristics)
                           if characteristic.name in columns_by_name]
                 return DataCharacteristics(values)
