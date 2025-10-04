@@ -3,8 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing characteristics of a datasets that are part of output data.
 """
-from itertools import chain
-from typing import Optional, override
+from typing import Any, List, Optional, Tuple, override
 
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import LABEL_CHARACTERISTICS, \
@@ -46,20 +45,37 @@ class DataCharacteristics(TabularOutputData):
 
     OPTION_FEATURE_SPARSITY = 'feature_sparsity'
 
-    def __init__(self, problem_domain: ProblemDomain, dataset: TabularDataset):
+    def __init__(self, values: List[Tuple[Characteristic, Any]]):
         """
         :param problem_domain:  The problem domain, the dataset is concerned with
         :param dataset:         The dataset
         """
         super().__init__(properties=self.PROPERTIES, context=self.CONTEXT)
-        self.feature_matrix = FeatureMatrix(dataset=dataset)
+        self.values = values
+        self.characteristics = [characteristic for characteristic, _ in values]
+
+    @staticmethod
+    def from_dataset(problem_domain: ProblemDomain, dataset: TabularDataset) -> 'DataCharacteristics':
+        """
+        Creates and returns `DataCharacteristics` from a given dataset.
+
+        :param problem_domain:  The problem domain, the dataset is concerned with
+        :param dataset:         The dataset
+        :return:                The `DataCharacteristics` that have been created
+        """
+        feature_matrix = FeatureMatrix(dataset=dataset)
 
         if isinstance(problem_domain, ClassificationProblem):
-            self.output_characteristics = LABEL_CHARACTERISTICS
-            self.output_matrix: OutputMatrix = LabelMatrix(values=dataset.y)
+            output_characteristics = LABEL_CHARACTERISTICS
+            output_matrix: OutputMatrix = LabelMatrix(values=dataset.y)
         else:
-            self.output_characteristics = OUTPUT_CHARACTERISTICS
-            self.output_matrix = OutputMatrix(values=dataset.y)
+            output_characteristics = OUTPUT_CHARACTERISTICS
+            output_matrix = OutputMatrix(values=dataset.y)
+
+        return DataCharacteristics([(characteristic, characteristic.function(feature_matrix))
+                                    for characteristic in FEATURE_CHARACTERISTICS]
+                                   + [(characteristic, characteristic.function(output_matrix))
+                                      for characteristic in output_characteristics])
 
     @override
     def to_text(self, options: Options, **kwargs) -> Optional[str]:
@@ -77,18 +93,12 @@ class DataCharacteristics(TabularOutputData):
         """
         percentage = options.get_bool(OPTION_PERCENTAGE, kwargs.get(OPTION_PERCENTAGE, True))
         decimals = options.get_int(OPTION_DECIMALS, kwargs.get(OPTION_DECIMALS, 0))
-        feature_characteristics = OutputValue.filter_values(FEATURE_CHARACTERISTICS, options)
-        output_characteristics = OutputValue.filter_values(self.output_characteristics, options)
-        values = chain(
-            map(
-                lambda characteristic: characteristic.format(
-                    characteristic.function(self.feature_matrix), percentage=percentage, decimals=decimals),
-                feature_characteristics),
-            map(
-                lambda characteristic: characteristic.format(
-                    characteristic.function(self.output_matrix), percentage=percentage, decimals=decimals),
-                output_characteristics))
-        return RowWiseTable(*chain(feature_characteristics, output_characteristics)).add_row(*values)
+        characteristics = OutputValue.filter_values(self.characteristics, options)
+        values = [
+            characteristic.format(value, percentage=percentage, decimals=decimals)
+            for characteristic, value in self.values
+        ]
+        return RowWiseTable(*characteristics).add_row(*values)
 
 
 FEATURE_CHARACTERISTICS = [
