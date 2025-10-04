@@ -5,13 +5,13 @@ Provides classes for representing characteristics of binary predictions that are
 """
 from typing import Any, List, Tuple
 
-from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import LABEL_CHARACTERISTICS, \
-    OUTPUT_CHARACTERISTICS, Characteristic, OutputCharacteristics
+from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import Characteristic, \
+    OutputCharacteristics, get_output_characteristics
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.matrix_output import OutputMatrix
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
-from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain
+from mlrl.testbed.experiments.problem_domain import ProblemDomain
 
 
 class PredictionCharacteristics(OutputCharacteristics):
@@ -39,10 +39,6 @@ class PredictionCharacteristics(OutputCharacteristics):
         :param prediction_matrix:   An prediction matrix
         :return:                    The `OutputCharacteristics` that have been created
         """
-        if isinstance(problem_domain, ClassificationProblem):
-            characteristics = LABEL_CHARACTERISTICS
-        else:
-            characteristics = OUTPUT_CHARACTERISTICS
-
+        characteristics = get_output_characteristics(problem_domain)
         return PredictionCharacteristics([(characteristic, characteristic.function(prediction_matrix))
                                           for characteristic in characteristics])

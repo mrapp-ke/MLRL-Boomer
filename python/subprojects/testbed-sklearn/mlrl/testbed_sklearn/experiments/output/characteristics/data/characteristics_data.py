@@ -6,8 +6,8 @@ Provides classes for representing characteristics of a datasets that are part of
 from typing import Any, List, Optional, Tuple, override
 
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
-from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import LABEL_CHARACTERISTICS, \
-    OUTPUT_CHARACTERISTICS, Characteristic
+from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import Characteristic, \
+    get_output_characteristics
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.matrix_feature import FeatureMatrix
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.matrix_label import LabelMatrix
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.matrix_output import OutputMatrix
@@ -64,12 +64,11 @@ class DataCharacteristics(TabularOutputData):
         :return:                The `DataCharacteristics` that have been created
         """
         feature_matrix = FeatureMatrix(dataset=dataset)
+        output_characteristics = get_output_characteristics(problem_domain)
 
         if isinstance(problem_domain, ClassificationProblem):
-            output_characteristics = LABEL_CHARACTERISTICS
             output_matrix: OutputMatrix = LabelMatrix(values=dataset.y)
         else:
-            output_characteristics = OUTPUT_CHARACTERISTICS
             output_matrix = OutputMatrix(values=dataset.y)
 
         return DataCharacteristics([(characteristic, characteristic.function(feature_matrix))
