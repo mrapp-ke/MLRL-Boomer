@@ -82,11 +82,12 @@ class DataCharacteristics(TabularOutputData):
         values = chain(
             map(
                 lambda characteristic: characteristic.format(
-                    self.feature_matrix, percentage=percentage, decimals=decimals), feature_characteristics),
+                    characteristic.function(self.feature_matrix), percentage=percentage, decimals=decimals),
+                feature_characteristics),
             map(
                 lambda characteristic: characteristic.format(
-                    self.output_matrix, percentage=percentage, decimals=decimals), output_characteristics),
-        )
+                    characteristic.function(self.output_matrix), percentage=percentage, decimals=decimals),
+                output_characteristics))
         return RowWiseTable(*chain(feature_characteristics, output_characteristics)).add_row(*values)
 
 
