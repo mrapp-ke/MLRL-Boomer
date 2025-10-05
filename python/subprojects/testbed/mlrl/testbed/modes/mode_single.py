@@ -24,7 +24,7 @@ class SingleMode(Mode):
         cli.add_arguments(*extension_arguments, *algorithmic_arguments)
 
     @override
-    def run_experiment(self, args: Namespace, recipe: Recipe):
+    def run_experiment(self, _: List[Argument], args: Namespace, recipe: Recipe):
         command = Command.from_argv()
         experiment_builder = recipe.create_experiment_builder(args, command)
         experiment_builder.run(args)

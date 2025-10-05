@@ -200,7 +200,7 @@ def main():
     __configure_logger(args)
 
     if runnable:
-        runnable.run(mode, args)
+        runnable.run(mode, cli.arguments, args)
 
 
 if __name__ == '__main__':

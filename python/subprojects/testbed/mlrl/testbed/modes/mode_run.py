@@ -8,13 +8,14 @@ import subprocess
 
 from argparse import Namespace
 from pathlib import Path
-from typing import override
+from typing import List, override
 
 from mlrl.testbed.command import ArgumentDict, Command
 from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.modes.mode import InputMode, Mode
 
+from mlrl.util.cli import Argument
 from mlrl.util.format import format_iterable
 
 
@@ -24,7 +25,8 @@ class RunMode(InputMode):
     """
 
     @override
-    def _run_experiment(self, args: Namespace, recipe: Recipe, meta_data: MetaData, input_directory: Path):
+    def _run_experiment(self, arguments: List[Argument], args: Namespace, recipe: Recipe, meta_data: MetaData,
+                        input_directory: Path):
         meta_data_command = meta_data.command
         log.info('Re-running experiment "%s"...', meta_data_command)
         overridden_arguments = Command.from_argv().argument_list.filter(*self.INPUT_DIR.names, *Mode.MODE.names)
