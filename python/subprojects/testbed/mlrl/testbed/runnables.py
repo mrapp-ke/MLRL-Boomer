@@ -52,7 +52,7 @@ class Runnable(Recipe, ABC):
         )
 
         @override
-        def _get_arguments(self) -> Set[Argument]:
+        def _get_arguments(self, _: Mode) -> Set[Argument]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
             """
@@ -84,6 +84,16 @@ class Runnable(Recipe, ABC):
             MetaDataExtension(),
             SlurmExtension(),
         ]
+
+    def get_supported_extensions(self, mode: Mode) -> List[Extension]:
+        """
+        Returns the extensions that should be applied to the runnable and support a given mode of operation.
+
+        :param mode:    The mode to be supported
+        :return:        A list that contains all extensions that should be applied to the runnable and support the given
+                        mode
+        """
+        return [extension for extension in self.get_extensions() if extension.is_mode_supported(mode)]
 
     def get_program_info(self) -> Optional[ProgramInfo]:
         """
@@ -126,7 +136,7 @@ class Runnable(Recipe, ABC):
                 runnable = self.runnable
                 experiment_builder = runnable.create_experiment_builder(args, command)
 
-                for extension in runnable.get_extensions():
+                for extension in runnable.get_supported_extensions(mode):
                     extension.configure_experiment(args, experiment_builder)
 
                     for dependency in extension.get_dependencies(mode):
@@ -145,7 +155,7 @@ class Runnable(Recipe, ABC):
         batch_mode = BatchMode(self.create_batch_config_file_factory())
         args = cli.parse_known_args()
 
-        for extension in self.get_extensions():
+        for extension in self.get_supported_extensions(batch_mode):
             extension.configure_batch_mode(args, batch_mode)
 
             for dependency in extension.get_dependencies(batch_mode):
@@ -162,7 +172,7 @@ class Runnable(Recipe, ABC):
         run_mode = RunMode()
         args = cli.parse_known_args()
 
-        for extension in self.get_extensions():
+        for extension in self.get_supported_extensions(run_mode):
             extension.configure_run_mode(args, run_mode)
 
             for dependency in extension.get_dependencies(run_mode):

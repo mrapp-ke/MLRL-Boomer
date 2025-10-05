@@ -39,7 +39,7 @@ class ParameterOutputExtension(Extension):
         super().__init__(OutputExtension(), *dependencies)
 
     @override
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, _: Mode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
@@ -76,11 +76,11 @@ class ParameterOutputDirectoryExtension(Extension):
         super().__init__(OutputExtension(), *dependencies)
 
     @override
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, mode: Mode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return {ParameterOutputDirectoryArguments.PARAMETER_SAVE_DIR}
+        return set() if isinstance(mode, BatchMode) else {ParameterOutputDirectoryArguments.PARAMETER_SAVE_DIR}
 
     @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
@@ -103,4 +103,4 @@ class ParameterOutputDirectoryExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode, RunMode}
+        return {SingleMode, BatchMode, RunMode}
