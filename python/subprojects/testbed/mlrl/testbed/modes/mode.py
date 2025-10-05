@@ -47,13 +47,15 @@ class Mode(ABC):
         """
 
     @abstractmethod
-    def run_experiment(self, args: Namespace, recipe: Recipe):
+    def run_experiment(self, arguments: List[Argument], args: Namespace, recipe: Recipe):
         """
         Must be implemented by subclasses in order to run an experiment according to the command line arguments
         specified by the user.
 
-        :param args:    The command line arguments specified by the user
-        :param recipe:  A `Recipe` that provides access to the ingredients that are needed for setting up experiments
+        :param arguments:   A list that contains the command line arguments available in the current mode of operation
+        :param args:        The command line arguments specified by the user
+        :param recipe:      A `Recipe` that provides access to the ingredients that are needed for setting up
+                            experiments
         """
 
     @abstractmethod
@@ -109,20 +111,23 @@ class InputMode(Mode, ABC):
         cli.add_arguments(self.INPUT_DIR, *extension_arguments)
 
     @override
-    def run_experiment(self, args: Namespace, recipe: Recipe):
+    def run_experiment(self, arguments: List[Argument], args: Namespace, recipe: Recipe):
         input_directory = self.INPUT_DIR.get_value(args)
 
         if input_directory:
             meta_data = self.__read_meta_data(args, recipe, input_directory)
             self.__check_version(meta_data)
-            self._run_experiment(args, recipe, meta_data, input_directory)
+            self._run_experiment(arguments, args, recipe, meta_data, input_directory)
 
     @abstractmethod
-    def _run_experiment(self, args: Namespace, recipe: Recipe, meta_data: MetaData, input_directory: Path):
+    def _run_experiment(self, arguments: List[Argument], args: Namespace, recipe: Recipe, meta_data: MetaData,
+                        input_directory: Path):
         """
         Must be implemented by subclasses in order to run an experiment that accesses the meta-data of an earlie
         experiment according to the command line arguments specified by the user.
 
+        :param arguments:       A list that contains the command line arguments available in the current mode of
+                                operation
         :param args:            The command line arguments specified by the user
         :param recipe:          A `Recipe` that provides access to the ingredients that are needed for setting up
                                 experiments

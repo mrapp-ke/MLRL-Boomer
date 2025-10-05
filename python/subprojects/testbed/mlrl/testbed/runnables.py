@@ -99,12 +99,13 @@ class Runnable(Recipe, ABC):
         """
         return None
 
-    def run(self, mode: Mode, args: Namespace):
+    def run(self, mode: Mode, arguments: List[Argument], args: Namespace):
         """
         Executes the runnable.
 
-        :param mode:    The mode of operation
-        :param args:    The command line arguments specified by the user
+        :param mode:        The mode of operation
+        :param arguments:   A list that contains the command line arguments available in the current mode of operation
+        :param args:        The command line arguments specified by the user
         """
 
         class RecipeWrapper(Recipe):
@@ -146,7 +147,7 @@ class Runnable(Recipe, ABC):
 
                 return experiment_builder
 
-        mode.run_experiment(args, RecipeWrapper(self))
+        mode.run_experiment(arguments, args, RecipeWrapper(self))
 
     def configure_batch_mode(self, cli: CommandLineInterface) -> BatchMode:
         """
@@ -171,9 +172,7 @@ class Runnable(Recipe, ABC):
 
         :param cli: The command line interface to be configured
         """
-        extensions = self.get_extensions()
-        read_mode = ReadMode(
-            *reduce(lambda aggr, extension: aggr | extension.get_arguments(ReadMode()), extensions, set()))
+        read_mode = ReadMode()
         args = cli.parse_known_args()
 
         for extension in self.get_supported_extensions(read_mode.to_enum()):

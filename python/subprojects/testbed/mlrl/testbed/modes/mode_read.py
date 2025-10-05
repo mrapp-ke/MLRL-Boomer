@@ -8,7 +8,7 @@ import logging as log
 from argparse import Namespace
 from dataclasses import replace
 from pathlib import Path
-from typing import override
+from typing import List, override
 
 from mlrl.testbed_sklearn.experiments.output.dataset.arguments_ground_truth import GroundTruthArguments
 
@@ -64,16 +64,9 @@ class ReadMode(InputMode):
 
             return state
 
-    def __init__(self, *read_mode_arguments: Argument):
-        """
-        :param read_mode_arguments: The arguments that can be specified by the user in read mode
-        """
-        self._read_mode_arguments = set(argument_name
-                                        for argument_names in map(lambda arg: arg.names, read_mode_arguments)
-                                        for argument_name in argument_names)
-
     @override
-    def _run_experiment(self, args: Namespace, recipe: Recipe, meta_data: MetaData, input_directory: Path):
+    def _run_experiment(self, arguments: List[Argument], args: Namespace, recipe: Recipe, meta_data: MetaData,
+                        input_directory: Path):
         batch = meta_data.child_commands if meta_data.child_commands else [meta_data.command]
         num_experiments = len(batch)
 
@@ -83,8 +76,10 @@ class ReadMode(InputMode):
         for i, command in enumerate(batch):
             log.info('\nReading experimental results of experiment (%s / %s)...', i + 1, num_experiments)
             log.info('The command "%s" has been used originally for running this experiment', str(command))
+            ignored_arguments = set(argument_name for argument_names in map(lambda arg: arg.names, arguments)
+                                    for argument_name in argument_names)
             command_args = command.apply_to_namespace(args,
-                                                      ignore=self._read_mode_arguments
+                                                      ignore=ignored_arguments
                                                       | GroundTruthArguments.PRINT_GROUND_TRUTH.names
                                                       | GroundTruthArguments.SAVE_GROUND_TRUTH.names)
             experiment_builder = recipe.create_experiment_builder(experiment_mode=self.to_enum(),
