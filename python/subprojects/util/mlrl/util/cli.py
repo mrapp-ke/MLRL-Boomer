@@ -9,7 +9,7 @@ from argparse import ArgumentError, ArgumentParser, Namespace
 from enum import Enum
 from functools import cached_property
 from pathlib import Path
-from typing import Any, Dict, Optional, Set, Tuple, Type, override
+from typing import Any, Dict, List, Optional, Set, Tuple, Type, override
 
 from mlrl.util.format import format_enum_values, format_set
 from mlrl.util.options import BooleanOption, Options, parse_enum, parse_param, parse_param_and_options
@@ -379,6 +379,7 @@ class CommandLineInterface:
         :param version_text:    A text to be shown when the "--version" flag is passed to the command line interface or
                                 None, if the "--version" flag should not be added to the command line interface
         """
+        self.arguments: List[Argument] = []
         self._argument_parser = argument_parser
 
         if version_text:
@@ -403,6 +404,7 @@ class CommandLineInterface:
                                              required=required,
                                              default=argument.default,
                                              **argument.kwargs)
+                self.arguments.append(argument)
             except ArgumentError:
                 # Argument has already been added
                 pass
