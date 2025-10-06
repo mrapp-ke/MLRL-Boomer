@@ -250,7 +250,7 @@ LabelVectorSetExtension.LabelVectorSetExtractor expected type of learner to be o
 Label vectors:
 
 Index         1
-Label vector  [1 1 1 1 1 1]
+Label vector  [0 1 2 3 4 5]
 Frequency     198
 
 MarginalProbabilityCalibrationModelWriter.DefaultExtractor expected type of learner to be one of {"ClassificationRuleLearner"}, but learner has type BoomerRegressor
