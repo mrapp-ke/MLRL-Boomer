@@ -171,8 +171,7 @@ options:
   --print-label-vectors PRINT_LABEL_VECTORS
                         Whether the unique label vectors contained in the
                         training data should be printed on the console or not.
-                        Must be one of {"false", "true"}. For additional
-                        options refer to the documentation.
+                        Must be one of {"false", "true"}.
   --print-meta-data PRINT_META_DATA
                         Whether meta-data should be printed on the console or
                         not. Must be one of {"false", "true"}.
@@ -224,8 +223,7 @@ options:
   --save-label-vectors SAVE_LABEL_VECTORS
                         Whether the unique label vectors contained in the
                         training data should be written to output files or
-                        not. Must be one of {"false", "true"}. For additional
-                        options refer to the documentation.
+                        not. Must be one of {"false", "true"}.
   --save-meta-data SAVE_META_DATA
                         Whether meta-data should be saved to output files or
                         not. If set to "auto", meta-data is saved whenever
