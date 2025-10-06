@@ -15,11 +15,36 @@ from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor, ResultWriter, TabularDataExtractor
 from mlrl.testbed.experiments.state import ExperimentState
 
+from mlrl.util.options import Options
+
 
 class LabelVectorWriter(ResultWriter):
     """
     Allows to write unique label vectors that are contained in a dataset to one or several sinks.
     """
+
+    class InputExtractor(TabularDataExtractor):
+        """
+        Uses `TabularInputData` that has previously been loaded via an input reader.
+        """
+
+        @override
+        def extract_data(self, state: ExperimentState, sinks: List[Sink]) -> Optional[OutputData]:
+            """
+            See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
+            """
+            tabular_output_data = super().extract_data(state, sinks)
+
+            if tabular_output_data:
+                table = tabular_output_data.to_table(Options()).to_column_wise_table()
+                columns_by_name = {column.header: column for column in table.columns}
+                column_label_vector = columns_by_name[LabelVectors.COLUMN_LABEL_VECTOR]
+                column_frequency = columns_by_name[LabelVectors.COLUMN_FREQUENCY]
+                values = [(label_vector, int(frequency))
+                          for label_vector, frequency in zip(column_label_vector, column_frequency)]
+                return LabelVectors(values)
+
+            return None
 
     class DefaultExtractor(DataExtractor):
         """
@@ -32,13 +57,18 @@ class LabelVectorWriter(ResultWriter):
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
             dataset = state.dataset_as(self, TabularDataset)
-            return LabelVectors(LabelVectorHistogram.from_dataset(dataset)) if dataset else None
+
+            if dataset:
+                return LabelVectors.from_histogram(LabelVectorHistogram.from_dataset(dataset))
+
+            return None
 
     def __init__(self, *extractors: DataExtractor):
         """
         :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
         """
-        super().__init__(TabularDataExtractor(properties=LabelVectors.PROPERTIES, context=LabelVectors.CONTEXT),
+        super().__init__(LabelVectorWriter.InputExtractor(properties=LabelVectors.PROPERTIES,
+                                                          context=LabelVectors.CONTEXT),
                          *extractors,
                          LabelVectorWriter.DefaultExtractor(),
                          input_data=TabularInputData(properties=LabelVectors.PROPERTIES, context=LabelVectors.CONTEXT))
