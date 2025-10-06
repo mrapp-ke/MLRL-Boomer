@@ -6,8 +6,6 @@ Provides classes that allow configuring the functionality to write label vectors
 from argparse import Namespace
 from typing import Set, Type, override
 
-from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vectors import LabelVectors
-
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
@@ -27,14 +25,12 @@ class LabelVectorExtension(Extension):
         '--print-label-vectors',
         description='Whether the unique label vectors contained in the training data should be printed on the console '
         + 'or not.',
-        true_options={LabelVectors.OPTION_SPARSE},
     )
 
     SAVE_LABEL_VECTORS = BoolArgument(
         '--save-label-vectors',
         description='Whether the unique label vectors contained in the training data should be written to output files '
         + 'or not.',
-        true_options={LabelVectors.OPTION_SPARSE},
     )
 
     def __init__(self, *dependencies: Extension):
@@ -52,21 +48,21 @@ class LabelVectorExtension(Extension):
 
     def __configure_log_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         print_all = OutputArguments.PRINT_ALL.get_value(args)
-        print_label_vectors, options = self.PRINT_LABEL_VECTORS.get_value(args, default=print_all)
+        print_label_vectors = self.PRINT_LABEL_VECTORS.get_value(args, default=print_all)
 
         if print_label_vectors:
-            experiment_builder.label_vector_writer.add_sinks(LogSink(options))
+            experiment_builder.label_vector_writer.add_sinks(LogSink())
 
     def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         save_all = OutputArguments.SAVE_ALL.get_value(args)
-        save_label_vectors, options = self.SAVE_LABEL_VECTORS.get_value(args, default=save_all)
+        save_label_vectors = self.SAVE_LABEL_VECTORS.get_value(args, default=save_all)
         base_dir = OutputArguments.BASE_DIR.get_value(args)
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
         if save_label_vectors and base_dir and result_directory:
             create_directory = OutputArguments.CREATE_DIRS.get_value(args)
             experiment_builder.label_vector_writer.add_sinks(
-                CsvFileSink(directory=base_dir / result_directory, create_directory=create_directory, options=options))
+                CsvFileSink(directory=base_dir / result_directory, create_directory=create_directory))
 
     @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):

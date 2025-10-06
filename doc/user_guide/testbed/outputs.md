@@ -556,17 +556,13 @@ When using a {ref}`cross validation<cross-validation>`, several models are train
 - `label_vectors_fold-4.csv`
 - `label_vectors_fold-5.csv`
 
-The above commands output each label vector present in a dataset, as well as their frequency, i.e., the number of examples they are associated with. Moreover, each label vector is assigned a unique index. By default, feature vectors are given in the following format, where the n-th element indicates whether the n-th label is relevant (1) or not (0):
-
-```text
-[0 0 1 1 1 0]
-```
-
-By setting the option `sparse` to the value `true`, an alternative representation can be used (see {ref}`here<arguments-label-vectors>`). It consists of the indices of all relevant labels in a label vector (counting from zero and sorted in increasing order), while all irrelevant ones are omitted. Due to its compactness, this representation is particularly well-suited when dealing with a large number of labels:
+The above commands output each label vector present in a dataset, as well as their frequency, i.e., the number of examples they are associated with. Moreover, each label vector is assigned a unique index. By default, feature vectors are given in the following sparse format:
 
 ```text
 [2 3 4]
 ```
+
+This notation specifies the indices of all relevant labels in a label vector (counting from zero and sorted in increasing order), while all irrelevant ones are omitted. The example above corresponds to the binary label vector `[0 0 1 1 1 0]`. Due to its compactness, the sparse representation is particularly well-suited when dealing with a large number of labels.
 
 (output-rule-specific)=
 

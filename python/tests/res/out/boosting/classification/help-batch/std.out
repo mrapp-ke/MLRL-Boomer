@@ -192,8 +192,7 @@ options:
   --print-label-vectors PRINT_LABEL_VECTORS
                         Whether the unique label vectors contained in the
                         training data should be printed on the console or not.
-                        Must be one of {"false", "true"}. For additional
-                        options refer to the documentation.
+                        Must be one of {"false", "true"}.
   --print-marginal-probability-calibration-model PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL
                         Whether the model for the calibration of marginal
                         probabilities should be printed on the console or not.
@@ -256,8 +255,7 @@ options:
   --save-label-vectors SAVE_LABEL_VECTORS
                         Whether the unique label vectors contained in the
                         training data should be written to output files or
-                        not. Must be one of {"false", "true"}. For additional
-                        options refer to the documentation.
+                        not. Must be one of {"false", "true"}.
   --save-marginal-probability-calibration-model SAVE_MARGINAL_PROBABILITY_CALIBRATION_MODEL
                         Whether the model for the calibration of marginal
                         probabilities should be written to an output file or
