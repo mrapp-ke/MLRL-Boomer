@@ -67,6 +67,21 @@ class GithubApi:
                     raise RuntimeError('Failed to query releases of GitHub repository "' + self.repository_name
                                        + '"') from error
 
+        def get_all_milestones(self, state='open') -> Iterable[Any]:
+            """
+            Returns all milestones of the repository.
+
+            :param state:   The state of the milestones to be returned. Must be 'open', 'closed', or 'all'
+            :return:        The milestones
+            """
+            with self.__create_client() as client:
+                try:
+                    repository = client.get_repo(self.repository_name)
+                    return repository.get_milestones(state=state)
+                except Exception as error:
+                    raise RuntimeError('Failed to query milestones of GitHub repository "'
+                                       + self.repository_name) from error
+
     def __init__(self, build_unit: BuildUnit):
         """
         :param build_unit: The build unit to access the GitHub API from
