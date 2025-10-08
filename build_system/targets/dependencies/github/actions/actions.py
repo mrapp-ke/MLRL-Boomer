@@ -10,10 +10,10 @@ from typing import Any, Dict, List, Set, override
 from core.build_unit import BuildUnit
 from util.files import FileType
 from util.log import Log
+from util.pygithub import GithubApi
 
 from targets.dependencies.github.modules import GithubWorkflowModule
 from targets.dependencies.github.workflows import Workflow, Workflows
-from targets.dependencies.pygithub import GithubApi
 
 
 @dataclass
