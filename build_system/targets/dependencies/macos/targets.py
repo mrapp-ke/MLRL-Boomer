@@ -12,11 +12,11 @@ from typing import Any, Optional, Tuple
 from core.build_unit import BuildUnit
 from util.io import create_directories
 from util.log import Log
+from util.pygithub import GithubApi
 
 from targets.dependencies.macos.cmake import Cmake
 from targets.dependencies.macos.curl import CurlDownload
 from targets.dependencies.macos.tar import TarExtract
-from targets.dependencies.pygithub import GithubApi
 
 SUFFIX_SRC = '.src'
 

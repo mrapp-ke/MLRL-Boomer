@@ -85,6 +85,9 @@ class Version:
             if first_number < second_number:
                 return True
 
+            if first_number > second_number:
+                return False
+
         return False
 
     def __le__(self, other: 'Version') -> bool:
