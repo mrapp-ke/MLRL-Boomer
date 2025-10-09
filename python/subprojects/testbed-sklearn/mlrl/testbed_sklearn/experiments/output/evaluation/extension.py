@@ -11,6 +11,7 @@ from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_classification
     ClassificationEvaluationDataExtractor
 from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_ranking import RankingEvaluationDataExtractor
 from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_regression import RegressionEvaluationDataExtractor
+from mlrl.testbed_sklearn.experiments.output.evaluation.writer import EvaluationWriter
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.sources.source_csv import CsvFileSource
@@ -112,14 +113,20 @@ class EvaluationExtension(Extension):
                 CsvFileSink(directory=base_dir / result_directory, create_directory=create_directory, options=options))
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: Mode):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, mode: Mode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
         self.__configure_log_sink(args, experiment_builder)
         self.__configure_csv_file_sink(args, experiment_builder)
+        evaluation_writer = experiment_builder.evaluation_writer
 
-        if experiment_builder.evaluation_writer.sinks:
+        if evaluation_writer.sinks:
+            if isinstance(mode, ReadMode):
+                extractor = EvaluationWriter.InputExtractor(properties=EvaluationResult.PROPERTIES,
+                                                            context=EvaluationResult.CONTEXT)
+                evaluation_writer.extractors.append(extractor)
+
             problem_domain = experiment_builder.initial_state.problem_domain
 
             if isinstance(problem_domain, RegressionProblem):
@@ -131,7 +138,7 @@ class EvaluationExtension(Extension):
             else:
                 extractor = ClassificationEvaluationDataExtractor()
 
-            experiment_builder.evaluation_writer.extractors.append(extractor)
+            evaluation_writer.extractors.append(extractor)
 
     @override
     def get_supported_modes(self) -> Set[Type[Mode]]:
