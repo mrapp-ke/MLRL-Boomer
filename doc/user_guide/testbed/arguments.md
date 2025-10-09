@@ -412,7 +412,6 @@ To provide valuable insights into the models learned by an algorithm, the predic
   - `true` The evaluation results in terms of common metrics are written to [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files.
 
     - `decimals` (Default value = `0`) The number of decimals to be used for evaluation scores or 0, if the number of decimals should not be restricted.
-    - `percentage` (Default value = `true`) `true`, if evaluation scores should be given as a percentage, if possible, `false` otherwise.
     - `enable_all` (Default value = `true`) `true`, if all supported metrics should be used unless specified otherwise, `false` if all metrics should be disabled by default.
     - `hamming_loss` (Default value = `true`) `true`, if evaluation scores according to the Hamming loss should be stored, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
     - `hamming_accuracy` (Default value = `true`) `true`, if evaluation scores according to the Hamming accuracy metric should be stored, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
@@ -510,7 +509,6 @@ To provide valuable insights into the models learned by an algorithm, the predic
   - `true` The characteristics of binary predictions are written to [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files. Does only have an effect if the parameter `--predict-probabilities` is set to `false`.
 
     - `decimals` (Default value = `0`) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
-    - `percentage` (Default value = `true`) `true`, if the characteristics should be given as a percentage, if possible, `false` otherwise.
     - `outputs` (Default value = `true`) `true`, if the number of outputs should be stored, `false` otherwise.
     - `output_density` (Default value = `true`) `true`, if the density of the ground truth matrix should be stored, `false` otherwise.
     - `output_sparsity` (Default value = `true`) `true`, if the sparsity of the ground truth matrix should be stored, `false` otherwise.
@@ -550,7 +548,6 @@ To provide valuable insights into the models learned by an algorithm, the predic
   - `true` The characteristics of the training dataset are written to a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file.
 
     - `decimals` (Default value = `0`) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
-    - `percentage` (Default value = `true`) `true`, if the characteristics should be given as a percentage, if possible, `false` otherwise.
     - `outputs` (Default value = `true`) `true`, if the number of outputs should be stored, `false` otherwise.
     - `output_density` (Default value = `true`) `true`, if the density of the ground truth matrix should be stored, `false` otherwise.
     - `output_sparsity` (Default value = `true`) `true`, if the sparsity of the ground truth matrix should be stored, `false` otherwise.

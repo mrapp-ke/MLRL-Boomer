@@ -75,7 +75,7 @@ class EvaluationExtension(Extension):
             EvaluationResult.OPTION_COVERAGE_ERROR, EvaluationResult.OPTION_LABEL_RANKING_AVERAGE_PRECISION,
             EvaluationResult.OPTION_DISCOUNTED_CUMULATIVE_GAIN,
             EvaluationResult.OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, EvaluationResult.OPTION_TRAINING_TIME,
-            EvaluationResult.OPTION_PREDICTION_TIME, OPTION_DECIMALS, OPTION_PERCENTAGE
+            EvaluationResult.OPTION_PREDICTION_TIME, OPTION_DECIMALS
         },
     )
 
