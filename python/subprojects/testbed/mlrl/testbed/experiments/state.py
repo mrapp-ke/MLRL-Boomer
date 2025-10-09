@@ -5,6 +5,7 @@ Provides classes for representing the state of experiments.
 """
 import logging as log
 
+from argparse import Namespace
 from dataclasses import dataclass, field
 from typing import Any, Dict, Optional, Type
 
@@ -58,6 +59,7 @@ class ExperimentState:
     Represents the state of an experiment.
 
     Attributes:
+        args:               The command line argument that have been used to start the experiment
         meta_data:          Meta-data about the command that has been used for running the experiment
         problem_domain:     The problem domain, the experiment is concerned with
         folding_strategy:   The strategy that is used for creating different folds of the dataset during the experiment
@@ -69,6 +71,7 @@ class ExperimentState:
         prediction_result:  The result of the prediction process or None, if no predictions have been obtained yet
         extras:             A dictionary that can be used to store arbitrary data referenced via a unique key
     """
+    args: Namespace
     meta_data: MetaData
     problem_domain: ProblemDomain
     folding_strategy: Optional[FoldingStrategy] = None
