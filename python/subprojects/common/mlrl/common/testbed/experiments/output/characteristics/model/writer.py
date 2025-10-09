@@ -20,11 +20,59 @@ from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor, ResultWriter, TabularDataExtractor
 from mlrl.testbed.experiments.state import ExperimentState
 
+from mlrl.util.options import Options
+
 
 class RuleModelCharacteristicsWriter(ResultWriter):
     """
     Allows writing the characteristics of a model to one or several sinks.
     """
+
+    class InputExtractor(TabularDataExtractor):
+        """
+        Uses `TabularInputData` that has previously been loaded via an input reader.
+        """
+
+        @override
+        def extract_data(self, state: ExperimentState, sinks: List[Sink]) -> Optional[OutputData]:
+            """
+            See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
+            """
+            tabular_output_data = super().extract_data(state, sinks)
+
+            if tabular_output_data:
+                table = tabular_output_data.to_table(Options())
+                table.to_column_wise_table()
+                indices = {column.header: index for index, column in enumerate(table.columns)}
+                row_wise_table = table.to_row_wise_table()
+                rule_model_statistics = RuleModelStatistics()
+
+                for row in row_wise_table.rows:
+                    body_statistics = BodyStatistics(
+                        num_numerical_leq=int(
+                            row[indices[RuleModelCharacteristics.COLUMN_NUM_CONDITIONS_NUMERICAL_LEQ]]),
+                        num_numerical_gr=int(row[indices[RuleModelCharacteristics.COLUMN_NUM_CONDITIONS_NUMERICAL_GR]]),
+                        num_ordinal_leq=int(row[indices[RuleModelCharacteristics.COLUMN_NUM_CONDITIONS_ORDINAL_LEQ]]),
+                        num_ordinal_gr=int(row[indices[RuleModelCharacteristics.COLUMN_NUM_CONDITIONS_ORDINAL_GR]]),
+                        num_nominal_eq=int(row[indices[RuleModelCharacteristics.COLUMN_NUM_CONDITIONS_NOMINAL_EQ]]),
+                        num_nominal_neq=int(row[indices[RuleModelCharacteristics.COLUMN_NUM_CONDITIONS_NOMINAL_NEQ]]),
+                    )
+                    head_statistics = HeadStatistics(
+                        num_positive_predictions=int(
+                            row[indices[RuleModelCharacteristics.COLUMN_NUM_PREDICTIONS_POSITIVE]]),
+                        num_negative_predictions=int(
+                            row[indices[RuleModelCharacteristics.COLUMN_NUM_PREDICTIONS_NEGATIVE]]),
+                    )
+                    rule_statistics = RuleStatistics(body_statistics=body_statistics, head_statistics=head_statistics)
+
+                    if row[indices[RuleModelCharacteristics.COLUMN_INDEX]].lower().find('default') > 0:
+                        rule_model_statistics.default_rule_statistics = rule_statistics
+                    else:
+                        rule_model_statistics.rule_statistics.append(rule_statistics)
+
+                return RuleModelCharacteristics(rule_model_statistics)
+
+            return None
 
     class DefaultExtractor(DataExtractor):
         """
@@ -108,8 +156,8 @@ class RuleModelCharacteristicsWriter(ResultWriter):
         """
         :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
         """
-        super().__init__(TabularDataExtractor(properties=RuleModelCharacteristics.PROPERTIES,
-                                              context=RuleModelCharacteristics.CONTEXT),
+        super().__init__(RuleModelCharacteristicsWriter.InputExtractor(properties=RuleModelCharacteristics.PROPERTIES,
+                                                                       context=RuleModelCharacteristics.CONTEXT),
                          *extractors,
                          RuleModelCharacteristicsWriter.DefaultExtractor(),
                          input_data=TabularInputData(properties=RuleModelCharacteristics.PROPERTIES,
