@@ -199,7 +199,7 @@ class SkLearnRunnable(Runnable, ABC):
         See :func:`mlrl.testbed.experiments.recipe.Recipe.create_experiment_builder`
         """
         meta_data = MetaData(command=command)
-        initial_state = ExperimentState(meta_data=meta_data, problem_domain=self.create_problem_domain(args))
+        initial_state = ExperimentState(args=args, meta_data=meta_data, problem_domain=self.create_problem_domain(args))
         return SkLearnExperiment.Builder(initial_state=initial_state,
                                          dataset_splitter=self.create_dataset_splitter(args, load_dataset))
 
