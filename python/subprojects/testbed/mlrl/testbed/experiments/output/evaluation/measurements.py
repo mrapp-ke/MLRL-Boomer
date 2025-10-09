@@ -69,3 +69,6 @@ class Measurements:
             result[OutputValue(measure.option_key, 'Std.-dev. ' + measure.name, measure.percentage)] = std_dev
 
         return result
+
+    def __bool__(self) -> bool:
+        return bool(self._values_per_measure)
