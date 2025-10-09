@@ -248,6 +248,10 @@ class OutputWriter:
         return None
 
     @override
+    def __str__(self) -> str:
+        return type(self).__name__
+
+    @override
     def __eq__(self, other: Any) -> bool:
         return isinstance(other, type(self))
 
