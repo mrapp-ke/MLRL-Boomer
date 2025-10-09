@@ -51,7 +51,7 @@ class PredictionCharacteristicsExtension(Extension):
             OutputCharacteristics.OPTION_OUTPUTS, OutputCharacteristics.OPTION_OUTPUT_DENSITY,
             OutputCharacteristics.OPTION_OUTPUT_SPARSITY, OutputCharacteristics.OPTION_LABEL_IMBALANCE_RATIO,
             OutputCharacteristics.OPTION_LABEL_CARDINALITY, OutputCharacteristics.OPTION_DISTINCT_LABEL_VECTORS,
-            OPTION_DECIMALS, OPTION_PERCENTAGE
+            OPTION_DECIMALS
         },
     )
 
