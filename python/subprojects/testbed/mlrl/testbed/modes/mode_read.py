@@ -89,7 +89,7 @@ class ReadMode(InputMode):
                                                       | GroundTruthArguments.SAVE_GROUND_TRUTH.names)
             experiment_builder = recipe.create_experiment_builder(command_args, command, load_dataset=False)
 
-            for output_writer in experiment_builder.output_writers:
+            for output_writer in sorted(experiment_builder.output_writers, key=str):
                 input_reader = output_writer.create_input_reader(command.apply_to_namespace(Namespace()),
                                                                  input_directory)
 
