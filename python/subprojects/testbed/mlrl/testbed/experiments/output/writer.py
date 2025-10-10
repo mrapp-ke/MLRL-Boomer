@@ -210,11 +210,21 @@ class OutputWriter:
         sinks = self.sinks
 
         if sinks:
-            output_data = self.__extract_data(state)
+            for output_state in self._create_states(state):
+                output_data = self.__extract_data(output_state)
 
-            if output_data:
-                for sink in sinks:
-                    self.__write_to_sink(sink, state, output_data)
+                if output_data:
+                    for sink in sinks:
+                        self.__write_to_sink(sink, output_state, output_data)
+
+    def _create_states(self, state: ExperimentState) -> List[ExperimentState]:
+        """
+        May be overridden by subclasses in order create a list of states from which output data should be extracted.
+
+        :param state:   The current state of the experiment
+        :return:        A list that contains the states from which output data should be extracted
+        """
+        return [state]
 
     def _write_to_sink(self, sink: Sink, state: ExperimentState, output_data: OutputData):
         """
