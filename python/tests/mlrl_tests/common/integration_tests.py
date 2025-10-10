@@ -172,11 +172,17 @@ class IntegrationTests(ABC):
         CmdRunner(builder).run(test_name, wipe_before=False)
 
     def test_evaluation_incremental(self, dataset: Dataset):
+        test_name = 'evaluation_incremental'
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .incremental_evaluation() \
             .print_evaluation() \
             .save_evaluation()
-        CmdRunner(builder).run('evaluation_incremental')
+        CmdRunner(builder).run(test_name, wipe_after=False)
+        builder = self._create_cmd_builder() \
+            .set_mode(Mode.MODE_READ) \
+            .print_evaluation() \
+            .save_evaluation()
+        CmdRunner(builder).run(test_name, wipe_before=False)
 
     @pytest.mark.parametrize('data_split, data_split_options', [
         (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options()),
