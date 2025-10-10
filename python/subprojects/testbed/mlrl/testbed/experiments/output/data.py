@@ -257,6 +257,14 @@ class OutputValue:
         self.name = name
         self.percentage = percentage
 
+    def std_dev(self) -> 'OutputValue':
+        """
+        Creates and returns an `OutputValue` that corresponds to the standard deviation of this value.
+
+        :return: An `OutputValue` that corresponds to the standard deviation of this value
+        """
+        return OutputValue(option_key=self.option_key, name='Std.-dev. ' + self.name, percentage=self.percentage)
+
     @staticmethod
     def filter_values(values: Iterable['OutputValue'], options: Options) -> List['OutputValue']:
         """

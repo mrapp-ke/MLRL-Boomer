@@ -66,7 +66,7 @@ class Measurements:
         for measure in self._values_per_measure:
             average, std_dev = self.average_by_measure(measure)
             result[measure] = average
-            result[OutputValue(measure.option_key, 'Std.-dev. ' + measure.name, measure.percentage)] = std_dev
+            result[measure.std_dev()] = std_dev
 
         return result
 
