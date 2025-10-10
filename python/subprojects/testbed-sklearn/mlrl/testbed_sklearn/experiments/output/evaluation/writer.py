@@ -47,20 +47,24 @@ class EvaluationDataExtractor(DataExtractor, ABC):
         dataset_type = state.dataset_type
         dataset = state.dataset
         folding_strategy = state.folding_strategy
+        fold = state.fold
 
         if training_result and prediction_result and dataset_type and dataset and folding_strategy:
             measurements = self.measurements.setdefault(dataset_type, Measurements(folding_strategy.num_folds))
-            fold_index = state.fold.index
-            options = Options(reduce(lambda aggr, sink: aggr | sink.options.dictionary, sinks, {}))
-            training_duration = training_result.training_duration.value
-            prediction_duration = prediction_result.prediction_duration.value
-            measurements.values_by_measure(EVALUATION_MEASURE_TRAINING_TIME)[fold_index] = training_duration
-            measurements.values_by_measure(EVALUATION_MEASURE_PREDICTION_TIME)[fold_index] = prediction_duration
-            self._update_measurements(measurements,
-                                      fold_index,
-                                      ground_truth=dataset.y,
-                                      predictions=prediction_result.predictions,
-                                      options=options)
+
+            if fold:
+                fold_index = fold.index
+                options = Options(reduce(lambda aggr, sink: aggr | sink.options.dictionary, sinks, {}))
+                training_duration = training_result.training_duration.value
+                prediction_duration = prediction_result.prediction_duration.value
+                measurements.values_by_measure(EVALUATION_MEASURE_TRAINING_TIME)[fold_index] = training_duration
+                measurements.values_by_measure(EVALUATION_MEASURE_PREDICTION_TIME)[fold_index] = prediction_duration
+                self._update_measurements(measurements,
+                                          fold_index,
+                                          ground_truth=dataset.y,
+                                          predictions=prediction_result.predictions,
+                                          options=options)
+
             return EvaluationResult(measurements)
 
         return None
@@ -135,14 +139,20 @@ class EvaluationWriter(ResultWriter):
                                                      context=EvaluationResult.CONTEXT))
 
     @override
-    def _write_to_sink(self, sink: Sink, state: ExperimentState, output_data: OutputData):
-        fold = state.fold
-        sink.write_to_sink(state, output_data, **{EvaluationResult.KWARG_FOLD: fold.index})
+    def _create_states(self, state: ExperimentState) -> List[ExperimentState]:
+        states = super()._create_states(state)
         folding_strategy = state.folding_strategy
 
         if folding_strategy and \
                 folding_strategy.is_cross_validation_used and \
                 not folding_strategy.is_subset and \
-                folding_strategy.is_last_fold(fold):
-            new_state = replace(state, fold=None)
-            sink.write_to_sink(new_state, output_data)
+                folding_strategy.is_last_fold(state.fold):
+            states.append(replace(state, fold=None))
+
+        return states
+
+    @override
+    def _write_to_sink(self, sink: Sink, state: ExperimentState, output_data: OutputData):
+        fold = state.fold
+        kwargs = {EvaluationResult.KWARG_FOLD: fold.index} if fold else {}
+        sink.write_to_sink(state, output_data, **kwargs)
