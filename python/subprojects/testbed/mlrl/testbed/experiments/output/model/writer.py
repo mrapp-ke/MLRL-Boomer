@@ -5,7 +5,7 @@ Provides classes that allow writing models to one or several sinks.
 """
 from argparse import Namespace
 from pathlib import Path
-from typing import List, Optional, override
+from typing import List, Optional, Tuple, override
 
 from mlrl.testbed.experiments.input.model import ModelReader
 from mlrl.testbed.experiments.input.reader import InputReader
@@ -28,16 +28,16 @@ class ModelWriter(OutputWriter):
         """
 
         @override
-        def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
+        def extract_data(self, state: ExperimentState, _: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
             training_result = state.training_result
 
             if training_result:
-                return OutputModel(training_result.learner)
+                return [(state, OutputModel(training_result.learner))]
 
-            return None
+            return []
 
     def __init__(self, *extractors: DataExtractor):
         """

@@ -5,7 +5,7 @@ Provides classes that allow writing characteristics of models to one or several 
 """
 import logging as log
 
-from typing import List, Optional, override
+from typing import List, Tuple, override
 
 import numpy as np
 
@@ -34,13 +34,13 @@ class RuleModelCharacteristicsWriter(ResultWriter):
         """
 
         @override
-        def extract_data(self, state: ExperimentState, sinks: List[Sink]) -> Optional[OutputData]:
+        def extract_data(self, state: ExperimentState, sinks: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
-            tabular_output_data = super().extract_data(state, sinks)
+            result: List[Tuple[ExperimentState, OutputData]] = []
 
-            if tabular_output_data:
+            for extracted_state, tabular_output_data in super().extract_data(state, sinks):
                 table = tabular_output_data.to_table(Options())
                 table.to_column_wise_table()
                 indices = {column.header: index for index, column in enumerate(table.columns)}
@@ -70,9 +70,9 @@ class RuleModelCharacteristicsWriter(ResultWriter):
                     else:
                         rule_model_statistics.rule_statistics.append(rule_statistics)
 
-                return RuleModelCharacteristics(rule_model_statistics)
+                result.append((extracted_state, RuleModelCharacteristics(rule_model_statistics)))
 
-            return None
+            return result
 
     class DefaultExtractor(DataExtractor):
         """
@@ -134,7 +134,7 @@ class RuleModelCharacteristicsWriter(ResultWriter):
                 raise ValueError('Unsupported type of head: ' + str(type(head)))
 
         @override
-        def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
+        def extract_data(self, state: ExperimentState, _: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
@@ -144,13 +144,13 @@ class RuleModelCharacteristicsWriter(ResultWriter):
                 model = learner.model_
 
                 if isinstance(model, RuleModel):
-                    return self.__create_rule_model_characteristics(model)
+                    return [(state, self.__create_rule_model_characteristics(model))]
 
                 log.error('%s expected type of model to be %s, but model has type %s',
                           type(self).__name__, RuleModel.__name__,
                           type(model).__name__)
 
-            return None
+            return []
 
     def __init__(self, *extractors: DataExtractor):
         """
