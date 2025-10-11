@@ -15,7 +15,7 @@ from mlrl.testbed.experiments.input.meta_data.reader import MetaDataReader
 from mlrl.testbed.experiments.input.sources import YamlFileSource
 from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.recipe import Recipe
-from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
 
 from mlrl.util.cli import Argument, CommandLineInterface, PathArgument, SetArgument
 
@@ -25,19 +25,11 @@ class Mode(ABC):
     An abstract base class for all modes of operation.
     """
 
-    MODE_SINGLE = 'single'
-
-    MODE_BATCH = 'batch'
-
-    MODE_READ = 'read'
-
-    MODE_RUN = 'run'
-
     MODE = SetArgument(
         '--mode',
-        values={MODE_SINGLE, MODE_BATCH, MODE_READ, MODE_RUN},
+        values={ExperimentMode.SINGLE, ExperimentMode.BATCH, ExperimentMode.READ, ExperimentMode.RUN},
         description='The mode of operation to be used.',
-        default=MODE_SINGLE,
+        default=ExperimentMode.SINGLE,
     )
 
     @abstractmethod
@@ -64,6 +56,14 @@ class Mode(ABC):
         :param recipe:  A `Recipe` that provides access to the ingredients that are needed for setting up experiments
         """
 
+    @abstractmethod
+    def to_enum(self) -> ExperimentMode:
+        """
+        Returns the `ExperimentMode` that corresponds to this mode of operation.
+
+        :return: An `ExperimentMode`
+        """
+
 
 class InputMode(Mode, ABC):
     """
@@ -77,16 +77,10 @@ class InputMode(Mode, ABC):
         + 'created when running one or several experiments in the past.',
     )
 
-    @override
-    def configure_arguments(self, cli: CommandLineInterface, extension_arguments: List[Argument],
-                            algorithmic_arguments: List[Argument]):
-        cli.add_arguments(self.INPUT_DIR, *extension_arguments)
-
-    @staticmethod
-    def __read_meta_data(args: Namespace, recipe: Recipe, input_directory: Path) -> MetaData:
+    def __read_meta_data(self, args: Namespace, recipe: Recipe, input_directory: Path) -> MetaData:
         log.info('Reading meta-data...')
         problem_domain = recipe.create_problem_domain(args)
-        state = ExperimentState(args=args, meta_data=MetaData(), problem_domain=problem_domain)
+        state = ExperimentState(mode=self.to_enum(), args=args, meta_data=MetaData(), problem_domain=problem_domain)
         reader = MetaDataReader(
             YamlFileSource(directory=input_directory, schema_file_path=InputMetaData.SCHEMA_FILE_PATH))
         meta_data = reader.read(state).meta_data
@@ -108,6 +102,11 @@ class InputMode(Mode, ABC):
                 + 'greater than currently used (%s).', meta_data_version, current_version)
         else:
             log.debug('No version conflicts detected')
+
+    @override
+    def configure_arguments(self, cli: CommandLineInterface, extension_arguments: List[Argument],
+                            algorithmic_arguments: List[Argument]):
+        cli.add_arguments(self.INPUT_DIR, *extension_arguments)
 
     @override
     def run_experiment(self, args: Namespace, recipe: Recipe):

@@ -16,7 +16,7 @@ from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.experiment import Experiment, ExperimentalProcedure
 from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.recipe import Recipe
-from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
 from mlrl.testbed.modes.mode import InputMode
 
 from mlrl.util.cli import Argument
@@ -87,7 +87,10 @@ class ReadMode(InputMode):
                                                       ignore=self._read_mode_arguments
                                                       | GroundTruthArguments.PRINT_GROUND_TRUTH.names
                                                       | GroundTruthArguments.SAVE_GROUND_TRUTH.names)
-            experiment_builder = recipe.create_experiment_builder(command_args, command, load_dataset=False)
+            experiment_builder = recipe.create_experiment_builder(experiment_mode=self.to_enum(),
+                                                                  args=command_args,
+                                                                  command=command,
+                                                                  load_dataset=False)
 
             for output_writer in sorted(experiment_builder.output_writers, key=str):
                 input_reader = output_writer.create_input_reader(command.apply_to_namespace(Namespace()),
@@ -97,3 +100,7 @@ class ReadMode(InputMode):
                     experiment_builder.add_input_readers(input_reader)
 
             ReadMode.Procedure().conduct_experiment(experiment_builder.build(command_args))
+
+    @override
+    def to_enum(self) -> ExperimentMode:
+        return ExperimentMode.READ

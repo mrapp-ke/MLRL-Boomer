@@ -13,6 +13,7 @@ from typing import override
 from mlrl.testbed.command import ArgumentDict, Command
 from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.recipe import Recipe
+from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.modes.mode import InputMode, Mode
 
 from mlrl.util.format import format_iterable
@@ -39,3 +40,7 @@ class RunMode(InputMode):
 
         log.info('')
         subprocess.run(list(meta_data_command), check=False)
+
+    @override
+    def to_enum(self) -> ExperimentMode:
+        return ExperimentMode.RUN

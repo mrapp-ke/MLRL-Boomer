@@ -13,6 +13,7 @@ from importlib.metadata import version
 from importlib.util import module_from_spec, spec_from_file_location
 from typing import Optional
 
+from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
 from mlrl.testbed.program_info import ProgramInfo
 from mlrl.testbed.runnables import Runnable
@@ -152,11 +153,11 @@ def __get_mode(cli: CommandLineInterface, runnable: Optional[Runnable]) -> Mode:
     args = cli.parse_known_args()
     mode = Mode.MODE.get_value(args)
 
-    if mode == Mode.MODE_BATCH:
+    if mode == ExperimentMode.BATCH:
         return runnable.configure_batch_mode(cli) if runnable else BatchMode()
-    if mode == Mode.MODE_READ:
+    if mode == ExperimentMode.READ:
         return runnable.configure_read_mode(cli) if runnable else ReadMode()
-    if mode == Mode.MODE_RUN:
+    if mode == ExperimentMode.RUN:
         return runnable.configure_run_mode(cli) if runnable else RunMode()
     return SingleMode()
 

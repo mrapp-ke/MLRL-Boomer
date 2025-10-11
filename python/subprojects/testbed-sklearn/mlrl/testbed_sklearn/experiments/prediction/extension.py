@@ -4,11 +4,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to obtain predictions from a machine learning model.
 """
 from argparse import Namespace
-from typing import Set, Type, override
+from typing import Set, override
 
 from mlrl.testbed.experiments.prediction_type import PredictionType
+from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import BatchMode, Mode, SingleMode
 
 from mlrl.util.cli import Argument, EnumArgument
 
@@ -26,18 +26,18 @@ class PredictionTypeExtension(Extension):
     )
 
     @override
-    def _get_arguments(self, _: Mode) -> Set[Argument]:
+    def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
         return {self.PREDICTION_TYPE}
 
     @override
-    def get_supported_modes(self) -> Set[Type[Mode]]:
+    def get_supported_modes(self) -> Set[ExperimentMode]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode, BatchMode}
+        return {ExperimentMode.SINGLE, ExperimentMode.BATCH}
 
     @staticmethod
     def get_prediction_type(args: Namespace) -> PredictionType:

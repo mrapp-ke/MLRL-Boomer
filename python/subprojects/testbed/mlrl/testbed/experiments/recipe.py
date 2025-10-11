@@ -10,6 +10,7 @@ from mlrl.testbed.command import Command
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
+from mlrl.testbed.experiments.state import ExperimentMode
 
 
 class Recipe(ABC):
@@ -39,12 +40,14 @@ class Recipe(ABC):
 
     @abstractmethod
     def create_experiment_builder(self,
+                                  experiment_mode: ExperimentMode,
                                   args: Namespace,
                                   command: Command,
                                   load_dataset: bool = True) -> Experiment.Builder:
         """
         Creates and returns the `Experiment.Builder` to be used for configuring experiments.
 
+        :param experiment_mode: The mode of operation
         :param args:            The command line arguments specified by the user
         :param command:         The command that has been used to start the experiment
         :param load_dataset:    True, if the dataset should be loaded by the experiment, False otherwise
