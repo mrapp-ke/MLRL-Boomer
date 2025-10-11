@@ -6,9 +6,17 @@ Provides classes for writing output data to sinks.
 import logging as log
 
 from abc import ABC, abstractmethod
+from argparse import Namespace
+from pathlib import Path
 from typing import Any, List, Optional, override
 
-from mlrl.testbed.experiments.output.data import OutputData
+from mlrl.testbed.experiments.context import Context
+from mlrl.testbed.experiments.data import Properties, TabularProperties
+from mlrl.testbed.experiments.input.data import DatasetInputData, InputData, TabularInputData, TextualInputData
+from mlrl.testbed.experiments.input.reader import InputReader
+from mlrl.testbed.experiments.input.sources import Source
+from mlrl.testbed.experiments.output.arguments import ResultDirectoryArguments
+from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData, TabularOutputData, TextualOutputData
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.state import ExperimentState
 
@@ -26,6 +34,107 @@ class DataExtractor(ABC):
         :param state:   The state from which the output data should be extracted
         :param sinks:   The sinks to which the extracted data should be written
         :return:        The output data that has been extracted or None, if no output data has been extracted
+        """
+
+
+class TextualDataExtractor(DataExtractor):
+    """
+    Uses `TextualInputData` that has previously been loaded via an input reader.
+    """
+
+    def __init__(self, properties: Properties, context: Context):
+        """
+        :param properties:  The properties of the input data
+        :param context:     The context of the input data
+        """
+        self.properties = properties
+        self.context = context
+
+    @override
+    def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
+        """
+        See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
+        """
+        properties = self.properties
+        context = self.context
+        input_data = TextualInputData(properties=properties, context=context)
+        input_data_key = input_data.get_key(state)
+        extra = state.extras.get(input_data_key)
+
+        if extra:
+            return TextualOutputData.from_text(properties=properties, context=context, text=extra)
+
+        return None
+
+
+class TabularDataExtractor(DataExtractor):
+    """
+    Uses `TabularInputData` that has previously been loaded via an input reader.
+    """
+
+    def __init__(self, properties: TabularProperties, context: Context):
+        """
+        :param properties:  The properties of the input data
+        :param context:     The context of the input data
+        """
+        self.properties = properties
+        self.context = context
+
+    @override
+    def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
+        """
+        See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
+        """
+        properties = self.properties
+        context = self.context
+        input_data = TabularInputData(properties=properties, context=context)
+        input_data_key = input_data.get_key(state)
+        extra = state.extras.get(input_data_key)
+
+        if extra:
+            return TabularOutputData.from_table(properties=properties, context=context, table=extra)
+
+        return None
+
+
+class DatasetExtractor(DataExtractor, ABC):
+    """
+    An abstract base class for all extractors that use `DatasetInputData` that has previously been loaded via an input
+    reader.
+    """
+
+    def __init__(self, properties: Properties, context: Context):
+        """
+        :param properties:  The properties of the input data
+        :param context:     The context of the input data
+        """
+        self.properties = properties
+        self.context = context
+
+    @override
+    def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
+        """
+        See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
+        """
+        properties = self.properties
+        context = self.context
+        input_data = DatasetInputData(properties=properties, context=context)
+        input_data_key = input_data.get_key(state)
+        extra = state.extras.get(input_data_key)
+
+        if extra:
+            return self._create_output_data(extra)
+
+        return None
+
+    @abstractmethod
+    def _create_output_data(self, data: Any) -> Optional[DatasetOutputData]:
+        """
+        Must be implemented by subclasses in order to create output data from given data that has been read via in input
+        reader.
+
+        :param data:    The data that has been returned by the input reader
+        :return:        The output data that has been created or None, if no output data has been created
         """
 
 
@@ -101,11 +210,21 @@ class OutputWriter:
         sinks = self.sinks
 
         if sinks:
-            output_data = self.__extract_data(state)
+            for output_state in self._create_states(state):
+                output_data = self.__extract_data(output_state)
 
-            if output_data:
-                for sink in sinks:
-                    self.__write_to_sink(sink, state, output_data)
+                if output_data:
+                    for sink in sinks:
+                        self.__write_to_sink(sink, output_state, output_data)
+
+    def _create_states(self, state: ExperimentState) -> List[ExperimentState]:
+        """
+        May be overridden by subclasses in order create a list of states from which output data should be extracted.
+
+        :param state:   The current state of the experiment
+        :return:        A list that contains the states from which output data should be extracted
+        """
+        return [state]
 
     def _write_to_sink(self, sink: Sink, state: ExperimentState, output_data: OutputData):
         """
@@ -117,6 +236,31 @@ class OutputWriter:
         """
         sink.write_to_sink(state, output_data)
 
+    def create_sources(self, input_directory: Path) -> List[Source]:
+        """
+        Creates and returns a list that contains all sources that can read the data produced by this output writer.
+
+        :param input_directory: The directory, the data should be read from
+        :return:                A list that contains the sources that has been created
+        """
+        return list(filter(None, map(lambda sink: sink.create_source(input_directory), self.sinks)))
+
+    @abstractmethod
+    def create_input_reader(self, args: Namespace, input_directory: Path) -> Optional[InputReader]:
+        """
+        May be overridden by subclasses in order to create an `InputReader` that can read the data produced by this
+        output writer.
+
+        :param args:            The command line arguments specified by the user
+        :param input_directory: The directory, the data should be read from
+        :return:                The `InputReader` that has been created or None, if no such reader is available
+        """
+        return None
+
+    @override
+    def __str__(self) -> str:
+        return type(self).__name__
+
     @override
     def __eq__(self, other: Any) -> bool:
         return isinstance(other, type(self))
@@ -124,3 +268,31 @@ class OutputWriter:
     @override
     def __hash__(self) -> int:
         return hash(type(self))
+
+
+class ResultWriter(OutputWriter):
+    """
+    Allows to write experimental results to one or several sinks.
+    """
+
+    def __init__(self, *extractors: DataExtractor, input_data: Optional[InputData] = None):
+        """
+        :param extractors:  Extractors that should be used for extracting the output data to be written to the sinks
+        :param input_data:  The `InputData` that corresponds to the output data written by this writer or None, if no
+                            such input data is available
+        """
+        super().__init__(*extractors)
+        self.input_data = input_data
+
+    @override
+    def create_input_reader(self, args: Namespace, input_directory: Path) -> Optional[InputReader]:
+        input_data = self.input_data
+
+        if input_data:
+            result_dir = ResultDirectoryArguments.RESULT_DIR.get_value(args)
+
+            if result_dir:
+                sources = self.create_sources(input_directory / result_dir)
+                return InputReader(input_data, *sources)
+
+        return None

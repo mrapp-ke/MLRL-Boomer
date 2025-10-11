@@ -10,6 +10,7 @@ from mlrl.testbed.command import Command
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
+from mlrl.testbed.experiments.state import ExperimentMode
 
 
 class Recipe(ABC):
@@ -28,20 +29,27 @@ class Recipe(ABC):
         """
 
     @abstractmethod
-    def create_dataset_splitter(self, args: Namespace) -> DatasetSplitter:
+    def create_dataset_splitter(self, args: Namespace, load_dataset: bool = True) -> DatasetSplitter:
         """
         Creates and returns the `DatasetSplitter` to be used in experiments.
 
-        :param args:    The command line arguments specified by the user
-        :return:        The `DatasetSplitter` that has been created
+        :param args:            The command line arguments specified by the user
+        :param load_dataset:    True, if the dataset should be loaded by the `DatasetSplitter`, False otherwise
+        :return:                The `DatasetSplitter` that has been created
         """
 
     @abstractmethod
-    def create_experiment_builder(self, args: Namespace, command: Command) -> Experiment.Builder:
+    def create_experiment_builder(self,
+                                  experiment_mode: ExperimentMode,
+                                  args: Namespace,
+                                  command: Command,
+                                  load_dataset: bool = True) -> Experiment.Builder:
         """
         Creates and returns the `Experiment.Builder` to be used for configuring experiments.
 
-        :param args:    The command line arguments specified by the user
-        :param command: The command that has been used to start the experiment
-        :return:        The `Experiment.Builder` that has been created
+        :param experiment_mode: The mode of operation
+        :param args:            The command line arguments specified by the user
+        :param command:         The command that has been used to start the experiment
+        :param load_dataset:    True, if the dataset should be loaded by the experiment, False otherwise
+        :return:                The `Experiment.Builder` that has been created
         """

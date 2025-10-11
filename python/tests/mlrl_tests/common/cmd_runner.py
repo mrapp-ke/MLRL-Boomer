@@ -13,7 +13,7 @@ import pytest
 from .cmd_builder import CmdBuilder
 from .comparison import FileComparison, TextFileComparison
 
-from mlrl.testbed.modes import Mode
+from mlrl.testbed.experiments.state import ExperimentMode
 
 
 class CmdRunner:
@@ -115,7 +115,7 @@ class CmdRunner:
         actual_output_dir = output_dir
         expected_output_dir = builder.expected_output_dir / test_name
 
-        if builder.mode == Mode.MODE_RUN and not builder.show_help:
+        if builder.mode in {ExperimentMode.RUN, ExperimentMode.READ} and not builder.show_help:
             expected_output_dir = expected_output_dir / CmdBuilder.RERUN_DIR
             actual_output_dir = actual_output_dir / CmdBuilder.RERUN_DIR
 

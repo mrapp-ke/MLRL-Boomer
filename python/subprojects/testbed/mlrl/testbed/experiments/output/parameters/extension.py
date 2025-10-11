@@ -12,7 +12,7 @@ from mlrl.testbed.experiments.output.extension import OutputExtension
 from mlrl.testbed.experiments.output.parameters.arguments import ParameterOutputDirectoryArguments
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
+from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
 
 from mlrl.util.cli import Argument, BoolArgument
 
@@ -46,7 +46,7 @@ class ParameterOutputExtension(Extension):
         return {self.PRINT_PARAMETERS, self.SAVE_PARAMETERS}
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: Mode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
@@ -61,7 +61,7 @@ class ParameterOutputExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode, BatchMode, RunMode}
+        return {SingleMode, BatchMode, ReadMode, RunMode}
 
 
 class ParameterOutputDirectoryExtension(Extension):
@@ -83,7 +83,7 @@ class ParameterOutputDirectoryExtension(Extension):
         return set() if isinstance(mode, BatchMode) else {ParameterOutputDirectoryArguments.PARAMETER_SAVE_DIR}
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: Mode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
@@ -103,4 +103,4 @@ class ParameterOutputDirectoryExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode, BatchMode, RunMode}
+        return {SingleMode, BatchMode, ReadMode, RunMode}

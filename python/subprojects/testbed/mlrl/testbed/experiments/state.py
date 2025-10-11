@@ -5,7 +5,9 @@ Provides classes for representing the state of experiments.
 """
 import logging as log
 
+from argparse import Namespace
 from dataclasses import dataclass, field
+from enum import StrEnum
 from typing import Any, Dict, Optional, Type
 
 from mlrl.testbed.experiments.dataset import Dataset
@@ -20,6 +22,16 @@ from mlrl.testbed.experiments.timer import Timer
 from mlrl.util.format import format_set
 
 ParameterDict = Dict[str, Any]
+
+
+class ExperimentMode(StrEnum):
+    """
+    Represents the mode of operation.
+    """
+    SINGLE = 'single'
+    BATCH = 'batch'
+    RUN = 'run'
+    READ = 'read'
 
 
 @dataclass
@@ -58,6 +70,8 @@ class ExperimentState:
     Represents the state of an experiment.
 
     Attributes:
+        mode:               The mode of operation
+        args:               The command line argument that have been used to start the experiment
         meta_data:          Meta-data about the command that has been used for running the experiment
         problem_domain:     The problem domain, the experiment is concerned with
         folding_strategy:   The strategy that is used for creating different folds of the dataset during the experiment
@@ -69,6 +83,8 @@ class ExperimentState:
         prediction_result:  The result of the prediction process or None, if no predictions have been obtained yet
         extras:             A dictionary that can be used to store arbitrary data referenced via a unique key
     """
+    mode: ExperimentMode
+    args: Namespace
     meta_data: MetaData
     problem_domain: ProblemDomain
     folding_strategy: Optional[FoldingStrategy] = None
@@ -91,12 +107,14 @@ class ExperimentState:
         """
         dataset = self.dataset
 
-        if any(isinstance(dataset, dataset_type) for dataset_type in types):
-            return dataset
+        if dataset:
+            if any(isinstance(dataset, dataset_type) for dataset_type in types):
+                return dataset
 
-        log.error('%s expected type of dataset to be one of %s, but dataset has type %s',
-                  type(caller).__qualname__, format_set(map(lambda dataset_type: dataset_type.__name__, types)),
-                  type(dataset).__name__)
+            log.error('%s expected type of dataset to be one of %s, but dataset has type %s',
+                      type(caller).__qualname__, format_set(map(lambda dataset_type: dataset_type.__name__, types)),
+                      type(dataset).__name__)
+
         return None
 
     def learner_as(self, caller: Any, *types: Type[Any]) -> Optional[Any]:

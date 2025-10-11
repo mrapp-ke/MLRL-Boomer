@@ -51,6 +51,7 @@ MLRL-Testbed supports different modes of operation configurable via the argument
   - `single` A single experiment is run.
   - `batch` A batch of experiments is run at once.
   - `run` A previously run experiment can be run again.
+  - `read` The output files produced by an earlier experiment can be read.
 
 #### Batch Mode
 
@@ -95,6 +96,14 @@ If the package [mlrl-testbed-slurm](https://pypi.org/project/mlrl-testbed-slurm/
 > A more detailed description of the following arguments can be found {ref}`here<testbed-run-mode>`.
 
 In {ref}`run mode <testbed-run-mode>`, the following mandatory arguments must be specified:
+
+- `--input-dir` An absolute or relative path to a directory that contains a `metadata.yml` file that has been saved by a previous experiment.
+
+#### Read Mode
+
+> A more detailed description of the following arguments can be found {ref}`here<testbed-read-mode>`.
+
+In {ref}`read mode <testbed-read-mode>`, the following arguments are mandatory:
 
 - `--input-dir` An absolute or relative path to a directory that contains a `metadata.yml` file that has been saved by a previous experiment.
 

@@ -7,11 +7,12 @@ from argparse import Namespace
 from typing import Set, Type, override
 
 from mlrl.testbed.experiments.experiment import Experiment
+from mlrl.testbed.experiments.input.sources import CsvFileSource
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
+from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
 
 from mlrl.util.cli import Argument, BoolArgument
 
@@ -51,7 +52,7 @@ class LabelVectorExtension(Extension):
         print_label_vectors = self.PRINT_LABEL_VECTORS.get_value(args, default=print_all)
 
         if print_label_vectors:
-            experiment_builder.label_vector_writer.add_sinks(LogSink())
+            experiment_builder.label_vector_writer.add_sinks(LogSink(source_factory=CsvFileSource))
 
     def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         save_all = OutputArguments.SAVE_ALL.get_value(args)
@@ -65,7 +66,7 @@ class LabelVectorExtension(Extension):
                 CsvFileSink(directory=base_dir / result_directory, create_directory=create_directory))
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: Mode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
@@ -77,4 +78,4 @@ class LabelVectorExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode, BatchMode, RunMode}
+        return {SingleMode, BatchMode, ReadMode, RunMode}

@@ -13,7 +13,6 @@ import numpy as np
 from mlrl.common.cython.output_space_info import LabelVectorSet, LabelVectorSetVisitor, NoOutputSpaceInfo
 from mlrl.common.learners import ClassificationRuleLearner
 
-from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
 from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vector_histogram import LabelVector, \
     LabelVectorHistogram
 from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vectors import LabelVectors
@@ -25,7 +24,7 @@ from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
+from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
 
 from mlrl.util.cli import Argument
 
@@ -47,11 +46,8 @@ class LabelVectorSetExtension(Extension):
             `LabelVectorHistogram`.
             """
 
-            def __init__(self, num_labels: int):
-                """
-                :param num_labels: The total number of available labels
-                """
-                self.label_vector_histogram = LabelVectorHistogram(num_labels=num_labels)
+            def __init__(self):
+                self.label_vector_histogram = LabelVectorHistogram()
 
             @override
             def visit_label_vector(self, label_vector: np.ndarray, frequency: int):
@@ -66,16 +62,15 @@ class LabelVectorSetExtension(Extension):
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
-            dataset = state.dataset_as(self, TabularDataset)
             learner = state.learner_as(self, ClassificationRuleLearner)
 
-            if dataset and learner:
+            if learner:
                 output_space_info = learner.output_space_info_
 
                 if isinstance(output_space_info, LabelVectorSet):
-                    visitor = LabelVectorSetExtension.LabelVectorSetExtractor.Visitor(num_labels=dataset.num_outputs)
+                    visitor = LabelVectorSetExtension.LabelVectorSetExtractor.Visitor()
                     output_space_info.visit(visitor)
-                    return LabelVectors(visitor.label_vector_histogram)
+                    return LabelVectors.from_histogram(visitor.label_vector_histogram)
 
                 if not isinstance(output_space_info, NoOutputSpaceInfo):
                     log.error('%s expected type of output space info to be %s, but output space info has type %s',
@@ -97,16 +92,17 @@ class LabelVectorSetExtension(Extension):
         """
         return set()
 
+    # pylint: disable=unused-argument
     @override
-    def configure_experiment(self, _: Namespace, experiment_builder: Experiment.Builder):
+    def configure_experiment(self, _: Namespace, experiment_builder: Experiment.Builder, mode: Mode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
-        experiment_builder.label_vector_writer.extractors.insert(0, LabelVectorSetExtension.LabelVectorSetExtractor())
+        experiment_builder.label_vector_writer.extractors.insert(1, LabelVectorSetExtension.LabelVectorSetExtractor())
 
     @override
     def get_supported_modes(self) -> Set[Type[Mode]]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode, BatchMode, RunMode}
+        return {SingleMode, BatchMode, ReadMode, RunMode}

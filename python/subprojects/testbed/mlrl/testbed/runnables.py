@@ -9,17 +9,19 @@ from argparse import Namespace
 from functools import reduce
 from typing import List, Optional, Set, Type, override
 
+from mlrl.testbed.arguments import PredictionDatasetArguments
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.output.meta_data.extension import MetaDataExtension
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.recipe import Recipe
+from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions import Extension
-from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
+from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
 from mlrl.testbed.program_info import ProgramInfo
 
-from mlrl.util.cli import Argument, BoolArgument, CommandLineInterface
+from mlrl.util.cli import Argument, CommandLineInterface
 
 try:
     from mlrl.testbed_slurm.extension import SlurmExtension
@@ -39,32 +41,25 @@ class Runnable(Recipe, ABC):
         An extension that configures the functionality to predict for different datasets.
         """
 
-        PREDICT_FOR_TRAINING_DATA = BoolArgument(
-            '--predict-for-training-data',
-            default=False,
-            description='Whether predictions should be obtained for the training data or not.',
-        )
-
-        PREDICT_FOR_TEST_DATA = BoolArgument(
-            '--predict-for-test-data',
-            default=True,
-            description='Whether predictions should be obtained for the test data or not.',
-        )
-
         @override
         def _get_arguments(self, _: Mode) -> Set[Argument]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
             """
-            return {self.PREDICT_FOR_TRAINING_DATA, self.PREDICT_FOR_TEST_DATA}
+            return {
+                PredictionDatasetArguments.PREDICT_FOR_TRAINING_DATA,
+                PredictionDatasetArguments.PREDICT_FOR_TEST_DATA,
+            }
 
         @override
-        def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
+        def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: Mode):
             """
             See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
             """
-            experiment_builder.set_predict_for_training_dataset(self.PREDICT_FOR_TRAINING_DATA.get_value(args))
-            experiment_builder.set_predict_for_test_dataset(self.PREDICT_FOR_TEST_DATA.get_value(args))
+            experiment_builder.set_predict_for_training_dataset(
+                PredictionDatasetArguments.PREDICT_FOR_TRAINING_DATA.get_value(args))
+            experiment_builder.set_predict_for_test_dataset(
+                PredictionDatasetArguments.PREDICT_FOR_TEST_DATA.get_value(args))
 
         @override
         def get_supported_modes(self) -> Set[Type[Mode]]:
@@ -104,12 +99,13 @@ class Runnable(Recipe, ABC):
         """
         return None
 
-    def run(self, mode: Mode, args: Namespace):
+    def run(self, mode: Mode, arguments: List[Argument], args: Namespace):
         """
         Executes the runnable.
 
-        :param mode:    The mode of operation
-        :param args:    The command line arguments specified by the user
+        :param mode:        The mode of operation
+        :param arguments:   A list that contains the command line arguments available in the current mode of operation
+        :param args:        The command line arguments specified by the user
         """
 
         class RecipeWrapper(Recipe):
@@ -128,23 +124,30 @@ class Runnable(Recipe, ABC):
                 return self.runnable.create_problem_domain(args)
 
             @override
-            def create_dataset_splitter(self, args: Namespace) -> DatasetSplitter:
-                return self.runnable.create_dataset_splitter(args)
+            def create_dataset_splitter(self, args: Namespace, load_dataset: bool = True) -> DatasetSplitter:
+                return self.runnable.create_dataset_splitter(args, load_dataset)
 
             @override
-            def create_experiment_builder(self, args: Namespace, command: Command) -> Experiment.Builder:
+            def create_experiment_builder(self,
+                                          experiment_mode: ExperimentMode,
+                                          args: Namespace,
+                                          command: Command,
+                                          load_dataset: bool = True) -> Experiment.Builder:
                 runnable = self.runnable
-                experiment_builder = runnable.create_experiment_builder(args, command)
+                experiment_builder = runnable.create_experiment_builder(experiment_mode=experiment_mode,
+                                                                        args=args,
+                                                                        command=command,
+                                                                        load_dataset=load_dataset)
 
                 for extension in runnable.get_supported_extensions(mode):
-                    extension.configure_experiment(args, experiment_builder)
+                    extension.configure_experiment(args, experiment_builder, mode)
 
                     for dependency in extension.get_dependencies(mode):
-                        dependency.configure_experiment(args, experiment_builder)
+                        dependency.configure_experiment(args, experiment_builder, mode)
 
                 return experiment_builder
 
-        mode.run_experiment(args, RecipeWrapper(self))
+        mode.run_experiment(arguments, args, RecipeWrapper(self))
 
     def configure_batch_mode(self, cli: CommandLineInterface) -> BatchMode:
         """
@@ -162,6 +165,23 @@ class Runnable(Recipe, ABC):
                 dependency.configure_batch_mode(args, batch_mode)
 
         return batch_mode
+
+    def configure_read_mode(self, cli: CommandLineInterface) -> ReadMode:
+        """
+        Configures the read mode according to the extensions applied to the runnable.
+
+        :param cli: The command line interface to be configured
+        """
+        read_mode = ReadMode()
+        args = cli.parse_known_args()
+
+        for extension in self.get_supported_extensions(read_mode):
+            extension.configure_read_mode(args, read_mode)
+
+            for dependency in extension.get_dependencies(read_mode):
+                dependency.configure_read_mode(args, read_mode)
+
+        return read_mode
 
     def configure_run_mode(self, cli: CommandLineInterface) -> RunMode:
         """

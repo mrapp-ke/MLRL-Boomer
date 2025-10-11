@@ -27,7 +27,7 @@ from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, RegressionProblem
-from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
 
@@ -107,7 +107,8 @@ class RuleLearnerRunnable(SkLearnRunnable):
             :param prediction_type: The type of the predictions
             :return:                The `SkLearnProblem.PredictorFactory` that should be used
             """
-            value, options = RuleLearnerRunnable.IncrementalPredictionExtension.INCREMENTAL_EVALUATION.get_value(args)
+            incremental_evaluation_argument = RuleLearnerRunnable.IncrementalPredictionExtension.INCREMENTAL_EVALUATION
+            value, options = incremental_evaluation_argument.get_value_and_options(args)
 
             if value:
                 min_size = options.get_int(OPTION_MIN_SIZE, 0)
@@ -294,14 +295,21 @@ class RuleLearnerRunnable(SkLearnRunnable):
                                                                          predict_kwargs=predict_kwargs)
 
     @override
-    def create_experiment_builder(self, args: Namespace, command: Command) -> Experiment.Builder:
+    def create_experiment_builder(self,
+                                  experiment_mode: ExperimentMode,
+                                  args: Namespace,
+                                  command: Command,
+                                  load_dataset: bool = True) -> Experiment.Builder:
         """
         See :func:`mlrl.testbed.experiments.recipe.Recipe.create_experiment_builder`
         """
         meta_data = MetaData(command=command)
-        initial_state = ExperimentState(meta_data=meta_data, problem_domain=self.create_problem_domain(args))
+        initial_state = ExperimentState(mode=experiment_mode,
+                                        args=args,
+                                        meta_data=meta_data,
+                                        problem_domain=self.create_problem_domain(args))
         return RuleLearnerExperiment.Builder(initial_state=initial_state,
-                                             dataset_splitter=self.create_dataset_splitter(args))
+                                             dataset_splitter=self.create_dataset_splitter(args, load_dataset))
 
     @override
     def create_classifier(self, args: Namespace) -> Optional[SkLearnClassifierMixin]:
