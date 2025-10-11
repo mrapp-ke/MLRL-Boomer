@@ -22,6 +22,7 @@ from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.evaluation.measurements import Measurements
 from mlrl.testbed.experiments.output.evaluation.measures import Measure
 from mlrl.testbed.experiments.output.sinks import Sink
+from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.writer import DataExtractor, ResultWriter, TabularDataExtractor
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.format import parse_number
@@ -100,7 +101,7 @@ class EvaluationWriter(ResultWriter):
             chain(MULTI_LABEL_EVALUATION_MEASURES, SINGLE_LABEL_EVALUATION_MEASURES, RANKING_EVALUATION_MEASURES,
                   REGRESSION_EVALUATION_MEASURES))
 
-        measurements: Dict[DatasetType, Measurements] = {}
+        measurements: Dict[DatasetType, Dict[int, Measurements]] = {}
 
         @override
         def extract_data(self, state: ExperimentState, sinks: List[Sink]) -> Optional[OutputData]:
@@ -108,24 +109,33 @@ class EvaluationWriter(ResultWriter):
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
             dataset_type = state.dataset_type
+            prediction_scope = state.prediction_result.prediction_scope if state.prediction_result else None
+            model_size = prediction_scope.model_size if prediction_scope and not prediction_scope.is_global else 0
             folding_strategy = state.folding_strategy
 
             if dataset_type and folding_strategy:
-                measurements = self.measurements.setdefault(dataset_type, Measurements(folding_strategy.num_folds))
+                measurements_by_model_size = self.measurements.setdefault(dataset_type, {})
                 tabular_output_data = super().extract_data(state, sinks)
+                num_folds = folding_strategy.num_folds
                 fold = state.fold
 
                 if tabular_output_data and fold:
                     table = tabular_output_data.to_table(Options()).to_column_wise_table()
                     columns_by_name = {column.header: column for column in table.columns}
+                    column_model_size = columns_by_name[CsvFileSink.COLUMN_MODEL_SIZE] if model_size else None
 
                     for measure in chain(self.ALL_MEASURES, map(Measure.std_dev, self.ALL_MEASURES)):
                         column = columns_by_name.get(measure.name)
 
                         if column:
-                            values = measurements.values_by_measure(measure)
-                            values[fold.index] = parse_number(column[0], percentage=measure.percentage)
+                            for row in range(column.num_rows):
+                                row_model_size = int(column_model_size[row]) if column_model_size else 0
+                                measurements = measurements_by_model_size.setdefault(
+                                    row_model_size, Measurements(num_folds))
+                                values = measurements.values_by_measure(measure)
+                                values[fold.index] = parse_number(column[row], percentage=measure.percentage)
 
+                measurements = measurements_by_model_size.setdefault(model_size, Measurements(num_folds))
                 return EvaluationResult(measurements) if measurements else None
 
             return None
