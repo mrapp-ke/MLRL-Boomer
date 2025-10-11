@@ -24,7 +24,8 @@ from mlrl.testbed.experiments.output.evaluation.measures import Measure
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.writer import DataExtractor, ResultWriter, TabularDataExtractor
-from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.experiments.prediction_scope import IncrementalPredictionScope
+from mlrl.testbed.experiments.state import ExperimentState, PredictionState
 from mlrl.testbed.util.format import parse_number
 
 from mlrl.util.options import Options
@@ -109,8 +110,6 @@ class EvaluationWriter(ResultWriter):
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
             dataset_type = state.dataset_type
-            prediction_scope = state.prediction_result.prediction_scope if state.prediction_result else None
-            model_size = prediction_scope.model_size if prediction_scope and not prediction_scope.is_global else 0
             folding_strategy = state.folding_strategy
 
             if dataset_type and folding_strategy:
@@ -121,7 +120,7 @@ class EvaluationWriter(ResultWriter):
                 for _, tabular_output_data in super().extract_data(state, sinks) if fold else []:
                     table = tabular_output_data.to_table(Options()).to_column_wise_table()
                     columns_by_name = {column.header: column for column in table.columns}
-                    column_model_size = columns_by_name[CsvFileSink.COLUMN_MODEL_SIZE] if model_size else None
+                    column_model_size = columns_by_name.get(CsvFileSink.COLUMN_MODEL_SIZE)
 
                     for measure in chain(self.ALL_MEASURES, map(Measure.std_dev, self.ALL_MEASURES)):
                         column = columns_by_name.get(measure.name)
@@ -134,7 +133,12 @@ class EvaluationWriter(ResultWriter):
                                 values = measurements.values_by_measure(measure)
                                 values[fold.index] = parse_number(column[row], percentage=measure.percentage)
 
-                measurements = measurements_by_model_size.setdefault(model_size, Measurements(num_folds))
+                if len(measurements_by_model_size) > 1:
+                    return [(replace(state, prediction_result=PredictionState(IncrementalPredictionScope(model_size))),
+                             EvaluationResult(measurements))
+                            for model_size, measurements in measurements_by_model_size.items()]
+
+                measurements = measurements_by_model_size.setdefault(0, Measurements(num_folds))
                 return [(state, EvaluationResult(measurements))] if measurements else []
 
             return []
