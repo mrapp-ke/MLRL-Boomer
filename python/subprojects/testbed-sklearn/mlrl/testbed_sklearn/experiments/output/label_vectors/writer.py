@@ -56,7 +56,7 @@ class LabelVectorWriter(ResultWriter):
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
-            dataset = state.dataset_as(self, TabularDataset)
+            dataset = state.dataset_as(TabularDataset)
 
             if dataset:
                 return [(state, LabelVectors.from_histogram(LabelVectorHistogram.from_dataset(dataset)))]

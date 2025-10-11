@@ -138,7 +138,7 @@ class RuleModelCharacteristicsWriter(ResultWriter):
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
-            learner = state.learner_as(self, ClassifierMixin, RegressorMixin)
+            learner = state.learner_as(ClassifierMixin, RegressorMixin)
 
             if learner:
                 model = learner.model_

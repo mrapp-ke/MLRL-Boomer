@@ -61,7 +61,7 @@ class LabelVectorSetExtension(Extension):
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
-            learner = state.learner_as(self, ClassificationRuleLearner)
+            learner = state.learner_as(ClassificationRuleLearner)
 
             if learner:
                 output_space_info = learner.output_space_info_

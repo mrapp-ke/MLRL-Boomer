@@ -61,7 +61,7 @@ class DataCharacteristicsWriter(ResultWriter):
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
-            dataset = state.dataset_as(self, TabularDataset)
+            dataset = state.dataset_as(TabularDataset)
 
             if dataset:
                 return [(state, DataCharacteristics.from_dataset(problem_domain=state.problem_domain, dataset=dataset))]
