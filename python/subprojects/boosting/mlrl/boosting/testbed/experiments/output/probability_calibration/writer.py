@@ -96,7 +96,7 @@ class ProbabilityCalibrationModelWriter(ResultWriter, ABC):
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
-            learner = state.learner_as(self, ClassificationRuleLearner)
+            learner = state.learner_as(ClassificationRuleLearner)
 
             if learner:
                 return [(state, self._get_calibration_model(learner))]

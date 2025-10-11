@@ -164,8 +164,8 @@ class SkLearnExperiment(Experiment):
             """
             See :func:`mlrl.testbed.experiments.experiment.Experiment.PredictionProcedure.predict`
             """
-            dataset = state.dataset_as(self, TabularDataset)
-            learner = state.learner_as(self, BaseEstimator)
+            dataset = state.dataset_as(TabularDataset)
+            learner = state.learner_as(BaseEstimator)
 
             if dataset and learner:
                 try:

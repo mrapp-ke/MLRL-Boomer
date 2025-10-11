@@ -35,8 +35,8 @@ class RuleModelAsTextWriter(ResultWriter):
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
-            dataset = state.dataset_as(self, TabularDataset)
-            learner = state.learner_as(self, ClassifierMixin, RegressorMixin)
+            dataset = state.dataset_as(TabularDataset)
+            learner = state.learner_as(ClassifierMixin, RegressorMixin)
 
             if dataset and learner:
                 model = learner.model_
