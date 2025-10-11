@@ -59,7 +59,7 @@ class PredictionWriter(ResultWriter):
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
-            prediction_result = state.prediction_result
+            prediction_result = state.prediction_result.prediction_result if state.prediction_result else None
             dataset = state.dataset_as(self, TabularDataset)
 
             if prediction_result and dataset:

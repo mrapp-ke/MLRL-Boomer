@@ -59,7 +59,7 @@ class PredictionCharacteristicsWriter(ResultWriter):
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
-            prediction_result = state.prediction_result
+            prediction_result = state.prediction_result.prediction_result if state.prediction_result else None
 
             # Prediction characteristics can only be determined in the case of binary predictions...
             if prediction_result and prediction_result.prediction_type == PredictionType.BINARY:

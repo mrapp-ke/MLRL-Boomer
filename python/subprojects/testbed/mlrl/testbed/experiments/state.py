@@ -48,20 +48,31 @@ class TrainingState:
 
 
 @dataclass
-class PredictionState:
+class PredictionResult:
     """
     Stores the result of a prediction process.
 
     Attributes:
         predictions:            A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` storing predictions
         prediction_type:        The type of the predictions
-        prediction_scope:       Whether the predictions have been obtained from a global model or incrementally
         prediction_duration:    The time needed for prediction
     """
     predictions: Any
     prediction_type: PredictionType
-    prediction_scope: PredictionScope
     prediction_duration: Timer.Duration
+
+
+@dataclass
+class PredictionState:
+    """
+    Represents the result of a prediction process.
+
+    Attributes:
+        prediction_scope:   Whether the predictions have been obtained from a global model or incrementally
+        prediction_result:  The result of the prediction process, if available
+    """
+    prediction_scope: PredictionScope
+    prediction_result: Optional[PredictionResult] = None
 
 
 @dataclass

@@ -43,7 +43,7 @@ class EvaluationDataExtractor(DataExtractor, ABC):
         See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
         """
         training_result = state.training_result
-        prediction_result = state.prediction_result
+        prediction_result = state.prediction_result.prediction_result if state.prediction_result else None
         dataset_type = state.dataset_type
         dataset = state.dataset
         folding_strategy = state.folding_strategy
