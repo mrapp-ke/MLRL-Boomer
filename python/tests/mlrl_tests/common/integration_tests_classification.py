@@ -14,7 +14,7 @@ from mlrl.common.config.parameters import SAMPLING_STRATIFIED_EXAMPLE_WISE, SAMP
 
 from mlrl.testbed_sklearn.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 
-from mlrl.testbed.modes import Mode
+from mlrl.testbed.experiments.state import ExperimentMode
 
 from mlrl.util.options import Options
 
@@ -48,7 +48,7 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
             .save_label_vectors()
         CmdRunner(builder).run(test_name, wipe_after=False)
         builder = self._create_cmd_builder() \
-            .set_mode(Mode.MODE_READ) \
+            .set_mode(ExperimentMode.READ) \
             .print_evaluation(False) \
             .save_evaluation(False) \
             .print_label_vectors() \

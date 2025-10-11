@@ -21,7 +21,7 @@ from mlrl.boosting.config.parameters import OPTION_BASED_ON_PROBABILITIES, PROBA
     StatisticTypeParameter
 
 from mlrl.testbed.experiments.prediction_type import PredictionType
-from mlrl.testbed.modes import Mode
+from mlrl.testbed.experiments.state import ExperimentMode
 
 from mlrl.util.cli import NONE
 from mlrl.util.options import BooleanOption, Options
@@ -114,7 +114,7 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
 
         if marginal_probability_calibration or joint_probability_calibration:
             builder = self._create_cmd_builder() \
-                .set_mode(Mode.MODE_READ) \
+                .set_mode(ExperimentMode.READ) \
                 .print_evaluation(False) \
                 .save_evaluation(False) \
                 .print_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \

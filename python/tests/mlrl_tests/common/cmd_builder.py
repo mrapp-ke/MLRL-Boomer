@@ -12,7 +12,7 @@ from mlrl.common.learners import SparsePolicy
 
 from mlrl.testbed_sklearn.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 
-from mlrl.testbed.modes import Mode
+from mlrl.testbed.experiments.state import ExperimentMode
 
 from mlrl.util.options import Options
 
@@ -124,13 +124,13 @@ class CmdBuilder:
             args.append('--help')
             return args
 
-        rerun = self.mode in {Mode.MODE_RUN, Mode.MODE_READ}
+        rerun = self.mode in {ExperimentMode.RUN, ExperimentMode.READ}
         base_dir = self.base_dir / self.RERUN_DIR if rerun else self.base_dir
 
         args.extend(('--log-level', 'debug'))
         args.extend(('--base-dir', str(base_dir)))
 
-        if self.mode == Mode.MODE_BATCH:
+        if self.mode == ExperimentMode.BATCH:
             args.extend(('--config', str(self.batch_config)))
 
             if self.runner:

@@ -19,7 +19,7 @@ from mlrl.common.learners import SparsePolicy
 
 from mlrl.testbed_sklearn.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 
-from mlrl.testbed.modes import Mode
+from mlrl.testbed.experiments.state import ExperimentMode
 
 from mlrl.util.cli import NONE
 from mlrl.util.options import Options
@@ -67,13 +67,13 @@ class IntegrationTests(ABC):
 
     def test_batch_mode(self):
         builder = self._create_cmd_builder() \
-            .set_mode(Mode.MODE_BATCH) \
+            .set_mode(ExperimentMode.BATCH) \
             .save_all()
         CmdRunner(builder).run('batch-mode')
 
     def test_batch_mode_separate_folds(self):
         builder = self._create_cmd_builder() \
-            .set_mode(Mode.MODE_BATCH) \
+            .set_mode(ExperimentMode.BATCH) \
             .save_all() \
             .data_split(DatasetSplitterArguments.VALUE_CROSS_VALIDATION,
                         options=Options({DatasetSplitterArguments.OPTION_NUM_FOLDS: 2}))
@@ -81,12 +81,12 @@ class IntegrationTests(ABC):
 
     def test_batch_mode_list(self):
         builder = self._create_cmd_builder() \
-            .set_mode(Mode.MODE_BATCH, '--list')
+            .set_mode(ExperimentMode.BATCH, '--list')
         CmdRunner(builder).run('batch-mode-list')
 
     def test_batch_mode_slurm(self):
         builder = self._create_cmd_builder() \
-            .set_mode(Mode.MODE_BATCH) \
+            .set_mode(ExperimentMode.BATCH) \
             .set_runner('slurm')
         CmdRunner(builder).run('batch-mode-slurm')
 
@@ -96,7 +96,7 @@ class IntegrationTests(ABC):
             .save_meta_data()
         CmdRunner(builder).run(test_name, wipe_after=False)
         builder = self._create_cmd_builder() \
-            .set_mode(Mode.MODE_RUN) \
+            .set_mode(ExperimentMode.RUN) \
             .save_all() \
             .print_all()
         CmdRunner(builder).run(test_name, wipe_before=False)
@@ -125,7 +125,7 @@ class IntegrationTests(ABC):
             .save_meta_data()
         CmdRunner(builder).run(test_name, wipe_after=False)
         builder = self._create_cmd_builder() \
-            .set_mode(Mode.MODE_READ) \
+            .set_mode(ExperimentMode.READ) \
             .print_evaluation(False) \
             .save_evaluation(False) \
             .print_meta_data() \
@@ -153,7 +153,7 @@ class IntegrationTests(ABC):
             .save_evaluation()
         CmdRunner(builder).run(test_name, wipe_after=False)
         builder = self._create_cmd_builder() \
-            .set_mode(Mode.MODE_READ) \
+            .set_mode(ExperimentMode.READ) \
             .print_evaluation() \
             .save_evaluation()
         CmdRunner(builder).run(test_name, wipe_before=False)
@@ -166,7 +166,7 @@ class IntegrationTests(ABC):
             .save_evaluation()
         CmdRunner(builder).run(test_name, wipe_after=False)
         builder = self._create_cmd_builder() \
-            .set_mode(Mode.MODE_READ) \
+            .set_mode(ExperimentMode.READ) \
             .print_evaluation() \
             .save_evaluation()
         CmdRunner(builder).run(test_name, wipe_before=False)
@@ -196,7 +196,7 @@ class IntegrationTests(ABC):
             .load_models()
         CmdRunner(builder).run(test_name, wipe_after=False)
         builder = self._create_cmd_builder() \
-            .set_mode(Mode.MODE_READ) \
+            .set_mode(ExperimentMode.READ) \
             .print_evaluation(False) \
             .save_evaluation(False) \
             .save_models()
@@ -223,7 +223,7 @@ class IntegrationTests(ABC):
             .save_ground_truth()
         CmdRunner(builder).run(test_name, wipe_after=False)
         builder = self._create_cmd_builder() \
-            .set_mode(Mode.MODE_READ) \
+            .set_mode(ExperimentMode.READ) \
             .print_evaluation(False) \
             .save_evaluation(False) \
             .print_predictions() \
@@ -242,7 +242,7 @@ class IntegrationTests(ABC):
             .save_ground_truth()
         CmdRunner(builder).run(test_name, wipe_after=False)
         builder = self._create_cmd_builder() \
-            .set_mode(Mode.MODE_READ) \
+            .set_mode(ExperimentMode.READ) \
             .print_evaluation(False) \
             .save_evaluation(False) \
             .print_predictions() \
@@ -269,7 +269,7 @@ class IntegrationTests(ABC):
             .save_prediction_characteristics()
         CmdRunner(builder).run(test_name, wipe_after=False)
         builder = self._create_cmd_builder() \
-            .set_mode(Mode.MODE_READ) \
+            .set_mode(ExperimentMode.READ) \
             .print_evaluation(False) \
             .save_evaluation(False) \
             .print_prediction_characteristics() \
@@ -286,7 +286,7 @@ class IntegrationTests(ABC):
             .save_prediction_characteristics()
         CmdRunner(builder).run(test_name, wipe_after=False)
         builder = self._create_cmd_builder() \
-            .set_mode(Mode.MODE_READ) \
+            .set_mode(ExperimentMode.READ) \
             .print_evaluation(False) \
             .save_evaluation(False) \
             .print_prediction_characteristics() \
@@ -312,7 +312,7 @@ class IntegrationTests(ABC):
             .save_data_characteristics()
         CmdRunner(builder).run(test_name, wipe_after=False)
         builder = self._create_cmd_builder() \
-            .set_mode(Mode.MODE_READ) \
+            .set_mode(ExperimentMode.READ) \
             .print_evaluation(False) \
             .save_evaluation(False) \
             .print_data_characteristics() \
@@ -338,7 +338,7 @@ class IntegrationTests(ABC):
             .save_model_characteristics()
         CmdRunner(builder).run(test_name, wipe_after=False)
         builder = self._create_cmd_builder() \
-            .set_mode(Mode.MODE_READ) \
+            .set_mode(ExperimentMode.READ) \
             .print_evaluation(False) \
             .save_evaluation(False) \
             .print_model_characteristics() \
@@ -364,7 +364,7 @@ class IntegrationTests(ABC):
             .save_rules()
         CmdRunner(builder).run(test_name, wipe_after=False)
         builder = self._create_cmd_builder() \
-            .set_mode(Mode.MODE_READ) \
+            .set_mode(ExperimentMode.READ) \
             .print_evaluation(False) \
             .save_evaluation(False) \
             .print_rules() \
@@ -419,7 +419,7 @@ class IntegrationTests(ABC):
             .load_parameters()
         CmdRunner(builder).run(test_name, wipe_after=False)
         builder = self._create_cmd_builder() \
-            .set_mode(Mode.MODE_READ) \
+            .set_mode(ExperimentMode.READ) \
             .print_evaluation(False) \
             .save_evaluation(False) \
             .print_parameters() \

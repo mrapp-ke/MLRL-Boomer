@@ -13,6 +13,7 @@ from typing import List, override
 from mlrl.testbed.command import ArgumentDict, Command
 from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.recipe import Recipe
+from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.modes.mode import InputMode, Mode
 
 from mlrl.util.cli import Argument
@@ -23,6 +24,9 @@ class RunMode(InputMode):
     """
     An abstract base class for all modes of operation for re-running experiments based on their meta-data.
     """
+
+    def __init__(self):
+        super().__init__(ExperimentMode.RUN)
 
     @override
     def _run_experiment(self, arguments: List[Argument], args: Namespace, recipe: Recipe, meta_data: MetaData,

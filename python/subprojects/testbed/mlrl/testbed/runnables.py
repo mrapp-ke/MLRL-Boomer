@@ -16,6 +16,7 @@ from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSpl
 from mlrl.testbed.experiments.output.meta_data.extension import MetaDataExtension
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.recipe import Recipe
+from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions import Extension
 from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
 from mlrl.testbed.program_info import ProgramInfo
@@ -128,11 +129,15 @@ class Runnable(Recipe, ABC):
 
             @override
             def create_experiment_builder(self,
+                                          experiment_mode: ExperimentMode,
                                           args: Namespace,
                                           command: Command,
                                           load_dataset: bool = True) -> Experiment.Builder:
                 runnable = self.runnable
-                experiment_builder = runnable.create_experiment_builder(args, command, load_dataset)
+                experiment_builder = runnable.create_experiment_builder(experiment_mode=experiment_mode,
+                                                                        args=args,
+                                                                        command=command,
+                                                                        load_dataset=load_dataset)
 
                 for extension in runnable.get_supported_extensions(mode):
                     extension.configure_experiment(args, experiment_builder, mode)
