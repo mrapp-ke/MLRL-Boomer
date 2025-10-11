@@ -8,7 +8,7 @@ import logging as log
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from pathlib import Path
-from typing import Any, List, Optional, override
+from typing import Any, List, Optional, Tuple, override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties, TabularProperties
@@ -27,13 +27,13 @@ class DataExtractor(ABC):
     """
 
     @abstractmethod
-    def extract_data(self, state: ExperimentState, sinks: List[Sink]) -> Optional[OutputData]:
+    def extract_data(self, state: ExperimentState, sinks: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
         """
         Must be implemented by subclasses in order to extract output data from the state of an experiment.
 
         :param state:   The state from which the output data should be extracted
         :param sinks:   The sinks to which the extracted data should be written
-        :return:        The output data that has been extracted or None, if no output data has been extracted
+        :return:        A list that contains the output data that has been extracted and the corresponding states
         """
 
 
@@ -51,7 +51,7 @@ class TextualDataExtractor(DataExtractor):
         self.context = context
 
     @override
-    def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
+    def extract_data(self, state: ExperimentState, _: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
         """
         See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
         """
@@ -62,9 +62,9 @@ class TextualDataExtractor(DataExtractor):
         extra = state.extras.get(input_data_key)
 
         if extra:
-            return TextualOutputData.from_text(properties=properties, context=context, text=extra)
+            return [(state, TextualOutputData.from_text(properties=properties, context=context, text=extra))]
 
-        return None
+        return []
 
 
 class TabularDataExtractor(DataExtractor):
@@ -81,7 +81,7 @@ class TabularDataExtractor(DataExtractor):
         self.context = context
 
     @override
-    def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
+    def extract_data(self, state: ExperimentState, _: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
         """
         See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
         """
@@ -92,9 +92,9 @@ class TabularDataExtractor(DataExtractor):
         extra = state.extras.get(input_data_key)
 
         if extra:
-            return TabularOutputData.from_table(properties=properties, context=context, table=extra)
+            return [(state, TabularOutputData.from_table(properties=properties, context=context, table=extra))]
 
-        return None
+        return []
 
 
 class DatasetExtractor(DataExtractor, ABC):
@@ -112,7 +112,7 @@ class DatasetExtractor(DataExtractor, ABC):
         self.context = context
 
     @override
-    def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
+    def extract_data(self, state: ExperimentState, _: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
         """
         See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
         """
@@ -123,9 +123,12 @@ class DatasetExtractor(DataExtractor, ABC):
         extra = state.extras.get(input_data_key)
 
         if extra:
-            return self._create_output_data(extra)
+            dataset_output_data = self._create_output_data(extra)
 
-        return None
+            if dataset_output_data:
+                return [(state, dataset_output_data)]
+
+        return []
 
     @abstractmethod
     def _create_output_data(self, data: Any) -> Optional[DatasetOutputData]:
@@ -143,7 +146,8 @@ class OutputWriter:
     Allows to write output data to one or several sinks.
     """
 
-    def __extract_data_from_extractor(self, extractor: DataExtractor, state: ExperimentState) -> Optional[OutputData]:
+    def __extract_data_from_extractor(self, extractor: DataExtractor,
+                                      state: ExperimentState) -> List[Tuple[ExperimentState, OutputData]]:
         try:
             return extractor.extract_data(state, self.sinks)
         # pylint: disable=broad-exception-caught
@@ -154,21 +158,21 @@ class OutputWriter:
             log.error('Failed to extract output data from experimental state via extractor of type %s',
                       type(extractor).__name__,
                       exc_info=error)
-            return None
+            return []
 
-    def __extract_data(self, state: ExperimentState) -> Optional[OutputData]:
+    def __extract_data(self, state: ExperimentState) -> List[Tuple[ExperimentState, OutputData]]:
         extractors = self.extractors
 
         if extractors:
             for extractor in extractors:
-                output_data = self.__extract_data_from_extractor(extractor, state)
+                result = self.__extract_data_from_extractor(extractor, state)
 
-                if output_data:
-                    return output_data
+                if result:
+                    return result
         else:
             log.warning('No extractors have been added to output writer of type %s', type(self).__name__)
 
-        return None
+        return []
 
     def __write_to_sink(self, sink: Sink, state: ExperimentState, output_data: OutputData):
         try:
@@ -211,11 +215,9 @@ class OutputWriter:
 
         if sinks:
             for output_state in self._create_states(state):
-                output_data = self.__extract_data(output_state)
-
-                if output_data:
+                for extracted_state, output_data in self.__extract_data(output_state):
                     for sink in sinks:
-                        self.__write_to_sink(sink, output_state, output_data)
+                        self.__write_to_sink(sink, extracted_state, output_data)
 
     def _create_states(self, state: ExperimentState) -> List[ExperimentState]:
         """

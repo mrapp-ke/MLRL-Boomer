@@ -6,7 +6,7 @@ Provides classes that allow writing textual representations of probability calib
 import logging as log
 
 from abc import ABC, abstractmethod
-from typing import Dict, List, Optional, override
+from typing import Dict, List, Optional, Tuple, override
 
 from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibrationModel, \
     NoProbabilityCalibrationModel
@@ -62,17 +62,17 @@ class ProbabilityCalibrationModelWriter(ResultWriter, ABC):
             return self._create_isotonic_calibration_model(bin_lists) if bin_lists else None
 
         @override
-        def extract_data(self, state: ExperimentState, sinks: List[Sink]) -> Optional[OutputData]:
+        def extract_data(self, state: ExperimentState, sinks: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
-            tabular_output_data = super().extract_data(state, sinks)
+            result: List[Tuple[ExperimentState, OutputData]] = []
 
-            if tabular_output_data:
+            for extracted_state, tabular_output_data in super().extract_data(state, sinks):
                 table = tabular_output_data.to_table(Options()).to_column_wise_table()
-                return self.__create_isotonic_calibration_model(table)
+                result.append((extracted_state, self.__create_isotonic_calibration_model(table)))
 
-            return None
+            return result
 
         @abstractmethod
         def _create_isotonic_calibration_model(
@@ -92,12 +92,16 @@ class ProbabilityCalibrationModelWriter(ResultWriter, ABC):
         """
 
         @override
-        def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
+        def extract_data(self, state: ExperimentState, _: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
             learner = state.learner_as(self, ClassificationRuleLearner)
-            return self._get_calibration_model(learner) if learner else None
+
+            if learner:
+                return [(state, self._get_calibration_model(learner))]
+
+            return []
 
         @abstractmethod
         def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Optional[OutputData]:

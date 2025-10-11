@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for writing characteristics of datasets to one or several sinks.
 """
 from itertools import chain
-from typing import List, Optional, override
+from typing import List, Tuple, override
 
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import get_output_characteristics
@@ -32,24 +32,24 @@ class DataCharacteristicsWriter(ResultWriter):
         """
 
         @override
-        def extract_data(self, state: ExperimentState, sinks: List[Sink]) -> Optional[OutputData]:
+        def extract_data(self, state: ExperimentState, sinks: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
-            tabular_output_data = super().extract_data(state, sinks)
+            result: List[Tuple[ExperimentState, OutputData]] = []
 
-            if tabular_output_data:
+            for extracted_state, tabular_output_data in super().extract_data(state, sinks):
                 table = tabular_output_data.to_table(Options()).to_column_wise_table()
                 columns_by_name = {column.header: column for column in table.columns}
                 feature_characteristics = FEATURE_CHARACTERISTICS
-                output_characteristics = get_output_characteristics(state.problem_domain)
+                output_characteristics = get_output_characteristics(extracted_state.problem_domain)
                 values = [(characteristic,
                            parse_number(columns_by_name[characteristic.name][0], percentage=characteristic.percentage))
                           for characteristic in chain(feature_characteristics, output_characteristics)
                           if characteristic.name in columns_by_name]
-                return DataCharacteristics(values)
+                result.append((extracted_state, DataCharacteristics(values)))
 
-            return None
+            return result
 
     class DefaultExtractor(DataExtractor):
         """
@@ -57,16 +57,16 @@ class DataCharacteristicsWriter(ResultWriter):
         """
 
         @override
-        def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
+        def extract_data(self, state: ExperimentState, _: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
             dataset = state.dataset_as(self, TabularDataset)
 
             if dataset:
-                return DataCharacteristics.from_dataset(problem_domain=state.problem_domain, dataset=dataset)
+                return [(state, DataCharacteristics.from_dataset(problem_domain=state.problem_domain, dataset=dataset))]
 
-            return None
+            return []
 
     def __init__(self, *extractors: DataExtractor):
         """

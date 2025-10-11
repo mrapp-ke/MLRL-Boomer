@@ -6,7 +6,7 @@ Provides classes that allow configuring the functionality to write label vectors
 import logging as log
 
 from argparse import Namespace
-from typing import List, Optional, Set, override
+from typing import List, Set, Tuple, override
 
 import numpy as np
 
@@ -57,7 +57,7 @@ class LabelVectorSetExtension(Extension):
                 self.label_vector_histogram.unique_label_vectors.append(label_vector)
 
         @override
-        def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
+        def extract_data(self, state: ExperimentState, _: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
@@ -69,14 +69,14 @@ class LabelVectorSetExtension(Extension):
                 if isinstance(output_space_info, LabelVectorSet):
                     visitor = LabelVectorSetExtension.LabelVectorSetExtractor.Visitor()
                     output_space_info.visit(visitor)
-                    return LabelVectors.from_histogram(visitor.label_vector_histogram)
+                    return [(state, LabelVectors.from_histogram(visitor.label_vector_histogram))]
 
                 if not isinstance(output_space_info, NoOutputSpaceInfo):
                     log.error('%s expected type of output space info to be %s, but output space info has type %s',
                               type(self).__name__, LabelVectorSet.__name__,
                               type(output_space_info).__name__)
 
-            return None
+            return []
 
     def __init__(self, *dependencies: Extension):
         """

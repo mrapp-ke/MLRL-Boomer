@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 from dataclasses import replace
 from functools import reduce
 from itertools import chain
-from typing import Any, Dict, List, Optional, override
+from typing import Any, Dict, List, Tuple, override
 
 from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import EVALUATION_MEASURE_PREDICTION_TIME, \
     EVALUATION_MEASURE_TRAINING_TIME, EvaluationResult
@@ -39,7 +39,7 @@ class EvaluationDataExtractor(DataExtractor, ABC):
     measurements: Dict[DatasetType, Measurements] = {}
 
     @override
-    def extract_data(self, state: ExperimentState, sinks: List[Sink]) -> Optional[OutputData]:
+    def extract_data(self, state: ExperimentState, sinks: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
         """
         See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
         """
@@ -66,9 +66,9 @@ class EvaluationDataExtractor(DataExtractor, ABC):
                                           predictions=prediction_result.predictions,
                                           options=options)
 
-            return EvaluationResult(measurements)
+            return [(state, EvaluationResult(measurements))]
 
-        return None
+        return []
 
     @abstractmethod
     def _update_measurements(self, measurements: Measurements, index: int, ground_truth: Any, predictions: Any,
@@ -104,7 +104,7 @@ class EvaluationWriter(ResultWriter):
         measurements: Dict[DatasetType, Dict[int, Measurements]] = {}
 
         @override
-        def extract_data(self, state: ExperimentState, sinks: List[Sink]) -> Optional[OutputData]:
+        def extract_data(self, state: ExperimentState, sinks: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
@@ -115,11 +115,10 @@ class EvaluationWriter(ResultWriter):
 
             if dataset_type and folding_strategy:
                 measurements_by_model_size = self.measurements.setdefault(dataset_type, {})
-                tabular_output_data = super().extract_data(state, sinks)
                 num_folds = folding_strategy.num_folds
                 fold = state.fold
 
-                if tabular_output_data and fold:
+                for _, tabular_output_data in super().extract_data(state, sinks) if fold else []:
                     table = tabular_output_data.to_table(Options()).to_column_wise_table()
                     columns_by_name = {column.header: column for column in table.columns}
                     column_model_size = columns_by_name[CsvFileSink.COLUMN_MODEL_SIZE] if model_size else None
@@ -136,9 +135,9 @@ class EvaluationWriter(ResultWriter):
                                 values[fold.index] = parse_number(column[row], percentage=measure.percentage)
 
                 measurements = measurements_by_model_size.setdefault(model_size, Measurements(num_folds))
-                return EvaluationResult(measurements) if measurements else None
+                return [(state, EvaluationResult(measurements))] if measurements else []
 
-            return None
+            return []
 
     def __init__(self, *extractors: EvaluationDataExtractor):
         """
