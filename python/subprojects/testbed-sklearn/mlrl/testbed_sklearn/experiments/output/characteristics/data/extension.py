@@ -5,7 +5,7 @@ Provides classes that allow configuring the functionality to write characteristi
 sinks.
 """
 from argparse import Namespace
-from typing import Set, Type, override
+from typing import Set, override
 
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import OutputCharacteristics
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics_data import DataCharacteristics
@@ -15,8 +15,8 @@ from mlrl.testbed.experiments.input.sources import CsvFileSource
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink
+from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
 from mlrl.util.cli import Argument, BoolArgument
@@ -62,7 +62,7 @@ class TabularDataCharacteristicExtension(Extension):
         super().__init__(OutputExtension(), ResultDirectoryExtension(), *dependencies)
 
     @override
-    def _get_arguments(self, _: Mode) -> Set[Argument]:
+    def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
@@ -90,7 +90,7 @@ class TabularDataCharacteristicExtension(Extension):
                 CsvFileSink(directory=base_dir / result_directory, create_directory=create_directory, options=options))
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: Mode):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: ExperimentMode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
@@ -98,8 +98,8 @@ class TabularDataCharacteristicExtension(Extension):
         self.__configure_csv_file_sink(args, experiment_builder)
 
     @override
-    def get_supported_modes(self) -> Set[Type[Mode]]:
+    def get_supported_modes(self) -> Set[ExperimentMode]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode, BatchMode, ReadMode, RunMode}
+        return {ExperimentMode.SINGLE, ExperimentMode.BATCH, ExperimentMode.READ, ExperimentMode.RUN}

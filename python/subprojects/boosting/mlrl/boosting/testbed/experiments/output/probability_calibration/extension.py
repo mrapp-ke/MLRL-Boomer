@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write calibration models to one or several sinks.
 """
 from argparse import Namespace
-from typing import List, Set, Type, override
+from typing import List, Set, override
 
 from mlrl.boosting.testbed.experiments.output.probability_calibration.writer import \
     JointProbabilityCalibrationModelWriter, MarginalProbabilityCalibrationModelWriter
@@ -14,8 +14,8 @@ from mlrl.testbed.experiments.input.sources.source_csv import CsvFileSource
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, Sink
+from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
 from mlrl.testbed.util.format import OPTION_DECIMALS
 
 from mlrl.util.cli import Argument, BoolArgument
@@ -48,7 +48,7 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
         super().__init__(OutputExtension(), ResultDirectoryExtension(), *dependencies)
 
     @override
-    def _get_arguments(self, _: Mode) -> Set[Argument]:
+    def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
@@ -77,7 +77,7 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
         return []
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: Mode):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: ExperimentMode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
@@ -88,11 +88,11 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
             experiment_builder.add_post_training_output_writers(writer)
 
     @override
-    def get_supported_modes(self) -> Set[Type[Mode]]:
+    def get_supported_modes(self) -> Set[ExperimentMode]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode, BatchMode, ReadMode, RunMode}
+        return {ExperimentMode.SINGLE, ExperimentMode.BATCH, ExperimentMode.READ, ExperimentMode.RUN}
 
 
 class JointProbabilityCalibrationModelExtension(Extension):
@@ -122,14 +122,14 @@ class JointProbabilityCalibrationModelExtension(Extension):
         super().__init__(OutputExtension(), ResultDirectoryExtension(), *dependencies)
 
     @override
-    def _get_arguments(self, _: Mode) -> Set[Argument]:
+    def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
         return {self.PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL, self.SAVE_JOINT_PROBABILITY_CALIBRATION_MODEL}
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: Mode):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: ExperimentMode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
@@ -156,8 +156,8 @@ class JointProbabilityCalibrationModelExtension(Extension):
             experiment_builder.add_post_training_output_writers(writer)
 
     @override
-    def get_supported_modes(self) -> Set[Type[Mode]]:
+    def get_supported_modes(self) -> Set[ExperimentMode]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode, BatchMode, ReadMode, RunMode}
+        return {ExperimentMode.SINGLE, ExperimentMode.BATCH, ExperimentMode.READ, ExperimentMode.RUN}

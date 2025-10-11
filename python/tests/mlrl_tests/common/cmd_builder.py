@@ -12,7 +12,7 @@ from mlrl.common.learners import SparsePolicy
 
 from mlrl.testbed_sklearn.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 
-from mlrl.testbed.modes import Mode
+from mlrl.testbed.experiments.state import ExperimentMode
 
 from mlrl.util.options import Options
 
@@ -124,12 +124,12 @@ class CmdBuilder:
             args.append('--help')
             return args
 
-        base_dir = self.base_dir / self.RERUN_DIR if self.mode == Mode.MODE_RUN else self.base_dir
+        base_dir = self.base_dir / self.RERUN_DIR if self.mode == ExperimentMode.RUN else self.base_dir
 
         args.extend(('--log-level', 'debug'))
         args.extend(('--base-dir', str(base_dir)))
 
-        if self.mode == Mode.MODE_BATCH:
+        if self.mode == ExperimentMode.BATCH:
             args.extend(('--config', str(self.batch_config)))
 
             if self.runner:
@@ -139,7 +139,7 @@ class CmdBuilder:
                     args.extend(('--slurm-config', str(self.CONFIG_DIR / 'slurm_config.yml'), '--print-slurm-scripts',
                                  'true', '--save-slurm-scripts', 'true', '--slurm-save-dir', str(base_dir)))
         else:
-            if self.mode == Mode.MODE_RUN:
+            if self.mode == ExperimentMode.MODE_RUN:
                 args.extend(('--input-dir', str(self.base_dir)))
             else:
                 args.extend(('--data-dir', str(self.RESOURCE_DIR / 'data')))
@@ -147,7 +147,7 @@ class CmdBuilder:
 
             args.extend(('--result-dir', str(self.result_dir)))
 
-            if self.model_load_dir and self.mode != Mode.MODE_RUN:
+            if self.model_load_dir and self.mode != ExperimentMode.MODE_RUN:
                 self.args.append('--load-models')
                 self.args.append(str(True).lower())
                 self.args.append('--model-load-dir')
@@ -161,7 +161,7 @@ class CmdBuilder:
                 self.args.append('--parameter-save-dir')
                 self.args.append(str(self.parameter_save_dir))
 
-        if self.problem_type and self.mode != Mode.MODE_RUN:
+        if self.problem_type and self.mode != ExperimentMode.MODE_RUN:
             args.extend(('--problem-type', self.problem_type))
 
         return args + self.args

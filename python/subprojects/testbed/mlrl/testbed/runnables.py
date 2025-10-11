@@ -7,7 +7,7 @@ Provides base classes for programs that can be configured via command line argum
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from functools import reduce
-from typing import List, Optional, Set, Type, override
+from typing import List, Optional, Set, override
 
 from mlrl.testbed.arguments import PredictionDatasetArguments
 from mlrl.testbed.command import Command
@@ -16,8 +16,9 @@ from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSpl
 from mlrl.testbed.experiments.output.meta_data.extension import MetaDataExtension
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.recipe import Recipe
+from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions import Extension
-from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
+from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode
 from mlrl.testbed.program_info import ProgramInfo
 
 from mlrl.util.cli import Argument, CommandLineInterface
@@ -41,7 +42,7 @@ class Runnable(Recipe, ABC):
         """
 
         @override
-        def _get_arguments(self, _: Mode) -> Set[Argument]:
+        def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
             """
@@ -51,7 +52,7 @@ class Runnable(Recipe, ABC):
             }
 
         @override
-        def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: Mode):
+        def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: ExperimentMode):
             """
             See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
             """
@@ -61,11 +62,11 @@ class Runnable(Recipe, ABC):
                 PredictionDatasetArguments.PREDICT_FOR_TEST_DATA.get_value(args))
 
         @override
-        def get_supported_modes(self) -> Set[Type[Mode]]:
+        def get_supported_modes(self) -> Set[ExperimentMode]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
             """
-            return {SingleMode, BatchMode, RunMode}
+            return {ExperimentMode.SINGLE, ExperimentMode.BATCH, ExperimentMode.RUN}
 
     def get_extensions(self) -> List[Extension]:
         """
@@ -79,7 +80,7 @@ class Runnable(Recipe, ABC):
             SlurmExtension(),
         ]
 
-    def get_supported_extensions(self, mode: Mode) -> List[Extension]:
+    def get_supported_extensions(self, mode: ExperimentMode) -> List[Extension]:
         """
         Returns the extensions that should be applied to the runnable and support a given mode of operation.
 
@@ -127,17 +128,21 @@ class Runnable(Recipe, ABC):
 
             @override
             def create_experiment_builder(self,
+                                          experiment_mode: ExperimentMode,
                                           args: Namespace,
                                           command: Command,
                                           load_dataset: bool = True) -> Experiment.Builder:
                 runnable = self.runnable
-                experiment_builder = runnable.create_experiment_builder(args, command, load_dataset)
+                experiment_builder = runnable.create_experiment_builder(experiment_mode=experiment_mode,
+                                                                        args=args,
+                                                                        command=command,
+                                                                        load_dataset=load_dataset)
 
-                for extension in runnable.get_supported_extensions(mode):
-                    extension.configure_experiment(args, experiment_builder, mode)
+                for extension in runnable.get_supported_extensions(experiment_mode):
+                    extension.configure_experiment(args, experiment_builder, experiment_mode)
 
-                    for dependency in extension.get_dependencies(mode):
-                        dependency.configure_experiment(args, experiment_builder, mode)
+                    for dependency in extension.get_dependencies(experiment_mode):
+                        dependency.configure_experiment(args, experiment_builder, experiment_mode)
 
                 return experiment_builder
 
@@ -152,10 +157,10 @@ class Runnable(Recipe, ABC):
         batch_mode = BatchMode(self.create_batch_config_file_factory())
         args = cli.parse_known_args()
 
-        for extension in self.get_supported_extensions(batch_mode):
+        for extension in self.get_supported_extensions(batch_mode.to_enum()):
             extension.configure_batch_mode(args, batch_mode)
 
-            for dependency in extension.get_dependencies(batch_mode):
+            for dependency in extension.get_dependencies(batch_mode.to_enum()):
                 dependency.configure_batch_mode(args, batch_mode)
 
         return batch_mode
@@ -171,10 +176,10 @@ class Runnable(Recipe, ABC):
             *reduce(lambda aggr, extension: aggr | extension.get_arguments(ReadMode()), extensions, set()))
         args = cli.parse_known_args()
 
-        for extension in self.get_supported_extensions(read_mode):
+        for extension in self.get_supported_extensions(read_mode.to_enum()):
             extension.configure_read_mode(args, read_mode)
 
-            for dependency in extension.get_dependencies(read_mode):
+            for dependency in extension.get_dependencies(read_mode.to_enum()):
                 dependency.configure_read_mode(args, read_mode)
 
         return read_mode
@@ -188,10 +193,10 @@ class Runnable(Recipe, ABC):
         run_mode = RunMode()
         args = cli.parse_known_args()
 
-        for extension in self.get_supported_extensions(run_mode):
+        for extension in self.get_supported_extensions(run_mode.to_enum()):
             extension.configure_run_mode(args, run_mode)
 
-            for dependency in extension.get_dependencies(run_mode):
+            for dependency in extension.get_dependencies(run_mode.to_enum()):
                 dependency.configure_run_mode(args, run_mode)
 
         return run_mode
@@ -203,8 +208,8 @@ class Runnable(Recipe, ABC):
         :param cli:     The command line interface to be configured
         :param mode:    The mode of operation
         """
-        extension_arguments: Set[Argument] = reduce(lambda aggr, extension: aggr | extension.get_arguments(mode),
-                                                    self.get_extensions(), set())
+        extension_arguments: Set[Argument] = reduce(
+            lambda aggr, extension: aggr | extension.get_arguments(mode.to_enum()), self.get_extensions(), set())
         algorithmic_arguments = self.get_algorithmic_arguments(cli.parse_known_args())
         mode.configure_arguments(cli,
                                  extension_arguments=sorted(extension_arguments, key=lambda arg: arg.name),

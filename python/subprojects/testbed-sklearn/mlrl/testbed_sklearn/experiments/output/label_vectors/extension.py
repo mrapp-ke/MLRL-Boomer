@@ -4,15 +4,15 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write label vectors to one or several sinks.
 """
 from argparse import Namespace
-from typing import Set, Type, override
+from typing import Set, override
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.sources import CsvFileSource
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink
+from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
 
 from mlrl.util.cli import Argument, BoolArgument
 
@@ -41,7 +41,7 @@ class LabelVectorExtension(Extension):
         super().__init__(OutputExtension(), ResultDirectoryExtension(), *dependencies)
 
     @override
-    def _get_arguments(self, _: Mode) -> Set[Argument]:
+    def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
@@ -66,7 +66,7 @@ class LabelVectorExtension(Extension):
                 CsvFileSink(directory=base_dir / result_directory, create_directory=create_directory))
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: Mode):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: ExperimentMode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
@@ -74,8 +74,8 @@ class LabelVectorExtension(Extension):
         self.__configure_csv_file_sink(args, experiment_builder)
 
     @override
-    def get_supported_modes(self) -> Set[Type[Mode]]:
+    def get_supported_modes(self) -> Set[ExperimentMode]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode, BatchMode, ReadMode, RunMode}
+        return {ExperimentMode.SINGLE, ExperimentMode.BATCH, ExperimentMode.READ, ExperimentMode.RUN}

@@ -6,7 +6,7 @@ Provides classes that allow configuring the functionality to write label vectors
 import logging as log
 
 from argparse import Namespace
-from typing import List, Optional, Set, Type, override
+from typing import List, Optional, Set, override
 
 import numpy as np
 
@@ -22,9 +22,8 @@ from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor
-from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
 
 from mlrl.util.cli import Argument
 
@@ -86,7 +85,7 @@ class LabelVectorSetExtension(Extension):
         super().__init__(OutputExtension(), ResultDirectoryExtension(), *dependencies)
 
     @override
-    def _get_arguments(self, _: Mode) -> Set[Argument]:
+    def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
@@ -94,15 +93,15 @@ class LabelVectorSetExtension(Extension):
 
     # pylint: disable=unused-argument
     @override
-    def configure_experiment(self, _: Namespace, experiment_builder: Experiment.Builder, mode: Mode):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, mode: ExperimentMode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
         experiment_builder.label_vector_writer.extractors.insert(1, LabelVectorSetExtension.LabelVectorSetExtractor())
 
     @override
-    def get_supported_modes(self) -> Set[Type[Mode]]:
+    def get_supported_modes(self) -> Set[ExperimentMode]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode, BatchMode, ReadMode, RunMode}
+        return {ExperimentMode.SINGLE, ExperimentMode.BATCH, ExperimentMode.READ, ExperimentMode.RUN}

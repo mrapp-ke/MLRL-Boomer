@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write evaluation results to one or several sinks.
 """
 from argparse import Namespace
-from typing import Set, Type, override
+from typing import Set, override
 
 from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import EvaluationResult
 from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_classification import \
@@ -20,8 +20,8 @@ from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDir
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, RegressionProblem
+from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
 from mlrl.util.cli import Argument, BoolArgument
@@ -88,7 +88,7 @@ class EvaluationExtension(Extension):
         super().__init__(OutputExtension(), ResultDirectoryExtension(), *dependencies)
 
     @override
-    def _get_arguments(self, _: Mode) -> Set[Argument]:
+    def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
@@ -113,7 +113,7 @@ class EvaluationExtension(Extension):
                 CsvFileSink(directory=base_dir / result_directory, create_directory=create_directory, options=options))
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, mode: Mode):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, mode: ExperimentMode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
@@ -122,7 +122,7 @@ class EvaluationExtension(Extension):
         evaluation_writer = experiment_builder.evaluation_writer
 
         if evaluation_writer.sinks:
-            if isinstance(mode, ReadMode):
+            if mode == ExperimentMode.READ:
                 extractor = EvaluationWriter.InputExtractor(properties=EvaluationResult.PROPERTIES,
                                                             context=EvaluationResult.CONTEXT)
                 evaluation_writer.extractors.append(extractor)
@@ -141,8 +141,8 @@ class EvaluationExtension(Extension):
             evaluation_writer.extractors.append(extractor)
 
     @override
-    def get_supported_modes(self) -> Set[Type[Mode]]:
+    def get_supported_modes(self) -> Set[ExperimentMode]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode, BatchMode, ReadMode, RunMode}
+        return {ExperimentMode.SINGLE, ExperimentMode.BATCH, ExperimentMode.READ, ExperimentMode.RUN}
