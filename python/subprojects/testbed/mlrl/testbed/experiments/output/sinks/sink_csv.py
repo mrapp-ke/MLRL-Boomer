@@ -23,6 +23,8 @@ class CsvFileSink(TabularFileSink):
     Allows to write tabular output data to a CSV file.
     """
 
+    COLUMN_MODEL_SIZE = 'Model size'
+
     def __init__(self, directory: Path, options: Options = Options(), create_directory: bool = False):
         """
         :param directory:           The path to the directory of the file
@@ -47,7 +49,7 @@ class CsvFileSink(TabularFileSink):
             if incremental_prediction:
                 model_size = prediction_result.prediction_scope.model_size
                 table.add_column(*[model_size for _ in range(table.num_rows)],
-                                 header=OutputValue('model_size', 'Model size'))
+                                 header=OutputValue('model_size', self.COLUMN_MODEL_SIZE))
 
         table.sort_by_headers()
 
