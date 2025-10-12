@@ -64,7 +64,10 @@ class ModelOutputDirectoryExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return set() if mode == ExperimentMode.BATCH else {ModelOutputDirectoryArguments.MODEL_SAVE_DIR}
+        if mode in {ExperimentMode.BATCH, ExperimentMode.READ}:
+            return set()
+
+        return {ModelOutputDirectoryArguments.MODEL_SAVE_DIR}
 
     @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: ExperimentMode):
