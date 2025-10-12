@@ -50,6 +50,7 @@ MLRL-Testbed supports different modes of operation configurable via the argument
 
   - `single` A single experiment is run.
   - `batch` A batch of experiments is run at once.
+  - `run` A previously run experiment can be run again.
 
 #### Batch Mode
 
@@ -88,6 +89,14 @@ If the package [mlrl-testbed-slurm](https://pypi.org/project/mlrl-testbed-slurm/
   - `false` Slurm scripts are not saved to output files.
 
 - `--slurm-save-dir` (Default value = `.`) An absolute or relative path to the directory where Slurm scripts should be saved.
+
+#### Run Mode
+
+> A more detailed description of the following arguments can be found {ref}`here<testbed-run-mode>`.
+
+In {ref}`run mode <testbed-run-mode>`, the following mandatory arguments must be specified:
+
+- `--input-dir` An absolute or relative path to a directory that contains a `metadata.yml` file that has been saved by a previous experiment.
 
 ### Dataset
 
@@ -245,6 +254,11 @@ MLRL-Testbed allows saving data gathered during experiments to output files or p
   - `true` The program exits if an error occurs while writing output data.
   - `false` Any error that occurs while writing output data is logged, but the program continues.
 
+- `--exit-on-missing-input` (Default value = `false`)
+
+  - `true` The program exits if an error occurs while reading input data.
+  - `false` Any error that occurs while reading input data is logged, but the program continues.
+
 - `--print-all` (Default value = `false`)
 
   - `true` All output data is printed on the console unless specified otherwise.
@@ -259,10 +273,15 @@ MLRL-Testbed allows saving data gathered during experiments to output files or p
 
 Saving meta-data can help improving the reproducibility of experiments. Among other information, it contains the command that has been used for running an experiment and the version of MLRL-Testbed used.
 
+- `--print-meta-data` (Default value = `false`)
+
+  - `true` The meta-data is printed on the console.
+  - `false` The meta-data is not printed on the console.
+
 - `--save-meta-data` (Default value = `auto`)
 
-  - `auto` Meta-data is saved to the directory `-base-dir` only if other output files are written as well.
-  - `true` Meta-data is always saved to the directory `--base-dir`
+  - `auto` The meta-data is saved to the directory `-base-dir` only if other output files are written as well.
+  - `true` The meta-data is always saved to the directory `--base-dir`
   - `false` No meta-data is saved.
 
 ### Models
@@ -393,7 +412,6 @@ To provide valuable insights into the models learned by an algorithm, the predic
   - `true` The evaluation results in terms of common metrics are written to [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files.
 
     - `decimals` (Default value = `0`) The number of decimals to be used for evaluation scores or 0, if the number of decimals should not be restricted.
-    - `percentage` (Default value = `true`) `true`, if evaluation scores should be given as a percentage, if possible, `false` otherwise.
     - `enable_all` (Default value = `true`) `true`, if all supported metrics should be used unless specified otherwise, `false` if all metrics should be disabled by default.
     - `hamming_loss` (Default value = `true`) `true`, if evaluation scores according to the Hamming loss should be stored, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
     - `hamming_accuracy` (Default value = `true`) `true`, if evaluation scores according to the Hamming accuracy metric should be stored, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
@@ -491,7 +509,6 @@ To provide valuable insights into the models learned by an algorithm, the predic
   - `true` The characteristics of binary predictions are written to [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files. Does only have an effect if the parameter `--predict-probabilities` is set to `false`.
 
     - `decimals` (Default value = `0`) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
-    - `percentage` (Default value = `true`) `true`, if the characteristics should be given as a percentage, if possible, `false` otherwise.
     - `outputs` (Default value = `true`) `true`, if the number of outputs should be stored, `false` otherwise.
     - `output_density` (Default value = `true`) `true`, if the density of the ground truth matrix should be stored, `false` otherwise.
     - `output_sparsity` (Default value = `true`) `true`, if the sparsity of the ground truth matrix should be stored, `false` otherwise.
@@ -531,7 +548,6 @@ To provide valuable insights into the models learned by an algorithm, the predic
   - `true` The characteristics of the training dataset are written to a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file.
 
     - `decimals` (Default value = `0`) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
-    - `percentage` (Default value = `true`) `true`, if the characteristics should be given as a percentage, if possible, `false` otherwise.
     - `outputs` (Default value = `true`) `true`, if the number of outputs should be stored, `false` otherwise.
     - `output_density` (Default value = `true`) `true`, if the density of the ground truth matrix should be stored, `false` otherwise.
     - `output_sparsity` (Default value = `true`) `true`, if the sparsity of the ground truth matrix should be stored, `false` otherwise.

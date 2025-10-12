@@ -3,28 +3,28 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing paths to files.
 """
+from dataclasses import dataclass
 from pathlib import Path
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.state import ExperimentState
 
 
+@dataclass
 class FilePath:
     """
     The path to a file, data can be written to or read from.
-    """
 
-    def __init__(self, directory: Path, file_name: str, suffix: str, context: Context):
-        """
-        :param directory:   The path to the directory, where the file is located
-        :param file_name:   The name of the file
-        :param suffix:      The suffix of the file (with leading dot)
-        :param context:     A `Context` to be used to determine the path
-        """
-        self.directory = directory
-        self.file_name = file_name
-        self.suffix = suffix
-        self.context = context
+    Attributes:
+        directory:  The path to the directory, where the file is located
+        file_name:  The name of the file
+        suffix:     The suffix of the file (with leading dot)
+        context:    A `Context` to be used to determine the path
+    """
+    directory: Path
+    file_name: str
+    suffix: str
+    context: Context
 
     def resolve(self, state: ExperimentState) -> Path:
         """
