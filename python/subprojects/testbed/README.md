@@ -20,6 +20,13 @@ This software package provides **mlrl-testbed - a command line utility for runni
 - evaluating the models' performance
 - saving experimental results to output files
 
+The package mlrl-testbed provides the following modes of operation for carrying out different tasks:
+
+- **Single:** In this mode a single experiment is run, involving the steps listed above.
+- **Batch:** In batch mode, multiple independent experiments using varying datasets and parameters can be run in an automated manner. By installing the optional package [mlrl-testbed-slurm](https://pypi.org/project/mlrl-testbed-slurm/), the experiments can be run via the [Slurm Workload Manager](https://wikipedia.org/wiki/Slurm_Workload_Manager).
+- **Read:** Read mode allows to read the output data produced by a previous experiment and to print it on the console or write it to different output files.
+- **Run:** In this mode, previous experiments can be run again, overriding some of their parameters if desired.
+
 # mlrl-testbed
 
 On its own, this package is not very powerful. It is intended as a basis for other packages that build functionality upon it. In fact, it does not make any assumptions about the problem domain or type of machine learning algorithm that should be used in an experiment. Instead, implementations of domain- or algorithm-specific functionality are provided by the extensions discussed below.
@@ -31,8 +38,6 @@ The package [mlrl-testbed-sklearn](https://pypi.org/project/mlrl-testbed-sklearn
 ```
 pip install mlrl-testbed-sklearn
 ```
-
-Optionally, support for the [Slurm Workload Manager](https://wikipedia.org/wiki/Slurm_Workload_Manager) can be installed via the package [mlrl-testbed-slurm](https://pypi.org/project/mlrl-testbed-slurm/).
 
 ### 💡 Example
 
@@ -68,7 +73,7 @@ class Runnable(SkLearnRunnable):
 
 The previously integrated algorithm can then be used in experiments controlled via a command line API. Assuming that the source code shown above is saved to a file named `custom_runnable.py` in the working directory, we are now capable of fitting a [RandomForestClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier) to a dataset by using the command below.
 
-```
+```text
 mlrl-testbed custom_runnable.py \
     --data-dir path/to/datasets/ \
     --dataset dataset-name \
@@ -79,7 +84,7 @@ The above command does not only train a model, but also evaluates it according t
 
 It is also possible to run multiple experiments at once by defining the datasets and algorithmic parameters to be used in the different runs in a YAML file:
 
-```
+```text
 mlrl-testbed custom_runnable.py --mode batch --config path/to/config.yaml
 ```
 
