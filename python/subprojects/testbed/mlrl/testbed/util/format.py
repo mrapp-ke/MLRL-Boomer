@@ -27,6 +27,17 @@ def format_number(value: Number, decimals: int = 2) -> str:
     return str(value)
 
 
+def to_int_or_float(value) -> int | float:
+    """
+    Converts a given value into an integer or a floating point value, depending on whether it has decimals or not.
+
+    :param value:   The value to be converted
+    :return:        An integer or a floating point value
+    """
+    value = float(value)
+    return int(value) if value % 1 == 0 else value
+
+
 def format_percentage(fraction: float, decimals: int = 2) -> str:
     """
     Creates and returns a textual representation of a percentage using a specific number of decimals.
