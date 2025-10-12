@@ -2,7 +2,7 @@
 
 # Read Mode
 
-When MLRL-Testbed operates in so-called "read mode", it reads the output data produced by a previously run experiment and allows to print it on the console or write it to different output files. Similar to the {ref}`run mode <testbed-run-mode>`, this mode of operation is based on the `metadata.yml` file that has been saved by a previous experiment.
+When mlrl-testbed operates in so-called "read mode", it reads the output data produced by a previously run experiment and allows to print it on the console or write it to different output files. Similar to the {ref}`run mode <testbed-run-mode>`, this mode of operation is based on the `metadata.yml` file that has been saved by a previous experiment.
 
 ```{note}
 A `metadata.yml` file is saved by an experiment if any output data is saved or if the argument `--save-meta-data true` is specified explicitly (see {ref}`here <meta-data>` for more details).
