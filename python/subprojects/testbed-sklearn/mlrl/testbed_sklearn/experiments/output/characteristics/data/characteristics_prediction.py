@@ -6,7 +6,7 @@ Provides classes for representing characteristics of binary predictions that are
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import OutputCharacteristics
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.matrix_output import OutputMatrix
 
-from mlrl.testbed.experiments.output.data import OutputData
+from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
 
 
@@ -22,5 +22,5 @@ class PredictionCharacteristics(OutputCharacteristics):
         """
         super().__init__(problem_domain=problem_domain,
                          output_matrix=prediction_matrix,
-                         properties=OutputData.Properties(name='Prediction characteristics',
-                                                          file_name='prediction_characteristics'))
+                         properties=TabularProperties(name='Prediction characteristics',
+                                                      file_name='prediction_characteristics'))

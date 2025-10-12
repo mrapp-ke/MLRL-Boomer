@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to split datasets into training and test datasets.
 """
 from argparse import Namespace
-from typing import Set, override
+from typing import Set, Type, override
 
 from mlrl.testbed_sklearn.experiments.input.dataset.extension import ArffFileExtension
 from mlrl.testbed_sklearn.experiments.input.dataset.preprocessors.extension import PreprocessorExtension
@@ -15,6 +15,7 @@ from mlrl.testbed_sklearn.experiments.input.dataset.splitters.splitter_cross_val
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.input.dataset.splitters.splitter_no import NoSplitter
 from mlrl.testbed.extensions.extension import Extension
+from mlrl.testbed.modes import BatchMode, Mode, SingleMode
 
 from mlrl.util.cli import Argument
 from mlrl.util.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
@@ -32,11 +33,18 @@ class DatasetSplitterExtension(Extension):
         super().__init__(PreprocessorExtension(), ArffFileExtension(), *dependencies)
 
     @override
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, _: Mode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
         return {DatasetSplitterArguments.RANDOM_STATE, DatasetSplitterArguments.DATASET_SPLITTER}
+
+    @override
+    def get_supported_modes(self) -> Set[Type[Mode]]:
+        """
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+        """
+        return {SingleMode, BatchMode}
 
     @staticmethod
     def get_random_state(args: Namespace) -> int:

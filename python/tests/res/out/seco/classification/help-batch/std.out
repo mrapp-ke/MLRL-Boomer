@@ -1,29 +1,18 @@
 mlrl-testbed mlrl.seco --mode batch --help
-usage: mlrl-testbed [-r RUNNABLE] [-v] [--mode MODE] [--config CONFIG]
-                    [--separate-folds SEPARATE_FOLDS] [--list]
-                    [--runner RUNNER] [--base-dir BASE_DIR]
+usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE]
+                    [--config CONFIG] [--separate-folds SEPARATE_FOLDS]
+                    [--list] [--runner RUNNER] [--base-dir BASE_DIR]
                     [--create-dirs CREATE_DIRS] [--data-split DATA_SPLIT]
                     [--exit-on-error EXIT_ON_ERROR]
-                    [--feature-binning FEATURE_BINNING]
+                    [--exit-on-missing-input EXIT_ON_MISSING_INPUT]
                     [--feature-format FEATURE_FORMAT]
-                    [--feature-sampling FEATURE_SAMPLING]
-                    [--head-type HEAD_TYPE] [--heuristic HEURISTIC]
-                    [--holdout HOLDOUT]
                     [--incremental-evaluation INCREMENTAL_EVALUATION]
-                    [--instance-sampling INSTANCE_SAMPLING]
-                    [--lift-function LIFT_FUNCTION]
                     [--load-models LOAD_MODELS]
                     [--load-parameters LOAD_PARAMETERS]
-                    [--log-level LOG_LEVEL] [--max-rules MAX_RULES]
                     [--model-load-dir MODEL_LOAD_DIR]
                     [--one-hot-encoding ONE_HOT_ENCODING]
                     [--output-format OUTPUT_FORMAT]
-                    [--output-sampling OUTPUT_SAMPLING]
-                    [--parallel-prediction PARALLEL_PREDICTION]
-                    [--parallel-rule-refinement PARALLEL_RULE_REFINEMENT]
-                    [--parallel-statistic-update PARALLEL_STATISTIC_UPDATE]
                     [--parameter-load-dir PARAMETER_LOAD_DIR]
-                    [--post-optimization POST_OPTIMIZATION]
                     [--predict-for-test-data PREDICT_FOR_TEST_DATA]
                     [--predict-for-training-data PREDICT_FOR_TRAINING_DATA]
                     [--prediction-format PREDICTION_FORMAT]
@@ -33,6 +22,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--mode MODE] [--config CONFIG]
                     [--print-evaluation PRINT_EVALUATION]
                     [--print-ground-truth PRINT_GROUND_TRUTH]
                     [--print-label-vectors PRINT_LABEL_VECTORS]
+                    [--print-meta-data PRINT_META_DATA]
                     [--print-model-characteristics PRINT_MODEL_CHARACTERISTICS]
                     [--print-parameters PRINT_PARAMETERS]
                     [--print-prediction-characteristics PRINT_PREDICTION_CHARACTERISTICS]
@@ -40,10 +30,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--mode MODE] [--config CONFIG]
                     [--print-rules PRINT_RULES]
                     [--print-slurm-scripts PRINT_SLURM_SCRIPTS]
                     [--problem-type PROBLEM_TYPE]
-                    [--pruning-heuristic PRUNING_HEURISTIC]
-                    [--random-state RANDOM_STATE]
-                    [--rule-induction RULE_INDUCTION]
-                    [--rule-pruning RULE_PRUNING] [--save-all SAVE_ALL]
+                    [--random-state RANDOM_STATE] [--save-all SAVE_ALL]
                     [--save-data-characteristics SAVE_DATA_CHARACTERISTICS]
                     [--save-evaluation SAVE_EVALUATION]
                     [--save-ground-truth SAVE_GROUND_TRUTH]
@@ -59,7 +46,21 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--mode MODE] [--config CONFIG]
                     [--slurm-config SLURM_CONFIG]
                     [--slurm-save-dir SLURM_SAVE_DIR]
                     [--sparse-feature-value SPARSE_FEATURE_VALUE]
-                    [--time-limit TIME_LIMIT] [-h]
+                    [--feature-binning FEATURE_BINNING]
+                    [--feature-sampling FEATURE_SAMPLING]
+                    [--head-type HEAD_TYPE] [--heuristic HEURISTIC]
+                    [--holdout HOLDOUT]
+                    [--instance-sampling INSTANCE_SAMPLING]
+                    [--lift-function LIFT_FUNCTION] [--max-rules MAX_RULES]
+                    [--output-sampling OUTPUT_SAMPLING]
+                    [--parallel-prediction PARALLEL_PREDICTION]
+                    [--parallel-rule-refinement PARALLEL_RULE_REFINEMENT]
+                    [--parallel-statistic-update PARALLEL_STATISTIC_UPDATE]
+                    [--post-optimization POST_OPTIMIZATION]
+                    [--pruning-heuristic PRUNING_HEURISTIC]
+                    [--rule-induction RULE_INDUCTION]
+                    [--rule-pruning RULE_PRUNING] [--time-limit TIME_LIMIT]
+                    [-h]
                     runnable_module_or_source_file
 
 A command line utility for training and evaluating machine learning algorithms
@@ -74,8 +75,11 @@ options:
                         The Python class name of the program that should be
                         run
   -v, --version         Display information about the program.
+  --log-level LOG_LEVEL
+                        The log level to be used. Must be one of {"critical",
+                        "debug", "error", "info", "notset", "warn"}.
   --mode MODE           The mode of operation to be used. Must be one of
-                        {"batch", "single"}.
+                        {"batch", "run", "single"}.
   --config CONFIG       An absolute or relative path to a YAML file that
                         configures the batch of experiments to be run.
   --separate-folds SEPARATE_FOLDS
@@ -103,62 +107,25 @@ options:
                         Whether the program should exit if an error occurs
                         while writing experimental results or not. Must be one
                         of {"false", "true"}.
-  --feature-binning FEATURE_BINNING
-                        The name of the strategy to be used for feature
-                        binning. Must be one of {"equal-frequency", "equal-
-                        width", "none"}. For additional options refer to the
-                        documentation.
+  --exit-on-missing-input EXIT_ON_MISSING_INPUT
+                        Whether the program should exit if an error occurs
+                        while reading input data or not. Must be one of
+                        {"false", "true"}.
   --feature-format FEATURE_FORMAT
                         The format to be used for the representation of the
                         feature matrix. Must be one of {"auto", "dense",
                         "sparse"}.
-  --feature-sampling FEATURE_SAMPLING
-                        The name of the strategy to be used for feature
-                        sampling. Must be one of {"none", "without-
-                        replacement"}. For additional options refer to the
-                        documentation.
-  --head-type HEAD_TYPE
-                        The type of the rule heads that should be used. Must
-                        be one of {"partial", "single"}.
-  --heuristic HEURISTIC
-                        The name of the heuristic to be used for learning
-                        rules. Must be one of {"accuracy", "f-measure",
-                        "laplace", "m-estimate", "precision", "recall",
-                        "weighted-relative-accuracy"}. For additional options
-                        refer to the documentation.
-  --holdout HOLDOUT     The name of the strategy to be used for creating a
-                        holdout set. Must be one of {"none", "random",
-                        "stratified-example-wise", "stratified-output-wise"}.
-                        For additional options refer to the documentation.
   --incremental-evaluation INCREMENTAL_EVALUATION
                         Whether models should be evaluated repeatedly, using
                         only a subset of the induced rules with increasing
                         size, or not. Must be one of {"false", "true"}. For
                         additional options refer to the documentation.
-  --instance-sampling INSTANCE_SAMPLING
-                        The name of the strategy to be used for instance
-                        sampling. Must be one of {"none", "stratified-example-
-                        wise", "stratified-output-wise", "with-replacement",
-                        "without-replacement"}. For additional options refer
-                        to the documentation.
-  --lift-function LIFT_FUNCTION
-                        The lift function to be used for the induction of
-                        multi-label rules. Must be one of {"kln", "none",
-                        "peak"}. For additional options refer to the
-                        documentation.
   --load-models LOAD_MODELS
                         Whether models should be loaded from input files or
                         not. Must be one of {"false", "true"}.
   --load-parameters LOAD_PARAMETERS
                         Whether parameters should be loaded from input files
                         or not. Must be one of {"false", "true"}.
-  --log-level LOG_LEVEL
-                        The log level to be used. Must be one of {"critical",
-                        "debug", "error", "info", "notset", "warn"}.
-  --max-rules MAX_RULES
-                        The maximum number of rules to be induced. Must be at
-                        least 1 or 0, if the number of rules should not be
-                        restricted
   --model-load-dir MODEL_LOAD_DIR
                         The path to the directory from which models should be
                         loaded.
@@ -170,34 +137,9 @@ options:
                         The format to be used for the representation of the
                         output matrix. Must be one of {"auto", "dense",
                         "sparse"}.
-  --output-sampling OUTPUT_SAMPLING
-                        The name of the strategy to be used for output
-                        sampling. Must be one of {"none", "round-robin",
-                        "without-replacement"}. For additional options refer
-                        to the documentation.
-  --parallel-prediction PARALLEL_PREDICTION
-                        Whether predictions for different examples should be
-                        obtained in parallel or not. Must be one of {"false",
-                        "true"}. For additional options refer to the
-                        documentation.
-  --parallel-rule-refinement PARALLEL_RULE_REFINEMENT
-                        Whether potential refinements of rules should be
-                        searched for in parallel or not. Must be one of
-                        {"false", "true"}. For additional options refer to the
-                        documentation.
-  --parallel-statistic-update PARALLEL_STATISTIC_UPDATE
-                        Whether the statistics for different examples should
-                        be updated in parallel or not. Must be one of
-                        {"false", "true"}. For additional options refer to the
-                        documentation.
   --parameter-load-dir PARAMETER_LOAD_DIR
                         The path to the directory from which parameters to be
                         used by the algorithm should be loaded.
-  --post-optimization POST_OPTIMIZATION
-                        The method that should be used for post-optimization
-                        of a previous learned model. Must be one of {"none",
-                        "sequential"}. For additional options refer to the
-                        documentation.
   --predict-for-test-data PREDICT_FOR_TEST_DATA
                         Whether predictions should be obtained for the test
                         data or not. Must be one of {"false", "true"}.
@@ -232,8 +174,10 @@ options:
   --print-label-vectors PRINT_LABEL_VECTORS
                         Whether the unique label vectors contained in the
                         training data should be printed on the console or not.
-                        Must be one of {"false", "true"}. For additional
-                        options refer to the documentation.
+                        Must be one of {"false", "true"}.
+  --print-meta-data PRINT_META_DATA
+                        Whether meta-data should be printed on the console or
+                        not. Must be one of {"false", "true"}.
   --print-model-characteristics PRINT_MODEL_CHARACTERISTICS
                         Whether the characteristics of models should be
                         printed on the console or not. Must be one of
@@ -262,23 +206,9 @@ options:
   --problem-type PROBLEM_TYPE
                         The type of the machine learning problem to be solved.
                         Must be one of {"classification", "regression"}.
-  --pruning-heuristic PRUNING_HEURISTIC
-                        The name of the heuristic to be used for pruning
-                        individual rules. Must be one of {"accuracy",
-                        "f-measure", "laplace", "m-estimate", "precision",
-                        "recall", "weighted-relative-accuracy"}. For
-                        additional options refer to the documentation.
   --random-state RANDOM_STATE
                         The seed to be used by random number generators. Must
                         be at least 1.
-  --rule-induction RULE_INDUCTION
-                        The name of the algorithm to be used for the induction
-                        of individual rules. Must be one of {"top-down-beam-
-                        search", "top-down-greedy"}. For additional options
-                        refer to the documentation.
-  --rule-pruning RULE_PRUNING
-                        The name of the strategy to be used for pruning
-                        individual rules. Must be one of {"irep", "none"}.
   --save-all SAVE_ALL   Whether all output data should be written to files or
                         not. Must be one of {"false", "true"}.
   --save-data-characteristics SAVE_DATA_CHARACTERISTICS
@@ -297,8 +227,7 @@ options:
   --save-label-vectors SAVE_LABEL_VECTORS
                         Whether the unique label vectors contained in the
                         training data should be written to output files or
-                        not. Must be one of {"false", "true"}. For additional
-                        options refer to the documentation.
+                        not. Must be one of {"false", "true"}.
   --save-meta-data SAVE_META_DATA
                         Whether meta-data should be saved to output files or
                         not. If set to "auto", meta-data is saved whenever
@@ -345,6 +274,83 @@ options:
                         sparse format is used for the representation of the
                         feature matrix, depending on the argument --feature-
                         format.
+  --feature-binning FEATURE_BINNING
+                        The name of the strategy to be used for feature
+                        binning. Must be one of {"equal-frequency", "equal-
+                        width", "none"}. For additional options refer to the
+                        documentation.
+  --feature-sampling FEATURE_SAMPLING
+                        The name of the strategy to be used for feature
+                        sampling. Must be one of {"none", "without-
+                        replacement"}. For additional options refer to the
+                        documentation.
+  --head-type HEAD_TYPE
+                        The type of the rule heads that should be used. Must
+                        be one of {"partial", "single"}.
+  --heuristic HEURISTIC
+                        The name of the heuristic to be used for learning
+                        rules. Must be one of {"accuracy", "f-measure",
+                        "laplace", "m-estimate", "precision", "recall",
+                        "weighted-relative-accuracy"}. For additional options
+                        refer to the documentation.
+  --holdout HOLDOUT     The name of the strategy to be used for creating a
+                        holdout set. Must be one of {"none", "random",
+                        "stratified-example-wise", "stratified-output-wise"}.
+                        For additional options refer to the documentation.
+  --instance-sampling INSTANCE_SAMPLING
+                        The name of the strategy to be used for instance
+                        sampling. Must be one of {"none", "stratified-example-
+                        wise", "stratified-output-wise", "with-replacement",
+                        "without-replacement"}. For additional options refer
+                        to the documentation.
+  --lift-function LIFT_FUNCTION
+                        The lift function to be used for the induction of
+                        multi-label rules. Must be one of {"kln", "none",
+                        "peak"}. For additional options refer to the
+                        documentation.
+  --max-rules MAX_RULES
+                        The maximum number of rules to be induced. Must be at
+                        least 1 or 0, if the number of rules should not be
+                        restricted
+  --output-sampling OUTPUT_SAMPLING
+                        The name of the strategy to be used for output
+                        sampling. Must be one of {"none", "round-robin",
+                        "without-replacement"}. For additional options refer
+                        to the documentation.
+  --parallel-prediction PARALLEL_PREDICTION
+                        Whether predictions for different examples should be
+                        obtained in parallel or not. Must be one of {"false",
+                        "true"}. For additional options refer to the
+                        documentation.
+  --parallel-rule-refinement PARALLEL_RULE_REFINEMENT
+                        Whether potential refinements of rules should be
+                        searched for in parallel or not. Must be one of
+                        {"false", "true"}. For additional options refer to the
+                        documentation.
+  --parallel-statistic-update PARALLEL_STATISTIC_UPDATE
+                        Whether the statistics for different examples should
+                        be updated in parallel or not. Must be one of
+                        {"false", "true"}. For additional options refer to the
+                        documentation.
+  --post-optimization POST_OPTIMIZATION
+                        The method that should be used for post-optimization
+                        of a previous learned model. Must be one of {"none",
+                        "sequential"}. For additional options refer to the
+                        documentation.
+  --pruning-heuristic PRUNING_HEURISTIC
+                        The name of the heuristic to be used for pruning
+                        individual rules. Must be one of {"accuracy",
+                        "f-measure", "laplace", "m-estimate", "precision",
+                        "recall", "weighted-relative-accuracy"}. For
+                        additional options refer to the documentation.
+  --rule-induction RULE_INDUCTION
+                        The name of the algorithm to be used for the induction
+                        of individual rules. Must be one of {"top-down-beam-
+                        search", "top-down-greedy"}. For additional options
+                        refer to the documentation.
+  --rule-pruning RULE_PRUNING
+                        The name of the strategy to be used for pruning
+                        individual rules. Must be one of {"irep", "none"}.
   --time-limit TIME_LIMIT
                         The duration in seconds after which the induction of
                         rules should be canceled. Must be at least 1 or 0, if

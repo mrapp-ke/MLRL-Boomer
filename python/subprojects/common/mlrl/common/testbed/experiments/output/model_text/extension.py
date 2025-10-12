@@ -4,8 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write rule models to one or several sinks.
 """
 from argparse import Namespace
-from pathlib import Path
-from typing import List, Set, override
+from typing import List, Set, Type, override
 
 from mlrl.common.testbed.experiments.output.model_text.model_text import RuleModelAsText
 from mlrl.common.testbed.experiments.output.model_text.writer import RuleModelAsTextWriter
@@ -13,10 +12,9 @@ from mlrl.common.testbed.experiments.output.model_text.writer import RuleModelAs
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
-from mlrl.testbed.experiments.output.sinks.sink import Sink
-from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
-from mlrl.testbed.experiments.output.sinks.sink_text import TextFileSink
+from mlrl.testbed.experiments.output.sinks import LogSink, Sink, TextFileSink
 from mlrl.testbed.extensions import Extension
+from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
 
 from mlrl.util.cli import Argument, BoolArgument
 
@@ -55,7 +53,7 @@ class RuleModelAsTextExtension(Extension):
         super().__init__(OutputExtension(), ResultDirectoryExtension(), *dependencies)
 
     @override
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, _: Mode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
@@ -70,11 +68,12 @@ class RuleModelAsTextExtension(Extension):
 
     def __create_text_file_sinks(self, args: Namespace) -> List[Sink]:
         value, options = self.SAVE_RULES.get_value(args, default=OutputArguments.SAVE_ALL.get_value(args))
+        base_dir = OutputArguments.BASE_DIR.get_value(args)
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
-        if value and result_directory:
+        if value and base_dir and result_directory:
             return [
-                TextFileSink(directory=Path(result_directory),
+                TextFileSink(directory=base_dir / result_directory,
                              create_directory=OutputArguments.CREATE_DIRS.get_value(args),
                              options=options)
             ]
@@ -90,3 +89,10 @@ class RuleModelAsTextExtension(Extension):
         if sinks:
             writer = RuleModelAsTextWriter().add_sinks(*sinks)
             experiment_builder.add_post_training_output_writers(writer)
+
+    @override
+    def get_supported_modes(self) -> Set[Type[Mode]]:
+        """
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+        """
+        return {SingleMode, BatchMode, RunMode}

@@ -1,5 +1,5 @@
 command: mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp
-  --data-dir python/tests/res/data --dataset atp7d-meka --result-dir results --save-evaluation
-  true --problem-type regression --print-evaluation false
+  --data-dir python/tests/res/data --dataset atp7d-meka --result-dir results --problem-type
+  regression --save-evaluation true --print-evaluation false
 timestamp: <timestamp>
 version: <version>

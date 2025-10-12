@@ -24,5 +24,4 @@ class RegressionCmdBuilder(CmdBuilder):
                          runnable_module_name=runnable_module_name,
                          runnable_class_name=runnable_class_name,
                          dataset=dataset)
-        self.args.append('--problem-type')
-        self.args.append('regression')
+        self.problem_type = 'regression'
