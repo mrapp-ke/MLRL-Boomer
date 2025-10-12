@@ -13,7 +13,7 @@ import arff
 
 from scipy.sparse import dok_array
 
-from mlrl.testbed_sklearn.experiments.dataset import AttributeType, TabularDataset
+from mlrl.testbed_sklearn.experiments.dataset import Attribute, AttributeType, TabularDataset
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.output.sinks.sink import DatasetFileSink
@@ -40,19 +40,31 @@ class ArffFileSink(DatasetFileSink):
         if dataset.has_sparse_features and dataset.has_sparse_outputs:
             return [{} for _ in range(num_examples)]
 
-        num_features = dataset.num_features
-        num_outputs = dataset.num_outputs
-        return [[0 for _ in range(num_features + num_outputs)] for _ in range(num_examples)]
+        num_attributes = dataset.num_features + dataset.num_outputs
+        attributes = dataset.features + dataset.outputs
+        return [[ArffFileSink.__format_value(attributes[i], 0) for i in range(num_attributes)]
+                for _ in range(num_examples)]
+
+    @staticmethod
+    def __format_value(attribute: Attribute, value: Any) -> Any:
+        nominal = attribute.attribute_type != AttributeType.NUMERICAL and attribute.nominal_values
+        nominal_values = attribute.nominal_values if nominal else None
+        return nominal_values[int(value)] if nominal_values else to_int_or_float(value)
 
     @staticmethod
     def __fill_arff_data(dataset: TabularDataset, data: List[Any]):
-        for keys, value in dok_array(dataset.x).items():
-            data[keys[0]][keys[1]] = to_int_or_float(value)
+        features = dataset.features
+
+        for (example_index, feature_index), value in dok_array(dataset.x).items():
+            feature = features[feature_index]
+            data[example_index][feature_index] = ArffFileSink.__format_value(feature, value)
 
         num_features = dataset.num_features
+        outputs = dataset.outputs
 
-        for keys, value in dok_array(dataset.y).items():
-            data[keys[0]][num_features + keys[1]] = to_int_or_float(value)
+        for (example_index, output_index), value in dok_array(dataset.y).items():
+            output = outputs[output_index]
+            data[example_index][num_features + output_index] = ArffFileSink.__format_value(output, value)
 
     @staticmethod
     def __write_arff_file(file_path: Path, dataset: TabularDataset):
