@@ -20,6 +20,7 @@ from mlrl.testbed_sklearn.experiments.dataset import AttributeType, TabularDatas
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.output.sinks.sink import DatasetFileSink
 from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.util.format import to_int_or_float
 from mlrl.testbed.util.io import ENCODING_UTF8, open_writable_file
 
 from mlrl.util.options import Options
@@ -44,12 +45,12 @@ class ArffFileSink(DatasetFileSink):
     @staticmethod
     def __fill_arff_data(dataset: TabularDataset, data: List[Any]):
         for keys, value in dok_array(dataset.x).items():
-            data[keys[0]][keys[1]] = value
+            data[keys[0]][keys[1]] = to_int_or_float(value)
 
         num_features = dataset.num_features
 
         for keys, value in dok_array(dataset.y).items():
-            data[keys[0]][num_features + keys[1]] = value
+            data[keys[0]][num_features + keys[1]] = to_int_or_float(value)
 
     @staticmethod
     def __write_arff_file(file_path: Path, dataset: TabularDataset):
