@@ -7,11 +7,11 @@ from argparse import Namespace
 from pathlib import Path
 from typing import Set, Type, override
 
-from mlrl.testbed.experiments.experiment import Experiment
+from mlrl.testbed.experiments.experiment import Experiment, ExperimentListener
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import Mode, SingleMode
+from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
 
 from mlrl.util.cli import Argument
 
@@ -22,7 +22,7 @@ class OutputExtension(Extension):
     """
 
     @override
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, _: Mode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
@@ -38,13 +38,20 @@ class OutputExtension(Extension):
         """
         experiment_builder.set_exit_on_error(OutputArguments.EXIT_ON_ERROR.get_value(args))
 
+    @override
+    def get_supported_modes(self) -> Set[Type[Mode]]:
+        """
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+        """
+        return {SingleMode, BatchMode, RunMode}
+
 
 class ResultDirectoryExtension(Extension):
     """
     An extension that configures the directory to which experimental results should be written.
     """
 
-    class WipeDirectoryListener(Experiment.Listener):
+    class WipeDirectoryListener(ExperimentListener):
         """
         Deletes all files from a directory before an experiment starts.
         """
@@ -56,9 +63,9 @@ class ResultDirectoryExtension(Extension):
             self.directory = directory
 
         @override
-        def before_start(self, _: Experiment, state: ExperimentState):
+        def before_start(self, state: ExperimentState):
             """
-            See :func:`mlrl.testbed.experiments.Experiment.Listener.before_start`
+            See :func:`mlrl.testbed.experiments.ExperimentListener.before_start`
             """
             directory = self.directory
 
@@ -70,7 +77,7 @@ class ResultDirectoryExtension(Extension):
             return state
 
     @override
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, _: Mode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
@@ -81,10 +88,11 @@ class ResultDirectoryExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
+        base_dir = OutputArguments.BASE_DIR.get_value(args)
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
-        if result_directory and ResultDirectoryArguments.WIPE_RESULT_DIR.get_value(args):
-            listener = ResultDirectoryExtension.WipeDirectoryListener(Path(result_directory))
+        if base_dir and result_directory and ResultDirectoryArguments.WIPE_RESULT_DIR.get_value(args):
+            listener = ResultDirectoryExtension.WipeDirectoryListener(base_dir / result_directory)
             experiment_builder.add_listeners(listener)
 
     @override
@@ -92,4 +100,4 @@ class ResultDirectoryExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode}
+        return {SingleMode, RunMode}

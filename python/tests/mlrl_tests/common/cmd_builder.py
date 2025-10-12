@@ -28,6 +28,8 @@ class CmdBuilder:
 
     EXPECTED_OUTPUT_DIR = RESOURCE_DIR / 'out'
 
+    RERUN_DIR = Path('rerun')
+
     def __init__(self,
                  expected_output_dir: Path,
                  batch_config: Path,
@@ -57,6 +59,7 @@ class CmdBuilder:
         self.current_fold = None
         self.args: List[str] = []
         self.save_evaluation(True)
+        self.problem_type: Optional[str] = None
 
     @property
     def base_dir(self) -> Path:
@@ -102,6 +105,7 @@ class CmdBuilder:
         parameter_save_dir = self.parameter_save_dir
         return self.base_dir / parameter_save_dir if parameter_save_dir else None
 
+    # pylint: disable=too-many-branches
     def build(self) -> List[str]:
         """
         Returns the command that has been configured via the builder.
@@ -120,8 +124,10 @@ class CmdBuilder:
             args.append('--help')
             return args
 
+        base_dir = self.base_dir / self.RERUN_DIR if self.mode == Mode.MODE_RUN else self.base_dir
+
         args.extend(('--log-level', 'debug'))
-        args.extend(('--base-dir', str(self.base_dir)))
+        args.extend(('--base-dir', str(base_dir)))
 
         if self.mode == Mode.MODE_BATCH:
             args.extend(('--config', str(self.batch_config)))
@@ -131,13 +137,17 @@ class CmdBuilder:
 
                 if self.runner == 'slurm':
                     args.extend(('--slurm-config', str(self.CONFIG_DIR / 'slurm_config.yml'), '--print-slurm-scripts',
-                                 'true', '--save-slurm-scripts', 'true', '--slurm-save-dir', str(self.base_dir)))
+                                 'true', '--save-slurm-scripts', 'true', '--slurm-save-dir', str(base_dir)))
         else:
-            args.extend(('--data-dir', str(self.RESOURCE_DIR / 'data')))
-            args.extend(('--dataset', self.dataset))
+            if self.mode == Mode.MODE_RUN:
+                args.extend(('--input-dir', str(self.base_dir)))
+            else:
+                args.extend(('--data-dir', str(self.RESOURCE_DIR / 'data')))
+                args.extend(('--dataset', self.dataset))
+
             args.extend(('--result-dir', str(self.result_dir)))
 
-            if self.model_load_dir:
+            if self.model_load_dir and self.mode != Mode.MODE_RUN:
                 self.args.append('--load-models')
                 self.args.append(str(True).lower())
                 self.args.append('--model-load-dir')
@@ -150,6 +160,9 @@ class CmdBuilder:
             if self.parameter_save_dir:
                 self.args.append('--parameter-save-dir')
                 self.args.append(str(self.parameter_save_dir))
+
+        if self.problem_type and self.mode != Mode.MODE_RUN:
+            args.extend(('--problem-type', self.problem_type))
 
         return args + self.args
 
@@ -319,6 +332,28 @@ class CmdBuilder:
         self.model_save_dir = self.model_dir
         self.args.append('--save-all')
         self.args.append(str(save_all).lower())
+        return self
+
+    def print_meta_data(self, print_meta_data: bool = True):
+        """
+        Configures whether the meta-data of the experiment should be printed on the console or not.
+
+        :param print_meta_data: True, if the meta-data should be printed, False otherwise
+        :return:                The builder itself
+        """
+        self.args.append('--print-meta-data')
+        self.args.append(str(print_meta_data).lower())
+        return self
+
+    def save_meta_data(self, save_meta_data: bool = True):
+        """
+        Configures whether the meta-data of the experiment should be written to output files or not.
+
+        :param save_meta_data:  True, if the meta-data should be written to output files, False otherwise
+        :return:                The builder itself
+        """
+        self.args.append('--save-meta-data')
+        self.args.append(str(save_meta_data).lower())
         return self
 
     def print_evaluation(self, print_evaluation: bool = True):
@@ -600,7 +635,7 @@ class CmdBuilder:
         """
         Configures the post-optimization method to be used by the algorithm.
 
-        :param post_optimization:   The name of the method that should be used for post-optimzation
+        :param post_optimization:   The name of the method that should be used for post-optimization
         :return:                    The builder itself
         """
         if post_optimization:

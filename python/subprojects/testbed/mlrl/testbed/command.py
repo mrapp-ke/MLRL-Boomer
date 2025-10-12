@@ -11,6 +11,7 @@ from dataclasses import dataclass
 from itertools import chain
 from typing import Dict, Iterable, List, Optional, override
 
+from mlrl.util.cli import Argument
 from mlrl.util.format import format_iterable
 
 
@@ -118,6 +119,17 @@ class Command(Iterable[str]):
         return Command(module_name=module_name, argument_dict=argument_dict, argument_list=argument_dict.to_list())
 
     @staticmethod
+    def from_string(string: str) -> 'Command':
+        """
+        Creates and returns a command from a given string.
+
+        :param string:  The string, the command should be created from
+        :return:        The command that has been created
+        """
+        args = string.split()
+        return Command.from_list(args[1], ArgumentList(args[2:]))
+
+    @staticmethod
     def from_argv() -> 'Command':
         """
         Creates and returns a command from `sys.argv`.
@@ -138,7 +150,7 @@ class Command(Iterable[str]):
 
         for i, argument in enumerate(argument_list):
             if argument.startswith('-'):
-                argument_name = argument.lstrip('-').replace('-', '_')
+                argument_name = Argument.argument_name_to_key(argument)
                 argument_value = None
 
                 if i + 1 < len(argument_list):

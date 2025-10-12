@@ -283,3 +283,43 @@ class IStatistics : public IStatisticsSpace {
         virtual std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
           const DenseWeightVector<float32>& weights) const = 0;
 };
+
+/**
+ * An abstract base class for all classes that provide access to statistics about the quality of predictions for
+ * training examples, which serve as the basis for learning a new rule or refining an existing one.
+ *
+ * @tparam State The type of the state of the training process
+ */
+template<typename State>
+class AbstractStatistics : virtual public IStatistics {
+    protected:
+
+        /**
+         * An unique pointer to the state of the training process.
+         */
+        const std::unique_ptr<State> statePtr_;
+
+    public:
+
+        /**
+         * @param statePtr An unique pointer to an object of template type `State` that represents the state of the
+         *                 training process and allows to update it
+         */
+        explicit AbstractStatistics(std::unique_ptr<State> statePtr) : statePtr_(std::move(statePtr)) {}
+
+        virtual ~AbstractStatistics() override {}
+
+        /**
+         * @see `IStatistics::getNumStatistics`
+         */
+        uint32 getNumStatistics() const override final {
+            return statePtr_->statisticMatrixPtr->getNumRows();
+        }
+
+        /**
+         * @see `IStatistics::getNumOutputs`
+         */
+        uint32 getNumOutputs() const override final {
+            return statePtr_->statisticMatrixPtr->getNumCols();
+        }
+};

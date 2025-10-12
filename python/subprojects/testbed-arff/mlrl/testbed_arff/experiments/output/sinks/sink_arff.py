@@ -13,6 +13,8 @@ import arff
 
 from scipy.sparse import dok_array
 
+from mlrl.testbed_arff.experiments.input.sources import ArffFileSource
+
 from mlrl.testbed_sklearn.experiments.dataset import Attribute, AttributeType, TabularDataset
 
 from mlrl.testbed.experiments.dataset import Dataset
@@ -28,10 +30,6 @@ class ArffFileSink(DatasetFileSink):
     """
     Allows to write a dataset to an ARFF file.
     """
-
-    SUFFIX_ARFF = 'arff'
-
-    SUFFIX_XML = 'xml'
 
     @staticmethod
     def __create_arff_data(dataset: TabularDataset) -> List[Any]:
@@ -111,11 +109,11 @@ class ArffFileSink(DatasetFileSink):
                                     otherwise
         """
         super().__init__(directory=directory,
-                         suffix=self.SUFFIX_ARFF,
+                         suffix=ArffFileSource.SUFFIX_ARFF,
                          options=options,
                          create_directory=create_directory)
 
     # pylint: disable=unused-argument
     def _write_dataset_to_file(self, file_path: Path, state: ExperimentState, dataset: Dataset, **_):
         self.__write_arff_file(file_path=file_path, dataset=dataset)
-        self.__write_xml_file(file_path=file_path.with_suffix('.' + self.SUFFIX_XML), dataset=dataset)
+        self.__write_xml_file(file_path=file_path.with_suffix('.' + ArffFileSource.SUFFIX_XML), dataset=dataset)

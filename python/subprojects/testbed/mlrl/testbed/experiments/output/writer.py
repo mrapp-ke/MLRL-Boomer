@@ -34,7 +34,7 @@ class OutputWriter:
     Allows to write output data to one or several sinks.
     """
 
-    def __extract_data(self, extractor: DataExtractor, state: ExperimentState) -> Optional[OutputData]:
+    def __extract_data_from_extractor(self, extractor: DataExtractor, state: ExperimentState) -> Optional[OutputData]:
         try:
             return extractor.extract_data(state, self.sinks)
         # pylint: disable=broad-exception-caught
@@ -46,6 +46,20 @@ class OutputWriter:
                       type(extractor).__name__,
                       exc_info=error)
             return None
+
+    def __extract_data(self, state: ExperimentState) -> Optional[OutputData]:
+        extractors = self.extractors
+
+        if extractors:
+            for extractor in extractors:
+                output_data = self.__extract_data_from_extractor(extractor, state)
+
+                if output_data:
+                    return output_data
+        else:
+            log.warning('No extractors have been added to output writer of type %s', type(self).__name__)
+
+        return None
 
     def __write_to_sink(self, sink: Sink, state: ExperimentState, output_data: OutputData):
         try:
@@ -87,22 +101,11 @@ class OutputWriter:
         sinks = self.sinks
 
         if sinks:
-            extractors = self.extractors
+            output_data = self.__extract_data(state)
 
-            if extractors:
-                output_data = None
-
-                for extractor in extractors:
-                    output_data = self.__extract_data(extractor, state)
-
-                    if output_data:
-                        break
-
-                if output_data:
-                    for sink in sinks:
-                        self.__write_to_sink(sink, state, output_data)
-            else:
-                log.warning('No extractors have been added to output writer of type %s', type(self).__name__)
+            if output_data:
+                for sink in sinks:
+                    self.__write_to_sink(sink, state, output_data)
 
     def _write_to_sink(self, sink: Sink, state: ExperimentState, output_data: OutputData):
         """

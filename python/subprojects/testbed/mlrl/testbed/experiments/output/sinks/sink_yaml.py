@@ -8,6 +8,7 @@ from typing import override
 
 import yaml
 
+from mlrl.testbed.experiments.input.sources import YamlFileSource
 from mlrl.testbed.experiments.output.data import OutputData, StructuralOutputData
 from mlrl.testbed.experiments.output.sinks.sink import FileSink
 from mlrl.testbed.experiments.state import ExperimentState
@@ -21,8 +22,6 @@ class YamlFileSink(FileSink):
     Allows to write structural output data to a YAML file.
     """
 
-    SUFFIX_YAML = 'yml'
-
     def __init__(self, directory: Path, options: Options = Options(), create_directory: bool = False):
         """
         :param directory:           The path to the directory of the file
@@ -31,7 +30,7 @@ class YamlFileSink(FileSink):
                                     otherwise
         """
         super().__init__(directory=directory,
-                         suffix=self.SUFFIX_YAML,
+                         suffix=YamlFileSource.SUFFIX_YAML,
                          options=options,
                          create_directory=create_directory)
 

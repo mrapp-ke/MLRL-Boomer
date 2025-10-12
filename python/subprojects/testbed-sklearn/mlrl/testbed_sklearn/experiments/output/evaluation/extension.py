@@ -4,8 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write evaluation results to one or several sinks.
 """
 from argparse import Namespace
-from pathlib import Path
-from typing import Set, override
+from typing import Set, Type, override
 
 from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import EvaluationResult
 from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_classification import \
@@ -16,11 +15,11 @@ from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_regression imp
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
-from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
-from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
+from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, RegressionProblem
 from mlrl.testbed.extensions.extension import Extension
+from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
 from mlrl.util.cli import Argument, BoolArgument
@@ -76,7 +75,7 @@ class EvaluationExtension(Extension):
             EvaluationResult.OPTION_COVERAGE_ERROR, EvaluationResult.OPTION_LABEL_RANKING_AVERAGE_PRECISION,
             EvaluationResult.OPTION_DISCOUNTED_CUMULATIVE_GAIN,
             EvaluationResult.OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, EvaluationResult.OPTION_TRAINING_TIME,
-            EvaluationResult.OPTION_PREDICTION_TIME, OPTION_DECIMALS, OPTION_PERCENTAGE
+            EvaluationResult.OPTION_PREDICTION_TIME, OPTION_DECIMALS
         },
     )
 
@@ -87,7 +86,7 @@ class EvaluationExtension(Extension):
         super().__init__(OutputExtension(), ResultDirectoryExtension(), *dependencies)
 
     @override
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, _: Mode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
@@ -103,12 +102,13 @@ class EvaluationExtension(Extension):
     def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         save_all = OutputArguments.SAVE_ALL.get_value(args)
         save_evaluation_results, options = self.SAVE_EVALUATION.get_value(args, default=save_all)
+        base_dir = OutputArguments.BASE_DIR.get_value(args)
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
-        if save_evaluation_results and result_directory:
+        if base_dir and save_evaluation_results and result_directory:
             create_directory = OutputArguments.CREATE_DIRS.get_value(args)
             experiment_builder.evaluation_writer.add_sinks(
-                CsvFileSink(directory=Path(result_directory), create_directory=create_directory, options=options))
+                CsvFileSink(directory=base_dir / result_directory, create_directory=create_directory, options=options))
 
     @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
@@ -131,3 +131,10 @@ class EvaluationExtension(Extension):
                 extractor = ClassificationEvaluationDataExtractor()
 
             experiment_builder.evaluation_writer.extractors.append(extractor)
+
+    @override
+    def get_supported_modes(self) -> Set[Type[Mode]]:
+        """
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+        """
+        return {SingleMode, BatchMode, RunMode}

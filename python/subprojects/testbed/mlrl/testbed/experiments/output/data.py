@@ -3,11 +3,14 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing output data.
 """
+import json
+
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, replace
+from dataclasses import replace
 from typing import Any, Dict, Iterable, List, Optional, Type, override
 
 from mlrl.testbed.experiments.context import Context
+from mlrl.testbed.experiments.data import Properties, TabularProperties
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
@@ -20,18 +23,6 @@ class OutputData(ABC):
     """
     An abstract class for all classes that represent output data.
     """
-
-    @dataclass
-    class Properties:
-        """
-        Properties of output data.
-
-        Attributes:
-            name:       A name to be included in log messages
-            file_name:  A file name to be used for writing into output files
-        """
-        name: str
-        file_name: str
 
     def __init__(self, properties: Properties, context: Context = Context()):
         """
@@ -133,6 +124,14 @@ class TabularOutputData(TextualOutputData, ABC):
     tabular, representation.
     """
 
+    def __init__(self, properties: TabularProperties, context: Context = Context()):
+        """
+        :param properties:  The properties of the output data
+        :param context:     A `Context` to be used by default for finding a suitable sink this output data can be
+                            written to
+        """
+        super().__init__(properties=properties, context=context)
+
     @abstractmethod
     def to_table(self, options: Options, **kwargs) -> Optional[Table]:
         """
@@ -143,7 +142,7 @@ class TabularOutputData(TextualOutputData, ABC):
         """
 
 
-class StructuralOutputData(OutputData, ABC):
+class StructuralOutputData(TextualOutputData, ABC):
     """
     An abstract base class for all classes that represent output data that can be converted into a structural
     representation, e.g., YAML or JSON.
@@ -157,6 +156,11 @@ class StructuralOutputData(OutputData, ABC):
         :param options: Options to be taken into account
         :return:        The dictionary that has been created
         """
+
+    @override
+    def to_text(self, options: Options, **kwargs) -> Optional[str]:
+        dictionary = self.to_dict(options, **kwargs)
+        return None if dictionary is None else json.dumps(dictionary, indent=4)
 
 
 class DatasetOutputData(TextualOutputData, ABC):
