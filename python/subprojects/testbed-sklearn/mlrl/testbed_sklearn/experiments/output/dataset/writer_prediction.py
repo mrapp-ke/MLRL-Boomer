@@ -5,6 +5,8 @@ Provides classes that allow writing predictions to one or several sinks.
 """
 
 from dataclasses import replace
+from functools import reduce
+from itertools import chain
 from typing import List, Optional, override
 
 import numpy as np
@@ -18,6 +20,8 @@ from mlrl.testbed.experiments.output.writer import DataExtractor, OutputWriter
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem
 from mlrl.testbed.experiments.state import ExperimentState
 
+from mlrl.util.arrays import is_sparse
+
 
 class PredictionWriter(OutputWriter):
     """
@@ -28,6 +32,18 @@ class PredictionWriter(OutputWriter):
         """
         The extractor to be used by a `PredictionWriter`, by default.
         """
+
+        @staticmethod
+        def __get_unique_values(array) -> np.ndarray:
+            if is_sparse(array):
+                data = array.data
+
+                if array.nnz < reduce(lambda aggr, ndim: aggr * ndim, array.shape, 1):
+                    return np.fromiter(set(chain(np.zeros(shape=1, dtype=data.dtype), data)), dtype=data.dtype)
+
+                return np.unique(data)
+
+            return np.unique(array)
 
         @override
         def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
@@ -44,7 +60,9 @@ class PredictionWriter(OutputWriter):
                 if issubclass(predictions.dtype.type, np.integer):
                     if isinstance(state.problem_domain, ClassificationProblem):
                         attribute_type = AttributeType.NOMINAL
-                        nominal_values = [str(value) for value in np.unique(predictions)]
+                        unique_values = self.__get_unique_values(predictions)
+                        unique_values.sort()
+                        nominal_values = [str(value) for value in unique_values]
                     else:
                         attribute_type = AttributeType.ORDINAL
                 else:
