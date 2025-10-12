@@ -39,10 +39,10 @@ A gradient boosting algorithm for multi-output classification and regression
 A separate-and-conquer algorithm for multi-label classification
 ```
 
-```{grid-item-card} MLRL-Testbed
+```{grid-item-card} mlrl-testbed
 :link: user-guide-testbed
 :link-type: ref
-:link-alt: Documentation of the command line utility MLRL-Testbed
+:link-alt: Documentation of the command line utility mlrl-testbed
 :text-align: center
 
 A command line utility for running machine learning experiments

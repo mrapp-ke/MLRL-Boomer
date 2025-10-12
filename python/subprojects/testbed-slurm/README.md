@@ -1,4 +1,4 @@
-# "MLRL-Testbed-Slurm": Adds support for the Slurm Workload Manager to the package "mlrl-testbed"
+# "mlrl-testbed-slurm": Adds support for the Slurm Workload Manager to the package "mlrl-testbed"
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![PyPI version](https://badge.fury.io/py/mlrl-testbed-slurm.svg)](https://badge.fury.io/py/mlrl-testbed-slurm) [![Documentation Status](https://readthedocs.org/projects/mlrl-boomer/badge/?version=latest)](https://mlrl-boomer.readthedocs.io/en/latest/?badge=latest)
 

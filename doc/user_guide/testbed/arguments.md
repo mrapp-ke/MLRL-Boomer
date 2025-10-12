@@ -44,7 +44,7 @@ The arguments given above can be used to integrate any scikit-learn compatible m
 
 ### Mode
 
-MLRL-Testbed supports different modes of operation configurable via the argument `--mode`. By default, a single experiment configured via the command line API is run. However, it is also possible to run several experiments at once. In the following, we provide an overview of all available configuration options:
+The package mlrl-testbed supports different modes of operation configurable via the argument `--mode`. By default, a single experiment configured via the command line API is run. However, it is also possible to run several experiments at once. In the following, we provide an overview of all available configuration options:
 
 - `--mode` (Default value = `single`)
 
@@ -249,7 +249,7 @@ Depending on the characteristics of a dataset, it might be desirable to apply on
 
 ## Saving and Loading Data
 
-MLRL-Testbed allows saving data gathered during experiments to output files or printing it on the console. Previously saved data can also be loaded in subsequent experiments. In the following, we list all command line arguments concerned with this functionality.
+The package mlrl-testbed allows saving data gathered during experiments to output files or printing it on the console. Previously saved data can also be loaded in subsequent experiments. In the following, we list all command line arguments concerned with this functionality.
 
 - `--base-dir` (Default value = `experiments/<yyyy-mm-dd_HH-MM>`, e.g., `experiments/2025-07-13_01-20`, depending on the current date and time) An absolute or relative path to a directory. If relative paths to directories, where files should be saved, are given, they are considered relative to the directory specified via this argument.
 
@@ -280,7 +280,7 @@ MLRL-Testbed allows saving data gathered during experiments to output files or p
 
 ### Meta-Data
 
-Saving meta-data can help improving the reproducibility of experiments. Among other information, it contains the command that has been used for running an experiment and the version of MLRL-Testbed used.
+Saving meta-data can help improving the reproducibility of experiments. Among other information, it contains the command that has been used for running an experiment and the version of mlrl-testbed used.
 
 - `--print-meta-data` (Default value = `false`)
 
