@@ -6,8 +6,8 @@ Provides base classes for programs that can be configured via command line argum
 
 from abc import ABC, abstractmethod
 from argparse import Namespace
-from functools import cached_property, reduce
-from typing import List, Optional, Set, override
+from functools import reduce
+from typing import List, Optional, Set, Type, override
 
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments import Experiment
@@ -16,9 +16,7 @@ from mlrl.testbed.experiments.output.meta_data.extension import MetaDataExtensio
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.extensions import Extension
-from mlrl.testbed.extensions.extension_log import LogExtension
-from mlrl.testbed.modes import Mode
-from mlrl.testbed.modes.mode_batch import BatchMode
+from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
 from mlrl.testbed.program_info import ProgramInfo
 
 from mlrl.util.cli import Argument, BoolArgument, CommandLineInterface
@@ -54,7 +52,7 @@ class Runnable(Recipe, ABC):
         )
 
         @override
-        def _get_arguments(self) -> Set[Argument]:
+        def _get_arguments(self, _: Mode) -> Set[Argument]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
             """
@@ -68,25 +66,34 @@ class Runnable(Recipe, ABC):
             experiment_builder.set_predict_for_training_dataset(self.PREDICT_FOR_TRAINING_DATA.get_value(args))
             experiment_builder.set_predict_for_test_dataset(self.PREDICT_FOR_TEST_DATA.get_value(args))
 
-    @cached_property
-    def extensions(self) -> List[Extension]:
-        """
-        A list that contains the extensions that should be applied to the runnable sorted in a consistent order.
-        """
-        return sorted(self.get_extensions(), key=lambda extension: type(extension).__name__)
+        @override
+        def get_supported_modes(self) -> Set[Type[Mode]]:
+            """
+            See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+            """
+            return {SingleMode, BatchMode, RunMode}
 
-    def get_extensions(self) -> Set[Extension]:
+    def get_extensions(self) -> List[Extension]:
         """
         May be overridden by subclasses in order to return the extensions that should be applied to the runnable.
 
         :return: A set that contains the extensions to be applied to the runnable
         """
-        return {
+        return [
             Runnable.PredictionDatasetExtension(),
-            LogExtension(),
             MetaDataExtension(),
             SlurmExtension(),
-        }
+        ]
+
+    def get_supported_extensions(self, mode: Mode) -> List[Extension]:
+        """
+        Returns the extensions that should be applied to the runnable and support a given mode of operation.
+
+        :param mode:    The mode to be supported
+        :return:        A list that contains all extensions that should be applied to the runnable and support the given
+                        mode
+        """
+        return [extension for extension in self.get_extensions() if extension.is_mode_supported(mode)]
 
     def get_program_info(self) -> Optional[ProgramInfo]:
         """
@@ -129,7 +136,7 @@ class Runnable(Recipe, ABC):
                 runnable = self.runnable
                 experiment_builder = runnable.create_experiment_builder(args, command)
 
-                for extension in runnable.extensions:
+                for extension in runnable.get_supported_extensions(mode):
                     extension.configure_experiment(args, experiment_builder)
 
                     for dependency in extension.get_dependencies(mode):
@@ -142,17 +149,36 @@ class Runnable(Recipe, ABC):
     def configure_batch_mode(self, cli: CommandLineInterface) -> BatchMode:
         """
         Configures the batch mode according to the extensions applied to the runnable.
+
+        :param cli: The command line interface to be configured
         """
         batch_mode = BatchMode(self.create_batch_config_file_factory())
         args = cli.parse_known_args()
 
-        for extension in self.extensions:
+        for extension in self.get_supported_extensions(batch_mode):
             extension.configure_batch_mode(args, batch_mode)
 
             for dependency in extension.get_dependencies(batch_mode):
                 dependency.configure_batch_mode(args, batch_mode)
 
         return batch_mode
+
+    def configure_run_mode(self, cli: CommandLineInterface) -> RunMode:
+        """
+        Configures the run mode according to the extensions applied to the runnable.
+
+        :param cli: The command line interface to be configured
+        """
+        run_mode = RunMode()
+        args = cli.parse_known_args()
+
+        for extension in self.get_supported_extensions(run_mode):
+            extension.configure_run_mode(args, run_mode)
+
+            for dependency in extension.get_dependencies(run_mode):
+                dependency.configure_run_mode(args, run_mode)
+
+        return run_mode
 
     def configure_arguments(self, cli: CommandLineInterface, mode: Mode):
         """
@@ -161,9 +187,12 @@ class Runnable(Recipe, ABC):
         :param cli:     The command line interface to be configured
         :param mode:    The mode of operation
         """
-        arguments = reduce(lambda aggr, extension: aggr | extension.get_arguments(mode), self.extensions, set())
-        arguments.update(self.get_algorithmic_arguments(cli.parse_known_args()))
-        cli.add_arguments(*sorted(arguments, key=lambda arg: arg.name))
+        extension_arguments: Set[Argument] = reduce(lambda aggr, extension: aggr | extension.get_arguments(mode),
+                                                    self.get_extensions(), set())
+        algorithmic_arguments = self.get_algorithmic_arguments(cli.parse_known_args())
+        mode.configure_arguments(cli,
+                                 extension_arguments=sorted(extension_arguments, key=lambda arg: arg.name),
+                                 algorithmic_arguments=sorted(algorithmic_arguments, key=lambda arg: arg.name))
 
     # pylint: disable=unused-argument
     def get_algorithmic_arguments(self, known_args: Namespace) -> Set[Argument]:

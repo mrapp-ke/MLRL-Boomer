@@ -1,0 +1,6 @@
+command: mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp/rerun --data-dir
+  python/tests/res/data --dataset atp7d --log-level debug --model-save-dir models
+  --parameter-save-dir results --print-all true --problem-type regression --result-dir
+  results --save-all true --save-evaluation true --save-meta-data true
+timestamp: <timestamp>
+version: <version>

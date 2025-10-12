@@ -6,11 +6,10 @@ package.
 """
 from abc import ABC, abstractmethod
 from argparse import Namespace
-from typing import Any, Set, Type, override
+from typing import Set, Type, override
 
 from mlrl.testbed.experiments.experiment import Experiment
-from mlrl.testbed.modes import Mode
-from mlrl.testbed.modes.mode_batch import BatchMode
+from mlrl.testbed.modes import BatchMode, Mode, RunMode
 
 from mlrl.util.cli import Argument
 
@@ -52,7 +51,7 @@ class Extension(ABC):
         :param mode:    The mode to be supported
         :return:        A set that contains the arguments
         """
-        arguments = self._get_arguments() if self.is_mode_supported(mode) else set()
+        arguments = self._get_arguments(mode) if self.is_mode_supported(mode) else set()
 
         for dependency in self._dependencies:
             for argument in dependency.get_arguments(mode):
@@ -60,13 +59,13 @@ class Extension(ABC):
 
         return arguments
 
+    @abstractmethod
     def get_supported_modes(self) -> Set[Type[Mode]]:
         """
-        May be overridden by subclasses in order to return the modes of operation supported by this extension.
+        Must be implemented by subclasses in order to return the modes of operation supported by this extension.
 
         :return: A set that contains the supported modes or an empty set, if all modes are supported
         """
-        return set()
 
     def is_mode_supported(self, mode: Mode) -> bool:
         """
@@ -96,22 +95,24 @@ class Extension(ABC):
         :param batch_mode:  The batch mode to be configured
         """
 
+    def configure_run_mode(self, args: Namespace, run_mode: RunMode):
+        """
+        May be overridden by subclasses in order to configure the run mode according to the command line arguments
+        specified by the user.
+
+        :param args:        The command line arguments specified by the user
+        :param run_mode:    The run mode to be configured
+        """
+
     @abstractmethod
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, mode: Mode) -> Set[Argument]:
         """
         Must be implemented by subclasses in order to return the arguments that should be added to the command line API
         according to this extension.
 
-        :return: A set that contains the arguments that should be added to the command line API
+        :mode:      The mode of operation
+        :return:    A set that contains the arguments that should be added to the command line API
         """
-
-    @override
-    def __hash__(self) -> int:
-        return hash(type(self))
-
-    @override
-    def __eq__(self, other: Any) -> bool:
-        return isinstance(other, type(self))
 
 
 class NopExtension(Extension):
@@ -120,5 +121,12 @@ class NopExtension(Extension):
     """
 
     @override
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, _: Mode) -> Set[Argument]:
+        return set()
+
+    @override
+    def get_supported_modes(self) -> Set[Type[Mode]]:
+        """
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+        """
         return set()

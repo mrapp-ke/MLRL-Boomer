@@ -1,6 +1,6 @@
 command: mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp
-  --data-dir python/tests/res/data --dataset atp7d --result-dir results --save-evaluation
-  true --problem-type regression --instance-sampling without-replacement --rule-pruning
+  --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type
+  regression --save-evaluation true --instance-sampling without-replacement --rule-pruning
   irep
 timestamp: <timestamp>
 version: <version>

@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides base classes for programs that can be configured via command line arguments.
 """
 from argparse import Namespace
-from typing import Any, Dict, Optional, Set, Type, override
+from typing import Any, Dict, List, Optional, Set, Type, override
 
 from sklearn.base import BaseEstimator, ClassifierMixin as SkLearnClassifierMixin, \
     RegressorMixin as SkLearnRegressorMixin
@@ -29,6 +29,7 @@ from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, RegressionProblem
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.extensions.extension import Extension
+from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
 
 from mlrl.util.cli import Argument, BoolArgument, EnumArgument, FloatArgument
 from mlrl.util.validation import assert_greater, assert_greater_or_equal
@@ -83,11 +84,18 @@ class RuleLearnerRunnable(SkLearnRunnable):
         )
 
         @override
-        def _get_arguments(self) -> Set[Argument]:
+        def _get_arguments(self, _: Mode) -> Set[Argument]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
             """
             return {self.INCREMENTAL_EVALUATION}
+
+        @override
+        def get_supported_modes(self) -> Set[Type[Mode]]:
+            """
+            See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+            """
+            return {SingleMode, BatchMode, RunMode}
 
         @staticmethod
         def get_predictor_factory(args: Namespace, prediction_type: PredictionType) -> SkLearnProblem.PredictorFactory:
@@ -148,11 +156,18 @@ class RuleLearnerRunnable(SkLearnRunnable):
         )
 
         @override
-        def _get_arguments(self) -> Set[Argument]:
+        def _get_arguments(self, _: Mode) -> Set[Argument]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
             """
             return {self.FEATURE_FORMAT, self.OUTPUT_FORMAT, self.PREDICTION_FORMAT, self.SPARSE_FEATURE_VALUE}
+
+        @override
+        def get_supported_modes(self) -> Set[Type[Mode]]:
+            """
+            See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+            """
+            return {SingleMode, BatchMode}
 
         @staticmethod
         def get_estimator(args: Namespace, estimator_type: Type[BaseEstimator],
@@ -232,17 +247,17 @@ class RuleLearnerRunnable(SkLearnRunnable):
         self.regressor_parameters = regressor_parameters
 
     @override
-    def get_extensions(self) -> Set[Extension]:
+    def get_extensions(self) -> List[Extension]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_extensions`
         """
-        return super().get_extensions() | {
+        return [
             RuleLearnerRunnable.IncrementalPredictionExtension(),
             RuleLearnerRunnable.RuleLearnerExtension(),
             RuleModelAsTextExtension(),
             RuleModelCharacteristicsExtension(),
             LabelVectorSetExtension(),
-        }
+        ] + super().get_extensions()
 
     @override
     def get_algorithmic_arguments(self, known_args: Namespace) -> Set[Argument]:

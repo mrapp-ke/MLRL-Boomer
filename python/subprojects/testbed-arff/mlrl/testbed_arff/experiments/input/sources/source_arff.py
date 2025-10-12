@@ -5,6 +5,7 @@ Provides classes that allow reading datasets from ARFF files.
 """
 import logging as log
 
+from dataclasses import replace
 from functools import cached_property
 from pathlib import Path
 from typing import Any, List, Optional, Set
@@ -15,11 +16,12 @@ import numpy as np
 
 from scipy.sparse import coo_array, csc_array, sparray
 
-from mlrl.testbed_arff.experiments.output.sinks.sink_arff import ArffFileSink
-
 from mlrl.testbed_sklearn.experiments.dataset import Attribute, AttributeType, TabularDataset
 
+from mlrl.testbed.experiments.context import Context
+from mlrl.testbed.experiments.data import Properties
 from mlrl.testbed.experiments.dataset import Dataset
+from mlrl.testbed.experiments.file_path import FilePath
 from mlrl.testbed.experiments.input.data import DatasetInputData
 from mlrl.testbed.experiments.input.sources.source import DatasetFileSource
 from mlrl.testbed.experiments.state import ExperimentState
@@ -45,6 +47,10 @@ class ArffFileSource(DatasetFileSource):
     """
     Allows to read a dataset from an ARFF file.
     """
+
+    SUFFIX_ARFF = 'arff'
+
+    SUFFIX_XML = 'xml'
 
     class ArffFile:
         """
@@ -130,16 +136,27 @@ class ArffFileSource(DatasetFileSource):
             parameter_name = '-C '
             arff_file = self.arff_file
             relation = arff_file.relation
-            index = relation.index(parameter_name)
-            parameter_value = relation[index + len(parameter_name):]
-            index = parameter_value.find(' ')
+            index = relation.find(parameter_name)
 
             if index >= 0:
-                parameter_value = parameter_value[:index]
+                parameter_value = relation[index + len(parameter_name):]
+                index = parameter_value.find(' ')
 
-            num_outputs = int(parameter_value)
-            attributes = arff_file.attributes
-            return {normalize_attribute_name(attributes[i].name) for i in range(num_outputs)}
+                if index >= 0:
+                    parameter_value = parameter_value[:index]
+
+                integer_value = int(parameter_value)
+                num_outputs = abs(integer_value)
+                attributes = arff_file.attributes
+
+                if integer_value < 0:
+                    outputs = attributes[(len(attributes) - num_outputs):]
+                else:
+                    outputs = attributes[:num_outputs]
+
+                return {normalize_attribute_name(output.name) for output in outputs}
+
+            return set()
 
         def __init__(self, arff_file: 'ArffFileSource.ArffFile', output_names: Optional[Set[str]]):
             """
@@ -220,18 +237,38 @@ class ArffFileSource(DatasetFileSource):
         except arff.BadLayout:
             return ArffFileSource.ArffFile.from_file(file_path, sparse=False, dtype=dtype)
 
+    def __find_xml_file(self, state: ExperimentState, directory: Path, properties: Properties,
+                        context: Context) -> Path:
+        file_path = FilePath(directory=directory,
+                             file_name=properties.file_name,
+                             suffix=self.SUFFIX_XML,
+                             context=context)
+        resolved_file_path = file_path.resolve(state)
+
+        if resolved_file_path.is_file():
+            return resolved_file_path
+
+        least_specific_context = Context(include_dataset_type=False, include_prediction_scope=False, include_fold=False)
+
+        if least_specific_context != context:
+            resolved_file_path = replace(file_path, context=least_specific_context).resolve(state)
+
+        return resolved_file_path
+
     def __init__(self, directory: Path):
         """
         :param directory: The path to the directory of the file
         """
-        super().__init__(directory=directory, suffix=ArffFileSink.SUFFIX_ARFF)
+        super().__init__(directory=directory, suffix=self.SUFFIX_ARFF)
 
     def _read_dataset_from_file(self, state: ExperimentState, file_path: Path,
                                 input_data: DatasetInputData) -> Optional[Dataset]:
-        properties = input_data.properties
         problem_domain = state.problem_domain
         arff_file = self.__read_arff_file(file_path=file_path, dtype=problem_domain.feature_dtype)
-        xml_file_path = file_path.with_name(properties.file_name + '.' + ArffFileSink.SUFFIX_XML)
+        xml_file_path = self.__find_xml_file(state=state,
+                                             directory=file_path.parent,
+                                             properties=input_data.properties,
+                                             context=input_data.context)
         arff_dataset = ArffFileSource.ArffDataset.from_file(arff_file=arff_file, file_path=xml_file_path)
         return TabularDataset(x=arff_dataset.feature_matrix.tolil(),
                               y=arff_dataset.output_matrix.astype(problem_domain.output_dtype).tolil(),

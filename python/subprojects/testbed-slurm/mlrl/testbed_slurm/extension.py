@@ -10,8 +10,7 @@ from mlrl.testbed_slurm.arguments import SlurmArguments
 from mlrl.testbed_slurm.runner import SlurmRunner
 
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import Mode
-from mlrl.testbed.modes.mode_batch import BatchMode
+from mlrl.testbed.modes import BatchMode, Mode
 
 from mlrl.util.cli import Argument
 
@@ -29,7 +28,7 @@ class SlurmExtension(Extension):
         batch_mode.add_runner(SlurmRunner())
 
     @override
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, _: Mode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """

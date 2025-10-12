@@ -67,6 +67,7 @@ class ExperimentState:
         parameters:         Algorithmic parameters of the learner used in the experiment
         training_result:    The result of the training process or None, if no model has been trained yet
         prediction_result:  The result of the prediction process or None, if no predictions have been obtained yet
+        extras:             A dictionary that can be used to store arbitrary data referenced via a unique key
     """
     meta_data: MetaData
     problem_domain: ProblemDomain
@@ -77,6 +78,7 @@ class ExperimentState:
     parameters: ParameterDict = field(default_factory=dict)
     training_result: Optional[TrainingState] = None
     prediction_result: Optional[PredictionState] = None
+    extras: Dict[str, Any] = field(default_factory=dict)
 
     def dataset_as(self, caller: Any, *types: Type[Dataset]) -> Optional[Dataset]:
         """
