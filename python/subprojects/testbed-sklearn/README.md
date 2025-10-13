@@ -1,4 +1,4 @@
-# "MLRL-Testbed-Sklearn": Adds support for the scikit-learn framework to the package "mlrl-testbed"
+# "mlrl-testbed-sklearn": Adds support for the scikit-learn framework to the package "mlrl-testbed"
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![PyPI version](https://badge.fury.io/py/mlrl-testbed-sklearn.svg)](https://badge.fury.io/py/mlrl-testbed-sklearn) [![Documentation Status](https://readthedocs.org/projects/mlrl-boomer/badge/?version=latest)](https://mlrl-boomer.readthedocs.io/en/latest/?badge=latest)
 

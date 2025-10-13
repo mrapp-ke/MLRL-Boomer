@@ -92,7 +92,7 @@ options:
                         The log level to be used. Must be one of {"critical",
                         "debug", "error", "info", "notset", "warn"}.
   --mode MODE           The mode of operation to be used. Must be one of
-                        {"batch", "run", "single"}.
+                        {"batch", "read", "run", "single"}.
   --config CONFIG       An absolute or relative path to a YAML file that
                         configures the batch of experiments to be run.
   --separate-folds SEPARATE_FOLDS

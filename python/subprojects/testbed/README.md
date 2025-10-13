@@ -2,7 +2,7 @@
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://github.com/mrapp-ke/MLRL-Boomer/raw/main/doc/_static/logo_testbed_dark.svg">
     <source media="(prefers-color-scheme: light)" srcset="https://github.com/mrapp-ke/MLRL-Boomer/raw/main/doc/_static/logo_testbed_light.svg">
-    <img alt="MLRL-Testbed" src="https://github.com/mrapp-ke/MLRL-Boomer/raw/main/.assets/logo_testbed_light.svg">
+    <img alt="mlrl-testbed" src="https://github.com/mrapp-ke/MLRL-Boomer/raw/main/.assets/logo_testbed_light.svg">
   </picture>
 </p>
 
@@ -20,7 +20,14 @@ This software package provides **mlrl-testbed - a command line utility for runni
 - evaluating the models' performance
 - saving experimental results to output files
 
-# MLRL-Testbed
+The package mlrl-testbed provides the following modes of operation for carrying out different tasks:
+
+- **Single:** In this mode a single experiment is run, involving the steps listed above.
+- **Batch:** In batch mode, multiple independent experiments using varying datasets and parameters can be run in an automated manner. By installing the optional package [mlrl-testbed-slurm](https://pypi.org/project/mlrl-testbed-slurm/), the experiments can be run via the [Slurm Workload Manager](https://wikipedia.org/wiki/Slurm_Workload_Manager).
+- **Read:** Read mode allows to read the output data produced by a previous experiment and to print it on the console or write it to different output files.
+- **Run:** In this mode, previous experiments can be run again, overriding some of their parameters if desired.
+
+# mlrl-testbed
 
 On its own, this package is not very powerful. It is intended as a basis for other packages that build functionality upon it. In fact, it does not make any assumptions about the problem domain or type of machine learning algorithm that should be used in an experiment. Instead, implementations of domain- or algorithm-specific functionality are provided by the extensions discussed below.
 
@@ -32,11 +39,9 @@ The package [mlrl-testbed-sklearn](https://pypi.org/project/mlrl-testbed-sklearn
 pip install mlrl-testbed-sklearn
 ```
 
-Optionally, support for the [Slurm Workload Manager](https://wikipedia.org/wiki/Slurm_Workload_Manager) can be installed via the package [mlrl-testbed-slurm](https://pypi.org/project/mlrl-testbed-slurm/).
-
 ### 💡 Example
 
-By writing just a small amount of code, any scikit-learn compatible [estimator](https://scikit-learn.org/stable/glossary.html#term-estimators) can be integrated with MLRL-Testbed and used in experiments. For example, the following code integrates scikit-learn's [RandomForestClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier):
+By writing just a small amount of code, any scikit-learn compatible [estimator](https://scikit-learn.org/stable/glossary.html#term-estimators) can be integrated with mlrl-testbed and used in experiments. For example, the following code integrates scikit-learn's [RandomForestClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier):
 
 ```python
 from argparse import Namespace
@@ -68,7 +73,7 @@ class Runnable(SkLearnRunnable):
 
 The previously integrated algorithm can then be used in experiments controlled via a command line API. Assuming that the source code shown above is saved to a file named `custom_runnable.py` in the working directory, we are now capable of fitting a [RandomForestClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier) to a dataset by using the command below.
 
-```
+```text
 mlrl-testbed custom_runnable.py \
     --data-dir path/to/datasets/ \
     --dataset dataset-name \
@@ -79,7 +84,7 @@ The above command does not only train a model, but also evaluates it according t
 
 It is also possible to run multiple experiments at once by defining the datasets and algorithmic parameters to be used in the different runs in a YAML file:
 
-```
+```text
 mlrl-testbed custom_runnable.py --mode batch --config path/to/config.yaml
 ```
 
@@ -100,7 +105,7 @@ parameters:
 
 ### 🏁 Advantages
 
-Making use of MLRL-Testbed does not only help with the burdens of training and evaluating machine learning models, it can also help making your own methods and algorithms more accessible to users. This is demonstrated by the rule learning algorithms [mlrl-boomer](https://pypi.org/project/mlrl-boomer/) and [mlrl-seco](https://pypi.org/project/mlrl-seco/) that can easily be run via the command line API described above and even extend it with rule-specific functionalities.
+Making use of mlrl-testbed does not only help with the burdens of training and evaluating machine learning models, it can also help making your own methods and algorithms more accessible to users. This is demonstrated by the rule learning algorithms [mlrl-boomer](https://pypi.org/project/mlrl-boomer/) and [mlrl-seco](https://pypi.org/project/mlrl-seco/) that can easily be run via the command line API described above and even extend it with rule-specific functionalities.
 
 ### 🔧 Functionalities
 

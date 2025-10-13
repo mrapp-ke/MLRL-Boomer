@@ -4,15 +4,15 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write algorithmic parameters to one or several sinks.
 """
 from argparse import Namespace
-from typing import Set, Type, override
+from typing import Set, override
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.arguments import OutputArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension
 from mlrl.testbed.experiments.output.parameters.arguments import ParameterOutputDirectoryArguments
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink
+from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import BatchMode, Mode, RunMode, SingleMode
 
 from mlrl.util.cli import Argument, BoolArgument
 
@@ -39,14 +39,14 @@ class ParameterOutputExtension(Extension):
         super().__init__(OutputExtension(), *dependencies)
 
     @override
-    def _get_arguments(self, _: Mode) -> Set[Argument]:
+    def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
         return {self.PRINT_PARAMETERS, self.SAVE_PARAMETERS}
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: ExperimentMode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
@@ -57,11 +57,11 @@ class ParameterOutputExtension(Extension):
             experiment_builder.parameter_writer.add_sinks(LogSink())
 
     @override
-    def get_supported_modes(self) -> Set[Type[Mode]]:
+    def get_supported_modes(self) -> Set[ExperimentMode]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode, BatchMode, RunMode}
+        return {ExperimentMode.SINGLE, ExperimentMode.BATCH, ExperimentMode.READ, ExperimentMode.RUN}
 
 
 class ParameterOutputDirectoryExtension(Extension):
@@ -76,14 +76,17 @@ class ParameterOutputDirectoryExtension(Extension):
         super().__init__(OutputExtension(), *dependencies)
 
     @override
-    def _get_arguments(self, mode: Mode) -> Set[Argument]:
+    def _get_arguments(self, mode: ExperimentMode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return set() if isinstance(mode, BatchMode) else {ParameterOutputDirectoryArguments.PARAMETER_SAVE_DIR}
+        if mode in {ExperimentMode.BATCH, ExperimentMode.READ}:
+            return set()
+
+        return {ParameterOutputDirectoryArguments.PARAMETER_SAVE_DIR}
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: ExperimentMode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
@@ -99,8 +102,8 @@ class ParameterOutputDirectoryExtension(Extension):
                     CsvFileSink(directory=base_dir / parameter_save_dir, create_directory=create_directory))
 
     @override
-    def get_supported_modes(self) -> Set[Type[Mode]]:
+    def get_supported_modes(self) -> Set[ExperimentMode]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode, BatchMode, RunMode}
+        return {ExperimentMode.SINGLE, ExperimentMode.BATCH, ExperimentMode.READ, ExperimentMode.RUN}

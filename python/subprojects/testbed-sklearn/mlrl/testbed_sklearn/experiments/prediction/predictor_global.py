@@ -11,8 +11,8 @@ from mlrl.testbed_sklearn.experiments.prediction.predictor import PredictionFunc
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
-from mlrl.testbed.experiments.prediction_scope import PredictionScope
-from mlrl.testbed.experiments.state import PredictionState
+from mlrl.testbed.experiments.prediction_scope import GlobalPredictionScope
+from mlrl.testbed.experiments.state import PredictionResult, PredictionState
 from mlrl.testbed.experiments.timer import Timer
 
 
@@ -36,19 +36,6 @@ class GlobalPredictor(Predictor):
     Obtains predictions from a previously trained global model.
     """
 
-    class Scope(PredictionScope):
-        """
-        Provides information about predictions that have been obtained from a global model.
-        """
-
-        @override
-        @property
-        def model_size(self) -> int:
-            """
-            See :func:`mlrl.testbed.prediction_scope.PredictionScope.model_size`
-            """
-            return 0
-
     @override
     def obtain_predictions(self, learner: Any, dataset: Dataset, dataset_type: DatasetType,
                            **kwargs) -> Generator[PredictionState, None, None]:
@@ -63,7 +50,7 @@ class GlobalPredictor(Predictor):
 
         if predictions is not None:
             log.info('Successfully predicted in %s', prediction_duration)
-            yield PredictionState(predictions=predictions,
-                                  prediction_type=self.prediction_type,
-                                  prediction_scope=GlobalPredictor.Scope(),
-                                  prediction_duration=prediction_duration)
+            yield PredictionState(prediction_scope=GlobalPredictionScope(),
+                                  prediction_result=PredictionResult(predictions=predictions,
+                                                                     prediction_type=self.prediction_type,
+                                                                     prediction_duration=prediction_duration))

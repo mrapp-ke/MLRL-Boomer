@@ -9,7 +9,7 @@ from argparse import Namespace
 from copy import copy
 from dataclasses import dataclass
 from itertools import chain
-from typing import Dict, Iterable, List, Optional, override
+from typing import Dict, Iterable, List, Optional, Set, override
 
 from mlrl.util.cli import Argument
 from mlrl.util.format import format_iterable
@@ -138,28 +138,33 @@ class Command(Iterable[str]):
         """
         return Command.from_list(module_name=sys.argv[1], argument_list=ArgumentList(sys.argv[2:]))
 
-    def apply_to_namespace(self, namespace: Namespace) -> Namespace:
+    def apply_to_namespace(self, namespace: Namespace, ignore: Optional[Set[str]] = None) -> Namespace:
         """
         Adds the command's arguments to a given namespace.
 
         :param namespace:   The namespace, the arguments should be added to
+        :param ignore:      A set that contains the names of arguments to be ignored or None, if all argument should be
+                            added
         :return:            The modified namespace
         """
         argument_list = self.argument_list
         modified_namespace = copy(namespace)
+        ignored_argument_names = {Argument.argument_name_to_key(argument) for argument in ignore} if ignore else set()
 
         for i, argument in enumerate(argument_list):
             if argument.startswith('-'):
                 argument_name = Argument.argument_name_to_key(argument)
-                argument_value = None
 
-                if i + 1 < len(argument_list):
-                    next_argument = argument_list[i + 1]
+                if argument_name not in ignored_argument_names:
+                    argument_value = None
 
-                    if not next_argument.startswith('-'):
-                        argument_value = next_argument
+                    if i + 1 < len(argument_list):
+                        next_argument = argument_list[i + 1]
 
-                setattr(modified_namespace, argument_name, argument_value if argument_value else True)
+                        if not next_argument.startswith('-'):
+                            argument_value = next_argument
+
+                    setattr(modified_namespace, argument_name, argument_value if argument_value else True)
 
         return modified_namespace
 

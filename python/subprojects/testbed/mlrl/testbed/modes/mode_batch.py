@@ -31,7 +31,7 @@ from mlrl.testbed.experiments.output.model.arguments import ModelOutputDirectory
 from mlrl.testbed.experiments.output.parameters.arguments import ParameterOutputDirectoryArguments
 from mlrl.testbed.experiments.output.sinks import YamlFileSink
 from mlrl.testbed.experiments.recipe import Recipe
-from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.modes.mode import Mode
 
@@ -118,7 +118,9 @@ class BatchMode(Mode):
                              'experiments' if num_experiments > 1 else 'experiment')
 
                 log.info('\nRunning experiment (%s / %s): "%s"', i + 1, num_experiments, str(command))
-                recipe.create_experiment_builder(command.apply_to_namespace(args), command).run()
+                recipe.create_experiment_builder(experiment_mode=ExperimentMode.BATCH,
+                                                 args=command.apply_to_namespace(args),
+                                                 command=command).run(args)
 
             run_time = Timer.stop(start_time)
             log.info('Successfully finished %s %s after %s', num_experiments,
@@ -279,7 +281,9 @@ class BatchMode(Mode):
         has_output_file_writers = False
 
         for command in batch:
-            experiment_builder = recipe.create_experiment_builder(command.apply_to_namespace(args), command)
+            experiment_builder = recipe.create_experiment_builder(experiment_mode=ExperimentMode.BATCH,
+                                                                  args=command.apply_to_namespace(args),
+                                                                  command=command)
             has_output_file_writers |= experiment_builder.has_output_file_writers
 
         self.__write_meta_data(args, recipe, batch, has_output_file_writers=has_output_file_writers)
@@ -287,8 +291,7 @@ class BatchMode(Mode):
         runner = self.__get_runner(args)
         runner.run_batch(args, batch, recipe)
 
-    @staticmethod
-    def __write_meta_data(args: Namespace, recipe: Recipe, batch: Batch, has_output_file_writers: bool):
+    def __write_meta_data(self, args: Namespace, recipe: Recipe, batch: Batch, has_output_file_writers: bool):
         save_meta_data = MetaDataArguments.SAVE_META_DATA.get_value(args)
 
         if save_meta_data == BooleanOption.TRUE or (save_meta_data == AUTO and has_output_file_writers):
@@ -299,7 +302,10 @@ class BatchMode(Mode):
                 sink = YamlFileSink(directory=base_dir, create_directory=create_directory)
                 batch_command = Command.from_argv()
                 meta_data = MetaData(command=batch_command, child_commands=batch)
-                state = ExperimentState(meta_data=meta_data, problem_domain=recipe.create_problem_domain(args))
+                state = ExperimentState(mode=self.to_enum(),
+                                        args=args,
+                                        meta_data=meta_data,
+                                        problem_domain=recipe.create_problem_domain(args))
                 MetaDataWriter().add_sinks(sink).write(state)
 
     def __get_runner(self, args: Namespace) -> 'BatchMode.Runner':
@@ -407,7 +413,7 @@ class BatchMode(Mode):
                           *extension_arguments, *algorithmic_arguments)
 
     @override
-    def run_experiment(self, args: Namespace, recipe: Recipe):
+    def run_experiment(self, _: List[Argument], args: Namespace, recipe: Recipe):
         config_file_path = self.CONFIG_FILE.get_value(args)
 
         if config_file_path:
@@ -416,3 +422,7 @@ class BatchMode(Mode):
 
             if config_file:
                 self.__process_commands(args, config_file, recipe)
+
+    @override
+    def to_enum(self) -> ExperimentMode:
+        return ExperimentMode.BATCH
