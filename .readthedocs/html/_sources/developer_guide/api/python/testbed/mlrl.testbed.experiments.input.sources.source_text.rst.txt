@@ -1,0 +1,7 @@
+mlrl.testbed.experiments.input.sources.source\_text module
+==========================================================
+
+.. automodule:: mlrl.testbed.experiments.input.sources.source_text
+   :members:
+   :show-inheritance:
+   :undoc-members:
