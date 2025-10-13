@@ -5,7 +5,7 @@ Provides classes that allow writing characteristics of models to one or several 
 """
 import logging as log
 
-from typing import List, Optional, override
+from typing import List, Tuple, override
 
 import numpy as np
 
@@ -14,16 +14,65 @@ from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 from mlrl.common.testbed.experiments.output.characteristics.model.characteristics import BodyStatistics, \
     HeadStatistics, RuleModelCharacteristics, RuleModelStatistics, RuleStatistics
 
+from mlrl.testbed.experiments.input.data import TabularInputData
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks import Sink
-from mlrl.testbed.experiments.output.writer import DataExtractor, OutputWriter
+from mlrl.testbed.experiments.output.writer import DataExtractor, ResultWriter, TabularDataExtractor
 from mlrl.testbed.experiments.state import ExperimentState
 
+from mlrl.util.options import Options
 
-class RuleModelCharacteristicsWriter(OutputWriter):
+
+class RuleModelCharacteristicsWriter(ResultWriter):
     """
     Allows writing the characteristics of a model to one or several sinks.
     """
+
+    class InputExtractor(TabularDataExtractor):
+        """
+        Uses `TabularInputData` that has previously been loaded via an input reader.
+        """
+
+        @override
+        def extract_data(self, state: ExperimentState, sinks: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
+            """
+            See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
+            """
+            result: List[Tuple[ExperimentState, OutputData]] = []
+
+            for extracted_state, tabular_output_data in super().extract_data(state, sinks):
+                table = tabular_output_data.to_table(Options())
+                table.to_column_wise_table()
+                indices = {column.header: index for index, column in enumerate(table.columns)}
+                row_wise_table = table.to_row_wise_table()
+                rule_model_statistics = RuleModelStatistics()
+
+                for row in row_wise_table.rows:
+                    body_statistics = BodyStatistics(
+                        num_numerical_leq=int(
+                            row[indices[RuleModelCharacteristics.COLUMN_NUM_CONDITIONS_NUMERICAL_LEQ]]),
+                        num_numerical_gr=int(row[indices[RuleModelCharacteristics.COLUMN_NUM_CONDITIONS_NUMERICAL_GR]]),
+                        num_ordinal_leq=int(row[indices[RuleModelCharacteristics.COLUMN_NUM_CONDITIONS_ORDINAL_LEQ]]),
+                        num_ordinal_gr=int(row[indices[RuleModelCharacteristics.COLUMN_NUM_CONDITIONS_ORDINAL_GR]]),
+                        num_nominal_eq=int(row[indices[RuleModelCharacteristics.COLUMN_NUM_CONDITIONS_NOMINAL_EQ]]),
+                        num_nominal_neq=int(row[indices[RuleModelCharacteristics.COLUMN_NUM_CONDITIONS_NOMINAL_NEQ]]),
+                    )
+                    head_statistics = HeadStatistics(
+                        num_positive_predictions=int(
+                            row[indices[RuleModelCharacteristics.COLUMN_NUM_PREDICTIONS_POSITIVE]]),
+                        num_negative_predictions=int(
+                            row[indices[RuleModelCharacteristics.COLUMN_NUM_PREDICTIONS_NEGATIVE]]),
+                    )
+                    rule_statistics = RuleStatistics(body_statistics=body_statistics, head_statistics=head_statistics)
+
+                    if row[indices[RuleModelCharacteristics.COLUMN_INDEX]].lower().find('default') > 0:
+                        rule_model_statistics.default_rule_statistics = rule_statistics
+                    else:
+                        rule_model_statistics.rule_statistics.append(rule_statistics)
+
+                result.append((extracted_state, RuleModelCharacteristics(rule_model_statistics)))
+
+            return result
 
     class DefaultExtractor(DataExtractor):
         """
@@ -85,26 +134,31 @@ class RuleModelCharacteristicsWriter(OutputWriter):
                 raise ValueError('Unsupported type of head: ' + str(type(head)))
 
         @override
-        def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
+        def extract_data(self, state: ExperimentState, _: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
-            learner = state.learner_as(self, ClassifierMixin, RegressorMixin)
+            learner = state.learner_as(ClassifierMixin, RegressorMixin)
 
             if learner:
                 model = learner.model_
 
                 if isinstance(model, RuleModel):
-                    return self.__create_rule_model_characteristics(model)
+                    return [(state, self.__create_rule_model_characteristics(model))]
 
                 log.error('%s expected type of model to be %s, but model has type %s',
                           type(self).__name__, RuleModel.__name__,
                           type(model).__name__)
 
-            return None
+            return []
 
     def __init__(self, *extractors: DataExtractor):
         """
         :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
         """
-        super().__init__(*extractors, RuleModelCharacteristicsWriter.DefaultExtractor())
+        super().__init__(RuleModelCharacteristicsWriter.InputExtractor(properties=RuleModelCharacteristics.PROPERTIES,
+                                                                       context=RuleModelCharacteristics.CONTEXT),
+                         *extractors,
+                         RuleModelCharacteristicsWriter.DefaultExtractor(),
+                         input_data=TabularInputData(properties=RuleModelCharacteristics.PROPERTIES,
+                                                     context=RuleModelCharacteristics.CONTEXT))

@@ -1,0 +1,49 @@
+mlrl-testbed mlrl.boosting --mode read --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --print-evaluation false --save-evaluation false --print-predictions true --save-predictions true
+Reading meta-data...
+Reading input data from file "python/tests/res/tmp/metadata.yml"...
+Successfully read meta-data
+Checking for version conflicts...
+Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is currently used
+No version conflicts detected
+Reading experimental results of 1 experiment...
+
+Reading experimental results of experiment (1 / 1)...
+The command "mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --data-split cross-validation{first_fold=1,last_fold=1} --print-evaluation false --save-evaluation false --print-predictions true --print-ground-truth true --save-predictions true --save-ground-truth true" has been used originally for running this experiment
+Performing fold 1 of 10-fold cross validation...
+Fold 1 / 10:
+Reading input data from file "python/tests/res/tmp/results/predictions_test_fold-1.arff"...
+Parsing meta-data from file "python/tests/res/tmp/results/predictions_test_fold-1.xml"...
+Predictions for test data (Fold 1):
+
+[[283.64 320.91 319.47 325.49 284.34 322.45]
+ [327.84 499.57 536.33 539.92 347.14 543.11]
+ [367.93 520.36 673.91 727.65 430.82 731.17]
+ [278.49 285.09 322.57 326.75 283.24 323.92]
+ [271.26 330.52 376.98 368.15 280.81 349.75]
+ [272.13 285.82 286.48 299.51 281.31 281.96]
+ [267.49 273.82 303.23 358.43 282.73 356.07]
+ [273.51 310.85 344.44 367.2  288.94 368.58]
+ [263.54 286.45 323.52 324.86 267.61 318.61]
+ [282.78 287.74 344.86 322.95 292.65 314.43]
+ [284.14 342.44 365.38 361.1  292.67 361.44]
+ [282.09 345.34 369.85 368.76 285.82 368.15]
+ [278.72 333.26 351.3  341.93 282.19 340.3 ]
+ [224.67 277.32 230.29 308.81 260.99 309.1 ]
+ [236.45 278.84 354.89 443.99 249.54 443.17]
+ [269.62 314.36 297.32 281.72 261.55 280.64]
+ [521.85 635.38 743.95 690.3  550.43 697.63]
+ [286.65 323.42 422.   401.49 312.45 401.97]
+ [279.18 318.47 361.17 381.79 294.91 377.07]
+ [301.85 396.42 449.86 421.65 322.16 419.34]
+ [351.82 415.36 481.54 475.29 371.3  475.87]
+ [373.04 540.81 584.46 594.74 401.42 604.31]
+ [263.84 378.7  421.76 459.54 265.53 459.79]
+ [198.68 192.09 314.41 404.78 245.1  416.14]
+ [236.22 283.87 256.89 400.4  249.43 398.98]
+ [291.75 382.81 461.06 527.15 339.03 531.37]
+ [235.25 254.24 417.13 503.9  283.76 506.28]
+ [199.3  184.53 238.09 487.31 250.45 488.24]
+ [259.94 332.89 391.34 463.05 260.77 465.67]
+ [261.64 368.18 468.47 509.28 252.16 505.12]]
+
+Writing output data to file "python/tests/res/tmp/rerun/results/predictions_test_fold-1.arff"...

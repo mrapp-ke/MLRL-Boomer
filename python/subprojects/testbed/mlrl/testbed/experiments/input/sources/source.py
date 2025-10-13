@@ -11,7 +11,8 @@ from typing import Any, Dict, Optional, override
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.file_path import FilePath
-from mlrl.testbed.experiments.input.data import DatasetInputData, InputData, StructuralInputData, TabularInputData
+from mlrl.testbed.experiments.input.data import DatasetInputData, InputData, StructuralInputData, TabularInputData, \
+    TextualInputData
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
 
@@ -102,6 +103,30 @@ class FileSource(Source, ABC):
         :param state:       The state that should be used to store the input data
         :param file_path:   The path to the file from which the input data should be read
         :param input_data:  The input data that should be read
+        """
+
+
+class TextualFileSource(FileSource, ABC):
+    """
+    An abstract base class for all classes that allow to read textual input data from a file.
+    """
+
+    @override
+    def _read_from_file(self, state: ExperimentState, file_path: Path, input_data: InputData) -> Optional[Any]:
+        if isinstance(input_data, TextualInputData):
+            return self._read_text_from_file(state, file_path, input_data)
+        return None
+
+    @abstractmethod
+    def _read_text_from_file(self, state: ExperimentState, file_path: Path,
+                             input_data: TextualInputData) -> Optional[str]:
+        """
+        Must be implemented by subclasses in order to read text from a specific file.
+
+        :param state:       The current state of the experiment
+        :param file_path:   The path to the file from which the input data should be read
+        :param input_data:  The input data that should be read
+        :return:            The text that has been read from the file
         """
 
 

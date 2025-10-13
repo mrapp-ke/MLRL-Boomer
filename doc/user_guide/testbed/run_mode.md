@@ -2,7 +2,7 @@
 
 # Run Mode
 
-MLRL-Testbed provides an alternative mode of operation in which it takes the `metadata.yml` file that has been saved by a previous experiment as an input. By reading the meta-data, the experiment can be run again.
+The package mlrl-testbed provides an alternative mode of operation in which it takes the `metadata.yml` file that has been saved by a previous experiment as an input. By reading the meta-data, the experiment can be run again. If you are interested in output data produced by an experiment, you should try {ref}`read mode <testbed-read-mode>` first. It does not come with the computational burdens of re-training models, as it is restricted to reading the output files produced by an experiment. However, if you require output data that was not saved when the experiment has been run, re-running the experiment is necessary.
 
 ```{note}
 A `metadata.yml` file is saved by an experiment if any output data is saved or if the argument `--save-meta-data true` is specified explicitly (see {ref}`here <meta-data>` for more details).

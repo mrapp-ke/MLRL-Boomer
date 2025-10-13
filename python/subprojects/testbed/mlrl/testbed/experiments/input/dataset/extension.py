@@ -6,7 +6,7 @@ Provides classes that allow configuring the functionality to load datasets.
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from pathlib import Path
-from typing import List, Sequence, Set, Type, override
+from typing import List, Sequence, Set, override
 
 from mlrl.testbed.command import ArgumentList
 from mlrl.testbed.experiments.input.dataset.arguments import DatasetArguments
@@ -14,8 +14,9 @@ from mlrl.testbed.experiments.input.dataset.dataset import InputDataset
 from mlrl.testbed.experiments.input.dataset.reader import DatasetReader
 from mlrl.testbed.experiments.input.extension import InputExtension
 from mlrl.testbed.experiments.input.sources import FileSource, Source
+from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import BatchMode, Mode, SingleMode
+from mlrl.testbed.modes import BatchMode
 
 from mlrl.util.cli import Argument, PathArgument
 
@@ -32,7 +33,7 @@ class DatasetExtension(Extension, ABC):
         super().__init__(InputExtension(), *dependencies)
 
     @override
-    def _get_arguments(self, _: Mode) -> Set[Argument]:
+    def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
@@ -60,11 +61,11 @@ class DatasetExtension(Extension, ABC):
         return DatasetReader(dataset, *sources)
 
     @override
-    def get_supported_modes(self) -> Set[Type[Mode]]:
+    def get_supported_modes(self) -> Set[ExperimentMode]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode}
+        return {ExperimentMode.SINGLE}
 
 
 class DatasetFileExtension(DatasetExtension, ABC):
@@ -79,7 +80,7 @@ class DatasetFileExtension(DatasetExtension, ABC):
     )
 
     @override
-    def _get_arguments(self, mode: Mode) -> Set[Argument]:
+    def _get_arguments(self, mode: ExperimentMode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """

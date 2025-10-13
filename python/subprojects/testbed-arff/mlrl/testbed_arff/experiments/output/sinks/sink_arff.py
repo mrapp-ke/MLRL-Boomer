@@ -6,7 +6,7 @@ Provides classes that allow writing datasets to ARFF files.
 import xml.etree.ElementTree as XmlTree
 
 from pathlib import Path
-from typing import Any, List
+from typing import Any, List, Optional, override
 from xml.dom import minidom
 
 import arff
@@ -18,6 +18,7 @@ from mlrl.testbed_arff.experiments.input.sources import ArffFileSource
 from mlrl.testbed_sklearn.experiments.dataset import Attribute, AttributeType, TabularDataset
 
 from mlrl.testbed.experiments.dataset import Dataset
+from mlrl.testbed.experiments.input.sources import Source
 from mlrl.testbed.experiments.output.sinks.sink import DatasetFileSink
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.format import to_int_or_float
@@ -117,3 +118,10 @@ class ArffFileSink(DatasetFileSink):
     def _write_dataset_to_file(self, file_path: Path, state: ExperimentState, dataset: Dataset, **_):
         self.__write_arff_file(file_path=file_path, dataset=dataset)
         self.__write_xml_file(file_path=file_path.with_suffix('.' + ArffFileSource.SUFFIX_XML), dataset=dataset)
+
+    @override
+    def create_source(self, input_directory: Path) -> Optional[Source]:
+        """
+        See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.create_source`
+        """
+        return ArffFileSource(input_directory)

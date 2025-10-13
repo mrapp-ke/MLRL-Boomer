@@ -108,6 +108,28 @@ class TextualOutputData(OutputData, ABC):
             return self.title + self.__format_dataset_type(state) + self.__format_prediction_scope(
                 state) + self.__format_fold(state)
 
+    @staticmethod
+    def from_text(properties: Properties, context: Context, text: str) -> 'TextualOutputData':
+        """
+        Creates and returns `TextualOutputData` from a given text.
+
+        :param properties:  The properties to be used
+        :param context:     The context to be used
+        :param text:        The text to be used
+        :return:            The `TextualOutputData` that has been created
+        """
+
+        class TextOutputData(TextualOutputData):
+            """
+            Output data that consists of a text.
+            """
+
+            @override
+            def to_text(self, options: Options, **kwargs) -> Optional[str]:
+                return text
+
+        return TextOutputData(properties=properties, context=context)
+
     @abstractmethod
     def to_text(self, options: Options, **kwargs) -> Optional[str]:
         """
@@ -131,6 +153,32 @@ class TabularOutputData(TextualOutputData, ABC):
                             written to
         """
         super().__init__(properties=properties, context=context)
+
+    @staticmethod
+    def from_table(properties: TabularProperties, context: Context, table: Table) -> 'TabularOutputData':
+        """
+        Creates and returns `TabularOutputData` from a given table.
+
+        :param properties:  The properties to be used
+        :param context:     The context to be used
+        :param table:       The table to be used
+        :return:            The `TabularOutputData` that has been created
+        """
+
+        class TableOutputData(TabularOutputData):
+            """
+            Output data that consists of a table.
+            """
+
+            @override
+            def to_text(self, options: Options, **kwargs) -> Optional[str]:
+                return table.format()
+
+            @override
+            def to_table(self, options: Options, **kwargs) -> Optional[Table]:
+                return table
+
+        return TableOutputData(properties=properties, context=context)
 
     @abstractmethod
     def to_table(self, options: Options, **kwargs) -> Optional[Table]:
@@ -208,6 +256,14 @@ class OutputValue:
         self.option_key = option_key
         self.name = name
         self.percentage = percentage
+
+    def std_dev(self) -> 'OutputValue':
+        """
+        Creates and returns an `OutputValue` that corresponds to the standard deviation of this value.
+
+        :return: An `OutputValue` that corresponds to the standard deviation of this value
+        """
+        return OutputValue(option_key=self.option_key, name='Std.-dev. ' + self.name, percentage=self.percentage)
 
     @staticmethod
     def filter_values(values: Iterable['OutputValue'], options: Options) -> List['OutputValue']:

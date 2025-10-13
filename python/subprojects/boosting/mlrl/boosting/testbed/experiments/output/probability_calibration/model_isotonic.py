@@ -5,7 +5,7 @@ Provides classes for representing models for the calibration of probabilities vi
 """
 
 from dataclasses import dataclass, field
-from typing import List, Optional, override
+from typing import Dict, List, Optional, override
 
 from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibrationModel, \
     IsotonicProbabilityCalibrationModelVisitor
@@ -23,6 +23,10 @@ class IsotonicRegressionModel(TabularOutputData):
     """
     Represents an isotonic regression model.
     """
+
+    COLUMN_THRESHOLDS = 'thresholds'
+
+    COLUMN_PROBABILITIES = 'probabilities'
 
     @dataclass
     class BinList:
@@ -43,7 +47,7 @@ class IsotonicRegressionModel(TabularOutputData):
         """
 
         def __init__(self):
-            self.bin_lists = {}
+            self.bin_lists: Dict[int, IsotonicRegressionModel.BinList] = {}
 
         @override
         def visit_bin(self, list_index: int, threshold: float, probability: float):
@@ -55,12 +59,13 @@ class IsotonicRegressionModel(TabularOutputData):
             bin_list.probabilities.append(probability)
 
     def __init__(self,
-                 calibration_model: IsotonicProbabilityCalibrationModel,
+                 bin_lists: Dict[int, 'IsotonicRegressionModel.BinList'],
                  properties: TabularProperties,
                  context: Context = Context(),
                  column_title_prefix: Optional[str] = None):
         """
-        :param calibration_model:   The isotonic calibration model
+        :param bin_lists:           A dictionary that stores lists of bins contained in an isotonic regression model,
+                                    mapped to indices
         :param properties:          The properties of the output data
         :param context:             A `Context` to be used by default for finding a suitable sink this output data can
                                     be written to
@@ -68,16 +73,40 @@ class IsotonicRegressionModel(TabularOutputData):
                                     thresholds or probabilities
         """
         super().__init__(properties=properties, context=context)
-        self.calibration_model = calibration_model
+        self.bin_lists = bin_lists
         self.column_title_prefix = column_title_prefix
+
+    @staticmethod
+    def from_calibration_model(calibration_model: IsotonicProbabilityCalibrationModel,
+                               properties: TabularProperties,
+                               context: Context = Context(),
+                               column_title_prefix: Optional[str] = None) -> 'IsotonicRegressionModel':
+        """
+        Creates and returns an `IsotonicRegressionModel` from a given `IsotonicProbabilityCalibrationModel`.
+
+        :param calibration_model:   An `IsotonicProbabilityCalibrationModel`
+        :param properties:          The properties of the output data
+        :param context:             A `Context` to be used by default for finding a suitable sink this output data can
+                                    be written to
+        :param column_title_prefix: An optional prefix to be prepended to the titles of table columns that contain
+                                    thresholds or probabilities
+        :return:                    The `IsotonicRegressionModel` that has been created
+        """
+        visitor = IsotonicRegressionModel.Visitor()
+        calibration_model.visit(visitor)
+        bin_lists = visitor.bin_lists
+        return IsotonicRegressionModel(bin_lists=bin_lists,
+                                       properties=properties,
+                                       context=context,
+                                       column_title_prefix=column_title_prefix)
 
     def _format_threshold_header(self, list_index: int) -> str:
         prefix = self.column_title_prefix
-        return (prefix + ' ' if prefix else '') + str(list_index + 1) + ' thresholds'
+        return (prefix + ' ' if prefix else '') + str(list_index + 1) + ' ' + self.COLUMN_THRESHOLDS
 
     def _format_probability_header(self, list_index: int) -> str:
         prefix = self.column_title_prefix
-        return (prefix + ' ' if prefix else '') + str(list_index + 1) + ' probabilities'
+        return (prefix + ' ' if prefix else '') + str(list_index + 1) + ' ' + self.COLUMN_PROBABILITIES
 
     @override
     def to_text(self, options: Options, **kwargs) -> Optional[str]:
@@ -112,13 +141,10 @@ class IsotonicRegressionModel(TabularOutputData):
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """
-        visitor = IsotonicRegressionModel.Visitor()
-        self.calibration_model.visit(visitor)
-        bin_lists = visitor.bin_lists
         decimals = options.get_int(OPTION_DECIMALS, kwargs.get(OPTION_DECIMALS, 0))
         table = ColumnWiseTable()
 
-        for list_index, bin_list in bin_lists.items():
+        for list_index, bin_list in self.bin_lists.items():
             thresholds = map(lambda value: format_number(value, decimals=decimals), bin_list.thresholds)
             table.add_column(*thresholds, header=self._format_threshold_header(list_index))
             probabilities = map(lambda value: format_number(value, decimals=decimals), bin_list.probabilities)

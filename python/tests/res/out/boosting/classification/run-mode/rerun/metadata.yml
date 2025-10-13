@@ -1,6 +1,5 @@
 command: mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp/rerun --data-dir
-  python/tests/res/data --dataset emotions --log-level debug --model-save-dir models
-  --parameter-save-dir results --print-all true --result-dir results --save-all true
-  --save-evaluation true --save-meta-data true
+  python/tests/res/data --dataset emotions --log-level debug --print-all true --result-dir
+  results --save-all true --save-evaluation true --save-meta-data true
 timestamp: <timestamp>
 version: <version>

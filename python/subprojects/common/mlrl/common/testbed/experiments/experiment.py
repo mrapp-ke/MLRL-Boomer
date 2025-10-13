@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for performing experiments using rule learning algorithms.
 """
+from argparse import Namespace
 from typing import Any, Dict, Optional, override
 
 from sklearn.base import BaseEstimator
@@ -28,8 +29,9 @@ class RuleLearnerExperiment(SkLearnExperiment):
         Allows to configure and create instances of the class `RuleLearnerExperiment`.
         """
 
-        def _create_experiment(self, initial_state: ExperimentState, dataset_splitter: DatasetSplitter) -> Experiment:
-            return RuleLearnerExperiment(initial_state=initial_state, dataset_splitter=dataset_splitter)
+        def _create_experiment(self, args: Namespace, initial_state: ExperimentState,
+                               dataset_splitter: DatasetSplitter) -> Experiment:
+            return RuleLearnerExperiment(args=args, initial_state=initial_state, dataset_splitter=dataset_splitter)
 
     class TrainingProcedure(SkLearnExperiment.TrainingProcedure):
         """
@@ -54,11 +56,13 @@ class RuleLearnerExperiment(SkLearnExperiment):
             return super()._fit(estimator, dataset, fit_kwargs)
 
     def __init__(self,
+                 args: Namespace,
                  initial_state: ExperimentState,
                  dataset_splitter: DatasetSplitter,
                  training_procedure: Optional[TrainingProcedure] = None,
                  prediction_procedure: Optional[SkLearnExperiment.PredictionProcedure] = None):
         """
+        :param args:                    The command line arguments specified by the user
         :param initial_state:           The initial state of the experiment
         :param dataset_splitter:        The method to be used for splitting the dataset into training and test datasets
         :param training_procedure:      The procedure that allows to fit a learner or None, if the default procedure
@@ -67,6 +71,7 @@ class RuleLearnerExperiment(SkLearnExperiment):
                                         default procedure should be used
         """
         super().__init__(
+            args=args,
             initial_state=initial_state,
             dataset_splitter=dataset_splitter,
             training_procedure=training_procedure if training_procedure else RuleLearnerExperiment.TrainingProcedure(
