@@ -14,5 +14,6 @@ Submodules
 
    mlrl.testbed.modes.mode
    mlrl.testbed.modes.mode_batch
+   mlrl.testbed.modes.mode_read
    mlrl.testbed.modes.mode_run
    mlrl.testbed.modes.mode_single

@@ -15,4 +15,5 @@ Submodules
    mlrl.testbed.experiments.input.sources.source
    mlrl.testbed.experiments.input.sources.source_csv
    mlrl.testbed.experiments.input.sources.source_pickle
+   mlrl.testbed.experiments.input.sources.source_text
    mlrl.testbed.experiments.input.sources.source_yaml
