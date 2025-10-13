@@ -19,7 +19,7 @@ from mlrl.common.learners import SparsePolicy
 
 from mlrl.testbed_sklearn.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 
-from mlrl.testbed.modes import Mode
+from mlrl.testbed.experiments.state import ExperimentMode
 
 from mlrl.util.cli import NONE
 from mlrl.util.options import Options
@@ -46,6 +46,7 @@ class IntegrationTests(ABC):
     @pytest.mark.parametrize('mode', [
         'single',
         'batch',
+        'read',
         'run',
     ])
     def test_help(self, mode: str):
@@ -55,37 +56,57 @@ class IntegrationTests(ABC):
         CmdRunner(builder).run(f'help-{mode}')
 
     def test_print_all(self):
+        test_name = 'print-all'
         builder = self._create_cmd_builder() \
             .print_all()
-        CmdRunner(builder).run('print-all')
+        CmdRunner(builder).run(test_name, wipe_after=False)
+        builder = self._create_cmd_builder() \
+            .set_mode(ExperimentMode.READ) \
+            .print_all()
+        CmdRunner(builder).run(test_name, wipe_before=False)
 
     def test_save_all(self):
+        test_name = 'save-all'
         builder = self._create_cmd_builder() \
             .save_all()
-        CmdRunner(builder).run('save-all')
+        CmdRunner(builder).run(test_name, wipe_after=False)
+        builder = self._create_cmd_builder() \
+            .set_mode(ExperimentMode.READ) \
+            .save_all()
+        CmdRunner(builder).run(test_name, wipe_before=False)
 
     def test_batch_mode(self):
+        test_name = 'batch-mode'
         builder = self._create_cmd_builder() \
-            .set_mode(Mode.MODE_BATCH) \
+            .set_mode(ExperimentMode.BATCH) \
             .save_all()
-        CmdRunner(builder).run('batch-mode')
+        CmdRunner(builder).run(test_name, wipe_after=False)
+        builder = self._create_cmd_builder() \
+            .set_mode(ExperimentMode.READ) \
+            .save_all()
+        CmdRunner(builder).run(test_name, wipe_before=False)
 
     def test_batch_mode_separate_folds(self):
+        test_name = 'batch-mode-separate-folds'
         builder = self._create_cmd_builder() \
-            .set_mode(Mode.MODE_BATCH) \
+            .set_mode(ExperimentMode.BATCH) \
             .save_all() \
             .data_split(DatasetSplitterArguments.VALUE_CROSS_VALIDATION,
                         options=Options({DatasetSplitterArguments.OPTION_NUM_FOLDS: 2}))
-        CmdRunner(builder).run('batch-mode-separate-folds')
+        CmdRunner(builder).run(test_name, wipe_after=False)
+        builder = self._create_cmd_builder() \
+            .set_mode(ExperimentMode.READ) \
+            .save_all()
+        CmdRunner(builder).run(test_name, wipe_before=False)
 
     def test_batch_mode_list(self):
         builder = self._create_cmd_builder() \
-            .set_mode(Mode.MODE_BATCH, '--list')
+            .set_mode(ExperimentMode.BATCH, '--list')
         CmdRunner(builder).run('batch-mode-list')
 
     def test_batch_mode_slurm(self):
         builder = self._create_cmd_builder() \
-            .set_mode(Mode.MODE_BATCH) \
+            .set_mode(ExperimentMode.BATCH) \
             .set_runner('slurm')
         CmdRunner(builder).run('batch-mode-slurm')
 
@@ -95,7 +116,7 @@ class IntegrationTests(ABC):
             .save_meta_data()
         CmdRunner(builder).run(test_name, wipe_after=False)
         builder = self._create_cmd_builder() \
-            .set_mode(Mode.MODE_RUN) \
+            .set_mode(ExperimentMode.RUN) \
             .save_all() \
             .print_all()
         CmdRunner(builder).run(test_name, wipe_before=False)
@@ -116,12 +137,20 @@ class IntegrationTests(ABC):
         CmdRunner(builder).run('meka-format')
 
     def test_meta_data(self):
+        test_name = 'meta_data'
         builder = self._create_cmd_builder() \
             .print_evaluation(False) \
             .save_evaluation(False) \
             .print_meta_data() \
             .save_meta_data()
-        CmdRunner(builder).run('meta_data')
+        CmdRunner(builder).run(test_name, wipe_after=False)
+        builder = self._create_cmd_builder() \
+            .set_mode(ExperimentMode.READ) \
+            .print_evaluation(False) \
+            .save_evaluation(False) \
+            .print_meta_data() \
+            .save_meta_data()
+        CmdRunner(builder).run(test_name, wipe_before=False)
 
     @pytest.mark.parametrize('data_split, data_split_options, predefined', [
         (NONE, Options(), False),
@@ -136,26 +165,44 @@ class IntegrationTests(ABC):
          }), False),
     ])
     def test_evaluation(self, data_split: str, data_split_options: Options, predefined: bool, dataset: Dataset):
+        test_name = f'evaluation_{data_split}' + ('-predefined' if predefined else '') + (f'_{data_split_options}'
+                                                                                          if data_split_options else '')
         builder = self._create_cmd_builder(dataset=dataset.default + ('-predefined' if predefined else '')) \
             .data_split(data_split, options=data_split_options) \
             .print_evaluation() \
             .save_evaluation()
-        CmdRunner(builder).run(f'evaluation_{data_split}' + ('-predefined' if predefined else '')
-                               + (f'_{data_split_options}' if data_split_options else ''))
+        CmdRunner(builder).run(test_name, wipe_after=False)
+        builder = self._create_cmd_builder() \
+            .set_mode(ExperimentMode.READ) \
+            .print_evaluation() \
+            .save_evaluation()
+        CmdRunner(builder).run(test_name, wipe_before=False)
 
     def test_evaluation_training_data(self, dataset: Dataset):
+        test_name = 'evaluation_training-data'
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .predict_for_training_data() \
             .print_evaluation() \
             .save_evaluation()
-        CmdRunner(builder).run('evaluation_training-data')
+        CmdRunner(builder).run(test_name, wipe_after=False)
+        builder = self._create_cmd_builder() \
+            .set_mode(ExperimentMode.READ) \
+            .print_evaluation() \
+            .save_evaluation()
+        CmdRunner(builder).run(test_name, wipe_before=False)
 
     def test_evaluation_incremental(self, dataset: Dataset):
+        test_name = 'evaluation_incremental'
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .incremental_evaluation() \
             .print_evaluation() \
             .save_evaluation()
-        CmdRunner(builder).run('evaluation_incremental')
+        CmdRunner(builder).run(test_name, wipe_after=False)
+        builder = self._create_cmd_builder() \
+            .set_mode(ExperimentMode.READ) \
+            .print_evaluation() \
+            .save_evaluation()
+        CmdRunner(builder).run(test_name, wipe_before=False)
 
     @pytest.mark.parametrize('data_split, data_split_options', [
         (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options()),
@@ -168,12 +215,18 @@ class IntegrationTests(ABC):
          })),
     ])
     def test_model_persistence(self, data_split: str, data_split_options: Options, dataset: Dataset):
+        test_name = f'model-persistence_{data_split}' + (f'_{data_split_options}' if data_split_options else '')
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .data_split(data_split, options=data_split_options) \
             .save_models() \
             .load_models()
-        CmdRunner(builder).run(f'model-persistence_{data_split}'
-                               + (f'_{data_split_options}' if data_split_options else ''))
+        CmdRunner(builder).run(test_name, wipe_after=False)
+        builder = self._create_cmd_builder() \
+            .set_mode(ExperimentMode.READ) \
+            .print_evaluation(False) \
+            .save_evaluation(False) \
+            .save_models()
+        CmdRunner(builder).run(test_name, wipe_before=False)
 
     @pytest.mark.parametrize('data_split, data_split_options', [
         (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options()),
@@ -185,6 +238,7 @@ class IntegrationTests(ABC):
          })),
     ])
     def test_predictions(self, data_split: str, data_split_options: Options, dataset: Dataset):
+        test_name = f'predictions_{data_split}' + (f'_{data_split_options}' if data_split_options else '')
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
@@ -193,9 +247,17 @@ class IntegrationTests(ABC):
             .print_ground_truth() \
             .save_predictions() \
             .save_ground_truth()
-        CmdRunner(builder).run(f'predictions_{data_split}' + (f'_{data_split_options}' if data_split_options else ''))
+        CmdRunner(builder).run(test_name, wipe_after=False)
+        builder = self._create_cmd_builder() \
+            .set_mode(ExperimentMode.READ) \
+            .print_evaluation(False) \
+            .save_evaluation(False) \
+            .print_predictions() \
+            .save_predictions()
+        CmdRunner(builder).run(test_name, wipe_before=False)
 
     def test_predictions_training_data(self, dataset: Dataset):
+        test_name = 'predictions_training-data'
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .predict_for_training_data() \
             .print_evaluation(False) \
@@ -204,7 +266,14 @@ class IntegrationTests(ABC):
             .print_ground_truth() \
             .save_predictions() \
             .save_ground_truth()
-        CmdRunner(builder).run('predictions_training-data')
+        CmdRunner(builder).run(test_name, wipe_after=False)
+        builder = self._create_cmd_builder() \
+            .set_mode(ExperimentMode.READ) \
+            .print_evaluation(False) \
+            .save_evaluation(False) \
+            .print_predictions() \
+            .save_predictions()
+        CmdRunner(builder).run(test_name, wipe_before=False)
 
     @pytest.mark.parametrize('data_split, data_split_options', [
         (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options()),
@@ -216,23 +285,39 @@ class IntegrationTests(ABC):
          })),
     ])
     def test_prediction_characteristics(self, data_split: str, data_split_options: Options, dataset: Dataset):
+        test_name = f'prediction-characteristics_{data_split}' + (f'_{data_split_options}'
+                                                                  if data_split_options else '')
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
             .save_evaluation(False) \
             .print_prediction_characteristics() \
             .save_prediction_characteristics()
-        CmdRunner(builder).run(f'prediction-characteristics_{data_split}'
-                               + (f'_{data_split_options}' if data_split_options else ''))
+        CmdRunner(builder).run(test_name, wipe_after=False)
+        builder = self._create_cmd_builder() \
+            .set_mode(ExperimentMode.READ) \
+            .print_evaluation(False) \
+            .save_evaluation(False) \
+            .print_prediction_characteristics() \
+            .save_prediction_characteristics()
+        CmdRunner(builder).run(test_name, wipe_before=False)
 
     def test_prediction_characteristics_training_data(self, dataset: Dataset):
+        test_name = 'prediction-characteristics_training-data'
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .predict_for_training_data() \
             .print_evaluation(False) \
             .save_evaluation(False) \
             .print_prediction_characteristics() \
             .save_prediction_characteristics()
-        CmdRunner(builder).run('prediction-characteristics_training-data')
+        CmdRunner(builder).run(test_name, wipe_after=False)
+        builder = self._create_cmd_builder() \
+            .set_mode(ExperimentMode.READ) \
+            .print_evaluation(False) \
+            .save_evaluation(False) \
+            .print_prediction_characteristics() \
+            .save_prediction_characteristics()
+        CmdRunner(builder).run(test_name, wipe_before=False)
 
     @pytest.mark.parametrize('data_split, data_split_options', [
         (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options()),
@@ -244,14 +329,21 @@ class IntegrationTests(ABC):
          })),
     ])
     def test_data_characteristics(self, data_split: str, data_split_options: Options, dataset: Dataset):
+        test_name = f'data-characteristics_{data_split}' + (f'_{data_split_options}' if data_split_options else '')
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
             .save_evaluation(False) \
             .print_data_characteristics() \
             .save_data_characteristics()
-        CmdRunner(builder).run(f'data-characteristics_{data_split}'
-                               + (f'_{data_split_options}' if data_split_options else ''))
+        CmdRunner(builder).run(test_name, wipe_after=False)
+        builder = self._create_cmd_builder() \
+            .set_mode(ExperimentMode.READ) \
+            .print_evaluation(False) \
+            .save_evaluation(False) \
+            .print_data_characteristics() \
+            .save_data_characteristics()
+        CmdRunner(builder).run(test_name, wipe_before=False)
 
     @pytest.mark.parametrize('data_split, data_split_options', [
         (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options()),
@@ -263,14 +355,21 @@ class IntegrationTests(ABC):
          })),
     ])
     def test_model_characteristics(self, data_split: str, data_split_options: Options, dataset: Dataset):
+        test_name = f'model-characteristics_{data_split}' + (f'_{data_split_options}' if data_split_options else '')
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
             .save_evaluation(False) \
             .print_model_characteristics() \
             .save_model_characteristics()
-        CmdRunner(builder).run(f'model-characteristics_{data_split}'
-                               + (f'_{data_split_options}' if data_split_options else ''))
+        CmdRunner(builder).run(test_name, wipe_after=False)
+        builder = self._create_cmd_builder() \
+            .set_mode(ExperimentMode.READ) \
+            .print_evaluation(False) \
+            .save_evaluation(False) \
+            .print_model_characteristics() \
+            .save_model_characteristics()
+        CmdRunner(builder).run(test_name, wipe_before=False)
 
     @pytest.mark.parametrize('data_split, data_split_options', [
         (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options()),
@@ -282,13 +381,21 @@ class IntegrationTests(ABC):
          })),
     ])
     def test_rules(self, data_split: str, data_split_options: Options, dataset: Dataset):
+        test_name = f'rules_{data_split}' + (f'_{data_split_options}' if data_split_options else '')
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
             .save_evaluation(False) \
             .print_rules() \
             .save_rules()
-        CmdRunner(builder).run(f'rules_{data_split}' + (f'_{data_split_options}' if data_split_options else ''))
+        CmdRunner(builder).run(test_name, wipe_after=False)
+        builder = self._create_cmd_builder() \
+            .set_mode(ExperimentMode.READ) \
+            .print_evaluation(False) \
+            .save_evaluation(False) \
+            .print_rules() \
+            .save_rules()
+        CmdRunner(builder).run(test_name, wipe_before=False)
 
     @pytest.mark.parametrize('dataset_name', ['numerical_sparse', 'binary', 'nominal', 'ordinal'])
     @pytest.mark.parametrize('feature_format', [SparsePolicy.FORCE_DENSE, SparsePolicy.FORCE_SPARSE])
@@ -327,6 +434,7 @@ class IntegrationTests(ABC):
          })),
     ])
     def test_parameters(self, data_split: str, data_split_options: Options, dataset: Dataset):
+        test_name = f'parameters_{data_split}' + (f'_{data_split_options}' if data_split_options else '')
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
@@ -335,7 +443,14 @@ class IntegrationTests(ABC):
             .print_parameters() \
             .save_parameters() \
             .load_parameters()
-        CmdRunner(builder).run(f'parameters_{data_split}' + (f'_{data_split_options}' if data_split_options else ''))
+        CmdRunner(builder).run(test_name, wipe_after=False)
+        builder = self._create_cmd_builder() \
+            .set_mode(ExperimentMode.READ) \
+            .print_evaluation(False) \
+            .save_evaluation(False) \
+            .print_parameters() \
+            .save_parameters()
+        CmdRunner(builder).run(test_name, wipe_before=False)
 
     @pytest.mark.parametrize('instance_sampling', [
         NONE,

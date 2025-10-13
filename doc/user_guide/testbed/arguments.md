@@ -44,13 +44,14 @@ The arguments given above can be used to integrate any scikit-learn compatible m
 
 ### Mode
 
-MLRL-Testbed supports different modes of operation configurable via the argument `--mode`. By default, a single experiment configured via the command line API is run. However, it is also possible to run several experiments at once. In the following, we provide an overview of all available configuration options:
+The package mlrl-testbed supports different modes of operation configurable via the argument `--mode`. By default, a single experiment configured via the command line API is run. However, it is also possible to run several experiments at once. In the following, we provide an overview of all available configuration options:
 
 - `--mode` (Default value = `single`)
 
   - `single` A single experiment is run.
   - `batch` A batch of experiments is run at once.
   - `run` A previously run experiment can be run again.
+  - `read` The output files produced by an earlier experiment can be read.
 
 #### Batch Mode
 
@@ -95,6 +96,14 @@ If the package [mlrl-testbed-slurm](https://pypi.org/project/mlrl-testbed-slurm/
 > A more detailed description of the following arguments can be found {ref}`here<testbed-run-mode>`.
 
 In {ref}`run mode <testbed-run-mode>`, the following mandatory arguments must be specified:
+
+- `--input-dir` An absolute or relative path to a directory that contains a `metadata.yml` file that has been saved by a previous experiment.
+
+#### Read Mode
+
+> A more detailed description of the following arguments can be found {ref}`here<testbed-read-mode>`.
+
+In {ref}`read mode <testbed-read-mode>`, the following arguments are mandatory:
 
 - `--input-dir` An absolute or relative path to a directory that contains a `metadata.yml` file that has been saved by a previous experiment.
 
@@ -240,7 +249,7 @@ Depending on the characteristics of a dataset, it might be desirable to apply on
 
 ## Saving and Loading Data
 
-MLRL-Testbed allows saving data gathered during experiments to output files or printing it on the console. Previously saved data can also be loaded in subsequent experiments. In the following, we list all command line arguments concerned with this functionality.
+The package mlrl-testbed allows saving data gathered during experiments to output files or printing it on the console. Previously saved data can also be loaded in subsequent experiments. In the following, we list all command line arguments concerned with this functionality.
 
 - `--base-dir` (Default value = `experiments/<yyyy-mm-dd_HH-MM>`, e.g., `experiments/2025-07-13_01-20`, depending on the current date and time) An absolute or relative path to a directory. If relative paths to directories, where files should be saved, are given, they are considered relative to the directory specified via this argument.
 
@@ -271,7 +280,7 @@ MLRL-Testbed allows saving data gathered during experiments to output files or p
 
 ### Meta-Data
 
-Saving meta-data can help improving the reproducibility of experiments. Among other information, it contains the command that has been used for running an experiment and the version of MLRL-Testbed used.
+Saving meta-data can help improving the reproducibility of experiments. Among other information, it contains the command that has been used for running an experiment and the version of mlrl-testbed used.
 
 - `--print-meta-data` (Default value = `false`)
 
@@ -469,7 +478,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
   - `false` No datasets containing predictions are written to ARFF files.
 
-- `--print-ground-truth` (Default value = `false`)
+- `--print-ground-truth` (Default value = `false`, *not available in {ref}`read mode <testbed-read-mode>`*)
 
   - `true` The ground truth for individual examples and outputs is printed on the console.
 
@@ -477,7 +486,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
   - `false` The ground truth is not printed on the console.
 
-- `--save-ground-truth` (Default value = `false`)
+- `--save-ground-truth` (Default value = `false`, *not available in {ref}`read mode <testbed-read-mode>`*)
 
   - `true` Training datasets containing the ground truth are written to ARFF files.
 
@@ -603,7 +612,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--print-rules` (Default value = `false`)
 
-  - `true` The induced rules are printed on the console. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
+  - `true` The induced rules are printed on the console. The following options may be specified using the {ref}`bracket notation<bracket-notation>` (*the options are not available in {ref}`read mode <testbed-read-mode>`*):
 
     - `print_feature_names` (Default value = `true`) `true`, if the names of features should be printed instead of their indices, `false` otherwise.
     - `print_output_names` (Default value = `true`) `true`, if the names of outputs should be printed instead of their indices, `false` otherwise.
@@ -617,7 +626,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--save-rules` (Default value = `false`)
 
-  - `true` The induced rules are written to a text file. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
+  - `true` The induced rules are written to a text file. The following options may be specified using the {ref}`bracket notation<bracket-notation>` (*the options are not available in {ref}`read mode <testbed-read-mode>`*):
 
     - `print_feature_names` (Default value = `true`) `true`, if the names of features should be printed instead of their indices, `false` otherwise.
     - `print_output_names` (Default value = `true`) `true`, if the names of outputs should be printed instead of their indices, `false` otherwise.

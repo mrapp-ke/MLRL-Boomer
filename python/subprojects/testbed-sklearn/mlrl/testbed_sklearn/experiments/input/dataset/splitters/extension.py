@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to split datasets into training and test datasets.
 """
 from argparse import Namespace
-from typing import Set, Type, override
+from typing import Set, override
 
 from mlrl.testbed_sklearn.experiments.input.dataset.extension import ArffFileExtension
 from mlrl.testbed_sklearn.experiments.input.dataset.preprocessors.extension import PreprocessorExtension
@@ -14,8 +14,8 @@ from mlrl.testbed_sklearn.experiments.input.dataset.splitters.splitter_cross_val
 
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.input.dataset.splitters.splitter_no import NoSplitter
+from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import BatchMode, Mode, SingleMode
 
 from mlrl.util.cli import Argument
 from mlrl.util.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
@@ -33,18 +33,18 @@ class DatasetSplitterExtension(Extension):
         super().__init__(PreprocessorExtension(), ArffFileExtension(), *dependencies)
 
     @override
-    def _get_arguments(self, _: Mode) -> Set[Argument]:
+    def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
         return {DatasetSplitterArguments.RANDOM_STATE, DatasetSplitterArguments.DATASET_SPLITTER}
 
     @override
-    def get_supported_modes(self) -> Set[Type[Mode]]:
+    def get_supported_modes(self) -> Set[ExperimentMode]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode, BatchMode}
+        return {ExperimentMode.SINGLE, ExperimentMode.BATCH}
 
     @staticmethod
     def get_random_state(args: Namespace) -> int:
@@ -59,17 +59,22 @@ class DatasetSplitterExtension(Extension):
         return random_state
 
     @staticmethod
-    def get_dataset_splitter(args: Namespace) -> DatasetSplitter:
+    def get_dataset_splitter(args: Namespace, load_dataset: bool = True) -> DatasetSplitter:
         """
         Returns the `DatasetSplitter` to be used for splitting datasets into training and test datasets according to the
         configuration.
 
-        :param args:    The command line arguments specified by the user
-        :return:        The `DatasetSplitter` to be used
+        :param args:            The command line arguments specified by the user
+        :param load_dataset:    True, if the dataset should be loaded, False otherwise
+        :return:                The `DatasetSplitter` to be used
         """
-        dataset_reader = ArffFileExtension().get_dataset_reader(args)
-        dataset_reader.add_preprocessors(*PreprocessorExtension.get_preprocessors(args))
-        dataset_splitter, options = DatasetSplitterArguments.DATASET_SPLITTER.get_value(args)
+        if load_dataset:
+            dataset_reader = ArffFileExtension().get_dataset_reader(args)
+            dataset_reader.add_preprocessors(*PreprocessorExtension.get_preprocessors(args))
+        else:
+            dataset_reader = None
+
+        dataset_splitter, options = DatasetSplitterArguments.DATASET_SPLITTER.get_value_and_options(args)
 
         if dataset_splitter == DatasetSplitterArguments.VALUE_CROSS_VALIDATION:
             num_folds = options.get_int(DatasetSplitterArguments.OPTION_NUM_FOLDS, 10)

@@ -2,13 +2,13 @@
 
 # Saving and Loading Data
 
-The {ref}`command line API <arguments>` of MLRL-Testbed provides a diverse set of options for saving data that is collected during an experiment. In some cases, e.g., models or algorithmic parameters, such data can also be read from input files. Both aspects, saving and loading data, are discussed below.
+The {ref}`command line API <arguments>` of mlrl-testbed provides a diverse set of options for saving data that is collected during an experiment. In some cases, e.g., models or algorithmic parameters, such data can also be read from input files. Both aspects, saving and loading data, are discussed below.
 
 (meta-data)=
 
 ## Saving Meta-Data
 
-Saving meta-data can help improving the reproducibility of experiments. Among other information, it contains the command that has been used for running an experiment and the version of MLRL-Testbed used. Based on this information the experiment can be re-run later using the {ref}`run mode <testbed-run-mode>`. By default, a `metadata.yml` file is saved to the directory specified via the argument `--base-dir`, if any other output data is saved as well. To explicitly enforce saving meta-data, the argument `--save-meta-data` can be used:
+Saving meta-data can help improving the reproducibility of experiments. Among other information, it contains the command that has been used for running an experiment and the version of mlrl-testbed used. Based on this information the experiment can be re-run later using the {ref}`run mode <testbed-run-mode>`. By default, a `metadata.yml` file is saved to the directory specified via the argument `--base-dir`, if any other output data is saved as well. To explicitly enforce saving meta-data, the argument `--save-meta-data` can be used:
 
 ````{tab} BOOMER
    ```text
@@ -568,7 +568,7 @@ This notation specifies the indices of all relevant labels in a label vector (co
 
 ### Rule-specific Results
 
-The rule learning algorithms developed by this project extend the functionality of MLRL-Testbed with rule-specific options. In the following, we discuss options for saving experiment results that are specific to this particular type of algorithms. Unless noted otherwise, the following options are available when using the packages [mlrl-boomer](https://pypi.org/project/mlrl-boomer/) and [mlrl-seco](https://pypi.org/project/mlrl-seco/) with MLRL-Testbed.
+The rule learning algorithms developed by this project extend the functionality of mlrl-testbed with rule-specific options. In the following, we discuss options for saving experiment results that are specific to this particular type of algorithms. Unless noted otherwise, the following options are available when using the packages [mlrl-boomer](https://pypi.org/project/mlrl-boomer/) and [mlrl-seco](https://pypi.org/project/mlrl-seco/) with mlrl-testbed.
 
 (output-model-characteristics)=
 
