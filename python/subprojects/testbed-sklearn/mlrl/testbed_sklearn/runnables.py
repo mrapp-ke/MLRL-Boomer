@@ -6,7 +6,7 @@ Provides classes for running experiments using the scikit-learn framework.
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Type, override
+from typing import Any, Dict, List, Optional, Set, override
 
 from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMixin as SkLearnRegressorMixin
 
@@ -37,9 +37,9 @@ from mlrl.testbed.experiments.output.parameters.extension import ParameterOutput
     ParameterOutputExtension
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
-from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import BatchMode, Mode, SingleMode
+from mlrl.testbed.modes import BatchMode
 from mlrl.testbed.runnables import Runnable
 
 from mlrl.util.cli import Argument, SetArgument
@@ -103,18 +103,18 @@ class SkLearnRunnable(Runnable, ABC):
             super().__init__(PredictionTypeExtension())
 
         @override
-        def _get_arguments(self, _: Mode) -> Set[Argument]:
+        def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
             """
             return {self.PROBLEM_TYPE}
 
         @override
-        def get_supported_modes(self) -> Set[Type[Mode]]:
+        def get_supported_modes(self) -> Set[ExperimentMode]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
             """
-            return {SingleMode, BatchMode}
+            return {ExperimentMode.SINGLE, ExperimentMode.BATCH}
 
         @staticmethod
         def get_problem_domain(args: Namespace,
@@ -184,21 +184,28 @@ class SkLearnRunnable(Runnable, ABC):
         return SkLearnRunnable.ProblemDomainExtension.get_problem_domain(args, runnable=self)
 
     @override
-    def create_dataset_splitter(self, args: Namespace) -> DatasetSplitter:
+    def create_dataset_splitter(self, args: Namespace, load_dataset: bool = True) -> DatasetSplitter:
         """
         See :func:`mlrl.testbed.experiments.recipe.Recipe.create_dataset_splitter`
         """
-        return DatasetSplitterExtension.get_dataset_splitter(args)
+        return DatasetSplitterExtension.get_dataset_splitter(args, load_dataset)
 
     @override
-    def create_experiment_builder(self, args: Namespace, command: Command) -> Experiment.Builder:
+    def create_experiment_builder(self,
+                                  experiment_mode: ExperimentMode,
+                                  args: Namespace,
+                                  command: Command,
+                                  load_dataset: bool = True) -> Experiment.Builder:
         """
         See :func:`mlrl.testbed.experiments.recipe.Recipe.create_experiment_builder`
         """
         meta_data = MetaData(command=command)
-        initial_state = ExperimentState(meta_data=meta_data, problem_domain=self.create_problem_domain(args))
+        initial_state = ExperimentState(mode=experiment_mode,
+                                        args=args,
+                                        meta_data=meta_data,
+                                        problem_domain=self.create_problem_domain(args))
         return SkLearnExperiment.Builder(initial_state=initial_state,
-                                         dataset_splitter=self.create_dataset_splitter(args))
+                                         dataset_splitter=self.create_dataset_splitter(args, load_dataset))
 
     @override
     def create_batch_config_file_factory(self) -> BatchMode.ConfigFile.Factory:

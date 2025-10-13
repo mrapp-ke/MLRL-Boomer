@@ -1,0 +1,92 @@
+mlrl-testbed mlrl.boosting --mode read --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --print-evaluation false --save-evaluation false --print-parameters true --save-parameters true
+Reading meta-data...
+Reading input data from file "python/tests/res/tmp/metadata.yml"...
+Successfully read meta-data
+Checking for version conflicts...
+Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is currently used
+No version conflicts detected
+Reading experimental results of 1 experiment...
+
+Reading experimental results of experiment (1 / 1)...
+The command "mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --data-split cross-validation --print-evaluation false --save-evaluation false --print-model-characteristics true --print-parameters true --save-parameters true --load-parameters true --parameter-load-dir python/tests/res/in --parameter-save-dir results" has been used originally for running this experiment
+Performing full 10-fold cross validation...
+Fold 1 / 10:
+Reading input data from file "python/tests/res/tmp/results/parameters_fold-1.csv"...
+Custom parameters (Fold 1):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
+
+Writing output data to file "python/tests/res/tmp/rerun/results/parameters_fold-1.csv"...
+Fold 2 / 10:
+Reading input data from file "python/tests/res/tmp/results/parameters_fold-2.csv"...
+Custom parameters (Fold 2):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
+
+Writing output data to file "python/tests/res/tmp/rerun/results/parameters_fold-2.csv"...
+Fold 3 / 10:
+Reading input data from file "python/tests/res/tmp/results/parameters_fold-3.csv"...
+Custom parameters (Fold 3):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
+
+Writing output data to file "python/tests/res/tmp/rerun/results/parameters_fold-3.csv"...
+Fold 4 / 10:
+Reading input data from file "python/tests/res/tmp/results/parameters_fold-4.csv"...
+Custom parameters (Fold 4):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
+
+Writing output data to file "python/tests/res/tmp/rerun/results/parameters_fold-4.csv"...
+Fold 5 / 10:
+Reading input data from file "python/tests/res/tmp/results/parameters_fold-5.csv"...
+Custom parameters (Fold 5):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
+
+Writing output data to file "python/tests/res/tmp/rerun/results/parameters_fold-5.csv"...
+Fold 6 / 10:
+Reading input data from file "python/tests/res/tmp/results/parameters_fold-6.csv"...
+Custom parameters (Fold 6):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
+
+Writing output data to file "python/tests/res/tmp/rerun/results/parameters_fold-6.csv"...
+Fold 7 / 10:
+Reading input data from file "python/tests/res/tmp/results/parameters_fold-7.csv"...
+Custom parameters (Fold 7):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
+
+Writing output data to file "python/tests/res/tmp/rerun/results/parameters_fold-7.csv"...
+Fold 8 / 10:
+Reading input data from file "python/tests/res/tmp/results/parameters_fold-8.csv"...
+Custom parameters (Fold 8):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
+
+Writing output data to file "python/tests/res/tmp/rerun/results/parameters_fold-8.csv"...
+Fold 9 / 10:
+Reading input data from file "python/tests/res/tmp/results/parameters_fold-9.csv"...
+Custom parameters (Fold 9):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
+
+Writing output data to file "python/tests/res/tmp/rerun/results/parameters_fold-9.csv"...
+Fold 10 / 10:
+Reading input data from file "python/tests/res/tmp/results/parameters_fold-10.csv"...
+Custom parameters (Fold 10):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
+
+Writing output data to file "python/tests/res/tmp/rerun/results/parameters_fold-10.csv"...

@@ -1,0 +1,33 @@
+mlrl-testbed mlrl.boosting --mode read --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --print-evaluation true --save-evaluation true
+Reading meta-data...
+Reading input data from file "python/tests/res/tmp/metadata.yml"...
+Successfully read meta-data
+Checking for version conflicts...
+Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is currently used
+No version conflicts detected
+Reading experimental results of 1 experiment...
+
+Reading experimental results of experiment (1 / 1)...
+The command "mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --data-split none --print-evaluation true --save-evaluation true" has been used originally for running this experiment
+Not using separate training and test sets. The model will be evaluated on the training data...
+Reading input data from file "python/tests/res/tmp/results/evaluation_training.csv"...
+Evaluation result for training data:
+
+Example-wise F1         100
+Example-wise Jaccard    100
+Example-wise Precision  100
+Example-wise Recall     100
+Hamming Accuracy        100
+Hamming Loss              0
+Macro F1                100
+Macro Jaccard           100
+Macro Precision         100
+Macro Recall            100
+Micro F1                100
+Micro Jaccard           100
+Micro Precision         100
+Micro Recall            100
+Subset 0/1 Loss           0
+Subset Accuracy         100
+
+Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_training.csv"...

@@ -6,9 +6,9 @@ Provides classes that allow writing output data to CSV files.
 import csv
 
 from pathlib import Path
-from typing import override
+from typing import Optional, override
 
-from mlrl.testbed.experiments.input.sources import CsvFileSource
+from mlrl.testbed.experiments.input.sources import CsvFileSource, Source
 from mlrl.testbed.experiments.output.data import OutputValue
 from mlrl.testbed.experiments.output.sinks.sink import TabularFileSink
 from mlrl.testbed.experiments.state import ExperimentState
@@ -22,6 +22,8 @@ class CsvFileSink(TabularFileSink):
     """
     Allows to write tabular output data to a CSV file.
     """
+
+    COLUMN_MODEL_SIZE = 'Model size'
 
     def __init__(self, directory: Path, options: Options = Options(), create_directory: bool = False):
         """
@@ -47,7 +49,7 @@ class CsvFileSink(TabularFileSink):
             if incremental_prediction:
                 model_size = prediction_result.prediction_scope.model_size
                 table.add_column(*[model_size for _ in range(table.num_rows)],
-                                 header=OutputValue('model_size', 'Model size'))
+                                 header=OutputValue('model_size', self.COLUMN_MODEL_SIZE))
 
         table.sort_by_headers()
 
@@ -65,3 +67,7 @@ class CsvFileSink(TabularFileSink):
 
             for row in table.rows:
                 csv_writer.writerow(row)
+
+    @override
+    def create_source(self, input_directory: Path) -> Optional[Source]:
+        return CsvFileSource(input_directory)

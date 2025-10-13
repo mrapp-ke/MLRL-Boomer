@@ -2,13 +2,13 @@
 
 # Supported Dataset Formats
 
-MLRL-Testbed is build in a modular fashion. This means that extensions can be used to extend its functionality, including the support for different dataset formats. In the following, the dataset formats supported by these extensions are discussed in detail.
+The package mlrl-testbed is build in a modular fashion. This means that extensions can be used to extend its functionality, including the support for different dataset formats. In the following, the dataset formats supported by these extensions are discussed in detail.
 
 (dataset-format-arff)=
 
 ## Attribute-Relation File Format (ARFF)
 
-The [Attribute-Relation File Format] has been proposed by researchers from the University of Waikato, New Zealand. It is used by the [WEKA](https://ml.cms.waikato.ac.nz/weka) machine learning software developed by the same people. Support for this file format is brought to MLRL-Testbed by the package [mlrl-testbed-arff](https://pypi.org/project/mlrl-testbed-arff/).
+The [Attribute-Relation File Format] has been proposed by researchers from the University of Waikato, New Zealand. It is used by the [WEKA](https://ml.cms.waikato.ac.nz/weka) machine learning software developed by the same people. Support for this file format is brought to mlrl-testbed by the package [mlrl-testbed-arff](https://pypi.org/project/mlrl-testbed-arff/).
 
 ```{note}
 Currently, the package [mlrl-testbed-arff](https://pypi.org/project/mlrl-testbed-arff/) is a hard dependency of [mlrl-testbed](https://pypi.org/project/mlrl-testbed/) and is therefore installed alongside it automatically. In the future, this behavior might change and the dependency might become optional.
@@ -16,7 +16,7 @@ Currently, the package [mlrl-testbed-arff](https://pypi.org/project/mlrl-testbed
 
 ### Mulan Format
 
-By default, MLRL-Testbed checks if the dataset files are present in the variant used by the [Mulan](https://github.com/tsoumakas/mulan) project. It requires two files to be present in a given directory:
+By default, mlrl-testbed checks if the dataset files are present in the variant used by the [Mulan](https://github.com/tsoumakas/mulan) project. It requires two files to be present in a given directory:
 
 1. An [ARFF](https://waikato.github.io/weka-wiki/formats_and_processing/arff_stable/) file that specifies the feature values and ground truth of the training examples.
 2. An XML file that specifies the names of the outputs.

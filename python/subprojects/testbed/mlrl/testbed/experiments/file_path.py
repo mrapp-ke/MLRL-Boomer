@@ -5,6 +5,7 @@ Provides classes for representing paths to files.
 """
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Optional
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.state import ExperimentState
@@ -18,12 +19,12 @@ class FilePath:
     Attributes:
         directory:  The path to the directory, where the file is located
         file_name:  The name of the file
-        suffix:     The suffix of the file (with leading dot)
+        suffix:     The suffix of the file (without leading dot) or None, if the suffix is unspecified
         context:    A `Context` to be used to determine the path
     """
     directory: Path
     file_name: str
-    suffix: str
+    suffix: Optional[str]
     context: Context
 
     def resolve(self, state: ExperimentState) -> Path:
@@ -59,4 +60,5 @@ class FilePath:
                 if fold:
                     file_name += '_fold-' + str(fold.index + 1)
 
-        return self.directory / (file_name + '.' + self.suffix)
+        path = self.directory / Path(file_name)
+        return path.with_suffix('.' + self.suffix) if self.suffix else path
