@@ -229,7 +229,33 @@ Depending on the characteristics of a dataset, it might be desirable to apply on
   - `true` One-hot-encoding is used to encode nominal features.
   - `false` The algorithm's ability to natively handle nominal features is used.
 
-## Saving Meta-Data
+## Saving and Loading Data
+
+MLRL-Testbed allows saving data gathered during experiments to output files or printing it on the console. Previously saved data can also be loaded in subsequent experiments. In the following, we list all command line arguments concerned with this functionality.
+
+- `--base-dir` (Default value = `experiments/<yyyy-mm-dd_HH-MM>`, e.g., `experiments/2025-07-13_01-20`, depending on the current date and time) An absolute or relative path to a directory. If relative paths to directories, where files should be saved, are given, they are considered relative to the directory specified via this argument.
+
+- `--create-dirs` (Default value = `true`)
+
+  - `true` The directories specified via the arguments `--result-dir`, `--model-save-dir` and `--parameter-save-dir` are automatically created if they do not already exist.
+  - `false` The directories are not created automatically.
+
+- `--exit-on-error` (Default value = `false`)
+
+  - `true` The program exits if an error occurs while writing output data.
+  - `false` Any error that occurs while writing output data is logged, but the program continues.
+
+- `--print-all` (Default value = `false`)
+
+  - `true` All output data is printed on the console unless specified otherwise.
+  - `false` No output data is printed on the console by default.
+
+- `--save-all` (Default value = `false`)
+
+  - `true` All output data is written to files.
+  - `false` No output data is written to files.
+
+### Meta-Data
 
 Saving meta-data can help improving the reproducibility of experiments. Among other information, it contains the command that has been used for running an experiment and the version of MLRL-Testbed used.
 
@@ -239,7 +265,7 @@ Saving meta-data can help improving the reproducibility of experiments. Among ot
   - `true` Meta-data is always saved to the directory `--base-dir`
   - `false` No meta-data is saved.
 
-## Saving and Loading Models
+### Models
 
 > A more detailed description of the following arguments can be found {ref}`here<model-persistence>`.
 
@@ -267,7 +293,7 @@ Because the training of models can be time-consuming, it might be desirable to s
   - `true` Models are saved to output files.
   - `false` Models are not saved to output files.
 
-## Saving and Loading Parameters
+### Algorithmic Parameters
 
 > A more detailed description of the following arguments can be found {ref}`here<parameter-persistence>`.
 
@@ -300,13 +326,11 @@ As an alternative to storing the models learned by an algorithm, the algorithmic
   - `true` Algorithmic parameters are saved to output files
   - `false` Algorithmic parameters are not saved to output files
 
-## Saving Experimental Results
+### Experimental Results
 
 > A more detailed description of the following arguments can be found {ref}`here<experimental-results>`.
 
 To provide valuable insights into the models learned by an algorithm, the predictions they provide, or the data they have been derived from, a wide variety of experimental results can be written to output files or printed on the console. If the results should be written to files, it is necessary to specify an output directory:
-
-- `--base-dir` (Default value = `experiments/<yyyy-mm-dd_HH-MM>`, e.g., `experiments/2025-07-13_01-20`, depending on the current date and time) An absolute or relative path to a directory. If relative paths to directories, where files should be saved, are given, they are considered relative to the directory specified via this argument.
 
 - `--result-dir` (Default value = `result`) An absolute or relative path to the directory where experimental results should be saved.
 
@@ -314,34 +338,14 @@ To provide valuable insights into the models learned by an algorithm, the predic
   This argument is only available when using the {ref}`mode <argument-mode>` `--mode single` (which is the default). In {ref}`batch mode <testbed-batch-mode>`, a suitable directory is created automatically.
   ```
 
-- `--create-dirs` (Default value = `true`)
-
-  - `true` The directories specified via the arguments `--result-dir`, `--model-save-dir` and `--parameter-save-dir` are automatically created if they do not already exist.
-  - `false` The directories are not created automatically.
-
 - `--wipe-result-dir` (Default value = `auto`)
 
   - `true` All files within the directory specified via the argument `--result-dir` are deleted before the experiment starts.
   - `false` No files within the directory are deleted, but existing files may be overwritten by the experiment.
 
-- `--exit-on-error` (Default value = `false`)
-
-  - `true` The program exits if an error occurs while writing experimental results.
-  - `false` Any error that occurs while writing experimental results is logged, but the program continues.
-
-- `--print-all` (Default value = `false`)
-
-  - `true` All output data is printed on the console unless specified otherwise.
-  - `false` No output data is printed on the console by default.
-
-- `--save-all` (Default value = `false`)
-
-  - `true` All output data is written to files.
-  - `false` No output data is written to files.
-
 (arguments-evaluation-results)=
 
-### Evaluation Results
+#### Evaluation Results
 
 - `--print-evaluation` (Default value = `true`)
 
@@ -429,7 +433,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 (arguments-predictions)=
 
-### Predictions
+#### Predictions
 
 - `--print-predictions` (Default value = `false`)
 
@@ -465,7 +469,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 (arguments-prediction-characteristics)=
 
-### Prediction Characteristics
+#### Prediction Characteristics
 
 - `--print-prediction-characteristics` (Default value = `false`)
 
@@ -499,7 +503,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 (arguments-data-characteristics)=
 
-### Data Characteristics
+#### Data Characteristics
 
 - `--print-data-characteristics` (Default value = `false`)
 
@@ -545,7 +549,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 (arguments-label-vectors)=
 
-### Label Vectors
+#### Label Vectors
 
 - `--print-label-vectors` (Default value = `false`, *classification only*)
 
@@ -565,7 +569,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 (arguments-model-characteristics)=
 
-### Model Characteristics
+#### Model Characteristics
 
 - `--print-model-characteristics` (Default value = `false`)
 
@@ -579,7 +583,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 (arguments-output-rules)=
 
-### Rules
+#### Rules
 
 - `--print-rules` (Default value = `false`)
 
@@ -611,7 +615,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 (arguments-probability-calibration-models)=
 
-### Probability Calibration Models
+#### Probability Calibration Models
 
 - `--print-marginal-probability-calibration-model` (Default value = `false`)
 
