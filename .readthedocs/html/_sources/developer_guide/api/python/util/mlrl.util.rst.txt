@@ -17,3 +17,4 @@ Submodules
    mlrl.util.format
    mlrl.util.options
    mlrl.util.validation
+   mlrl.util.version
