@@ -35,6 +35,7 @@ This documentation discusses the following topics:
 ---
 maxdepth: 1
 ---
+methodology
 parameters
 ```
 

@@ -120,6 +120,7 @@ caption: User Guide
 hidden: true
 maxdepth: 2
 ---
+user_guide/foundations/index
 user_guide/boosting/index
 user_guide/seco/index
 user_guide/testbed/index
