@@ -53,6 +53,9 @@ def close_milestone(build_unit: BuildUnit):
         for milestone in repository.get_all_milestones():
             milestone_title = milestone.title
 
-            if Version.parse(milestone_title) <= milestone_version:
-                Log.info('Closing milestone "%s"...', milestone_title)
-                milestone.edit(state='closed')
+            try:
+                if Version.parse(milestone_title) <= milestone_version:
+                    Log.info('Closing milestone "%s"...', milestone_title)
+                    milestone.edit(state='closed')
+            except ValueError:
+                Log.verbose('Ignoring milestone "%s", as it does not correspond to a version number.', milestone_title)
