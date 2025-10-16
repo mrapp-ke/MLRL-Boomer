@@ -132,6 +132,7 @@ target_architecture = host_machine.cpu_family() + '-' + host_machine.system()
 
 # Check build options
 multi_threading_support_enabled = get_option('multi_threading_support').enabled()
+gpu_support_option = get_option('gpu_support')
 gpu_support_enabled = get_option('gpu_support').enabled()
 
 # Set configuration options
@@ -142,6 +143,11 @@ configuration.set('mlrlcommon_target_architecture', target_architecture)
 configuration.set10('multi_threading_support_enabled', multi_threading_support_enabled)
 configuration.set10('gpu_support_enabled', gpu_support_enabled)
 configure_file(input : 'include/mlrl/common/config.hpp.in', output : 'config.hpp', configuration: configuration)
+
+# Dependencies
+dependencies = [
+    dependency('OpenCL', required : gpu_support_option)
+]
 
 # Compiler and linker arguments
 cpp_args = []
@@ -183,10 +189,11 @@ else
 endif
 
 # Library declaration
-common_lib = library(library_name, source_files, include_directories : include_dir, cpp_args : cpp_args,
-                     link_args : link_args, version : library_version, install : true, install_dir : install_dir)
-common_static_lib = static_library(library_name, source_files, include_directories : include_dir, cpp_args : cpp_args,
-                                   link_args : link_args)
+common_lib = library(library_name, source_files, dependencies: dependencies, include_directories : include_dir,
+                     cpp_args : cpp_args, link_args : link_args, version : library_version, install : true,
+                     install_dir : install_dir)
+common_static_lib = static_library(library_name, source_files, dependencies : dependencies,
+                                   include_directories : include_dir, cpp_args : cpp_args, link_args : link_args)
 common_dep = declare_dependency(include_directories : include_dir, link_with : common_static_lib)
 
 # Test declaration
