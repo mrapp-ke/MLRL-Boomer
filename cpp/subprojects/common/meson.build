@@ -131,9 +131,10 @@ library_version = get_option('library_version')
 target_architecture = host_machine.cpu_family() + '-' + host_machine.system()
 
 # Check build options
-multi_threading_support_enabled = get_option('multi_threading_support').enabled()
+multi_threading_support_option = get_option('multi_threading_support')
+multi_threading_support_enabled = multi_threading_support_option.enabled()
 gpu_support_option = get_option('gpu_support')
-gpu_support_enabled = get_option('gpu_support').enabled()
+gpu_support_enabled = gpu_support_option.enabled() or (gpu_support_option.auto() and host_machine.system() == 'darwin')
 
 # Set configuration options
 configuration = configuration_data()
@@ -148,6 +149,10 @@ configure_file(input : 'include/mlrl/common/config.hpp.in', output : 'config.hpp
 dependencies = [
     dependency('OpenCL', required : gpu_support_option)
 ]
+
+if host_machine.system() != 'darwin'  # Fails in macOS CI builds with the error "Couldn't find libomp"
+    dependencies += dependency('OpenMP', required : multi_threading_support_option)
+endif
 
 # Compiler and linker arguments
 cpp_args = []
