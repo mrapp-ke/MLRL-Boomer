@@ -125,18 +125,37 @@ include_dir = include_directories('include')
 install_root = meson.current_source_dir() / '../../../python/subprojects'
 install_dir = install_root / meson.project_name() / 'mlrl' / meson.project_name() / 'cython/'
 
+# Obtain information about the host system
+host_system = host_machine.system()
+macos = host_system == 'darwin'
+windows = host_system == 'windows'
+
 # Obtain information about the library
 library_name = 'mlrl' + meson.project_name()
 library_version = get_option('library_version')
-target_architecture = host_machine.cpu_family() + '-' + host_machine.system()
+target_architecture = host_machine.cpu_family() + '-' + host_system
 
 # Check build options
 multi_threading_support_option = get_option('multi_threading_support')
-multi_threading_support_enabled = multi_threading_support_option.enabled()
 gpu_support_option = get_option('gpu_support')
-gpu_support_enabled = gpu_support_option.enabled() or (gpu_support_option.auto() and host_machine.system() == 'darwin')
+
+# Dependencies
+openmp_dep = dependency('OpenMP', required : multi_threading_support_option)
+opencl_dep = dependency('OpenCL', required : gpu_support_option)
+
+dependencies = [
+    opencl_dep
+]
+
+if not macos
+    # Fails in macOS CI builds with the error "Couldn't find libomp"
+    dependencies += openmp_dep
+endif
 
 # Set configuration options
+multi_threading_support_enabled = (not macos and openmp_dep.found()) or (macos and not multi_threading_support_option.disabled())
+gpu_support_enabled = opencl_dep.found()
+
 configuration = configuration_data()
 configuration.set('mlrlcommon_library_name', 'lib' + library_name)
 configuration.set('mlrlcommon_library_version', library_version)
@@ -145,20 +164,11 @@ configuration.set10('multi_threading_support_enabled', multi_threading_support_e
 configuration.set10('gpu_support_enabled', gpu_support_enabled)
 configure_file(input : 'include/mlrl/common/config.hpp.in', output : 'config.hpp', configuration: configuration)
 
-# Dependencies
-dependencies = [
-    dependency('OpenCL', required : gpu_support_option)
-]
-
-if host_machine.system() != 'darwin'  # Fails in macOS CI builds with the error "Couldn't find libomp"
-    dependencies += dependency('OpenMP', required : multi_threading_support_option)
-endif
-
 # Compiler and linker arguments
 cpp_args = []
 link_args = []
 
-if host_machine.system() == 'windows'
+if windows
     cpp_args += '-DMLRLCOMMON_EXPORTS'
     cpp_args += '/wd4250'  # Supress MSVC compiler warning C4250 ("inherits via dominance")
 
@@ -169,7 +179,7 @@ if host_machine.system() == 'windows'
     if gpu_support_enabled
         link_args += 'OpenCL.lib'
     endif
-elif host_machine.system() == 'darwin'
+elif macos
     cpp_args += '-Xclang'
 
     if multi_threading_support_enabled
