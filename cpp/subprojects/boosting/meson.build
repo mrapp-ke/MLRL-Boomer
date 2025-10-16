@@ -84,11 +84,9 @@ test_files = [
 
 # Dependencies
 common_project = subproject('common')
+dependencies = common_project.get_variable('dependencies')
 common_dep = common_project.get_variable('common_dep')
-
-dependencies = [
-    common_dep
-]
+dependencies += common_dep
 
 # Directory containing public headers
 include_dir = include_directories('include')
