@@ -392,7 +392,7 @@ This project comes with unit tests for the C++ code it contains (see {ref}`testi
 
 ### Multi-Threading Support
 
-By default, the project is built with multi-threading support enabled. This requires [OpenMP](https://www.openmp.org/) to be available on the host system. In order to compile the project without multi-threading support, e.g., because OpenMP is not available, the build option `multi_threading_support` can be set to `disabled` instead of `enabled`. Alternatively, the desired value can be specified via the environment variable `MULTI_THREADING_SUPPORT`.
+By default, the project is built with multi-threading support enabled if[OpenMP](https://www.openmp.org/) is available on the host system. To explicitly compile the project without multi-threading support, even though OpenMP is available, the build option `multi_threading_support` can be set to `disabled` instead of `auto`. The value `enabled` explicitly enables multi-threading support. The desired value can be specified via the environment variable `MULTI_THREADING_SUPPORT`.
 
 When using the {ref}`command line API <testbed>`, the command `mlrl-testbed mlrl.boosting --version` or `mlrl-testbed mlrl.boosting -v` can be executed to check whether the program was built with multi-threading support enabled or not. It prints the build options used for compilation, as well as information about the CPU cores available on the system for multi-threading.
 
