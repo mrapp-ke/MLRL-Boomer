@@ -22,7 +22,6 @@ on:
         type: boolean
 env:
   RELEASE: ${{ inputs.release == true }}
-  GPU_SUPPORT: disabled
 jobs:
   build_doc:
     if: ${{ inputs.apidoc_cpp == true || inputs.apidoc_python == true || inputs.doc == true }}
