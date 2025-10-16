@@ -11,6 +11,8 @@ on:
         type: string
 env:
   SUBPROJECTS: ${{ inputs.subproject }}
+  MULTI_THREADING_SUPPORT: enabled
+  GPU_SUPPORT: enabled
 jobs:
   macos_build:
     name: Test MacOS build
