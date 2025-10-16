@@ -1,4 +1,4 @@
 option('library_version', type : 'string', yield : true)
-option('multi_threading_support', type : 'feature', value : 'enabled')
+option('multi_threading_support', type : 'feature', value : 'auto')
 option('gpu_support', type : 'feature', value : 'auto')
 option('test_support', type : 'feature', value : 'auto')

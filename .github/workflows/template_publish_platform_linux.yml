@@ -12,8 +12,9 @@ on:
 env:
   SUBPROJECTS: ${{ inputs.subproject }}
   RELEASE: ${{ inputs.release == true }}
-  TEST_SUPPORT: disabled
+  MULTI_THREADING_SUPPORT: enabled
   GPU_SUPPORT: disabled
+  TEST_SUPPORT: disabled
 jobs:
   publish_linux_wheels:
     name: Publish ${{ inputs.subproject }} (Linux)
