@@ -424,7 +424,7 @@ If you need to access this information programmatically in your own Python or C+
 So far, GPU support is still at an early stage of development. No algorithm provided by this project makes use of it yet.
 ```
 
-GPU support via [OpenCL](https://en.wikipedia.org/wiki/OpenCL) is enabled by default when building the project. However, it can be disabled at compile-time by setting the build option `gpu_support` to `disabled` instead of `enabled`. Alternatively, the desired value can be specified via the environment variable `GPU_SUPPORT`.
+GPU support via [OpenCL](https://en.wikipedia.org/wiki/OpenCL) is enabled by default when building the project on a system where OpenCL is available. This feature can explicitly be enabled or disabled at compile-time by setting the build option `gpu_support` to `enabled` or `disabled`. Alternatively, the desired value can be specified via the environment variable `GPU_SUPPORT`.
 
 An easy way to check whether the program was built with GPU support enabled or not, is to run the `mlrl-testbed mlrl.boosting --version` or `mlrl-testbed mlrl.boosting -v` command that is provided by the {ref}`command line API <testbed>`. It prints the build options used for compiling the program, together with a list of supported GPUs available on your machine.
 
