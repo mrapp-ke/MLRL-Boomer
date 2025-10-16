@@ -130,12 +130,21 @@ library_name = 'mlrl' + meson.project_name()
 library_version = get_option('library_version')
 target_architecture = host_machine.cpu_family() + '-' + host_machine.system()
 
-# Check build options
-multi_threading_support_enabled = get_option('multi_threading_support').enabled()
+# Access build options
+multi_threading_support_option = get_option('multi_threading_support')
 gpu_support_option = get_option('gpu_support')
-gpu_support_enabled = get_option('gpu_support').enabled()
+
+# Dependencies
+opencl_dep = dependency('OpenCL', required : gpu_support_option)
+
+dependencies = [
+    opencl_dep
+]
 
 # Set configuration options
+multi_threading_support_enabled = get_option('multi_threading_support').enabled()
+gpu_support_enabled = opencl_dep.found()
+
 configuration = configuration_data()
 configuration.set('mlrlcommon_library_name', 'lib' + library_name)
 configuration.set('mlrlcommon_library_version', library_version)
@@ -143,11 +152,6 @@ configuration.set('mlrlcommon_target_architecture', target_architecture)
 configuration.set10('multi_threading_support_enabled', multi_threading_support_enabled)
 configuration.set10('gpu_support_enabled', gpu_support_enabled)
 configure_file(input : 'include/mlrl/common/config.hpp.in', output : 'config.hpp', configuration: configuration)
-
-# Dependencies
-dependencies = [
-    dependency('OpenCL', required : gpu_support_option)
-]
 
 # Compiler and linker arguments
 cpp_args = []
