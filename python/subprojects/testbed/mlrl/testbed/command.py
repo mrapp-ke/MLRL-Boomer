@@ -9,7 +9,7 @@ from argparse import Namespace
 from copy import copy
 from dataclasses import dataclass
 from itertools import chain
-from typing import Dict, Iterable, List, Optional, Set, override
+from typing import Any, Dict, Iterable, List, Optional, Set, override
 
 from mlrl.util.cli import Argument
 from mlrl.util.format import format_iterable
@@ -175,3 +175,11 @@ class Command(Iterable[str]):
     @override
     def __str__(self) -> str:
         return format_iterable(self, separator=' ')
+
+    @override
+    def __hash__(self) -> int:
+        return hash(str(self))
+
+    @override
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, type(self)) and str(self) == str(other)
