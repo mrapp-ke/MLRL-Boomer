@@ -12,6 +12,7 @@ from typing import List, override
 
 from mlrl.testbed_sklearn.experiments.output.dataset.arguments_ground_truth import GroundTruthArguments
 
+from mlrl.testbed.command import Command
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.experiment import Experiment, ExperimentalProcedure
 from mlrl.testbed.experiments.meta_data import MetaData
@@ -64,6 +65,29 @@ class ReadMode(InputMode):
 
             return state
 
+    def __run_single_experiment(self, arguments: List[Argument], args: Namespace, recipe: Recipe, input_directory: Path,
+                                command: Command) -> ExperimentState:
+        log.info('The command "%s" has been used originally for running this experiment', str(command))
+        ignored_arguments = set(argument_name for argument_names in map(lambda arg: arg.names, arguments)
+                                for argument_name in argument_names)
+        command_args = command.apply_to_namespace(args,
+                                                  ignore=ignored_arguments
+                                                  | GroundTruthArguments.PRINT_GROUND_TRUTH.names
+                                                  | GroundTruthArguments.SAVE_GROUND_TRUTH.names)
+        experiment_builder = recipe.create_experiment_builder(experiment_mode=self.to_enum(),
+                                                              args=command_args,
+                                                              command=command,
+                                                              load_dataset=False)
+
+        for output_writer in sorted(experiment_builder.output_writers, key=str):
+            input_reader = output_writer.create_input_reader(command.apply_to_namespace(Namespace()), input_directory)
+
+            if input_reader and input_reader.sources:
+                experiment_builder.add_input_readers(input_reader)
+
+        experiment = experiment_builder.build(command_args)
+        return ReadMode.Procedure().conduct_experiment(experiment)
+
     @override
     def _run_experiment(self, arguments: List[Argument], args: Namespace, recipe: Recipe, meta_data: MetaData,
                         input_directory: Path):
@@ -75,26 +99,7 @@ class ReadMode(InputMode):
 
         for i, command in enumerate(batch):
             log.info('\nReading experimental results of experiment (%s / %s)...', i + 1, num_experiments)
-            log.info('The command "%s" has been used originally for running this experiment', str(command))
-            ignored_arguments = set(argument_name for argument_names in map(lambda arg: arg.names, arguments)
-                                    for argument_name in argument_names)
-            command_args = command.apply_to_namespace(args,
-                                                      ignore=ignored_arguments
-                                                      | GroundTruthArguments.PRINT_GROUND_TRUTH.names
-                                                      | GroundTruthArguments.SAVE_GROUND_TRUTH.names)
-            experiment_builder = recipe.create_experiment_builder(experiment_mode=self.to_enum(),
-                                                                  args=command_args,
-                                                                  command=command,
-                                                                  load_dataset=False)
-
-            for output_writer in sorted(experiment_builder.output_writers, key=str):
-                input_reader = output_writer.create_input_reader(command.apply_to_namespace(Namespace()),
-                                                                 input_directory)
-
-                if input_reader and input_reader.sources:
-                    experiment_builder.add_input_readers(input_reader)
-
-            ReadMode.Procedure().conduct_experiment(experiment_builder.build(command_args))
+            self.__run_single_experiment(arguments, args, recipe, input_directory, command)
 
     @override
     def to_enum(self) -> ExperimentMode:
