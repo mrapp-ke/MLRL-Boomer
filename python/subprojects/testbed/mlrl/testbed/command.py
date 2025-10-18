@@ -168,6 +168,20 @@ class Command(Iterable[str]):
 
         return modified_namespace
 
+    @staticmethod
+    def with_argument(command: 'Command', argument: str, value: str) -> 'Command':
+        """
+        Creates and returns a modified variant of a command, where a specific argument set to a given value.
+
+        :param command:     The command to modify
+        :param argument:    The name of the argument to be set
+        :param value:       The value to be set
+        :return:            The modified command
+        """
+        argument_dict = ArgumentDict(command.argument_dict)
+        argument_dict[argument] = value
+        return Command.from_dict(module_name=command.module_name, argument_dict=argument_dict)
+
     @override
     def __iter__(self):
         return iter(chain(['mlrl-testbed', self.module_name], self.argument_list))
