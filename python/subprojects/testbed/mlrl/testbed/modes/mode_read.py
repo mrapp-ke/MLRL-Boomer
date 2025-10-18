@@ -8,18 +8,22 @@ import logging as log
 from argparse import Namespace
 from dataclasses import replace
 from pathlib import Path
-from typing import List, override
+from typing import List, Set, override
 
 from mlrl.testbed_sklearn.experiments.output.dataset.arguments_ground_truth import GroundTruthArguments
 
+from mlrl.testbed.command import Command
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.experiment import Experiment, ExperimentalProcedure
+from mlrl.testbed.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
 from mlrl.testbed.modes.mode import InputMode
+from mlrl.testbed.modes.mode_batch import BatchMode
 
 from mlrl.util.cli import Argument
+from mlrl.util.options import Options
 
 
 class ReadMode(InputMode):
@@ -64,37 +68,84 @@ class ReadMode(InputMode):
 
             return state
 
+    @staticmethod
+    def __get_batch(arguments: List[Argument], args: Namespace, meta_data: MetaData) -> List[Command]:
+        main_command = meta_data.command
+        child_commands = meta_data.child_commands
+
+        if child_commands:
+            unique_commands: Set[Command] = set()
+            batch = []
+
+            for command in child_commands:
+                if BatchMode.SEPARATE_FOLDS.get_value(main_command.apply_to_namespace(args)):
+                    command = ReadMode.__remove_fold_option(arguments, args, command)
+
+                if command not in unique_commands:
+                    unique_commands.add(command)
+                    batch.append(command)
+
+            return batch
+
+        return [main_command]
+
+    @staticmethod
+    def __remove_fold_option(arguments: List[Argument], args: Namespace, command: Command) -> Command:
+        command_args = ReadMode.__create_command_args(arguments, args, command)
+        value, options = DatasetSplitterArguments.DATASET_SPLITTER.get_value_and_options(command_args)
+
+        if value == DatasetSplitterArguments.VALUE_CROSS_VALIDATION:
+            first_fold = options.get_int(DatasetSplitterArguments.OPTION_FIRST_FOLD, default_value=0)
+            last_fold = options.get_int(DatasetSplitterArguments.OPTION_LAST_FOLD, default_value=0)
+
+            if first_fold > 0 and first_fold == last_fold:
+                options = Options({
+                    key: value
+                    for key, value in options.dictionary.items() if key not in
+                    {DatasetSplitterArguments.OPTION_FIRST_FOLD, DatasetSplitterArguments.OPTION_LAST_FOLD}
+                })
+                return Command.with_argument(command, DatasetSplitterArguments.DATASET_SPLITTER.name,
+                                             value + str(options))
+
+        return command
+
+    @staticmethod
+    def __create_command_args(arguments: List[Argument], args: Namespace, command: Command) -> Namespace:
+        ignored_arguments = set(argument_name for argument_names in map(lambda arg: arg.names, arguments)
+                                for argument_name in argument_names)
+        return command.apply_to_namespace(args,
+                                          ignore=ignored_arguments | GroundTruthArguments.PRINT_GROUND_TRUTH.names
+                                          | GroundTruthArguments.SAVE_GROUND_TRUTH.names)
+
+    def __run_single_experiment(self, args: Namespace, recipe: Recipe, input_directory: Path,
+                                command: Command) -> ExperimentState:
+        log.info('The command "%s" has been used originally for running this experiment', str(command))
+        experiment_builder = recipe.create_experiment_builder(experiment_mode=self.to_enum(),
+                                                              args=args,
+                                                              command=command,
+                                                              load_dataset=False)
+
+        for output_writer in sorted(experiment_builder.output_writers, key=str):
+            input_reader = output_writer.create_input_reader(command.apply_to_namespace(Namespace()), input_directory)
+
+            if input_reader and input_reader.sources:
+                experiment_builder.add_input_readers(input_reader)
+
+        experiment = experiment_builder.build(args)
+        return ReadMode.Procedure().conduct_experiment(experiment)
+
     @override
     def _run_experiment(self, arguments: List[Argument], args: Namespace, recipe: Recipe, meta_data: MetaData,
                         input_directory: Path):
-        batch = meta_data.child_commands if meta_data.child_commands else [meta_data.command]
+        batch = self.__get_batch(arguments, args, meta_data)
         num_experiments = len(batch)
-
         log.info('Reading experimental results of %s %s...', num_experiments,
                  'experiments' if num_experiments > 1 else 'experiment')
 
         for i, command in enumerate(batch):
             log.info('\nReading experimental results of experiment (%s / %s)...', i + 1, num_experiments)
-            log.info('The command "%s" has been used originally for running this experiment', str(command))
-            ignored_arguments = set(argument_name for argument_names in map(lambda arg: arg.names, arguments)
-                                    for argument_name in argument_names)
-            command_args = command.apply_to_namespace(args,
-                                                      ignore=ignored_arguments
-                                                      | GroundTruthArguments.PRINT_GROUND_TRUTH.names
-                                                      | GroundTruthArguments.SAVE_GROUND_TRUTH.names)
-            experiment_builder = recipe.create_experiment_builder(experiment_mode=self.to_enum(),
-                                                                  args=command_args,
-                                                                  command=command,
-                                                                  load_dataset=False)
-
-            for output_writer in sorted(experiment_builder.output_writers, key=str):
-                input_reader = output_writer.create_input_reader(command.apply_to_namespace(Namespace()),
-                                                                 input_directory)
-
-                if input_reader and input_reader.sources:
-                    experiment_builder.add_input_readers(input_reader)
-
-            ReadMode.Procedure().conduct_experiment(experiment_builder.build(command_args))
+            command_args = self.__create_command_args(arguments, args, command)
+            self.__run_single_experiment(command_args, recipe, input_directory, command)
 
     @override
     def to_enum(self) -> ExperimentMode:
