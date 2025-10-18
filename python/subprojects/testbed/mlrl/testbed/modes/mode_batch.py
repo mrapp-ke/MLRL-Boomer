@@ -16,13 +16,12 @@ from typing import Any, Callable, Generator, Iterable, List, Optional, override
 
 import yamale
 
-from mlrl.testbed_sklearn.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
-
 from mlrl.testbed_slurm.arguments import SlurmArguments
 
 from mlrl.testbed.command import ArgumentDict, ArgumentList, Command
 from mlrl.testbed.experiments.fold import FoldingStrategy
 from mlrl.testbed.experiments.input.dataset.arguments import DatasetArguments
+from mlrl.testbed.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.meta_data.arguments import MetaDataArguments
