@@ -8,13 +8,14 @@ import logging as log
 from argparse import Namespace
 from dataclasses import replace
 from pathlib import Path
-from typing import List, Set, override
+from typing import Dict, List, Set, Tuple, override
 
 from mlrl.testbed_sklearn.experiments.output.dataset.arguments_ground_truth import GroundTruthArguments
 
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.experiment import Experiment, ExperimentalProcedure
+from mlrl.testbed.experiments.input.dataset.arguments import DatasetArguments
 from mlrl.testbed.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.recipe import Recipe
@@ -117,6 +118,19 @@ class ReadMode(InputMode):
                                           ignore=ignored_arguments | GroundTruthArguments.PRINT_GROUND_TRUTH.names
                                           | GroundTruthArguments.SAVE_GROUND_TRUTH.names)
 
+    @staticmethod
+    def __group_batch_by_dataset(arguments: List[Argument], args: Namespace,
+                                 batch: List[Command]) -> Dict[str, List[Tuple[Command, Namespace]]]:
+        commands_by_dataset: Dict[str, List[Tuple[Command, Namespace]]] = {}
+
+        for command in batch:
+            command_args = ReadMode.__create_command_args(arguments, args, command)
+            dataset_name = DatasetArguments.DATASET_NAME.get_value(command_args)
+            commands = commands_by_dataset.setdefault(dataset_name, [])
+            commands.append((command, command_args))
+
+        return commands_by_dataset
+
     def __run_single_experiment(self, args: Namespace, recipe: Recipe, input_directory: Path,
                                 command: Command) -> ExperimentState:
         log.info('The command "%s" has been used originally for running this experiment', str(command))
@@ -141,11 +155,13 @@ class ReadMode(InputMode):
         num_experiments = len(batch)
         log.info('Reading experimental results of %s %s...', num_experiments,
                  'experiments' if num_experiments > 1 else 'experiment')
+        i = 1
 
-        for i, command in enumerate(batch):
-            log.info('\nReading experimental results of experiment (%s / %s)...', i + 1, num_experiments)
-            command_args = self.__create_command_args(arguments, args, command)
-            self.__run_single_experiment(command_args, recipe, input_directory, command)
+        for dataset_name, commands in self.__group_batch_by_dataset(arguments, args, batch).items():
+            for command, command_args in commands:
+                log.info('\nReading experimental results of experiment (%s / %s)...', i, num_experiments)
+                self.__run_single_experiment(command_args, recipe, input_directory, command)
+                i += 1
 
     @override
     def to_enum(self) -> ExperimentMode:
