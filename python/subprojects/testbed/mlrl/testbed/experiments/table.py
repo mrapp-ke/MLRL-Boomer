@@ -232,6 +232,11 @@ class RowWiseTable(Table):
         def __iter__(self) -> Iterator[Header]:
             return iter(self.table._headers)
 
+        @override
+        def __eq__(self, other: Any) -> bool:
+            return isinstance(other, type(self)) and other.num_columns == self.num_columns and all(
+                str(first_header) == str(second_header) for first_header, second_header in zip(self, other))
+
     class Row(Row):
         """
         Provides access to a single row of a `RowWiseTable`.
@@ -316,6 +321,45 @@ class RowWiseTable(Table):
         self._alignments = alignments
         self._rows: List[List[Any]] = []
         self._num_columns = len(headers) if headers else 0
+
+    @staticmethod
+    def aggregate(*tables: Table) -> 'RowWiseTable':
+        """
+        Creates and returns a `RowWiseTable` that contains all rows of the given tables. The given tables must all have
+        the same headers.
+
+        :param tables:  The tables to aggregate
+        :return:        A `RowWiseTable` that contains all rows of the given tables
+        """
+        row_wise_tables = [table.to_row_wise_table() for table in tables]
+
+        if not row_wise_tables:
+            raise ValueError('No tables to aggregate')
+
+        aggregated_table = row_wise_tables[0].copy()
+
+        if len(row_wise_tables) > 1:
+            for table in row_wise_tables[1:]:
+                if aggregated_table.header_row != table.header_row:
+                    raise ValueError('The headers of the tables do not match')
+
+                for row in table.rows:
+                    aggregated_table.add_row(*row)
+
+        return aggregated_table
+
+    def copy(self) -> 'RowWiseTable':
+        """
+        Creates and returns a copy of this table.
+
+        :return: The copy that has been created
+        """
+        copied_table = RowWiseTable(*self._headers, alignments=self._alignments)
+
+        for row in self.rows:
+            copied_table.add_row(*row)
+
+        return copied_table
 
     def add_row(self, *values: Cell):
         """
