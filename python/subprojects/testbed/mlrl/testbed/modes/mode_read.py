@@ -8,18 +8,21 @@ import logging as log
 from argparse import Namespace
 from dataclasses import replace
 from pathlib import Path
-from typing import Dict, List, Set, Tuple, override
+from typing import Dict, List, Optional, Set, Tuple, override
 
 from mlrl.testbed_sklearn.experiments.output.dataset.arguments_ground_truth import GroundTruthArguments
+from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import EvaluationResult
 
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.experiment import Experiment, ExperimentalProcedure
+from mlrl.testbed.experiments.input.data import TabularInputData
 from mlrl.testbed.experiments.input.dataset.arguments import DatasetArguments
 from mlrl.testbed.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
+from mlrl.testbed.experiments.table import RowWiseTable, Table
 from mlrl.testbed.modes.mode import InputMode
 from mlrl.testbed.modes.mode_batch import BatchMode
 
@@ -148,6 +151,35 @@ class ReadMode(InputMode):
         experiment = experiment_builder.build(args)
         return ReadMode.Procedure().conduct_experiment(experiment)
 
+    @staticmethod
+    def __aggregate_evaluation(states: List[ExperimentState], dataset_name: str,
+                               dataset_type: DatasetType) -> Optional[Table]:
+        num_states = len(states)
+
+        if num_states > 1:
+            input_data = TabularInputData(properties=EvaluationResult.PROPERTIES, context=EvaluationResult.CONTEXT)
+            tables: List[Table] = []
+
+            for state in states:
+                input_data_key = input_data.get_key(replace(state, dataset_type=dataset_type))
+                extra = state.extras.get(input_data_key)
+
+                if isinstance(extra, Table):
+                    tables.append(extra)
+
+            num_tables = len(tables)
+            num_missing = num_states - num_tables
+
+            if num_missing > 0:
+                if num_tables > 0:
+                    log.error('Evaluation results for %s data of the dataset "%s" are incomplete. %s of %s %s missing.',
+                              dataset_type, dataset_name, num_missing, num_states,
+                              'files are' if num_missing > 1 else 'file is')
+            else:
+                return RowWiseTable.aggregate(*tables)
+
+        return None
+
     @override
     def _run_experiment(self, arguments: List[Argument], args: Namespace, recipe: Recipe, meta_data: MetaData,
                         input_directory: Path):
@@ -157,11 +189,23 @@ class ReadMode(InputMode):
                  'experiments' if num_experiments > 1 else 'experiment')
         i = 1
 
+        evaluation_by_dataset: Dict[str, Dict[DatasetType, Table]] = {}
+
         for dataset_name, commands in self.__group_batch_by_dataset(arguments, args, batch).items():
+            states: List[ExperimentState] = []
+
             for command, command_args in commands:
                 log.info('\nReading experimental results of experiment (%s / %s)...', i, num_experiments)
-                self.__run_single_experiment(command_args, recipe, input_directory, command)
+                state = self.__run_single_experiment(command_args, recipe, input_directory, command)
+                states.append(state)
                 i += 1
+
+            for dataset_type in [DatasetType.TRAINING, DatasetType.TEST]:
+                table = self.__aggregate_evaluation(states, dataset_name=dataset_name, dataset_type=dataset_type)
+
+                if table:
+                    evaluation_by_dataset_type = evaluation_by_dataset.setdefault(dataset_name, {})
+                    evaluation_by_dataset_type[dataset_type] = table
 
     @override
     def to_enum(self) -> ExperimentMode:
