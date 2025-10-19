@@ -125,11 +125,11 @@ class EvaluationExtension(Extension):
 
     def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         save_all = OutputArguments.SAVE_ALL.get_value(args)
-        save_evaluation_results, options = self.SAVE_EVALUATION.get_value_and_options(args, default=save_all)
+        save_evaluation, options = self.SAVE_EVALUATION.get_value_and_options(args, default=save_all)
         base_dir = OutputArguments.BASE_DIR.get_value(args)
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
-        if base_dir and save_evaluation_results and result_directory:
+        if base_dir and save_evaluation and result_directory:
             create_directory = OutputArguments.CREATE_DIRS.get_value(args)
             experiment_builder.evaluation_writer.add_sinks(
                 CsvFileSink(directory=base_dir / result_directory, create_directory=create_directory, options=options))
