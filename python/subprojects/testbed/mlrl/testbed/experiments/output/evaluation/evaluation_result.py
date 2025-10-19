@@ -3,16 +3,15 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing evaluation results that are part of output data.
 """
-from typing import Dict, Optional, override, List
+from typing import Dict, List, Optional, override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.output.data import TabularOutputData
-from mlrl.testbed.experiments.table import Table, RowWiseTable
+from mlrl.testbed.experiments.table import RowWiseTable, Table
+from mlrl.testbed.util.format import OPTION_DECIMALS, format_number
 
 from mlrl.util.options import Options
-
-from mlrl.testbed.util.format import OPTION_DECIMALS
 
 
 class AggregatedEvaluationResult(TabularOutputData):
@@ -60,6 +59,18 @@ class AggregatedEvaluationResult(TabularOutputData):
 
             aggregated_table = RowWiseTable.aggregate(*tables).to_column_wise_table()
             aggregated_table.add_column(*values, header='Dataset', position=0)
+            decimals = kwargs.get(OPTION_DECIMALS, 0)
+
+            for column in aggregated_table.columns:
+                for row_index in range(column.num_rows):
+                    try:
+                        value = column[row_index]
+
+                        if value is not None:
+                            column[row_index] = format_number(float(value), decimals=decimals)
+                    except ValueError:
+                        pass
+
             return aggregated_table
 
         return None
