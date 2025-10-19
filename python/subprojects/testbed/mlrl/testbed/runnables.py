@@ -13,6 +13,7 @@ from mlrl.testbed.arguments import PredictionDatasetArguments
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
+from mlrl.testbed.experiments.output.evaluation.extension import AggregatedEvaluationExtension
 from mlrl.testbed.experiments.output.meta_data.extension import MetaDataExtension
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.recipe import Recipe
@@ -76,6 +77,7 @@ class Runnable(Recipe, ABC):
         """
         return [
             Runnable.PredictionDatasetExtension(),
+            AggregatedEvaluationExtension(),
             MetaDataExtension(),
             SlurmExtension(),
         ]
