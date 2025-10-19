@@ -256,6 +256,11 @@ class RowWiseTable(Table):
             return self.table.num_columns
 
         @override
+        def __iter__(self) -> Iterator[Cell]:
+            for column_index in range(self.num_columns):
+                yield self[column_index]
+
+        @override
         def __getitem__(self, column_index: int) -> Cell:
             if column_index >= self.num_columns:
                 raise IndexError('Invalid column index: Got ' + str(column_index) + ', but table has only '
@@ -264,10 +269,17 @@ class RowWiseTable(Table):
             row = self.table._rows[self.row_index]
             return row[column_index] if column_index < len(row) else None
 
-        @override
-        def __iter__(self) -> Iterator[Cell]:
-            for column_index in range(self.num_columns):
-                yield self[column_index]
+        def __setitem__(self, column_index: int, value: Cell):
+            if column_index >= self.num_columns:
+                raise IndexError('Invalid column index: Got ' + str(column_index) + ', but table has only '
+                                 + str(self.num_columns) + ' columns')
+
+            row = self.table._rows[self.row_index]
+
+            if len(row) <= column_index:
+                row.extend([None] * (column_index - len(row) + 1))
+
+            row[column_index] = value
 
     class Column(Column):
         """
@@ -534,6 +546,11 @@ class ColumnWiseTable(Table):
             return self.table.num_rows
 
         @override
+        def __iter__(self) -> Iterator[Cell]:
+            for row_index in range(self.num_rows):
+                yield self[row_index]
+
+        @override
         def __getitem__(self, row_index: int) -> Cell:
             if row_index >= self.num_rows:
                 raise IndexError('Invalid row index: Got ' + str(row_index) + ', but table has only '
@@ -542,10 +559,17 @@ class ColumnWiseTable(Table):
             column = self.table._columns[self.column_index]
             return column[row_index] if row_index < len(column) else None
 
-        @override
-        def __iter__(self) -> Iterator[Cell]:
-            for row_index in range(self.num_rows):
-                yield self[row_index]
+        def __setitem__(self, row_index: int, value: Cell):
+            if row_index >= self.num_rows:
+                raise IndexError('Invalid row index: Got ' + str(row_index) + ', but table has only '
+                                 + str(self.num_rows) + ' rows')
+
+            column = self.table._columns[self.column_index]
+
+            if len(column) <= row_index:
+                column.extend([None] * (row_index - len(column) + 1))
+
+            column[row_index] = value
 
     def __init__(self):
         self._headers: Optional[List[Header]] = None
