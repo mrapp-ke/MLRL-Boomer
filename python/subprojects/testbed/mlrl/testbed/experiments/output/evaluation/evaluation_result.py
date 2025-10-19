@@ -3,12 +3,12 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing evaluation results that are part of output data.
 """
-from typing import Dict, Optional, override
+from typing import Dict, Optional, override, List
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.output.data import TabularOutputData
-from mlrl.testbed.experiments.table import Table
+from mlrl.testbed.experiments.table import Table, RowWiseTable
 
 from mlrl.util.options import Options
 
@@ -46,6 +46,20 @@ class AggregatedEvaluationResult(TabularOutputData):
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """
-        for _, table in self.evaluation_by_dataset.items():
-            return table
+        evaluation_by_dataset = self.evaluation_by_dataset
+
+        if evaluation_by_dataset:
+            dataset_names = sorted(evaluation_by_dataset.keys())
+            tables: List[Table] = []
+            values: List[str] = []
+
+            for dataset_name in dataset_names:
+                table = evaluation_by_dataset[dataset_name]
+                tables.append(table)
+                values.extend((dataset_name for _ in range(table.num_rows)))
+
+            aggregated_table = RowWiseTable.aggregate(*tables).to_column_wise_table()
+            aggregated_table.add_column(*values, header='Dataset', position=0)
+            return aggregated_table
+
         return None
