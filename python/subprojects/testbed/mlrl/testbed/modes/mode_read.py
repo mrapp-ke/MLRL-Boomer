@@ -35,9 +35,9 @@ class ReadMode(InputMode):
     An abstract base class for all modes of operation that read experimental results.
     """
 
-    class Procedure(ExperimentalProcedure):
+    class SingleExperimentProcedure(ExperimentalProcedure):
         """
-        The procedure that is used to conduct experiments in read mode.
+        The procedure that is used to conduct a single experiment in read mode.
         """
 
         @override
@@ -149,7 +149,7 @@ class ReadMode(InputMode):
                 experiment_builder.add_input_readers(input_reader)
 
         experiment = experiment_builder.build(args)
-        return ReadMode.Procedure().conduct_experiment(experiment)
+        return ReadMode.SingleExperimentProcedure().conduct_experiment(experiment)
 
     @staticmethod
     def __aggregate_evaluation(states: List[ExperimentState], dataset_name: str,
