@@ -8,7 +8,7 @@ import logging as log
 from argparse import Namespace
 from dataclasses import replace
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple, override
+from typing import Dict, List, Optional, Set, Tuple, override
 
 from mlrl.testbed_sklearn.experiments.output.dataset.arguments_ground_truth import GroundTruthArguments
 from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import EvaluationResult
@@ -190,33 +190,58 @@ class ReadMode(InputMode):
         return ReadMode.SingleExperimentProcedure().conduct_experiment(experiment)
 
     @staticmethod
-    def __aggregate_evaluation(states: List[ExperimentState], dataset_name: str,
+    def __aggregate_evaluation(commands_and_their_states: List[Tuple[Command, ExperimentState]],
+                               algorithmic_arguments: Set[Argument], dataset_name: str,
                                dataset_type: DatasetType) -> Optional[Table]:
-        num_states = len(states)
+        num_commands = len(commands_and_their_states)
 
-        if num_states > 1:
+        if num_commands > 1:
             input_data = TabularInputData(properties=EvaluationResult.PROPERTIES, context=EvaluationResult.CONTEXT)
+            algorithmic_argument_names = set(map(lambda arg: arg.name, algorithmic_arguments))
             tables: List[Table] = []
+            headers: Set[str] = set()
 
-            for state in states:
-                input_data_key = input_data.get_key(replace(state, dataset_type=dataset_type))
-                extra = state.extras.get(input_data_key)
+            for command, result_state in commands_and_their_states:
+                input_data_key = input_data.get_key(replace(result_state, dataset_type=dataset_type))
+                extra = result_state.extras.get(input_data_key)
 
                 if isinstance(extra, Table):
                     tables.append(extra)
 
+                    for argument in command.argument_dict.keys():
+                        if argument in algorithmic_argument_names:
+                            headers.add(argument)
+
             num_tables = len(tables)
-            num_missing = num_states - num_tables
+            num_missing = num_commands - num_tables
 
             if num_missing > 0:
                 if num_tables > 0:
                     log.error('Evaluation results for %s data of the dataset "%s" are incomplete. %s of %s %s missing.',
-                              dataset_type, dataset_name, num_missing, num_states,
+                              dataset_type, dataset_name, num_missing, num_commands,
                               'files are' if num_missing > 1 else 'file is')
             else:
-                return RowWiseTable.aggregate(*tables)
+                return ReadMode.__aggregate_tables(commands_and_their_states, headers, tables)
 
         return None
+
+    @staticmethod
+    def __aggregate_tables(commands_and_their_states: List[Tuple[Command, ExperimentState]], headers: Set[str],
+                           tables: List[Table]) -> Table:
+        aggregated_table = RowWiseTable.aggregate(*tables).to_column_wise_table()
+
+        for position, header in enumerate(sorted(headers)):
+            aggregated_table.add_column(header=header, position=position)
+
+        for column_index, column in enumerate(aggregated_table.columns):
+            if column_index >= len(headers):
+                break
+
+            if column.header:
+                for row_index, (command, _) in enumerate(commands_and_their_states):
+                    column[row_index] = command.argument_dict.get(str(column.header))
+
+        return aggregated_table
 
     def __write_aggregated_evaluation_result(self, args: Namespace, recipe: Recipe, command: Command,
                                              evaluation_by_dataset_type: Dict[DatasetType, Dict[str, Table]]):
@@ -240,16 +265,19 @@ class ReadMode(InputMode):
         evaluation_by_dataset_type: Dict[DatasetType, Dict[str, Table]] = {}
 
         for dataset_name, commands in self.__group_batch_by_dataset(extension_arguments, args, batch).items():
-            states: List[ExperimentState] = []
+            commands_and_their_states: List[Tuple[Command, ExperimentState]] = []
 
             for command, command_args in commands:
                 log.info('\nReading experimental results of experiment (%s / %s)...', i, num_experiments)
                 state = self.__run_single_experiment(command_args, recipe, input_directory, command)
-                states.append(state)
+                commands_and_their_states.append((command, state))
                 i += 1
 
             for dataset_type in [DatasetType.TRAINING, DatasetType.TEST]:
-                table = self.__aggregate_evaluation(states, dataset_name=dataset_name, dataset_type=dataset_type)
+                table = self.__aggregate_evaluation(commands_and_their_states,
+                                                    algorithmic_arguments,
+                                                    dataset_name=dataset_name,
+                                                    dataset_type=dataset_type)
 
                 if table:
                     evaluation_by_dataset = evaluation_by_dataset_type.setdefault(dataset_type, {})
