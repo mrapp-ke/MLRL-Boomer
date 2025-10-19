@@ -16,10 +16,11 @@ from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.experiment import Experiment, ExperimentalProcedure
-from mlrl.testbed.experiments.input.data import TabularInputData
+from mlrl.testbed.experiments.input.data import InputData, TabularInputData
 from mlrl.testbed.experiments.input.dataset.arguments import DatasetArguments
 from mlrl.testbed.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 from mlrl.testbed.experiments.meta_data import MetaData
+from mlrl.testbed.experiments.output.evaluation.evaluation_result import AggregatedEvaluationResult
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
 from mlrl.testbed.experiments.table import RowWiseTable, Table
@@ -69,6 +70,43 @@ class ReadMode(InputMode):
 
                     for listener in listeners:
                         training_state = listener.after_training(training_state)
+
+            return state
+
+    class AggregatedEvaluationProcedure(ExperimentalProcedure):
+        """
+        The procedure that is used to write evaluation results that have been aggregated across several experiments to
+        one or several sinks.
+        """
+
+        def __init__(self, evaluation_by_dataset_type: Dict[DatasetType, Dict[str, Table]]):
+            """
+            :param evaluation_by_dataset_type: A dictionary that stores aggregated evaluation results for different
+                                               datasets, mapped to a dataset type
+            """
+            self.evaluation_by_dataset_type = evaluation_by_dataset_type
+
+        @override
+        def _before_experiment(self, _: Experiment, state: ExperimentState) -> ExperimentState:
+            input_data = InputData(properties=AggregatedEvaluationResult.PROPERTIES,
+                                   context=AggregatedEvaluationResult.CONTEXT)
+
+            for dataset_type, evaluation_by_dataset in self.evaluation_by_dataset_type.items():
+                new_state = replace(state, dataset_type=dataset_type)
+                input_data_key = input_data.get_key(new_state)
+                state.extras[input_data_key] = AggregatedEvaluationResult(evaluation_by_dataset)
+
+            return state
+
+        @override
+        def _conduct_experiment(self, experiment: Experiment, state: ExperimentState) -> ExperimentState:
+            listeners = experiment.listeners
+
+            for dataset_type in self.evaluation_by_dataset_type.keys():
+                prediction_state = replace(state, dataset_type=dataset_type)
+
+                for listener in listeners:
+                    listener.after_prediction(prediction_state)
 
             return state
 
@@ -180,6 +218,16 @@ class ReadMode(InputMode):
 
         return None
 
+    def __write_aggregated_evaluation_result(self, args: Namespace, recipe: Recipe, command: Command,
+                                             evaluation_by_dataset_type: Dict[DatasetType, Dict[str, Table]]):
+        experiment_builder = recipe.create_experiment_builder(experiment_mode=self.to_enum(),
+                                                              args=args,
+                                                              command=command,
+                                                              load_dataset=False)
+
+        experiment = experiment_builder.build(args)
+        return ReadMode.AggregatedEvaluationProcedure(evaluation_by_dataset_type).conduct_experiment(experiment)
+
     @override
     def _run_experiment(self, arguments: List[Argument], args: Namespace, recipe: Recipe, meta_data: MetaData,
                         input_directory: Path):
@@ -189,7 +237,7 @@ class ReadMode(InputMode):
                  'experiments' if num_experiments > 1 else 'experiment')
         i = 1
 
-        evaluation_by_dataset: Dict[str, Dict[DatasetType, Table]] = {}
+        evaluation_by_dataset_type: Dict[DatasetType, Dict[str, Table]] = {}
 
         for dataset_name, commands in self.__group_batch_by_dataset(arguments, args, batch).items():
             states: List[ExperimentState] = []
@@ -204,8 +252,10 @@ class ReadMode(InputMode):
                 table = self.__aggregate_evaluation(states, dataset_name=dataset_name, dataset_type=dataset_type)
 
                 if table:
-                    evaluation_by_dataset_type = evaluation_by_dataset.setdefault(dataset_name, {})
-                    evaluation_by_dataset_type[dataset_type] = table
+                    evaluation_by_dataset = evaluation_by_dataset_type.setdefault(dataset_type, {})
+                    evaluation_by_dataset[dataset_name] = table
+
+        self.__write_aggregated_evaluation_result(args, recipe, meta_data.command, evaluation_by_dataset_type)
 
     @override
     def to_enum(self) -> ExperimentMode:
