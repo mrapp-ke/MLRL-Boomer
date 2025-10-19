@@ -556,30 +556,33 @@ class ColumnWiseTable(Table):
     def add_column(self,
                    *values: Cell,
                    header: Optional[Header] = None,
-                   alignment: Optional[Alignment] = None) -> 'ColumnWiseTable':
+                   alignment: Optional[Alignment] = None,
+                   position: int = -1) -> 'ColumnWiseTable':
         """
-        Adds a new column to the end of the table.
+        Adds a new column to a table at a specific position.
 
         :param values:      The values in the column
         :param header:      The header of the column or None
         :param alignment:   The alignment of the column or None
+        :param position:    The position, the column should be added at, or -1, if the column should be added at the end
         :return:            The modified table
         """
         column = list(values)
+        position = self.num_columns if position < 0 else position
 
         if header:
             if not self._headers:
                 self._headers = [None for _ in range(self.num_columns)]
 
-            self._headers.append(header)
+            self._headers.insert(position, header)
 
         if alignment:
             if not self._alignments:
                 self._alignments = [None for _ in range(self.num_columns)]
 
-            self._alignments.append(alignment)
+            self._alignments.insert(position, alignment)
 
-        self._columns.append(column)
+        self._columns.insert(position, column)
         self._num_rows = max(len(column), self._num_rows)
         return self
 
