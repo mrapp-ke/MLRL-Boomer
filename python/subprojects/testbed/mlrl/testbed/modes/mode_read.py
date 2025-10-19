@@ -8,7 +8,7 @@ import logging as log
 from argparse import Namespace
 from dataclasses import replace
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Tuple, override
+from typing import Any, Dict, List, Optional, Set, Tuple, override
 
 from mlrl.testbed_sklearn.experiments.output.dataset.arguments_ground_truth import GroundTruthArguments
 from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import EvaluationResult
@@ -111,7 +111,7 @@ class ReadMode(InputMode):
             return state
 
     @staticmethod
-    def __get_batch(arguments: List[Argument], args: Namespace, meta_data: MetaData) -> List[Command]:
+    def __get_batch(arguments: Set[Argument], args: Namespace, meta_data: MetaData) -> List[Command]:
         main_command = meta_data.command
         child_commands = meta_data.child_commands
 
@@ -132,7 +132,7 @@ class ReadMode(InputMode):
         return [main_command]
 
     @staticmethod
-    def __remove_fold_option(arguments: List[Argument], args: Namespace, command: Command) -> Command:
+    def __remove_fold_option(arguments: Set[Argument], args: Namespace, command: Command) -> Command:
         command_args = ReadMode.__create_command_args(arguments, args, command)
         value, options = DatasetSplitterArguments.DATASET_SPLITTER.get_value_and_options(command_args)
 
@@ -152,7 +152,7 @@ class ReadMode(InputMode):
         return command
 
     @staticmethod
-    def __create_command_args(arguments: List[Argument], args: Namespace, command: Command) -> Namespace:
+    def __create_command_args(arguments: Set[Argument], args: Namespace, command: Command) -> Namespace:
         ignored_arguments = set(argument_name for argument_names in map(lambda arg: arg.names, arguments)
                                 for argument_name in argument_names)
         return command.apply_to_namespace(args,
@@ -160,7 +160,7 @@ class ReadMode(InputMode):
                                           | GroundTruthArguments.SAVE_GROUND_TRUTH.names)
 
     @staticmethod
-    def __group_batch_by_dataset(arguments: List[Argument], args: Namespace,
+    def __group_batch_by_dataset(arguments: Set[Argument], args: Namespace,
                                  batch: List[Command]) -> Dict[str, List[Tuple[Command, Namespace]]]:
         commands_by_dataset: Dict[str, List[Tuple[Command, Namespace]]] = {}
 
@@ -229,9 +229,9 @@ class ReadMode(InputMode):
         return ReadMode.AggregatedEvaluationProcedure(evaluation_by_dataset_type).conduct_experiment(experiment)
 
     @override
-    def _run_experiment(self, arguments: List[Argument], args: Namespace, recipe: Recipe, meta_data: MetaData,
-                        input_directory: Path):
-        batch = self.__get_batch(arguments, args, meta_data)
+    def _run_experiment(self, extension_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
+                        recipe: Recipe, meta_data: MetaData, input_directory: Path):
+        batch = self.__get_batch(extension_arguments, args, meta_data)
         num_experiments = len(batch)
         log.info('Reading experimental results of %s %s...', num_experiments,
                  'experiments' if num_experiments > 1 else 'experiment')
@@ -239,7 +239,7 @@ class ReadMode(InputMode):
 
         evaluation_by_dataset_type: Dict[DatasetType, Dict[str, Table]] = {}
 
-        for dataset_name, commands in self.__group_batch_by_dataset(arguments, args, batch).items():
+        for dataset_name, commands in self.__group_batch_by_dataset(extension_arguments, args, batch).items():
             states: List[ExperimentState] = []
 
             for command, command_args in commands:
