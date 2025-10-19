@@ -160,7 +160,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
             """
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
             """
-            return {self.FEATURE_FORMAT, self.OUTPUT_FORMAT, self.PREDICTION_FORMAT, self.SPARSE_FEATURE_VALUE}
+            return {self.PREDICTION_FORMAT, self.SPARSE_FEATURE_VALUE}
 
         @override
         def get_supported_modes(self) -> Set[ExperimentMode]:
@@ -279,7 +279,10 @@ class RuleLearnerRunnable(SkLearnRunnable):
             raise RuntimeError('The machine learning algorithm does not support ' + problem_domain.problem_name
                                + ' problems')
 
-        return set(filter(None, map(lambda param: param.as_argument(config_type), parameters)))
+        return set(filter(None, map(lambda param: param.as_argument(config_type), parameters))) | {
+            RuleLearnerRunnable.RuleLearnerExtension.FEATURE_FORMAT,
+            RuleLearnerRunnable.RuleLearnerExtension.OUTPUT_FORMAT,
+        }
 
     @override
     def create_problem_domain(self, args: Namespace):
