@@ -415,6 +415,7 @@ class Pip:
         """
         Installs all dependencies in the requirements file.
         """
+        requirements: Set[Requirement] = set()
         requirements = reduce(lambda aggr, requirements_file: aggr | requirements_file.requirements,
-                              self.requirements_files, set())
+                              self.requirements_files, requirements)
         Pip.install_requirements(*requirements)
