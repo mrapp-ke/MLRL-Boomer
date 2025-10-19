@@ -11,14 +11,14 @@ from enum import Enum
 from importlib import import_module
 from importlib.metadata import version
 from importlib.util import module_from_spec, spec_from_file_location
-from typing import Optional
+from typing import Optional, Set
 
 from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
 from mlrl.testbed.program_info import ProgramInfo
 from mlrl.testbed.runnables import Runnable
 
-from mlrl.util.cli import CommandLineInterface, EnumArgument
+from mlrl.util.cli import Argument, CommandLineInterface, EnumArgument
 
 
 class LogLevel(Enum):
@@ -185,9 +185,11 @@ def main():
     runnable = __get_runnable(argument_parser)
     cli = __get_cli(runnable, argument_parser)
     mode = __get_mode(cli, runnable)
+    extension_arguments: Set[Argument] = set()
+    algorithmic_arguments: Set[Argument] = set()
 
     if runnable:
-        runnable.configure_arguments(cli, mode)
+        extension_arguments, algorithmic_arguments = runnable.configure_arguments(cli, mode)
     else:
         mode.configure_arguments(cli, extension_arguments=[], algorithmic_arguments=[])
 
@@ -201,7 +203,7 @@ def main():
     __configure_logger(args)
 
     if runnable:
-        runnable.run(mode, cli.arguments, args)
+        runnable.run(mode, extension_arguments, algorithmic_arguments, args)
 
 
 if __name__ == '__main__':
