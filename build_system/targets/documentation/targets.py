@@ -93,14 +93,14 @@ class BuildDocumentation(BuildTarget.Runnable):
 
     def __init__(self):
         super().__init__(SphinxModule.Filter())
-        sphinx_builder = get_env(environ, self.ENV_SPHINX_BUILDER, default=SphinxBuild.BUILDER_HTML)
+        sphinx_builder = get_env(environ, self.ENV_SPHINX_BUILDER)
         valid_builders = {SphinxBuild.BUILDER_HTML, SphinxBuild.BUILDER_LINKCHECK, SphinxBuild.BUILDER_SPELLING}
 
-        if sphinx_builder not in valid_builders:
+        if sphinx_builder and sphinx_builder not in valid_builders:
             Log.error('Command line argument %s must be one of {%s}, but got: "%s"', self.ENV_SPHINX_BUILDER,
                       format_iterable(valid_builders, delimiter='"'), sphinx_builder)
 
-        self.sphinx_builder = sphinx_builder
+        self.sphinx_builder = sphinx_builder if sphinx_builder else SphinxBuild.BUILDER_HTML
 
     @override
     def run(self, build_unit: BuildUnit, module: Module):
