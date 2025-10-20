@@ -622,7 +622,7 @@ class ColumnWiseTable(Table):
             columns = self._columns
             alignments = self._alignments
             sorted_column_indices = [
-                index for index, header in sorted(enumerate(headers), key=lambda x: x[1] if x[1] else '')
+                index for index, _ in sorted(enumerate(headers), key=lambda x: str(x[1]) if x[1] else '')
             ]
             sorted_columns = []
             sorted_headers = []
