@@ -83,6 +83,13 @@ class Column(Iterable[Cell], ABC):
 
     @property
     @abstractmethod
+    def alignment(self) -> Optional[Alignment]:
+        """
+        The alignment of the column.
+        """
+
+    @property
+    @abstractmethod
     def num_rows(self) -> int:
         """
         The number of rows in the table.
@@ -299,6 +306,12 @@ class RowWiseTable(Table):
         def header(self) -> Optional[Header]:
             header_row = self.table.header_row
             return header_row[self.column_index] if header_row else None
+
+        @override
+        @property
+        def alignment(self) -> Optional[Alignment]:
+            alignments = self.table.alignments
+            return alignments[self.column_index] if alignments else None
 
         @override
         @property
@@ -544,6 +557,12 @@ class ColumnWiseTable(Table):
         def header(self) -> Optional[Header]:
             header_row = self.table.header_row
             return header_row[self.column_index] if header_row else None
+
+        @override
+        @property
+        def alignment(self) -> Optional[Alignment]:
+            alignments = self.table.alignments
+            return alignments[self.column_index] if alignments else None
 
         @override
         @property
