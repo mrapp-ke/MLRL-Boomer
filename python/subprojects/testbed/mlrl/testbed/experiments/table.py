@@ -456,6 +456,11 @@ class RowWiseTable(Table):
 
         return table
 
+    def __getitem__(self, row_index: int) -> Row:
+        if row_index < 0 or row_index >= self.num_rows:
+            raise ValueError('Row index must be between 0 and ' + str(self.num_rows) + ', but got: ' + str(row_index))
+        return RowWiseTable.Row(self, row_index)
+
 
 class ColumnWiseTable(Table):
     """
@@ -686,3 +691,9 @@ class ColumnWiseTable(Table):
     @override
     def to_column_wise_table(self) -> 'ColumnWiseTable':
         return self
+
+    def __getitem__(self, column_index: int) -> Column:
+        if column_index < 0 or column_index >= self.num_columns:
+            raise ValueError('Column index must be between 0 and ' + str(self.num_columns) + ', but got: '
+                             + str(column_index))
+        return ColumnWiseTable.Column(self, column_index)
