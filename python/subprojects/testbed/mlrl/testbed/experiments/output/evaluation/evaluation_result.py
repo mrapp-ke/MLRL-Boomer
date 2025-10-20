@@ -23,6 +23,10 @@ class AggregatedEvaluationResult(TabularOutputData):
 
     CONTEXT = Context(include_prediction_scope=False, include_fold=False)
 
+    COLUMN_DATASET = 'Dataset'
+
+    COLUMN_PREFIX_PARAMETER = 'Parameter'
+
     def __init__(self, evaluation_by_dataset: Dict[str, Table]):
         """
         :param evaluation_by_dataset: A dictionary that stores a table with evaluation results, mapped to the names of
@@ -58,7 +62,7 @@ class AggregatedEvaluationResult(TabularOutputData):
                 values.extend((dataset_name for _ in range(table.num_rows)))
 
             aggregated_table = RowWiseTable.aggregate(*tables).to_column_wise_table()
-            aggregated_table.add_column(*values, header='Dataset', position=0)
+            aggregated_table.add_column(*values, header=self.COLUMN_DATASET, position=0)
             decimals = kwargs.get(OPTION_DECIMALS, 0)
 
             for column in aggregated_table.columns:
