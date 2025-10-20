@@ -601,6 +601,21 @@ class ColumnWiseTable(Table):
         self._columns: List[List[Cell]] = []
         self._num_rows = 0
 
+    def slice(self, *column_indices: int) -> 'ColumnWiseTable':
+        """
+        Creates and returns a copy of this table that contains the columns with specific indices in the given order.
+
+        :param column_indices:  The indices of the columns to be sliced
+        :return:                The table that has been created
+        """
+        sliced_table = ColumnWiseTable()
+
+        for column_index in column_indices:
+            column = self[column_index]
+            sliced_table.add_column(*column, header=column.header, alignment=column.alignment)
+
+        return sliced_table
+
     def add_column(self,
                    *values: Cell,
                    header: Optional[Header] = None,
