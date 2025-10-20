@@ -210,7 +210,7 @@ class ReadMode(InputMode):
 
                     for argument in command.argument_dict.keys():
                         if argument in algorithmic_argument_names:
-                            headers.add(argument)
+                            headers.add(f'{AggregatedEvaluationResult.COLUMN_PREFIX_PARAMETER} {argument}')
 
             num_tables = len(tables)
             num_missing = num_commands - num_tables
@@ -239,7 +239,8 @@ class ReadMode(InputMode):
 
             if column.header:
                 for row_index, (command, _) in enumerate(commands_and_their_states):
-                    column[row_index] = command.argument_dict.get(str(column.header))
+                    argument = str(column.header)[len(AggregatedEvaluationResult.COLUMN_PREFIX_PARAMETER):].lstrip()
+                    column[row_index] = command.argument_dict.get(argument)
 
         return aggregated_table
 
