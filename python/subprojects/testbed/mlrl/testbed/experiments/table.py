@@ -25,7 +25,7 @@ Header = Optional[Any]
 Cell = Optional[Any]
 
 
-class HeaderRow(Iterable[Optional[Any]], ABC):
+class HeaderRow(Iterable[Header], ABC):
     """
     Provides access to the headers of a table.
     """
@@ -140,7 +140,7 @@ class Table(ABC):
 
     @property
     @abstractmethod
-    def alignments(self) -> Optional[List[Alignment]]:
+    def alignments(self) -> Optional[List[Optional[Alignment]]]:
         """
         The individual alignments of the columns in the table or None, if no alignments have been specified.
         """
@@ -196,7 +196,8 @@ class Table(ABC):
             if not headers:
                 return tabulate(rows, tablefmt='plain')
 
-            alignments = map(lambda alignment: alignment.value, self.alignments) if self.alignments else None
+            alignments = map(lambda alignment: alignment.value
+                             if alignment else None, self.alignments) if self.alignments else None
             return tabulate(rows, headers=headers, tablefmt='simple_outline', colalign=alignments)
 
         return ''
@@ -228,7 +229,7 @@ class RowWiseTable(Table):
             return self.table._headers[column_index]
 
         @override
-        def __iter__(self) -> Iterator[Optional[Any]]:
+        def __iter__(self) -> Iterator[Header]:
             return iter(self.table._headers)
 
     class Row(Row):
@@ -302,7 +303,7 @@ class RowWiseTable(Table):
             for row_index in range(self.num_rows):
                 yield self[row_index]
 
-    def __init__(self, *headers: Header, alignments: Optional[List[Alignment]] = None):
+    def __init__(self, *headers: Header, alignments: Optional[List[Optional[Alignment]]] = None):
         """
         :param headers:     The headers of the individual columns
         :param alignments:  The alignments of the individual columns or None
@@ -316,7 +317,7 @@ class RowWiseTable(Table):
         self._rows: List[List[Any]] = []
         self._num_columns = len(headers) if headers else 0
 
-    def add_row(self, *values: Optional[Any]):
+    def add_row(self, *values: Cell):
         """
         Adds a new row to the end of the table.
 
@@ -367,7 +368,7 @@ class RowWiseTable(Table):
 
     @override
     @property
-    def alignments(self) -> Optional[List[Alignment]]:
+    def alignments(self) -> Optional[List[Optional[Alignment]]]:
         return self._alignments
 
     @override
@@ -423,11 +424,13 @@ class ColumnWiseTable(Table):
 
         @override
         def __getitem__(self, column_index: int) -> Header:
-            return self.table._headers[column_index]
+            headers = self.table._headers
+            return headers[column_index] if headers else None
 
         @override
         def __iter__(self) -> Iterator[Header]:
-            return iter(self.table._headers)
+            headers = self.table._headers
+            return iter(headers if headers else [])
 
     class Row(Row):
         """
@@ -501,13 +504,13 @@ class ColumnWiseTable(Table):
                 yield self[row_index]
 
     def __init__(self):
-        self._headers = None
-        self._alignments = None
-        self._columns = []
+        self._headers: Optional[List[Header]] = None
+        self._alignments: Optional[List[Optional[Alignment]]] = None
+        self._columns: List[List[Cell]] = []
         self._num_rows = 0
 
     def add_column(self,
-                   *values: Optional[Any],
+                   *values: Cell,
                    header: Optional[Header] = None,
                    alignment: Optional[Alignment] = None) -> 'ColumnWiseTable':
         """
@@ -547,10 +550,12 @@ class ColumnWiseTable(Table):
         if headers:
             columns = self._columns
             alignments = self._alignments
-            sorted_column_indices = sorted(range(len(headers)), key=headers.__getitem__)
+            sorted_column_indices = [
+                index for index, header in sorted(enumerate(headers), key=lambda x: x[1] if x[1] else '')
+            ]
             sorted_columns = []
             sorted_headers = []
-            sorted_alignments: Optional[List[str]] = [] if alignments else None
+            sorted_alignments: Optional[List[Optional[Alignment]]] = [] if alignments else None
 
             for column_index in sorted_column_indices:
                 sorted_columns.append(columns[column_index])
@@ -582,7 +587,7 @@ class ColumnWiseTable(Table):
 
     @override
     @property
-    def alignments(self) -> Optional[List[Alignment]]:
+    def alignments(self) -> Optional[List[Optional[Alignment]]]:
         return self._alignments
 
     @override
@@ -599,7 +604,8 @@ class ColumnWiseTable(Table):
 
     @override
     def to_row_wise_table(self) -> RowWiseTable:
-        table = RowWiseTable(*self._headers, alignments=self._alignments)
+        headers = self._headers if self._headers else []
+        table = RowWiseTable(*headers, alignments=self._alignments)
 
         for row in self.rows:
             table.add_row(*row)
