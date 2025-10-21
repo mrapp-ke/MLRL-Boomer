@@ -398,3 +398,330 @@ Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-r
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/models/model.pickle"...
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/rules.txt"...
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/model_characteristics.csv"...
+Evaluation results of several experiments for test data:
+
+Evaluation results for measure "Example-wise F1":
+
+feature_format    instance_sampling                  loss                     Example-wise F1
+----------------  ---------------------------------  ---------------------  -----------------
+"emotions"
+----------------  ---------------------------------  ---------------------  -----------------
+                  none                               logistic-decomposable              63.11
+sparse            none                               logistic-decomposable              61.46
+                  with-replacement{sample_size=0.5}  logistic-decomposable              61.17
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable              57.57
+----------------  ---------------------------------  ---------------------  -----------------
+"enron"
+----------------  ---------------------------------  ---------------------  -----------------
+                  none                               logistic-decomposable              57.44
+sparse            none                               logistic-decomposable              57.44
+                  with-replacement{sample_size=0.5}  logistic-decomposable              56.45
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable              56.45
+
+Evaluation results for measure "Example-wise Jaccard":
+
+feature_format    instance_sampling                  loss                     Example-wise Jaccard
+----------------  ---------------------------------  ---------------------  ----------------------
+"emotions"
+----------------  ---------------------------------  ---------------------  ----------------------
+                  none                               logistic-decomposable                   55.31
+sparse            none                               logistic-decomposable                   53.74
+                  with-replacement{sample_size=0.5}  logistic-decomposable                   52.98
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable                   49.59
+----------------  ---------------------------------  ---------------------  ----------------------
+"enron"
+----------------  ---------------------------------  ---------------------  ----------------------
+                  none                               logistic-decomposable                   46.65
+sparse            none                               logistic-decomposable                   46.65
+                  with-replacement{sample_size=0.5}  logistic-decomposable                   45.85
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable                   45.85
+
+Evaluation results for measure "Example-wise Precision":
+
+feature_format    instance_sampling                  loss                     Example-wise Precision
+----------------  ---------------------------------  ---------------------  ------------------------
+"emotions"
+----------------  ---------------------------------  ---------------------  ------------------------
+                  none                               logistic-decomposable                     78.06
+sparse            none                               logistic-decomposable                     75.77
+                  with-replacement{sample_size=0.5}  logistic-decomposable                     77.81
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable                     75.26
+----------------  ---------------------------------  ---------------------  ------------------------
+"enron"
+----------------  ---------------------------------  ---------------------  ------------------------
+                  none                               logistic-decomposable                     75.41
+sparse            none                               logistic-decomposable                     75.41
+                  with-replacement{sample_size=0.5}  logistic-decomposable                     74.44
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable                     74.44
+
+Evaluation results for measure "Example-wise Recall":
+
+feature_format    instance_sampling                  loss                     Example-wise Recall
+----------------  ---------------------------------  ---------------------  ---------------------
+"emotions"
+----------------  ---------------------------------  ---------------------  ---------------------
+                  none                               logistic-decomposable                  62.67
+sparse            none                               logistic-decomposable                  61.56
+                  with-replacement{sample_size=0.5}  logistic-decomposable                  62.93
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable                  57.74
+----------------  ---------------------------------  ---------------------  ---------------------
+"enron"
+----------------  ---------------------------------  ---------------------  ---------------------
+                  none                               logistic-decomposable                  53.46
+sparse            none                               logistic-decomposable                  53.46
+                  with-replacement{sample_size=0.5}  logistic-decomposable                  51.84
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable                  51.84
+
+Evaluation results for measure "Hamming Accuracy":
+
+feature_format    instance_sampling                  loss                     Hamming Accuracy
+----------------  ---------------------------------  ---------------------  ------------------
+"emotions"
+----------------  ---------------------------------  ---------------------  ------------------
+                  none                               logistic-decomposable               81.29
+sparse            none                               logistic-decomposable               80.87
+                  with-replacement{sample_size=0.5}  logistic-decomposable               80.87
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable               79.34
+----------------  ---------------------------------  ---------------------  ------------------
+"enron"
+----------------  ---------------------------------  ---------------------  ------------------
+                  none                               logistic-decomposable               95.54
+sparse            none                               logistic-decomposable               95.54
+                  with-replacement{sample_size=0.5}  logistic-decomposable               95.53
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable               95.53
+
+Evaluation results for measure "Hamming Loss":
+
+feature_format    instance_sampling                  loss                     Hamming Loss
+----------------  ---------------------------------  ---------------------  --------------
+"emotions"
+----------------  ---------------------------------  ---------------------  --------------
+                  none                               logistic-decomposable           18.71
+sparse            none                               logistic-decomposable           19.13
+                  with-replacement{sample_size=0.5}  logistic-decomposable           19.13
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable           20.66
+----------------  ---------------------------------  ---------------------  --------------
+"enron"
+----------------  ---------------------------------  ---------------------  --------------
+                  none                               logistic-decomposable            4.46
+sparse            none                               logistic-decomposable            4.46
+                  with-replacement{sample_size=0.5}  logistic-decomposable            4.47
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable            4.47
+
+Evaluation results for measure "Macro F1":
+
+feature_format    instance_sampling                  loss                     Macro F1
+----------------  ---------------------------------  ---------------------  ----------
+"emotions"
+----------------  ---------------------------------  ---------------------  ----------
+                  none                               logistic-decomposable       65.05
+sparse            none                               logistic-decomposable       64.71
+                  with-replacement{sample_size=0.5}  logistic-decomposable       65.39
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable       60.9
+----------------  ---------------------------------  ---------------------  ----------
+"enron"
+----------------  ---------------------------------  ---------------------  ----------
+                  none                               logistic-decomposable       22.37
+sparse            none                               logistic-decomposable       22.37
+                  with-replacement{sample_size=0.5}  logistic-decomposable       21.51
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable       21.51
+
+Evaluation results for measure "Macro Jaccard":
+
+feature_format    instance_sampling                  loss                     Macro Jaccard
+----------------  ---------------------------------  ---------------------  ---------------
+"emotions"
+----------------  ---------------------------------  ---------------------  ---------------
+                  none                               logistic-decomposable            49.47
+sparse            none                               logistic-decomposable            49.08
+                  with-replacement{sample_size=0.5}  logistic-decomposable            49.82
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable            45.36
+----------------  ---------------------------------  ---------------------  ---------------
+"enron"
+----------------  ---------------------------------  ---------------------  ---------------
+                  none                               logistic-decomposable            16.81
+sparse            none                               logistic-decomposable            16.81
+                  with-replacement{sample_size=0.5}  logistic-decomposable            16.14
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable            16.14
+
+Evaluation results for measure "Macro Precision":
+
+feature_format    instance_sampling                  loss                     Macro Precision
+----------------  ---------------------------------  ---------------------  -----------------
+"emotions"
+----------------  ---------------------------------  ---------------------  -----------------
+                  none                               logistic-decomposable              75.75
+sparse            none                               logistic-decomposable              73.89
+                  with-replacement{sample_size=0.5}  logistic-decomposable              72.69
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable              70.32
+----------------  ---------------------------------  ---------------------  -----------------
+"enron"
+----------------  ---------------------------------  ---------------------  -----------------
+                  none                               logistic-decomposable              61.04
+sparse            none                               logistic-decomposable              61.04
+                  with-replacement{sample_size=0.5}  logistic-decomposable              64.85
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable              64.85
+
+Evaluation results for measure "Macro Recall":
+
+feature_format    instance_sampling                  loss                     Macro Recall
+----------------  ---------------------------------  ---------------------  --------------
+"emotions"
+----------------  ---------------------------------  ---------------------  --------------
+                  none                               logistic-decomposable           60.43
+sparse            none                               logistic-decomposable           60.08
+                  with-replacement{sample_size=0.5}  logistic-decomposable           60.82
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable           55.7
+----------------  ---------------------------------  ---------------------  --------------
+"enron"
+----------------  ---------------------------------  ---------------------  --------------
+                  none                               logistic-decomposable           18.92
+sparse            none                               logistic-decomposable           18.92
+                  with-replacement{sample_size=0.5}  logistic-decomposable           18.38
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable           18.38
+
+Evaluation results for measure "Micro F1":
+
+feature_format    instance_sampling                  loss                     Micro F1
+----------------  ---------------------------------  ---------------------  ----------
+"emotions"
+----------------  ---------------------------------  ---------------------  ----------
+                  none                               logistic-decomposable       67.84
+sparse            none                               logistic-decomposable       67.25
+                  with-replacement{sample_size=0.5}  logistic-decomposable       67.34
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable       63.89
+----------------  ---------------------------------  ---------------------  ----------
+"enron"
+----------------  ---------------------------------  ---------------------  ----------
+                  none                               logistic-decomposable       58.78
+sparse            none                               logistic-decomposable       58.78
+                  with-replacement{sample_size=0.5}  logistic-decomposable       58.26
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable       58.26
+
+Evaluation results for measure "Micro Jaccard":
+
+feature_format    instance_sampling                  loss                     Micro Jaccard
+----------------  ---------------------------------  ---------------------  ---------------
+"emotions"
+----------------  ---------------------------------  ---------------------  ---------------
+                  none                               logistic-decomposable            51.33
+sparse            none                               logistic-decomposable            50.66
+                  with-replacement{sample_size=0.5}  logistic-decomposable            50.77
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable            46.94
+----------------  ---------------------------------  ---------------------  ---------------
+"enron"
+----------------  ---------------------------------  ---------------------  ---------------
+                  none                               logistic-decomposable            41.63
+sparse            none                               logistic-decomposable            41.63
+                  with-replacement{sample_size=0.5}  logistic-decomposable            41.11
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable            41.11
+
+Evaluation results for measure "Micro Precision":
+
+feature_format    instance_sampling                  loss                     Micro Precision
+----------------  ---------------------------------  ---------------------  -----------------
+"emotions"
+----------------  ---------------------------------  ---------------------  -----------------
+                  none                               logistic-decomposable              75.08
+sparse            none                               logistic-decomposable              74.04
+                  with-replacement{sample_size=0.5}  logistic-decomposable              73.89
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable              72.15
+----------------  ---------------------------------  ---------------------  -----------------
+"enron"
+----------------  ---------------------------------  ---------------------  -----------------
+                  none                               logistic-decomposable              71.2
+sparse            none                               logistic-decomposable              71.2
+                  with-replacement{sample_size=0.5}  logistic-decomposable              71.63
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable              71.63
+
+Evaluation results for measure "Micro Recall":
+
+feature_format    instance_sampling                  loss                     Micro Recall
+----------------  ---------------------------------  ---------------------  --------------
+"emotions"
+----------------  ---------------------------------  ---------------------  --------------
+                  none                               logistic-decomposable           61.87
+sparse            none                               logistic-decomposable           61.6
+                  with-replacement{sample_size=0.5}  logistic-decomposable           61.87
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable           57.33
+----------------  ---------------------------------  ---------------------  --------------
+"enron"
+----------------  ---------------------------------  ---------------------  --------------
+                  none                               logistic-decomposable           50.05
+sparse            none                               logistic-decomposable           50.05
+                  with-replacement{sample_size=0.5}  logistic-decomposable           49.1
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable           49.1
+
+Evaluation results for measure "Prediction Time":
+
+feature_format    instance_sampling                  loss                     Prediction Time
+----------------  ---------------------------------  ---------------------  -----------------
+"emotions"
+----------------  ---------------------------------  ---------------------  -----------------
+                  none                               logistic-decomposable               xxx
+sparse            none                               logistic-decomposable               xxx
+                  with-replacement{sample_size=xxx}  logistic-decomposable               xxx
+sparse            with-replacement{sample_size=xxx}  logistic-decomposable               xxx
+----------------  ---------------------------------  ---------------------  -----------------
+"enron"
+----------------  ---------------------------------  ---------------------  -----------------
+                  none                               logistic-decomposable               xxx
+sparse            none                               logistic-decomposable               xxx
+                  with-replacement{sample_size=xxx}  logistic-decomposable               xxx
+sparse            with-replacement{sample_size=xxx}  logistic-decomposable               xxx
+
+Evaluation results for measure "Subset 0/1 Loss":
+
+feature_format    instance_sampling                  loss                     Subset 0/1 Loss
+----------------  ---------------------------------  ---------------------  -----------------
+"emotions"
+----------------  ---------------------------------  ---------------------  -----------------
+                  none                               logistic-decomposable              69.39
+sparse            none                               logistic-decomposable              70.92
+                  with-replacement{sample_size=0.5}  logistic-decomposable              73.47
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable              75
+----------------  ---------------------------------  ---------------------  -----------------
+"enron"
+----------------  ---------------------------------  ---------------------  -----------------
+                  none                               logistic-decomposable              84.88
+sparse            none                               logistic-decomposable              84.88
+                  with-replacement{sample_size=0.5}  logistic-decomposable              85.59
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable              85.59
+
+Evaluation results for measure "Subset Accuracy":
+
+feature_format    instance_sampling                  loss                     Subset Accuracy
+----------------  ---------------------------------  ---------------------  -----------------
+"emotions"
+----------------  ---------------------------------  ---------------------  -----------------
+                  none                               logistic-decomposable              30.61
+sparse            none                               logistic-decomposable              29.08
+                  with-replacement{sample_size=0.5}  logistic-decomposable              26.53
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable              25
+----------------  ---------------------------------  ---------------------  -----------------
+"enron"
+----------------  ---------------------------------  ---------------------  -----------------
+                  none                               logistic-decomposable              15.12
+sparse            none                               logistic-decomposable              15.12
+                  with-replacement{sample_size=0.5}  logistic-decomposable              14.41
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable              14.41
+
+Evaluation results for measure "Training Time":
+
+feature_format    instance_sampling                  loss                     Training Time
+----------------  ---------------------------------  ---------------------  ---------------
+"emotions"
+----------------  ---------------------------------  ---------------------  ---------------
+                  none                               logistic-decomposable             xxx
+sparse            none                               logistic-decomposable             xxx
+                  with-replacement{sample_size=xxx}  logistic-decomposable             xxx
+sparse            with-replacement{sample_size=xxx}  logistic-decomposable             xxx
+----------------  ---------------------------------  ---------------------  ---------------
+"enron"
+----------------  ---------------------------------  ---------------------  ---------------
+                  none                               logistic-decomposable             xxx
+sparse            none                               logistic-decomposable             xxx
+                  with-replacement{sample_size=xxx}  logistic-decomposable             xxx
+sparse            with-replacement{sample_size=xxx}  logistic-decomposable             xxx
+
+Writing output data to file "python/tests/res/tmp/rerun/aggregated_evaluation_test.csv"...
