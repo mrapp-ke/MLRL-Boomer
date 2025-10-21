@@ -4,10 +4,10 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing tables.
 """
 from abc import ABC, abstractmethod
-from enum import Enum
+from enum import Enum, StrEnum
 from typing import Any, Generator, Iterable, Iterator, List, Optional, override
 
-from tabulate import tabulate
+from tabulate import SEPARATING_LINE, tabulate
 
 
 class Alignment(Enum):
@@ -118,6 +118,14 @@ class Table(ABC):
     An abstract base class for all tables.
     """
 
+    class Format(StrEnum):
+        """
+        All formats that can be used for formatting tables.
+        """
+        SIMPLE = 'simple'
+        PLAIN = 'plain'
+        OUTLINE = 'simple_outline'
+
     @property
     def has_headers(self) -> bool:
         """
@@ -190,30 +198,46 @@ class Table(ABC):
         :return: The `ColumnWiseTable` that has been created
         """
 
-    def format(self, auto_rotate: bool = True) -> str:
+    def format(self,
+               auto_rotate: bool = True,
+               table_format: Optional['Table.Format'] = None,
+               separator_indices: Optional[List[int]] = None) -> str:
         """
         Creates and returns a textual representation of the table.
 
-        :param auto_rotate: True, if tables with a single row should automatically be rotated for legibility, False
-                            otherwise
-        :return:            The textual representation that has been created
+        :param auto_rotate:         True, if tables with a single row should automatically be rotated for legibility,
+                                    False otherwise
+        :param table_format:        The format that should be used for formatting the table or None, if the default
+                                    should be used
+        :param separator_indices:   A list that contains the indices of the row at which a separator should be inserted,
+                                    or None if no separators should be inserted
+        :return:                    The textual representation that has been created
         """
         if self.num_cells > 0:
             headers = self.header_row
-            rows = self.rows
+            rows: List[Any] = list(self.rows)
+
+            if separator_indices:
+                separator_indices.sort()
+
+                for row_index in reversed(separator_indices):
+                    rows.insert(row_index, SEPARATING_LINE)
 
             if auto_rotate and headers and self.num_rows == 1:
                 first_row = next(self.rows)
                 rotated_rows = [[headers[column_index], first_row[column_index]]
                                 for column_index in range(self.num_columns)]
-                return tabulate(rotated_rows, tablefmt='plain')
+                return tabulate(rotated_rows, tablefmt=table_format if table_format else Table.Format.PLAIN)
 
             if not headers:
-                return tabulate(rows, tablefmt='plain')
+                return tabulate(rows, tablefmt=table_format if table_format else Table.Format.PLAIN)
 
             alignments = map(lambda alignment: alignment.value
                              if alignment else None, self.alignments) if self.alignments else None
-            return tabulate(rows, headers=headers, tablefmt='simple_outline', colalign=alignments)
+            return tabulate(rows,
+                            headers=headers,
+                            tablefmt=table_format if table_format else Table.Format.OUTLINE,
+                            colalign=alignments)
 
         return '<no data available>'
 
