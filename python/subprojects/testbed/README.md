@@ -24,7 +24,7 @@ The package mlrl-testbed provides the following modes of operation for carrying 
 
 - **Single:** In this mode a single experiment is run, involving the steps listed above.
 - **Batch:** In batch mode, multiple independent experiments using varying datasets and parameters can be run in an automated manner. By installing the optional package [mlrl-testbed-slurm](https://pypi.org/project/mlrl-testbed-slurm/), the experiments can be run via the [Slurm Workload Manager](https://wikipedia.org/wiki/Slurm_Workload_Manager).
-- **Read:** Read mode allows to read the output data produced by a previous experiment and to print it on the console or write it to different output files.
+- **Read:** Read mode allows to read the output data produced by a previous experiment and to print it on the console or write it to different output files. It is particularly useful for inspecting results for multiple experiments obtained via batch mode, as results are automatically aggregated across different experiments.
 - **Run:** In this mode, previous experiments can be run again, overriding some of their parameters if desired.
 
 # mlrl-testbed
