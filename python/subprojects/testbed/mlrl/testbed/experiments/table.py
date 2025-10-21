@@ -74,6 +74,14 @@ class Column(Iterable[Cell], ABC):
     Provides access to a single column of a table.
     """
 
+    @abstractmethod
+    def set_header(self, value: Header):
+        """
+        Sets the header of the column to a given value.
+
+        :param value: The value to be set
+        """
+
     @property
     @abstractmethod
     def header(self) -> Optional[Header]:
@@ -300,6 +308,18 @@ class RowWiseTable(Table):
             """
             self.table = table
             self.column_index = column_index
+
+        @override
+        def set_header(self, value: Header):
+            # pylint: disable=protected-access
+            headers = self.table._headers
+
+            if headers:
+                headers[self.column_index] = value
+            else:
+                headers = [None for _ in range(self.table.num_columns)]
+                headers[self.column_index] = value
+                self.table._headers = headers
 
         @override
         @property
@@ -551,6 +571,23 @@ class ColumnWiseTable(Table):
             """
             self.table = table
             self.column_index = column_index
+
+        @override
+        def set_header(self, value: Header):
+            """
+            Sets the header of the column to a given value.
+
+            :param value: The value to be set
+            """
+            # pylint: disable=protected-access
+            headers = self.table._headers
+
+            if headers:
+                headers[self.column_index] = value
+            else:
+                headers = [None for _ in range(self.table.num_columns)]
+                headers[self.column_index] = value
+                self.table._headers = headers
 
         @override
         @property
