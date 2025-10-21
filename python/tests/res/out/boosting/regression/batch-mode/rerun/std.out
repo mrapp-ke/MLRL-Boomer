@@ -286,3 +286,114 @@ Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-r
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/models/model.pickle"...
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/results/rules.txt"...
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/results/model_characteristics.csv"...
+Evaluation results of several experiments for test data:
+
+Evaluation results for measure "Mean Absolute Error":
+
+feature_format    instance_sampling                  loss                          Mean Absolute Error
+----------------  ---------------------------------  --------------------------  ---------------------
+"atp7d"
+----------------  ---------------------------------  --------------------------  ---------------------
+                  none                               squared-error-decomposable                  29.91
+sparse            none                               squared-error-decomposable                  30.03
+                  with-replacement{sample_size=0.5}  squared-error-decomposable                  33
+sparse            with-replacement{sample_size=0.5}  squared-error-decomposable                  34.15
+----------------  ---------------------------------  --------------------------  ---------------------
+"atp7d-binary"
+----------------  ---------------------------------  --------------------------  ---------------------
+                  none                               squared-error-decomposable                  31.92
+sparse            none                               squared-error-decomposable                  31.92
+                  with-replacement{sample_size=0.5}  squared-error-decomposable                  34.77
+sparse            with-replacement{sample_size=0.5}  squared-error-decomposable                  34.77
+
+Evaluation results for measure "Mean Absolute Percentage Error":
+
+feature_format    instance_sampling                  loss                          Mean Absolute Percentage Error
+----------------  ---------------------------------  --------------------------  --------------------------------
+"atp7d"
+----------------  ---------------------------------  --------------------------  --------------------------------
+                  none                               squared-error-decomposable                              0.08
+sparse            none                               squared-error-decomposable                              0.08
+                  with-replacement{sample_size=0.5}  squared-error-decomposable                              0.08
+sparse            with-replacement{sample_size=0.5}  squared-error-decomposable                              0.09
+----------------  ---------------------------------  --------------------------  --------------------------------
+"atp7d-binary"
+----------------  ---------------------------------  --------------------------  --------------------------------
+                  none                               squared-error-decomposable                              0.08
+sparse            none                               squared-error-decomposable                              0.08
+                  with-replacement{sample_size=0.5}  squared-error-decomposable                              0.09
+sparse            with-replacement{sample_size=0.5}  squared-error-decomposable                              0.09
+
+Evaluation results for measure "Mean Squared Error":
+
+feature_format    instance_sampling                  loss                          Mean Squared Error
+----------------  ---------------------------------  --------------------------  --------------------
+"atp7d"
+----------------  ---------------------------------  --------------------------  --------------------
+                  none                               squared-error-decomposable               2826.34
+sparse            none                               squared-error-decomposable               3007.35
+                  with-replacement{sample_size=0.5}  squared-error-decomposable               4086.77
+sparse            with-replacement{sample_size=0.5}  squared-error-decomposable               4131.78
+----------------  ---------------------------------  --------------------------  --------------------
+"atp7d-binary"
+----------------  ---------------------------------  --------------------------  --------------------
+                  none                               squared-error-decomposable               3361.17
+sparse            none                               squared-error-decomposable               3361.17
+                  with-replacement{sample_size=0.5}  squared-error-decomposable               3554.64
+sparse            with-replacement{sample_size=0.5}  squared-error-decomposable               3554.64
+
+Evaluation results for measure "Median Absolute Error":
+
+feature_format    instance_sampling                  loss                          Median Absolute Error
+----------------  ---------------------------------  --------------------------  -----------------------
+"atp7d"
+----------------  ---------------------------------  --------------------------  -----------------------
+                  none                               squared-error-decomposable                    15.83
+sparse            none                               squared-error-decomposable                    15.2
+                  with-replacement{sample_size=0.5}  squared-error-decomposable                    17.98
+sparse            with-replacement{sample_size=0.5}  squared-error-decomposable                    18.58
+----------------  ---------------------------------  --------------------------  -----------------------
+"atp7d-binary"
+----------------  ---------------------------------  --------------------------  -----------------------
+                  none                               squared-error-decomposable                    17.49
+sparse            none                               squared-error-decomposable                    17.49
+                  with-replacement{sample_size=0.5}  squared-error-decomposable                    20.76
+sparse            with-replacement{sample_size=0.5}  squared-error-decomposable                    20.76
+
+Evaluation results for measure "Prediction Time":
+
+feature_format    instance_sampling                  loss                          Prediction Time
+----------------  ---------------------------------  --------------------------  -----------------
+"atpxxxd"
+----------------  ---------------------------------  --------------------------  -----------------
+                  none                               squared-error-decomposable               xxx
+sparse            none                               squared-error-decomposable               xxx
+                  with-replacement{sample_size=xxx}  squared-error-decomposable               xxx
+sparse            with-replacement{sample_size=xxx}  squared-error-decomposable               xxx
+----------------  ---------------------------------  --------------------------  -----------------
+"atpxxxd-binary"
+----------------  ---------------------------------  --------------------------  -----------------
+                  none                               squared-error-decomposable               xxx
+sparse            none                               squared-error-decomposable               xxx
+                  with-replacement{sample_size=xxx}  squared-error-decomposable               xxx
+sparse            with-replacement{sample_size=xxx}  squared-error-decomposable               xxx
+
+Evaluation results for measure "Training Time":
+
+feature_format    instance_sampling                  loss                          Training Time
+----------------  ---------------------------------  --------------------------  ---------------
+"atpxxxd"
+----------------  ---------------------------------  --------------------------  ---------------
+                  none                               squared-error-decomposable             xxx
+sparse            none                               squared-error-decomposable             xxx
+                  with-replacement{sample_size=xxx}  squared-error-decomposable             xxx
+sparse            with-replacement{sample_size=xxx}  squared-error-decomposable             xxx
+----------------  ---------------------------------  --------------------------  ---------------
+"atpxxxd-binary"
+----------------  ---------------------------------  --------------------------  ---------------
+                  none                               squared-error-decomposable             xxx
+sparse            none                               squared-error-decomposable             xxx
+                  with-replacement{sample_size=xxx}  squared-error-decomposable             xxx
+sparse            with-replacement{sample_size=xxx}  squared-error-decomposable             xxx
+
+Writing output data to file "python/tests/res/tmp/rerun/aggregated_evaluation_test.csv"...
