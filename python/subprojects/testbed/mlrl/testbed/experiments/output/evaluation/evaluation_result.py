@@ -4,12 +4,12 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing evaluation results that are part of output data.
 """
 from itertools import chain
-from typing import Dict, List, Optional, override
+from typing import Dict, List, Optional, Set, override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
-from mlrl.testbed.experiments.table import RowWiseTable, Table
+from mlrl.testbed.experiments.table import Column, ColumnWiseTable, RowWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, format_number
 
 from mlrl.util.options import Options
@@ -59,7 +59,7 @@ class AggregatedEvaluationResult(TabularOutputData):
                     dataset_column_index = column_index
                 elif header.startswith(self.COLUMN_PREFIX_PARAMETER):
                     parameter_column_indices.append(column_index)
-                    column.set_header(header[len(self.COLUMN_PREFIX_PARAMETER):].lstrip())
+                    column.set_header(header[len(self.COLUMN_PREFIX_PARAMETER):].lstrip().lstrip('-').replace('-', '_'))
                 elif header.startswith(OutputValue.COLUMN_PREFIX_STD_DEV):
                     key = header[len(OutputValue.COLUMN_PREFIX_STD_DEV):].lstrip()
                     std_dev_column_indices[key] = column_index
@@ -75,12 +75,49 @@ class AggregatedEvaluationResult(TabularOutputData):
                 measure = str(column.header)
                 text += 'Evaluation results for measure "' + measure + '":\n\n'
                 std_dev_index = std_dev_column_indices.get(measure)
-                relevant_indices = chain([dataset_column_index], parameter_column_indices, [measure_index] +
+                relevant_indices = chain(parameter_column_indices, [measure_index] +
                                          ([std_dev_index] if std_dev_index else []))
                 sliced_table = column_wise_table.slice(*relevant_indices)
-                text += sliced_table.format()
+
+                if std_dev_index:
+                    self.__add_std_dev_column(sliced_table)
+
+                row_wise_table = sliced_table.to_row_wise_table()
+                dataset_column = column_wise_table[dataset_column_index]
+                datasets = self.__add_dataset_rows(dataset_column, row_wise_table)
+                separator_indices = [
+                    row_index for row_index, row in enumerate(row_wise_table.rows)
+                    if row_index > 0 and (row[0] in datasets or row_wise_table[row_index - 1][0] in datasets)
+                ]
+                text += row_wise_table.format(table_format=Table.Format.SIMPLE, separator_indices=separator_indices)
 
         return text if text else None
+
+    @staticmethod
+    def __add_std_dev_column(sliced_table: ColumnWiseTable):
+        std_dev_column = sliced_table[sliced_table.num_columns - 1]
+
+        for row_index in range(std_dev_column.num_rows):
+            std_dev_column[row_index] = '±' + str(std_dev_column[row_index])
+
+    @staticmethod
+    def __add_dataset_rows(dataset_column: Column, table: RowWiseTable) -> set[str]:
+        previous_dataset: Optional[str] = None
+        datasets: Set[str] = set()
+
+        for row_index in range(dataset_column.num_rows - 1, -1, -1):
+            dataset = '"' + str(dataset_column[row_index]) + '"'
+
+            if row_index == 0:
+                table.add_row(dataset, position=0)
+
+            if previous_dataset and dataset != previous_dataset:
+                table.add_row(previous_dataset, position=row_index + 1)
+
+            previous_dataset = dataset
+            datasets.add(dataset)
+
+        return datasets
 
     @override
     def to_table(self, options: Options, **kwargs) -> Optional[Table]:
