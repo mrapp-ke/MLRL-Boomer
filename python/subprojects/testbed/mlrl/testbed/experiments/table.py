@@ -432,20 +432,21 @@ class RowWiseTable(Table):
 
         return copied_table
 
-    def add_row(self, *values: Cell):
+    def add_row(self, *values: Cell, position: int = -1):
         """
-        Adds a new row to the end of the table.
+        Adds a new row at a specific position of the table.
 
-        :param values:  The values in the row
-        :return:        The modified table
+        :param values:      The values in the row
+        :param position:    The position where the row should be added or -1, if the row should be added at the end
+        :return:            The modified table
         """
         row = list(values)
         headers = self._headers
 
         if headers and len(row) > len(headers):
-            raise ValueError('The row must contain at most ' + str(len(headers)) + ' values')
+            headers.append(None)
 
-        self._rows.append(row)
+        self._rows.insert(self.num_rows if position < 0 else position, row)
         self._num_columns = max(len(row), self._num_columns)
         return self
 
