@@ -241,11 +241,13 @@ class RowWiseTable(Table):
 
         @override
         def __getitem__(self, column_index: int) -> Header:
-            return self.table._headers[column_index]
+            headers = self.table._headers
+            return headers[column_index] if headers else None
 
         @override
         def __iter__(self) -> Iterator[Header]:
-            return iter(self.table._headers)
+            headers = self.table._headers
+            return iter(headers if headers else [])
 
         @override
         def __eq__(self, other: Any) -> bool:
@@ -362,7 +364,7 @@ class RowWiseTable(Table):
             raise ValueError('The number of alignments does not match the number headers: Expected ' + str(len(headers))
                              + ', but got ' + str(len(alignments)))
 
-        self._headers = headers
+        self._headers = list(headers) if headers else None
         self._alignments = alignments
         self._rows: List[List[Any]] = []
         self._num_columns = len(headers) if headers else 0
@@ -399,7 +401,7 @@ class RowWiseTable(Table):
 
         :return: The copy that has been created
         """
-        copied_table = RowWiseTable(*self._headers, alignments=self._alignments)
+        copied_table = RowWiseTable(*(self._headers if self._headers else []), alignments=self._alignments)
 
         for row in self.rows:
             copied_table.add_row(*row)
