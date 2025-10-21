@@ -3,11 +3,12 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing evaluation results that are part of output data.
 """
+from itertools import chain
 from typing import Dict, List, Optional, override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
-from mlrl.testbed.experiments.output.data import TabularOutputData
+from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
 from mlrl.testbed.experiments.table import RowWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, format_number
 
@@ -40,9 +41,46 @@ class AggregatedEvaluationResult(TabularOutputData):
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
+        text = ''
         kwargs = dict(kwargs) | {OPTION_DECIMALS: 2}
         table = self.to_table(options, **kwargs)
-        return table.format() if table else None
+
+        if table:
+            column_wise_table = table.to_column_wise_table()
+            dataset_column_index = 0
+            parameter_column_indices: List[int] = []
+            measure_column_indices: List[int] = []
+            std_dev_column_indices: Dict[str, int] = {}
+
+            for column_index, column in enumerate(column_wise_table.columns):
+                header = str(column.header)
+
+                if header == self.COLUMN_DATASET:
+                    dataset_column_index = column_index
+                elif header.startswith(self.COLUMN_PREFIX_PARAMETER):
+                    parameter_column_indices.append(column_index)
+                    column.set_header(header[len(self.COLUMN_PREFIX_PARAMETER):].lstrip())
+                elif header.startswith(OutputValue.COLUMN_PREFIX_STD_DEV):
+                    key = header[len(OutputValue.COLUMN_PREFIX_STD_DEV):].lstrip()
+                    std_dev_column_indices[key] = column_index
+                    column.set_header(OutputValue.COLUMN_PREFIX_STD_DEV)
+                else:
+                    measure_column_indices.append(column_index)
+
+            for i, measure_index in enumerate(measure_column_indices):
+                if i > 0:
+                    text += '\n\n'
+
+                column = column_wise_table[measure_index]
+                measure = str(column.header)
+                text += 'Evaluation results for measure "' + measure + '":\n\n'
+                std_dev_index = std_dev_column_indices.get(measure)
+                relevant_indices = chain([dataset_column_index], parameter_column_indices, [measure_index] +
+                                         ([std_dev_index] if std_dev_index else []))
+                sliced_table = column_wise_table.slice(*relevant_indices)
+                text += sliced_table.format()
+
+        return text if text else None
 
     @override
     def to_table(self, options: Options, **kwargs) -> Optional[Table]:
