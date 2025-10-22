@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing evaluation results that are part of output data.
 """
 from itertools import chain
-from typing import Dict, List, Optional, Set, override
+from typing import Dict, List, Optional, Set, Tuple, override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
@@ -49,7 +49,7 @@ class AggregatedEvaluationResult(TabularOutputData):
             column_wise_table = table.to_column_wise_table()
             dataset_column_index = 0
             parameter_column_indices: List[int] = []
-            measure_column_indices: List[int] = []
+            measures: List[Tuple[int, str]] = []
             std_dev_column_indices: Dict[str, int] = {}
 
             for column_index, column in enumerate(column_wise_table.columns):
@@ -65,14 +65,14 @@ class AggregatedEvaluationResult(TabularOutputData):
                     std_dev_column_indices[key] = column_index
                     column.set_header(OutputValue.COLUMN_PREFIX_STD_DEV)
                 else:
-                    measure_column_indices.append(column_index)
+                    measures.append((column_index, header))
 
-            for i, measure_index in enumerate(measure_column_indices):
+            measures.sort(key=lambda x: x[1])
+
+            for i, (measure_index, measure) in enumerate(measures):
                 if i > 0:
                     text += '\n\n'
 
-                column = column_wise_table[measure_index]
-                measure = str(column.header)
                 text += 'Evaluation results for measure "' + measure + '":\n\n'
                 std_dev_index = std_dev_column_indices.get(measure)
                 relevant_indices = chain(parameter_column_indices, [measure_index] +
