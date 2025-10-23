@@ -8,6 +8,7 @@ from typing import Set, override
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.arguments import OutputArguments
+from mlrl.testbed.experiments.output.evaluation.evaluation_result import AggregatedEvaluationResult
 from mlrl.testbed.experiments.output.extension import OutputExtension
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink
 from mlrl.testbed.experiments.state import ExperimentMode
@@ -27,13 +28,13 @@ class AggregatedEvaluationExtension(Extension):
         '--print-evaluation',
         default=True,
         description='Whether the evaluation results should be printed on the console or not.',
-        true_options={OPTION_DECIMALS, OPTION_PERCENTAGE},
+        true_options={AggregatedEvaluationResult.OPTION_ENABLE_ALL, OPTION_DECIMALS, OPTION_PERCENTAGE},
     )
 
     SAVE_EVALUATION = BoolArgument(
         '--save-evaluation',
         description='Whether evaluation results should be written to output files or not.',
-        true_options={OPTION_DECIMALS},
+        true_options={AggregatedEvaluationResult.OPTION_ENABLE_ALL, OPTION_DECIMALS},
     )
 
     def __init__(self, *dependencies: Extension):
