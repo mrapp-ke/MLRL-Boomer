@@ -842,269 +842,269 @@ Evaluation results of several experiments for test data:
 
 Evaluation results for measure "Example-wise F1":
 
-feature_format    heuristic    instance_sampling                    Example-wise F1  Std.-dev.
-----------------  -----------  ---------------------------------  -----------------  -----------
+feature_format    heuristic    instance_sampling                    Example-wise F1  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  -----------------  -----------  ------
 "emotions"
-----------------  -----------  ---------------------------------  -----------------  -----------
-                  f-measure    none                                           47.57  ±3.24
-sparse            m-estimate   none                                           50.75  ±1.86
-                  f-measure    with-replacement{sample_size=0.5}              50.44  ±1.20
-sparse            m-estimate   with-replacement{sample_size=0.5}              52.52  ±1.91
-----------------  -----------  ---------------------------------  -----------------  -----------
+----------------  -----------  ---------------------------------  -----------------  -----------  ------
+                  f-measure    none                                           47.57  ±3.24             2
+sparse            m-estimate   none                                           50.75  ±1.86             6
+                  f-measure    with-replacement{sample_size=0.5}              50.44  ±1.20             5
+sparse            m-estimate   with-replacement{sample_size=0.5}              52.52  ±1.91             8
+----------------  -----------  ---------------------------------  -----------------  -----------  ------
 "enron"
-----------------  -----------  ---------------------------------  -----------------  -----------
-                  f-measure    none                                           48.02  ±1.65
-sparse            m-estimate   none                                           48.52  ±0.30
-                  f-measure    with-replacement{sample_size=0.5}              42.55  ±0.66
-sparse            m-estimate   with-replacement{sample_size=0.5}              52.44  ±0.07
+----------------  -----------  ---------------------------------  -----------------  -----------  ------
+                  f-measure    none                                           48.02  ±1.65             3
+sparse            m-estimate   none                                           48.52  ±0.30             4
+                  f-measure    with-replacement{sample_size=0.5}              42.55  ±0.66             1
+sparse            m-estimate   with-replacement{sample_size=0.5}              52.44  ±0.07             7
 
 Evaluation results for measure "Example-wise Jaccard":
 
-feature_format    heuristic    instance_sampling                    Example-wise Jaccard  Std.-dev.
-----------------  -----------  ---------------------------------  ----------------------  -----------
+feature_format    heuristic    instance_sampling                    Example-wise Jaccard  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  ----------------------  -----------  ------
 "emotions"
-----------------  -----------  ---------------------------------  ----------------------  -----------
-                  f-measure    none                                                38.15  ±2.46
-sparse            m-estimate   none                                                41.71  ±1.47
-                  f-measure    with-replacement{sample_size=0.5}                   41.55  ±1.35
-sparse            m-estimate   with-replacement{sample_size=0.5}                   43.85  ±2.06
-----------------  -----------  ---------------------------------  ----------------------  -----------
+----------------  -----------  ---------------------------------  ----------------------  -----------  ------
+                  f-measure    none                                                38.15  ±2.46             4
+sparse            m-estimate   none                                                41.71  ±1.47             7
+                  f-measure    with-replacement{sample_size=0.5}                   41.55  ±1.35             6
+sparse            m-estimate   with-replacement{sample_size=0.5}                   43.85  ±2.06             8
+----------------  -----------  ---------------------------------  ----------------------  -----------  ------
 "enron"
-----------------  -----------  ---------------------------------  ----------------------  -----------
-                  f-measure    none                                                34.93  ±0.84
-sparse            m-estimate   none                                                35.04  ±0.61
-                  f-measure    with-replacement{sample_size=0.5}                   30.46  ±0.76
-sparse            m-estimate   with-replacement{sample_size=0.5}                   39.11  ±0.28
+----------------  -----------  ---------------------------------  ----------------------  -----------  ------
+                  f-measure    none                                                34.93  ±0.84             2
+sparse            m-estimate   none                                                35.04  ±0.61             3
+                  f-measure    with-replacement{sample_size=0.5}                   30.46  ±0.76             1
+sparse            m-estimate   with-replacement{sample_size=0.5}                   39.11  ±0.28             5
 
 Evaluation results for measure "Example-wise Precision":
 
-feature_format    heuristic    instance_sampling                    Example-wise Precision  Std.-dev.
-----------------  -----------  ---------------------------------  ------------------------  -----------
+feature_format    heuristic    instance_sampling                    Example-wise Precision  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  ------------------------  -----------  ------
 "emotions"
-----------------  -----------  ---------------------------------  ------------------------  -----------
-                  f-measure    none                                                  60.68  ±0.23
-sparse            m-estimate   none                                                  61.56  ±1.05
-                  f-measure    with-replacement{sample_size=0.5}                     60.16  ±0.57
-sparse            m-estimate   with-replacement{sample_size=0.5}                     61.2   ±1.85
-----------------  -----------  ---------------------------------  ------------------------  -----------
+----------------  -----------  ---------------------------------  ------------------------  -----------  ------
+                  f-measure    none                                                  60.68  ±0.23             6
+sparse            m-estimate   none                                                  61.56  ±1.05             8
+                  f-measure    with-replacement{sample_size=0.5}                     60.16  ±0.57             5
+sparse            m-estimate   with-replacement{sample_size=0.5}                     61.2   ±1.85             7
+----------------  -----------  ---------------------------------  ------------------------  -----------  ------
 "enron"
-----------------  -----------  ---------------------------------  ------------------------  -----------
-                  f-measure    none                                                  48.89  ±1.37
-sparse            m-estimate   none                                                  45.34  ±1.60
-                  f-measure    with-replacement{sample_size=0.5}                     42.98  ±1.78
-sparse            m-estimate   with-replacement{sample_size=0.5}                     52.1   ±0.73
+----------------  -----------  ---------------------------------  ------------------------  -----------  ------
+                  f-measure    none                                                  48.89  ±1.37             3
+sparse            m-estimate   none                                                  45.34  ±1.60             2
+                  f-measure    with-replacement{sample_size=0.5}                     42.98  ±1.78             1
+sparse            m-estimate   with-replacement{sample_size=0.5}                     52.1   ±0.73             4
 
 Evaluation results for measure "Example-wise Recall":
 
-feature_format    heuristic    instance_sampling                    Example-wise Recall  Std.-dev.
-----------------  -----------  ---------------------------------  ---------------------  -----------
+feature_format    heuristic    instance_sampling                    Example-wise Recall  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  ---------------------  -----------  ------
 "emotions"
-----------------  -----------  ---------------------------------  ---------------------  -----------
-                  f-measure    none                                               56.32  ±3.95
-sparse            m-estimate   none                                               56.07  ±1.23
-                  f-measure    with-replacement{sample_size=0.5}                  57.34  ±0.27
-sparse            m-estimate   with-replacement{sample_size=0.5}                  56.74  ±1.00
-----------------  -----------  ---------------------------------  ---------------------  -----------
+----------------  -----------  ---------------------------------  ---------------------  -----------  ------
+                  f-measure    none                                               56.32  ±3.95             4
+sparse            m-estimate   none                                               56.07  ±1.23             3
+                  f-measure    with-replacement{sample_size=0.5}                  57.34  ±0.27             6
+sparse            m-estimate   with-replacement{sample_size=0.5}                  56.74  ±1.00             5
+----------------  -----------  ---------------------------------  ---------------------  -----------  ------
 "enron"
-----------------  -----------  ---------------------------------  ---------------------  -----------
-                  f-measure    none                                               54.86  ±4.72
-sparse            m-estimate   none                                               59.75  ±1.75
-                  f-measure    with-replacement{sample_size=0.5}                  47.52  ±0.53
-sparse            m-estimate   with-replacement{sample_size=0.5}                  58.44  ±0.61
+----------------  -----------  ---------------------------------  ---------------------  -----------  ------
+                  f-measure    none                                               54.86  ±4.72             2
+sparse            m-estimate   none                                               59.75  ±1.75             8
+                  f-measure    with-replacement{sample_size=0.5}                  47.52  ±0.53             1
+sparse            m-estimate   with-replacement{sample_size=0.5}                  58.44  ±0.61             7
 
 Evaluation results for measure "Hamming Accuracy":
 
-feature_format    heuristic    instance_sampling                    Hamming Accuracy  Std.-dev.
-----------------  -----------  ---------------------------------  ------------------  -----------
+feature_format    heuristic    instance_sampling                    Hamming Accuracy  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  ------------------  -----------  ------
 "emotions"
-----------------  -----------  ---------------------------------  ------------------  -----------
-                  f-measure    none                                            69.84  ±0.65
-sparse            m-estimate   none                                            72.99  ±0.24
-                  f-measure    with-replacement{sample_size=0.5}               72.15  ±0.13
-sparse            m-estimate   with-replacement{sample_size=0.5}               74.28  ±0.58
-----------------  -----------  ---------------------------------  ------------------  -----------
+----------------  -----------  ---------------------------------  ------------------  -----------  ------
+                  f-measure    none                                            69.84  ±0.65             1
+sparse            m-estimate   none                                            72.99  ±0.24             3
+                  f-measure    with-replacement{sample_size=0.5}               72.15  ±0.13             2
+sparse            m-estimate   with-replacement{sample_size=0.5}               74.28  ±0.58             4
+----------------  -----------  ---------------------------------  ------------------  -----------  ------
 "enron"
-----------------  -----------  ---------------------------------  ------------------  -----------
-                  f-measure    none                                            93.28  ±0.15
-sparse            m-estimate   none                                            92.64  ±0.24
-                  f-measure    with-replacement{sample_size=0.5}               92.71  ±0.38
-sparse            m-estimate   with-replacement{sample_size=0.5}               94.07  ±0.02
+----------------  -----------  ---------------------------------  ------------------  -----------  ------
+                  f-measure    none                                            93.28  ±0.15             7
+sparse            m-estimate   none                                            92.64  ±0.24             5
+                  f-measure    with-replacement{sample_size=0.5}               92.71  ±0.38             6
+sparse            m-estimate   with-replacement{sample_size=0.5}               94.07  ±0.02             8
 
 Evaluation results for measure "Hamming Loss":
 
-feature_format    heuristic    instance_sampling                    Hamming Loss  Std.-dev.
-----------------  -----------  ---------------------------------  --------------  -----------
+feature_format    heuristic    instance_sampling                    Hamming Loss  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  --------------  -----------  ------
 "emotions"
-----------------  -----------  ---------------------------------  --------------  -----------
-                  f-measure    none                                        30.16  ±0.65
-sparse            m-estimate   none                                        27.01  ±0.24
-                  f-measure    with-replacement{sample_size=0.5}           27.85  ±0.13
-sparse            m-estimate   with-replacement{sample_size=0.5}           25.72  ±0.58
-----------------  -----------  ---------------------------------  --------------  -----------
+----------------  -----------  ---------------------------------  --------------  -----------  ------
+                  f-measure    none                                        30.16  ±0.65             8
+sparse            m-estimate   none                                        27.01  ±0.24             6
+                  f-measure    with-replacement{sample_size=0.5}           27.85  ±0.13             7
+sparse            m-estimate   with-replacement{sample_size=0.5}           25.72  ±0.58             5
+----------------  -----------  ---------------------------------  --------------  -----------  ------
 "enron"
-----------------  -----------  ---------------------------------  --------------  -----------
-                  f-measure    none                                         6.72  ±0.15
-sparse            m-estimate   none                                         7.36  ±0.24
-                  f-measure    with-replacement{sample_size=0.5}            7.29  ±0.38
-sparse            m-estimate   with-replacement{sample_size=0.5}            5.93  ±0.02
+----------------  -----------  ---------------------------------  --------------  -----------  ------
+                  f-measure    none                                         6.72  ±0.15             2
+sparse            m-estimate   none                                         7.36  ±0.24             4
+                  f-measure    with-replacement{sample_size=0.5}            7.29  ±0.38             3
+sparse            m-estimate   with-replacement{sample_size=0.5}            5.93  ±0.02             1
 
 Evaluation results for measure "Macro F1":
 
-feature_format    heuristic    instance_sampling                    Macro F1  Std.-dev.
-----------------  -----------  ---------------------------------  ----------  -----------
+feature_format    heuristic    instance_sampling                    Macro F1  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  ----------  -----------  ------
 "emotions"
-----------------  -----------  ---------------------------------  ----------  -----------
-                  f-measure    none                                    52.67  ±1.94
-sparse            m-estimate   none                                    55.46  ±1.47
-                  f-measure    with-replacement{sample_size=0.5}       50.47  ±1.11
-sparse            m-estimate   with-replacement{sample_size=0.5}       56.36  ±2.10
-----------------  -----------  ---------------------------------  ----------  -----------
+----------------  -----------  ---------------------------------  ----------  -----------  ------
+                  f-measure    none                                    52.67  ±1.94             6
+sparse            m-estimate   none                                    55.46  ±1.47             7
+                  f-measure    with-replacement{sample_size=0.5}       50.47  ±1.11             5
+sparse            m-estimate   with-replacement{sample_size=0.5}       56.36  ±2.10             8
+----------------  -----------  ---------------------------------  ----------  -----------  ------
 "enron"
-----------------  -----------  ---------------------------------  ----------  -----------
-                  f-measure    none                                    17.2   ±0.78
-sparse            m-estimate   none                                    19.14  ±0.60
-                  f-measure    with-replacement{sample_size=0.5}       11.42  ±0.90
-sparse            m-estimate   with-replacement{sample_size=0.5}       13.08  ±1.09
+----------------  -----------  ---------------------------------  ----------  -----------  ------
+                  f-measure    none                                    17.2   ±0.78             3
+sparse            m-estimate   none                                    19.14  ±0.60             4
+                  f-measure    with-replacement{sample_size=0.5}       11.42  ±0.90             1
+sparse            m-estimate   with-replacement{sample_size=0.5}       13.08  ±1.09             2
 
 Evaluation results for measure "Macro Jaccard":
 
-feature_format    heuristic    instance_sampling                    Macro Jaccard  Std.-dev.
-----------------  -----------  ---------------------------------  ---------------  -----------
+feature_format    heuristic    instance_sampling                    Macro Jaccard  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  ---------------  -----------  ------
 "emotions"
-----------------  -----------  ---------------------------------  ---------------  -----------
-                  f-measure    none                                         36.81  ±2.05
-sparse            m-estimate   none                                         39.13  ±1.47
-                  f-measure    with-replacement{sample_size=0.5}            36.27  ±1.13
-sparse            m-estimate   with-replacement{sample_size=0.5}            40.39  ±1.66
-----------------  -----------  ---------------------------------  ---------------  -----------
+----------------  -----------  ---------------------------------  ---------------  -----------  ------
+                  f-measure    none                                         36.81  ±2.05             6
+sparse            m-estimate   none                                         39.13  ±1.47             7
+                  f-measure    with-replacement{sample_size=0.5}            36.27  ±1.13             5
+sparse            m-estimate   with-replacement{sample_size=0.5}            40.39  ±1.66             8
+----------------  -----------  ---------------------------------  ---------------  -----------  ------
 "enron"
-----------------  -----------  ---------------------------------  ---------------  -----------
-                  f-measure    none                                         11.57  ±0.93
-sparse            m-estimate   none                                         12.72  ±0.62
-                  f-measure    with-replacement{sample_size=0.5}             7.92  ±0.89
-sparse            m-estimate   with-replacement{sample_size=0.5}             9.52  ±1.00
+----------------  -----------  ---------------------------------  ---------------  -----------  ------
+                  f-measure    none                                         11.57  ±0.93             3
+sparse            m-estimate   none                                         12.72  ±0.62             4
+                  f-measure    with-replacement{sample_size=0.5}             7.92  ±0.89             1
+sparse            m-estimate   with-replacement{sample_size=0.5}             9.52  ±1.00             2
 
 Evaluation results for measure "Macro Precision":
 
-feature_format    heuristic    instance_sampling                    Macro Precision  Std.-dev.
-----------------  -----------  ---------------------------------  -----------------  -----------
+feature_format    heuristic    instance_sampling                    Macro Precision  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  -----------------  -----------  ------
 "emotions"
-----------------  -----------  ---------------------------------  -----------------  -----------
-                  f-measure    none                                           50.83  ±0.14
-sparse            m-estimate   none                                           56.48  ±1.40
-                  f-measure    with-replacement{sample_size=0.5}              64.08  ±1.39
-sparse            m-estimate   with-replacement{sample_size=0.5}              57.9   ±2.98
-----------------  -----------  ---------------------------------  -----------------  -----------
+----------------  -----------  ---------------------------------  -----------------  -----------  ------
+                  f-measure    none                                           50.83  ±0.14             3
+sparse            m-estimate   none                                           56.48  ±1.40             4
+                  f-measure    with-replacement{sample_size=0.5}              64.08  ±1.39             6
+sparse            m-estimate   with-replacement{sample_size=0.5}              57.9   ±2.98             5
+----------------  -----------  ---------------------------------  -----------------  -----------  ------
 "enron"
-----------------  -----------  ---------------------------------  -----------------  -----------
-                  f-measure    none                                           39.13  ±3.53
-sparse            m-estimate   none                                           31.06  ±2.15
-                  f-measure    with-replacement{sample_size=0.5}              72.79  ±0.17
-sparse            m-estimate   with-replacement{sample_size=0.5}              87.49  ±0.01
+----------------  -----------  ---------------------------------  -----------------  -----------  ------
+                  f-measure    none                                           39.13  ±3.53             2
+sparse            m-estimate   none                                           31.06  ±2.15             1
+                  f-measure    with-replacement{sample_size=0.5}              72.79  ±0.17             7
+sparse            m-estimate   with-replacement{sample_size=0.5}              87.49  ±0.01             8
 
 Evaluation results for measure "Macro Recall":
 
-feature_format    heuristic    instance_sampling                    Macro Recall  Std.-dev.
-----------------  -----------  ---------------------------------  --------------  -----------
+feature_format    heuristic    instance_sampling                    Macro Recall  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  --------------  -----------  ------
 "emotions"
-----------------  -----------  ---------------------------------  --------------  -----------
-                  f-measure    none                                        55.11  ±3.83
-sparse            m-estimate   none                                        54.68  ±1.45
-                  f-measure    with-replacement{sample_size=0.5}           57.19  ±0.11
-sparse            m-estimate   with-replacement{sample_size=0.5}           56.81  ±1.24
-----------------  -----------  ---------------------------------  --------------  -----------
+----------------  -----------  ---------------------------------  --------------  -----------  ------
+                  f-measure    none                                        55.11  ±3.83             6
+sparse            m-estimate   none                                        54.68  ±1.45             5
+                  f-measure    with-replacement{sample_size=0.5}           57.19  ±0.11             8
+sparse            m-estimate   with-replacement{sample_size=0.5}           56.81  ±1.24             7
+----------------  -----------  ---------------------------------  --------------  -----------  ------
 "enron"
-----------------  -----------  ---------------------------------  --------------  -----------
-                  f-measure    none                                        17.42  ±1.43
-sparse            m-estimate   none                                        21.46  ±1.00
-                  f-measure    with-replacement{sample_size=0.5}           15.67  ±1.26
-sparse            m-estimate   with-replacement{sample_size=0.5}           14.44  ±1.13
+----------------  -----------  ---------------------------------  --------------  -----------  ------
+                  f-measure    none                                        17.42  ±1.43             3
+sparse            m-estimate   none                                        21.46  ±1.00             4
+                  f-measure    with-replacement{sample_size=0.5}           15.67  ±1.26             2
+sparse            m-estimate   with-replacement{sample_size=0.5}           14.44  ±1.13             1
 
 Evaluation results for measure "Micro F1":
 
-feature_format    heuristic    instance_sampling                    Micro F1  Std.-dev.
-----------------  -----------  ---------------------------------  ----------  -----------
+feature_format    heuristic    instance_sampling                    Micro F1  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  ----------  -----------  ------
 "emotions"
-----------------  -----------  ---------------------------------  ----------  -----------
-                  f-measure    none                                    53.51  ±1.67
-sparse            m-estimate   none                                    56.07  ±1.30
-                  f-measure    with-replacement{sample_size=0.5}       56.57  ±1.06
-sparse            m-estimate   with-replacement{sample_size=0.5}       58.42  ±1.22
-----------------  -----------  ---------------------------------  ----------  -----------
+----------------  -----------  ---------------------------------  ----------  -----------  ------
+                  f-measure    none                                    53.51  ±1.67             4
+sparse            m-estimate   none                                    56.07  ±1.30             6
+                  f-measure    with-replacement{sample_size=0.5}       56.57  ±1.06             7
+sparse            m-estimate   with-replacement{sample_size=0.5}       58.42  ±1.22             8
+----------------  -----------  ---------------------------------  ----------  -----------  ------
 "enron"
-----------------  -----------  ---------------------------------  ----------  -----------
-                  f-measure    none                                    50.6   ±1.07
-sparse            m-estimate   none                                    50.18  ±0.28
-                  f-measure    with-replacement{sample_size=0.5}       48.08  ±0.97
-sparse            m-estimate   with-replacement{sample_size=0.5}       55.48  ±0.35
+----------------  -----------  ---------------------------------  ----------  -----------  ------
+                  f-measure    none                                    50.6   ±1.07             3
+sparse            m-estimate   none                                    50.18  ±0.28             2
+                  f-measure    with-replacement{sample_size=0.5}       48.08  ±0.97             1
+sparse            m-estimate   with-replacement{sample_size=0.5}       55.48  ±0.35             5
 
 Evaluation results for measure "Micro Jaccard":
 
-feature_format    heuristic    instance_sampling                    Micro Jaccard  Std.-dev.
-----------------  -----------  ---------------------------------  ---------------  -----------
+feature_format    heuristic    instance_sampling                    Micro Jaccard  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  ---------------  -----------  ------
 "emotions"
-----------------  -----------  ---------------------------------  ---------------  -----------
-                  f-measure    none                                         36.55  ±1.56
-sparse            m-estimate   none                                         38.97  ±1.26
-                  f-measure    with-replacement{sample_size=0.5}            39.45  ±1.03
-sparse            m-estimate   with-replacement{sample_size=0.5}            41.27  ±1.22
-----------------  -----------  ---------------------------------  ---------------  -----------
+----------------  -----------  ---------------------------------  ---------------  -----------  ------
+                  f-measure    none                                         36.55  ±1.56             4
+sparse            m-estimate   none                                         38.97  ±1.26             6
+                  f-measure    with-replacement{sample_size=0.5}            39.45  ±1.03             7
+sparse            m-estimate   with-replacement{sample_size=0.5}            41.27  ±1.22             8
+----------------  -----------  ---------------------------------  ---------------  -----------  ------
 "enron"
-----------------  -----------  ---------------------------------  ---------------  -----------
-                  f-measure    none                                         33.88  ±0.96
-sparse            m-estimate   none                                         33.5   ±0.25
-                  f-measure    with-replacement{sample_size=0.5}            31.66  ±0.84
-sparse            m-estimate   with-replacement{sample_size=0.5}            38.39  ±0.34
+----------------  -----------  ---------------------------------  ---------------  -----------  ------
+                  f-measure    none                                         33.88  ±0.96             3
+sparse            m-estimate   none                                         33.5   ±0.25             2
+                  f-measure    with-replacement{sample_size=0.5}            31.66  ±0.84             1
+sparse            m-estimate   with-replacement{sample_size=0.5}            38.39  ±0.34             5
 
 Evaluation results for measure "Micro Precision":
 
-feature_format    heuristic    instance_sampling                    Micro Precision  Std.-dev.
-----------------  -----------  ---------------------------------  -----------------  -----------
+feature_format    heuristic    instance_sampling                    Micro Precision  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  -----------------  -----------  ------
 "emotions"
-----------------  -----------  ---------------------------------  -----------------  -----------
-                  f-measure    none                                           51.47  ±0.18
-sparse            m-estimate   none                                           56.77  ±1.28
-                  f-measure    with-replacement{sample_size=0.5}              54.96  ±1.04
-sparse            m-estimate   with-replacement{sample_size=0.5}              58.84  ±2.01
-----------------  -----------  ---------------------------------  -----------------  -----------
+----------------  -----------  ---------------------------------  -----------------  -----------  ------
+                  f-measure    none                                           51.47  ±0.18             4
+sparse            m-estimate   none                                           56.77  ±1.28             7
+                  f-measure    with-replacement{sample_size=0.5}              54.96  ±1.04             6
+sparse            m-estimate   with-replacement{sample_size=0.5}              58.84  ±2.01             8
+----------------  -----------  ---------------------------------  -----------------  -----------  ------
 "enron"
-----------------  -----------  ---------------------------------  -----------------  -----------
-                  f-measure    none                                           47.72  ±0.90
-sparse            m-estimate   none                                           44.2   ±1.24
-                  f-measure    with-replacement{sample_size=0.5}              44.17  ±2.19
-sparse            m-estimate   with-replacement{sample_size=0.5}              53.24  ±0.34
+----------------  -----------  ---------------------------------  -----------------  -----------  ------
+                  f-measure    none                                           47.72  ±0.90             3
+sparse            m-estimate   none                                           44.2   ±1.24             2
+                  f-measure    with-replacement{sample_size=0.5}              44.17  ±2.19             1
+sparse            m-estimate   with-replacement{sample_size=0.5}              53.24  ±0.34             5
 
 Evaluation results for measure "Micro Recall":
 
-feature_format    heuristic    instance_sampling                    Micro Recall  Std.-dev.
-----------------  -----------  ---------------------------------  --------------  -----------
+feature_format    heuristic    instance_sampling                    Micro Recall  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  --------------  -----------  ------
 "emotions"
-----------------  -----------  ---------------------------------  --------------  -----------
-                  f-measure    none                                        55.87  ±3.84
-sparse            m-estimate   none                                        55.39  ±1.33
-                  f-measure    with-replacement{sample_size=0.5}           58.28  ±1.08
-sparse            m-estimate   with-replacement{sample_size=0.5}           58.02  ±0.46
-----------------  -----------  ---------------------------------  --------------  -----------
+----------------  -----------  ---------------------------------  --------------  -----------  ------
+                  f-measure    none                                        55.87  ±3.84             4
+sparse            m-estimate   none                                        55.39  ±1.33             3
+                  f-measure    with-replacement{sample_size=0.5}           58.28  ±1.08             8
+sparse            m-estimate   with-replacement{sample_size=0.5}           58.02  ±0.46             6
+----------------  -----------  ---------------------------------  --------------  -----------  ------
 "enron"
-----------------  -----------  ---------------------------------  --------------  -----------
-                  f-measure    none                                        54.08  ±3.59
-sparse            m-estimate   none                                        58.12  ±1.39
-                  f-measure    with-replacement{sample_size=0.5}           52.89  ±0.81
-sparse            m-estimate   with-replacement{sample_size=0.5}           57.93  ±1.16
+----------------  -----------  ---------------------------------  --------------  -----------  ------
+                  f-measure    none                                        54.08  ±3.59             2
+sparse            m-estimate   none                                        58.12  ±1.39             7
+                  f-measure    with-replacement{sample_size=0.5}           52.89  ±0.81             1
+sparse            m-estimate   with-replacement{sample_size=0.5}           57.93  ±1.16             5
 
 Evaluation results for measure "Prediction Time":
 
-feature_format    heuristic    instance_sampling                    Prediction Time  Std.-dev.
-----------------  -----------  ---------------------------------  -----------------  -----------
+feature_format    heuristic    instance_sampling                    Prediction Time  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  -----------------  -----------  ------
 "emotions"
-----------------  -----------  ---------------------------------  -----------------  -----------
+----------------  -----------  ---------------------------------  -----------------  -----------  ------
                   f-measure    none                                            xxx
 sparse            m-estimate   none                                            xxx
                   f-measure    with-replacement{sample_size=xxx}               xxx
 sparse            m-estimate   with-replacement{sample_size=xxx}               xxx
-----------------  -----------  ---------------------------------  -----------------  -----------
+----------------  -----------  ---------------------------------  -----------------  -----------  ------
 "enron"
-----------------  -----------  ---------------------------------  -----------------  -----------
+----------------  -----------  ---------------------------------  -----------------  -----------  ------
                   f-measure    none                                            xxx
 sparse            m-estimate   none                                            xxx
                   f-measure    with-replacement{sample_size=xxx}               xxx
@@ -1112,53 +1112,53 @@ sparse            m-estimate   with-replacement{sample_size=xxx}               x
 
 Evaluation results for measure "Subset 0/1 Loss":
 
-feature_format    heuristic    instance_sampling                    Subset 0/1 Loss  Std.-dev.
-----------------  -----------  ---------------------------------  -----------------  -----------
+feature_format    heuristic    instance_sampling                    Subset 0/1 Loss  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  -----------------  -----------  ------
 "emotions"
-----------------  -----------  ---------------------------------  -----------------  -----------
-                  f-measure    none                                           89.54  ±0.35
-sparse            m-estimate   none                                           84.65  ±0.14
-                  f-measure    with-replacement{sample_size=0.5}              84.66  ±1.83
-sparse            m-estimate   with-replacement{sample_size=0.5}              81.79  ±2.67
-----------------  -----------  ---------------------------------  -----------------  -----------
+----------------  -----------  ---------------------------------  -----------------  -----------  ------
+                  f-measure    none                                           89.54  ±0.35             4
+sparse            m-estimate   none                                           84.65  ±0.14             2
+                  f-measure    with-replacement{sample_size=0.5}              84.66  ±1.83             3
+sparse            m-estimate   with-replacement{sample_size=0.5}              81.79  ±2.67             1
+----------------  -----------  ---------------------------------  -----------------  -----------  ------
 "enron"
-----------------  -----------  ---------------------------------  -----------------  -----------
-                  f-measure    none                                           98.47  ±0.71
-sparse            m-estimate   none                                           98.65  ±0.88
-                  f-measure    with-replacement{sample_size=0.5}              99.71  ±0.06
-sparse            m-estimate   with-replacement{sample_size=0.5}              98.53  ±0.65
+----------------  -----------  ---------------------------------  -----------------  -----------  ------
+                  f-measure    none                                           98.47  ±0.71             5
+sparse            m-estimate   none                                           98.65  ±0.88             7
+                  f-measure    with-replacement{sample_size=0.5}              99.71  ±0.06             8
+sparse            m-estimate   with-replacement{sample_size=0.5}              98.53  ±0.65             6
 
 Evaluation results for measure "Subset Accuracy":
 
-feature_format    heuristic    instance_sampling                    Subset Accuracy  Std.-dev.
-----------------  -----------  ---------------------------------  -----------------  -----------
+feature_format    heuristic    instance_sampling                    Subset Accuracy  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  -----------------  -----------  ------
 "emotions"
-----------------  -----------  ---------------------------------  -----------------  -----------
-                  f-measure    none                                           10.46  ±0.35
-sparse            m-estimate   none                                           15.35  ±0.14
-                  f-measure    with-replacement{sample_size=0.5}              15.34  ±1.83
-sparse            m-estimate   with-replacement{sample_size=0.5}              18.21  ±2.67
-----------------  -----------  ---------------------------------  -----------------  -----------
+----------------  -----------  ---------------------------------  -----------------  -----------  ------
+                  f-measure    none                                           10.46  ±0.35             5
+sparse            m-estimate   none                                           15.35  ±0.14             7
+                  f-measure    with-replacement{sample_size=0.5}              15.34  ±1.83             6
+sparse            m-estimate   with-replacement{sample_size=0.5}              18.21  ±2.67             8
+----------------  -----------  ---------------------------------  -----------------  -----------  ------
 "enron"
-----------------  -----------  ---------------------------------  -----------------  -----------
-                  f-measure    none                                            1.53  ±0.71
-sparse            m-estimate   none                                            1.35  ±0.88
-                  f-measure    with-replacement{sample_size=0.5}               0.29  ±0.06
-sparse            m-estimate   with-replacement{sample_size=0.5}               1.47  ±0.65
+----------------  -----------  ---------------------------------  -----------------  -----------  ------
+                  f-measure    none                                            1.53  ±0.71             4
+sparse            m-estimate   none                                            1.35  ±0.88             2
+                  f-measure    with-replacement{sample_size=0.5}               0.29  ±0.06             1
+sparse            m-estimate   with-replacement{sample_size=0.5}               1.47  ±0.65             3
 
 Evaluation results for measure "Training Time":
 
-feature_format    heuristic    instance_sampling                    Training Time  Std.-dev.
-----------------  -----------  ---------------------------------  ---------------  -----------
+feature_format    heuristic    instance_sampling                    Training Time  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  ---------------  -----------  ------
 "emotions"
-----------------  -----------  ---------------------------------  ---------------  -----------
+----------------  -----------  ---------------------------------  ---------------  -----------  ------
                   f-measure    none                                          xxx
 sparse            m-estimate   none                                          xxx
                   f-measure    with-replacement{sample_size=xxx}             xxx
 sparse            m-estimate   with-replacement{sample_size=xxx}             xxx
-----------------  -----------  ---------------------------------  ---------------  -----------
+----------------  -----------  ---------------------------------  ---------------  -----------  ------
 "enron"
-----------------  -----------  ---------------------------------  ---------------  -----------
+----------------  -----------  ---------------------------------  ---------------  -----------  ------
                   f-measure    none                                          xxx
 sparse            m-estimate   none                                          xxx
                   f-measure    with-replacement{sample_size=xxx}             xxx

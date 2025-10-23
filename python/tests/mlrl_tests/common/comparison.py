@@ -135,7 +135,7 @@ class TextFileComparison(FileComparison):
 
                 return line
 
-            return regex.sub(r'\d+(?:\.\d+)?(\s+±\d+(?:\.\d+)?)?', 'xxx', line)
+            return regex.sub(r'\d+(?:\.\d+)?(\s+(±)?\d+(?:\.\d+)?)*', 'xxx', line)
 
         if line in {
                 'Evaluation results for measure "Prediction Time":',
