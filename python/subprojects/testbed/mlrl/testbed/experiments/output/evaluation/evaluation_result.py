@@ -24,6 +24,8 @@ class AggregatedEvaluationResult(TabularOutputData):
 
     CONTEXT = Context(include_prediction_scope=False, include_fold=False)
 
+    OPTION_ENABLE_ALL = 'enable_all'
+
     COLUMN_DATASET = 'Dataset'
 
     COLUMN_PREFIX_PARAMETER = 'Parameter'
