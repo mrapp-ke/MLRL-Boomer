@@ -18,7 +18,7 @@ from mlrl.testbed_sklearn.experiments.output.evaluation.measures_regression impo
 
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.input.data import TabularInputData
-from mlrl.testbed.experiments.output.data import OutputData
+from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.output.evaluation.measurements import Measurements
 from mlrl.testbed.experiments.output.evaluation.measures import Measure
 from mlrl.testbed.experiments.output.sinks import Sink
@@ -167,5 +167,11 @@ class EvaluationWriter(ResultWriter):
     @override
     def _write_to_sink(self, sink: Sink, state: ExperimentState, output_data: OutputData):
         fold = state.fold
+
+        if not fold and isinstance(output_data, TabularOutputData):
+            input_data = TabularInputData(properties=EvaluationResult.PROPERTIES, context=EvaluationResult.CONTEXT)
+            input_data_key = input_data.get_key(state)
+            state.extras.setdefault(input_data_key, output_data.to_table(Options()))
+
         kwargs = {EvaluationResult.KWARG_FOLD: fold.index} if fold else {}
         sink.write_to_sink(state, output_data, **kwargs)
