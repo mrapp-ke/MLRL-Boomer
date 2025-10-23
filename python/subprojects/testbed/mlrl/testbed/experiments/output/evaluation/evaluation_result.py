@@ -6,9 +6,14 @@ Provides classes for representing evaluation results that are part of output dat
 from itertools import chain
 from typing import Dict, List, Optional, Set, Tuple, override
 
+import numpy as np
+
+from scipy.stats import rankdata
+
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
+from mlrl.testbed.experiments.output.evaluation.measures import AggregationMeasure
 from mlrl.testbed.experiments.table import Column, ColumnWiseTable, RowWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, format_number
 
@@ -31,6 +36,14 @@ class AggregatedEvaluationResult(TabularOutputData):
     COLUMN_DATASET = 'Dataset'
 
     COLUMN_PREFIX_PARAMETER = 'Parameter'
+
+    AGGREGATION_MEASURES = [
+        AggregationMeasure(
+            option_key=OPTION_RANK,
+            name='Rank',
+            aggregation_function=lambda array: rankdata(array, method='average'),
+        ),
+    ]
 
     def __init__(self, evaluation_by_dataset: Dict[str, Table]):
         """
@@ -143,16 +156,30 @@ class AggregatedEvaluationResult(TabularOutputData):
             aggregated_table = RowWiseTable.aggregate(*tables).to_column_wise_table()
             aggregated_table.add_column(*values, header=self.COLUMN_DATASET, position=0)
             decimals = options.get_int(OPTION_DECIMALS, kwargs.get(OPTION_DECIMALS, 0))
+            aggregation_measures = OutputValue.filter_values(self.AGGREGATION_MEASURES, options)
 
-            for column in aggregated_table.columns:
-                for row_index in range(column.num_rows):
+            for column_index in range(aggregated_table.num_columns - 1, -1, -1):
+                column = aggregated_table[column_index]
+                num_rows = column.num_rows
+                array = np.full(shape=num_rows, fill_value=np.nan, dtype=float)
+
+                for row_index in range(num_rows):
                     try:
                         value = column[row_index]
 
                         if value is not None:
-                            column[row_index] = format_number(float(value), decimals=decimals)
+                            float_value = float(value)
+                            array[row_index] = float_value
+                            column[row_index] = format_number(float_value, decimals=decimals)
                     except ValueError:
                         pass
+
+                for aggregation_measure in aggregation_measures:
+                    if isinstance(aggregation_measure, AggregationMeasure):
+                        array = aggregation_measure.aggregate(array)
+                        aggregated_table.add_column(*array,
+                                                    header=f'{aggregation_measure.name} {column.header}',
+                                                    position=column_index + 1)
 
             return aggregated_table
 
