@@ -413,6 +413,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
     - `lrap` (Default value = `true`) `true`, if evaluation scores according to the label ranking average precision metric should be printed, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `probabilities` or `scores`.
     - `dcg` (Default value = `true`) `true`, if evaluation scores according to the discounted cumulative gain metric should be printed, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `probabilities` or `scores`.
     - `ndcg` (Default value = `true`) `true`, if evaluation scores according to the normalized discounted cumulative gain metric should be printed, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `probabilities` or `scores`.
+    - `rank` (Default value = `true`) `true`, if the ranks of individual experiments should be printed when aggregating results for several experiments, `false` otherwise.
 
   - `false` The evaluation results are not printed on the console.
 
@@ -455,6 +456,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
     - `ndcg` (Default value = `true`) `true`, if evaluation scores according to the normalized discounted cumulative gain metric should be stored, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `probabilities` or `scores`.
     - `training_time` (Default value = `true`) `true`, if the time that was needed for training should be stored, `false` otherwise.
     - `prediction_time` (Default value = `true`) `true`, if the time that was needed for prediction should be stored, `false` otherwise.
+    - `rank` (Default value = `true`) `true`, if the ranks of individual experiments should be stored when aggregating results for several experiments, `false` otherwise.
 
   - `false` The evaluation results are not written to [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files.
 
