@@ -68,11 +68,20 @@ class AggregatedEvaluationResult(TabularOutputData):
             parameter_column_indices: List[int] = []
             measures: List[Tuple[int, str]] = []
             std_dev_column_indices: Dict[str, int] = {}
+            aggregation_measure_column_indices: Dict[str, Dict[str, int]] = {}
 
             for column_index, column in enumerate(column_wise_table.columns):
                 header = str(column.header)
+                aggregation_measure_names = map(lambda x: x.name, self.AGGREGATION_MEASURES)
+                aggregation_measure = next((name for name in aggregation_measure_names if header.startswith(name)),
+                                           None)
 
-                if header == self.COLUMN_DATASET:
+                if aggregation_measure:
+                    key = header[len(aggregation_measure):].lstrip()
+                    dictionary = aggregation_measure_column_indices.setdefault(key, {})
+                    dictionary[aggregation_measure] = column_index
+                    column.set_header(aggregation_measure)
+                elif header == self.COLUMN_DATASET:
                     dataset_column_index = column_index
                 elif header.startswith(self.COLUMN_PREFIX_PARAMETER):
                     parameter_column_indices.append(column_index)
@@ -92,12 +101,16 @@ class AggregatedEvaluationResult(TabularOutputData):
 
                 text += 'Evaluation results for measure "' + measure + '":\n\n'
                 std_dev_index = std_dev_column_indices.get(measure)
+                aggregation_measure_indices = aggregation_measure_column_indices.get(measure, {})
                 relevant_indices = chain(parameter_column_indices, [measure_index] +
                                          ([std_dev_index] if std_dev_index else []))
                 sliced_table = column_wise_table.slice(*relevant_indices)
 
                 if std_dev_index:
                     self.__add_std_dev_column(sliced_table)
+
+                for aggregation_measure, column_index, in aggregation_measure_indices.items():
+                    sliced_table.add_column(*column_wise_table[column_index], header=aggregation_measure)
 
                 row_wise_table = sliced_table.to_row_wise_table()
                 dataset_column = column_wise_table[dataset_column_index]
