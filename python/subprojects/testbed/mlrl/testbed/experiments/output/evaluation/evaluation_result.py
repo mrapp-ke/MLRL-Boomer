@@ -142,7 +142,7 @@ class AggregatedEvaluationResult(TabularOutputData):
 
             aggregated_table = RowWiseTable.aggregate(*tables).to_column_wise_table()
             aggregated_table.add_column(*values, header=self.COLUMN_DATASET, position=0)
-            decimals = kwargs.get(OPTION_DECIMALS, 0)
+            decimals = options.get_int(OPTION_DECIMALS, kwargs.get(OPTION_DECIMALS, 0))
 
             for column in aggregated_table.columns:
                 for row_index in range(column.num_rows):
