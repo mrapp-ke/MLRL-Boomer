@@ -20,7 +20,7 @@ class Measure(OutputValue):
     def __init__(self,
                  option_key: str,
                  name: str,
-                 evaluation_function: EvaluationFunction,
+                 evaluation_function: 'EvaluationFunction',
                  percentage: bool = True,
                  **kwargs):
         """
