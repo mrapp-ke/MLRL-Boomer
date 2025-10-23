@@ -160,6 +160,7 @@ class AggregatedEvaluationResult(TabularOutputData):
 
             for column_index in range(aggregated_table.num_columns - 1, -1, -1):
                 column = aggregated_table[column_index]
+                header = str(column.header)
                 num_rows = column.num_rows
                 array = np.full(shape=num_rows, fill_value=np.nan, dtype=float)
 
@@ -174,12 +175,16 @@ class AggregatedEvaluationResult(TabularOutputData):
                     except ValueError:
                         pass
 
-                for aggregation_measure in aggregation_measures:
-                    if isinstance(aggregation_measure, AggregationMeasure):
-                        array = aggregation_measure.aggregate(array)
-                        aggregated_table.add_column(*array,
-                                                    header=f'{aggregation_measure.name} {column.header}',
-                                                    position=column_index + 1)
+                if header != self.COLUMN_DATASET \
+                        and not header.startswith(self.COLUMN_PREFIX_PARAMETER) \
+                        and not header.startswith(OutputValue.COLUMN_PREFIX_STD_DEV) \
+                        and not np.isnan(array).any():
+                    for aggregation_measure in aggregation_measures:
+                        if isinstance(aggregation_measure, AggregationMeasure):
+                            array = aggregation_measure.aggregate(array)
+                            aggregated_table.add_column(*map(lambda x: format_number(x, decimals=decimals), array),
+                                                        header=f'{aggregation_measure.name} {header}',
+                                                        position=column_index + 1)
 
             return aggregated_table
 
