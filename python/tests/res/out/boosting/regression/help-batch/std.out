@@ -5,13 +5,11 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE]
                     [--create-dirs CREATE_DIRS] [--data-split DATA_SPLIT]
                     [--exit-on-error EXIT_ON_ERROR]
                     [--exit-on-missing-input EXIT_ON_MISSING_INPUT]
-                    [--feature-format FEATURE_FORMAT]
                     [--incremental-evaluation INCREMENTAL_EVALUATION]
                     [--load-models LOAD_MODELS]
                     [--load-parameters LOAD_PARAMETERS]
                     [--model-load-dir MODEL_LOAD_DIR]
                     [--one-hot-encoding ONE_HOT_ENCODING]
-                    [--output-format OUTPUT_FORMAT]
                     [--parameter-load-dir PARAMETER_LOAD_DIR]
                     [--predict-for-test-data PREDICT_FOR_TEST_DATA]
                     [--predict-for-training-data PREDICT_FOR_TRAINING_DATA]
@@ -53,6 +51,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE]
                     [--binary-predictor BINARY_PREDICTOR]
                     [--default-rule DEFAULT_RULE]
                     [--feature-binning FEATURE_BINNING]
+                    [--feature-format FEATURE_FORMAT]
                     [--feature-sampling FEATURE_SAMPLING]
                     [--global-pruning GLOBAL_PRUNING] [--head-type HEAD_TYPE]
                     [--holdout HOLDOUT]
@@ -62,7 +61,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE]
                     [--l2-regularization-weight L2_REGULARIZATION_WEIGHT]
                     [--label-binning LABEL_BINNING] [--loss LOSS]
                     [--marginal-probability-calibration MARGINAL_PROBABILITY_CALIBRATION]
-                    [--max-rules MAX_RULES]
+                    [--max-rules MAX_RULES] [--output-format OUTPUT_FORMAT]
                     [--output-sampling OUTPUT_SAMPLING]
                     [--parallel-prediction PARALLEL_PREDICTION]
                     [--parallel-rule-refinement PARALLEL_RULE_REFINEMENT]
@@ -124,10 +123,6 @@ options:
                         Whether the program should exit if an error occurs
                         while reading input data or not. Must be one of
                         {"false", "true"}.
-  --feature-format FEATURE_FORMAT
-                        The format to be used for the representation of the
-                        feature matrix. Must be one of {"auto", "dense",
-                        "sparse"}.
   --incremental-evaluation INCREMENTAL_EVALUATION
                         Whether models should be evaluated repeatedly, using
                         only a subset of the induced rules with increasing
@@ -146,10 +141,6 @@ options:
                         Whether one-hot-encoding should be used to encode
                         nominal features or not. Must be one of {"false",
                         "true"}.
-  --output-format OUTPUT_FORMAT
-                        The format to be used for the representation of the
-                        output matrix. Must be one of {"auto", "dense",
-                        "sparse"}.
   --parameter-load-dir PARAMETER_LOAD_DIR
                         The path to the directory from which parameters to be
                         used by the algorithm should be loaded.
@@ -322,6 +313,10 @@ options:
                         binning. Must be one of {"equal-frequency", "equal-
                         width", "none"}. For additional options refer to the
                         documentation.
+  --feature-format FEATURE_FORMAT
+                        The format to be used for the representation of the
+                        feature matrix. Must be one of {"auto", "dense",
+                        "sparse"}.
   --feature-sampling FEATURE_SAMPLING
                         The name of the strategy to be used for feature
                         sampling. Must be one of {"none", "without-
@@ -382,6 +377,10 @@ options:
                         The maximum number of rules to be induced. Must be at
                         least 1 or 0, if the number of rules should not be
                         restricted
+  --output-format OUTPUT_FORMAT
+                        The format to be used for the representation of the
+                        output matrix. Must be one of {"auto", "dense",
+                        "sparse"}.
   --output-sampling OUTPUT_SAMPLING
                         The name of the strategy to be used for output
                         sampling. Must be one of {"none", "round-robin",
