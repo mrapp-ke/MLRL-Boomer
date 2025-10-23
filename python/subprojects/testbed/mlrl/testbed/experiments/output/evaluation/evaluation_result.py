@@ -26,6 +26,8 @@ class AggregatedEvaluationResult(TabularOutputData):
 
     OPTION_ENABLE_ALL = 'enable_all'
 
+    OPTION_RANK = 'rank'
+
     COLUMN_DATASET = 'Dataset'
 
     COLUMN_PREFIX_PARAMETER = 'Parameter'

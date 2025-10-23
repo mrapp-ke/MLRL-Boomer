@@ -28,13 +28,18 @@ class AggregatedEvaluationExtension(Extension):
         '--print-evaluation',
         default=True,
         description='Whether the evaluation results should be printed on the console or not.',
-        true_options={AggregatedEvaluationResult.OPTION_ENABLE_ALL, OPTION_DECIMALS, OPTION_PERCENTAGE},
+        true_options={
+            AggregatedEvaluationResult.OPTION_ENABLE_ALL, OPTION_DECIMALS, OPTION_PERCENTAGE,
+            AggregatedEvaluationResult.OPTION_RANK
+        },
     )
 
     SAVE_EVALUATION = BoolArgument(
         '--save-evaluation',
         description='Whether evaluation results should be written to output files or not.',
-        true_options={AggregatedEvaluationResult.OPTION_ENABLE_ALL, OPTION_DECIMALS},
+        true_options={
+            AggregatedEvaluationResult.OPTION_ENABLE_ALL, OPTION_DECIMALS, AggregatedEvaluationResult.OPTION_RANK
+        },
     )
 
     def __init__(self, *dependencies: Extension):
