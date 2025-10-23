@@ -125,8 +125,25 @@ class TextFileComparison(FileComparison):
     Allows to compare or overwrite text files produced by tests.
     """
 
-    @staticmethod
-    def __replace_durations_with_placeholders(line: str) -> str:
+    block_of_durations: int = -1
+
+    def __replace_durations_with_placeholders(self, line_index: int, line: str) -> str:
+        if self.block_of_durations >= 0:
+            if not line:
+                if self.block_of_durations != line_index - 1:
+                    self.block_of_durations = -1
+
+                return line
+
+            return regex.sub(r'\d+(?:\.\d+)?(\s+±\d+(?:\.\d+)?)?', 'xxx', line)
+
+        if line in {
+                'Evaluation results for measure "Prediction Time":',
+                'Evaluation results for measure "Training Time":',
+        }:
+            self.block_of_durations = line_index
+            return line
+
         regex_duration = '(\\d+ (day(s)*|hour(s)*|minute(s)*|second(s)*|millisecond(s)*))'
         return regex.sub(regex_duration + '((, )' + regex_duration + ')*' + '(( and )' + regex_duration + ')?',
                          PLACEHOLDER_DURATION, line)
@@ -141,11 +158,10 @@ class TextFileComparison(FileComparison):
         regex_version = r'"\d+.\d+.\d+"'
         return regex.sub(regex_version, '"' + PLACEHOLDER_VERSION + '"', line)
 
-    @staticmethod
-    def __mask_line(line: str) -> str:
-        masked_line = TextFileComparison.__replace_durations_with_placeholders(line.strip('\n'))
-        masked_line = TextFileComparison.__replace_timestamps_with_placeholders(masked_line)
-        masked_line = TextFileComparison.__replace_versions_with_placeholders(masked_line)
+    def __mask_line(self, line_index: int, line: str) -> str:
+        masked_line = self.__replace_durations_with_placeholders(line_index, line.strip('\n'))
+        masked_line = self.__replace_timestamps_with_placeholders(masked_line)
+        masked_line = self.__replace_versions_with_placeholders(masked_line)
         return masked_line
 
     def __init__(self, lines: Iterable[str]):
@@ -160,7 +176,7 @@ class TextFileComparison(FileComparison):
             expected_lines = file.readlines()
 
             for line_index, (actual_line, expected_line) in enumerate(zip(self.lines, expected_lines)):
-                actual_line = self.__mask_line(actual_line)
+                actual_line = self.__mask_line(line_index, actual_line)
                 expected_line = expected_line.strip('\n')
 
                 if actual_line != expected_line:
@@ -174,8 +190,8 @@ class TextFileComparison(FileComparison):
     @override
     def _write(self, file: Path):
         with open(file, 'w+', encoding=ENCODING_UTF8) as output_file:
-            for line in self.lines:
-                output_file.write(self.__mask_line(line) + '\n')
+            for line_index, line in enumerate(self.lines):
+                output_file.write(self.__mask_line(line_index, line) + '\n')
 
 
 class PickleFileComparison(FileComparison):

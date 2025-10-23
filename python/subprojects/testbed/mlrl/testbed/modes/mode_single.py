@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that implement a mode of operation for performing a single experiment.
 """
 from argparse import Namespace
-from typing import List, override
+from typing import List, Set, override
 
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments.recipe import Recipe
@@ -25,7 +25,8 @@ class SingleMode(Mode):
         cli.add_arguments(*extension_arguments, *algorithmic_arguments)
 
     @override
-    def run_experiment(self, _: List[Argument], args: Namespace, recipe: Recipe):
+    def run_experiment(self, extension_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
+                       recipe: Recipe):
         command = Command.from_argv()
         experiment_builder = recipe.create_experiment_builder(experiment_mode=self.to_enum(),
                                                               args=args,

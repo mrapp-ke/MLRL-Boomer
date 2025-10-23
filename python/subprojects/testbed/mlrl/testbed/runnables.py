@@ -7,12 +7,13 @@ Provides base classes for programs that can be configured via command line argum
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from functools import reduce
-from typing import List, Optional, Set, override
+from typing import List, Optional, Set, Tuple, override
 
 from mlrl.testbed.arguments import PredictionDatasetArguments
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
+from mlrl.testbed.experiments.output.evaluation.extension import AggregatedEvaluationExtension
 from mlrl.testbed.experiments.output.meta_data.extension import MetaDataExtension
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.recipe import Recipe
@@ -76,6 +77,7 @@ class Runnable(Recipe, ABC):
         """
         return [
             Runnable.PredictionDatasetExtension(),
+            AggregatedEvaluationExtension(),
             MetaDataExtension(),
             SlurmExtension(),
         ]
@@ -99,13 +101,17 @@ class Runnable(Recipe, ABC):
         """
         return None
 
-    def run(self, mode: Mode, arguments: List[Argument], args: Namespace):
+    def run(self, mode: Mode, extension_arguments: Set[Argument], algorithmic_arguments: Set[Argument],
+            args: Namespace):
         """
         Executes the runnable.
 
-        :param mode:        The mode of operation
-        :param arguments:   A list that contains the command line arguments available in the current mode of operation
-        :param args:        The command line arguments specified by the user
+        :param mode:                    The mode of operation
+        :param extension_arguments:     The arguments that should be added to the command line interface according to
+                                        the registered extensions
+        :param algorithmic_arguments:   The arguments that should be added to the command line interface for configuring
+                                        the algorithm's hyperparameters
+        :param args:                    The command line arguments specified by the user
         """
 
         class RecipeWrapper(Recipe):
@@ -147,7 +153,7 @@ class Runnable(Recipe, ABC):
 
                 return experiment_builder
 
-        mode.run_experiment(arguments, args, RecipeWrapper(self))
+        mode.run_experiment(extension_arguments, algorithmic_arguments, args, RecipeWrapper(self))
 
     def configure_batch_mode(self, cli: CommandLineInterface) -> BatchMode:
         """
@@ -200,12 +206,14 @@ class Runnable(Recipe, ABC):
 
         return run_mode
 
-    def configure_arguments(self, cli: CommandLineInterface, mode: Mode):
+    def configure_arguments(self, cli: CommandLineInterface, mode: Mode) -> Tuple[Set[Argument], Set[Argument]]:
         """
         Configures the command line interface according to the extensions applied to the runnable.
 
         :param cli:     The command line interface to be configured
         :param mode:    The mode of operation
+        :return:        A set that contains the arguments that should be added to the command line interface according
+                        to the registered extensions, as well as a set that contains algorithmic arguments
         """
         extension_arguments: Set[Argument] = reduce(
             lambda aggr, extension: aggr | extension.get_arguments(mode.to_enum()), self.get_extensions(), set())
@@ -213,6 +221,7 @@ class Runnable(Recipe, ABC):
         mode.configure_arguments(cli,
                                  extension_arguments=sorted(extension_arguments, key=lambda arg: arg.name),
                                  algorithmic_arguments=sorted(algorithmic_arguments, key=lambda arg: arg.name))
+        return extension_arguments, set(algorithmic_arguments)
 
     # pylint: disable=unused-argument
     def get_algorithmic_arguments(self, known_args: Namespace) -> Set[Argument]:

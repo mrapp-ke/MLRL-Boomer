@@ -13,7 +13,7 @@ OPTION_DECIMALS = 'decimals'
 OPTION_PERCENTAGE = 'percentage'
 
 
-def format_number(value: Number, decimals: int = 2) -> str:
+def format_number(value: Any, decimals: int = 2) -> str:
     """
     Creates and returns a textual representation of a value using a specific number of decimals, if the value is a
     floating point value.
