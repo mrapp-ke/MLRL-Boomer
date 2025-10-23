@@ -1,0 +1,9 @@
+Dataset,Mean Absolute Error,Mean Absolute Percentage Error,Mean Squared Error,Median Absolute Error,Parameter --feature-format,Parameter --instance-sampling,Parameter --loss,Prediction Time,Training Time
+atp7d,29.906873698097836,0.0799326349862939,2826.3378742748196,15.828599931870095,,none,squared-error-decomposable,<duration>,<duration>
+atp7d,30.02866240935228,0.08054685097678434,3007.349462685331,15.202449491395916,sparse,none,squared-error-decomposable,<duration>,<duration>
+atp7d,33.00286318909806,0.08135953153443164,4086.7736373060907,17.984437361138475,,with-replacement{sample_size=0.5},squared-error-decomposable,<duration>,<duration>
+atp7d,34.14518390578342,0.0915030757224984,4131.776375411608,18.580352025237218,sparse,with-replacement{sample_size=0.5},squared-error-decomposable,<duration>,<duration>
+atp7d-binary,31.919571780477728,0.07994474958556748,3361.166707708328,17.486144467511096,,none,squared-error-decomposable,<duration>,<duration>
+atp7d-binary,31.919571780477728,0.07994474958556748,3361.166707708328,17.486144467511096,sparse,none,squared-error-decomposable,<duration>,<duration>
+atp7d-binary,34.771091022985615,0.08938671161722533,3554.6433600618348,20.75661144126338,,with-replacement{sample_size=0.5},squared-error-decomposable,<duration>,<duration>
+atp7d-binary,34.771091022985615,0.08938671161722533,3554.6433600618348,20.75661144126338,sparse,with-replacement{sample_size=0.5},squared-error-decomposable,<duration>,<duration>

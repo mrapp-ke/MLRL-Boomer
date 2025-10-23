@@ -247,6 +247,8 @@ class OutputValue:
     Represents a numeric value that is part of output data.
     """
 
+    COLUMN_PREFIX_STD_DEV = 'Std.-dev.'
+
     def __init__(self, option_key: str, name: str, percentage: bool = False):
         """
         :param option_key:  The key of the option that can be used for filtering
@@ -263,7 +265,9 @@ class OutputValue:
 
         :return: An `OutputValue` that corresponds to the standard deviation of this value
         """
-        return OutputValue(option_key=self.option_key, name='Std.-dev. ' + self.name, percentage=self.percentage)
+        return OutputValue(option_key=self.option_key,
+                           name=f'{self.COLUMN_PREFIX_STD_DEV} {self.name}',
+                           percentage=self.percentage)
 
     @staticmethod
     def filter_values(values: Iterable['OutputValue'], options: Options) -> List['OutputValue']:

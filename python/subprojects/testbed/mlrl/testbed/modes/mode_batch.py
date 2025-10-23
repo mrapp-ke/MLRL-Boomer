@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from functools import cached_property, reduce
 from itertools import chain
 from pathlib import Path
-from typing import Any, Callable, Generator, Iterable, List, Optional, override
+from typing import Any, Callable, Generator, Iterable, List, Optional, Set, override
 
 import yamale
 
@@ -412,7 +412,8 @@ class BatchMode(Mode):
                           *extension_arguments, *algorithmic_arguments)
 
     @override
-    def run_experiment(self, _: List[Argument], args: Namespace, recipe: Recipe):
+    def run_experiment(self, extension_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
+                       recipe: Recipe):
         config_file_path = self.CONFIG_FILE.get_value(args)
 
         if config_file_path:
