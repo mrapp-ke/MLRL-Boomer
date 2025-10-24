@@ -297,7 +297,7 @@ Saving meta-data can help improving the reproducibility of experiments. Among ot
 
 > A more detailed description of the following arguments can be found {ref}`here<model-persistence>`.
 
-Because the training of models can be time-consuming, it might be desirable to store them on disk for later use. This requires to specify the paths of directories to which models should be saved or loaded from.
+Because the training of models can be time-consuming, it might be desirable to save them on disk for later use. This requires to specify the paths of directories to which models should be saved or loaded from.
 
 - `--model-load-dir` (Default value = `models`)
 
@@ -413,6 +413,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
     - `lrap` (Default value = `true`) `true`, if evaluation scores according to the label ranking average precision metric should be printed, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `probabilities` or `scores`.
     - `dcg` (Default value = `true`) `true`, if evaluation scores according to the discounted cumulative gain metric should be printed, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `probabilities` or `scores`.
     - `ndcg` (Default value = `true`) `true`, if evaluation scores according to the normalized discounted cumulative gain metric should be printed, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `probabilities` or `scores`.
+    - `rank` (Default value = `true`) `true`, if the ranks of individual experiments should be printed when aggregating results for several experiments, `false` otherwise.
 
   - `false` The evaluation results are not printed on the console.
 
@@ -422,39 +423,40 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
     - `decimals` (Default value = `0`) The number of decimals to be used for evaluation scores or 0, if the number of decimals should not be restricted.
     - `enable_all` (Default value = `true`) `true`, if all supported metrics should be used unless specified otherwise, `false` if all metrics should be disabled by default.
-    - `hamming_loss` (Default value = `true`) `true`, if evaluation scores according to the Hamming loss should be stored, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
-    - `hamming_accuracy` (Default value = `true`) `true`, if evaluation scores according to the Hamming accuracy metric should be stored, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
-    - `subset_zero_one_loss` (Default value = `true`) `true`, if evaluation scores according to the subset 0/1 loss should be stored, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
-    - `subset_accuracy` (Default value = `true`) `true`, if evaluation scores according to the subset accuracy metric should be stored, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
-    - `micro_precision` (Default value = `true`) `true`, if evaluation scores according to the micro-averaged precision metric should be stored, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
-    - `micro_recall` (Default value = `true`) `true`, if evaluation scores according to the micro-averaged recall metric should be stored, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
-    - `micro_f1` (Default value = `true`) `true`, if evaluation scores according to the micro-averaged F1-measure should be stored, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
-    - `micro_jaccard` (Default value = `true`) `true`, if evaluation scores according to the micro-averaged Jaccard metric should be stored, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
-    - `macro_precision` (Default value = `true`) `true`, if evaluation scores according to the macro-averaged precision metric should be stored, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
-    - `macro_recall` (Default value = `true`) `true`, if evaluation scores according to the macro-averaged recall metric should be stored, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
-    - `macro_f1` (Default value = `true`) `true`, if evaluation scores according to the macro-averaged F1-measure should be stored, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
-    - `macro_jaccard` (Default value = `true`) `true`, if evaluation scores according to the macro-averaged Jaccard metric should be stored, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
-    - `example_wise_precision` (Default value = `true`) `true`, if evaluation scores according to the example-wise precision metric should be stored, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
-    - `example_wise_recall` (Default value = `true`) `true`, if evaluation scores according to the example-wise recall metric should be stored, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
-    - `example_wise_f1` (Default value = `true`) `true`, if evaluation scores according to the example-wise F1-measure should be stored, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
-    - `example_wise_jaccard` (Default value = `true`) `true`, if evaluation scores according to the example-wise Jaccard metric should be stored, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
-    - `accuracy` (Default value = `true`) `true`, if evaluation scores according to the accuracy metric should be stored, `false` otherwise. Does only have an effect when dealing with single-label data and if the parameter `--prediction-type` is set to `labels`.
-    - `zero_one_loss` (Default value = `true`) `true`, if evaluation scores according to the 0/1 loss should be stored, `false` otherwise. Does only have an effect when dealing with single-label data and if the parameter `--prediction-type` is set to `labels`.
-    - `precision` (Default value = `true`) `true`, if evaluation scores according to the precision metric should be stored, `false` otherwise. Does only have an effect when dealing with single-label data and if the parameter `--prediction-type` is set to `labels`.
-    - `recall` (Default value = `true`) `true`, if evaluation scores according to the recall metric should be stored, `false` otherwise. Does only have an effect when dealing with single-label data and if the parameter `--prediction-type` is set to `labels`.
-    - `f1` (Default value = `true`) `true`, if evaluation scores according to the F1-measure should be stored, `false` otherwise. Does only have an effect when dealing with single-label data and if the parameter `--prediction-type` is set to `labels`.
-    - `jaccard` (Default value = `true`) `true`, if evaluation scores according to the Jaccard metric should be stored, `false` otherwise. Does only have an effect when dealing with single-label data and if the parameter `--prediction-type` is set to `labels`.
-    - `mean_absolute_error` (Default value = `true`) `true`, if evaluation scores according to the mean absolute error metric should be stored, `false` otherwise. Does only have an effect if the parameter `--prediction-type` is set to `probabilities` or `scores`.
-    - `mean_squared_error` (Default value = `true`) `true`, if evaluation scores according to the mean squared error metric should be stored, `false` otherwise. Does only have an effect if the parameter `--prediction-type` is set to `probabilities` or `scores`.
-    - `mean_absolute_error` (Default value = `true`) `true`, if evaluation scores according to the mean absolute error metric should be stored, `false` otherwise. Does only have an effect if the parameter `--prediction-type` is set to `probabilities` or `scores`.
-    - `mean_absolute_percentage_error` (Default value = `true`) `true`, if evaluation scores according to the mean absolute percentage error metric should be stored, `false` otherwise. Does only have an effect if the parameter `--prediction-type` is set to `probabilities` or `scores`.
-    - `rank_loss` (Default value = `true`) `true`, if evaluation scores according to the rank loss should be stored, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `probabilities` or `scores`.
-    - `coverage_error` (Default value = `true`) `true`, if evaluation scores according to the coverage error metric should be stored, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `probabilities` or `scores`.
-    - `lrap` (Default value = `true`) `true`, if evaluation scores according to the label ranking average precision metric should be stored, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `probabilities` or `scores`.
-    - `dcg` (Default value = `true`) `true`, if evaluation scores according to the discounted cumulative gain metric should be stored, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `probabilities` or `scores`.
-    - `ndcg` (Default value = `true`) `true`, if evaluation scores according to the normalized discounted cumulative gain metric should be stored, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `probabilities` or `scores`.
-    - `training_time` (Default value = `true`) `true`, if the time that was needed for training should be stored, `false` otherwise.
-    - `prediction_time` (Default value = `true`) `true`, if the time that was needed for prediction should be stored, `false` otherwise.
+    - `hamming_loss` (Default value = `true`) `true`, if evaluation scores according to the Hamming loss should be saved, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
+    - `hamming_accuracy` (Default value = `true`) `true`, if evaluation scores according to the Hamming accuracy metric should be saved, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
+    - `subset_zero_one_loss` (Default value = `true`) `true`, if evaluation scores according to the subset 0/1 loss should be saved, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
+    - `subset_accuracy` (Default value = `true`) `true`, if evaluation scores according to the subset accuracy metric should be saved, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
+    - `micro_precision` (Default value = `true`) `true`, if evaluation scores according to the micro-averaged precision metric should be saved, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
+    - `micro_recall` (Default value = `true`) `true`, if evaluation scores according to the micro-averaged recall metric should be saved, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
+    - `micro_f1` (Default value = `true`) `true`, if evaluation scores according to the micro-averaged F1-measure should be saved, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
+    - `micro_jaccard` (Default value = `true`) `true`, if evaluation scores according to the micro-averaged Jaccard metric should be saved, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
+    - `macro_precision` (Default value = `true`) `true`, if evaluation scores according to the macro-averaged precision metric should be saved, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
+    - `macro_recall` (Default value = `true`) `true`, if evaluation scores according to the macro-averaged recall metric should be saved, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
+    - `macro_f1` (Default value = `true`) `true`, if evaluation scores according to the macro-averaged F1-measure should be saved, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
+    - `macro_jaccard` (Default value = `true`) `true`, if evaluation scores according to the macro-averaged Jaccard metric should be saved, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
+    - `example_wise_precision` (Default value = `true`) `true`, if evaluation scores according to the example-wise precision metric should be saved, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
+    - `example_wise_recall` (Default value = `true`) `true`, if evaluation scores according to the example-wise recall metric should be saved, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
+    - `example_wise_f1` (Default value = `true`) `true`, if evaluation scores according to the example-wise F1-measure should be saved, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
+    - `example_wise_jaccard` (Default value = `true`) `true`, if evaluation scores according to the example-wise Jaccard metric should be saved, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `labels`.
+    - `accuracy` (Default value = `true`) `true`, if evaluation scores according to the accuracy metric should be saved, `false` otherwise. Does only have an effect when dealing with single-label data and if the parameter `--prediction-type` is set to `labels`.
+    - `zero_one_loss` (Default value = `true`) `true`, if evaluation scores according to the 0/1 loss should be saved, `false` otherwise. Does only have an effect when dealing with single-label data and if the parameter `--prediction-type` is set to `labels`.
+    - `precision` (Default value = `true`) `true`, if evaluation scores according to the precision metric should be saved, `false` otherwise. Does only have an effect when dealing with single-label data and if the parameter `--prediction-type` is set to `labels`.
+    - `recall` (Default value = `true`) `true`, if evaluation scores according to the recall metric should be saved, `false` otherwise. Does only have an effect when dealing with single-label data and if the parameter `--prediction-type` is set to `labels`.
+    - `f1` (Default value = `true`) `true`, if evaluation scores according to the F1-measure should be saved, `false` otherwise. Does only have an effect when dealing with single-label data and if the parameter `--prediction-type` is set to `labels`.
+    - `jaccard` (Default value = `true`) `true`, if evaluation scores according to the Jaccard metric should be saved, `false` otherwise. Does only have an effect when dealing with single-label data and if the parameter `--prediction-type` is set to `labels`.
+    - `mean_absolute_error` (Default value = `true`) `true`, if evaluation scores according to the mean absolute error metric should be saved, `false` otherwise. Does only have an effect if the parameter `--prediction-type` is set to `probabilities` or `scores`.
+    - `mean_squared_error` (Default value = `true`) `true`, if evaluation scores according to the mean squared error metric should be saved, `false` otherwise. Does only have an effect if the parameter `--prediction-type` is set to `probabilities` or `scores`.
+    - `mean_absolute_error` (Default value = `true`) `true`, if evaluation scores according to the mean absolute error metric should be saved, `false` otherwise. Does only have an effect if the parameter `--prediction-type` is set to `probabilities` or `scores`.
+    - `mean_absolute_percentage_error` (Default value = `true`) `true`, if evaluation scores according to the mean absolute percentage error metric should be saved, `false` otherwise. Does only have an effect if the parameter `--prediction-type` is set to `probabilities` or `scores`.
+    - `rank_loss` (Default value = `true`) `true`, if evaluation scores according to the rank loss should be saved, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `probabilities` or `scores`.
+    - `coverage_error` (Default value = `true`) `true`, if evaluation scores according to the coverage error metric should be saved, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `probabilities` or `scores`.
+    - `lrap` (Default value = `true`) `true`, if evaluation scores according to the label ranking average precision metric should be saved, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `probabilities` or `scores`.
+    - `dcg` (Default value = `true`) `true`, if evaluation scores according to the discounted cumulative gain metric should be saved, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `probabilities` or `scores`.
+    - `ndcg` (Default value = `true`) `true`, if evaluation scores according to the normalized discounted cumulative gain metric should be saved, `false` otherwise. Does only have an effect when dealing with multi-label data and if the parameter `--prediction-type` is set to `probabilities` or `scores`.
+    - `training_time` (Default value = `true`) `true`, if the time that was needed for training should be saved, `false` otherwise.
+    - `prediction_time` (Default value = `true`) `true`, if the time that was needed for prediction should be saved, `false` otherwise.
+    - `rank` (Default value = `true`) `true`, if the ranks of individual experiments should be saved when aggregating results for several experiments, `false` otherwise.
 
   - `false` The evaluation results are not written to [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files.
 
@@ -518,12 +520,12 @@ To provide valuable insights into the models learned by an algorithm, the predic
   - `true` The characteristics of binary predictions are written to [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files. Does only have an effect if the parameter `--predict-probabilities` is set to `false`.
 
     - `decimals` (Default value = `0`) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
-    - `outputs` (Default value = `true`) `true`, if the number of outputs should be stored, `false` otherwise.
-    - `output_density` (Default value = `true`) `true`, if the density of the ground truth matrix should be stored, `false` otherwise.
-    - `output_sparsity` (Default value = `true`) `true`, if the sparsity of the ground truth matrix should be stored, `false` otherwise.
-    - `label_imbalance_ratio` (Default value = `true`, *classification only*) `true`, if the label imbalance ratio should be stored, `false` otherwise.
-    - `label_cardinality` (Default value = `true`, *classification only*) `true`, if the average label cardinality should be stored, `false` otherwise.
-    - `distinct_label_vectors` (Default value = `true`, *classification only*) `true`, if the number of distinct label vectors should be stored, `false` otherwise.
+    - `outputs` (Default value = `true`) `true`, if the number of outputs should be saved, `false` otherwise.
+    - `output_density` (Default value = `true`) `true`, if the density of the ground truth matrix should be saved, `false` otherwise.
+    - `output_sparsity` (Default value = `true`) `true`, if the sparsity of the ground truth matrix should be saved, `false` otherwise.
+    - `label_imbalance_ratio` (Default value = `true`, *classification only*) `true`, if the label imbalance ratio should be saved, `false` otherwise.
+    - `label_cardinality` (Default value = `true`, *classification only*) `true`, if the average label cardinality should be saved, `false` otherwise.
+    - `distinct_label_vectors` (Default value = `true`, *classification only*) `true`, if the number of distinct label vectors should be saved, `false` otherwise.
 
   - `false` The characteristics of predictions are not written to [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files.
 
@@ -557,18 +559,18 @@ To provide valuable insights into the models learned by an algorithm, the predic
   - `true` The characteristics of the training dataset are written to a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file.
 
     - `decimals` (Default value = `0`) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
-    - `outputs` (Default value = `true`) `true`, if the number of outputs should be stored, `false` otherwise.
-    - `output_density` (Default value = `true`) `true`, if the density of the ground truth matrix should be stored, `false` otherwise.
-    - `output_sparsity` (Default value = `true`) `true`, if the sparsity of the ground truth matrix should be stored, `false` otherwise.
-    - `label_imbalance_ratio` (Default value = `true`, *classification only*) `true`, if the label imbalance ratio should be stored, `false` otherwise.
-    - `label_cardinality` (Default value = `true`, *classification only*) `true`, if the average label cardinality should be stored, `false` otherwise.
-    - `distinct_label_vectors` (Default value = `true`, *classification only*) `true`, if the number of distinct label vectors should be stored, `false` otherwise.
-    - `examples` (Default value = `true`) `true`, if the number of examples should be stored, `false` otherwise.
-    - `features` (Default value = `true`) `true`, if the number of features should be stored, `false` otherwise.
-    - `numerical_features` (Default value = `true`) `true`, if the number of numerical features should be stored, `false` otherwise.
-    - `nominal_features` (Default value = `true`) `true`, if the number of nominal features should be stored, `false` otherwise.
-    - `feature_density` (Default value = `true`) `true`, if the feature density should be stored, `false` otherwise.
-    - `feature_sparsity` (Default value = `true`) `true`, if the feature sparsity should be stored, `false` otherwise.
+    - `outputs` (Default value = `true`) `true`, if the number of outputs should be saved, `false` otherwise.
+    - `output_density` (Default value = `true`) `true`, if the density of the ground truth matrix should be saved, `false` otherwise.
+    - `output_sparsity` (Default value = `true`) `true`, if the sparsity of the ground truth matrix should be saved, `false` otherwise.
+    - `label_imbalance_ratio` (Default value = `true`, *classification only*) `true`, if the label imbalance ratio should be saved, `false` otherwise.
+    - `label_cardinality` (Default value = `true`, *classification only*) `true`, if the average label cardinality should be saved, `false` otherwise.
+    - `distinct_label_vectors` (Default value = `true`, *classification only*) `true`, if the number of distinct label vectors should be saved, `false` otherwise.
+    - `examples` (Default value = `true`) `true`, if the number of examples should be saved, `false` otherwise.
+    - `features` (Default value = `true`) `true`, if the number of features should be saved, `false` otherwise.
+    - `numerical_features` (Default value = `true`) `true`, if the number of numerical features should be saved, `false` otherwise.
+    - `nominal_features` (Default value = `true`) `true`, if the number of nominal features should be saved, `false` otherwise.
+    - `feature_density` (Default value = `true`) `true`, if the feature density should be saved, `false` otherwise.
+    - `feature_sparsity` (Default value = `true`) `true`, if the feature sparsity should be saved, `false` otherwise.
 
   - `false` The characteristics of the training dataset are not written to a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file.
 
