@@ -9,6 +9,7 @@ from typing import Optional, override
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
+from mlrl.testbed.experiments.output.evaluation.evaluation_result import AggregatedEvaluationResult
 from mlrl.testbed.experiments.output.evaluation.measurements import Measurements
 from mlrl.testbed.experiments.output.sinks import CsvFileSink
 from mlrl.testbed.experiments.table import RowWiseTable, Table
@@ -25,8 +26,6 @@ class EvaluationResult(TabularOutputData):
     PROPERTIES = TabularProperties(name='Evaluation result', file_name='evaluation')
 
     CONTEXT = Context()
-
-    OPTION_ENABLE_ALL = 'enable_all'
 
     OPTION_HAMMING_LOSS = 'hamming_loss'
 
@@ -142,7 +141,8 @@ class EvaluationResult(TabularOutputData):
         """
         percentage = options.get_bool(OPTION_PERCENTAGE, kwargs.get(OPTION_PERCENTAGE, True))
         decimals = options.get_int(OPTION_DECIMALS, kwargs.get(OPTION_DECIMALS, 0))
-        enable_all = options.get_bool(self.OPTION_ENABLE_ALL, kwargs.get(self.OPTION_ENABLE_ALL, True))
+        enable_all = options.get_bool(AggregatedEvaluationResult.OPTION_ENABLE_ALL,
+                                      kwargs.get(AggregatedEvaluationResult.OPTION_ENABLE_ALL, True))
         fold = kwargs.get(self.KWARG_FOLD)
         dictionary = self.measurements.averages_as_dict() if fold is None else self.measurements.values_as_dict(fold)
         headers, measures = tee(
