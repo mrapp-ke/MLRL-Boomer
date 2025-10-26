@@ -57,7 +57,7 @@ jobs:
       - name: Create virtual environment
         run: ./build venv
       - name: Download Python packages
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: python-packages-${{ inputs.subproject }}
           path: python/subprojects/
@@ -85,7 +85,7 @@ jobs:
           git push -u origin HEAD
       - name: Upload Python test results as artifacts
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: python-test-results-${{ inputs.subproject }}-${{ matrix.block }}
           path: python/tests/build/test-results/*.xml
