@@ -117,7 +117,7 @@ class SlurmRunner(BatchMode.Runner):
             for line in config_file.before_script:
                 content += line + '\n'
 
-        content += str(command) + '\n'
+        content += str(command).replace('{', '\'{').replace('}', '}\'') + '\n'
 
         if config_file and config_file.after_script:
             for line in config_file.after_script:
