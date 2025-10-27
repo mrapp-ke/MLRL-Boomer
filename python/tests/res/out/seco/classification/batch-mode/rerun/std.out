@@ -358,17 +358,17 @@ feature_format    heuristic    instance_sampling                    Example-wise
 ----------------  -----------  ---------------------------------  -----------------  ------
 "emotions"
 ----------------  -----------  ---------------------------------  -----------------  ------
-                  f-measure    none                                           50.45       3
-sparse            m-estimate   none                                           52.04       5
-                  f-measure    with-replacement{sample_size=0.5}              55.51       7
-sparse            m-estimate   with-replacement{sample_size=0.5}              57.05       8
+                  f-measure    none                                           50.45       1
+sparse            m-estimate   none                                           52.04       2
+                  f-measure    with-replacement{sample_size=0.5}              55.51       3
+sparse            m-estimate   with-replacement{sample_size=0.5}              57.05       4
 ----------------  -----------  ---------------------------------  -----------------  ------
 "enron"
 ----------------  -----------  ---------------------------------  -----------------  ------
                   f-measure    none                                           50.32       2
-sparse            m-estimate   none                                           50.85       4
+sparse            m-estimate   none                                           50.85       3
                   f-measure    with-replacement{sample_size=0.5}              46.07       1
-sparse            m-estimate   with-replacement{sample_size=0.5}              53.32       6
+sparse            m-estimate   with-replacement{sample_size=0.5}              53.32       4
 
 Evaluation results for measure "Example-wise Jaccard":
 
@@ -376,10 +376,10 @@ feature_format    heuristic    instance_sampling                    Example-wise
 ----------------  -----------  ---------------------------------  ----------------------  ------
 "emotions"
 ----------------  -----------  ---------------------------------  ----------------------  ------
-                  f-measure    none                                                40.83       5
-sparse            m-estimate   none                                                43.31       6
-                  f-measure    with-replacement{sample_size=0.5}                   45.92       7
-sparse            m-estimate   with-replacement{sample_size=0.5}                   47.87       8
+                  f-measure    none                                                40.83       1
+sparse            m-estimate   none                                                43.31       2
+                  f-measure    with-replacement{sample_size=0.5}                   45.92       3
+sparse            m-estimate   with-replacement{sample_size=0.5}                   47.87       4
 ----------------  -----------  ---------------------------------  ----------------------  ------
 "enron"
 ----------------  -----------  ---------------------------------  ----------------------  ------
@@ -394,10 +394,10 @@ feature_format    heuristic    instance_sampling                    Example-wise
 ----------------  -----------  ---------------------------------  ------------------------  ------
 "emotions"
 ----------------  -----------  ---------------------------------  ------------------------  ------
-                  f-measure    none                                                  61.14       6
-sparse            m-estimate   none                                                  60.75       5
-                  f-measure    with-replacement{sample_size=0.5}                     61.3        7
-sparse            m-estimate   with-replacement{sample_size=0.5}                     66.83       8
+                  f-measure    none                                                  61.14       2
+sparse            m-estimate   none                                                  60.75       1
+                  f-measure    with-replacement{sample_size=0.5}                     61.3        3
+sparse            m-estimate   with-replacement{sample_size=0.5}                     66.83       4
 ----------------  -----------  ---------------------------------  ------------------------  ------
 "enron"
 ----------------  -----------  ---------------------------------  ------------------------  ------
@@ -412,17 +412,17 @@ feature_format    heuristic    instance_sampling                    Example-wise
 ----------------  -----------  ---------------------------------  ---------------------  ------
 "emotions"
 ----------------  -----------  ---------------------------------  ---------------------  ------
-                  f-measure    none                                               58.59       3
-sparse            m-estimate   none                                               57.82       2
-                  f-measure    with-replacement{sample_size=0.5}                  59.61       5
-sparse            m-estimate   with-replacement{sample_size=0.5}                  61.9        6
+                  f-measure    none                                               58.59       2
+sparse            m-estimate   none                                               57.82       1
+                  f-measure    with-replacement{sample_size=0.5}                  59.61       3
+sparse            m-estimate   with-replacement{sample_size=0.5}                  61.9        4
 ----------------  -----------  ---------------------------------  ---------------------  ------
 "enron"
 ----------------  -----------  ---------------------------------  ---------------------  ------
-                  f-measure    none                                               59.04       4
-sparse            m-estimate   none                                               64.26       8
+                  f-measure    none                                               59.04       2
+sparse            m-estimate   none                                               64.26       4
                   f-measure    with-replacement{sample_size=0.5}                  53.71       1
-sparse            m-estimate   with-replacement{sample_size=0.5}                  62.07       7
+sparse            m-estimate   with-replacement{sample_size=0.5}                  62.07       3
 
 Evaluation results for measure "Hamming Accuracy":
 
@@ -437,10 +437,10 @@ sparse            m-estimate   with-replacement{sample_size=0.5}               7
 ----------------  -----------  ---------------------------------  ------------------  ------
 "enron"
 ----------------  -----------  ---------------------------------  ------------------  ------
-                  f-measure    none                                            93.51       7
-sparse            m-estimate   none                                            92.87       5
-                  f-measure    with-replacement{sample_size=0.5}               92.9        6
-sparse            m-estimate   with-replacement{sample_size=0.5}               93.98       8
+                  f-measure    none                                            93.51       3
+sparse            m-estimate   none                                            92.87       1
+                  f-measure    with-replacement{sample_size=0.5}               92.9        2
+sparse            m-estimate   with-replacement{sample_size=0.5}               93.98       4
 
 Evaluation results for measure "Hamming Loss":
 
@@ -448,10 +448,10 @@ feature_format    heuristic    instance_sampling                    Hamming Loss
 ----------------  -----------  ---------------------------------  --------------  ------
 "emotions"
 ----------------  -----------  ---------------------------------  --------------  ------
-                  f-measure    none                                        30.44       8
-sparse            m-estimate   none                                        27.47       7
-                  f-measure    with-replacement{sample_size=0.5}           26.11       6
-sparse            m-estimate   with-replacement{sample_size=0.5}           24.66       5
+                  f-measure    none                                        30.44       4
+sparse            m-estimate   none                                        27.47       3
+                  f-measure    with-replacement{sample_size=0.5}           26.11       2
+sparse            m-estimate   with-replacement{sample_size=0.5}           24.66       1
 ----------------  -----------  ---------------------------------  --------------  ------
 "enron"
 ----------------  -----------  ---------------------------------  --------------  ------
@@ -466,10 +466,10 @@ feature_format    heuristic    instance_sampling                    Macro F1    
 ----------------  -----------  ---------------------------------  ----------  ------
 "emotions"
 ----------------  -----------  ---------------------------------  ----------  ------
-                  f-measure    none                                    54.8        6
-sparse            m-estimate   none                                    57.69       7
-                  f-measure    with-replacement{sample_size=0.5}       50.74       5
-sparse            m-estimate   with-replacement{sample_size=0.5}       57.86       8
+                  f-measure    none                                    54.8        2
+sparse            m-estimate   none                                    57.69       3
+                  f-measure    with-replacement{sample_size=0.5}       50.74       1
+sparse            m-estimate   with-replacement{sample_size=0.5}       57.86       4
 ----------------  -----------  ---------------------------------  ----------  ------
 "enron"
 ----------------  -----------  ---------------------------------  ----------  ------
@@ -484,10 +484,10 @@ feature_format    heuristic    instance_sampling                    Macro Jaccar
 ----------------  -----------  ---------------------------------  ---------------  ------
 "emotions"
 ----------------  -----------  ---------------------------------  ---------------  ------
-                  f-measure    none                                         38.6        6
-sparse            m-estimate   none                                         41.2        7
-                  f-measure    with-replacement{sample_size=0.5}            36.95       5
-sparse            m-estimate   with-replacement{sample_size=0.5}            42.62       8
+                  f-measure    none                                         38.6        2
+sparse            m-estimate   none                                         41.2        3
+                  f-measure    with-replacement{sample_size=0.5}            36.95       1
+sparse            m-estimate   with-replacement{sample_size=0.5}            42.62       4
 ----------------  -----------  ---------------------------------  ---------------  ------
 "enron"
 ----------------  -----------  ---------------------------------  ---------------  ------
@@ -502,17 +502,17 @@ feature_format    heuristic    instance_sampling                    Macro Precis
 ----------------  -----------  ---------------------------------  -----------------  ------
 "emotions"
 ----------------  -----------  ---------------------------------  -----------------  ------
-                  f-measure    none                                           52.59       2
-sparse            m-estimate   none                                           56.35       4
-                  f-measure    with-replacement{sample_size=0.5}              71.08       6
-sparse            m-estimate   with-replacement{sample_size=0.5}              57.6        5
+                  f-measure    none                                           52.59       1
+sparse            m-estimate   none                                           56.35       2
+                  f-measure    with-replacement{sample_size=0.5}              71.08       4
+sparse            m-estimate   with-replacement{sample_size=0.5}              57.6        3
 ----------------  -----------  ---------------------------------  -----------------  ------
 "enron"
 ----------------  -----------  ---------------------------------  -----------------  ------
-                  f-measure    none                                           54.99       3
+                  f-measure    none                                           54.99       2
 sparse            m-estimate   none                                           35.46       1
-                  f-measure    with-replacement{sample_size=0.5}              81.88       7
-sparse            m-estimate   with-replacement{sample_size=0.5}              86.41       8
+                  f-measure    with-replacement{sample_size=0.5}              81.88       3
+sparse            m-estimate   with-replacement{sample_size=0.5}              86.41       4
 
 Evaluation results for measure "Macro Recall":
 
@@ -520,10 +520,10 @@ feature_format    heuristic    instance_sampling                    Macro Recall
 ----------------  -----------  ---------------------------------  --------------  ------
 "emotions"
 ----------------  -----------  ---------------------------------  --------------  ------
-                  f-measure    none                                        57.88       6
-sparse            m-estimate   none                                        59.42       7
-                  f-measure    with-replacement{sample_size=0.5}           56.02       5
-sparse            m-estimate   with-replacement{sample_size=0.5}           60.23       8
+                  f-measure    none                                        57.88       2
+sparse            m-estimate   none                                        59.42       3
+                  f-measure    with-replacement{sample_size=0.5}           56.02       1
+sparse            m-estimate   with-replacement{sample_size=0.5}           60.23       4
 ----------------  -----------  ---------------------------------  --------------  ------
 "enron"
 ----------------  -----------  ---------------------------------  --------------  ------
@@ -538,17 +538,17 @@ feature_format    heuristic    instance_sampling                    Micro F1    
 ----------------  -----------  ---------------------------------  ----------  ------
 "emotions"
 ----------------  -----------  ---------------------------------  ----------  ------
-                  f-measure    none                                    55.14       4
-sparse            m-estimate   none                                    58          6
-                  f-measure    with-replacement{sample_size=0.5}       58.68       7
-sparse            m-estimate   with-replacement{sample_size=0.5}       61.94       8
+                  f-measure    none                                    55.14       1
+sparse            m-estimate   none                                    58          2
+                  f-measure    with-replacement{sample_size=0.5}       58.68       3
+sparse            m-estimate   with-replacement{sample_size=0.5}       61.94       4
 ----------------  -----------  ---------------------------------  ----------  ------
 "enron"
 ----------------  -----------  ---------------------------------  ----------  ------
                   f-measure    none                                    52.7        3
 sparse            m-estimate   none                                    52.53       2
                   f-measure    with-replacement{sample_size=0.5}       50.97       1
-sparse            m-estimate   with-replacement{sample_size=0.5}       55.64       5
+sparse            m-estimate   with-replacement{sample_size=0.5}       55.64       4
 
 Evaluation results for measure "Micro Jaccard":
 
@@ -556,17 +556,17 @@ feature_format    heuristic    instance_sampling                    Micro Jaccar
 ----------------  -----------  ---------------------------------  ---------------  ------
 "emotions"
 ----------------  -----------  ---------------------------------  ---------------  ------
-                  f-measure    none                                         38.06       4
-sparse            m-estimate   none                                         40.84       6
-                  f-measure    with-replacement{sample_size=0.5}            41.52       7
-sparse            m-estimate   with-replacement{sample_size=0.5}            44.87       8
+                  f-measure    none                                         38.06       1
+sparse            m-estimate   none                                         40.84       2
+                  f-measure    with-replacement{sample_size=0.5}            41.52       3
+sparse            m-estimate   with-replacement{sample_size=0.5}            44.87       4
 ----------------  -----------  ---------------------------------  ---------------  ------
 "enron"
 ----------------  -----------  ---------------------------------  ---------------  ------
                   f-measure    none                                         35.78       3
 sparse            m-estimate   none                                         35.62       2
                   f-measure    with-replacement{sample_size=0.5}            34.2        1
-sparse            m-estimate   with-replacement{sample_size=0.5}            38.54       5
+sparse            m-estimate   with-replacement{sample_size=0.5}            38.54       4
 
 Evaluation results for measure "Micro Precision":
 
@@ -574,17 +574,17 @@ feature_format    heuristic    instance_sampling                    Micro Precis
 ----------------  -----------  ---------------------------------  -----------------  ------
 "emotions"
 ----------------  -----------  ---------------------------------  -----------------  ------
-                  f-measure    none                                           52.01       4
-sparse            m-estimate   none                                           56.6        6
-                  f-measure    with-replacement{sample_size=0.5}              59.24       7
-sparse            m-estimate   with-replacement{sample_size=0.5}              60.98       8
+                  f-measure    none                                           52.01       1
+sparse            m-estimate   none                                           56.6        2
+                  f-measure    with-replacement{sample_size=0.5}              59.24       3
+sparse            m-estimate   with-replacement{sample_size=0.5}              60.98       4
 ----------------  -----------  ---------------------------------  -----------------  ------
 "enron"
 ----------------  -----------  ---------------------------------  -----------------  ------
                   f-measure    none                                           49.07       3
 sparse            m-estimate   none                                           45.51       2
                   f-measure    with-replacement{sample_size=0.5}              45.41       1
-sparse            m-estimate   with-replacement{sample_size=0.5}              52.28       5
+sparse            m-estimate   with-replacement{sample_size=0.5}              52.28       4
 
 Evaluation results for measure "Micro Recall":
 
@@ -592,17 +592,17 @@ feature_format    heuristic    instance_sampling                    Micro Recall
 ----------------  -----------  ---------------------------------  --------------  ------
 "emotions"
 ----------------  -----------  ---------------------------------  --------------  ------
-                  f-measure    none                                        58.67       4
-sparse            m-estimate   none                                        59.47       6
-                  f-measure    with-replacement{sample_size=0.5}           58.13       3
-sparse            m-estimate   with-replacement{sample_size=0.5}           62.93       8
+                  f-measure    none                                        58.67       2
+sparse            m-estimate   none                                        59.47       3
+                  f-measure    with-replacement{sample_size=0.5}           58.13       1
+sparse            m-estimate   with-replacement{sample_size=0.5}           62.93       4
 ----------------  -----------  ---------------------------------  --------------  ------
 "enron"
 ----------------  -----------  ---------------------------------  --------------  ------
                   f-measure    none                                        56.92       1
-sparse            m-estimate   none                                        62.1        7
+sparse            m-estimate   none                                        62.1        4
                   f-measure    with-replacement{sample_size=0.5}           58.09       2
-sparse            m-estimate   with-replacement{sample_size=0.5}           59.46       5
+sparse            m-estimate   with-replacement{sample_size=0.5}           59.46       3
 
 Evaluation results for measure "Prediction Time":
 
@@ -635,10 +635,10 @@ sparse            m-estimate   with-replacement{sample_size=0.5}              78
 ----------------  -----------  ---------------------------------  -----------------  ------
 "enron"
 ----------------  -----------  ---------------------------------  -----------------  ------
-                  f-measure    none                                           99.29       5
-sparse            m-estimate   none                                           99.82       8
-                  f-measure    with-replacement{sample_size=0.5}              99.47       6
-sparse            m-estimate   with-replacement{sample_size=0.5}              99.64       7
+                  f-measure    none                                           99.29       1
+sparse            m-estimate   none                                           99.82       4
+                  f-measure    with-replacement{sample_size=0.5}              99.47       2
+sparse            m-estimate   with-replacement{sample_size=0.5}              99.64       3
 
 Evaluation results for measure "Subset Accuracy":
 
@@ -646,10 +646,10 @@ feature_format    heuristic    instance_sampling                    Subset Accur
 ----------------  -----------  ---------------------------------  -----------------  ------
 "emotions"
 ----------------  -----------  ---------------------------------  -----------------  ------
-                  f-measure    none                                           13.78       5
-sparse            m-estimate   none                                           16.33       6
-                  f-measure    with-replacement{sample_size=0.5}              18.37       7
-sparse            m-estimate   with-replacement{sample_size=0.5}              21.94       8
+                  f-measure    none                                           13.78       1
+sparse            m-estimate   none                                           16.33       2
+                  f-measure    with-replacement{sample_size=0.5}              18.37       3
+sparse            m-estimate   with-replacement{sample_size=0.5}              21.94       4
 ----------------  -----------  ---------------------------------  -----------------  ------
 "enron"
 ----------------  -----------  ---------------------------------  -----------------  ------
