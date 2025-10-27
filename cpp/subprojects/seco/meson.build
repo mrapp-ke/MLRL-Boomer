@@ -4,6 +4,7 @@ project('seco', 'cpp', meson_version : '>=1.1')
 source_files = [
     'src/mlrl/seco/data/matrix_coverage_dense.cpp',
     'src/mlrl/seco/data/vector_confusion_matrix_dense.cpp',
+    'src/mlrl/seco/data/matrix_statistic_decomposable_dense.cpp',
     'src/mlrl/seco/heuristics/heuristic_accuracy.cpp',
     'src/mlrl/seco/heuristics/heuristic_f_measure.cpp',
     'src/mlrl/seco/heuristics/heuristic_laplace.cpp',

@@ -12,7 +12,8 @@ from mlrl.common.testbed.experiments.output.characteristics.model.statistics imp
     RuleModelStatistics, RuleStatistics
 
 from mlrl.testbed.experiments.context import Context
-from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
+from mlrl.testbed.experiments.data import TabularProperties
+from mlrl.testbed.experiments.output.data import TabularOutputData
 from mlrl.testbed.experiments.table import Alignment, RowWiseTable, Table
 from mlrl.testbed.util.format import format_number, format_percentage
 from mlrl.testbed.util.math import divide_or_zero
@@ -25,12 +26,43 @@ class RuleModelCharacteristics(TabularOutputData):
     Represents characteristics of a rule model that are part of output data.
     """
 
+    PROPERTIES = TabularProperties(name='Model characteristics', file_name='model_characteristics')
+
+    CONTEXT = Context(include_dataset_type=False)
+
+    COLUMN_INDEX = 'Rule'
+
+    COLUMN_NUM_CONDITIONS = 'conditions'
+
+    COLUMN_NUM_CONDITIONS_NUMERICAL = 'numerical conditions'
+
+    COLUMN_NUM_CONDITIONS_NUMERICAL_LEQ = 'numerical <= operator'
+
+    COLUMN_NUM_CONDITIONS_NUMERICAL_GR = 'numerical > operator'
+
+    COLUMN_NUM_CONDITIONS_ORDINAL = 'ordinal conditions'
+
+    COLUMN_NUM_CONDITIONS_ORDINAL_LEQ = 'ordinal <= operator'
+
+    COLUMN_NUM_CONDITIONS_ORDINAL_GR = 'ordinal > operator'
+
+    COLUMN_NUM_CONDITION_NOMINAL = 'nominal conditions'
+
+    COLUMN_NUM_CONDITIONS_NOMINAL_EQ = 'nominal == operator'
+
+    COLUMN_NUM_CONDITIONS_NOMINAL_NEQ = 'nominal != operator'
+
+    COLUMN_NUM_PREDICTIONS = 'predictions'
+
+    COLUMN_NUM_PREDICTIONS_POSITIVE = 'pos. predictions'
+
+    COLUMN_NUM_PREDICTIONS_NEGATIVE = 'neg. predictions'
+
     def __init__(self, statistics: RuleModelStatistics):
         """
         :param statistics: The statistics of a rule model
         """
-        super().__init__(OutputData.Properties(name='Model characteristics', file_name='model_characteristics'),
-                         Context(include_dataset_type=False))
+        super().__init__(properties=self.PROPERTIES, context=self.CONTEXT)
         self.statistics = statistics
 
     # pylint: disable=unused-argument
@@ -126,10 +158,13 @@ class RuleModelCharacteristics(TabularOutputData):
         """
         statistics = self.statistics
         default_rule_statistics = [statistics.default_rule_statistics] if statistics.default_rule_statistics else []
-        table = RowWiseTable('Rule', 'conditions', 'numerical conditions', 'numerical <= operator',
-                             'numerical > operator', 'ordinal conditions', 'ordinal <= operator', 'ordinal > operator',
-                             'nominal conditions', 'nominal == operator', 'nominal != operator', 'predictions',
-                             'pos. predictions', 'neg. predictions')
+        table = RowWiseTable(self.COLUMN_INDEX, self.COLUMN_NUM_CONDITIONS, self.COLUMN_NUM_CONDITIONS_NUMERICAL,
+                             self.COLUMN_NUM_CONDITIONS_NUMERICAL_LEQ, self.COLUMN_NUM_CONDITIONS_NUMERICAL_GR,
+                             self.COLUMN_NUM_CONDITIONS_ORDINAL, self.COLUMN_NUM_CONDITIONS_ORDINAL_LEQ,
+                             self.COLUMN_NUM_CONDITIONS_ORDINAL_GR, self.COLUMN_NUM_CONDITION_NOMINAL,
+                             self.COLUMN_NUM_CONDITIONS_NOMINAL_EQ, self.COLUMN_NUM_CONDITIONS_NOMINAL_NEQ,
+                             self.COLUMN_NUM_PREDICTIONS, self.COLUMN_NUM_PREDICTIONS_POSITIVE,
+                             self.COLUMN_NUM_PREDICTIONS_NEGATIVE)
 
         for i, rule_statistics in enumerate(chain(default_rule_statistics, statistics.rule_statistics)):
             rule_name = 'Rule ' + str(i + 1)

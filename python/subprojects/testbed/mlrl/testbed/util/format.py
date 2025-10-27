@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for creating textual representations.
 """
 from numbers import Number
+from typing import Any
 
 import numpy as np
 
@@ -12,7 +13,7 @@ OPTION_DECIMALS = 'decimals'
 OPTION_PERCENTAGE = 'percentage'
 
 
-def format_number(value: Number, decimals: int = 2) -> str:
+def format_number(value: Any, decimals: int = 2) -> str:
     """
     Creates and returns a textual representation of a value using a specific number of decimals, if the value is a
     floating point value.
@@ -25,6 +26,19 @@ def format_number(value: Number, decimals: int = 2) -> str:
         rounded_value = round(value, decimals)
         return ('{:.' + str(decimals) + 'f}').format(rounded_value)
     return str(value)
+
+
+def parse_number(value: Any, percentage: bool = False) -> Number:
+    """
+    Parses a given value and converts it into a number. If the value cannot be parsed, a `ValueError` is raised.
+
+    :param value:       The value to be parsed
+    :param percentage:  True, if the given value is a percentage, False otherwise. Percentages will be converted into
+                        values in [0, 1]
+    :return:            A number
+    """
+    value = to_int_or_float(str(value))
+    return value / 100 if percentage else value
 
 
 def to_int_or_float(value) -> int | float:

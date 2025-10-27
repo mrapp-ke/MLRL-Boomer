@@ -1,0 +1,5 @@
+command: mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp/rerun --data-dir python/tests/res/data
+  --dataset emotions --log-level debug --model-save-dir models --parameter-save-dir
+  results --result-dir results --save-all true --save-evaluation true
+timestamp: <timestamp>
+version: <version>
