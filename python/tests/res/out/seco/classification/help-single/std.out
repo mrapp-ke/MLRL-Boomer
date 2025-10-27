@@ -41,7 +41,6 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE]
                     [--save-predictions SAVE_PREDICTIONS]
                     [--save-rules SAVE_RULES]
                     [--sparse-feature-value SPARSE_FEATURE_VALUE]
-                    [--wipe-result-dir WIPE_RESULT_DIR]
                     [--feature-binning FEATURE_BINNING]
                     [--feature-format FEATURE_FORMAT]
                     [--feature-sampling FEATURE_SAMPLING]
@@ -252,11 +251,6 @@ options:
                         sparse format is used for the representation of the
                         feature matrix, depending on the argument --feature-
                         format.
-  --wipe-result-dir WIPE_RESULT_DIR
-                        Whether all files in the directory specified via the
-                        argument --result-dir should be deleted before an
-                        experiment starts or not. Must be one of {"false",
-                        "true"}.
   --feature-binning FEATURE_BINNING
                         The name of the strategy to be used for feature
                         binning. Must be one of {"equal-frequency", "equal-

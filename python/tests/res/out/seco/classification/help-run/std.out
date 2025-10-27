@@ -35,8 +35,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE]
                     [--save-parameters SAVE_PARAMETERS]
                     [--save-prediction-characteristics SAVE_PREDICTION_CHARACTERISTICS]
                     [--save-predictions SAVE_PREDICTIONS]
-                    [--save-rules SAVE_RULES]
-                    [--wipe-result-dir WIPE_RESULT_DIR] [-h]
+                    [--save-rules SAVE_RULES] [-h]
                     runnable_module_or_source_file
 
 A command line utility for training and evaluating machine learning algorithms
@@ -202,9 +201,4 @@ options:
                         Whether the induced rules should be written to a text
                         file or not. Must be one of {"false", "true"}. For
                         additional options refer to the documentation.
-  --wipe-result-dir WIPE_RESULT_DIR
-                        Whether all files in the directory specified via the
-                        argument --result-dir should be deleted before an
-                        experiment starts or not. Must be one of {"false",
-                        "true"}.
   -h, --help            Show this help message and exit
