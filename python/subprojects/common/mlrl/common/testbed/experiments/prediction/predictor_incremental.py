@@ -16,9 +16,9 @@ from mlrl.testbed_sklearn.experiments.prediction.predictor import PredictionFunc
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
-from mlrl.testbed.experiments.prediction_scope import PredictionScope
+from mlrl.testbed.experiments.prediction_scope import IncrementalPredictionScope
 from mlrl.testbed.experiments.prediction_type import PredictionType
-from mlrl.testbed.experiments.state import PredictionState
+from mlrl.testbed.experiments.state import PredictionResult, PredictionState
 from mlrl.testbed.experiments.timer import Timer
 
 
@@ -39,25 +39,6 @@ class IncrementalPredictor(Predictor):
     Repeatedly obtains predictions from a previously trained ensemble model, e.g., a model consisting of several rules,
     using only a subset of the ensemble members with increasing size.
     """
-
-    class Scope(PredictionScope):
-        """
-        Provides information about predictions that have been obtained incrementally.
-        """
-
-        def __init__(self, model_size: int):
-            """
-            :param model_size: The size of the model, the predictions have been obtained from
-            """
-            self._model_size = model_size
-
-        @override
-        @property
-        def model_size(self) -> int:
-            """
-            See :func:`mlrl.testbed.prediction_scope.PredictionScope.model_size`
-            """
-            return self._model_size
 
     def __init__(self, prediction_type: PredictionType, min_size: int, max_size: int, step_size: int):
         """
@@ -105,10 +86,10 @@ class IncrementalPredictor(Predictor):
 
                 if predictions is not None:
                     log.info('Successfully predicted in %s', prediction_duration)
-                    yield PredictionState(predictions=predictions,
-                                          prediction_type=self.prediction_type,
-                                          prediction_scope=IncrementalPredictor.Scope(current_size),
-                                          prediction_duration=prediction_duration)
+                    yield PredictionState(prediction_scope=IncrementalPredictionScope(current_size),
+                                          prediction_result=PredictionResult(predictions=predictions,
+                                                                             prediction_type=self.prediction_type,
+                                                                             prediction_duration=prediction_duration))
 
                 next_step_size = step_size
                 current_size = min(current_size + next_step_size, total_size)

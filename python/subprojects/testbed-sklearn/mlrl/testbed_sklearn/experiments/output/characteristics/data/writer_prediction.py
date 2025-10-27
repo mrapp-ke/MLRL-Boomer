@@ -3,23 +3,51 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for writing characteristics of binary predictions to one or several sinks.
 """
-from typing import List, Optional, override
+from typing import List, Tuple, override
 
+from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import get_output_characteristics
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics_prediction import \
     PredictionCharacteristics
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.matrix_label import LabelMatrix
 
+from mlrl.testbed.experiments.input.data import TabularInputData
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks import Sink
-from mlrl.testbed.experiments.output.writer import DataExtractor, OutputWriter
+from mlrl.testbed.experiments.output.writer import DataExtractor, ResultWriter, TabularDataExtractor
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.util.format import parse_number
+
+from mlrl.util.options import Options
 
 
-class PredictionCharacteristicsWriter(OutputWriter):
+class PredictionCharacteristicsWriter(ResultWriter):
     """
     Allows to write the characteristics of binary predictions to one or several sinks.
     """
+
+    class InputExtractor(TabularDataExtractor):
+        """
+        Uses `TabularInputData` that has previously been loaded via an input reader.
+        """
+
+        @override
+        def extract_data(self, state: ExperimentState, sinks: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
+            """
+            See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
+            """
+            result: List[Tuple[ExperimentState, OutputData]] = []
+
+            for extracted_state, tabular_output_data in super().extract_data(state, sinks):
+                table = tabular_output_data.to_table(Options()).to_column_wise_table()
+                columns_by_name = {column.header: column for column in table.columns}
+                characteristics = get_output_characteristics(extracted_state.problem_domain)
+                values = [(characteristic,
+                           parse_number(columns_by_name[characteristic.name][0], percentage=characteristic.percentage))
+                          for characteristic in characteristics if characteristic.name in columns_by_name]
+                result.append((extracted_state, PredictionCharacteristics(values)))
+
+            return result
 
     class DefaultExtractor(DataExtractor):
         """
@@ -27,21 +55,28 @@ class PredictionCharacteristicsWriter(OutputWriter):
         """
 
         @override
-        def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
+        def extract_data(self, state: ExperimentState, _: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
-            prediction_result = state.prediction_result
+            prediction_result = state.prediction_result.prediction_result if state.prediction_result else None
 
             # Prediction characteristics can only be determined in the case of binary predictions...
             if prediction_result and prediction_result.prediction_type == PredictionType.BINARY:
-                return PredictionCharacteristics(problem_domain=state.problem_domain,
-                                                 prediction_matrix=LabelMatrix(prediction_result.predictions))
+                prediction_matrix = LabelMatrix(prediction_result.predictions)
+                return [(state,
+                         PredictionCharacteristics.from_prediction_matrix(problem_domain=state.problem_domain,
+                                                                          prediction_matrix=prediction_matrix))]
 
-            return None
+            return []
 
     def __init__(self, *extractors: DataExtractor):
         """
         :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
         """
-        super().__init__(*extractors, PredictionCharacteristicsWriter.DefaultExtractor())
+        super().__init__(PredictionCharacteristicsWriter.InputExtractor(properties=PredictionCharacteristics.PROPERTIES,
+                                                                        context=PredictionCharacteristics.CONTEXT),
+                         *extractors,
+                         PredictionCharacteristicsWriter.DefaultExtractor(),
+                         input_data=TabularInputData(properties=PredictionCharacteristics.PROPERTIES,
+                                                     context=PredictionCharacteristics.CONTEXT))

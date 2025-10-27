@@ -128,7 +128,7 @@ child-commands:
   --save-all true --save-evaluation true --save-meta-data false --wipe-result-dir
   false
 command: mlrl-testbed mlrl.boosting --mode batch --log-level debug --base-dir python/tests/res/tmp
-  --config python/tests/res/config/boosting/regression/batch_config.yml --save-evaluation
-  true --problem-type regression --save-all true --data-split cross-validation{num_folds=2}
+  --config python/tests/res/config/boosting/regression/batch_config.yml --problem-type
+  regression --save-evaluation true --save-all true --data-split cross-validation{num_folds=2}
 timestamp: <timestamp>
 version: <version>

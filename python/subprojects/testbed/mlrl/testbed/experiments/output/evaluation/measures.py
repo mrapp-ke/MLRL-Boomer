@@ -5,6 +5,8 @@ Provides classes for implementing evaluation measures.
 """
 from typing import Any, Callable
 
+import numpy as np
+
 from mlrl.testbed.experiments.output.data import OutputValue
 
 
@@ -18,7 +20,7 @@ class Measure(OutputValue):
     def __init__(self,
                  option_key: str,
                  name: str,
-                 evaluation_function: EvaluationFunction,
+                 evaluation_function: 'EvaluationFunction',
                  percentage: bool = True,
                  **kwargs):
         """
@@ -43,3 +45,31 @@ class Measure(OutputValue):
         :return:                An evaluation score in [0, 1]
         """
         return self.evaluation_function(ground_truth, predictions, **self.kwargs)
+
+
+class AggregationMeasure(OutputValue):
+    """
+    An aggregation measure that aggregates evaluation results for several experiments.
+    """
+
+    AggregationFunction = Callable[[np.ndarray], np.ndarray]
+
+    def __init__(self, option_key: str, name: str, aggregation_function: 'AggregationFunction', **kwargs):
+        """
+        :param option_key:              The key of the option that can be used for filtering
+        :param name:                    The name of the value
+        :param aggregation_function:    The function that should be invoked to aggregate several evaluation results
+        :param kwargs:                  Optional keyword arguments to be passed to the evaluation function
+        """
+        super().__init__(option_key=option_key, name=name)
+        self.aggregation_function = aggregation_function
+        self.kwargs = kwargs
+
+    def aggregate(self, values: np.ndarray) -> np.ndarray:
+        """
+        Applies the aggregation function to given evaluation results.
+
+        :param values:  A `numpy.ndarray`, shape `(num_results)`, that stores the values to be aggregated
+        :return:        A `numpy.ndarray`, shape `(num_results)`, that stores the aggregated values
+        """
+        return self.aggregation_function(values, **self.kwargs)

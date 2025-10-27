@@ -1,0 +1,7 @@
+command: mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp
+  --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type
+  regression --save-evaluation true --data-split cross-validation --print-evaluation
+  false --save-evaluation false --print-prediction-characteristics true --save-prediction-characteristics
+  true
+timestamp: <timestamp>
+version: <version>
