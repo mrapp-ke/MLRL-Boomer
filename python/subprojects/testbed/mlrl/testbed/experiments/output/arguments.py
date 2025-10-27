@@ -56,10 +56,3 @@ class ResultDirectoryArguments:
         default='results',
         description='The path to the directory where experimental results should be saved.',
     )
-
-    WIPE_RESULT_DIR = BoolArgument(
-        '--wipe-result-dir',
-        default=True,
-        description='Whether all files in the directory specified via the argument ' + RESULT_DIR.name + ' should be '
-        + 'deleted before an experiment starts or not.',
-    )
