@@ -16,10 +16,10 @@ A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Mean Absolute Error               69.5
-Mean Absolute Percentage Error     0.19
-Mean Squared Error              7863.36
-Median Absolute Error             68.55
+Mean Absolute Error (↓)               69.5
+Mean Absolute Percentage Error (↓)     0.19
+Mean Squared Error (↓)              7863.36
+Median Absolute Error (↓)             68.55
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Successfully finished experiment after <duration>

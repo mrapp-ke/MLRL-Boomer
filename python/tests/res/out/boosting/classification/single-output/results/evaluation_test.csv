@@ -1,2 +1,2 @@
-0/1 Loss,Accuracy,F1,Jaccard,Precision,Prediction Time,Recall,Training Time
+0/1 Loss (↓),Accuracy (↑),F1 (↑),Jaccard (↑),Precision (↑),Prediction Time (seconds),Recall (↑),Training Time (seconds)
 38.94736842105263,61.05263157894737,37.28813559322034,22.916666666666664,42.30769230769231,<duration>,33.33333333333333,<duration>

@@ -16,22 +16,22 @@ A sparse matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Example-wise F1         41.1
-Example-wise Jaccard    32.37
-Example-wise Precision  68.19
-Example-wise Recall     53.4
-Hamming Accuracy        68.11
-Hamming Loss            31.89
-Macro F1                47.41
-Macro Jaccard           31.94
-Macro Precision         49.32
-Macro Recall            48.37
-Micro F1                50.33
-Micro Jaccard           33.63
-Micro Precision         50
-Micro Recall            50.67
-Subset 0/1 Loss         92.35
-Subset Accuracy          7.65
+Example-wise F1 (↑)         41.1
+Example-wise Jaccard (↑)    32.37
+Example-wise Precision (↑)  68.19
+Example-wise Recall (↑)     53.4
+Hamming Accuracy (↑)        68.11
+Hamming Loss (↓)            31.89
+Macro F1 (↑)                47.41
+Macro Jaccard (↑)           31.94
+Macro Precision (↑)         49.32
+Macro Recall (↑)            48.37
+Micro F1 (↑)                50.33
+Micro Jaccard (↑)           33.63
+Micro Precision (↑)         50
+Micro Recall (↑)            50.67
+Subset 0/1 Loss (↓)         92.35
+Subset Accuracy (↑)          7.65
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Ground truth for test data:

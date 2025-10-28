@@ -14,24 +14,28 @@ REGRESSION_EVALUATION_MEASURES = [
     Measure(
         option_key=EvaluationResult.OPTION_MEAN_ABSOLUTE_ERROR,
         name='Mean Absolute Error',
+        smaller_is_better=True,
         evaluation_function=metrics.mean_absolute_error,
         percentage=False,
     ),
     Measure(
         option_key=EvaluationResult.OPTION_MEAN_SQUARED_ERROR,
         name='Mean Squared Error',
+        smaller_is_better=True,
         evaluation_function=metrics.mean_squared_error,
         percentage=False,
     ),
     Measure(
         option_key=EvaluationResult.OPTION_MEDIAN_ABSOLUTE_ERROR,
         name='Median Absolute Error',
+        smaller_is_better=True,
         evaluation_function=metrics.median_absolute_error,
         percentage=False,
     ),
     Measure(
         option_key=EvaluationResult.OPTION_MEAN_ABSOLUTE_PERCENTAGE_ERROR,
         name='Mean Absolute Percentage Error',
+        smaller_is_better=True,
         evaluation_function=metrics.mean_absolute_percentage_error,
         percentage=False,
     ),
