@@ -13,21 +13,21 @@ Using separate training and test sets...
 Reading input data from file "python/tests/res/tmp/results/evaluation_test.csv"...
 Evaluation result for test data:
 
-Example-wise F1         62.24
-Example-wise Jaccard    53.96
-Example-wise Precision  74.59
-Example-wise Recall     63.86
-Hamming Accuracy        79.95
-Hamming Loss            20.05
-Macro F1                66.85
-Macro Jaccard           50.79
-Macro Precision         72.27
-Macro Recall            63.25
-Micro F1                67.73
-Micro Jaccard           51.2
-Micro Precision         72.03
-Micro Recall            63.91
-Subset 0/1 Loss         72.28
-Subset Accuracy         27.72
+Example-wise F1 (↑)         62.24
+Example-wise Jaccard (↑)    53.96
+Example-wise Precision (↑)  74.59
+Example-wise Recall (↑)     63.86
+Hamming Accuracy (↑)        79.95
+Hamming Loss (↓)            20.05
+Macro F1 (↑)                66.85
+Macro Jaccard (↑)           50.79
+Macro Precision (↑)         72.27
+Macro Recall (↑)            63.25
+Micro F1 (↑)                67.73
+Micro Jaccard (↑)           51.2
+Micro Precision (↑)         72.03
+Micro Recall (↑)            63.91
+Subset 0/1 Loss (↓)         72.28
+Subset Accuracy (↑)         27.72
 
 Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...
