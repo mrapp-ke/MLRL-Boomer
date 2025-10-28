@@ -296,15 +296,15 @@ feature_format    instance_sampling                  loss                       
 ----------------  ---------------------------------  --------------------------  ---------------------  ------
                   none                               squared-error-decomposable                  29.91     1
 sparse            none                               squared-error-decomposable                  30.03     2
-                  with-replacement{sample_size=0.5}  squared-error-decomposable                  33        5
-sparse            with-replacement{sample_size=0.5}  squared-error-decomposable                  34.15     6
+                  with-replacement{sample_size=0.5}  squared-error-decomposable                  33        3
+sparse            with-replacement{sample_size=0.5}  squared-error-decomposable                  34.15     4
 ----------------  ---------------------------------  --------------------------  ---------------------  ------
 "atp7d-binary"
 ----------------  ---------------------------------  --------------------------  ---------------------  ------
-                  none                               squared-error-decomposable                  31.92     3.5
-sparse            none                               squared-error-decomposable                  31.92     3.5
-                  with-replacement{sample_size=0.5}  squared-error-decomposable                  34.77     7.5
-sparse            with-replacement{sample_size=0.5}  squared-error-decomposable                  34.77     7.5
+                  none                               squared-error-decomposable                  31.92     1.5
+sparse            none                               squared-error-decomposable                  31.92     1.5
+                  with-replacement{sample_size=0.5}  squared-error-decomposable                  34.77     3.5
+sparse            with-replacement{sample_size=0.5}  squared-error-decomposable                  34.77     3.5
 
 Evaluation results for measure "Mean Absolute Percentage Error":
 
@@ -313,16 +313,16 @@ feature_format    instance_sampling                  loss                       
 "atp7d"
 ----------------  ---------------------------------  --------------------------  --------------------------------  ------
                   none                               squared-error-decomposable                              0.08     1
-sparse            none                               squared-error-decomposable                              0.08     4
-                  with-replacement{sample_size=0.5}  squared-error-decomposable                              0.08     5
-sparse            with-replacement{sample_size=0.5}  squared-error-decomposable                              0.09     8
+sparse            none                               squared-error-decomposable                              0.08     2
+                  with-replacement{sample_size=0.5}  squared-error-decomposable                              0.08     3
+sparse            with-replacement{sample_size=0.5}  squared-error-decomposable                              0.09     4
 ----------------  ---------------------------------  --------------------------  --------------------------------  ------
 "atp7d-binary"
 ----------------  ---------------------------------  --------------------------  --------------------------------  ------
-                  none                               squared-error-decomposable                              0.08     2.5
-sparse            none                               squared-error-decomposable                              0.08     2.5
-                  with-replacement{sample_size=0.5}  squared-error-decomposable                              0.09     6.5
-sparse            with-replacement{sample_size=0.5}  squared-error-decomposable                              0.09     6.5
+                  none                               squared-error-decomposable                              0.08     1.5
+sparse            none                               squared-error-decomposable                              0.08     1.5
+                  with-replacement{sample_size=0.5}  squared-error-decomposable                              0.09     3.5
+sparse            with-replacement{sample_size=0.5}  squared-error-decomposable                              0.09     3.5
 
 Evaluation results for measure "Mean Squared Error":
 
@@ -332,15 +332,15 @@ feature_format    instance_sampling                  loss                       
 ----------------  ---------------------------------  --------------------------  --------------------  ------
                   none                               squared-error-decomposable               2826.34     1
 sparse            none                               squared-error-decomposable               3007.35     2
-                  with-replacement{sample_size=0.5}  squared-error-decomposable               4086.77     7
-sparse            with-replacement{sample_size=0.5}  squared-error-decomposable               4131.78     8
+                  with-replacement{sample_size=0.5}  squared-error-decomposable               4086.77     3
+sparse            with-replacement{sample_size=0.5}  squared-error-decomposable               4131.78     4
 ----------------  ---------------------------------  --------------------------  --------------------  ------
 "atp7d-binary"
 ----------------  ---------------------------------  --------------------------  --------------------  ------
-                  none                               squared-error-decomposable               3361.17     3.5
-sparse            none                               squared-error-decomposable               3361.17     3.5
-                  with-replacement{sample_size=0.5}  squared-error-decomposable               3554.64     5.5
-sparse            with-replacement{sample_size=0.5}  squared-error-decomposable               3554.64     5.5
+                  none                               squared-error-decomposable               3361.17     1.5
+sparse            none                               squared-error-decomposable               3361.17     1.5
+                  with-replacement{sample_size=0.5}  squared-error-decomposable               3554.64     3.5
+sparse            with-replacement{sample_size=0.5}  squared-error-decomposable               3554.64     3.5
 
 Evaluation results for measure "Median Absolute Error":
 
@@ -350,15 +350,15 @@ feature_format    instance_sampling                  loss                       
 ----------------  ---------------------------------  --------------------------  -----------------------  ------
                   none                               squared-error-decomposable                    15.83     2
 sparse            none                               squared-error-decomposable                    15.2      1
-                  with-replacement{sample_size=0.5}  squared-error-decomposable                    17.98     5
-sparse            with-replacement{sample_size=0.5}  squared-error-decomposable                    18.58     6
+                  with-replacement{sample_size=0.5}  squared-error-decomposable                    17.98     3
+sparse            with-replacement{sample_size=0.5}  squared-error-decomposable                    18.58     4
 ----------------  ---------------------------------  --------------------------  -----------------------  ------
 "atp7d-binary"
 ----------------  ---------------------------------  --------------------------  -----------------------  ------
-                  none                               squared-error-decomposable                    17.49     3.5
-sparse            none                               squared-error-decomposable                    17.49     3.5
-                  with-replacement{sample_size=0.5}  squared-error-decomposable                    20.76     7.5
-sparse            with-replacement{sample_size=0.5}  squared-error-decomposable                    20.76     7.5
+                  none                               squared-error-decomposable                    17.49     1.5
+sparse            none                               squared-error-decomposable                    17.49     1.5
+                  with-replacement{sample_size=0.5}  squared-error-decomposable                    20.76     3.5
+sparse            with-replacement{sample_size=0.5}  squared-error-decomposable                    20.76     3.5
 
 Evaluation results for measure "Prediction Time":
 

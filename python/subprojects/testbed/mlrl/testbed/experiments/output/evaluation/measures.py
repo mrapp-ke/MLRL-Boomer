@@ -3,9 +3,7 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for implementing evaluation measures.
 """
-from typing import Any, Callable
-
-import numpy as np
+from typing import Any, Callable, List
 
 from mlrl.testbed.experiments.output.data import OutputValue
 
@@ -52,7 +50,7 @@ class AggregationMeasure(OutputValue):
     An aggregation measure that aggregates evaluation results for several experiments.
     """
 
-    AggregationFunction = Callable[[np.ndarray], np.ndarray]
+    AggregationFunction = Callable[[List[float]], List[float]]
 
     def __init__(self, option_key: str, name: str, aggregation_function: 'AggregationFunction', **kwargs):
         """
@@ -65,11 +63,11 @@ class AggregationMeasure(OutputValue):
         self.aggregation_function = aggregation_function
         self.kwargs = kwargs
 
-    def aggregate(self, values: np.ndarray) -> np.ndarray:
+    def aggregate(self, values: List[float]) -> List[float]:
         """
         Applies the aggregation function to given evaluation results.
 
-        :param values:  A `numpy.ndarray`, shape `(num_results)`, that stores the values to be aggregated
-        :return:        A `numpy.ndarray`, shape `(num_results)`, that stores the aggregated values
+        :param values:  A list that stores the values to be aggregated
+        :return:        A list that stores the aggregated values
         """
         return self.aggregation_function(values, **self.kwargs)
