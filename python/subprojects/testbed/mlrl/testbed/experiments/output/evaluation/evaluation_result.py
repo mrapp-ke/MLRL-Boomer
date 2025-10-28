@@ -15,7 +15,7 @@ from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
 from mlrl.testbed.experiments.output.evaluation.measures import AggregationMeasure, Measure
-from mlrl.testbed.experiments.table import Column, ColumnWiseTable, RowWiseTable, Table
+from mlrl.testbed.experiments.table import Cell, Column, ColumnWiseTable, RowWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, format_number
 
 from mlrl.util.options import Options
@@ -71,19 +71,18 @@ class AggregatedEvaluationResult(TabularOutputData):
             parameter_column_indices: List[int] = []
             measures: List[Tuple[int, str]] = []
             std_dev_column_indices: Dict[str, int] = {}
-            aggregation_measure_column_indices: Dict[str, Dict[str, int]] = {}
+            aggregation_measure_column_indices: Dict[str, Dict[AggregationMeasure, int]] = {}
 
             for column_index, column in enumerate(column_wise_table.columns):
                 header = str(column.header)
-                aggregation_measure_names = map(lambda x: x.name, self.AGGREGATION_MEASURES)
-                aggregation_measure = next((name for name in aggregation_measure_names if header.startswith(name)),
-                                           None)
+                aggregation_measure = next(
+                    (measure for measure in self.AGGREGATION_MEASURES if header.startswith(measure.name)), None)
 
                 if aggregation_measure:
-                    key = header[len(aggregation_measure):].lstrip()
+                    key = header[len(aggregation_measure.name):].lstrip()
                     dictionary = aggregation_measure_column_indices.setdefault(key, {})
                     dictionary[aggregation_measure] = column_index
-                    column.set_header(aggregation_measure)
+                    column.set_header(aggregation_measure.name)
                 elif header == self.COLUMN_DATASET:
                     dataset_column_index = column_index
                 elif header.startswith(self.COLUMN_PREFIX_PARAMETER):
@@ -105,26 +104,80 @@ class AggregatedEvaluationResult(TabularOutputData):
                 text += 'Evaluation results for measure "' + measure + '":\n\n'
                 std_dev_index = std_dev_column_indices.get(measure)
                 aggregation_measure_indices = aggregation_measure_column_indices.get(measure, {})
-                relevant_indices = chain(parameter_column_indices, [measure_index] +
-                                         ([std_dev_index] if std_dev_index else []))
+                measure_indices = [measure_index] + ([std_dev_index] if std_dev_index else [])
+                relevant_indices = chain(parameter_column_indices, measure_indices)
                 sliced_table = column_wise_table.slice(*relevant_indices)
 
                 if std_dev_index:
                     self.__add_std_dev_column(sliced_table)
 
                 for aggregation_measure, column_index, in aggregation_measure_indices.items():
-                    sliced_table.add_column(*column_wise_table[column_index], header=aggregation_measure)
+                    sliced_table.add_column(*column_wise_table[column_index], header=aggregation_measure.name)
 
                 row_wise_table = sliced_table.to_row_wise_table()
                 dataset_column = column_wise_table[dataset_column_index]
-                datasets = self.__add_dataset_rows(dataset_column, row_wise_table)
+                parameter_columns: List[Column] = [
+                    column_wise_table[column_index] for column_index in parameter_column_indices
+                ]
+                average_rows = self.__get_average_rows(table=column_wise_table,
+                                                       aggregation_measure_indices=aggregation_measure_indices,
+                                                       parameter_columns=parameter_columns,
+                                                       num_columns=row_wise_table.num_columns,
+                                                       decimals=options.get_int(OPTION_DECIMALS,
+                                                                                kwargs.get(OPTION_DECIMALS, 0)))
+                separators = self.__add_separator_rows(dataset_column, row_wise_table, averages=bool(average_rows))
+
+                for row in average_rows:
+                    row_wise_table.add_row(*row)
+
                 separator_indices = [
                     row_index for row_index, row in enumerate(row_wise_table.rows)
-                    if row_index > 0 and (row[0] in datasets or row_wise_table[row_index - 1][0] in datasets)
+                    if row_index > 0 and (row[0] in separators or row_wise_table[row_index - 1][0] in separators)
                 ]
                 text += row_wise_table.format(table_format=Table.Format.SIMPLE, separator_indices=separator_indices)
 
         return text if text else None
+
+    # pylint: disable=too-many-nested-blocks
+    @staticmethod
+    def __get_average_rows(table: ColumnWiseTable, aggregation_measure_indices: Dict[AggregationMeasure, int],
+                           parameter_columns: List[Column], num_columns: int, decimals: int) -> List[List[Cell]]:
+        result = []
+
+        for parameter_setting, row_indices in AggregatedEvaluationResult.__get_unique_parameter_settings(
+                parameter_columns).items():
+            row = list(parameter_setting) + ([None] *
+                                             (num_columns - len(parameter_setting) - len(aggregation_measure_indices)))
+
+            for aggregation_measure, column_index, in aggregation_measure_indices.items():
+                values: List[float] = []
+
+                if aggregation_measure.can_be_averaged:
+                    for row_index in row_indices:
+                        value = table[column_index][row_index]
+
+                        if value is not None:
+                            try:
+                                values.append(float(value))
+                            except ValueError:
+                                pass
+
+                row.append(format_number(np.asarray(values, dtype=float).mean(), decimals=decimals) if values else None)
+
+            result.append(row)
+
+        return result
+
+    @staticmethod
+    def __get_unique_parameter_settings(parameter_columns: List[Column]) -> Dict[Tuple[Cell, ...], List[int]]:
+        num_rows = parameter_columns[0].num_rows if parameter_columns else 0
+        unique_parameters: Dict[Tuple[Cell, ...], List[int]] = {}
+
+        for row_index in range(num_rows):
+            parameters = tuple((parameter_column[row_index] for parameter_column in parameter_columns))
+            unique_parameters.setdefault(parameters, []).append(row_index)
+
+        return unique_parameters
 
     @staticmethod
     def __add_std_dev_column(sliced_table: ColumnWiseTable):
@@ -134,9 +187,9 @@ class AggregatedEvaluationResult(TabularOutputData):
             std_dev_column[row_index] = '±' + str(std_dev_column[row_index])
 
     @staticmethod
-    def __add_dataset_rows(dataset_column: Column, table: RowWiseTable) -> set[str]:
+    def __add_separator_rows(dataset_column: Column, table: RowWiseTable, averages: bool = False) -> Set[str]:
         previous_dataset: Optional[str] = None
-        datasets: Set[str] = set()
+        separators: Set[str] = set()
 
         for row_index in range(dataset_column.num_rows - 1, -1, -1):
             dataset = '"' + str(dataset_column[row_index]) + '"'
@@ -148,9 +201,14 @@ class AggregatedEvaluationResult(TabularOutputData):
                 table.add_row(previous_dataset, position=row_index + 1)
 
             previous_dataset = dataset
-            datasets.add(dataset)
+            separators.add(dataset)
 
-        return datasets
+        if averages:
+            separator_averages = 'Averages'
+            table.add_row(separator_averages)
+            separators.add(separator_averages)
+
+        return separators
 
     @override
     def to_table(self, options: Options, **kwargs) -> Optional[Table]:
