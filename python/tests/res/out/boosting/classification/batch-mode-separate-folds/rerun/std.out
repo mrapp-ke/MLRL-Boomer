@@ -942,10 +942,10 @@ feature_format    instance_sampling                  loss                     Ex
 ----------------  ---------------------------------  ---------------------  -----------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  ---------------------  -----------------  -----------  ------
-                  none                               logistic-decomposable              62.05  ±0.03           7
-sparse            none                               logistic-decomposable              62.34  ±0.12           8
-                  with-replacement{sample_size=0.5}  logistic-decomposable              61.6   ±0.08           6
-sparse            with-replacement{sample_size=0.5}  logistic-decomposable              60.76  ±0.59           5
+                  none                               logistic-decomposable              62.05  ±0.03           3
+sparse            none                               logistic-decomposable              62.34  ±0.12           4
+                  with-replacement{sample_size=0.5}  logistic-decomposable              61.6   ±0.08           2
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable              60.76  ±0.59           1
 ----------------  ---------------------------------  ---------------------  -----------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  ---------------------  -----------------  -----------  ------
@@ -960,10 +960,10 @@ feature_format    instance_sampling                  loss                     Ex
 ----------------  ---------------------------------  ---------------------  ----------------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  ---------------------  ----------------------  -----------  ------
-                  none                               logistic-decomposable                   54.23  ±0.56           7
-sparse            none                               logistic-decomposable                   54.69  ±0.10           8
-                  with-replacement{sample_size=0.5}  logistic-decomposable                   53.65  ±0.10           6
-sparse            with-replacement{sample_size=0.5}  logistic-decomposable                   52.82  ±0.46           5
+                  none                               logistic-decomposable                   54.23  ±0.56           3
+sparse            none                               logistic-decomposable                   54.69  ±0.10           4
+                  with-replacement{sample_size=0.5}  logistic-decomposable                   53.65  ±0.10           2
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable                   52.82  ±0.46           1
 ----------------  ---------------------------------  ---------------------  ----------------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  ---------------------  ----------------------  -----------  ------
@@ -978,10 +978,10 @@ feature_format    instance_sampling                  loss                     Ex
 ----------------  ---------------------------------  ---------------------  ------------------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  ---------------------  ------------------------  -----------  ------
-                  none                               logistic-decomposable                     75.82  ±3.86           8
-sparse            none                               logistic-decomposable                     75.8   ±3.55           7
-                  with-replacement{sample_size=0.5}  logistic-decomposable                     75.52  ±2.43           6
-sparse            with-replacement{sample_size=0.5}  logistic-decomposable                     75.01  ±3.61           5
+                  none                               logistic-decomposable                     75.82  ±3.86           4
+sparse            none                               logistic-decomposable                     75.8   ±3.55           3
+                  with-replacement{sample_size=0.5}  logistic-decomposable                     75.52  ±2.43           2
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable                     75.01  ±3.61           1
 ----------------  ---------------------------------  ---------------------  ------------------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  ---------------------  ------------------------  -----------  ------
@@ -996,10 +996,10 @@ feature_format    instance_sampling                  loss                     Ex
 ----------------  ---------------------------------  ---------------------  ---------------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  ---------------------  ---------------------  -----------  ------
-                  none                               logistic-decomposable                  62.59  ±1.48           7
-sparse            none                               logistic-decomposable                  63.13  ±1.29           8
-                  with-replacement{sample_size=0.5}  logistic-decomposable                  61.92  ±1.76           6
-sparse            with-replacement{sample_size=0.5}  logistic-decomposable                  61.47  ±1.03           5
+                  none                               logistic-decomposable                  62.59  ±1.48           3
+sparse            none                               logistic-decomposable                  63.13  ±1.29           4
+                  with-replacement{sample_size=0.5}  logistic-decomposable                  61.92  ±1.76           2
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable                  61.47  ±1.03           1
 ----------------  ---------------------------------  ---------------------  ---------------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  ---------------------  ---------------------  -----------  ------
@@ -1021,10 +1021,10 @@ sparse            with-replacement{sample_size=0.5}  logistic-decomposable      
 ----------------  ---------------------------------  ---------------------  ------------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  ---------------------  ------------------  -----------  ------
-                  none                               logistic-decomposable               95.24  ±0.08           5.5
-sparse            none                               logistic-decomposable               95.24  ±0.08           5.5
-                  with-replacement{sample_size=0.5}  logistic-decomposable               95.32  ±0.01           7.5
-sparse            with-replacement{sample_size=0.5}  logistic-decomposable               95.32  ±0.01           7.5
+                  none                               logistic-decomposable               95.24  ±0.08           1.5
+sparse            none                               logistic-decomposable               95.24  ±0.08           1.5
+                  with-replacement{sample_size=0.5}  logistic-decomposable               95.32  ±0.01           3.5
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable               95.32  ±0.01           3.5
 
 Evaluation results for measure "Hamming Loss":
 
@@ -1032,10 +1032,10 @@ feature_format    instance_sampling                  loss                     Ha
 ----------------  ---------------------------------  ---------------------  --------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  ---------------------  --------------  -----------  ------
-                  none                               logistic-decomposable           18.91  ±0.11           6
-sparse            none                               logistic-decomposable           18.8   ±0.12           5
-                  with-replacement{sample_size=0.5}  logistic-decomposable           18.94  ±0.02           7
-sparse            with-replacement{sample_size=0.5}  logistic-decomposable           19.22  ±0.31           8
+                  none                               logistic-decomposable           18.91  ±0.11           2
+sparse            none                               logistic-decomposable           18.8   ±0.12           1
+                  with-replacement{sample_size=0.5}  logistic-decomposable           18.94  ±0.02           3
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable           19.22  ±0.31           4
 ----------------  ---------------------------------  ---------------------  --------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  ---------------------  --------------  -----------  ------
@@ -1050,10 +1050,10 @@ feature_format    instance_sampling                  loss                     Ma
 ----------------  ---------------------------------  ---------------------  ----------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  ---------------------  ----------  -----------  ------
-                  none                               logistic-decomposable       65.55  ±0.57           7
-sparse            none                               logistic-decomposable       65.94  ±0.04           8
-                  with-replacement{sample_size=0.5}  logistic-decomposable       65.3   ±0.69           6
-sparse            with-replacement{sample_size=0.5}  logistic-decomposable       64.83  ±0.24           5
+                  none                               logistic-decomposable       65.55  ±0.57           3
+sparse            none                               logistic-decomposable       65.94  ±0.04           4
+                  with-replacement{sample_size=0.5}  logistic-decomposable       65.3   ±0.69           2
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable       64.83  ±0.24           1
 ----------------  ---------------------------------  ---------------------  ----------  -----------  ------
 "enron"
 ----------------  ---------------------------------  ---------------------  ----------  -----------  ------
@@ -1068,10 +1068,10 @@ feature_format    instance_sampling                  loss                     Ma
 ----------------  ---------------------------------  ---------------------  ---------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  ---------------------  ---------------  -----------  ------
-                  none                               logistic-decomposable            50.05  ±0.56           7
-sparse            none                               logistic-decomposable            50.36  ±0.08           8
-                  with-replacement{sample_size=0.5}  logistic-decomposable            49.73  ±0.64           6
-sparse            with-replacement{sample_size=0.5}  logistic-decomposable            49.18  ±0.27           5
+                  none                               logistic-decomposable            50.05  ±0.56           3
+sparse            none                               logistic-decomposable            50.36  ±0.08           4
+                  with-replacement{sample_size=0.5}  logistic-decomposable            49.73  ±0.64           2
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable            49.18  ±0.27           1
 ----------------  ---------------------------------  ---------------------  ---------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  ---------------------  ---------------  -----------  ------
@@ -1086,10 +1086,10 @@ feature_format    instance_sampling                  loss                     Ma
 ----------------  ---------------------------------  ---------------------  -----------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  ---------------------  -----------------  -----------  ------
-                  none                               logistic-decomposable              72.08  ±1.92           5
-sparse            none                               logistic-decomposable              72.25  ±2.70           6
-                  with-replacement{sample_size=0.5}  logistic-decomposable              72.5   ±1.78           8
-sparse            with-replacement{sample_size=0.5}  logistic-decomposable              72.35  ±2.83           7
+                  none                               logistic-decomposable              72.08  ±1.92           1
+sparse            none                               logistic-decomposable              72.25  ±2.70           2
+                  with-replacement{sample_size=0.5}  logistic-decomposable              72.5   ±1.78           4
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable              72.35  ±2.83           3
 ----------------  ---------------------------------  ---------------------  -----------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  ---------------------  -----------------  -----------  ------
@@ -1104,10 +1104,10 @@ feature_format    instance_sampling                  loss                     Ma
 ----------------  ---------------------------------  ---------------------  --------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  ---------------------  --------------  -----------  ------
-                  none                               logistic-decomposable           61.47  ±2.17           7
-sparse            none                               logistic-decomposable           62.08  ±1.89           8
-                  with-replacement{sample_size=0.5}  logistic-decomposable           60.9   ±1.87           6
-sparse            with-replacement{sample_size=0.5}  logistic-decomposable           60.36  ±1.19           5
+                  none                               logistic-decomposable           61.47  ±2.17           3
+sparse            none                               logistic-decomposable           62.08  ±1.89           4
+                  with-replacement{sample_size=0.5}  logistic-decomposable           60.9   ±1.87           2
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable           60.36  ±1.19           1
 ----------------  ---------------------------------  ---------------------  --------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  ---------------------  --------------  -----------  ------
@@ -1122,10 +1122,10 @@ feature_format    instance_sampling                  loss                     Mi
 ----------------  ---------------------------------  ---------------------  ----------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  ---------------------  ----------  -----------  ------
-                  none                               logistic-decomposable       67.31  ±0.51           7
-sparse            none                               logistic-decomposable       67.63  ±0.18           8
-                  with-replacement{sample_size=0.5}  logistic-decomposable       67.15  ±0.23           6
-sparse            with-replacement{sample_size=0.5}  logistic-decomposable       66.57  ±0.29           5
+                  none                               logistic-decomposable       67.31  ±0.51           3
+sparse            none                               logistic-decomposable       67.63  ±0.18           4
+                  with-replacement{sample_size=0.5}  logistic-decomposable       67.15  ±0.23           2
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable       66.57  ±0.29           1
 ----------------  ---------------------------------  ---------------------  ----------  -----------  ------
 "enron"
 ----------------  ---------------------------------  ---------------------  ----------  -----------  ------
@@ -1140,10 +1140,10 @@ feature_format    instance_sampling                  loss                     Mi
 ----------------  ---------------------------------  ---------------------  ---------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  ---------------------  ---------------  -----------  ------
-                  none                               logistic-decomposable            50.73  ±0.58           7
-sparse            none                               logistic-decomposable            51.09  ±0.21           8
-                  with-replacement{sample_size=0.5}  logistic-decomposable            50.55  ±0.26           6
-sparse            with-replacement{sample_size=0.5}  logistic-decomposable            49.89  ±0.33           5
+                  none                               logistic-decomposable            50.73  ±0.58           3
+sparse            none                               logistic-decomposable            51.09  ±0.21           4
+                  with-replacement{sample_size=0.5}  logistic-decomposable            50.55  ±0.26           2
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable            49.89  ±0.33           1
 ----------------  ---------------------------------  ---------------------  ---------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  ---------------------  ---------------  -----------  ------
@@ -1158,10 +1158,10 @@ feature_format    instance_sampling                  loss                     Mi
 ----------------  ---------------------------------  ---------------------  -----------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  ---------------------  -----------------  -----------  ------
-                  none                               logistic-decomposable              72.96  ±1.99           6
-sparse            none                               logistic-decomposable              73.01  ±2.49           7
-                  with-replacement{sample_size=0.5}  logistic-decomposable              73.05  ±1.95           8
-sparse            with-replacement{sample_size=0.5}  logistic-decomposable              72.7   ±2.68           5
+                  none                               logistic-decomposable              72.96  ±1.99           2
+sparse            none                               logistic-decomposable              73.01  ±2.49           3
+                  with-replacement{sample_size=0.5}  logistic-decomposable              73.05  ±1.95           4
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable              72.7   ±2.68           1
 ----------------  ---------------------------------  ---------------------  -----------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  ---------------------  -----------------  -----------  ------
@@ -1176,10 +1176,10 @@ feature_format    instance_sampling                  loss                     Mi
 ----------------  ---------------------------------  ---------------------  --------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  ---------------------  --------------  -----------  ------
-                  none                               logistic-decomposable           62.6   ±2.35           7
-sparse            none                               logistic-decomposable           63.13  ±2.18           8
-                  with-replacement{sample_size=0.5}  logistic-decomposable           62.22  ±1.80           6
-sparse            with-replacement{sample_size=0.5}  logistic-decomposable           61.49  ±1.42           5
+                  none                               logistic-decomposable           62.6   ±2.35           3
+sparse            none                               logistic-decomposable           63.13  ±2.18           4
+                  with-replacement{sample_size=0.5}  logistic-decomposable           62.22  ±1.80           2
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable           61.49  ±1.42           1
 ----------------  ---------------------------------  ---------------------  --------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  ---------------------  --------------  -----------  ------
@@ -1219,10 +1219,10 @@ sparse            with-replacement{sample_size=0.5}  logistic-decomposable      
 ----------------  ---------------------------------  ---------------------  -----------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  ---------------------  -----------------  -----------  ------
-                  none                               logistic-decomposable              86.9   ±0.18           5.5
-sparse            none                               logistic-decomposable              86.9   ±0.18           5.5
-                  with-replacement{sample_size=0.5}  logistic-decomposable              87.78  ±0.59           7.5
-sparse            with-replacement{sample_size=0.5}  logistic-decomposable              87.78  ±0.59           7.5
+                  none                               logistic-decomposable              86.9   ±0.18           1.5
+sparse            none                               logistic-decomposable              86.9   ±0.18           1.5
+                  with-replacement{sample_size=0.5}  logistic-decomposable              87.78  ±0.59           3.5
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable              87.78  ±0.59           3.5
 
 Evaluation results for measure "Subset Accuracy":
 
@@ -1230,10 +1230,10 @@ feature_format    instance_sampling                  loss                     Su
 ----------------  ---------------------------------  ---------------------  -----------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  ---------------------  -----------------  -----------  ------
-                  none                               logistic-decomposable              30.19  ±2.92           7
-sparse            none                               logistic-decomposable              31.37  ±1.06           8
-                  with-replacement{sample_size=0.5}  logistic-decomposable              29.34  ±0.72           6
-sparse            with-replacement{sample_size=0.5}  logistic-decomposable              27.99  ±0.29           5
+                  none                               logistic-decomposable              30.19  ±2.92           3
+sparse            none                               logistic-decomposable              31.37  ±1.06           4
+                  with-replacement{sample_size=0.5}  logistic-decomposable              29.34  ±0.72           2
+sparse            with-replacement{sample_size=0.5}  logistic-decomposable              27.99  ±0.29           1
 ----------------  ---------------------------------  ---------------------  -----------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  ---------------------  -----------------  -----------  ------
