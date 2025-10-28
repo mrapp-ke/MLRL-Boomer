@@ -27,6 +27,7 @@ MULTI_LABEL_EVALUATION_MEASURES = [
     Measure(
         option_key=EvaluationResult.OPTION_HAMMING_LOSS,
         name='Hamming Loss',
+        smaller_is_better=True,
         evaluation_function=metrics.hamming_loss,
     ),
     Measure(
@@ -37,6 +38,7 @@ MULTI_LABEL_EVALUATION_MEASURES = [
     Measure(
         option_key=EvaluationResult.OPTION_SUBSET_ZERO_ONE_LOSS,
         name='Subset 0/1 Loss',
+        smaller_is_better=True,
         evaluation_function=lambda a, b: 1 - metrics.accuracy_score(a, b),
     ),
     Measure(
@@ -124,6 +126,7 @@ SINGLE_LABEL_EVALUATION_MEASURES = [
     Measure(
         option_key=EvaluationResult.OPTION_ZERO_ONE_LOSS,
         name='0/1 Loss',
+        smaller_is_better=True,
         evaluation_function=lambda a, b: 1 - metrics.accuracy_score(a, b),
     ),
     Measure(
