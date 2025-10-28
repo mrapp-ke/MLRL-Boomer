@@ -20,22 +20,22 @@ A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 1):
 
-Example-wise F1         50.8
-Example-wise Jaccard    40.61
-Example-wise Precision  60.9
-Example-wise Recall     60.27
-Hamming Accuracy        69.19
-Hamming Loss            30.81
-Macro F1                54.61
-Macro Jaccard           38.85
-Macro Precision         50.97
-Macro Recall            58.94
-Micro F1                55.18
-Micro Jaccard           38.11
-Micro Precision         51.29
-Micro Recall            59.72
-Subset 0/1 Loss         89.9
-Subset Accuracy         10.1
+Example-wise F1 (↑)         50.8
+Example-wise Jaccard (↑)    40.61
+Example-wise Precision (↑)  60.9
+Example-wise Recall (↑)     60.27
+Hamming Accuracy (↑)        69.19
+Hamming Loss (↓)            30.81
+Macro F1 (↑)                54.61
+Macro Jaccard (↑)           38.85
+Macro Precision (↑)         50.97
+Macro Recall (↑)            58.94
+Micro F1 (↑)                55.18
+Micro Jaccard (↑)           38.11
+Micro Precision (↑)         51.29
+Micro Recall (↑)            59.72
+Subset 0/1 Loss (↓)         89.9
+Subset Accuracy (↑)         10.1
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_emotions/results/evaluation_test_fold-1.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_emotions/results/ground_truth_test_fold-1.arff"...
@@ -65,22 +65,22 @@ A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 2):
 
-Example-wise F1         44.33
-Example-wise Jaccard    35.69
-Example-wise Precision  60.45
-Example-wise Recall     52.36
-Hamming Accuracy        70.5
-Hamming Loss            29.5
-Macro F1                50.73
-Macro Jaccard           34.76
-Macro Precision         50.69
-Macro Recall            51.28
-Micro F1                51.84
-Micro Jaccard           34.99
-Micro Precision         51.65
-Micro Recall            52.03
-Subset 0/1 Loss         89.19
-Subset Accuracy         10.81
+Example-wise F1 (↑)         44.33
+Example-wise Jaccard (↑)    35.69
+Example-wise Precision (↑)  60.45
+Example-wise Recall (↑)     52.36
+Hamming Accuracy (↑)        70.5
+Hamming Loss (↓)            29.5
+Macro F1 (↑)                50.73
+Macro Jaccard (↑)           34.76
+Macro Precision (↑)         50.69
+Macro Recall (↑)            51.28
+Micro F1 (↑)                51.84
+Micro Jaccard (↑)           34.99
+Micro Precision (↑)         51.65
+Micro Recall (↑)            52.03
+Subset 0/1 Loss (↓)         89.19
+Subset Accuracy (↑)         10.81
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_emotions/results/evaluation_test_fold-2.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_emotions/results/ground_truth_test_fold-2.arff"...
@@ -110,22 +110,22 @@ A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 1):
 
-Example-wise F1         52.62
-Example-wise Jaccard    43.18
-Example-wise Precision  62.62
-Example-wise Recall     57.3
-Hamming Accuracy        73.23
-Hamming Loss            26.77
-Macro F1                56.94
-Macro Jaccard           40.6
-Macro Precision         57.88
-Macro Recall            56.13
-Micro F1                57.37
-Micro Jaccard           40.23
-Micro Precision         58.05
-Micro Recall            56.71
-Subset 0/1 Loss         84.51
-Subset Accuracy         15.49
+Example-wise F1 (↑)         52.62
+Example-wise Jaccard (↑)    43.18
+Example-wise Precision (↑)  62.62
+Example-wise Recall (↑)     57.3
+Hamming Accuracy (↑)        73.23
+Hamming Loss (↓)            26.77
+Macro F1 (↑)                56.94
+Macro Jaccard (↑)           40.6
+Macro Precision (↑)         57.88
+Macro Recall (↑)            56.13
+Micro F1 (↑)                57.37
+Micro Jaccard (↑)           40.23
+Micro Precision (↑)         58.05
+Micro Recall (↑)            56.71
+Subset 0/1 Loss (↓)         84.51
+Subset Accuracy (↑)         15.49
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/evaluation_test_fold-1.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/ground_truth_test_fold-1.arff"...
@@ -155,22 +155,22 @@ A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 2):
 
-Example-wise F1         48.89
-Example-wise Jaccard    40.24
-Example-wise Precision  60.51
-Example-wise Recall     54.84
-Hamming Accuracy        72.75
-Hamming Loss            27.25
-Macro F1                53.99
-Macro Jaccard           37.67
-Macro Precision         55.08
-Macro Recall            53.23
-Micro F1                54.77
-Micro Jaccard           37.71
-Micro Precision         55.49
-Micro Recall            54.06
-Subset 0/1 Loss         84.8
-Subset Accuracy         15.2
+Example-wise F1 (↑)         48.89
+Example-wise Jaccard (↑)    40.24
+Example-wise Precision (↑)  60.51
+Example-wise Recall (↑)     54.84
+Hamming Accuracy (↑)        72.75
+Hamming Loss (↓)            27.25
+Macro F1 (↑)                53.99
+Macro Jaccard (↑)           37.67
+Macro Precision (↑)         55.08
+Macro Recall (↑)            53.23
+Micro F1 (↑)                54.77
+Micro Jaccard (↑)           37.71
+Micro Precision (↑)         55.49
+Micro Recall (↑)            54.06
+Subset 0/1 Loss (↓)         84.8
+Subset Accuracy (↑)         15.2
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/evaluation_test_fold-2.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/ground_truth_test_fold-2.arff"...
@@ -200,22 +200,22 @@ A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 1):
 
-Example-wise F1         51.65
-Example-wise Jaccard    42.9
-Example-wise Precision  59.59
-Example-wise Recall     57.07
-Hamming Accuracy        72.28
-Hamming Loss            27.72
-Macro F1                51.59
-Macro Jaccard           37.4
-Macro Precision         65.47
-Macro Recall            57.3
-Micro F1                57.63
-Micro Jaccard           40.48
-Micro Precision         56
-Micro Recall            59.36
-Subset 0/1 Loss         82.83
-Subset Accuracy         17.17
+Example-wise F1 (↑)         51.65
+Example-wise Jaccard (↑)    42.9
+Example-wise Precision (↑)  59.59
+Example-wise Recall (↑)     57.07
+Hamming Accuracy (↑)        72.28
+Hamming Loss (↓)            27.72
+Macro F1 (↑)                51.59
+Macro Jaccard (↑)           37.4
+Macro Precision (↑)         65.47
+Macro Recall (↑)            57.3
+Micro F1 (↑)                57.63
+Micro Jaccard (↑)           40.48
+Micro Precision (↑)         56
+Micro Recall (↑)            59.36
+Subset 0/1 Loss (↓)         82.83
+Subset Accuracy (↑)         17.17
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results/evaluation_test_fold-1.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results/ground_truth_test_fold-1.arff"...
@@ -245,22 +245,22 @@ A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 2):
 
-Example-wise F1         49.24
-Example-wise Jaccard    40.2
-Example-wise Precision  60.73
-Example-wise Recall     57.6
-Hamming Accuracy        72.02
-Hamming Loss            27.98
-Macro F1                49.36
-Macro Jaccard           35.15
-Macro Precision         62.7
-Macro Recall            57.08
-Micro F1                55.51
-Micro Jaccard           38.41
-Micro Precision         53.91
-Micro Recall            57.2
-Subset 0/1 Loss         86.49
-Subset Accuracy         13.51
+Example-wise F1 (↑)         49.24
+Example-wise Jaccard (↑)    40.2
+Example-wise Precision (↑)  60.73
+Example-wise Recall (↑)     57.6
+Hamming Accuracy (↑)        72.02
+Hamming Loss (↓)            27.98
+Macro F1 (↑)                49.36
+Macro Jaccard (↑)           35.15
+Macro Precision (↑)         62.7
+Macro Recall (↑)            57.08
+Micro F1 (↑)                55.51
+Micro Jaccard (↑)           38.41
+Micro Precision (↑)         53.91
+Micro Recall (↑)            57.2
+Subset 0/1 Loss (↓)         86.49
+Subset Accuracy (↑)         13.51
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results/evaluation_test_fold-2.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results/ground_truth_test_fold-2.arff"...
@@ -290,22 +290,22 @@ A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 1):
 
-Example-wise F1         54.43
-Example-wise Jaccard    45.91
-Example-wise Precision  63.05
-Example-wise Recall     57.74
-Hamming Accuracy        74.86
-Hamming Loss            25.14
-Macro F1                58.46
-Macro Jaccard           42.05
-Macro Precision         60.89
-Macro Recall            58.05
-Micro F1                59.64
-Micro Jaccard           42.49
-Micro Precision         60.85
-Micro Recall            58.48
-Subset 0/1 Loss         79.12
-Subset Accuracy         20.88
+Example-wise F1 (↑)         54.43
+Example-wise Jaccard (↑)    45.91
+Example-wise Precision (↑)  63.05
+Example-wise Recall (↑)     57.74
+Hamming Accuracy (↑)        74.86
+Hamming Loss (↓)            25.14
+Macro F1 (↑)                58.46
+Macro Jaccard (↑)           42.05
+Macro Precision (↑)         60.89
+Macro Recall (↑)            58.05
+Micro F1 (↑)                59.64
+Micro Jaccard (↑)           42.49
+Micro Precision (↑)         60.85
+Micro Recall (↑)            58.48
+Subset 0/1 Loss (↓)         79.12
+Subset Accuracy (↑)         20.88
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/evaluation_test_fold-1.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/ground_truth_test_fold-1.arff"...
@@ -335,22 +335,22 @@ A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 2):
 
-Example-wise F1         50.61
-Example-wise Jaccard    41.79
-Example-wise Precision  59.35
-Example-wise Recall     55.74
-Hamming Accuracy        73.7
-Hamming Loss            26.3
-Macro F1                54.26
-Macro Jaccard           38.73
-Macro Precision         54.92
-Macro Recall            55.57
-Micro F1                57.2
-Micro Jaccard           40.05
-Micro Precision         56.83
-Micro Recall            57.56
-Subset 0/1 Loss         84.46
-Subset Accuracy         15.54
+Example-wise F1 (↑)         50.61
+Example-wise Jaccard (↑)    41.79
+Example-wise Precision (↑)  59.35
+Example-wise Recall (↑)     55.74
+Hamming Accuracy (↑)        73.7
+Hamming Loss (↓)            26.3
+Macro F1 (↑)                54.26
+Macro Jaccard (↑)           38.73
+Macro Precision (↑)         54.92
+Macro Recall (↑)            55.57
+Micro F1 (↑)                57.2
+Micro Jaccard (↑)           40.05
+Micro Precision (↑)         56.83
+Micro Recall (↑)            57.56
+Subset 0/1 Loss (↓)         84.46
+Subset Accuracy (↑)         15.54
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/evaluation_test_fold-2.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/ground_truth_test_fold-2.arff"...
@@ -380,22 +380,22 @@ A sparse matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 1):
 
-Example-wise F1         49.66
-Example-wise Jaccard    35.77
-Example-wise Precision  47.52
-Example-wise Recall     59.58
-Hamming Accuracy        93.14
-Hamming Loss             6.86
-Macro F1                17.98
-Macro Jaccard           12.51
-Macro Precision         42.66
-Macro Recall            18.85
-Micro F1                51.68
-Micro Jaccard           34.84
-Micro Precision         46.82
-Micro Recall            57.67
-Subset 0/1 Loss         99.18
-Subset Accuracy          0.82
+Example-wise F1 (↑)         49.66
+Example-wise Jaccard (↑)    35.77
+Example-wise Precision (↑)  47.52
+Example-wise Recall (↑)     59.58
+Hamming Accuracy (↑)        93.14
+Hamming Loss (↓)             6.86
+Macro F1 (↑)                17.98
+Macro Jaccard (↑)           12.51
+Macro Precision (↑)         42.66
+Macro Recall (↑)            18.85
+Micro F1 (↑)                51.68
+Micro Jaccard (↑)           34.84
+Micro Precision (↑)         46.82
+Micro Recall (↑)            57.67
+Subset 0/1 Loss (↓)         99.18
+Subset Accuracy (↑)          0.82
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_enron/results/evaluation_test_fold-1.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_enron/results/ground_truth_test_fold-1.arff"...
@@ -425,22 +425,22 @@ A sparse matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 2):
 
-Example-wise F1         46.37
-Example-wise Jaccard    34.09
-Example-wise Precision  50.26
-Example-wise Recall     50.15
-Hamming Accuracy        93.43
-Hamming Loss             6.57
-Macro F1                16.41
-Macro Jaccard           10.64
-Macro Precision         35.6
-Macro Recall            15.99
-Micro F1                49.53
-Micro Jaccard           32.92
-Micro Precision         48.61
-Micro Recall            50.49
-Subset 0/1 Loss         97.77
-Subset Accuracy          2.23
+Example-wise F1 (↑)         46.37
+Example-wise Jaccard (↑)    34.09
+Example-wise Precision (↑)  50.26
+Example-wise Recall (↑)     50.15
+Hamming Accuracy (↑)        93.43
+Hamming Loss (↓)             6.57
+Macro F1 (↑)                16.41
+Macro Jaccard (↑)           10.64
+Macro Precision (↑)         35.6
+Macro Recall (↑)            15.99
+Micro F1 (↑)                49.53
+Micro Jaccard (↑)           32.92
+Micro Precision (↑)         48.61
+Micro Recall (↑)            50.49
+Subset 0/1 Loss (↓)         97.77
+Subset Accuracy (↑)          2.23
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_enron/results/evaluation_test_fold-2.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_enron/results/ground_truth_test_fold-2.arff"...
@@ -470,22 +470,22 @@ A sparse matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 1):
 
-Example-wise F1         48.21
-Example-wise Jaccard    34.42
-Example-wise Precision  43.74
-Example-wise Recall     61.5
-Hamming Accuracy        92.4
-Hamming Loss             7.6
-Macro F1                19.74
-Macro Jaccard           13.34
-Macro Precision         33.21
-Macro Recall            22.46
-Micro F1                49.91
-Micro Jaccard           33.25
-Micro Precision         42.97
-Micro Recall            59.51
-Subset 0/1 Loss         99.53
-Subset Accuracy          0.47
+Example-wise F1 (↑)         48.21
+Example-wise Jaccard (↑)    34.42
+Example-wise Precision (↑)  43.74
+Example-wise Recall (↑)     61.5
+Hamming Accuracy (↑)        92.4
+Hamming Loss (↓)             7.6
+Macro F1 (↑)                19.74
+Macro Jaccard (↑)           13.34
+Macro Precision (↑)         33.21
+Macro Recall (↑)            22.46
+Micro F1 (↑)                49.91
+Micro Jaccard (↑)           33.25
+Micro Precision (↑)         42.97
+Micro Recall (↑)            59.51
+Subset 0/1 Loss (↓)         99.53
+Subset Accuracy (↑)          0.47
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/evaluation_test_fold-1.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/ground_truth_test_fold-1.arff"...
@@ -515,22 +515,22 @@ A sparse matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 2):
 
-Example-wise F1         48.82
-Example-wise Jaccard    35.65
-Example-wise Precision  46.93
-Example-wise Recall     58
-Hamming Accuracy        92.89
-Hamming Loss             7.11
-Macro F1                18.53
-Macro Jaccard           12.1
-Macro Precision         28.91
-Macro Recall            20.46
-Micro F1                50.46
-Micro Jaccard           33.75
-Micro Precision         45.44
-Micro Recall            56.74
-Subset 0/1 Loss         97.77
-Subset Accuracy          2.23
+Example-wise F1 (↑)         48.82
+Example-wise Jaccard (↑)    35.65
+Example-wise Precision (↑)  46.93
+Example-wise Recall (↑)     58
+Hamming Accuracy (↑)        92.89
+Hamming Loss (↓)             7.11
+Macro F1 (↑)                18.53
+Macro Jaccard (↑)           12.1
+Macro Precision (↑)         28.91
+Macro Recall (↑)            20.46
+Micro F1 (↑)                50.46
+Micro Jaccard (↑)           33.75
+Micro Precision (↑)         45.44
+Micro Recall (↑)            56.74
+Subset 0/1 Loss (↓)         97.77
+Subset Accuracy (↑)          2.23
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/evaluation_test_fold-2.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/ground_truth_test_fold-2.arff"...
@@ -560,22 +560,22 @@ A sparse matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 1):
 
-Example-wise F1         41.89
-Example-wise Jaccard    29.7
-Example-wise Precision  41.2
-Example-wise Recall     48.06
-Hamming Accuracy        92.33
-Hamming Loss             7.67
-Macro F1                12.32
-Macro Jaccard            8.81
-Macro Precision         72.62
-Macro Recall            16.93
-Micro F1                47.12
-Micro Jaccard           30.82
-Micro Precision         41.98
-Micro Recall            53.69
-Subset 0/1 Loss         99.76
-Subset Accuracy          0.24
+Example-wise F1 (↑)         41.89
+Example-wise Jaccard (↑)    29.7
+Example-wise Precision (↑)  41.2
+Example-wise Recall (↑)     48.06
+Hamming Accuracy (↑)        92.33
+Hamming Loss (↓)             7.67
+Macro F1 (↑)                12.32
+Macro Jaccard (↑)            8.81
+Macro Precision (↑)         72.62
+Macro Recall (↑)            16.93
+Micro F1 (↑)                47.12
+Micro Jaccard (↑)           30.82
+Micro Precision (↑)         41.98
+Micro Recall (↑)            53.69
+Subset 0/1 Loss (↓)         99.76
+Subset Accuracy (↑)          0.24
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results/evaluation_test_fold-1.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results/ground_truth_test_fold-1.arff"...
@@ -605,22 +605,22 @@ A sparse matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 2):
 
-Example-wise F1         43.2
-Example-wise Jaccard    31.22
-Example-wise Precision  44.77
-Example-wise Recall     46.99
-Hamming Accuracy        93.09
-Hamming Loss             6.91
-Macro F1                10.51
-Macro Jaccard            7.03
-Macro Precision         72.96
-Macro Recall            14.41
-Micro F1                49.05
-Micro Jaccard           32.5
-Micro Precision         46.35
-Micro Recall            52.08
-Subset 0/1 Loss         99.65
-Subset Accuracy          0.35
+Example-wise F1 (↑)         43.2
+Example-wise Jaccard (↑)    31.22
+Example-wise Precision (↑)  44.77
+Example-wise Recall (↑)     46.99
+Hamming Accuracy (↑)        93.09
+Hamming Loss (↓)             6.91
+Macro F1 (↑)                10.51
+Macro Jaccard (↑)            7.03
+Macro Precision (↑)         72.96
+Macro Recall (↑)            14.41
+Micro F1 (↑)                49.05
+Micro Jaccard (↑)           32.5
+Micro Precision (↑)         46.35
+Micro Recall (↑)            52.08
+Subset 0/1 Loss (↓)         99.65
+Subset Accuracy (↑)          0.35
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results/evaluation_test_fold-2.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results/ground_truth_test_fold-2.arff"...
@@ -650,22 +650,22 @@ A sparse matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 1):
 
-Example-wise F1         52.37
-Example-wise Jaccard    38.82
-Example-wise Precision  51.37
-Example-wise Recall     59.04
-Hamming Accuracy        94.05
-Hamming Loss             5.95
-Macro F1                14.17
-Macro Jaccard           10.51
-Macro Precision         87.5
-Macro Recall            15.57
-Micro F1                55.83
-Micro Jaccard           38.72
-Micro Precision         52.9
-Micro Recall            59.09
-Subset 0/1 Loss         99.18
-Subset Accuracy          0.82
+Example-wise F1 (↑)         52.37
+Example-wise Jaccard (↑)    38.82
+Example-wise Precision (↑)  51.37
+Example-wise Recall (↑)     59.04
+Hamming Accuracy (↑)        94.05
+Hamming Loss (↓)             5.95
+Macro F1 (↑)                14.17
+Macro Jaccard (↑)           10.51
+Macro Precision (↑)         87.5
+Macro Recall (↑)            15.57
+Micro F1 (↑)                55.83
+Micro Jaccard (↑)           38.72
+Micro Precision (↑)         52.9
+Micro Recall (↑)            59.09
+Subset 0/1 Loss (↓)         99.18
+Subset Accuracy (↑)          0.82
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/evaluation_test_fold-1.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/ground_truth_test_fold-1.arff"...
@@ -695,22 +695,22 @@ A sparse matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 2):
 
-Example-wise F1         52.51
-Example-wise Jaccard    39.39
-Example-wise Precision  52.83
-Example-wise Recall     57.83
-Hamming Accuracy        94.1
-Hamming Loss             5.9
-Macro F1                11.99
-Macro Jaccard            8.52
-Macro Precision         87.48
-Macro Recall            13.31
-Micro F1                55.12
-Micro Jaccard           38.05
-Micro Precision         53.57
-Micro Recall            56.77
-Subset 0/1 Loss         97.88
-Subset Accuracy          2.12
+Example-wise F1 (↑)         52.51
+Example-wise Jaccard (↑)    39.39
+Example-wise Precision (↑)  52.83
+Example-wise Recall (↑)     57.83
+Hamming Accuracy (↑)        94.1
+Hamming Loss (↓)             5.9
+Macro F1 (↑)                11.99
+Macro Jaccard (↑)            8.52
+Macro Precision (↑)         87.48
+Macro Recall (↑)            13.31
+Micro F1 (↑)                55.12
+Micro Jaccard (↑)           38.05
+Micro Precision (↑)         53.57
+Micro Recall (↑)            56.77
+Subset 0/1 Loss (↓)         97.88
+Subset Accuracy (↑)          2.12
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/evaluation_test_fold-2.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/ground_truth_test_fold-2.arff"...

@@ -5,7 +5,7 @@ Provides classes for representing evaluation results that are part of output dat
 """
 from functools import partial
 from itertools import chain
-from typing import Dict, List, Optional, Set, Tuple, override
+from typing import Dict, Iterable, List, Optional, Set, Tuple, override
 
 import numpy as np
 
@@ -14,7 +14,7 @@ from scipy.stats import rankdata
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
-from mlrl.testbed.experiments.output.evaluation.measures import AggregationMeasure
+from mlrl.testbed.experiments.output.evaluation.measures import AggregationMeasure, Measure
 from mlrl.testbed.experiments.table import Column, ColumnWiseTable, RowWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, format_number
 
@@ -42,7 +42,9 @@ class AggregatedEvaluationResult(TabularOutputData):
         AggregationMeasure(
             option_key=OPTION_RANK,
             name='Rank',
-            aggregation_function=lambda values: rankdata(np.asarray(values), method='average'),
+            aggregation_function=lambda values, smaller_is_better: rankdata(np.asarray(values) *
+                                                                            (1 if smaller_is_better else -1),
+                                                                            method='average'),
         ),
     ]
 
@@ -199,15 +201,18 @@ class AggregatedEvaluationResult(TabularOutputData):
                         and not header.startswith(self.COLUMN_PREFIX_PARAMETER) \
                         and not header.startswith(OutputValue.COLUMN_PREFIX_STD_DEV) \
                         and values_by_dataset:
+                    smaller_is_better = Measure.is_smaller_better(header)
+
                     for aggregation_measure in aggregation_measures:
                         if isinstance(aggregation_measure, AggregationMeasure):
 
-                            def aggregation_function(measure: AggregationMeasure,
-                                                     values_list: List[float]) -> List[float]:
-                                return measure.aggregate(values_list)
+                            def aggregation_function(aggregation_measure: AggregationMeasure, smaller_is_better: bool,
+                                                     values_list: List[float]) -> Iterable[float]:
+                                return aggregation_measure.aggregate(values_list, smaller_is_better=smaller_is_better)
 
                             aggregated_column = chain.from_iterable(
-                                map(partial(aggregation_function, aggregation_measure), values_by_dataset))
+                                map(partial(aggregation_function, aggregation_measure, smaller_is_better),
+                                    values_by_dataset))
                             aggregated_table.add_column(*map(lambda x: format_number(x, decimals=decimals),
                                                              aggregated_column),
                                                         header=f'{aggregation_measure.name} {header}',

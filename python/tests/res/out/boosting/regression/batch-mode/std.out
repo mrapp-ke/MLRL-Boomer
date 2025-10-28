@@ -19,10 +19,10 @@ A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Mean Absolute Error               29.91
-Mean Absolute Percentage Error     0.08
-Mean Squared Error              2826.34
-Median Absolute Error             15.83
+Mean Absolute Error (↓)               29.91
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2826.34
+Median Absolute Error (↓)             15.83
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/results/evaluation_test.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/results/ground_truth_test.arff"...
@@ -51,10 +51,10 @@ A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Mean Absolute Error               30.03
-Mean Absolute Percentage Error     0.08
-Mean Squared Error              3007.35
-Median Absolute Error             15.2
+Mean Absolute Error (↓)               30.03
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              3007.35
+Median Absolute Error (↓)             15.2
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/results/evaluation_test.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/results/ground_truth_test.arff"...
@@ -83,10 +83,10 @@ A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Mean Absolute Error               33
-Mean Absolute Percentage Error     0.08
-Mean Squared Error              4086.77
-Median Absolute Error             17.98
+Mean Absolute Error (↓)               33
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              4086.77
+Median Absolute Error (↓)             17.98
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_atp7d/results/evaluation_test.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_atp7d/results/ground_truth_test.arff"...
@@ -115,10 +115,10 @@ A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Mean Absolute Error               34.15
-Mean Absolute Percentage Error     0.09
-Mean Squared Error              4131.78
-Median Absolute Error             18.58
+Mean Absolute Error (↓)               34.15
+Mean Absolute Percentage Error (↓)     0.09
+Mean Squared Error (↓)              4131.78
+Median Absolute Error (↓)             18.58
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/results/evaluation_test.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/results/ground_truth_test.arff"...
@@ -147,10 +147,10 @@ A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Mean Absolute Error               31.92
-Mean Absolute Percentage Error     0.08
-Mean Squared Error              3361.17
-Median Absolute Error             17.49
+Mean Absolute Error (↓)               31.92
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              3361.17
+Median Absolute Error (↓)             17.49
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/results/evaluation_test.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/results/ground_truth_test.arff"...
@@ -179,10 +179,10 @@ A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Mean Absolute Error               31.92
-Mean Absolute Percentage Error     0.08
-Mean Squared Error              3361.17
-Median Absolute Error             17.49
+Mean Absolute Error (↓)               31.92
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              3361.17
+Median Absolute Error (↓)             17.49
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/results/evaluation_test.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/results/ground_truth_test.arff"...
@@ -211,10 +211,10 @@ A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Mean Absolute Error               34.77
-Mean Absolute Percentage Error     0.09
-Mean Squared Error              3554.64
-Median Absolute Error             20.76
+Mean Absolute Error (↓)               34.77
+Mean Absolute Percentage Error (↓)     0.09
+Mean Squared Error (↓)              3554.64
+Median Absolute Error (↓)             20.76
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_atp7d-binary/results/evaluation_test.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_atp7d-binary/results/ground_truth_test.arff"...
@@ -243,10 +243,10 @@ A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Mean Absolute Error               34.77
-Mean Absolute Percentage Error     0.09
-Mean Squared Error              3554.64
-Median Absolute Error             20.76
+Mean Absolute Error (↓)               34.77
+Mean Absolute Percentage Error (↓)     0.09
+Mean Squared Error (↓)              3554.64
+Median Absolute Error (↓)             20.76
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/results/evaluation_test.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/results/ground_truth_test.arff"...

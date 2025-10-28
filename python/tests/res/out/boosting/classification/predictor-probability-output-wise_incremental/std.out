@@ -16,300 +16,300 @@ Predicting for 196 test examples using a model of size 50...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 50:
 
-Coverage Error                    3.04
-Discounted Cumulative Gain        1.33
-Label Ranking Average Precision   0.77
-Mean Absolute Error               0.4
-Mean Absolute Percentage Error    1.13232e+15
-Mean Squared Error                0.18
-Median Absolute Error             0.38
-NDCG                             84.24
-Ranking Loss                      0.2
+Coverage Error (↓)                    3.04
+Discounted Cumulative Gain (↑)        1.33
+Label Ranking Average Precision (↑)   0.77
+Mean Absolute Error (↓)               0.4
+Mean Absolute Percentage Error (↓)    1.13232e+15
+Mean Squared Error (↓)                0.18
+Median Absolute Error (↓)             0.38
+NDCG (↑)                             84.24
+Ranking Loss (↓)                      0.2
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 100...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 100:
 
-Coverage Error                    3.01
-Discounted Cumulative Gain        1.33
-Label Ranking Average Precision   0.78
-Mean Absolute Error               0.38
-Mean Absolute Percentage Error    1.06557e+15
-Mean Squared Error                0.17
-Median Absolute Error             0.36
-NDCG                             84.82
-Ranking Loss                      0.19
+Coverage Error (↓)                    3.01
+Discounted Cumulative Gain (↑)        1.33
+Label Ranking Average Precision (↑)   0.78
+Mean Absolute Error (↓)               0.38
+Mean Absolute Percentage Error (↓)    1.06557e+15
+Mean Squared Error (↓)                0.17
+Median Absolute Error (↓)             0.36
+NDCG (↑)                             84.82
+Ranking Loss (↓)                      0.19
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 150...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 150:
 
-Coverage Error                    2.95
-Discounted Cumulative Gain        1.35
-Label Ranking Average Precision   0.79
-Mean Absolute Error               0.36
-Mean Absolute Percentage Error    1.01193e+15
-Mean Squared Error                0.17
-Median Absolute Error             0.35
-NDCG                             85.73
-Ranking Loss                      0.18
+Coverage Error (↓)                    2.95
+Discounted Cumulative Gain (↑)        1.35
+Label Ranking Average Precision (↑)   0.79
+Mean Absolute Error (↓)               0.36
+Mean Absolute Percentage Error (↓)    1.01193e+15
+Mean Squared Error (↓)                0.17
+Median Absolute Error (↓)             0.35
+NDCG (↑)                             85.73
+Ranking Loss (↓)                      0.18
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 200...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 200:
 
-Coverage Error                    2.89
-Discounted Cumulative Gain        1.36
-Label Ranking Average Precision   0.79
-Mean Absolute Error               0.35
-Mean Absolute Percentage Error    9.71988e+14
-Mean Squared Error                0.16
-Median Absolute Error             0.33
-NDCG                             86.17
-Ranking Loss                      0.17
+Coverage Error (↓)                    2.89
+Discounted Cumulative Gain (↑)        1.36
+Label Ranking Average Precision (↑)   0.79
+Mean Absolute Error (↓)               0.35
+Mean Absolute Percentage Error (↓)    9.71988e+14
+Mean Squared Error (↓)                0.16
+Median Absolute Error (↓)             0.33
+NDCG (↑)                             86.17
+Ranking Loss (↓)                      0.17
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 250...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 250:
 
-Coverage Error                    2.86
-Discounted Cumulative Gain        1.36
-Label Ranking Average Precision   0.8
-Mean Absolute Error               0.34
-Mean Absolute Percentage Error    9.32889e+14
-Mean Squared Error                0.16
-Median Absolute Error             0.32
-NDCG                             86.58
-Ranking Loss                      0.17
+Coverage Error (↓)                    2.86
+Discounted Cumulative Gain (↑)        1.36
+Label Ranking Average Precision (↑)   0.8
+Mean Absolute Error (↓)               0.34
+Mean Absolute Percentage Error (↓)    9.32889e+14
+Mean Squared Error (↓)                0.16
+Median Absolute Error (↓)             0.32
+NDCG (↑)                             86.58
+Ranking Loss (↓)                      0.17
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 300...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 300:
 
-Coverage Error                    2.82
-Discounted Cumulative Gain        1.37
-Label Ranking Average Precision   0.8
-Mean Absolute Error               0.33
-Mean Absolute Percentage Error    9.05575e+14
-Mean Squared Error                0.16
-Median Absolute Error             0.31
-NDCG                             86.84
-Ranking Loss                      0.16
+Coverage Error (↓)                    2.82
+Discounted Cumulative Gain (↑)        1.37
+Label Ranking Average Precision (↑)   0.8
+Mean Absolute Error (↓)               0.33
+Mean Absolute Percentage Error (↓)    9.05575e+14
+Mean Squared Error (↓)                0.16
+Median Absolute Error (↓)             0.31
+NDCG (↑)                             86.84
+Ranking Loss (↓)                      0.16
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 350...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 350:
 
-Coverage Error                    2.79
-Discounted Cumulative Gain        1.36
-Label Ranking Average Precision   0.81
-Mean Absolute Error               0.33
-Mean Absolute Percentage Error    8.84003e+14
-Mean Squared Error                0.15
-Median Absolute Error             0.3
-NDCG                             86.83
-Ranking Loss                      0.16
+Coverage Error (↓)                    2.79
+Discounted Cumulative Gain (↑)        1.36
+Label Ranking Average Precision (↑)   0.81
+Mean Absolute Error (↓)               0.33
+Mean Absolute Percentage Error (↓)    8.84003e+14
+Mean Squared Error (↓)                0.15
+Median Absolute Error (↓)             0.3
+NDCG (↑)                             86.83
+Ranking Loss (↓)                      0.16
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 400...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 400:
 
-Coverage Error                    2.79
-Discounted Cumulative Gain        1.36
-Label Ranking Average Precision   0.81
-Mean Absolute Error               0.32
-Mean Absolute Percentage Error    8.58971e+14
-Mean Squared Error                0.15
-Median Absolute Error             0.29
-NDCG                             86.87
-Ranking Loss                      0.16
+Coverage Error (↓)                    2.79
+Discounted Cumulative Gain (↑)        1.36
+Label Ranking Average Precision (↑)   0.81
+Mean Absolute Error (↓)               0.32
+Mean Absolute Percentage Error (↓)    8.58971e+14
+Mean Squared Error (↓)                0.15
+Median Absolute Error (↓)             0.29
+NDCG (↑)                             86.87
+Ranking Loss (↓)                      0.16
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 450...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 450:
 
-Coverage Error                    2.8
-Discounted Cumulative Gain        1.37
-Label Ranking Average Precision   0.81
-Mean Absolute Error               0.32
-Mean Absolute Percentage Error    8.42818e+14
-Mean Squared Error                0.15
-Median Absolute Error             0.28
-NDCG                             87.1
-Ranking Loss                      0.16
+Coverage Error (↓)                    2.8
+Discounted Cumulative Gain (↑)        1.37
+Label Ranking Average Precision (↑)   0.81
+Mean Absolute Error (↓)               0.32
+Mean Absolute Percentage Error (↓)    8.42818e+14
+Mean Squared Error (↓)                0.15
+Median Absolute Error (↓)             0.28
+NDCG (↑)                             87.1
+Ranking Loss (↓)                      0.16
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 500...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 500:
 
-Coverage Error                    2.8
-Discounted Cumulative Gain        1.36
-Label Ranking Average Precision   0.8
-Mean Absolute Error               0.31
-Mean Absolute Percentage Error    8.24421e+14
-Mean Squared Error                0.15
-Median Absolute Error             0.28
-NDCG                             86.78
-Ranking Loss                      0.16
+Coverage Error (↓)                    2.8
+Discounted Cumulative Gain (↑)        1.36
+Label Ranking Average Precision (↑)   0.8
+Mean Absolute Error (↓)               0.31
+Mean Absolute Percentage Error (↓)    8.24421e+14
+Mean Squared Error (↓)                0.15
+Median Absolute Error (↓)             0.28
+NDCG (↑)                             86.78
+Ranking Loss (↓)                      0.16
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 550...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 550:
 
-Coverage Error                    2.81
-Discounted Cumulative Gain        1.36
-Label Ranking Average Precision   0.8
-Mean Absolute Error               0.31
-Mean Absolute Percentage Error    8.08816e+14
-Mean Squared Error                0.15
-Median Absolute Error             0.27
-NDCG                             86.74
-Ranking Loss                      0.16
+Coverage Error (↓)                    2.81
+Discounted Cumulative Gain (↑)        1.36
+Label Ranking Average Precision (↑)   0.8
+Mean Absolute Error (↓)               0.31
+Mean Absolute Percentage Error (↓)    8.08816e+14
+Mean Squared Error (↓)                0.15
+Median Absolute Error (↓)             0.27
+NDCG (↑)                             86.74
+Ranking Loss (↓)                      0.16
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 600...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 600:
 
-Coverage Error                    2.8
-Discounted Cumulative Gain        1.36
-Label Ranking Average Precision   0.81
-Mean Absolute Error               0.3
-Mean Absolute Percentage Error    7.9712e+14
-Mean Squared Error                0.15
-Median Absolute Error             0.27
-NDCG                             86.84
-Ranking Loss                      0.16
+Coverage Error (↓)                    2.8
+Discounted Cumulative Gain (↑)        1.36
+Label Ranking Average Precision (↑)   0.81
+Mean Absolute Error (↓)               0.3
+Mean Absolute Percentage Error (↓)    7.9712e+14
+Mean Squared Error (↓)                0.15
+Median Absolute Error (↓)             0.27
+NDCG (↑)                             86.84
+Ranking Loss (↓)                      0.16
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 650...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 650:
 
-Coverage Error                    2.79
-Discounted Cumulative Gain        1.36
-Label Ranking Average Precision   0.81
-Mean Absolute Error               0.3
-Mean Absolute Percentage Error    7.84557e+14
-Mean Squared Error                0.15
-Median Absolute Error             0.26
-NDCG                             86.97
-Ranking Loss                      0.16
+Coverage Error (↓)                    2.79
+Discounted Cumulative Gain (↑)        1.36
+Label Ranking Average Precision (↑)   0.81
+Mean Absolute Error (↓)               0.3
+Mean Absolute Percentage Error (↓)    7.84557e+14
+Mean Squared Error (↓)                0.15
+Median Absolute Error (↓)             0.26
+NDCG (↑)                             86.97
+Ranking Loss (↓)                      0.16
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 700...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 700:
 
-Coverage Error                    2.8
-Discounted Cumulative Gain        1.36
-Label Ranking Average Precision   0.8
-Mean Absolute Error               0.3
-Mean Absolute Percentage Error    7.75343e+14
-Mean Squared Error                0.15
-Median Absolute Error             0.26
-NDCG                             86.71
-Ranking Loss                      0.16
+Coverage Error (↓)                    2.8
+Discounted Cumulative Gain (↑)        1.36
+Label Ranking Average Precision (↑)   0.8
+Mean Absolute Error (↓)               0.3
+Mean Absolute Percentage Error (↓)    7.75343e+14
+Mean Squared Error (↓)                0.15
+Median Absolute Error (↓)             0.26
+NDCG (↑)                             86.71
+Ranking Loss (↓)                      0.16
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 750...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 750:
 
-Coverage Error                    2.78
-Discounted Cumulative Gain        1.37
-Label Ranking Average Precision   0.81
-Mean Absolute Error               0.29
-Mean Absolute Percentage Error    7.64717e+14
-Mean Squared Error                0.15
-Median Absolute Error             0.25
-NDCG                             87.06
-Ranking Loss                      0.16
+Coverage Error (↓)                    2.78
+Discounted Cumulative Gain (↑)        1.37
+Label Ranking Average Precision (↑)   0.81
+Mean Absolute Error (↓)               0.29
+Mean Absolute Percentage Error (↓)    7.64717e+14
+Mean Squared Error (↓)                0.15
+Median Absolute Error (↓)             0.25
+NDCG (↑)                             87.06
+Ranking Loss (↓)                      0.16
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 800...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 800:
 
-Coverage Error                    2.78
-Discounted Cumulative Gain        1.37
-Label Ranking Average Precision   0.81
-Mean Absolute Error               0.29
-Mean Absolute Percentage Error    7.56852e+14
-Mean Squared Error                0.15
-Median Absolute Error             0.25
-NDCG                             87.27
-Ranking Loss                      0.15
+Coverage Error (↓)                    2.78
+Discounted Cumulative Gain (↑)        1.37
+Label Ranking Average Precision (↑)   0.81
+Mean Absolute Error (↓)               0.29
+Mean Absolute Percentage Error (↓)    7.56852e+14
+Mean Squared Error (↓)                0.15
+Median Absolute Error (↓)             0.25
+NDCG (↑)                             87.27
+Ranking Loss (↓)                      0.15
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 850...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 850:
 
-Coverage Error                    2.78
-Discounted Cumulative Gain        1.37
-Label Ranking Average Precision   0.81
-Mean Absolute Error               0.29
-Mean Absolute Percentage Error    7.50653e+14
-Mean Squared Error                0.15
-Median Absolute Error             0.24
-NDCG                             87.13
-Ranking Loss                      0.16
+Coverage Error (↓)                    2.78
+Discounted Cumulative Gain (↑)        1.37
+Label Ranking Average Precision (↑)   0.81
+Mean Absolute Error (↓)               0.29
+Mean Absolute Percentage Error (↓)    7.50653e+14
+Mean Squared Error (↓)                0.15
+Median Absolute Error (↓)             0.24
+NDCG (↑)                             87.13
+Ranking Loss (↓)                      0.16
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 900...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 900:
 
-Coverage Error                    2.81
-Discounted Cumulative Gain        1.36
-Label Ranking Average Precision   0.8
-Mean Absolute Error               0.29
-Mean Absolute Percentage Error    7.44137e+14
-Mean Squared Error                0.15
-Median Absolute Error             0.24
-NDCG                             86.62
-Ranking Loss                      0.16
+Coverage Error (↓)                    2.81
+Discounted Cumulative Gain (↑)        1.36
+Label Ranking Average Precision (↑)   0.8
+Mean Absolute Error (↓)               0.29
+Mean Absolute Percentage Error (↓)    7.44137e+14
+Mean Squared Error (↓)                0.15
+Median Absolute Error (↓)             0.24
+NDCG (↑)                             86.62
+Ranking Loss (↓)                      0.16
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 950...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 950:
 
-Coverage Error                    2.81
-Discounted Cumulative Gain        1.36
-Label Ranking Average Precision   0.8
-Mean Absolute Error               0.29
-Mean Absolute Percentage Error    7.3833e+14
-Mean Squared Error                0.15
-Median Absolute Error             0.24
-NDCG                             86.89
-Ranking Loss                      0.16
+Coverage Error (↓)                    2.81
+Discounted Cumulative Gain (↑)        1.36
+Label Ranking Average Precision (↑)   0.8
+Mean Absolute Error (↓)               0.29
+Mean Absolute Percentage Error (↓)    7.3833e+14
+Mean Squared Error (↓)                0.15
+Median Absolute Error (↓)             0.24
+NDCG (↑)                             86.89
+Ranking Loss (↓)                      0.16
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 1000...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 1000:
 
-Coverage Error                    2.81
-Discounted Cumulative Gain        1.36
-Label Ranking Average Precision   0.8
-Mean Absolute Error               0.28
-Mean Absolute Percentage Error    7.33529e+14
-Mean Squared Error                0.15
-Median Absolute Error             0.23
-NDCG                             86.91
-Ranking Loss                      0.16
+Coverage Error (↓)                    2.81
+Discounted Cumulative Gain (↑)        1.36
+Label Ranking Average Precision (↑)   0.8
+Mean Absolute Error (↓)               0.28
+Mean Absolute Percentage Error (↓)    7.33529e+14
+Mean Squared Error (↓)                0.15
+Median Absolute Error (↓)             0.23
+NDCG (↑)                             86.91
+Ranking Loss (↓)                      0.16
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Marginal probability calibration model:
