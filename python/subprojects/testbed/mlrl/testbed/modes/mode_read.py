@@ -23,7 +23,7 @@ from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.output.evaluation.evaluation_result import AggregatedEvaluationResult
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
-from mlrl.testbed.experiments.table import RowWiseTable, Table
+from mlrl.testbed.experiments.table import Cell, RowWiseTable, Table
 from mlrl.testbed.modes.mode import InputMode
 from mlrl.testbed.modes.mode_batch import BatchMode
 
@@ -231,16 +231,17 @@ class ReadMode(InputMode):
         aggregated_table = RowWiseTable.aggregate(*tables).to_column_wise_table()
 
         for position, header in enumerate(sorted(headers)):
-            aggregated_table.add_column(header=header, position=position)
+            column: List[Cell] = []
+            unique_values: Set[Cell] = set()
 
-        for column_index, column in enumerate(aggregated_table.columns):
-            if column_index >= len(headers):
-                break
+            for command, _ in commands_and_their_states:
+                argument_name = header[len(AggregatedEvaluationResult.COLUMN_PREFIX_PARAMETER):].lstrip()
+                argument_value = command.argument_dict.get(argument_name)
+                column.append(argument_value)
+                unique_values.add(argument_value)
 
-            if column.header:
-                for row_index, (command, _) in enumerate(commands_and_their_states):
-                    argument = str(column.header)[len(AggregatedEvaluationResult.COLUMN_PREFIX_PARAMETER):].lstrip()
-                    column[row_index] = command.argument_dict.get(argument)
+            if len(unique_values) > 1:
+                aggregated_table.add_column(*column, header=header, position=position)
 
         return aggregated_table
 
