@@ -11,6 +11,7 @@ from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
 from mlrl.testbed.experiments.output.evaluation.evaluation_result import AggregatedEvaluationResult
 from mlrl.testbed.experiments.output.evaluation.measurements import Measurements
+from mlrl.testbed.experiments.output.evaluation.measures import Measure
 from mlrl.testbed.experiments.output.sinks import CsvFileSink
 from mlrl.testbed.experiments.table import RowWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
@@ -152,6 +153,12 @@ class EvaluationResult(TabularOutputData):
         return RowWiseTable(*headers).add_row(*values)
 
 
-EVALUATION_MEASURE_TRAINING_TIME = OutputValue(EvaluationResult.OPTION_TRAINING_TIME, 'Training Time (seconds)')
+EVALUATION_MEASURE_TRAINING_TIME = OutputValue(
+    option_key=EvaluationResult.OPTION_TRAINING_TIME,
+    name='Training Time (' + Measure.UNIT_SECONDS + ')',
+)
 
-EVALUATION_MEASURE_PREDICTION_TIME = OutputValue(EvaluationResult.OPTION_PREDICTION_TIME, 'Prediction Time (seconds)')
+EVALUATION_MEASURE_PREDICTION_TIME = OutputValue(
+    option_key=EvaluationResult.OPTION_PREDICTION_TIME,
+    name='Prediction Time (' + Measure.UNIT_SECONDS + ')',
+)
