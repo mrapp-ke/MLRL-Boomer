@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing evaluation results that are part of output data.
 """
+from functools import partial
 from itertools import chain
 from typing import Dict, List, Optional, Set, Tuple, override
 
@@ -41,7 +42,7 @@ class AggregatedEvaluationResult(TabularOutputData):
         AggregationMeasure(
             option_key=OPTION_RANK,
             name='Rank',
-            aggregation_function=lambda array: rankdata(array, method='average'),
+            aggregation_function=lambda values: rankdata(np.asarray(values), method='average'),
         ),
     ]
 
@@ -159,31 +160,37 @@ class AggregatedEvaluationResult(TabularOutputData):
         if evaluation_by_dataset:
             dataset_names = sorted(evaluation_by_dataset.keys())
             tables: List[Table] = []
-            values: List[str] = []
+            dataset_column: List[str] = []
 
             for dataset_name in dataset_names:
                 table = evaluation_by_dataset[dataset_name]
                 tables.append(table)
-                values.extend((dataset_name for _ in range(table.num_rows)))
+                dataset_column.extend((dataset_name for _ in range(table.num_rows)))
 
             aggregated_table = RowWiseTable.aggregate(*tables).to_column_wise_table()
-            aggregated_table.add_column(*values, header=self.COLUMN_DATASET, position=0)
+            aggregated_table.add_column(*dataset_column, header=self.COLUMN_DATASET, position=0)
             decimals = options.get_int(OPTION_DECIMALS, kwargs.get(OPTION_DECIMALS, 0))
             aggregation_measures = OutputValue.filter_values(self.AGGREGATION_MEASURES, options)
 
             for column_index in range(aggregated_table.num_columns - 1, -1, -1):
                 column = aggregated_table[column_index]
                 header = str(column.header)
-                num_rows = column.num_rows
-                array = np.full(shape=num_rows, fill_value=np.nan, dtype=float)
+                current_dataset: Optional[str] = None
+                values_by_dataset: List[List[float]] = []
 
-                for row_index in range(num_rows):
+                for row_index in range(column.num_rows):
+                    dataset = dataset_column[row_index] if row_index < len(dataset_column) else None
+
+                    if dataset and dataset != current_dataset:
+                        current_dataset = dataset
+                        values_by_dataset.append([])
+
                     try:
                         value = column[row_index]
 
                         if value is not None:
                             float_value = float(value)
-                            array[row_index] = float_value
+                            values_by_dataset[-1].append(float_value)
                             column[row_index] = format_number(float_value, decimals=decimals)
                     except ValueError:
                         pass
@@ -191,11 +198,18 @@ class AggregatedEvaluationResult(TabularOutputData):
                 if header != self.COLUMN_DATASET \
                         and not header.startswith(self.COLUMN_PREFIX_PARAMETER) \
                         and not header.startswith(OutputValue.COLUMN_PREFIX_STD_DEV) \
-                        and not np.isnan(array).any():
+                        and values_by_dataset:
                     for aggregation_measure in aggregation_measures:
                         if isinstance(aggregation_measure, AggregationMeasure):
-                            array = aggregation_measure.aggregate(array)
-                            aggregated_table.add_column(*map(lambda x: format_number(x, decimals=decimals), array),
+
+                            def aggregation_function(measure: AggregationMeasure,
+                                                     values_list: List[float]) -> List[float]:
+                                return measure.aggregate(values_list)
+
+                            aggregated_column = chain.from_iterable(
+                                map(partial(aggregation_function, aggregation_measure), values_by_dataset))
+                            aggregated_table.add_column(*map(lambda x: format_number(x, decimals=decimals),
+                                                             aggregated_column),
                                                         header=f'{aggregation_measure.name} {header}',
                                                         position=column_index + 1)
 
