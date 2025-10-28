@@ -26,22 +26,22 @@ Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/h
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_emotions/parameters/parameters_fold-1.csv"...
 Evaluation result for test data (Fold 1):
 
-Example-wise F1         50.8
-Example-wise Jaccard    40.61
-Example-wise Precision  60.9
-Example-wise Recall     60.27
-Hamming Accuracy        69.19
-Hamming Loss            30.81
-Macro F1                54.61
-Macro Jaccard           38.85
-Macro Precision         50.97
-Macro Recall            58.94
-Micro F1                55.18
-Micro Jaccard           38.11
-Micro Precision         51.29
-Micro Recall            59.72
-Subset 0/1 Loss         89.9
-Subset Accuracy         10.1
+Example-wise F1 (↑)         50.8
+Example-wise Jaccard (↑)    40.61
+Example-wise Precision (↑)  60.9
+Example-wise Recall (↑)     60.27
+Hamming Accuracy (↑)        69.19
+Hamming Loss (↓)            30.81
+Macro F1 (↑)                54.61
+Macro Jaccard (↑)           38.85
+Macro Precision (↑)         50.97
+Macro Recall (↑)            58.94
+Micro F1 (↑)                55.18
+Micro Jaccard (↑)           38.11
+Micro Precision (↑)         51.29
+Micro Recall (↑)            59.72
+Subset 0/1 Loss (↓)         89.9
+Subset Accuracy (↑)         10.1
 
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_emotions/results/evaluation_test_fold-1.csv"...
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_emotions/results/prediction_characteristics_test_fold-1.csv"...
@@ -66,42 +66,42 @@ Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/h
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_emotions/parameters/parameters_fold-2.csv"...
 Evaluation result for test data (Fold 2):
 
-Example-wise F1         44.33
-Example-wise Jaccard    35.69
-Example-wise Precision  60.45
-Example-wise Recall     52.36
-Hamming Accuracy        70.5
-Hamming Loss            29.5
-Macro F1                50.73
-Macro Jaccard           34.76
-Macro Precision         50.69
-Macro Recall            51.28
-Micro F1                51.84
-Micro Jaccard           34.99
-Micro Precision         51.65
-Micro Recall            52.03
-Subset 0/1 Loss         89.19
-Subset Accuracy         10.81
+Example-wise F1 (↑)         44.33
+Example-wise Jaccard (↑)    35.69
+Example-wise Precision (↑)  60.45
+Example-wise Recall (↑)     52.36
+Hamming Accuracy (↑)        70.5
+Hamming Loss (↓)            29.5
+Macro F1 (↑)                50.73
+Macro Jaccard (↑)           34.76
+Macro Precision (↑)         50.69
+Macro Recall (↑)            51.28
+Micro F1 (↑)                51.84
+Micro Jaccard (↑)           34.99
+Micro Precision (↑)         51.65
+Micro Recall (↑)            52.03
+Subset 0/1 Loss (↓)         89.19
+Subset Accuracy (↑)         10.81
 
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_emotions/results/evaluation_test_fold-2.csv"...
 Evaluation result for test data (Average across 2 folds):
 
-Example-wise F1         47.57  ±3.24
-Example-wise Jaccard    38.15  ±2.46
-Example-wise Precision  60.68  ±0.23
-Example-wise Recall     56.32  ±3.95
-Hamming Accuracy        69.84  ±0.65
-Hamming Loss            30.16  ±0.65
-Macro F1                52.67  ±1.94
-Macro Jaccard           36.81  ±2.05
-Macro Precision         50.83  ±0.14
-Macro Recall            55.11  ±3.83
-Micro F1                53.51  ±1.67
-Micro Jaccard           36.55  ±1.56
-Micro Precision         51.47  ±0.18
-Micro Recall            55.87  ±3.84
-Subset 0/1 Loss         89.54  ±0.35
-Subset Accuracy         10.46  ±0.35
+Example-wise F1 (↑)         47.57  ±3.24
+Example-wise Jaccard (↑)    38.15  ±2.46
+Example-wise Precision (↑)  60.68  ±0.23
+Example-wise Recall (↑)     56.32  ±3.95
+Hamming Accuracy (↑)        69.84  ±0.65
+Hamming Loss (↓)            30.16  ±0.65
+Macro F1 (↑)                52.67  ±1.94
+Macro Jaccard (↑)           36.81  ±2.05
+Macro Precision (↑)         50.83  ±0.14
+Macro Recall (↑)            55.11  ±3.83
+Micro F1 (↑)                53.51  ±1.67
+Micro Jaccard (↑)           36.55  ±1.56
+Micro Precision (↑)         51.47  ±0.18
+Micro Recall (↑)            55.87  ±3.84
+Subset 0/1 Loss (↓)         89.54  ±0.35
+Subset Accuracy (↑)         10.46  ±0.35
 
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_emotions/results/evaluation_test.csv"...
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_emotions/results/prediction_characteristics_test_fold-2.csv"...
@@ -130,22 +130,22 @@ Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/h
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/parameters/parameters_fold-1.csv"...
 Evaluation result for test data (Fold 1):
 
-Example-wise F1         52.62
-Example-wise Jaccard    43.18
-Example-wise Precision  62.62
-Example-wise Recall     57.3
-Hamming Accuracy        73.23
-Hamming Loss            26.77
-Macro F1                56.94
-Macro Jaccard           40.6
-Macro Precision         57.88
-Macro Recall            56.13
-Micro F1                57.37
-Micro Jaccard           40.23
-Micro Precision         58.05
-Micro Recall            56.71
-Subset 0/1 Loss         84.51
-Subset Accuracy         15.49
+Example-wise F1 (↑)         52.62
+Example-wise Jaccard (↑)    43.18
+Example-wise Precision (↑)  62.62
+Example-wise Recall (↑)     57.3
+Hamming Accuracy (↑)        73.23
+Hamming Loss (↓)            26.77
+Macro F1 (↑)                56.94
+Macro Jaccard (↑)           40.6
+Macro Precision (↑)         57.88
+Macro Recall (↑)            56.13
+Micro F1 (↑)                57.37
+Micro Jaccard (↑)           40.23
+Micro Precision (↑)         58.05
+Micro Recall (↑)            56.71
+Subset 0/1 Loss (↓)         84.51
+Subset Accuracy (↑)         15.49
 
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/evaluation_test_fold-1.csv"...
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/prediction_characteristics_test_fold-1.csv"...
@@ -170,42 +170,42 @@ Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/h
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/parameters/parameters_fold-2.csv"...
 Evaluation result for test data (Fold 2):
 
-Example-wise F1         48.89
-Example-wise Jaccard    40.24
-Example-wise Precision  60.51
-Example-wise Recall     54.84
-Hamming Accuracy        72.75
-Hamming Loss            27.25
-Macro F1                53.99
-Macro Jaccard           37.67
-Macro Precision         55.08
-Macro Recall            53.23
-Micro F1                54.77
-Micro Jaccard           37.71
-Micro Precision         55.49
-Micro Recall            54.06
-Subset 0/1 Loss         84.8
-Subset Accuracy         15.2
+Example-wise F1 (↑)         48.89
+Example-wise Jaccard (↑)    40.24
+Example-wise Precision (↑)  60.51
+Example-wise Recall (↑)     54.84
+Hamming Accuracy (↑)        72.75
+Hamming Loss (↓)            27.25
+Macro F1 (↑)                53.99
+Macro Jaccard (↑)           37.67
+Macro Precision (↑)         55.08
+Macro Recall (↑)            53.23
+Micro F1 (↑)                54.77
+Micro Jaccard (↑)           37.71
+Micro Precision (↑)         55.49
+Micro Recall (↑)            54.06
+Subset 0/1 Loss (↓)         84.8
+Subset Accuracy (↑)         15.2
 
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/evaluation_test_fold-2.csv"...
 Evaluation result for test data (Average across 2 folds):
 
-Example-wise F1         50.75  ±1.86
-Example-wise Jaccard    41.71  ±1.47
-Example-wise Precision  61.56  ±1.05
-Example-wise Recall     56.07  ±1.23
-Hamming Accuracy        72.99  ±0.24
-Hamming Loss            27.01  ±0.24
-Macro F1                55.46  ±1.47
-Macro Jaccard           39.13  ±1.47
-Macro Precision         56.48  ±1.40
-Macro Recall            54.68  ±1.45
-Micro F1                56.07  ±1.30
-Micro Jaccard           38.97  ±1.26
-Micro Precision         56.77  ±1.28
-Micro Recall            55.39  ±1.33
-Subset 0/1 Loss         84.65  ±0.14
-Subset Accuracy         15.35  ±0.14
+Example-wise F1 (↑)         50.75  ±1.86
+Example-wise Jaccard (↑)    41.71  ±1.47
+Example-wise Precision (↑)  61.56  ±1.05
+Example-wise Recall (↑)     56.07  ±1.23
+Hamming Accuracy (↑)        72.99  ±0.24
+Hamming Loss (↓)            27.01  ±0.24
+Macro F1 (↑)                55.46  ±1.47
+Macro Jaccard (↑)           39.13  ±1.47
+Macro Precision (↑)         56.48  ±1.40
+Macro Recall (↑)            54.68  ±1.45
+Micro F1 (↑)                56.07  ±1.30
+Micro Jaccard (↑)           38.97  ±1.26
+Micro Precision (↑)         56.77  ±1.28
+Micro Recall (↑)            55.39  ±1.33
+Subset 0/1 Loss (↓)         84.65  ±0.14
+Subset Accuracy (↑)         15.35  ±0.14
 
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/evaluation_test.csv"...
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/prediction_characteristics_test_fold-2.csv"...
@@ -234,22 +234,22 @@ Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-r
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/parameters/parameters_fold-1.csv"...
 Evaluation result for test data (Fold 1):
 
-Example-wise F1         51.65
-Example-wise Jaccard    42.9
-Example-wise Precision  59.59
-Example-wise Recall     57.07
-Hamming Accuracy        72.28
-Hamming Loss            27.72
-Macro F1                51.59
-Macro Jaccard           37.4
-Macro Precision         65.47
-Macro Recall            57.3
-Micro F1                57.63
-Micro Jaccard           40.48
-Micro Precision         56
-Micro Recall            59.36
-Subset 0/1 Loss         82.83
-Subset Accuracy         17.17
+Example-wise F1 (↑)         51.65
+Example-wise Jaccard (↑)    42.9
+Example-wise Precision (↑)  59.59
+Example-wise Recall (↑)     57.07
+Hamming Accuracy (↑)        72.28
+Hamming Loss (↓)            27.72
+Macro F1 (↑)                51.59
+Macro Jaccard (↑)           37.4
+Macro Precision (↑)         65.47
+Macro Recall (↑)            57.3
+Micro F1 (↑)                57.63
+Micro Jaccard (↑)           40.48
+Micro Precision (↑)         56
+Micro Recall (↑)            59.36
+Subset 0/1 Loss (↓)         82.83
+Subset Accuracy (↑)         17.17
 
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results/evaluation_test_fold-1.csv"...
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results/prediction_characteristics_test_fold-1.csv"...
@@ -274,42 +274,42 @@ Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-r
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/parameters/parameters_fold-2.csv"...
 Evaluation result for test data (Fold 2):
 
-Example-wise F1         49.24
-Example-wise Jaccard    40.2
-Example-wise Precision  60.73
-Example-wise Recall     57.6
-Hamming Accuracy        72.02
-Hamming Loss            27.98
-Macro F1                49.36
-Macro Jaccard           35.15
-Macro Precision         62.7
-Macro Recall            57.08
-Micro F1                55.51
-Micro Jaccard           38.41
-Micro Precision         53.91
-Micro Recall            57.2
-Subset 0/1 Loss         86.49
-Subset Accuracy         13.51
+Example-wise F1 (↑)         49.24
+Example-wise Jaccard (↑)    40.2
+Example-wise Precision (↑)  60.73
+Example-wise Recall (↑)     57.6
+Hamming Accuracy (↑)        72.02
+Hamming Loss (↓)            27.98
+Macro F1 (↑)                49.36
+Macro Jaccard (↑)           35.15
+Macro Precision (↑)         62.7
+Macro Recall (↑)            57.08
+Micro F1 (↑)                55.51
+Micro Jaccard (↑)           38.41
+Micro Precision (↑)         53.91
+Micro Recall (↑)            57.2
+Subset 0/1 Loss (↓)         86.49
+Subset Accuracy (↑)         13.51
 
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results/evaluation_test_fold-2.csv"...
 Evaluation result for test data (Average across 2 folds):
 
-Example-wise F1         50.44  ±1.20
-Example-wise Jaccard    41.55  ±1.35
-Example-wise Precision  60.16  ±0.57
-Example-wise Recall     57.34  ±0.27
-Hamming Accuracy        72.15  ±0.13
-Hamming Loss            27.85  ±0.13
-Macro F1                50.47  ±1.11
-Macro Jaccard           36.27  ±1.13
-Macro Precision         64.08  ±1.39
-Macro Recall            57.19  ±0.11
-Micro F1                56.57  ±1.06
-Micro Jaccard           39.45  ±1.03
-Micro Precision         54.96  ±1.04
-Micro Recall            58.28  ±1.08
-Subset 0/1 Loss         84.66  ±1.83
-Subset Accuracy         15.34  ±1.83
+Example-wise F1 (↑)         50.44  ±1.20
+Example-wise Jaccard (↑)    41.55  ±1.35
+Example-wise Precision (↑)  60.16  ±0.57
+Example-wise Recall (↑)     57.34  ±0.27
+Hamming Accuracy (↑)        72.15  ±0.13
+Hamming Loss (↓)            27.85  ±0.13
+Macro F1 (↑)                50.47  ±1.11
+Macro Jaccard (↑)           36.27  ±1.13
+Macro Precision (↑)         64.08  ±1.39
+Macro Recall (↑)            57.19  ±0.11
+Micro F1 (↑)                56.57  ±1.06
+Micro Jaccard (↑)           39.45  ±1.03
+Micro Precision (↑)         54.96  ±1.04
+Micro Recall (↑)            58.28  ±1.08
+Subset 0/1 Loss (↓)         84.66  ±1.83
+Subset Accuracy (↑)         15.34  ±1.83
 
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results/evaluation_test.csv"...
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results/prediction_characteristics_test_fold-2.csv"...
@@ -338,22 +338,22 @@ Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-r
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/parameters/parameters_fold-1.csv"...
 Evaluation result for test data (Fold 1):
 
-Example-wise F1         54.43
-Example-wise Jaccard    45.91
-Example-wise Precision  63.05
-Example-wise Recall     57.74
-Hamming Accuracy        74.86
-Hamming Loss            25.14
-Macro F1                58.46
-Macro Jaccard           42.05
-Macro Precision         60.89
-Macro Recall            58.05
-Micro F1                59.64
-Micro Jaccard           42.49
-Micro Precision         60.85
-Micro Recall            58.48
-Subset 0/1 Loss         79.12
-Subset Accuracy         20.88
+Example-wise F1 (↑)         54.43
+Example-wise Jaccard (↑)    45.91
+Example-wise Precision (↑)  63.05
+Example-wise Recall (↑)     57.74
+Hamming Accuracy (↑)        74.86
+Hamming Loss (↓)            25.14
+Macro F1 (↑)                58.46
+Macro Jaccard (↑)           42.05
+Macro Precision (↑)         60.89
+Macro Recall (↑)            58.05
+Micro F1 (↑)                59.64
+Micro Jaccard (↑)           42.49
+Micro Precision (↑)         60.85
+Micro Recall (↑)            58.48
+Subset 0/1 Loss (↓)         79.12
+Subset Accuracy (↑)         20.88
 
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/evaluation_test_fold-1.csv"...
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/prediction_characteristics_test_fold-1.csv"...
@@ -378,42 +378,42 @@ Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-r
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/parameters/parameters_fold-2.csv"...
 Evaluation result for test data (Fold 2):
 
-Example-wise F1         50.61
-Example-wise Jaccard    41.79
-Example-wise Precision  59.35
-Example-wise Recall     55.74
-Hamming Accuracy        73.7
-Hamming Loss            26.3
-Macro F1                54.26
-Macro Jaccard           38.73
-Macro Precision         54.92
-Macro Recall            55.57
-Micro F1                57.2
-Micro Jaccard           40.05
-Micro Precision         56.83
-Micro Recall            57.56
-Subset 0/1 Loss         84.46
-Subset Accuracy         15.54
+Example-wise F1 (↑)         50.61
+Example-wise Jaccard (↑)    41.79
+Example-wise Precision (↑)  59.35
+Example-wise Recall (↑)     55.74
+Hamming Accuracy (↑)        73.7
+Hamming Loss (↓)            26.3
+Macro F1 (↑)                54.26
+Macro Jaccard (↑)           38.73
+Macro Precision (↑)         54.92
+Macro Recall (↑)            55.57
+Micro F1 (↑)                57.2
+Micro Jaccard (↑)           40.05
+Micro Precision (↑)         56.83
+Micro Recall (↑)            57.56
+Subset 0/1 Loss (↓)         84.46
+Subset Accuracy (↑)         15.54
 
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/evaluation_test_fold-2.csv"...
 Evaluation result for test data (Average across 2 folds):
 
-Example-wise F1         52.52  ±1.91
-Example-wise Jaccard    43.85  ±2.06
-Example-wise Precision  61.2   ±1.85
-Example-wise Recall     56.74  ±1.00
-Hamming Accuracy        74.28  ±0.58
-Hamming Loss            25.72  ±0.58
-Macro F1                56.36  ±2.10
-Macro Jaccard           40.39  ±1.66
-Macro Precision         57.9   ±2.98
-Macro Recall            56.81  ±1.24
-Micro F1                58.42  ±1.22
-Micro Jaccard           41.27  ±1.22
-Micro Precision         58.84  ±2.01
-Micro Recall            58.02  ±0.46
-Subset 0/1 Loss         81.79  ±2.67
-Subset Accuracy         18.21  ±2.67
+Example-wise F1 (↑)         52.52  ±1.91
+Example-wise Jaccard (↑)    43.85  ±2.06
+Example-wise Precision (↑)  61.2   ±1.85
+Example-wise Recall (↑)     56.74  ±1.00
+Hamming Accuracy (↑)        74.28  ±0.58
+Hamming Loss (↓)            25.72  ±0.58
+Macro F1 (↑)                56.36  ±2.10
+Macro Jaccard (↑)           40.39  ±1.66
+Macro Precision (↑)         57.9   ±2.98
+Macro Recall (↑)            56.81  ±1.24
+Micro F1 (↑)                58.42  ±1.22
+Micro Jaccard (↑)           41.27  ±1.22
+Micro Precision (↑)         58.84  ±2.01
+Micro Recall (↑)            58.02  ±0.46
+Subset 0/1 Loss (↓)         81.79  ±2.67
+Subset Accuracy (↑)         18.21  ±2.67
 
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/evaluation_test.csv"...
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/prediction_characteristics_test_fold-2.csv"...
@@ -442,22 +442,22 @@ Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/h
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_enron/parameters/parameters_fold-1.csv"...
 Evaluation result for test data (Fold 1):
 
-Example-wise F1         49.66
-Example-wise Jaccard    35.77
-Example-wise Precision  47.52
-Example-wise Recall     59.58
-Hamming Accuracy        93.14
-Hamming Loss             6.86
-Macro F1                17.98
-Macro Jaccard           12.51
-Macro Precision         42.66
-Macro Recall            18.85
-Micro F1                51.68
-Micro Jaccard           34.84
-Micro Precision         46.82
-Micro Recall            57.67
-Subset 0/1 Loss         99.18
-Subset Accuracy          0.82
+Example-wise F1 (↑)         49.66
+Example-wise Jaccard (↑)    35.77
+Example-wise Precision (↑)  47.52
+Example-wise Recall (↑)     59.58
+Hamming Accuracy (↑)        93.14
+Hamming Loss (↓)             6.86
+Macro F1 (↑)                17.98
+Macro Jaccard (↑)           12.51
+Macro Precision (↑)         42.66
+Macro Recall (↑)            18.85
+Micro F1 (↑)                51.68
+Micro Jaccard (↑)           34.84
+Micro Precision (↑)         46.82
+Micro Recall (↑)            57.67
+Subset 0/1 Loss (↓)         99.18
+Subset Accuracy (↑)          0.82
 
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_enron/results/evaluation_test_fold-1.csv"...
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_enron/results/prediction_characteristics_test_fold-1.csv"...
@@ -482,42 +482,42 @@ Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/h
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_enron/parameters/parameters_fold-2.csv"...
 Evaluation result for test data (Fold 2):
 
-Example-wise F1         46.37
-Example-wise Jaccard    34.09
-Example-wise Precision  50.26
-Example-wise Recall     50.15
-Hamming Accuracy        93.43
-Hamming Loss             6.57
-Macro F1                16.41
-Macro Jaccard           10.64
-Macro Precision         35.6
-Macro Recall            15.99
-Micro F1                49.53
-Micro Jaccard           32.92
-Micro Precision         48.61
-Micro Recall            50.49
-Subset 0/1 Loss         97.77
-Subset Accuracy          2.23
+Example-wise F1 (↑)         46.37
+Example-wise Jaccard (↑)    34.09
+Example-wise Precision (↑)  50.26
+Example-wise Recall (↑)     50.15
+Hamming Accuracy (↑)        93.43
+Hamming Loss (↓)             6.57
+Macro F1 (↑)                16.41
+Macro Jaccard (↑)           10.64
+Macro Precision (↑)         35.6
+Macro Recall (↑)            15.99
+Micro F1 (↑)                49.53
+Micro Jaccard (↑)           32.92
+Micro Precision (↑)         48.61
+Micro Recall (↑)            50.49
+Subset 0/1 Loss (↓)         97.77
+Subset Accuracy (↑)          2.23
 
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_enron/results/evaluation_test_fold-2.csv"...
 Evaluation result for test data (Average across 2 folds):
 
-Example-wise F1         48.02  ±1.65
-Example-wise Jaccard    34.93  ±0.84
-Example-wise Precision  48.89  ±1.37
-Example-wise Recall     54.86  ±4.72
-Hamming Accuracy        93.28  ±0.15
-Hamming Loss             6.72  ±0.15
-Macro F1                17.2   ±0.78
-Macro Jaccard           11.57  ±0.93
-Macro Precision         39.13  ±3.53
-Macro Recall            17.42  ±1.43
-Micro F1                50.6   ±1.07
-Micro Jaccard           33.88  ±0.96
-Micro Precision         47.72  ±0.90
-Micro Recall            54.08  ±3.59
-Subset 0/1 Loss         98.47  ±0.71
-Subset Accuracy          1.53  ±0.71
+Example-wise F1 (↑)         48.02  ±1.65
+Example-wise Jaccard (↑)    34.93  ±0.84
+Example-wise Precision (↑)  48.89  ±1.37
+Example-wise Recall (↑)     54.86  ±4.72
+Hamming Accuracy (↑)        93.28  ±0.15
+Hamming Loss (↓)             6.72  ±0.15
+Macro F1 (↑)                17.2   ±0.78
+Macro Jaccard (↑)           11.57  ±0.93
+Macro Precision (↑)         39.13  ±3.53
+Macro Recall (↑)            17.42  ±1.43
+Micro F1 (↑)                50.6   ±1.07
+Micro Jaccard (↑)           33.88  ±0.96
+Micro Precision (↑)         47.72  ±0.90
+Micro Recall (↑)            54.08  ±3.59
+Subset 0/1 Loss (↓)         98.47  ±0.71
+Subset Accuracy (↑)          1.53  ±0.71
 
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_enron/results/evaluation_test.csv"...
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_enron/results/prediction_characteristics_test_fold-2.csv"...
@@ -546,22 +546,22 @@ Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/h
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/parameters/parameters_fold-1.csv"...
 Evaluation result for test data (Fold 1):
 
-Example-wise F1         48.21
-Example-wise Jaccard    34.42
-Example-wise Precision  43.74
-Example-wise Recall     61.5
-Hamming Accuracy        92.4
-Hamming Loss             7.6
-Macro F1                19.74
-Macro Jaccard           13.34
-Macro Precision         33.21
-Macro Recall            22.46
-Micro F1                49.91
-Micro Jaccard           33.25
-Micro Precision         42.97
-Micro Recall            59.51
-Subset 0/1 Loss         99.53
-Subset Accuracy          0.47
+Example-wise F1 (↑)         48.21
+Example-wise Jaccard (↑)    34.42
+Example-wise Precision (↑)  43.74
+Example-wise Recall (↑)     61.5
+Hamming Accuracy (↑)        92.4
+Hamming Loss (↓)             7.6
+Macro F1 (↑)                19.74
+Macro Jaccard (↑)           13.34
+Macro Precision (↑)         33.21
+Macro Recall (↑)            22.46
+Micro F1 (↑)                49.91
+Micro Jaccard (↑)           33.25
+Micro Precision (↑)         42.97
+Micro Recall (↑)            59.51
+Subset 0/1 Loss (↓)         99.53
+Subset Accuracy (↑)          0.47
 
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/evaluation_test_fold-1.csv"...
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/prediction_characteristics_test_fold-1.csv"...
@@ -586,42 +586,42 @@ Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/h
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/parameters/parameters_fold-2.csv"...
 Evaluation result for test data (Fold 2):
 
-Example-wise F1         48.82
-Example-wise Jaccard    35.65
-Example-wise Precision  46.93
-Example-wise Recall     58
-Hamming Accuracy        92.89
-Hamming Loss             7.11
-Macro F1                18.53
-Macro Jaccard           12.1
-Macro Precision         28.91
-Macro Recall            20.46
-Micro F1                50.46
-Micro Jaccard           33.75
-Micro Precision         45.44
-Micro Recall            56.74
-Subset 0/1 Loss         97.77
-Subset Accuracy          2.23
+Example-wise F1 (↑)         48.82
+Example-wise Jaccard (↑)    35.65
+Example-wise Precision (↑)  46.93
+Example-wise Recall (↑)     58
+Hamming Accuracy (↑)        92.89
+Hamming Loss (↓)             7.11
+Macro F1 (↑)                18.53
+Macro Jaccard (↑)           12.1
+Macro Precision (↑)         28.91
+Macro Recall (↑)            20.46
+Micro F1 (↑)                50.46
+Micro Jaccard (↑)           33.75
+Micro Precision (↑)         45.44
+Micro Recall (↑)            56.74
+Subset 0/1 Loss (↓)         97.77
+Subset Accuracy (↑)          2.23
 
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/evaluation_test_fold-2.csv"...
 Evaluation result for test data (Average across 2 folds):
 
-Example-wise F1         48.52  ±0.30
-Example-wise Jaccard    35.04  ±0.61
-Example-wise Precision  45.34  ±1.60
-Example-wise Recall     59.75  ±1.75
-Hamming Accuracy        92.64  ±0.24
-Hamming Loss             7.36  ±0.24
-Macro F1                19.14  ±0.60
-Macro Jaccard           12.72  ±0.62
-Macro Precision         31.06  ±2.15
-Macro Recall            21.46  ±1.00
-Micro F1                50.18  ±0.28
-Micro Jaccard           33.5   ±0.25
-Micro Precision         44.2   ±1.24
-Micro Recall            58.12  ±1.39
-Subset 0/1 Loss         98.65  ±0.88
-Subset Accuracy          1.35  ±0.88
+Example-wise F1 (↑)         48.52  ±0.30
+Example-wise Jaccard (↑)    35.04  ±0.61
+Example-wise Precision (↑)  45.34  ±1.60
+Example-wise Recall (↑)     59.75  ±1.75
+Hamming Accuracy (↑)        92.64  ±0.24
+Hamming Loss (↓)             7.36  ±0.24
+Macro F1 (↑)                19.14  ±0.60
+Macro Jaccard (↑)           12.72  ±0.62
+Macro Precision (↑)         31.06  ±2.15
+Macro Recall (↑)            21.46  ±1.00
+Micro F1 (↑)                50.18  ±0.28
+Micro Jaccard (↑)           33.5   ±0.25
+Micro Precision (↑)         44.2   ±1.24
+Micro Recall (↑)            58.12  ±1.39
+Subset 0/1 Loss (↓)         98.65  ±0.88
+Subset Accuracy (↑)          1.35  ±0.88
 
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/evaluation_test.csv"...
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/prediction_characteristics_test_fold-2.csv"...
@@ -650,22 +650,22 @@ Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-r
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/parameters/parameters_fold-1.csv"...
 Evaluation result for test data (Fold 1):
 
-Example-wise F1         41.89
-Example-wise Jaccard    29.7
-Example-wise Precision  41.2
-Example-wise Recall     48.06
-Hamming Accuracy        92.33
-Hamming Loss             7.67
-Macro F1                12.32
-Macro Jaccard            8.81
-Macro Precision         72.62
-Macro Recall            16.93
-Micro F1                47.12
-Micro Jaccard           30.82
-Micro Precision         41.98
-Micro Recall            53.69
-Subset 0/1 Loss         99.76
-Subset Accuracy          0.24
+Example-wise F1 (↑)         41.89
+Example-wise Jaccard (↑)    29.7
+Example-wise Precision (↑)  41.2
+Example-wise Recall (↑)     48.06
+Hamming Accuracy (↑)        92.33
+Hamming Loss (↓)             7.67
+Macro F1 (↑)                12.32
+Macro Jaccard (↑)            8.81
+Macro Precision (↑)         72.62
+Macro Recall (↑)            16.93
+Micro F1 (↑)                47.12
+Micro Jaccard (↑)           30.82
+Micro Precision (↑)         41.98
+Micro Recall (↑)            53.69
+Subset 0/1 Loss (↓)         99.76
+Subset Accuracy (↑)          0.24
 
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results/evaluation_test_fold-1.csv"...
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results/prediction_characteristics_test_fold-1.csv"...
@@ -690,42 +690,42 @@ Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-r
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/parameters/parameters_fold-2.csv"...
 Evaluation result for test data (Fold 2):
 
-Example-wise F1         43.2
-Example-wise Jaccard    31.22
-Example-wise Precision  44.77
-Example-wise Recall     46.99
-Hamming Accuracy        93.09
-Hamming Loss             6.91
-Macro F1                10.51
-Macro Jaccard            7.03
-Macro Precision         72.96
-Macro Recall            14.41
-Micro F1                49.05
-Micro Jaccard           32.5
-Micro Precision         46.35
-Micro Recall            52.08
-Subset 0/1 Loss         99.65
-Subset Accuracy          0.35
+Example-wise F1 (↑)         43.2
+Example-wise Jaccard (↑)    31.22
+Example-wise Precision (↑)  44.77
+Example-wise Recall (↑)     46.99
+Hamming Accuracy (↑)        93.09
+Hamming Loss (↓)             6.91
+Macro F1 (↑)                10.51
+Macro Jaccard (↑)            7.03
+Macro Precision (↑)         72.96
+Macro Recall (↑)            14.41
+Micro F1 (↑)                49.05
+Micro Jaccard (↑)           32.5
+Micro Precision (↑)         46.35
+Micro Recall (↑)            52.08
+Subset 0/1 Loss (↓)         99.65
+Subset Accuracy (↑)          0.35
 
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results/evaluation_test_fold-2.csv"...
 Evaluation result for test data (Average across 2 folds):
 
-Example-wise F1         42.55  ±0.66
-Example-wise Jaccard    30.46  ±0.76
-Example-wise Precision  42.98  ±1.78
-Example-wise Recall     47.52  ±0.53
-Hamming Accuracy        92.71  ±0.38
-Hamming Loss             7.29  ±0.38
-Macro F1                11.42  ±0.90
-Macro Jaccard            7.92  ±0.89
-Macro Precision         72.79  ±0.17
-Macro Recall            15.67  ±1.26
-Micro F1                48.08  ±0.97
-Micro Jaccard           31.66  ±0.84
-Micro Precision         44.17  ±2.19
-Micro Recall            52.89  ±0.81
-Subset 0/1 Loss         99.71  ±0.06
-Subset Accuracy          0.29  ±0.06
+Example-wise F1 (↑)         42.55  ±0.66
+Example-wise Jaccard (↑)    30.46  ±0.76
+Example-wise Precision (↑)  42.98  ±1.78
+Example-wise Recall (↑)     47.52  ±0.53
+Hamming Accuracy (↑)        92.71  ±0.38
+Hamming Loss (↓)             7.29  ±0.38
+Macro F1 (↑)                11.42  ±0.90
+Macro Jaccard (↑)            7.92  ±0.89
+Macro Precision (↑)         72.79  ±0.17
+Macro Recall (↑)            15.67  ±1.26
+Micro F1 (↑)                48.08  ±0.97
+Micro Jaccard (↑)           31.66  ±0.84
+Micro Precision (↑)         44.17  ±2.19
+Micro Recall (↑)            52.89  ±0.81
+Subset 0/1 Loss (↓)         99.71  ±0.06
+Subset Accuracy (↑)          0.29  ±0.06
 
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results/evaluation_test.csv"...
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results/prediction_characteristics_test_fold-2.csv"...
@@ -754,22 +754,22 @@ Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-r
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/parameters/parameters_fold-1.csv"...
 Evaluation result for test data (Fold 1):
 
-Example-wise F1         52.37
-Example-wise Jaccard    38.82
-Example-wise Precision  51.37
-Example-wise Recall     59.04
-Hamming Accuracy        94.05
-Hamming Loss             5.95
-Macro F1                14.17
-Macro Jaccard           10.51
-Macro Precision         87.5
-Macro Recall            15.57
-Micro F1                55.83
-Micro Jaccard           38.72
-Micro Precision         52.9
-Micro Recall            59.09
-Subset 0/1 Loss         99.18
-Subset Accuracy          0.82
+Example-wise F1 (↑)         52.37
+Example-wise Jaccard (↑)    38.82
+Example-wise Precision (↑)  51.37
+Example-wise Recall (↑)     59.04
+Hamming Accuracy (↑)        94.05
+Hamming Loss (↓)             5.95
+Macro F1 (↑)                14.17
+Macro Jaccard (↑)           10.51
+Macro Precision (↑)         87.5
+Macro Recall (↑)            15.57
+Micro F1 (↑)                55.83
+Micro Jaccard (↑)           38.72
+Micro Precision (↑)         52.9
+Micro Recall (↑)            59.09
+Subset 0/1 Loss (↓)         99.18
+Subset Accuracy (↑)          0.82
 
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/evaluation_test_fold-1.csv"...
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/prediction_characteristics_test_fold-1.csv"...
@@ -794,42 +794,42 @@ Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-r
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/parameters/parameters_fold-2.csv"...
 Evaluation result for test data (Fold 2):
 
-Example-wise F1         52.51
-Example-wise Jaccard    39.39
-Example-wise Precision  52.83
-Example-wise Recall     57.83
-Hamming Accuracy        94.1
-Hamming Loss             5.9
-Macro F1                11.99
-Macro Jaccard            8.52
-Macro Precision         87.48
-Macro Recall            13.31
-Micro F1                55.12
-Micro Jaccard           38.05
-Micro Precision         53.57
-Micro Recall            56.77
-Subset 0/1 Loss         97.88
-Subset Accuracy          2.12
+Example-wise F1 (↑)         52.51
+Example-wise Jaccard (↑)    39.39
+Example-wise Precision (↑)  52.83
+Example-wise Recall (↑)     57.83
+Hamming Accuracy (↑)        94.1
+Hamming Loss (↓)             5.9
+Macro F1 (↑)                11.99
+Macro Jaccard (↑)            8.52
+Macro Precision (↑)         87.48
+Macro Recall (↑)            13.31
+Micro F1 (↑)                55.12
+Micro Jaccard (↑)           38.05
+Micro Precision (↑)         53.57
+Micro Recall (↑)            56.77
+Subset 0/1 Loss (↓)         97.88
+Subset Accuracy (↑)          2.12
 
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/evaluation_test_fold-2.csv"...
 Evaluation result for test data (Average across 2 folds):
 
-Example-wise F1         52.44  ±0.07
-Example-wise Jaccard    39.11  ±0.28
-Example-wise Precision  52.1   ±0.73
-Example-wise Recall     58.44  ±0.61
-Hamming Accuracy        94.07  ±0.02
-Hamming Loss             5.93  ±0.02
-Macro F1                13.08  ±1.09
-Macro Jaccard            9.52  ±1.00
-Macro Precision         87.49  ±0.01
-Macro Recall            14.44  ±1.13
-Micro F1                55.48  ±0.35
-Micro Jaccard           38.39  ±0.34
-Micro Precision         53.24  ±0.34
-Micro Recall            57.93  ±1.16
-Subset 0/1 Loss         98.53  ±0.65
-Subset Accuracy          1.47  ±0.65
+Example-wise F1 (↑)         52.44  ±0.07
+Example-wise Jaccard (↑)    39.11  ±0.28
+Example-wise Precision (↑)  52.1   ±0.73
+Example-wise Recall (↑)     58.44  ±0.61
+Hamming Accuracy (↑)        94.07  ±0.02
+Hamming Loss (↓)             5.93  ±0.02
+Macro F1 (↑)                13.08  ±1.09
+Macro Jaccard (↑)            9.52  ±1.00
+Macro Precision (↑)         87.49  ±0.01
+Macro Recall (↑)            14.44  ±1.13
+Micro F1 (↑)                55.48  ±0.35
+Micro Jaccard (↑)           38.39  ±0.34
+Micro Precision (↑)         53.24  ±0.34
+Micro Recall (↑)            57.93  ±1.16
+Subset 0/1 Loss (↓)         98.53  ±0.65
+Subset Accuracy (↑)          1.47  ±0.65
 
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/evaluation_test.csv"...
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/prediction_characteristics_test_fold-2.csv"...
@@ -840,328 +840,328 @@ Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-r
 Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/model_characteristics_fold-2.csv"...
 Evaluation results of several experiments for test data:
 
-Evaluation results for measure "Example-wise F1":
+Evaluation results for measure "Example-wise F1 (↑)":
 
-feature_format    heuristic    instance_sampling                    Example-wise F1  Std.-dev.      Rank
-----------------  -----------  ---------------------------------  -----------------  -----------  ------
-"emotions"
-----------------  -----------  ---------------------------------  -----------------  -----------  ------
-                  f-measure    none                                           47.57  ±3.24             1
-sparse            m-estimate   none                                           50.75  ±1.86             3
-                  f-measure    with-replacement{sample_size=0.5}              50.44  ±1.20             2
-sparse            m-estimate   with-replacement{sample_size=0.5}              52.52  ±1.91             4
-----------------  -----------  ---------------------------------  -----------------  -----------  ------
-"enron"
-----------------  -----------  ---------------------------------  -----------------  -----------  ------
-                  f-measure    none                                           48.02  ±1.65             2
-sparse            m-estimate   none                                           48.52  ±0.30             3
-                  f-measure    with-replacement{sample_size=0.5}              42.55  ±0.66             1
-sparse            m-estimate   with-replacement{sample_size=0.5}              52.44  ±0.07             4
-
-Evaluation results for measure "Example-wise Jaccard":
-
-feature_format    heuristic    instance_sampling                    Example-wise Jaccard  Std.-dev.      Rank
-----------------  -----------  ---------------------------------  ----------------------  -----------  ------
-"emotions"
-----------------  -----------  ---------------------------------  ----------------------  -----------  ------
-                  f-measure    none                                                38.15  ±2.46             1
-sparse            m-estimate   none                                                41.71  ±1.47             3
-                  f-measure    with-replacement{sample_size=0.5}                   41.55  ±1.35             2
-sparse            m-estimate   with-replacement{sample_size=0.5}                   43.85  ±2.06             4
-----------------  -----------  ---------------------------------  ----------------------  -----------  ------
-"enron"
-----------------  -----------  ---------------------------------  ----------------------  -----------  ------
-                  f-measure    none                                                34.93  ±0.84             2
-sparse            m-estimate   none                                                35.04  ±0.61             3
-                  f-measure    with-replacement{sample_size=0.5}                   30.46  ±0.76             1
-sparse            m-estimate   with-replacement{sample_size=0.5}                   39.11  ±0.28             4
-
-Evaluation results for measure "Example-wise Precision":
-
-feature_format    heuristic    instance_sampling                    Example-wise Precision  Std.-dev.      Rank
-----------------  -----------  ---------------------------------  ------------------------  -----------  ------
-"emotions"
-----------------  -----------  ---------------------------------  ------------------------  -----------  ------
-                  f-measure    none                                                  60.68  ±0.23             2
-sparse            m-estimate   none                                                  61.56  ±1.05             4
-                  f-measure    with-replacement{sample_size=0.5}                     60.16  ±0.57             1
-sparse            m-estimate   with-replacement{sample_size=0.5}                     61.2   ±1.85             3
-----------------  -----------  ---------------------------------  ------------------------  -----------  ------
-"enron"
-----------------  -----------  ---------------------------------  ------------------------  -----------  ------
-                  f-measure    none                                                  48.89  ±1.37             3
-sparse            m-estimate   none                                                  45.34  ±1.60             2
-                  f-measure    with-replacement{sample_size=0.5}                     42.98  ±1.78             1
-sparse            m-estimate   with-replacement{sample_size=0.5}                     52.1   ±0.73             4
-
-Evaluation results for measure "Example-wise Recall":
-
-feature_format    heuristic    instance_sampling                    Example-wise Recall  Std.-dev.      Rank
+feature_format    heuristic    instance_sampling                    Example-wise F1 (↑)  Std.-dev.      Rank
 ----------------  -----------  ---------------------------------  ---------------------  -----------  ------
 "emotions"
 ----------------  -----------  ---------------------------------  ---------------------  -----------  ------
-                  f-measure    none                                               56.32  ±3.95             2
-sparse            m-estimate   none                                               56.07  ±1.23             1
-                  f-measure    with-replacement{sample_size=0.5}                  57.34  ±0.27             4
-sparse            m-estimate   with-replacement{sample_size=0.5}                  56.74  ±1.00             3
+                  f-measure    none                                               47.57  ±3.24             4
+sparse            m-estimate   none                                               50.75  ±1.86             2
+                  f-measure    with-replacement{sample_size=0.5}                  50.44  ±1.20             3
+sparse            m-estimate   with-replacement{sample_size=0.5}                  52.52  ±1.91             1
 ----------------  -----------  ---------------------------------  ---------------------  -----------  ------
 "enron"
 ----------------  -----------  ---------------------------------  ---------------------  -----------  ------
-                  f-measure    none                                               54.86  ±4.72             2
-sparse            m-estimate   none                                               59.75  ±1.75             4
-                  f-measure    with-replacement{sample_size=0.5}                  47.52  ±0.53             1
-sparse            m-estimate   with-replacement{sample_size=0.5}                  58.44  ±0.61             3
+                  f-measure    none                                               48.02  ±1.65             3
+sparse            m-estimate   none                                               48.52  ±0.30             2
+                  f-measure    with-replacement{sample_size=0.5}                  42.55  ±0.66             4
+sparse            m-estimate   with-replacement{sample_size=0.5}                  52.44  ±0.07             1
 
-Evaluation results for measure "Hamming Accuracy":
+Evaluation results for measure "Example-wise Jaccard (↑)":
 
-feature_format    heuristic    instance_sampling                    Hamming Accuracy  Std.-dev.      Rank
+feature_format    heuristic    instance_sampling                    Example-wise Jaccard (↑)  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  --------------------------  -----------  ------
+"emotions"
+----------------  -----------  ---------------------------------  --------------------------  -----------  ------
+                  f-measure    none                                                    38.15  ±2.46             4
+sparse            m-estimate   none                                                    41.71  ±1.47             2
+                  f-measure    with-replacement{sample_size=0.5}                       41.55  ±1.35             3
+sparse            m-estimate   with-replacement{sample_size=0.5}                       43.85  ±2.06             1
+----------------  -----------  ---------------------------------  --------------------------  -----------  ------
+"enron"
+----------------  -----------  ---------------------------------  --------------------------  -----------  ------
+                  f-measure    none                                                    34.93  ±0.84             3
+sparse            m-estimate   none                                                    35.04  ±0.61             2
+                  f-measure    with-replacement{sample_size=0.5}                       30.46  ±0.76             4
+sparse            m-estimate   with-replacement{sample_size=0.5}                       39.11  ±0.28             1
+
+Evaluation results for measure "Example-wise Precision (↑)":
+
+feature_format    heuristic    instance_sampling                    Example-wise Precision (↑)  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  ----------------------------  -----------  ------
+"emotions"
+----------------  -----------  ---------------------------------  ----------------------------  -----------  ------
+                  f-measure    none                                                      60.68  ±0.23             3
+sparse            m-estimate   none                                                      61.56  ±1.05             1
+                  f-measure    with-replacement{sample_size=0.5}                         60.16  ±0.57             4
+sparse            m-estimate   with-replacement{sample_size=0.5}                         61.2   ±1.85             2
+----------------  -----------  ---------------------------------  ----------------------------  -----------  ------
+"enron"
+----------------  -----------  ---------------------------------  ----------------------------  -----------  ------
+                  f-measure    none                                                      48.89  ±1.37             2
+sparse            m-estimate   none                                                      45.34  ±1.60             3
+                  f-measure    with-replacement{sample_size=0.5}                         42.98  ±1.78             4
+sparse            m-estimate   with-replacement{sample_size=0.5}                         52.1   ±0.73             1
+
+Evaluation results for measure "Example-wise Recall (↑)":
+
+feature_format    heuristic    instance_sampling                    Example-wise Recall (↑)  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  -------------------------  -----------  ------
+"emotions"
+----------------  -----------  ---------------------------------  -------------------------  -----------  ------
+                  f-measure    none                                                   56.32  ±3.95             3
+sparse            m-estimate   none                                                   56.07  ±1.23             4
+                  f-measure    with-replacement{sample_size=0.5}                      57.34  ±0.27             1
+sparse            m-estimate   with-replacement{sample_size=0.5}                      56.74  ±1.00             2
+----------------  -----------  ---------------------------------  -------------------------  -----------  ------
+"enron"
+----------------  -----------  ---------------------------------  -------------------------  -----------  ------
+                  f-measure    none                                                   54.86  ±4.72             3
+sparse            m-estimate   none                                                   59.75  ±1.75             1
+                  f-measure    with-replacement{sample_size=0.5}                      47.52  ±0.53             4
+sparse            m-estimate   with-replacement{sample_size=0.5}                      58.44  ±0.61             2
+
+Evaluation results for measure "Hamming Accuracy (↑)":
+
+feature_format    heuristic    instance_sampling                    Hamming Accuracy (↑)  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  ----------------------  -----------  ------
+"emotions"
+----------------  -----------  ---------------------------------  ----------------------  -----------  ------
+                  f-measure    none                                                69.84  ±0.65             4
+sparse            m-estimate   none                                                72.99  ±0.24             2
+                  f-measure    with-replacement{sample_size=0.5}                   72.15  ±0.13             3
+sparse            m-estimate   with-replacement{sample_size=0.5}                   74.28  ±0.58             1
+----------------  -----------  ---------------------------------  ----------------------  -----------  ------
+"enron"
+----------------  -----------  ---------------------------------  ----------------------  -----------  ------
+                  f-measure    none                                                93.28  ±0.15             2
+sparse            m-estimate   none                                                92.64  ±0.24             4
+                  f-measure    with-replacement{sample_size=0.5}                   92.71  ±0.38             3
+sparse            m-estimate   with-replacement{sample_size=0.5}                   94.07  ±0.02             1
+
+Evaluation results for measure "Hamming Loss (↓)":
+
+feature_format    heuristic    instance_sampling                    Hamming Loss (↓)  Std.-dev.      Rank
 ----------------  -----------  ---------------------------------  ------------------  -----------  ------
 "emotions"
 ----------------  -----------  ---------------------------------  ------------------  -----------  ------
-                  f-measure    none                                            69.84  ±0.65             1
-sparse            m-estimate   none                                            72.99  ±0.24             3
-                  f-measure    with-replacement{sample_size=0.5}               72.15  ±0.13             2
-sparse            m-estimate   with-replacement{sample_size=0.5}               74.28  ±0.58             4
+                  f-measure    none                                            30.16  ±0.65             4
+sparse            m-estimate   none                                            27.01  ±0.24             2
+                  f-measure    with-replacement{sample_size=0.5}               27.85  ±0.13             3
+sparse            m-estimate   with-replacement{sample_size=0.5}               25.72  ±0.58             1
 ----------------  -----------  ---------------------------------  ------------------  -----------  ------
 "enron"
 ----------------  -----------  ---------------------------------  ------------------  -----------  ------
-                  f-measure    none                                            93.28  ±0.15             3
-sparse            m-estimate   none                                            92.64  ±0.24             1
-                  f-measure    with-replacement{sample_size=0.5}               92.71  ±0.38             2
-sparse            m-estimate   with-replacement{sample_size=0.5}               94.07  ±0.02             4
+                  f-measure    none                                             6.72  ±0.15             2
+sparse            m-estimate   none                                             7.36  ±0.24             4
+                  f-measure    with-replacement{sample_size=0.5}                7.29  ±0.38             3
+sparse            m-estimate   with-replacement{sample_size=0.5}                5.93  ±0.02             1
 
-Evaluation results for measure "Hamming Loss":
+Evaluation results for measure "Macro F1 (↑)":
 
-feature_format    heuristic    instance_sampling                    Hamming Loss  Std.-dev.      Rank
+feature_format    heuristic    instance_sampling                    Macro F1 (↑)  Std.-dev.      Rank
 ----------------  -----------  ---------------------------------  --------------  -----------  ------
 "emotions"
 ----------------  -----------  ---------------------------------  --------------  -----------  ------
-                  f-measure    none                                        30.16  ±0.65             4
-sparse            m-estimate   none                                        27.01  ±0.24             2
-                  f-measure    with-replacement{sample_size=0.5}           27.85  ±0.13             3
-sparse            m-estimate   with-replacement{sample_size=0.5}           25.72  ±0.58             1
+                  f-measure    none                                        52.67  ±1.94             3
+sparse            m-estimate   none                                        55.46  ±1.47             2
+                  f-measure    with-replacement{sample_size=0.5}           50.47  ±1.11             4
+sparse            m-estimate   with-replacement{sample_size=0.5}           56.36  ±2.10             1
 ----------------  -----------  ---------------------------------  --------------  -----------  ------
 "enron"
 ----------------  -----------  ---------------------------------  --------------  -----------  ------
-                  f-measure    none                                         6.72  ±0.15             2
-sparse            m-estimate   none                                         7.36  ±0.24             4
-                  f-measure    with-replacement{sample_size=0.5}            7.29  ±0.38             3
-sparse            m-estimate   with-replacement{sample_size=0.5}            5.93  ±0.02             1
+                  f-measure    none                                        17.2   ±0.78             2
+sparse            m-estimate   none                                        19.14  ±0.60             1
+                  f-measure    with-replacement{sample_size=0.5}           11.42  ±0.90             4
+sparse            m-estimate   with-replacement{sample_size=0.5}           13.08  ±1.09             3
 
-Evaluation results for measure "Macro F1":
+Evaluation results for measure "Macro Jaccard (↑)":
 
-feature_format    heuristic    instance_sampling                    Macro F1  Std.-dev.      Rank
-----------------  -----------  ---------------------------------  ----------  -----------  ------
+feature_format    heuristic    instance_sampling                    Macro Jaccard (↑)  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  -------------------  -----------  ------
 "emotions"
-----------------  -----------  ---------------------------------  ----------  -----------  ------
-                  f-measure    none                                    52.67  ±1.94             2
-sparse            m-estimate   none                                    55.46  ±1.47             3
-                  f-measure    with-replacement{sample_size=0.5}       50.47  ±1.11             1
-sparse            m-estimate   with-replacement{sample_size=0.5}       56.36  ±2.10             4
-----------------  -----------  ---------------------------------  ----------  -----------  ------
+----------------  -----------  ---------------------------------  -------------------  -----------  ------
+                  f-measure    none                                             36.81  ±2.05             3
+sparse            m-estimate   none                                             39.13  ±1.47             2
+                  f-measure    with-replacement{sample_size=0.5}                36.27  ±1.13             4
+sparse            m-estimate   with-replacement{sample_size=0.5}                40.39  ±1.66             1
+----------------  -----------  ---------------------------------  -------------------  -----------  ------
 "enron"
-----------------  -----------  ---------------------------------  ----------  -----------  ------
-                  f-measure    none                                    17.2   ±0.78             3
-sparse            m-estimate   none                                    19.14  ±0.60             4
-                  f-measure    with-replacement{sample_size=0.5}       11.42  ±0.90             1
-sparse            m-estimate   with-replacement{sample_size=0.5}       13.08  ±1.09             2
+----------------  -----------  ---------------------------------  -------------------  -----------  ------
+                  f-measure    none                                             11.57  ±0.93             2
+sparse            m-estimate   none                                             12.72  ±0.62             1
+                  f-measure    with-replacement{sample_size=0.5}                 7.92  ±0.89             4
+sparse            m-estimate   with-replacement{sample_size=0.5}                 9.52  ±1.00             3
 
-Evaluation results for measure "Macro Jaccard":
+Evaluation results for measure "Macro Precision (↑)":
 
-feature_format    heuristic    instance_sampling                    Macro Jaccard  Std.-dev.      Rank
-----------------  -----------  ---------------------------------  ---------------  -----------  ------
+feature_format    heuristic    instance_sampling                    Macro Precision (↑)  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  ---------------------  -----------  ------
 "emotions"
-----------------  -----------  ---------------------------------  ---------------  -----------  ------
-                  f-measure    none                                         36.81  ±2.05             2
-sparse            m-estimate   none                                         39.13  ±1.47             3
-                  f-measure    with-replacement{sample_size=0.5}            36.27  ±1.13             1
-sparse            m-estimate   with-replacement{sample_size=0.5}            40.39  ±1.66             4
-----------------  -----------  ---------------------------------  ---------------  -----------  ------
+----------------  -----------  ---------------------------------  ---------------------  -----------  ------
+                  f-measure    none                                               50.83  ±0.14             4
+sparse            m-estimate   none                                               56.48  ±1.40             3
+                  f-measure    with-replacement{sample_size=0.5}                  64.08  ±1.39             1
+sparse            m-estimate   with-replacement{sample_size=0.5}                  57.9   ±2.98             2
+----------------  -----------  ---------------------------------  ---------------------  -----------  ------
 "enron"
-----------------  -----------  ---------------------------------  ---------------  -----------  ------
-                  f-measure    none                                         11.57  ±0.93             3
-sparse            m-estimate   none                                         12.72  ±0.62             4
-                  f-measure    with-replacement{sample_size=0.5}             7.92  ±0.89             1
-sparse            m-estimate   with-replacement{sample_size=0.5}             9.52  ±1.00             2
+----------------  -----------  ---------------------------------  ---------------------  -----------  ------
+                  f-measure    none                                               39.13  ±3.53             3
+sparse            m-estimate   none                                               31.06  ±2.15             4
+                  f-measure    with-replacement{sample_size=0.5}                  72.79  ±0.17             2
+sparse            m-estimate   with-replacement{sample_size=0.5}                  87.49  ±0.01             1
 
-Evaluation results for measure "Macro Precision":
+Evaluation results for measure "Macro Recall (↑)":
 
-feature_format    heuristic    instance_sampling                    Macro Precision  Std.-dev.      Rank
-----------------  -----------  ---------------------------------  -----------------  -----------  ------
+feature_format    heuristic    instance_sampling                    Macro Recall (↑)  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  ------------------  -----------  ------
 "emotions"
-----------------  -----------  ---------------------------------  -----------------  -----------  ------
-                  f-measure    none                                           50.83  ±0.14             1
-sparse            m-estimate   none                                           56.48  ±1.40             2
-                  f-measure    with-replacement{sample_size=0.5}              64.08  ±1.39             4
-sparse            m-estimate   with-replacement{sample_size=0.5}              57.9   ±2.98             3
-----------------  -----------  ---------------------------------  -----------------  -----------  ------
+----------------  -----------  ---------------------------------  ------------------  -----------  ------
+                  f-measure    none                                            55.11  ±3.83             3
+sparse            m-estimate   none                                            54.68  ±1.45             4
+                  f-measure    with-replacement{sample_size=0.5}               57.19  ±0.11             1
+sparse            m-estimate   with-replacement{sample_size=0.5}               56.81  ±1.24             2
+----------------  -----------  ---------------------------------  ------------------  -----------  ------
 "enron"
-----------------  -----------  ---------------------------------  -----------------  -----------  ------
-                  f-measure    none                                           39.13  ±3.53             2
-sparse            m-estimate   none                                           31.06  ±2.15             1
-                  f-measure    with-replacement{sample_size=0.5}              72.79  ±0.17             3
-sparse            m-estimate   with-replacement{sample_size=0.5}              87.49  ±0.01             4
+----------------  -----------  ---------------------------------  ------------------  -----------  ------
+                  f-measure    none                                            17.42  ±1.43             2
+sparse            m-estimate   none                                            21.46  ±1.00             1
+                  f-measure    with-replacement{sample_size=0.5}               15.67  ±1.26             3
+sparse            m-estimate   with-replacement{sample_size=0.5}               14.44  ±1.13             4
 
-Evaluation results for measure "Macro Recall":
+Evaluation results for measure "Micro F1 (↑)":
 
-feature_format    heuristic    instance_sampling                    Macro Recall  Std.-dev.      Rank
+feature_format    heuristic    instance_sampling                    Micro F1 (↑)  Std.-dev.      Rank
 ----------------  -----------  ---------------------------------  --------------  -----------  ------
 "emotions"
 ----------------  -----------  ---------------------------------  --------------  -----------  ------
-                  f-measure    none                                        55.11  ±3.83             2
-sparse            m-estimate   none                                        54.68  ±1.45             1
-                  f-measure    with-replacement{sample_size=0.5}           57.19  ±0.11             4
-sparse            m-estimate   with-replacement{sample_size=0.5}           56.81  ±1.24             3
+                  f-measure    none                                        53.51  ±1.67             4
+sparse            m-estimate   none                                        56.07  ±1.30             3
+                  f-measure    with-replacement{sample_size=0.5}           56.57  ±1.06             2
+sparse            m-estimate   with-replacement{sample_size=0.5}           58.42  ±1.22             1
 ----------------  -----------  ---------------------------------  --------------  -----------  ------
 "enron"
 ----------------  -----------  ---------------------------------  --------------  -----------  ------
-                  f-measure    none                                        17.42  ±1.43             3
-sparse            m-estimate   none                                        21.46  ±1.00             4
-                  f-measure    with-replacement{sample_size=0.5}           15.67  ±1.26             2
-sparse            m-estimate   with-replacement{sample_size=0.5}           14.44  ±1.13             1
+                  f-measure    none                                        50.6   ±1.07             2
+sparse            m-estimate   none                                        50.18  ±0.28             3
+                  f-measure    with-replacement{sample_size=0.5}           48.08  ±0.97             4
+sparse            m-estimate   with-replacement{sample_size=0.5}           55.48  ±0.35             1
 
-Evaluation results for measure "Micro F1":
+Evaluation results for measure "Micro Jaccard (↑)":
 
-feature_format    heuristic    instance_sampling                    Micro F1  Std.-dev.      Rank
-----------------  -----------  ---------------------------------  ----------  -----------  ------
+feature_format    heuristic    instance_sampling                    Micro Jaccard (↑)  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  -------------------  -----------  ------
 "emotions"
-----------------  -----------  ---------------------------------  ----------  -----------  ------
-                  f-measure    none                                    53.51  ±1.67             1
-sparse            m-estimate   none                                    56.07  ±1.30             2
-                  f-measure    with-replacement{sample_size=0.5}       56.57  ±1.06             3
-sparse            m-estimate   with-replacement{sample_size=0.5}       58.42  ±1.22             4
-----------------  -----------  ---------------------------------  ----------  -----------  ------
+----------------  -----------  ---------------------------------  -------------------  -----------  ------
+                  f-measure    none                                             36.55  ±1.56             4
+sparse            m-estimate   none                                             38.97  ±1.26             3
+                  f-measure    with-replacement{sample_size=0.5}                39.45  ±1.03             2
+sparse            m-estimate   with-replacement{sample_size=0.5}                41.27  ±1.22             1
+----------------  -----------  ---------------------------------  -------------------  -----------  ------
 "enron"
-----------------  -----------  ---------------------------------  ----------  -----------  ------
-                  f-measure    none                                    50.6   ±1.07             3
-sparse            m-estimate   none                                    50.18  ±0.28             2
-                  f-measure    with-replacement{sample_size=0.5}       48.08  ±0.97             1
-sparse            m-estimate   with-replacement{sample_size=0.5}       55.48  ±0.35             4
+----------------  -----------  ---------------------------------  -------------------  -----------  ------
+                  f-measure    none                                             33.88  ±0.96             2
+sparse            m-estimate   none                                             33.5   ±0.25             3
+                  f-measure    with-replacement{sample_size=0.5}                31.66  ±0.84             4
+sparse            m-estimate   with-replacement{sample_size=0.5}                38.39  ±0.34             1
 
-Evaluation results for measure "Micro Jaccard":
+Evaluation results for measure "Micro Precision (↑)":
 
-feature_format    heuristic    instance_sampling                    Micro Jaccard  Std.-dev.      Rank
-----------------  -----------  ---------------------------------  ---------------  -----------  ------
+feature_format    heuristic    instance_sampling                    Micro Precision (↑)  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  ---------------------  -----------  ------
 "emotions"
-----------------  -----------  ---------------------------------  ---------------  -----------  ------
-                  f-measure    none                                         36.55  ±1.56             1
-sparse            m-estimate   none                                         38.97  ±1.26             2
-                  f-measure    with-replacement{sample_size=0.5}            39.45  ±1.03             3
-sparse            m-estimate   with-replacement{sample_size=0.5}            41.27  ±1.22             4
-----------------  -----------  ---------------------------------  ---------------  -----------  ------
+----------------  -----------  ---------------------------------  ---------------------  -----------  ------
+                  f-measure    none                                               51.47  ±0.18             4
+sparse            m-estimate   none                                               56.77  ±1.28             2
+                  f-measure    with-replacement{sample_size=0.5}                  54.96  ±1.04             3
+sparse            m-estimate   with-replacement{sample_size=0.5}                  58.84  ±2.01             1
+----------------  -----------  ---------------------------------  ---------------------  -----------  ------
 "enron"
-----------------  -----------  ---------------------------------  ---------------  -----------  ------
-                  f-measure    none                                         33.88  ±0.96             3
-sparse            m-estimate   none                                         33.5   ±0.25             2
-                  f-measure    with-replacement{sample_size=0.5}            31.66  ±0.84             1
-sparse            m-estimate   with-replacement{sample_size=0.5}            38.39  ±0.34             4
+----------------  -----------  ---------------------------------  ---------------------  -----------  ------
+                  f-measure    none                                               47.72  ±0.90             2
+sparse            m-estimate   none                                               44.2   ±1.24             3
+                  f-measure    with-replacement{sample_size=0.5}                  44.17  ±2.19             4
+sparse            m-estimate   with-replacement{sample_size=0.5}                  53.24  ±0.34             1
 
-Evaluation results for measure "Micro Precision":
+Evaluation results for measure "Micro Recall (↑)":
 
-feature_format    heuristic    instance_sampling                    Micro Precision  Std.-dev.      Rank
-----------------  -----------  ---------------------------------  -----------------  -----------  ------
+feature_format    heuristic    instance_sampling                    Micro Recall (↑)  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  ------------------  -----------  ------
 "emotions"
-----------------  -----------  ---------------------------------  -----------------  -----------  ------
-                  f-measure    none                                           51.47  ±0.18             1
-sparse            m-estimate   none                                           56.77  ±1.28             3
-                  f-measure    with-replacement{sample_size=0.5}              54.96  ±1.04             2
-sparse            m-estimate   with-replacement{sample_size=0.5}              58.84  ±2.01             4
-----------------  -----------  ---------------------------------  -----------------  -----------  ------
+----------------  -----------  ---------------------------------  ------------------  -----------  ------
+                  f-measure    none                                            55.87  ±3.84             3
+sparse            m-estimate   none                                            55.39  ±1.33             4
+                  f-measure    with-replacement{sample_size=0.5}               58.28  ±1.08             1
+sparse            m-estimate   with-replacement{sample_size=0.5}               58.02  ±0.46             2
+----------------  -----------  ---------------------------------  ------------------  -----------  ------
 "enron"
-----------------  -----------  ---------------------------------  -----------------  -----------  ------
-                  f-measure    none                                           47.72  ±0.90             3
-sparse            m-estimate   none                                           44.2   ±1.24             2
-                  f-measure    with-replacement{sample_size=0.5}              44.17  ±2.19             1
-sparse            m-estimate   with-replacement{sample_size=0.5}              53.24  ±0.34             4
+----------------  -----------  ---------------------------------  ------------------  -----------  ------
+                  f-measure    none                                            54.08  ±3.59             3
+sparse            m-estimate   none                                            58.12  ±1.39             1
+                  f-measure    with-replacement{sample_size=0.5}               52.89  ±0.81             4
+sparse            m-estimate   with-replacement{sample_size=0.5}               57.93  ±1.16             2
 
-Evaluation results for measure "Micro Recall":
+Evaluation results for measure "Prediction Time (seconds)":
 
-feature_format    heuristic    instance_sampling                    Micro Recall  Std.-dev.      Rank
-----------------  -----------  ---------------------------------  --------------  -----------  ------
+feature_format    heuristic    instance_sampling                    Prediction Time (seconds)  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  ---------------------------  -----------  ------
 "emotions"
-----------------  -----------  ---------------------------------  --------------  -----------  ------
-                  f-measure    none                                        55.87  ±3.84             2
-sparse            m-estimate   none                                        55.39  ±1.33             1
-                  f-measure    with-replacement{sample_size=0.5}           58.28  ±1.08             4
-sparse            m-estimate   with-replacement{sample_size=0.5}           58.02  ±0.46             3
-----------------  -----------  ---------------------------------  --------------  -----------  ------
+----------------  -----------  ---------------------------------  ---------------------------  -----------  ------
+                  f-measure    none                                                      xxx
+sparse            m-estimate   none                                                      xxx
+                  f-measure    with-replacement{sample_size=xxx}                         xxx
+sparse            m-estimate   with-replacement{sample_size=xxx}                         xxx
+----------------  -----------  ---------------------------------  ---------------------------  -----------  ------
 "enron"
-----------------  -----------  ---------------------------------  --------------  -----------  ------
-                  f-measure    none                                        54.08  ±3.59             2
-sparse            m-estimate   none                                        58.12  ±1.39             4
-                  f-measure    with-replacement{sample_size=0.5}           52.89  ±0.81             1
-sparse            m-estimate   with-replacement{sample_size=0.5}           57.93  ±1.16             3
+----------------  -----------  ---------------------------------  ---------------------------  -----------  ------
+                  f-measure    none                                                      xxx
+sparse            m-estimate   none                                                      xxx
+                  f-measure    with-replacement{sample_size=xxx}                         xxx
+sparse            m-estimate   with-replacement{sample_size=xxx}                         xxx
 
-Evaluation results for measure "Prediction Time":
+Evaluation results for measure "Subset 0/1 Loss (↓)":
 
-feature_format    heuristic    instance_sampling                    Prediction Time  Std.-dev.      Rank
-----------------  -----------  ---------------------------------  -----------------  -----------  ------
+feature_format    heuristic    instance_sampling                    Subset 0/1 Loss (↓)  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  ---------------------  -----------  ------
 "emotions"
-----------------  -----------  ---------------------------------  -----------------  -----------  ------
-                  f-measure    none                                            xxx
-sparse            m-estimate   none                                            xxx
-                  f-measure    with-replacement{sample_size=xxx}               xxx
-sparse            m-estimate   with-replacement{sample_size=xxx}               xxx
-----------------  -----------  ---------------------------------  -----------------  -----------  ------
+----------------  -----------  ---------------------------------  ---------------------  -----------  ------
+                  f-measure    none                                               89.54  ±0.35             4
+sparse            m-estimate   none                                               84.65  ±0.14             2
+                  f-measure    with-replacement{sample_size=0.5}                  84.66  ±1.83             3
+sparse            m-estimate   with-replacement{sample_size=0.5}                  81.79  ±2.67             1
+----------------  -----------  ---------------------------------  ---------------------  -----------  ------
 "enron"
-----------------  -----------  ---------------------------------  -----------------  -----------  ------
-                  f-measure    none                                            xxx
-sparse            m-estimate   none                                            xxx
-                  f-measure    with-replacement{sample_size=xxx}               xxx
-sparse            m-estimate   with-replacement{sample_size=xxx}               xxx
+----------------  -----------  ---------------------------------  ---------------------  -----------  ------
+                  f-measure    none                                               98.47  ±0.71             1
+sparse            m-estimate   none                                               98.65  ±0.88             3
+                  f-measure    with-replacement{sample_size=0.5}                  99.71  ±0.06             4
+sparse            m-estimate   with-replacement{sample_size=0.5}                  98.53  ±0.65             2
 
-Evaluation results for measure "Subset 0/1 Loss":
+Evaluation results for measure "Subset Accuracy (↑)":
 
-feature_format    heuristic    instance_sampling                    Subset 0/1 Loss  Std.-dev.      Rank
-----------------  -----------  ---------------------------------  -----------------  -----------  ------
+feature_format    heuristic    instance_sampling                    Subset Accuracy (↑)  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  ---------------------  -----------  ------
 "emotions"
-----------------  -----------  ---------------------------------  -----------------  -----------  ------
-                  f-measure    none                                           89.54  ±0.35             4
-sparse            m-estimate   none                                           84.65  ±0.14             2
-                  f-measure    with-replacement{sample_size=0.5}              84.66  ±1.83             3
-sparse            m-estimate   with-replacement{sample_size=0.5}              81.79  ±2.67             1
-----------------  -----------  ---------------------------------  -----------------  -----------  ------
+----------------  -----------  ---------------------------------  ---------------------  -----------  ------
+                  f-measure    none                                               10.46  ±0.35             4
+sparse            m-estimate   none                                               15.35  ±0.14             2
+                  f-measure    with-replacement{sample_size=0.5}                  15.34  ±1.83             3
+sparse            m-estimate   with-replacement{sample_size=0.5}                  18.21  ±2.67             1
+----------------  -----------  ---------------------------------  ---------------------  -----------  ------
 "enron"
-----------------  -----------  ---------------------------------  -----------------  -----------  ------
-                  f-measure    none                                           98.47  ±0.71             1
-sparse            m-estimate   none                                           98.65  ±0.88             3
-                  f-measure    with-replacement{sample_size=0.5}              99.71  ±0.06             4
-sparse            m-estimate   with-replacement{sample_size=0.5}              98.53  ±0.65             2
+----------------  -----------  ---------------------------------  ---------------------  -----------  ------
+                  f-measure    none                                                1.53  ±0.71             1
+sparse            m-estimate   none                                                1.35  ±0.88             3
+                  f-measure    with-replacement{sample_size=0.5}                   0.29  ±0.06             4
+sparse            m-estimate   with-replacement{sample_size=0.5}                   1.47  ±0.65             2
 
-Evaluation results for measure "Subset Accuracy":
+Evaluation results for measure "Training Time (seconds)":
 
-feature_format    heuristic    instance_sampling                    Subset Accuracy  Std.-dev.      Rank
-----------------  -----------  ---------------------------------  -----------------  -----------  ------
+feature_format    heuristic    instance_sampling                    Training Time (seconds)  Std.-dev.      Rank
+----------------  -----------  ---------------------------------  -------------------------  -----------  ------
 "emotions"
-----------------  -----------  ---------------------------------  -----------------  -----------  ------
-                  f-measure    none                                           10.46  ±0.35             1
-sparse            m-estimate   none                                           15.35  ±0.14             3
-                  f-measure    with-replacement{sample_size=0.5}              15.34  ±1.83             2
-sparse            m-estimate   with-replacement{sample_size=0.5}              18.21  ±2.67             4
-----------------  -----------  ---------------------------------  -----------------  -----------  ------
+----------------  -----------  ---------------------------------  -------------------------  -----------  ------
+                  f-measure    none                                                    xxx
+sparse            m-estimate   none                                                    xxx
+                  f-measure    with-replacement{sample_size=xxx}                       xxx
+sparse            m-estimate   with-replacement{sample_size=xxx}                       xxx
+----------------  -----------  ---------------------------------  -------------------------  -----------  ------
 "enron"
-----------------  -----------  ---------------------------------  -----------------  -----------  ------
-                  f-measure    none                                            1.53  ±0.71             4
-sparse            m-estimate   none                                            1.35  ±0.88             2
-                  f-measure    with-replacement{sample_size=0.5}               0.29  ±0.06             1
-sparse            m-estimate   with-replacement{sample_size=0.5}               1.47  ±0.65             3
-
-Evaluation results for measure "Training Time":
-
-feature_format    heuristic    instance_sampling                    Training Time  Std.-dev.      Rank
-----------------  -----------  ---------------------------------  ---------------  -----------  ------
-"emotions"
-----------------  -----------  ---------------------------------  ---------------  -----------  ------
-                  f-measure    none                                          xxx
-sparse            m-estimate   none                                          xxx
-                  f-measure    with-replacement{sample_size=xxx}             xxx
-sparse            m-estimate   with-replacement{sample_size=xxx}             xxx
-----------------  -----------  ---------------------------------  ---------------  -----------  ------
-"enron"
-----------------  -----------  ---------------------------------  ---------------  -----------  ------
-                  f-measure    none                                          xxx
-sparse            m-estimate   none                                          xxx
-                  f-measure    with-replacement{sample_size=xxx}             xxx
-sparse            m-estimate   with-replacement{sample_size=xxx}             xxx
+----------------  -----------  ---------------------------------  -------------------------  -----------  ------
+                  f-measure    none                                                    xxx
+sparse            m-estimate   none                                                    xxx
+                  f-measure    with-replacement{sample_size=xxx}                       xxx
+sparse            m-estimate   with-replacement{sample_size=xxx}                       xxx
 
 Writing output data to file "python/tests/res/tmp/rerun/aggregated_evaluation_test.csv"...

@@ -25,22 +25,22 @@ Writing output data to file "python/tests/res/tmp/rerun/results/data_characteris
 Writing output data to file "python/tests/res/tmp/rerun/results/parameters.csv"...
 Evaluation result for test data:
 
-Example-wise F1         53.72
-Example-wise Jaccard    44.55
-Example-wise Precision  63.06
-Example-wise Recall     59.18
-Hamming Accuracy        72.96
-Hamming Loss            27.04
-Macro F1                50.95
-Macro Jaccard           36.98
-Macro Precision         64.57
-Macro Recall            56.59
-Micro F1                58.16
-Micro Jaccard           41
-Micro Precision         57.4
-Micro Recall            58.93
-Subset 0/1 Loss         81.63
-Subset Accuracy         18.37
+Example-wise F1 (↑)         53.72
+Example-wise Jaccard (↑)    44.55
+Example-wise Precision (↑)  63.06
+Example-wise Recall (↑)     59.18
+Hamming Accuracy (↑)        72.96
+Hamming Loss (↓)            27.04
+Macro F1 (↑)                50.95
+Macro Jaccard (↑)           36.98
+Macro Precision (↑)         64.57
+Macro Recall (↑)            56.59
+Micro F1 (↑)                58.16
+Micro Jaccard (↑)           41
+Micro Precision (↑)         57.4
+Micro Recall (↑)            58.93
+Subset 0/1 Loss (↓)         81.63
+Subset Accuracy (↑)         18.37
 
 Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...
 Writing output data to file "python/tests/res/tmp/rerun/results/prediction_characteristics_test.csv"...
