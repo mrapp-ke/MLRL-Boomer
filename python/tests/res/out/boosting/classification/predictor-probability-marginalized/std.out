@@ -16,15 +16,15 @@ A dense matrix is used to store the predicted probability estimates
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Coverage Error                    3.94
-Discounted Cumulative Gain        1.25
-Label Ranking Average Precision   0.63
-Mean Absolute Error               0.33
-Mean Absolute Percentage Error    4.40522e+14
-Mean Squared Error                0.22
-Median Absolute Error             0.22
-NDCG                             79.2
-Ranking Loss                      0.45
+Coverage Error (↓)                    3.94
+Discounted Cumulative Gain (↑)        1.25
+Label Ranking Average Precision (↑)   0.63
+Mean Absolute Error (↓)               0.33
+Mean Absolute Percentage Error (↓)    4.40522e+14
+Mean Squared Error (↓)                0.22
+Median Absolute Error (↓)             0.22
+NDCG (↑)                             79.2
+Ranking Loss (↓)                      0.45
 
 Ground truth for test data:
 

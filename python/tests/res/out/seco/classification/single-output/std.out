@@ -14,12 +14,12 @@ A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-0/1 Loss   37.89
-Accuracy   62.11
-F1         40
-Jaccard    25
-Precision  44.44
-Recall     36.36
+0/1 Loss (↓)   37.89
+Accuracy (↑)   62.11
+F1 (↑)         40
+Jaccard (↑)    25
+Precision (↑)  44.44
+Recall (↑)     36.36
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Successfully finished experiment after <duration>

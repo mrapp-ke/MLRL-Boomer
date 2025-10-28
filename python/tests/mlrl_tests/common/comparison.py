@@ -138,8 +138,8 @@ class TextFileComparison(FileComparison):
             return regex.sub(r'\d+(?:\.\d+)?(\s+(±)?\d+(?:\.\d+)?)*', 'xxx', line)
 
         if line in {
-                'Evaluation results for measure "Prediction Time":',
-                'Evaluation results for measure "Training Time":',
+                'Evaluation results for measure "Prediction Time (seconds)":',
+                'Evaluation results for measure "Training Time (seconds)":',
         }:
             self.block_of_durations = line_index
             return line
