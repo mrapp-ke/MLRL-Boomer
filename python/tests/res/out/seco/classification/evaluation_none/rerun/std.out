@@ -13,21 +13,21 @@ Not using separate training and test sets. The model will be evaluated on the tr
 Reading input data from file "python/tests/res/tmp/results/evaluation_training.csv"...
 Evaluation result for training data:
 
-Example-wise F1         66.41
-Example-wise Jaccard    57.36
-Example-wise Precision  75.11
-Example-wise Recall     69.59
-Hamming Accuracy        81.51
-Hamming Loss            18.49
-Macro F1                61.59
-Macro Jaccard           49.23
-Macro Precision         78.61
-Macro Recall            65.96
-Micro F1                69.84
-Micro Jaccard           53.66
-Micro Precision         70.95
-Micro Recall            68.77
-Subset 0/1 Loss         70.66
-Subset Accuracy         29.34
+Example-wise F1 (↑)         66.41
+Example-wise Jaccard (↑)    57.36
+Example-wise Precision (↑)  75.11
+Example-wise Recall (↑)     69.59
+Hamming Accuracy (↑)        81.51
+Hamming Loss (↓)            18.49
+Macro F1 (↑)                61.59
+Macro Jaccard (↑)           49.23
+Macro Precision (↑)         78.61
+Macro Recall (↑)            65.96
+Micro F1 (↑)                69.84
+Micro Jaccard (↑)           53.66
+Micro Precision (↑)         70.95
+Micro Recall (↑)            68.77
+Subset 0/1 Loss (↓)         70.66
+Subset Accuracy (↑)         29.34
 
 Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_training.csv"...

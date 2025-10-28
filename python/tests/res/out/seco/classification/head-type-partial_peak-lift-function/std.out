@@ -14,22 +14,22 @@ A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Example-wise F1         54.06
-Example-wise Jaccard    45.2
-Example-wise Precision  63.18
-Example-wise Recall     56.97
-Hamming Accuracy        73.89
-Hamming Loss            26.11
-Macro F1                52.59
-Macro Jaccard           37.69
-Macro Precision         60.48
-Macro Recall            54.47
-Micro F1                58.12
-Micro Jaccard           40.96
-Micro Precision         59.5
-Micro Recall            56.8
-Subset 0/1 Loss         81.12
-Subset Accuracy         18.88
+Example-wise F1 (↑)         54.06
+Example-wise Jaccard (↑)    45.2
+Example-wise Precision (↑)  63.18
+Example-wise Recall (↑)     56.97
+Hamming Accuracy (↑)        73.89
+Hamming Loss (↓)            26.11
+Macro F1 (↑)                52.59
+Macro Jaccard (↑)           37.69
+Macro Precision (↑)         60.48
+Macro Recall (↑)            54.47
+Micro F1 (↑)                58.12
+Micro Jaccard (↑)           40.96
+Micro Precision (↑)         59.5
+Micro Recall (↑)            56.8
+Subset 0/1 Loss (↓)         81.12
+Subset Accuracy (↑)         18.88
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Model characteristics:
