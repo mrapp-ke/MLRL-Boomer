@@ -294,17 +294,24 @@ feature_format    instance_sampling                    Mean Absolute Error (↓)
 ----------------  ---------------------------------  -------------------------  ------
 "atp7d"
 ----------------  ---------------------------------  -------------------------  ------
-                  none                                                   29.91     1
-sparse            none                                                   30.03     2
-                  with-replacement{sample_size=0.5}                      33        3
-sparse            with-replacement{sample_size=0.5}                      34.15     4
+                  none                                                   29.91    1
+sparse            none                                                   30.03    2
+                  with-replacement{sample_size=0.5}                      33       3
+sparse            with-replacement{sample_size=0.5}                      34.15    4
 ----------------  ---------------------------------  -------------------------  ------
 "atp7d-binary"
 ----------------  ---------------------------------  -------------------------  ------
-                  none                                                   31.92     1.5
-sparse            none                                                   31.92     1.5
-                  with-replacement{sample_size=0.5}                      34.77     3.5
-sparse            with-replacement{sample_size=0.5}                      34.77     3.5
+                  none                                                   31.92    1.5
+sparse            none                                                   31.92    1.5
+                  with-replacement{sample_size=0.5}                      34.77    3.5
+sparse            with-replacement{sample_size=0.5}                      34.77    3.5
+----------------  ---------------------------------  -------------------------  ------
+Averages
+----------------  ---------------------------------  -------------------------  ------
+                  none                                                            1.25
+sparse            none                                                            1.75
+                  with-replacement{sample_size=0.5}                               3.25
+sparse            with-replacement{sample_size=0.5}                               3.75
 
 Evaluation results for measure "Mean Absolute Percentage Error (↓)":
 
@@ -312,17 +319,24 @@ feature_format    instance_sampling                    Mean Absolute Percentage 
 ----------------  ---------------------------------  ------------------------------------  ------
 "atp7d"
 ----------------  ---------------------------------  ------------------------------------  ------
-                  none                                                               0.08     1
-sparse            none                                                               0.08     2
-                  with-replacement{sample_size=0.5}                                  0.08     3
-sparse            with-replacement{sample_size=0.5}                                  0.09     4
+                  none                                                               0.08    1
+sparse            none                                                               0.08    2
+                  with-replacement{sample_size=0.5}                                  0.08    3
+sparse            with-replacement{sample_size=0.5}                                  0.09    4
 ----------------  ---------------------------------  ------------------------------------  ------
 "atp7d-binary"
 ----------------  ---------------------------------  ------------------------------------  ------
-                  none                                                               0.08     1.5
-sparse            none                                                               0.08     1.5
-                  with-replacement{sample_size=0.5}                                  0.09     3.5
-sparse            with-replacement{sample_size=0.5}                                  0.09     3.5
+                  none                                                               0.08    1.5
+sparse            none                                                               0.08    1.5
+                  with-replacement{sample_size=0.5}                                  0.09    3.5
+sparse            with-replacement{sample_size=0.5}                                  0.09    3.5
+----------------  ---------------------------------  ------------------------------------  ------
+Averages
+----------------  ---------------------------------  ------------------------------------  ------
+                  none                                                                       1.25
+sparse            none                                                                       1.75
+                  with-replacement{sample_size=0.5}                                          3.25
+sparse            with-replacement{sample_size=0.5}                                          3.75
 
 Evaluation results for measure "Mean Squared Error (↓)":
 
@@ -330,17 +344,24 @@ feature_format    instance_sampling                    Mean Squared Error (↓) 
 ----------------  ---------------------------------  ------------------------  ------
 "atp7d"
 ----------------  ---------------------------------  ------------------------  ------
-                  none                                                2826.34     1
-sparse            none                                                3007.35     2
-                  with-replacement{sample_size=0.5}                   4086.77     3
-sparse            with-replacement{sample_size=0.5}                   4131.78     4
+                  none                                                2826.34    1
+sparse            none                                                3007.35    2
+                  with-replacement{sample_size=0.5}                   4086.77    3
+sparse            with-replacement{sample_size=0.5}                   4131.78    4
 ----------------  ---------------------------------  ------------------------  ------
 "atp7d-binary"
 ----------------  ---------------------------------  ------------------------  ------
-                  none                                                3361.17     1.5
-sparse            none                                                3361.17     1.5
-                  with-replacement{sample_size=0.5}                   3554.64     3.5
-sparse            with-replacement{sample_size=0.5}                   3554.64     3.5
+                  none                                                3361.17    1.5
+sparse            none                                                3361.17    1.5
+                  with-replacement{sample_size=0.5}                   3554.64    3.5
+sparse            with-replacement{sample_size=0.5}                   3554.64    3.5
+----------------  ---------------------------------  ------------------------  ------
+Averages
+----------------  ---------------------------------  ------------------------  ------
+                  none                                                           1.25
+sparse            none                                                           1.75
+                  with-replacement{sample_size=0.5}                              3.25
+sparse            with-replacement{sample_size=0.5}                              3.75
 
 Evaluation results for measure "Median Absolute Error (↓)":
 
@@ -348,52 +369,73 @@ feature_format    instance_sampling                    Median Absolute Error (�
 ----------------  ---------------------------------  ---------------------------  ------
 "atp7d"
 ----------------  ---------------------------------  ---------------------------  ------
-                  none                                                     15.83     2
-sparse            none                                                     15.2      1
-                  with-replacement{sample_size=0.5}                        17.98     3
-sparse            with-replacement{sample_size=0.5}                        18.58     4
+                  none                                                     15.83    2
+sparse            none                                                     15.2     1
+                  with-replacement{sample_size=0.5}                        17.98    3
+sparse            with-replacement{sample_size=0.5}                        18.58    4
 ----------------  ---------------------------------  ---------------------------  ------
 "atp7d-binary"
 ----------------  ---------------------------------  ---------------------------  ------
-                  none                                                     17.49     1.5
-sparse            none                                                     17.49     1.5
-                  with-replacement{sample_size=0.5}                        20.76     3.5
-sparse            with-replacement{sample_size=0.5}                        20.76     3.5
+                  none                                                     17.49    1.5
+sparse            none                                                     17.49    1.5
+                  with-replacement{sample_size=0.5}                        20.76    3.5
+sparse            with-replacement{sample_size=0.5}                        20.76    3.5
+----------------  ---------------------------------  ---------------------------  ------
+Averages
+----------------  ---------------------------------  ---------------------------  ------
+                  none                                                              1.75
+sparse            none                                                              1.25
+                  with-replacement{sample_size=0.5}                                 3.25
+sparse            with-replacement{sample_size=0.5}                                 3.75
 
 Evaluation results for measure "Prediction Time (seconds)":
 
 feature_format    instance_sampling                    Prediction Time (seconds)    Rank
 ----------------  ---------------------------------  ---------------------------  ------
-"atpxxxd"
+"atp7d"
 ----------------  ---------------------------------  ---------------------------  ------
-                  none                                                      xxx
-sparse            none                                                      xxx
-                  with-replacement{sample_size=xxx}                         xxx
-sparse            with-replacement{sample_size=xxx}                         xxx
+                  none
+sparse            none
+                  with-replacement{sample_size=0.5}
+sparse            with-replacement{sample_size=0.5}
 ----------------  ---------------------------------  ---------------------------  ------
-"atpxxxd-binary"
+"atp7d-binary"
 ----------------  ---------------------------------  ---------------------------  ------
-                  none                                                      xxx
-sparse            none                                                      xxx
-                  with-replacement{sample_size=xxx}                         xxx
-sparse            with-replacement{sample_size=xxx}                         xxx
+                  none
+sparse            none
+                  with-replacement{sample_size=0.5}
+sparse            with-replacement{sample_size=0.5}
+----------------  ---------------------------------  ---------------------------  ------
+Averages
+----------------  ---------------------------------  ---------------------------  ------
+                  none
+sparse            none
+                  with-replacement{sample_size=0.5}
+sparse            with-replacement{sample_size=0.5}
 
 Evaluation results for measure "Training Time (seconds)":
 
 feature_format    instance_sampling                    Training Time (seconds)    Rank
 ----------------  ---------------------------------  -------------------------  ------
-"atpxxxd"
+"atp7d"
 ----------------  ---------------------------------  -------------------------  ------
-                  none                                                    xxx
-sparse            none                                                    xxx
-                  with-replacement{sample_size=xxx}                       xxx
-sparse            with-replacement{sample_size=xxx}                       xxx
+                  none
+sparse            none
+                  with-replacement{sample_size=0.5}
+sparse            with-replacement{sample_size=0.5}
 ----------------  ---------------------------------  -------------------------  ------
-"atpxxxd-binary"
+"atp7d-binary"
 ----------------  ---------------------------------  -------------------------  ------
-                  none                                                    xxx
-sparse            none                                                    xxx
-                  with-replacement{sample_size=xxx}                       xxx
-sparse            with-replacement{sample_size=xxx}                       xxx
+                  none
+sparse            none
+                  with-replacement{sample_size=0.5}
+sparse            with-replacement{sample_size=0.5}
+----------------  ---------------------------------  -------------------------  ------
+Averages
+----------------  ---------------------------------  -------------------------  ------
+                  none
+sparse            none
+                  with-replacement{sample_size=0.5}
+sparse            with-replacement{sample_size=0.5}
 
 Writing output data to file "python/tests/res/tmp/rerun/aggregated_evaluation_test.csv"...
