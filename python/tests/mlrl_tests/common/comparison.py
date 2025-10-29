@@ -7,7 +7,7 @@ import re as regex
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Set, override
+from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, override
 
 import yaml
 
@@ -125,23 +125,22 @@ class TextFileComparison(FileComparison):
     Allows to compare or overwrite text files produced by tests.
     """
 
-    block_of_durations: int = -1
+    block_of_durations: Tuple[int, int] = (-1, -1)
 
     def __replace_durations_with_placeholders(self, line_index: int, line: str) -> str:
-        if self.block_of_durations >= 0:
+        if self.block_of_durations[0] >= 0:
             if not line:
-                if self.block_of_durations != line_index - 1:
-                    self.block_of_durations = -1
-
+                self.block_of_durations = (-1, -1)
                 return line
+            if line.startswith('--') or line.startswith('"'):
+                return line
+            return line[:self.block_of_durations[1]].rstrip()
 
-            return regex.sub(r'\d+(?:\.\d+)?(\s+(±)?\d+(?:\.\d+)?)*', 'xxx', line)
+        column_index = line.find('Prediction Time (seconds)')
+        column_index = column_index if column_index >= 0 else line.find('Training Time (seconds)')
 
-        if line in {
-                'Evaluation results for measure "Prediction Time (seconds)":',
-                'Evaluation results for measure "Training Time (seconds)":',
-        }:
-            self.block_of_durations = line_index
+        if column_index >= 0:
+            self.block_of_durations = (line_index, column_index)
             return line
 
         regex_duration = '(\\d+ (day(s)*|hour(s)*|minute(s)*|second(s)*|millisecond(s)*))'

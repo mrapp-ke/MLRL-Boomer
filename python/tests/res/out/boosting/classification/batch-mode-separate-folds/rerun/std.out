@@ -942,17 +942,24 @@ feature_format    instance_sampling                    Example-wise F1 (↑)  St
 ----------------  ---------------------------------  ---------------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  ---------------------  -----------  ------
-                  none                                               62.05  ±0.03           2
-sparse            none                                               62.34  ±0.12           1
-                  with-replacement{sample_size=0.5}                  61.6   ±0.08           3
-sparse            with-replacement{sample_size=0.5}                  60.76  ±0.59           4
+                  none                                               62.05  ±0.03          2
+sparse            none                                               62.34  ±0.12          1
+                  with-replacement{sample_size=0.5}                  61.6   ±0.08          3
+sparse            with-replacement{sample_size=0.5}                  60.76  ±0.59          4
 ----------------  ---------------------------------  ---------------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  ---------------------  -----------  ------
-                  none                                               54.22  ±0.12           1.5
-sparse            none                                               54.22  ±0.12           1.5
-                  with-replacement{sample_size=0.5}                  53.95  ±0.14           3.5
-sparse            with-replacement{sample_size=0.5}                  53.95  ±0.14           3.5
+                  none                                               54.22  ±0.12          1.5
+sparse            none                                               54.22  ±0.12          1.5
+                  with-replacement{sample_size=0.5}                  53.95  ±0.14          3.5
+sparse            with-replacement{sample_size=0.5}                  53.95  ±0.14          3.5
+----------------  ---------------------------------  ---------------------  -----------  ------
+Averages
+----------------  ---------------------------------  ---------------------  -----------  ------
+                  none                                                                     1.75
+sparse            none                                                                     1.25
+                  with-replacement{sample_size=0.5}                                        3.25
+sparse            with-replacement{sample_size=0.5}                                        3.75
 
 Evaluation results for measure "Example-wise Jaccard (↑)":
 
@@ -960,17 +967,24 @@ feature_format    instance_sampling                    Example-wise Jaccard (↑
 ----------------  ---------------------------------  --------------------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  --------------------------  -----------  ------
-                  none                                                    54.23  ±0.56           2
-sparse            none                                                    54.69  ±0.10           1
-                  with-replacement{sample_size=0.5}                       53.65  ±0.10           3
-sparse            with-replacement{sample_size=0.5}                       52.82  ±0.46           4
+                  none                                                    54.23  ±0.56          2
+sparse            none                                                    54.69  ±0.10          1
+                  with-replacement{sample_size=0.5}                       53.65  ±0.10          3
+sparse            with-replacement{sample_size=0.5}                       52.82  ±0.46          4
 ----------------  ---------------------------------  --------------------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  --------------------------  -----------  ------
-                  none                                                    43.54  ±0.10           1.5
-sparse            none                                                    43.54  ±0.10           1.5
-                  with-replacement{sample_size=0.5}                       43.22  ±0.31           3.5
-sparse            with-replacement{sample_size=0.5}                       43.22  ±0.31           3.5
+                  none                                                    43.54  ±0.10          1.5
+sparse            none                                                    43.54  ±0.10          1.5
+                  with-replacement{sample_size=0.5}                       43.22  ±0.31          3.5
+sparse            with-replacement{sample_size=0.5}                       43.22  ±0.31          3.5
+----------------  ---------------------------------  --------------------------  -----------  ------
+Averages
+----------------  ---------------------------------  --------------------------  -----------  ------
+                  none                                                                          1.75
+sparse            none                                                                          1.25
+                  with-replacement{sample_size=0.5}                                             3.25
+sparse            with-replacement{sample_size=0.5}                                             3.75
 
 Evaluation results for measure "Example-wise Precision (↑)":
 
@@ -978,17 +992,24 @@ feature_format    instance_sampling                    Example-wise Precision (�
 ----------------  ---------------------------------  ----------------------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  ----------------------------  -----------  ------
-                  none                                                      75.82  ±3.86           1
-sparse            none                                                      75.8   ±3.55           2
-                  with-replacement{sample_size=0.5}                         75.52  ±2.43           3
-sparse            with-replacement{sample_size=0.5}                         75.01  ±3.61           4
+                  none                                                      75.82  ±3.86          1
+sparse            none                                                      75.8   ±3.55          2
+                  with-replacement{sample_size=0.5}                         75.52  ±2.43          3
+sparse            with-replacement{sample_size=0.5}                         75.01  ±3.61          4
 ----------------  ---------------------------------  ----------------------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  ----------------------------  -----------  ------
-                  none                                                      71.33  ±1.73           3.5
-sparse            none                                                      71.33  ±1.73           3.5
-                  with-replacement{sample_size=0.5}                         73.43  ±0.05           1.5
-sparse            with-replacement{sample_size=0.5}                         73.43  ±0.05           1.5
+                  none                                                      71.33  ±1.73          3.5
+sparse            none                                                      71.33  ±1.73          3.5
+                  with-replacement{sample_size=0.5}                         73.43  ±0.05          1.5
+sparse            with-replacement{sample_size=0.5}                         73.43  ±0.05          1.5
+----------------  ---------------------------------  ----------------------------  -----------  ------
+Averages
+----------------  ---------------------------------  ----------------------------  -----------  ------
+                  none                                                                            2.25
+sparse            none                                                                            2.75
+                  with-replacement{sample_size=0.5}                                               2.25
+sparse            with-replacement{sample_size=0.5}                                               2.75
 
 Evaluation results for measure "Example-wise Recall (↑)":
 
@@ -996,17 +1017,24 @@ feature_format    instance_sampling                    Example-wise Recall (↑)
 ----------------  ---------------------------------  -------------------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  -------------------------  -----------  ------
-                  none                                                   62.59  ±1.48           2
-sparse            none                                                   63.13  ±1.29           1
-                  with-replacement{sample_size=0.5}                      61.92  ±1.76           3
-sparse            with-replacement{sample_size=0.5}                      61.47  ±1.03           4
+                  none                                                   62.59  ±1.48          2
+sparse            none                                                   63.13  ±1.29          1
+                  with-replacement{sample_size=0.5}                      61.92  ±1.76          3
+sparse            with-replacement{sample_size=0.5}                      61.47  ±1.03          4
 ----------------  ---------------------------------  -------------------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  -------------------------  -----------  ------
-                  none                                                   50.14  ±0.12           1.5
-sparse            none                                                   50.14  ±0.12           1.5
-                  with-replacement{sample_size=0.5}                      49.5   ±0.31           3.5
-sparse            with-replacement{sample_size=0.5}                      49.5   ±0.31           3.5
+                  none                                                   50.14  ±0.12          1.5
+sparse            none                                                   50.14  ±0.12          1.5
+                  with-replacement{sample_size=0.5}                      49.5   ±0.31          3.5
+sparse            with-replacement{sample_size=0.5}                      49.5   ±0.31          3.5
+----------------  ---------------------------------  -------------------------  -----------  ------
+Averages
+----------------  ---------------------------------  -------------------------  -----------  ------
+                  none                                                                         1.75
+sparse            none                                                                         1.25
+                  with-replacement{sample_size=0.5}                                            3.25
+sparse            with-replacement{sample_size=0.5}                                            3.75
 
 Evaluation results for measure "Hamming Accuracy (↑)":
 
@@ -1014,17 +1042,24 @@ feature_format    instance_sampling                    Hamming Accuracy (↑)  S
 ----------------  ---------------------------------  ----------------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  ----------------------  -----------  ------
-                  none                                                81.09  ±0.11           2
-sparse            none                                                81.2   ±0.12           1
-                  with-replacement{sample_size=0.5}                   81.06  ±0.02           3
-sparse            with-replacement{sample_size=0.5}                   80.78  ±0.31           4
+                  none                                                81.09  ±0.11          2
+sparse            none                                                81.2   ±0.12          1
+                  with-replacement{sample_size=0.5}                   81.06  ±0.02          3
+sparse            with-replacement{sample_size=0.5}                   80.78  ±0.31          4
 ----------------  ---------------------------------  ----------------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  ----------------------  -----------  ------
-                  none                                                95.24  ±0.08           3.5
-sparse            none                                                95.24  ±0.08           3.5
-                  with-replacement{sample_size=0.5}                   95.32  ±0.01           1.5
-sparse            with-replacement{sample_size=0.5}                   95.32  ±0.01           1.5
+                  none                                                95.24  ±0.08          3.5
+sparse            none                                                95.24  ±0.08          3.5
+                  with-replacement{sample_size=0.5}                   95.32  ±0.01          1.5
+sparse            with-replacement{sample_size=0.5}                   95.32  ±0.01          1.5
+----------------  ---------------------------------  ----------------------  -----------  ------
+Averages
+----------------  ---------------------------------  ----------------------  -----------  ------
+                  none                                                                      2.75
+sparse            none                                                                      2.25
+                  with-replacement{sample_size=0.5}                                         2.25
+sparse            with-replacement{sample_size=0.5}                                         2.75
 
 Evaluation results for measure "Hamming Loss (↓)":
 
@@ -1032,17 +1067,24 @@ feature_format    instance_sampling                    Hamming Loss (↓)  Std.-
 ----------------  ---------------------------------  ------------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  ------------------  -----------  ------
-                  none                                            18.91  ±0.11           2
-sparse            none                                            18.8   ±0.12           1
-                  with-replacement{sample_size=0.5}               18.94  ±0.02           3
-sparse            with-replacement{sample_size=0.5}               19.22  ±0.31           4
+                  none                                            18.91  ±0.11          2
+sparse            none                                            18.8   ±0.12          1
+                  with-replacement{sample_size=0.5}               18.94  ±0.02          3
+sparse            with-replacement{sample_size=0.5}               19.22  ±0.31          4
 ----------------  ---------------------------------  ------------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  ------------------  -----------  ------
-                  none                                             4.76  ±0.08           3.5
-sparse            none                                             4.76  ±0.08           3.5
-                  with-replacement{sample_size=0.5}                4.68  ±0.01           1.5
-sparse            with-replacement{sample_size=0.5}                4.68  ±0.01           1.5
+                  none                                             4.76  ±0.08          3.5
+sparse            none                                             4.76  ±0.08          3.5
+                  with-replacement{sample_size=0.5}                4.68  ±0.01          1.5
+sparse            with-replacement{sample_size=0.5}                4.68  ±0.01          1.5
+----------------  ---------------------------------  ------------------  -----------  ------
+Averages
+----------------  ---------------------------------  ------------------  -----------  ------
+                  none                                                                  2.75
+sparse            none                                                                  2.25
+                  with-replacement{sample_size=0.5}                                     2.25
+sparse            with-replacement{sample_size=0.5}                                     2.75
 
 Evaluation results for measure "Macro F1 (↑)":
 
@@ -1050,17 +1092,24 @@ feature_format    instance_sampling                    Macro F1 (↑)  Std.-dev.
 ----------------  ---------------------------------  --------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  --------------  -----------  ------
-                  none                                        65.55  ±0.57           2
-sparse            none                                        65.94  ±0.04           1
-                  with-replacement{sample_size=0.5}           65.3   ±0.69           3
-sparse            with-replacement{sample_size=0.5}           64.83  ±0.24           4
+                  none                                        65.55  ±0.57          2
+sparse            none                                        65.94  ±0.04          1
+                  with-replacement{sample_size=0.5}           65.3   ±0.69          3
+sparse            with-replacement{sample_size=0.5}           64.83  ±0.24          4
 ----------------  ---------------------------------  --------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  --------------  -----------  ------
-                  none                                        18.3   ±1.26           1.5
-sparse            none                                        18.3   ±1.26           1.5
-                  with-replacement{sample_size=0.5}           17.3   ±1.42           3.5
-sparse            with-replacement{sample_size=0.5}           17.3   ±1.42           3.5
+                  none                                        18.3   ±1.26          1.5
+sparse            none                                        18.3   ±1.26          1.5
+                  with-replacement{sample_size=0.5}           17.3   ±1.42          3.5
+sparse            with-replacement{sample_size=0.5}           17.3   ±1.42          3.5
+----------------  ---------------------------------  --------------  -----------  ------
+Averages
+----------------  ---------------------------------  --------------  -----------  ------
+                  none                                                              1.75
+sparse            none                                                              1.25
+                  with-replacement{sample_size=0.5}                                 3.25
+sparse            with-replacement{sample_size=0.5}                                 3.75
 
 Evaluation results for measure "Macro Jaccard (↑)":
 
@@ -1068,17 +1117,24 @@ feature_format    instance_sampling                    Macro Jaccard (↑)  Std.
 ----------------  ---------------------------------  -------------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  -------------------  -----------  ------
-                  none                                             50.05  ±0.56           2
-sparse            none                                             50.36  ±0.08           1
-                  with-replacement{sample_size=0.5}                49.73  ±0.64           3
-sparse            with-replacement{sample_size=0.5}                49.18  ±0.27           4
+                  none                                             50.05  ±0.56          2
+sparse            none                                             50.36  ±0.08          1
+                  with-replacement{sample_size=0.5}                49.73  ±0.64          3
+sparse            with-replacement{sample_size=0.5}                49.18  ±0.27          4
 ----------------  ---------------------------------  -------------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  -------------------  -----------  ------
-                  none                                             12.82  ±1.16           1.5
-sparse            none                                             12.82  ±1.16           1.5
-                  with-replacement{sample_size=0.5}                12.19  ±1.22           3.5
-sparse            with-replacement{sample_size=0.5}                12.19  ±1.22           3.5
+                  none                                             12.82  ±1.16          1.5
+sparse            none                                             12.82  ±1.16          1.5
+                  with-replacement{sample_size=0.5}                12.19  ±1.22          3.5
+sparse            with-replacement{sample_size=0.5}                12.19  ±1.22          3.5
+----------------  ---------------------------------  -------------------  -----------  ------
+Averages
+----------------  ---------------------------------  -------------------  -----------  ------
+                  none                                                                   1.75
+sparse            none                                                                   1.25
+                  with-replacement{sample_size=0.5}                                      3.25
+sparse            with-replacement{sample_size=0.5}                                      3.75
 
 Evaluation results for measure "Macro Precision (↑)":
 
@@ -1086,17 +1142,24 @@ feature_format    instance_sampling                    Macro Precision (↑)  St
 ----------------  ---------------------------------  ---------------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  ---------------------  -----------  ------
-                  none                                               72.08  ±1.92           4
-sparse            none                                               72.25  ±2.70           3
-                  with-replacement{sample_size=0.5}                  72.5   ±1.78           1
-sparse            with-replacement{sample_size=0.5}                  72.35  ±2.83           2
+                  none                                               72.08  ±1.92          4
+sparse            none                                               72.25  ±2.70          3
+                  with-replacement{sample_size=0.5}                  72.5   ±1.78          1
+sparse            with-replacement{sample_size=0.5}                  72.35  ±2.83          2
 ----------------  ---------------------------------  ---------------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  ---------------------  -----------  ------
-                  none                                               53.67  ±2.66           3.5
-sparse            none                                               53.67  ±2.66           3.5
-                  with-replacement{sample_size=0.5}                  53.97  ±4.10           1.5
-sparse            with-replacement{sample_size=0.5}                  53.97  ±4.10           1.5
+                  none                                               53.67  ±2.66          3.5
+sparse            none                                               53.67  ±2.66          3.5
+                  with-replacement{sample_size=0.5}                  53.97  ±4.10          1.5
+sparse            with-replacement{sample_size=0.5}                  53.97  ±4.10          1.5
+----------------  ---------------------------------  ---------------------  -----------  ------
+Averages
+----------------  ---------------------------------  ---------------------  -----------  ------
+                  none                                                                     3.75
+sparse            none                                                                     3.25
+                  with-replacement{sample_size=0.5}                                        1.25
+sparse            with-replacement{sample_size=0.5}                                        1.75
 
 Evaluation results for measure "Macro Recall (↑)":
 
@@ -1104,17 +1167,24 @@ feature_format    instance_sampling                    Macro Recall (↑)  Std.-
 ----------------  ---------------------------------  ------------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  ------------------  -----------  ------
-                  none                                            61.47  ±2.17           2
-sparse            none                                            62.08  ±1.89           1
-                  with-replacement{sample_size=0.5}               60.9   ±1.87           3
-sparse            with-replacement{sample_size=0.5}               60.36  ±1.19           4
+                  none                                            61.47  ±2.17          2
+sparse            none                                            62.08  ±1.89          1
+                  with-replacement{sample_size=0.5}               60.9   ±1.87          3
+sparse            with-replacement{sample_size=0.5}               60.36  ±1.19          4
 ----------------  ---------------------------------  ------------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  ------------------  -----------  ------
-                  none                                            15.29  ±1.29           1.5
-sparse            none                                            15.29  ±1.29           1.5
-                  with-replacement{sample_size=0.5}               14.49  ±1.43           3.5
-sparse            with-replacement{sample_size=0.5}               14.49  ±1.43           3.5
+                  none                                            15.29  ±1.29          1.5
+sparse            none                                            15.29  ±1.29          1.5
+                  with-replacement{sample_size=0.5}               14.49  ±1.43          3.5
+sparse            with-replacement{sample_size=0.5}               14.49  ±1.43          3.5
+----------------  ---------------------------------  ------------------  -----------  ------
+Averages
+----------------  ---------------------------------  ------------------  -----------  ------
+                  none                                                                  1.75
+sparse            none                                                                  1.25
+                  with-replacement{sample_size=0.5}                                     3.25
+sparse            with-replacement{sample_size=0.5}                                     3.75
 
 Evaluation results for measure "Micro F1 (↑)":
 
@@ -1122,17 +1192,24 @@ feature_format    instance_sampling                    Micro F1 (↑)  Std.-dev.
 ----------------  ---------------------------------  --------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  --------------  -----------  ------
-                  none                                        67.31  ±0.51           2
-sparse            none                                        67.63  ±0.18           1
-                  with-replacement{sample_size=0.5}           67.15  ±0.23           3
-sparse            with-replacement{sample_size=0.5}           66.57  ±0.29           4
+                  none                                        67.31  ±0.51          2
+sparse            none                                        67.63  ±0.18          1
+                  with-replacement{sample_size=0.5}           67.15  ±0.23          3
+sparse            with-replacement{sample_size=0.5}           66.57  ±0.29          4
 ----------------  ---------------------------------  --------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  --------------  -----------  ------
-                  none                                        56     ±0.24           3.5
-sparse            none                                        56     ±0.24           3.5
-                  with-replacement{sample_size=0.5}           56.19  ±0.08           1.5
-sparse            with-replacement{sample_size=0.5}           56.19  ±0.08           1.5
+                  none                                        56     ±0.24          3.5
+sparse            none                                        56     ±0.24          3.5
+                  with-replacement{sample_size=0.5}           56.19  ±0.08          1.5
+sparse            with-replacement{sample_size=0.5}           56.19  ±0.08          1.5
+----------------  ---------------------------------  --------------  -----------  ------
+Averages
+----------------  ---------------------------------  --------------  -----------  ------
+                  none                                                              2.75
+sparse            none                                                              2.25
+                  with-replacement{sample_size=0.5}                                 2.25
+sparse            with-replacement{sample_size=0.5}                                 2.75
 
 Evaluation results for measure "Micro Jaccard (↑)":
 
@@ -1140,17 +1217,24 @@ feature_format    instance_sampling                    Micro Jaccard (↑)  Std.
 ----------------  ---------------------------------  -------------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  -------------------  -----------  ------
-                  none                                             50.73  ±0.58           2
-sparse            none                                             51.09  ±0.21           1
-                  with-replacement{sample_size=0.5}                50.55  ±0.26           3
-sparse            with-replacement{sample_size=0.5}                49.89  ±0.33           4
+                  none                                             50.73  ±0.58          2
+sparse            none                                             51.09  ±0.21          1
+                  with-replacement{sample_size=0.5}                50.55  ±0.26          3
+sparse            with-replacement{sample_size=0.5}                49.89  ±0.33          4
 ----------------  ---------------------------------  -------------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  -------------------  -----------  ------
-                  none                                             38.89  ±0.23           3.5
-sparse            none                                             38.89  ±0.23           3.5
-                  with-replacement{sample_size=0.5}                39.08  ±0.08           1.5
-sparse            with-replacement{sample_size=0.5}                39.08  ±0.08           1.5
+                  none                                             38.89  ±0.23          3.5
+sparse            none                                             38.89  ±0.23          3.5
+                  with-replacement{sample_size=0.5}                39.08  ±0.08          1.5
+sparse            with-replacement{sample_size=0.5}                39.08  ±0.08          1.5
+----------------  ---------------------------------  -------------------  -----------  ------
+Averages
+----------------  ---------------------------------  -------------------  -----------  ------
+                  none                                                                   2.75
+sparse            none                                                                   2.25
+                  with-replacement{sample_size=0.5}                                      2.25
+sparse            with-replacement{sample_size=0.5}                                      2.75
 
 Evaluation results for measure "Micro Precision (↑)":
 
@@ -1158,17 +1242,24 @@ feature_format    instance_sampling                    Micro Precision (↑)  St
 ----------------  ---------------------------------  ---------------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  ---------------------  -----------  ------
-                  none                                               72.96  ±1.99           3
-sparse            none                                               73.01  ±2.49           2
-                  with-replacement{sample_size=0.5}                  73.05  ±1.95           1
-sparse            with-replacement{sample_size=0.5}                  72.7   ±2.68           4
+                  none                                               72.96  ±1.99          3
+sparse            none                                               73.01  ±2.49          2
+                  with-replacement{sample_size=0.5}                  73.05  ±1.95          1
+sparse            with-replacement{sample_size=0.5}                  72.7   ±2.68          4
 ----------------  ---------------------------------  ---------------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  ---------------------  -----------  ------
-                  none                                               68.23  ±1.14           3.5
-sparse            none                                               68.23  ±1.14           3.5
-                  with-replacement{sample_size=0.5}                  69.72  ±0.03           1.5
-sparse            with-replacement{sample_size=0.5}                  69.72  ±0.03           1.5
+                  none                                               68.23  ±1.14          3.5
+sparse            none                                               68.23  ±1.14          3.5
+                  with-replacement{sample_size=0.5}                  69.72  ±0.03          1.5
+sparse            with-replacement{sample_size=0.5}                  69.72  ±0.03          1.5
+----------------  ---------------------------------  ---------------------  -----------  ------
+Averages
+----------------  ---------------------------------  ---------------------  -----------  ------
+                  none                                                                     3.25
+sparse            none                                                                     2.75
+                  with-replacement{sample_size=0.5}                                        1.25
+sparse            with-replacement{sample_size=0.5}                                        2.75
 
 Evaluation results for measure "Micro Recall (↑)":
 
@@ -1176,17 +1267,24 @@ feature_format    instance_sampling                    Micro Recall (↑)  Std.-
 ----------------  ---------------------------------  ------------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  ------------------  -----------  ------
-                  none                                            62.6   ±2.35           2
-sparse            none                                            63.13  ±2.18           1
-                  with-replacement{sample_size=0.5}               62.22  ±1.80           3
-sparse            with-replacement{sample_size=0.5}               61.49  ±1.42           4
+                  none                                            62.6   ±2.35          2
+sparse            none                                            63.13  ±2.18          1
+                  with-replacement{sample_size=0.5}               62.22  ±1.80          3
+sparse            with-replacement{sample_size=0.5}               61.49  ±1.42          4
 ----------------  ---------------------------------  ------------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  ------------------  -----------  ------
-                  none                                            47.5   ±0.21           1.5
-sparse            none                                            47.5   ±0.21           1.5
-                  with-replacement{sample_size=0.5}               47.06  ±0.13           3.5
-sparse            with-replacement{sample_size=0.5}               47.06  ±0.13           3.5
+                  none                                            47.5   ±0.21          1.5
+sparse            none                                            47.5   ±0.21          1.5
+                  with-replacement{sample_size=0.5}               47.06  ±0.13          3.5
+sparse            with-replacement{sample_size=0.5}               47.06  ±0.13          3.5
+----------------  ---------------------------------  ------------------  -----------  ------
+Averages
+----------------  ---------------------------------  ------------------  -----------  ------
+                  none                                                                  1.75
+sparse            none                                                                  1.25
+                  with-replacement{sample_size=0.5}                                     3.25
+sparse            with-replacement{sample_size=0.5}                                     3.75
 
 Evaluation results for measure "Prediction Time (seconds)":
 
@@ -1194,17 +1292,24 @@ feature_format    instance_sampling                    Prediction Time (seconds)
 ----------------  ---------------------------------  ---------------------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  ---------------------------  -----------  ------
-                  none                                                      xxx
-sparse            none                                                      xxx
-                  with-replacement{sample_size=xxx}                         xxx
-sparse            with-replacement{sample_size=xxx}                         xxx
+                  none
+sparse            none
+                  with-replacement{sample_size=0.5}
+sparse            with-replacement{sample_size=0.5}
 ----------------  ---------------------------------  ---------------------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  ---------------------------  -----------  ------
-                  none                                                      xxx
-sparse            none                                                      xxx
-                  with-replacement{sample_size=xxx}                         xxx
-sparse            with-replacement{sample_size=xxx}                         xxx
+                  none
+sparse            none
+                  with-replacement{sample_size=0.5}
+sparse            with-replacement{sample_size=0.5}
+----------------  ---------------------------------  ---------------------------  -----------  ------
+Averages
+----------------  ---------------------------------  ---------------------------  -----------  ------
+                  none
+sparse            none
+                  with-replacement{sample_size=0.5}
+sparse            with-replacement{sample_size=0.5}
 
 Evaluation results for measure "Subset 0/1 Loss (↓)":
 
@@ -1212,17 +1317,24 @@ feature_format    instance_sampling                    Subset 0/1 Loss (↓)  St
 ----------------  ---------------------------------  ---------------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  ---------------------  -----------  ------
-                  none                                               69.81  ±2.92           2
-sparse            none                                               68.63  ±1.06           1
-                  with-replacement{sample_size=0.5}                  70.66  ±0.72           3
-sparse            with-replacement{sample_size=0.5}                  72.01  ±0.29           4
+                  none                                               69.81  ±2.92          2
+sparse            none                                               68.63  ±1.06          1
+                  with-replacement{sample_size=0.5}                  70.66  ±0.72          3
+sparse            with-replacement{sample_size=0.5}                  72.01  ±0.29          4
 ----------------  ---------------------------------  ---------------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  ---------------------  -----------  ------
-                  none                                               86.9   ±0.18           1.5
-sparse            none                                               86.9   ±0.18           1.5
-                  with-replacement{sample_size=0.5}                  87.78  ±0.59           3.5
-sparse            with-replacement{sample_size=0.5}                  87.78  ±0.59           3.5
+                  none                                               86.9   ±0.18          1.5
+sparse            none                                               86.9   ±0.18          1.5
+                  with-replacement{sample_size=0.5}                  87.78  ±0.59          3.5
+sparse            with-replacement{sample_size=0.5}                  87.78  ±0.59          3.5
+----------------  ---------------------------------  ---------------------  -----------  ------
+Averages
+----------------  ---------------------------------  ---------------------  -----------  ------
+                  none                                                                     1.75
+sparse            none                                                                     1.25
+                  with-replacement{sample_size=0.5}                                        3.25
+sparse            with-replacement{sample_size=0.5}                                        3.75
 
 Evaluation results for measure "Subset Accuracy (↑)":
 
@@ -1230,17 +1342,24 @@ feature_format    instance_sampling                    Subset Accuracy (↑)  St
 ----------------  ---------------------------------  ---------------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  ---------------------  -----------  ------
-                  none                                               30.19  ±2.92           2
-sparse            none                                               31.37  ±1.06           1
-                  with-replacement{sample_size=0.5}                  29.34  ±0.72           3
-sparse            with-replacement{sample_size=0.5}                  27.99  ±0.29           4
+                  none                                               30.19  ±2.92          2
+sparse            none                                               31.37  ±1.06          1
+                  with-replacement{sample_size=0.5}                  29.34  ±0.72          3
+sparse            with-replacement{sample_size=0.5}                  27.99  ±0.29          4
 ----------------  ---------------------------------  ---------------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  ---------------------  -----------  ------
-                  none                                               13.1   ±0.18           1.5
-sparse            none                                               13.1   ±0.18           1.5
-                  with-replacement{sample_size=0.5}                  12.22  ±0.59           3.5
-sparse            with-replacement{sample_size=0.5}                  12.22  ±0.59           3.5
+                  none                                               13.1   ±0.18          1.5
+sparse            none                                               13.1   ±0.18          1.5
+                  with-replacement{sample_size=0.5}                  12.22  ±0.59          3.5
+sparse            with-replacement{sample_size=0.5}                  12.22  ±0.59          3.5
+----------------  ---------------------------------  ---------------------  -----------  ------
+Averages
+----------------  ---------------------------------  ---------------------  -----------  ------
+                  none                                                                     1.75
+sparse            none                                                                     1.25
+                  with-replacement{sample_size=0.5}                                        3.25
+sparse            with-replacement{sample_size=0.5}                                        3.75
 
 Evaluation results for measure "Training Time (seconds)":
 
@@ -1248,16 +1367,23 @@ feature_format    instance_sampling                    Training Time (seconds)  
 ----------------  ---------------------------------  -------------------------  -----------  ------
 "emotions"
 ----------------  ---------------------------------  -------------------------  -----------  ------
-                  none                                                    xxx
-sparse            none                                                    xxx
-                  with-replacement{sample_size=xxx}                       xxx
-sparse            with-replacement{sample_size=xxx}                       xxx
+                  none
+sparse            none
+                  with-replacement{sample_size=0.5}
+sparse            with-replacement{sample_size=0.5}
 ----------------  ---------------------------------  -------------------------  -----------  ------
 "enron"
 ----------------  ---------------------------------  -------------------------  -----------  ------
-                  none                                                    xxx
-sparse            none                                                    xxx
-                  with-replacement{sample_size=xxx}                       xxx
-sparse            with-replacement{sample_size=xxx}                       xxx
+                  none
+sparse            none
+                  with-replacement{sample_size=0.5}
+sparse            with-replacement{sample_size=0.5}
+----------------  ---------------------------------  -------------------------  -----------  ------
+Averages
+----------------  ---------------------------------  -------------------------  -----------  ------
+                  none
+sparse            none
+                  with-replacement{sample_size=0.5}
+sparse            with-replacement{sample_size=0.5}
 
 Writing output data to file "python/tests/res/tmp/rerun/aggregated_evaluation_test.csv"...
