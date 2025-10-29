@@ -69,15 +69,23 @@ class AggregationMeasure(OutputValue):
 
     AggregationFunction = Callable[[List[float], bool], Iterable[float]]
 
-    def __init__(self, option_key: str, name: str, aggregation_function: 'AggregationFunction', **kwargs):
+    def __init__(self,
+                 option_key: str,
+                 name: str,
+                 aggregation_function: 'AggregationFunction',
+                 can_be_averaged: bool = True,
+                 **kwargs):
         """
         :param option_key:              The key of the option that can be used for filtering
         :param name:                    The name of the value
         :param aggregation_function:    The function that should be invoked to aggregate several evaluation results
+        :param can_be_averaged:         True, if the values that result from the aggregation measure can be averaged,
+                                        False otherwise
         :param kwargs:                  Optional keyword arguments to be passed to the evaluation function
         """
         super().__init__(option_key=option_key, name=name)
         self.aggregation_function = aggregation_function
+        self.can_be_averaged = can_be_averaged
         self.kwargs = kwargs
 
     def aggregate(self, values: List[float], smaller_is_better: bool) -> Iterable[float]:
