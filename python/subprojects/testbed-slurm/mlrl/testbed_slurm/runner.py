@@ -18,6 +18,7 @@ from mlrl.testbed_slurm.arguments import SlurmArguments
 from mlrl.testbed_slurm.sbatch import Sbatch
 
 from mlrl.testbed.command import Command
+from mlrl.testbed.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.modes.mode_batch import Batch, BatchMode
@@ -104,9 +105,10 @@ class SlurmRunner(BatchMode.Runner):
     def __create_sbatch_script(command: Command, config_file: Optional[ConfigFile]) -> str:
         base_dir = Path(command.argument_dict[OutputArguments.BASE_DIR.name])
         result_dir = base_dir / command.argument_dict[ResultDirectoryArguments.RESULT_DIR.name]
+        std_file_name = SlurmRunner.__get_std_file_name(command)
         content = '#!/bin/sh\n\n'
-        content += '#SBATCH --output=' + str(result_dir / 'std.out') + '\n'
-        content += '#SBATCH --error=' + str(result_dir / 'std.err') + '\n'
+        content += '#SBATCH --output=' + str(result_dir / f'{std_file_name}.out') + '\n'
+        content += '#SBATCH --error=' + str(result_dir / f'{std_file_name}.err') + '\n'
 
         if config_file:
             for argument in config_file.sbatch_arguments:
@@ -124,6 +126,29 @@ class SlurmRunner(BatchMode.Runner):
                 content += line + '\n'
 
         return content
+
+    @staticmethod
+    def __get_std_file_name(command: Command) -> str:
+        file_name = 'std'
+
+        try:
+            command_args = command.apply_to_namespace(Namespace())
+            value, options = DatasetSplitterArguments.DATASET_SPLITTER.get_value_and_options(command_args)
+
+            if value == DatasetSplitterArguments.VALUE_CROSS_VALIDATION:
+                first_fold = options.get_int(DatasetSplitterArguments.OPTION_FIRST_FOLD, 0)
+                last_fold = options.get_int(DatasetSplitterArguments.OPTION_LAST_FOLD, 0)
+                file_name += '_fold'
+
+                if first_fold > 0:
+                    file_name += '-' + str(first_fold)
+
+                if last_fold > first_fold:
+                    file_name += '-' + str(last_fold)
+        except ValueError:
+            pass
+
+        return file_name
 
     @staticmethod
     def __write_sbatch_file(args: Namespace, command: Command, config_file: Optional[ConfigFile],
