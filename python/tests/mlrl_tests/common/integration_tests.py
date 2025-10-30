@@ -109,6 +109,14 @@ class IntegrationTests(ABC):
             .set_runner('slurm')
         CmdRunner(builder).run('batch-mode-slurm')
 
+    def test_batch_mode_separate_folds_slurm(self):
+        builder = self._create_cmd_builder() \
+            .set_mode(ExperimentMode.BATCH) \
+            .set_runner('slurm') \
+            .data_split(DatasetSplitterArguments.VALUE_CROSS_VALIDATION,
+                        options=Options({DatasetSplitterArguments.OPTION_NUM_FOLDS: 2}))
+        CmdRunner(builder).run('batch-mode-separate-folds-slurm')
+
     def test_run_mode(self):
         test_name = 'run-mode'
         builder = self._create_cmd_builder() \
