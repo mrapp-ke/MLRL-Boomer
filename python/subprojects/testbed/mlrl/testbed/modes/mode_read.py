@@ -181,7 +181,7 @@ class ReadMode(InputMode):
                                                               load_dataset=False)
 
         for output_writer in sorted(experiment_builder.output_writers, key=str):
-            input_reader = output_writer.create_input_reader(command.apply_to_namespace(Namespace()), input_directory)
+            input_reader = output_writer.create_input_reader(command.to_namespace(), input_directory)
 
             if input_reader and input_reader.sources:
                 experiment_builder.add_input_readers(input_reader)
