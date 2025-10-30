@@ -168,6 +168,16 @@ class Command(Iterable[str]):
 
         return modified_namespace
 
+    def to_namespace(self, ignore: Optional[Set[str]] = None) -> Namespace:
+        """
+        Creates and returns a namespace from the command's arguments.
+
+        :param ignore:  A set that contains the names of arguments to be ignored or None, if all argument should be
+                        added
+        :return:        The namespace that has been created
+        """
+        return self.apply_to_namespace(Namespace(), ignore=ignore)
+
     @staticmethod
     def with_argument(command: 'Command', argument: str, value: str) -> 'Command':
         """
