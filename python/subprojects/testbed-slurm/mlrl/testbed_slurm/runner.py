@@ -169,8 +169,9 @@ class SlurmRunner(BatchMode.Runner):
     @staticmethod
     def __create_sbatch_script(command: Command, config_file: Optional[ConfigFile],
                                job_array: Optional[JobArray]) -> str:
-        base_dir = Path(command.argument_dict[OutputArguments.BASE_DIR.name])
-        result_dir = base_dir / command.argument_dict[ResultDirectoryArguments.RESULT_DIR.name]
+        command_args = command.to_namespace()
+        base_dir = Path(OutputArguments.BASE_DIR.get_value(command_args))
+        result_dir = base_dir / ResultDirectoryArguments.RESULT_DIR.get_value(command_args)
         job_array_task_ids = job_array.formatted_task_ids if job_array else None
         std_file_name = SlurmRunner.__get_std_file_name(command)
 
@@ -208,8 +209,7 @@ class SlurmRunner(BatchMode.Runner):
         file_name = 'std'
 
         try:
-            command_args = command.apply_to_namespace(Namespace())
-            value, options = DatasetSplitterArguments.DATASET_SPLITTER.get_value_and_options(command_args)
+            value, options = DatasetSplitterArguments.DATASET_SPLITTER.get_value_and_options(command.to_namespace())
 
             if value == DatasetSplitterArguments.VALUE_CROSS_VALIDATION:
                 first_fold = options.get_int(DatasetSplitterArguments.OPTION_FIRST_FOLD, 0)
@@ -261,8 +261,7 @@ class SlurmRunner(BatchMode.Runner):
         result: List[JobArray | Command] = []
 
         for command in batch:
-            command_args = command.apply_to_namespace(Namespace())
-            value, options = DatasetSplitterArguments.DATASET_SPLITTER.get_value_and_options(command_args)
+            value, options = DatasetSplitterArguments.DATASET_SPLITTER.get_value_and_options(command.to_namespace())
             job_array: Optional[JobArray] = None
 
             if value == DatasetSplitterArguments.VALUE_CROSS_VALIDATION:
