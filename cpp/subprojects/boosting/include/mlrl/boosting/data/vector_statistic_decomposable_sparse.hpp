@@ -327,7 +327,7 @@ namespace boosting {
              * @param view      A reference to an object of type `SparseSetView` that stores the gradients and Hessians
              *                  to be added to this vector
              * @param row       The index of the row to be added to this vector
-             * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
+             * @param indices   A reference to a `CompleteIndexVector` that provides access to the indices
              */
             void addToSubset(const SparseSetView<Statistic<StatisticType>>& view, uint32 row,
                              const CompleteIndexVector& indices);
@@ -339,7 +339,7 @@ namespace boosting {
              * @param view      A reference to an object of type `SparseSetView` that stores the gradients and Hessians
              *                  to be added to this vector
              * @param row       The index of the row to be added to this vector
-             * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
+             * @param indices   A reference to a `PartialIndexVector` that provides access to the indices
              */
             void addToSubset(const SparseSetView<Statistic<StatisticType>>& view, uint32 row,
                              const PartialIndexVector& indices);
@@ -352,7 +352,7 @@ namespace boosting {
              * @param view      A reference to an object of type `SparseSetView` that stores the gradients and Hessians
              *                  to be added to this vector
              * @param row       The index of the row to be added to this vector
-             * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
+             * @param indices   A reference to a `CompleteIndexVector` that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
             void addToSubset(const SparseSetView<Statistic<StatisticType>>& view, uint32 row,
@@ -366,7 +366,7 @@ namespace boosting {
              * @param view      A reference to an object of type `SparseSetView` that stores the gradients and Hessians
              *                  to be added to this vector
              * @param row       The index of the row to be added to this vector
-             * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
+             * @param indices   A reference to a `PartialIndexVector` that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
             void addToSubset(const SparseSetView<Statistic<StatisticType>>& view, uint32 row,
