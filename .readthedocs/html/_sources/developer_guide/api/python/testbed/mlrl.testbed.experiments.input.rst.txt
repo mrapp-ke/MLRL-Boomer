@@ -27,4 +27,5 @@ Submodules
    mlrl.testbed.experiments.input.arguments
    mlrl.testbed.experiments.input.data
    mlrl.testbed.experiments.input.extension
+   mlrl.testbed.experiments.input.policies
    mlrl.testbed.experiments.input.reader
