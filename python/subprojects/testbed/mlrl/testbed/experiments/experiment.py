@@ -335,14 +335,12 @@ class Experiment(ABC):
                 for dataset_type in dataset_types:
                     state.dataset_type = dataset_type
 
-                    if not context.include_dataset_type:
-                        state = input_reader.read(state)
-                    else:
-                        if any(source.is_available(state, input_data) for source in input_reader.sources):
-                            state = input_reader.read(state)
-                        elif len(dataset_types) == 1 and dataset_types[0] == DatasetType.TEST:
-                            state.dataset_type = DatasetType.TRAINING
-                            state = input_reader.read(state)
+                    if context.include_dataset_type \
+                            and not any(source.is_available(state, input_data) for source in input_reader.sources) \
+                            and len(dataset_types) == 1 and dataset_types[0] == DatasetType.TEST:
+                        state.dataset_type = DatasetType.TRAINING
+
+                    state = input_reader.read(state)
 
             state.dataset_type = original_dataset_type
             return state
