@@ -53,11 +53,13 @@ The package mlrl-testbed supports different modes of operation configurable via 
   - `run` A previously run experiment can be run again.
   - `read` The output files produced by an earlier experiment can be read.
 
+In the following, arguments are annotated with the labels {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-success-line}`testbed-read-mode` and {bdg-ref-info-line}`testbed-run-mode`, depending on the modes of operation they can be used with.
+
 #### Batch Mode
 
 > A more detailed description of the following arguments can be found {ref}`here<testbed-batch-mode>`.
 
-In {ref}`batch mode <testbed-batch-mode>`, the following mandatory arguments must be given as well:
+In {bdg-ref-primary-line}`testbed-batch-mode`, the following mandatory arguments must be given:
 
 - `--config` An absolute or relative path to a YAML file that defines the batch of experiments to be run.
 
@@ -95,7 +97,7 @@ If the package [mlrl-testbed-slurm](https://pypi.org/project/mlrl-testbed-slurm/
 
 > A more detailed description of the following arguments can be found {ref}`here<testbed-run-mode>`.
 
-In {ref}`run mode <testbed-run-mode>`, the following mandatory arguments must be specified:
+In {bdg-ref-info-line}`testbed-run-mode`, the following mandatory arguments must be specified:
 
 - `--input-dir` An absolute or relative path to a directory that contains a `metadata.yml` file that has been saved by a previous experiment.
 
@@ -103,26 +105,26 @@ In {ref}`run mode <testbed-run-mode>`, the following mandatory arguments must be
 
 > A more detailed description of the following arguments can be found {ref}`here<testbed-read-mode>`.
 
-In {ref}`read mode <testbed-read-mode>`, the following arguments are mandatory:
+In {bdg-ref-success-line}`testbed-read-mode`, the following arguments are mandatory:
 
 - `--input-dir` An absolute or relative path to a directory that contains a `metadata.yml` file that has been saved by a previous experiment.
 
 ### Dataset
+
+> The following arguments are available in {bdg-secondary-line}`Single Mode`.
 
 The following mandatory arguments must always be given to specify the dataset that should be used, as well as the location where it should be loaded from.
 
 - `--data-dir` An absolute or relative path to the directory where the dataset files are located.
 - `--dataset` The name of the dataset files (without suffix).
 
-```{note}
-The arguments `--data-dir` and `--dataset` are only available when using the {ref}`mode <argument-mode>` `--mode single` (which is the default). In {ref}`batch mode <testbed-batch-mode>`, datasets are defined via a configuration file.
-```
-
 Optionally, the following arguments can be used to provide additional information about the dataset.
 
 - `--sparse-feature-value` (Default value = `0.0`) The value that should be used for sparse elements in the feature matrix. Does only have an effect if a sparse format is used for the representation of the feature matrix, depending on the parameter `--feature-format`.
 
 ### Problem Type
+
+> The following arguments are available in {bdg-secondary-line}`Single Mode` and {bdg-ref-primary-line}`testbed-batch-mode`.
 
 The package mlrl-testbed is able to conduct experiments for classification and regression problems. When dealing with the latter, the type of the machine learning problem must explicitly be specified via the following argument:
 
@@ -134,6 +136,8 @@ The package mlrl-testbed is able to conduct experiments for classification and r
 (setting-algorithmic-parameters)=
 
 ## Setting Algorithmic Parameters
+
+> Algorithmic parameters can only be specified in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode` and {bdg-ref-info-line}`testbed-run-mode`.
 
 In addition to the command line arguments that are discussed above, it is often desirable to not rely on the default configuration of the BOOMER algorithm in an experiment, but to use a custom configuration. For this purpose, all the algorithmic parameters that are discussed in the section {ref}`parameters` may be set by providing corresponding arguments to the command line API.
 
@@ -190,6 +194,8 @@ One of the most important capabilities of mlrl-testbed is to train machine learn
 
 ### Strategies for Data Splitting
 
+> The following arguments are available in {bdg-secondary-line}`Single Mode` and {bdg-ref-primary-line}`testbed-batch-mode`.
+
 - `--data-split` (Default value = `train-test`)
 
   - `train-test` The available data is split into a single training and test set. Given that `dataset-name` is provided as the value of the argument `--dataset`, the training data must be stored in a file named `dataset-name_training.arff`, whereas the test data must be stored in a file named `dataset-name_test.arff`. If no such files are available, the program searches for a file with the name `dataset-name.arff` and splits it into training and test data automatically. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
@@ -206,23 +212,25 @@ One of the most important capabilities of mlrl-testbed is to train machine learn
 
 ### Types of Predictions
 
-- `--prediction-type` (Default value = `binary`)
+- `--prediction-type` (Default value = `binary`, {bdg-secondary-line}`Single Mode` and {bdg-ref-primary-line}`testbed-batch-mode`)
 
   - `scores` The learner is instructed to predict scores. In this case, ranking measures are used for evaluation.
   - `probabilities` The learner is instructed to predict probability estimates. In this case, ranking measures are used for evaluation.
   - `binary` The learner is instructed to predict binary labels. In this case, bi-partition evaluation measures are used for evaluation.
 
-- `--predict-for-training-data` (Default value = `false`)
+- `--predict-for-training-data` (Default value = `false`, {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-info-line}`testbed-run-mode`)
 
   - `true` Predictions are obtained for the training data.
   - `false` Predictions are not obtained for the training data.
 
-- `--predict-for-test-data` (Default value = `true`)
+- `--predict-for-test-data` (Default value = `true`, {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-info-line}`testbed-run-mode`)
 
   - `true` Predictions are obtained for the test data.
   - `false` Predictions are not obtained for the test data.
 
 ### Incremental Evaluation
+
+> The following arguments are available in {bdg-secondary-line}`Single Mode` and {bdg-ref-primary-line}`testbed-batch-mode`.
 
 - `--incremental-evaluation` (Default value = `false`)
 
@@ -242,12 +250,16 @@ Depending on the characteristics of a dataset, it might be desirable to apply on
 
 ### One-Hot-Encoding
 
+> The following arguments are available in {bdg-secondary-line}`Single Mode` and {bdg-ref-primary-line}`testbed-batch-mode`.
+
 - `--one-hot-encoding` (Default value = `false`)
 
   - `true` One-hot-encoding is used to encode nominal features.
   - `false` The algorithm's ability to natively handle nominal features is used.
 
 ## Saving and Loading Data
+
+> The following arguments are available in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-success-line}`testbed-read-mode` and {bdg-ref-info-line}`testbed-run-mode`.
 
 The package mlrl-testbed allows saving data gathered during experiments to output files or printing it on the console. Previously saved data can also be loaded in subsequent experiments. In the following, we list all command line arguments concerned with this functionality.
 
@@ -280,6 +292,8 @@ The package mlrl-testbed allows saving data gathered during experiments to outpu
 
 ### Meta-Data
 
+> The following arguments are available in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-success-line}`testbed-read-mode` and {bdg-ref-info-line}`testbed-run-mode`.
+
 Saving meta-data can help improving the reproducibility of experiments. Among other information, it contains the command that has been used for running an experiment and the version of mlrl-testbed used.
 
 - `--print-meta-data` (Default value = `false`)
@@ -299,24 +313,20 @@ Saving meta-data can help improving the reproducibility of experiments. Among ot
 
 Because the training of models can be time-consuming, it might be desirable to save them on disk for later use. This requires to specify the paths of directories to which models should be saved or loaded from.
 
-- `--model-load-dir` (Default value = `models`)
+- `--model-load-dir` (Default value = `models`, {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode` and {bdg-ref-info-line}`testbed-run-mode`)
 
   - An absolute or relative path to the directory from which models should be loaded. If such models are found in the specified directory, they are used instead of learning a new model from scratch.
 
-- `--load-models` (Default value = `false`)
+- `--load-models` (Default value = `false`, {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode` and {bdg-ref-info-line}`testbed-run-mode`)
 
   - `true` Models are loaded from input files.
   - `false` Models are not loaded from input files.
 
-- `--model-save-dir` (Default value = `models`)
+- `--model-save-dir` (Default value = `models`, {bdg-secondary-line}`Single Mode` and {bdg-ref-info-line}`testbed-run-mode`)
 
   - An absolute or relative path to the directory to which models should be saved once training has completed.
 
-    ```{note}
-    This argument is only available when using the {ref}`mode <argument-mode>` `--mode single` (which is the default). In {ref}`batch mode <testbed-batch-mode>`, a suitable directory is created automatically.
-    ```
-
-- `--save-models` (Default value = `false`)
+- `--save-models` (Default value = `false`, {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-success-line}`testbed-read-mode` and {bdg-ref-info-line}`testbed-run-mode`)
 
   - `true` Models are saved to output files.
   - `false` Models are not saved to output files.
@@ -327,29 +337,25 @@ Because the training of models can be time-consuming, it might be desirable to s
 
 As an alternative to storing the models learned by an algorithm, the algorithmic parameters used for training can be saved to disk. This may help to remember the configuration used for training a model and enables to reload the same parameter setting for additional experiments.
 
-- `--parameter-load-dir` (Default value = `parameters`)
+- `--parameter-load-dir` (Default value = `parameters`, {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode` and {bdg-ref-info-line}`testbed-run-mode`)
 
   - An absolute or relative path to the directory from which parameters to be used by the algorithm should be loaded. If such files are found in the specified directory, the specified parameter settings are used instead of the parameters that are provided via command line arguments.
 
-- `--load-parameters` (Default value = `false`)
+- `--load-parameters` (Default value = `false`, {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode` and {bdg-ref-info-line}`testbed-run-mode`)
 
   - `true` Algorithmic parameters are loaded from input files
   - `false` Algorithmic parameters are not loaded from input files
 
-- `--parameter-save-dir` (Default value = `parameters`)
+- `--parameter-save-dir` (Default value = `parameters`, {bdg-secondary-line}`Single Mode` and {bdg-ref-info-line}`testbed-run-mode`)
 
   - An absolute or relative path to the directory to which [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files that store algorithmic parameters set by the user should be saved.
 
-    ```{note}
-    This argument is only available when using the {ref}`mode <argument-mode>` `--mode single` (which is the default). In {ref}`batch mode <testbed-batch-mode>`, a suitable directory is created automatically.
-    ```
-
-- `--print-parameters` (Default value = `false`)
+- `--print-parameters` (Default value = `false`, {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-success-line}`testbed-read-mode` and {bdg-ref-info-line}`testbed-run-mode`)
 
   - `true` Algorithmic parameters are printed on the console.
   - `false` Algorithmic parameters are not printed on the console.
 
-- `--save-parameters` (Default value = `false`)
+- `--save-parameters` (Default value = `false`, {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-success-line}`testbed-read-mode` and {bdg-ref-info-line}`testbed-run-mode`)
 
   - `true` Algorithmic parameters are saved to output files
   - `false` Algorithmic parameters are not saved to output files
@@ -360,11 +366,9 @@ As an alternative to storing the models learned by an algorithm, the algorithmic
 
 To provide valuable insights into the models learned by an algorithm, the predictions they provide, or the data they have been derived from, a wide variety of experimental results can be written to output files or printed on the console. If the results should be written to files, it is necessary to specify an output directory:
 
-- `--result-dir` (Default value = `result`) An absolute or relative path to the directory where experimental results should be saved.
+> The following arguments are available in {bdg-secondary-line}`Single Mode`, {bdg-ref-success-line}`testbed-read-mode` and {bdg-ref-info-line}`testbed-run-mode`.
 
-  ```{note}
-  This argument is only available when using the {ref}`mode <argument-mode>` `--mode single` (which is the default). In {ref}`batch mode <testbed-batch-mode>`, a suitable directory is created automatically.
-  ```
+- `--result-dir` (Default value = `result`) An absolute or relative path to the directory where experimental results should be saved.
 
 - `--wipe-result-dir` (Default value = `true`)
 
@@ -374,6 +378,8 @@ To provide valuable insights into the models learned by an algorithm, the predic
 (arguments-evaluation-results)=
 
 #### Evaluation Results
+
+> The following arguments are available in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-success-line}`testbed-read-mode` and {bdg-ref-info-line}`testbed-run-mode`.
 
 - `--print-evaluation` (Default value = `true`)
 
@@ -464,6 +470,8 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 #### Predictions
 
+> The following arguments are available in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-success-line}`testbed-read-mode` and {bdg-ref-info-line}`testbed-run-mode`.
+
 - `--print-predictions` (Default value = `false`)
 
   - `true` The predictions for individual examples and outputs are printed on the console.
@@ -479,6 +487,12 @@ To provide valuable insights into the models learned by an algorithm, the predic
     - `decimals` (Default value = `0`) The number of decimals to be used for real-valued predictions or 0, if the number of decimals should not be restricted.
 
   - `false` No datasets containing predictions are written to ARFF files.
+
+(arguments-ground-truth)=
+
+#### Ground Truth
+
+> The following arguments are available in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode` and {bdg-ref-info-line}`testbed-run-mode`.
 
 - `--print-ground-truth` (Default value = `false`, *not available in {ref}`read mode <testbed-read-mode>`*)
 
@@ -499,6 +513,8 @@ To provide valuable insights into the models learned by an algorithm, the predic
 (arguments-prediction-characteristics)=
 
 #### Prediction Characteristics
+
+> The following arguments are available in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-success-line}`testbed-read-mode` and {bdg-ref-info-line}`testbed-run-mode`.
 
 - `--print-prediction-characteristics` (Default value = `false`)
 
@@ -532,6 +548,8 @@ To provide valuable insights into the models learned by an algorithm, the predic
 (arguments-data-characteristics)=
 
 #### Data Characteristics
+
+> The following arguments are available in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-success-line}`testbed-read-mode` and {bdg-ref-info-line}`testbed-run-mode`.
 
 - `--print-data-characteristics` (Default value = `false`)
 
@@ -578,6 +596,8 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 #### Label Vectors
 
+> The following arguments are available in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-success-line}`testbed-read-mode` and {bdg-ref-info-line}`testbed-run-mode`.
+
 - `--print-label-vectors` (Default value = `false`, *classification only*)
 
   - `true` The unique label vectors contained in the training data are printed on the console. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
@@ -598,6 +618,8 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 #### Model Characteristics
 
+> The following arguments are available in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-success-line}`testbed-read-mode` and {bdg-ref-info-line}`testbed-run-mode`.
+
 - `--print-model-characteristics` (Default value = `false`)
 
   - `true` The characteristics of rule models are printed on the console
@@ -612,9 +634,11 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 #### Rules
 
+> The following arguments are available in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-success-line}`testbed-read-mode` and {bdg-ref-info-line}`testbed-run-mode`.
+
 - `--print-rules` (Default value = `false`)
 
-  - `true` The induced rules are printed on the console. The following options may be specified using the {ref}`bracket notation<bracket-notation>` (*the options are not available in {ref}`read mode <testbed-read-mode>`*):
+  - `true` The induced rules are printed on the console. The following options may be specified using the {ref}`bracket notation<bracket-notation>` (*the options are only available in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, and {bdg-ref-info-line}`testbed-run-mode`*):
 
     - `print_feature_names` (Default value = `true`) `true`, if the names of features should be printed instead of their indices, `false` otherwise.
     - `print_output_names` (Default value = `true`) `true`, if the names of outputs should be printed instead of their indices, `false` otherwise.
@@ -628,7 +652,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--save-rules` (Default value = `false`)
 
-  - `true` The induced rules are written to a text file. The following options may be specified using the {ref}`bracket notation<bracket-notation>` (*the options are not available in {ref}`read mode <testbed-read-mode>`*):
+  - `true` The induced rules are written to a text file. The following options may be specified using the {ref}`bracket notation<bracket-notation>` (*the options are only available in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, and {bdg-ref-info-line}`testbed-run-mode`*):
 
     - `print_feature_names` (Default value = `true`) `true`, if the names of features should be printed instead of their indices, `false` otherwise.
     - `print_output_names` (Default value = `true`) `true`, if the names of outputs should be printed instead of their indices, `false` otherwise.
@@ -643,6 +667,8 @@ To provide valuable insights into the models learned by an algorithm, the predic
 (arguments-probability-calibration-models)=
 
 #### Probability Calibration Models
+
+> The following arguments are available in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-success-line}`testbed-read-mode` and {bdg-ref-info-line}`testbed-run-mode`.
 
 - `--print-marginal-probability-calibration-model` (Default value = `false`)
 
