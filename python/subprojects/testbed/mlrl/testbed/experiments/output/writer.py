@@ -248,7 +248,7 @@ class OutputWriter:
         """
         return list(filter(None, map(lambda sink: sink.create_source(input_directory), self.sinks)))
 
-    @abstractmethod
+    # pylint: disable=unused-argument
     def create_input_reader(self, args: Namespace, input_directory: Path) -> Optional[InputReader]:
         """
         May be overridden by subclasses in order to create an `InputReader` that can read the data produced by this
