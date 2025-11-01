@@ -78,7 +78,9 @@ extlinks = {
     'repo-dir': (github_dir_url, '%s'),
 }
 
-# Authentication headers to be used by builder "linkcheck"
+# Configuration of the builder "linkcheck"
+linkcheck_timeout = 30
+linkcheck_retries = 3
 linkcheck_request_headers = {}
 github_token = environ.get('GITHUB_TOKEN')
 
