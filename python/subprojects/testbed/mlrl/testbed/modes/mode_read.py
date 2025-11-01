@@ -31,14 +31,14 @@ from mlrl.util.cli import Argument
 from mlrl.util.options import Options
 
 
-class ReadMode(InputMode):
+class ResultReaderUtility:
     """
-    An abstract base class for all modes of operation that read experimental results.
+    A helper class for reading experimental results produced by a specific command.
     """
 
-    class SingleExperimentProcedure(ExperimentalProcedure):
+    class ReadProcedure(ExperimentalProcedure):
         """
-        The procedure that is used to conduct a single experiment in read mode.
+        A procedure that allows reading the output files produced by a single experiment.
         """
 
         @override
@@ -73,6 +73,45 @@ class ReadMode(InputMode):
 
             return state
 
+    def __init__(self, args: Namespace, recipe: Recipe, command: Command, input_directory: Path):
+        """
+        :param args:            The command line arguments provided by the user
+        :param recipe:          A `Recipe` that provides access to the ingredients that are needed for setting up
+                                experiments
+        :param command:         The command that produced the experimental results to be read
+        :param input_directory: The path to the directory from which the experimental results should be read
+        """
+        experiment_builder = recipe.create_experiment_builder(experiment_mode=ExperimentMode.READ,
+                                                              args=args,
+                                                              command=command,
+                                                              load_dataset=False)
+        command_args = command.to_namespace()
+
+        for output_writer in sorted(experiment_builder.output_writers, key=str):
+            input_reader = output_writer.create_input_reader(command_args, input_directory)
+
+            if input_reader and input_reader.sources:
+                experiment_builder.add_input_readers(input_reader)
+
+        self.args = args
+        self.experiment_builder = experiment_builder
+
+    def read(self) -> ExperimentState:
+        """
+        Reads the experimental results.
+
+        :return: A state that stores the experimental results that have been read in its extras
+        """
+        experiment = self.experiment_builder.build(self.args)
+        return ResultReaderUtility.ReadProcedure().conduct_experiment(experiment)
+
+
+class ReadMode(InputMode):
+    """
+    An abstract base class for all modes of operation that read experimental results.
+    """
+
+    class AggregateEvaluationProcedure(ExperimentalProcedure):
         """
         The procedure that is used to write evaluation results that have been aggregated across several experiments to
         one or several sinks.
@@ -171,22 +210,11 @@ class ReadMode(InputMode):
 
         return commands_by_dataset
 
-    def __run_single_experiment(self, args: Namespace, recipe: Recipe, input_directory: Path,
+    @staticmethod
+    def __run_single_experiment(args: Namespace, recipe: Recipe, input_directory: Path,
                                 command: Command) -> ExperimentState:
         log.info('The command "%s" has been used originally for running this experiment', str(command))
-        experiment_builder = recipe.create_experiment_builder(experiment_mode=self.to_enum(),
-                                                              args=args,
-                                                              command=command,
-                                                              load_dataset=False)
-
-        for output_writer in sorted(experiment_builder.output_writers, key=str):
-            input_reader = output_writer.create_input_reader(command.to_namespace(), input_directory)
-
-            if input_reader and input_reader.sources:
-                experiment_builder.add_input_readers(input_reader)
-
-        experiment = experiment_builder.build(args)
-        return ReadMode.SingleExperimentProcedure().conduct_experiment(experiment)
+        return ResultReaderUtility(args=args, recipe=recipe, command=command, input_directory=input_directory).read()
 
     @staticmethod
     def __aggregate_evaluation(commands_and_their_states: List[Tuple[Command, ExperimentState]],
