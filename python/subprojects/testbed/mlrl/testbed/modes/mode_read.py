@@ -73,7 +73,6 @@ class ReadMode(InputMode):
 
             return state
 
-    class AggregatedEvaluationProcedure(ExperimentalProcedure):
         """
         The procedure that is used to write evaluation results that have been aggregated across several experiments to
         one or several sinks.
@@ -253,7 +252,7 @@ class ReadMode(InputMode):
                                                               load_dataset=False)
 
         experiment = experiment_builder.build(args)
-        return ReadMode.AggregatedEvaluationProcedure(evaluation_by_dataset_type).conduct_experiment(experiment)
+        return ReadMode.AggregateEvaluationProcedure(evaluation_by_dataset_type).conduct_experiment(experiment)
 
     @override
     def _run_experiment(self, extension_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
