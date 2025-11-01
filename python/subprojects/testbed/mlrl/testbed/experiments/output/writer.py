@@ -17,6 +17,7 @@ from mlrl.testbed.experiments.input.reader import InputReader
 from mlrl.testbed.experiments.input.sources import Source
 from mlrl.testbed.experiments.output.arguments import ResultDirectoryArguments
 from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData, TabularOutputData, TextualOutputData
+from mlrl.testbed.experiments.output.policies import OutputErrorPolicy
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.state import ExperimentState
 
@@ -152,7 +153,7 @@ class OutputWriter:
             return extractor.extract_data(state, self.sinks)
         # pylint: disable=broad-exception-caught
         except Exception as error:
-            if self.exit_on_error:
+            if self.output_error_policy == OutputErrorPolicy.EXIT:
                 raise error
 
             log.error('Failed to extract output data from experimental state via extractor of type %s',
@@ -179,7 +180,7 @@ class OutputWriter:
             self._write_to_sink(sink, state, output_data)
         # pylint: disable=broad-exception-caught
         except Exception as error:
-            if self.exit_on_error:
+            if self.output_error_policy == OutputErrorPolicy.EXIT:
                 raise error
 
             log.error('Failed to write output data of type "%s" to sink %s',
@@ -193,7 +194,7 @@ class OutputWriter:
         """
         self.extractors = list(extractors)
         self.sinks: List[Sink] = []
-        self.exit_on_error = True
+        self.output_error_policy = OutputErrorPolicy.EXIT
 
     def add_sinks(self, *sinks: Sink) -> 'OutputWriter':
         """
