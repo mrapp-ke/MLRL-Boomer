@@ -98,7 +98,7 @@ namespace seco {
              *                  `DenseDecomposableStatisticMatrix<CContiguousView<const uint8>>::View` that provides
              *                  random access to the confusion matrices of the training examples
              * @param row       The index of the row to be added to this vector
-             * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
+             * @param indices   A reference to a `CompleteIndexVector` that provides access to the indices
              * @param weight    The weight, the confusion matrix elements should be multiplied by
              */
             void addToSubset(const DenseDecomposableStatisticMatrix<CContiguousView<const uint8>>::View& view,
@@ -112,7 +112,7 @@ namespace seco {
              * @param view      A reference to an object of type `DenseDecomposableStatisticMatrix<BinaryCsrView>::View`
              *                  that provides row-wise access to the labels of the training examples
              * @param row       The index of the row to be added to this vector
-             * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
+             * @param indices   A reference to a `CompleteIndexVector` that provides access to the indices
              * @param weight    The weight, the confusion matrix elements should be multiplied by
              */
             void addToSubset(const DenseDecomposableStatisticMatrix<BinaryCsrView>::View& view, uint32 row,
@@ -127,7 +127,7 @@ namespace seco {
              *                  `DenseDecomposableStatisticMatrix<CContiguousView<const uint8>>::View` that provides
              *                  random access to the confusion matrices of the training examples
              * @param row       The index of the row to be added to this vector
-             * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
+             * @param indices   A reference to a `PartialIndexVector` that provides access to the indices
              * @param weight    The weight, the confusion matrix elements should be multiplied by
              */
             void addToSubset(const DenseDecomposableStatisticMatrix<CContiguousView<const uint8>>::View& view,
@@ -141,7 +141,7 @@ namespace seco {
              * @param view      A reference to an object of type `DenseDecomposableStatisticMatrix<BinaryCsrView>::View`
              *                  that provides row-wise access to the labels of the training examples
              * @param row       The index of the row to be added to this vector
-             * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
+             * @param indices   A reference to a `PartialIndexVector` that provides access to the indices
              * @param weight    The weight, the confusion matrix elements should be multiplied by
              */
             void addToSubset(const DenseDecomposableStatisticMatrix<BinaryCsrView>::View& view, uint32 row,
