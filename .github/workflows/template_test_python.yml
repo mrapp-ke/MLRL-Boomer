@@ -9,6 +9,7 @@ on:
       overwrite_output_files:
         required: false
         type: boolean
+        default: true
       subproject:
         required: true
         type: string
