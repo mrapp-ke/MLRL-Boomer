@@ -270,10 +270,10 @@ The package mlrl-testbed allows saving data gathered during experiments to outpu
   - `true` The directories specified via the arguments `--result-dir`, `--model-save-dir` and `--parameter-save-dir` are automatically created if they do not already exist.
   - `false` The directories are not created automatically.
 
-- `--exit-on-error` (Default value = `false`)
+- `--if-output-error` (Default value = `log`)
 
-  - `true` The program exits if an error occurs while writing output data.
-  - `false` Any error that occurs while writing output data is logged, but the program continues.
+  - `exit` The program exits if an error occurs while writing output data.
+  - `log` Any error that occurs while writing output data is logged, but the program continues.
 
 - `--if-input-missing` (Default value = `exit`)
 
