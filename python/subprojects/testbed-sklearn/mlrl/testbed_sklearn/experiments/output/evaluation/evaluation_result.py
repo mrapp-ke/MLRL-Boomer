@@ -6,8 +6,12 @@ Provides classes for representing evaluation results that are part of output dat
 from itertools import tee
 from typing import Optional, override
 
-from mlrl.testbed.experiments.output.data import OutputData, OutputValue, TabularOutputData
+from mlrl.testbed.experiments.context import Context
+from mlrl.testbed.experiments.data import TabularProperties
+from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
+from mlrl.testbed.experiments.output.evaluation.evaluation_result import AggregatedEvaluationResult
 from mlrl.testbed.experiments.output.evaluation.measurements import Measurements
+from mlrl.testbed.experiments.output.evaluation.measures import Measure
 from mlrl.testbed.experiments.output.sinks import CsvFileSink
 from mlrl.testbed.experiments.table import RowWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
@@ -20,7 +24,9 @@ class EvaluationResult(TabularOutputData):
     Stores the evaluation results according to different measures.
     """
 
-    OPTION_ENABLE_ALL = 'enable_all'
+    PROPERTIES = TabularProperties(name='Evaluation result', file_name='evaluation')
+
+    CONTEXT = Context()
 
     OPTION_HAMMING_LOSS = 'hamming_loss'
 
@@ -94,7 +100,7 @@ class EvaluationResult(TabularOutputData):
         """
         :param measurements: The measurements according to different evaluation measures
         """
-        super().__init__(OutputData.Properties(name='Evaluation result', file_name='evaluation'))
+        super().__init__(properties=self.PROPERTIES, context=self.CONTEXT)
         self.get_context(CsvFileSink).include_prediction_scope = False
         self.measurements = measurements
 
@@ -136,7 +142,8 @@ class EvaluationResult(TabularOutputData):
         """
         percentage = options.get_bool(OPTION_PERCENTAGE, kwargs.get(OPTION_PERCENTAGE, True))
         decimals = options.get_int(OPTION_DECIMALS, kwargs.get(OPTION_DECIMALS, 0))
-        enable_all = options.get_bool(self.OPTION_ENABLE_ALL, kwargs.get(self.OPTION_ENABLE_ALL, True))
+        enable_all = options.get_bool(AggregatedEvaluationResult.OPTION_ENABLE_ALL,
+                                      kwargs.get(AggregatedEvaluationResult.OPTION_ENABLE_ALL, True))
         fold = kwargs.get(self.KWARG_FOLD)
         dictionary = self.measurements.averages_as_dict() if fold is None else self.measurements.values_as_dict(fold)
         headers, measures = tee(
@@ -146,6 +153,12 @@ class EvaluationResult(TabularOutputData):
         return RowWiseTable(*headers).add_row(*values)
 
 
-EVALUATION_MEASURE_TRAINING_TIME = OutputValue(EvaluationResult.OPTION_TRAINING_TIME, 'Training Time')
+EVALUATION_MEASURE_TRAINING_TIME = OutputValue(
+    option_key=EvaluationResult.OPTION_TRAINING_TIME,
+    name='Training Time (' + Measure.UNIT_SECONDS + ')',
+)
 
-EVALUATION_MEASURE_PREDICTION_TIME = OutputValue(EvaluationResult.OPTION_PREDICTION_TIME, 'Prediction Time')
+EVALUATION_MEASURE_PREDICTION_TIME = OutputValue(
+    option_key=EvaluationResult.OPTION_PREDICTION_TIME,
+    name='Prediction Time (' + Measure.UNIT_SECONDS + ')',
+)

@@ -99,3 +99,74 @@ class IWeightedStatistics : virtual public IStatisticsSpace {
         virtual std::unique_ptr<IResettableStatisticsSubset> createSubset(
           const BinaryDokVector& excludedStatisticIndices, const PartialIndexVector& outputIndices) const = 0;
 };
+
+/**
+ * An abstract base class for all classes that provide access to statistics.
+ *
+ * @tparam State            The type of the state of the training process
+ * @tparam StatisticVector  The type of the vectors that are used to store statistics
+ * @tparam WeightVector     The type of the vector that provides access to the weights of individual statistics
+ */
+template<typename State, typename StatisticVector, typename WeightVector>
+class AbstractWeightedStatistics : public AbstractStatisticsSpace<State>,
+                                   virtual public IWeightedStatistics {
+    protected:
+
+        /**
+         * A reference to an object of template type `WeightVector` that provides access to the weights of individual
+         * statistics.
+         */
+        const WeightVector& weights_;
+
+        /**
+         * A reference to an object of template type `WeightVector` that provides access to the weights of individual
+         * statistics.
+         */
+        StatisticVector totalSumVector_;
+
+    public:
+
+        /**
+         * @param state   A reference to an object of template type `State` that represents the state of the training
+         *                process
+         * @param weights A reference to an object of template type `WeightVector` that provides access to the weights
+         *                of individual statistics
+         */
+        AbstractWeightedStatistics(State& state, const WeightVector& weights)
+            : AbstractStatisticsSpace<State>(state), weights_(weights),
+              totalSumVector_(state.statisticMatrixPtr->getNumCols(), true) {
+            setVectorToWeightedSumOfStatistics(totalSumVector_, weights, state.statisticMatrixPtr->getView());
+        }
+
+        /**
+         * @param other A reference to an object of type `AbstractWeightedStatistics` to be copied
+         */
+        AbstractWeightedStatistics(const AbstractWeightedStatistics<State, StatisticVector, WeightVector>& other)
+            : AbstractStatisticsSpace<State>(other.state_), weights_(other.weights_),
+              totalSumVector_(other.totalSumVector_) {}
+
+        virtual ~AbstractWeightedStatistics() override {}
+
+        /**
+         * @see `IWeightedStatistics::resetCoveredStatistics`
+         */
+        void resetCoveredStatistics() override {
+            totalSumVector_.clear();
+        }
+
+        /**
+         * @see `IWeightedStatistics::addCoveredStatistic`
+         */
+        void addCoveredStatistic(uint32 statisticIndex) override {
+            addStatisticsToVector(totalSumVector_, weights_, this->state_.statisticMatrixPtr->getView(),
+                                  statisticIndex);
+        }
+
+        /**
+         * @see `IWeightedStatistics::removeCoveredStatistic`
+         */
+        void removeCoveredStatistic(uint32 statisticIndex) override {
+            removeStatisticsFromVector(totalSumVector_, weights_, this->state_.statisticMatrixPtr->getView(),
+                                       statisticIndex);
+        }
+};

@@ -1,4 +1,4 @@
-mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --save-evaluation true --problem-type regression --data-split cross-validation{first_fold=1,last_fold=1} --print-evaluation true --save-evaluation true
+mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --data-split cross-validation{first_fold=1,last_fold=1} --print-evaluation true --save-evaluation true
 Starting experiment using the regression algorithm "BoomerRegressor"...
 Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Performing fold 1 of 10-fold cross validation...
@@ -15,10 +15,10 @@ A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 1):
 
-Mean Absolute Error               28.78
-Mean Absolute Percentage Error     0.08
-Mean Squared Error              2827.78
-Median Absolute Error             14.58
+Mean Absolute Error (↓)               28.78
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2827.78
+Median Absolute Error (↓)             14.58
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-1.csv"...
 Successfully finished experiment after <duration>

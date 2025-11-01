@@ -7,7 +7,7 @@ hide-toc: true
 ```{image} ../../_static/logo_testbed_light.svg
 ---
 align: center
-alt: MLRL-Testbed
+alt: mlrl-testbed
 class: only-light
 ---
 ```
@@ -15,7 +15,7 @@ class: only-light
 ```{image} ../../_static/logo_testbed_dark.svg
 ---
 align: center
-alt: MLRL-Testbed
+alt: mlrl-testbed
 class: only-dark
 ---
 ```
@@ -41,6 +41,8 @@ pre_processing
 outputs
 runnables
 batch_mode
+run_mode
+read_mode
 arguments
 ```
 

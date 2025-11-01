@@ -1,0 +1,173 @@
+mlrl-testbed mlrl.boosting --mode read --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --print-evaluation true --save-evaluation true
+Reading meta-data...
+Reading input data from file "python/tests/res/tmp/metadata.yml"...
+Successfully read meta-data
+Checking for version conflicts...
+Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is currently used
+No version conflicts detected
+Reading experimental results of 1 experiment...
+
+Reading experimental results of experiment (1 / 1)...
+The command "mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --incremental-evaluation true{step_size=50} --print-evaluation true --save-evaluation true" has been used originally for running this experiment
+Using separate training and test sets...
+Reading input data from file "python/tests/res/tmp/results/evaluation_test.csv"...
+Evaluation result for test data using a model of size 50:
+
+Mean Absolute Error (↓)               38.73
+Mean Absolute Percentage Error (↓)     0.11
+Mean Squared Error (↓)              3817.27
+Median Absolute Error (↓)             24.48
+
+Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...
+Evaluation result for test data using a model of size 100:
+
+Mean Absolute Error (↓)               35.28
+Mean Absolute Percentage Error (↓)     0.1
+Mean Squared Error (↓)              3352.27
+Median Absolute Error (↓)             21.83
+
+Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...
+Evaluation result for test data using a model of size 150:
+
+Mean Absolute Error (↓)               33.19
+Mean Absolute Percentage Error (↓)     0.09
+Mean Squared Error (↓)              3113.87
+Median Absolute Error (↓)             19.63
+
+Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...
+Evaluation result for test data using a model of size 200:
+
+Mean Absolute Error (↓)               31.93
+Mean Absolute Percentage Error (↓)     0.09
+Mean Squared Error (↓)              3007.98
+Median Absolute Error (↓)             18.06
+
+Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...
+Evaluation result for test data using a model of size 250:
+
+Mean Absolute Error (↓)               31.15
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2922.57
+Median Absolute Error (↓)             16.9
+
+Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...
+Evaluation result for test data using a model of size 300:
+
+Mean Absolute Error (↓)               30.81
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2898.59
+Median Absolute Error (↓)             16.63
+
+Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...
+Evaluation result for test data using a model of size 350:
+
+Mean Absolute Error (↓)               30.6
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2886.61
+Median Absolute Error (↓)             16.51
+
+Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...
+Evaluation result for test data using a model of size 400:
+
+Mean Absolute Error (↓)               30.39
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2875.06
+Median Absolute Error (↓)             15.89
+
+Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...
+Evaluation result for test data using a model of size 450:
+
+Mean Absolute Error (↓)               30.25
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2867.54
+Median Absolute Error (↓)             16.04
+
+Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...
+Evaluation result for test data using a model of size 500:
+
+Mean Absolute Error (↓)               30.16
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2857.21
+Median Absolute Error (↓)             16.01
+
+Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...
+Evaluation result for test data using a model of size 550:
+
+Mean Absolute Error (↓)               30.11
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2851.8
+Median Absolute Error (↓)             16.11
+
+Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...
+Evaluation result for test data using a model of size 600:
+
+Mean Absolute Error (↓)               30.08
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2846.38
+Median Absolute Error (↓)             16.06
+
+Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...
+Evaluation result for test data using a model of size 650:
+
+Mean Absolute Error (↓)               30.08
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2843.95
+Median Absolute Error (↓)             16
+
+Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...
+Evaluation result for test data using a model of size 700:
+
+Mean Absolute Error (↓)               30.02
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2837.29
+Median Absolute Error (↓)             16.04
+
+Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...
+Evaluation result for test data using a model of size 750:
+
+Mean Absolute Error (↓)               29.98
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2833.97
+Median Absolute Error (↓)             16.03
+
+Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...
+Evaluation result for test data using a model of size 800:
+
+Mean Absolute Error (↓)               29.95
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2830.3
+Median Absolute Error (↓)             16
+
+Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...
+Evaluation result for test data using a model of size 850:
+
+Mean Absolute Error (↓)               29.94
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2829.76
+Median Absolute Error (↓)             15.99
+
+Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...
+Evaluation result for test data using a model of size 900:
+
+Mean Absolute Error (↓)               29.93
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2828.22
+Median Absolute Error (↓)             15.94
+
+Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...
+Evaluation result for test data using a model of size 950:
+
+Mean Absolute Error (↓)               29.91
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2826.65
+Median Absolute Error (↓)             15.87
+
+Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...
+Evaluation result for test data using a model of size 1000:
+
+Mean Absolute Error (↓)               29.91
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2826.34
+Median Absolute Error (↓)             15.83
+
+Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...

@@ -14,15 +14,15 @@ A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Coverage Error                    2.69
-Discounted Cumulative Gain        1.39
-Label Ranking Average Precision   0.83
-Mean Absolute Error               4.29
-Mean Absolute Percentage Error    1.5319e+16
-Mean Squared Error               27.18
-Median Absolute Error             3.91
-NDCG                             88.65
-Ranking Loss                      0.14
+Coverage Error (↓)                    2.69
+Discounted Cumulative Gain (↑)        1.39
+Label Ranking Average Precision (↑)   0.83
+Mean Absolute Error (↓)               4.29
+Mean Absolute Percentage Error (↓)    1.5319e+16
+Mean Squared Error (↓)               27.18
+Median Absolute Error (↓)             3.91
+NDCG (↑)                             88.65
+Ranking Loss (↓)                      0.14
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Ground truth for test data:

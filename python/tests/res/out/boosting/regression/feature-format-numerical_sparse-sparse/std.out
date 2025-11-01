@@ -1,4 +1,4 @@
-mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d-numerical-sparse --result-dir results --save-evaluation true --problem-type regression --feature-format sparse
+mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d-numerical-sparse --result-dir results --problem-type regression --save-evaluation true --feature-format sparse
 Starting experiment using the regression algorithm "BoomerRegressor"...
 Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Using separate training and test sets...
@@ -14,10 +14,10 @@ A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Mean Absolute Error               33.65
-Mean Absolute Percentage Error     0.09
-Mean Squared Error              3896.66
-Median Absolute Error             19.34
+Mean Absolute Error (↓)               33.65
+Mean Absolute Percentage Error (↓)     0.09
+Mean Squared Error (↓)              3896.66
+Median Absolute Error (↓)             19.34
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Successfully finished experiment after <duration>

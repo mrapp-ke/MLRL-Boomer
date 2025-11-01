@@ -3,9 +3,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing the state of experiments.
 """
-import logging as log
 
+from argparse import Namespace
 from dataclasses import dataclass, field
+from enum import StrEnum
 from typing import Any, Dict, Optional, Type
 
 from mlrl.testbed.experiments.dataset import Dataset
@@ -17,9 +18,17 @@ from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.timer import Timer
 
-from mlrl.util.format import format_set
-
 ParameterDict = Dict[str, Any]
+
+
+class ExperimentMode(StrEnum):
+    """
+    Represents the mode of operation.
+    """
+    SINGLE = 'single'
+    BATCH = 'batch'
+    RUN = 'run'
+    READ = 'read'
 
 
 @dataclass
@@ -36,20 +45,31 @@ class TrainingState:
 
 
 @dataclass
-class PredictionState:
+class PredictionResult:
     """
     Stores the result of a prediction process.
 
     Attributes:
         predictions:            A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` storing predictions
         prediction_type:        The type of the predictions
-        prediction_scope:       Whether the predictions have been obtained from a global model or incrementally
         prediction_duration:    The time needed for prediction
     """
     predictions: Any
     prediction_type: PredictionType
-    prediction_scope: PredictionScope
     prediction_duration: Timer.Duration
+
+
+@dataclass
+class PredictionState:
+    """
+    Represents the result of a prediction process.
+
+    Attributes:
+        prediction_scope:   Whether the predictions have been obtained from a global model or incrementally
+        prediction_result:  The result of the prediction process, if available
+    """
+    prediction_scope: PredictionScope
+    prediction_result: Optional[PredictionResult] = None
 
 
 @dataclass
@@ -58,6 +78,8 @@ class ExperimentState:
     Represents the state of an experiment.
 
     Attributes:
+        mode:               The mode of operation
+        args:               The command line argument that have been used to start the experiment
         meta_data:          Meta-data about the command that has been used for running the experiment
         problem_domain:     The problem domain, the experiment is concerned with
         folding_strategy:   The strategy that is used for creating different folds of the dataset during the experiment
@@ -67,7 +89,10 @@ class ExperimentState:
         parameters:         Algorithmic parameters of the learner used in the experiment
         training_result:    The result of the training process or None, if no model has been trained yet
         prediction_result:  The result of the prediction process or None, if no predictions have been obtained yet
+        extras:             A dictionary that can be used to store arbitrary data referenced via a unique key
     """
+    mode: ExperimentMode
+    args: Namespace
     meta_data: MetaData
     problem_domain: ProblemDomain
     folding_strategy: Optional[FoldingStrategy] = None
@@ -77,36 +102,32 @@ class ExperimentState:
     parameters: ParameterDict = field(default_factory=dict)
     training_result: Optional[TrainingState] = None
     prediction_result: Optional[PredictionState] = None
+    extras: Dict[str, Any] = field(default_factory=dict)
 
-    def dataset_as(self, caller: Any, *types: Type[Dataset]) -> Optional[Dataset]:
+    def dataset_as(self, *types: Type[Dataset]) -> Optional[Dataset]:
         """
         Returns the dataset used in the experiment, if it has one of given types. Otherwise, a log message is omitted
         and `None` is returned.
 
-        :param caller:  The caller of this function to be included in the log message
         :param types:   The accepted types
         :return:        The dataset or None, if it does not have the correct type
         """
         dataset = self.dataset
 
-        if any(isinstance(dataset, dataset_type) for dataset_type in types):
-            return dataset
+        if dataset:
+            if any(isinstance(dataset, dataset_type) for dataset_type in types):
+                return dataset
 
-        log.error('%s expected type of dataset to be one of %s, but dataset has type %s',
-                  type(caller).__qualname__, format_set(map(lambda dataset_type: dataset_type.__name__, types)),
-                  type(dataset).__name__)
         return None
 
-    def learner_as(self, caller: Any, *types: Type[Any]) -> Optional[Any]:
+    def learner_as(self, *types: Type[Any]) -> Optional[Any]:
         """
         Returns the learner that has been trained in the experiment, if it has one of given types. Otherwise, a log
         message is omitted and `None` is returned.
 
-        :param caller:  The caller of this function to be included in the log message
         :param types:   The accepted types
         :return:        The learner or None, if it does not have the correct type
         """
-        learner = None
         training_result = self.training_result
 
         if training_result:
@@ -115,7 +136,4 @@ class ExperimentState:
             if any(isinstance(learner, learner_type) for learner_type in types):
                 return learner
 
-        log.error('%s expected type of learner to be one of %s, but learner has type %s',
-                  type(caller).__qualname__, format_set(map(lambda learner_type: learner_type.__name__, types)),
-                  type(learner).__name__)
         return None

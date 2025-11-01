@@ -13,6 +13,8 @@ import pytest
 from .cmd_builder import CmdBuilder
 from .comparison import FileComparison, TextFileComparison
 
+from mlrl.testbed.experiments.state import ExperimentMode
+
 
 class CmdRunner:
     """
@@ -41,7 +43,8 @@ class CmdRunner:
         expected_files_to_be_deleted = []
 
         for expected_file in expected_output_dir.rglob('*'):
-            if expected_file.is_file() and expected_file != expected_output_dir / 'std.out':
+            if expected_file.is_file() and expected_file != expected_output_dir / 'std.out' and \
+                    not any (parent.name == CmdBuilder.RERUN_DIR.name for parent in expected_file.parents):
                 actual_file = output_dir / expected_file.relative_to(expected_output_dir)
 
                 if self.__should_overwrite_files():
@@ -86,17 +89,20 @@ class CmdRunner:
         self.builder = builder
         self.args = builder.build()
 
-    def run(self, test_name: str):
+    def run(self, test_name: str, wipe_before: bool = True, wipe_after: bool = True):
         """
         Runs the command.
 
-        :param test_name: The name of the directory that stores the output files produced by the command
+        :param test_name:   The name of the directory that stores the output files produced by the command
+        :param wipe_before: True, if temporary directory should be deleted before running the command, False otherwise
+        :param wipe_after:  True, if temporary directory should be deleted after running the command, False otherwise
         """
         builder = self.builder
         output_dir = builder.base_dir
 
         # Delete temporary directories...
-        shutil.rmtree(output_dir, ignore_errors=True)
+        if wipe_before:
+            shutil.rmtree(output_dir, ignore_errors=True)
 
         # Run command...
         out = self.__run_cmd()
@@ -106,11 +112,18 @@ class CmdRunner:
 
         # Check if output of the command is as expected...
         stdout = [self.__format_cmd()] + str(out.stdout).splitlines()
+        actual_output_dir = output_dir
         expected_output_dir = builder.expected_output_dir / test_name
+
+        if builder.mode in {ExperimentMode.RUN, ExperimentMode.READ} and not builder.show_help:
+            expected_output_dir = expected_output_dir / CmdBuilder.RERUN_DIR
+            actual_output_dir = actual_output_dir / CmdBuilder.RERUN_DIR
+
         self.__compare_or_overwrite_files(TextFileComparison(stdout), expected_file=expected_output_dir / 'std.out')
 
         # Check if all expected files have been created...
-        self.__compare_or_overwrite_output_files(output_dir=output_dir, expected_output_dir=expected_output_dir)
+        self.__compare_or_overwrite_output_files(output_dir=actual_output_dir, expected_output_dir=expected_output_dir)
 
         # Delete temporary directories...
-        shutil.rmtree(output_dir, ignore_errors=True)
+        if wipe_after:
+            shutil.rmtree(output_dir, ignore_errors=True)

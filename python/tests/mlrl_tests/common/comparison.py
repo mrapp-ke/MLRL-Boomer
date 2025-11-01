@@ -7,14 +7,19 @@ import re as regex
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Set, override
+from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, override
 
 import yaml
 
-from mlrl.testbed.experiments.output.sinks import CsvFileSink, PickleFileSink, YamlFileSink
+from mlrl.testbed.experiments.input.meta_data.meta_data import InputMetaData
+from mlrl.testbed.experiments.input.sources import CsvFileSource, PickleFileSource, YamlFileSource
 from mlrl.testbed.util.io import ENCODING_UTF8, open_readable_file, open_writable_file
 
 PLACEHOLDER_DURATION = '<duration>'
+
+PLACEHOLDER_TIMESTAMP = '<timestamp>'
+
+PLACEHOLDER_VERSION = '<version>'
 
 PLACEHOLDER_FILE_NAME = '<file>'
 
@@ -72,11 +77,11 @@ class FileComparison(ABC):
         :param file:    The path to the file
         :return:        The `FileComparison` that has been created
         """
-        if file.name == 'metadata.' + YamlFileSink.SUFFIX_YAML:
+        if file.name == InputMetaData.FILENAME + '.' + YamlFileSource.SUFFIX_YAML:
             return MetaDataFileComparison(file)
-        if file.suffix == '.' + PickleFileSink.SUFFIX_PICKLE:
+        if file.suffix == '.' + PickleFileSource.SUFFIX_PICKLE:
             return PickleFileComparison(file)
-        if file.suffix == '.' + CsvFileSink.SUFFIX_CSV:
+        if file.suffix == '.' + CsvFileSource.SUFFIX_CSV:
             return CsvFileComparison(file)
 
         with open(file, mode='r', encoding=ENCODING_UTF8) as text_file:
@@ -120,15 +125,43 @@ class TextFileComparison(FileComparison):
     Allows to compare or overwrite text files produced by tests.
     """
 
-    @staticmethod
-    def __replace_durations_with_placeholders(line: str) -> str:
+    block_of_durations: Tuple[int, int] = (-1, -1)
+
+    def __replace_durations_with_placeholders(self, line_index: int, line: str) -> str:
+        if self.block_of_durations[0] >= 0:
+            if not line:
+                self.block_of_durations = (-1, -1)
+                return line
+            if line.startswith('--') or line.startswith('"'):
+                return line
+            return line[:self.block_of_durations[1]].rstrip()
+
+        column_index = line.find('Prediction Time (seconds)')
+        column_index = column_index if column_index >= 0 else line.find('Training Time (seconds)')
+
+        if column_index >= 0:
+            self.block_of_durations = (line_index, column_index)
+            return line
+
         regex_duration = '(\\d+ (day(s)*|hour(s)*|minute(s)*|second(s)*|millisecond(s)*))'
         return regex.sub(regex_duration + '((, )' + regex_duration + ')*' + '(( and )' + regex_duration + ')?',
                          PLACEHOLDER_DURATION, line)
 
     @staticmethod
-    def __mask_line(line: str) -> str:
-        return TextFileComparison.__replace_durations_with_placeholders(line.strip('\n'))
+    def __replace_timestamps_with_placeholders(line: str) -> str:
+        regex_timestamp = r'"\d\d\d\d-\d\d-\d\d_\d\d-\d\d"'
+        return regex.sub(regex_timestamp, '"' + PLACEHOLDER_TIMESTAMP + '"', line)
+
+    @staticmethod
+    def __replace_versions_with_placeholders(line: str) -> str:
+        regex_version = r'"\d+.\d+.\d+"'
+        return regex.sub(regex_version, '"' + PLACEHOLDER_VERSION + '"', line)
+
+    def __mask_line(self, line_index: int, line: str) -> str:
+        masked_line = self.__replace_durations_with_placeholders(line_index, line.strip('\n'))
+        masked_line = self.__replace_timestamps_with_placeholders(masked_line)
+        masked_line = self.__replace_versions_with_placeholders(masked_line)
+        return masked_line
 
     def __init__(self, lines: Iterable[str]):
         """
@@ -142,7 +175,7 @@ class TextFileComparison(FileComparison):
             expected_lines = file.readlines()
 
             for line_index, (actual_line, expected_line) in enumerate(zip(self.lines, expected_lines)):
-                actual_line = self.__mask_line(actual_line)
+                actual_line = self.__mask_line(line_index, actual_line)
                 expected_line = expected_line.strip('\n')
 
                 if actual_line != expected_line:
@@ -156,8 +189,8 @@ class TextFileComparison(FileComparison):
     @override
     def _write(self, file: Path):
         with open(file, 'w+', encoding=ENCODING_UTF8) as output_file:
-            for line in self.lines:
-                output_file.write(self.__mask_line(line) + '\n')
+            for line_index, line in enumerate(self.lines):
+                output_file.write(self.__mask_line(line_index, line) + '\n')
 
 
 class PickleFileComparison(FileComparison):
@@ -274,15 +307,17 @@ class CsvFileComparison(FileComparison):
     @override
     def _compare(self, another_file: Path) -> Optional[Difference]:
         with open(self.file, mode='r', encoding=ENCODING_UTF8) as actual_file:
-            actual_csv_file = csv.reader(actual_file, delimiter=CsvFileSink.DELIMITER, quotechar=CsvFileSink.QUOTE_CHAR)
+            actual_csv_file = csv.reader(actual_file,
+                                         delimiter=CsvFileSource.DELIMITER,
+                                         quotechar=CsvFileSource.QUOTE_CHAR)
             num_actual_rows = sum(1 for _ in actual_csv_file)
             actual_file.seek(0)
             num_actual_columns = len(next(actual_csv_file)) if num_actual_rows > 0 else 0
 
             with open(another_file, mode='r', encoding=ENCODING_UTF8) as expected_file:
                 expected_csv_file = csv.reader(expected_file,
-                                               delimiter=CsvFileSink.DELIMITER,
-                                               quotechar=CsvFileSink.QUOTE_CHAR)
+                                               delimiter=CsvFileSource.DELIMITER,
+                                               quotechar=CsvFileSource.QUOTE_CHAR)
                 num_expected_rows = sum(1 for _ in expected_csv_file)
                 expected_file.seek(0)
                 headers = next(expected_csv_file) if num_expected_rows > 0 else []
@@ -322,12 +357,14 @@ class CsvFileComparison(FileComparison):
     @override
     def _write(self, file: Path):
         with open(self.file, 'r', encoding=ENCODING_UTF8) as input_file:
-            input_csv_file = csv.reader(input_file, delimiter=CsvFileSink.DELIMITER, quotechar=CsvFileSink.QUOTE_CHAR)
+            input_csv_file = csv.reader(input_file,
+                                        delimiter=CsvFileSource.DELIMITER,
+                                        quotechar=CsvFileSource.QUOTE_CHAR)
 
             with open(file, 'w+', encoding=ENCODING_UTF8) as output_file:
                 output_csv_file = csv.writer(output_file,
-                                             delimiter=CsvFileSink.DELIMITER,
-                                             quotechar=CsvFileSink.QUOTE_CHAR,
+                                             delimiter=CsvFileSource.DELIMITER,
+                                             quotechar=CsvFileSource.QUOTE_CHAR,
                                              quoting=csv.QUOTE_MINIMAL,
                                              lineterminator='\n')
 
@@ -435,6 +472,6 @@ class MetaDataFileComparison(FileComparison):
     @override
     def _write(self, file: Path):
         yaml_dict = self.__load_yaml(self.path)
-        yaml_dict[self.FIELD_VERSION] = '<version>'
-        yaml_dict[self.FIELD_TIMESTAMP] = '<timestamp>'
+        yaml_dict[self.FIELD_VERSION] = PLACEHOLDER_VERSION
+        yaml_dict[self.FIELD_TIMESTAMP] = PLACEHOLDER_TIMESTAMP
         self.__write_yaml(yaml_dict, file)

@@ -4,10 +4,11 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow writing output data to YAML files.
 """
 from pathlib import Path
-from typing import override
+from typing import Optional, override
 
 import yaml
 
+from mlrl.testbed.experiments.input.sources import Source, YamlFileSource
 from mlrl.testbed.experiments.output.data import OutputData, StructuralOutputData
 from mlrl.testbed.experiments.output.sinks.sink import FileSink
 from mlrl.testbed.experiments.state import ExperimentState
@@ -21,8 +22,6 @@ class YamlFileSink(FileSink):
     Allows to write structural output data to a YAML file.
     """
 
-    SUFFIX_YAML = 'yml'
-
     def __init__(self, directory: Path, options: Options = Options(), create_directory: bool = False):
         """
         :param directory:           The path to the directory of the file
@@ -31,7 +30,7 @@ class YamlFileSink(FileSink):
                                     otherwise
         """
         super().__init__(directory=directory,
-                         suffix=self.SUFFIX_YAML,
+                         suffix=YamlFileSource.SUFFIX_YAML,
                          options=options,
                          create_directory=create_directory)
 
@@ -43,3 +42,7 @@ class YamlFileSink(FileSink):
             if dictionary:
                 with open_writable_file(file_path) as yaml_file:
                     yaml.dump(dictionary, yaml_file)
+
+    @override
+    def create_source(self, input_directory: Path) -> Optional[Source]:
+        return YamlFileSource(input_directory)
