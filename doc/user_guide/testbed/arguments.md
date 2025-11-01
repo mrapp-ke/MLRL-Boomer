@@ -275,6 +275,11 @@ The package mlrl-testbed allows saving data gathered during experiments to outpu
   - `exit` The program exits if an error occurs while writing output data.
   - `log` Any error that occurs while writing output data is logged, but the program continues.
 
+- `--if-output-exists` (Default value = `cancel`)
+
+  - `cancel` The experiment is canceled if all of its output files do already exist.
+  - `overwrite` Existing output files will be overwritten.
+
 - `--if-input-missing` (Default value = `exit`)
 
   - `exit` The program exits if an error occurs while reading input data.
