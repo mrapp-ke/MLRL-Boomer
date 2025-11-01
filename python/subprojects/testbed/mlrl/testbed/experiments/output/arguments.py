@@ -6,7 +6,9 @@ Defines command line arguments for configuring the functionality to write output
 from datetime import datetime
 from pathlib import Path
 
-from mlrl.util.cli import BoolArgument, PathArgument
+from mlrl.testbed.experiments.output.policies import OutputErrorPolicy
+
+from mlrl.util.cli import BoolArgument, EnumArgument, PathArgument
 
 
 class OutputArguments:
@@ -27,9 +29,10 @@ class OutputArguments:
         description='Whether the directories, where files should be saved, should be created automatically, if they do '
         + 'not exist, or not.')
 
-    EXIT_ON_ERROR = BoolArgument(
-        '--exit-on-error',
-        default=False,
+    IF_OUTPUT_ERROR = EnumArgument(
+        '--if-output-error',
+        enum=OutputErrorPolicy,
+        default=OutputErrorPolicy.LOG,
         description='Whether the program should exit if an error occurs while writing experimental results or not.',
     )
 

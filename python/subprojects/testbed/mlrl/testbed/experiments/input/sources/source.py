@@ -13,6 +13,7 @@ from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.file_path import FilePath
 from mlrl.testbed.experiments.input.data import DatasetInputData, InputData, StructuralInputData, TabularInputData, \
     TextualInputData
+from mlrl.testbed.experiments.input.policies import MissingInputPolicy
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
 
@@ -23,7 +24,7 @@ class Source(ABC):
     """
 
     def __init__(self):
-        self.exit_on_missing_input = True
+        self.missing_input_policy = MissingInputPolicy.EXIT
 
     @abstractmethod
     def is_available(self, state: ExperimentState, input_data: InputData) -> bool:
@@ -88,7 +89,7 @@ class FileSource(Source, ABC):
             if data:
                 input_data.update_state(state, data)
                 return True
-        elif self.exit_on_missing_input:
+        elif self.missing_input_policy == MissingInputPolicy.EXIT:
             raise IOError(f'The file "{file_path}" does not exist')
         else:
             log.error('The file "%s" does not exist', file_path)
