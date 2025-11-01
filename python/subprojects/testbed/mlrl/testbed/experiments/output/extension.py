@@ -26,7 +26,7 @@ class OutputExtension(Extension):
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
         return {
-            OutputArguments.BASE_DIR, OutputArguments.CREATE_DIRS, OutputArguments.EXIT_ON_ERROR,
+            OutputArguments.BASE_DIR, OutputArguments.CREATE_DIRS, OutputArguments.IF_OUTPUT_ERROR,
             OutputArguments.PRINT_ALL, OutputArguments.SAVE_ALL
         }
 
@@ -35,7 +35,7 @@ class OutputExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
-        experiment_builder.set_exit_on_error(OutputArguments.EXIT_ON_ERROR.get_value(args))
+        experiment_builder.set_output_error_policy(OutputArguments.IF_OUTPUT_ERROR.get_value(args))
 
     @override
     def get_supported_modes(self) -> Set[ExperimentMode]:

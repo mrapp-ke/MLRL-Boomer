@@ -24,14 +24,14 @@ class InputExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return {InputArguments.EXIT_ON_MISSING_INPUT}
+        return {InputArguments.IF_INPUT_MISSING}
 
     @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: ExperimentMode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
-        experiment_builder.set_exit_on_missing_input(InputArguments.EXIT_ON_MISSING_INPUT.get_value(args))
+        experiment_builder.set_missing_input_policy(InputArguments.IF_INPUT_MISSING.get_value(args))
 
     @override
     def get_supported_modes(self) -> Set[ExperimentMode]:
