@@ -5,7 +5,6 @@ Provides classes that implement a mode of operation for performing multiple expe
 """
 import logging as log
 import re as regex
-import sys
 
 from abc import ABC, abstractmethod
 from argparse import Namespace
@@ -13,17 +12,16 @@ from dataclasses import dataclass, field
 from functools import cached_property, reduce
 from itertools import chain
 from pathlib import Path
-from typing import Any, Callable, Generator, Iterable, List, Optional, override
+from typing import Any, Callable, Generator, Iterable, List, Optional, Set, override
 
 import yamale
-
-from mlrl.testbed_sklearn.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 
 from mlrl.testbed_slurm.arguments import SlurmArguments
 
 from mlrl.testbed.command import ArgumentDict, ArgumentList, Command
 from mlrl.testbed.experiments.fold import FoldingStrategy
 from mlrl.testbed.experiments.input.dataset.arguments import DatasetArguments
+from mlrl.testbed.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.meta_data.arguments import MetaDataArguments
@@ -32,11 +30,11 @@ from mlrl.testbed.experiments.output.model.arguments import ModelOutputDirectory
 from mlrl.testbed.experiments.output.parameters.arguments import ParameterOutputDirectoryArguments
 from mlrl.testbed.experiments.output.sinks import YamlFileSink
 from mlrl.testbed.experiments.recipe import Recipe
-from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.modes.mode import Mode
 
-from mlrl.util.cli import AUTO, BoolArgument, CommandLineInterface, FlagArgument, SetArgument, StringArgument
+from mlrl.util.cli import AUTO, Argument, BoolArgument, CommandLineInterface, FlagArgument, SetArgument, StringArgument
 from mlrl.util.options import BooleanOption, Options
 
 Batch = List[Command]
@@ -119,7 +117,9 @@ class BatchMode(Mode):
                              'experiments' if num_experiments > 1 else 'experiment')
 
                 log.info('\nRunning experiment (%s / %s): "%s"', i + 1, num_experiments, str(command))
-                recipe.create_experiment_builder(command.apply_to_namespace(args), command).run()
+                recipe.create_experiment_builder(experiment_mode=ExperimentMode.BATCH,
+                                                 args=command.apply_to_namespace(args),
+                                                 command=command).run(args)
 
             run_time = Timer.stop(start_time)
             log.info('Successfully finished %s %s after %s', num_experiments,
@@ -280,7 +280,9 @@ class BatchMode(Mode):
         has_output_file_writers = False
 
         for command in batch:
-            experiment_builder = recipe.create_experiment_builder(command.apply_to_namespace(args), command)
+            experiment_builder = recipe.create_experiment_builder(experiment_mode=ExperimentMode.BATCH,
+                                                                  args=command.apply_to_namespace(args),
+                                                                  command=command)
             has_output_file_writers |= experiment_builder.has_output_file_writers
 
         self.__write_meta_data(args, recipe, batch, has_output_file_writers=has_output_file_writers)
@@ -288,8 +290,7 @@ class BatchMode(Mode):
         runner = self.__get_runner(args)
         runner.run_batch(args, batch, recipe)
 
-    @staticmethod
-    def __write_meta_data(args: Namespace, recipe: Recipe, batch: Batch, has_output_file_writers: bool):
+    def __write_meta_data(self, args: Namespace, recipe: Recipe, batch: Batch, has_output_file_writers: bool):
         save_meta_data = MetaDataArguments.SAVE_META_DATA.get_value(args)
 
         if save_meta_data == BooleanOption.TRUE or (save_meta_data == AUTO and has_output_file_writers):
@@ -297,10 +298,13 @@ class BatchMode(Mode):
 
             if base_dir:
                 create_directory = OutputArguments.CREATE_DIRS.get_value(args)
-                sink = YamlFileSink(directory=Path(base_dir), create_directory=create_directory)
+                sink = YamlFileSink(directory=base_dir, create_directory=create_directory)
                 batch_command = Command.from_argv()
                 meta_data = MetaData(command=batch_command, child_commands=batch)
-                state = ExperimentState(meta_data=meta_data, problem_domain=recipe.create_problem_domain(args))
+                state = ExperimentState(mode=self.to_enum(),
+                                        args=args,
+                                        meta_data=meta_data,
+                                        problem_domain=recipe.create_problem_domain(args))
                 MetaDataWriter().add_sinks(sink).write(state)
 
     def __get_runner(self, args: Namespace) -> 'BatchMode.Runner':
@@ -317,8 +321,8 @@ class BatchMode(Mode):
                        config_file: ConfigFile,
                        recipe: Recipe,
                        separate_folds: bool = False) -> Generator[Command, None, None]:
-        module_name = sys.argv[1]
-        default_args = BatchMode.__filter_arguments(ArgumentList(sys.argv[2:]))
+        command = Command.from_argv()
+        default_args = BatchMode.__filter_arguments(command.argument_list)
         base_dir = OutputArguments.BASE_DIR.get_value(args)
 
         for dataset_args in map(BatchMode.__filter_arguments, config_file.dataset_args):
@@ -337,14 +341,14 @@ class BatchMode(Mode):
                         ParameterOutputDirectoryArguments.PARAMETER_SAVE_DIR.name: str(output_dir / 'parameters'),
                         MetaDataArguments.SAVE_META_DATA.name: str(False).lower(),
                     })
-                command = Command.from_dict(module_name=module_name, argument_dict=argument_dict)
+                command = Command.from_dict(module_name=command.module_name, argument_dict=argument_dict)
 
                 if separate_folds:
                     dataset_splitter = recipe.create_dataset_splitter(command.apply_to_namespace(args))
                     folding_strategy = dataset_splitter.folding_strategy
 
                     if folding_strategy.is_cross_validation_used:
-                        yield from BatchMode.__separate_folds(folding_strategy, module_name, argument_dict)
+                        yield from BatchMode.__separate_folds(folding_strategy, command.module_name, argument_dict)
                     else:
                         yield command
                 else:
@@ -404,11 +408,14 @@ class BatchMode(Mode):
         return self
 
     @override
-    def configure_arguments(self, cli: CommandLineInterface):
-        cli.add_arguments(self.CONFIG_FILE, self.SEPARATE_FOLDS, self.LIST_COMMANDS, self.__create_runner_argument())
+    def configure_arguments(self, cli: CommandLineInterface, extension_arguments: List[Argument],
+                            algorithmic_arguments: List[Argument]):
+        cli.add_arguments(self.CONFIG_FILE, self.SEPARATE_FOLDS, self.LIST_COMMANDS, self.__create_runner_argument(),
+                          *extension_arguments, *algorithmic_arguments)
 
     @override
-    def run_experiment(self, args: Namespace, recipe: Recipe):
+    def run_experiment(self, extension_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
+                       recipe: Recipe):
         config_file_path = self.CONFIG_FILE.get_value(args)
 
         if config_file_path:
@@ -417,3 +424,7 @@ class BatchMode(Mode):
 
             if config_file:
                 self.__process_commands(args, config_file, recipe)
+
+    @override
+    def to_enum(self) -> ExperimentMode:
+        return ExperimentMode.BATCH

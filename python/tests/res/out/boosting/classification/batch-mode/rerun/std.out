@@ -1,0 +1,853 @@
+mlrl-testbed mlrl.boosting --mode read --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --save-all true
+Reading meta-data...
+Reading input data from file "python/tests/res/tmp/metadata.yml"...
+Successfully read meta-data
+Checking for version conflicts...
+Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is currently used
+No version conflicts detected
+Reading experimental results of 8 experiments...
+
+Reading experimental results of experiment (1 / 8)...
+The command "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --instance-sampling none --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_none/loss_logistic-decomposable/dataset_emotions/models --parameter-save-dir instance-sampling_none/loss_logistic-decomposable/dataset_emotions/parameters --result-dir instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Using separate training and test sets...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results/data_characteristics.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results/evaluation_test.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results/joint_probability_calibration_model.csv"...
+The file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results/joint_probability_calibration_model.csv" does not exist
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results/label_vectors.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results/marginal_probability_calibration_model.csv"...
+The file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results/marginal_probability_calibration_model.csv" does not exist
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results/prediction_characteristics_test.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results/predictions_test.arff"...
+Parsing meta-data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results/predictions_test.xml"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results/rules.txt"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results/model_characteristics.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/models/model.pickle"...
+Successfully loaded model
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/parameters/parameters.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results/data_characteristics.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/parameters/parameters.csv"...
+Evaluation result for test data:
+
+Example-wise F1 (↑)         63.11
+Example-wise Jaccard (↑)    55.31
+Example-wise Precision (↑)  78.06
+Example-wise Recall (↑)     62.67
+Hamming Accuracy (↑)        81.29
+Hamming Loss (↓)            18.71
+Macro F1 (↑)                65.05
+Macro Jaccard (↑)           49.47
+Macro Precision (↑)         75.75
+Macro Recall (↑)            60.43
+Micro F1 (↑)                67.84
+Micro Jaccard (↑)           51.33
+Micro Precision (↑)         75.08
+Micro Recall (↑)            61.87
+Subset 0/1 Loss (↓)         69.39
+Subset Accuracy (↑)         30.61
+
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results/evaluation_test.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results/prediction_characteristics_test.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results/predictions_test.arff"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results/joint_probability_calibration_model.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results/label_vectors.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results/marginal_probability_calibration_model.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/models/model.pickle"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results/rules.txt"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results/model_characteristics.csv"...
+
+Reading experimental results of experiment (2 / 8)...
+The command "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --feature-format sparse --instance-sampling none --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/models --parameter-save-dir instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/parameters --result-dir instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Using separate training and test sets...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/data_characteristics.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/evaluation_test.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/joint_probability_calibration_model.csv"...
+The file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/joint_probability_calibration_model.csv" does not exist
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/label_vectors.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/marginal_probability_calibration_model.csv"...
+The file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/marginal_probability_calibration_model.csv" does not exist
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/prediction_characteristics_test.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/predictions_test.arff"...
+Parsing meta-data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/predictions_test.xml"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/rules.txt"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/model_characteristics.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/models/model.pickle"...
+Successfully loaded model
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/parameters/parameters.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/data_characteristics.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/parameters/parameters.csv"...
+Evaluation result for test data:
+
+Example-wise F1 (↑)         61.46
+Example-wise Jaccard (↑)    53.74
+Example-wise Precision (↑)  75.77
+Example-wise Recall (↑)     61.56
+Hamming Accuracy (↑)        80.87
+Hamming Loss (↓)            19.13
+Macro F1 (↑)                64.71
+Macro Jaccard (↑)           49.08
+Macro Precision (↑)         73.89
+Macro Recall (↑)            60.08
+Micro F1 (↑)                67.25
+Micro Jaccard (↑)           50.66
+Micro Precision (↑)         74.04
+Micro Recall (↑)            61.6
+Subset 0/1 Loss (↓)         70.92
+Subset Accuracy (↑)         29.08
+
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/evaluation_test.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/prediction_characteristics_test.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/predictions_test.arff"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/joint_probability_calibration_model.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/label_vectors.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/marginal_probability_calibration_model.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/models/model.pickle"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/rules.txt"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/model_characteristics.csv"...
+
+Reading experimental results of experiment (3 / 8)...
+The command "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --instance-sampling with-replacement{sample_size=0.5} --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/models --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/parameters --result-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Using separate training and test sets...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/results/data_characteristics.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/results/evaluation_test.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/results/joint_probability_calibration_model.csv"...
+The file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/results/joint_probability_calibration_model.csv" does not exist
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/results/label_vectors.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/results/marginal_probability_calibration_model.csv"...
+The file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/results/marginal_probability_calibration_model.csv" does not exist
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/results/prediction_characteristics_test.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/results/predictions_test.arff"...
+Parsing meta-data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/results/predictions_test.xml"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/results/rules.txt"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/results/model_characteristics.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/models/model.pickle"...
+Successfully loaded model
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/parameters/parameters.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/results/data_characteristics.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/parameters/parameters.csv"...
+Evaluation result for test data:
+
+Example-wise F1 (↑)         61.17
+Example-wise Jaccard (↑)    52.98
+Example-wise Precision (↑)  77.81
+Example-wise Recall (↑)     62.93
+Hamming Accuracy (↑)        80.87
+Hamming Loss (↓)            19.13
+Macro F1 (↑)                65.39
+Macro Jaccard (↑)           49.82
+Macro Precision (↑)         72.69
+Macro Recall (↑)            60.82
+Micro F1 (↑)                67.34
+Micro Jaccard (↑)           50.77
+Micro Precision (↑)         73.89
+Micro Recall (↑)            61.87
+Subset 0/1 Loss (↓)         73.47
+Subset Accuracy (↑)         26.53
+
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/results/evaluation_test.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/results/prediction_characteristics_test.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/results/predictions_test.arff"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/results/joint_probability_calibration_model.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/results/label_vectors.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/results/marginal_probability_calibration_model.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/models/model.pickle"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/results/rules.txt"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/results/model_characteristics.csv"...
+
+Reading experimental results of experiment (4 / 8)...
+The command "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --feature-format sparse --instance-sampling with-replacement{sample_size=0.5} --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/models --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/parameters --result-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Using separate training and test sets...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/data_characteristics.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/evaluation_test.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/joint_probability_calibration_model.csv"...
+The file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/joint_probability_calibration_model.csv" does not exist
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/label_vectors.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/marginal_probability_calibration_model.csv"...
+The file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/marginal_probability_calibration_model.csv" does not exist
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/prediction_characteristics_test.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/predictions_test.arff"...
+Parsing meta-data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/predictions_test.xml"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/rules.txt"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/model_characteristics.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/models/model.pickle"...
+Successfully loaded model
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/parameters/parameters.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/data_characteristics.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/parameters/parameters.csv"...
+Evaluation result for test data:
+
+Example-wise F1 (↑)         57.57
+Example-wise Jaccard (↑)    49.59
+Example-wise Precision (↑)  75.26
+Example-wise Recall (↑)     57.74
+Hamming Accuracy (↑)        79.34
+Hamming Loss (↓)            20.66
+Macro F1 (↑)                60.9
+Macro Jaccard (↑)           45.36
+Macro Precision (↑)         70.32
+Macro Recall (↑)            55.7
+Micro F1 (↑)                63.89
+Micro Jaccard (↑)           46.94
+Micro Precision (↑)         72.15
+Micro Recall (↑)            57.33
+Subset 0/1 Loss (↓)         75
+Subset Accuracy (↑)         25
+
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/evaluation_test.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/prediction_characteristics_test.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/predictions_test.arff"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/joint_probability_calibration_model.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/label_vectors.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/marginal_probability_calibration_model.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/models/model.pickle"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/rules.txt"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/model_characteristics.csv"...
+
+Reading experimental results of experiment (5 / 8)...
+The command "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset enron --instance-sampling none --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_none/loss_logistic-decomposable/dataset_enron/models --parameter-save-dir instance-sampling_none/loss_logistic-decomposable/dataset_enron/parameters --result-dir instance-sampling_none/loss_logistic-decomposable/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Using separate training and test sets...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_enron/results/data_characteristics.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_enron/results/evaluation_test.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_enron/results/joint_probability_calibration_model.csv"...
+The file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_enron/results/joint_probability_calibration_model.csv" does not exist
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_enron/results/label_vectors.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_enron/results/marginal_probability_calibration_model.csv"...
+The file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_enron/results/marginal_probability_calibration_model.csv" does not exist
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_enron/results/prediction_characteristics_test.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_enron/results/predictions_test.arff"...
+Parsing meta-data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_enron/results/predictions_test.xml"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_enron/results/rules.txt"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_enron/results/model_characteristics.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_enron/models/model.pickle"...
+Successfully loaded model
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_enron/parameters/parameters.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/dataset_enron/results/data_characteristics.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/dataset_enron/parameters/parameters.csv"...
+Evaluation result for test data:
+
+Example-wise F1 (↑)         57.44
+Example-wise Jaccard (↑)    46.65
+Example-wise Precision (↑)  75.41
+Example-wise Recall (↑)     53.46
+Hamming Accuracy (↑)        95.54
+Hamming Loss (↓)             4.46
+Macro F1 (↑)                22.37
+Macro Jaccard (↑)           16.81
+Macro Precision (↑)         61.04
+Macro Recall (↑)            18.92
+Micro F1 (↑)                58.78
+Micro Jaccard (↑)           41.63
+Micro Precision (↑)         71.2
+Micro Recall (↑)            50.05
+Subset 0/1 Loss (↓)         84.88
+Subset Accuracy (↑)         15.12
+
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/dataset_enron/results/evaluation_test.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/dataset_enron/results/prediction_characteristics_test.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/dataset_enron/results/predictions_test.arff"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/dataset_enron/results/joint_probability_calibration_model.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/dataset_enron/results/label_vectors.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/dataset_enron/results/marginal_probability_calibration_model.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/dataset_enron/models/model.pickle"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/dataset_enron/results/rules.txt"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/dataset_enron/results/model_characteristics.csv"...
+
+Reading experimental results of experiment (6 / 8)...
+The command "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset enron --feature-format sparse --instance-sampling none --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/models --parameter-save-dir instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/parameters --result-dir instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Using separate training and test sets...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/data_characteristics.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/evaluation_test.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/joint_probability_calibration_model.csv"...
+The file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/joint_probability_calibration_model.csv" does not exist
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/label_vectors.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/marginal_probability_calibration_model.csv"...
+The file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/marginal_probability_calibration_model.csv" does not exist
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/prediction_characteristics_test.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/predictions_test.arff"...
+Parsing meta-data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/predictions_test.xml"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/rules.txt"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/model_characteristics.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/models/model.pickle"...
+Successfully loaded model
+Reading input data from file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/parameters/parameters.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/data_characteristics.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/parameters/parameters.csv"...
+Evaluation result for test data:
+
+Example-wise F1 (↑)         57.44
+Example-wise Jaccard (↑)    46.65
+Example-wise Precision (↑)  75.41
+Example-wise Recall (↑)     53.46
+Hamming Accuracy (↑)        95.54
+Hamming Loss (↓)             4.46
+Macro F1 (↑)                22.37
+Macro Jaccard (↑)           16.81
+Macro Precision (↑)         61.04
+Macro Recall (↑)            18.92
+Micro F1 (↑)                58.78
+Micro Jaccard (↑)           41.63
+Micro Precision (↑)         71.2
+Micro Recall (↑)            50.05
+Subset 0/1 Loss (↓)         84.88
+Subset Accuracy (↑)         15.12
+
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/evaluation_test.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/prediction_characteristics_test.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/predictions_test.arff"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/joint_probability_calibration_model.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/label_vectors.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/marginal_probability_calibration_model.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/models/model.pickle"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/rules.txt"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/model_characteristics.csv"...
+
+Reading experimental results of experiment (7 / 8)...
+The command "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset enron --instance-sampling with-replacement{sample_size=0.5} --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/models --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/parameters --result-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Using separate training and test sets...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results/data_characteristics.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results/evaluation_test.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results/joint_probability_calibration_model.csv"...
+The file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results/joint_probability_calibration_model.csv" does not exist
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results/label_vectors.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results/marginal_probability_calibration_model.csv"...
+The file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results/marginal_probability_calibration_model.csv" does not exist
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results/prediction_characteristics_test.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results/predictions_test.arff"...
+Parsing meta-data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results/predictions_test.xml"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results/rules.txt"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results/model_characteristics.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/models/model.pickle"...
+Successfully loaded model
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/parameters/parameters.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results/data_characteristics.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/parameters/parameters.csv"...
+Evaluation result for test data:
+
+Example-wise F1 (↑)         56.45
+Example-wise Jaccard (↑)    45.85
+Example-wise Precision (↑)  74.44
+Example-wise Recall (↑)     51.84
+Hamming Accuracy (↑)        95.53
+Hamming Loss (↓)             4.47
+Macro F1 (↑)                21.51
+Macro Jaccard (↑)           16.14
+Macro Precision (↑)         64.85
+Macro Recall (↑)            18.38
+Micro F1 (↑)                58.26
+Micro Jaccard (↑)           41.11
+Micro Precision (↑)         71.63
+Micro Recall (↑)            49.1
+Subset 0/1 Loss (↓)         85.59
+Subset Accuracy (↑)         14.41
+
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results/evaluation_test.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results/prediction_characteristics_test.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results/predictions_test.arff"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results/joint_probability_calibration_model.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results/label_vectors.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results/marginal_probability_calibration_model.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/models/model.pickle"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results/rules.txt"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results/model_characteristics.csv"...
+
+Reading experimental results of experiment (8 / 8)...
+The command "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset enron --feature-format sparse --instance-sampling with-replacement{sample_size=0.5} --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/models --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/parameters --result-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Using separate training and test sets...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/data_characteristics.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/evaluation_test.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/joint_probability_calibration_model.csv"...
+The file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/joint_probability_calibration_model.csv" does not exist
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/label_vectors.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/marginal_probability_calibration_model.csv"...
+The file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/marginal_probability_calibration_model.csv" does not exist
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/prediction_characteristics_test.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/predictions_test.arff"...
+Parsing meta-data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/predictions_test.xml"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/rules.txt"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/model_characteristics.csv"...
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/models/model.pickle"...
+Successfully loaded model
+Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/parameters/parameters.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/data_characteristics.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/parameters/parameters.csv"...
+Evaluation result for test data:
+
+Example-wise F1 (↑)         56.45
+Example-wise Jaccard (↑)    45.85
+Example-wise Precision (↑)  74.44
+Example-wise Recall (↑)     51.84
+Hamming Accuracy (↑)        95.53
+Hamming Loss (↓)             4.47
+Macro F1 (↑)                21.51
+Macro Jaccard (↑)           16.14
+Macro Precision (↑)         64.85
+Macro Recall (↑)            18.38
+Micro F1 (↑)                58.26
+Micro Jaccard (↑)           41.11
+Micro Precision (↑)         71.63
+Micro Recall (↑)            49.1
+Subset 0/1 Loss (↓)         85.59
+Subset Accuracy (↑)         14.41
+
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/evaluation_test.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/prediction_characteristics_test.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/predictions_test.arff"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/joint_probability_calibration_model.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/label_vectors.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/marginal_probability_calibration_model.csv"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/models/model.pickle"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/rules.txt"...
+Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/model_characteristics.csv"...
+Evaluation results of several experiments for test data:
+
+Evaluation results for measure "Example-wise F1 (↑)":
+
+feature_format    instance_sampling                    Example-wise F1 (↑)    Rank
+----------------  ---------------------------------  ---------------------  ------
+"emotions"
+----------------  ---------------------------------  ---------------------  ------
+                  none                                               63.11    1
+sparse            none                                               61.46    2
+                  with-replacement{sample_size=0.5}                  61.17    3
+sparse            with-replacement{sample_size=0.5}                  57.57    4
+----------------  ---------------------------------  ---------------------  ------
+"enron"
+----------------  ---------------------------------  ---------------------  ------
+                  none                                               57.44    1.5
+sparse            none                                               57.44    1.5
+                  with-replacement{sample_size=0.5}                  56.45    3.5
+sparse            with-replacement{sample_size=0.5}                  56.45    3.5
+----------------  ---------------------------------  ---------------------  ------
+Averages
+----------------  ---------------------------------  ---------------------  ------
+                  none                                                        1.25
+sparse            none                                                        1.75
+                  with-replacement{sample_size=0.5}                           3.25
+sparse            with-replacement{sample_size=0.5}                           3.75
+
+Evaluation results for measure "Example-wise Jaccard (↑)":
+
+feature_format    instance_sampling                    Example-wise Jaccard (↑)    Rank
+----------------  ---------------------------------  --------------------------  ------
+"emotions"
+----------------  ---------------------------------  --------------------------  ------
+                  none                                                    55.31    1
+sparse            none                                                    53.74    2
+                  with-replacement{sample_size=0.5}                       52.98    3
+sparse            with-replacement{sample_size=0.5}                       49.59    4
+----------------  ---------------------------------  --------------------------  ------
+"enron"
+----------------  ---------------------------------  --------------------------  ------
+                  none                                                    46.65    1.5
+sparse            none                                                    46.65    1.5
+                  with-replacement{sample_size=0.5}                       45.85    3.5
+sparse            with-replacement{sample_size=0.5}                       45.85    3.5
+----------------  ---------------------------------  --------------------------  ------
+Averages
+----------------  ---------------------------------  --------------------------  ------
+                  none                                                             1.25
+sparse            none                                                             1.75
+                  with-replacement{sample_size=0.5}                                3.25
+sparse            with-replacement{sample_size=0.5}                                3.75
+
+Evaluation results for measure "Example-wise Precision (↑)":
+
+feature_format    instance_sampling                    Example-wise Precision (↑)    Rank
+----------------  ---------------------------------  ----------------------------  ------
+"emotions"
+----------------  ---------------------------------  ----------------------------  ------
+                  none                                                      78.06    1
+sparse            none                                                      75.77    3
+                  with-replacement{sample_size=0.5}                         77.81    2
+sparse            with-replacement{sample_size=0.5}                         75.26    4
+----------------  ---------------------------------  ----------------------------  ------
+"enron"
+----------------  ---------------------------------  ----------------------------  ------
+                  none                                                      75.41    1.5
+sparse            none                                                      75.41    1.5
+                  with-replacement{sample_size=0.5}                         74.44    3.5
+sparse            with-replacement{sample_size=0.5}                         74.44    3.5
+----------------  ---------------------------------  ----------------------------  ------
+Averages
+----------------  ---------------------------------  ----------------------------  ------
+                  none                                                               1.25
+sparse            none                                                               2.25
+                  with-replacement{sample_size=0.5}                                  2.75
+sparse            with-replacement{sample_size=0.5}                                  3.75
+
+Evaluation results for measure "Example-wise Recall (↑)":
+
+feature_format    instance_sampling                    Example-wise Recall (↑)    Rank
+----------------  ---------------------------------  -------------------------  ------
+"emotions"
+----------------  ---------------------------------  -------------------------  ------
+                  none                                                   62.67    2
+sparse            none                                                   61.56    3
+                  with-replacement{sample_size=0.5}                      62.93    1
+sparse            with-replacement{sample_size=0.5}                      57.74    4
+----------------  ---------------------------------  -------------------------  ------
+"enron"
+----------------  ---------------------------------  -------------------------  ------
+                  none                                                   53.46    1.5
+sparse            none                                                   53.46    1.5
+                  with-replacement{sample_size=0.5}                      51.84    3.5
+sparse            with-replacement{sample_size=0.5}                      51.84    3.5
+----------------  ---------------------------------  -------------------------  ------
+Averages
+----------------  ---------------------------------  -------------------------  ------
+                  none                                                            1.75
+sparse            none                                                            2.25
+                  with-replacement{sample_size=0.5}                               2.25
+sparse            with-replacement{sample_size=0.5}                               3.75
+
+Evaluation results for measure "Hamming Accuracy (↑)":
+
+feature_format    instance_sampling                    Hamming Accuracy (↑)    Rank
+----------------  ---------------------------------  ----------------------  ------
+"emotions"
+----------------  ---------------------------------  ----------------------  ------
+                  none                                                81.29    1
+sparse            none                                                80.87    2.5
+                  with-replacement{sample_size=0.5}                   80.87    2.5
+sparse            with-replacement{sample_size=0.5}                   79.34    4
+----------------  ---------------------------------  ----------------------  ------
+"enron"
+----------------  ---------------------------------  ----------------------  ------
+                  none                                                95.54    1.5
+sparse            none                                                95.54    1.5
+                  with-replacement{sample_size=0.5}                   95.53    3.5
+sparse            with-replacement{sample_size=0.5}                   95.53    3.5
+----------------  ---------------------------------  ----------------------  ------
+Averages
+----------------  ---------------------------------  ----------------------  ------
+                  none                                                         1.25
+sparse            none                                                         2
+                  with-replacement{sample_size=0.5}                            3
+sparse            with-replacement{sample_size=0.5}                            3.75
+
+Evaluation results for measure "Hamming Loss (↓)":
+
+feature_format    instance_sampling                    Hamming Loss (↓)    Rank
+----------------  ---------------------------------  ------------------  ------
+"emotions"
+----------------  ---------------------------------  ------------------  ------
+                  none                                            18.71    1
+sparse            none                                            19.13    2.5
+                  with-replacement{sample_size=0.5}               19.13    2.5
+sparse            with-replacement{sample_size=0.5}               20.66    4
+----------------  ---------------------------------  ------------------  ------
+"enron"
+----------------  ---------------------------------  ------------------  ------
+                  none                                             4.46    1.5
+sparse            none                                             4.46    1.5
+                  with-replacement{sample_size=0.5}                4.47    3.5
+sparse            with-replacement{sample_size=0.5}                4.47    3.5
+----------------  ---------------------------------  ------------------  ------
+Averages
+----------------  ---------------------------------  ------------------  ------
+                  none                                                     1.25
+sparse            none                                                     2
+                  with-replacement{sample_size=0.5}                        3
+sparse            with-replacement{sample_size=0.5}                        3.75
+
+Evaluation results for measure "Macro F1 (↑)":
+
+feature_format    instance_sampling                    Macro F1 (↑)    Rank
+----------------  ---------------------------------  --------------  ------
+"emotions"
+----------------  ---------------------------------  --------------  ------
+                  none                                        65.05    2
+sparse            none                                        64.71    3
+                  with-replacement{sample_size=0.5}           65.39    1
+sparse            with-replacement{sample_size=0.5}           60.9     4
+----------------  ---------------------------------  --------------  ------
+"enron"
+----------------  ---------------------------------  --------------  ------
+                  none                                        22.37    1.5
+sparse            none                                        22.37    1.5
+                  with-replacement{sample_size=0.5}           21.51    3.5
+sparse            with-replacement{sample_size=0.5}           21.51    3.5
+----------------  ---------------------------------  --------------  ------
+Averages
+----------------  ---------------------------------  --------------  ------
+                  none                                                 1.75
+sparse            none                                                 2.25
+                  with-replacement{sample_size=0.5}                    2.25
+sparse            with-replacement{sample_size=0.5}                    3.75
+
+Evaluation results for measure "Macro Jaccard (↑)":
+
+feature_format    instance_sampling                    Macro Jaccard (↑)    Rank
+----------------  ---------------------------------  -------------------  ------
+"emotions"
+----------------  ---------------------------------  -------------------  ------
+                  none                                             49.47    2
+sparse            none                                             49.08    3
+                  with-replacement{sample_size=0.5}                49.82    1
+sparse            with-replacement{sample_size=0.5}                45.36    4
+----------------  ---------------------------------  -------------------  ------
+"enron"
+----------------  ---------------------------------  -------------------  ------
+                  none                                             16.81    1.5
+sparse            none                                             16.81    1.5
+                  with-replacement{sample_size=0.5}                16.14    3.5
+sparse            with-replacement{sample_size=0.5}                16.14    3.5
+----------------  ---------------------------------  -------------------  ------
+Averages
+----------------  ---------------------------------  -------------------  ------
+                  none                                                      1.75
+sparse            none                                                      2.25
+                  with-replacement{sample_size=0.5}                         2.25
+sparse            with-replacement{sample_size=0.5}                         3.75
+
+Evaluation results for measure "Macro Precision (↑)":
+
+feature_format    instance_sampling                    Macro Precision (↑)    Rank
+----------------  ---------------------------------  ---------------------  ------
+"emotions"
+----------------  ---------------------------------  ---------------------  ------
+                  none                                               75.75    1
+sparse            none                                               73.89    2
+                  with-replacement{sample_size=0.5}                  72.69    3
+sparse            with-replacement{sample_size=0.5}                  70.32    4
+----------------  ---------------------------------  ---------------------  ------
+"enron"
+----------------  ---------------------------------  ---------------------  ------
+                  none                                               61.04    3.5
+sparse            none                                               61.04    3.5
+                  with-replacement{sample_size=0.5}                  64.85    1.5
+sparse            with-replacement{sample_size=0.5}                  64.85    1.5
+----------------  ---------------------------------  ---------------------  ------
+Averages
+----------------  ---------------------------------  ---------------------  ------
+                  none                                                        2.25
+sparse            none                                                        2.75
+                  with-replacement{sample_size=0.5}                           2.25
+sparse            with-replacement{sample_size=0.5}                           2.75
+
+Evaluation results for measure "Macro Recall (↑)":
+
+feature_format    instance_sampling                    Macro Recall (↑)    Rank
+----------------  ---------------------------------  ------------------  ------
+"emotions"
+----------------  ---------------------------------  ------------------  ------
+                  none                                            60.43    2
+sparse            none                                            60.08    3
+                  with-replacement{sample_size=0.5}               60.82    1
+sparse            with-replacement{sample_size=0.5}               55.7     4
+----------------  ---------------------------------  ------------------  ------
+"enron"
+----------------  ---------------------------------  ------------------  ------
+                  none                                            18.92    1.5
+sparse            none                                            18.92    1.5
+                  with-replacement{sample_size=0.5}               18.38    3.5
+sparse            with-replacement{sample_size=0.5}               18.38    3.5
+----------------  ---------------------------------  ------------------  ------
+Averages
+----------------  ---------------------------------  ------------------  ------
+                  none                                                     1.75
+sparse            none                                                     2.25
+                  with-replacement{sample_size=0.5}                        2.25
+sparse            with-replacement{sample_size=0.5}                        3.75
+
+Evaluation results for measure "Micro F1 (↑)":
+
+feature_format    instance_sampling                    Micro F1 (↑)    Rank
+----------------  ---------------------------------  --------------  ------
+"emotions"
+----------------  ---------------------------------  --------------  ------
+                  none                                        67.84    1
+sparse            none                                        67.25    3
+                  with-replacement{sample_size=0.5}           67.34    2
+sparse            with-replacement{sample_size=0.5}           63.89    4
+----------------  ---------------------------------  --------------  ------
+"enron"
+----------------  ---------------------------------  --------------  ------
+                  none                                        58.78    1.5
+sparse            none                                        58.78    1.5
+                  with-replacement{sample_size=0.5}           58.26    3.5
+sparse            with-replacement{sample_size=0.5}           58.26    3.5
+----------------  ---------------------------------  --------------  ------
+Averages
+----------------  ---------------------------------  --------------  ------
+                  none                                                 1.25
+sparse            none                                                 2.25
+                  with-replacement{sample_size=0.5}                    2.75
+sparse            with-replacement{sample_size=0.5}                    3.75
+
+Evaluation results for measure "Micro Jaccard (↑)":
+
+feature_format    instance_sampling                    Micro Jaccard (↑)    Rank
+----------------  ---------------------------------  -------------------  ------
+"emotions"
+----------------  ---------------------------------  -------------------  ------
+                  none                                             51.33    1
+sparse            none                                             50.66    3
+                  with-replacement{sample_size=0.5}                50.77    2
+sparse            with-replacement{sample_size=0.5}                46.94    4
+----------------  ---------------------------------  -------------------  ------
+"enron"
+----------------  ---------------------------------  -------------------  ------
+                  none                                             41.63    1.5
+sparse            none                                             41.63    1.5
+                  with-replacement{sample_size=0.5}                41.11    3.5
+sparse            with-replacement{sample_size=0.5}                41.11    3.5
+----------------  ---------------------------------  -------------------  ------
+Averages
+----------------  ---------------------------------  -------------------  ------
+                  none                                                      1.25
+sparse            none                                                      2.25
+                  with-replacement{sample_size=0.5}                         2.75
+sparse            with-replacement{sample_size=0.5}                         3.75
+
+Evaluation results for measure "Micro Precision (↑)":
+
+feature_format    instance_sampling                    Micro Precision (↑)    Rank
+----------------  ---------------------------------  ---------------------  ------
+"emotions"
+----------------  ---------------------------------  ---------------------  ------
+                  none                                               75.08    1
+sparse            none                                               74.04    2
+                  with-replacement{sample_size=0.5}                  73.89    3
+sparse            with-replacement{sample_size=0.5}                  72.15    4
+----------------  ---------------------------------  ---------------------  ------
+"enron"
+----------------  ---------------------------------  ---------------------  ------
+                  none                                               71.2     3.5
+sparse            none                                               71.2     3.5
+                  with-replacement{sample_size=0.5}                  71.63    1.5
+sparse            with-replacement{sample_size=0.5}                  71.63    1.5
+----------------  ---------------------------------  ---------------------  ------
+Averages
+----------------  ---------------------------------  ---------------------  ------
+                  none                                                        2.25
+sparse            none                                                        2.75
+                  with-replacement{sample_size=0.5}                           2.25
+sparse            with-replacement{sample_size=0.5}                           2.75
+
+Evaluation results for measure "Micro Recall (↑)":
+
+feature_format    instance_sampling                    Micro Recall (↑)    Rank
+----------------  ---------------------------------  ------------------  ------
+"emotions"
+----------------  ---------------------------------  ------------------  ------
+                  none                                            61.87    1.5
+sparse            none                                            61.6     3
+                  with-replacement{sample_size=0.5}               61.87    1.5
+sparse            with-replacement{sample_size=0.5}               57.33    4
+----------------  ---------------------------------  ------------------  ------
+"enron"
+----------------  ---------------------------------  ------------------  ------
+                  none                                            50.05    1.5
+sparse            none                                            50.05    1.5
+                  with-replacement{sample_size=0.5}               49.1     3.5
+sparse            with-replacement{sample_size=0.5}               49.1     3.5
+----------------  ---------------------------------  ------------------  ------
+Averages
+----------------  ---------------------------------  ------------------  ------
+                  none                                                     1.5
+sparse            none                                                     2.25
+                  with-replacement{sample_size=0.5}                        2.5
+sparse            with-replacement{sample_size=0.5}                        3.75
+
+Evaluation results for measure "Prediction Time (seconds)":
+
+feature_format    instance_sampling                    Prediction Time (seconds)    Rank
+----------------  ---------------------------------  ---------------------------  ------
+"emotions"
+----------------  ---------------------------------  ---------------------------  ------
+                  none
+sparse            none
+                  with-replacement{sample_size=0.5}
+sparse            with-replacement{sample_size=0.5}
+----------------  ---------------------------------  ---------------------------  ------
+"enron"
+----------------  ---------------------------------  ---------------------------  ------
+                  none
+sparse            none
+                  with-replacement{sample_size=0.5}
+sparse            with-replacement{sample_size=0.5}
+----------------  ---------------------------------  ---------------------------  ------
+Averages
+----------------  ---------------------------------  ---------------------------  ------
+                  none
+sparse            none
+                  with-replacement{sample_size=0.5}
+sparse            with-replacement{sample_size=0.5}
+
+Evaluation results for measure "Subset 0/1 Loss (↓)":
+
+feature_format    instance_sampling                    Subset 0/1 Loss (↓)    Rank
+----------------  ---------------------------------  ---------------------  ------
+"emotions"
+----------------  ---------------------------------  ---------------------  ------
+                  none                                               69.39    1
+sparse            none                                               70.92    2
+                  with-replacement{sample_size=0.5}                  73.47    3
+sparse            with-replacement{sample_size=0.5}                  75       4
+----------------  ---------------------------------  ---------------------  ------
+"enron"
+----------------  ---------------------------------  ---------------------  ------
+                  none                                               84.88    1.5
+sparse            none                                               84.88    1.5
+                  with-replacement{sample_size=0.5}                  85.59    3.5
+sparse            with-replacement{sample_size=0.5}                  85.59    3.5
+----------------  ---------------------------------  ---------------------  ------
+Averages
+----------------  ---------------------------------  ---------------------  ------
+                  none                                                        1.25
+sparse            none                                                        1.75
+                  with-replacement{sample_size=0.5}                           3.25
+sparse            with-replacement{sample_size=0.5}                           3.75
+
+Evaluation results for measure "Subset Accuracy (↑)":
+
+feature_format    instance_sampling                    Subset Accuracy (↑)    Rank
+----------------  ---------------------------------  ---------------------  ------
+"emotions"
+----------------  ---------------------------------  ---------------------  ------
+                  none                                               30.61    1
+sparse            none                                               29.08    2
+                  with-replacement{sample_size=0.5}                  26.53    3
+sparse            with-replacement{sample_size=0.5}                  25       4
+----------------  ---------------------------------  ---------------------  ------
+"enron"
+----------------  ---------------------------------  ---------------------  ------
+                  none                                               15.12    1.5
+sparse            none                                               15.12    1.5
+                  with-replacement{sample_size=0.5}                  14.41    3.5
+sparse            with-replacement{sample_size=0.5}                  14.41    3.5
+----------------  ---------------------------------  ---------------------  ------
+Averages
+----------------  ---------------------------------  ---------------------  ------
+                  none                                                        1.25
+sparse            none                                                        1.75
+                  with-replacement{sample_size=0.5}                           3.25
+sparse            with-replacement{sample_size=0.5}                           3.75
+
+Evaluation results for measure "Training Time (seconds)":
+
+feature_format    instance_sampling                    Training Time (seconds)    Rank
+----------------  ---------------------------------  -------------------------  ------
+"emotions"
+----------------  ---------------------------------  -------------------------  ------
+                  none
+sparse            none
+                  with-replacement{sample_size=0.5}
+sparse            with-replacement{sample_size=0.5}
+----------------  ---------------------------------  -------------------------  ------
+"enron"
+----------------  ---------------------------------  -------------------------  ------
+                  none
+sparse            none
+                  with-replacement{sample_size=0.5}
+sparse            with-replacement{sample_size=0.5}
+----------------  ---------------------------------  -------------------------  ------
+Averages
+----------------  ---------------------------------  -------------------------  ------
+                  none
+sparse            none
+                  with-replacement{sample_size=0.5}
+sparse            with-replacement{sample_size=0.5}
+
+Writing output data to file "python/tests/res/tmp/rerun/aggregated_evaluation_test.csv"...

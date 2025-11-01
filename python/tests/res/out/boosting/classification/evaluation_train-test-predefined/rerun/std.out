@@ -1,0 +1,33 @@
+mlrl-testbed mlrl.boosting --mode read --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --print-evaluation true --save-evaluation true
+Reading meta-data...
+Reading input data from file "python/tests/res/tmp/metadata.yml"...
+Successfully read meta-data
+Checking for version conflicts...
+Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is currently used
+No version conflicts detected
+Reading experimental results of 1 experiment...
+
+Reading experimental results of experiment (1 / 1)...
+The command "mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions-predefined --result-dir results --save-evaluation true --data-split train-test --print-evaluation true --save-evaluation true" has been used originally for running this experiment
+Using separate training and test sets...
+Reading input data from file "python/tests/res/tmp/results/evaluation_test.csv"...
+Evaluation result for test data:
+
+Example-wise F1 (↑)         62.24
+Example-wise Jaccard (↑)    53.96
+Example-wise Precision (↑)  74.59
+Example-wise Recall (↑)     63.86
+Hamming Accuracy (↑)        79.95
+Hamming Loss (↓)            20.05
+Macro F1 (↑)                66.85
+Macro Jaccard (↑)           50.79
+Macro Precision (↑)         72.27
+Macro Recall (↑)            63.25
+Micro F1 (↑)                67.73
+Micro Jaccard (↑)           51.2
+Micro Precision (↑)         72.03
+Micro Recall (↑)            63.91
+Subset 0/1 Loss (↓)         72.28
+Subset Accuracy (↑)         27.72
+
+Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...

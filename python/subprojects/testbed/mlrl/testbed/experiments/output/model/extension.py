@@ -4,16 +4,15 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write models to one or several sinks.
 """
 from argparse import Namespace
-from pathlib import Path
-from typing import Set, Type, override
+from typing import Set, override
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.arguments import OutputArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension
 from mlrl.testbed.experiments.output.model.arguments import ModelOutputDirectoryArguments
-from mlrl.testbed.experiments.output.sinks.sink_pickle import PickleFileSink
+from mlrl.testbed.experiments.output.sinks import PickleFileSink
+from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.modes import Mode, SingleMode
 
 from mlrl.util.cli import Argument, BoolArgument
 
@@ -35,11 +34,18 @@ class ModelOutputExtension(Extension):
         super().__init__(OutputExtension(), *dependencies)
 
     @override
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
         return {self.SAVE_MODELS}
+
+    @override
+    def get_supported_modes(self) -> Set[ExperimentMode]:
+        """
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+        """
+        return {ExperimentMode.SINGLE, ExperimentMode.BATCH, ExperimentMode.READ, ExperimentMode.RUN}
 
 
 class ModelOutputDirectoryExtension(Extension):
@@ -54,30 +60,34 @@ class ModelOutputDirectoryExtension(Extension):
         super().__init__(OutputExtension(), *dependencies)
 
     @override
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, mode: ExperimentMode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
+        if mode in {ExperimentMode.BATCH, ExperimentMode.READ}:
+            return set()
+
         return {ModelOutputDirectoryArguments.MODEL_SAVE_DIR}
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: ExperimentMode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
         save_all = OutputArguments.SAVE_ALL.get_value(args)
 
         if ModelOutputExtension.SAVE_MODELS.get_value(args, default=save_all):
+            base_dir = OutputArguments.BASE_DIR.get_value(args)
             model_save_dir = ModelOutputDirectoryArguments.MODEL_SAVE_DIR.get_value(args)
 
-            if model_save_dir:
+            if base_dir and model_save_dir:
                 create_directory = OutputArguments.CREATE_DIRS.get_value(args)
                 experiment_builder.model_writer.add_sinks(
-                    PickleFileSink(directory=Path(model_save_dir), create_directory=create_directory))
+                    PickleFileSink(directory=base_dir / model_save_dir, create_directory=create_directory))
 
     @override
-    def get_supported_modes(self) -> Set[Type[Mode]]:
+    def get_supported_modes(self) -> Set[ExperimentMode]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
-        return {SingleMode}
+        return {ExperimentMode.SINGLE, ExperimentMode.BATCH, ExperimentMode.READ, ExperimentMode.RUN}

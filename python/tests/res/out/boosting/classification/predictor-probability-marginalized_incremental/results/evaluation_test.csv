@@ -1,4 +1,4 @@
-Coverage Error,Discounted Cumulative Gain,Label Ranking Average Precision,Mean Absolute Error,Mean Absolute Percentage Error,Mean Squared Error,Median Absolute Error,Model size,NDCG,Prediction Time,Ranking Loss,Training Time
+Coverage Error (↓),Discounted Cumulative Gain (↑),Label Ranking Average Precision (↑),Mean Absolute Error (↓),Mean Absolute Percentage Error (↓),Mean Squared Error (↓),Median Absolute Error (↓),Model size,NDCG (↑),Prediction Time (seconds),Ranking Loss (↓),Training Time (seconds)
 3.061224489795918,1.3329483388975036,0.7660714285714286,0.36385643949819263,762325974273930.4,0.1722216983283459,0.3006959840692411,50,84.4257313066613,<duration>,0.20235260770975058,<duration>
 2.9744897959183674,1.3454373989777553,0.7791950113378685,0.352097085790489,729704753413858.9,0.16672735543835457,0.29890283671335177,100,85.31419619818166,<duration>,0.18714569160997732,<duration>
 2.943877551020408,1.3563004044714773,0.7919926303854875,0.342582555194248,704351488230759.1,0.16253703662659982,0.2921815377120709,150,86.14728298656014,<duration>,0.18013038548752835,<duration>

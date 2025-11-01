@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides base classes for programs that can be configured via command line arguments.
 """
 from argparse import Namespace
-from typing import Any, Dict, Optional, Set, Type, override
+from typing import Any, Dict, List, Optional, Set, Type, override
 
 from sklearn.base import BaseEstimator, ClassifierMixin as SkLearnClassifierMixin, \
     RegressorMixin as SkLearnRegressorMixin
@@ -27,7 +27,7 @@ from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, RegressionProblem
-from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
 from mlrl.testbed.extensions.extension import Extension
 
 from mlrl.util.cli import Argument, BoolArgument, EnumArgument, FloatArgument
@@ -83,11 +83,18 @@ class RuleLearnerRunnable(SkLearnRunnable):
         )
 
         @override
-        def _get_arguments(self) -> Set[Argument]:
+        def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
             """
             return {self.INCREMENTAL_EVALUATION}
+
+        @override
+        def get_supported_modes(self) -> Set[ExperimentMode]:
+            """
+            See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+            """
+            return {ExperimentMode.SINGLE, ExperimentMode.BATCH, ExperimentMode.RUN}
 
         @staticmethod
         def get_predictor_factory(args: Namespace, prediction_type: PredictionType) -> SkLearnProblem.PredictorFactory:
@@ -99,7 +106,8 @@ class RuleLearnerRunnable(SkLearnRunnable):
             :param prediction_type: The type of the predictions
             :return:                The `SkLearnProblem.PredictorFactory` that should be used
             """
-            value, options = RuleLearnerRunnable.IncrementalPredictionExtension.INCREMENTAL_EVALUATION.get_value(args)
+            incremental_evaluation_argument = RuleLearnerRunnable.IncrementalPredictionExtension.INCREMENTAL_EVALUATION
+            value, options = incremental_evaluation_argument.get_value_and_options(args)
 
             if value:
                 min_size = options.get_int(OPTION_MIN_SIZE, 0)
@@ -148,11 +156,18 @@ class RuleLearnerRunnable(SkLearnRunnable):
         )
 
         @override
-        def _get_arguments(self) -> Set[Argument]:
+        def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
             """
-            return {self.FEATURE_FORMAT, self.OUTPUT_FORMAT, self.PREDICTION_FORMAT, self.SPARSE_FEATURE_VALUE}
+            return {self.PREDICTION_FORMAT, self.SPARSE_FEATURE_VALUE}
+
+        @override
+        def get_supported_modes(self) -> Set[ExperimentMode]:
+            """
+            See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+            """
+            return {ExperimentMode.SINGLE, ExperimentMode.BATCH}
 
         @staticmethod
         def get_estimator(args: Namespace, estimator_type: Type[BaseEstimator],
@@ -232,17 +247,17 @@ class RuleLearnerRunnable(SkLearnRunnable):
         self.regressor_parameters = regressor_parameters
 
     @override
-    def get_extensions(self) -> Set[Extension]:
+    def get_extensions(self) -> List[Extension]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_extensions`
         """
-        return super().get_extensions() | {
+        return [
             RuleLearnerRunnable.IncrementalPredictionExtension(),
             RuleLearnerRunnable.RuleLearnerExtension(),
             RuleModelAsTextExtension(),
             RuleModelCharacteristicsExtension(),
             LabelVectorSetExtension(),
-        }
+        ] + super().get_extensions()
 
     @override
     def get_algorithmic_arguments(self, known_args: Namespace) -> Set[Argument]:
@@ -264,7 +279,10 @@ class RuleLearnerRunnable(SkLearnRunnable):
             raise RuntimeError('The machine learning algorithm does not support ' + problem_domain.problem_name
                                + ' problems')
 
-        return set(filter(None, map(lambda param: param.as_argument(config_type), parameters)))
+        return set(filter(None, map(lambda param: param.as_argument(config_type), parameters))) | {
+            RuleLearnerRunnable.RuleLearnerExtension.FEATURE_FORMAT,
+            RuleLearnerRunnable.RuleLearnerExtension.OUTPUT_FORMAT,
+        }
 
     @override
     def create_problem_domain(self, args: Namespace):
@@ -279,14 +297,21 @@ class RuleLearnerRunnable(SkLearnRunnable):
                                                                          predict_kwargs=predict_kwargs)
 
     @override
-    def create_experiment_builder(self, args: Namespace, command: Command) -> Experiment.Builder:
+    def create_experiment_builder(self,
+                                  experiment_mode: ExperimentMode,
+                                  args: Namespace,
+                                  command: Command,
+                                  load_dataset: bool = True) -> Experiment.Builder:
         """
         See :func:`mlrl.testbed.experiments.recipe.Recipe.create_experiment_builder`
         """
         meta_data = MetaData(command=command)
-        initial_state = ExperimentState(meta_data=meta_data, problem_domain=self.create_problem_domain(args))
+        initial_state = ExperimentState(mode=experiment_mode,
+                                        args=args,
+                                        meta_data=meta_data,
+                                        problem_domain=self.create_problem_domain(args))
         return RuleLearnerExperiment.Builder(initial_state=initial_state,
-                                             dataset_splitter=self.create_dataset_splitter(args))
+                                             dataset_splitter=self.create_dataset_splitter(args, load_dataset))
 
     @override
     def create_classifier(self, args: Namespace) -> Optional[SkLearnClassifierMixin]:

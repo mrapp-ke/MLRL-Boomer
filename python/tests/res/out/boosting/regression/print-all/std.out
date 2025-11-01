@@ -1,4 +1,4 @@
-mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --save-evaluation true --problem-type regression --print-all true
+mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --print-all true
 Starting experiment using the regression algorithm "BoomerRegressor"...
 Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Using separate training and test sets...
@@ -17,6 +17,10 @@ Outputs               6
 Output Density      100
 Output Sparsity       0
 
+Custom parameters:
+
+<no data available>
+
 Fitting model to 198 training examples...
 A dense matrix is used to store the feature values of the training examples
 A dense matrix is used to store the regression scores of the training examples
@@ -27,10 +31,10 @@ A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Mean Absolute Error               29.91
-Mean Absolute Percentage Error     0.08
-Mean Squared Error              2826.34
-Median Absolute Error             15.83
+Mean Absolute Error (↓)               29.91
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2826.34
+Median Absolute Error (↓)             15.83
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Ground truth for test data:
@@ -241,15 +245,12 @@ Predictions for test data:
  [267.26 291.32 309.8  360.89 283.69 360.32]
  [228.4  247.16 457.26 494.6  282.14 503.42]]
 
-JointProbabilityCalibrationModelWriter.DefaultExtractor expected type of learner to be one of {"ClassificationRuleLearner"}, but learner has type BoomerRegressor
-LabelVectorSetExtension.LabelVectorSetExtractor expected type of learner to be one of {"ClassificationRuleLearner"}, but learner has type BoomerRegressor
 Label vectors:
 
 Index         1
-Label vector  [1 1 1 1 1 1]
+Label vector  [0 1 2 3 4 5]
 Frequency     198
 
-MarginalProbabilityCalibrationModelWriter.DefaultExtractor expected type of learner to be one of {"ClassificationRuleLearner"}, but learner has type BoomerRegressor
 Model:
 
 {} => (LBL+ALLminpA+bt7d_000 = 275.29, LBL+ALLminp0+bt7d_000 = 329.50, LBL+aDLminpA+bt7d_000 = 364.09, LBL+aCOminpA+bt7d_000 = 387.78, LBL+aFLminpA+bt7d_000 = 291.37, LBL+aUAminpA+bt7d_000 = 386.54)

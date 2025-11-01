@@ -3,11 +3,14 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing output data.
 """
+import json
+
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, replace
+from dataclasses import replace
 from typing import Any, Dict, Iterable, List, Optional, Type, override
 
 from mlrl.testbed.experiments.context import Context
+from mlrl.testbed.experiments.data import Properties, TabularProperties
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
@@ -20,18 +23,6 @@ class OutputData(ABC):
     """
     An abstract class for all classes that represent output data.
     """
-
-    @dataclass
-    class Properties:
-        """
-        Properties of output data.
-
-        Attributes:
-            name:       A name to be included in log messages
-            file_name:  A file name to be used for writing into output files
-        """
-        name: str
-        file_name: str
 
     def __init__(self, properties: Properties, context: Context = Context()):
         """
@@ -117,6 +108,28 @@ class TextualOutputData(OutputData, ABC):
             return self.title + self.__format_dataset_type(state) + self.__format_prediction_scope(
                 state) + self.__format_fold(state)
 
+    @staticmethod
+    def from_text(properties: Properties, context: Context, text: str) -> 'TextualOutputData':
+        """
+        Creates and returns `TextualOutputData` from a given text.
+
+        :param properties:  The properties to be used
+        :param context:     The context to be used
+        :param text:        The text to be used
+        :return:            The `TextualOutputData` that has been created
+        """
+
+        class TextOutputData(TextualOutputData):
+            """
+            Output data that consists of a text.
+            """
+
+            @override
+            def to_text(self, options: Options, **kwargs) -> Optional[str]:
+                return text
+
+        return TextOutputData(properties=properties, context=context)
+
     @abstractmethod
     def to_text(self, options: Options, **kwargs) -> Optional[str]:
         """
@@ -133,6 +146,40 @@ class TabularOutputData(TextualOutputData, ABC):
     tabular, representation.
     """
 
+    def __init__(self, properties: TabularProperties, context: Context = Context()):
+        """
+        :param properties:  The properties of the output data
+        :param context:     A `Context` to be used by default for finding a suitable sink this output data can be
+                            written to
+        """
+        super().__init__(properties=properties, context=context)
+
+    @staticmethod
+    def from_table(properties: TabularProperties, context: Context, table: Table) -> 'TabularOutputData':
+        """
+        Creates and returns `TabularOutputData` from a given table.
+
+        :param properties:  The properties to be used
+        :param context:     The context to be used
+        :param table:       The table to be used
+        :return:            The `TabularOutputData` that has been created
+        """
+
+        class TableOutputData(TabularOutputData):
+            """
+            Output data that consists of a table.
+            """
+
+            @override
+            def to_text(self, options: Options, **kwargs) -> Optional[str]:
+                return table.format()
+
+            @override
+            def to_table(self, options: Options, **kwargs) -> Optional[Table]:
+                return table
+
+        return TableOutputData(properties=properties, context=context)
+
     @abstractmethod
     def to_table(self, options: Options, **kwargs) -> Optional[Table]:
         """
@@ -143,7 +190,7 @@ class TabularOutputData(TextualOutputData, ABC):
         """
 
 
-class StructuralOutputData(OutputData, ABC):
+class StructuralOutputData(TextualOutputData, ABC):
     """
     An abstract base class for all classes that represent output data that can be converted into a structural
     representation, e.g., YAML or JSON.
@@ -157,6 +204,11 @@ class StructuralOutputData(OutputData, ABC):
         :param options: Options to be taken into account
         :return:        The dictionary that has been created
         """
+
+    @override
+    def to_text(self, options: Options, **kwargs) -> Optional[str]:
+        dictionary = self.to_dict(options, **kwargs)
+        return None if dictionary is None else json.dumps(dictionary, indent=4)
 
 
 class DatasetOutputData(TextualOutputData, ABC):
@@ -195,6 +247,8 @@ class OutputValue:
     Represents a numeric value that is part of output data.
     """
 
+    COLUMN_PREFIX_STD_DEV = 'Std.-dev.'
+
     def __init__(self, option_key: str, name: str, percentage: bool = False):
         """
         :param option_key:  The key of the option that can be used for filtering
@@ -204,6 +258,16 @@ class OutputValue:
         self.option_key = option_key
         self.name = name
         self.percentage = percentage
+
+    def std_dev(self) -> 'OutputValue':
+        """
+        Creates and returns an `OutputValue` that corresponds to the standard deviation of this value.
+
+        :return: An `OutputValue` that corresponds to the standard deviation of this value
+        """
+        return OutputValue(option_key=self.option_key,
+                           name=f'{self.COLUMN_PREFIX_STD_DEV} {self.name}',
+                           percentage=self.percentage)
 
     @staticmethod
     def filter_values(values: Iterable['OutputValue'], options: Options) -> List['OutputValue']:

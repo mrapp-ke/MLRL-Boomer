@@ -1,0 +1,27 @@
+mlrl-testbed mlrl.boosting --mode read --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --print-evaluation false --save-evaluation false --print-data-characteristics true --save-data-characteristics true
+Reading meta-data...
+Reading input data from file "python/tests/res/tmp/metadata.yml"...
+Successfully read meta-data
+Checking for version conflicts...
+Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is currently used
+No version conflicts detected
+Reading experimental results of 1 experiment...
+
+Reading experimental results of experiment (1 / 1)...
+The command "mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --data-split train-test --print-evaluation false --save-evaluation false --print-data-characteristics true --save-data-characteristics true" has been used originally for running this experiment
+Using separate training and test sets...
+Reading input data from file "python/tests/res/tmp/results/data_characteristics.csv"...
+Data characteristics:
+
+Examples            198
+Features            411
+Numerical Features  411
+Ordinal Features      0
+Nominal Features      0
+Feature Density      88.62
+Feature Sparsity     11.38
+Outputs               6
+Output Density      100
+Output Sparsity       0
+
+Writing output data to file "python/tests/res/tmp/rerun/results/data_characteristics.csv"...

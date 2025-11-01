@@ -19,22 +19,22 @@ A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Example-wise F1         63.11
-Example-wise Jaccard    55.31
-Example-wise Precision  78.06
-Example-wise Recall     62.67
-Hamming Accuracy        81.29
-Hamming Loss            18.71
-Macro F1                65.05
-Macro Jaccard           49.47
-Macro Precision         75.75
-Macro Recall            60.43
-Micro F1                67.84
-Micro Jaccard           51.33
-Micro Precision         75.08
-Micro Recall            61.87
-Subset 0/1 Loss         69.39
-Subset Accuracy         30.61
+Example-wise F1 (↑)         63.11
+Example-wise Jaccard (↑)    55.31
+Example-wise Precision (↑)  78.06
+Example-wise Recall (↑)     62.67
+Hamming Accuracy (↑)        81.29
+Hamming Loss (↓)            18.71
+Macro F1 (↑)                65.05
+Macro Jaccard (↑)           49.47
+Macro Precision (↑)         75.75
+Macro Recall (↑)            60.43
+Micro F1 (↑)                67.84
+Micro Jaccard (↑)           51.33
+Micro Precision (↑)         75.08
+Micro Recall (↑)            61.87
+Subset 0/1 Loss (↓)         69.39
+Subset Accuracy (↑)         30.61
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results/evaluation_test.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results/ground_truth_test.arff"...
@@ -65,22 +65,22 @@ A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Example-wise F1         61.46
-Example-wise Jaccard    53.74
-Example-wise Precision  75.77
-Example-wise Recall     61.56
-Hamming Accuracy        80.87
-Hamming Loss            19.13
-Macro F1                64.71
-Macro Jaccard           49.08
-Macro Precision         73.89
-Macro Recall            60.08
-Micro F1                67.25
-Micro Jaccard           50.66
-Micro Precision         74.04
-Micro Recall            61.6
-Subset 0/1 Loss         70.92
-Subset Accuracy         29.08
+Example-wise F1 (↑)         61.46
+Example-wise Jaccard (↑)    53.74
+Example-wise Precision (↑)  75.77
+Example-wise Recall (↑)     61.56
+Hamming Accuracy (↑)        80.87
+Hamming Loss (↓)            19.13
+Macro F1 (↑)                64.71
+Macro Jaccard (↑)           49.08
+Macro Precision (↑)         73.89
+Macro Recall (↑)            60.08
+Micro F1 (↑)                67.25
+Micro Jaccard (↑)           50.66
+Micro Precision (↑)         74.04
+Micro Recall (↑)            61.6
+Subset 0/1 Loss (↓)         70.92
+Subset Accuracy (↑)         29.08
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/evaluation_test.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/ground_truth_test.arff"...
@@ -111,22 +111,22 @@ A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Example-wise F1         61.17
-Example-wise Jaccard    52.98
-Example-wise Precision  77.81
-Example-wise Recall     62.93
-Hamming Accuracy        80.87
-Hamming Loss            19.13
-Macro F1                65.39
-Macro Jaccard           49.82
-Macro Precision         72.69
-Macro Recall            60.82
-Micro F1                67.34
-Micro Jaccard           50.77
-Micro Precision         73.89
-Micro Recall            61.87
-Subset 0/1 Loss         73.47
-Subset Accuracy         26.53
+Example-wise F1 (↑)         61.17
+Example-wise Jaccard (↑)    52.98
+Example-wise Precision (↑)  77.81
+Example-wise Recall (↑)     62.93
+Hamming Accuracy (↑)        80.87
+Hamming Loss (↓)            19.13
+Macro F1 (↑)                65.39
+Macro Jaccard (↑)           49.82
+Macro Precision (↑)         72.69
+Macro Recall (↑)            60.82
+Micro F1 (↑)                67.34
+Micro Jaccard (↑)           50.77
+Micro Precision (↑)         73.89
+Micro Recall (↑)            61.87
+Subset 0/1 Loss (↓)         73.47
+Subset Accuracy (↑)         26.53
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/results/evaluation_test.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/results/ground_truth_test.arff"...
@@ -157,22 +157,22 @@ A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Example-wise F1         57.57
-Example-wise Jaccard    49.59
-Example-wise Precision  75.26
-Example-wise Recall     57.74
-Hamming Accuracy        79.34
-Hamming Loss            20.66
-Macro F1                60.9
-Macro Jaccard           45.36
-Macro Precision         70.32
-Macro Recall            55.7
-Micro F1                63.89
-Micro Jaccard           46.94
-Micro Precision         72.15
-Micro Recall            57.33
-Subset 0/1 Loss         75
-Subset Accuracy         25
+Example-wise F1 (↑)         57.57
+Example-wise Jaccard (↑)    49.59
+Example-wise Precision (↑)  75.26
+Example-wise Recall (↑)     57.74
+Hamming Accuracy (↑)        79.34
+Hamming Loss (↓)            20.66
+Macro F1 (↑)                60.9
+Macro Jaccard (↑)           45.36
+Macro Precision (↑)         70.32
+Macro Recall (↑)            55.7
+Micro F1 (↑)                63.89
+Micro Jaccard (↑)           46.94
+Micro Precision (↑)         72.15
+Micro Recall (↑)            57.33
+Subset 0/1 Loss (↓)         75
+Subset Accuracy (↑)         25
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/evaluation_test.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/ground_truth_test.arff"...
@@ -203,22 +203,22 @@ A sparse matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Example-wise F1         57.44
-Example-wise Jaccard    46.65
-Example-wise Precision  75.41
-Example-wise Recall     53.46
-Hamming Accuracy        95.54
-Hamming Loss             4.46
-Macro F1                22.37
-Macro Jaccard           16.81
-Macro Precision         61.04
-Macro Recall            18.92
-Micro F1                58.78
-Micro Jaccard           41.63
-Micro Precision         71.2
-Micro Recall            50.05
-Subset 0/1 Loss         84.88
-Subset Accuracy         15.12
+Example-wise F1 (↑)         57.44
+Example-wise Jaccard (↑)    46.65
+Example-wise Precision (↑)  75.41
+Example-wise Recall (↑)     53.46
+Hamming Accuracy (↑)        95.54
+Hamming Loss (↓)             4.46
+Macro F1 (↑)                22.37
+Macro Jaccard (↑)           16.81
+Macro Precision (↑)         61.04
+Macro Recall (↑)            18.92
+Micro F1 (↑)                58.78
+Micro Jaccard (↑)           41.63
+Micro Precision (↑)         71.2
+Micro Recall (↑)            50.05
+Subset 0/1 Loss (↓)         84.88
+Subset Accuracy (↑)         15.12
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_enron/results/evaluation_test.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_enron/results/ground_truth_test.arff"...
@@ -249,22 +249,22 @@ A sparse matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Example-wise F1         57.44
-Example-wise Jaccard    46.65
-Example-wise Precision  75.41
-Example-wise Recall     53.46
-Hamming Accuracy        95.54
-Hamming Loss             4.46
-Macro F1                22.37
-Macro Jaccard           16.81
-Macro Precision         61.04
-Macro Recall            18.92
-Micro F1                58.78
-Micro Jaccard           41.63
-Micro Precision         71.2
-Micro Recall            50.05
-Subset 0/1 Loss         84.88
-Subset Accuracy         15.12
+Example-wise F1 (↑)         57.44
+Example-wise Jaccard (↑)    46.65
+Example-wise Precision (↑)  75.41
+Example-wise Recall (↑)     53.46
+Hamming Accuracy (↑)        95.54
+Hamming Loss (↓)             4.46
+Macro F1 (↑)                22.37
+Macro Jaccard (↑)           16.81
+Macro Precision (↑)         61.04
+Macro Recall (↑)            18.92
+Micro F1 (↑)                58.78
+Micro Jaccard (↑)           41.63
+Micro Precision (↑)         71.2
+Micro Recall (↑)            50.05
+Subset 0/1 Loss (↓)         84.88
+Subset Accuracy (↑)         15.12
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/evaluation_test.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/ground_truth_test.arff"...
@@ -295,22 +295,22 @@ A sparse matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Example-wise F1         56.45
-Example-wise Jaccard    45.85
-Example-wise Precision  74.44
-Example-wise Recall     51.84
-Hamming Accuracy        95.53
-Hamming Loss             4.47
-Macro F1                21.51
-Macro Jaccard           16.14
-Macro Precision         64.85
-Macro Recall            18.38
-Micro F1                58.26
-Micro Jaccard           41.11
-Micro Precision         71.63
-Micro Recall            49.1
-Subset 0/1 Loss         85.59
-Subset Accuracy         14.41
+Example-wise F1 (↑)         56.45
+Example-wise Jaccard (↑)    45.85
+Example-wise Precision (↑)  74.44
+Example-wise Recall (↑)     51.84
+Hamming Accuracy (↑)        95.53
+Hamming Loss (↓)             4.47
+Macro F1 (↑)                21.51
+Macro Jaccard (↑)           16.14
+Macro Precision (↑)         64.85
+Macro Recall (↑)            18.38
+Micro F1 (↑)                58.26
+Micro Jaccard (↑)           41.11
+Micro Precision (↑)         71.63
+Micro Recall (↑)            49.1
+Subset 0/1 Loss (↓)         85.59
+Subset Accuracy (↑)         14.41
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results/evaluation_test.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results/ground_truth_test.arff"...
@@ -341,22 +341,22 @@ A sparse matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Example-wise F1         56.45
-Example-wise Jaccard    45.85
-Example-wise Precision  74.44
-Example-wise Recall     51.84
-Hamming Accuracy        95.53
-Hamming Loss             4.47
-Macro F1                21.51
-Macro Jaccard           16.14
-Macro Precision         64.85
-Macro Recall            18.38
-Micro F1                58.26
-Micro Jaccard           41.11
-Micro Precision         71.63
-Micro Recall            49.1
-Subset 0/1 Loss         85.59
-Subset Accuracy         14.41
+Example-wise F1 (↑)         56.45
+Example-wise Jaccard (↑)    45.85
+Example-wise Precision (↑)  74.44
+Example-wise Recall (↑)     51.84
+Hamming Accuracy (↑)        95.53
+Hamming Loss (↓)             4.47
+Macro F1 (↑)                21.51
+Macro Jaccard (↑)           16.14
+Macro Precision (↑)         64.85
+Macro Recall (↑)            18.38
+Micro F1 (↑)                58.26
+Micro Jaccard (↑)           41.11
+Micro Precision (↑)         71.63
+Micro Recall (↑)            49.1
+Subset 0/1 Loss (↓)         85.59
+Subset Accuracy (↑)         14.41
 
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/evaluation_test.csv"...
 Writing output data to file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/ground_truth_test.arff"...

@@ -14,12 +14,14 @@ RANKING_EVALUATION_MEASURES = [
     Measure(
         option_key=EvaluationResult.OPTION_RANK_LOSS,
         name='Ranking Loss',
+        smaller_is_better=True,
         evaluation_function=metrics.label_ranking_loss,
         percentage=False,
     ),
     Measure(
         option_key=EvaluationResult.OPTION_COVERAGE_ERROR,
         name='Coverage Error',
+        smaller_is_better=True,
         evaluation_function=metrics.coverage_error,
         percentage=False,
     ),
