@@ -359,7 +359,7 @@ namespace boosting {
                              const CompleteIndexVector& indices, WeightType weight);
 
             /**
-             * Adds certain gradients and Hessians in a single row of a `SparsesetView`, whose positions are given as a
+             * Adds certain gradients and Hessians in a single row of a `SparseSetView`, whose positions are given as a
              * `PartialIndexVector`, to this vector. The gradients and Hessians to be added are multiplied by a specific
              * weight.
              *
