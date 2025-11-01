@@ -21,6 +21,7 @@ from mlrl.testbed.experiments.output.evaluation.writer import AggregatedEvaluati
 from mlrl.testbed.experiments.output.meta_data.writer import MetaDataWriter
 from mlrl.testbed.experiments.output.model.writer import ModelWriter
 from mlrl.testbed.experiments.output.parameters.writer import ParameterWriter
+from mlrl.testbed.experiments.output.policies import OutputErrorPolicy
 from mlrl.testbed.experiments.output.sinks import FileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState, ParameterDict, PredictionState, TrainingState
@@ -113,7 +114,7 @@ class Experiment(ABC):
             self.aggregated_evaluation_writer = AggregatedEvaluationWriter()
             self.predict_for_training_dataset = False
             self.predict_for_test_dataset = True
-            self.exit_on_error = True
+            self.output_error_policy = OutputErrorPolicy.EXIT
             self.missing_input_policy = MissingInputPolicy.LOG
             self.add_before_start_output_writers(self.meta_data_writer)
             self.add_pre_training_output_writers(self.parameter_writer)
@@ -218,14 +219,14 @@ class Experiment(ABC):
             self.predict_for_test_dataset = predict_for_test_dataset
             return self
 
-        def set_exit_on_error(self, exit_on_error: bool) -> 'Experiment.Builder':
+        def set_output_error_policy(self, output_error_policy: OutputErrorPolicy) -> 'Experiment.Builder':
             """
-            Sets whether the program should exit if an error occurs while writing experimental results.
+            Sets the policy to be used if an error occurs while writing experimental results.
 
-            :param exit_on_error:   True, if the program should be aborted if an error occurs, False otherwise
-            :return:                The builder itself
+            :param output_error_policy: The policy to be set
+            :return:                    The builder itself
             """
-            self.exit_on_error = exit_on_error
+            self.output_error_policy = output_error_policy
             return self
 
         def set_missing_input_policy(self, missing_input_policy: MissingInputPolicy) -> 'Experiment.Builder':
@@ -245,11 +246,11 @@ class Experiment(ABC):
             :param args:    The command line arguments specified by the user
             :return:        The experiment that has been created
             """
-            exit_on_error = self.exit_on_error
+            output_error_policy = self.output_error_policy
 
             for output_writer in chain(self.pre_training_output_writers, self.post_training_output_writers,
                                        self.prediction_output_writers):
-                output_writer.exit_on_error = exit_on_error
+                output_writer.output_error_policy = output_error_policy
 
             missing_input_policy = self.missing_input_policy
 
