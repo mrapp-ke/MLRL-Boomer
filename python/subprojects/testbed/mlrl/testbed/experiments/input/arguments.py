@@ -3,7 +3,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Defines command line arguments for configuring the functionality to read input data from one or several sources.
 """
-from mlrl.util.cli import BoolArgument
+from mlrl.testbed.experiments.input.policies import MissingInputPolicy
+
+from mlrl.util.cli import EnumArgument
 
 
 class InputArguments:
@@ -11,8 +13,9 @@ class InputArguments:
     Defines command line arguments for configuring the functionality to read input data from one or several sources.
     """
 
-    EXIT_ON_MISSING_INPUT = BoolArgument(
-        '--exit-on-missing-input',
-        default=False,
-        description='Whether the program should exit if an error occurs while reading input data or not.',
+    IF_INPUT_MISSING = EnumArgument(
+        '--if-input-missing',
+        enum=MissingInputPolicy,
+        default=MissingInputPolicy.LOG,
+        description='What to do if an error occurs while reading input data.',
     )
