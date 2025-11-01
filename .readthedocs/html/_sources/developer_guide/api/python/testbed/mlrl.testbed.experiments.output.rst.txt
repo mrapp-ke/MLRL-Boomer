@@ -28,4 +28,5 @@ Submodules
    mlrl.testbed.experiments.output.arguments
    mlrl.testbed.experiments.output.data
    mlrl.testbed.experiments.output.extension
+   mlrl.testbed.experiments.output.policies
    mlrl.testbed.experiments.output.writer
