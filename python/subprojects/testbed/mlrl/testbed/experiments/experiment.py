@@ -15,6 +15,7 @@ from mlrl.testbed.arguments import PredictionDatasetArguments
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
+from mlrl.testbed.experiments.input.policies import MissingInputPolicy
 from mlrl.testbed.experiments.input.reader import InputReader
 from mlrl.testbed.experiments.output.evaluation.writer import AggregatedEvaluationWriter
 from mlrl.testbed.experiments.output.meta_data.writer import MetaDataWriter
@@ -113,7 +114,7 @@ class Experiment(ABC):
             self.predict_for_training_dataset = False
             self.predict_for_test_dataset = True
             self.exit_on_error = True
-            self.exit_on_missing_input = False
+            self.missing_input_policy = MissingInputPolicy.LOG
             self.add_before_start_output_writers(self.meta_data_writer)
             self.add_pre_training_output_writers(self.parameter_writer)
             self.add_post_training_output_writers(self.model_writer)
@@ -227,14 +228,14 @@ class Experiment(ABC):
             self.exit_on_error = exit_on_error
             return self
 
-        def set_exit_on_missing_input(self, exit_on_missing_input: bool) -> 'Experiment.Builder':
+        def set_missing_input_policy(self, missing_input_policy: MissingInputPolicy) -> 'Experiment.Builder':
             """
-            Sets whether the program should exit if an error occurs while reading input data.
+            Sets the policy to be used if an error occurs while reading input data.
 
-            :param exit_on_missing_input:   Tue, if the program should be aborted if an error occurs, False otherwise
+            :param missing_input_policy:    The policy to be set
             :return:                        The builder itself
             """
-            self.exit_on_missing_input = exit_on_missing_input
+            self.missing_input_policy = missing_input_policy
             return self
 
         def build(self, args: Namespace) -> 'Experiment':
@@ -250,11 +251,11 @@ class Experiment(ABC):
                                        self.prediction_output_writers):
                 output_writer.exit_on_error = exit_on_error
 
-            exit_on_missing_input = self.exit_on_missing_input
+            missing_input_policy = self.missing_input_policy
 
             for input_reader in self.input_readers:
                 for source in input_reader.sources:
-                    source.exit_on_missing_input = exit_on_missing_input
+                    source.missing_input_policy = missing_input_policy
 
             experiment = self._create_experiment(args, self.initial_state, self.dataset_splitter)
             experiment.listeners.extend(self.listeners)
