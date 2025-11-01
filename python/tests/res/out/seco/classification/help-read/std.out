@@ -2,8 +2,8 @@ mlrl-testbed mlrl.seco --mode read --help
 usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE]
                     [--input-dir INPUT_DIR] [--base-dir BASE_DIR]
                     [--create-dirs CREATE_DIRS]
-                    [--exit-on-error EXIT_ON_ERROR]
-                    [--exit-on-missing-input EXIT_ON_MISSING_INPUT]
+                    [--if-input-missing IF_INPUT_MISSING]
+                    [--if-output-error IF_OUTPUT_ERROR]
                     [--print-all PRINT_ALL]
                     [--print-data-characteristics PRINT_DATA_CHARACTERISTICS]
                     [--print-evaluation PRINT_EVALUATION]
@@ -54,14 +54,13 @@ options:
                         Whether the directories, where files should be saved,
                         should be created automatically, if they do not exist,
                         or not. Must be one of {"false", "true"}.
-  --exit-on-error EXIT_ON_ERROR
+  --if-input-missing IF_INPUT_MISSING
+                        What to do if an error occurs while reading input
+                        data. Must be one of {"exit", "log"}.
+  --if-output-error IF_OUTPUT_ERROR
                         Whether the program should exit if an error occurs
                         while writing experimental results or not. Must be one
-                        of {"false", "true"}.
-  --exit-on-missing-input EXIT_ON_MISSING_INPUT
-                        Whether the program should exit if an error occurs
-                        while reading input data or not. Must be one of
-                        {"false", "true"}.
+                        of {"exit", "log"}.
   --print-all PRINT_ALL
                         Whether all output data should be printed on the
                         console or not. Must be one of {"false", "true"}.
