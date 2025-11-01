@@ -2,8 +2,8 @@ mlrl-testbed mlrl.boosting --mode single --help
 usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE]
                     [--base-dir BASE_DIR] [--create-dirs CREATE_DIRS]
                     [--data-dir DATA_DIR] [--data-split DATA_SPLIT]
-                    [--dataset DATASET] [--exit-on-error EXIT_ON_ERROR]
-                    [--exit-on-missing-input EXIT_ON_MISSING_INPUT]
+                    [--dataset DATASET] [--if-input-missing IF_INPUT_MISSING]
+                    [--if-output-error IF_OUTPUT_ERROR]
                     [--incremental-evaluation INCREMENTAL_EVALUATION]
                     [--load-models LOAD_MODELS]
                     [--load-parameters LOAD_PARAMETERS]
@@ -105,14 +105,13 @@ options:
                         {"cross-validation", "none", "train-test"}. For
                         additional options refer to the documentation.
   --dataset DATASET     The name of the dataset.
-  --exit-on-error EXIT_ON_ERROR
+  --if-input-missing IF_INPUT_MISSING
+                        What to do if an error occurs while reading input
+                        data. Must be one of {"exit", "log"}.
+  --if-output-error IF_OUTPUT_ERROR
                         Whether the program should exit if an error occurs
                         while writing experimental results or not. Must be one
-                        of {"false", "true"}.
-  --exit-on-missing-input EXIT_ON_MISSING_INPUT
-                        Whether the program should exit if an error occurs
-                        while reading input data or not. Must be one of
-                        {"false", "true"}.
+                        of {"exit", "log"}.
   --incremental-evaluation INCREMENTAL_EVALUATION
                         Whether models should be evaluated repeatedly, using
                         only a subset of the induced rules with increasing
