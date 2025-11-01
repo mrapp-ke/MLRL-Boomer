@@ -135,7 +135,7 @@ namespace seco {
              *                                  the majority of the training examples
              * @param coverageMatrix            A reference to an object of type `DenseCoverageMatrix` that stores how
              *                                  often individual examples and labels have been covered
-             * @param indices                   A reference to a `CompleteIndexVector' that provides access to the
+             * @param indices                   A reference to a `CompleteIndexVector` that provides access to the
              *                                  indices
              * @param weight                    The weight, the confusion matrix elements should be multiplied by
              */
@@ -159,7 +159,7 @@ namespace seco {
              *                                  the majority of the training examples
              * @param coverageMatrix            A reference to an object of type `DenseCoverageMatrix` that stores how
              *                                  often individual examples and labels have been covered
-             * @param indices                   A reference to a `CompleteIndexVector' that provides access to the
+             * @param indices                   A reference to a `CompleteIndexVector` that provides access to the
              *                                  indices
              * @param weight                    The weight, the confusion matrix elements should be multiplied by
              */
@@ -183,7 +183,7 @@ namespace seco {
              *                                  the majority of the training examples
              * @param coverageMatrix            A reference to an object of type `DenseCoverageMatrix` that stores how
              *                                  often individual examples and labels have been covered
-             * @param indices                   A reference to a `PartialIndexVector' that provides access to the
+             * @param indices                   A reference to a `PartialIndexVector` that provides access to the
              *                                  indices
              * @param weight                    The weight, the confusion matrix elements should be multiplied by
              */
@@ -207,7 +207,7 @@ namespace seco {
              *                                  to the majority of the training examples
              * @param coverageMatrix            A reference to an object of type `DenseCoverageMatrix` that stores how
              *                                  often individual examples and labels have been covered
-             * @param indices                   A reference to a `PartialIndexVector' that provides access to the
+             * @param indices                   A reference to a `PartialIndexVector` that provides access to the
              *                                  indices
              * @param weight                    The weight, the confusion matrix elements should be multiplied by
              */
