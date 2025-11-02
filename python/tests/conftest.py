@@ -8,6 +8,8 @@ import pytest
 
 ARGUMENT_NUM_BLOCKS = '--num-blocks'
 
+MAX_BLOCKS = 32
+
 
 def pytest_addoption(parser):
     """
@@ -39,7 +41,7 @@ def pytest_collection_modifyitems(items):
             rng = np.random.default_rng(seed)
             block_indices = rng.integers(low=0, high=num_blocks, size=num_tests)
 
-        if num_blocks < 1 or num_blocks > 8:
-            raise ValueError(f'Argument {ARGUMENT_NUM_BLOCKS} must be at least 1 and at most 8')
+        if num_blocks < 1 or num_blocks > MAX_BLOCKS:
+            raise ValueError(f'Argument {ARGUMENT_NUM_BLOCKS} must be at least 1 and at most {MAX_BLOCKS}')
 
         item.add_marker(f'block-{block_indices[i]}')
