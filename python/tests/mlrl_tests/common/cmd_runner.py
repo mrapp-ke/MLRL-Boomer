@@ -7,6 +7,7 @@ import subprocess
 from functools import reduce
 from os import environ
 from pathlib import Path
+from typing import List, Optional
 
 import pytest
 
@@ -21,15 +22,17 @@ class CmdRunner:
     Allows to run commands that have been configured via a `CmdBuilder`.
     """
 
-    def __format_cmd(self):
-        return reduce(lambda aggr, arg: aggr + (' ' + arg if len(aggr) > 0 else arg), self.args, '')
+    def __format_cmd(self, args: Optional[List[str]] = None) -> str:
+        args = self.args if args is None else args
+        return reduce(lambda aggr, arg: aggr + (' ' + arg if len(aggr) > 0 else arg), args, '')
 
-    def __run_cmd(self):
-        out = subprocess.run(self.args, capture_output=True, text=True, check=False)
+    def __run_cmd(self, *additional_args: str):
+        args = self.args + list(additional_args)
+        out = subprocess.run(args, capture_output=True, text=True, check=False)
         exit_code = out.returncode
 
         if exit_code != 0:
-            pytest.fail('Command "' + self.__format_cmd() + '" terminated with non-zero exit code ' + str(exit_code)
+            pytest.fail('Command "' + self.__format_cmd(args) + '" terminated with non-zero exit code ' + str(exit_code)
                         + '\n\n' + str(out.stderr))
 
         return out
@@ -108,7 +111,7 @@ class CmdRunner:
         out = self.__run_cmd()
 
         if builder.model_save_dir and builder.model_load_dir:
-            out = self.__run_cmd()
+            out = self.__run_cmd('--if-outputs-exist', 'overwrite')
 
         # Check if output of the command is as expected...
         stdout = [self.__format_cmd()] + str(out.stdout).splitlines()
