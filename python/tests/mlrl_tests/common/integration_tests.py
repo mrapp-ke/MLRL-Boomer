@@ -74,6 +74,12 @@ class IntegrationTests(ABC):
             .save_all()
         CmdRunner(builder).run(test_name, wipe_before=False)
 
+    def test_cancel_if_outputs_exist(self):
+        test_name = 'cancel-if-outputs-exist'
+        builder = self._create_cmd_builder()
+        CmdRunner(builder).run(test_name, wipe_after=False, compare_output=False)
+        CmdRunner(builder).run(test_name, wipe_before=False)
+
     def test_batch_mode(self):
         test_name = 'batch-mode'
         builder = self._create_cmd_builder() \
@@ -83,6 +89,13 @@ class IntegrationTests(ABC):
         builder = self._create_cmd_builder() \
             .set_mode(ExperimentMode.READ) \
             .save_all()
+        CmdRunner(builder).run(test_name, wipe_before=False)
+
+    def test_batch_mode_cancel_if_outputs_exist(self):
+        test_name = 'batch-mode-cancel-if-outputs-exist'
+        builder = self._create_cmd_builder() \
+            .set_mode(ExperimentMode.BATCH)
+        CmdRunner(builder).run(test_name, wipe_after=False, compare_output=False)
         CmdRunner(builder).run(test_name, wipe_before=False)
 
     def test_batch_mode_separate_folds(self):

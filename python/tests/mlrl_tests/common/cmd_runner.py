@@ -92,13 +92,17 @@ class CmdRunner:
         self.builder = builder
         self.args = builder.build()
 
-    def run(self, test_name: str, wipe_before: bool = True, wipe_after: bool = True):
+    def run(self, test_name: str, wipe_before: bool = True, wipe_after: bool = True, compare_output: bool = True):
         """
         Runs the command.
 
-        :param test_name:   The name of the directory that stores the output files produced by the command
-        :param wipe_before: True, if temporary directory should be deleted before running the command, False otherwise
-        :param wipe_after:  True, if temporary directory should be deleted after running the command, False otherwise
+        :param test_name:       The name of the directory that stores the output files produced by the command
+        :param wipe_before:     True, if temporary directory should be deleted before running the command, False
+                                otherwise
+        :param wipe_after:      True, if temporary directory should be deleted after running the command, False
+                                otherwise
+        :param compare_output:  True, if the output of the command should be compared to the expected output, False
+                                otherwise
         """
         builder = self.builder
         output_dir = builder.base_dir
@@ -114,18 +118,20 @@ class CmdRunner:
             out = self.__run_cmd('--if-outputs-exist', 'overwrite')
 
         # Check if output of the command is as expected...
-        stdout = [self.__format_cmd()] + str(out.stdout).splitlines()
-        actual_output_dir = output_dir
-        expected_output_dir = builder.expected_output_dir / test_name
+        if compare_output:
+            stdout = [self.__format_cmd()] + str(out.stdout).splitlines()
+            actual_output_dir = output_dir
+            expected_output_dir = builder.expected_output_dir / test_name
 
-        if builder.mode in {ExperimentMode.RUN, ExperimentMode.READ} and not builder.show_help:
-            expected_output_dir = expected_output_dir / CmdBuilder.RERUN_DIR
-            actual_output_dir = actual_output_dir / CmdBuilder.RERUN_DIR
+            if builder.mode in {ExperimentMode.RUN, ExperimentMode.READ} and not builder.show_help:
+                expected_output_dir = expected_output_dir / CmdBuilder.RERUN_DIR
+                actual_output_dir = actual_output_dir / CmdBuilder.RERUN_DIR
 
-        self.__compare_or_overwrite_files(TextFileComparison(stdout), expected_file=expected_output_dir / 'std.out')
+            self.__compare_or_overwrite_files(TextFileComparison(stdout), expected_file=expected_output_dir / 'std.out')
 
-        # Check if all expected files have been created...
-        self.__compare_or_overwrite_output_files(output_dir=actual_output_dir, expected_output_dir=expected_output_dir)
+            # Check if all expected files have been created...
+            self.__compare_or_overwrite_output_files(output_dir=actual_output_dir,
+                                                     expected_output_dir=expected_output_dir)
 
         # Delete temporary directories...
         if wipe_after:
