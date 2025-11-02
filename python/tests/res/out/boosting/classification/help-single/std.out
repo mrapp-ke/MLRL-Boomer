@@ -4,6 +4,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE]
                     [--data-dir DATA_DIR] [--data-split DATA_SPLIT]
                     [--dataset DATASET] [--if-input-missing IF_INPUT_MISSING]
                     [--if-output-error IF_OUTPUT_ERROR]
+                    [--if-outputs-exist IF_OUTPUTS_EXIST]
                     [--incremental-evaluation INCREMENTAL_EVALUATION]
                     [--load-models LOAD_MODELS]
                     [--load-parameters LOAD_PARAMETERS]
@@ -112,6 +113,9 @@ options:
                         Whether the program should exit if an error occurs
                         while writing experimental results or not. Must be one
                         of {"exit", "log"}.
+  --if-outputs-exist IF_OUTPUTS_EXIST
+                        What to do if experimental results do already exist.
+                        Must be one of {"cancel", "overwrite"}.
   --incremental-evaluation INCREMENTAL_EVALUATION
                         Whether models should be evaluated repeatedly, using
                         only a subset of the induced rules with increasing
