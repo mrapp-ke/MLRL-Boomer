@@ -28,6 +28,10 @@ jobs:
           - 5
           - 6
           - 7
+          - 8
+          - 9
+          - 10
+          - 11
     steps:
       - name: Generate token
         if: ${{ inputs.overwrite_output_files == true }}
@@ -67,7 +71,7 @@ jobs:
         env:
           SUBPROJECTS: ${{ inputs.subproject }}
           OVERWRITE_OUTPUT_FILES: ${{ inputs.overwrite_output_files }}
-          NUM_BLOCKS: 8
+          NUM_BLOCKS: 12
           BLOCK_INDEX: ${{ matrix.block }}
         run: ./build tests_python --no-dependencies
       - name: Push changes in output files
