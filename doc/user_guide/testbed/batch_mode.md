@@ -36,6 +36,11 @@ datasets:
       - second-dataset
   - directory: path/to/other/datasets/
     names: third-dataset
+default_arguments:
+  - name: --first-default-argument
+    value: first-value
+  - name: --second-default-argument
+    value: second-value
 parameters:
   - name: --first-parameter
     values:
@@ -49,7 +54,7 @@ parameters:
           --third-parameter true
 ```
 
-The YAML file must contain the definition of at least one dataset (a schema file can be found {repo-file}`here <python/subprojects/testbed-sklearn/mlrl/testbed_sklearn/batch_config.schema.yml>`), consisting of the path to the directory where the dataset is located, as well as the name of the dataset (see {ref}`testbed-datasets`). In addition, several parameters and corresponding values can be specified. Each combination of the values given for different parameters will be used in experiments conducted on each available dataset. If two or more parameter values should be set jointly, they can be listed under `additional_arguments`.
+The YAML file must contain the definition of at least one dataset (a schema file can be found {repo-file}`here <python/subprojects/testbed-sklearn/mlrl/testbed_sklearn/batch_config.schema.yml>`), consisting of the path to the directory where the dataset is located, as well as the name of the dataset (see {ref}`testbed-datasets`). In addition, several parameters and corresponding values can be specified. Each combination of the values given for different parameters will be used in experiments conducted on each available dataset. If two or more parameter values should be set jointly, they can be listed under `additional_arguments`. Finally, it is also possible to define arbitrary default arguments under the optional section `default_arguments`. Default arguments are the same for all experiments.
 
 ```{tip}
 By default, when using a cross validation, a separate experiment is run for each cross validation fold. If a single experiment should perform all folds, the default behavior can be disabled via the argument `--separate-folds false`. 
@@ -77,6 +82,8 @@ mlrl-testbed mlrl.boosting \
     --parameter-save-dir first-parameter_50/second-parameter_true/third-parameter_true/dataset_first-dataset/parameters \
     --data-dir path/to/datasets/ \
     --dataset first-dataset \
+    --first-default-argument first-value \
+    --second-default-argument second-value \
     --first-parameter 50 \
     --second-parameter true \
     --third-parameter true \
