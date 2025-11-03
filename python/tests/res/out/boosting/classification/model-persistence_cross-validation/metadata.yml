@@ -1,6 +1,6 @@
 command: mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp
   --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation
   true --data-split cross-validation --save-models true --load-models true --model-load-dir
-  models --model-save-dir models
+  models --model-save-dir models --if-outputs-exist overwrite
 timestamp: <timestamp>
 version: <version>

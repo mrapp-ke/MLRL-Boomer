@@ -4,6 +4,6 @@ command: mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/re
   true --save-marginal-probability-calibration-model true --save-evaluation false
   --prediction-type probabilities --probability-predictor output-wise --print-predictions
   true --print-ground-truth true --save-models true --load-models true --model-load-dir
-  models --model-save-dir models
+  models --model-save-dir models --if-outputs-exist overwrite
 timestamp: <timestamp>
 version: <version>

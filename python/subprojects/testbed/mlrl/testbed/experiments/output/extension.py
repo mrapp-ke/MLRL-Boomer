@@ -21,14 +21,22 @@ class OutputExtension(Extension):
     """
 
     @override
-    def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
+    def _get_arguments(self, mode: ExperimentMode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return {
-            OutputArguments.BASE_DIR, OutputArguments.CREATE_DIRS, OutputArguments.IF_OUTPUT_ERROR,
-            OutputArguments.PRINT_ALL, OutputArguments.SAVE_ALL
+        arguments = {
+            OutputArguments.BASE_DIR,
+            OutputArguments.CREATE_DIRS,
+            OutputArguments.IF_OUTPUT_ERROR,
+            OutputArguments.PRINT_ALL,
+            OutputArguments.SAVE_ALL,
         }
+
+        if mode in {ExperimentMode.SINGLE, ExperimentMode.BATCH}:
+            arguments.add(OutputArguments.IF_OUTPUTS_EXIST)
+
+        return arguments
 
     @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: ExperimentMode):
