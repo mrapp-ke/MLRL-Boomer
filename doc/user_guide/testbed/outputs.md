@@ -4,6 +4,10 @@
 
 The {ref}`command line API <arguments>` of mlrl-testbed provides a diverse set of options for saving data that is collected during an experiment. In some cases, e.g., models or algorithmic parameters, such data can also be read from input files. Both aspects, saving and loading data, are discussed below.
 
+```{tip}
+By default, mlrl-testbed checks if the output files that should be produced by an experiments according to the given arguments do already exist. If this is the case, the experiment is canceled to avoid unnecessary computations. By providing the argument `--if-outputs-exist overwrite`, the experiment can be forced to be run anyway.
+```
+
 (meta-data)=
 
 ## Saving Meta-Data

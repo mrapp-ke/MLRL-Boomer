@@ -6,7 +6,7 @@ Defines command line arguments for configuring the functionality to write output
 from datetime import datetime
 from pathlib import Path
 
-from mlrl.testbed.experiments.output.policies import OutputErrorPolicy
+from mlrl.testbed.experiments.output.policies import OutputErrorPolicy, OutputExistsPolicy
 
 from mlrl.util.cli import BoolArgument, EnumArgument, PathArgument
 
@@ -34,6 +34,13 @@ class OutputArguments:
         enum=OutputErrorPolicy,
         default=OutputErrorPolicy.LOG,
         description='Whether the program should exit if an error occurs while writing experimental results or not.',
+    )
+
+    IF_OUTPUTS_EXIST = EnumArgument(
+        '--if-outputs-exist',
+        enum=OutputExistsPolicy,
+        default=OutputExistsPolicy.CANCEL,
+        description='What to do if experimental results do already exist.',
     )
 
     PRINT_ALL = BoolArgument(

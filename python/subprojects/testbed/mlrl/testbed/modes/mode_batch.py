@@ -28,11 +28,13 @@ from mlrl.testbed.experiments.output.meta_data.arguments import MetaDataArgument
 from mlrl.testbed.experiments.output.meta_data.writer import MetaDataWriter
 from mlrl.testbed.experiments.output.model.arguments import ModelOutputDirectoryArguments
 from mlrl.testbed.experiments.output.parameters.arguments import ParameterOutputDirectoryArguments
+from mlrl.testbed.experiments.output.policies import OutputExistsPolicy
 from mlrl.testbed.experiments.output.sinks import YamlFileSink
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.modes.mode import Mode
+from mlrl.testbed.modes.util import OutputUtil
 
 from mlrl.util.cli import AUTO, Argument, BoolArgument, CommandLineInterface, FlagArgument, SetArgument, StringArgument
 from mlrl.util.options import BooleanOption, Options
@@ -278,17 +280,45 @@ class BatchMode(Mode):
 
         # Validate arguments for individual experiments...
         has_output_file_writers = False
+        filtered_batch: Batch = []
 
         for command in batch:
+            command_args = command.apply_to_namespace(args)
             experiment_builder = recipe.create_experiment_builder(experiment_mode=ExperimentMode.BATCH,
-                                                                  args=command.apply_to_namespace(args),
+                                                                  args=command_args,
                                                                   command=command)
             has_output_file_writers |= experiment_builder.has_output_file_writers
 
-        self.__write_meta_data(args, recipe, batch, has_output_file_writers=has_output_file_writers)
+            if not BatchMode.__should_experiment_be_skipped(args=command_args, recipe=recipe, command=command):
+                filtered_batch.append(command)
 
+        num_skipped = len(batch) - len(filtered_batch)
+
+        if num_skipped > 0:
+            log.info(
+                'Skipping %s of %s %s, because all of their output files do already exist. Use the argument "%s %s" to '
+                + 'force-run all experiments.', num_skipped, len(batch),
+                'experiments' if num_skipped > 1 else 'experiment', OutputArguments.IF_OUTPUTS_EXIST.name,
+                OutputExistsPolicy.OVERWRITE)
+
+        self.__write_meta_data(args, recipe, batch, has_output_file_writers=has_output_file_writers)
         runner = self.__get_runner(args)
-        runner.run_batch(args, batch, recipe)
+        runner.run_batch(args, filtered_batch, recipe)
+
+    @staticmethod
+    def __should_experiment_be_skipped(args: Namespace, recipe: Recipe, command: Command) -> bool:
+        if OutputArguments.IF_OUTPUTS_EXIST.get_value(args) == OutputExistsPolicy.CANCEL:
+            base_dir = OutputArguments.BASE_DIR.get_value(args)
+            output_util = OutputUtil(args=args,
+                                     recipe=recipe,
+                                     command=command,
+                                     input_directory=base_dir,
+                                     file_sinks_only=True)
+
+            if output_util.check_if_output_files_exist():
+                return True
+
+        return False
 
     def __write_meta_data(self, args: Namespace, recipe: Recipe, batch: Batch, has_output_file_writers: bool):
         save_meta_data = MetaDataArguments.SAVE_META_DATA.get_value(args)
