@@ -28,6 +28,8 @@ jobs:
         with:
           python-version: ${{ inputs.python_version }}
           check-latest: true
+          cache: pip
+          cache-dependency-path: '**/requirements.txt'
       - name: Install OpenMP
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
