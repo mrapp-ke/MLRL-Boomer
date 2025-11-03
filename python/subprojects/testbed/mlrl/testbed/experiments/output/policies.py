@@ -12,3 +12,11 @@ class OutputErrorPolicy(StrEnum):
     """
     LOG = 'log'
     EXIT = 'exit'
+
+
+class OutputExistsPolicy(StrEnum):
+    """
+    Policies that can be used if experimental results do already exist.
+    """
+    OVERWRITE = 'overwrite'
+    CANCEL = 'cancel'
