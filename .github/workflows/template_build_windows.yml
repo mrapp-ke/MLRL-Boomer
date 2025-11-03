@@ -27,6 +27,8 @@ jobs:
         with:
           python-version: ${{ inputs.python_version }}
           check-latest: true
+          cache: pip
+          cache-dependency-path: '**/requirements.txt'
       - name: Prepare MSVC
         uses: ilammy/msvc-dev-cmd@v1
       - name: Install OpenCL
