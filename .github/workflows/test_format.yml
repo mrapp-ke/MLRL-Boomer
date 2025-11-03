@@ -31,6 +31,8 @@ jobs:
         with:
           python-version: ${{ steps.python_version.outputs.python_version }}
           check-latest: true
+          cache: pip
+          cache-dependency-path: '**/requirements.txt'
       - name: Detect changes
         uses: dorny/paths-filter@v3
         id: filter
@@ -88,6 +90,8 @@ jobs:
         with:
           python-version: ${{ steps.python_version.outputs.python_version }}
           check-latest: true
+          cache: pip
+          cache-dependency-path: '**/requirements.txt'
       - name: Check C++ source files
         run: ./build test_format_cpp
   test_format_python:
@@ -106,6 +110,8 @@ jobs:
         with:
           python-version: ${{ steps.python_version.outputs.python_version }}
           check-latest: true
+          cache: pip
+          cache-dependency-path: '**/requirements.txt'
       - name: Check Python source files
         run: ./build test_format_python
   test_format_cfg:
@@ -124,6 +130,8 @@ jobs:
         with:
           python-version: ${{ steps.python_version.outputs.python_version }}
           check-latest: true
+          cache: pip
+          cache-dependency-path: '**/requirements.txt'
       - name: Check .cfg files
         run: ./build test_format_cfg
   test_format_md:
@@ -142,6 +150,8 @@ jobs:
         with:
           python-version: ${{ steps.python_version.outputs.python_version }}
           check-latest: true
+          cache: pip
+          cache-dependency-path: '**/requirements.txt'
       - name: Check Markdown files
         run: ./build test_format_md
   test_format_yaml:
@@ -160,6 +170,8 @@ jobs:
         with:
           python-version: ${{ steps.python_version.outputs.python_version }}
           check-latest: true
+          cache: pip
+          cache-dependency-path: '**/requirements.txt'
       - name: Check YAML files
         run: ./build test_format_yaml
   test_format_toml:
