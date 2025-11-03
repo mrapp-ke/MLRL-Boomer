@@ -42,6 +42,8 @@ jobs:
         with:
           python-version: ${{ inputs.python_version }}
           check-latest: true
+          cache: pip
+          cache-dependency-path: '**/requirements.txt'
       - name: Install OpenCL
         run: sudo apt update && sudo apt install -y opencl-headers ocl-icd-opencl-dev
       - name: Install GoogleTest
