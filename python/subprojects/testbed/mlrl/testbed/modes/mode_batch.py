@@ -135,6 +135,18 @@ class BatchMode(Mode):
         Factory = Callable[[str], 'BatchMode.ConfigFile']
 
         @dataclass
+        class DefaultArgument:
+            """
+            A default parameter defined in the configuration file.
+
+            Attributes:
+                name:   The name of the parameter
+                value:  The value of the parameter
+            """
+            name: str
+            value: str
+
+        @dataclass
         class Parameter:
             """
             A parameter defined in the configuration file.
@@ -185,6 +197,22 @@ class BatchMode(Mode):
             yamale.validate(schema, data)
             self.file_path = file_path
             self.yaml_dict = data[0][0]
+
+        @cached_property
+        def default_arguments(self) -> List[DefaultArgument]:
+            """
+            A list that contains all default arguments defined in the configuration file.
+            """
+            default_arguments = []
+            node = self.yaml_dict.get('default_arguments', [])
+
+            if node:
+                for argument_dict in node:
+                    default_arguments.append(
+                        BatchMode.ConfigFile.DefaultArgument(name=argument_dict['name'],
+                                                             value=str(argument_dict['value'])))
+
+            return default_arguments
 
         @cached_property
         def parameters(self) -> List[Parameter]:
@@ -353,6 +381,10 @@ class BatchMode(Mode):
                        separate_folds: bool = False) -> Generator[Command, None, None]:
         command = Command.from_argv()
         default_args = BatchMode.__filter_arguments(command.argument_list)
+
+        for default_argument in config_file.default_arguments:
+            default_args.setdefault(default_argument.name, default_argument.value)
+
         base_dir = OutputArguments.BASE_DIR.get_value(args)
 
         for dataset_args in map(BatchMode.__filter_arguments, config_file.dataset_args):
