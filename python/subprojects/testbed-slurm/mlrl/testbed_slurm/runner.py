@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow to run experiments via the Slurm Workload Manager.
 """
 import logging as log
+import re as regex
 import sys
 
 from argparse import Namespace
@@ -167,6 +168,24 @@ class SlurmRunner(BatchMode.Runner):
         return None
 
     @staticmethod
+    def __escape_command(command: Command) -> str:
+        pattern = regex.compile(r'(\$\{.*?\})|(\{)|(\})')
+
+        def replacer(match):
+            if match.group(2):
+                # Plain '{' should be escaped
+                return '\\{'
+
+            if match.group(3):
+                # Plain '}' should be escaped
+                return '\\}'
+
+            # ${...} blocks should NOT be escaped
+            return match.group(1)
+
+        return pattern.sub(replacer, str(command))
+
+    @staticmethod
     def __create_sbatch_script(command: Command, config_file: Optional[ConfigFile],
                                job_array: Optional[JobArray]) -> str:
         command_args = command.to_namespace()
@@ -194,9 +213,7 @@ class SlurmRunner(BatchMode.Runner):
             for line in config_file.before_script:
                 content += line + '\n'
 
-        content += str(command) \
-            .replace('{', '\'{') \
-            .replace('}', '}\'') + '\n'
+        content += SlurmRunner.__escape_command(command) + '\n'
 
         if config_file and config_file.after_script:
             for line in config_file.after_script:
@@ -285,7 +302,7 @@ class SlurmRunner(BatchMode.Runner):
 
                     modified_options = Options({
                         key:
-                            '$SLURM_ARRAY_TASK_ID' if key in {
+                            '${SLURM_ARRAY_TASK_ID}' if key in {
                                 DatasetSplitterArguments.OPTION_FIRST_FOLD, DatasetSplitterArguments.OPTION_LAST_FOLD
                             } else value
                         for key, value in options.dictionary.items()
