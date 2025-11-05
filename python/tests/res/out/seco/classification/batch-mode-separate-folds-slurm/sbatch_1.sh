@@ -9,5 +9,5 @@
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
-mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation'{first_fold=$SLURM_ARRAY_TASK_ID,last_fold=$SLURM_ARRAY_TASK_ID,num_folds=2}' --dataset emotions --heuristic f-measure --instance-sampling none --log-level debug --model-save-dir instance-sampling_none/heuristic_f-measure/dataset_emotions/models --parameter-save-dir instance-sampling_none/heuristic_f-measure/dataset_emotions/parameters --result-dir instance-sampling_none/heuristic_f-measure/dataset_emotions/results --save-evaluation true --save-meta-data false --wipe-result-dir false
+mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset emotions --heuristic f-measure --instance-sampling none --log-level debug --model-save-dir instance-sampling_none/heuristic_f-measure/dataset_emotions/models --parameter-save-dir instance-sampling_none/heuristic_f-measure/dataset_emotions/parameters --result-dir instance-sampling_none/heuristic_f-measure/dataset_emotions/results --save-evaluation true --save-meta-data false --wipe-result-dir false
 deactivate

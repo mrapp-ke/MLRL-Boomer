@@ -5,6 +5,7 @@ datasets:
   - directory: python/tests/res/data
     names:
       - atp7d-binary
+default_arguments:
 parameters:
   - name: --instance-sampling
     values:

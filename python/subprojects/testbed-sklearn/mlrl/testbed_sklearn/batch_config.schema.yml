@@ -1,10 +1,14 @@
 ---
 datasets: list(include('dataset'))
+default_arguments: any(list(include('default_argument')), null(), required=False)
 parameters: list(include('parameter'))
 ---
 dataset:
   directory: str()
   names: any(str(), list(str()))
+default_argument:
+  name: str()
+  value: any(str(), int(), num(), bool())
 parameter:
   name: str()
   values: list(any(str(), include('value_object')))

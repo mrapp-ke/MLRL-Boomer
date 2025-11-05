@@ -8,5 +8,5 @@
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
-mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --instance-sampling with-replacement'{sample_size=0.5}' --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_logistic-decomposable/dataset_emotions/models --parameter-save-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_logistic-decomposable/dataset_emotions/parameters --result-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_logistic-decomposable/dataset_emotions/results --save-evaluation true --save-meta-data false
+mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --instance-sampling with-replacement\{sample_size=0.5\} --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_with-replacement\{sample_size=0.5\}/loss_logistic-decomposable/dataset_emotions/models --parameter-save-dir instance-sampling_with-replacement\{sample_size=0.5\}/loss_logistic-decomposable/dataset_emotions/parameters --result-dir instance-sampling_with-replacement\{sample_size=0.5\}/loss_logistic-decomposable/dataset_emotions/results --save-evaluation true --save-meta-data false
 deactivate
