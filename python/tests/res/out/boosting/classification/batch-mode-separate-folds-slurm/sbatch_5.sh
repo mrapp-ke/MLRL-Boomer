@@ -9,5 +9,5 @@
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
-mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset enron --instance-sampling none --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_none/loss_logistic-decomposable/dataset_enron/models --parameter-save-dir instance-sampling_none/loss_logistic-decomposable/dataset_enron/parameters --result-dir instance-sampling_none/loss_logistic-decomposable/dataset_enron/results --save-evaluation true --save-meta-data false --wipe-result-dir false
+mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset enron --instance-sampling none --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_none/loss_logistic-decomposable/dataset_enron/models --parameter-save-dir instance-sampling_none/loss_logistic-decomposable/dataset_enron/parameters --result-dir instance-sampling_none/loss_logistic-decomposable/dataset_enron/results --save-evaluation true --save-meta-data false
 deactivate

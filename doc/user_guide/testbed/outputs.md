@@ -207,7 +207,7 @@ The path to the directory, where experimental results should be saved, can be ei
 ```
 
 ```{tip}
-By default, the directory specified via the argument `--result-dir` is created automatically if it does not exist. This functionality can be turned off via the argument `--create-dirs false`. Moreover, all files in the specified directory are usually deleted before an experiment starts. By providing the argument `--wipe-result-dir false`, the deletion of files can be prevented.
+By default, the directory specified via the argument `--result-dir` is created automatically if it does not exist. This functionality can be turned off via the argument `--create-dirs false`.
 ```
 
 ```{tip}
