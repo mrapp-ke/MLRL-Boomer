@@ -29,10 +29,10 @@ Writing output data to file "python/tests/res/tmp/rerun/results/data_characteris
 Writing output data to file "python/tests/res/tmp/rerun/results/parameters.csv"...
 Evaluation result for test data:
 
-Mean Absolute Error (↓)               29.91
+Mean Absolute Error (↓)               29.74
 Mean Absolute Percentage Error (↓)     0.08
-Mean Squared Error (↓)              2826.34
-Median Absolute Error (↓)             15.83
+Mean Squared Error (↓)              2840.67
+Median Absolute Error (↓)             16.41
 
 Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...
 Writing output data to file "python/tests/res/tmp/rerun/results/prediction_characteristics_test.csv"...

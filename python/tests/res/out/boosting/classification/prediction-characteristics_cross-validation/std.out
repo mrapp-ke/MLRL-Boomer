@@ -131,10 +131,10 @@ Successfully predicted in <duration>
 Prediction characteristics for test data (Fold 7):
 
 Outputs                  6
-Output Density          26.55
-Output Sparsity         73.45
-Label Imbalance Ratio    2.1
-Label Cardinality        1.59
+Output Density          27.12
+Output Sparsity         72.88
+Label Imbalance Ratio    2.05
+Label Cardinality        1.63
 Distinct Label Vectors  12
 
 Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-7.csv"...

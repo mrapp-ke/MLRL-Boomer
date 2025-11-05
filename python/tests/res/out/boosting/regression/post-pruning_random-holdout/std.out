@@ -15,10 +15,10 @@ A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Mean Absolute Error (↓)               35.32
+Mean Absolute Error (↓)               35.41
 Mean Absolute Percentage Error (↓)     0.09
-Mean Squared Error (↓)              4706.67
-Median Absolute Error (↓)             16.3
+Mean Squared Error (↓)              4703.12
+Median Absolute Error (↓)             16.4
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Model characteristics:
@@ -27,7 +27,7 @@ Model characteristics:
 │ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
 ├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
 │ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
-│ 378 local rules               │    1230 │                  47.15% │                 52.85% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+│ 378 local rules               │    1230 │                  47.40% │                 52.60% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
 └───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
 
 ┌────────────────────────────────┬─────────┬────────────┬────────────┐

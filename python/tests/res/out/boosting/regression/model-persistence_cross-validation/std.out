@@ -98,10 +98,10 @@ A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 5):
 
-Mean Absolute Error (↓)               28.76
+Mean Absolute Error (↓)               29.23
 Mean Absolute Percentage Error (↓)     0.08
-Mean Squared Error (↓)              2439.06
-Median Absolute Error (↓)             12.68
+Mean Squared Error (↓)              2516.64
+Median Absolute Error (↓)             12.87
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-5.csv"...
 Writing output data to file "python/tests/res/tmp/models/model_fold-5.pickle"...
@@ -138,9 +138,9 @@ A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 7):
 
-Mean Absolute Error (↓)               24.33
-Mean Absolute Percentage Error (↓)     0.06
-Mean Squared Error (↓)              1692.33
+Mean Absolute Error (↓)               24.53
+Mean Absolute Percentage Error (↓)     0.07
+Mean Squared Error (↓)              1697.13
 Median Absolute Error (↓)             12.87
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-7.csv"...
@@ -158,10 +158,10 @@ A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 8):
 
-Mean Absolute Error (↓)               21.27
+Mean Absolute Error (↓)               21.26
 Mean Absolute Percentage Error (↓)     0.06
-Mean Squared Error (↓)              1197
-Median Absolute Error (↓)             13.1
+Mean Squared Error (↓)              1195.54
+Median Absolute Error (↓)             12.97
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-8.csv"...
 Writing output data to file "python/tests/res/tmp/models/model_fold-8.pickle"...
@@ -206,9 +206,9 @@ Median Absolute Error (↓)             18.24
 Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-10.csv"...
 Evaluation result for test data (Average across 10 folds):
 
-Mean Absolute Error (↓)               25.07  ±5.25
+Mean Absolute Error (↓)               25.14  ±5.28
 Mean Absolute Percentage Error (↓)     0.07  ±0.01
-Mean Squared Error (↓)              2007.91  ±951.23
+Mean Squared Error (↓)              2016     ±954.99
 Median Absolute Error (↓)             13.82  ±1.88
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
