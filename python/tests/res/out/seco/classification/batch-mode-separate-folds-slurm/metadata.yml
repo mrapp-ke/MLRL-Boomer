@@ -5,112 +5,112 @@ child-commands:
   instance-sampling_none/heuristic_f-measure/dataset_emotions/models --parameter-save-dir
   instance-sampling_none/heuristic_f-measure/dataset_emotions/parameters --result-dir
   instance-sampling_none/heuristic_f-measure/dataset_emotions/results --save-evaluation
-  true --save-meta-data false --wipe-result-dir false
+  true --save-meta-data false
 - mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset emotions
   --heuristic f-measure --instance-sampling none --log-level debug --model-save-dir
   instance-sampling_none/heuristic_f-measure/dataset_emotions/models --parameter-save-dir
   instance-sampling_none/heuristic_f-measure/dataset_emotions/parameters --result-dir
   instance-sampling_none/heuristic_f-measure/dataset_emotions/results --save-evaluation
-  true --save-meta-data false --wipe-result-dir false
+  true --save-meta-data false
 - mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset emotions
   --feature-format sparse --heuristic m-estimate --instance-sampling none --log-level
   debug --model-save-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/models
   --parameter-save-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/parameters
   --result-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results
-  --save-evaluation true --save-meta-data false --wipe-result-dir false
+  --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset emotions
   --feature-format sparse --heuristic m-estimate --instance-sampling none --log-level
   debug --model-save-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/models
   --parameter-save-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/parameters
   --result-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results
-  --save-evaluation true --save-meta-data false --wipe-result-dir false
+  --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset emotions
   --heuristic f-measure --instance-sampling with-replacement{sample_size=0.5} --log-level
   debug --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/models
   --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/parameters
   --result-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results
-  --save-evaluation true --save-meta-data false --wipe-result-dir false
+  --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset emotions
   --heuristic f-measure --instance-sampling with-replacement{sample_size=0.5} --log-level
   debug --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/models
   --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/parameters
   --result-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results
-  --save-evaluation true --save-meta-data false --wipe-result-dir false
+  --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset emotions
   --feature-format sparse --heuristic m-estimate --instance-sampling with-replacement{sample_size=0.5}
   --log-level debug --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/models
   --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/parameters
   --result-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results
-  --save-evaluation true --save-meta-data false --wipe-result-dir false
+  --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset emotions
   --feature-format sparse --heuristic m-estimate --instance-sampling with-replacement{sample_size=0.5}
   --log-level debug --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/models
   --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/parameters
   --result-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results
-  --save-evaluation true --save-meta-data false --wipe-result-dir false
+  --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset enron
   --heuristic f-measure --instance-sampling none --log-level debug --model-save-dir
   instance-sampling_none/heuristic_f-measure/dataset_enron/models --parameter-save-dir
   instance-sampling_none/heuristic_f-measure/dataset_enron/parameters --result-dir
   instance-sampling_none/heuristic_f-measure/dataset_enron/results --save-evaluation
-  true --save-meta-data false --wipe-result-dir false
+  true --save-meta-data false
 - mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset enron
   --heuristic f-measure --instance-sampling none --log-level debug --model-save-dir
   instance-sampling_none/heuristic_f-measure/dataset_enron/models --parameter-save-dir
   instance-sampling_none/heuristic_f-measure/dataset_enron/parameters --result-dir
   instance-sampling_none/heuristic_f-measure/dataset_enron/results --save-evaluation
-  true --save-meta-data false --wipe-result-dir false
+  true --save-meta-data false
 - mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset enron
   --feature-format sparse --heuristic m-estimate --instance-sampling none --log-level
   debug --model-save-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/models
   --parameter-save-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/parameters
   --result-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results
-  --save-evaluation true --save-meta-data false --wipe-result-dir false
+  --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset enron
   --feature-format sparse --heuristic m-estimate --instance-sampling none --log-level
   debug --model-save-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/models
   --parameter-save-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/parameters
   --result-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results
-  --save-evaluation true --save-meta-data false --wipe-result-dir false
+  --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset enron
   --heuristic f-measure --instance-sampling with-replacement{sample_size=0.5} --log-level
   debug --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/models
   --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/parameters
   --result-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results
-  --save-evaluation true --save-meta-data false --wipe-result-dir false
+  --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset enron
   --heuristic f-measure --instance-sampling with-replacement{sample_size=0.5} --log-level
   debug --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/models
   --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/parameters
   --result-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results
-  --save-evaluation true --save-meta-data false --wipe-result-dir false
+  --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset enron
   --feature-format sparse --heuristic m-estimate --instance-sampling with-replacement{sample_size=0.5}
   --log-level debug --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/models
   --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/parameters
   --result-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results
-  --save-evaluation true --save-meta-data false --wipe-result-dir false
+  --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset enron
   --feature-format sparse --heuristic m-estimate --instance-sampling with-replacement{sample_size=0.5}
   --log-level debug --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/models
   --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/parameters
   --result-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results
-  --save-evaluation true --save-meta-data false --wipe-result-dir false
+  --save-evaluation true --save-meta-data false
 command: mlrl-testbed mlrl.seco --mode batch --log-level debug --base-dir python/tests/res/tmp
   --config python/tests/res/config/seco/classification/batch_config.yml --runner slurm
   --slurm-config python/tests/res/config/slurm_config.yml --print-slurm-scripts true

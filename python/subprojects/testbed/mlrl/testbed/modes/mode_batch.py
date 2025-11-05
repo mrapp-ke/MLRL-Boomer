@@ -430,8 +430,6 @@ class BatchMode(Mode):
                 argument_dict | {
                     DatasetSplitterArguments.DATASET_SPLITTER.name:
                         DatasetSplitterArguments.VALUE_CROSS_VALIDATION + str(options),
-                    ResultDirectoryArguments.WIPE_RESULT_DIR.name:
-                        BooleanOption.FALSE,
                 })
             yield Command.from_dict(module_name=module_name, argument_dict=argument_dict_per_fold)
 
