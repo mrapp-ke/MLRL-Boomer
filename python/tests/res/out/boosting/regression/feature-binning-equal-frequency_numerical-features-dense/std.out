@@ -17,8 +17,8 @@ Evaluation result for test data:
 
 Mean Absolute Error (↓)               32.05
 Mean Absolute Percentage Error (↓)     0.08
-Mean Squared Error (↓)              3625.12
-Median Absolute Error (↓)             14.8
+Mean Squared Error (↓)              3597.77
+Median Absolute Error (↓)             14.77
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Successfully finished experiment after <duration>
