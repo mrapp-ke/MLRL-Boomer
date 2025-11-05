@@ -26,8 +26,8 @@ class CmdRunner:
         args = self.args if args is None else args
         return reduce(lambda aggr, arg: aggr + (' ' + arg if len(aggr) > 0 else arg), args, '')
 
-    def __run_cmd(self, *additional_args: str):
-        args = self.args + list(additional_args)
+    def __run_cmd(self):
+        args = self.args
         out = subprocess.run(args, capture_output=True, text=True, check=False)
         exit_code = out.returncode
 
@@ -115,7 +115,8 @@ class CmdRunner:
         out = self.__run_cmd()
 
         if builder.model_save_dir and builder.model_load_dir:
-            out = self.__run_cmd('--if-outputs-exist', 'overwrite')
+            shutil.rmtree(output_dir, ignore_errors=True)
+            out = self.__run_cmd()
 
         # Check if output of the command is as expected...
         if compare_output:

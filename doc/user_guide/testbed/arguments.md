@@ -375,11 +375,6 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--result-dir` (Default value = `result`) An absolute or relative path to the directory where experimental results should be saved.
 
-- `--wipe-result-dir` (Default value = `true`)
-
-  - `true` All files within the directory specified via the argument `--result-dir` are deleted before the experiment starts.
-  - `false` No files within the directory are deleted, but existing files may be overwritten by the experiment.
-
 (arguments-evaluation-results)=
 
 #### Evaluation Results
