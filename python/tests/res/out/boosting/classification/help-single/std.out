@@ -46,7 +46,6 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE]
                     [--save-predictions SAVE_PREDICTIONS]
                     [--save-rules SAVE_RULES]
                     [--sparse-feature-value SPARSE_FEATURE_VALUE]
-                    [--wipe-result-dir WIPE_RESULT_DIR]
                     [--binary-predictor BINARY_PREDICTOR]
                     [--default-rule DEFAULT_RULE]
                     [--feature-binning FEATURE_BINNING]
@@ -287,11 +286,6 @@ options:
                         sparse format is used for the representation of the
                         feature matrix, depending on the argument --feature-
                         format.
-  --wipe-result-dir WIPE_RESULT_DIR
-                        Whether all files in the directory specified via the
-                        argument --result-dir should be deleted before an
-                        experiment starts or not. Must be one of {"false",
-                        "true"}.
   --binary-predictor BINARY_PREDICTOR
                         The name of the strategy to be used for predicting
                         binary labels If set to "auto", the most suitable

@@ -4,6 +4,6 @@ command: mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/re
   true --save-marginal-probability-calibration-model true --binary-predictor output-wise{based_on_probabilities=true}
   --incremental-evaluation true{step_size=50} --print-evaluation true --save-evaluation
   true --save-models true --load-models true --model-load-dir models --model-save-dir
-  models --if-outputs-exist overwrite
+  models
 timestamp: <timestamp>
 version: <version>
