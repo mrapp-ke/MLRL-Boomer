@@ -5,6 +5,6 @@ command: mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/re
   isotonic --print-joint-probability-calibration-model true --save-joint-probability-calibration-model
   true --binary-predictor example-wise{based_on_probabilities=true} --print-predictions
   true --print-ground-truth true --print-label-vectors true --save-models true --load-models
-  true --model-load-dir models --model-save-dir models --if-outputs-exist overwrite
+  true --model-load-dir models --model-save-dir models
 timestamp: <timestamp>
 version: <version>
