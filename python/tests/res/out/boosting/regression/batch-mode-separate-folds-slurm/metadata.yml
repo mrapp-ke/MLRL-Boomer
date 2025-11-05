@@ -5,112 +5,112 @@ child-commands:
   instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/models --parameter-save-dir
   instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/parameters
   --problem-type regression --result-dir instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/results
-  --save-evaluation true --save-meta-data false --wipe-result-dir false
+  --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset atp7d
   --instance-sampling none --log-level debug --loss squared-error-decomposable --model-save-dir
   instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/models --parameter-save-dir
   instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/parameters
   --problem-type regression --result-dir instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/results
-  --save-evaluation true --save-meta-data false --wipe-result-dir false
+  --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset atp7d
   --feature-format sparse --instance-sampling none --log-level debug --loss squared-error-decomposable
   --model-save-dir instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/models
   --parameter-save-dir instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/parameters
   --problem-type regression --result-dir instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/results
-  --save-evaluation true --save-meta-data false --wipe-result-dir false
+  --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset atp7d
   --feature-format sparse --instance-sampling none --log-level debug --loss squared-error-decomposable
   --model-save-dir instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/models
   --parameter-save-dir instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/parameters
   --problem-type regression --result-dir instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/results
-  --save-evaluation true --save-meta-data false --wipe-result-dir false
+  --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset atp7d
   --instance-sampling with-replacement{sample_size=0.5} --log-level debug --loss squared-error-decomposable
   --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_atp7d/models
   --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_atp7d/parameters
   --problem-type regression --result-dir instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_atp7d/results
-  --save-evaluation true --save-meta-data false --wipe-result-dir false
+  --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset atp7d
   --instance-sampling with-replacement{sample_size=0.5} --log-level debug --loss squared-error-decomposable
   --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_atp7d/models
   --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_atp7d/parameters
   --problem-type regression --result-dir instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_atp7d/results
-  --save-evaluation true --save-meta-data false --wipe-result-dir false
+  --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset atp7d
   --feature-format sparse --instance-sampling with-replacement{sample_size=0.5} --log-level
   debug --loss squared-error-decomposable --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/models
   --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/parameters
   --problem-type regression --result-dir instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/results
-  --save-evaluation true --save-meta-data false --wipe-result-dir false
+  --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset atp7d
   --feature-format sparse --instance-sampling with-replacement{sample_size=0.5} --log-level
   debug --loss squared-error-decomposable --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/models
   --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/parameters
   --problem-type regression --result-dir instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/results
-  --save-evaluation true --save-meta-data false --wipe-result-dir false
+  --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset atp7d-binary
   --instance-sampling none --log-level debug --loss squared-error-decomposable --model-save-dir
   instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/models
   --parameter-save-dir instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/parameters
   --problem-type regression --result-dir instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/results
-  --save-evaluation true --save-meta-data false --wipe-result-dir false
+  --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset atp7d-binary
   --instance-sampling none --log-level debug --loss squared-error-decomposable --model-save-dir
   instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/models
   --parameter-save-dir instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/parameters
   --problem-type regression --result-dir instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/results
-  --save-evaluation true --save-meta-data false --wipe-result-dir false
+  --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset atp7d-binary
   --feature-format sparse --instance-sampling none --log-level debug --loss squared-error-decomposable
   --model-save-dir instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/models
   --parameter-save-dir instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/parameters
   --problem-type regression --result-dir instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/results
-  --save-evaluation true --save-meta-data false --wipe-result-dir false
+  --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset atp7d-binary
   --feature-format sparse --instance-sampling none --log-level debug --loss squared-error-decomposable
   --model-save-dir instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/models
   --parameter-save-dir instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/parameters
   --problem-type regression --result-dir instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/results
-  --save-evaluation true --save-meta-data false --wipe-result-dir false
+  --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset atp7d-binary
   --instance-sampling with-replacement{sample_size=0.5} --log-level debug --loss squared-error-decomposable
   --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_atp7d-binary/models
   --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_atp7d-binary/parameters
   --problem-type regression --result-dir instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_atp7d-binary/results
-  --save-evaluation true --save-meta-data false --wipe-result-dir false
+  --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset atp7d-binary
   --instance-sampling with-replacement{sample_size=0.5} --log-level debug --loss squared-error-decomposable
   --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_atp7d-binary/models
   --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_atp7d-binary/parameters
   --problem-type regression --result-dir instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_atp7d-binary/results
-  --save-evaluation true --save-meta-data false --wipe-result-dir false
+  --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset atp7d-binary
   --feature-format sparse --instance-sampling with-replacement{sample_size=0.5} --log-level
   debug --loss squared-error-decomposable --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/models
   --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/parameters
   --problem-type regression --result-dir instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/results
-  --save-evaluation true --save-meta-data false --wipe-result-dir false
+  --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
   --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset atp7d-binary
   --feature-format sparse --instance-sampling with-replacement{sample_size=0.5} --log-level
   debug --loss squared-error-decomposable --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/models
   --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/parameters
   --problem-type regression --result-dir instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/results
-  --save-evaluation true --save-meta-data false --wipe-result-dir false
+  --save-evaluation true --save-meta-data false
 command: mlrl-testbed mlrl.boosting --mode batch --log-level debug --base-dir python/tests/res/tmp
   --config python/tests/res/config/boosting/regression/batch_config.yml --runner slurm
   --slurm-config python/tests/res/config/slurm_config.yml --print-slurm-scripts true
