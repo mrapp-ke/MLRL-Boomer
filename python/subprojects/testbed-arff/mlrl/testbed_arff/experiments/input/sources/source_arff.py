@@ -7,7 +7,7 @@ import logging as log
 
 from functools import cached_property
 from pathlib import Path
-from typing import Any, List, Optional, Set
+from typing import Any, List, Optional, Set, override
 from xml.dom import minidom
 
 import arff
@@ -226,6 +226,7 @@ class ArffFileSource(DatasetFileSource):
         """
         super().__init__(directory=directory, suffix=ArffFileSink.SUFFIX_ARFF)
 
+    @override
     def _read_dataset_from_file(self, state: ExperimentState, file_path: Path,
                                 input_data: DatasetInputData) -> Optional[Dataset]:
         properties = input_data.properties
