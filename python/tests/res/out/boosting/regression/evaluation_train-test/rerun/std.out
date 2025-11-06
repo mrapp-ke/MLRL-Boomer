@@ -13,9 +13,9 @@ Using separate training and test sets...
 Reading input data from file "python/tests/res/tmp/results/evaluation_test.csv"...
 Evaluation result for test data:
 
-Mean Absolute Error (↓)               29.91
+Mean Absolute Error (↓)               29.74
 Mean Absolute Percentage Error (↓)     0.08
-Mean Squared Error (↓)              2826.34
-Median Absolute Error (↓)             15.83
+Mean Squared Error (↓)              2840.67
+Median Absolute Error (↓)             16.41
 
 Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...
