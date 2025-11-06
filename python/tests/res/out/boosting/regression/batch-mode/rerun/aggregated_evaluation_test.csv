@@ -1,9 +1,9 @@
 Dataset,Mean Absolute Error (↓),Mean Absolute Percentage Error (↓),Mean Squared Error (↓),Median Absolute Error (↓),Parameter --feature-format,Parameter --instance-sampling,Prediction Time (seconds),Rank Mean Absolute Error (↓),Rank Mean Absolute Percentage Error (↓),Rank Mean Squared Error (↓),Rank Median Absolute Error (↓),Rank Prediction Time (seconds),Rank Training Time (seconds),Training Time (seconds)
-atp7d,29.906873698097836,0.0799326349862939,2826.3378742748196,15.828599931870095,,none,<duration>,1.0,1.0,1.0,2.0,<duration>,<duration>,<duration>
-atp7d,30.02866240935228,0.08054685097678434,3007.349462685331,15.202449491395916,sparse,none,<duration>,2.0,2.0,2.0,1.0,<duration>,<duration>,<duration>
-atp7d,33.00286318909806,0.08135953153443164,4086.7736373060907,17.984437361138475,,with-replacement{sample_size=0.5},<duration>,3.0,3.0,3.0,3.0,<duration>,<duration>,<duration>
-atp7d,34.14518390578342,0.0915030757224984,4131.776375411608,18.580352025237218,sparse,with-replacement{sample_size=0.5},<duration>,4.0,4.0,4.0,4.0,<duration>,<duration>,<duration>
-atp7d-binary,31.919571780477728,0.07994474958556748,3361.166707708328,17.486144467511096,,none,<duration>,1.5,1.5,1.5,1.5,<duration>,<duration>,<duration>
-atp7d-binary,31.919571780477728,0.07994474958556748,3361.166707708328,17.486144467511096,sparse,none,<duration>,1.5,1.5,1.5,1.5,<duration>,<duration>,<duration>
-atp7d-binary,34.771091022985615,0.08938671161722533,3554.6433600618348,20.75661144126338,,with-replacement{sample_size=0.5},<duration>,3.5,3.5,3.5,3.5,<duration>,<duration>,<duration>
-atp7d-binary,34.771091022985615,0.08938671161722533,3554.6433600618348,20.75661144126338,sparse,with-replacement{sample_size=0.5},<duration>,3.5,3.5,3.5,3.5,<duration>,<duration>,<duration>
+atp7d,29.735833366695203,0.07932898657376869,2840.668872866509,16.413433537605062,,none,<duration>,1.0,1.0,1.0,2.0,<duration>,<duration>,<duration>
+atp7d,30.74080667766245,0.08137456306241102,2924.8342713937295,17.166264355706517,sparse,none,<duration>,2.0,2.0,2.0,3.0,<duration>,<duration>,<duration>
+atp7d,34.876257407092915,0.08853677393201527,4169.336281119737,18.72805829772066,,with-replacement{sample_size=0.5},<duration>,4.0,4.0,3.0,4.0,<duration>,<duration>,<duration>
+atp7d,33.87952453961965,0.08711604588638544,4343.135940339704,16.139439338391337,sparse,with-replacement{sample_size=0.5},<duration>,3.0,3.0,4.0,1.0,<duration>,<duration>,<duration>
+atp7d-binary,32.63274058147477,0.08167120123596618,3658.872195259975,16.763427510663558,,none,<duration>,1.5,1.5,1.5,1.5,<duration>,<duration>,<duration>
+atp7d-binary,32.63274058147477,0.08167120123596618,3658.872195259975,16.763427510663558,sparse,none,<duration>,1.5,1.5,1.5,1.5,<duration>,<duration>,<duration>
+atp7d-binary,35.333800784694695,0.09218610411678203,3760.219844491618,21.369615410701954,,with-replacement{sample_size=0.5},<duration>,3.5,3.5,3.5,3.5,<duration>,<duration>,<duration>
+atp7d-binary,35.333800784694695,0.09218610411678203,3760.219844491618,21.369615410701954,sparse,with-replacement{sample_size=0.5},<duration>,3.5,3.5,3.5,3.5,<duration>,<duration>,<duration>

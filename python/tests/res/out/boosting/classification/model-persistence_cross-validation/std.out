@@ -210,20 +210,20 @@ A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 7):
 
-Example-wise F1 (↑)         60.51
-Example-wise Jaccard (↑)    53.81
-Example-wise Precision (↑)  71.47
-Example-wise Recall (↑)     62.15
+Example-wise F1 (↑)         61.64
+Example-wise Jaccard (↑)    54.66
+Example-wise Precision (↑)  70.62
+Example-wise Recall (↑)     63.84
 Hamming Accuracy (↑)        81.36
 Hamming Loss (↓)            18.64
-Macro F1 (↑)                63.47
-Macro Jaccard (↑)           48.39
-Macro Precision (↑)         68.54
-Macro Recall (↑)            60.42
-Micro F1 (↑)                67
-Micro Jaccard (↑)           50.38
-Micro Precision (↑)         71.28
-Micro Recall (↑)            63.21
+Macro F1 (↑)                63.77
+Macro Jaccard (↑)           48.71
+Macro Precision (↑)         67.89
+Macro Recall (↑)            61.34
+Micro F1 (↑)                67.33
+Micro Jaccard (↑)           50.75
+Micro Precision (↑)         70.83
+Micro Recall (↑)            64.15
 Subset 0/1 Loss (↓)         66.1
 Subset Accuracy (↑)         33.9
 
@@ -326,20 +326,20 @@ Subset Accuracy (↑)         28.81
 Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-10.csv"...
 Evaluation result for test data (Average across 10 folds):
 
-Example-wise F1 (↑)         63.61  ±3.06
-Example-wise Jaccard (↑)    55.96  ±3.31
-Example-wise Precision (↑)  74.48  ±3.19
-Example-wise Recall (↑)     65.18  ±3.70
+Example-wise F1 (↑)         63.72  ±2.96
+Example-wise Jaccard (↑)    56.04  ±3.27
+Example-wise Precision (↑)  74.39  ±3.28
+Example-wise Recall (↑)     65.35  ±3.60
 Hamming Accuracy (↑)        81.62  ±1.43
 Hamming Loss (↓)            18.38  ±1.43
-Macro F1 (↑)                67     ±3.25
-Macro Jaccard (↑)           51.68  ±3.60
-Macro Precision (↑)         73.33  ±4.64
-Macro Recall (↑)            64.49  ±4.53
-Micro F1 (↑)                68.77  ±2.96
-Micro Jaccard (↑)           52.48  ±3.51
-Micro Precision (↑)         72.89  ±3.35
-Micro Recall (↑)            65.24  ±4.19
+Macro F1 (↑)                67.03  ±3.22
+Macro Jaccard (↑)           51.71  ±3.57
+Macro Precision (↑)         73.26  ±4.71
+Macro Recall (↑)            64.58  ±4.46
+Micro F1 (↑)                68.8   ±2.94
+Micro Jaccard (↑)           52.52  ±3.49
+Micro Precision (↑)         72.84  ±3.37
+Micro Recall (↑)            65.34  ±4.15
 Subset 0/1 Loss (↓)         67.62  ±4.18
 Subset Accuracy (↑)         32.38  ±4.18
 
