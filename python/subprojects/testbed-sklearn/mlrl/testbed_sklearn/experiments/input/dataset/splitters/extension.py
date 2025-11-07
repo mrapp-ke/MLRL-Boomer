@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to split datasets into training and test datasets.
 """
 from argparse import Namespace
+from itertools import chain
 from typing import Set, override
 
 from mlrl.testbed_sklearn.experiments.input.dataset.extension import ArffFileExtension
@@ -11,6 +12,9 @@ from mlrl.testbed_sklearn.experiments.input.dataset.preprocessors.extension impo
 from mlrl.testbed_sklearn.experiments.input.dataset.splitters.splitter_bipartition import BipartitionSplitter
 from mlrl.testbed_sklearn.experiments.input.dataset.splitters.splitter_cross_validation import CrossValidationSplitter
 
+from mlrl.testbed.experiments.input.dataset.arguments import DatasetArguments
+from mlrl.testbed.experiments.input.dataset.dataset import InputDataset
+from mlrl.testbed.experiments.input.dataset.reader import DatasetReader
 from mlrl.testbed.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.input.dataset.splitters.splitter_no import NoSplitter
@@ -26,11 +30,13 @@ class DatasetSplitterExtension(Extension):
     An extension that configures the functionality to split tabular datasets into training and test datasets.
     """
 
+    DATASET_READER_EXTENSIONS = [ArffFileExtension()]
+
     def __init__(self, *dependencies: Extension):
         """
         :param dependencies: Other extensions, this extension depends on
         """
-        super().__init__(PreprocessorExtension(), ArffFileExtension(), *dependencies)
+        super().__init__(PreprocessorExtension(), *self.DATASET_READER_EXTENSIONS, *dependencies)
 
     @override
     def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
@@ -69,7 +75,11 @@ class DatasetSplitterExtension(Extension):
         :return:                The `DatasetSplitter` to be used
         """
         if load_dataset:
-            dataset_reader = ArffFileExtension().get_dataset_reader(args)
+            dataset = InputDataset(name=DatasetArguments.DATASET_NAME.get_value(args))
+            sources = chain.from_iterable(
+                extension.create_sources(dataset, args)
+                for extension in DatasetSplitterExtension.DATASET_READER_EXTENSIONS)
+            dataset_reader = DatasetReader(dataset, *sources)
             dataset_reader.add_preprocessors(*PreprocessorExtension.get_preprocessors(args))
         else:
             dataset_reader = None
