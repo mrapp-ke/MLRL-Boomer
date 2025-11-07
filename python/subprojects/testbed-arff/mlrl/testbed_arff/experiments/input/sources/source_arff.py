@@ -7,7 +7,7 @@ import logging as log
 
 from functools import cached_property
 from pathlib import Path
-from typing import Any, List, Optional, Set
+from typing import Any, List, Optional, Set, override
 from xml.dom import minidom
 
 import arff
@@ -53,9 +53,9 @@ class ArffFileSource(DatasetFileSource):
 
         def __init__(self, matrix: sparray, arff_attributes: List[Any], relation: str):
             """
-            param matrix:           The data matrix that is stored in the file
-            param arff_attributes:  The attributes defined in the file
-            param relation:         The @relation declaration contained in the file
+            :param matrix:           The data matrix that is stored in the file
+            :param arff_attributes:  The attributes defined in the file
+            :param relation:         The @relation declaration contained in the file
             """
             self.matrix = matrix
             self.arff_attributes = arff_attributes
@@ -70,7 +70,7 @@ class ArffFileSource(DatasetFileSource):
             :param sparse:      True, if the ARFF file is given in sparse format, False otherwise. If the given format
                                 is incorrect, an `arff.BadLayout` is raised
             :param dtype:       The type of the data matrix to be read from the file
-            :return:            A dictionary that stores the content of the ARFF file
+            :return:            An `ArffFileSource.ArffFile` that has been loaded
             """
             with open_readable_file(file_path) as arff_file:
                 arff_dict = arff.load(arff_file, encode_nominal=True, return_type=arff.COO if sparse else arff.DENSE)
@@ -226,6 +226,7 @@ class ArffFileSource(DatasetFileSource):
         """
         super().__init__(directory=directory, suffix=ArffFileSink.SUFFIX_ARFF)
 
+    @override
     def _read_dataset_from_file(self, state: ExperimentState, file_path: Path,
                                 input_data: DatasetInputData) -> Optional[Dataset]:
         properties = input_data.properties
