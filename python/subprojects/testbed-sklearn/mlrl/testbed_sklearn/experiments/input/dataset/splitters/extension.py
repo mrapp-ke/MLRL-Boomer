@@ -22,7 +22,7 @@ from mlrl.testbed.experiments.input.dataset.splitters.splitter_no import NoSplit
 from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions.extension import Extension
 
-from mlrl.util.cli import Argument
+from mlrl.util.cli import AUTO, Argument, SetArgument
 from mlrl.util.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
 
 
@@ -32,6 +32,12 @@ class DatasetSplitterExtension(Extension):
     """
 
     DATASET_READER_EXTENSIONS: List[DatasetFileExtension] = [ArffFileExtension(), SvmFileExtension()]
+
+    DATASET_FORMAT = SetArgument('--dataset-format',
+                                 default=AUTO,
+                                 values={AUTO}
+                                 | set(map(lambda extension: extension.file_type, DATASET_READER_EXTENSIONS)),
+                                 description='The dataset format to be used.')
 
     def __init__(self, *dependencies: Extension):
         """
@@ -44,7 +50,7 @@ class DatasetSplitterExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return {DatasetSplitterArguments.RANDOM_STATE, DatasetSplitterArguments.DATASET_SPLITTER}
+        return {DatasetSplitterArguments.RANDOM_STATE, DatasetSplitterArguments.DATASET_SPLITTER, self.DATASET_FORMAT}
 
     @override
     def get_supported_modes(self) -> Set[ExperimentMode]:
@@ -77,9 +83,11 @@ class DatasetSplitterExtension(Extension):
         """
         if load_dataset:
             dataset = InputDataset(name=DatasetArguments.DATASET_NAME.get_value(args))
+            dataset_format = DatasetSplitterExtension.DATASET_FORMAT.get_value(args)
             sources = chain.from_iterable(
                 extension.create_sources(dataset, args)
-                for extension in DatasetSplitterExtension.DATASET_READER_EXTENSIONS)
+                for extension in DatasetSplitterExtension.DATASET_READER_EXTENSIONS
+                if dataset_format in {AUTO, extension.file_type})
             dataset_reader = DatasetReader(dataset, *sources)
             dataset_reader.add_preprocessors(*PreprocessorExtension.get_preprocessors(args))
         else:

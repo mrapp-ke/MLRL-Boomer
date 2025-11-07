@@ -3,6 +3,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE]
                     [--config CONFIG] [--separate-folds SEPARATE_FOLDS]
                     [--list] [--runner RUNNER] [--base-dir BASE_DIR]
                     [--create-dirs CREATE_DIRS] [--data-split DATA_SPLIT]
+                    [--dataset-format DATASET_FORMAT]
                     [--if-input-missing IF_INPUT_MISSING]
                     [--if-output-error IF_OUTPUT_ERROR]
                     [--if-outputs-exist IF_OUTPUTS_EXIST]
@@ -104,6 +105,9 @@ options:
                         data into training and test sets. Must be one of
                         {"cross-validation", "none", "train-test"}. For
                         additional options refer to the documentation.
+  --dataset-format DATASET_FORMAT
+                        The dataset format to be used. Must be one of {"arff",
+                        "auto", "svm"}.
   --if-input-missing IF_INPUT_MISSING
                         What to do if an error occurs while reading input
                         data. Must be one of {"exit", "log"}.
