@@ -4,6 +4,35 @@
 
 The package mlrl-testbed is build in a modular fashion. This means that extensions can be used to extend its functionality, including the support for different dataset formats. In the following, the dataset formats supported by these extensions are discussed in detail.
 
+We provide a curated list of supported datasets in [this repository](https://github.com/mrapp-ke/Boomer-Datasets). The datasets included in this repository originate from the following sources:
+
+- The [MEKA](https://waikato.github.io/meka/datasets) project
+- The [MULAN](http://mulan.sourceforge.net/datasets-mlc.html) project
+- The [LIBSVM](https://en.wikipedia.org/wiki/LIBSVM) project
+- The [MLDA](https://www.uco.es/kdis/mllresources) tool for analyzing multi-label datasets
+
+(dataset-format-svm)=
+
+## LIBSVM Format
+
+The LIBSVM dataset format was popularized by the [LIBSVM library](https://en.wikipedia.org/wiki/LIBSVM) and is supported by many machine learning frameworks. Support for this particular dataset format is brought to mlrl-testbed via the package [mlrl-testbed-arff](https://pypi.org/project/mlrl-testbed-arff/) and is implemented via scikit-learn's {py:meth}`sklearn.datasets.load_svmlight_file`. It is a simple plain text format aimed at efficiently storing sparse datasets without unnecessary overhead. Due to its simplicity, it comes with some limitations. For example, unlike the {ref}`ARFF format <dataset-format-arff>`, it does not include any meta-data, such as attribute types or names. For this reason, all features are always interpreted as numerical ones.
+
+Each line in an SVM file corresponds to a particular training or test example. For example, in case of a (multi-label) classification dataset, it can look like this:
+
+```text
+<label-index1>,<label-index2> <feature-index1>:<feature-value1> <feature-index2>:<feature-value2>
+```
+
+The line starts wit a comma-separated list of indices. These indices are the indices of the labels that are relevant to the example. Then, a space-separated list of tuples follows. Each tuple corresponds to a certain feature, identified via an index, and a corresponding value. As SVM files are supposed to encode sparse datasets, irrelevant labels and feature values that are equal to zero are not explicitly stored in the file.
+
+In case of a regression dataset, a single line could look like this:
+
+```text
+<score1>,<score2> <feature-index1>:<feature-value1> <feature-index2>:<feature-value2>
+```
+
+Whereas the features are encoded in the same way as before, the comma-separated list at the start denotes the regression scores corresponding to the example. One score must be given for each available output, i.e., scores that are equal to zero cannot be omitted here.
+
 (dataset-format-arff)=
 
 ## Attribute-Relation File Format (ARFF)
