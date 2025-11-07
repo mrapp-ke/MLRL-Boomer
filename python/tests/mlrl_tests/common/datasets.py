@@ -30,6 +30,8 @@ class Dataset:
 
     LANGLOG = 'langlog'
 
+    YEAST = 'yeast'
+
     BREAST_CANCER = 'breast-cancer'
 
     MEKA = 'meka'
@@ -46,6 +48,8 @@ class Dataset:
 
     ATP7D_MEKA = 'atp7d-meka'
 
+    BODYFAT = 'bodyfat'
+
     HOUSING = 'housing'
 
     default: str = EMOTIONS
@@ -56,3 +60,4 @@ class Dataset:
     ordinal: str = EMOTIONS_ORDINAL
     single_output: str = BREAST_CANCER
     meka: str = MEKA
+    svm: str = YEAST
