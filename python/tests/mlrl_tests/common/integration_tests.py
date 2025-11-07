@@ -156,6 +156,11 @@ class IntegrationTests(ABC):
             .print_evaluation(False)
         CmdRunner(builder).run('meka-format')
 
+    def test_svm_format(self, dataset: Dataset):
+        builder = self._create_cmd_builder(dataset=dataset.svm) \
+            .print_evaluation(False)
+        CmdRunner(builder).run('svm-format')
+
     def test_meta_data(self):
         test_name = 'meta_data'
         builder = self._create_cmd_builder() \

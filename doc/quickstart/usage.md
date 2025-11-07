@@ -121,7 +121,7 @@ In this example, we use the estimator to predict for the same data that has prev
  [0 1]]
 ```
 
-In practice, one usually retrieves the data from files rather than manually specifying the values of the feature and ground truth matrices. A collection of benchmark datasets can be found [here](https://github.com/mrapp-ke/Boomer-Datasets).
+In practice, one usually retrieves the data from files rather than manually specifying the values of the feature and ground truth matrices. Information about supported datasets can be found {ref}`here <testbed-datasets>`.
 
 The argument `x` that must be passed to the `predict` method, has the same semantics as for the `fit` method. It can either be a [numpy array](https://numpy.org/doc/stable/reference/generated/numpy.array.html), an equivalent [array-like](https://scikit-learn.org/stable/glossary.html#term-array-like) data type, or a [scipy sparse matrix](https://docs.scipy.org/doc/scipy/reference/sparse.html). In the latter case, the value that should be used for sparse elements in the feature matrix `x` can be specified via the keyword argument `sparse_feature_value`:
 

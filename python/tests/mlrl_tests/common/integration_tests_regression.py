@@ -26,7 +26,8 @@ class RegressionIntegrationTests(IntegrationTests, ABC):
                        nominal=Dataset.ATP7D_NOMINAL,
                        ordinal=Dataset.ATP7D_ORDINAL,
                        single_output=Dataset.HOUSING,
-                       meka=Dataset.ATP7D_MEKA)
+                       meka=Dataset.ATP7D_MEKA,
+                       svm=Dataset.BODYFAT)
 
     def test_single_output_regression(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.single_output) \
