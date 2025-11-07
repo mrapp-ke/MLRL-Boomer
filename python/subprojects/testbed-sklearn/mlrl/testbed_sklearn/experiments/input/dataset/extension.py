@@ -19,6 +19,9 @@ class ArffFileExtension(DatasetFileExtension):
     An extension that configures the functionality to load datasets from ARFF files.
     """
 
+    def __init__(self):
+        super().__init__(file_type=ArffFileSource.SUFFIX_ARFF)
+
     # pylint: disable=unused-argument
     @override
     def _create_file_sources(self, dataset_directory: Path, dataset: InputDataset,
