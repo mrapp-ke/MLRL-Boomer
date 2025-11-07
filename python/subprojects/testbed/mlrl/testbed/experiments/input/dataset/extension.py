@@ -25,11 +25,13 @@ class DatasetExtension(Extension, ABC):
     An abstract base class for all extensions that configure the functionality to load datasets.
     """
 
-    def __init__(self, *dependencies: Extension):
+    def __init__(self, file_type: str, *dependencies: Extension):
         """
-        :param dependencies: Other extensions, this extension depends on
+        :param file_type:       The file type supported by this extension
+        :param dependencies:    Other extensions, this extension depends on
         """
         super().__init__(InputExtension(), *dependencies)
+        self.file_type = file_type
 
     @override
     def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
