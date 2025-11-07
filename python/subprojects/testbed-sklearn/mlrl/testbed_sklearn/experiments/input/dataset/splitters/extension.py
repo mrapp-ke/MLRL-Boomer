@@ -5,15 +5,16 @@ Provides classes that allow configuring the functionality to split datasets into
 """
 from argparse import Namespace
 from itertools import chain
-from typing import Set, override
+from typing import List, Set, override
 
-from mlrl.testbed_sklearn.experiments.input.dataset.extension import ArffFileExtension
+from mlrl.testbed_sklearn.experiments.input.dataset.extension import ArffFileExtension, SvmFileExtension
 from mlrl.testbed_sklearn.experiments.input.dataset.preprocessors.extension import PreprocessorExtension
 from mlrl.testbed_sklearn.experiments.input.dataset.splitters.splitter_bipartition import BipartitionSplitter
 from mlrl.testbed_sklearn.experiments.input.dataset.splitters.splitter_cross_validation import CrossValidationSplitter
 
 from mlrl.testbed.experiments.input.dataset.arguments import DatasetArguments
 from mlrl.testbed.experiments.input.dataset.dataset import InputDataset
+from mlrl.testbed.experiments.input.dataset.extension import DatasetFileExtension
 from mlrl.testbed.experiments.input.dataset.reader import DatasetReader
 from mlrl.testbed.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
@@ -30,7 +31,7 @@ class DatasetSplitterExtension(Extension):
     An extension that configures the functionality to split tabular datasets into training and test datasets.
     """
 
-    DATASET_READER_EXTENSIONS = [ArffFileExtension()]
+    DATASET_READER_EXTENSIONS: List[DatasetFileExtension] = [ArffFileExtension(), SvmFileExtension()]
 
     def __init__(self, *dependencies: Extension):
         """
