@@ -120,6 +120,12 @@ The following mandatory arguments must always be given to specify the dataset th
 
 Optionally, the following arguments can be used to provide additional information about the dataset.
 
+- `--dataset-format` (Default value = `auto`)
+
+  - `auto` The format of the dataset is determined automatically.
+  - `arff` The dataset is given in the {ref}`ARFF format <dataset-format-arff>`.
+  - `svm` The dataset is given in the {ref}`LibSVM format <dataset-format-svm>`.
+
 - `--sparse-feature-value` (Default value = `0.0`) The value that should be used for sparse elements in the feature matrix. Does only have an effect if a sparse format is used for the representation of the feature matrix, depending on the parameter `--feature-format`.
 
 ### Problem Type
