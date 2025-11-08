@@ -7,7 +7,7 @@ The package mlrl-testbed is build in a modular fashion. This means that extensio
 We provide a curated list of supported datasets in [this repository](https://github.com/mrapp-ke/Boomer-Datasets). The datasets included in this repository originate from the following sources:
 
 - The [MEKA](https://waikato.github.io/meka/datasets) project
-- The [MULAN](http://mulan.sourceforge.net/datasets-mlc.html) project
+- The [MULAN](https://github.com/tsoumakas/mulan) project
 - The [LIBSVM](https://en.wikipedia.org/wiki/LIBSVM) project
 - The [MLDA](https://www.uco.es/kdis/mllresources) tool for analyzing multi-label datasets
 
