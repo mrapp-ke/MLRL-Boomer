@@ -42,6 +42,10 @@ testbed-sklearn:
   - all:
       - changed-files:
           - any-glob-to-any-file: python/subprojects/testbed-sklearn/**
+testbed-slurm:
+  - all:
+      - changed-files:
+          - any-glob-to-any-file: python/subprojects/testbed-slurm/**
 util:
   - all:
       - changed-files:
