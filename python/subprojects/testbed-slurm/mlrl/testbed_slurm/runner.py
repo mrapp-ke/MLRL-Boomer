@@ -186,7 +186,7 @@ class SlurmRunner(BatchMode.Runner):
         return pattern.sub(replacer, str(command))
 
     @staticmethod
-    def __create_sbatch_script(command: Command, config_file: Optional[ConfigFile],
+    def __create_sbatch_script(command: Command, job_name: str, config_file: Optional[ConfigFile],
                                job_array: Optional[JobArray]) -> str:
         command_args = command.to_namespace()
         base_dir = Path(OutputArguments.BASE_DIR.get_value(command_args))
@@ -198,6 +198,7 @@ class SlurmRunner(BatchMode.Runner):
             std_file_name = job_array.file_name_modifier(std_file_name)
 
         content = '#!/bin/sh\n\n'
+        content += '#SBATCH --job-name=' + job_name + '\n'
         content += '#SBATCH --output=' + str(result_dir / f'{std_file_name}.out') + '\n'
         content += '#SBATCH --error=' + str(result_dir / f'{std_file_name}.err') + '\n'
 
@@ -245,11 +246,15 @@ class SlurmRunner(BatchMode.Runner):
 
     @staticmethod
     def __write_sbatch_file(args: Namespace, command: Command, config_file: Optional[ConfigFile],
-                            job_array: Optional[JobArray], file_name: str) -> Path:
-        path = Path(SlurmArguments.SLURM_SAVE_DIR.get_value(args)) / file_name
+                            job_array: Optional[JobArray], job_name: str) -> Path:
+        path = Path(SlurmArguments.SLURM_SAVE_DIR.get_value(args)) / (job_name + '.sh')
 
         with open_writable_file(path) as sbatch_file:
-            sbatch_file.write(SlurmRunner.__create_sbatch_script(command, config_file=config_file, job_array=job_array))
+            sbatch_file.write(
+                SlurmRunner.__create_sbatch_script(command,
+                                                   job_name=job_name,
+                                                   config_file=config_file,
+                                                   job_array=job_array))
 
         return path
 
@@ -349,7 +354,7 @@ class SlurmRunner(BatchMode.Runner):
                                                           command,
                                                           config_file=slurm_config_file,
                                                           job_array=job_array,
-                                                          file_name=f'sbatch_{i + 1}.sh')
+                                                          job_name=f'sbatch_{i + 1}')
 
             if save_file:
                 log.info('Slurm script saved to file "%s"', sbatch_file)
