@@ -21,6 +21,7 @@ from mlrl.testbed_slurm.arguments import SlurmArguments
 from mlrl.testbed_slurm.sbatch import Sbatch
 
 from mlrl.testbed.command import Command
+from mlrl.testbed.experiments.input.dataset.arguments import DatasetArguments
 from mlrl.testbed.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.recipe import Recipe
@@ -349,12 +350,14 @@ class SlurmRunner(BatchMode.Runner):
             job_array = command_or_job_array if isinstance(command_or_job_array, JobArray) else None
             command = job_array.modified_command if job_array else cast(Command, command_or_job_array)
             log.info('\nSubmitting Slurm job (%s / %s): "%s"', i + 1, num_jobs, str(command))
+            dataset_name = DatasetArguments.DATASET_NAME.get_value(command.to_namespace())
+            job_name = dataset_name if dataset_name else 'sbatch'
             slurm_config_file = SlurmRunner.__read_config_file(args)
             sbatch_file = SlurmRunner.__write_sbatch_file(args,
                                                           command,
                                                           config_file=slurm_config_file,
                                                           job_array=job_array,
-                                                          job_name=f'sbatch_{i + 1}')
+                                                          job_name=f'{job_name}_{i + 1}')
 
             if save_file:
                 log.info('Slurm script saved to file "%s"', sbatch_file)
