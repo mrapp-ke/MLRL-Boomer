@@ -21,6 +21,7 @@ from mlrl.testbed_slurm.arguments import SlurmArguments
 from mlrl.testbed_slurm.sbatch import Sbatch
 
 from mlrl.testbed.command import Command
+from mlrl.testbed.experiments.input.dataset.arguments import DatasetArguments
 from mlrl.testbed.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.recipe import Recipe
@@ -186,7 +187,7 @@ class SlurmRunner(BatchMode.Runner):
         return pattern.sub(replacer, str(command))
 
     @staticmethod
-    def __create_sbatch_script(command: Command, config_file: Optional[ConfigFile],
+    def __create_sbatch_script(command: Command, job_name: str, config_file: Optional[ConfigFile],
                                job_array: Optional[JobArray]) -> str:
         command_args = command.to_namespace()
         base_dir = Path(OutputArguments.BASE_DIR.get_value(command_args))
@@ -198,6 +199,7 @@ class SlurmRunner(BatchMode.Runner):
             std_file_name = job_array.file_name_modifier(std_file_name)
 
         content = '#!/bin/sh\n\n'
+        content += '#SBATCH --job-name=' + job_name + '\n'
         content += '#SBATCH --output=' + str(result_dir / f'{std_file_name}.out') + '\n'
         content += '#SBATCH --error=' + str(result_dir / f'{std_file_name}.err') + '\n'
 
@@ -245,11 +247,15 @@ class SlurmRunner(BatchMode.Runner):
 
     @staticmethod
     def __write_sbatch_file(args: Namespace, command: Command, config_file: Optional[ConfigFile],
-                            job_array: Optional[JobArray], file_name: str) -> Path:
-        path = Path(SlurmArguments.SLURM_SAVE_DIR.get_value(args)) / file_name
+                            job_array: Optional[JobArray], job_name: str) -> Path:
+        path = Path(SlurmArguments.SLURM_SAVE_DIR.get_value(args)) / (job_name + '.sh')
 
         with open_writable_file(path) as sbatch_file:
-            sbatch_file.write(SlurmRunner.__create_sbatch_script(command, config_file=config_file, job_array=job_array))
+            sbatch_file.write(
+                SlurmRunner.__create_sbatch_script(command,
+                                                   job_name=job_name,
+                                                   config_file=config_file,
+                                                   job_array=job_array))
 
         return path
 
@@ -344,12 +350,14 @@ class SlurmRunner(BatchMode.Runner):
             job_array = command_or_job_array if isinstance(command_or_job_array, JobArray) else None
             command = job_array.modified_command if job_array else cast(Command, command_or_job_array)
             log.info('\nSubmitting Slurm job (%s / %s): "%s"', i + 1, num_jobs, str(command))
+            dataset_name = DatasetArguments.DATASET_NAME.get_value(command.to_namespace())
+            job_name = dataset_name if dataset_name else 'sbatch'
             slurm_config_file = SlurmRunner.__read_config_file(args)
             sbatch_file = SlurmRunner.__write_sbatch_file(args,
                                                           command,
                                                           config_file=slurm_config_file,
                                                           job_array=job_array,
-                                                          file_name=f'sbatch_{i + 1}.sh')
+                                                          job_name=f'{job_name}_{i + 1}')
 
             if save_file:
                 log.info('Slurm script saved to file "%s"', sbatch_file)
