@@ -35,6 +35,7 @@ class Measure(OutputValue):
         super().__init__(option_key=option_key,
                          name=name + ' (' + ('↓' if smaller_is_better else '↑') + ')',
                          percentage=percentage)
+        self.unformatted_name = name
         self.evaluation_function = evaluation_function
         self.smaller_is_better = smaller_is_better
         self.kwargs = kwargs
