@@ -11,6 +11,10 @@ from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_classification
     ClassificationEvaluationDataExtractor
 from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_ranking import RankingEvaluationDataExtractor
 from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_regression import RegressionEvaluationDataExtractor
+from mlrl.testbed_sklearn.experiments.output.evaluation.measures_classification import \
+    MULTI_LABEL_EVALUATION_MEASURES, SINGLE_LABEL_EVALUATION_MEASURES
+from mlrl.testbed_sklearn.experiments.output.evaluation.measures_ranking import RANKING_EVALUATION_MEASURES
+from mlrl.testbed_sklearn.experiments.output.evaluation.measures_regression import REGRESSION_EVALUATION_MEASURES
 from mlrl.testbed_sklearn.experiments.output.evaluation.writer import EvaluationWriter
 
 from mlrl.testbed.experiments.experiment import Experiment
@@ -37,41 +41,9 @@ class EvaluationExtension(Extension):
         required=AggregatedEvaluationExtension.PRINT_EVALUATION.required,
         default=AggregatedEvaluationExtension.PRINT_EVALUATION.default,
         description='Whether the evaluation results should be printed on the console or not.',
-        true_options={
-            EvaluationResult.OPTION_HAMMING_LOSS,
-            EvaluationResult.OPTION_HAMMING_ACCURACY,
-            EvaluationResult.OPTION_SUBSET_ZERO_ONE_LOSS,
-            EvaluationResult.OPTION_SUBSET_ACCURACY,
-            EvaluationResult.OPTION_MICRO_PRECISION,
-            EvaluationResult.OPTION_MICRO_RECALL,
-            EvaluationResult.OPTION_MICRO_F1,
-            EvaluationResult.OPTION_MICRO_JACCARD,
-            EvaluationResult.OPTION_MACRO_PRECISION,
-            EvaluationResult.OPTION_MACRO_RECALL,
-            EvaluationResult.OPTION_MACRO_F1,
-            EvaluationResult.OPTION_MACRO_JACCARD,
-            EvaluationResult.OPTION_EXAMPLE_WISE_PRECISION,
-            EvaluationResult.OPTION_EXAMPLE_WISE_RECALL,
-            EvaluationResult.OPTION_EXAMPLE_WISE_F1,
-            EvaluationResult.OPTION_EXAMPLE_WISE_JACCARD,
-            EvaluationResult.OPTION_ACCURACY,
-            EvaluationResult.OPTION_ZERO_ONE_LOSS,
-            EvaluationResult.OPTION_PRECISION,
-            EvaluationResult.OPTION_RECALL,
-            EvaluationResult.OPTION_F1,
-            EvaluationResult.OPTION_JACCARD,
-            EvaluationResult.OPTION_MEAN_ABSOLUTE_ERROR,
-            EvaluationResult.OPTION_MEAN_SQUARED_ERROR,
-            EvaluationResult.OPTION_MEDIAN_ABSOLUTE_ERROR,
-            EvaluationResult.OPTION_MEAN_ABSOLUTE_PERCENTAGE_ERROR,
-            EvaluationResult.OPTION_RANK_LOSS,
-            EvaluationResult.OPTION_COVERAGE_ERROR,
-            EvaluationResult.OPTION_LABEL_RANKING_AVERAGE_PRECISION,
-            EvaluationResult.OPTION_DISCOUNTED_CUMULATIVE_GAIN,
-            EvaluationResult.OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN,
-            EvaluationResult.OPTION_TRAINING_TIME,
-            EvaluationResult.OPTION_PREDICTION_TIME,
-        } | (AggregatedEvaluationExtension.PRINT_EVALUATION.true_options or set()),
+        true_options=set(RANKING_EVALUATION_MEASURES) | set(REGRESSION_EVALUATION_MEASURES)
+        | set(MULTI_LABEL_EVALUATION_MEASURES) | set(SINGLE_LABEL_EVALUATION_MEASURES) |
+        (AggregatedEvaluationExtension.PRINT_EVALUATION.true_options or set()),
         false_options=AggregatedEvaluationExtension.PRINT_EVALUATION.false_options,
     )
 
@@ -80,24 +52,9 @@ class EvaluationExtension(Extension):
         required=AggregatedEvaluationExtension.SAVE_EVALUATION.required,
         default=AggregatedEvaluationExtension.SAVE_EVALUATION.default,
         description='Whether evaluation results should be written to output files or not.',
-        true_options={
-            EvaluationResult.OPTION_HAMMING_LOSS, EvaluationResult.OPTION_HAMMING_ACCURACY,
-            EvaluationResult.OPTION_SUBSET_ZERO_ONE_LOSS, EvaluationResult.OPTION_SUBSET_ACCURACY,
-            EvaluationResult.OPTION_MICRO_PRECISION, EvaluationResult.OPTION_MICRO_RECALL,
-            EvaluationResult.OPTION_MICRO_F1, EvaluationResult.OPTION_MICRO_JACCARD,
-            EvaluationResult.OPTION_MACRO_PRECISION, EvaluationResult.OPTION_MACRO_RECALL,
-            EvaluationResult.OPTION_MACRO_F1, EvaluationResult.OPTION_MACRO_JACCARD,
-            EvaluationResult.OPTION_EXAMPLE_WISE_PRECISION, EvaluationResult.OPTION_EXAMPLE_WISE_RECALL,
-            EvaluationResult.OPTION_EXAMPLE_WISE_F1, EvaluationResult.OPTION_EXAMPLE_WISE_JACCARD,
-            EvaluationResult.OPTION_ACCURACY, EvaluationResult.OPTION_ZERO_ONE_LOSS, EvaluationResult.OPTION_PRECISION,
-            EvaluationResult.OPTION_RECALL, EvaluationResult.OPTION_F1, EvaluationResult.OPTION_JACCARD,
-            EvaluationResult.OPTION_MEAN_ABSOLUTE_ERROR, EvaluationResult.OPTION_MEAN_SQUARED_ERROR,
-            EvaluationResult.OPTION_MEDIAN_ABSOLUTE_ERROR, EvaluationResult.OPTION_MEAN_ABSOLUTE_PERCENTAGE_ERROR,
-            EvaluationResult.OPTION_RANK_LOSS, EvaluationResult.OPTION_COVERAGE_ERROR,
-            EvaluationResult.OPTION_LABEL_RANKING_AVERAGE_PRECISION, EvaluationResult.OPTION_DISCOUNTED_CUMULATIVE_GAIN,
-            EvaluationResult.OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, EvaluationResult.OPTION_TRAINING_TIME,
-            EvaluationResult.OPTION_PREDICTION_TIME
-        } | (AggregatedEvaluationExtension.SAVE_EVALUATION.true_options or set()),
+        true_options=set(RANKING_EVALUATION_MEASURES) | set(REGRESSION_EVALUATION_MEASURES)
+        | set(MULTI_LABEL_EVALUATION_MEASURES) | set(SINGLE_LABEL_EVALUATION_MEASURES) |
+        (AggregatedEvaluationExtension.SAVE_EVALUATION.true_options or set()),
         false_options=AggregatedEvaluationExtension.SAVE_EVALUATION.false_options,
     )
 
