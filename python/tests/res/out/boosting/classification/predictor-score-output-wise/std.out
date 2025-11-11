@@ -16,13 +16,13 @@ Successfully predicted in <duration>
 Evaluation result for test data:
 
 Coverage Error (↓)                    2.69
-Discounted Cumulative Gain (↑)        1.39
+DCG (↑)                               1.39         DCG@1:    0.76  DCG@2:    1.14  DCG@3:    1.29  DCG@5:    1.38  DCG@8:    1.39
 Label Ranking Average Precision (↑)   0.83
 Mean Absolute Error (↓)               4.29
 Mean Absolute Percentage Error (↓)    1.53277e+16
 Mean Squared Error (↓)               27.2
 Median Absolute Error (↓)             3.91
-NDCG (↑)                             88.64
+NDCG (↑)                             88.64         NDCG@1:  76.02  NDCG@2:  77.19  NDCG@3:  82.76  NDCG@5:  87.77  NDCG@8:  88.64
 Ranking Loss (↓)                      0.14
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
