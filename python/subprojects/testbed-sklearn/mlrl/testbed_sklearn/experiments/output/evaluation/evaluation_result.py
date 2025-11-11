@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing evaluation results that are part of output data.
 """
 from itertools import tee
-from typing import Optional, override
+from typing import Any, Dict, List, Optional, Tuple, override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
@@ -104,6 +104,9 @@ class EvaluationResult(TabularOutputData):
         self.get_context(CsvFileSink).include_prediction_scope = False
         self.measurements = measurements
 
+    def __get_unformatted_header(self, header: Any) -> str:
+        return str(header).rstrip('(↑)').rstrip('(↓)').rstrip()
+
     @override
     def to_text(self, options: Options, **kwargs) -> Optional[str]:
         """
@@ -114,22 +117,36 @@ class EvaluationResult(TabularOutputData):
 
         if table:
             header_row = table.header_row
-            first_row = next(table.rows)
             fold = kwargs.get(self.KWARG_FOLD)
-            rotated_table = RowWiseTable()
+            variants_by_measure: Dict[str, List[Tuple[str, int]]] = {}
 
             for column_index in range(0, table.num_columns, 2 if fold is None else 1):
                 header = header_row[column_index] if header_row else None
 
                 if not header or header.option_key not in {self.OPTION_TRAINING_TIME, self.OPTION_PREDICTION_TIME}:
-                    value = first_row[column_index]
-                    new_row = [header, value] if header else [value]
+                    measure_name = self.__get_unformatted_header(header)
+                    at_index = measure_name.find('@')
+
+                    if at_index >= 0:
+                        measure_name = measure_name[:at_index]
+
+                    variants_by_measure.setdefault(measure_name, []).append((measure_name, column_index))
+
+            first_row = next(table.rows)
+            rotated_table = RowWiseTable()
+
+            for measure_name, variants in variants_by_measure.items():
+                new_row: List[Any] = []
+
+                for _, column_index in sorted(variants, key=lambda x: x[0]):
+                    header = header_row[column_index] if header_row else None
+                    new_row.append(self.__get_unformatted_header(header) + ':' if header and new_row else header)
+                    new_row.append(first_row[column_index])
 
                     if fold is None:
-                        std_dev = '±' + first_row[column_index + 1]
-                        new_row.append(std_dev)
+                        new_row.append('±' + first_row[column_index + 1])
 
-                    rotated_table.add_row(*new_row)
+                rotated_table.add_row(*new_row)
 
             return rotated_table.sort_by_columns(0).format()
 
