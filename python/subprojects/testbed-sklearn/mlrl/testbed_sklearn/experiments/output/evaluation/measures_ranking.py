@@ -34,6 +34,7 @@ def at_k(measure: Measure) -> Generator[Measure, None, None]:
             **{'k': k},
         )
 
+
 RANKING_EVALUATION_MEASURES = [
     Measure(
         option_key=EvaluationResult.OPTION_RANK_LOSS,
@@ -68,7 +69,7 @@ RANKING_EVALUATION_MEASURES = [
         at_k(
             Measure(
                 option_key=EvaluationResult.OPTION_DISCOUNTED_CUMULATIVE_GAIN,
-                name='Discounted Cumulative Gain',
+                name='DCG',
                 evaluation_function=metrics.dcg_score,
                 percentage=False,
             )),
