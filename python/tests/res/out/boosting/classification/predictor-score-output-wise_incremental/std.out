@@ -16,13 +16,13 @@ Successfully predicted in <duration>
 Evaluation result for test data using a model of size 50:
 
 Coverage Error (↓)                    2.81
-Discounted Cumulative Gain (↑)        1.38
+DCG (↑)                               1.38         DCG@1:    0.75  DCG@2:    1.09  DCG@3:    1.27  DCG@5:    1.36  DCG@8:    1.38
 Label Ranking Average Precision (↑)   0.81
 Mean Absolute Error (↓)               1.66
 Mean Absolute Percentage Error (↓)    5.81937e+15
 Mean Squared Error (↓)                4.02
 Median Absolute Error (↓)             1.5
-NDCG (↑)                             87.61
+NDCG (↑)                             87.61         NDCG@1:  75     NDCG@2:  74.72  NDCG@3:  80.64  NDCG@5:  86.78  NDCG@8:  87.61
 Ranking Loss (↓)                      0.15
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
@@ -31,13 +31,13 @@ Successfully predicted in <duration>
 Evaluation result for test data using a model of size 100:
 
 Coverage Error (↓)                    2.81
-Discounted Cumulative Gain (↑)        1.37
+DCG (↑)                               1.37         DCG@1:    0.73  DCG@2:    1.09  DCG@3:    1.25  DCG@5:    1.36  DCG@8:    1.37
 Label Ranking Average Precision (↑)   0.81
 Mean Absolute Error (↓)               1.98
 Mean Absolute Percentage Error (↓)    7.05439e+15
 Mean Squared Error (↓)                5.87
 Median Absolute Error (↓)             1.73
-NDCG (↑)                             87.14
+NDCG (↑)                             87.14         NDCG@1:  72.96  NDCG@2:  74.28  NDCG@3:  79.61  NDCG@5:  86.5   NDCG@8:  87.14
 Ranking Loss (↓)                      0.16
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
@@ -46,13 +46,13 @@ Successfully predicted in <duration>
 Evaluation result for test data using a model of size 150:
 
 Coverage Error (↓)                    2.76
-Discounted Cumulative Gain (↑)        1.38
+DCG (↑)                               1.38         DCG@1:    0.74  DCG@2:    1.12  DCG@3:    1.27  DCG@5:    1.37  DCG@8:    1.38
 Label Ranking Average Precision (↑)   0.82
 Mean Absolute Error (↓)               2.2
 Mean Absolute Percentage Error (↓)    7.85771e+15
 Mean Squared Error (↓)                7.24
 Median Absolute Error (↓)             1.93
-NDCG (↑)                             87.74
+NDCG (↑)                             87.74         NDCG@1:  74.49  NDCG@2:  75.66  NDCG@3:  80.89  NDCG@5:  86.88  NDCG@8:  87.74
 Ranking Loss (↓)                      0.15
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
@@ -61,13 +61,13 @@ Successfully predicted in <duration>
 Evaluation result for test data using a model of size 200:
 
 Coverage Error (↓)                    2.74
-Discounted Cumulative Gain (↑)        1.38
+DCG (↑)                               1.38         DCG@1:    0.74  DCG@2:    1.11  DCG@3:    1.28  DCG@5:    1.37  DCG@8:    1.38
 Label Ranking Average Precision (↑)   0.82
 Mean Absolute Error (↓)               2.4
 Mean Absolute Percentage Error (↓)    8.62687e+15
 Mean Squared Error (↓)                8.72
 Median Absolute Error (↓)             2.17
-NDCG (↑)                             87.71
+NDCG (↑)                             87.71         NDCG@1:  73.98  NDCG@2:  75.1   NDCG@3:  81.37  NDCG@5:  86.85  NDCG@8:  87.71
 Ranking Loss (↓)                      0.15
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
@@ -76,13 +76,13 @@ Successfully predicted in <duration>
 Evaluation result for test data using a model of size 250:
 
 Coverage Error (↓)                    2.71
-Discounted Cumulative Gain (↑)        1.39
+DCG (↑)                               1.39         DCG@1:    0.76  DCG@2:    1.11  DCG@3:    1.29  DCG@5:    1.37  DCG@8:    1.39
 Label Ranking Average Precision (↑)   0.83
 Mean Absolute Error (↓)               2.59
 Mean Absolute Percentage Error (↓)    9.29028e+15
 Mean Squared Error (↓)               10.14
 Median Absolute Error (↓)             2.29
-NDCG (↑)                             88.2
+NDCG (↑)                             88.2          NDCG@1:  75.51  NDCG@2:  75.52  NDCG@3:  82.13  NDCG@5:  87.34  NDCG@8:  88.2
 Ranking Loss (↓)                      0.14
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
@@ -91,13 +91,13 @@ Successfully predicted in <duration>
 Evaluation result for test data using a model of size 300:
 
 Coverage Error (↓)                    2.74
-Discounted Cumulative Gain (↑)        1.39
+DCG (↑)                               1.39         DCG@1:    0.77  DCG@2:    1.11  DCG@3:    1.27  DCG@5:    1.37  DCG@8:    1.39
 Label Ranking Average Precision (↑)   0.82
 Mean Absolute Error (↓)               2.77
 Mean Absolute Percentage Error (↓)    9.90922e+15
 Mean Squared Error (↓)               11.55
 Median Absolute Error (↓)             2.45
-NDCG (↑)                             88.27
+NDCG (↑)                             88.27         NDCG@1:  77.04  NDCG@2:  75.08  NDCG@3:  81.12  NDCG@5:  87.51  NDCG@8:  88.27
 Ranking Loss (↓)                      0.15
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
@@ -106,13 +106,13 @@ Successfully predicted in <duration>
 Evaluation result for test data using a model of size 350:
 
 Coverage Error (↓)                    2.73
-Discounted Cumulative Gain (↑)        1.39
+DCG (↑)                               1.39         DCG@1:    0.78  DCG@2:    1.12  DCG@3:    1.29  DCG@5:    1.37  DCG@8:    1.39
 Label Ranking Average Precision (↑)   0.83
 Mean Absolute Error (↓)               2.94
 Mean Absolute Percentage Error (↓)    1.05565e+16
 Mean Squared Error (↓)               13.07
 Median Absolute Error (↓)             2.55
-NDCG (↑)                             88.68
+NDCG (↑)                             88.68         NDCG@1:  77.55  NDCG@2:  76.18  NDCG@3:  82.12  NDCG@5:  87.59  NDCG@8:  88.68
 Ranking Loss (↓)                      0.14
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
@@ -121,13 +121,13 @@ Successfully predicted in <duration>
 Evaluation result for test data using a model of size 400:
 
 Coverage Error (↓)                    2.71
-Discounted Cumulative Gain (↑)        1.4
+DCG (↑)                               1.4          DCG@1:    0.78  DCG@2:    1.13  DCG@3:    1.29  DCG@5:    1.38  DCG@8:    1.4
 Label Ranking Average Precision (↑)   0.83
 Mean Absolute Error (↓)               3.08
 Mean Absolute Percentage Error (↓)    1.10525e+16
 Mean Squared Error (↓)               14.32
 Median Absolute Error (↓)             2.74
-NDCG (↑)                             88.89
+NDCG (↑)                             88.89         NDCG@1:  77.55  NDCG@2:  77.09  NDCG@3:  82.47  NDCG@5:  87.92  NDCG@8:  88.89
 Ranking Loss (↓)                      0.14
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
@@ -136,13 +136,13 @@ Successfully predicted in <duration>
 Evaluation result for test data using a model of size 450:
 
 Coverage Error (↓)                    2.71
-Discounted Cumulative Gain (↑)        1.39
+DCG (↑)                               1.39         DCG@1:    0.77  DCG@2:    1.14  DCG@3:    1.29  DCG@5:    1.37  DCG@8:    1.39
 Label Ranking Average Precision (↑)   0.83
 Mean Absolute Error (↓)               3.23
 Mean Absolute Percentage Error (↓)    1.15964e+16
 Mean Squared Error (↓)               15.71
 Median Absolute Error (↓)             2.86
-NDCG (↑)                             88.83
+NDCG (↑)                             88.83         NDCG@1:  77.04  NDCG@2:  77.5   NDCG@3:  82.34  NDCG@5:  87.63  NDCG@8:  88.83
 Ranking Loss (↓)                      0.14
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
@@ -151,13 +151,13 @@ Successfully predicted in <duration>
 Evaluation result for test data using a model of size 500:
 
 Coverage Error (↓)                    2.72
-Discounted Cumulative Gain (↑)        1.39
+DCG (↑)                               1.39         DCG@1:    0.78  DCG@2:    1.13  DCG@3:    1.29  DCG@5:    1.38  DCG@8:    1.39
 Label Ranking Average Precision (↑)   0.83
 Mean Absolute Error (↓)               3.38
 Mean Absolute Percentage Error (↓)    1.21095e+16
 Mean Squared Error (↓)               17.06
 Median Absolute Error (↓)             3.04
-NDCG (↑)                             88.73
+NDCG (↑)                             88.73         NDCG@1:  77.55  NDCG@2:  76.82  NDCG@3:  82.24  NDCG@5:  87.64  NDCG@8:  88.73
 Ranking Loss (↓)                      0.14
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
@@ -166,13 +166,13 @@ Successfully predicted in <duration>
 Evaluation result for test data using a model of size 550:
 
 Coverage Error (↓)                    2.72
-Discounted Cumulative Gain (↑)        1.39
+DCG (↑)                               1.39         DCG@1:    0.77  DCG@2:    1.12  DCG@3:    1.29  DCG@5:    1.38  DCG@8:    1.39
 Label Ranking Average Precision (↑)   0.83
 Mean Absolute Error (↓)               3.49
 Mean Absolute Percentage Error (↓)    1.24866e+16
 Mean Squared Error (↓)               18.12
 Median Absolute Error (↓)             3.13
-NDCG (↑)                             88.47
+NDCG (↑)                             88.47         NDCG@1:  77.04  NDCG@2:  76.11  NDCG@3:  82.06  NDCG@5:  87.72  NDCG@8:  88.47
 Ranking Loss (↓)                      0.14
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
@@ -181,13 +181,13 @@ Successfully predicted in <duration>
 Evaluation result for test data using a model of size 600:
 
 Coverage Error (↓)                    2.7
-Discounted Cumulative Gain (↑)        1.39
+DCG (↑)                               1.39         DCG@1:    0.77  DCG@2:    1.13  DCG@3:    1.3  DCG@5:    1.38  DCG@8:    1.39
 Label Ranking Average Precision (↑)   0.83
 Mean Absolute Error (↓)               3.63
 Mean Absolute Percentage Error (↓)    1.29948e+16
 Mean Squared Error (↓)               19.61
 Median Absolute Error (↓)             3.25
-NDCG (↑)                             88.6
+NDCG (↑)                             88.6          NDCG@1:  76.53  NDCG@2:  76.91  NDCG@3:  82.6  NDCG@5:  87.85  NDCG@8:  88.6
 Ranking Loss (↓)                      0.14
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
@@ -196,13 +196,13 @@ Successfully predicted in <duration>
 Evaluation result for test data using a model of size 650:
 
 Coverage Error (↓)                    2.72
-Discounted Cumulative Gain (↑)        1.39
+DCG (↑)                               1.39         DCG@1:    0.77  DCG@2:    1.13  DCG@3:    1.29  DCG@5:    1.38  DCG@8:    1.39
 Label Ranking Average Precision (↑)   0.83
 Mean Absolute Error (↓)               3.73
 Mean Absolute Percentage Error (↓)    1.33519e+16
 Mean Squared Error (↓)               20.68
 Median Absolute Error (↓)             3.33
-NDCG (↑)                             88.53
+NDCG (↑)                             88.53         NDCG@1:  76.53  NDCG@2:  76.72  NDCG@3:  82.27  NDCG@5:  87.67  NDCG@8:  88.53
 Ranking Loss (↓)                      0.14
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
@@ -211,13 +211,13 @@ Successfully predicted in <duration>
 Evaluation result for test data using a model of size 700:
 
 Coverage Error (↓)                    2.72
-Discounted Cumulative Gain (↑)        1.39
+DCG (↑)                               1.39         DCG@1:    0.77  DCG@2:    1.12  DCG@3:    1.29  DCG@5:    1.38  DCG@8:    1.39
 Label Ranking Average Precision (↑)   0.83
 Mean Absolute Error (↓)               3.83
 Mean Absolute Percentage Error (↓)    1.37009e+16
 Mean Squared Error (↓)               21.76
 Median Absolute Error (↓)             3.42
-NDCG (↑)                             88.43
+NDCG (↑)                             88.43         NDCG@1:  76.53  NDCG@2:  76.2   NDCG@3:  82.21  NDCG@5:  87.56  NDCG@8:  88.43
 Ranking Loss (↓)                      0.14
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
@@ -226,13 +226,13 @@ Successfully predicted in <duration>
 Evaluation result for test data using a model of size 750:
 
 Coverage Error (↓)                    2.69
-Discounted Cumulative Gain (↑)        1.39
+DCG (↑)                               1.39         DCG@1:    0.76  DCG@2:    1.13  DCG@3:    1.29  DCG@5:    1.38  DCG@8:    1.39
 Label Ranking Average Precision (↑)   0.83
 Mean Absolute Error (↓)               3.92
 Mean Absolute Percentage Error (↓)    1.40069e+16
 Mean Squared Error (↓)               22.71
 Median Absolute Error (↓)             3.52
-NDCG (↑)                             88.56
+NDCG (↑)                             88.56         NDCG@1:  76.02  NDCG@2:  77     NDCG@3:  82.46  NDCG@5:  87.81  NDCG@8:  88.56
 Ranking Loss (↓)                      0.14
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
@@ -241,13 +241,13 @@ Successfully predicted in <duration>
 Evaluation result for test data using a model of size 800:
 
 Coverage Error (↓)                    2.71
-Discounted Cumulative Gain (↑)        1.39
+DCG (↑)                               1.39         DCG@1:    0.77  DCG@2:    1.13  DCG@3:    1.29  DCG@5:    1.38  DCG@8:    1.39
 Label Ranking Average Precision (↑)   0.83
 Mean Absolute Error (↓)               4
 Mean Absolute Percentage Error (↓)    1.43141e+16
 Mean Squared Error (↓)               23.72
 Median Absolute Error (↓)             3.58
-NDCG (↑)                             88.71
+NDCG (↑)                             88.71         NDCG@1:  77.04  NDCG@2:  77.03  NDCG@3:  82.71  NDCG@5:  87.85  NDCG@8:  88.71
 Ranking Loss (↓)                      0.14
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
@@ -256,13 +256,13 @@ Successfully predicted in <duration>
 Evaluation result for test data using a model of size 850:
 
 Coverage Error (↓)                    2.71
-Discounted Cumulative Gain (↑)        1.39
+DCG (↑)                               1.39         DCG@1:    0.76  DCG@2:    1.13  DCG@3:    1.29  DCG@5:    1.38  DCG@8:    1.39
 Label Ranking Average Precision (↑)   0.83
 Mean Absolute Error (↓)               4.07
 Mean Absolute Percentage Error (↓)    1.45708e+16
 Mean Squared Error (↓)               24.57
 Median Absolute Error (↓)             3.66
-NDCG (↑)                             88.5
+NDCG (↑)                             88.5          NDCG@1:  76.02  NDCG@2:  76.8   NDCG@3:  82.35  NDCG@5:  87.64  NDCG@8:  88.5
 Ranking Loss (↓)                      0.14
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
@@ -271,13 +271,13 @@ Successfully predicted in <duration>
 Evaluation result for test data using a model of size 900:
 
 Coverage Error (↓)                    2.69
-Discounted Cumulative Gain (↑)        1.39
+DCG (↑)                               1.39         DCG@1:    0.76  DCG@2:    1.13  DCG@3:    1.29  DCG@5:    1.38  DCG@8:    1.39
 Label Ranking Average Precision (↑)   0.83
 Mean Absolute Error (↓)               4.15
 Mean Absolute Percentage Error (↓)    1.48235e+16
 Mean Squared Error (↓)               25.44
 Median Absolute Error (↓)             3.73
-NDCG (↑)                             88.47
+NDCG (↑)                             88.47         NDCG@1:  75.51  NDCG@2:  76.88  NDCG@3:  82.6   NDCG@5:  87.6   NDCG@8:  88.47
 Ranking Loss (↓)                      0.14
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
@@ -286,13 +286,13 @@ Successfully predicted in <duration>
 Evaluation result for test data using a model of size 950:
 
 Coverage Error (↓)                    2.69
-Discounted Cumulative Gain (↑)        1.39
+DCG (↑)                               1.39         DCG@1:    0.76  DCG@2:    1.13  DCG@3:    1.3   DCG@5:    1.38  DCG@8:    1.39
 Label Ranking Average Precision (↑)   0.83
 Mean Absolute Error (↓)               4.23
 Mean Absolute Percentage Error (↓)    1.51141e+16
 Mean Squared Error (↓)               26.43
 Median Absolute Error (↓)             3.81
-NDCG (↑)                             88.56
+NDCG (↑)                             88.56         NDCG@1:  76.02  NDCG@2:  76.8   NDCG@3:  82.79  NDCG@5:  87.69  NDCG@8:  88.56
 Ranking Loss (↓)                      0.14
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
@@ -301,13 +301,13 @@ Successfully predicted in <duration>
 Evaluation result for test data using a model of size 1000:
 
 Coverage Error (↓)                    2.69
-Discounted Cumulative Gain (↑)        1.39
+DCG (↑)                               1.39         DCG@1:    0.76  DCG@2:    1.14  DCG@3:    1.29  DCG@5:    1.38  DCG@8:    1.39
 Label Ranking Average Precision (↑)   0.83
 Mean Absolute Error (↓)               4.29
 Mean Absolute Percentage Error (↓)    1.53277e+16
 Mean Squared Error (↓)               27.2
 Median Absolute Error (↓)             3.91
-NDCG (↑)                             88.64
+NDCG (↑)                             88.64         NDCG@1:  76.02  NDCG@2:  77.19  NDCG@3:  82.76  NDCG@5:  87.77  NDCG@8:  88.64
 Ranking Loss (↓)                      0.14
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
