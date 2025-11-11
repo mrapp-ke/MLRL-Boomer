@@ -18,13 +18,13 @@ Successfully predicted in <duration>
 Evaluation result for test data:
 
 Coverage Error (↓)                    2.83
-Discounted Cumulative Gain (↑)        1.36
+DCG (↑)                               1.36         DCG@1:    0.7  DCG@2:    1.08  DCG@3:    1.26  DCG@5:    1.34  DCG@8:    1.36
 Label Ranking Average Precision (↑)   0.8
 Mean Absolute Error (↓)               0.28
 Mean Absolute Percentage Error (↓)    6.96985e+14
 Mean Squared Error (↓)                0.14
 Median Absolute Error (↓)             0.22
-NDCG (↑)                             86.27
+NDCG (↑)                             86.27         NDCG@1:  69.9  NDCG@2:  73.15  NDCG@3:  80.17  NDCG@5:  85.21  NDCG@8:  86.27
 Ranking Loss (↓)                      0.16
 
 Ground truth for test data:

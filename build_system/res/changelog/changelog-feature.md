@@ -5,6 +5,7 @@
 - Experiments are now canceled by default if all of their output files do already exist. This behavior can be adjusted via the newly added argument `--if-outputs-exist`.
 - Default arguments can now be defined in the YAML configuration required by mlrl-testbed's batch mode.
 - Support for datasets in the LibSVM format has been added to the package mlrl-testbed-sklearn.
+- The ranking measures DCG@k and DCG@k with predefined values for k have been added to mlrl-testbed-sklearn.
 - The command line argument `--dataset-format` has been added. It allows to explicitly specify the format of a dataset to be loaded.
 - The command line argument `--if-input-missing` has been added. It allows to exit the program mlrl-testbed if any error occurs while reading input data. The argument `--exit-on-error` has been replaced with a similar argument `--if-output-error`.
 - The command line argument `--print-meta-data` has been added. It allows to print the meta-data of an experiment on the console.
