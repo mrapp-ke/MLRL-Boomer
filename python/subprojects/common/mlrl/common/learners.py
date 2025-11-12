@@ -87,6 +87,7 @@ class SparsePolicy(StrEnum):
                          + str(sparse_format) + '"')
 
 
+# pylint: disable=no-member
 class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, ABC):
     """
     A scikit-learn implementation of a rule learning algorithm.
@@ -184,7 +185,6 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         self.feature_format = feature_format
         self.output_format = output_format
         self.prediction_format = prediction_format
-        self.model_: Optional[Any] = None
 
     # pylint: disable=attribute-defined-outside-init
     def _fit(self, x, y, **kwargs):
