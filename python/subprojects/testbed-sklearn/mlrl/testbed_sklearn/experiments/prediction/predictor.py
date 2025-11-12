@@ -8,7 +8,7 @@ import logging as log
 from abc import ABC, abstractmethod
 from typing import Any, Callable, Generator, Optional
 
-from sklearn.base import ClassifierMixin, RegressorMixin
+from sklearn.base import is_classifier, is_regressor
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
@@ -34,9 +34,9 @@ class PredictionFunction:
 
     def __predict_scores(self, dataset: Dataset, **kwargs) -> Any:
         try:
-            if isinstance(self.learner, ClassifierMixin) and self.predict_function:
+            if is_classifier(self.learner) and self.predict_function:
                 return self.predict_function(dataset.x, predict_scores=True, **kwargs)
-            if isinstance(self.learner, RegressorMixin) and self.predict_function:
+            if is_regressor(self.learner) and self.predict_function:
                 return self.predict_function(dataset.x, **kwargs)
             raise RuntimeError()
         except RuntimeError:
