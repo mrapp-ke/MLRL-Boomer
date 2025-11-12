@@ -31,7 +31,8 @@ from mlrl.common.mixins import IncrementalClassifierMixin, IncrementalPredictor,
     IncrementalProbabilisticClassifierMixin, IncrementalRegressorMixin, LearnerMixin, NominalFeatureSupportMixin, \
     OrdinalFeatureSupportMixin, ProbabilisticClassifierMixin
 
-from mlrl.util.arrays import SparseFormat, enforce_2d, enforce_dense, is_sparse, is_sparse_and_memory_efficient
+from mlrl.util.arrays import SparseFormat, enforce_2d, enforce_dense, ensure_no_complex_data, is_sparse, \
+    is_sparse_and_memory_efficient
 from mlrl.util.options import parse_enum
 from mlrl.util.validation import assert_greater_or_equal
 
@@ -350,7 +351,7 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
         x_sparse_policy = parse_enum('feature_format', self.feature_format, SparsePolicy, default=SparsePolicy.AUTO)
         x_enforce_sparse = x_sparse_policy.should_enforce_sparse(x, sparse_format=x_sparse_format, dtype=np.float32)
         x = x if x_enforce_sparse else enforce_2d(
-            enforce_dense(x, order='F', dtype=np.float32, sparse_value=sparse_feature_value))
+            enforce_dense(ensure_no_complex_data(x), order='F', dtype=np.float32, sparse_value=sparse_feature_value))
         x = validate_data(self, X=x, accept_sparse=x_sparse_format, dtype=np.float32, ensure_all_finite='allow-nan')
 
         if is_sparse(x):
@@ -381,7 +382,7 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
         sparse_policy = parse_enum('feature_format', self.feature_format, SparsePolicy, default=SparsePolicy.AUTO)
         enforce_sparse = sparse_policy.should_enforce_sparse(x, sparse_format=sparse_format, dtype=np.float32)
         x = x if enforce_sparse else enforce_2d(
-            enforce_dense(x, order='C', dtype=np.float32, sparse_value=sparse_feature_value))
+            enforce_dense(ensure_no_complex_data(x), order='C', dtype=np.float32, sparse_value=sparse_feature_value))
         x = validate_data(self,
                           X=x,
                           reset=False,
