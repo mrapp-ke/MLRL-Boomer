@@ -7,13 +7,12 @@ classification rules.
 from typing import Any, Optional, override
 
 from mlrl.common.learners import ClassificationRuleLearner, configure_rule_learner
-from mlrl.common.mixins import ClassifierMixin
 
 from mlrl.seco.config.parameters import SECO_CLASSIFIER_PARAMETERS
 from mlrl.seco.cython.learner_seco import SeCoClassifier as SeCoWrapper, SeCoClassifierConfig
 
 
-class SeCoClassifier(ClassificationRuleLearner, ClassifierMixin):
+class SeCoClassifier(ClassificationRuleLearner):
     """
     A scikit-learn implementation of a Separate-and-Conquer (SeCo) algorithm for learning multi-label classification
     rules.
