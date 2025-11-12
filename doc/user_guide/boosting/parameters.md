@@ -349,7 +349,7 @@ The following parameters allow to employ various sampling techniques that may he
 
 > *Default value = `1`.*
 
-The seed to be used by random number generators. The given value must be at least 1.
+The seed to be used by random number generators. The given value must be at least 0.
 
 ### `output_sampling`
 

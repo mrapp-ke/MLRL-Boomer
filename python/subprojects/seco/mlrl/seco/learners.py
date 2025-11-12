@@ -42,7 +42,7 @@ class SeCoClassifier(ClassificationRuleLearner, ClassifierMixin):
                  parallel_statistic_update: Optional[str] = None,
                  parallel_prediction: Optional[str] = None):
         """
-        :param random_state:                The seed to be used by RNGs. Must be at least 1
+        :param random_state:                The seed to be used by RNGs. Must be at least 0
         :param rule_induction:              An algorithm to be used for the induction of individual rules. Must be
                                             'top-down-greedy' or 'top-down-beam-search'. For additional options refer to
                                             the documentation

@@ -13,7 +13,7 @@ class DatasetSplitterArguments:
 
     RANDOM_STATE = IntArgument(
         '--random-state',
-        description='The seed to be used by random number generators. Must be at least 1.',
+        description='The seed to be used by random number generators. Must be at least 0.',
         default=1,
     )
 

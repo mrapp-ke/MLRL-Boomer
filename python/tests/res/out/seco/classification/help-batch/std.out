@@ -207,7 +207,7 @@ options:
                         Must be one of {"classification", "regression"}.
   --random-state RANDOM_STATE
                         The seed to be used by random number generators. Must
-                        be at least 1.
+                        be at least 0.
   --save-all SAVE_ALL   Whether all output data should be written to files or
                         not. Must be one of {"false", "true"}.
   --save-data-characteristics SAVE_DATA_CHARACTERISTICS
