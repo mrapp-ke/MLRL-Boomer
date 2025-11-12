@@ -5,15 +5,14 @@ Provides scikit-learn implementations of boosting algorithms.
 """
 from typing import Any, Optional, override
 
-from mlrl.common.learners import ClassificationRuleLearner, RegressionRuleLearner, configure_rule_learner
-from mlrl.common.mixins import ClassifierMixin, RegressorMixin
+from mlrl.common.learners import ProbabilisticClassificationRuleLearner, RegressionRuleLearner, configure_rule_learner
 
 from mlrl.boosting.config.parameters import BOOMER_CLASSIFIER_PARAMETERS, BOOMER_REGRESSOR_PARAMETERS
 from mlrl.boosting.cython.learner_boomer import BoomerClassifier as BoomerClassifierWrapper, BoomerClassifierConfig, \
     BoomerRegressor as BoomerRegressorWrapper, BoomerRegressorConfig
 
 
-class BoomerClassifier(ClassificationRuleLearner, ClassifierMixin):
+class BoomerClassifier(ProbabilisticClassificationRuleLearner):
     """
     A scikit-learn implementation of "BOOMER", an algorithm for learning gradient boosted multi-output rules, that can
     be used in classification problems.
@@ -184,7 +183,7 @@ class BoomerClassifier(ClassificationRuleLearner, ClassifierMixin):
         return BoomerClassifierWrapper(config)
 
 
-class BoomerRegressor(RegressionRuleLearner, RegressorMixin):
+class BoomerRegressor(RegressionRuleLearner):
     """
     A scikit-learn implementation of "BOOMER", an algorithm for learning gradient boosted multi-output rules, that can
     be used in regression problems.
