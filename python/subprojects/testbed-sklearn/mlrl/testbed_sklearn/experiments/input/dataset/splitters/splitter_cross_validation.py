@@ -193,7 +193,7 @@ class CrossValidationSplitter(DatasetSplitter):
                                 test sets should be used
         :param first_fold:      The index of the first cross validation fold to be performed (inclusive, starting at 0)
         :param last_fold:       The index of the last cross validation fold to be performed (exclusive)
-        :param random_state:    The seed to be used by RNGs. Must be at least 1
+        :param random_state:    The seed to be used by RNGs. Must be at least 0
         """
         super().__init__(FoldingStrategy(num_folds=num_folds, first=first_fold, last=last_fold))
         self.dataset_reader = dataset_reader

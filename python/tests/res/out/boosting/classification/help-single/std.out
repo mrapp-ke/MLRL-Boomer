@@ -221,7 +221,7 @@ options:
                         Must be one of {"classification", "regression"}.
   --random-state RANDOM_STATE
                         The seed to be used by random number generators. Must
-                        be at least 1.
+                        be at least 0.
   --result-dir RESULT_DIR
                         The path to the directory where experimental results
                         should be saved.

@@ -52,7 +52,7 @@ class BoomerClassifier(ClassificationRuleLearner, ClassifierMixin):
                  parallel_statistic_update: Optional[str] = None,
                  parallel_prediction: Optional[str] = None):
         """
-        :param random_state:                        The seed to be used by RNGs. Must be at least 1
+        :param random_state:                        The seed to be used by RNGs. Must be at least 0
         :param statistic_format:                    The format to be used for representing gradients and Hessians. Must
                                                     be 'dense', 'sparse' or 'auto', if the most suitable format should
                                                     be chosen automatically
@@ -218,7 +218,7 @@ class BoomerRegressor(RegressionRuleLearner, RegressorMixin):
                  parallel_statistic_update: Optional[str] = None,
                  parallel_prediction: Optional[str] = None):
         """
-        :param random_state:                The seed to be used by RNGs. Must be at least 1
+        :param random_state:                The seed to be used by RNGs. Must be at least 0
         :param statistic_format:            The format to be used for representing gradients and Hessians. Must be
                                             'dense', 'sparse' or 'auto', if the most suitable format should be chosen
                                             automatically
