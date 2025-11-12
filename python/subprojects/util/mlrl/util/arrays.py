@@ -171,6 +171,8 @@ def enforce_2d(array: np.ndarray) -> np.ndarray:
     :param array:   A `np.ndarray` to be converted
     :return:        A `np.ndarray` with at least two dimensions
     """
+    if array.ndim == 0:
+        return array.reshape(1, -1)
     if array.ndim == 1:
         return np.expand_dims(array, axis=1)
     return array
