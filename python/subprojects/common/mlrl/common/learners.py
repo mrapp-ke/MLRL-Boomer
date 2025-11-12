@@ -12,6 +12,7 @@ from typing import Any, Optional, Set, override
 import numpy as np
 
 from sklearn.base import BaseEstimator as SkLearnBaseEstimator
+from sklearn.utils import InputTags
 from sklearn.utils.validation import check_array, validate_data
 
 from mlrl.common.config.parameters import Parameter
@@ -445,6 +446,16 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
     @override
     def _validate_params(self):
         self._create_learner()
+
+    @override
+    def __sklearn_tags__(self):
+        tags = super().__sklearn_tags__()
+        tags.input_tags = InputTags(
+            sparse=True,
+            categorical=True,
+            allow_nan=True,
+        )
+        return tags
 
 
 def convert_into_sklearn_compatible_probabilities(probabilities: np.ndarray) -> np.ndarray:

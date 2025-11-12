@@ -4,9 +4,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides mixins that additional functionality to machine learning algorithms.
 """
 from abc import ABC, abstractmethod
+from typing import override
 
 from sklearn.base import BaseEstimator as SkLearnBaseEstimator, ClassifierMixin as SkLearnClassifierMixin, \
     MultiOutputMixin as SkLearnMultiOutputMixin, RegressorMixin as SkLearnRegressorMixin
+from sklearn.utils import ClassifierTags
 from sklearn.utils.validation import check_is_fitted
 
 
@@ -164,6 +166,16 @@ class ClassifierMixin(SkLearnBaseEstimator, SkLearnClassifierMixin, SkLearnMulti
         """
         raise RuntimeError('Prediction of binary labels not supported using the current configuration')
 
+    @override
+    def __sklearn_tags__(self):
+        tags = super().__sklearn_tags__()
+        tags.estimator_type = 'classifier'
+        tags.classifier_tags = ClassifierTags(
+            multi_class=False,
+            multi_label=True,
+        )
+        return tags
+
 
 class IncrementalClassifierMixin(ABC):
     """
@@ -288,6 +300,12 @@ class RegressorMixin(SkLearnBaseEstimator, SkLearnRegressorMixin, SkLearnMultiOu
                     `(num_examples, num_outputs)`, that stores the scores for individual examples and outputs
         """
         raise RuntimeError('Prediction of scores not supported using the current configuration')
+
+    @override
+    def __sklearn_tags__(self):
+        tags = super().__sklearn_tags__()
+        tags.estimator_type = 'regressor'
+        return tags
 
 
 class IncrementalRegressorMixin(ABC):
