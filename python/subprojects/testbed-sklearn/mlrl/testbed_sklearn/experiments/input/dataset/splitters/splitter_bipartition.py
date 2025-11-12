@@ -121,7 +121,7 @@ class BipartitionSplitter(DatasetSplitter):
         :param dataset_reader:  The reader that should be used for loading datasets or None, if datasets should not be
                                 loaded
         :param test_size:       The fraction of the available data to be used as the test set
-        :param random_state:    The seed to be used by RNGs. Must be at least 1
+        :param random_state:    The seed to be used by RNGs. Must be at least 0
         """
         super().__init__(FoldingStrategy(num_folds=1, first=0, last=1))
         self.dataset_reader = dataset_reader
