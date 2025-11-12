@@ -73,7 +73,7 @@ class LearnerMixin(SkLearnBaseEstimator, ABC):
         :return:    A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
                     `(num_examples, num_outputs)`, that stores the scores for individual examples and outputs
         """
-        raise RuntimeError('Prediction of scores not supported using the current configuration')
+        raise AttributeError('Prediction of scores not supported using the current configuration')
 
     def _predict_scores_incrementally(self, x, **kwargs) -> IncrementalPredictor:
         """
@@ -84,7 +84,7 @@ class LearnerMixin(SkLearnBaseEstimator, ABC):
                     `(num_examples, num_features)`, that stores the feature values of the query examples
         :return:    The `IncrementalPredictor` that has been created
         """
-        raise RuntimeError('Incremental prediction of scores not supported using the current configuration')
+        raise AttributeError('Incremental prediction of scores not supported using the current configuration')
 
 
 class OrdinalFeatureSupportMixin(ABC):
@@ -157,7 +157,7 @@ class ClassifierMixin(SkLearnClassifierMixin, SkLearnMultiOutputMixin, LearnerMi
         :return:    A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` of shape
                     `(num_examples, num_labels)`, that stores the prediction for individual examples and labels
         """
-        raise RuntimeError('Prediction of binary labels not supported using the current configuration')
+        raise AttributeError('Prediction of binary labels not supported using the current configuration')
 
     @override
     def __sklearn_tags__(self):
@@ -196,7 +196,7 @@ class ProbabilisticClassifierMixin(ABC):
         :return:    A `numpy.ndarray` or `scipy.sparse` matrix of shape `(num_examples, num_labels)`, that stores the
                     probabilities for individual examples and labels
         """
-        raise RuntimeError('Prediction of probabilities not supported using the current configuration')
+        raise AttributeError('Prediction of probabilities not supported using the current configuration')
 
 
 class IncrementalClassifierMixin(ClassifierMixin, ABC):
@@ -230,7 +230,7 @@ class IncrementalClassifierMixin(ClassifierMixin, ABC):
                     `(num_examples, num_features)`, that stores the feature values of the query examples
         :return:    The `IncrementalPredictor` that has been created
         """
-        raise RuntimeError('Incremental prediction of binary labels not supported using the current configuration')
+        raise AttributeError('Incremental prediction of binary labels not supported using the current configuration')
 
 
 class IncrementalProbabilisticClassifierMixin(ABC):
@@ -260,7 +260,7 @@ class IncrementalProbabilisticClassifierMixin(ABC):
                     `(num_examples, num_features)`, that stores the feature values of the query examples
         :return:    The `IncrementalPredictor` that has been created
         """
-        raise RuntimeError('Incremental prediction of probabilities not supported using the current configuration')
+        raise AttributeError('Incremental prediction of probabilities not supported using the current configuration')
 
 
 class RegressorMixin(SkLearnRegressorMixin, SkLearnMultiOutputMixin, LearnerMixin, ABC):
