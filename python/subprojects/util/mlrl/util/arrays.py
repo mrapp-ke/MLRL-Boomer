@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for handling arrays.
 """
 from enum import StrEnum
-from typing import Optional, Set, Union
+from typing import Any, Optional, Set, Union
 
 import numpy as np
 
@@ -132,6 +132,17 @@ def is_sparse_and_memory_efficient(array,
         size_dense = np.prod(array.shape) * size_data
         return size_sparse < size_dense
     return False
+
+
+def ensure_no_complex_data(array) -> Any:
+    """
+    Raises a `ValueError` if the given array stores complex numbers.
+
+    :return: The given array
+    """
+    if hasattr(array, 'dtype') and np.issubdtype(array.dtype, np.complexfloating):
+        raise ValueError('Complex data not supported')
+    return array
 
 
 def enforce_dense(array,
