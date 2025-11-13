@@ -127,7 +127,11 @@ class ClassifierMixin(SkLearnClassifierMixin, SkLearnMultiOutputMixin, LearnerMi
                     ground truth
         :return:    The fitted learner
         """
-        self.model_ = self._fit(x, y, **kwargs)
+        model = self._fit(x, y, **kwargs)
+
+        if model:
+            self.model_ = model
+
         return self
 
     def predict(self, x, **kwargs):

@@ -201,17 +201,20 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
         :keyword sample_weights:            A `numpy.ndarray`, shape `(num_examples)`, that stores the weights of
                                             individual training examples
         """
-        feature_matrix = self._create_column_wise_feature_matrix(x, **kwargs)
-        output_matrix = self.__create_row_wise_output_matrix(y)
-        feature_info = self._create_feature_info(feature_matrix.get_num_features(), **kwargs)
-        example_weights = self._create_example_weights(feature_matrix.get_num_examples(), **kwargs)
-        learner = self._create_learner()
-        training_result = learner.fit(example_weights, feature_info, feature_matrix, output_matrix)
-        self.num_outputs_ = training_result.num_outputs
-        self.output_space_info_ = training_result.output_space_info
-        self.marginal_probability_calibration_model_ = training_result.marginal_probability_calibration_model
-        self.joint_probability_calibration_model_ = training_result.joint_probability_calibration_model
-        return training_result.rule_model
+        if x is not None and y is not None:
+            feature_matrix = self._create_column_wise_feature_matrix(x, **kwargs)
+            output_matrix = self.__create_row_wise_output_matrix(y)
+            feature_info = self._create_feature_info(feature_matrix.get_num_features(), **kwargs)
+            example_weights = self._create_example_weights(feature_matrix.get_num_examples(), **kwargs)
+            learner = self._create_learner()
+            training_result = learner.fit(example_weights, feature_info, feature_matrix, output_matrix)
+            self.num_outputs_ = training_result.num_outputs
+            self.output_space_info_ = training_result.output_space_info
+            self.marginal_probability_calibration_model_ = training_result.marginal_probability_calibration_model
+            self.joint_probability_calibration_model_ = training_result.joint_probability_calibration_model
+            return training_result.rule_model
+
+        return None
 
     @staticmethod
     def _create_score_predictor(learner: RuleLearnerWrapper, model: RuleModel, output_space_info: OutputSpaceInfo,
