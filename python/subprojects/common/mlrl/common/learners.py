@@ -456,7 +456,6 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
         tags = super().__sklearn_tags__()
         tags.input_tags = InputTags(
             sparse=True,
-            categorical=True,
             allow_nan=True,
         )
         return tags
