@@ -12,6 +12,7 @@ from typing import Any, Optional, Set, override
 import numpy as np
 
 from sklearn.utils import InputTags
+from sklearn.utils.multiclass import type_of_target
 from sklearn.utils.validation import check_array, validate_data
 
 from mlrl.common.config.parameters import Parameter
@@ -202,6 +203,9 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
                                             individual training examples
         """
         if x is not None and y is not None:
+            if not is_sparse(y) and type_of_target(y, input_name='y') == 'multiclass':
+                raise ValueError('Only binary classification is supported.')
+
             feature_matrix = self._create_column_wise_feature_matrix(x, **kwargs)
             output_matrix = self.__create_row_wise_output_matrix(y)
             feature_info = self._create_feature_info(feature_matrix.get_num_features(), **kwargs)
