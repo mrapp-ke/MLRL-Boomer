@@ -8,8 +8,8 @@ from typing import Any, Optional, Set, Union
 
 import numpy as np
 
-from scipy.sparse import issparse, isspmatrix_coo, isspmatrix_csc, isspmatrix_csr, isspmatrix_dok, isspmatrix_lil, \
-    sparray
+from scipy.sparse import issparse, isspmatrix_bsr, isspmatrix_coo, isspmatrix_csc, isspmatrix_csr, isspmatrix_dia, \
+    isspmatrix_dok, isspmatrix_lil, sparray
 
 from mlrl.util.format import format_iterable
 
@@ -23,6 +23,8 @@ class SparseFormat(StrEnum):
     DOK = 'dok'
     CSC = 'csc'
     CSR = 'csr'
+    DIA = 'dia'
+    BSR = 'bsr'
 
 
 def is_lil(array) -> bool:
@@ -75,6 +77,26 @@ def is_csr(array) -> bool:
     return isspmatrix_csr(array) or (isinstance(array, sparray) and array.format == 'csr')
 
 
+def is_dia(array) -> bool:
+    """
+    Returns whether a given `scipy_sparse.spmatrix` or `scipy.sparse.sparray` uses the DIA format or not.
+
+    :param array:   A `scipy.sparse.spmatrix` or `scipy.sparse.sparray` to be checked
+    :return:        True, if the given array uses the DIA format, False otherwise
+    """
+    return isspmatrix_dia(array) or (isinstance(array, sparray) and array.format == 'dia')
+
+
+def is_bsr(array) -> bool:
+    """
+    Returns whether a given `scipy_sparse.spmatrix` or `scipy.sparse.sparray` uses the BSR format or not.
+
+    :param array:   A `scipy.sparse.spmatrix` or `scipy.sparse.sparray` to be checked
+    :return:        True, if the given array uses the BSR format, False otherwise
+    """
+    return isspmatrix_bsr(array) or (isinstance(array, sparray) and array.format == 'bsr')
+
+
 def is_sparse(array, supported_formats: Optional[Set[SparseFormat]] = None) -> bool:
     """
     Returns whether a given array is a `scipy.sparse.spmatrix` or `scipy.sparse.sparray` or not.
@@ -91,8 +113,11 @@ def is_sparse(array, supported_formats: Optional[Set[SparseFormat]] = None) -> b
         dok = SparseFormat.DOK in supported_formats and is_dok(array)
         csc = SparseFormat.CSC in supported_formats and is_csc(array)
         csr = SparseFormat.CSR in supported_formats and is_csr(array)
+        dia = SparseFormat.DIA in supported_formats and is_dia(array)
+        bsr = SparseFormat.BSR in supported_formats and is_bsr(array)
 
-        if lil or coo or dok or csc or csr:
+        # pylint: disable=too-many-boolean-expressions
+        if lil or coo or dok or csc or csr or dia or bsr:
             return True
         return False
 
