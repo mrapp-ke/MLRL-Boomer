@@ -208,6 +208,10 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
 
             feature_matrix = self._create_column_wise_feature_matrix(x, **kwargs)
             output_matrix = self.__create_row_wise_output_matrix(y)
+
+            if feature_matrix.get_num_examples() != output_matrix.get_num_rows():
+                raise ValueError('x and y must have the same number of rows.')
+
             feature_info = self._create_feature_info(feature_matrix.get_num_features(), **kwargs)
             example_weights = self._create_example_weights(feature_matrix.get_num_examples(), **kwargs)
             learner = self._create_learner()
