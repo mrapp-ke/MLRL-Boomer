@@ -74,9 +74,7 @@ class SparsePolicy(StrEnum):
             # Given matrix is dense
             return False
 
-        supported_formats = [SparseFormat.LIL, SparseFormat.COO, SparseFormat.DOK, SparseFormat.CSR, SparseFormat.CSC]
-
-        if is_sparse(matrix, supported_formats=supported_formats):
+        if is_sparse(matrix, supported_formats=list(SparseFormat)):
             # Given matrix is in a format that might be converted into the specified sparse format
             if self == SparsePolicy.AUTO:
                 return is_sparse_and_memory_efficient(matrix,
