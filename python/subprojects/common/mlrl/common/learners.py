@@ -478,7 +478,8 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
         y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C', dtype=np.uint8)),
                         accept_sparse=sparse_format,
                         dtype=np.uint8,
-                        ensure_non_negative=True)
+                        ensure_non_negative=True,
+                        ensure_all_finite=True)
 
         if is_sparse(y):
             log.debug('A sparse matrix is used to store the labels of the training examples')
@@ -579,7 +580,8 @@ class RegressionRuleLearner(IncrementalRegressorMixin, RuleLearner, ABC):
     def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool, **_) -> Any:
         y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C', dtype=np.float32)),
                         accept_sparse=sparse_format,
-                        dtype=np.float32)
+                        dtype=np.float32,
+                        ensure_all_finite=True)
 
         if is_sparse(y):
             log.debug('A sparse matrix is used to store the regression scores of the training examples')
