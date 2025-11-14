@@ -627,9 +627,12 @@ def convert_into_sklearn_compatible_probabilities(probabilities: np.ndarray) -> 
     :param probabilities: A `np.ndarray` that stores probability estimates
     :return:              A `np.ndarray` that is compatible with scikit-learn
     """
-    if probabilities.shape[1] == 1:
+    shape = probabilities.shape
+
+    if len(shape) == 1 or (len(shape) > 1 and shape[1] == 1):
         # In the case of a single-label problem, scikit-learn expects probability estimates to be given for the negative
         # and positive class...
+        probabilities = enforce_2d(probabilities)
         probabilities = np.hstack((1 - probabilities, probabilities))
 
     return probabilities
