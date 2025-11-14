@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides scikit-learn implementations of boosting algorithms.
 """
-from typing import Any, Optional
+from typing import Any, Optional, override
 
 from mlrl.common.learners import ClassificationRuleLearner, RegressionRuleLearner, configure_rule_learner
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
@@ -177,6 +177,7 @@ class BoomerClassifier(ClassificationRuleLearner, ClassifierMixin):
         self.parallel_statistic_update = parallel_statistic_update
         self.parallel_prediction = parallel_prediction
 
+    @override
     def _create_learner(self) -> Any:
         config = BoomerClassifierConfig()
         configure_rule_learner(self, config, BOOMER_CLASSIFIER_PARAMETERS)
@@ -309,6 +310,7 @@ class BoomerRegressor(RegressionRuleLearner, RegressorMixin):
         self.parallel_statistic_update = parallel_statistic_update
         self.parallel_prediction = parallel_prediction
 
+    @override
     def _create_learner(self) -> Any:
         config = BoomerRegressorConfig()
         configure_rule_learner(self, config, BOOMER_REGRESSOR_PARAMETERS)
