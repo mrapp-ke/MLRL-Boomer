@@ -89,7 +89,6 @@ class SparsePolicy(StrEnum):
                          + str(sparse_format) + '"')
 
 
-# pylint: disable=no-member
 class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, LearnerMixin, ABC):
     """
     A scikit-learn implementation of a rule learning algorithm.
@@ -252,6 +251,7 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
         if learner.can_predict_scores(feature_matrix, num_outputs):
             log.debug('A dense matrix is used to store the predicted scores')
             max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
+            # pylint: disable=no-member,useless-suppression
             return self._create_score_predictor(learner, self.model_, self.output_space_info_, num_outputs,
                                                 feature_matrix).predict(max_rules)
 
@@ -272,6 +272,7 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
 
         if learner.can_predict_scores(feature_matrix, num_outputs):
             log.debug('A dense matrix is used to store the predicted scores')
+            # pylint: disable=no-member,useless-suppression
             model = self.model_
             predictor = self._create_score_predictor(learner, model, self.output_space_info_, num_outputs,
                                                      feature_matrix)
