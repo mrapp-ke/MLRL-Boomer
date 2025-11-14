@@ -365,6 +365,9 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
             enforce_dense(ensure_no_complex_data(x), order='F', dtype=np.float32, sparse_value=sparse_feature_value))
         x = validate_data(self, X=x, accept_sparse=x_sparse_format, dtype=np.float32, ensure_all_finite='allow-nan')
 
+        if x.shape[1] <= 1:
+            raise ValueError('x must contain more than 1 feature(s)')
+
         if is_sparse(x):
             log.debug(
                 'A sparse matrix with sparse value %s is used to store the feature values of the training examples',
