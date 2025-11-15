@@ -200,9 +200,6 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
                                             individual training examples
         """
         if x is not None and y is not None:
-            if not is_sparse(y) and type_of_target(y, input_name='y') == 'multiclass':
-                raise ValueError('Only binary classification is supported.')
-
             feature_matrix = self._create_column_wise_feature_matrix(x, **kwargs)
             output_matrix = self.__create_row_wise_output_matrix(y)
 
@@ -486,6 +483,17 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
                         dtype=np.uint8,
                         ensure_non_negative=True,
                         ensure_all_finite=True)
+        target_type = type_of_target(y, input_name='y')
+
+        if target_type in {'continuous', 'continuous-multioutput', 'multiclass'}:
+            message = f'Unknown label type: {target_type}.'
+
+            if target_type == 'multiclass':
+                message += ' Only binary classification is supported.'
+            elif target_type.startswith('continuous'):
+                message += ' In classification, the ground truth must be binary, not continuous.'
+
+            raise ValueError(message)
 
         if is_sparse(y):
             log.debug('A sparse matrix is used to store the labels of the training examples')
