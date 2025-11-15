@@ -36,6 +36,7 @@ jobs:
           CIBW_BEFORE_BUILD: .\build.bat --clean && .\build.bat pyproject_toml
           CIBW_BUILD_FRONTEND: build
           CIBW_ARCHS: auto64
+          CIBW_SKIP: cp???t-win*
           CIBW_PROJECT_REQUIRES_PYTHON: ${{ steps.python_version.outputs.content }}
         with:
           package-dir: python/subprojects/${{ inputs.subproject }}/
