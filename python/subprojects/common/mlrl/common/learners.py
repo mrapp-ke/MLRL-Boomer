@@ -93,7 +93,7 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
     A scikit-learn implementation of a rule learning algorithm.
     """
 
-    KWARG_EXAMPLE_WEIGHTS = 'sample_weights'
+    KWARG_EXAMPLE_WEIGHTS = 'sample_weight'
 
     KWARG_SPARSE_FEATURE_VALUE = 'sparse_feature_value'
 
@@ -265,7 +265,7 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
                                             of all nominal features
         :keyword ordinal_feature_indices:   A `numpy.ndarray`, shape `(num_ordinal_features)`, that stores the indices
                                             of all ordinal features
-        :keyword sample_weights:            A `numpy.ndarray`, shape `(num_examples)`, that stores the weights of
+        :keyword sample_weight:             A `numpy.ndarray`, shape `(num_examples)`, that stores the weights of
                                             individual training examples
         """
         if x is not None and y is not None:
