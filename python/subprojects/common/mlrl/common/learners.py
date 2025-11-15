@@ -11,8 +11,8 @@ from typing import Any, Optional, Set, override
 
 import numpy as np
 
-from sklearn.base import BaseEstimator as SkLearnBaseEstimator
 from sklearn.utils import InputTags
+from sklearn.utils.multiclass import type_of_target
 from sklearn.utils.validation import check_array, validate_data
 
 from mlrl.common.config.parameters import Parameter
@@ -28,10 +28,12 @@ from mlrl.common.cython.probability_calibration import JointProbabilityCalibrati
     MarginalProbabilityCalibrationModel
 from mlrl.common.cython.regression_matrix import CContiguousRegressionMatrix, CsrRegressionMatrix
 from mlrl.common.cython.rule_model import RuleModel
-from mlrl.common.mixins import ClassifierMixin, IncrementalClassifierMixin, IncrementalPredictor, \
-    IncrementalRegressorMixin, NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, RegressorMixin
+from mlrl.common.mixins import IncrementalClassifierMixin, IncrementalPredictor, \
+    IncrementalProbabilisticClassifierMixin, IncrementalRegressorMixin, LearnerMixin, NominalFeatureSupportMixin, \
+    OrdinalFeatureSupportMixin, ProbabilisticClassifierMixin
 
-from mlrl.util.arrays import SparseFormat, enforce_2d, enforce_dense, is_sparse, is_sparse_and_memory_efficient
+from mlrl.util.arrays import SparseFormat, enforce_2d, enforce_dense, ensure_no_complex_data, is_sparse, \
+    is_sparse_and_memory_efficient
 from mlrl.util.options import parse_enum
 from mlrl.util.validation import assert_greater_or_equal
 
@@ -72,9 +74,7 @@ class SparsePolicy(StrEnum):
             # Given matrix is dense
             return False
 
-        supported_formats = [SparseFormat.LIL, SparseFormat.COO, SparseFormat.DOK, SparseFormat.CSR, SparseFormat.CSC]
-
-        if is_sparse(matrix, supported_formats=supported_formats):
+        if is_sparse(matrix, supported_formats=list(SparseFormat)):
             # Given matrix is in a format that might be converted into the specified sparse format
             if self == SparsePolicy.AUTO:
                 return is_sparse_and_memory_efficient(matrix,
@@ -87,7 +87,7 @@ class SparsePolicy(StrEnum):
                          + str(sparse_format) + '"')
 
 
-class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, ABC):
+class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, LearnerMixin, ABC):
     """
     A scikit-learn implementation of a rule learning algorithm.
     """
@@ -184,9 +184,9 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         self.feature_format = feature_format
         self.output_format = output_format
         self.prediction_format = prediction_format
-        self.model_: Optional[Any] = None
 
     # pylint: disable=attribute-defined-outside-init
+    @override
     def _fit(self, x, y, **kwargs):
         """
         :keyword sparse_feature_value:      The value that should be used for sparse elements in the feature matrix.
@@ -199,17 +199,24 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         :keyword sample_weights:            A `numpy.ndarray`, shape `(num_examples)`, that stores the weights of
                                             individual training examples
         """
-        feature_matrix = self._create_column_wise_feature_matrix(x, **kwargs)
-        output_matrix = self.__create_row_wise_output_matrix(y)
-        feature_info = self._create_feature_info(feature_matrix.get_num_features(), **kwargs)
-        example_weights = self._create_example_weights(feature_matrix.get_num_examples(), **kwargs)
-        learner = self._create_learner()
-        training_result = learner.fit(example_weights, feature_info, feature_matrix, output_matrix)
-        self.num_outputs_ = training_result.num_outputs
-        self.output_space_info_ = training_result.output_space_info
-        self.marginal_probability_calibration_model_ = training_result.marginal_probability_calibration_model
-        self.joint_probability_calibration_model_ = training_result.joint_probability_calibration_model
-        return training_result.rule_model
+        if x is not None and y is not None:
+            feature_matrix = self._create_column_wise_feature_matrix(x, **kwargs)
+            output_matrix = self.__create_row_wise_output_matrix(y)
+
+            if feature_matrix.get_num_examples() != output_matrix.get_num_rows():
+                raise ValueError('x and y must have the same number of rows.')
+
+            feature_info = self._create_feature_info(feature_matrix.get_num_features(), **kwargs)
+            example_weights = self._create_example_weights(feature_matrix.get_num_examples(), **kwargs)
+            learner = self._create_learner()
+            training_result = learner.fit(example_weights, feature_info, feature_matrix, output_matrix)
+            self.num_outputs_ = training_result.num_outputs
+            self.output_space_info_ = training_result.output_space_info
+            self.marginal_probability_calibration_model_ = training_result.marginal_probability_calibration_model
+            self.joint_probability_calibration_model_ = training_result.joint_probability_calibration_model
+            return training_result.rule_model
+
+        return None
 
     @staticmethod
     def _create_score_predictor(learner: RuleLearnerWrapper, model: RuleModel, output_space_info: OutputSpaceInfo,
@@ -226,6 +233,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         """
         return learner.create_score_predictor(feature_matrix, model, output_space_info, num_outputs)
 
+    @override
     def _predict_scores(self, x, **kwargs):
         """
         :keyword sparse_feature_value: The value that should be used for sparse elements in the feature matrix. Does
@@ -238,11 +246,13 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         if learner.can_predict_scores(feature_matrix, num_outputs):
             log.debug('A dense matrix is used to store the predicted scores')
             max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
+            # pylint: disable=no-member,useless-suppression
             return self._create_score_predictor(learner, self.model_, self.output_space_info_, num_outputs,
                                                 feature_matrix).predict(max_rules)
 
-        raise RuntimeError('Prediction of scores not supported using the current configuration')
+        return super()._predict_scores(x, **kwargs)
 
+    @override
     def _predict_scores_incrementally(self, x, **kwargs):
         """
         :keyword sparse_feature_value:  The value that should be used for sparse elements in the feature matrix. Does
@@ -257,6 +267,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
 
         if learner.can_predict_scores(feature_matrix, num_outputs):
             log.debug('A dense matrix is used to store the predicted scores')
+            # pylint: disable=no-member,useless-suppression
             model = self.model_
             predictor = self._create_score_predictor(learner, model, self.output_space_info_, num_outputs,
                                                      feature_matrix)
@@ -267,7 +278,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
                     feature_matrix, predictor.create_incremental_predictor(max_rules))
             return ClassificationRuleLearner.NonNativeIncrementalPredictor(feature_matrix, model, max_rules, predictor)
 
-        raise RuntimeError('Incremental prediction of scores not supported using the current configuration')
+        return super()._predict_scores_incrementally(x, **kwargs)
 
     @staticmethod
     def __create_feature_indices(input_name: str, **kwargs) -> np.ndarray:
@@ -347,8 +358,11 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         x_sparse_policy = parse_enum('feature_format', self.feature_format, SparsePolicy, default=SparsePolicy.AUTO)
         x_enforce_sparse = x_sparse_policy.should_enforce_sparse(x, sparse_format=x_sparse_format, dtype=np.float32)
         x = x if x_enforce_sparse else enforce_2d(
-            enforce_dense(x, order='F', dtype=np.float32, sparse_value=sparse_feature_value))
+            enforce_dense(ensure_no_complex_data(x), order='F', dtype=np.float32, sparse_value=sparse_feature_value))
         x = validate_data(self, X=x, accept_sparse=x_sparse_format, dtype=np.float32, ensure_all_finite='allow-nan')
+
+        if x.shape[1] <= 1:
+            raise ValueError('x must contain more than 1 feature(s)')
 
         if is_sparse(x):
             log.debug(
@@ -378,7 +392,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         sparse_policy = parse_enum('feature_format', self.feature_format, SparsePolicy, default=SparsePolicy.AUTO)
         enforce_sparse = sparse_policy.should_enforce_sparse(x, sparse_format=sparse_format, dtype=np.float32)
         x = x if enforce_sparse else enforce_2d(
-            enforce_dense(x, order='C', dtype=np.float32, sparse_value=sparse_feature_value))
+            enforce_dense(ensure_no_complex_data(x), order='C', dtype=np.float32, sparse_value=sparse_feature_value))
         x = validate_data(self,
                           X=x,
                           reset=False,
@@ -452,57 +466,34 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         tags = super().__sklearn_tags__()
         tags.input_tags = InputTags(
             sparse=True,
-            categorical=True,
             allow_nan=True,
         )
         return tags
 
 
-def convert_into_sklearn_compatible_probabilities(probabilities: np.ndarray) -> np.ndarray:
-    """
-    Converts given probability estimates into a format that is compatible with scikit-learn.
-
-    :param probabilities: A `np.ndarray` that stores probability estimates
-    :return:              A `np.ndarray` that is compatible with scikit-learn
-    """
-    if probabilities.shape[1] == 1:
-        # In the case of a single-label problem, scikit-learn expects probability estimates to be given for the negative
-        # and positive class...
-        probabilities = np.hstack((1 - probabilities, probabilities))
-
-    return probabilities
-
-
-class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassifierMixin, ABC):
+class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
     """
     A scikit-learn implementation of a rule learning algorithm that can be applied to classification problems.
     """
-
-    class NativeIncrementalProbabilityPredictor(RuleLearner.NativeIncrementalPredictor):
-        """
-        Allows to obtain probability estimates from a `ClassificationRuleLearner` incrementally by using its native
-        support of this functionality.
-        """
-
-        @override
-        def apply_next(self, step_size: int):
-            return convert_into_sklearn_compatible_probabilities(super().apply_next(step_size))
-
-    class NonNativeIncrementalProbabilityPredictor(RuleLearner.NonNativeIncrementalPredictor):
-        """
-        Allows to obtain probability estimates from a `ClassificationRuleLearner` incrementally.
-        """
-
-        @override
-        def apply_next(self, step_size: int):
-            return convert_into_sklearn_compatible_probabilities(super().apply_next(step_size))
 
     @override
     def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool, **_) -> Any:
         y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C', dtype=np.uint8)),
                         accept_sparse=sparse_format,
                         dtype=np.uint8,
-                        ensure_non_negative=True)
+                        ensure_non_negative=True,
+                        ensure_all_finite=True)
+        target_type = type_of_target(y, input_name='y')
+
+        if target_type in {'continuous', 'continuous-multioutput', 'multiclass'}:
+            message = f'Unknown label type: {target_type}.'
+
+            if target_type == 'multiclass':
+                message += ' Only binary classification is supported.'
+            elif target_type.startswith('continuous'):
+                message += ' In classification, the ground truth must be binary, not continuous.'
+
+            raise ValueError(message)
 
         if is_sparse(y):
             log.debug('A sparse matrix is used to store the labels of the training examples')
@@ -512,80 +503,6 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
 
         log.debug('A dense matrix is used to store the labels of the training examples')
         return CContiguousLabelMatrix(y)
-
-    @staticmethod
-    def _create_probability_predictor(learner: RuleLearnerWrapper, model: RuleModel, output_space_info: OutputSpaceInfo,
-                                      marginal_probability_calibration_model: MarginalProbabilityCalibrationModel,
-                                      joint_probability_calibration_model: JointProbabilityCalibrationModel,
-                                      num_labels: int, feature_matrix: RowWiseFeatureMatrix):
-        """
-        Creates and returns a predictor for predicting probability estimates.
-
-        :param learner:                                 The learner for which the predictor should be created
-        :param model:                                   The model to be used for prediction
-        :param output_space_info:                       Information about the output space that may be used for
-                                                        prediction
-        :param marginal_probability_calibration_model:  A model for the calibration of marginal probabilities
-        :param joint_probability_calibration_model:     A model for the calibration of joint probabilities
-        :param num_labels:                              The total number of labels to predict for
-        :param feature_matrix:                          A feature matrix that provides row-wise access to the features
-                                                        of the query examples
-        :return:                                        The predictor that has been created
-        """
-        return learner.create_probability_predictor(feature_matrix, model, output_space_info,
-                                                    marginal_probability_calibration_model,
-                                                    joint_probability_calibration_model, num_labels)
-
-    @override
-    def _predict_proba(self, x, **kwargs):
-        """
-        :keyword sparse_feature_value: The value that should be used for sparse elements in the feature matrix. Does
-                                       only have an effect if `x` is a `scipy.sparse.spmatrix` or `scipy.sparse.sparray`
-        """
-        learner = self._create_learner()
-        feature_matrix = self._create_row_wise_feature_matrix(x, **kwargs)
-        num_outputs = self.num_outputs_
-
-        if learner.can_predict_probabilities(feature_matrix, num_outputs):
-            log.debug('A dense matrix is used to store the predicted probability estimates')
-            max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
-            return convert_into_sklearn_compatible_probabilities(
-                self._create_probability_predictor(learner, self.model_, self.output_space_info_,
-                                                   self.marginal_probability_calibration_model_,
-                                                   self.joint_probability_calibration_model_, num_outputs,
-                                                   feature_matrix).predict(max_rules))
-
-        return super()._predict_proba(x, **kwargs)
-
-    @override
-    def _predict_proba_incrementally(self, x, **kwargs):
-        """
-        :keyword sparse_feature_value:  The value that should be used for sparse elements in the feature matrix. Does
-                                        only have an effect if `x` is a `scipy.sparse.spmatrix` or
-                                        `scipy.sparse.sparray`
-        :keyword max_rules:             The maximum number of rules to be used for prediction. Must be at least 1 or 0,
-                                        if the number of rules should not be restricted
-        """
-        learner = self._create_learner()
-        feature_matrix = self._create_row_wise_feature_matrix(x, **kwargs)
-        num_outputs = self.num_outputs_
-
-        if learner.can_predict_probabilities(feature_matrix, num_outputs):
-            log.debug('A dense matrix is used to store the predicted probability estimates')
-            model = self.model_
-            predictor = self._create_probability_predictor(learner, model, self.output_space_info_,
-                                                           self.marginal_probability_calibration_model_,
-                                                           self.joint_probability_calibration_model_, num_outputs,
-                                                           feature_matrix)
-            max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
-
-            if predictor.can_predict_incrementally():
-                return ClassificationRuleLearner.NativeIncrementalProbabilityPredictor(
-                    feature_matrix, predictor.create_incremental_predictor(max_rules))
-            return ClassificationRuleLearner.NonNativeIncrementalProbabilityPredictor(
-                feature_matrix, model, max_rules, predictor)
-
-        return super().predict_proba_incrementally(x, **kwargs)
 
     @staticmethod
     def _create_binary_predictor(learner: RuleLearnerWrapper, model: RuleModel, output_space_info: OutputSpaceInfo,
@@ -668,7 +585,7 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
         return super()._predict_binary_incrementally(x, **kwargs)
 
 
-class RegressionRuleLearner(RuleLearner, RegressorMixin, IncrementalRegressorMixin, ABC):
+class RegressionRuleLearner(IncrementalRegressorMixin, RuleLearner, ABC):
     """
     A scikit-learn implementation of a rule learning algorithm that can be applied to regression problems.
     """
@@ -677,7 +594,12 @@ class RegressionRuleLearner(RuleLearner, RegressorMixin, IncrementalRegressorMix
     def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool, **_) -> Any:
         y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C', dtype=np.float32)),
                         accept_sparse=sparse_format,
-                        dtype=np.float32)
+                        dtype=np.float32,
+                        ensure_all_finite=True)
+        target_type = type_of_target(y, input_name='y')
+
+        if target_type in {'binary', 'multiclass', 'multilabel-indicator'}:
+            raise ValueError(f'Unknown label type: {target_type}. In regression, the ground truth must be continuous.')
 
         if is_sparse(y):
             log.debug('A sparse matrix is used to store the regression scores of the training examples')
@@ -706,3 +628,122 @@ def configure_rule_learner(learner: RuleLearner, config: RuleLearnerConfig, para
 
             if value is not None:
                 parameter.configure(config=config, value=value)
+
+
+def convert_into_sklearn_compatible_probabilities(probabilities: np.ndarray) -> np.ndarray:
+    """
+    Converts given probability estimates into a format that is compatible with scikit-learn.
+
+    :param probabilities: A `np.ndarray` that stores probability estimates
+    :return:              A `np.ndarray` that is compatible with scikit-learn
+    """
+    shape = probabilities.shape
+
+    if len(shape) == 1 or (len(shape) > 1 and shape[1] == 1):
+        # In the case of a single-label problem, scikit-learn expects probability estimates to be given for the negative
+        # and positive class...
+        probabilities = enforce_2d(probabilities)
+        probabilities = np.hstack((1 - probabilities, probabilities))
+
+    return probabilities
+
+
+class ProbabilisticClassificationRuleLearner(ProbabilisticClassifierMixin, IncrementalProbabilisticClassifierMixin,
+                                             ClassificationRuleLearner, ABC):
+    """
+    A scikit-learn implementation of a probabilistic rule learning algorithm that can be applied to classification
+    problems.
+    """
+
+    class NativeIncrementalProbabilityPredictor(RuleLearner.NativeIncrementalPredictor):
+        """
+        Allows to obtain probability estimates from a `ProbabilisticClassificationRuleLearner` incrementally by using
+        its native support for this functionality.
+        """
+
+        @override
+        def apply_next(self, step_size: int):
+            return convert_into_sklearn_compatible_probabilities(super().apply_next(step_size))
+
+    class NonNativeIncrementalProbabilityPredictor(RuleLearner.NonNativeIncrementalPredictor):
+        """
+        Allows to obtain probability estimates from a `ProbabilisticClassificationRuleLearner` incrementally.
+        """
+
+        @override
+        def apply_next(self, step_size: int):
+            return convert_into_sklearn_compatible_probabilities(super().apply_next(step_size))
+
+    @override
+    def _predict_proba(self, x, **kwargs):
+        """
+        :keyword sparse_feature_value: The value that should be used for sparse elements in the feature matrix. Does
+                                       only have an effect if `x` is a `scipy.sparse.spmatrix` or `scipy.sparse.sparray`
+        """
+        learner = self._create_learner()
+        feature_matrix = self._create_row_wise_feature_matrix(x, **kwargs)
+        num_outputs = self.num_outputs_
+
+        if learner.can_predict_probabilities(feature_matrix, num_outputs):
+            log.debug('A dense matrix is used to store the predicted probability estimates')
+            max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
+            return convert_into_sklearn_compatible_probabilities(
+                self._create_probability_predictor(learner, self.model_, self.output_space_info_,
+                                                   self.marginal_probability_calibration_model_,
+                                                   self.joint_probability_calibration_model_, num_outputs,
+                                                   feature_matrix).predict(max_rules))
+
+        return super()._predict_proba(x, **kwargs)
+
+    @staticmethod
+    def _create_probability_predictor(learner: RuleLearnerWrapper, model: RuleModel, output_space_info: OutputSpaceInfo,
+                                      marginal_probability_calibration_model: MarginalProbabilityCalibrationModel,
+                                      joint_probability_calibration_model: JointProbabilityCalibrationModel,
+                                      num_labels: int, feature_matrix: RowWiseFeatureMatrix):
+        """
+        Creates and returns a predictor for predicting probability estimates.
+
+        :param learner:                                 The learner for which the predictor should be created
+        :param model:                                   The model to be used for prediction
+        :param output_space_info:                       Information about the output space that may be used for
+                                                        prediction
+        :param marginal_probability_calibration_model:  A model for the calibration of marginal probabilities
+        :param joint_probability_calibration_model:     A model for the calibration of joint probabilities
+        :param num_labels:                              The total number of labels to predict for
+        :param feature_matrix:                          A feature matrix that provides row-wise access to the features
+                                                        of the query examples
+        :return:                                        The predictor that has been created
+        """
+        return learner.create_probability_predictor(feature_matrix, model, output_space_info,
+                                                    marginal_probability_calibration_model,
+                                                    joint_probability_calibration_model, num_labels)
+
+    @override
+    def _predict_proba_incrementally(self, x, **kwargs):
+        """
+        :keyword sparse_feature_value:  The value that should be used for sparse elements in the feature matrix. Does
+                                        only have an effect if `x` is a `scipy.sparse.spmatrix` or
+                                        `scipy.sparse.sparray`
+        :keyword max_rules:             The maximum number of rules to be used for prediction. Must be at least 1 or 0,
+                                        if the number of rules should not be restricted
+        """
+        learner = self._create_learner()
+        feature_matrix = self._create_row_wise_feature_matrix(x, **kwargs)
+        num_outputs = self.num_outputs_
+
+        if learner.can_predict_probabilities(feature_matrix, num_outputs):
+            log.debug('A dense matrix is used to store the predicted probability estimates')
+            model = self.model_
+            predictor = self._create_probability_predictor(learner, model, self.output_space_info_,
+                                                           self.marginal_probability_calibration_model_,
+                                                           self.joint_probability_calibration_model_, num_outputs,
+                                                           feature_matrix)
+            max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
+
+            if predictor.can_predict_incrementally():
+                return ProbabilisticClassificationRuleLearner.NativeIncrementalProbabilityPredictor(
+                    feature_matrix, predictor.create_incremental_predictor(max_rules))
+            return ProbabilisticClassificationRuleLearner.NonNativeIncrementalProbabilityPredictor(
+                feature_matrix, model, max_rules, predictor)
+
+        return super().predict_proba_incrementally(x, **kwargs)

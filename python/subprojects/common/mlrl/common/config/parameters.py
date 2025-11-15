@@ -278,7 +278,7 @@ class RandomStateParameter(IntParameter):
 
     def __init__(self):
         super().__init__(name='random_state',
-                         description='The seed to be used by random number generators. Must be at least 1.',
+                         description='The seed to be used by random number generators. Must be at least 0.',
                          mixin=RNGMixin)
 
     @override

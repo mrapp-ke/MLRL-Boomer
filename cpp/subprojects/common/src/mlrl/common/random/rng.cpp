@@ -38,7 +38,7 @@ uint32 RNGConfig::getRandomState() const {
 }
 
 RNGConfig& RNGConfig::setRandomState(uint32 randomState) {
-    util::assertGreaterOrEqual<uint32>("randomState", randomState, 1);
+    util::assertGreaterOrEqual<uint32>("randomState", randomState, 0);
     randomState_ = randomState;
     return *this;
 }

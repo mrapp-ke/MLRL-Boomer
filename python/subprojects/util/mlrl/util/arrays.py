@@ -4,12 +4,12 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for handling arrays.
 """
 from enum import StrEnum
-from typing import Optional, Set, Union
+from typing import Any, Optional, Set, Union
 
 import numpy as np
 
-from scipy.sparse import issparse, isspmatrix_coo, isspmatrix_csc, isspmatrix_csr, isspmatrix_dok, isspmatrix_lil, \
-    sparray
+from scipy.sparse import issparse, isspmatrix_bsr, isspmatrix_coo, isspmatrix_csc, isspmatrix_csr, isspmatrix_dia, \
+    isspmatrix_dok, isspmatrix_lil, sparray
 
 from mlrl.util.format import format_iterable
 
@@ -23,6 +23,8 @@ class SparseFormat(StrEnum):
     DOK = 'dok'
     CSC = 'csc'
     CSR = 'csr'
+    DIA = 'dia'
+    BSR = 'bsr'
 
 
 def is_lil(array) -> bool:
@@ -75,6 +77,26 @@ def is_csr(array) -> bool:
     return isspmatrix_csr(array) or (isinstance(array, sparray) and array.format == 'csr')
 
 
+def is_dia(array) -> bool:
+    """
+    Returns whether a given `scipy_sparse.spmatrix` or `scipy.sparse.sparray` uses the DIA format or not.
+
+    :param array:   A `scipy.sparse.spmatrix` or `scipy.sparse.sparray` to be checked
+    :return:        True, if the given array uses the DIA format, False otherwise
+    """
+    return isspmatrix_dia(array) or (isinstance(array, sparray) and array.format == 'dia')
+
+
+def is_bsr(array) -> bool:
+    """
+    Returns whether a given `scipy_sparse.spmatrix` or `scipy.sparse.sparray` uses the BSR format or not.
+
+    :param array:   A `scipy.sparse.spmatrix` or `scipy.sparse.sparray` to be checked
+    :return:        True, if the given array uses the BSR format, False otherwise
+    """
+    return isspmatrix_bsr(array) or (isinstance(array, sparray) and array.format == 'bsr')
+
+
 def is_sparse(array, supported_formats: Optional[Set[SparseFormat]] = None) -> bool:
     """
     Returns whether a given array is a `scipy.sparse.spmatrix` or `scipy.sparse.sparray` or not.
@@ -91,8 +113,11 @@ def is_sparse(array, supported_formats: Optional[Set[SparseFormat]] = None) -> b
         dok = SparseFormat.DOK in supported_formats and is_dok(array)
         csc = SparseFormat.CSC in supported_formats and is_csc(array)
         csr = SparseFormat.CSR in supported_formats and is_csr(array)
+        dia = SparseFormat.DIA in supported_formats and is_dia(array)
+        bsr = SparseFormat.BSR in supported_formats and is_bsr(array)
 
-        if lil or coo or dok or csc or csr:
+        # pylint: disable=too-many-boolean-expressions
+        if lil or coo or dok or csc or csr or dia or bsr:
             return True
         return False
 
@@ -134,6 +159,17 @@ def is_sparse_and_memory_efficient(array,
     return False
 
 
+def ensure_no_complex_data(array) -> Any:
+    """
+    Raises a `ValueError` if the given array stores complex numbers.
+
+    :return: The given array
+    """
+    if hasattr(array, 'dtype') and np.issubdtype(array.dtype, np.complexfloating):
+        raise ValueError('Complex data not supported')
+    return array
+
+
 def enforce_dense(array,
                   order: str,
                   dtype: Optional[np.dtype] = None,
@@ -171,6 +207,8 @@ def enforce_2d(array: np.ndarray) -> np.ndarray:
     :param array:   A `np.ndarray` to be converted
     :return:        A `np.ndarray` with at least two dimensions
     """
+    if array.ndim == 0:
+        return array.reshape(1, -1)
     if array.ndim == 1:
         return np.expand_dims(array, axis=1)
     return array
