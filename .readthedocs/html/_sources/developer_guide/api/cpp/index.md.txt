@@ -11,4 +11,5 @@ maxdepth: 1
 Library libmlrlboosting <boosting/filelist.rst>
 Library libmlrlcommon <common/filelist.rst>
 Library libmlrlseco <seco/filelist.rst>
+Library libmlrlcommon <common/filelist.rst>
 ```

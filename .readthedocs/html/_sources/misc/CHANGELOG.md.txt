@@ -53,7 +53,7 @@ This release comes with API changes. For an updated overview of the available pa
 
 ### API Changes
 
-- The package MLRL-Testbed does now provide a batch mode for running multiple experiments at once. It can be enabled via the argument `--mode batch`.
+- The package mlrl-testbed does now provide a batch mode for running multiple experiments at once. It can be enabled via the argument `--mode batch`.
 - The command line argument `--sequential-post-optimization true` has been replaced with `--post-optimization sequential`.
 - Command line arguments starting with `--store-` have been renamed to use the prefix `--save-`.
 - The default value of the command line argument `--save-evaluation` (previously `--store-evaluation`) has been changed from `true` to `false`.
