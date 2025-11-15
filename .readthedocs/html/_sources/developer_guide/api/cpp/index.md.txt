@@ -8,7 +8,7 @@ For those who are interested in modifying the project's source code or want to u
 ---
 maxdepth: 1
 ---
-Library libmlrlcommon <common/filelist.rst>
 Library libmlrlboosting <boosting/filelist.rst>
+Library libmlrlcommon <common/filelist.rst>
 Library libmlrlseco <seco/filelist.rst>
 ```

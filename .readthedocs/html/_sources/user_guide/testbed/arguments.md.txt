@@ -338,7 +338,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
   This argument is only available when using the {ref}`mode <argument-mode>` `--mode single` (which is the default). In {ref}`batch mode <testbed-batch-mode>`, a suitable directory is created automatically.
   ```
 
-- `--wipe-result-dir` (Default value = `auto`)
+- `--wipe-result-dir` (Default value = `true`)
 
   - `true` All files within the directory specified via the argument `--result-dir` are deleted before the experiment starts.
   - `false` No files within the directory are deleted, but existing files may be overwritten by the experiment.
