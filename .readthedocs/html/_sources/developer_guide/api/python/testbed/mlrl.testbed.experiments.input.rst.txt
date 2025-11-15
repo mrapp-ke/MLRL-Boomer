@@ -13,6 +13,7 @@ Subpackages
    :maxdepth: 4
 
    mlrl.testbed.experiments.input.dataset
+   mlrl.testbed.experiments.input.meta_data
    mlrl.testbed.experiments.input.model
    mlrl.testbed.experiments.input.parameters
    mlrl.testbed.experiments.input.sources
@@ -23,5 +24,8 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   mlrl.testbed.experiments.input.arguments
    mlrl.testbed.experiments.input.data
+   mlrl.testbed.experiments.input.extension
+   mlrl.testbed.experiments.input.policies
    mlrl.testbed.experiments.input.reader
