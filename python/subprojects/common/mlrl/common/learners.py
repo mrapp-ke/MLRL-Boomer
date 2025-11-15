@@ -17,7 +17,7 @@ from sklearn.utils.multiclass import type_of_target
 from sklearn.utils.validation import check_array, validate_data
 
 from mlrl.common.config.parameters import Parameter
-from mlrl.common.cython.example_weights import EqualExampleWeights, ExampleWeights, RealValuedExampleWeights
+from mlrl.common.cython.example_weights import EqualExampleWeights, RealValuedExampleWeights
 from mlrl.common.cython.feature_info import EqualFeatureInfo, FeatureInfo, MixedFeatureInfo
 from mlrl.common.cython.feature_matrix import CContiguousFeatureMatrix, ColumnWiseFeatureMatrix, CscFeatureMatrix, \
     CsrFeatureMatrix, FortranContiguousFeatureMatrix, RowWiseFeatureMatrix
@@ -270,16 +270,18 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
         """
         if x is not None and y is not None:
             feature_matrix = self._create_column_wise_feature_matrix(x, **kwargs)
-            output_matrix = self.__create_row_wise_output_matrix(y)
+            example_weights = self._create_example_weights(**kwargs)
+            output_matrix = self.__create_row_wise_output_matrix(y, example_weights)
 
             if output_matrix:
                 if feature_matrix.get_num_examples() != output_matrix.get_num_rows():
                     raise ValueError('x and y must have the same number of rows.')
 
                 feature_info = self._create_feature_info(feature_matrix.get_num_features(), **kwargs)
-                example_weights = self._create_example_weights(feature_matrix.get_num_examples(), **kwargs)
                 learner = self._create_learner()
-                training_result = learner.fit(example_weights, feature_info, feature_matrix, output_matrix)
+                example_weights_object = EqualExampleWeights(feature_matrix.get_num_examples(
+                )) if example_weights is None else RealValuedExampleWeights(example_weights)
+                training_result = learner.fit(example_weights_object, feature_info, feature_matrix, output_matrix)
                 self.num_outputs_ = training_result.num_outputs
                 self.output_space_info_ = training_result.output_space_info
                 self.marginal_probability_calibration_model_ = training_result.marginal_probability_calibration_model
@@ -408,26 +410,24 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
             return EqualFeatureInfo.create_nominal()
         return MixedFeatureInfo(num_features, ordinal_feature_indices, nominal_feature_indices)
 
-    def _create_example_weights(self, num_examples: int, **kwargs) -> ExampleWeights:
+    def _create_example_weights(self, **kwargs) -> Optional[np.ndarray]:
         """
         Creates and returns the `ExampleWeights` that provide access to the weights of individual training examples.
 
-        :param num_examples:    The total number of available training examples
-        :return:                A `np.ndarray`, shape `(num_examples)`, that provides access to the weights of
-                                individual training examples
+        :return: A `np.ndarray`, shape `(num_examples)`, that provides access to the weights of individual training
+                 examples
         """
         example_weights = kwargs.get(self.KWARG_EXAMPLE_WEIGHTS)
 
-        if example_weights:
+        if example_weights is not None:
             example_weights = enforce_dense(example_weights, order='C', dtype=np.float32)
-            example_weights = check_array(example_weights,
-                                          ensure_2d=False,
-                                          dtype=np.float32,
-                                          ensure_non_negative=True,
-                                          input_name=self.KWARG_EXAMPLE_WEIGHTS)
-            return RealValuedExampleWeights(example_weights)
+            return check_array(example_weights,
+                               ensure_2d=False,
+                               dtype=np.float32,
+                               ensure_non_negative=True,
+                               input_name=self.KWARG_EXAMPLE_WEIGHTS)
 
-        return EqualExampleWeights(num_examples)
+        return None
 
     def _create_column_wise_feature_matrix(self, x, **kwargs) -> ColumnWiseFeatureMatrix:
         """
@@ -495,14 +495,15 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
         log.debug('A dense matrix is used to store the feature values of the query examples')
         return CContiguousFeatureMatrix(x)
 
-    def __create_row_wise_output_matrix(self, y) -> Optional[Any]:
+    def __create_row_wise_output_matrix(self, y, example_weights: Optional[np.ndarray]) -> Optional[Any]:
         """
         Must be implemented by subclasses in order to create a matrix that provides row-wise access to the ground truth
         of training examples.
 
-        :param y:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                    `(num_examples, num_outputs)`, that stores the ground truth of the training examples
-        :return:    The matrix that has been created or None, if no matrix has been created
+        :param y:               A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                                `(num_examples, num_outputs)`, that stores the ground truth of the training examples
+        :param example_weights: The weights of individual examples, if available
+        :return:                The matrix that has been created or None, if no matrix has been created
         """
         y_sparse_format = SparseFormat.CSR
         prediction_sparse_policy = parse_enum('prediction_format',
@@ -518,10 +519,14 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
                                                                  sparse_format=y_sparse_format,
                                                                  dtype=np.uint8,
                                                                  sparse_values=False)
-        return self._create_row_wise_output_matrix(y, sparse_format=y_sparse_format, sparse=y_enforce_sparse)
+        return self._create_row_wise_output_matrix(y,
+                                                   sparse_format=y_sparse_format,
+                                                   sparse=y_enforce_sparse,
+                                                   example_weights=example_weights)
 
     @abstractmethod
-    def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool, **kwargs) -> Optional[Any]:
+    def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool,
+                                       example_weights: Optional[np.ndarray], **kwargs) -> Optional[Any]:
         """
         Must be implemented by subclasses in order to create a matrix that provides row-wise access to the ground truth
         of training examples.
@@ -530,6 +535,7 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
                                 `(num_examples, num_outputs)`, that stores the ground truth of the training examples
         :param sparse_format:   The `SparseFormat` to be used for sparse matrices
         :param sparse:          True, if the given matrix should be converted into a sparse matrix, False otherwise
+        :param example_weights: The weights of individual examples, if available
         :return:                The matrix that has been created or None, if no matrix has been created
         """
 
@@ -562,7 +568,8 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
 
     # pylint: disable=attribute-defined-outside-init
     @override
-    def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool, **_) -> Optional[Any]:
+    def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool,
+                                       example_weights: Optional[np.ndarray], **_) -> Optional[Any]:
         y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C', dtype=np.uint8)),
                         accept_sparse=sparse_format,
                         dtype=np.uint8,
@@ -583,8 +590,15 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
         num_examples = y.shape[0]
         num_labels = y.shape[1]
         sparse = is_sparse(y)
-        unique_values = np.fromiter(chain(np.unique(y.data), [0] if y.nnz < num_examples * num_labels else []),
-                                    dtype=y.dtype) if sparse else np.unique(y)
+        example_mask = None if example_weights is None else np.where(example_weights > 0)
+
+        if sparse:
+            values = y[example_mask].data if example_mask else y.data
+            unique_values = np.fromiter(chain(np.unique(values), [0] if y.nnz < num_examples * num_labels else []),
+                                        dtype=y.dtype)
+        else:
+            values = y[example_mask] if example_mask else y
+            unique_values = np.unique(values)
 
         if unique_values.size > 1:
             if sparse:
@@ -701,7 +715,8 @@ class RegressionRuleLearner(IncrementalRegressorMixin, RuleLearner, ABC):
     """
 
     @override
-    def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool, **_) -> Optional[Any]:
+    def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool,
+                                       example_weights: Optional[np.ndarray], **_) -> Optional[Any]:
         y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C', dtype=np.float32)),
                         accept_sparse=sparse_format,
                         dtype=np.float32,
