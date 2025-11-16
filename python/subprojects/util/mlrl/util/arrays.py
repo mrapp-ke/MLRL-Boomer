@@ -184,9 +184,9 @@ def enforce_dense(array,
     :param sparse_value:    The value that should be used for sparse elements in the given array
     :return:                A `np.ndarray` that uses the given memory layout and data type
     """
-    dtype = dtype if dtype else array.dtype
-
     if is_sparse(array):
+        dtype = dtype if dtype else array.dtype
+
         if sparse_value != 0:
             dense_array = np.full(
                 shape=array.shape,  # type: ignore[call-overload]
@@ -196,7 +196,9 @@ def enforce_dense(array,
             dense_array[array.nonzero()] = 0
             dense_array += array
             return np.asarray(dense_array, dtype=dtype, order=order)  # type: ignore[call-overload]
+
         return np.require(array.toarray(order=order), dtype=dtype)
+
     return np.require(array, dtype=dtype, requirements=[order])  # type: ignore[list-item, arg-type]
 
 
