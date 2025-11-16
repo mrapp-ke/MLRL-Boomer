@@ -31,7 +31,7 @@ jobs:
         with:
           path: python/.version-python
       - name: Build package
-        uses: pypa/cibuildwheel@v3.2
+        uses: pypa/cibuildwheel@v3.3
         env:
           CIBW_BEFORE_BUILD: .\build.bat --clean && .\build.bat pyproject_toml
           CIBW_BUILD_FRONTEND: build
