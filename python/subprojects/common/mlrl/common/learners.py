@@ -8,7 +8,7 @@ import logging as log
 from abc import ABC, abstractmethod
 from enum import StrEnum
 from itertools import chain
-from typing import Any, Optional, Set, override
+from typing import Any, Optional, Set, override, Tuple
 
 import numpy as np
 
@@ -595,10 +595,9 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
     @override
     def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool,
                                        example_weights: Optional[np.ndarray], **_) -> Optional[Any]:
-        y = self._encode_labels(y)
-        y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C', dtype=np.uint8)),
+        y, label_encoder = self._encode_labels(y)
+        y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C')),
                         accept_sparse=sparse_format,
-                        dtype=np.uint8,
                         ensure_non_negative=True,
                         ensure_all_finite=True)
         target_type = type_of_target(y, input_name='y')
@@ -626,6 +625,8 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
             values = y[example_mask] if example_mask else y
             unique_values = np.unique(values)
 
+        self.classes_ = label_encoder.inverse_transform(unique_values) if label_encoder else unique_values
+
         if unique_values.size > 1:
             if sparse:
                 log.debug('A sparse matrix is used to store the labels of the training examples')
@@ -634,18 +635,18 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
                 return CsrLabelMatrix(y_indices, y_indptr, num_examples, num_labels)
 
             log.debug('A dense matrix is used to store the labels of the training examples')
-            return CContiguousLabelMatrix(y)
+            return CContiguousLabelMatrix(y.astype(dtype=np.uint8, copy=False))
 
         self.constant_prediction_ = unique_values[0]
         self.num_outputs_ = num_labels
         return None
 
-    def _encode_labels(self, y) -> Any:
+    def _encode_labels(self, y) -> Tuple[Any, Optional[LabelEncoder]]:
         """
         Encodes the given label matrix, if necessary, depending on it type, using a `LabelEncoder`.
 
         :param y:   The label matrix
-        :return:    The encoded label matrix
+        :return:    The encoded label matrix, as well as a label encoder, if any has been used
         """
         dtype = getattr(y, 'dtype', None)
 
@@ -653,9 +654,9 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
             label_encoder = LabelEncoder()
             y_encoded = label_encoder.fit_transform(y)
             self.label_encoder_ = label_encoder
-            return y_encoded
+            return y_encoded, label_encoder
 
-        return y
+        return y, None
 
     @staticmethod
     def _create_binary_predictor(learner: RuleLearnerWrapper, model: RuleModel, output_space_info: OutputSpaceInfo,
