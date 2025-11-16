@@ -597,7 +597,6 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
         y, label_encoder = self._encode_labels(y)
         y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C')),
                         accept_sparse=sparse_format,
-                        ensure_non_negative=True,
                         ensure_all_finite=True)
         target_type = type_of_target(y, input_name='y')
 
