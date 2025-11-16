@@ -12,6 +12,7 @@ from typing import Any, Optional, Set, override
 
 import numpy as np
 
+from sklearn.preprocessing import LabelEncoder
 from sklearn.utils import InputTags
 from sklearn.utils.multiclass import type_of_target
 from sklearn.utils.validation import check_array, validate_data
@@ -105,14 +106,19 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
         functionality.
         """
 
-        def __init__(self, feature_matrix: RowWiseFeatureMatrix, incremental_predictor):
+        def __init__(self,
+                     feature_matrix: RowWiseFeatureMatrix,
+                     incremental_predictor,
+                     label_encoder: Optional[LabelEncoder] = None):
             """
             :param feature_matrix:          A `RowWiseFeatureMatrix` that stores the feature values of the query
                                             examples
             :param incremental_predictor:   The incremental predictor to be used for obtaining predictions
+            :param label_encoder:           An optional `LabelEncoder` that should be used to decode the predictions
             """
             self.feature_matrix = feature_matrix
             self.incremental_predictor = incremental_predictor
+            self.label_encoder = label_encoder
 
         @override
         def has_next(self) -> bool:
@@ -133,20 +139,28 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
             """
             See :func:`mlrl.common.mixins.IncrementalPredictor.apply_next`
             """
-            return self.incremental_predictor.apply_next(step_size)
+            predictions = self.incremental_predictor.apply_next(step_size)
+            label_encoder = self.label_encoder
+            return label_encoder.inverse_transform(predictions) if label_encoder else predictions
 
     class NonNativeIncrementalPredictor(IncrementalPredictor):
         """
         Allows to obtain predictions from a `RuleLearner` incrementally.
         """
 
-        def __init__(self, feature_matrix: RowWiseFeatureMatrix, model: RuleModel, max_rules: int, predictor):
+        def __init__(self,
+                     feature_matrix: RowWiseFeatureMatrix,
+                     model: RuleModel,
+                     max_rules: int,
+                     predictor,
+                     label_encoder: Optional[LabelEncoder] = None):
             """
             :param feature_matrix:  A `RowWiseFeatureMatrix` that stores the feature values of the query examples
             :param model:           The model to be used for obtaining predictions
             :param max_rules:       The maximum number of rules to be used for prediction. Must be at least 1 or 0, if
                                     the number of rules should not be restricted
             :param predictor:       The predictor to be used for obtaining predictions
+            :param label_encoder:   An optional `LabelEncoder` that should be used to decode the predictions
             """
             if max_rules != 0:
                 assert_greater_or_equal('max_rules', max_rules, 1)
@@ -154,6 +168,7 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
             self.num_total_rules = min(model.get_num_used_rules(),
                                        max_rules) if max_rules > 0 else model.get_num_used_rules()
             self.predictor = predictor
+            self.label_encoder = label_encoder
             self.num_considered_rules = 0
 
         @override
@@ -170,32 +185,40 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
             """
             assert_greater_or_equal('step_size', step_size, 1)
             self.num_considered_rules = min(self.num_total_rules, self.num_considered_rules + step_size)
-            return self.predictor.predict(self.num_considered_rules)
+            predictions = self.predictor.predict(self.num_considered_rules)
+            label_encoder = self.label_encoder
+            return label_encoder.inverse_transform(predictions) if label_encoder else predictions
 
     class ConstantIncrementalPredictor(IncrementalPredictor):
         """
         Allows to obtain constant predictions from a `RuleLearner` incrementally.
         """
 
-        def __init__(self, constant_predictions: np.ndarray):
+        def __init__(self, constant_predictions: np.ndarray, label_encoder: Optional[LabelEncoder] = None):
             """
-            :param constant_predictions: The constant predictions to be returned by the predictor
+            :param constant_predictions:    The constant predictions to be returned by the predictor
+            :param label_encoder:           An optional `LabelEncoder` that should be used to decode the predictions
             """
             self._constant_predictions = constant_predictions
+            self._label_encoder = label_encoder
             self._has_next = True
 
         @staticmethod
-        def binary(num_examples: int, num_outputs: int, value) -> 'RuleLearner.ConstantIncrementalPredictor':
+        def binary(num_examples: int,
+                   num_outputs: int,
+                   value,
+                   label_encoder: Optional[LabelEncoder] = None) -> 'RuleLearner.ConstantIncrementalPredictor':
             """
             Creates a `ConstantIncrementalPredictor` that predicts a binary value.
 
             :param num_examples:    The number of examples to predict for
             :param num_outputs:     The number of outputs to predict for
             :param value:           The value to be predicted
+            :param label_encoder:   An optional `LabelEncoder` that should be used to decode the predictions
             """
             shape = (num_examples, num_outputs) if num_outputs > 1 else (num_examples, )
             constant_prediction = np.full(shape=shape, fill_value=value)
-            return RuleLearner.ConstantIncrementalPredictor(constant_prediction)
+            return RuleLearner.ConstantIncrementalPredictor(constant_prediction, label_encoder=label_encoder)
 
         @staticmethod
         def score(num_examples: int, num_outputs: int, value) -> 'RuleLearner.ConstantIncrementalPredictor':
@@ -238,7 +261,9 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
             """
             assert_greater_or_equal('step_size', step_size, 1)
             self._has_next = False
-            return self._constant_predictions
+            label_encoder = self._label_encoder
+            predictions = self._constant_predictions
+            return label_encoder.inverse_transform(predictions) if label_encoder else predictions
 
     def __init__(self, feature_format: Optional[str], output_format: Optional[str], prediction_format: Optional[str]):
         """
@@ -570,6 +595,7 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
     @override
     def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool,
                                        example_weights: Optional[np.ndarray], **_) -> Optional[Any]:
+        y = self._encode_labels(y)
         y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C', dtype=np.uint8)),
                         accept_sparse=sparse_format,
                         dtype=np.uint8,
@@ -614,6 +640,23 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
         self.num_outputs_ = num_labels
         return None
 
+    def _encode_labels(self, y) -> Any:
+        """
+        Encodes the given label matrix, if necessary, depending on it type, using a `LabelEncoder`.
+
+        :param y:   The label matrix
+        :return:    The encoded label matrix
+        """
+        dtype = getattr(y, 'dtype', None)
+
+        if dtype and dtype.kind not in {'i', 'u'}:
+            label_encoder = LabelEncoder()
+            y_encoded = label_encoder.fit_transform(y)
+            self.label_encoder_ = label_encoder
+            return y_encoded
+
+        return y
+
     @staticmethod
     def _create_binary_predictor(learner: RuleLearnerWrapper, model: RuleModel, output_space_info: OutputSpaceInfo,
                                  marginal_probability_calibration_model: MarginalProbabilityCalibrationModel,
@@ -655,19 +698,22 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
 
         if learner.can_predict_binary(feature_matrix, num_outputs):
             constant_prediction = getattr(self, 'constant_prediction_', None)
+            label_encoder = getattr(self, 'label_encoder_', None)
 
             if constant_prediction is not None:
                 return RuleLearner.ConstantIncrementalPredictor.binary(num_examples=feature_matrix.get_num_examples(),
                                                                        num_outputs=num_outputs,
-                                                                       value=constant_prediction).apply_next(1)
+                                                                       value=constant_prediction,
+                                                                       label_encoder=label_encoder).apply_next(1)
 
             sparse_predictions = self.sparse_predictions_
             log.debug('A %s matrix is used to store the predicted labels', 'sparse' if sparse_predictions else 'dense')
             max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
-            return self._create_binary_predictor(learner, self.model_, self.output_space_info_,
-                                                 self.marginal_probability_calibration_model_,
-                                                 self.joint_probability_calibration_model_, num_outputs, feature_matrix,
-                                                 sparse_predictions).predict(max_rules)
+            predictions = self._create_binary_predictor(learner, self.model_, self.output_space_info_,
+                                                        self.marginal_probability_calibration_model_,
+                                                        self.joint_probability_calibration_model_, num_outputs,
+                                                        feature_matrix, sparse_predictions).predict(max_rules)
+            return label_encoder.inverse_transform(predictions) if label_encoder else predictions
 
         return super()._predict_binary(x, **kwargs)
 
@@ -686,11 +732,13 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
 
         if learner.can_predict_binary(feature_matrix, num_outputs):
             constant_prediction = getattr(self, 'constant_prediction_', None)
+            label_encoder = getattr(self, 'label_encoder_', None)
 
             if constant_prediction is not None:
                 return RuleLearner.ConstantIncrementalPredictor.binary(num_examples=feature_matrix.get_num_examples(),
                                                                        num_outputs=num_outputs,
-                                                                       value=constant_prediction)
+                                                                       value=constant_prediction,
+                                                                       label_encoder=label_encoder)
 
             sparse_predictions = self.sparse_predictions_
             log.debug('A %s matrix is used to store the predicted labels', 'sparse' if sparse_predictions else 'dense')
@@ -703,8 +751,9 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
 
             if predictor.can_predict_incrementally():
                 return ClassificationRuleLearner.NativeIncrementalPredictor(
-                    feature_matrix, predictor.create_incremental_predictor(max_rules))
-            return ClassificationRuleLearner.NonNativeIncrementalPredictor(feature_matrix, model, max_rules, predictor)
+                    feature_matrix, predictor.create_incremental_predictor(max_rules), label_encoder)
+            return ClassificationRuleLearner.NonNativeIncrementalPredictor(feature_matrix, model, max_rules, predictor,
+                                                                           label_encoder)
 
         return super()._predict_binary_incrementally(x, **kwargs)
 
