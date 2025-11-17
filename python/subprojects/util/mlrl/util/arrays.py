@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for handling arrays.
 """
 from enum import StrEnum
+from itertools import chain
 from typing import Any, Optional, Set, Union
 
 import numpy as np
@@ -157,6 +158,23 @@ def is_sparse_and_memory_efficient(array,
         size_dense = np.prod(array.shape) * size_data
         return size_sparse < size_dense
     return False
+
+
+def get_unique_values(matrix) -> np.ndarray:
+    """
+    Returns a `np.ndarray` that stores all unique values contains in a given matrix, sorted in increasing order.
+
+    :param matrix:  A `np.ndarray` or `scipy.sparse.sparray`
+    :return:        A `np.ndarray` that stores the unique values
+    """
+    if is_sparse(matrix):
+        matrix_size = matrix.shape[0] * matrix.shape[1]
+        values = np.fromiter(chain(np.unique(matrix.data), [0] if matrix.nnz < matrix_size else []), dtype=matrix.dtype)
+    else:
+        values = np.unique(matrix)
+
+    values.sort()
+    return values
 
 
 def ensure_no_complex_data(array) -> Any:
