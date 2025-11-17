@@ -108,16 +108,19 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
         def __init__(self,
                      feature_matrix: RowWiseFeatureMatrix,
                      incremental_predictor,
-                     label_encoder: Optional[LabelEncoder] = None):
+                     label_encoder: Optional[LabelEncoder] = None,
+                     dtype: Optional[np.dtype] = None):
             """
             :param feature_matrix:          A `RowWiseFeatureMatrix` that stores the feature values of the query
                                             examples
             :param incremental_predictor:   The incremental predictor to be used for obtaining predictions
             :param label_encoder:           An optional `LabelEncoder` that should be used to decode the predictions
+            :param dtype                    An optional dtype, the predictions should be converted to
             """
             self.feature_matrix = feature_matrix
             self.incremental_predictor = incremental_predictor
             self.label_encoder = label_encoder
+            self.dtype = dtype
 
         @override
         def has_next(self) -> bool:
@@ -140,7 +143,12 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
             """
             predictions = self.incremental_predictor.apply_next(step_size)
             label_encoder = self.label_encoder
-            return label_encoder.inverse_transform(predictions) if label_encoder else predictions
+
+            if label_encoder:
+                predictions = label_encoder.inverse_transform(predictions)
+
+            dtype = self.dtype
+            return predictions.astype(dtype, copy=False) if dtype else predictions
 
     class NonNativeIncrementalPredictor(IncrementalPredictor):
         """
@@ -152,7 +160,8 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
                      model: RuleModel,
                      max_rules: int,
                      predictor,
-                     label_encoder: Optional[LabelEncoder] = None):
+                     label_encoder: Optional[LabelEncoder] = None,
+                     dtype: Optional[np.dtype] = None):
             """
             :param feature_matrix:  A `RowWiseFeatureMatrix` that stores the feature values of the query examples
             :param model:           The model to be used for obtaining predictions
@@ -160,6 +169,7 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
                                     the number of rules should not be restricted
             :param predictor:       The predictor to be used for obtaining predictions
             :param label_encoder:   An optional `LabelEncoder` that should be used to decode the predictions
+            :param dtype:           An optional dtype, the predictions should be converted to
             """
             if max_rules != 0:
                 assert_greater_or_equal('max_rules', max_rules, 1)
@@ -168,6 +178,7 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
                                        max_rules) if max_rules > 0 else model.get_num_used_rules()
             self.predictor = predictor
             self.label_encoder = label_encoder
+            self.dtype = dtype
             self.num_considered_rules = 0
 
         @override
@@ -186,7 +197,12 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
             self.num_considered_rules = min(self.num_total_rules, self.num_considered_rules + step_size)
             predictions = self.predictor.predict(self.num_considered_rules)
             label_encoder = self.label_encoder
-            return label_encoder.inverse_transform(predictions) if label_encoder else predictions
+
+            if label_encoder:
+                predictions = label_encoder.inverse_transform(predictions)
+
+            dtype = self.dtype
+            return predictions.astype(dtype, copy=False) if dtype else predictions
 
     class ConstantIncrementalPredictor(IncrementalPredictor):
         """
@@ -382,11 +398,18 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
             predictor = self._create_score_predictor(learner, model, self.output_space_info_, num_outputs,
                                                      feature_matrix)
             max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
+            dtype = getattr(self, 'y_dtype_', None)
 
             if predictor.can_predict_incrementally():
                 return ClassificationRuleLearner.NativeIncrementalPredictor(
-                    feature_matrix, predictor.create_incremental_predictor(max_rules))
-            return ClassificationRuleLearner.NonNativeIncrementalPredictor(feature_matrix, model, max_rules, predictor)
+                    feature_matrix=feature_matrix,
+                    incremental_predictor=predictor.create_incremental_predictor(max_rules),
+                    dtype=dtype)
+            return ClassificationRuleLearner.NonNativeIncrementalPredictor(feature_matrix=feature_matrix,
+                                                                           model=model,
+                                                                           max_rules=max_rules,
+                                                                           predictor=predictor,
+                                                                           dtype=dtype)
 
         return super()._predict_scores_incrementally(x, **kwargs)
 
@@ -543,6 +566,9 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
                                                                  sparse_format=y_sparse_format,
                                                                  dtype=np.uint8,
                                                                  sparse_values=False)
+        if hasattr(y, 'dtype'):
+            self.y_dtype_ = y.dtype
+
         return self._create_row_wise_output_matrix(y,
                                                    sparse_format=y_sparse_format,
                                                    sparse=y_enforce_sparse,
@@ -704,7 +730,12 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
                                                         self.marginal_probability_calibration_model_,
                                                         self.joint_probability_calibration_model_, num_outputs,
                                                         feature_matrix, sparse_predictions).predict(max_rules)
-            return label_encoder.inverse_transform(predictions) if label_encoder else predictions
+
+            if label_encoder:
+                predictions = label_encoder.inverse_transform(predictions)
+
+            dtype = getattr(self, 'y_dtype_', None)
+            return predictions.astype(dtype, copy=False) if dtype else predictions
 
         return super()._predict_binary(x, **kwargs)
 
@@ -739,12 +770,20 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
                                                       self.joint_probability_calibration_model_, num_outputs,
                                                       feature_matrix, sparse_predictions)
             max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
+            dtype = getattr(self, 'y_dtype_', None)
 
             if predictor.can_predict_incrementally():
                 return ClassificationRuleLearner.NativeIncrementalPredictor(
-                    feature_matrix, predictor.create_incremental_predictor(max_rules), label_encoder)
-            return ClassificationRuleLearner.NonNativeIncrementalPredictor(feature_matrix, model, max_rules, predictor,
-                                                                           label_encoder)
+                    feature_matrix=feature_matrix,
+                    incremental_predictor=predictor.create_incremental_predictor(max_rules),
+                    label_encoder=label_encoder,
+                    dtype=dtype)
+            return ClassificationRuleLearner.NonNativeIncrementalPredictor(feature_matrix=feature_matrix,
+                                                                           model=model,
+                                                                           max_rules=max_rules,
+                                                                           predictor=predictor,
+                                                                           label_encoder=label_encoder,
+                                                                           dtype=dtype)
 
         return super()._predict_binary_incrementally(x, **kwargs)
 
@@ -771,6 +810,12 @@ class RegressionRuleLearner(IncrementalRegressorMixin, RuleLearner, ABC):
 
         log.debug('A dense matrix is used to store the regression scores of the training examples')
         return CContiguousRegressionMatrix(y)
+
+    @override
+    def _predict_scores(self, x, **kwargs):
+        predictions = super()._predict_scores(x, **kwargs)
+        dtype = getattr(self, 'y_dtype_', None)
+        return predictions.astype(dtype, copy=False) if dtype else predictions
 
 
 def configure_rule_learner(learner: RuleLearner, config: RuleLearnerConfig, parameters: Set[Parameter]):
