@@ -7,8 +7,7 @@ import logging as log
 
 from abc import ABC, abstractmethod
 from enum import StrEnum
-from itertools import chain
-from typing import Any, Optional, Set, override, Tuple
+from typing import Any, Optional, Set, Tuple, override
 
 import numpy as np
 
@@ -34,8 +33,8 @@ from mlrl.common.mixins import IncrementalClassifierMixin, IncrementalPredictor,
     IncrementalProbabilisticClassifierMixin, IncrementalRegressorMixin, LearnerMixin, NominalFeatureSupportMixin, \
     OrdinalFeatureSupportMixin, ProbabilisticClassifierMixin
 
-from mlrl.util.arrays import SparseFormat, enforce_2d, enforce_dense, ensure_no_complex_data, is_sparse, \
-    is_sparse_and_memory_efficient
+from mlrl.util.arrays import SparseFormat, enforce_2d, enforce_dense, ensure_no_complex_data, get_unique_values, \
+    is_sparse, is_sparse_and_memory_efficient
 from mlrl.util.options import parse_enum
 from mlrl.util.validation import assert_greater_or_equal
 
@@ -616,15 +615,7 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
         num_labels = y.shape[1]
         sparse = is_sparse(y)
         example_mask = None if example_weights is None else np.where(example_weights > 0)
-
-        if sparse:
-            values = y[example_mask].data if example_mask else y.data
-            unique_values = np.fromiter(chain(np.unique(values), [0] if y.nnz < num_examples * num_labels else []),
-                                        dtype=y.dtype)
-        else:
-            values = y[example_mask] if example_mask else y
-            unique_values = np.unique(values)
-
+        unique_values = get_unique_values(y[example_mask] if example_mask else y)
         self.classes_ = label_encoder.inverse_transform(unique_values) if label_encoder else unique_values
 
         if unique_values.size > 1:
