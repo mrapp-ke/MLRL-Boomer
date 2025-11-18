@@ -129,6 +129,14 @@ The argument `x` that must be passed to the `predict` method, has the same seman
 pred = clf.predict(x, sparse_feature_value = 0.0)
 ```
 
+By default, the data type of the ground truth is also used for the predictions. If a different type should be used, it can be specified via the keyword argument `dtype`:
+
+```python
+import numpy as np
+
+pred = clf.predict(x, dtype=np.float32)
+```
+
 ## Accessing the Rules in a Model
 
 In some cases it might be desirable to access the rule in a model that has been learned via the `fit` method. For this purpose, we provide a convenient API that is illustrated in the following example:
