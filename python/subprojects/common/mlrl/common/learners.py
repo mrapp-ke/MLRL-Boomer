@@ -99,6 +99,8 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
 
     KWARG_MAX_RULES = 'max_rules'
 
+    KWARG_DTYPE = 'dtype'
+
     class NativeIncrementalPredictor(IncrementalPredictor):
         """
         Allows to obtain predictions from a `RuleLearner` incrementally by using its native support of this
@@ -348,8 +350,10 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
     @override
     def _predict_scores(self, x, **kwargs):
         """
-        :keyword sparse_feature_value: The value that should be used for sparse elements in the feature matrix. Does
-                                       only have an effect if `x` is a `scipy.sparse.spmatrix` or `scipy.sparse.sparray`
+        :keyword sparse_feature_value:  The value that should be used for sparse elements in the feature matrix. Does
+                                        only have an effect if `x` is a `scipy.sparse.spmatrix` or
+                                        `scipy.sparse.sparray`
+        :keyword dtype:                 The dtype to be used for the predictions
         """
         learner = self._create_learner()
         feature_matrix = self._create_row_wise_feature_matrix(x, **kwargs)
@@ -366,8 +370,10 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
             log.debug('A dense matrix is used to store the predicted scores')
             max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
             # pylint: disable=no-member,useless-suppression
-            return self._create_score_predictor(learner, self.model_, self.output_space_info_, num_outputs,
-                                                feature_matrix).predict(max_rules)
+            predictions = self._create_score_predictor(learner, self.model_, self.output_space_info_, num_outputs,
+                                                       feature_matrix).predict(max_rules)
+            dtype = kwargs.get(self.KWARG_DTYPE)
+            return predictions.astype(dtype, copy=False) if dtype else predictions
 
         return super()._predict_scores(x, **kwargs)
 
@@ -379,6 +385,7 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
                                         `scipy.sparse.sparray`
         :keyword max_rules:             The maximum number of rules to be used for prediction. Must be at least 1 or 0,
                                         if the number of rules should not be restricted
+        :keyword dtype:                 The dtype to be used for the predictions
         """
         learner = self._create_learner()
         feature_matrix = self._create_row_wise_feature_matrix(x, **kwargs)
@@ -398,7 +405,7 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
             predictor = self._create_score_predictor(learner, model, self.output_space_info_, num_outputs,
                                                      feature_matrix)
             max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
-            dtype = getattr(self, 'y_dtype_', None)
+            dtype = kwargs.get(self.KWARG_DTYPE)
 
             if predictor.can_predict_incrementally():
                 return ClassificationRuleLearner.NativeIncrementalPredictor(
@@ -706,8 +713,10 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
     @override
     def _predict_binary(self, x, **kwargs):
         """
-        :keyword sparse_feature_value: The value that should be used for sparse elements in the feature matrix. Does
-                                       only have an effect if `x` is a `scipy.sparse.spmatrix` or `scipy.sparse.sparray`
+        :keyword sparse_feature_value:  The value that should be used for sparse elements in the feature matrix. Does
+                                        only have an effect if `x` is a `scipy.sparse.spmatrix` or
+                                        `scipy.sparse.sparray`
+        :keyword dtype:                 The dtype to be used for the predictions
         """
         learner = self._create_learner()
         feature_matrix = self._create_row_wise_feature_matrix(x, **kwargs)
@@ -734,7 +743,7 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
             if label_encoder:
                 predictions = label_encoder.inverse_transform(predictions)
 
-            dtype = getattr(self, 'y_dtype_', None)
+            dtype = kwargs.get(self.KWARG_DTYPE, getattr(self, 'y_dtype_', None))
             return predictions.astype(dtype, copy=False) if dtype else predictions
 
         return super()._predict_binary(x, **kwargs)
@@ -747,6 +756,7 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
                                         `scipy.sparse.sparray`
         :keyword max_rules:             The maximum number of rules to be used for prediction. Must be at least 1 or 0,
                                         if the number of rules should not be restricted
+        :keyword dtype:                 The dtype to be used for the predictions
         """
         learner = self._create_learner()
         feature_matrix = self._create_row_wise_feature_matrix(x, **kwargs)
@@ -770,7 +780,7 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
                                                       self.joint_probability_calibration_model_, num_outputs,
                                                       feature_matrix, sparse_predictions)
             max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
-            dtype = getattr(self, 'y_dtype_', None)
+            dtype = kwargs.get(self.KWARG_DTYPE, getattr(self, 'y_dtype_', None))
 
             if predictor.can_predict_incrementally():
                 return ClassificationRuleLearner.NativeIncrementalPredictor(
@@ -813,9 +823,13 @@ class RegressionRuleLearner(IncrementalRegressorMixin, RuleLearner, ABC):
 
     @override
     def _predict_scores(self, x, **kwargs):
-        predictions = super()._predict_scores(x, **kwargs)
-        dtype = getattr(self, 'y_dtype_', None)
-        return predictions.astype(dtype, copy=False) if dtype else predictions
+        dtype = kwargs.get(self.KWARG_DTYPE, getattr(self, 'y_dtype_', None))
+        return super()._predict_scores(x, **(dict(kwargs) | {self.KWARG_DTYPE: dtype}))
+
+    @override
+    def _predict_scores_incrementally(self, x, **kwargs):
+        dtype = kwargs.get(self.KWARG_DTYPE, getattr(self, 'y_dtype_', None))
+        return super()._predict_scores_incrementally(x, **(dict(kwargs) | {self.KWARG_DTYPE: dtype}))
 
 
 def configure_rule_learner(learner: RuleLearner, config: RuleLearnerConfig, parameters: Set[Parameter]):
@@ -883,8 +897,10 @@ class ProbabilisticClassificationRuleLearner(ProbabilisticClassifierMixin, Incre
     @override
     def _predict_proba(self, x, **kwargs):
         """
-        :keyword sparse_feature_value: The value that should be used for sparse elements in the feature matrix. Does
-                                       only have an effect if `x` is a `scipy.sparse.spmatrix` or `scipy.sparse.sparray`
+        :keyword sparse_feature_value:  The value that should be used for sparse elements in the feature matrix. Does
+                                        only have an effect if `x` is a `scipy.sparse.spmatrix` or
+                                        `scipy.sparse.sparray`
+        :keyword dtype:                 The dtype to be used for the predictions
         """
         learner = self._create_learner()
         feature_matrix = self._create_row_wise_feature_matrix(x, **kwargs)
@@ -900,11 +916,13 @@ class ProbabilisticClassificationRuleLearner(ProbabilisticClassifierMixin, Incre
 
             log.debug('A dense matrix is used to store the predicted probability estimates')
             max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
-            return convert_into_sklearn_compatible_probabilities(
+            predictions = convert_into_sklearn_compatible_probabilities(
                 self._create_probability_predictor(learner, self.model_, self.output_space_info_,
                                                    self.marginal_probability_calibration_model_,
                                                    self.joint_probability_calibration_model_, num_outputs,
                                                    feature_matrix).predict(max_rules))
+            dtype = kwargs.get(self.KWARG_DTYPE)
+            return predictions.astype(dtype=dtype, copy=False) if dtype else predictions
 
         return super()._predict_proba(x, **kwargs)
 
@@ -939,6 +957,7 @@ class ProbabilisticClassificationRuleLearner(ProbabilisticClassifierMixin, Incre
                                         `scipy.sparse.sparray`
         :keyword max_rules:             The maximum number of rules to be used for prediction. Must be at least 1 or 0,
                                         if the number of rules should not be restricted
+        :keyword dtype:                 The dtype to be used for the predictions
         """
         learner = self._create_learner()
         feature_matrix = self._create_row_wise_feature_matrix(x, **kwargs)
@@ -958,11 +977,14 @@ class ProbabilisticClassificationRuleLearner(ProbabilisticClassifierMixin, Incre
                                                            self.joint_probability_calibration_model_, num_outputs,
                                                            feature_matrix)
             max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
+            dtype = kwargs.get(self.KWARG_DTYPE)
 
             if predictor.can_predict_incrementally():
                 return ProbabilisticClassificationRuleLearner.NativeIncrementalProbabilityPredictor(
-                    feature_matrix, predictor.create_incremental_predictor(max_rules))
+                    feature_matrix=feature_matrix,
+                    incremental_predictor=predictor.create_incremental_predictor(max_rules),
+                    dtype=dtype)
             return ProbabilisticClassificationRuleLearner.NonNativeIncrementalProbabilityPredictor(
-                feature_matrix, model, max_rules, predictor)
+                feature_matrix=feature_matrix, model=model, max_rules=max_rules, predictor=predictor, dtype=dtype)
 
         return super().predict_proba_incrementally(x, **kwargs)
