@@ -833,6 +833,10 @@ class RegressionRuleLearner(IncrementalRegressorMixin, RuleLearner, ABC):
     @override
     def _predict_scores(self, x, **kwargs):
         dtype = kwargs.get(self.KWARG_DTYPE, getattr(self, 'y_dtype_', None))
+
+        if dtype and np.issubdtype(dtype, np.integer):
+            dtype = None
+
         return super()._predict_scores(x, **(dict(kwargs) | {self.KWARG_DTYPE: dtype}))
 
     @override
