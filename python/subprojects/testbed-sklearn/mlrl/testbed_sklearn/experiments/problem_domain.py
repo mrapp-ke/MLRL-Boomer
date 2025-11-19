@@ -107,4 +107,4 @@ class SkLearnRegressionProblem(SkLearnProblem, RegressionProblem):
     @override
     @property
     def output_dtype(self) -> Any:
-        return np.float32
+        return np.float64
