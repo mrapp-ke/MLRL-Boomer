@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides base classes for implementing rule learning algorithms.
 """
 import logging as log
+import re as regex
 
 from abc import ABC, abstractmethod
 from enum import StrEnum
@@ -531,12 +532,18 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
         enforce_sparse = sparse_policy.should_enforce_sparse(x, sparse_format=sparse_format, dtype=np.float32)
         x = x if enforce_sparse else enforce_2d(
             enforce_dense(ensure_no_complex_data(x), order='C', dtype=np.float32, sparse_value=sparse_feature_value))
-        x = validate_data(self,
-                          X=x,
-                          reset=False,
-                          accept_sparse=sparse_format,
-                          dtype=np.float32,
-                          ensure_all_finite='allow-nan')
+
+        try:
+            x = validate_data(self,
+                              X=x,
+                              reset=False,
+                              accept_sparse=sparse_format,
+                              dtype=np.float32,
+                              ensure_all_finite='allow-nan')
+        except ValueError as error:
+            message = str(error)
+            pattern = r'X has \d+ features, but .+ is expecting \d+ features as input.'
+            raise ValueError('Reshape your data. ' + message) if regex.fullmatch(pattern, message) else error
 
         if is_sparse(x):
             log.debug('A sparse matrix with sparse value %s is used to store the feature values of the query examples',
