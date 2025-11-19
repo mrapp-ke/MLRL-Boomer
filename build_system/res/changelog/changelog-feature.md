@@ -1,3 +1,7 @@
+# Algorithmic Enhancements
+
+- All of our algorithms are now compatible with the scikit-learn API according to the tests provided in the module `sklearn.utils.estimator_checks`. From now on, these tests are applied regularly via continuous integration.
+
 # API Changes
 
 - The BOOMER algorithm now uses 32- rather than 64-bit statistics by default. This typically reduces the algorithm's training time and memory footprint without a significant loss of predictive accuracy.
