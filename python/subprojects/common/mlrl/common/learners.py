@@ -14,7 +14,7 @@ import numpy as np
 from sklearn.preprocessing import LabelEncoder
 from sklearn.utils import InputTags
 from sklearn.utils.multiclass import type_of_target
-from sklearn.utils.validation import check_array, validate_data
+from sklearn.utils.validation import assert_all_finite, check_array, validate_data
 
 from mlrl.common.config.parameters import Parameter
 from mlrl.common.cython.example_weights import EqualExampleWeights, RealValuedExampleWeights
@@ -627,10 +627,11 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
     @override
     def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool,
                                        example_weights: Optional[np.ndarray], **_) -> Optional[Any]:
+        assert_all_finite(y, estimator_name=type(self).__name__, input_name='y')
         y, label_encoder = self._encode_labels(y)
         y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C')),
                         accept_sparse=sparse_format,
-                        ensure_all_finite=True)
+                        ensure_all_finite=False)
         target_type = type_of_target(y, input_name='y')
 
         if target_type in {'continuous', 'continuous-multioutput', 'multiclass'}:
@@ -806,10 +807,11 @@ class RegressionRuleLearner(IncrementalRegressorMixin, RuleLearner, ABC):
     @override
     def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool,
                                        example_weights: Optional[np.ndarray], **_) -> Optional[Any]:
+        assert_all_finite(y, estimator_name=type(self).__name__, input_name='y')
         y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C', dtype=np.float32)),
                         accept_sparse=sparse_format,
                         dtype=np.float32,
-                        ensure_all_finite=True)
+                        ensure_all_finite=False)
 
         if is_sparse(y):
             log.debug('A sparse matrix is used to store the regression scores of the training examples')
