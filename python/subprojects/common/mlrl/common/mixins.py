@@ -114,8 +114,6 @@ class ClassifierMixin(SkLearnClassifierMixin, SkLearnMultiOutputMixin, LearnerMi
     A mixin for all machine learning algorithms that can be applied to classification problems.
     """
 
-    KWARG_PREDICT_SCORES = 'predict_scores'
-
     def fit(self, x, y, **kwargs):
         """
         Fits a model to given training examples and their corresponding ground truth labels.
@@ -136,20 +134,14 @@ class ClassifierMixin(SkLearnClassifierMixin, SkLearnMultiOutputMixin, LearnerMi
 
     def predict(self, x, **kwargs):
         """
-        Obtains and returns predictions for given query examples. If the optional keyword argument `predict_scores` is
-        set to `True`, scores are obtained instead of binary predictions.
+        Obtains and returns binary predictions for given query examples.
 
-        :keyword predict_scores:    True, if scores should be obtained, False, if binary predictions should be obtained
-        :param x:                   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                                    `(num_examples, num_features)`, that stores the feature values of the query examples
-        :return:                    A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` of shape
-                                    `(num_examples, num_labels)`, that stores the prediction for individual examples and
-                                    labels
+        :param x:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                    `(num_examples, num_features)`, that stores the feature values of the query examples
+        :return:    A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` of shape
+                    `(num_examples, num_labels)`, that stores the prediction for individual examples and labels
         """
         check_is_fitted(self)
-
-        if bool(kwargs.get(self.KWARG_PREDICT_SCORES, False)):
-            return self._predict_scores(x, **kwargs)
         return self._predict_binary(x, **kwargs)
 
     def _predict_binary(self, x, **kwargs):
@@ -172,6 +164,25 @@ class ClassifierMixin(SkLearnClassifierMixin, SkLearnMultiOutputMixin, LearnerMi
             multi_label=True,
         )
         return tags
+
+
+class MarginClassifierMixin(LearnerMixin, ABC):
+    """
+    A mixin for all machine learning algorithms that can be applied to classification problems and are able to estimate
+    the distance from examples to the decision boundary.
+    """
+
+    def decision_function(self, x, **kwargs):
+        """
+        Obtains and returns predicted scores for given query examples.
+
+        :param x:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                    `(num_examples, num_features)`, that stores the feature values of the query examples
+        :return:    A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` of shape
+                    `(num_examples, num_labels)`, that stores the prediction for individual examples and labels
+        """
+        check_is_fitted(self)
+        return self._predict_scores(x, **kwargs)
 
 
 class ProbabilisticClassifierMixin(ABC):
@@ -212,17 +223,14 @@ class IncrementalClassifierMixin(ClassifierMixin, ABC):
 
     def predict_incrementally(self, x, **kwargs) -> IncrementalPredictor:
         """
-        Returns an `IncrementalPredictor` that allows to obtain predictions for given query examples incrementally.
+        Returns an `IncrementalPredictor` that allows to obtain binary predictions for given query examples
+        incrementally.
 
-        :param x:                   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                                    `(num_examples, num_features)`, that stores the feature values of the query examples
-        :keyword predict_scores:    True, if scores should be obtained, False, if binary predictions should be obtained
-        :return:                    The `IncrementalPredictor` that has been created
+        :param x:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                    `(num_examples, num_features)`, that stores the feature values of the query examples
+        :return:    The `IncrementalPredictor` that has been created
         """
         check_is_fitted(self)
-
-        if bool(kwargs.get(ClassifierMixin.KWARG_PREDICT_SCORES, False)):
-            return self._predict_scores_incrementally(x, **kwargs)
         return self._predict_binary_incrementally(x, **kwargs)
 
     def _predict_binary_incrementally(self, x, **kwargs) -> IncrementalPredictor:
@@ -235,6 +243,24 @@ class IncrementalClassifierMixin(ClassifierMixin, ABC):
         :return:    The `IncrementalPredictor` that has been created
         """
         raise AttributeError('Incremental prediction of binary labels not supported using the current configuration')
+
+
+class IncrementalMarginClassifierMixin(LearnerMixin, ABC):
+    """
+    A mixin for all machine learning algorithms that can be applied to classification problems, is able to estimate the
+    distance from examples to the decision boundary, and support incremental prediction.
+    """
+
+    def decision_function_incrementally(self, x, **kwargs) -> IncrementalPredictor:
+        """
+        Returns an `IncrementalPredictor` that allows to obtain predicted scores for given query examples incrementally.
+
+        :param x:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                    `(num_examples, num_features)`, that stores the feature values of the query examples
+        :return:    The `IncrementalPredictor` that has been created
+        """
+        check_is_fitted(self)
+        return self._predict_scores_incrementally(x, **kwargs)
 
 
 class IncrementalProbabilisticClassifierMixin(ABC):
