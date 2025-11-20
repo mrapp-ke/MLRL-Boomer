@@ -30,6 +30,8 @@ class IncrementalPredictionFunction(PredictionFunction):
     def __init__(self, learner: BaseEstimator):
         super().__init__(learner=learner,
                          predict_function=learner.predict_incrementally,
+                         decision_function=learner.decision_function_incrementally if callable(
+                             getattr(learner, 'decision_function_incrementally', None)) else None,
                          predict_proba_function=learner.predict_proba_incrementally if callable(
                              getattr(learner, 'predict_proba_incrementally', None)) else None)
 

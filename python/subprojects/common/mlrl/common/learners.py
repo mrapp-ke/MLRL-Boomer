@@ -30,9 +30,9 @@ from mlrl.common.cython.probability_calibration import JointProbabilityCalibrati
     MarginalProbabilityCalibrationModel
 from mlrl.common.cython.regression_matrix import CContiguousRegressionMatrix, CsrRegressionMatrix
 from mlrl.common.cython.rule_model import RuleModel
-from mlrl.common.mixins import IncrementalClassifierMixin, IncrementalPredictor, \
-    IncrementalProbabilisticClassifierMixin, IncrementalRegressorMixin, LearnerMixin, NominalFeatureSupportMixin, \
-    OrdinalFeatureSupportMixin, ProbabilisticClassifierMixin
+from mlrl.common.mixins import IncrementalClassifierMixin, IncrementalMarginClassifierMixin, IncrementalPredictor, \
+    IncrementalProbabilisticClassifierMixin, IncrementalRegressorMixin, LearnerMixin, MarginClassifierMixin, \
+    NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, ProbabilisticClassifierMixin
 
 from mlrl.util.arrays import SparseFormat, enforce_2d, enforce_dense, ensure_no_complex_data, get_unique_values, \
     is_sparse, is_sparse_and_memory_efficient
@@ -881,7 +881,8 @@ def convert_into_sklearn_compatible_probabilities(probabilities: np.ndarray) -> 
     return probabilities
 
 
-class ProbabilisticClassificationRuleLearner(ProbabilisticClassifierMixin, IncrementalProbabilisticClassifierMixin,
+class ProbabilisticClassificationRuleLearner(MarginClassifierMixin, IncrementalMarginClassifierMixin,
+                                             ProbabilisticClassifierMixin, IncrementalProbabilisticClassifierMixin,
                                              ClassificationRuleLearner, ABC):
     """
     A scikit-learn implementation of a probabilistic rule learning algorithm that can be applied to classification

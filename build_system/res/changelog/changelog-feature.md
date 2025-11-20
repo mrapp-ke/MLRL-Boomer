@@ -4,6 +4,7 @@
 
 # API Changes
 
+- The Python implementations of algorithms provided by this project do now implement scikit-learn's `decision_function` method, if supported. This method should be used instead of the keyword argument `predict_scores`, which has been removed from the `predict` functions.
 - The BOOMER algorithm now uses 32- rather than 64-bit statistics by default. This typically reduces the algorithm's training time and memory footprint without a significant loss of predictive accuracy.
 - The package mlrl-testbed provides two new modes for re-running experiments and reading their output files, respectively. They can be enabled via the arguments `--mode run` or `--mode read` and are based on reading the metadata.yml files that have been created by previous experiments.
 - Experiments are now canceled by default if all of their output files do already exist. This behavior can be adjusted via the newly added argument `--if-outputs-exist`.
