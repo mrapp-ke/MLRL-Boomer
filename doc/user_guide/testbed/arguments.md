@@ -145,7 +145,7 @@ The package mlrl-testbed is able to conduct experiments for classification and r
 
 > Algorithmic parameters can only be specified in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode` and {bdg-ref-info-line}`testbed-run-mode`.
 
-In addition to the command line arguments that are discussed above, it is often desirable to not rely on the default configuration of the BOOMER algorithm in an experiment, but to use a custom configuration. For this purpose, all the algorithmic parameters that are discussed in the section {ref}`parameters` may be set by providing corresponding arguments to the command line API.
+In addition to the command line arguments discussed above, it is often desirable to not rely on the default configuration of the BOOMER algorithm in an experiment, but to use a custom configuration. For this purpose, all algorithmic parameters that are discussed in the section {ref}`parameters` may be set by providing corresponding arguments to the command line API.
 
 In accordance with the syntax that is typically used by command line programs, the parameter names must be given according to the following syntax that slightly differs from the names that are used by the programmatic Python API:
 
@@ -191,6 +191,12 @@ Some algorithmic parameters, including the parameter `feature_binning`, allow to
        --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
    ```
 ````
+
+(arguments-control)=
+
+## Control Arguments
+
+In the following subsections provide a complete overview of all command line arguments that are available for controlling the behavior of experiments conducted by mlrl-testbed.
 
 ## Performance Evaluation
 
