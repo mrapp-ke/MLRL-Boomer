@@ -80,10 +80,10 @@ clf.fit(x, y, nominal_feature_indices=[0, 2], ordinal_feature_indices=[1])
 
 ### Custom Weights for Training Examples
 
-By default, all training examples have identical weights. This means that incorrect predictions for each of these examples are penalized in the same way by the training algorithm. However, in some use cases, e.g., when dealing with imbalanced data, it might be desirable to penalize incorrect predictions for some examples more heavily than for others. For this reason, it is possible to provide arbitrary (positive) integer- or real-valued weights to an algorithm's `fit`-method via the keyword argument `sample_weights`:
+By default, all training examples have identical weights. This means that incorrect predictions for each of these examples are penalized in the same way by the training algorithm. However, in some use cases, e.g., when dealing with imbalanced data, it might be desirable to penalize incorrect predictions for some examples more heavily than for others. For this reason, it is possible to provide arbitrary (positive) integer- or real-valued weights to an algorithm's `fit`-method via the keyword argument `sample_weight`:
 
 ```python
-clf.fit(x, y, sample_weights=[1.5, 1])
+clf.fit(x, y, sample_weight=[1.5, 1])
 ```
 
 ### Setting Algorithmic Parameters
@@ -127,6 +127,14 @@ The argument `x` that must be passed to the `predict` method, has the same seman
 
 ```python
 pred = clf.predict(x, sparse_feature_value = 0.0)
+```
+
+By default, the data type of the ground truth is also used for the predictions. If a different type should be used, it can be specified via the keyword argument `dtype`:
+
+```python
+import numpy as np
+
+pred = clf.predict(x, dtype=np.float32)
 ```
 
 ## Accessing the Rules in a Model
