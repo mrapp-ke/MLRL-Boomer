@@ -35,6 +35,7 @@ This documentation provides information about the following topics:
 ---
 maxdepth: 1
 ---
+introduction
 datasets
 evaluation
 pre_processing
