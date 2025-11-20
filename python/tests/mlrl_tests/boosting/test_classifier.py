@@ -6,6 +6,8 @@ from typing import Any, Optional, override
 
 import pytest
 
+from sklearn.utils.estimator_checks import check_estimator
+
 from ..common.cmd_runner import CmdRunner
 from ..common.datasets import Dataset
 from ..common.integration_tests_classification import ClassificationIntegrationTests
@@ -19,6 +21,7 @@ from mlrl.common.learners import SparsePolicy
 from mlrl.boosting.config.parameters import OPTION_BASED_ON_PROBABILITIES, PROBABILITY_CALIBRATION_ISOTONIC, \
     BinaryPredictorParameter, ClassificationLossParameter, HeadTypeParameter, ProbabilityPredictorParameter, \
     StatisticTypeParameter
+from mlrl.boosting.learners import BoomerClassifier
 
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.state import ExperimentMode
@@ -37,6 +40,14 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
     @override
     def _create_cmd_builder(self, dataset: str = Dataset.EMOTIONS) -> Any:
         return BoomerClassifierCmdBuilder(dataset=dataset)
+
+    def test_scikit_learn_compatibility(self):
+        check_estimator(BoomerClassifier(),
+                        expected_failed_checks={
+                            'check_classifiers_train': 'Fails because model is too large to pickle',
+                            'check_estimators_pickle': 'Fails because model is too large to pickle',
+                            'check_readonly_memmap_input': 'Fails because model is too large to pickle',
+                        })
 
     @pytest.mark.parametrize('prediction_type', [
         PredictionType.SCORES,
