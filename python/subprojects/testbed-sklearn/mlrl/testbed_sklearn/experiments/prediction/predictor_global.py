@@ -28,6 +28,8 @@ class GlobalPredictionFunction(PredictionFunction):
         super().__init__(
             learner=learner,
             predict_function=learner.predict,
+            decision_function=learner.decision_function
+            if callable(getattr(learner, 'decision_function', None)) else None,
             predict_proba_function=learner.predict_proba if callable(getattr(learner, 'predict_proba', None)) else None)
 
 
