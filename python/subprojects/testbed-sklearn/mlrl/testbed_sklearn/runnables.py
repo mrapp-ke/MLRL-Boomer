@@ -3,12 +3,20 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for running experiments using the scikit-learn framework.
 """
+import contextlib
+import os
+
 from abc import ABC, abstractmethod
 from argparse import Namespace
+from functools import cached_property
+from itertools import chain
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, override
+from typing import Any, Dict, List, Optional, Set, Type, override
+
+import numpy as np
 
 from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMixin as SkLearnRegressorMixin
+from sklearn.utils import all_estimators
 
 from mlrl.testbed_sklearn.experiments import SkLearnExperiment
 from mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension import DatasetSplitterExtension
@@ -41,8 +49,10 @@ from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.modes import BatchMode
 from mlrl.testbed.runnables import Runnable
+from mlrl.testbed.util.io import ENCODING_UTF8
 
 from mlrl.util.cli import Argument, SetArgument
+from mlrl.util.format import format_set
 
 
 class SkLearnRunnable(Runnable, ABC):
@@ -137,7 +147,7 @@ class SkLearnRunnable(Runnable, ABC):
             if problem_type == ClassificationProblem.NAME:
                 base_learner = runnable.create_classifier(args)
 
-                if not base_learner:
+                if base_learner is None:
                     raise AttributeError('Classification problems are not supported by the runnable "'
                                          + type(runnable).__name__ + '"')
 
@@ -151,7 +161,7 @@ class SkLearnRunnable(Runnable, ABC):
 
             base_learner = runnable.create_regressor(args)
 
-            if not base_learner:
+            if base_learner is None:
                 raise AttributeError('Regression problems are not supported by the runnable "' + type(runnable).__name__
                                      + '"')
 
@@ -257,3 +267,199 @@ class SkLearnRunnable(Runnable, ABC):
         :param args:    The command line arguments
         :return:        The learner that has been created or None, if regression problems are not supported
         """
+
+
+class SklearnEstimator:
+    """
+    Represents a scikit-learn estimator that can be used with a `SklearnEstimatorRunnable`.
+    """
+
+    EstimatorType = Type[SkLearnClassifierMixin] | Type[SkLearnRegressorMixin]
+
+    def __init__(self, estimator_name: str, estimator_type: EstimatorType):
+        """
+        :param estimator_name:  The name of the estimator
+        :param estimator_type:  The type of the estimator
+        """
+        self.estimator_name = estimator_name
+        self.estimator_type = estimator_type
+
+    @staticmethod
+    def get_supported_estimators(problem_type: Optional[str] = None) -> Set['SklearnEstimator']:
+        """
+        Returns a set that returns all supported scikit-learn estimators for a given problem type.
+
+        :param problem_type:    A problem type or None, if all estimators should be returned
+        :return:                A set that contains the names of all supported estimators
+        """
+        regressors: Set[SklearnEstimator] = set()
+        classifiers: Set[SklearnEstimator] = set()
+
+        if not problem_type or problem_type == RegressionProblem.NAME:
+            regressors = {
+                SklearnEstimator(estimator_name=estimator_name, estimator_type=estimator_type)
+                for estimator_name, estimator_type in all_estimators(type_filter='regressor')
+                if issubclass(estimator_type, SkLearnRegressorMixin)
+            }
+
+        if not problem_type or problem_type == ClassificationProblem.NAME:
+            classifiers = {
+                SklearnEstimator(estimator_name=estimator_name, estimator_type=estimator_type)
+                for estimator_name, estimator_type in all_estimators(type_filter='classifier')
+                if issubclass(estimator_type, SkLearnClassifierMixin)
+            }
+
+        return set(filter(lambda estimator: estimator.can_be_default_instantiated, chain(regressors, classifiers)))
+
+    @property
+    def is_classifier(self) -> bool:
+        """
+        True, if the estimator is a classifier, False otherwise.
+        """
+        return issubclass(self.estimator_type, SkLearnClassifierMixin)
+
+    @property
+    def is_regressor(self) -> bool:
+        """
+        True, if the estimator is a regressor, False otherwise.
+        """
+        return issubclass(self.estimator_type, SkLearnRegressorMixin)
+
+    @cached_property
+    def can_be_default_instantiated(self) -> bool:
+        """
+        True, if the estimator can be instantiated via a default constructor, False otherwise.
+        """
+
+        @contextlib.contextmanager
+        def suppress_output():
+            with open(os.devnull, mode='w', encoding=ENCODING_UTF8) as devnull:
+                with contextlib.redirect_stdout(devnull), contextlib.redirect_stderr(devnull):
+                    yield
+
+        try:
+            with suppress_output():
+                instance = self.instantiate()
+                rng = np.random.default_rng(seed=1)
+                tags = instance.__sklearn_tags__() if hasattr(instance, '__sklearn_tags__') else None
+                num_examples = 12
+                num_features = 3
+                x_shape = (num_examples, num_features)
+                x: np.ndarray
+
+                if tags and tags.input_tags.categorical:
+                    x = rng.integers(low=0, high=1, endpoint=True, size=x_shape, dtype=np.int32)
+                else:
+                    x = rng.random(size=x_shape, dtype=np.float32)
+
+                if self.is_regressor:
+                    y = rng.random(size=(num_examples, 2 if tags and tags.target_tags.multi_output else 1),
+                                   dtype=np.float32)
+                else:
+                    y = np.zeros(shape=num_examples, dtype=np.uint8)
+                    y[(num_examples // 2):] = 1
+
+                    if tags and tags.target_tags.multi_output:
+                        y = np.column_stack((y, y))
+
+                instance.fit(x, y)
+
+            return True
+        # pylint: disable=broad-exception-caught
+        except Exception:
+            return False
+
+    def instantiate(self) -> SkLearnClassifierMixin | SkLearnRegressorMixin:
+        """
+        Creates and returns a new instance of the estimator.
+
+        :return: The instance that has been created
+        """
+        return self.estimator_type()
+
+    @override
+    def __str__(self) -> str:
+        return self.estimator_name
+
+
+class SkLearnEstimatorRunnable(SkLearnRunnable):
+    """
+    An abstract base class for all programs that run an experiment using a specific scikit-learn estimator.
+    """
+
+    class EstimatorExtension(Extension):
+        """
+        An extension that configures the scikit-learn estimator to be used in an experiment.
+        """
+
+        ESTIMATOR = SetArgument(
+            '--estimator',
+            values=set(map(str, SklearnEstimator.get_supported_estimators())),
+            description='The name of the scikit-learn estimator to be used. Must be one of '
+            + format_set(SklearnEstimator.get_supported_estimators(ClassificationProblem.NAME)) + ', if the argument '
+            + SkLearnRunnable.ProblemDomainExtension.PROBLEM_TYPE.name + ' is set to "' + ClassificationProblem.NAME
+            + '", or ' + format_set(SklearnEstimator.get_supported_estimators(RegressionProblem.NAME)) + ', if it is '
+            + 'set to "' + RegressionProblem.NAME + '".',
+            description_formatter=lambda description, _: description,
+            required=True,
+        )
+
+        @override
+        def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
+            """
+            See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
+            """
+            return {self.ESTIMATOR}
+
+        @override
+        def get_supported_modes(self) -> Set[ExperimentMode]:
+            """
+            See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+            """
+            return {ExperimentMode.SINGLE, ExperimentMode.BATCH, ExperimentMode.RUN, ExperimentMode.READ}
+
+    @staticmethod
+    def __get_estimator(args: Namespace, problem_type: str) -> SklearnEstimator:
+        estimator_name = SkLearnEstimatorRunnable.EstimatorExtension.ESTIMATOR.get_value(args)
+        estimators_by_name = {
+            estimator.estimator_name: estimator
+            for estimator in SklearnEstimator.get_supported_estimators(problem_type=problem_type)
+        }
+        estimator = estimators_by_name.get(estimator_name)
+
+        if not estimator:
+            raise ValueError('Estimator "' + estimator_name + '" does not support problem type "' + problem_type + '"')
+
+        return estimator
+
+    @override
+    def get_extensions(self) -> List[Extension]:
+        """
+        See :func:`mlrl.testbed.runnables.Runnable.get_extensions`
+        """
+        return [
+            SkLearnEstimatorRunnable.EstimatorExtension(),
+        ] + super().get_extensions()
+
+    @override
+    def get_algorithmic_arguments(self, known_args: Namespace) -> Set[Argument]:
+        """
+        See :func:`mlrl.testbed.runnables.Runnable.get_algorithmic_arguments`
+        """
+        return set()
+
+    @override
+    def create_classifier(self, args: Namespace) -> Optional[SkLearnClassifierMixin]:
+        """
+        See :func:`mlrl.testbed.runnables.Runnable.create_classifier`
+        """
+        estimator = self.__get_estimator(args, problem_type=ClassificationProblem.NAME)
+        return estimator.instantiate()
+
+    @override
+    def create_regressor(self, args: Namespace) -> Optional[SkLearnRegressorMixin]:
+        """
+        See :func:`mlrl.testbed_sklearn.runnables.SkLearnRunnable.create_regressor`
+        """
+        estimator = self.__get_estimator(args, problem_type=RegressionProblem.NAME)
+        return estimator.instantiate()
