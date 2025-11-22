@@ -19,7 +19,7 @@ from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 from mlrl.util.options import Options
 
 
-class EvaluationResult(TabularOutputData):
+class TabularEvaluationResult(TabularOutputData):
     """
     Stores the evaluation results according to different measures.
     """
@@ -171,11 +171,11 @@ class EvaluationResult(TabularOutputData):
 
 
 EVALUATION_MEASURE_TRAINING_TIME = OutputValue(
-    option_key=EvaluationResult.OPTION_TRAINING_TIME,
+    option_key=TabularEvaluationResult.OPTION_TRAINING_TIME,
     name='Training Time (' + Measure.UNIT_SECONDS + ')',
 )
 
 EVALUATION_MEASURE_PREDICTION_TIME = OutputValue(
-    option_key=EvaluationResult.OPTION_PREDICTION_TIME,
+    option_key=TabularEvaluationResult.OPTION_PREDICTION_TIME,
     name='Prediction Time (' + Measure.UNIT_SECONDS + ')',
 )
