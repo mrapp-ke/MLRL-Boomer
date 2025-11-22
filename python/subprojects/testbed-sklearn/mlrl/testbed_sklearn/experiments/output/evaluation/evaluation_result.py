@@ -6,10 +6,8 @@ Provides classes for representing evaluation results that are part of output dat
 from itertools import tee
 from typing import Any, Dict, List, Optional, Tuple, override
 
-from mlrl.testbed.experiments.context import Context
-from mlrl.testbed.experiments.data import TabularProperties
-from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
-from mlrl.testbed.experiments.output.evaluation.evaluation_result import AggregatedEvaluationResult
+from mlrl.testbed.experiments.output.data import OutputValue
+from mlrl.testbed.experiments.output.evaluation.evaluation_result import AggregatedEvaluationResult, EvaluationResult
 from mlrl.testbed.experiments.output.evaluation.measurements import Measurements
 from mlrl.testbed.experiments.output.evaluation.measures import Measure
 from mlrl.testbed.experiments.output.sinks import CsvFileSink
@@ -19,14 +17,10 @@ from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 from mlrl.util.options import Options
 
 
-class TabularEvaluationResult(TabularOutputData):
+class TabularEvaluationResult(EvaluationResult):
     """
     Stores the evaluation results according to different measures.
     """
-
-    PROPERTIES = TabularProperties(name='Evaluation result', file_name='evaluation')
-
-    CONTEXT = Context()
 
     OPTION_HAMMING_LOSS = 'hamming_loss'
 
@@ -100,7 +94,7 @@ class TabularEvaluationResult(TabularOutputData):
         """
         :param measurements: The measurements according to different evaluation measures
         """
-        super().__init__(properties=self.PROPERTIES, context=self.CONTEXT)
+        super().__init__()
         self.get_context(CsvFileSink).include_prediction_scope = False
         self.measurements = measurements
 
