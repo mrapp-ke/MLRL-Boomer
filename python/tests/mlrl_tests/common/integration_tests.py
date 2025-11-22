@@ -278,7 +278,9 @@ class IntegrationTests(ABC):
             .print_evaluation(False) \
             .save_evaluation(False) \
             .print_predictions() \
-            .save_predictions()
+            .save_predictions() \
+            .print_ground_truth() \
+            .save_ground_truth()
         CmdRunner(builder).run(test_name, wipe_before=False)
 
     def test_predictions_training_data(self, dataset: Dataset):

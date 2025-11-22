@@ -7,6 +7,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE]
                     [--print-all PRINT_ALL]
                     [--print-data-characteristics PRINT_DATA_CHARACTERISTICS]
                     [--print-evaluation PRINT_EVALUATION]
+                    [--print-ground-truth PRINT_GROUND_TRUTH]
                     [--print-label-vectors PRINT_LABEL_VECTORS]
                     [--print-meta-data PRINT_META_DATA]
                     [--print-model-characteristics PRINT_MODEL_CHARACTERISTICS]
@@ -16,6 +17,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE]
                     [--print-rules PRINT_RULES] [--save-all SAVE_ALL]
                     [--save-data-characteristics SAVE_DATA_CHARACTERISTICS]
                     [--save-evaluation SAVE_EVALUATION]
+                    [--save-ground-truth SAVE_GROUND_TRUTH]
                     [--save-label-vectors SAVE_LABEL_VECTORS]
                     [--save-meta-data SAVE_META_DATA]
                     [--save-model-characteristics SAVE_MODEL_CHARACTERISTICS]
@@ -73,6 +75,10 @@ options:
                         Whether the evaluation results should be printed on
                         the console or not. Must be one of {"false", "true"}.
                         For additional options refer to the documentation.
+  --print-ground-truth PRINT_GROUND_TRUTH
+                        Whether the ground truth should be printed on the
+                        console or not. Must be one of {"false", "true"}. For
+                        additional options refer to the documentation.
   --print-label-vectors PRINT_LABEL_VECTORS
                         Whether the unique label vectors contained in the
                         training data should be printed on the console or not.
@@ -109,6 +115,10 @@ options:
                         the documentation.
   --save-evaluation SAVE_EVALUATION
                         Whether evaluation results should be written to output
+                        files or not. Must be one of {"false", "true"}. For
+                        additional options refer to the documentation.
+  --save-ground-truth SAVE_GROUND_TRUTH
+                        Whether the ground truth should be written to output
                         files or not. Must be one of {"false", "true"}. For
                         additional options refer to the documentation.
   --save-label-vectors SAVE_LABEL_VECTORS
