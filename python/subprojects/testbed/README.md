@@ -12,20 +12,7 @@
 
 <!-- documentation-start -->
 
-This software package provides **mlrl-testbed - a command line utility for running machine learning experiments**. It implements a straightforward, easily configurable, and extensible *workflow* for conducting experiments, including steps such as (but not restricted to) the following:
-
-- loading a dataset
-- splitting it into training and test sets
-- training one or several models
-- evaluating the models' performance
-- saving experimental results to output files
-
-The package mlrl-testbed provides the following modes of operation for carrying out different tasks:
-
-- **Single:** In this mode a single experiment is run, involving the steps listed above.
-- **Batch:** In batch mode, multiple independent experiments using varying datasets and parameters can be run in an automated manner. By installing the optional package [mlrl-testbed-slurm](https://pypi.org/project/mlrl-testbed-slurm/), the experiments can be run via the [Slurm Workload Manager](https://wikipedia.org/wiki/Slurm_Workload_Manager).
-- **Read:** Read mode allows to read the output data produced by a previous experiment and to print it on the console or write it to different output files. It is particularly useful for inspecting results for multiple experiments obtained via batch mode, as results are automatically aggregated across different experiments.
-- **Run:** In this mode, previous experiments can be run again, overriding some of their parameters if desired.
+This software package provides **mlrl-testbed - a command line utility for running machine learning experiments**. It implements a *straightforward*, *easily configurable*, and *extensible* workflow for conducting experiments.
 
 # mlrl-testbed
 

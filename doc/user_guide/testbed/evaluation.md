@@ -4,6 +4,8 @@
 
 A major task in machine learning is to assess the predictive performance of different learning approaches, compare them to each other, and decide for the best approach suitable for a particular problem. The package mlrl-testbed helps with these tasks by implementing several strategies for splitting available data into training and test sets, which is crucial to obtain unbiased estimates of a method's performance. In accordance with established practices, a machine learning model that is trained on a test set is afterward applied to the corresponding test set to obtain predictions for data that was not included in the training process. The metrics that are used for evaluating the quality of these predictions are automatically chosen, depending on the type of predictions (binary predictions, probability estimates, etc.) provided by the tested method.
 
+(evaluation-data-splitting)=
+
 ## Strategies for Data Splitting
 
 Several strategies for splitting the available data into distinct training and test sets can be used. They are described in the following.
