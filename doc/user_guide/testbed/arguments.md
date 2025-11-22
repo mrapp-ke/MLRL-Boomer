@@ -506,7 +506,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 > The following arguments are available in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode` and {bdg-ref-info-line}`testbed-run-mode`.
 
-- `--print-ground-truth` (Default value = `false`, *not available in {ref}`read mode <testbed-read-mode>`*)
+- `--print-ground-truth` (Default value = `false`)
 
   - `true` The ground truth for individual examples and outputs is printed on the console.
 
@@ -514,7 +514,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
   - `false` The ground truth is not printed on the console.
 
-- `--save-ground-truth` (Default value = `false`, *not available in {ref}`read mode <testbed-read-mode>`*)
+- `--save-ground-truth` (Default value = `false`)
 
   - `true` Training datasets containing the ground truth are written to ARFF files.
 

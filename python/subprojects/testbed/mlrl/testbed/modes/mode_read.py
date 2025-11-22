@@ -10,8 +10,6 @@ from dataclasses import replace
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple, override
 
-from mlrl.testbed_sklearn.experiments.output.dataset.arguments_ground_truth import GroundTruthArguments
-
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.experiment import Experiment, ExperimentalProcedure
@@ -118,9 +116,7 @@ class ReadMode(InputMode):
     def __create_command_args(arguments: Set[Argument], args: Namespace, command: Command) -> Namespace:
         ignored_arguments = set(argument_name for argument_names in map(lambda arg: arg.names, arguments)
                                 for argument_name in argument_names)
-        return command.apply_to_namespace(args,
-                                          ignore=ignored_arguments | GroundTruthArguments.PRINT_GROUND_TRUTH.names
-                                          | GroundTruthArguments.SAVE_GROUND_TRUTH.names)
+        return command.apply_to_namespace(args, ignore=ignored_arguments)
 
     @staticmethod
     def __group_batch_by_dataset(arguments: Set[Argument], args: Namespace,
