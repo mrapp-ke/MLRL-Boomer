@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple, override
 
 from mlrl.testbed_sklearn.experiments.output.dataset.arguments_ground_truth import GroundTruthArguments
-from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import TabularEvaluationResult
 
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments.dataset_type import DatasetType
@@ -20,7 +19,7 @@ from mlrl.testbed.experiments.input.data import InputData, TabularInputData
 from mlrl.testbed.experiments.input.dataset.arguments import DatasetArguments
 from mlrl.testbed.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 from mlrl.testbed.experiments.meta_data import MetaData
-from mlrl.testbed.experiments.output.evaluation.evaluation_result import AggregatedEvaluationResult
+from mlrl.testbed.experiments.output.evaluation.evaluation_result import AggregatedEvaluationResult, EvaluationResult
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
 from mlrl.testbed.experiments.table import Cell, RowWiseTable, Table
@@ -150,8 +149,7 @@ class ReadMode(InputMode):
         num_commands = len(commands_and_their_states)
 
         if num_commands > 1:
-            input_data = TabularInputData(properties=TabularEvaluationResult.PROPERTIES,
-                                          context=TabularEvaluationResult.CONTEXT)
+            input_data = TabularInputData(properties=EvaluationResult.PROPERTIES, context=EvaluationResult.CONTEXT)
             algorithmic_argument_names = set(map(lambda arg: arg.name, algorithmic_arguments))
             tables: List[Table] = []
             headers: Set[str] = set()

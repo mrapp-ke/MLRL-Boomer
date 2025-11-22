@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing evaluation results that are part of output data.
 """
+from abc import ABC
 from functools import partial
 from itertools import chain
 from typing import Dict, Iterable, List, Optional, Set, Tuple, override
@@ -19,6 +20,19 @@ from mlrl.testbed.experiments.table import Cell, Column, ColumnWiseTable, RowWis
 from mlrl.testbed.util.format import OPTION_DECIMALS, format_number
 
 from mlrl.util.options import Options
+
+
+class EvaluationResult(TabularOutputData, ABC):
+    """
+    An abstract base class for all output data that stores evaluation results.
+    """
+
+    PROPERTIES = TabularProperties(name='Evaluation result', file_name='evaluation')
+
+    CONTEXT = Context()
+
+    def __init__(self):
+        super().__init__(properties=self.PROPERTIES, context=self.CONTEXT)
 
 
 class AggregatedEvaluationResult(TabularOutputData):
