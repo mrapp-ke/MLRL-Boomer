@@ -238,7 +238,7 @@ By default, the predictive performance of all models trained during an experimen
    ```
 ````
 
-Accordingly, the argument `--save-evaluation` allows to enable or disable saving the evaluation results to [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files:
+Accordingly, the argument `--save-evaluation` allows to enable or disable saving the evaluation results to [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) files:
 
 ````{tab} BOOMER
    ```text
@@ -378,7 +378,7 @@ By using the command line argument `--print-prediction-characteristics`, charact
    ```
 ````
 
-Alternatively, they statistics can be written to a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file by using the argument `--save-prediction-characteristics`:
+Alternatively, they statistics can be written to a [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) file by using the argument `--save-prediction-characteristics`:
 
 ````{tab} BOOMER
    ```text
@@ -452,7 +452,7 @@ To obtain insightful statistics regarding the characteristics of a dataset, the 
    ```
 ````
 
-If you prefer to write the statistics into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file, the argument `--save-data-characteristics` can be used:
+If you prefer to write the statistics into a [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) file, the argument `--save-data-characteristics` can be used:
 
 ````{tab} BOOMER
    ```text
@@ -598,7 +598,7 @@ To obtain a quick overview of some statistics that characterize a rule-based mod
    ```
 ````
 
-The above command results in a tabular representation of the characteristics being printed on the console. If one intends to write them into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file instead, the argument `--save-model-characteristics` may be used:
+The above command results in a tabular representation of the characteristics being printed on the console. If one intends to write them into a [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) file instead, the argument `--save-model-characteristics` may be used:
 
 ````{tab} BOOMER
    ```text
@@ -748,7 +748,7 @@ The gradient boosting algorithms provided by this project allow to obtain probab
    ```
 ````
 
-Alternatively, a representations of the calibration models can be written to [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files by using the arguments `--save-marginal-probability-calibration-model` and `--save-joint-probability-calibration-model`
+Alternatively, a representations of the calibration models can be written to [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) files by using the arguments `--save-marginal-probability-calibration-model` and `--save-joint-probability-calibration-model`
 
 ````{tab} BOOMER
    ```text
