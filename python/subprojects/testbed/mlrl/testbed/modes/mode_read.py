@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple, override
 
 from mlrl.testbed_sklearn.experiments.output.dataset.arguments_ground_truth import GroundTruthArguments
-from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import EvaluationResult
+from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import TabularEvaluationResult
 
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments.dataset_type import DatasetType
@@ -150,7 +150,8 @@ class ReadMode(InputMode):
         num_commands = len(commands_and_their_states)
 
         if num_commands > 1:
-            input_data = TabularInputData(properties=EvaluationResult.PROPERTIES, context=EvaluationResult.CONTEXT)
+            input_data = TabularInputData(properties=TabularEvaluationResult.PROPERTIES,
+                                          context=TabularEvaluationResult.CONTEXT)
             algorithmic_argument_names = set(map(lambda arg: arg.name, algorithmic_arguments))
             tables: List[Table] = []
             headers: Set[str] = set()
