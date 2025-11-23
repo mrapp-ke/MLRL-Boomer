@@ -10,7 +10,7 @@ from itertools import chain
 from typing import Any, Dict, List, Tuple, override
 
 from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import EVALUATION_MEASURE_PREDICTION_TIME, \
-    EVALUATION_MEASURE_TRAINING_TIME, EvaluationResult
+    EVALUATION_MEASURE_TRAINING_TIME, TabularEvaluationResult
 from mlrl.testbed_sklearn.experiments.output.evaluation.measures_classification import \
     MULTI_LABEL_EVALUATION_MEASURES, SINGLE_LABEL_EVALUATION_MEASURES
 from mlrl.testbed_sklearn.experiments.output.evaluation.measures_ranking import RANKING_EVALUATION_MEASURES
@@ -67,7 +67,7 @@ class EvaluationDataExtractor(DataExtractor, ABC):
                                           predictions=prediction_result.predictions,
                                           options=options)
 
-            return [(state, EvaluationResult(measurements))]
+            return [(state, TabularEvaluationResult(measurements))]
 
         return []
 
@@ -135,11 +135,11 @@ class EvaluationWriter(ResultWriter):
 
                 if len(measurements_by_model_size) > 1:
                     return [(replace(state, prediction_result=PredictionState(IncrementalPredictionScope(model_size))),
-                             EvaluationResult(measurements))
+                             TabularEvaluationResult(measurements))
                             for model_size, measurements in measurements_by_model_size.items()]
 
                 measurements = measurements_by_model_size.setdefault(0, Measurements(num_folds))
-                return [(state, EvaluationResult(measurements))] if measurements else []
+                return [(state, TabularEvaluationResult(measurements))] if measurements else []
 
             return []
 
@@ -148,8 +148,8 @@ class EvaluationWriter(ResultWriter):
         :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
         """
         super().__init__(*extractors,
-                         input_data=TabularInputData(properties=EvaluationResult.PROPERTIES,
-                                                     context=EvaluationResult.CONTEXT))
+                         input_data=TabularInputData(properties=TabularEvaluationResult.PROPERTIES,
+                                                     context=TabularEvaluationResult.CONTEXT))
 
     @override
     def _create_states(self, state: ExperimentState) -> List[ExperimentState]:
@@ -169,9 +169,10 @@ class EvaluationWriter(ResultWriter):
         fold = state.fold
 
         if not fold and isinstance(output_data, TabularOutputData):
-            input_data = TabularInputData(properties=EvaluationResult.PROPERTIES, context=EvaluationResult.CONTEXT)
+            input_data = TabularInputData(properties=TabularEvaluationResult.PROPERTIES,
+                                          context=TabularEvaluationResult.CONTEXT)
             input_data_key = input_data.get_key(state)
             state.extras.setdefault(input_data_key, output_data.to_table(Options()))
 
-        kwargs = {EvaluationResult.KWARG_FOLD: fold.index} if fold else {}
+        kwargs = {TabularEvaluationResult.KWARG_FOLD: fold.index} if fold else {}
         sink.write_to_sink(state, output_data, **kwargs)

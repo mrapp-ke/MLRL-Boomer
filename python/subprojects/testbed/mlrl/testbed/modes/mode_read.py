@@ -10,9 +10,6 @@ from dataclasses import replace
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple, override
 
-from mlrl.testbed_sklearn.experiments.output.dataset.arguments_ground_truth import GroundTruthArguments
-from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import EvaluationResult
-
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.experiment import Experiment, ExperimentalProcedure
@@ -20,7 +17,7 @@ from mlrl.testbed.experiments.input.data import InputData, TabularInputData
 from mlrl.testbed.experiments.input.dataset.arguments import DatasetArguments
 from mlrl.testbed.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 from mlrl.testbed.experiments.meta_data import MetaData
-from mlrl.testbed.experiments.output.evaluation.evaluation_result import AggregatedEvaluationResult
+from mlrl.testbed.experiments.output.evaluation.evaluation_result import AggregatedEvaluationResult, EvaluationResult
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
 from mlrl.testbed.experiments.table import Cell, RowWiseTable, Table
@@ -119,9 +116,7 @@ class ReadMode(InputMode):
     def __create_command_args(arguments: Set[Argument], args: Namespace, command: Command) -> Namespace:
         ignored_arguments = set(argument_name for argument_names in map(lambda arg: arg.names, arguments)
                                 for argument_name in argument_names)
-        return command.apply_to_namespace(args,
-                                          ignore=ignored_arguments | GroundTruthArguments.PRINT_GROUND_TRUTH.names
-                                          | GroundTruthArguments.SAVE_GROUND_TRUTH.names)
+        return command.apply_to_namespace(args, ignore=ignored_arguments)
 
     @staticmethod
     def __group_batch_by_dataset(arguments: Set[Argument], args: Namespace,

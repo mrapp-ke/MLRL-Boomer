@@ -6,7 +6,7 @@ Provides classes that allow configuring the functionality to write evaluation re
 from argparse import Namespace
 from typing import Set, override
 
-from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import EvaluationResult
+from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import TabularEvaluationResult
 from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_classification import \
     ClassificationEvaluationDataExtractor
 from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_ranking import RankingEvaluationDataExtractor
@@ -100,8 +100,8 @@ class EvaluationExtension(Extension):
 
         if evaluation_writer.sinks:
             if mode == ExperimentMode.READ:
-                extractor = EvaluationWriter.InputExtractor(properties=EvaluationResult.PROPERTIES,
-                                                            context=EvaluationResult.CONTEXT)
+                extractor = EvaluationWriter.InputExtractor(properties=TabularEvaluationResult.PROPERTIES,
+                                                            context=TabularEvaluationResult.CONTEXT)
                 evaluation_writer.extractors.append(extractor)
 
             problem_domain = experiment_builder.initial_state.problem_domain
