@@ -32,7 +32,6 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "mlrl-testbed-sklearn",
     "mlrl-util",
     "pyyaml",
     "tabulate",
@@ -40,7 +39,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-testbed = ["mlrl-testbed-slurm"]
+testbed = ["mlrl-testbed-sklearn", "mlrl-testbed-slurm"]
 
 [project.urls]
 homepage = "https://github.com/mrapp-ke/MLRL-Boomer"
