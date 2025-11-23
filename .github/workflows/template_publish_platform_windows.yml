@@ -25,6 +25,10 @@ jobs:
         uses: actions/checkout@v6
       - name: Prepare MSVC
         uses: ilammy/msvc-dev-cmd@v1
+      - name: Remove conflicting link.exe
+        uses: JesseTG/rm@v1.0.3
+        with:
+          path: C:\Program Files\Git\usr\bin\link.EXE
       - name: Determine supported Python versions
         uses: juliangruber/read-file-action@v1
         id: python_version
