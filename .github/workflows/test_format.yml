@@ -22,7 +22,7 @@ jobs:
       toml: ${{ steps.filter.outputs.toml }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Determine supported Python versions
         id: python_version
         run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
@@ -81,7 +81,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Determine supported Python versions
         id: python_version
         run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
@@ -101,7 +101,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Determine supported Python versions
         id: python_version
         run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
@@ -121,7 +121,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Determine supported Python versions
         id: python_version
         run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
@@ -141,7 +141,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Determine supported Python versions
         id: python_version
         run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
@@ -161,7 +161,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Determine supported Python versions
         id: python_version
         run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
@@ -181,7 +181,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Determine supported Python versions
         id: python_version
         run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
