@@ -12,7 +12,6 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   mlrl.testbed_sklearn.experiments.output.dataset.arguments_ground_truth
    mlrl.testbed_sklearn.experiments.output.dataset.dataset
    mlrl.testbed_sklearn.experiments.output.dataset.dataset_ground_truth
    mlrl.testbed_sklearn.experiments.output.dataset.dataset_prediction
