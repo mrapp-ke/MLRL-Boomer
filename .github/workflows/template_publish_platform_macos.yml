@@ -17,7 +17,13 @@ env:
 jobs:
   publish_macos_wheels:
     name: Publish ${{ inputs.subproject }} (macOS)
-    runs-on: macos-26
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos-26
+          - macos-15-intel
     steps:
       - name: Checkout
         uses: actions/checkout@v6
