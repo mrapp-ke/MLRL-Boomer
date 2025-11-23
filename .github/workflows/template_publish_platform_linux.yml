@@ -26,7 +26,7 @@ jobs:
           - ubuntu-24.04-arm
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Determine supported Python versions
         uses: juliangruber/read-file-action@v1
         id: python_version
