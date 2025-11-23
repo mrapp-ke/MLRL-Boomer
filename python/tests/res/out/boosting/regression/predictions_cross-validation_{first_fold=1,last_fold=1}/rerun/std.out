@@ -1,4 +1,4 @@
-mlrl-testbed mlrl.boosting --mode read --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --print-evaluation false --save-evaluation false --print-predictions true --save-predictions true
+mlrl-testbed mlrl.boosting --mode read --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --print-evaluation false --save-evaluation false --print-predictions true --save-predictions true --print-ground-truth true --save-ground-truth true
 Reading meta-data...
 Reading input data from file "python/tests/res/tmp/metadata.yml"...
 Successfully read meta-data
@@ -11,8 +11,44 @@ Reading experimental results of experiment (1 / 1)...
 The command "mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --data-split cross-validation{first_fold=1,last_fold=1} --print-evaluation false --save-evaluation false --print-predictions true --print-ground-truth true --save-predictions true --save-ground-truth true" has been used originally for running this experiment
 Performing fold 1 of 10-fold cross validation...
 Fold 1 / 10:
+Reading input data from file "python/tests/res/tmp/results/ground_truth_test_fold-1.arff"...
+Parsing meta-data from file "python/tests/res/tmp/results/ground_truth_test_fold-1.xml"...
 Reading input data from file "python/tests/res/tmp/results/predictions_test_fold-1.arff"...
 Parsing meta-data from file "python/tests/res/tmp/results/predictions_test_fold-1.xml"...
+Ground truth for test data (Fold 1):
+
+[[283. 319. 319. 319. 283. 319.]
+ [283. 319. 319. 319. 283. 319.]
+ [441. 441. 740. 740. 540. 740.]
+ [272. 279. 319. 319. 272. 319.]
+ [278. 329. 350. 386. 278. 329.]
+ [278. 279. 279. 299. 278. 278.]
+ [279. 279. 301. 366. 283. 366.]
+ [233. 294. 329. 329. 278. 329.]
+ [268. 279. 309. 309. 268. 309.]
+ [279. 279. 329. 329. 288. 294.]
+ [290. 357. 375. 363. 298. 363.]
+ [288. 329. 329. 329. 288. 329.]
+ [283. 309. 309. 309. 283. 309.]
+ [198. 279. 198. 309. 262. 309.]
+ [253. 319. 319. 319. 253. 319.]
+ [267. 319. 319. 319. 267. 319.]
+ [530. 949. 839. 740. 555. 740.]
+ [279. 279. 395. 369. 313. 401.]
+ [273. 349. 395. 391. 273. 396.]
+ [273. 440. 460. 463. 334. 463.]
+ [334. 440. 460. 463. 334. 463.]
+ [460. 601. 460. 740. 460. 740.]
+ [268. 397. 496. 468. 268. 468.]
+ [199. 199. 244. 447. 244. 470.]
+ [244. 309. 244. 391. 244. 391.]
+ [298. 397. 456. 513. 344. 513.]
+ [249. 249. 447. 488. 313. 488.]
+ [199. 199. 199. 488. 243. 488.]
+ [243. 327. 496. 513. 243. 513.]
+ [243. 372. 496. 513. 243. 513.]]
+
+Writing output data to file "python/tests/res/tmp/rerun/results/ground_truth_test_fold-1.arff"...
 Predictions for test data (Fold 1):
 
 [[283.64 320.91 319.47 325.49 284.34 322.45]

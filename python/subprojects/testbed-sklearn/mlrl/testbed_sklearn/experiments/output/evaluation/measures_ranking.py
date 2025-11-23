@@ -9,7 +9,7 @@ from typing import Generator
 from sklearn import metrics
 
 from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import EVALUATION_MEASURE_PREDICTION_TIME, \
-    EVALUATION_MEASURE_TRAINING_TIME, EvaluationResult
+    EVALUATION_MEASURE_TRAINING_TIME, TabularEvaluationResult
 
 from mlrl.testbed.experiments.output.evaluation.measures import Measure
 
@@ -37,21 +37,21 @@ def at_k(measure: Measure) -> Generator[Measure, None, None]:
 
 RANKING_EVALUATION_MEASURES = [
     Measure(
-        option_key=EvaluationResult.OPTION_RANK_LOSS,
+        option_key=TabularEvaluationResult.OPTION_RANK_LOSS,
         name='Ranking Loss',
         smaller_is_better=True,
         evaluation_function=metrics.label_ranking_loss,
         percentage=False,
     ),
     Measure(
-        option_key=EvaluationResult.OPTION_COVERAGE_ERROR,
+        option_key=TabularEvaluationResult.OPTION_COVERAGE_ERROR,
         name='Coverage Error',
         smaller_is_better=True,
         evaluation_function=metrics.coverage_error,
         percentage=False,
     ),
     Measure(
-        option_key=EvaluationResult.OPTION_LABEL_RANKING_AVERAGE_PRECISION,
+        option_key=TabularEvaluationResult.OPTION_LABEL_RANKING_AVERAGE_PRECISION,
         name='Label Ranking Average Precision',
         evaluation_function=metrics.label_ranking_average_precision_score,
         percentage=False,
@@ -62,13 +62,13 @@ RANKING_EVALUATION_MEASURES = [
     chain(
         at_k(
             Measure(
-                option_key=EvaluationResult.OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN,
+                option_key=TabularEvaluationResult.OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN,
                 name='NDCG',
                 evaluation_function=metrics.ndcg_score,
             )),
         at_k(
             Measure(
-                option_key=EvaluationResult.OPTION_DISCOUNTED_CUMULATIVE_GAIN,
+                option_key=TabularEvaluationResult.OPTION_DISCOUNTED_CUMULATIVE_GAIN,
                 name='DCG',
                 evaluation_function=metrics.dcg_score,
                 percentage=False,
