@@ -21,7 +21,7 @@ jobs:
       - name: Enable support for long paths
         run: git config --system core.longpaths true
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
