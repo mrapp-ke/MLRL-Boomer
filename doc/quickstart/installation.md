@@ -17,7 +17,7 @@ header-rows: 1
   - ✅
   - ✅
 * - macOS
-  - ❌
+  - ✅
   - ✅
 * - Windows
   - ✅
