@@ -41,12 +41,12 @@ class SingleMode(Mode):
         return False
 
     @override
-    def configure_arguments(self, cli: CommandLineInterface, extension_arguments: List[Argument],
+    def configure_arguments(self, cli: CommandLineInterface, control_arguments: List[Argument],
                             algorithmic_arguments: List[Argument]):
-        cli.add_arguments(*extension_arguments, *algorithmic_arguments)
+        cli.add_arguments(*control_arguments, *algorithmic_arguments)
 
     @override
-    def run_experiment(self, extension_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
+    def run_experiment(self, control_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
                        recipe: Recipe):
         command = Command.from_argv()
 

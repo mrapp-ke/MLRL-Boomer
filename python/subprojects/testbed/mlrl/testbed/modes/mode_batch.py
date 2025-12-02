@@ -470,13 +470,13 @@ class BatchMode(Mode):
         return self
 
     @override
-    def configure_arguments(self, cli: CommandLineInterface, extension_arguments: List[Argument],
+    def configure_arguments(self, cli: CommandLineInterface, control_arguments: List[Argument],
                             algorithmic_arguments: List[Argument]):
         cli.add_arguments(self.CONFIG_FILE, self.SEPARATE_FOLDS, self.LIST_COMMANDS, self.__create_runner_argument(),
-                          *extension_arguments, *algorithmic_arguments)
+                          *control_arguments, *algorithmic_arguments)
 
     @override
-    def run_experiment(self, extension_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
+    def run_experiment(self, control_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
                        recipe: Recipe):
         config_file_path = self.CONFIG_FILE.get_value(args)
 
