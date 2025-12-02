@@ -205,9 +205,9 @@ class ReadMode(InputMode):
         return ReadMode.AggregateEvaluationProcedure(evaluation_by_dataset_type).conduct_experiment(experiment)
 
     @override
-    def _run_experiment(self, extension_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
+    def _run_experiment(self, control_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
                         recipe: Recipe, meta_data: MetaData, input_directory: Path):
-        batch = self.__get_batch(extension_arguments, args, meta_data)
+        batch = self.__get_batch(control_arguments, args, meta_data)
         num_experiments = len(batch)
         log.info('Reading experimental results of %s %s...', num_experiments,
                  'experiments' if num_experiments > 1 else 'experiment')
@@ -215,7 +215,7 @@ class ReadMode(InputMode):
 
         evaluation_by_dataset_type: Dict[DatasetType, Dict[str, Table]] = {}
 
-        for dataset_name, commands in self.__group_batch_by_dataset(extension_arguments, args, batch).items():
+        for dataset_name, commands in self.__group_batch_by_dataset(control_arguments, args, batch).items():
             commands_and_their_states: List[Tuple[Command, ExperimentState]] = []
 
             for command, command_args in commands:
