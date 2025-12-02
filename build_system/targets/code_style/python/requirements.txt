@@ -1,6 +1,6 @@
 autoflake >= 2.3, < 2.4
 cython-lint >= 0.18, < 0.19
 isort >= 7.0, < 7.1
-mypy >= 1.18, < 1.19
+mypy >= 1.19, < 1.20
 pylint >= 4.0, < 4.1
 yapf >= 0.43, < 0.44
