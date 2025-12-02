@@ -9,7 +9,7 @@ from argparse import ArgumentError, ArgumentParser, Namespace, _ArgumentGroup
 from enum import Enum
 from functools import cached_property
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple, Type, override
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Type, override
 
 from mlrl.util.format import format_enum_values, format_set, format_value
 from mlrl.util.options import BooleanOption, Options, parse_enum, parse_param, parse_param_and_options
@@ -346,30 +346,33 @@ class SetArgument(Argument):
     An argument of a command line interface for which the user can provide one out of a predefined set of string values.
     """
 
+    Values = Set[str] | Dict[str, Set[str]]
+
     @staticmethod
-    def __format_description(description: Optional[str], values: Set[str] | Dict[str, Set[str]]) -> str:
+    def __format_description(description: Optional[str], values: Values) -> str:
+        result = description if description else ''
+
         if description:
             if not description.endswith('.'):
-                description += '.'
+                result += '.'
 
-            description += ' '
-        else:
-            description = ''
+            result += ' '
 
-        description += 'Must be one of ' + format_set(values.keys() if isinstance(values, dict) else values) + '.'
+        result += 'Must be one of ' + format_set(values.keys() if isinstance(values, dict) else values) + '.'
 
         if isinstance(values, dict):
-            description += ' For additional options refer to the documentation.'
+            result += ' For additional options refer to the documentation.'
 
-        return description
+        return result
 
     def __init__(self,
                  *names: str,
-                 values: Set[str] | Dict[str, Set[str]],
+                 values: Values,
                  description: Optional[str] = None,
                  add_default_value_to_description: bool = True,
                  default: Optional[str] = None,
-                 required: bool = False):
+                 required: bool = False,
+                 description_formatter: Callable[[str, Values], Optional[str]] = __format_description):
         """
         :param names:                               One or several names of the argument
         :param values:                              A set that contains the predefined values or a dictionary that
@@ -380,13 +383,16 @@ class SetArgument(Argument):
                                                     is not None, False otherwise
         :param default:                             The default value
         :param required:                            True, if the argument is mandatory, False otherwise
+        :param description_formatter:               An optional function to be used for formatting the description of
+                                                    this argument
         """
-        super().__init__(*names,
-                         default=default,
-                         description=self.__format_description(description, values),
-                         add_default_value_to_description=add_default_value_to_description,
-                         type=str,
-                         required=required)
+        super().__init__(
+            *names,
+            default=default,
+            description=description_formatter(description, values),  # type: ignore[arg-type]
+            add_default_value_to_description=add_default_value_to_description,
+            type=str,
+            required=required)
         self.supported_values = values
 
     @override
