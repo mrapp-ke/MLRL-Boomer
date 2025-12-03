@@ -5,6 +5,7 @@ Provides classes for running experiments using the scikit-learn framework.
 """
 import contextlib
 import os
+import re as regex
 
 from abc import ABC, abstractmethod
 from argparse import Namespace
@@ -13,6 +14,7 @@ from itertools import chain
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Type, override
 
+import docstring_parser
 import numpy as np
 
 from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMixin as SkLearnRegressorMixin
@@ -51,8 +53,8 @@ from mlrl.testbed.modes import BatchMode
 from mlrl.testbed.runnables import Runnable
 from mlrl.testbed.util.io import ENCODING_UTF8
 
-from mlrl.util.cli import Argument, SetArgument
-from mlrl.util.format import format_set
+from mlrl.util.cli import Argument, BoolArgument, FloatArgument, IntArgument, SetArgument
+from mlrl.util.format import format_list, format_set
 
 
 class SkLearnRunnable(Runnable, ABC):
@@ -274,7 +276,136 @@ class SklearnEstimator:
     Represents a scikit-learn estimator that can be used with a `SklearnEstimatorRunnable`.
     """
 
+    class SklearnArgument(Argument):
+        """
+        A command line argument that allows to configure a hyperparameter of a scikit-learn estimator.
+        """
+
+        def __init__(self,
+                     name: str,
+                     parameter_name: str,
+                     arguments: List[Argument],
+                     description: Optional[str] = None,
+                     type_hint: Optional[str] = None):
+            """
+            :param name:            The name of the argument
+            :param parameter_name:  The name of the hyperparameter
+            :param arguments:       A list that contains arguments that should be used for parsing the argument's value
+            :param description:     An optional description of the argument
+            :param type_hint:       An optional type hint
+            """
+            super().__init__(name, description=description)
+            self.parameter_name = parameter_name
+            self.arguments = arguments
+            self.type_hint = type_hint
+
+        @staticmethod
+        def from_type_name(argument_name: str,
+                           parameter_name: str,
+                           type_name: str,
+                           description: Optional[str] = None) -> 'SklearnEstimator.SklearnArgument':
+            """
+            Creates and returns an `SklearnArgument` from a given type name.
+
+            :param argument_name:   The name to be used by the argument
+            :param parameter_name:  the name of the hyperparameter
+            :param type_name:       The type name to be parsed
+            :param description:     An optional description of the argument
+            """
+            arguments: List[Argument] = []
+            type_hints: List[str] = []
+            default_value: Optional[str] = None
+
+            for part in [part.strip() for part in regex.split(r'[{}]', type_name) if part]:
+                parts2 = [part2.strip() for part2 in regex.split(r',|or', part) if part2]
+
+                if all(part2 == 'None' or (part2.startswith('"') and part2.endswith('"')) for part2 in parts2):
+                    values = set(filter(lambda part2: part2 != 'None', map(lambda part2: part2.strip('"'), parts2)))
+                    arguments.append(SetArgument(argument_name, values=values))
+                    type_hints.append('one of ' + format_set(values))
+                else:
+                    for part2 in parts2:
+                        if part2.startswith('non-negative'):
+                            part2 = part2[len('non-negative'):].strip()
+
+                        if part2 == 'int':
+                            arguments.insert(0, IntArgument(argument_name))  # Must have priority over 'float'
+                            type_hints.append(part2)
+                        elif part2 == 'float':
+                            arguments.append(FloatArgument(argument_name))
+                            type_hints.append(part2)
+                        elif part2 == 'bool':
+                            arguments.append(BoolArgument(argument_name))
+                            type_hints.append(part2)
+                        elif part2.startswith('default='):
+                            default_value = part2.lstrip('default=')
+                        else:
+                            raise ValueError('Failed to parse type name: ' + part2)
+
+            type_hint: Optional[str] = None
+
+            if description and type_hints:
+                description = description.rstrip() + ('' if description.endswith('.') else '.')
+                type_hint = format_list(type_hints, last_separator=' or ')
+                description += ' Must be ' + type_hint + '.'
+
+                if default_value:
+                    description += ' The default value is ' + default_value + '.'
+
+            return SklearnEstimator.SklearnArgument(name=argument_name,
+                                                    parameter_name=parameter_name,
+                                                    description=description,
+                                                    type_hint=type_hint,
+                                                    arguments=arguments)
+
+        @override
+        def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
+            """
+            See :func:`mlrl.util.cli.Argument.get_value`
+            """
+            for argument in self.arguments:
+                try:
+                    value = argument.get_value(args, default=None)
+
+                    if value is not None:
+                        return value
+                except ValueError:
+                    pass
+
+            value = super().get_value(args, default=default)
+
+            if value is not None:
+                message = 'Invalid value given for argument ' + self.name + '.'
+                type_hint = self.type_hint
+                message += ' ' + ('Must be' + type_hint + ', but got' if type_hint else 'Got') + ': ' + str(value)
+                raise ValueError(message)
+
+            return default
+
     EstimatorType = Type[SkLearnClassifierMixin] | Type[SkLearnRegressorMixin]
+
+    @staticmethod
+    def __format_argument_description(description: str) -> str:
+        indent_delimiter = '.. '
+        indent = 0
+        lines: List[str] = []
+
+        for line in description.split('\n'):
+            if line:
+                if line.startswith(indent_delimiter):
+                    indent = len(indent_delimiter)
+                elif indent == 0 or not line.startswith(' ' * indent):
+                    lines.append(line.strip().lstrip('- '))
+                    indent = 0
+
+        description = ' '.join(lines)
+        sentences: List[str] = []
+
+        for sentence in description.split('. '):
+            if not regex.search(r':[a-z]+:`.*`', sentence):
+                sentences.append(sentence.strip().replace('``', '\'').replace('`', '\''))
+
+        return '. '.join(sentences)
 
     def __init__(self, estimator_name: str, estimator_type: EstimatorType):
         """
@@ -326,6 +457,34 @@ class SklearnEstimator:
         return issubclass(self.estimator_type, SkLearnRegressorMixin)
 
     @cached_property
+    def algorithmic_arguments(self) -> Set['SklearnEstimator.SklearnArgument']:
+        """
+        A set that contains the command line arguments that allow to control the hyperparameters of the estimator.
+        """
+        arguments: Set[SklearnEstimator.SklearnArgument] = set()
+        apidoc = self.estimator_type.__doc__
+
+        if apidoc:
+            for param in docstring_parser.parse(apidoc).params:
+                parameter_name = param.arg_name
+                type_name = param.type_name
+
+                if type_name and not parameter_name.startswith('_') and not parameter_name.endswith('_'):
+                    argument_name = Argument.key_to_argument_name(parameter_name)
+                    description = self.__format_argument_description(param.description or '')
+
+                    try:
+                        arguments.add(
+                            SklearnEstimator.SklearnArgument.from_type_name(argument_name=argument_name,
+                                                                            parameter_name=parameter_name,
+                                                                            type_name=type_name,
+                                                                            description=description))
+                    except ValueError:
+                        pass
+
+        return arguments
+
+    @cached_property
     def can_be_default_instantiated(self) -> bool:
         """
         True, if the estimator can be instantiated via a default constructor, False otherwise.
@@ -369,13 +528,23 @@ class SklearnEstimator:
         except Exception:
             return False
 
-    def instantiate(self) -> SkLearnClassifierMixin | SkLearnRegressorMixin:
+    def instantiate(self, args: Optional[Namespace] = None) -> SkLearnClassifierMixin | SkLearnRegressorMixin:
         """
         Creates and returns a new instance of the estimator.
 
-        :return: The instance that has been created
+        :param args:    Command line arguments specified by the user or None, if default hyperparameters should be used
+        :return:        The instance that has been created
         """
-        return self.estimator_type()
+        kwargs: Dict[str, Any] = {}
+
+        if args:
+            for argument in self.algorithmic_arguments:
+                value = argument.get_value(args)
+
+                if value is not None:
+                    kwargs[argument.parameter_name] = value
+
+        return self.estimator_type(**kwargs)
 
     @override
     def __str__(self) -> str:
@@ -419,7 +588,7 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
             return {ExperimentMode.SINGLE, ExperimentMode.BATCH, ExperimentMode.RUN, ExperimentMode.READ}
 
     @staticmethod
-    def __get_estimator(args: Namespace, problem_type: str) -> SklearnEstimator:
+    def __get_estimator(args: Namespace, problem_type: Optional[str] = None) -> Optional[SklearnEstimator]:
         estimator_name = SkLearnEstimatorRunnable.EstimatorExtension.ESTIMATOR.get_value(args)
         estimators_by_name = {
             estimator.estimator_name: estimator
@@ -427,7 +596,7 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
         }
         estimator = estimators_by_name.get(estimator_name)
 
-        if not estimator:
+        if not estimator and problem_type:
             raise ValueError('Estimator "' + estimator_name + '" does not support problem type "' + problem_type + '"')
 
         return estimator
@@ -446,7 +615,8 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_algorithmic_arguments`
         """
-        return set()
+        estimator = self.__get_estimator(known_args)
+        return estimator.algorithmic_arguments if estimator else set()
 
     @override
     def create_classifier(self, args: Namespace) -> Optional[SkLearnClassifierMixin]:
@@ -454,7 +624,7 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
         See :func:`mlrl.testbed.runnables.Runnable.create_classifier`
         """
         estimator = self.__get_estimator(args, problem_type=ClassificationProblem.NAME)
-        return estimator.instantiate()
+        return estimator.instantiate(args) if estimator else None
 
     @override
     def create_regressor(self, args: Namespace) -> Optional[SkLearnRegressorMixin]:
@@ -462,4 +632,4 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
         See :func:`mlrl.testbed_sklearn.runnables.SkLearnRunnable.create_regressor`
         """
         estimator = self.__get_estimator(args, problem_type=RegressionProblem.NAME)
-        return estimator.instantiate()
+        return estimator.instantiate(args) if estimator else None

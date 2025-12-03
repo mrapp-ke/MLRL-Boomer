@@ -65,6 +65,16 @@ class Argument:
         """
         return name.lstrip('-').replace('-', '_')
 
+    @staticmethod
+    def key_to_argument_name(key: str) -> str:
+        """
+        Converts the key of an argument into its name.
+
+        :param key: The key of the argument
+        :return:    The name of the argument
+        """
+        return '--' + key.replace('_', '-')
+
     @cached_property
     def name(self) -> str:
         """
