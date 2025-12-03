@@ -101,14 +101,13 @@ class Runnable(Recipe, ABC):
         """
         return None
 
-    def run(self, mode: Mode, extension_arguments: Set[Argument], algorithmic_arguments: Set[Argument],
-            args: Namespace):
+    def run(self, mode: Mode, control_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace):
         """
         Executes the runnable.
 
         :param mode:                    The mode of operation
-        :param extension_arguments:     The arguments that should be added to the command line interface according to
-                                        the registered extensions
+        :param control_arguments:       The arguments that should be added to the command line interface for controlling
+                                        mlrl-testbed's behavior
         :param algorithmic_arguments:   The arguments that should be added to the command line interface for configuring
                                         the algorithm's hyperparameters
         :param args:                    The command line arguments specified by the user
@@ -153,7 +152,7 @@ class Runnable(Recipe, ABC):
 
                 return experiment_builder
 
-        mode.run_experiment(extension_arguments, algorithmic_arguments, args, RecipeWrapper(self))
+        mode.run_experiment(control_arguments, algorithmic_arguments, args, RecipeWrapper(self))
 
     def configure_batch_mode(self, cli: CommandLineInterface) -> BatchMode:
         """
@@ -215,13 +214,13 @@ class Runnable(Recipe, ABC):
         :return:        A set that contains the arguments that should be added to the command line interface according
                         to the registered extensions, as well as a set that contains algorithmic arguments
         """
-        extension_arguments: Set[Argument] = reduce(
+        control_arguments: Set[Argument] = reduce(
             lambda aggr, extension: aggr | extension.get_arguments(mode.to_enum()), self.get_extensions(), set())
         algorithmic_arguments = self.get_algorithmic_arguments(cli.parse_known_args())
         mode.configure_arguments(cli,
-                                 extension_arguments=sorted(extension_arguments, key=lambda arg: arg.name),
+                                 control_arguments=sorted(control_arguments, key=lambda arg: arg.name),
                                  algorithmic_arguments=sorted(algorithmic_arguments, key=lambda arg: arg.name))
-        return extension_arguments, set(algorithmic_arguments)
+        return control_arguments, set(algorithmic_arguments)
 
     # pylint: disable=unused-argument
     def get_algorithmic_arguments(self, known_args: Namespace) -> Set[Argument]:
