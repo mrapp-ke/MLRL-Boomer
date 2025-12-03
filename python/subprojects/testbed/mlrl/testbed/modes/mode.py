@@ -33,28 +33,28 @@ class Mode(ABC):
     )
 
     @abstractmethod
-    def configure_arguments(self, cli: CommandLineInterface, extension_arguments: List[Argument],
+    def configure_arguments(self, cli: CommandLineInterface, control_arguments: List[Argument],
                             algorithmic_arguments: List[Argument]):
         """
         Must be implemented by subclasses in order to configure the command line interface according to the mode of
         operation.
 
         :param cli:                     The command line interface to be configured
-        :param extension_arguments:     The arguments that should be added to the command line interface according to
-                                        the registered extensions
+        :param control_arguments:       The arguments that should be added to the command line interface for controlling
+                                        mlrl-testbed's behavior
         :param algorithmic_arguments:   The arguments that should be added to the command line interface for configuring
                                         the algorithm's hyperparameters
         """
 
     @abstractmethod
-    def run_experiment(self, extension_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
+    def run_experiment(self, control_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
                        recipe: Recipe):
         """
         Must be implemented by subclasses in order to run an experiment according to the command line arguments
         specified by the user.
 
-        :param extension_arguments:     The arguments that should be added to the command line interface according to
-                                        the registered extensions
+        :param control_arguments:       The arguments that should be added to the command line interface for controlling
+                                        mlrl-testbed's behavior
         :param algorithmic_arguments:   The arguments that should be added to the command line interface for configuring
                                         the algorithm's hyperparameters
         :param args:                    The command line arguments specified by the user
@@ -110,29 +110,29 @@ class InputMode(Mode, ABC):
             log.debug('No version conflicts detected')
 
     @override
-    def configure_arguments(self, cli: CommandLineInterface, extension_arguments: List[Argument],
+    def configure_arguments(self, cli: CommandLineInterface, control_arguments: List[Argument],
                             algorithmic_arguments: List[Argument]):
-        cli.add_arguments(self.INPUT_DIR, *extension_arguments)
+        cli.add_arguments(self.INPUT_DIR, *control_arguments)
 
     @override
-    def run_experiment(self, extension_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
+    def run_experiment(self, control_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
                        recipe: Recipe):
         input_directory = self.INPUT_DIR.get_value(args)
 
         if input_directory:
             meta_data = self.__read_meta_data(args, recipe, input_directory)
             self.__check_version(meta_data)
-            self._run_experiment(extension_arguments, algorithmic_arguments, args, recipe, meta_data, input_directory)
+            self._run_experiment(control_arguments, algorithmic_arguments, args, recipe, meta_data, input_directory)
 
     @abstractmethod
-    def _run_experiment(self, extension_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
+    def _run_experiment(self, control_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
                         recipe: Recipe, meta_data: MetaData, input_directory: Path):
         """
         Must be implemented by subclasses in order to run an experiment that accesses the meta-data of an earlie
         experiment according to the command line arguments specified by the user.
 
-        :param extension_arguments:     The arguments that should be added to the command line interface according to
-                                        the registered extensions
+        :param control_arguments:       The arguments that should be added to the command line interface for controlling
+                                        mlrl-testbed's behavior
         :param algorithmic_arguments:   The arguments that should be added to the command line interface for configuring
                                         the algorithm's hyperparameters
         :param args:                    The command line arguments specified by the user

@@ -185,13 +185,13 @@ def main():
     runnable = __get_runnable(argument_parser)
     cli = __get_cli(runnable, argument_parser)
     mode = __get_mode(cli, runnable)
-    extension_arguments: Set[Argument] = set()
+    control_arguments: Set[Argument] = set()
     algorithmic_arguments: Set[Argument] = set()
 
     if runnable:
-        extension_arguments, algorithmic_arguments = runnable.configure_arguments(cli, mode)
+        control_arguments, algorithmic_arguments = runnable.configure_arguments(cli, mode)
     else:
-        mode.configure_arguments(cli, extension_arguments=[], algorithmic_arguments=[])
+        mode.configure_arguments(cli, control_arguments=[], algorithmic_arguments=[])
 
     argument_parser.add_argument('-h',
                                  '--help',
@@ -203,7 +203,7 @@ def main():
     __configure_logger(args)
 
     if runnable:
-        runnable.run(mode, extension_arguments, algorithmic_arguments, args)
+        runnable.run(mode, control_arguments, algorithmic_arguments, args)
 
 
 if __name__ == '__main__':

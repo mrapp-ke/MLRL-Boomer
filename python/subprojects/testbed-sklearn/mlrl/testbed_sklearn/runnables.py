@@ -136,6 +136,11 @@ class SkLearnRunnable(Runnable, ABC):
 
             if problem_type == ClassificationProblem.NAME:
                 base_learner = runnable.create_classifier(args)
+
+                if not base_learner:
+                    raise AttributeError('Classification problems are not supported by the runnable "'
+                                         + type(runnable).__name__ + '"')
+
                 # pylint: disable=protected-access
                 base_learner._validate_params()  # type: ignore[union-attr]
                 return SkLearnClassificationProblem(base_learner=base_learner,
@@ -145,6 +150,11 @@ class SkLearnRunnable(Runnable, ABC):
                                                     predict_kwargs=predict_kwargs)
 
             base_learner = runnable.create_regressor(args)
+
+            if not base_learner:
+                raise AttributeError('Regression problems are not supported by the runnable "' + type(runnable).__name__
+                                     + '"')
+
             # pylint: disable=protected-access
             base_learner._validate_params()  # type: ignore[union-attr]
             return SkLearnRegressionProblem(base_learner=base_learner,

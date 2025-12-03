@@ -26,7 +26,7 @@ class RunMode(InputMode):
     """
 
     @override
-    def _run_experiment(self, extension_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
+    def _run_experiment(self, control_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
                         recipe: Recipe, meta_data: MetaData, input_directory: Path):
         meta_data_command = meta_data.command
         log.info('Re-running experiment "%s"...', meta_data_command)
