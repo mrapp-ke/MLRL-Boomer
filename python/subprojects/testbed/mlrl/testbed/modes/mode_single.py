@@ -41,9 +41,11 @@ class SingleMode(Mode):
         return False
 
     @override
-    def configure_arguments(self, cli: CommandLineInterface, control_arguments: List[Argument],
-                            algorithmic_arguments: List[Argument]):
+    def configure_control_arguments(self, cli: CommandLineInterface, control_arguments: List[Argument]):
         cli.add_arguments(*control_arguments, group='control arguments')
+
+    @override
+    def configure_algorithmic_arguments(self, cli: CommandLineInterface, algorithmic_arguments: List[Argument]):
         cli.add_arguments(*algorithmic_arguments, group='algorithmic arguments')
 
     @override
