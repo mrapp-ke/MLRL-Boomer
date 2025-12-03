@@ -204,7 +204,8 @@ def main():
     if runnable:
         control_arguments, algorithmic_arguments = runnable.configure_arguments(cli, mode)
     else:
-        mode.configure_arguments(cli, control_arguments=[], algorithmic_arguments=[])
+        mode.configure_control_arguments(cli, control_arguments=[])
+        mode.configure_algorithmic_arguments(cli, algorithmic_arguments=[])
 
     argument_parser.add_argument('-h',
                                  '--help',
