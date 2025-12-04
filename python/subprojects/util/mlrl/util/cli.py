@@ -32,7 +32,7 @@ class Argument:
                  decorator: Optional[Decorator] = None,
                  **kwargs: Any):
         """
-        :param names:       One of several names of the argument
+        :param names:       One or several names of the argument
         :param required:    True, if the argument is mandatory, False otherwise
         :param default:     The default value of the argument, if any
         :param decorator:   An optional decorator function that is given the value provided by the user for this
