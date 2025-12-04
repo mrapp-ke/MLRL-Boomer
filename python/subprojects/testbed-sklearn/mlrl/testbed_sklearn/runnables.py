@@ -416,31 +416,34 @@ class SklearnEstimator:
         self.estimator_type = estimator_type
 
     @staticmethod
-    def get_supported_estimators(problem_type: Optional[str] = None) -> Set['SklearnEstimator']:
+    def get_supported_regressors() -> Set['SklearnEstimator']:
         """
-        Returns a set that returns all supported scikit-learn estimators for a given problem type.
+        Returns a set that returns all supported scikit-learn regressors.
 
-        :param problem_type:    A problem type or None, if all estimators should be returned
-        :return:                A set that contains the names of all supported estimators
+        :return: A set that contains the names of all supported regressors
         """
-        regressors: Set[SklearnEstimator] = set()
-        classifiers: Set[SklearnEstimator] = set()
+        return set(
+            filter(
+                lambda estimator: estimator.can_be_default_instantiated, {
+                    SklearnEstimator(estimator_name=estimator_name, estimator_type=estimator_type)
+                    for estimator_name, estimator_type in all_estimators(type_filter='regressor')
+                    if issubclass(estimator_type, SkLearnRegressorMixin)
+                }))
 
-        if not problem_type or problem_type == RegressionProblem.NAME:
-            regressors = {
-                SklearnEstimator(estimator_name=estimator_name, estimator_type=estimator_type)
-                for estimator_name, estimator_type in all_estimators(type_filter='regressor')
-                if issubclass(estimator_type, SkLearnRegressorMixin)
-            }
+    @staticmethod
+    def get_supported_classifiers() -> Set['SklearnEstimator']:
+        """
+        Returns a set that returns all supported scikit-learn classifiers.
 
-        if not problem_type or problem_type == ClassificationProblem.NAME:
-            classifiers = {
-                SklearnEstimator(estimator_name=estimator_name, estimator_type=estimator_type)
-                for estimator_name, estimator_type in all_estimators(type_filter='classifier')
-                if issubclass(estimator_type, SkLearnClassifierMixin)
-            }
-
-        return set(filter(lambda estimator: estimator.can_be_default_instantiated, chain(regressors, classifiers)))
+        :return: A set that contains the names of all supported classifiers
+        """
+        return set(
+            filter(
+                lambda estimator: estimator.can_be_default_instantiated, {
+                    SklearnEstimator(estimator_name=estimator_name, estimator_type=estimator_type)
+                    for estimator_name, estimator_type in all_estimators(type_filter='classifier')
+                    if issubclass(estimator_type, SkLearnClassifierMixin)
+                }))
 
     @property
     def is_classifier(self) -> bool:
@@ -561,24 +564,48 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
         An extension that configures the scikit-learn estimator to be used in an experiment.
         """
 
-        ESTIMATOR = SetArgument(
-            '--estimator',
-            values=set(map(str, SklearnEstimator.get_supported_estimators())),
-            description='The name of the scikit-learn estimator to be used. Must be one of '
-            + format_set(SklearnEstimator.get_supported_estimators(ClassificationProblem.NAME)) + ', if the argument '
-            + SkLearnRunnable.ProblemDomainExtension.PROBLEM_TYPE.name + ' is set to "' + ClassificationProblem.NAME
-            + '", or ' + format_set(SklearnEstimator.get_supported_estimators(RegressionProblem.NAME)) + ', if it is '
-            + 'set to "' + RegressionProblem.NAME + '".',
-            description_formatter=lambda description, _: description,
-            required=True,
-        )
+        def __init__(self, supported_classifiers: Set[SklearnEstimator], supported_regressors: Set[SklearnEstimator],
+                     *dependencies: 'Extension'):
+            """
+            :param supported_classifiers:   A set that contains all supported scikit-learn classifiers
+            :param supported_regressors:    A set that contains all supported scikit-learn regressors
+            :param dependencies:            Other extensions, this extension depends on
+            """
+            super().__init__(*dependencies)
+            self._supported_classifiers = supported_classifiers
+            self._supported_regressors = supported_regressors
+
+        @staticmethod
+        def create_estimator_argument(supported_classifiers: Set[SklearnEstimator],
+                                      supported_regressors: Set[SklearnEstimator]) -> SetArgument:
+            """
+            Creates and returns a `SetArgument` that allows to specify the name of the scikit-learn estimator to be
+            used in an experiment.
+
+            :param supported_classifiers:   A set that contains all supported scikit-learn classifiers
+            :param supported_regressors:    A set that contains all supported scikit-learn regressors
+            :return                         The `SetArgument` that has been created
+            """
+            return SetArgument(
+                '--estimator',
+                values=set(map(str, chain(supported_classifiers, supported_regressors))),
+                description='The name of the scikit-learn estimator to be used. Must be one of '
+                + format_set(supported_classifiers) + ', if the argument '
+                + SkLearnRunnable.ProblemDomainExtension.PROBLEM_TYPE.name + ' is set to "' + ClassificationProblem.NAME
+                + '", or ' + format_set(supported_regressors) + ', if it is set to "' + RegressionProblem.NAME + '".',
+                description_formatter=lambda description, _: description,
+                required=True,
+            )
 
         @override
         def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
             """
-            return {self.ESTIMATOR}
+            return {
+                self.create_estimator_argument(supported_classifiers=self._supported_classifiers,
+                                               supported_regressors=self._supported_regressors)
+            }
 
         @override
         def get_supported_modes(self) -> Set[ExperimentMode]:
@@ -587,13 +614,15 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
             """
             return {ExperimentMode.SINGLE, ExperimentMode.BATCH, ExperimentMode.RUN, ExperimentMode.READ}
 
-    @staticmethod
-    def __get_estimator(args: Namespace, problem_type: Optional[str] = None) -> Optional[SklearnEstimator]:
-        estimator_name = SkLearnEstimatorRunnable.EstimatorExtension.ESTIMATOR.get_value(args)
-        estimators_by_name = {
-            estimator.estimator_name: estimator
-            for estimator in SklearnEstimator.get_supported_estimators(problem_type=problem_type)
-        }
+    def __init__(self):
+        self._classifiers = SklearnEstimator.get_supported_classifiers()
+        self._regressors = SklearnEstimator.get_supported_regressors()
+
+    def __get_estimator(self, args: Namespace, problem_type: Optional[str] = None) -> Optional[SklearnEstimator]:
+        estimators = self._regressors if problem_type == RegressionProblem.NAME else self._classifiers
+        estimator_name = SkLearnEstimatorRunnable.EstimatorExtension.create_estimator_argument(
+            supported_classifiers=self._classifiers, supported_regressors=self._regressors).get_value(args)
+        estimators_by_name = {estimator.estimator_name: estimator for estimator in estimators}
         estimator = estimators_by_name.get(estimator_name)
 
         if not estimator and problem_type:
@@ -607,7 +636,8 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
         See :func:`mlrl.testbed.runnables.Runnable.get_extensions`
         """
         return [
-            SkLearnEstimatorRunnable.EstimatorExtension(),
+            SkLearnEstimatorRunnable.EstimatorExtension(supported_classifiers=self._classifiers,
+                                                        supported_regressors=self._regressors),
         ] + super().get_extensions()
 
     @override
