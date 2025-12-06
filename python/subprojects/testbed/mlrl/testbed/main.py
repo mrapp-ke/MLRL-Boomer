@@ -19,6 +19,7 @@ from mlrl.testbed.program_info import ProgramInfo
 from mlrl.testbed.runnables import Runnable
 
 from mlrl.util.cli import Argument, CommandLineInterface, EnumArgument
+from mlrl.util.validation import ValidationError
 
 
 class LogLevel(Enum):
@@ -203,7 +204,11 @@ def main():
     __configure_logger(args)
 
     if runnable:
-        runnable.run(mode, control_arguments, algorithmic_arguments, args)
+        try:
+            runnable.run(mode, control_arguments, algorithmic_arguments, args)
+        except ValidationError as error:
+            log.error('%s', error)
+            sys.exit(1)
 
 
 if __name__ == '__main__':
