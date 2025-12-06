@@ -133,4 +133,4 @@ cdef inline OutputSpaceInfo create_output_space_info(unique_ptr[IOutputSpaceInfo
             return no_output_space_info
         else:
             del ptr
-            raise RuntimeError('Encountered unsupported IOutputSpaceInfo object')
+            raise ValueError('Encountered unsupported IOutputSpaceInfo object')

@@ -393,7 +393,7 @@ class BatchMode(Mode):
             dataset_name = dataset_args[DatasetArguments.DATASET_NAME.name]
 
             if not dataset_name:
-                raise RuntimeError('Unable to determine dataset name based on the arguments ' + str(dataset_args))
+                raise ValueError('Unable to determine dataset name based on the arguments ' + str(dataset_args))
 
             for parameter_args in map(BatchMode.__filter_arguments, config_file.parameter_args):
                 output_dir = BatchMode.__get_output_dir(parameter_args, dataset_name)
