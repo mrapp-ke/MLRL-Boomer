@@ -3,6 +3,24 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for validation.
 """
+from typing import override
+
+
+class ValidationError(Exception):
+    """
+    An exception to be raised when a validation error occurs.
+    """
+
+    def __init__(self, message: str):
+        """
+        :param message: The message of the exception
+        """
+        super().__init__(message)
+        self.message = message
+
+    @override
+    def __str__(self) -> str:
+        return self.message
 
 
 def assert_greater(name: str, value, threshold):
