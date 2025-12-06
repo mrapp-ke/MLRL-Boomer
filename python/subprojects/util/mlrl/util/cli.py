@@ -26,7 +26,7 @@ class Argument:
 
     def __init__(self, *names: str, required: bool = False, default: Optional[Any] = None, **kwargs: Any):
         """
-        :param names:       One of several names of the argument
+        :param names:       One or several names of the argument
         :param required:    True, if the argument is mandatory, False otherwise
         :param default:     The default value of the argument, if any
         :param kwargs:      Optional keyword argument to be passed to an `ArgumentParser`
@@ -271,7 +271,7 @@ class BoolArgument(Argument):
 
             return BooleanOption.parse(str_value)
 
-        return None, None if has_options else None
+        return (None, None) if has_options else None
 
 
 class SetArgument(Argument):
