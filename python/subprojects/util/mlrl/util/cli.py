@@ -255,7 +255,7 @@ class BoolArgument(Argument):
 
             return BooleanOption.parse(str_value)
 
-        return None, None if has_options else None
+        return (None, None) if has_options else None
 
 
 class SetArgument(Argument):
