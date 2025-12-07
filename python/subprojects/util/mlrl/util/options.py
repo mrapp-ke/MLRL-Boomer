@@ -8,6 +8,7 @@ from functools import reduce
 from typing import Any, Dict, Optional, Set, Tuple, Type, override
 
 from mlrl.util.format import format_enum_values, format_set
+from mlrl.util.validation import ValidationError
 
 
 class BooleanOption(StrEnum):
@@ -30,8 +31,8 @@ class BooleanOption(StrEnum):
             return True
         if text == BooleanOption.FALSE:
             return False
-        raise ValueError('Invalid boolean value given. Must be one of ' + format_enum_values(BooleanOption)
-                         + ', but is "' + str(text) + '".')
+        raise ValidationError('Invalid boolean value given. Must be one of ' + format_enum_values(BooleanOption)
+                              + ', but is "' + str(text) + '".')
 
 
 class Options:
@@ -61,10 +62,11 @@ class Options:
 
         if string:
             if not string.startswith('{'):
-                raise ValueError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. Must start with "{", but is "' + string
-                                 + '"')
+                raise ValidationError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. Must start with "{", but is "' + string
+                                      + '"')
             if not string.endswith('}'):
-                raise ValueError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. Must end with "}", but is "' + string + '"')
+                raise ValidationError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. Must end with "}", but is "' + string
+                                      + '"')
 
             string = string[1:-1]
 
@@ -74,29 +76,29 @@ class Options:
                         parts = option.split('=')
 
                         if len(parts) != 2:
-                            raise ValueError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. '
-                                             + Options.ERROR_MESSAGE_INVALID_OPTION + ', but got element "' + option
-                                             + '" at index ' + str(option_index))
+                            raise ValidationError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. '
+                                                  + Options.ERROR_MESSAGE_INVALID_OPTION + ', but got element "'
+                                                  + option + '" at index ' + str(option_index))
 
                         key = parts[0]
 
                         if len(key) == 0:
-                            raise ValueError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. '
-                                             + Options.ERROR_MESSAGE_INVALID_OPTION
-                                             + ', but key is missing from element "' + option + '" at index '
-                                             + str(option_index))
+                            raise ValidationError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. '
+                                                  + Options.ERROR_MESSAGE_INVALID_OPTION
+                                                  + ', but key is missing from element "' + option + '" at index '
+                                                  + str(option_index))
 
                         if key not in allowed_keys:
-                            raise ValueError('Key must be one of ' + format_set(allowed_keys) + ', but got key "' + key
-                                             + '" at index ' + str(option_index))
+                            raise ValidationError('Key must be one of ' + format_set(allowed_keys) + ', but got key "'
+                                                  + key + '" at index ' + str(option_index))
 
                         value = parts[1]
 
                         if len(value) == 0:
-                            raise ValueError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. '
-                                             + Options.ERROR_MESSAGE_INVALID_OPTION
-                                             + ', but value is missing from element "' + option + '" at index '
-                                             + str(option_index))
+                            raise ValidationError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. '
+                                                  + Options.ERROR_MESSAGE_INVALID_OPTION
+                                                  + ', but value is missing from element "' + option + '" at index '
+                                                  + str(option_index))
 
                         dictionary[key] = value
 
@@ -143,8 +145,8 @@ class Options:
             try:
                 value = int(value)
             except ValueError as error:
-                raise ValueError('Value for key "' + key + '" is expected to be an integer, but is "' + str(value)
-                                 + '"') from error
+                raise ValidationError('Value for key "' + key + '" is expected to be an integer, but is "' + str(value)
+                                      + '"') from error
 
             return value
 
@@ -164,8 +166,8 @@ class Options:
             try:
                 value = float(value)
             except ValueError as error:
-                raise ValueError('Value for key "' + key + '" is expected to be a float, but is "' + str(value)
-                                 + '"') from error
+                raise ValidationError('Value for key "' + key + '" is expected to be a float, but is "' + str(value)
+                                      + '"') from error
 
             return value
 
@@ -197,8 +199,9 @@ def parse_enum(name: str, value: Optional[str], enum: Type[Enum], default: Optio
             if expected_value == value:
                 return enum_value
 
-        raise ValueError('Invalid value given for ' + ('argument' if name.startswith('-') else 'parameter') + ' "'
-                         + name + '": Must be one of ' + format_enum_values(enum) + ', but is "' + str(value) + '"')
+        raise ValidationError('Invalid value given for ' + ('argument' if name.startswith('-') else 'parameter') + ' "'
+                              + name + '": Must be one of ' + format_enum_values(enum) + ', but is "' + str(value)
+                              + '"')
 
     return default
 
@@ -215,8 +218,8 @@ def parse_param(name: str, value: str, allowed_values: Set[str]) -> str:
     if value in allowed_values:
         return value
 
-    raise ValueError('Invalid value given for ' + ('argument' if name.startswith('-') else 'parameter') + ' "' + name
-                     + '": Must be one of ' + format_set(allowed_values) + ', but is "' + str(value) + '"')
+    raise ValidationError('Invalid value given for ' + ('argument' if name.startswith('-') else 'parameter') + ' "'
+                          + name + '": Must be one of ' + format_set(allowed_values) + ', but is "' + str(value) + '"')
 
 
 def parse_param_and_options(name: str, value: str, allowed_values_and_options: Dict[str,
@@ -239,12 +242,12 @@ def parse_param_and_options(name: str, value: str, allowed_values_and_options: D
                 try:
                     return allowed_value, Options.create(suffix, allowed_options)
                 except ValueError as error:
-                    raise ValueError('Invalid options given for '
-                                     + ('argument' if name.startswith('-') else 'parameter') + ' "' + name
-                                     + '" with value "' + allowed_value + '": ' + str(error)) from error
+                    raise ValidationError('Invalid options given for '
+                                          + ('argument' if name.startswith('-') else 'parameter') + ' "' + name
+                                          + '" with value "' + allowed_value + '": ' + str(error)) from error
 
             return allowed_value, Options()
 
-    raise ValueError('Invalid value given for ' + ('argument' if name.startswith('-') else 'parameter') + ' "' + name
-                     + '": Must be one of ' + format_set(allowed_values_and_options.keys()) + ', but is "' + value
-                     + '"')
+    raise ValidationError('Invalid value given for ' + ('argument' if name.startswith('-') else 'parameter') + ' "'
+                          + name + '": Must be one of ' + format_set(allowed_values_and_options.keys()) + ', but is "'
+                          + value + '"')

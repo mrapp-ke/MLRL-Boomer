@@ -113,8 +113,8 @@ class TabularFileSink(FileSink, ABC):
     @override
     def _write_to_file(self, file_path: Path, state: ExperimentState, output_data: OutputData, **kwargs):
         if not isinstance(output_data, TabularOutputData):
-            raise RuntimeError('Output data of type "' + type(output_data).__name__
-                               + '" cannot be converted into a tabular representation')
+            raise ValueError('Output data of type "' + type(output_data).__name__
+                             + '" cannot be converted into a tabular representation')
 
         tabular_data = output_data.to_table(self.options, **kwargs)
 
@@ -150,8 +150,8 @@ class DatasetFileSink(FileSink, ABC):
     @override
     def _write_to_file(self, file_path: Path, state: ExperimentState, output_data: OutputData, **kwargs):
         if not isinstance(output_data, DatasetOutputData):
-            raise RuntimeError('Output data of type "' + type(output_data).__name__
-                               + '" cannot be converted into a dataset')
+            raise ValueError('Output data of type "' + type(output_data).__name__
+                             + '" cannot be converted into a dataset')
 
         dataset = output_data.to_dataset(self.options, **kwargs)
 

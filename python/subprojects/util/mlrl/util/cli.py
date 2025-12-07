@@ -13,6 +13,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple, Type, override
 
 from mlrl.util.format import format_enum_values, format_set
 from mlrl.util.options import BooleanOption, Options, parse_enum, parse_param, parse_param_and_options
+from mlrl.util.validation import ValidationError
 
 NONE = 'none'
 
@@ -173,8 +174,8 @@ class IntArgument(Argument):
         try:
             return None if value is None else int(value)
         except ValueError as error:
-            raise ValueError('Expected value of argument ' + self.name + ' to be an integer, but got: '
-                             + str(value)) from error
+            raise ValidationError('Expected value of argument ' + self.name + ' to be an integer, but got: '
+                                  + str(value)) from error
 
 
 class FloatArgument(Argument):
@@ -202,8 +203,8 @@ class FloatArgument(Argument):
         try:
             return None if value is None else float(value)
         except ValueError as error:
-            raise ValueError('Expected value of argument ' + self.name + ' to be a float, but got: '
-                             + str(value)) from error
+            raise ValidationError('Expected value of argument ' + self.name + ' to be a float, but got: '
+                                  + str(value)) from error
 
 
 class BoolArgument(Argument):

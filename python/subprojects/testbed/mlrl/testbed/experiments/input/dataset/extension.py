@@ -18,6 +18,7 @@ from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.modes import BatchMode
 
 from mlrl.util.cli import Argument, PathArgument
+from mlrl.util.validation import ValidationError
 
 
 class DatasetExtension(Extension, ABC):
@@ -107,7 +108,7 @@ class DatasetFileExtension(DatasetExtension, ABC):
         datasets = config.yaml_dict.get('datasets', [])
 
         if not datasets:
-            raise ValueError('No datasets are specified in the configuration file "' + str(config) + '"')
+            raise ValidationError('No datasets are specified in the configuration file "' + str(config) + '"')
 
         dataset_args = []
 

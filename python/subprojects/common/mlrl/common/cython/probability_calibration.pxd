@@ -164,7 +164,7 @@ cdef inline MarginalProbabilityCalibrationModel create_marginal_probability_cali
             return isotonic_marginal_probability_calibration_model
         else:
             del ptr
-            raise RuntimeError('Encountered unsupported IMarginalProbabilityCalibrationModel object')
+            raise ValueError('Encountered unsupported IMarginalProbabilityCalibrationModel object')
 
 
 cdef inline JointProbabilityCalibrationModel create_joint_probability_calibration_model(
@@ -193,4 +193,4 @@ cdef inline JointProbabilityCalibrationModel create_joint_probability_calibratio
             return isotonic_joint_probability_calibration_model
         else:
             del ptr
-            raise RuntimeError('Encountered unsupported IJointProbabilityCalibrationModel object')
+            raise ValueError('Encountered unsupported IJointProbabilityCalibrationModel object')
