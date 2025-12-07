@@ -1,22 +1,22 @@
 mlrl-testbed mlrl.seco --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --data-split cross-validation --print-evaluation false --save-evaluation false --print-model-characteristics true --print-parameters true --save-parameters true --load-parameters true --parameter-load-dir python/tests/res/in --parameter-save-dir results
 Checking if output files do already exist...
 Starting experiment using the classification algorithm "SeCoClassifier"...
-Writing output data to file "python/tests/res/tmp/metadata.yml"...
+DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Performing full 10-fold cross validation...
 Fold 1 / 10:
-Reading input data from file "python/tests/res/data/emotions.arff"...
-Parsing meta-data from file "python/tests/res/data/emotions.xml"...
-Reading input data from file "python/tests/res/in/parameters_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/data/emotions.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+DEBUG: Reading input data from file "python/tests/res/in/parameters_fold-1.csv"...
 Custom parameters (Fold 1):
 
 max_rules       10
 rule_induction  top-down-greedy{max_conditions=1}
 
-Writing output data to file "python/tests/res/tmp/results/parameters_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/parameters_fold-1.csv"...
 Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 Fitting model to 533 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model characteristics (Fold 1):
 
@@ -42,17 +42,17 @@ Model characteristics (Fold 1):
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
 Fold 2 / 10:
-Reading input data from file "python/tests/res/in/parameters_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/in/parameters_fold-2.csv"...
 Custom parameters (Fold 2):
 
 max_rules       10
 rule_induction  top-down-greedy{max_conditions=1}
 
-Writing output data to file "python/tests/res/tmp/results/parameters_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/parameters_fold-2.csv"...
 Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 Fitting model to 533 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model characteristics (Fold 2):
 
@@ -78,17 +78,17 @@ Model characteristics (Fold 2):
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
 Fold 3 / 10:
-Reading input data from file "python/tests/res/in/parameters_fold-3.csv"...
+DEBUG: Reading input data from file "python/tests/res/in/parameters_fold-3.csv"...
 Custom parameters (Fold 3):
 
 max_rules       10
 rule_induction  top-down-greedy{max_conditions=1}
 
-Writing output data to file "python/tests/res/tmp/results/parameters_fold-3.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/parameters_fold-3.csv"...
 Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 Fitting model to 533 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model characteristics (Fold 3):
 
@@ -114,17 +114,17 @@ Model characteristics (Fold 3):
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
 Fold 4 / 10:
-Reading input data from file "python/tests/res/in/parameters_fold-4.csv"...
+DEBUG: Reading input data from file "python/tests/res/in/parameters_fold-4.csv"...
 Custom parameters (Fold 4):
 
 max_rules       10
 rule_induction  top-down-greedy{max_conditions=1}
 
-Writing output data to file "python/tests/res/tmp/results/parameters_fold-4.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/parameters_fold-4.csv"...
 Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model characteristics (Fold 4):
 
@@ -150,17 +150,17 @@ Model characteristics (Fold 4):
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
 Fold 5 / 10:
-Reading input data from file "python/tests/res/in/parameters_fold-5.csv"...
+DEBUG: Reading input data from file "python/tests/res/in/parameters_fold-5.csv"...
 Custom parameters (Fold 5):
 
 max_rules       10
 rule_induction  top-down-greedy{max_conditions=1}
 
-Writing output data to file "python/tests/res/tmp/results/parameters_fold-5.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/parameters_fold-5.csv"...
 Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model characteristics (Fold 5):
 
@@ -186,17 +186,17 @@ Model characteristics (Fold 5):
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
 Fold 6 / 10:
-Reading input data from file "python/tests/res/in/parameters_fold-6.csv"...
+DEBUG: Reading input data from file "python/tests/res/in/parameters_fold-6.csv"...
 Custom parameters (Fold 6):
 
 max_rules       10
 rule_induction  top-down-greedy{max_conditions=1}
 
-Writing output data to file "python/tests/res/tmp/results/parameters_fold-6.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/parameters_fold-6.csv"...
 Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model characteristics (Fold 6):
 
@@ -222,17 +222,17 @@ Model characteristics (Fold 6):
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
 Fold 7 / 10:
-Reading input data from file "python/tests/res/in/parameters_fold-7.csv"...
+DEBUG: Reading input data from file "python/tests/res/in/parameters_fold-7.csv"...
 Custom parameters (Fold 7):
 
 max_rules       10
 rule_induction  top-down-greedy{max_conditions=1}
 
-Writing output data to file "python/tests/res/tmp/results/parameters_fold-7.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/parameters_fold-7.csv"...
 Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model characteristics (Fold 7):
 
@@ -258,17 +258,17 @@ Model characteristics (Fold 7):
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
 Fold 8 / 10:
-Reading input data from file "python/tests/res/in/parameters_fold-8.csv"...
+DEBUG: Reading input data from file "python/tests/res/in/parameters_fold-8.csv"...
 Custom parameters (Fold 8):
 
 max_rules       10
 rule_induction  top-down-greedy{max_conditions=1}
 
-Writing output data to file "python/tests/res/tmp/results/parameters_fold-8.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/parameters_fold-8.csv"...
 Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model characteristics (Fold 8):
 
@@ -294,17 +294,17 @@ Model characteristics (Fold 8):
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
 Fold 9 / 10:
-Reading input data from file "python/tests/res/in/parameters_fold-9.csv"...
+DEBUG: Reading input data from file "python/tests/res/in/parameters_fold-9.csv"...
 Custom parameters (Fold 9):
 
 max_rules       10
 rule_induction  top-down-greedy{max_conditions=1}
 
-Writing output data to file "python/tests/res/tmp/results/parameters_fold-9.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/parameters_fold-9.csv"...
 Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model characteristics (Fold 9):
 
@@ -330,17 +330,17 @@ Model characteristics (Fold 9):
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
 Fold 10 / 10:
-Reading input data from file "python/tests/res/in/parameters_fold-10.csv"...
+DEBUG: Reading input data from file "python/tests/res/in/parameters_fold-10.csv"...
 Custom parameters (Fold 10):
 
 max_rules       10
 rule_induction  top-down-greedy{max_conditions=1}
 
-Writing output data to file "python/tests/res/tmp/results/parameters_fold-10.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/parameters_fold-10.csv"...
 Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model characteristics (Fold 10):
 
