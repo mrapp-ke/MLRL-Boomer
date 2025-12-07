@@ -1,18 +1,18 @@
 mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --data-split cross-validation --print-evaluation false --save-evaluation false --print-predictions true --print-ground-truth true --save-predictions true --save-ground-truth true
 Checking if output files do already exist...
 Starting experiment using the regression algorithm "BoomerRegressor"...
-Writing output data to file "python/tests/res/tmp/metadata.yml"...
+DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Performing full 10-fold cross validation...
 Fold 1 / 10:
-Reading input data from file "python/tests/res/data/atp7d.arff"...
-Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
+DEBUG: Reading input data from file "python/tests/res/data/atp7d.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
 Fitting model to 266 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 30 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Ground truth for test data (Fold 1):
 
@@ -47,7 +47,7 @@ Ground truth for test data (Fold 1):
  [243. 327. 496. 513. 243. 513.]
  [243. 372. 496. 513. 243. 513.]]
 
-Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-1.arff"...
 Predictions for test data (Fold 1):
 
 [[283.64 320.91 319.47 325.49 284.34 322.45]
@@ -81,15 +81,15 @@ Predictions for test data (Fold 1):
  [259.94 332.89 391.34 463.05 260.77 465.67]
  [261.64 368.18 468.47 509.28 252.16 505.12]]
 
-Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-1.arff"...
 Fold 2 / 10:
 Fitting model to 266 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 30 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Ground truth for test data (Fold 2):
 
@@ -124,7 +124,7 @@ Ground truth for test data (Fold 2):
  [ 199.  199.  447.  488.  268.  488.]
  [ 199.  199.  199.  488.  243.  488.]]
 
-Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-2.arff"...
 Predictions for test data (Fold 2):
 
 [[355.02 796.23 734.86 740.08 361.09 747.13]
@@ -158,15 +158,15 @@ Predictions for test data (Fold 2):
  [199.14 209.67 398.27 482.52 260.23 493.93]
  [218.73 238.02 260.04 479.93 244.88 481.31]]
 
-Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-2.arff"...
 Fold 3 / 10:
 Fitting model to 266 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 30 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Ground truth for test data (Fold 3):
 
@@ -201,7 +201,7 @@ Ground truth for test data (Fold 3):
  [ 288.  397.  456.  513.  344.  513.]
  [ 199.  199.  199.  488.  268.  488.]]
 
-Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-3.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-3.arff"...
 Predictions for test data (Fold 3):
 
 [[ 327.36 1137.77  730.46  727.37  342.95  732.2 ]
@@ -235,15 +235,15 @@ Predictions for test data (Fold 3):
  [ 290.87  393.12  465.15  511.99  332.22  514.89]
  [ 214.88  221.51  358.83  459.18  262.08  461.86]]
 
-Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-3.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-3.arff"...
 Fold 4 / 10:
 Fitting model to 266 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 30 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Ground truth for test data (Fold 4):
 
@@ -278,7 +278,7 @@ Ground truth for test data (Fold 4):
  [199. 199. 199. 488. 243. 488.]
  [243. 289. 407. 488. 243. 488.]]
 
-Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-4.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-4.arff"...
 Predictions for test data (Fold 4):
 
 [[282.76 340.77 336.83 341.39 288.26 332.36]
@@ -312,15 +312,15 @@ Predictions for test data (Fold 4):
  [193.11 174.72 207.65 486.16 259.52 483.84]
  [252.4  287.09 336.22 414.   266.18 414.56]]
 
-Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-4.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-4.arff"...
 Fold 5 / 10:
 Fitting model to 266 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 30 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Ground truth for test data (Fold 5):
 
@@ -355,7 +355,7 @@ Ground truth for test data (Fold 5):
  [249. 249. 407. 447. 268. 468.]
  [199. 199. 199. 488. 243. 488.]]
 
-Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-5.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-5.arff"...
 Predictions for test data (Fold 5):
 
 [[300.73 546.45 429.6  426.17 325.32 433.  ]
@@ -389,15 +389,15 @@ Predictions for test data (Fold 5):
  [235.01 268.84 422.82 439.58 284.98 447.39]
  [225.64 242.17 255.28 464.53 257.4  463.61]]
 
-Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-5.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-5.arff"...
 Fold 6 / 10:
 Fitting model to 266 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 30 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Ground truth for test data (Fold 6):
 
@@ -432,7 +432,7 @@ Ground truth for test data (Fold 6):
  [199. 199. 447. 488. 268. 488.]
  [199. 199. 199. 488. 243. 488.]]
 
-Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-6.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-6.arff"...
 Predictions for test data (Fold 6):
 
 [[281.44 300.19 328.31 330.54 292.24 327.18]
@@ -466,15 +466,15 @@ Predictions for test data (Fold 6):
  [206.84 201.7  427.38 496.69 284.85 504.92]
  [219.38 235.2  270.95 472.73 256.24 472.92]]
 
-Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-6.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-6.arff"...
 Fold 7 / 10:
 Fitting model to 267 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 29 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Ground truth for test data (Fold 7):
 
@@ -508,7 +508,7 @@ Ground truth for test data (Fold 7):
  [243. 289. 407. 488. 243. 488.]
  [243. 372. 496. 513. 243. 513.]]
 
-Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-7.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-7.arff"...
 Predictions for test data (Fold 7):
 
 [[293.56 694.7  566.61 528.35 306.54 534.96]
@@ -541,15 +541,15 @@ Predictions for test data (Fold 7):
  [235.28 249.2  307.67 448.37 252.69 444.12]
  [255.67 306.98 400.03 457.25 265.77 454.18]]
 
-Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-7.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-7.arff"...
 Fold 8 / 10:
 Fitting model to 267 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 29 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Ground truth for test data (Fold 8):
 
@@ -583,7 +583,7 @@ Ground truth for test data (Fold 8):
  [ 244.  309.  244.  391.  244.  391.]
  [ 298.  372.  445.  462.  298.  455.]]
 
-Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-8.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-8.arff"...
 Predictions for test data (Fold 8):
 
 [[364.89 981.75 679.1  728.18 386.42 739.33]
@@ -616,15 +616,15 @@ Predictions for test data (Fold 8):
  [211.32 241.77 260.82 413.   230.32 409.75]
  [213.58 283.58 435.74 469.24 235.21 475.02]]
 
-Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-8.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-8.arff"...
 Fold 9 / 10:
 Fitting model to 267 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 29 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Ground truth for test data (Fold 9):
 
@@ -658,7 +658,7 @@ Ground truth for test data (Fold 9):
  [288. 294. 447. 513. 313. 513.]
  [199. 199. 199. 488. 243. 488.]]
 
-Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-9.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-9.arff"...
 Predictions for test data (Fold 9):
 
 [[279.32 821.77 582.68 501.94 256.24 500.19]
@@ -691,15 +691,15 @@ Predictions for test data (Fold 9):
  [275.75 351.02 452.68 502.15 327.79 503.03]
  [177.43 161.81 183.87 483.16 238.87 483.29]]
 
-Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-9.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-9.arff"...
 Fold 10 / 10:
 Fitting model to 267 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 29 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Ground truth for test data (Fold 10):
 
@@ -733,7 +733,7 @@ Ground truth for test data (Fold 10):
  [288. 397. 456. 513. 344. 513.]
  [199. 199. 447. 488. 268. 488.]]
 
-Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-10.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-10.arff"...
 Predictions for test data (Fold 10):
 
 [[271.17 509.56 513.05 449.48 257.42 442.93]
@@ -766,5 +766,5 @@ Predictions for test data (Fold 10):
  [275.95 373.68 489.48 502.57 296.74 502.2 ]
  [237.66 280.77 430.87 484.96 291.13 476.69]]
 
-Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-10.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-10.arff"...
 Successfully finished experiment after <duration>
