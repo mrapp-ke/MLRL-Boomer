@@ -1,18 +1,18 @@
 mlrl-testbed mlrl.seco --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --data-split cross-validation --print-evaluation true --save-evaluation true
 Checking if output files do already exist...
 Starting experiment using the classification algorithm "SeCoClassifier"...
-Writing output data to file "python/tests/res/tmp/metadata.yml"...
+DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Performing full 10-fold cross validation...
 Fold 1 / 10:
-Reading input data from file "python/tests/res/data/emotions.arff"...
-Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+DEBUG: Reading input data from file "python/tests/res/data/emotions.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 Fitting model to 533 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Predicting for 60 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted labels
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 1):
 
@@ -33,15 +33,15 @@ Micro Recall (↑)            59.83
 Subset 0/1 Loss (↓)         81.67
 Subset Accuracy (↑)         18.33
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-1.csv"...
 Fold 2 / 10:
 Fitting model to 533 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Predicting for 60 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted labels
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 2):
 
@@ -62,15 +62,15 @@ Micro Recall (↑)            56.67
 Subset 0/1 Loss (↓)         81.67
 Subset Accuracy (↑)         18.33
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-2.csv"...
 Fold 3 / 10:
 Fitting model to 533 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Predicting for 60 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted labels
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 3):
 
@@ -91,15 +91,15 @@ Micro Recall (↑)            60.53
 Subset 0/1 Loss (↓)         81.67
 Subset Accuracy (↑)         18.33
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-3.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-3.csv"...
 Fold 4 / 10:
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Predicting for 59 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted labels
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 4):
 
@@ -120,15 +120,15 @@ Micro Recall (↑)            55.88
 Subset 0/1 Loss (↓)         77.97
 Subset Accuracy (↑)         22.03
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-4.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-4.csv"...
 Fold 5 / 10:
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Predicting for 59 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted labels
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 5):
 
@@ -149,15 +149,15 @@ Micro Recall (↑)            66.96
 Subset 0/1 Loss (↓)         79.66
 Subset Accuracy (↑)         20.34
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-5.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-5.csv"...
 Fold 6 / 10:
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Predicting for 59 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted labels
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 6):
 
@@ -178,15 +178,15 @@ Micro Recall (↑)            54.81
 Subset 0/1 Loss (↓)         86.44
 Subset Accuracy (↑)         13.56
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-6.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-6.csv"...
 Fold 7 / 10:
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Predicting for 59 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted labels
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 7):
 
@@ -207,15 +207,15 @@ Micro Recall (↑)            56.6
 Subset 0/1 Loss (↓)         77.97
 Subset Accuracy (↑)         22.03
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-7.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-7.csv"...
 Fold 8 / 10:
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Predicting for 59 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted labels
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 8):
 
@@ -236,15 +236,15 @@ Micro Recall (↑)            63.55
 Subset 0/1 Loss (↓)         76.27
 Subset Accuracy (↑)         23.73
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-8.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-8.csv"...
 Fold 9 / 10:
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Predicting for 59 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted labels
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 9):
 
@@ -265,15 +265,15 @@ Micro Recall (↑)            60.18
 Subset 0/1 Loss (↓)         81.36
 Subset Accuracy (↑)         18.64
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-9.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-9.csv"...
 Fold 10 / 10:
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Predicting for 59 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted labels
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 10):
 
@@ -294,7 +294,7 @@ Micro Recall (↑)            60
 Subset 0/1 Loss (↓)         71.19
 Subset Accuracy (↑)         28.81
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-10.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-10.csv"...
 Evaluation result for test data (Average across 10 folds):
 
 Example-wise F1 (↑)         55.15  ±2.71
@@ -314,5 +314,5 @@ Micro Recall (↑)            59.5   ±3.54
 Subset 0/1 Loss (↓)         79.58  ±3.87
 Subset Accuracy (↑)         20.42  ±3.87
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Successfully finished experiment after <duration>
