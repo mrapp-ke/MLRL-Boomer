@@ -29,6 +29,7 @@ from mlrl.testbed.modes.mode_batch import Batch, BatchMode
 from mlrl.testbed.util.io import open_readable_file, open_writable_file
 
 from mlrl.util.options import Options
+from mlrl.util.validation import ValidationError
 
 
 @dataclass
@@ -240,7 +241,7 @@ class SlurmRunner(BatchMode.Runner):
 
                 if last_fold > first_fold:
                     file_name += '-' + str(last_fold)
-        except ValueError:
+        except ValidationError:
             pass
 
         return file_name
