@@ -11,7 +11,7 @@ from enum import Enum
 from importlib import import_module
 from importlib.metadata import version
 from importlib.util import module_from_spec, spec_from_file_location
-from typing import Optional, Set
+from typing import Optional, Set, override
 
 from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
@@ -164,18 +164,30 @@ def __get_mode(cli: CommandLineInterface, runnable: Optional[Runnable]) -> Mode:
 
 
 def __configure_logger(args: Namespace):
+
+    class LogLevelFormatter(log.Formatter):
+        """
+        Prepends the log level to log messages unless the log level is INFO.
+        """
+
+        @override
+        def format(self, record):
+            if record.levelno != log.INFO:
+                record.msg = f'{record.levelname}: {record.msg}'
+            return super().format(record)
+
     log_level = LOG_LEVEL.get_value(args).value
     root = log.getLogger()
     root.setLevel(log_level)
-    out_handler = log.StreamHandler(sys.stdout)
-    out_handler.setLevel(log_level)
-    out_handler.setFormatter(log.Formatter('%(message)s'))
+    handler = log.StreamHandler(sys.stdout)
+    handler.setLevel(log_level)
+    handler.setFormatter(LogLevelFormatter('%(message)s'))
     existing_handlers = list(root.handlers)
 
     for existing_handler in existing_handlers:
         root.removeHandler(existing_handler)
 
-    root.addHandler(out_handler)
+    root.addHandler(handler)
 
 
 def main():
