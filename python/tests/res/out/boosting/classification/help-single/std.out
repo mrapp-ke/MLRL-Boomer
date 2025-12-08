@@ -88,72 +88,84 @@ options:
   -v, --version         Display information about the program.
   --log-level LOG_LEVEL
                         The log level to be used. Must be one of {"critical",
-                        "debug", "error", "info", "notset", "warn"}.
+                        "debug", "error", "info", "notset", "warn"}. The
+                        default value is "info".
   --mode MODE           The mode of operation to be used. Must be one of
-                        {"batch", "read", "run", "single"}.
+                        {"batch", "read", "run", "single"}. The default value
+                        is "single".
   --base-dir BASE_DIR   If relative paths to directories, where files should
                         be saved, are given, they are considered relative to
-                        the directory specified via this argument.
+                        the directory specified via this argument. The default
+                        value is "experiments/YYY-MM-DD_hh-mm".
   --create-dirs CREATE_DIRS
                         Whether the directories, where files should be saved,
                         should be created automatically, if they do not exist,
-                        or not. Must be one of {"false", "true"}.
+                        or not. Must be one of {"false", "true"}. The default
+                        value is "true".
   --data-dir DATA_DIR   The path to the directory where the dataset files are
                         located.
   --data-split DATA_SPLIT
                         The strategy to be used for splitting the available
                         data into training and test sets. Must be one of
                         {"cross-validation", "none", "train-test"}. For
-                        additional options refer to the documentation.
+                        additional options refer to the documentation. The
+                        default value is "train-test".
   --dataset DATASET     The name of the dataset.
   --dataset-format DATASET_FORMAT
                         The dataset format to be used. Must be one of {"arff",
-                        "auto", "svm"}.
+                        "auto", "svm"}. The default value is "auto".
   --if-input-missing IF_INPUT_MISSING
                         What to do if an error occurs while reading input
-                        data. Must be one of {"exit", "log"}.
+                        data. Must be one of {"exit", "log"}. The default
+                        value is "log".
   --if-output-error IF_OUTPUT_ERROR
                         Whether the program should exit if an error occurs
                         while writing experimental results or not. Must be one
-                        of {"exit", "log"}.
+                        of {"exit", "log"}. The default value is "log".
   --if-outputs-exist IF_OUTPUTS_EXIST
                         What to do if experimental results do already exist.
-                        Must be one of {"cancel", "overwrite"}.
+                        Must be one of {"cancel", "overwrite"}. The default
+                        value is "cancel".
   --incremental-evaluation INCREMENTAL_EVALUATION
                         Whether models should be evaluated repeatedly, using
                         only a subset of the induced rules with increasing
                         size, or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        additional options refer to the documentation. The
+                        default value is "false".
   --load-models LOAD_MODELS
                         Whether models should be loaded from input files or
-                        not. Must be one of {"false", "true"}.
+                        not. Must be one of {"false", "true"}. The default
+                        value is "false".
   --load-parameters LOAD_PARAMETERS
                         Whether parameters should be loaded from input files
-                        or not. Must be one of {"false", "true"}.
+                        or not. Must be one of {"false", "true"}. The default
+                        value is "false".
   --model-load-dir MODEL_LOAD_DIR
                         The path to the directory from which models should be
-                        loaded.
+                        loaded. The default value is "models".
   --model-save-dir MODEL_SAVE_DIR
                         The path to the directory where models should be
-                        saved.
+                        saved. The default value is "models".
   --one-hot-encoding ONE_HOT_ENCODING
                         Whether one-hot-encoding should be used to encode
                         nominal features or not. Must be one of {"false",
-                        "true"}.
+                        "true"}. The default value is "false".
   --parameter-load-dir PARAMETER_LOAD_DIR
                         The path to the directory from which parameters to be
-                        used by the algorithm should be loaded.
+                        used by the algorithm should be loaded. The default
+                        value is "parameters".
   --parameter-save-dir PARAMETER_SAVE_DIR
                         The path to the directory where configuration files,
                         which specify the parameters used by the algorithm,
-                        should be saved.
+                        should be saved. The default value is "parameters".
   --predict-for-test-data PREDICT_FOR_TEST_DATA
                         Whether predictions should be obtained for the test
-                        data or not. Must be one of {"false", "true"}.
+                        data or not. Must be one of {"false", "true"}. The
+                        default value is "true".
   --predict-for-training-data PREDICT_FOR_TRAINING_DATA
                         Whether predictions should be obtained for the
                         training data or not. Must be one of {"false",
-                        "true"}.
+                        "true"}. The default value is "false".
   --prediction-format PREDICTION_FORMAT
                         The format to be used for the representation of
                         predictions. Must be one of {"auto", "dense",
@@ -161,135 +173,160 @@ options:
   --prediction-type PREDICTION_TYPE
                         The type of predictions that should be obtained from
                         the learner. Must be one of {"binary",
-                        "probabilities", "scores"}.
+                        "probabilities", "scores"}. The default value is
+                        "binary".
   --print-all PRINT_ALL
                         Whether all output data should be printed on the
-                        console or not. Must be one of {"false", "true"}.
+                        console or not. Must be one of {"false", "true"}. The
+                        default value is "false".
   --print-data-characteristics PRINT_DATA_CHARACTERISTICS
                         Whether the characteristics of the training data
                         should be printed on the console or not. Must be one
                         of {"false", "true"}. For additional options refer to
-                        the documentation.
+                        the documentation. The default value is "false".
   --print-evaluation PRINT_EVALUATION
                         Whether the evaluation results should be printed on
                         the console or not. Must be one of {"false", "true"}.
-                        For additional options refer to the documentation.
+                        For additional options refer to the documentation. The
+                        default value is "true".
   --print-ground-truth PRINT_GROUND_TRUTH
                         Whether the ground truth should be printed on the
                         console or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        additional options refer to the documentation. The
+                        default value is "false".
   --print-joint-probability-calibration-model PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL
                         Whether the model for the calibration of joint
                         probabilities should be printed on the console or not.
                         Must be one of {"false", "true"}. For additional
-                        options refer to the documentation.
+                        options refer to the documentation. The default value
+                        is "false".
   --print-label-vectors PRINT_LABEL_VECTORS
                         Whether the unique label vectors contained in the
                         training data should be printed on the console or not.
-                        Must be one of {"false", "true"}.
+                        Must be one of {"false", "true"}. The default value is
+                        "false".
   --print-marginal-probability-calibration-model PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL
                         Whether the model for the calibration of marginal
                         probabilities should be printed on the console or not.
                         Must be one of {"false", "true"}. For additional
-                        options refer to the documentation.
+                        options refer to the documentation. The default value
+                        is "false".
   --print-meta-data PRINT_META_DATA
                         Whether meta-data should be printed on the console or
-                        not. Must be one of {"false", "true"}.
+                        not. Must be one of {"false", "true"}. The default
+                        value is "false".
   --print-model-characteristics PRINT_MODEL_CHARACTERISTICS
                         Whether the characteristics of models should be
                         printed on the console or not. Must be one of
-                        {"false", "true"}.
+                        {"false", "true"}. The default value is "false".
   --print-parameters PRINT_PARAMETERS
                         Whether the parameter setting should be printed on the
-                        console or not. Must be one of {"false", "true"}.
+                        console or not. Must be one of {"false", "true"}. The
+                        default value is "false".
   --print-prediction-characteristics PRINT_PREDICTION_CHARACTERISTICS
                         Whether the characteristics of binary predictions
                         should be printed on the console or not. Does only
                         have an effect if the argument --prediction-type is
                         set to binary. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        additional options refer to the documentation. The
+                        default value is "false".
   --print-predictions PRINT_PREDICTIONS
                         Whether predictions should be printed on the console
                         or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        additional options refer to the documentation. The
+                        default value is "false".
   --print-rules PRINT_RULES
                         Whether the induced rules should be printed on the
                         console or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        additional options refer to the documentation. The
+                        default value is "false".
   --problem-type PROBLEM_TYPE
                         The type of the machine learning problem to be solved.
-                        Must be one of {"classification", "regression"}.
+                        Must be one of {"classification", "regression"}. The
+                        default value is "classification".
   --random-state RANDOM_STATE
                         The seed to be used by random number generators. Must
-                        be at least 0.
+                        be at least 0. The default value is 1.
   --result-dir RESULT_DIR
                         The path to the directory where experimental results
-                        should be saved.
+                        should be saved. The default value is "results".
   --save-all SAVE_ALL   Whether all output data should be written to files or
-                        not. Must be one of {"false", "true"}.
+                        not. Must be one of {"false", "true"}. The default
+                        value is "false".
   --save-data-characteristics SAVE_DATA_CHARACTERISTICS
                         Whether the characteristics of the training data
                         should be written to output files or not. Must be one
                         of {"false", "true"}. For additional options refer to
-                        the documentation.
+                        the documentation. The default value is "false".
   --save-evaluation SAVE_EVALUATION
                         Whether evaluation results should be written to output
                         files or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        additional options refer to the documentation. The
+                        default value is "false".
   --save-ground-truth SAVE_GROUND_TRUTH
                         Whether the ground truth should be written to output
                         files or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        additional options refer to the documentation. The
+                        default value is "false".
   --save-joint-probability-calibration-model SAVE_JOINT_PROBABILITY_CALIBRATION_MODEL
                         Whether the model for the calibration of joint
                         probabilities should be written to an output file or
                         not. Must be one of {"false", "true"}. For additional
-                        options refer to the documentation.
+                        options refer to the documentation. The default value
+                        is "false".
   --save-label-vectors SAVE_LABEL_VECTORS
                         Whether the unique label vectors contained in the
                         training data should be written to output files or
-                        not. Must be one of {"false", "true"}.
+                        not. Must be one of {"false", "true"}. The default
+                        value is "false".
   --save-marginal-probability-calibration-model SAVE_MARGINAL_PROBABILITY_CALIBRATION_MODEL
                         Whether the model for the calibration of marginal
                         probabilities should be written to an output file or
                         not. Must be one of {"false", "true"}. For additional
-                        options refer to the documentation.
+                        options refer to the documentation. The default value
+                        is "false".
   --save-meta-data SAVE_META_DATA
                         Whether meta-data should be saved to output files or
                         not. If set to "auto", meta-data is saved whenever
                         other output files are written as well. Must be one of
-                        {"auto", "false", "true"}.
+                        {"auto", "false", "true"}. The default value is
+                        "auto".
   --save-model-characteristics SAVE_MODEL_CHARACTERISTICS
                         Whether the characteristics of models should be
                         written to output files or not. Must be one of
-                        {"false", "true"}.
+                        {"false", "true"}. The default value is "false".
   --save-models SAVE_MODELS
                         Whether models should be saved to output files or not.
-                        Must be one of {"false", "true"}.
+                        Must be one of {"false", "true"}. The default value is
+                        "false".
   --save-parameters SAVE_PARAMETERS
                         Whether the parameter setting should be written to
                         output files or not. Must be one of {"false", "true"}.
+                        The default value is "false".
   --save-prediction-characteristics SAVE_PREDICTION_CHARACTERISTICS
                         Whether the characteristics of binary predictions
                         should be written to output files or not. Does only
                         have an effect if the argument --prediction-type is
                         set to binary and if the argument --result-dir is
                         specified. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        additional options refer to the documentation. The
+                        default value is "false".
   --save-predictions SAVE_PREDICTIONS
                         Whether predictions should be written to output files
                         or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        additional options refer to the documentation. The
+                        default value is "false".
   --save-rules SAVE_RULES
                         Whether the induced rules should be written to a text
                         file or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        additional options refer to the documentation. The
+                        default value is "false".
   --sparse-feature-value SPARSE_FEATURE_VALUE
                         The value that should be used for sparse elements in
                         the feature matrix. Does only have an effect if a
                         sparse format is used for the representation of the
                         feature matrix, depending on the argument --feature-
-                        format.
+                        format. The default value is 0.0.
   --binary-predictor BINARY_PREDICTOR
                         The name of the strategy to be used for predicting
                         binary labels If set to "auto", the most suitable
@@ -343,10 +380,10 @@ options:
                         documentation.
   --l1-regularization-weight L1_REGULARIZATION_WEIGHT
                         The weight of the L1 regularization. Must be at least
-                        0
+                        0.
   --l2-regularization-weight L2_REGULARIZATION_WEIGHT
                         The weight of the L2 regularization. Must be at least
-                        0
+                        0.
   --label-binning LABEL_BINNING
                         The name of the strategy to be used for gradient-based
                         label binning (GBLB) If set to "auto", the most
@@ -368,7 +405,7 @@ options:
   --max-rules MAX_RULES
                         The maximum number of rules to be induced. Must be at
                         least 1 or 0, if the number of rules should not be
-                        restricted
+                        restricted.
   --output-format OUTPUT_FORMAT
                         The format to be used for the representation of the
                         output matrix. Must be one of {"auto", "dense",
@@ -429,5 +466,5 @@ options:
   --time-limit TIME_LIMIT
                         The duration in seconds after which the induction of
                         rules should be canceled. Must be at least 1 or 0, if
-                        no time limit should be set
+                        no time limit should be set.
   -h, --help            Show this help message and exit
