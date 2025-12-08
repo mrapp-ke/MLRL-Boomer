@@ -6,7 +6,7 @@ Imports and invokes the program to be run by the command line utility.
 import logging as log
 import sys
 
-from argparse import ArgumentParser, Namespace, RawDescriptionHelpFormatter
+from argparse import ArgumentParser, HelpFormatter, Namespace
 from enum import Enum
 from importlib import import_module
 from importlib.metadata import version
@@ -46,7 +46,7 @@ LOG_LEVEL = EnumArgument(
 
 def __create_argument_parser() -> ArgumentParser:
     argument_parser = ArgumentParser(
-        formatter_class=RawDescriptionHelpFormatter,
+        formatter_class=lambda prog: HelpFormatter(prog, width=120),
         description='A command line utility for training and evaluating machine learning algorithms',
         add_help=False)
 

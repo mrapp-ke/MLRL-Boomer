@@ -5,7 +5,7 @@ Provides classes for configuring the arguments of a command line interface.
 """
 import sys
 
-from argparse import ArgumentError, ArgumentParser, Namespace
+from argparse import ArgumentError, ArgumentParser, Namespace, _ArgumentGroup
 from enum import Enum
 from functools import cached_property
 from pathlib import Path
@@ -447,6 +447,7 @@ class CommandLineInterface:
         """
         self.arguments: List[Argument] = []
         self._argument_parser = argument_parser
+        self._argument_groups: Dict[str, _ArgumentGroup] = {}
 
         if version_text:
             argument_parser.add_argument('-v',
@@ -455,22 +456,26 @@ class CommandLineInterface:
                                          version=version_text,
                                          help='Display information about the program.')
 
-    def add_arguments(self, *arguments: Argument):
+    def add_arguments(self, *arguments: Argument, group: Optional[str] = None):
         """
         Adds a new argument that enables the user to provide a value to the command line interface.
 
-        :param arguments: The arguments to be added
+        :param arguments:   The arguments to be added
+        :param group:       The name of a group, the arguments should be added to, or None, if they should not be added
+                            to a particular group
         """
         argument_parser = self._argument_parser
+        argument_group = self._argument_groups.setdefault(
+            group, argument_parser.add_argument_group(group)) if group else argument_parser
 
         for argument in arguments:
             try:
                 required = argument.required and '--help' not in sys.argv and '-h' not in sys.argv
-                argument_parser.add_argument(*argument.names,
-                                             required=required,
-                                             default=argument.default,
-                                             help=argument.description,
-                                             **argument.kwargs)
+                argument_group.add_argument(*argument.names,
+                                            required=required,
+                                            default=argument.default,
+                                            help=argument.description,
+                                            **argument.kwargs)
                 self.arguments.append(argument)
             except ArgumentError:
                 # Argument has already been added
