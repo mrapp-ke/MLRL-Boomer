@@ -20,7 +20,9 @@ class OutputArguments:
         '--base-dir',
         default=Path('experiments') / datetime.now().strftime('%Y-%m-%d_%H-%M'),
         description='If relative paths to directories, where files should be saved, are given, they are considered '
-        + 'relative to the directory specified via this argument.',
+        + 'relative to the directory specified via this argument. The default value is "'
+        + str(Path('experiments') / 'YYY-MM-DD_hh-mm') + '".',
+        add_default_value_to_description=False,
     )
 
     CREATE_DIRS = BoolArgument(
