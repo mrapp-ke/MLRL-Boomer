@@ -281,11 +281,7 @@ class BatchMode(Mode):
         description='Lists the commands for running individual experiments instead of executing them.',
     )
 
-    RUNNER = SetArgument(
-        '--runner',
-        values={},
-        description='The runner to be used for running individual experiments in a batch.',
-    )
+    ARGUMENT_RUNNER = '--runner'
 
     @property
     def runners(self) -> List[Runner]:
@@ -297,11 +293,11 @@ class BatchMode(Mode):
     def __create_runner_argument(self) -> SetArgument:
         runners = self.runners
         return SetArgument(
-            *self.RUNNER.names,
+            self.ARGUMENT_RUNNER,
             values={runner.name
                     for runner in runners},
             default=runners[0].name,
-            description=self.RUNNER.description,
+            description='The runner to be used for running individual experiments in a batch.',
         )
 
     def __process_commands(self, args: Namespace, config_file: ConfigFile, recipe: Recipe):
@@ -449,7 +445,7 @@ class BatchMode(Mode):
             slurm_arguments = []
 
         return argument_list.filter(*BatchMode.CONFIG_FILE.names, *Mode.MODE.names, BatchMode.LIST_COMMANDS.name,
-                                    BatchMode.RUNNER.name, *slurm_arguments).to_dict()
+                                    BatchMode.ARGUMENT_RUNNER, *slurm_arguments).to_dict()
 
     def __init__(self, config_file_factory: Optional[ConfigFile.Factory] = None):
         """
