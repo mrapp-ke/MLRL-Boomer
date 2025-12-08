@@ -51,10 +51,15 @@ options:
   --mode MODE           The mode of operation to be used. Must be one of
                         {"batch", "read", "run", "single"}. The default value
                         is "single".
+  -h, --help            Show this help message and exit
+
+read-mode arguments:
   --input-dir INPUT_DIR
                         An absolute or relative path to a directory that
                         contains a metadata.yml file that has been created
                         when running one or several experiments in the past.
+
+control arguments:
   --base-dir BASE_DIR   If relative paths to directories, where files should
                         be saved, are given, they are considered relative to
                         the directory specified via this argument. The default
@@ -206,4 +211,3 @@ options:
                         Whether the induced rules should be written to a text
                         file or not. Must be one of {"false", "true"}. The
                         default value is "false".
-  -h, --help            Show this help message and exit
