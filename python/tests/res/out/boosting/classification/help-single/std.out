@@ -93,6 +93,9 @@ options:
   --mode MODE           The mode of operation to be used. Must be one of
                         {"batch", "read", "run", "single"}. The default value
                         is "single".
+  -h, --help            Show this help message and exit
+
+control arguments:
   --base-dir BASE_DIR   If relative paths to directories, where files should
                         be saved, are given, they are considered relative to
                         the directory specified via this argument. The default
@@ -327,6 +330,8 @@ options:
                         sparse format is used for the representation of the
                         feature matrix, depending on the argument --feature-
                         format. The default value is 0.0.
+
+algorithmic arguments:
   --binary-predictor BINARY_PREDICTOR
                         The name of the strategy to be used for predicting
                         binary labels If set to "auto", the most suitable
@@ -467,4 +472,3 @@ options:
                         The duration in seconds after which the induction of
                         rules should be canceled. Must be at least 1 or 0, if
                         no time limit should be set.
-  -h, --help            Show this help message and exit
