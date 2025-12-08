@@ -1,407 +1,271 @@
 mlrl-testbed mlrl.seco --mode batch --help
-usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE]
-                    [--config CONFIG] [--separate-folds SEPARATE_FOLDS]
-                    [--list] [--runner RUNNER] [--base-dir BASE_DIR]
-                    [--create-dirs CREATE_DIRS] [--data-split DATA_SPLIT]
-                    [--dataset-format DATASET_FORMAT]
-                    [--if-input-missing IF_INPUT_MISSING]
-                    [--if-output-error IF_OUTPUT_ERROR]
-                    [--if-outputs-exist IF_OUTPUTS_EXIST]
-                    [--incremental-evaluation INCREMENTAL_EVALUATION]
-                    [--load-models LOAD_MODELS]
-                    [--load-parameters LOAD_PARAMETERS]
-                    [--model-load-dir MODEL_LOAD_DIR]
-                    [--one-hot-encoding ONE_HOT_ENCODING]
-                    [--parameter-load-dir PARAMETER_LOAD_DIR]
+usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE] [--config CONFIG]
+                    [--separate-folds SEPARATE_FOLDS] [--list] [--runner RUNNER] [--base-dir BASE_DIR]
+                    [--create-dirs CREATE_DIRS] [--data-split DATA_SPLIT] [--dataset-format DATASET_FORMAT]
+                    [--if-input-missing IF_INPUT_MISSING] [--if-output-error IF_OUTPUT_ERROR]
+                    [--if-outputs-exist IF_OUTPUTS_EXIST] [--incremental-evaluation INCREMENTAL_EVALUATION]
+                    [--load-models LOAD_MODELS] [--load-parameters LOAD_PARAMETERS] [--model-load-dir MODEL_LOAD_DIR]
+                    [--one-hot-encoding ONE_HOT_ENCODING] [--parameter-load-dir PARAMETER_LOAD_DIR]
                     [--predict-for-test-data PREDICT_FOR_TEST_DATA]
-                    [--predict-for-training-data PREDICT_FOR_TRAINING_DATA]
-                    [--prediction-format PREDICTION_FORMAT]
-                    [--prediction-type PREDICTION_TYPE]
-                    [--print-all PRINT_ALL]
-                    [--print-data-characteristics PRINT_DATA_CHARACTERISTICS]
-                    [--print-evaluation PRINT_EVALUATION]
-                    [--print-ground-truth PRINT_GROUND_TRUTH]
-                    [--print-label-vectors PRINT_LABEL_VECTORS]
-                    [--print-meta-data PRINT_META_DATA]
-                    [--print-model-characteristics PRINT_MODEL_CHARACTERISTICS]
+                    [--predict-for-training-data PREDICT_FOR_TRAINING_DATA] [--prediction-format PREDICTION_FORMAT]
+                    [--prediction-type PREDICTION_TYPE] [--print-all PRINT_ALL]
+                    [--print-data-characteristics PRINT_DATA_CHARACTERISTICS] [--print-evaluation PRINT_EVALUATION]
+                    [--print-ground-truth PRINT_GROUND_TRUTH] [--print-label-vectors PRINT_LABEL_VECTORS]
+                    [--print-meta-data PRINT_META_DATA] [--print-model-characteristics PRINT_MODEL_CHARACTERISTICS]
                     [--print-parameters PRINT_PARAMETERS]
                     [--print-prediction-characteristics PRINT_PREDICTION_CHARACTERISTICS]
-                    [--print-predictions PRINT_PREDICTIONS]
-                    [--print-rules PRINT_RULES]
-                    [--print-slurm-scripts PRINT_SLURM_SCRIPTS]
-                    [--problem-type PROBLEM_TYPE]
+                    [--print-predictions PRINT_PREDICTIONS] [--print-rules PRINT_RULES]
+                    [--print-slurm-scripts PRINT_SLURM_SCRIPTS] [--problem-type PROBLEM_TYPE]
                     [--random-state RANDOM_STATE] [--save-all SAVE_ALL]
-                    [--save-data-characteristics SAVE_DATA_CHARACTERISTICS]
-                    [--save-evaluation SAVE_EVALUATION]
-                    [--save-ground-truth SAVE_GROUND_TRUTH]
-                    [--save-label-vectors SAVE_LABEL_VECTORS]
-                    [--save-meta-data SAVE_META_DATA]
-                    [--save-model-characteristics SAVE_MODEL_CHARACTERISTICS]
-                    [--save-models SAVE_MODELS]
-                    [--save-parameters SAVE_PARAMETERS]
+                    [--save-data-characteristics SAVE_DATA_CHARACTERISTICS] [--save-evaluation SAVE_EVALUATION]
+                    [--save-ground-truth SAVE_GROUND_TRUTH] [--save-label-vectors SAVE_LABEL_VECTORS]
+                    [--save-meta-data SAVE_META_DATA] [--save-model-characteristics SAVE_MODEL_CHARACTERISTICS]
+                    [--save-models SAVE_MODELS] [--save-parameters SAVE_PARAMETERS]
                     [--save-prediction-characteristics SAVE_PREDICTION_CHARACTERISTICS]
-                    [--save-predictions SAVE_PREDICTIONS]
-                    [--save-rules SAVE_RULES]
-                    [--save-slurm-scripts SAVE_SLURM_SCRIPTS]
-                    [--slurm-config SLURM_CONFIG]
-                    [--slurm-save-dir SLURM_SAVE_DIR]
-                    [--sparse-feature-value SPARSE_FEATURE_VALUE]
-                    [--feature-binning FEATURE_BINNING]
-                    [--feature-format FEATURE_FORMAT]
-                    [--feature-sampling FEATURE_SAMPLING]
-                    [--head-type HEAD_TYPE] [--heuristic HEURISTIC]
-                    [--holdout HOLDOUT]
-                    [--instance-sampling INSTANCE_SAMPLING]
-                    [--lift-function LIFT_FUNCTION] [--max-rules MAX_RULES]
-                    [--output-format OUTPUT_FORMAT]
-                    [--output-sampling OUTPUT_SAMPLING]
-                    [--parallel-prediction PARALLEL_PREDICTION]
-                    [--parallel-rule-refinement PARALLEL_RULE_REFINEMENT]
-                    [--parallel-statistic-update PARALLEL_STATISTIC_UPDATE]
-                    [--post-optimization POST_OPTIMIZATION]
-                    [--pruning-heuristic PRUNING_HEURISTIC]
-                    [--rule-induction RULE_INDUCTION]
-                    [--rule-pruning RULE_PRUNING] [--time-limit TIME_LIMIT]
-                    [-h]
+                    [--save-predictions SAVE_PREDICTIONS] [--save-rules SAVE_RULES]
+                    [--save-slurm-scripts SAVE_SLURM_SCRIPTS] [--slurm-config SLURM_CONFIG]
+                    [--slurm-save-dir SLURM_SAVE_DIR] [--sparse-feature-value SPARSE_FEATURE_VALUE]
+                    [--feature-binning FEATURE_BINNING] [--feature-format FEATURE_FORMAT]
+                    [--feature-sampling FEATURE_SAMPLING] [--head-type HEAD_TYPE] [--heuristic HEURISTIC]
+                    [--holdout HOLDOUT] [--instance-sampling INSTANCE_SAMPLING] [--lift-function LIFT_FUNCTION]
+                    [--max-rules MAX_RULES] [--output-format OUTPUT_FORMAT] [--output-sampling OUTPUT_SAMPLING]
+                    [--parallel-prediction PARALLEL_PREDICTION] [--parallel-rule-refinement PARALLEL_RULE_REFINEMENT]
+                    [--parallel-statistic-update PARALLEL_STATISTIC_UPDATE] [--post-optimization POST_OPTIMIZATION]
+                    [--pruning-heuristic PRUNING_HEURISTIC] [--rule-induction RULE_INDUCTION]
+                    [--rule-pruning RULE_PRUNING] [--time-limit TIME_LIMIT] [-h]
                     runnable_module_or_source_file
 
 A command line utility for training and evaluating machine learning algorithms
 
 positional arguments:
   runnable_module_or_source_file
-                        The Python module or source file of the program that
-                        should be run
+                        The Python module or source file of the program that should be run
 
 options:
   -r, --runnable RUNNABLE
-                        The Python class name of the program that should be
-                        run
+                        The Python class name of the program that should be run
   -v, --version         Display information about the program.
   --log-level LOG_LEVEL
-                        The log level to be used. Must be one of {"critical",
-                        "debug", "error", "info", "notset", "warn"}. The
-                        default value is "info".
-  --mode MODE           The mode of operation to be used. Must be one of
-                        {"batch", "read", "run", "single"}. The default value
-                        is "single".
+                        The log level to be used. Must be one of {"critical", "debug", "error", "info", "notset",
+                        "warn"}. The default value is "info".
+  --mode MODE           The mode of operation to be used. Must be one of {"batch", "read", "run", "single"}. The default
+                        value is "single".
   -h, --help            Show this help message and exit
 
 batch-mode arguments:
-  --config CONFIG       An absolute or relative path to a YAML file that
-                        configures the batch of experiments to be run.
+  --config CONFIG       An absolute or relative path to a YAML file that configures the batch of experiments to be run.
   --separate-folds SEPARATE_FOLDS
-                        Whether separate experiments should be run for the
-                        individual folds of a cross validation or not. Must be
-                        one of {"false", "true"}. The default value is "true".
-  --list                Lists the commands for running individual experiments
-                        instead of executing them.
-  --runner RUNNER       The runner to be used for running individual
-                        experiments in a batch. Must be one of {"sequential",
-                        "slurm"}. The default value is "sequential".
+                        Whether separate experiments should be run for the individual folds of a cross validation or
+                        not. Must be one of {"false", "true"}. The default value is "true".
+  --list                Lists the commands for running individual experiments instead of executing them.
+  --runner RUNNER       The runner to be used for running individual experiments in a batch. Must be one of
+                        {"sequential", "slurm"}. The default value is "sequential".
 
 control arguments:
-  --base-dir BASE_DIR   If relative paths to directories, where files should
-                        be saved, are given, they are considered relative to
-                        the directory specified via this argument. The default
-                        value is "experiments/YYY-MM-DD_hh-mm".
+  --base-dir BASE_DIR   If relative paths to directories, where files should be saved, are given, they are considered
+                        relative to the directory specified via this argument. The default value is "experiments/YYY-MM-
+                        DD_hh-mm".
   --create-dirs CREATE_DIRS
-                        Whether the directories, where files should be saved,
-                        should be created automatically, if they do not exist,
-                        or not. Must be one of {"false", "true"}. The default
-                        value is "true".
+                        Whether the directories, where files should be saved, should be created automatically, if they
+                        do not exist, or not. Must be one of {"false", "true"}. The default value is "true".
   --data-split DATA_SPLIT
-                        The strategy to be used for splitting the available
-                        data into training and test sets. Must be one of
-                        {"cross-validation", "none", "train-test"}. For
-                        additional options refer to the documentation. The
-                        default value is "train-test".
+                        The strategy to be used for splitting the available data into training and test sets. Must be
+                        one of {"cross-validation", "none", "train-test"}. For additional options refer to the
+                        documentation. The default value is "train-test".
   --dataset-format DATASET_FORMAT
-                        The dataset format to be used. Must be one of {"arff",
-                        "auto", "svm"}. The default value is "auto".
+                        The dataset format to be used. Must be one of {"arff", "auto", "svm"}. The default value is
+                        "auto".
   --if-input-missing IF_INPUT_MISSING
-                        What to do if an error occurs while reading input
-                        data. Must be one of {"exit", "log"}. The default
-                        value is "log".
+                        What to do if an error occurs while reading input data. Must be one of {"exit", "log"}. The
+                        default value is "log".
   --if-output-error IF_OUTPUT_ERROR
-                        Whether the program should exit if an error occurs
-                        while writing experimental results or not. Must be one
-                        of {"exit", "log"}. The default value is "log".
+                        Whether the program should exit if an error occurs while writing experimental results or not.
+                        Must be one of {"exit", "log"}. The default value is "log".
   --if-outputs-exist IF_OUTPUTS_EXIST
-                        What to do if experimental results do already exist.
-                        Must be one of {"cancel", "overwrite"}. The default
-                        value is "cancel".
+                        What to do if experimental results do already exist. Must be one of {"cancel", "overwrite"}. The
+                        default value is "cancel".
   --incremental-evaluation INCREMENTAL_EVALUATION
-                        Whether models should be evaluated repeatedly, using
-                        only a subset of the induced rules with increasing
-                        size, or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation. The
-                        default value is "false".
+                        Whether models should be evaluated repeatedly, using only a subset of the induced rules with
+                        increasing size, or not. Must be one of {"false", "true"}. For additional options refer to the
+                        documentation. The default value is "false".
   --load-models LOAD_MODELS
-                        Whether models should be loaded from input files or
-                        not. Must be one of {"false", "true"}. The default
-                        value is "false".
+                        Whether models should be loaded from input files or not. Must be one of {"false", "true"}. The
+                        default value is "false".
   --load-parameters LOAD_PARAMETERS
-                        Whether parameters should be loaded from input files
-                        or not. Must be one of {"false", "true"}. The default
-                        value is "false".
+                        Whether parameters should be loaded from input files or not. Must be one of {"false", "true"}.
+                        The default value is "false".
   --model-load-dir MODEL_LOAD_DIR
-                        The path to the directory from which models should be
-                        loaded. The default value is "models".
+                        The path to the directory from which models should be loaded. The default value is "models".
   --one-hot-encoding ONE_HOT_ENCODING
-                        Whether one-hot-encoding should be used to encode
-                        nominal features or not. Must be one of {"false",
-                        "true"}. The default value is "false".
+                        Whether one-hot-encoding should be used to encode nominal features or not. Must be one of
+                        {"false", "true"}. The default value is "false".
   --parameter-load-dir PARAMETER_LOAD_DIR
-                        The path to the directory from which parameters to be
-                        used by the algorithm should be loaded. The default
-                        value is "parameters".
+                        The path to the directory from which parameters to be used by the algorithm should be loaded.
+                        The default value is "parameters".
   --predict-for-test-data PREDICT_FOR_TEST_DATA
-                        Whether predictions should be obtained for the test
-                        data or not. Must be one of {"false", "true"}. The
-                        default value is "true".
+                        Whether predictions should be obtained for the test data or not. Must be one of {"false",
+                        "true"}. The default value is "true".
   --predict-for-training-data PREDICT_FOR_TRAINING_DATA
-                        Whether predictions should be obtained for the
-                        training data or not. Must be one of {"false",
+                        Whether predictions should be obtained for the training data or not. Must be one of {"false",
                         "true"}. The default value is "false".
   --prediction-format PREDICTION_FORMAT
-                        The format to be used for the representation of
-                        predictions. Must be one of {"auto", "dense",
+                        The format to be used for the representation of predictions. Must be one of {"auto", "dense",
                         "sparse"}.
   --prediction-type PREDICTION_TYPE
-                        The type of predictions that should be obtained from
-                        the learner. Must be one of {"binary",
-                        "probabilities", "scores"}. The default value is
-                        "binary".
+                        The type of predictions that should be obtained from the learner. Must be one of {"binary",
+                        "probabilities", "scores"}. The default value is "binary".
   --print-all PRINT_ALL
-                        Whether all output data should be printed on the
-                        console or not. Must be one of {"false", "true"}. The
-                        default value is "false".
+                        Whether all output data should be printed on the console or not. Must be one of {"false",
+                        "true"}. The default value is "false".
   --print-data-characteristics PRINT_DATA_CHARACTERISTICS
-                        Whether the characteristics of the training data
-                        should be printed on the console or not. Must be one
-                        of {"false", "true"}. For additional options refer to
-                        the documentation. The default value is "false".
-  --print-evaluation PRINT_EVALUATION
-                        Whether the evaluation results should be printed on
-                        the console or not. Must be one of {"false", "true"}.
-                        For additional options refer to the documentation. The
-                        default value is "true".
-  --print-ground-truth PRINT_GROUND_TRUTH
-                        Whether the ground truth should be printed on the
-                        console or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation. The
-                        default value is "false".
-  --print-label-vectors PRINT_LABEL_VECTORS
-                        Whether the unique label vectors contained in the
-                        training data should be printed on the console or not.
-                        Must be one of {"false", "true"}. The default value is
-                        "false".
-  --print-meta-data PRINT_META_DATA
-                        Whether meta-data should be printed on the console or
-                        not. Must be one of {"false", "true"}. The default
+                        Whether the characteristics of the training data should be printed on the console or not. Must
+                        be one of {"false", "true"}. For additional options refer to the documentation. The default
                         value is "false".
+  --print-evaluation PRINT_EVALUATION
+                        Whether the evaluation results should be printed on the console or not. Must be one of {"false",
+                        "true"}. For additional options refer to the documentation. The default value is "true".
+  --print-ground-truth PRINT_GROUND_TRUTH
+                        Whether the ground truth should be printed on the console or not. Must be one of {"false",
+                        "true"}. For additional options refer to the documentation. The default value is "false".
+  --print-label-vectors PRINT_LABEL_VECTORS
+                        Whether the unique label vectors contained in the training data should be printed on the console
+                        or not. Must be one of {"false", "true"}. The default value is "false".
+  --print-meta-data PRINT_META_DATA
+                        Whether meta-data should be printed on the console or not. Must be one of {"false", "true"}. The
+                        default value is "false".
   --print-model-characteristics PRINT_MODEL_CHARACTERISTICS
-                        Whether the characteristics of models should be
-                        printed on the console or not. Must be one of
+                        Whether the characteristics of models should be printed on the console or not. Must be one of
                         {"false", "true"}. The default value is "false".
   --print-parameters PRINT_PARAMETERS
-                        Whether the parameter setting should be printed on the
-                        console or not. Must be one of {"false", "true"}. The
-                        default value is "false".
+                        Whether the parameter setting should be printed on the console or not. Must be one of {"false",
+                        "true"}. The default value is "false".
   --print-prediction-characteristics PRINT_PREDICTION_CHARACTERISTICS
-                        Whether the characteristics of binary predictions
-                        should be printed on the console or not. Does only
-                        have an effect if the argument --prediction-type is
-                        set to binary. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation. The
-                        default value is "false".
+                        Whether the characteristics of binary predictions should be printed on the console or not. Does
+                        only have an effect if the argument --prediction-type is set to binary. Must be one of {"false",
+                        "true"}. For additional options refer to the documentation. The default value is "false".
   --print-predictions PRINT_PREDICTIONS
-                        Whether predictions should be printed on the console
-                        or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation. The
-                        default value is "false".
+                        Whether predictions should be printed on the console or not. Must be one of {"false", "true"}.
+                        For additional options refer to the documentation. The default value is "false".
   --print-rules PRINT_RULES
-                        Whether the induced rules should be printed on the
-                        console or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation. The
-                        default value is "false".
+                        Whether the induced rules should be printed on the console or not. Must be one of {"false",
+                        "true"}. For additional options refer to the documentation. The default value is "false".
   --print-slurm-scripts PRINT_SLURM_SCRIPTS
-                        Whether the Slurm scripts for running individual
-                        experiments in a batch should be printed or not. Must
-                        be one of {"false", "true"}. The default value is
-                        "false".
+                        Whether the Slurm scripts for running individual experiments in a batch should be printed or
+                        not. Must be one of {"false", "true"}. The default value is "false".
   --problem-type PROBLEM_TYPE
-                        The type of the machine learning problem to be solved.
-                        Must be one of {"classification", "regression"}. The
-                        default value is "classification".
+                        The type of the machine learning problem to be solved. Must be one of {"classification",
+                        "regression"}. The default value is "classification".
   --random-state RANDOM_STATE
-                        The seed to be used by random number generators. Must
-                        be at least 0. The default value is 1.
-  --save-all SAVE_ALL   Whether all output data should be written to files or
-                        not. Must be one of {"false", "true"}. The default
-                        value is "false".
+                        The seed to be used by random number generators. Must be at least 0. The default value is 1.
+  --save-all SAVE_ALL   Whether all output data should be written to files or not. Must be one of {"false", "true"}. The
+                        default value is "false".
   --save-data-characteristics SAVE_DATA_CHARACTERISTICS
-                        Whether the characteristics of the training data
-                        should be written to output files or not. Must be one
-                        of {"false", "true"}. For additional options refer to
-                        the documentation. The default value is "false".
-  --save-evaluation SAVE_EVALUATION
-                        Whether evaluation results should be written to output
-                        files or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation. The
-                        default value is "false".
-  --save-ground-truth SAVE_GROUND_TRUTH
-                        Whether the ground truth should be written to output
-                        files or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation. The
-                        default value is "false".
-  --save-label-vectors SAVE_LABEL_VECTORS
-                        Whether the unique label vectors contained in the
-                        training data should be written to output files or
-                        not. Must be one of {"false", "true"}. The default
+                        Whether the characteristics of the training data should be written to output files or not. Must
+                        be one of {"false", "true"}. For additional options refer to the documentation. The default
                         value is "false".
+  --save-evaluation SAVE_EVALUATION
+                        Whether evaluation results should be written to output files or not. Must be one of {"false",
+                        "true"}. For additional options refer to the documentation. The default value is "false".
+  --save-ground-truth SAVE_GROUND_TRUTH
+                        Whether the ground truth should be written to output files or not. Must be one of {"false",
+                        "true"}. For additional options refer to the documentation. The default value is "false".
+  --save-label-vectors SAVE_LABEL_VECTORS
+                        Whether the unique label vectors contained in the training data should be written to output
+                        files or not. Must be one of {"false", "true"}. The default value is "false".
   --save-meta-data SAVE_META_DATA
-                        Whether meta-data should be saved to output files or
-                        not. If set to "auto", meta-data is saved whenever
-                        other output files are written as well. Must be one of
-                        {"auto", "false", "true"}. The default value is
-                        "auto".
+                        Whether meta-data should be saved to output files or not. If set to "auto", meta-data is saved
+                        whenever other output files are written as well. Must be one of {"auto", "false", "true"}. The
+                        default value is "auto".
   --save-model-characteristics SAVE_MODEL_CHARACTERISTICS
-                        Whether the characteristics of models should be
-                        written to output files or not. Must be one of
+                        Whether the characteristics of models should be written to output files or not. Must be one of
                         {"false", "true"}. The default value is "false".
   --save-models SAVE_MODELS
-                        Whether models should be saved to output files or not.
-                        Must be one of {"false", "true"}. The default value is
-                        "false".
+                        Whether models should be saved to output files or not. Must be one of {"false", "true"}. The
+                        default value is "false".
   --save-parameters SAVE_PARAMETERS
-                        Whether the parameter setting should be written to
-                        output files or not. Must be one of {"false", "true"}.
-                        The default value is "false".
+                        Whether the parameter setting should be written to output files or not. Must be one of {"false",
+                        "true"}. The default value is "false".
   --save-prediction-characteristics SAVE_PREDICTION_CHARACTERISTICS
-                        Whether the characteristics of binary predictions
-                        should be written to output files or not. Does only
-                        have an effect if the argument --prediction-type is
-                        set to binary and if the argument --result-dir is
-                        specified. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation. The
-                        default value is "false".
+                        Whether the characteristics of binary predictions should be written to output files or not. Does
+                        only have an effect if the argument --prediction-type is set to binary and if the argument
+                        --result-dir is specified. Must be one of {"false", "true"}. For additional options refer to the
+                        documentation. The default value is "false".
   --save-predictions SAVE_PREDICTIONS
-                        Whether predictions should be written to output files
-                        or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation. The
-                        default value is "false".
+                        Whether predictions should be written to output files or not. Must be one of {"false", "true"}.
+                        For additional options refer to the documentation. The default value is "false".
   --save-rules SAVE_RULES
-                        Whether the induced rules should be written to a text
-                        file or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation. The
-                        default value is "false".
+                        Whether the induced rules should be written to a text file or not. Must be one of {"false",
+                        "true"}. For additional options refer to the documentation. The default value is "false".
   --save-slurm-scripts SAVE_SLURM_SCRIPTS
-                        Whether the Slurm scripts for running individual
-                        experiments in a batch should be saved to the working
-                        directory or not. Must be one of {"false", "true"}.
-                        The default value is "false".
+                        Whether the Slurm scripts for running individual experiments in a batch should be saved to the
+                        working directory or not. Must be one of {"false", "true"}. The default value is "false".
   --slurm-config SLURM_CONFIG
-                        An absolute or relative path to a YAML file that
-                        configures the Slurm jobs to be run.
+                        An absolute or relative path to a YAML file that configures the Slurm jobs to be run.
   --slurm-save-dir SLURM_SAVE_DIR
-                        An absolute or relative path to the directory where
-                        Slurm scripts should be saved. The default value is
-                        ".".
+                        An absolute or relative path to the directory where Slurm scripts should be saved. The default
+                        value is ".".
   --sparse-feature-value SPARSE_FEATURE_VALUE
-                        The value that should be used for sparse elements in
-                        the feature matrix. Does only have an effect if a
-                        sparse format is used for the representation of the
-                        feature matrix, depending on the argument --feature-
-                        format. The default value is 0.0.
+                        The value that should be used for sparse elements in the feature matrix. Does only have an
+                        effect if a sparse format is used for the representation of the feature matrix, depending on the
+                        argument --feature-format. The default value is 0.0.
 
 algorithmic arguments:
   --feature-binning FEATURE_BINNING
-                        The name of the strategy to be used for feature
-                        binning. Must be one of {"equal-frequency", "equal-
-                        width", "none"}. For additional options refer to the
-                        documentation.
+                        The name of the strategy to be used for feature binning. Must be one of {"equal-frequency",
+                        "equal-width", "none"}. For additional options refer to the documentation.
   --feature-format FEATURE_FORMAT
-                        The format to be used for the representation of the
-                        feature matrix. Must be one of {"auto", "dense",
-                        "sparse"}.
+                        The format to be used for the representation of the feature matrix. Must be one of {"auto",
+                        "dense", "sparse"}.
   --feature-sampling FEATURE_SAMPLING
-                        The name of the strategy to be used for feature
-                        sampling. Must be one of {"none", "without-
-                        replacement"}. For additional options refer to the
-                        documentation.
+                        The name of the strategy to be used for feature sampling. Must be one of {"none", "without-
+                        replacement"}. For additional options refer to the documentation.
   --head-type HEAD_TYPE
-                        The type of the rule heads that should be used. Must
-                        be one of {"partial", "single"}.
+                        The type of the rule heads that should be used. Must be one of {"partial", "single"}.
   --heuristic HEURISTIC
-                        The name of the heuristic to be used for learning
-                        rules. Must be one of {"accuracy", "f-measure",
-                        "laplace", "m-estimate", "precision", "recall",
-                        "weighted-relative-accuracy"}. For additional options
-                        refer to the documentation.
-  --holdout HOLDOUT     The name of the strategy to be used for creating a
-                        holdout set. Must be one of {"none", "random",
-                        "stratified-example-wise", "stratified-output-wise"}.
-                        For additional options refer to the documentation.
+                        The name of the heuristic to be used for learning rules. Must be one of {"accuracy",
+                        "f-measure", "laplace", "m-estimate", "precision", "recall", "weighted-relative-accuracy"}. For
+                        additional options refer to the documentation.
+  --holdout HOLDOUT     The name of the strategy to be used for creating a holdout set. Must be one of {"none",
+                        "random", "stratified-example-wise", "stratified-output-wise"}. For additional options refer to
+                        the documentation.
   --instance-sampling INSTANCE_SAMPLING
-                        The name of the strategy to be used for instance
-                        sampling. Must be one of {"none", "stratified-example-
-                        wise", "stratified-output-wise", "with-replacement",
-                        "without-replacement"}. For additional options refer
-                        to the documentation.
+                        The name of the strategy to be used for instance sampling. Must be one of {"none", "stratified-
+                        example-wise", "stratified-output-wise", "with-replacement", "without-replacement"}. For
+                        additional options refer to the documentation.
   --lift-function LIFT_FUNCTION
-                        The lift function to be used for the induction of
-                        multi-label rules. Must be one of {"kln", "none",
-                        "peak"}. For additional options refer to the
-                        documentation.
+                        The lift function to be used for the induction of multi-label rules. Must be one of {"kln",
+                        "none", "peak"}. For additional options refer to the documentation.
   --max-rules MAX_RULES
-                        The maximum number of rules to be induced. Must be at
-                        least 1 or 0, if the number of rules should not be
-                        restricted.
+                        The maximum number of rules to be induced. Must be at least 1 or 0, if the number of rules
+                        should not be restricted.
   --output-format OUTPUT_FORMAT
-                        The format to be used for the representation of the
-                        output matrix. Must be one of {"auto", "dense",
-                        "sparse"}.
+                        The format to be used for the representation of the output matrix. Must be one of {"auto",
+                        "dense", "sparse"}.
   --output-sampling OUTPUT_SAMPLING
-                        The name of the strategy to be used for output
-                        sampling. Must be one of {"none", "round-robin",
-                        "without-replacement"}. For additional options refer
-                        to the documentation.
+                        The name of the strategy to be used for output sampling. Must be one of {"none", "round-robin",
+                        "without-replacement"}. For additional options refer to the documentation.
   --parallel-prediction PARALLEL_PREDICTION
-                        Whether predictions for different examples should be
-                        obtained in parallel or not. Must be one of {"false",
-                        "true"}. For additional options refer to the
-                        documentation.
+                        Whether predictions for different examples should be obtained in parallel or not. Must be one of
+                        {"false", "true"}. For additional options refer to the documentation.
   --parallel-rule-refinement PARALLEL_RULE_REFINEMENT
-                        Whether potential refinements of rules should be
-                        searched for in parallel or not. Must be one of
-                        {"false", "true"}. For additional options refer to the
-                        documentation.
+                        Whether potential refinements of rules should be searched for in parallel or not. Must be one of
+                        {"false", "true"}. For additional options refer to the documentation.
   --parallel-statistic-update PARALLEL_STATISTIC_UPDATE
-                        Whether the statistics for different examples should
-                        be updated in parallel or not. Must be one of
-                        {"false", "true"}. For additional options refer to the
-                        documentation.
+                        Whether the statistics for different examples should be updated in parallel or not. Must be one
+                        of {"false", "true"}. For additional options refer to the documentation.
   --post-optimization POST_OPTIMIZATION
-                        The method that should be used for post-optimization
-                        of a previous learned model. Must be one of {"none",
-                        "sequential"}. For additional options refer to the
-                        documentation.
+                        The method that should be used for post-optimization of a previous learned model. Must be one of
+                        {"none", "sequential"}. For additional options refer to the documentation.
   --pruning-heuristic PRUNING_HEURISTIC
-                        The name of the heuristic to be used for pruning
-                        individual rules. Must be one of {"accuracy",
-                        "f-measure", "laplace", "m-estimate", "precision",
-                        "recall", "weighted-relative-accuracy"}. For
+                        The name of the heuristic to be used for pruning individual rules. Must be one of {"accuracy",
+                        "f-measure", "laplace", "m-estimate", "precision", "recall", "weighted-relative-accuracy"}. For
                         additional options refer to the documentation.
   --rule-induction RULE_INDUCTION
-                        The name of the algorithm to be used for the induction
-                        of individual rules. Must be one of {"top-down-beam-
-                        search", "top-down-greedy"}. For additional options
-                        refer to the documentation.
+                        The name of the algorithm to be used for the induction of individual rules. Must be one of
+                        {"top-down-beam-search", "top-down-greedy"}. For additional options refer to the documentation.
   --rule-pruning RULE_PRUNING
-                        The name of the strategy to be used for pruning
-                        individual rules. Must be one of {"irep", "none"}.
+                        The name of the strategy to be used for pruning individual rules. Must be one of {"irep",
+                        "none"}.
   --time-limit TIME_LIMIT
-                        The duration in seconds after which the induction of
-                        rules should be canceled. Must be at least 1 or 0, if
-                        no time limit should be set.
+                        The duration in seconds after which the induction of rules should be canceled. Must be at least
+                        1 or 0, if no time limit should be set.
