@@ -5,6 +5,7 @@ Provides utility functions for creating textual representations.
 """
 from enum import Enum
 from functools import reduce
+from pathlib import Path
 from typing import Any, Iterable, Type
 
 
@@ -39,3 +40,17 @@ def format_set(objects: Iterable[Any]) -> str:
     :return:        The textual representation that has been created
     """
     return '{' + format_iterable(sorted(objects, key=str), delimiter='"') + '}'
+
+
+def format_value(value: Any) -> str:
+    """
+    Creates and returns a textual representation of a given value.
+
+    :param value:   The value to be formatted
+    :return:        The textual representation that has been created
+    """
+    if isinstance(value, str):
+        return '"' + value + '"'
+    if isinstance(value, Path):
+        return '"' + str(value) + '"'
+    return str(value)
