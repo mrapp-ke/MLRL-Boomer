@@ -42,116 +42,140 @@ options:
   -v, --version         Display information about the program.
   --log-level LOG_LEVEL
                         The log level to be used. Must be one of {"critical",
-                        "debug", "error", "info", "notset", "warn"}.
+                        "debug", "error", "info", "notset", "warn"}. The
+                        default value is "info".
   --mode MODE           The mode of operation to be used. Must be one of
-                        {"batch", "read", "run", "single"}.
+                        {"batch", "read", "run", "single"}. The default value
+                        is "single".
   --input-dir INPUT_DIR
                         An absolute or relative path to a directory that
                         contains a metadata.yml file that has been created
                         when running one or several experiments in the past.
   --base-dir BASE_DIR   If relative paths to directories, where files should
                         be saved, are given, they are considered relative to
-                        the directory specified via this argument.
+                        the directory specified via this argument. The default
+                        value is "experiments/YYY-MM-DD_hh-mm".
   --create-dirs CREATE_DIRS
                         Whether the directories, where files should be saved,
                         should be created automatically, if they do not exist,
-                        or not. Must be one of {"false", "true"}.
+                        or not. Must be one of {"false", "true"}. The default
+                        value is "true".
   --if-input-missing IF_INPUT_MISSING
                         What to do if an error occurs while reading input
-                        data. Must be one of {"exit", "log"}.
+                        data. Must be one of {"exit", "log"}. The default
+                        value is "log".
   --if-output-error IF_OUTPUT_ERROR
                         Whether the program should exit if an error occurs
                         while writing experimental results or not. Must be one
-                        of {"exit", "log"}.
+                        of {"exit", "log"}. The default value is "log".
   --print-all PRINT_ALL
                         Whether all output data should be printed on the
-                        console or not. Must be one of {"false", "true"}.
+                        console or not. Must be one of {"false", "true"}. The
+                        default value is "false".
   --print-data-characteristics PRINT_DATA_CHARACTERISTICS
                         Whether the characteristics of the training data
                         should be printed on the console or not. Must be one
                         of {"false", "true"}. For additional options refer to
-                        the documentation.
+                        the documentation. The default value is "false".
   --print-evaluation PRINT_EVALUATION
                         Whether the evaluation results should be printed on
                         the console or not. Must be one of {"false", "true"}.
-                        For additional options refer to the documentation.
+                        For additional options refer to the documentation. The
+                        default value is "true".
   --print-ground-truth PRINT_GROUND_TRUTH
                         Whether the ground truth should be printed on the
                         console or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        additional options refer to the documentation. The
+                        default value is "false".
   --print-label-vectors PRINT_LABEL_VECTORS
                         Whether the unique label vectors contained in the
                         training data should be printed on the console or not.
-                        Must be one of {"false", "true"}.
+                        Must be one of {"false", "true"}. The default value is
+                        "false".
   --print-meta-data PRINT_META_DATA
                         Whether meta-data should be printed on the console or
-                        not. Must be one of {"false", "true"}.
+                        not. Must be one of {"false", "true"}. The default
+                        value is "false".
   --print-model-characteristics PRINT_MODEL_CHARACTERISTICS
                         Whether the characteristics of models should be
                         printed on the console or not. Must be one of
-                        {"false", "true"}.
+                        {"false", "true"}. The default value is "false".
   --print-parameters PRINT_PARAMETERS
                         Whether the parameter setting should be printed on the
-                        console or not. Must be one of {"false", "true"}.
+                        console or not. Must be one of {"false", "true"}. The
+                        default value is "false".
   --print-prediction-characteristics PRINT_PREDICTION_CHARACTERISTICS
                         Whether the characteristics of binary predictions
                         should be printed on the console or not. Does only
                         have an effect if the argument --prediction-type is
                         set to binary. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        additional options refer to the documentation. The
+                        default value is "false".
   --print-predictions PRINT_PREDICTIONS
                         Whether predictions should be printed on the console
                         or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        additional options refer to the documentation. The
+                        default value is "false".
   --print-rules PRINT_RULES
                         Whether the induced rules should be printed on the
-                        console or not. Must be one of {"false", "true"}.
+                        console or not. Must be one of {"false", "true"}. The
+                        default value is "false".
   --save-all SAVE_ALL   Whether all output data should be written to files or
-                        not. Must be one of {"false", "true"}.
+                        not. Must be one of {"false", "true"}. The default
+                        value is "false".
   --save-data-characteristics SAVE_DATA_CHARACTERISTICS
                         Whether the characteristics of the training data
                         should be written to output files or not. Must be one
                         of {"false", "true"}. For additional options refer to
-                        the documentation.
+                        the documentation. The default value is "false".
   --save-evaluation SAVE_EVALUATION
                         Whether evaluation results should be written to output
                         files or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        additional options refer to the documentation. The
+                        default value is "false".
   --save-ground-truth SAVE_GROUND_TRUTH
                         Whether the ground truth should be written to output
                         files or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        additional options refer to the documentation. The
+                        default value is "false".
   --save-label-vectors SAVE_LABEL_VECTORS
                         Whether the unique label vectors contained in the
                         training data should be written to output files or
-                        not. Must be one of {"false", "true"}.
+                        not. Must be one of {"false", "true"}. The default
+                        value is "false".
   --save-meta-data SAVE_META_DATA
                         Whether meta-data should be saved to output files or
                         not. If set to "auto", meta-data is saved whenever
                         other output files are written as well. Must be one of
-                        {"auto", "false", "true"}.
+                        {"auto", "false", "true"}. The default value is
+                        "auto".
   --save-model-characteristics SAVE_MODEL_CHARACTERISTICS
                         Whether the characteristics of models should be
                         written to output files or not. Must be one of
-                        {"false", "true"}.
+                        {"false", "true"}. The default value is "false".
   --save-models SAVE_MODELS
                         Whether models should be saved to output files or not.
-                        Must be one of {"false", "true"}.
+                        Must be one of {"false", "true"}. The default value is
+                        "false".
   --save-parameters SAVE_PARAMETERS
                         Whether the parameter setting should be written to
                         output files or not. Must be one of {"false", "true"}.
+                        The default value is "false".
   --save-prediction-characteristics SAVE_PREDICTION_CHARACTERISTICS
                         Whether the characteristics of binary predictions
                         should be written to output files or not. Does only
                         have an effect if the argument --prediction-type is
                         set to binary and if the argument --result-dir is
                         specified. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        additional options refer to the documentation. The
+                        default value is "false".
   --save-predictions SAVE_PREDICTIONS
                         Whether predictions should be written to output files
                         or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        additional options refer to the documentation. The
+                        default value is "false".
   --save-rules SAVE_RULES
                         Whether the induced rules should be written to a text
-                        file or not. Must be one of {"false", "true"}.
+                        file or not. Must be one of {"false", "true"}. The
+                        default value is "false".
   -h, --help            Show this help message and exit
