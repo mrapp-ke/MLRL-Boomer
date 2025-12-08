@@ -468,8 +468,13 @@ class BatchMode(Mode):
     @override
     def configure_arguments(self, cli: CommandLineInterface, control_arguments: List[Argument],
                             algorithmic_arguments: List[Argument]):
-        cli.add_arguments(self.CONFIG_FILE, self.SEPARATE_FOLDS, self.LIST_COMMANDS, self.__create_runner_argument(),
-                          *control_arguments, *algorithmic_arguments)
+        cli.add_arguments(self.CONFIG_FILE,
+                          self.SEPARATE_FOLDS,
+                          self.LIST_COMMANDS,
+                          self.__create_runner_argument(),
+                          group='batch-mode arguments')
+        cli.add_arguments(*control_arguments, group='control arguments')
+        cli.add_arguments(*algorithmic_arguments, group='algorithmic arguments')
 
     @override
     def run_experiment(self, control_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
