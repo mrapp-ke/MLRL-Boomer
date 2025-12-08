@@ -12,12 +12,13 @@ from argparse import Namespace
 from functools import cached_property
 from itertools import chain
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Type, override
+from typing import Any, Dict, Iterable, List, Optional, Set, Type, override
 
 import docstring_parser
 import numpy as np
 
 from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMixin as SkLearnRegressorMixin
+from sklearn.dummy import DummyClassifier, DummyRegressor
 from sklearn.utils import all_estimators
 
 from mlrl.testbed_sklearn.experiments import SkLearnExperiment
@@ -407,91 +408,7 @@ class SklearnEstimator:
 
         return '. '.join(sentences)
 
-    def __init__(self, estimator_name: str, estimator_type: EstimatorType):
-        """
-        :param estimator_name:  The name of the estimator
-        :param estimator_type:  The type of the estimator
-        """
-        self.estimator_name = estimator_name
-        self.estimator_type = estimator_type
-
-    @staticmethod
-    def get_supported_regressors() -> Set['SklearnEstimator']:
-        """
-        Returns a set that returns all supported scikit-learn regressors.
-
-        :return: A set that contains the names of all supported regressors
-        """
-        return set(
-            filter(
-                lambda estimator: estimator.can_be_default_instantiated, {
-                    SklearnEstimator(estimator_name=estimator_name, estimator_type=estimator_type)
-                    for estimator_name, estimator_type in all_estimators(type_filter='regressor')
-                    if issubclass(estimator_type, SkLearnRegressorMixin)
-                }))
-
-    @staticmethod
-    def get_supported_classifiers() -> Set['SklearnEstimator']:
-        """
-        Returns a set that returns all supported scikit-learn classifiers.
-
-        :return: A set that contains the names of all supported classifiers
-        """
-        return set(
-            filter(
-                lambda estimator: estimator.can_be_default_instantiated, {
-                    SklearnEstimator(estimator_name=estimator_name, estimator_type=estimator_type)
-                    for estimator_name, estimator_type in all_estimators(type_filter='classifier')
-                    if issubclass(estimator_type, SkLearnClassifierMixin)
-                }))
-
-    @property
-    def is_classifier(self) -> bool:
-        """
-        True, if the estimator is a classifier, False otherwise.
-        """
-        return issubclass(self.estimator_type, SkLearnClassifierMixin)
-
-    @property
-    def is_regressor(self) -> bool:
-        """
-        True, if the estimator is a regressor, False otherwise.
-        """
-        return issubclass(self.estimator_type, SkLearnRegressorMixin)
-
-    @cached_property
-    def algorithmic_arguments(self) -> Set['SklearnEstimator.SklearnArgument']:
-        """
-        A set that contains the command line arguments that allow to control the hyperparameters of the estimator.
-        """
-        arguments: Set[SklearnEstimator.SklearnArgument] = set()
-        apidoc = self.estimator_type.__doc__
-
-        if apidoc:
-            for param in docstring_parser.parse(apidoc).params:
-                parameter_name = param.arg_name
-                type_name = param.type_name
-
-                if type_name and not parameter_name.startswith('_') and not parameter_name.endswith('_'):
-                    argument_name = Argument.key_to_argument_name(parameter_name)
-                    description = self.__format_argument_description(param.description or '')
-
-                    try:
-                        arguments.add(
-                            SklearnEstimator.SklearnArgument.from_type_name(argument_name=argument_name,
-                                                                            parameter_name=parameter_name,
-                                                                            type_name=type_name,
-                                                                            description=description))
-                    except ValueError:
-                        pass
-
-        return arguments
-
-    @cached_property
-    def can_be_default_instantiated(self) -> bool:
-        """
-        True, if the estimator can be instantiated via a default constructor, False otherwise.
-        """
+    def __can_be_instantiated(self, *args, **kwargs) -> bool:
 
         @contextlib.contextmanager
         def suppress_output():
@@ -501,7 +418,7 @@ class SklearnEstimator:
 
         try:
             with suppress_output():
-                instance = self.instantiate()
+                instance = self.instantiate(*args, **kwargs)
                 rng = np.random.default_rng(seed=1)
                 tags = instance.__sklearn_tags__() if hasattr(instance, '__sklearn_tags__') else None
                 num_examples = 12
@@ -531,23 +448,158 @@ class SklearnEstimator:
         except Exception:
             return False
 
-    def instantiate(self, args: Optional[Namespace] = None) -> SkLearnClassifierMixin | SkLearnRegressorMixin:
+    def __init__(self, estimator_name: str, estimator_type: EstimatorType):
+        """
+        :param estimator_name:  The name of the estimator
+        :param estimator_type:  The type of the estimator
+        """
+        self.estimator_name = estimator_name
+        self.estimator_type = estimator_type
+
+    @staticmethod
+    def get_supported_regressors() -> Set['SklearnEstimator']:
+        """
+        Returns a set that contains all supported scikit-learn regressors.
+
+        :return: A set that contains the names of all supported regressors
+        """
+        return set(
+            filter(
+                lambda estimator: estimator.can_be_default_instantiated, {
+                    SklearnEstimator(estimator_name=estimator_name, estimator_type=estimator_type)
+                    for estimator_name, estimator_type in all_estimators(type_filter='regressor')
+                    if issubclass(estimator_type, SkLearnRegressorMixin)
+                }))
+
+    @staticmethod
+    def get_supported_classifiers() -> Set['SklearnEstimator']:
+        """
+        Returns a set that contains all supported scikit-learn classifiers.
+
+        :return: A set that contains the names of all supported classifiers
+        """
+        return set(
+            filter(
+                lambda estimator: estimator.can_be_default_instantiated, {
+                    SklearnEstimator(estimator_name=estimator_name, estimator_type=estimator_type)
+                    for estimator_name, estimator_type in all_estimators(type_filter='classifier')
+                    if issubclass(estimator_type, SkLearnClassifierMixin)
+                }))
+
+    @staticmethod
+    def get_supported_meta_regressors() -> Set['SklearnEstimator']:
+        """
+        Returns a set that contains all supported scikit-learn meta-regressors.
+
+        :return: A set that contains the names of all supported meta-regressors
+        """
+        return set(
+            filter(
+                lambda estimator: estimator.can_be_instantiated_with_estimator, {
+                    SklearnEstimator(estimator_name=estimator_name, estimator_type=estimator_type)
+                    for estimator_name, estimator_type in all_estimators(type_filter='regressor')
+                    if issubclass(estimator_type, SkLearnRegressorMixin)
+                }))
+
+    @staticmethod
+    def get_supported_meta_classifiers() -> Set['SklearnEstimator']:
+        """
+        Returns a set that contains all supported scikit-learn meta-classifiers.
+
+        :return: A set that contains the names of all supported meta-classifiers
+        """
+        return set(
+            filter(
+                lambda estimator: estimator.can_be_instantiated_with_estimator, {
+                    SklearnEstimator(estimator_name=estimator_name, estimator_type=estimator_type)
+                    for estimator_name, estimator_type in all_estimators(type_filter='classifier')
+                    if issubclass(estimator_type, SkLearnClassifierMixin)
+                }))
+
+    @property
+    def is_classifier(self) -> bool:
+        """
+        True, if the estimator is a classifier, False otherwise.
+        """
+        return issubclass(self.estimator_type, SkLearnClassifierMixin)
+
+    @property
+    def is_regressor(self) -> bool:
+        """
+        True, if the estimator is a regressor, False otherwise.
+        """
+        return issubclass(self.estimator_type, SkLearnRegressorMixin)
+
+    @property
+    def is_meta_estimator(self) -> bool:
+        """
+        True, if the estimator is a meta-estimator, False otherwise.
+        """
+        return self.can_be_instantiated_with_estimator
+
+    @cached_property
+    def algorithmic_arguments(self) -> Set['SklearnEstimator.SklearnArgument']:
+        """
+        A set that contains the command line arguments that allow to control the hyperparameters of the estimator.
+        """
+        arguments: Set[SklearnEstimator.SklearnArgument] = set()
+        apidoc = self.estimator_type.__doc__
+
+        if apidoc:
+            prefix = 'meta_' if self.is_meta_estimator else ''
+
+            for param in docstring_parser.parse(apidoc).params:
+                parameter_name = param.arg_name
+                type_name = param.type_name
+
+                if type_name and not parameter_name.startswith('_') and not parameter_name.endswith('_'):
+                    argument_name = Argument.key_to_argument_name(prefix + parameter_name)
+                    description = self.__format_argument_description(param.description or '')
+
+                    try:
+                        arguments.add(
+                            SklearnEstimator.SklearnArgument.from_type_name(argument_name=argument_name,
+                                                                            parameter_name=parameter_name,
+                                                                            type_name=type_name,
+                                                                            description=description))
+                    except ValueError:
+                        pass
+
+        return arguments
+
+    @cached_property
+    def can_be_default_instantiated(self) -> bool:
+        """
+        True, if the estimator can be instantiated via a default constructor, False otherwise.
+        """
+        return self.__can_be_instantiated()
+
+    @cached_property
+    def can_be_instantiated_with_estimator(self) -> bool:
+        """
+        True, if the estimator can be instantiated by providing another estimator as a constructor argument, False
+        otherwise.
+        """
+        return self.__can_be_instantiated(estimator=DummyRegressor() if self.is_regressor else DummyClassifier())
+
+    def instantiate(self, args: Optional[Namespace] = None, **kwargs) -> SkLearnClassifierMixin | SkLearnRegressorMixin:
         """
         Creates and returns a new instance of the estimator.
 
         :param args:    Command line arguments specified by the user or None, if default hyperparameters should be used
+        :param kwargs:  Optional keyword arguments to be passed to the estimator's constructor
         :return:        The instance that has been created
         """
-        kwargs: Dict[str, Any] = {}
+        constructor_kwargs: Dict[str, Any] = dict(kwargs)
 
         if args:
             for argument in self.algorithmic_arguments:
                 value = argument.get_value(args)
 
                 if value is not None:
-                    kwargs[argument.parameter_name] = value
+                    constructor_kwargs[argument.parameter_name] = value
 
-        return self.estimator_type(**kwargs)
+        return self.estimator_type(**constructor_kwargs)
 
     @override
     def __str__(self) -> str:
@@ -565,15 +617,42 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
         """
 
         def __init__(self, supported_classifiers: Set[SklearnEstimator], supported_regressors: Set[SklearnEstimator],
-                     *dependencies: 'Extension'):
+                     supported_meta_classifiers: Set[SklearnEstimator],
+                     supported_meta_regressors: Set[SklearnEstimator], *dependencies: 'Extension'):
             """
-            :param supported_classifiers:   A set that contains all supported scikit-learn classifiers
-            :param supported_regressors:    A set that contains all supported scikit-learn regressors
-            :param dependencies:            Other extensions, this extension depends on
+            :param supported_classifiers:       A set that contains all supported scikit-learn classifiers
+            :param supported_regressors:        A set that contains all supported scikit-learn regressors
+            :param supported_meta_classifiers:  A set that contains all supported scikit-learn meta-classifiers
+            :param supported_meta_regressors:   A set that contains all supported scikit-learn meta-regressors
+            :param dependencies:                Other extensions, this extension depends on
             """
             super().__init__(*dependencies)
             self._supported_classifiers = supported_classifiers
             self._supported_regressors = supported_regressors
+            self._supported_meta_classifiers = supported_meta_classifiers
+            self._supported_meta_regressors = supported_meta_regressors
+
+        @staticmethod
+        def create_meta_estimator_argument(supported_meta_classifiers: Set[SklearnEstimator],
+                                           supported_meta_regressors: Set[SklearnEstimator]) -> SetArgument:
+            """
+            Creates and returns a `SetArgument` that allows to specify the name of a scikit-learn meta-estimator to be
+            used in an experiment.
+
+            :param supported_meta_classifiers:  A set that contains all supported scikit-learn meta-classifiers
+            :param supported_meta_regressors:   A set that contains all supported scikit-learn meta-regressors
+            :return:                            The `SetArgument` that has been created
+            """
+            return SetArgument(
+                '--meta-estimator',
+                values=set(map(str, chain(supported_meta_classifiers, supported_meta_regressors))),
+                description='The name of a scikit-learn meta estimator to be used. Must be one of '
+                + format_set(supported_meta_classifiers) + ', if the argument '
+                + SkLearnRunnable.ProblemDomainExtension.PROBLEM_TYPE.name + ' is set to "' + ClassificationProblem.NAME
+                + '", or ' + format_set(supported_meta_regressors) + ', if it is set to "' + RegressionProblem.NAME
+                + '".',
+                description_formatter=lambda description, _: description,
+            )
 
         @staticmethod
         def create_estimator_argument(supported_classifiers: Set[SklearnEstimator],
@@ -603,6 +682,8 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
             """
             return {
+                self.create_meta_estimator_argument(supported_meta_classifiers=self._supported_meta_classifiers,
+                                                    supported_meta_regressors=self._supported_meta_regressors),
                 self.create_estimator_argument(supported_classifiers=self._supported_classifiers,
                                                supported_regressors=self._supported_regressors)
             }
@@ -617,16 +698,50 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
     def __init__(self):
         self._classifiers = SklearnEstimator.get_supported_classifiers()
         self._regressors = SklearnEstimator.get_supported_regressors()
+        self._meta_classifiers = SklearnEstimator.get_supported_meta_classifiers()
+        self._meta_regressors = SklearnEstimator.get_supported_meta_regressors()
 
-    def __get_estimator(self, args: Namespace, problem_type: Optional[str] = None) -> Optional[SklearnEstimator]:
-        estimators = self._regressors if problem_type == RegressionProblem.NAME else self._classifiers
-        estimator_name = SkLearnEstimatorRunnable.EstimatorExtension.create_estimator_argument(
-            supported_classifiers=self._classifiers, supported_regressors=self._regressors).get_value(args)
+    @staticmethod
+    def __get_estimator_by_name(estimators: Iterable[SklearnEstimator],
+                                estimator_name: str,
+                                problem_type: Optional[str] = None) -> Optional[SklearnEstimator]:
         estimators_by_name = {estimator.estimator_name: estimator for estimator in estimators}
         estimator = estimators_by_name.get(estimator_name)
 
         if not estimator and problem_type:
             raise ValueError('Estimator "' + estimator_name + '" does not support problem type "' + problem_type + '"')
+
+        return estimator
+
+    def __get_estimator(self, args: Namespace, problem_type: Optional[str] = None) -> Optional[SklearnEstimator]:
+        estimators = self._regressors if problem_type == RegressionProblem.NAME else self._classifiers
+        estimator_name = SkLearnEstimatorRunnable.EstimatorExtension.create_estimator_argument(
+            supported_classifiers=self._classifiers, supported_regressors=self._regressors).get_value(args)
+        return self.__get_estimator_by_name(estimators, estimator_name, problem_type=problem_type)
+
+    def __get_meta_estimator(self, args: Namespace, problem_type: Optional[str] = None) -> Optional[SklearnEstimator]:
+        meta_estimators = self._meta_regressors if problem_type == RegressionProblem.NAME else self._meta_classifiers
+        meta_estimator_name = SkLearnEstimatorRunnable.EstimatorExtension.create_meta_estimator_argument(
+            supported_meta_classifiers=self._meta_classifiers,
+            supported_meta_regressors=self._meta_regressors).get_value(args)
+
+        if meta_estimator_name:
+            return self.__get_estimator_by_name(meta_estimators, meta_estimator_name, problem_type=problem_type)
+
+        return None
+
+    def __instantiate_estimator(
+            self,
+            args: Namespace,
+            problem_type: Optional[str] = None) -> Optional[SkLearnClassifierMixin] | Optional[SkLearnRegressorMixin]:
+        estimator = self.__get_estimator(args, problem_type=problem_type)
+        estimator = estimator.instantiate(args) if estimator else None
+
+        if estimator is not None:
+            meta_estimator = self.__get_meta_estimator(args, problem_type=problem_type)
+
+            if meta_estimator is not None:
+                return meta_estimator.instantiate(args, estimator=estimator)
 
         return estimator
 
@@ -637,7 +752,9 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
         """
         return [
             SkLearnEstimatorRunnable.EstimatorExtension(supported_classifiers=self._classifiers,
-                                                        supported_regressors=self._regressors),
+                                                        supported_regressors=self._regressors,
+                                                        supported_meta_classifiers=self._meta_classifiers,
+                                                        supported_meta_regressors=self._meta_regressors),
         ] + super().get_extensions()
 
     @override
@@ -645,21 +762,22 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_algorithmic_arguments`
         """
+        meta_estimator = self.__get_meta_estimator(known_args)
+        meta_estimator_arguments = meta_estimator.algorithmic_arguments if meta_estimator else set()
         estimator = self.__get_estimator(known_args)
-        return estimator.algorithmic_arguments if estimator else set()
+        estimator_arguments = estimator.algorithmic_arguments if estimator else set()
+        return meta_estimator_arguments | estimator_arguments
 
     @override
     def create_classifier(self, args: Namespace) -> Optional[SkLearnClassifierMixin]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.create_classifier`
         """
-        estimator = self.__get_estimator(args, problem_type=ClassificationProblem.NAME)
-        return estimator.instantiate(args) if estimator else None
+        return self.__instantiate_estimator(args, problem_type=ClassificationProblem.NAME)
 
     @override
     def create_regressor(self, args: Namespace) -> Optional[SkLearnRegressorMixin]:
         """
         See :func:`mlrl.testbed_sklearn.runnables.SkLearnRunnable.create_regressor`
         """
-        estimator = self.__get_estimator(args, problem_type=RegressionProblem.NAME)
-        return estimator.instantiate(args) if estimator else None
+        return self.__instantiate_estimator(args, problem_type=RegressionProblem.NAME)
