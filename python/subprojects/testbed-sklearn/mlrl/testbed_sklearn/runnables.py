@@ -660,14 +660,15 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
 
         @staticmethod
         def create_estimator_argument(supported_classifiers: Set[SklearnEstimator],
-                                      supported_regressors: Set[SklearnEstimator]) -> SetArgument:
+                                      supported_regressors: Set[SklearnEstimator], mode: ExperimentMode) -> SetArgument:
             """
             Creates and returns a `SetArgument` that allows to specify the name of the scikit-learn estimator to be
             used in an experiment.
 
             :param supported_classifiers:   A set that contains all supported scikit-learn classifiers
             :param supported_regressors:    A set that contains all supported scikit-learn regressors
-            :return                         The `SetArgument` that has been created
+            :param mode:                    The mode of operation
+            :return:                        The `SetArgument` that has been created
             """
             return SetArgument(
                 '--estimator',
@@ -677,11 +678,11 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
                 + SkLearnRunnable.ProblemDomainExtension.PROBLEM_TYPE.name + ' is set to "' + ClassificationProblem.NAME
                 + '", or ' + format_set(supported_regressors) + ', if it is set to "' + RegressionProblem.NAME + '".',
                 description_formatter=lambda description, _: description,
-                required=True,
+                required=mode in {ExperimentMode.SINGLE, ExperimentMode.BATCH},
             )
 
         @override
-        def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
+        def _get_arguments(self, mode: ExperimentMode) -> Set[Argument]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
             """
@@ -689,7 +690,8 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
                 self.create_meta_estimator_argument(supported_meta_classifiers=self._supported_meta_classifiers,
                                                     supported_meta_regressors=self._supported_meta_regressors),
                 self.create_estimator_argument(supported_classifiers=self._supported_classifiers,
-                                               supported_regressors=self._supported_regressors)
+                                               supported_regressors=self._supported_regressors,
+                                               mode=mode)
             }
 
         @override
@@ -717,10 +719,13 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
 
         return estimator
 
-    def __get_estimator(self, args: Namespace, problem_type: Optional[str] = None) -> Optional[SklearnEstimator]:
+    def __get_estimator(self,
+                        mode: ExperimentMode,
+                        args: Namespace,
+                        problem_type: Optional[str] = None) -> Optional[SklearnEstimator]:
         estimators = self._regressors if problem_type == RegressionProblem.NAME else self._classifiers
         estimator_name = SkLearnEstimatorRunnable.EstimatorExtension.create_estimator_argument(
-            supported_classifiers=self._classifiers, supported_regressors=self._regressors).get_value(args)
+            supported_classifiers=self._classifiers, supported_regressors=self._regressors, mode=mode).get_value(args)
         return self.__get_estimator_by_name(estimators, estimator_name, problem_type=problem_type)
 
     def __get_meta_estimator(self, args: Namespace, problem_type: Optional[str] = None) -> Optional[SklearnEstimator]:
@@ -736,9 +741,10 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
 
     def __instantiate_estimator(
             self,
+            mode: ExperimentMode,
             args: Namespace,
             problem_type: Optional[str] = None) -> Optional[SkLearnClassifierMixin] | Optional[SkLearnRegressorMixin]:
-        estimator = self.__get_estimator(args, problem_type=problem_type)
+        estimator = self.__get_estimator(mode, args, problem_type=problem_type)
         estimator = estimator.instantiate(args) if estimator else None
 
         if estimator is not None:
@@ -768,7 +774,7 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
         """
         meta_estimator = self.__get_meta_estimator(known_args)
         meta_estimator_arguments = meta_estimator.algorithmic_arguments if meta_estimator else set()
-        estimator = self.__get_estimator(known_args)
+        estimator = self.__get_estimator(mode, known_args)
         estimator_arguments = estimator.algorithmic_arguments if estimator else set()
         return meta_estimator_arguments | estimator_arguments
 
@@ -777,11 +783,11 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
         """
         See :func:`mlrl.testbed.runnables.Runnable.create_classifier`
         """
-        return self.__instantiate_estimator(args, problem_type=ClassificationProblem.NAME)
+        return self.__instantiate_estimator(mode, args, problem_type=ClassificationProblem.NAME)
 
     @override
     def create_regressor(self, mode: ExperimentMode, args: Namespace) -> Optional[SkLearnRegressorMixin]:
         """
         See :func:`mlrl.testbed_sklearn.runnables.SkLearnRunnable.create_regressor`
         """
-        return self.__instantiate_estimator(args, problem_type=RegressionProblem.NAME)
+        return self.__instantiate_estimator(mode, args, problem_type=RegressionProblem.NAME)
