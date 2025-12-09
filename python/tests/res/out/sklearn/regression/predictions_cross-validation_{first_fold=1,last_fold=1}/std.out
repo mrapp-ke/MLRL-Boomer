@@ -1,0 +1,81 @@
+mlrl-testbed mlrl.testbed_sklearn --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --data-split cross-validation{first_fold=1,last_fold=1} --print-evaluation false --save-evaluation false --print-predictions true --print-ground-truth true --save-predictions true --save-ground-truth true --n-estimators 1 --estimator RandomForestRegressor
+Checking if output files do already exist...
+Starting experiment using the regression algorithm "RandomForestRegressor"...
+DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
+Performing fold 1 of 10-fold cross validation...
+Fold 1 / 10:
+DEBUG: Reading input data from file "python/tests/res/data/atp7d.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
+Fitting model to 266 training examples...
+Successfully fit model in <duration>
+Predicting for 30 test examples...
+Successfully predicted in <duration>
+Ground truth for test data (Fold 1):
+
+[[283. 319. 319. 319. 283. 319.]
+ [283. 319. 319. 319. 283. 319.]
+ [441. 441. 740. 740. 540. 740.]
+ [272. 279. 319. 319. 272. 319.]
+ [278. 329. 350. 386. 278. 329.]
+ [278. 279. 279. 299. 278. 278.]
+ [279. 279. 301. 366. 283. 366.]
+ [233. 294. 329. 329. 278. 329.]
+ [268. 279. 309. 309. 268. 309.]
+ [279. 279. 329. 329. 288. 294.]
+ [290. 357. 375. 363. 298. 363.]
+ [288. 329. 329. 329. 288. 329.]
+ [283. 309. 309. 309. 283. 309.]
+ [198. 279. 198. 309. 262. 309.]
+ [253. 319. 319. 319. 253. 319.]
+ [267. 319. 319. 319. 267. 319.]
+ [530. 949. 839. 740. 555. 740.]
+ [279. 279. 395. 369. 313. 401.]
+ [273. 349. 395. 391. 273. 396.]
+ [273. 440. 460. 463. 334. 463.]
+ [334. 440. 460. 463. 334. 463.]
+ [460. 601. 460. 740. 460. 740.]
+ [268. 397. 496. 468. 268. 468.]
+ [199. 199. 244. 447. 244. 470.]
+ [244. 309. 244. 391. 244. 391.]
+ [298. 397. 456. 513. 344. 513.]
+ [249. 249. 447. 488. 313. 488.]
+ [199. 199. 199. 488. 243. 488.]
+ [243. 327. 496. 513. 243. 513.]
+ [243. 372. 496. 513. 243. 513.]]
+
+DEBUG: Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-1.arff"...
+Predictions for test data (Fold 1):
+
+[[268. 420. 460. 433. 273. 433.]
+ [388. 441. 642. 587. 395. 587.]
+ [315. 329. 514. 386. 337. 329.]
+ [268. 309. 309. 309. 268. 309.]
+ [315. 329. 542. 386. 337. 329.]
+ [277. 279. 319. 301. 277. 288.]
+ [279. 279. 301. 376. 283. 376.]
+ [233. 294. 329. 329. 278. 329.]
+ [233. 294. 329. 329. 278. 329.]
+ [279. 279. 329. 301. 288. 294.]
+ [290. 357. 375. 368. 298. 368.]
+ [268. 309. 369. 369. 277. 369.]
+ [288. 329. 329. 329. 288. 329.]
+ [198. 279. 198. 309. 262. 309.]
+ [253. 319. 319. 319. 253. 319.]
+ [268. 319. 319. 319. 268. 319.]
+ [441. 441. 740. 740. 540. 740.]
+ [298. 309. 369. 369. 346. 369.]
+ [244. 372. 445. 447. 244. 455.]
+ [268. 420. 460. 433. 318. 433.]
+ [315. 735. 514. 638. 676. 720.]
+ [315. 329. 514. 386. 337. 329.]
+ [268. 397. 445. 468. 268. 468.]
+ [298. 372. 445. 462. 298. 455.]
+ [244. 309. 244. 391. 244. 391.]
+ [298. 397. 456. 513. 343. 513.]
+ [199. 199. 447. 488. 298. 488.]
+ [199. 199. 199. 488. 243. 488.]
+ [199. 199. 199. 488. 243. 488.]
+ [298. 372. 445. 462. 298. 455.]]
+
+DEBUG: Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-1.arff"...
+Successfully finished experiment after <duration>

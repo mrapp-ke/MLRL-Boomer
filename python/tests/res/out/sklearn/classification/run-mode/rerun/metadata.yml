@@ -1,0 +1,6 @@
+command: mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/rerun --data-dir
+  python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level
+  debug --n-estimators 1 --print-all true --result-dir results --save-all true --save-evaluation
+  true --save-meta-data true
+timestamp: <timestamp>
+version: <version>

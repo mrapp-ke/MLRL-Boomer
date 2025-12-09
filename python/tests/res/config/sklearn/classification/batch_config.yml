@@ -1,0 +1,19 @@
+---
+datasets:
+  - directory: python/tests/res/data
+    names: emotions
+  - directory: python/tests/res/data
+    names:
+      - enron
+default_arguments:
+parameters:
+  - name: --n-estimators
+    values:
+      - 1
+      - 2
+  - name: --criterion
+    values:
+      - gini
+      - value: entropy
+        additional_arguments:
+          - --max-depth 5

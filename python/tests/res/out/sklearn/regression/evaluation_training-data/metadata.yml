@@ -1,0 +1,6 @@
+command: mlrl-testbed mlrl.testbed_sklearn --log-level debug --base-dir python/tests/res/tmp
+  --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type
+  regression --save-evaluation true --predict-for-training-data true --print-evaluation
+  true --save-evaluation true --n-estimators 1 --estimator RandomForestRegressor
+timestamp: <timestamp>
+version: <version>
