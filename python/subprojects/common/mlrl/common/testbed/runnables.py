@@ -309,7 +309,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
         initial_state = ExperimentState(mode=experiment_mode,
                                         args=args,
                                         meta_data=meta_data,
-                                        problem_domain=self.create_problem_domain(args))
+                                        problem_domain=self.create_problem_domain(experiment_mode, args))
         return RuleLearnerExperiment.Builder(initial_state=initial_state,
                                              dataset_splitter=self.create_dataset_splitter(args, load_dataset))
 
