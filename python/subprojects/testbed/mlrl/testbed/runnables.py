@@ -125,8 +125,8 @@ class Runnable(Recipe, ABC):
                 self.runnable = runnable
 
             @override
-            def create_problem_domain(self, args: Namespace) -> ProblemDomain:
-                return self.runnable.create_problem_domain(args)
+            def create_problem_domain(self, mode: ExperimentMode, args: Namespace) -> ProblemDomain:
+                return self.runnable.create_problem_domain(mode, args)
 
             @override
             def create_dataset_splitter(self, args: Namespace, load_dataset: bool = True) -> DatasetSplitter:

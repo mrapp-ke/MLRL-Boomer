@@ -356,7 +356,7 @@ class BatchMode(Mode):
                 state = ExperimentState(mode=self.to_enum(),
                                         args=args,
                                         meta_data=meta_data,
-                                        problem_domain=recipe.create_problem_domain(args))
+                                        problem_domain=recipe.create_problem_domain(self.to_enum(), args))
                 MetaDataWriter().add_sinks(sink).write(state)
 
     def __get_runner(self, args: Namespace) -> 'BatchMode.Runner':
