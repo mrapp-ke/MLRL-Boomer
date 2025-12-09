@@ -264,7 +264,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_algorithmic_arguments`
         """
-        problem_domain = SkLearnRunnable.ProblemDomainExtension.get_problem_domain(known_args, runnable=self)
+        problem_domain = SkLearnRunnable.ProblemDomainExtension.get_problem_domain(mode, known_args, runnable=self)
         config_type = None
         parameters = None
 
@@ -291,7 +291,8 @@ class RuleLearnerRunnable(SkLearnRunnable):
         """
         fit_kwargs = RuleLearnerRunnable.RuleLearnerExtension.get_fit_kwargs(args)
         predict_kwargs = RuleLearnerRunnable.RuleLearnerExtension.get_predict_kwargs(args)
-        return SkLearnRunnable.ProblemDomainExtension.get_problem_domain(args,
+        return SkLearnRunnable.ProblemDomainExtension.get_problem_domain(mode,
+                                                                         args,
                                                                          runnable=self,
                                                                          fit_kwargs=fit_kwargs,
                                                                          predict_kwargs=predict_kwargs)

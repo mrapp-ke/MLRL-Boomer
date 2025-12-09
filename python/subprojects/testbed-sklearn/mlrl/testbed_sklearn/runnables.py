@@ -130,13 +130,15 @@ class SkLearnRunnable(Runnable, ABC):
             return {ExperimentMode.SINGLE, ExperimentMode.BATCH}
 
         @staticmethod
-        def get_problem_domain(args: Namespace,
+        def get_problem_domain(mode: ExperimentMode,
+                               args: Namespace,
                                runnable: 'SkLearnRunnable',
                                fit_kwargs: Optional[Dict[str, Any]] = None,
                                predict_kwargs: Optional[Dict[str, Any]] = None) -> ProblemDomain:
             """
             Returns the problem domain that should be tackled by an experiment.
 
+            :param mode:            The mode of operation
             :param args:            The command line arguments specified by the user
             :param runnable:        The `SkLearnRunnable` that is used to run the experiment
             :param fit_kwargs:      Optional keyword arguments to be passed to the estimator's `predict` function
@@ -204,7 +206,7 @@ class SkLearnRunnable(Runnable, ABC):
         """
         See :func:`mlrl.testbed.experiments.recipe.Recipe.create_problem_domain`
         """
-        return SkLearnRunnable.ProblemDomainExtension.get_problem_domain(args, runnable=self)
+        return SkLearnRunnable.ProblemDomainExtension.get_problem_domain(mode, args, runnable=self)
 
     @override
     def create_dataset_splitter(self, args: Namespace, load_dataset: bool = True) -> DatasetSplitter:
