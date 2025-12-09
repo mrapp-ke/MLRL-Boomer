@@ -758,7 +758,7 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
         ] + super().get_extensions()
 
     @override
-    def get_algorithmic_arguments(self, known_args: Namespace) -> Set[Argument]:
+    def get_algorithmic_arguments(self, mode: ExperimentMode, known_args: Namespace) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_algorithmic_arguments`
         """
