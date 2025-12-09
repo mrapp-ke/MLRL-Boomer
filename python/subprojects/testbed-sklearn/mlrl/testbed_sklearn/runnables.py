@@ -150,7 +150,7 @@ class SkLearnRunnable(Runnable, ABC):
             problem_type = SkLearnRunnable.ProblemDomainExtension.PROBLEM_TYPE.get_value(args)
 
             if problem_type == ClassificationProblem.NAME:
-                base_learner = runnable.create_classifier(args)
+                base_learner = runnable.create_classifier(mode, args)
 
                 if base_learner is None:
                     raise AttributeError('Classification problems are not supported by the runnable "'
@@ -164,7 +164,7 @@ class SkLearnRunnable(Runnable, ABC):
                                                     fit_kwargs=fit_kwargs,
                                                     predict_kwargs=predict_kwargs)
 
-            base_learner = runnable.create_regressor(args)
+            base_learner = runnable.create_regressor(mode, args)
 
             if base_learner is None:
                 raise AttributeError('Regression problems are not supported by the runnable "' + type(runnable).__name__
@@ -254,21 +254,23 @@ class SkLearnRunnable(Runnable, ABC):
         return SkLearnRunnable.GlobalPredictorFactory(prediction_type)
 
     @abstractmethod
-    def create_classifier(self, args: Namespace) -> Optional[SkLearnClassifierMixin]:
+    def create_classifier(self, mode: ExperimentMode, args: Namespace) -> Optional[SkLearnClassifierMixin]:
         """
         Must be implemented by subclasses in order to create a machine learning algorithm that can be applied to
         classification problems.
 
+        :param mode:    The mode of operation
         :param args:    The command line arguments
         :return:        The learner that has been created or None, if regression problems are not supported
         """
 
     @abstractmethod
-    def create_regressor(self, args: Namespace) -> Optional[SkLearnRegressorMixin]:
+    def create_regressor(self, mode: ExperimentMode, args: Namespace) -> Optional[SkLearnRegressorMixin]:
         """
         Must be implemented by subclasses in order to create a machine learning algorithm that can be applied to
         regression problems.
 
+        :param mode:    The mode of operation
         :param args:    The command line arguments
         :return:        The learner that has been created or None, if regression problems are not supported
         """
@@ -771,14 +773,14 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
         return meta_estimator_arguments | estimator_arguments
 
     @override
-    def create_classifier(self, args: Namespace) -> Optional[SkLearnClassifierMixin]:
+    def create_classifier(self, mode: ExperimentMode, args: Namespace) -> Optional[SkLearnClassifierMixin]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.create_classifier`
         """
         return self.__instantiate_estimator(args, problem_type=ClassificationProblem.NAME)
 
     @override
-    def create_regressor(self, args: Namespace) -> Optional[SkLearnRegressorMixin]:
+    def create_regressor(self, mode: ExperimentMode, args: Namespace) -> Optional[SkLearnRegressorMixin]:
         """
         See :func:`mlrl.testbed_sklearn.runnables.SkLearnRunnable.create_regressor`
         """

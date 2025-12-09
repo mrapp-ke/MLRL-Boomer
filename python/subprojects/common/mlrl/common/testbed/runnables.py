@@ -315,7 +315,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
                                              dataset_splitter=self.create_dataset_splitter(args, load_dataset))
 
     @override
-    def create_classifier(self, args: Namespace) -> Optional[SkLearnClassifierMixin]:
+    def create_classifier(self, _: ExperimentMode, args: Namespace) -> Optional[SkLearnClassifierMixin]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.create_classifier`
         """
@@ -328,7 +328,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
         return None
 
     @override
-    def create_regressor(self, args: Namespace) -> Optional[SkLearnRegressorMixin]:
+    def create_regressor(self, _: ExperimentMode, args: Namespace) -> Optional[SkLearnRegressorMixin]:
         """
         See :func:`mlrl.testbed_sklearn.runnables.SkLearnRunnable.create_regressor`
         """
