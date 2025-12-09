@@ -200,7 +200,7 @@ class SkLearnRunnable(Runnable, ABC):
         ] + super().get_extensions()
 
     @override
-    def create_problem_domain(self, args: Namespace) -> ProblemDomain:
+    def create_problem_domain(self, mode: ExperimentMode, args: Namespace) -> ProblemDomain:
         """
         See :func:`mlrl.testbed.experiments.recipe.Recipe.create_problem_domain`
         """
@@ -226,7 +226,7 @@ class SkLearnRunnable(Runnable, ABC):
         initial_state = ExperimentState(mode=experiment_mode,
                                         args=args,
                                         meta_data=meta_data,
-                                        problem_domain=self.create_problem_domain(args))
+                                        problem_domain=self.create_problem_domain(experiment_mode, args))
         return SkLearnExperiment.Builder(initial_state=initial_state,
                                          dataset_splitter=self.create_dataset_splitter(args, load_dataset))
 

@@ -20,10 +20,11 @@ class Recipe(ABC):
     """
 
     @abstractmethod
-    def create_problem_domain(self, args: Namespace) -> ProblemDomain:
+    def create_problem_domain(self, mode: ExperimentMode, args: Namespace) -> ProblemDomain:
         """
         Creates and returns the `ProblemDomain` to be used in experiments.
 
+        :param mode:    The mode of operation
         :param args:    The command line arguments specified by the user
         :return:        The `ProblemDomain` that has been created
         """

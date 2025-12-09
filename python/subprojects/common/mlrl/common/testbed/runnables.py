@@ -285,7 +285,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
         }
 
     @override
-    def create_problem_domain(self, args: Namespace):
+    def create_problem_domain(self, mode: ExperimentMode, args: Namespace):
         """
         See :func:`mlrl.testbed.experiments.recipe.Recipe.create_problem_domain`
         """
