@@ -1,0 +1,278 @@
+mlrl-testbed mlrl.testbed_sklearn --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --data-split cross-validation --print-evaluation true --save-evaluation true --n-estimators 1 --estimator RandomForestClassifier
+Checking if output files do already exist...
+Starting experiment using the classification algorithm "RandomForestClassifier"...
+DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
+Performing full 10-fold cross validation...
+Fold 1 / 10:
+DEBUG: Reading input data from file "python/tests/res/data/emotions.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+Fitting model to 533 training examples...
+Successfully fit model in <duration>
+Predicting for 60 test examples...
+Successfully predicted in <duration>
+Evaluation result for test data (Fold 1):
+
+Example-wise F1 (↑)         54.61
+Example-wise Jaccard (↑)    47.36
+Example-wise Precision (↑)  59.44
+Example-wise Recall (↑)     54.72
+Hamming Accuracy (↑)        73.61
+Hamming Loss (↓)            26.39
+Macro F1 (↑)                57.81
+Macro Jaccard (↑)           41.25
+Macro Precision (↑)         61.14
+Macro Recall (↑)            55.99
+Micro F1 (↑)                58.15
+Micro Jaccard (↑)           40.99
+Micro Precision (↑)         60
+Micro Recall (↑)            56.41
+Subset 0/1 Loss (↓)         73.33
+Subset Accuracy (↑)         26.67
+
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-1.csv"...
+Fold 2 / 10:
+Fitting model to 533 training examples...
+Successfully fit model in <duration>
+Predicting for 60 test examples...
+Successfully predicted in <duration>
+Evaluation result for test data (Fold 2):
+
+Example-wise F1 (↑)         53.5
+Example-wise Jaccard (↑)    45.42
+Example-wise Precision (↑)  56.11
+Example-wise Recall (↑)     56.11
+Hamming Accuracy (↑)        71.94
+Hamming Loss (↓)            28.06
+Macro F1 (↑)                56.75
+Macro Jaccard (↑)           40.43
+Macro Precision (↑)         59.57
+Macro Recall (↑)            56.19
+Micro F1 (↑)                57.02
+Micro Jaccard (↑)           39.88
+Micro Precision (↑)         58.26
+Micro Recall (↑)            55.83
+Subset 0/1 Loss (↓)         78.33
+Subset Accuracy (↑)         21.67
+
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-2.csv"...
+Fold 3 / 10:
+Fitting model to 533 training examples...
+Successfully fit model in <duration>
+Predicting for 60 test examples...
+Successfully predicted in <duration>
+Evaluation result for test data (Fold 3):
+
+Example-wise F1 (↑)         42.72
+Example-wise Jaccard (↑)    34.31
+Example-wise Precision (↑)  46.67
+Example-wise Recall (↑)     44.17
+Hamming Accuracy (↑)        65.83
+Hamming Loss (↓)            34.17
+Macro F1 (↑)                45.3
+Macro Jaccard (↑)           30.01
+Macro Precision (↑)         47.87
+Macro Recall (↑)            43.65
+Micro F1 (↑)                44.84
+Micro Jaccard (↑)           28.9
+Micro Precision (↑)         45.87
+Micro Recall (↑)            43.86
+Subset 0/1 Loss (↓)         90
+Subset Accuracy (↑)         10
+
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-3.csv"...
+Fold 4 / 10:
+Fitting model to 534 training examples...
+Successfully fit model in <duration>
+Predicting for 59 test examples...
+Successfully predicted in <duration>
+Evaluation result for test data (Fold 4):
+
+Example-wise F1 (↑)         49.55
+Example-wise Jaccard (↑)    41.86
+Example-wise Precision (↑)  51.69
+Example-wise Recall (↑)     52.26
+Hamming Accuracy (↑)        70.62
+Hamming Loss (↓)            29.38
+Macro F1 (↑)                48.38
+Macro Jaccard (↑)           32.46
+Macro Precision (↑)         48.93
+Macro Recall (↑)            48.44
+Micro F1 (↑)                49.51
+Micro Jaccard (↑)           32.9
+Micro Precision (↑)         49.04
+Micro Recall (↑)            50
+Subset 0/1 Loss (↓)         77.97
+Subset Accuracy (↑)         22.03
+
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-4.csv"...
+Fold 5 / 10:
+Fitting model to 534 training examples...
+Successfully fit model in <duration>
+Predicting for 59 test examples...
+Successfully predicted in <duration>
+Evaluation result for test data (Fold 5):
+
+Example-wise F1 (↑)         53.16
+Example-wise Jaccard (↑)    44.41
+Example-wise Precision (↑)  58.19
+Example-wise Recall (↑)     55.08
+Hamming Accuracy (↑)        71.75
+Hamming Loss (↓)            28.25
+Macro F1 (↑)                53.9
+Macro Jaccard (↑)           38.85
+Macro Precision (↑)         56.73
+Macro Recall (↑)            53.22
+Micro F1 (↑)                55.36
+Micro Jaccard (↑)           38.27
+Micro Precision (↑)         56.88
+Micro Recall (↑)            53.91
+Subset 0/1 Loss (↓)         81.36
+Subset Accuracy (↑)         18.64
+
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-5.csv"...
+Fold 6 / 10:
+Fitting model to 534 training examples...
+Successfully fit model in <duration>
+Predicting for 59 test examples...
+Successfully predicted in <duration>
+Evaluation result for test data (Fold 6):
+
+Example-wise F1 (↑)         49.72
+Example-wise Jaccard (↑)    42.94
+Example-wise Precision (↑)  53.39
+Example-wise Recall (↑)     52.54
+Hamming Accuracy (↑)        70.62
+Hamming Loss (↓)            29.38
+Macro F1 (↑)                49.92
+Macro Jaccard (↑)           34.28
+Macro Precision (↑)         49.6
+Macro Recall (↑)            52.48
+Micro F1 (↑)                51.4
+Micro Jaccard (↑)           34.59
+Micro Precision (↑)         50
+Micro Recall (↑)            52.88
+Subset 0/1 Loss (↓)         76.27
+Subset Accuracy (↑)         23.73
+
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-6.csv"...
+Fold 7 / 10:
+Fitting model to 534 training examples...
+Successfully fit model in <duration>
+Predicting for 59 test examples...
+Successfully predicted in <duration>
+Evaluation result for test data (Fold 7):
+
+Example-wise F1 (↑)         54.18
+Example-wise Jaccard (↑)    45.76
+Example-wise Precision (↑)  55.37
+Example-wise Recall (↑)     58.47
+Hamming Accuracy (↑)        72.6
+Hamming Loss (↓)            27.4
+Macro F1 (↑)                51.85
+Macro Jaccard (↑)           37.43
+Macro Precision (↑)         52.81
+Macro Recall (↑)            51.48
+Micro F1 (↑)                54.88
+Micro Jaccard (↑)           37.82
+Micro Precision (↑)         54.13
+Micro Recall (↑)            55.66
+Subset 0/1 Loss (↓)         77.97
+Subset Accuracy (↑)         22.03
+
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-7.csv"...
+Fold 8 / 10:
+Fitting model to 534 training examples...
+Successfully fit model in <duration>
+Predicting for 59 test examples...
+Successfully predicted in <duration>
+Evaluation result for test data (Fold 8):
+
+Example-wise F1 (↑)         50.28
+Example-wise Jaccard (↑)    43.79
+Example-wise Precision (↑)  51.13
+Example-wise Recall (↑)     52.54
+Hamming Accuracy (↑)        71.75
+Hamming Loss (↓)            28.25
+Macro F1 (↑)                53.97
+Macro Jaccard (↑)           37.8
+Macro Precision (↑)         54.65
+Macro Recall (↑)            54.45
+Micro F1 (↑)                53.7
+Micro Jaccard (↑)           36.71
+Micro Precision (↑)         53.21
+Micro Recall (↑)            54.21
+Subset 0/1 Loss (↓)         72.88
+Subset Accuracy (↑)         27.12
+
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-8.csv"...
+Fold 9 / 10:
+Fitting model to 534 training examples...
+Successfully fit model in <duration>
+Predicting for 59 test examples...
+Successfully predicted in <duration>
+Evaluation result for test data (Fold 9):
+
+Example-wise F1 (↑)         48.98
+Example-wise Jaccard (↑)    42.37
+Example-wise Precision (↑)  50.85
+Example-wise Recall (↑)     51.13
+Hamming Accuracy (↑)        69.21
+Hamming Loss (↓)            30.79
+Macro F1 (↑)                49.2
+Macro Jaccard (↑)           34.83
+Macro Precision (↑)         51.72
+Macro Recall (↑)            49.04
+Micro F1 (↑)                51.98
+Micro Jaccard (↑)           35.12
+Micro Precision (↑)         51.75
+Micro Recall (↑)            52.21
+Subset 0/1 Loss (↓)         77.97
+Subset Accuracy (↑)         22.03
+
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-9.csv"...
+Fold 10 / 10:
+Fitting model to 534 training examples...
+Successfully fit model in <duration>
+Predicting for 59 test examples...
+Successfully predicted in <duration>
+Evaluation result for test data (Fold 10):
+
+Example-wise F1 (↑)         50.34
+Example-wise Jaccard (↑)    41.5
+Example-wise Precision (↑)  56.5
+Example-wise Recall (↑)     50.85
+Hamming Accuracy (↑)        70.62
+Hamming Loss (↓)            29.38
+Macro F1 (↑)                48.62
+Macro Jaccard (↑)           33.23
+Macro Precision (↑)         51.42
+Macro Recall (↑)            47.76
+Micro F1 (↑)                51.4
+Micro Jaccard (↑)           34.59
+Micro Precision (↑)         52.88
+Micro Recall (↑)            50
+Subset 0/1 Loss (↓)         83.05
+Subset Accuracy (↑)         16.95
+
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-10.csv"...
+Evaluation result for test data (Average across 10 folds):
+
+Example-wise F1 (↑)         50.7   ±3.32
+Example-wise Jaccard (↑)    42.97  ±3.39
+Example-wise Precision (↑)  53.93  ±3.71
+Example-wise Recall (↑)     52.79  ±3.66
+Hamming Accuracy (↑)        70.86  ±2.04
+Hamming Loss (↓)            29.14  ±2.04
+Macro F1 (↑)                51.57  ±3.79
+Macro Jaccard (↑)           36.06  ±3.48
+Macro Precision (↑)         53.44  ±4.27
+Macro Recall (↑)            51.27  ±3.81
+Micro F1 (↑)                52.83  ±3.70
+Micro Jaccard (↑)           35.98  ±3.37
+Micro Precision (↑)         53.2   ±4.12
+Micro Recall (↑)            52.5   ±3.59
+Subset 0/1 Loss (↓)         78.91  ±4.73
+Subset Accuracy (↑)         21.09  ±4.73
+
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Successfully finished experiment after <duration>

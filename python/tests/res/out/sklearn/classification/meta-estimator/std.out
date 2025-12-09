@@ -1,0 +1,36 @@
+mlrl-testbed mlrl.testbed_sklearn --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --print-evaluation true --save-evaluation false --n-estimators 1 --meta-verbose True --meta-estimator ClassifierChain --estimator RandomForestClassifier
+Checking if output files do already exist...
+Starting experiment using the classification algorithm "ClassifierChain"...
+Using separate training and test sets...
+DEBUG: Reading input data from file "python/tests/res/data/emotions.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+Fitting model to 397 training examples...
+[Chain] ................... (1 of 6) Processing order 0, total=   0.0s
+[Chain] ................... (2 of 6) Processing order 1, total=   0.0s
+[Chain] ................... (3 of 6) Processing order 2, total=   0.0s
+[Chain] ................... (4 of 6) Processing order 3, total=   0.0s
+[Chain] ................... (5 of 6) Processing order 4, total=   0.0s
+[Chain] ................... (6 of 6) Processing order 5, total=   0.0s
+Successfully fit model in <duration>
+Predicting for 196 test examples...
+Successfully predicted in <duration>
+Evaluation result for test data:
+
+Example-wise F1 (↑)         49.21
+Example-wise Jaccard (↑)    39.73
+Example-wise Precision (↑)  59.23
+Example-wise Recall (↑)     53.57
+Hamming Accuracy (↑)        70.49
+Hamming Loss (↓)            29.51
+Macro F1 (↑)                52.22
+Macro Jaccard (↑)           35.75
+Macro Precision (↑)         53.74
+Macro Recall (↑)            51.42
+Micro F1 (↑)                52.79
+Micro Jaccard (↑)           35.86
+Micro Precision (↑)         53.89
+Micro Recall (↑)            51.73
+Subset 0/1 Loss (↓)         86.73
+Subset Accuracy (↑)         13.27
+
+Successfully finished experiment after <duration>

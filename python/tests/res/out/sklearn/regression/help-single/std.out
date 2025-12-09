@@ -1,0 +1,250 @@
+mlrl-testbed mlrl.testbed_sklearn --mode single --help --estimator RandomForestRegressor
+usage: mlrl-testbed [-r RUNNABLE] [--log-level LOG_LEVEL] [--mode MODE] [--base-dir BASE_DIR]
+                    [--create-dirs CREATE_DIRS] [--data-dir DATA_DIR] [--data-split DATA_SPLIT] [--dataset DATASET]
+                    [--dataset-format DATASET_FORMAT] [--estimator ESTIMATOR] [--if-input-missing IF_INPUT_MISSING]
+                    [--if-output-error IF_OUTPUT_ERROR] [--if-outputs-exist IF_OUTPUTS_EXIST]
+                    [--load-models LOAD_MODELS] [--load-parameters LOAD_PARAMETERS] [--meta-estimator META_ESTIMATOR]
+                    [--model-load-dir MODEL_LOAD_DIR] [--model-save-dir MODEL_SAVE_DIR]
+                    [--one-hot-encoding ONE_HOT_ENCODING] [--parameter-load-dir PARAMETER_LOAD_DIR]
+                    [--parameter-save-dir PARAMETER_SAVE_DIR] [--predict-for-test-data PREDICT_FOR_TEST_DATA]
+                    [--predict-for-training-data PREDICT_FOR_TRAINING_DATA] [--prediction-type PREDICTION_TYPE]
+                    [--print-all PRINT_ALL] [--print-data-characteristics PRINT_DATA_CHARACTERISTICS]
+                    [--print-evaluation PRINT_EVALUATION] [--print-ground-truth PRINT_GROUND_TRUTH]
+                    [--print-label-vectors PRINT_LABEL_VECTORS] [--print-meta-data PRINT_META_DATA]
+                    [--print-parameters PRINT_PARAMETERS]
+                    [--print-prediction-characteristics PRINT_PREDICTION_CHARACTERISTICS]
+                    [--print-predictions PRINT_PREDICTIONS] [--problem-type PROBLEM_TYPE] [--random-state RANDOM_STATE]
+                    [--result-dir RESULT_DIR] [--save-all SAVE_ALL]
+                    [--save-data-characteristics SAVE_DATA_CHARACTERISTICS] [--save-evaluation SAVE_EVALUATION]
+                    [--save-ground-truth SAVE_GROUND_TRUTH] [--save-label-vectors SAVE_LABEL_VECTORS]
+                    [--save-meta-data SAVE_META_DATA] [--save-models SAVE_MODELS] [--save-parameters SAVE_PARAMETERS]
+                    [--save-prediction-characteristics SAVE_PREDICTION_CHARACTERISTICS]
+                    [--save-predictions SAVE_PREDICTIONS] [--bootstrap BOOTSTRAP] [--ccp-alpha CCP_ALPHA]
+                    [--max-depth MAX_DEPTH] [--max-features MAX_FEATURES] [--max-leaf-nodes MAX_LEAF_NODES]
+                    [--max-samples MAX_SAMPLES] [--min-impurity-decrease MIN_IMPURITY_DECREASE]
+                    [--min-samples-leaf MIN_SAMPLES_LEAF] [--min-samples-split MIN_SAMPLES_SPLIT]
+                    [--min-weight-fraction-leaf MIN_WEIGHT_FRACTION_LEAF] [--n-estimators N_ESTIMATORS]
+                    [--n-jobs N_JOBS] [--verbose VERBOSE] [--warm-start WARM_START] [-h]
+                    runnable_module_or_source_file
+
+A command line utility for training and evaluating machine learning algorithms
+
+positional arguments:
+  runnable_module_or_source_file
+                        The Python module or source file of the program that should be run
+
+options:
+  -r, --runnable RUNNABLE
+                        The Python class name of the program that should be run
+  --log-level LOG_LEVEL
+                        The log level to be used. Must be one of {"critical", "debug", "error", "info", "notset",
+                        "warn"}. The default value is "info".
+  --mode MODE           The mode of operation to be used. Must be one of {"batch", "read", "run", "single"}. The default
+                        value is "single".
+  -h, --help            Show this help message and exit
+
+control arguments:
+  --base-dir BASE_DIR   If relative paths to directories, where files should be saved, are given, they are considered
+                        relative to the directory specified via this argument. The default value is "experiments/YYY-MM-
+                        DD_hh-mm".
+  --create-dirs CREATE_DIRS
+                        Whether the directories, where files should be saved, should be created automatically, if they
+                        do not exist, or not. Must be one of {"false", "true"}. The default value is "true".
+  --data-dir DATA_DIR   The path to the directory where the dataset files are located.
+  --data-split DATA_SPLIT
+                        The strategy to be used for splitting the available data into training and test sets. Must be
+                        one of {"cross-validation", "none", "train-test"}. For additional options refer to the
+                        documentation. The default value is "train-test".
+  --dataset DATASET     The name of the dataset.
+  --dataset-format DATASET_FORMAT
+                        The dataset format to be used. Must be one of {"arff", "auto", "svm"}. The default value is
+                        "auto".
+  --estimator ESTIMATOR
+                        The name of the scikit-learn estimator to be used. Must be one of {"AdaBoostClassifier",
+                        "BaggingClassifier", "DecisionTreeClassifier", "DummyClassifier", "ExtraTreeClassifier",
+                        "ExtraTreesClassifier", "GaussianProcessClassifier", "GradientBoostingClassifier",
+                        "HistGradientBoostingClassifier", "LinearSVC", "LogisticRegression", "LogisticRegressionCV",
+                        "MLPClassifier", "NuSVC", "PassiveAggressiveClassifier", "Perceptron", "RandomForestClassifier",
+                        "RidgeClassifier", "SGDClassifier", "SVC"}, if the argument --problem-type is set to
+                        "classification", or {"AdaBoostRegressor", "BaggingRegressor", "DecisionTreeRegressor",
+                        "ElasticNet", "ElasticNetCV", "ExtraTreeRegressor", "ExtraTreesRegressor",
+                        "GaussianProcessRegressor", "GradientBoostingRegressor", "HistGradientBoostingRegressor",
+                        "Lars", "Lasso", "LassoCV", "LassoLars", "LinearSVR", "MLPRegressor", "MultiTaskElasticNet",
+                        "MultiTaskElasticNetCV", "MultiTaskLasso", "MultiTaskLassoCV", "PassiveAggressiveRegressor",
+                        "RANSACRegressor", "RandomForestRegressor", "Ridge", "SGDRegressor", "TheilSenRegressor"}, if it
+                        is set to "regression".
+  --if-input-missing IF_INPUT_MISSING
+                        What to do if an error occurs while reading input data. Must be one of {"exit", "log"}. The
+                        default value is "log".
+  --if-output-error IF_OUTPUT_ERROR
+                        Whether the program should exit if an error occurs while writing experimental results or not.
+                        Must be one of {"exit", "log"}. The default value is "log".
+  --if-outputs-exist IF_OUTPUTS_EXIST
+                        What to do if experimental results do already exist. Must be one of {"cancel", "overwrite"}. The
+                        default value is "cancel".
+  --load-models LOAD_MODELS
+                        Whether models should be loaded from input files or not. Must be one of {"false", "true"}. The
+                        default value is "false".
+  --load-parameters LOAD_PARAMETERS
+                        Whether parameters should be loaded from input files or not. Must be one of {"false", "true"}.
+                        The default value is "false".
+  --meta-estimator META_ESTIMATOR
+                        The name of a scikit-learn meta estimator to be used. Must be one of {"AdaBoostClassifier",
+                        "BaggingClassifier", "ClassifierChain", "OutputCodeClassifier"}, if the argument --problem-type
+                        is set to "classification", or {"AdaBoostRegressor", "BaggingRegressor", "RegressorChain"}, if
+                        it is set to "regression".
+  --model-load-dir MODEL_LOAD_DIR
+                        The path to the directory from which models should be loaded. The default value is "models".
+  --model-save-dir MODEL_SAVE_DIR
+                        The path to the directory where models should be saved. The default value is "models".
+  --one-hot-encoding ONE_HOT_ENCODING
+                        Whether one-hot-encoding should be used to encode nominal features or not. Must be one of
+                        {"false", "true"}. The default value is "false".
+  --parameter-load-dir PARAMETER_LOAD_DIR
+                        The path to the directory from which parameters to be used by the algorithm should be loaded.
+                        The default value is "parameters".
+  --parameter-save-dir PARAMETER_SAVE_DIR
+                        The path to the directory where configuration files, which specify the parameters used by the
+                        algorithm, should be saved. The default value is "parameters".
+  --predict-for-test-data PREDICT_FOR_TEST_DATA
+                        Whether predictions should be obtained for the test data or not. Must be one of {"false",
+                        "true"}. The default value is "true".
+  --predict-for-training-data PREDICT_FOR_TRAINING_DATA
+                        Whether predictions should be obtained for the training data or not. Must be one of {"false",
+                        "true"}. The default value is "false".
+  --prediction-type PREDICTION_TYPE
+                        The type of predictions that should be obtained from the learner. Must be one of {"binary",
+                        "probabilities", "scores"}. The default value is "binary".
+  --print-all PRINT_ALL
+                        Whether all output data should be printed on the console or not. Must be one of {"false",
+                        "true"}. The default value is "false".
+  --print-data-characteristics PRINT_DATA_CHARACTERISTICS
+                        Whether the characteristics of the training data should be printed on the console or not. Must
+                        be one of {"false", "true"}. For additional options refer to the documentation. The default
+                        value is "false".
+  --print-evaluation PRINT_EVALUATION
+                        Whether the evaluation results should be printed on the console or not. Must be one of {"false",
+                        "true"}. For additional options refer to the documentation. The default value is "true".
+  --print-ground-truth PRINT_GROUND_TRUTH
+                        Whether the ground truth should be printed on the console or not. Must be one of {"false",
+                        "true"}. For additional options refer to the documentation. The default value is "false".
+  --print-label-vectors PRINT_LABEL_VECTORS
+                        Whether the unique label vectors contained in the training data should be printed on the console
+                        or not. Must be one of {"false", "true"}. The default value is "false".
+  --print-meta-data PRINT_META_DATA
+                        Whether meta-data should be printed on the console or not. Must be one of {"false", "true"}. The
+                        default value is "false".
+  --print-parameters PRINT_PARAMETERS
+                        Whether the parameter setting should be printed on the console or not. Must be one of {"false",
+                        "true"}. The default value is "false".
+  --print-prediction-characteristics PRINT_PREDICTION_CHARACTERISTICS
+                        Whether the characteristics of binary predictions should be printed on the console or not. Does
+                        only have an effect if the argument --prediction-type is set to binary. Must be one of {"false",
+                        "true"}. For additional options refer to the documentation. The default value is "false".
+  --print-predictions PRINT_PREDICTIONS
+                        Whether predictions should be printed on the console or not. Must be one of {"false", "true"}.
+                        For additional options refer to the documentation. The default value is "false".
+  --problem-type PROBLEM_TYPE
+                        The type of the machine learning problem to be solved. Must be one of {"classification",
+                        "regression"}. The default value is "classification".
+  --random-state RANDOM_STATE
+                        The seed to be used by random number generators. Must be at least 0. The default value is 1.
+  --result-dir RESULT_DIR
+                        The path to the directory where experimental results should be saved. The default value is
+                        "results".
+  --save-all SAVE_ALL   Whether all output data should be written to files or not. Must be one of {"false", "true"}. The
+                        default value is "false".
+  --save-data-characteristics SAVE_DATA_CHARACTERISTICS
+                        Whether the characteristics of the training data should be written to output files or not. Must
+                        be one of {"false", "true"}. For additional options refer to the documentation. The default
+                        value is "false".
+  --save-evaluation SAVE_EVALUATION
+                        Whether evaluation results should be written to output files or not. Must be one of {"false",
+                        "true"}. For additional options refer to the documentation. The default value is "false".
+  --save-ground-truth SAVE_GROUND_TRUTH
+                        Whether the ground truth should be written to output files or not. Must be one of {"false",
+                        "true"}. For additional options refer to the documentation. The default value is "false".
+  --save-label-vectors SAVE_LABEL_VECTORS
+                        Whether the unique label vectors contained in the training data should be written to output
+                        files or not. Must be one of {"false", "true"}. The default value is "false".
+  --save-meta-data SAVE_META_DATA
+                        Whether meta-data should be saved to output files or not. If set to "auto", meta-data is saved
+                        whenever other output files are written as well. Must be one of {"auto", "false", "true"}. The
+                        default value is "auto".
+  --save-models SAVE_MODELS
+                        Whether models should be saved to output files or not. Must be one of {"false", "true"}. The
+                        default value is "false".
+  --save-parameters SAVE_PARAMETERS
+                        Whether the parameter setting should be written to output files or not. Must be one of {"false",
+                        "true"}. The default value is "false".
+  --save-prediction-characteristics SAVE_PREDICTION_CHARACTERISTICS
+                        Whether the characteristics of binary predictions should be written to output files or not. Does
+                        only have an effect if the argument --prediction-type is set to binary and if the argument
+                        --result-dir is specified. Must be one of {"false", "true"}. For additional options refer to the
+                        documentation. The default value is "false".
+  --save-predictions SAVE_PREDICTIONS
+                        Whether predictions should be written to output files or not. Must be one of {"false", "true"}.
+                        For additional options refer to the documentation. The default value is "false".
+
+algorithmic arguments:
+  --bootstrap BOOTSTRAP
+                        Whether bootstrap samples are used when building trees. If False, the whole dataset is used to
+                        build each tree. Must be bool. The default value is True.
+  --ccp-alpha CCP_ALPHA
+                        Complexity parameter used for Minimal Cost-Complexity Pruning. The subtree with the largest cost
+                        complexity that is smaller than 'ccp_alpha' will be chosen. By default, no pruning is performed.
+                        Must be float. The default value is 0.0.
+  --max-depth MAX_DEPTH
+                        The maximum depth of the tree. If None, then nodes are expanded until all leaves are pure or
+                        until all leaves contain less than min_samples_split samples. Must be int. The default value is
+                        None.
+  --max-features MAX_FEATURES
+                        The number of features to consider when looking for the best split: If int, then consider
+                        'max_features' features at each split. If float, then 'max_features' is a fraction and 'max(1,
+                        int(max_features * n_features_in_))' features are considered at each split. If "sqrt", then
+                        'max_features=sqrt(n_features)'. If "log2", then 'max_features=log2(n_features)'. If None or
+                        1.0, then 'max_features=n_features'. Note: the search for a split does not stop until at least
+                        one valid partition of the node samples is found, even if it requires to effectively inspect
+                        more than 'max_features' features. Must be one of {"log2", "sqrt"}, int or float. The default
+                        value is 1.0.
+  --max-leaf-nodes MAX_LEAF_NODES
+                        Grow trees with 'max_leaf_nodes' in best-first fashion. Best nodes are defined as relative
+                        reduction in impurity. If None then unlimited number of leaf nodes. Must be int. The default
+                        value is None.
+  --max-samples MAX_SAMPLES
+                        If bootstrap is True, the number of samples to draw from X to train each base estimator. If None
+                        (default), then draw 'X.shape[0]' samples. If int, then draw 'max_samples' samples. If float,
+                        then draw 'max(round(n_samples * max_samples), 1)' samples. Thus, 'max_samples' should be in the
+                        interval '(0.0, 1.0]'. Must be int or float. The default value is None.
+  --min-impurity-decrease MIN_IMPURITY_DECREASE
+                        A node will be split if this split induces a decrease of the impurity greater than or equal to
+                        this value. The weighted impurity decrease equation is the following:: N_t / N * (impurity -
+                        N_t_R / N_t * right_impurity N_t_L / N_t * left_impurity) where 'N' is the total number of
+                        samples, 'N_t' is the number of samples at the current node, 'N_t_L' is the number of samples in
+                        the left child, and 'N_t_R' is the number of samples in the right child. 'N', 'N_t', 'N_t_R' and
+                        'N_t_L' all refer to the weighted sum, if 'sample_weight' is passed. Must be float. The default
+                        value is 0.0.
+  --min-samples-leaf MIN_SAMPLES_LEAF
+                        The minimum number of samples required to be at a leaf node. A split point at any depth will
+                        only be considered if it leaves at least 'min_samples_leaf' training samples in each of the left
+                        and right branches. This may have the effect of smoothing the model, especially in regression.
+                        If int, then consider 'min_samples_leaf' as the minimum number. If float, then
+                        'min_samples_leaf' is a fraction and 'ceil(min_samples_leaf * n_samples)' are the minimum number
+                        of samples for each node. Must be int or float. The default value is 1.
+  --min-samples-split MIN_SAMPLES_SPLIT
+                        The minimum number of samples required to split an internal node: If int, then consider
+                        'min_samples_split' as the minimum number. If float, then 'min_samples_split' is a fraction and
+                        'ceil(min_samples_split * n_samples)' are the minimum number of samples for each split. Must be
+                        int or float. The default value is 2.
+  --min-weight-fraction-leaf MIN_WEIGHT_FRACTION_LEAF
+                        The minimum weighted fraction of the sum total of weights (of all the input samples) required to
+                        be at a leaf node. Samples have equal weight when sample_weight is not provided. Must be float.
+                        The default value is 0.0.
+  --n-estimators N_ESTIMATORS
+                        The number of trees in the forest. Must be int. The default value is 100.
+  --n-jobs N_JOBS       The number of jobs to run in parallel. '-1' means using all processors. Must be int. The default
+                        value is None.
+  --verbose VERBOSE     Controls the verbosity when fitting and predicting. Must be int. The default value is 0.
+  --warm-start WARM_START
+                        When set to 'True', reuse the solution of the previous call to fit and add more estimators to
+                        the ensemble, otherwise, just fit a whole new forest. Must be bool. The default value is False.

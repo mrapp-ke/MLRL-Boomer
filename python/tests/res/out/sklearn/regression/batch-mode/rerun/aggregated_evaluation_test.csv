@@ -1,0 +1,9 @@
+Dataset,Mean Absolute Error (↓),Mean Absolute Percentage Error (↓),Mean Squared Error (↓),Median Absolute Error (↓),Parameter --max-leaf-nodes,Parameter --n-estimators,Prediction Time (seconds),Rank Mean Absolute Error (↓),Rank Mean Absolute Percentage Error (↓),Rank Mean Squared Error (↓),Rank Median Absolute Error (↓),Rank Prediction Time (seconds),Rank Training Time (seconds),Training Time (seconds)
+emotions,0.31007380611011925,698005006252610.8,0.18266066139782222,0.20771342394595801,10.0,1.0,<duration>,3.0,3.0,3.0,2.0,<duration>,<duration>,<duration>
+emotions,0.2891295905009383,650938894683913.9,0.19077018601660664,0.18020156588372482,20.0,1.0,<duration>,1.0,1.0,4.0,1.0,<duration>,<duration>,<duration>
+emotions,0.3136049077652176,704629024519014.2,0.17197697934060477,0.241397499071341,10.0,2.0,<duration>,4.0,4.0,2.0,4.0,<duration>,<duration>,<duration>
+emotions,0.2949600622698137,660024452608050.6,0.17045333002787208,0.21360795224270554,20.0,2.0,<duration>,2.0,2.0,1.0,3.0,<duration>,<duration>,<duration>
+enron,0.0809048231172238,182193088079916.94,0.04183150365013983,0.05008060320429679,10.0,1.0,<duration>,3.0,3.0,3.0,2.0,<duration>,<duration>,<duration>
+enron,0.07847610134295151,175927574237416.16,0.0422103430886871,0.04788679377082378,20.0,1.0,<duration>,2.0,1.0,4.0,1.0,<duration>,<duration>,<duration>
+enron,0.08091471439424752,182475146003312.97,0.040012441989621325,0.05270457113316255,10.0,2.0,<duration>,4.0,4.0,2.0,4.0,<duration>,<duration>,<duration>
+enron,0.07846986190010642,176095682085543.75,0.03962200741690127,0.0511970071140917,20.0,2.0,<duration>,1.0,2.0,1.0,3.0,<duration>,<duration>,<duration>
