@@ -23,8 +23,7 @@ class BoomerCmdBuilderMixin(RuleLearnerCmdBuilderMixin):
         :return:        The builder itself
         """
         if loss:
-            self.args.append('--loss')
-            self.args.append(loss)
+            self.add_algorithmic_argument('--loss', loss)
 
         return self
 
@@ -35,8 +34,7 @@ class BoomerCmdBuilderMixin(RuleLearnerCmdBuilderMixin):
         :param default_rule:    True, if a default rule should be induced, False otherwise
         :return:                The builder itself
         """
-        self.args.append('--default-rule')
-        self.args.append(str(default_rule).lower())
+        self.add_algorithmic_argument('--default-rule', str(default_rule).lower())
         return self
 
     def head_type(self, head_type: Optional[str] = HeadTypeParameter.HEAD_TYPE_SINGLE):
@@ -47,8 +45,7 @@ class BoomerCmdBuilderMixin(RuleLearnerCmdBuilderMixin):
         :return:            The builder itself
         """
         if head_type:
-            self.args.append('--head-type')
-            self.args.append(head_type)
+            self.add_algorithmic_argument('--head-type', head_type)
 
         return self
 
@@ -59,8 +56,7 @@ class BoomerCmdBuilderMixin(RuleLearnerCmdBuilderMixin):
         :param sparse:  True, if sparse data structures should be used to store the statistics, False otherwise
         :return:        The builder itself
         """
-        self.args.append('--statistic-format')
-        self.args.append('sparse' if sparse else 'dense')
+        self.add_algorithmic_argument('--statistic-format', 'sparse' if sparse else 'dense')
         return self
 
     def statistic_type(self, statistic_type: Optional[str] = StatisticTypeParameter.STATISTIC_TYPE_FLOAT64):
@@ -71,8 +67,7 @@ class BoomerCmdBuilderMixin(RuleLearnerCmdBuilderMixin):
         :return:                The builder itself
         """
         if statistic_type:
-            self.args.append('--statistic-type')
-            self.args.append(statistic_type)
+            self.add_algorithmic_argument('--statistic-type', statistic_type)
 
         return self
 
@@ -84,7 +79,6 @@ class BoomerCmdBuilderMixin(RuleLearnerCmdBuilderMixin):
         :return:                The builder itself
         """
         if global_pruning:
-            self.args.append('--global-pruning')
-            self.args.append(global_pruning)
+            self.add_algorithmic_argument('--global-pruning', global_pruning)
 
         return self

@@ -2,7 +2,7 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, List, Optional
 
 from .datasets import Dataset
 
@@ -52,7 +52,8 @@ class CmdBuilder:
         self.model_load_dir: Optional[Path] = None
         self.num_folds = 0
         self.current_fold = None
-        self.args: List[str] = []
+        self.control_args: List[str] = []
+        self.algorithmic_args: List[str] = []
         self.save_evaluation(True)
         self.problem_type: Optional[str] = None
 
@@ -100,6 +101,7 @@ class CmdBuilder:
         parameter_save_dir = self.parameter_save_dir
         return self.base_dir / parameter_save_dir if parameter_save_dir else None
 
+    # pylint: disable=too-many-branches
     def build(self) -> List[str]:
         """
         Returns the command that has been configured via the builder.
@@ -142,23 +144,57 @@ class CmdBuilder:
                 args.extend(('--result-dir', str(self.result_dir)))
 
                 if self.model_load_dir:
-                    self.args.append('--load-models')
-                    self.args.append(str(True).lower())
-                    self.args.append('--model-load-dir')
-                    self.args.append(str(self.model_load_dir))
+                    args.append('--load-models')
+                    args.append(str(True).lower())
+                    args.append('--model-load-dir')
+                    args.append(str(self.model_load_dir))
 
                 if self.model_save_dir:
-                    self.args.append('--model-save-dir')
-                    self.args.append(str(self.model_save_dir))
+                    args.append('--model-save-dir')
+                    args.append(str(self.model_save_dir))
 
                 if self.parameter_save_dir:
-                    self.args.append('--parameter-save-dir')
-                    self.args.append(str(self.parameter_save_dir))
+                    args.append('--parameter-save-dir')
+                    args.append(str(self.parameter_save_dir))
 
         if self.problem_type and not rerun:
             args.extend(('--problem-type', self.problem_type))
 
-        return args + self.args
+        args.extend(self.control_args)
+
+        if self.mode != ExperimentMode.READ:
+            args.extend(self.algorithmic_args)
+
+        return args
+
+    def add_control_argument(self, name: str, value: Optional[Any] = None):
+        """
+        Adds a control argument to the command.
+
+        :param name:    The name of the argument
+        :param value:   The value of the argument
+        :return:        The builder itself
+        """
+        self.control_args.append(name)
+
+        if value is not None:
+            self.control_args.append(str(value))
+        return self
+
+    def add_algorithmic_argument(self, name: str, value: Optional[Any] = None):
+        """
+        Adds an algorithmic argument to the command.
+
+        :param name:    The name of the argument
+        :param value:   The value of the argument
+        :return:        The builder itself
+        """
+        self.algorithmic_args.append(name)
+
+        if value is not None:
+            self.algorithmic_args.append(str(value))
+
+        return self
 
     def set_mode(self, mode: Optional[str], *extra_args: str):
         """
@@ -169,7 +205,7 @@ class CmdBuilder:
         :return:            The builder itself
         """
         self.mode = mode
-        self.args.extend(extra_args)
+        self.control_args.extend(extra_args)
         return self
 
     def set_runner(self, runner: Optional[str] = 'sequential'):
@@ -208,8 +244,7 @@ class CmdBuilder:
         :return: The builder itself
         """
         self.model_save_dir = self.model_dir
-        self.args.append('--save-models')
-        self.args.append(str(True).lower())
+        self.add_control_argument('--save-models', str(True).lower())
         return self
 
     def load_parameters(self):
@@ -218,10 +253,8 @@ class CmdBuilder:
 
         :return: The builder itself
         """
-        self.args.append('--load-parameters')
-        self.args.append(str(True).lower())
-        self.args.append('--parameter-load-dir')
-        self.args.append(str(self.RESOURCE_DIR / 'in'))
+        self.add_control_argument('--load-parameters', str(True).lower())
+        self.add_control_argument('--parameter-load-dir', str(self.RESOURCE_DIR / 'in'))
         return self
 
     def save_parameters(self):
@@ -231,8 +264,7 @@ class CmdBuilder:
         :return: The builder itself
         """
         self.parameter_save_dir = self.result_dir
-        self.args.append('--save-parameters')
-        self.args.append(str(True).lower())
+        self.add_control_argument('--save-parameters', str(True).lower())
         return self
 
     def data_split(self,
@@ -245,7 +277,6 @@ class CmdBuilder:
         :param options:     Options to be taken into account
         :return:            The builder itself
         """
-        self.args.append('--data-split')
         num_folds = 0
         current_fold = None
 
@@ -257,7 +288,7 @@ class CmdBuilder:
                 if first_fold > 0 and first_fold == options.get_int(DatasetSplitterArguments.OPTION_FIRST_FOLD, 0):
                     current_fold = first_fold
 
-            self.args.append(data_split + (str(options) if options else ''))
+            self.add_control_argument('--data-split', data_split + (str(options) if options else ''))
 
         self.num_folds = num_folds
         self.current_fold = current_fold
@@ -271,8 +302,7 @@ class CmdBuilder:
                                             otherwise
         :return:                            The builder itself
         """
-        self.args.append('--predict-for-training-data')
-        self.args.append(str(predict_for_training_data).lower())
+        self.add_control_argument('--predict-for-training-data', str(predict_for_training_data).lower())
         return self
 
     def print_all(self, print_all: bool = True):
@@ -282,8 +312,7 @@ class CmdBuilder:
         :param print_all:   True, if all experimental results should be printed, False otherwise
         :return:            The builder itself
         """
-        self.args.append('--print-all')
-        self.args.append(str(print_all).lower())
+        self.add_control_argument('--print-all', str(print_all).lower())
         return self
 
     def save_all(self, save_all: bool = True):
@@ -295,8 +324,7 @@ class CmdBuilder:
         """
         self.parameter_save_dir = self.result_dir
         self.model_save_dir = self.model_dir
-        self.args.append('--save-all')
-        self.args.append(str(save_all).lower())
+        self.add_control_argument('--save-all', str(save_all).lower())
         return self
 
     def print_meta_data(self, print_meta_data: bool = True):
@@ -306,8 +334,7 @@ class CmdBuilder:
         :param print_meta_data: True, if the meta-data should be printed, False otherwise
         :return:                The builder itself
         """
-        self.args.append('--print-meta-data')
-        self.args.append(str(print_meta_data).lower())
+        self.add_control_argument('--print-meta-data', str(print_meta_data).lower())
         return self
 
     def save_meta_data(self, save_meta_data: bool = True):
@@ -317,8 +344,7 @@ class CmdBuilder:
         :param save_meta_data:  True, if the meta-data should be written to output files, False otherwise
         :return:                The builder itself
         """
-        self.args.append('--save-meta-data')
-        self.args.append(str(save_meta_data).lower())
+        self.add_control_argument('--save-meta-data', str(save_meta_data).lower())
         return self
 
     def print_evaluation(self, print_evaluation: bool = True):
@@ -328,8 +354,7 @@ class CmdBuilder:
         :param print_evaluation:    True, if the evaluation results should be printed, False otherwise
         :return:                    The builder self
         """
-        self.args.append('--print-evaluation')
-        self.args.append(str(print_evaluation).lower())
+        self.add_control_argument('--print-evaluation', str(print_evaluation).lower())
         return self
 
     def save_evaluation(self, save_evaluation: bool = True):
@@ -339,8 +364,7 @@ class CmdBuilder:
         :param save_evaluation: True, if the evaluation results should be written to output files, False otherwise
         :return:                The builder itself
         """
-        self.args.append('--save-evaluation')
-        self.args.append(str(save_evaluation).lower())
+        self.add_control_argument('--save-evaluation', str(save_evaluation).lower())
         return self
 
     def print_parameters(self, print_parameters: bool = True):
@@ -350,8 +374,7 @@ class CmdBuilder:
         :param print_parameters:    True, if the parameters should be printed, False otherwise
         :return:                    The builder itself
         """
-        self.args.append('--print-parameters')
-        self.args.append(str(print_parameters).lower())
+        self.add_control_argument('--print-parameters', str(print_parameters).lower())
         return self
 
     def print_predictions(self, print_predictions: bool = True):
@@ -361,8 +384,7 @@ class CmdBuilder:
         :param print_predictions:   True, if the predictions should be printed, False otherwise
         :return:                    The builder itself
         """
-        self.args.append('--print-predictions')
-        self.args.append(str(print_predictions).lower())
+        self.add_control_argument('--print-predictions', str(print_predictions).lower())
         return self
 
     def save_predictions(self, save_predictions: bool = True):
@@ -372,8 +394,7 @@ class CmdBuilder:
         :param save_predictions:    True, if the predictions should be written to output files, False otherwise
         :return:                    The builder itself
         """
-        self.args.append('--save-predictions')
-        self.args.append(str(save_predictions).lower())
+        self.add_control_argument('--save-predictions', str(save_predictions).lower())
         return self
 
     def print_ground_truth(self, print_ground_truth: bool = True):
@@ -383,8 +404,7 @@ class CmdBuilder:
         :param print_ground_truth:  True, if the ground truth should be printed, False otherwise
         :return:                    The builder itself
         """
-        self.args.append('--print-ground-truth')
-        self.args.append(str(print_ground_truth).lower())
+        self.add_control_argument('--print-ground-truth', str(print_ground_truth).lower())
         return self
 
     def save_ground_truth(self, save_ground_truth: bool = True):
@@ -394,8 +414,7 @@ class CmdBuilder:
         :param save_ground_truth:   True, if the ground truth should be written to output files, False otherwise
         :return:                    The builder itself
         """
-        self.args.append('--save-ground-truth')
-        self.args.append(str(save_ground_truth).lower())
+        self.add_control_argument('--save-ground-truth', str(save_ground_truth).lower())
         return self
 
     def print_prediction_characteristics(self, print_prediction_characteristics: bool = True):
@@ -406,8 +425,7 @@ class CmdBuilder:
                                                     otherwise
         :return:                                    The builder itself
         """
-        self.args.append('--print-prediction-characteristics')
-        self.args.append(str(print_prediction_characteristics).lower())
+        self.add_control_argument('--print-prediction-characteristics', str(print_prediction_characteristics).lower())
         return self
 
     def save_prediction_characteristics(self, save_prediction_characteristics: bool = True):
@@ -418,8 +436,7 @@ class CmdBuilder:
                                                 output files, False otherwise
         :return:                                The builder itself
         """
-        self.args.append('--save-prediction-characteristics')
-        self.args.append(str(save_prediction_characteristics).lower())
+        self.add_control_argument('--save-prediction-characteristics', str(save_prediction_characteristics).lower())
         return self
 
     def print_data_characteristics(self, print_data_characteristics: bool = True):
@@ -429,8 +446,7 @@ class CmdBuilder:
         :param print_data_characteristics:  True, if the characteristics of datasets should be printed, False otherwise
         :return:                            The builder itself
         """
-        self.args.append('--print-data-characteristics')
-        self.args.append(str(print_data_characteristics).lower())
+        self.add_control_argument('--print-data-characteristics', str(print_data_characteristics).lower())
         return self
 
     def save_data_characteristics(self, save_data_characteristics: bool = True):
@@ -441,6 +457,5 @@ class CmdBuilder:
                                             files, False otherwise
         :return:                            The builder itself
         """
-        self.args.append('--save-data-characteristics')
-        self.args.append(str(save_data_characteristics).lower())
+        self.add_control_argument('--save-data-characteristics', str(save_data_characteristics).lower())
         return self
