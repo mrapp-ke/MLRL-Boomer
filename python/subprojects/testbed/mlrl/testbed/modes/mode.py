@@ -93,7 +93,7 @@ class InputMode(Mode, ABC):
 
     def __read_meta_data(self, args: Namespace, recipe: Recipe, input_directory: Path) -> MetaData:
         log.info('Reading meta-data...')
-        problem_domain = recipe.create_problem_domain(args)
+        problem_domain = recipe.create_problem_domain(self.to_enum(), args)
         state = ExperimentState(mode=self.to_enum(), args=args, meta_data=MetaData(), problem_domain=problem_domain)
         reader = MetaDataReader(
             YamlFileSource(directory=input_directory, schema_file_path=InputMetaData.SCHEMA_FILE_PATH))
