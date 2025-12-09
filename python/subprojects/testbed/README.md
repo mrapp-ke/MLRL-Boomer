@@ -32,6 +32,7 @@ By writing just a small amount of code, any scikit-learn compatible [estimator](
 
 ```python
 from argparse import Namespace
+from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed_sklearn.runnables import SkLearnRunnable
 from mlrl.util.cli import Argument, IntArgument
 from sklearn.ensemble import RandomForestClassifier
@@ -50,10 +51,10 @@ class Runnable(SkLearnRunnable):
     def get_algorithmic_arguments(self, known_args: Namespace) -> Set[Argument]:
         return { self.N_ESTIMATORS }
 
-    def create_classifier(self, args: Namespace) -> Optional[ClassifierMixin]:
+    def create_classifier(self, mode: ExperimentMode, args: Namespace) -> Optional[ClassifierMixin]:
         return RandomForestClassifier()
 
-    def create_regressor(self, args: Namespace) -> Optional[RegressorMixin]:
+    def create_regressor(self, mode: ExperimentMode, args: Namespace) -> Optional[RegressorMixin]:
         return None  # Not needed in this case
 
 ```
