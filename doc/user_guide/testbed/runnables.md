@@ -12,6 +12,7 @@ In the following, we provide an exemplary implementation of such a class using s
 
 ```python
 from argparse import Namespace
+from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed_sklearn.runnables import SkLearnRunnable
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.base import ClassifierMixin, RegressorMixin
@@ -20,10 +21,10 @@ from typing import Optional
 
 class Runnable(SkLearnRunnable):
 
-    def create_classifier(self, args: Namespace) -> Optional[ClassifierMixin]:
+    def create_classifier(self, mode: ExperimentMode, args: Namespace) -> Optional[ClassifierMixin]:
         return RandomForestClassifier()
 
-    def create_regressor(self, args: Namespace) -> Optional[RegressorMixin]:
+    def create_regressor(self, mode: ExperimentMode, args: Namespace) -> Optional[RegressorMixin]:
         return None
 
 ```
@@ -41,6 +42,7 @@ To ease the configuration of a machine learning algorithm, for which you created
 ```python
 from argparse import Namespace
 from mlrl.testbed import SkLearnRunnable
+from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.util.cli import Argument, IntArgument
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.base import ClassifierMixin, RegressorMixin
@@ -57,10 +59,10 @@ class Runnable(SkLearnRunnable):
     def get_algorithmic_arguments(self, known_args: Namespace) -> Set[Argument]:
         return { self.N_ESTIMATORS }
 
-    def create_classifier(self, args: Namespace) -> Optional[ClassifierMixin]:
+    def create_classifier(self, mode: ExperimentMode, args: Namespace) -> Optional[ClassifierMixin]:
         return RandomForestClassifier(n_estimators=self.N_ESTIMATORS.get_value(args))
 
-    def create_regressor(self, args: Namespace) -> Optional[RegressorMixin]:
+    def create_regressor(self, mode: ExperimentMode, args: Namespace) -> Optional[RegressorMixin]:
         return None
 
 ```
