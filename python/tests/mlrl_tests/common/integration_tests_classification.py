@@ -8,7 +8,7 @@ import pytest
 
 from .cmd_runner import CmdRunner
 from .datasets import Dataset
-from .integration_tests import IntegrationTests
+from .integration_tests import IntegrationTests, RuleLearnerIntegrationTestsMixin
 
 from mlrl.common.config.parameters import SAMPLING_STRATIFIED_EXAMPLE_WISE, SAMPLING_STRATIFIED_OUTPUT_WISE
 
@@ -53,6 +53,12 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
             .print_label_vectors() \
             .save_label_vectors()
         CmdRunner(builder).run(test_name, wipe_before=False)
+
+
+class ClassificationRuleLearnerIntegrationTestsMixin(RuleLearnerIntegrationTestsMixin):
+    """
+    A mixin for integration tests for a classification rule learner.
+    """
 
     @pytest.mark.parametrize('instance_sampling', [
         SAMPLING_STRATIFIED_OUTPUT_WISE,

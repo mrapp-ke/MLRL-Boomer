@@ -10,6 +10,7 @@ from sklearn.utils.estimator_checks import check_estimator
 
 from ..common.cmd_runner import CmdRunner
 from ..common.datasets import Dataset
+from ..common.integration_tests import RuleLearnerIntegrationTestsMixin
 from ..common.integration_tests_regression import RegressionIntegrationTests
 from .cmd_builder_regression import BoomerRegressorCmdBuilder
 from .integration_tests import BoomerIntegrationTestsMixin
@@ -20,7 +21,7 @@ from mlrl.boosting.learners import BoomerRegressor
 
 @pytest.mark.boosting
 @pytest.mark.regression
-class TestBoomerRegressor(RegressionIntegrationTests, BoomerIntegrationTestsMixin):
+class TestBoomerRegressor(RegressionIntegrationTests, RuleLearnerIntegrationTestsMixin, BoomerIntegrationTestsMixin):
     """
     Defines a series of integration tests for the BOOMER algorithm for regression problems.
     """
