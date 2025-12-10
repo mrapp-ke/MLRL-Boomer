@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from typing import Optional
 
-from ..common.cmd_builder import RuleLearnerCmdBuilderMixin
+from ..common.cmd_builder_rule_learners import RuleLearnerCmdBuilderMixin
 
 from mlrl.common.config.parameters import GlobalPruningParameter
 

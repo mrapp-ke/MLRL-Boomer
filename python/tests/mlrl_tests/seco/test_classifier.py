@@ -10,8 +10,8 @@ from sklearn.utils.estimator_checks import check_estimator
 
 from ..common.cmd_runner import CmdRunner
 from ..common.datasets import Dataset
-from ..common.integration_tests import RuleLearnerIntegrationTestsMixin
 from ..common.integration_tests_classification import ClassificationIntegrationTests
+from ..common.integration_tests_rule_learners import RuleLearnerIntegrationTestsMixin
 from .cmd_builder import SeCoClassifierCmdBuilder
 
 from mlrl.common.config.parameters import RulePruningParameter
