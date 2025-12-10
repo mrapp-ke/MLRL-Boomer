@@ -54,6 +54,12 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
             .save_label_vectors()
         CmdRunner(builder).run(test_name, wipe_before=False)
 
+
+class ClassificationRuleLearnerIntegrationTestsMixin(IntegrationTests):
+    """
+    A mixin for integration tests for a classification rule learner.
+    """
+
     @pytest.mark.parametrize('instance_sampling', [
         SAMPLING_STRATIFIED_OUTPUT_WISE,
         SAMPLING_STRATIFIED_EXAMPLE_WISE,
