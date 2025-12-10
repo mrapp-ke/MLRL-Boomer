@@ -11,7 +11,7 @@ default_argument:
   value: any(str(), int(), num(), bool())
 parameter:
   name: str()
-  values: list(any(str(), include('value_object')))
+  values: list(any(str(), int(), num(), bool(), include('value_object')))
 value_object:
   value: str()
   additional_arguments: list(str(), required=False)
