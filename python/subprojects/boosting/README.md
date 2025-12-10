@@ -84,6 +84,10 @@ In addition to the features mentioned above, several techniques that may speed u
 
 - **Multi-threading** can be used for parallelizing the evaluation of a rule's potential refinements across several features, updating the gradients and Hessians of individual examples in parallel, or obtaining predictions for several examples in parallel.
 
+### Other Optimizations
+
+- **High- or low-precision data types** can be used for gradients and Hessians to trade off training accuracy and speed differently.
+
 <!-- documentation-end -->
 
 ## 📚 Documentation
