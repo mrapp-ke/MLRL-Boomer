@@ -178,8 +178,8 @@ class BatchMode(Mode):
             parameter_values = []
 
             for value in values:
-                if isinstance(value, str):
-                    parameter_values.append(BatchMode.ConfigFile.ParameterValue(value=value))
+                if isinstance(value, (str, int, float, bool)):
+                    parameter_values.append(BatchMode.ConfigFile.ParameterValue(value=str(value)))
                 else:
                     node = value.get('additional_arguments', [])
                     additional_arguments = node if node else []
