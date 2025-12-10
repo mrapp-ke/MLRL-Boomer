@@ -39,7 +39,7 @@ class PythonTestModule(TestModule, SubprojectModule):
     @override
     @property
     def subproject_name(self) -> str:
-        return self.root_directory.name
+        return self.root_directory.name.replace('_', '-')
 
     @override
     def __str__(self) -> str:
