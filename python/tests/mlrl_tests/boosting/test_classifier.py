@@ -10,7 +10,8 @@ from sklearn.utils.estimator_checks import check_estimator
 
 from ..common.cmd_runner import CmdRunner
 from ..common.datasets import Dataset
-from ..common.integration_tests_classification import ClassificationIntegrationTests
+from ..common.integration_tests_classification import ClassificationIntegrationTests, \
+    ClassificationRuleLearnerIntegrationTestsMixin
 from .cmd_builder_classification import BoomerClassifierCmdBuilder
 from .integration_tests import BoomerIntegrationTestsMixin
 
@@ -32,7 +33,8 @@ from mlrl.util.options import BooleanOption, Options
 
 @pytest.mark.boosting
 @pytest.mark.classification
-class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTestsMixin):
+class TestBoomerClassifier(ClassificationIntegrationTests, ClassificationRuleLearnerIntegrationTestsMixin,
+                           BoomerIntegrationTestsMixin):
     """
     Defines a series of integration tests for the BOOMER algorithm for classification problems.
     """

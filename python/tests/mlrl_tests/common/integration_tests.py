@@ -146,11 +146,6 @@ class IntegrationTests(ABC):
             .print_evaluation()
         CmdRunner(builder).run('single-output')
 
-    def test_sparse_feature_value(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.numerical_sparse) \
-            .sparse_feature_value(1.0)
-        CmdRunner(builder).run('sparse-feature-value')
-
     def test_meka_format(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.meka) \
             .print_evaluation(False)
@@ -207,19 +202,6 @@ class IntegrationTests(ABC):
         test_name = 'evaluation_training-data'
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .predict_for_training_data() \
-            .print_evaluation() \
-            .save_evaluation()
-        CmdRunner(builder).run(test_name, wipe_after=False)
-        builder = self._create_cmd_builder() \
-            .set_mode(ExperimentMode.READ) \
-            .print_evaluation() \
-            .save_evaluation()
-        CmdRunner(builder).run(test_name, wipe_before=False)
-
-    def test_evaluation_incremental(self, dataset: Dataset):
-        test_name = 'evaluation_incremental'
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .incremental_evaluation() \
             .print_evaluation() \
             .save_evaluation()
         CmdRunner(builder).run(test_name, wipe_after=False)
@@ -378,6 +360,58 @@ class IntegrationTests(ABC):
         (DatasetSplitterArguments.VALUE_CROSS_VALIDATION,
          Options({
              DatasetSplitterArguments.OPTION_FIRST_FOLD: 1,
+             DatasetSplitterArguments.OPTION_LAST_FOLD: 1
+         })),
+    ])
+    def test_parameters(self, data_split: str, data_split_options: Options, dataset: Dataset):
+        test_name = f'parameters_{data_split}' + (f'_{data_split_options}' if data_split_options else '')
+        builder = self._create_cmd_builder(dataset=dataset.default) \
+            .data_split(data_split, options=data_split_options) \
+            .print_evaluation(False) \
+            .save_evaluation(False) \
+            .print_model_characteristics() \
+            .print_parameters() \
+            .save_parameters() \
+            .load_parameters()
+        CmdRunner(builder).run(test_name, wipe_after=False)
+        builder = self._create_cmd_builder() \
+            .set_mode(ExperimentMode.READ) \
+            .print_evaluation(False) \
+            .save_evaluation(False) \
+            .print_parameters() \
+            .save_parameters()
+        CmdRunner(builder).run(test_name, wipe_before=False)
+
+
+class RuleLearnerIntegrationTestsMixin(IntegrationTests):
+    """
+    A mixin for integration tests for a rule learning algorithm.
+    """
+
+    def test_sparse_feature_value(self, dataset: Dataset):
+        builder = self._create_cmd_builder(dataset=dataset.numerical_sparse) \
+            .sparse_feature_value(1.0)
+        CmdRunner(builder).run('sparse-feature-value')
+
+    def test_evaluation_incremental(self, dataset: Dataset):
+        test_name = 'evaluation_incremental'
+        builder = self._create_cmd_builder(dataset=dataset.default) \
+            .incremental_evaluation() \
+            .print_evaluation() \
+            .save_evaluation()
+        CmdRunner(builder).run(test_name, wipe_after=False)
+        builder = self._create_cmd_builder() \
+            .set_mode(ExperimentMode.READ) \
+            .print_evaluation() \
+            .save_evaluation()
+        CmdRunner(builder).run(test_name, wipe_before=False)
+
+    @pytest.mark.parametrize('data_split, data_split_options', [
+        (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options()),
+        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION, Options()),
+        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION,
+         Options({
+             DatasetSplitterArguments.OPTION_FIRST_FOLD: 1,
              DatasetSplitterArguments.OPTION_LAST_FOLD: 1,
          })),
     ])
@@ -450,34 +484,6 @@ class IntegrationTests(ABC):
             .print_predictions() \
             .print_ground_truth()
         CmdRunner(builder).run(f'prediction-format-{prediction_format}')
-
-    @pytest.mark.parametrize('data_split, data_split_options', [
-        (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options()),
-        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION, Options()),
-        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION,
-         Options({
-             DatasetSplitterArguments.OPTION_FIRST_FOLD: 1,
-             DatasetSplitterArguments.OPTION_LAST_FOLD: 1
-         })),
-    ])
-    def test_parameters(self, data_split: str, data_split_options: Options, dataset: Dataset):
-        test_name = f'parameters_{data_split}' + (f'_{data_split_options}' if data_split_options else '')
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .data_split(data_split, options=data_split_options) \
-            .print_evaluation(False) \
-            .save_evaluation(False) \
-            .print_model_characteristics() \
-            .print_parameters() \
-            .save_parameters() \
-            .load_parameters()
-        CmdRunner(builder).run(test_name, wipe_after=False)
-        builder = self._create_cmd_builder() \
-            .set_mode(ExperimentMode.READ) \
-            .print_evaluation(False) \
-            .save_evaluation(False) \
-            .print_parameters() \
-            .save_parameters()
-        CmdRunner(builder).run(test_name, wipe_before=False)
 
     @pytest.mark.parametrize('instance_sampling', [
         NONE,

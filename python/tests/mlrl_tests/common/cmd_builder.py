@@ -18,7 +18,7 @@ from mlrl.util.options import Options
 
 class CmdBuilder:
     """
-    A builder that allows to configure a command for running a rule learner.
+    A builder that allows to configure a command for running an experiment.
     """
 
     RESOURCE_DIR = Path('python', 'tests', 'res')
@@ -267,17 +267,6 @@ class CmdBuilder:
         self.current_fold = current_fold
         return self
 
-    def sparse_feature_value(self, sparse_feature_value: float = 0.0):
-        """
-        Configures the value that should be used for sparse elements in the feature matrix.
-
-        :param sparse_feature_value:    The value that should be used for sparse elements in the feature matrix
-        :return:                        The builder itself
-        """
-        self.args.append('--sparse-feature-value')
-        self.args.append(str(sparse_feature_value))
-        return self
-
     def predict_for_training_data(self, predict_for_training_data: bool = True):
         """
         Configures whether predictions should be obtained for the training data or not.
@@ -288,24 +277,6 @@ class CmdBuilder:
         """
         self.args.append('--predict-for-training-data')
         self.args.append(str(predict_for_training_data).lower())
-        return self
-
-    def incremental_evaluation(self, incremental_evaluation: bool = True, step_size: int = 50):
-        """
-        Configures whether the model that is learned by the rule learner should be evaluated repeatedly, using only a
-        subset of the rules with increasing size.
-
-        :param incremental_evaluation:  True, if the rule learner should be evaluated incrementally, False otherwise
-        :param step_size:               The number of additional rules to be evaluated at each repetition
-        :return:                        The builder itself
-        """
-        self.args.append('--incremental-evaluation')
-        value = str(incremental_evaluation).lower()
-
-        if incremental_evaluation:
-            value += '{step_size=' + str(step_size) + '}'
-
-        self.args.append(value)
         return self
 
     def print_all(self, print_all: bool = True):
@@ -476,6 +447,41 @@ class CmdBuilder:
         """
         self.args.append('--save-data-characteristics')
         self.args.append(str(save_data_characteristics).lower())
+        return self
+
+
+class RuleLearnerCmdBuilderMixin(CmdBuilder):
+    """
+    A mixin for all builders that allow to configure a command for running a rule learner.
+    """
+
+    def sparse_feature_value(self, sparse_feature_value: float = 0.0):
+        """
+        Configures the value that should be used for sparse elements in the feature matrix.
+
+        :param sparse_feature_value:    The value that should be used for sparse elements in the feature matrix
+        :return:                        The builder itself
+        """
+        self.args.append('--sparse-feature-value')
+        self.args.append(str(sparse_feature_value))
+        return self
+
+    def incremental_evaluation(self, incremental_evaluation: bool = True, step_size: int = 50):
+        """
+        Configures whether the model that is learned by the rule learner should be evaluated repeatedly, using only a
+        subset of the rules with increasing size.
+
+        :param incremental_evaluation:  True, if the rule learner should be evaluated incrementally, False otherwise
+        :param step_size:               The number of additional rules to be evaluated at each repetition
+        :return:                        The builder itself
+        """
+        self.args.append('--incremental-evaluation')
+        value = str(incremental_evaluation).lower()
+
+        if incremental_evaluation:
+            value += '{step_size=' + str(step_size) + '}'
+
+        self.args.append(value)
         return self
 
     def print_model_characteristics(self, print_model_characteristics: bool = True):

@@ -10,6 +10,7 @@ from sklearn.utils.estimator_checks import check_estimator
 
 from ..common.cmd_runner import CmdRunner
 from ..common.datasets import Dataset
+from ..common.integration_tests import RuleLearnerIntegrationTestsMixin
 from ..common.integration_tests_classification import ClassificationIntegrationTests
 from .cmd_builder import SeCoClassifierCmdBuilder
 
@@ -25,7 +26,7 @@ from mlrl.util.cli import NONE
 
 @pytest.mark.seco
 @pytest.mark.classification
-class TestSeCoClassifier(ClassificationIntegrationTests):
+class TestSeCoClassifier(ClassificationIntegrationTests, RuleLearnerIntegrationTestsMixin):
     """
     Defines a series of integration tests for the separate-and-conquer (SeCo) algorithm for classification problems.
     """
