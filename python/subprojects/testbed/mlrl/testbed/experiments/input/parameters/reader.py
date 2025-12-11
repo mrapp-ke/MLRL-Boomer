@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes that allow reading algorithmic parameters from a source.
+Provides classes that allow reading algorithmic parameters from one or several sources.
 """
 
 from mlrl.testbed.experiments.input.parameters.parameters import InputParameters
@@ -11,11 +11,11 @@ from mlrl.testbed.experiments.input.sources import Source
 
 class ParameterReader(InputReader):
     """
-    Allows reading algorithmic parameters from a source.
+    Allows reading algorithmic parameters from one or several sources.
     """
 
-    def __init__(self, source: Source):
+    def __init__(self, *sources: Source):
         """
-        :param source: The source, the input data should be read from
+        :param sources: The sources, the input data should be read from
         """
-        super().__init__(source, InputParameters())
+        super().__init__(InputParameters(), *sources)

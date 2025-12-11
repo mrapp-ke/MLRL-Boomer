@@ -1,39 +1,40 @@
 mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --marginal-probability-calibration isotonic --print-marginal-probability-calibration-model true --save-marginal-probability-calibration-model true --binary-predictor output-wise{based_on_probabilities=true} --print-predictions true --print-ground-truth true --save-models true --load-models true --model-load-dir models --model-save-dir models
+Checking if output files do already exist...
 Starting experiment using the classification algorithm "BoomerClassifier"...
-Writing output data to file "python/tests/res/tmp/metadata.yml"...
+DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Using separate training and test sets...
-Reading input data from file "python/tests/res/data/emotions.arff"...
-Parsing meta-data from file "python/tests/res/data/emotions.xml"...
-Reading input data from file "models/model.pickle"...
-Failed to unpickle file "models/model.pickle"
+DEBUG: Reading input data from file "python/tests/res/data/emotions.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+DEBUG: Reading input data from file "models/model.pickle"...
+ERROR: The file "models/model.pickle" does not exist
 Fitting model to 397 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Predicting for 196 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted labels
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Example-wise F1         65.88
-Example-wise Jaccard    56.59
-Example-wise Precision  70.24
-Example-wise Recall     68.96
-Hamming Accuracy        80.02
-Hamming Loss            19.98
-Macro F1                65.39
-Macro Jaccard           49.71
-Macro Precision         68.94
-Macro Recall            65.12
-Micro F1                68.46
-Micro Jaccard           52.04
-Micro Precision         68.92
-Micro Recall            68
-Subset 0/1 Loss         70.92
-Subset Accuracy         29.08
+Example-wise F1 (↑)         65.14
+Example-wise Jaccard (↑)    55.48
+Example-wise Precision (↑)  67.43
+Example-wise Recall (↑)     68.88
+Hamming Accuracy (↑)        79.25
+Hamming Loss (↓)            20.75
+Macro F1 (↑)                64.43
+Macro Jaccard (↑)           48.51
+Macro Precision (↑)         68.49
+Macro Recall (↑)            64.46
+Micro F1 (↑)                67.47
+Micro Jaccard (↑)           50.91
+Micro Precision (↑)         67.47
+Micro Recall (↑)            67.47
+Subset 0/1 Loss (↓)         73.47
+Subset Accuracy (↑)         26.53
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Ground truth for test data:
 
 [[1 0 0 0 0 1]
@@ -237,7 +238,7 @@ Predictions for test data:
 
 [[1 0 0 0 0 1]
  [1 0 0 0 0 1]
- [0 0 0 0 0 0]
+ [0 0 1 0 0 0]
  [0 0 1 0 0 0]
  [0 0 1 1 1 0]
  [0 0 1 1 1 0]
@@ -250,39 +251,39 @@ Predictions for test data:
  [1 0 0 0 0 1]
  [0 0 0 0 0 1]
  [1 0 0 0 0 1]
- [1 0 0 0 0 1]
+ [1 1 0 0 0 1]
  [0 0 1 1 1 0]
  [0 0 1 1 0 0]
- [0 0 1 1 1 0]
+ [0 0 1 1 0 0]
  [0 0 1 1 1 0]
  [0 0 0 0 0 1]
  [0 0 1 1 0 0]
  [0 0 1 0 0 0]
  [1 0 0 0 0 1]
- [1 1 0 0 0 0]
+ [1 1 1 0 0 0]
  [0 0 1 1 0 0]
  [0 0 1 0 0 1]
  [0 1 1 0 0 0]
- [1 1 1 0 0 0]
+ [0 1 1 0 0 0]
  [1 0 0 0 0 1]
  [0 0 0 0 0 1]
  [0 0 1 0 0 1]
- [1 0 0 0 0 0]
+ [1 0 0 0 0 1]
  [0 0 1 1 1 0]
  [1 0 0 0 0 1]
- [1 1 0 0 0 0]
- [0 0 1 0 0 1]
- [0 0 1 0 0 0]
+ [0 1 0 0 0 0]
+ [0 0 0 0 0 1]
+ [0 1 1 0 0 0]
  [1 1 0 0 0 0]
  [1 0 0 0 0 1]
  [0 0 1 0 0 0]
  [0 0 0 0 0 1]
  [0 0 0 0 1 1]
- [1 0 0 0 0 1]
+ [0 0 0 0 0 1]
  [0 0 1 0 0 1]
  [0 0 1 0 0 0]
  [1 0 0 0 0 1]
- [0 0 1 0 0 0]
+ [0 1 1 0 0 0]
  [0 0 1 1 1 0]
  [0 0 0 0 0 1]
  [0 0 0 0 0 1]
@@ -295,29 +296,29 @@ Predictions for test data:
  [0 0 1 1 1 0]
  [0 1 1 0 0 0]
  [0 0 0 0 0 1]
- [0 0 1 0 0 1]
- [0 0 1 0 0 0]
- [1 1 1 0 0 0]
- [0 1 0 0 0 0]
+ [0 0 0 0 0 1]
  [0 1 1 0 0 0]
- [1 0 0 0 0 1]
- [0 0 1 0 0 0]
+ [0 1 1 0 0 0]
+ [0 1 1 0 0 0]
+ [0 1 1 0 0 0]
+ [1 1 0 0 0 1]
+ [0 1 1 0 0 0]
  [0 0 1 1 1 0]
  [0 0 1 1 0 0]
  [0 0 1 0 1 0]
  [0 0 1 1 1 0]
  [0 0 1 1 1 0]
- [0 0 1 0 0 0]
+ [0 0 1 0 0 1]
  [0 0 0 0 0 1]
  [0 1 0 0 0 1]
- [0 0 0 0 0 1]
- [0 0 1 1 0 0]
- [0 0 0 0 0 0]
+ [0 1 0 0 0 1]
+ [0 0 1 0 1 0]
+ [0 0 0 0 1 0]
  [0 0 1 0 0 1]
  [0 1 1 0 0 0]
  [0 0 0 1 1 0]
  [1 0 0 0 0 1]
- [0 0 1 1 1 0]
+ [0 0 1 1 0 0]
  [0 0 1 0 0 1]
  [0 1 1 0 0 1]
  [0 0 1 0 0 1]
@@ -325,76 +326,76 @@ Predictions for test data:
  [0 0 1 0 0 1]
  [0 0 0 0 0 1]
  [0 1 1 0 0 0]
- [0 1 1 0 0 0]
+ [0 0 1 0 0 0]
  [0 0 1 0 0 0]
  [0 0 1 1 0 0]
  [0 0 1 1 1 0]
+ [1 1 0 0 0 1]
+ [0 0 1 0 0 1]
+ [0 0 1 1 1 0]
+ [0 1 1 0 0 0]
+ [0 0 1 1 1 0]
+ [0 0 1 1 1 0]
+ [0 0 1 1 0 0]
+ [0 0 1 0 0 0]
+ [0 0 1 0 0 0]
+ [0 0 1 1 1 0]
+ [1 1 0 0 0 1]
  [1 0 0 0 0 1]
+ [1 0 0 0 0 1]
+ [1 0 0 0 0 1]
+ [1 0 0 0 0 1]
+ [0 1 1 0 0 0]
+ [1 0 0 0 0 1]
+ [0 0 1 0 0 0]
+ [0 0 1 1 0 0]
+ [0 1 1 0 0 0]
+ [1 0 0 0 0 1]
+ [0 0 1 0 0 0]
+ [0 1 1 0 0 0]
+ [0 0 1 0 0 0]
+ [1 0 0 0 0 1]
+ [0 0 1 1 1 0]
+ [1 0 0 0 0 1]
+ [0 0 1 0 0 0]
  [0 0 0 0 0 1]
- [0 0 1 1 1 0]
- [1 1 1 0 0 0]
- [0 0 0 1 1 0]
- [0 0 1 1 1 0]
- [0 0 1 1 0 0]
- [0 0 1 0 0 0]
- [0 0 1 0 0 0]
- [0 0 1 1 1 0]
- [1 0 0 0 0 1]
- [1 0 0 0 0 1]
- [1 0 0 0 0 1]
- [1 0 0 0 0 1]
- [1 0 0 0 0 1]
- [0 1 1 0 0 0]
- [1 0 0 0 0 1]
- [0 0 1 0 0 0]
- [0 0 1 1 0 0]
- [0 0 1 0 0 0]
- [1 0 0 0 0 1]
- [0 1 1 0 0 0]
- [0 1 1 0 0 0]
- [0 0 1 1 0 0]
- [1 0 0 0 0 1]
- [0 0 1 1 1 0]
- [1 0 0 0 0 1]
- [0 0 0 0 0 0]
- [0 0 0 0 0 1]
  [0 1 1 0 0 0]
  [1 0 0 0 0 1]
  [0 0 1 1 1 0]
  [1 0 0 0 0 1]
- [0 0 0 0 0 1]
+ [0 0 1 0 0 1]
  [0 1 0 0 0 1]
- [0 0 1 1 1 0]
+ [0 0 1 1 0 0]
  [1 0 0 0 0 1]
  [0 0 1 0 0 0]
  [0 0 1 0 0 1]
+ [0 0 1 0 0 1]
  [0 0 0 0 0 1]
- [0 0 0 0 0 1]
- [0 0 1 0 1 0]
- [0 0 1 1 0 0]
+ [0 0 1 0 0 0]
+ [0 0 1 1 1 0]
  [0 0 1 1 1 0]
  [0 0 1 0 0 0]
  [0 1 0 0 0 1]
  [0 1 1 0 0 0]
- [1 1 1 0 0 0]
+ [0 1 1 0 0 0]
  [0 0 1 0 0 1]
  [0 0 1 0 0 0]
  [0 1 1 0 0 0]
  [0 0 1 0 0 0]
  [1 0 0 0 0 1]
  [0 0 1 1 0 0]
- [0 0 1 0 0 0]
+ [0 0 1 0 0 1]
  [0 0 0 0 0 1]
  [1 1 0 0 0 1]
- [0 0 1 1 1 0]
+ [0 0 0 1 1 0]
  [1 1 0 0 0 1]
  [0 0 1 1 0 0]
  [0 0 1 0 0 1]
  [0 1 0 0 0 0]
  [1 0 1 0 0 1]
  [0 1 1 0 0 0]
- [1 0 0 0 0 1]
- [0 1 1 0 0 1]
+ [0 0 0 0 0 1]
+ [0 0 1 0 0 1]
  [0 0 1 1 1 0]
  [0 1 1 0 0 0]
  [0 0 1 0 0 1]
@@ -410,12 +411,12 @@ Predictions for test data:
  [0 0 1 1 1 0]
  [0 0 1 1 0 0]
  [0 0 0 0 0 1]
- [0 0 1 0 0 0]
+ [0 1 1 0 0 0]
  [0 0 0 0 0 1]
- [1 0 0 0 0 1]
+ [0 0 0 0 0 1]
  [0 0 1 1 0 0]
  [0 0 1 1 1 0]
- [0 0 1 0 0 0]
+ [0 1 1 0 0 0]
  [0 0 1 0 0 0]
  [0 0 1 1 1 0]
  [0 0 0 0 0 1]
@@ -428,7 +429,7 @@ Predictions for test data:
  [0 0 1 0 0 0]
  [0 0 1 0 0 0]
  [0 0 0 0 0 1]
- [1 1 0 0 0 1]
+ [1 0 0 0 0 1]
  [0 1 1 0 0 0]
  [0 0 0 0 0 1]]
 
@@ -438,67 +439,78 @@ Marginal probability calibration model:
 │   Label 1 thresholds │   Label 1 probabilities │
 ├──────────────────────┼─────────────────────────┤
 │               0      │                  0      │
-│               0.0012 │                  0.2441 │
-│               0.026  │                  0.3312 │
-│               0.2426 │                  0.4333 │
-│               0.404  │                  0.5    │
-│               0.7181 │                  0.6094 │
-│               0.9848 │                  1      │
+│               0.0006 │                  0.0769 │
+│               0.0023 │                  0.0952 │
+│               0.0212 │                  0.3042 │
+│               0.1312 │                  0.4    │
+│               0.2105 │                  0.4417 │
+│               0.5997 │                  0.5    │
+│               0.6951 │                  0.6333 │
+│               0.8326 │                  0.6667 │
+│               0.8922 │                  0.875  │
+│               0.9603 │                  1      │
 └──────────────────────┴─────────────────────────┘
 ┌──────────────────────┬─────────────────────────┐
 │   Label 2 thresholds │   Label 2 probabilities │
 ├──────────────────────┼─────────────────────────┤
 │               0      │                  0      │
-│               0.0015 │                  0.2    │
-│               0.0019 │                  0.2097 │
-│               0.0446 │                  0.2381 │
-│               0.0657 │                  0.375  │
-│               0.1106 │                  0.3823 │
-│               0.3771 │                  0.5    │
-│               0.7206 │                  0.7045 │
+│               0.0022 │                  0.2525 │
+│               0.0162 │                  0.2694 │
+│               0.086  │                  0.3333 │
+│               0.1316 │                  0.3479 │
+│               0.2913 │                  0.5    │
+│               0.3338 │                  0.5238 │
+│               0.6828 │                  0.8036 │
+│               0.9646 │                  1      │
 └──────────────────────┴─────────────────────────┘
 ┌──────────────────────┬─────────────────────────┐
 │   Label 3 thresholds │   Label 3 probabilities │
 ├──────────────────────┼─────────────────────────┤
 │               0      │                  0      │
-│               0.0285 │                  0.2    │
-│               0.0973 │                  0.5226 │
-│               0.9807 │                  0.5655 │
-│               0.9983 │                  1      │
+│               0.0408 │                  0.3333 │
+│               0.0923 │                  0.5    │
+│               0.5461 │                  0.5042 │
+│               0.9957 │                  0.6667 │
+│               0.997  │                  1      │
 └──────────────────────┴─────────────────────────┘
 ┌──────────────────────┬─────────────────────────┐
 │   Label 4 thresholds │   Label 4 probabilities │
 ├──────────────────────┼─────────────────────────┤
 │               0      │                  0      │
-│               0.0003 │                  0.0156 │
-│               0.0657 │                  0.2667 │
-│               0.3108 │                  0.3625 │
-│               0.9412 │                  0.7083 │
-│               0.9847 │                  1      │
+│               0.0003 │                  0.0159 │
+│               0.0483 │                  0.2    │
+│               0.3111 │                  0.3333 │
+│               0.518  │                  0.4167 │
+│               0.9344 │                  0.7333 │
+│               0.9868 │                  1      │
 └──────────────────────┴─────────────────────────┘
 ┌──────────────────────┬─────────────────────────┐
 │   Label 5 thresholds │   Label 5 probabilities │
 ├──────────────────────┼─────────────────────────┤
 │               0.0001 │                  0      │
-│               0.0018 │                  0.1429 │
-│               0.0034 │                  0.2162 │
-│               0.044  │                  0.25   │
-│               0.0566 │                  0.294  │
-│               0.5818 │                  0.3125 │
-│               0.9535 │                  1      │
+│               0.0031 │                  0.1849 │
+│               0.0202 │                  0.2    │
+│               0.0267 │                  0.2306 │
+│               0.0679 │                  0.25   │
+│               0.1198 │                  0.2946 │
+│               0.7024 │                  0.5    │
+│               0.953  │                  0.8    │
+│               0.9754 │                  1      │
 └──────────────────────┴─────────────────────────┘
 ┌──────────────────────┬─────────────────────────┐
 │   Label 6 thresholds │   Label 6 probabilities │
 ├──────────────────────┼─────────────────────────┤
 │               0      │                  0      │
-│               0.0008 │                  0.025  │
-│               0.0129 │                  0.1667 │
-│               0.0244 │                  0.25   │
-│               0.2021 │                  0.4664 │
-│               0.9622 │                  0.875  │
-│               0.9862 │                  1      │
+│               0.0011 │                  0.0286 │
+│               0.0138 │                  0.1429 │
+│               0.0186 │                  0.25   │
+│               0.1785 │                  0.5    │
+│               0.2218 │                  0.5208 │
+│               0.665  │                  0.5312 │
+│               0.9485 │                  0.6786 │
+│               0.9875 │                  1      │
 └──────────────────────┴─────────────────────────┘
 
-Writing output data to file "python/tests/res/tmp/results/marginal_probability_calibration_model.csv"...
-Writing output data to file "python/tests/res/tmp/models/model.pickle"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/marginal_probability_calibration_model.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/models/model.pickle"...
 Successfully finished experiment after <duration>

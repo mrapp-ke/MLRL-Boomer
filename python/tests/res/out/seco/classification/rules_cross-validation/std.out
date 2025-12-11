@@ -1,12 +1,14 @@
 mlrl-testbed mlrl.seco --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --data-split cross-validation --print-evaluation false --save-evaluation false --print-rules true --save-rules true
+Checking if output files do already exist...
 Starting experiment using the classification algorithm "SeCoClassifier"...
+DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Performing full 10-fold cross validation...
 Fold 1 / 10:
-Reading input data from file "python/tests/res/data/emotions.arff"...
-Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+DEBUG: Reading input data from file "python/tests/res/data/emotions.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 Fitting model to 533 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model (Fold 1):
 
@@ -100,11 +102,11 @@ Model (Fold 1):
 {} => (amazed-suprised = 0, happy-pleased = 0, relaxing-calm = 0, quiet-still = 0, sad-lonely = 0, angry-aggresive = 0)
 
 
-Writing output data to file "python/tests/res/tmp/results/rules_fold-1.txt"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/rules_fold-1.txt"...
 Fold 2 / 10:
 Fitting model to 533 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model (Fold 2):
 
@@ -178,11 +180,11 @@ Model (Fold 2):
 {} => (amazed-suprised = 0, happy-pleased = 0, relaxing-calm = 0, quiet-still = 0, sad-lonely = 0, angry-aggresive = 0)
 
 
-Writing output data to file "python/tests/res/tmp/results/rules_fold-2.txt"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/rules_fold-2.txt"...
 Fold 3 / 10:
 Fitting model to 533 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model (Fold 3):
 
@@ -260,11 +262,11 @@ Model (Fold 3):
 {} => (amazed-suprised = 0, happy-pleased = 0, relaxing-calm = 0, quiet-still = 0, sad-lonely = 0, angry-aggresive = 0)
 
 
-Writing output data to file "python/tests/res/tmp/results/rules_fold-3.txt"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/rules_fold-3.txt"...
 Fold 4 / 10:
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model (Fold 4):
 
@@ -340,11 +342,11 @@ Model (Fold 4):
 {} => (amazed-suprised = 0, happy-pleased = 0, relaxing-calm = 0, quiet-still = 0, sad-lonely = 0, angry-aggresive = 0)
 
 
-Writing output data to file "python/tests/res/tmp/results/rules_fold-4.txt"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/rules_fold-4.txt"...
 Fold 5 / 10:
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model (Fold 5):
 
@@ -428,11 +430,11 @@ Model (Fold 5):
 {} => (amazed-suprised = 0, happy-pleased = 0, relaxing-calm = 0, quiet-still = 0, sad-lonely = 0, angry-aggresive = 0)
 
 
-Writing output data to file "python/tests/res/tmp/results/rules_fold-5.txt"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/rules_fold-5.txt"...
 Fold 6 / 10:
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model (Fold 6):
 
@@ -502,11 +504,11 @@ Model (Fold 6):
 {} => (amazed-suprised = 0, happy-pleased = 0, relaxing-calm = 0, quiet-still = 0, sad-lonely = 0, angry-aggresive = 0)
 
 
-Writing output data to file "python/tests/res/tmp/results/rules_fold-6.txt"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/rules_fold-6.txt"...
 Fold 7 / 10:
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model (Fold 7):
 
@@ -584,11 +586,11 @@ Model (Fold 7):
 {} => (amazed-suprised = 0, happy-pleased = 0, relaxing-calm = 0, quiet-still = 0, sad-lonely = 0, angry-aggresive = 0)
 
 
-Writing output data to file "python/tests/res/tmp/results/rules_fold-7.txt"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/rules_fold-7.txt"...
 Fold 8 / 10:
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model (Fold 8):
 
@@ -663,11 +665,11 @@ Model (Fold 8):
 {} => (amazed-suprised = 0, happy-pleased = 0, relaxing-calm = 0, quiet-still = 0, sad-lonely = 0, angry-aggresive = 0)
 
 
-Writing output data to file "python/tests/res/tmp/results/rules_fold-8.txt"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/rules_fold-8.txt"...
 Fold 9 / 10:
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model (Fold 9):
 
@@ -751,11 +753,11 @@ Model (Fold 9):
 {} => (amazed-suprised = 0, happy-pleased = 0, relaxing-calm = 0, quiet-still = 0, sad-lonely = 0, angry-aggresive = 0)
 
 
-Writing output data to file "python/tests/res/tmp/results/rules_fold-9.txt"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/rules_fold-9.txt"...
 Fold 10 / 10:
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model (Fold 10):
 
@@ -839,5 +841,5 @@ Model (Fold 10):
 {} => (amazed-suprised = 0, happy-pleased = 0, relaxing-calm = 0, quiet-still = 0, sad-lonely = 0, angry-aggresive = 0)
 
 
-Writing output data to file "python/tests/res/tmp/results/rules_fold-10.txt"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/rules_fold-10.txt"...
 Successfully finished experiment after <duration>

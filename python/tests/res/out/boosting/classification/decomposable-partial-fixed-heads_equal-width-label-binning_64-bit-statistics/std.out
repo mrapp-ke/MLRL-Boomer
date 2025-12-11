@@ -1,37 +1,38 @@
 mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --loss logistic-decomposable --statistic-type 64-bit --head-type partial-fixed --label-binning equal-width --print-model-characteristics true
+Checking if output files do already exist...
 Starting experiment using the classification algorithm "BoomerClassifier"...
-Writing output data to file "python/tests/res/tmp/metadata.yml"...
+DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Using separate training and test sets...
-Reading input data from file "python/tests/res/data/emotions.arff"...
-Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+DEBUG: Reading input data from file "python/tests/res/data/emotions.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 Fitting model to 397 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Predicting for 196 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted labels
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Example-wise F1         62
-Example-wise Jaccard    55.06
-Example-wise Precision  80.48
-Example-wise Recall     62.67
-Hamming Accuracy        82.06
-Hamming Loss            17.94
-Macro F1                66.58
-Macro Jaccard           51.24
-Macro Precision         76.61
-Macro Recall            60.66
-Micro F1                68.83
-Micro Jaccard           52.48
-Micro Precision         77.15
-Micro Recall            62.13
-Subset 0/1 Loss         66.84
-Subset Accuracy         33.16
+Example-wise F1 (↑)         62
+Example-wise Jaccard (↑)    55.06
+Example-wise Precision (↑)  80.48
+Example-wise Recall (↑)     62.67
+Hamming Accuracy (↑)        82.06
+Hamming Loss (↓)            17.94
+Macro F1 (↑)                66.58
+Macro Jaccard (↑)           51.24
+Macro Precision (↑)         76.61
+Macro Recall (↑)            60.66
+Micro F1 (↑)                68.83
+Micro Jaccard (↑)           52.48
+Micro Precision (↑)         77.15
+Micro Recall (↑)            62.13
+Subset 0/1 Loss (↓)         66.84
+Subset Accuracy (↑)         33.16
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Model characteristics:
 
 ┌───────────────────────────────┬─────────┬─────────────────────────┬────────────────────────┬───────────────────────┬──────────────────────┬───────────────────────┬───────────────────────┐

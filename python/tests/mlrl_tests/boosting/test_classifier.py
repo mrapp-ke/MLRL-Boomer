@@ -6,9 +6,12 @@ from typing import Any, Optional, override
 
 import pytest
 
+from sklearn.utils.estimator_checks import check_estimator
+
 from ..common.cmd_runner import CmdRunner
 from ..common.datasets import Dataset
 from ..common.integration_tests_classification import ClassificationIntegrationTests
+from ..common.integration_tests_rule_learners import ClassificationRuleLearnerIntegrationTestsMixin
 from .cmd_builder_classification import BoomerClassifierCmdBuilder
 from .integration_tests import BoomerIntegrationTestsMixin
 
@@ -19,8 +22,10 @@ from mlrl.common.learners import SparsePolicy
 from mlrl.boosting.config.parameters import OPTION_BASED_ON_PROBABILITIES, PROBABILITY_CALIBRATION_ISOTONIC, \
     BinaryPredictorParameter, ClassificationLossParameter, HeadTypeParameter, ProbabilityPredictorParameter, \
     StatisticTypeParameter
+from mlrl.boosting.learners import BoomerClassifier
 
 from mlrl.testbed.experiments.prediction_type import PredictionType
+from mlrl.testbed.experiments.state import ExperimentMode
 
 from mlrl.util.cli import NONE
 from mlrl.util.options import BooleanOption, Options
@@ -28,7 +33,8 @@ from mlrl.util.options import BooleanOption, Options
 
 @pytest.mark.boosting
 @pytest.mark.classification
-class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTestsMixin):
+class TestBoomerClassifier(ClassificationIntegrationTests, ClassificationRuleLearnerIntegrationTestsMixin,
+                           BoomerIntegrationTestsMixin):
     """
     Defines a series of integration tests for the BOOMER algorithm for classification problems.
     """
@@ -36,6 +42,14 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
     @override
     def _create_cmd_builder(self, dataset: str = Dataset.EMOTIONS) -> Any:
         return BoomerClassifierCmdBuilder(dataset=dataset)
+
+    def test_scikit_learn_compatibility(self):
+        check_estimator(BoomerClassifier(),
+                        expected_failed_checks={
+                            'check_classifiers_train': 'Fails because model is too large to pickle',
+                            'check_estimators_pickle': 'Fails because model is too large to pickle',
+                            'check_readonly_memmap_input': 'Fails because model is too large to pickle',
+                        })
 
     @pytest.mark.parametrize('prediction_type', [
         PredictionType.SCORES,
@@ -90,6 +104,8 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
                               marginal_probability_calibration: Optional[str],
                               joint_probability_calibration: Optional[str], label_vectors: Optional[bool],
                               prediction_format: Optional[str]):
+        test_name = f'predictor-binary-{binary_predictor}' + (f'_{prediction_format}' if prediction_format else '') + (
+            f'_{binary_predictor_options}' if binary_predictor_options else '')
         builder = self._create_cmd_builder() \
             .marginal_probability_calibration(marginal_probability_calibration) \
             .print_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
@@ -107,9 +123,19 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
             builder.save_models()
             builder.load_models()
 
-        CmdRunner(builder).run(f'predictor-binary-{binary_predictor}'
-                               + (f'_{prediction_format}' if prediction_format else '')
-                               + (f'_{binary_predictor_options}' if binary_predictor_options else ''))
+        CmdRunner(builder).run(test_name,
+                               wipe_after=not marginal_probability_calibration and not joint_probability_calibration)
+
+        if marginal_probability_calibration or joint_probability_calibration:
+            builder = self._create_cmd_builder() \
+                .set_mode(ExperimentMode.READ) \
+                .print_evaluation(False) \
+                .save_evaluation(False) \
+                .print_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
+                .save_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
+                .print_joint_probability_calibration_model(True if joint_probability_calibration else None) \
+                .save_joint_probability_calibration_model(True if joint_probability_calibration else None)
+            CmdRunner(builder).run(test_name, wipe_before=False)
 
     @pytest.mark.parametrize(
         'binary_predictor, binary_predictor_options, marginal_probability_calibration, joint_probability_calibration, '

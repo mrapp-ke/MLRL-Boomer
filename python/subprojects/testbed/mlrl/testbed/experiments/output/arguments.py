@@ -6,7 +6,9 @@ Defines command line arguments for configuring the functionality to write output
 from datetime import datetime
 from pathlib import Path
 
-from mlrl.util.cli import BoolArgument, StringArgument
+from mlrl.testbed.experiments.output.policies import OutputErrorPolicy, OutputExistsPolicy
+
+from mlrl.util.cli import BoolArgument, EnumArgument, PathArgument
 
 
 class OutputArguments:
@@ -14,11 +16,13 @@ class OutputArguments:
     Defines command line arguments for configuring the functionality to write output data to one or several sinks.
     """
 
-    BASE_DIR = StringArgument(
+    BASE_DIR = PathArgument(
         '--base-dir',
         default=Path('experiments') / datetime.now().strftime('%Y-%m-%d_%H-%M'),
         description='If relative paths to directories, where files should be saved, are given, they are considered '
-        + 'relative to the directory specified via this argument.',
+        + 'relative to the directory specified via this argument. The default value is "'
+        + str(Path('experiments') / 'YYY-MM-DD_hh-mm') + '".',
+        add_default_value_to_description=False,
     )
 
     CREATE_DIRS = BoolArgument(
@@ -27,10 +31,18 @@ class OutputArguments:
         description='Whether the directories, where files should be saved, should be created automatically, if they do '
         + 'not exist, or not.')
 
-    EXIT_ON_ERROR = BoolArgument(
-        '--exit-on-error',
-        default=False,
+    IF_OUTPUT_ERROR = EnumArgument(
+        '--if-output-error',
+        enum=OutputErrorPolicy,
+        default=OutputErrorPolicy.LOG,
         description='Whether the program should exit if an error occurs while writing experimental results or not.',
+    )
+
+    IF_OUTPUTS_EXIST = EnumArgument(
+        '--if-outputs-exist',
+        enum=OutputExistsPolicy,
+        default=OutputExistsPolicy.CANCEL,
+        description='What to do if experimental results do already exist.',
     )
 
     PRINT_ALL = BoolArgument(
@@ -51,16 +63,8 @@ class ResultDirectoryArguments:
     Defines command line arguments for configuring the directory to which experimental results should be written.
     """
 
-    RESULT_DIR = StringArgument(
+    RESULT_DIR = PathArgument(
         '--result-dir',
         default='results',
         description='The path to the directory where experimental results should be saved.',
-        decorator=lambda args, value: Path(OutputArguments.BASE_DIR.get_value(args)) / value,
-    )
-
-    WIPE_RESULT_DIR = BoolArgument(
-        '--wipe-result-dir',
-        default=True,
-        description='Whether all files in the directory specified via the argument ' + RESULT_DIR.name + ' should be '
-        + 'deleted before an experiment starts or not.',
     )

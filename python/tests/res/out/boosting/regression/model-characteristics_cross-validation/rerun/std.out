@@ -1,0 +1,272 @@
+mlrl-testbed mlrl.boosting --mode read --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --print-evaluation false --save-evaluation false --print-model-characteristics true --save-model-characteristics true
+Reading meta-data...
+DEBUG: Reading input data from file "python/tests/res/tmp/metadata.yml"...
+Successfully read meta-data
+DEBUG: Checking for version conflicts...
+DEBUG: Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is currently used
+DEBUG: No version conflicts detected
+Reading experimental results of 1 experiment...
+
+Reading experimental results of experiment (1 / 1)...
+The command "mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --data-split cross-validation --print-evaluation false --save-evaluation false --print-model-characteristics true --save-model-characteristics true" has been used originally for running this experiment
+Performing full 10-fold cross validation...
+Fold 1 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/model_characteristics_fold-1.csv"...
+Model characteristics (Fold 1):
+
+┌───────────────────────────────┬─────────┬─────────────────────────┬────────────────────────┬───────────────────────┬──────────────────────┬───────────────────────┬───────────────────────┐
+│ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
+├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
+│ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+│ 999 local rules               │    3676 │                  52.88% │                 47.12% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+└───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │    100.00% │      0.00% │
+│ 999 local rules                │    5994 │     50.77% │     49.23% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │      3.68 │        18 │
+│ Predictions                 │         6 │      6    │         6 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/model_characteristics_fold-1.csv"...
+Fold 2 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/model_characteristics_fold-2.csv"...
+Model characteristics (Fold 2):
+
+┌───────────────────────────────┬─────────┬─────────────────────────┬────────────────────────┬───────────────────────┬──────────────────────┬───────────────────────┬───────────────────────┐
+│ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
+├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
+│ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+│ 999 local rules               │    3663 │                  52.33% │                 47.67% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+└───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │    100.00% │      0.00% │
+│ 999 local rules                │    5994 │     51.35% │     48.65% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │      3.67 │        14 │
+│ Predictions                 │         6 │      6    │         6 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/model_characteristics_fold-2.csv"...
+Fold 3 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/model_characteristics_fold-3.csv"...
+Model characteristics (Fold 3):
+
+┌───────────────────────────────┬─────────┬─────────────────────────┬────────────────────────┬───────────────────────┬──────────────────────┬───────────────────────┬───────────────────────┐
+│ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
+├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
+│ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+│ 999 local rules               │    3649 │                  53.19% │                 46.81% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+└───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │    100.00% │      0.00% │
+│ 999 local rules                │    5994 │     50.15% │     49.85% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │      3.65 │        15 │
+│ Predictions                 │         6 │      6    │         6 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/model_characteristics_fold-3.csv"...
+Fold 4 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/model_characteristics_fold-4.csv"...
+Model characteristics (Fold 4):
+
+┌───────────────────────────────┬─────────┬─────────────────────────┬────────────────────────┬───────────────────────┬──────────────────────┬───────────────────────┬───────────────────────┐
+│ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
+├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
+│ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+│ 999 local rules               │    3588 │                  52.70% │                 47.30% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+└───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │    100.00% │      0.00% │
+│ 999 local rules                │    5994 │     50.23% │     49.77% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │      3.59 │        14 │
+│ Predictions                 │         6 │      6    │         6 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/model_characteristics_fold-4.csv"...
+Fold 5 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/model_characteristics_fold-5.csv"...
+Model characteristics (Fold 5):
+
+┌───────────────────────────────┬─────────┬─────────────────────────┬────────────────────────┬───────────────────────┬──────────────────────┬───────────────────────┬───────────────────────┐
+│ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
+├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
+│ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+│ 999 local rules               │    3646 │                  53.48% │                 46.52% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+└───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │    100.00% │      0.00% │
+│ 999 local rules                │    5994 │     49.92% │     50.08% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │      3.65 │        15 │
+│ Predictions                 │         6 │      6    │         6 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/model_characteristics_fold-5.csv"...
+Fold 6 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/model_characteristics_fold-6.csv"...
+Model characteristics (Fold 6):
+
+┌───────────────────────────────┬─────────┬─────────────────────────┬────────────────────────┬───────────────────────┬──────────────────────┬───────────────────────┬───────────────────────┐
+│ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
+├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
+│ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+│ 999 local rules               │    3690 │                  52.22% │                 47.78% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+└───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │    100.00% │      0.00% │
+│ 999 local rules                │    5994 │     50.37% │     49.63% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │      3.69 │        13 │
+│ Predictions                 │         6 │      6    │         6 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/model_characteristics_fold-6.csv"...
+Fold 7 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/model_characteristics_fold-7.csv"...
+Model characteristics (Fold 7):
+
+┌───────────────────────────────┬─────────┬─────────────────────────┬────────────────────────┬───────────────────────┬──────────────────────┬───────────────────────┬───────────────────────┐
+│ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
+├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
+│ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+│ 999 local rules               │    3647 │                  51.80% │                 48.20% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+└───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │    100.00% │      0.00% │
+│ 999 local rules                │    5994 │     50.20% │     49.80% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │      3.65 │        15 │
+│ Predictions                 │         6 │      6    │         6 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/model_characteristics_fold-7.csv"...
+Fold 8 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/model_characteristics_fold-8.csv"...
+Model characteristics (Fold 8):
+
+┌───────────────────────────────┬─────────┬─────────────────────────┬────────────────────────┬───────────────────────┬──────────────────────┬───────────────────────┬───────────────────────┐
+│ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
+├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
+│ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+│ 999 local rules               │    3830 │                  51.36% │                 48.64% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+└───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │    100.00% │      0.00% │
+│ 999 local rules                │    5994 │     51.45% │     48.55% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │      3.83 │        14 │
+│ Predictions                 │         6 │      6    │         6 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/model_characteristics_fold-8.csv"...
+Fold 9 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/model_characteristics_fold-9.csv"...
+Model characteristics (Fold 9):
+
+┌───────────────────────────────┬─────────┬─────────────────────────┬────────────────────────┬───────────────────────┬──────────────────────┬───────────────────────┬───────────────────────┐
+│ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
+├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
+│ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+│ 999 local rules               │    3633 │                  54.17% │                 45.83% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+└───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │    100.00% │      0.00% │
+│ 999 local rules                │    5994 │     48.73% │     51.27% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │      3.64 │        14 │
+│ Predictions                 │         6 │      6    │         6 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/model_characteristics_fold-9.csv"...
+Fold 10 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/model_characteristics_fold-10.csv"...
+Model characteristics (Fold 10):
+
+┌───────────────────────────────┬─────────┬─────────────────────────┬────────────────────────┬───────────────────────┬──────────────────────┬───────────────────────┬───────────────────────┐
+│ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
+├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
+│ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+│ 999 local rules               │    3665 │                  52.71% │                 47.29% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+└───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │    100.00% │      0.00% │
+│ 999 local rules                │    5994 │     50.15% │     49.85% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │      3.67 │        16 │
+│ Predictions                 │         6 │      6    │         6 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/model_characteristics_fold-10.csv"...

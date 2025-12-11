@@ -1,609 +1,601 @@
 mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --marginal-probability-calibration isotonic --print-marginal-probability-calibration-model true --save-marginal-probability-calibration-model true --joint-probability-calibration isotonic --print-joint-probability-calibration-model true --save-joint-probability-calibration-model true --binary-predictor gfm --incremental-evaluation true{step_size=50} --print-evaluation true --save-evaluation true --prediction-format sparse --save-models true --load-models true --model-load-dir models --model-save-dir models
+Checking if output files do already exist...
 Starting experiment using the classification algorithm "BoomerClassifier"...
-Writing output data to file "python/tests/res/tmp/metadata.yml"...
+DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Using separate training and test sets...
-Reading input data from file "python/tests/res/data/emotions.arff"...
-Parsing meta-data from file "python/tests/res/data/emotions.xml"...
-Reading input data from file "models/model.pickle"...
-Failed to unpickle file "models/model.pickle"
+DEBUG: Reading input data from file "python/tests/res/data/emotions.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+DEBUG: Reading input data from file "models/model.pickle"...
+ERROR: The file "models/model.pickle" does not exist
 Fitting model to 397 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
-A dense matrix is used to store the feature values of the query examples
-A sparse matrix is used to store the predicted labels
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A sparse matrix is used to store the predicted labels
 Predicting for 196 test examples using a model of size 50...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 50:
 
-Example-wise F1         59.64
-Example-wise Jaccard    46.15
-Example-wise Precision  47.78
-Example-wise Recall     88.95
-Hamming Accuracy        62.41
-Hamming Loss            37.59
-Macro F1                59.4
-Macro Jaccard           42.84
-Macro Precision         47.83
-Macro Recall            85.66
-Micro F1                59.74
-Micro Jaccard           42.6
-Micro Precision         45.37
-Micro Recall            87.47
-Subset 0/1 Loss         92.35
-Subset Accuracy          7.65
+Example-wise F1 (↑)         60.53
+Example-wise Jaccard (↑)    46.9
+Example-wise Precision (↑)  48.54
+Example-wise Recall (↑)     89.29
+Hamming Accuracy (↑)        64.12
+Hamming Loss (↓)            35.88
+Macro F1 (↑)                61.89
+Macro Jaccard (↑)           45.33
+Macro Precision (↑)         50.3
+Macro Recall (↑)            87.16
+Micro F1 (↑)                61.14
+Micro Jaccard (↑)           44.03
+Micro Precision (↑)         46.69
+Micro Recall (↑)            88.53
+Subset 0/1 Loss (↓)         92.35
+Subset Accuracy (↑)          7.65
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 100...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 100:
 
-Example-wise F1         61.55
-Example-wise Jaccard    48.63
-Example-wise Precision  50.78
-Example-wise Recall     87.76
-Hamming Accuracy        65.56
-Hamming Loss            34.44
-Macro F1                61.36
-Macro Jaccard           44.94
-Macro Precision         50.35
-Macro Recall            84.73
-Micro F1                61.54
-Micro Jaccard           44.44
-Micro Precision         47.79
-Micro Recall            86.4
-Subset 0/1 Loss         89.29
-Subset Accuracy         10.71
+Example-wise F1 (↑)         61.85
+Example-wise Jaccard (↑)    48.91
+Example-wise Precision (↑)  51.14
+Example-wise Recall (↑)     87.67
+Hamming Accuracy (↑)        66.5
+Hamming Loss (↓)            33.5
+Macro F1 (↑)                63.04
+Macro Jaccard (↑)           46.75
+Macro Precision (↑)         52.2
+Macro Recall (↑)            85.64
+Micro F1 (↑)                62.4
+Micro Jaccard (↑)           45.35
+Micro Precision (↑)         48.59
+Micro Recall (↑)            87.2
+Subset 0/1 Loss (↓)         89.29
+Subset Accuracy (↑)         10.71
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 150...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 150:
 
-Example-wise F1         63.12
-Example-wise Jaccard    50.49
-Example-wise Precision  52.73
-Example-wise Recall     88.18
-Hamming Accuracy        67.35
-Hamming Loss            32.65
-Macro F1                62.8
-Macro Jaccard           46.48
-Macro Precision         51.34
-Macro Recall            85.67
-Micro F1                63.01
-Micro Jaccard           45.99
-Micro Precision         49.32
-Micro Recall            87.2
-Subset 0/1 Loss         86.73
-Subset Accuracy         13.27
+Example-wise F1 (↑)         62.92
+Example-wise Jaccard (↑)    50.09
+Example-wise Precision (↑)  53.15
+Example-wise Recall (↑)     86.82
+Hamming Accuracy (↑)        68.2
+Hamming Loss (↓)            31.8
+Macro F1 (↑)                63.53
+Macro Jaccard (↑)           47.3
+Macro Precision (↑)         53.43
+Macro Recall (↑)            84.11
+Micro F1 (↑)                63.26
+Micro Jaccard (↑)           46.26
+Micro Precision (↑)         50.08
+Micro Recall (↑)            85.87
+Subset 0/1 Loss (↓)         87.24
+Subset Accuracy (↑)         12.76
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 200...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 200:
 
-Example-wise F1         60.44
-Example-wise Jaccard    47.84
-Example-wise Precision  53.58
-Example-wise Recall     84.61
-Hamming Accuracy        66.67
-Hamming Loss            33.33
-Macro F1                60.29
-Macro Jaccard           43.83
-Macro Precision         50.22
-Macro Recall            80.43
-Micro F1                61.11
-Micro Jaccard           44
-Micro Precision         48.66
-Micro Recall            82.13
-Subset 0/1 Loss         88.78
-Subset Accuracy         11.22
+Example-wise F1 (↑)         60.27
+Example-wise Jaccard (↑)    47.84
+Example-wise Precision (↑)  55.09
+Example-wise Recall (↑)     82.4
+Hamming Accuracy (↑)        68.11
+Hamming Loss (↓)            31.89
+Macro F1 (↑)                61.14
+Macro Jaccard (↑)           44.82
+Macro Precision (↑)         52.13
+Macro Recall (↑)            78.69
+Micro F1 (↑)                61.77
+Micro Jaccard (↑)           44.69
+Micro Precision (↑)         50
+Micro Recall (↑)            80.8
+Subset 0/1 Loss (↓)         88.27
+Subset Accuracy (↑)         11.73
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 250...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 250:
 
-Example-wise F1         59.08
-Example-wise Jaccard    47.07
-Example-wise Precision  55.88
-Example-wise Recall     81.29
-Hamming Accuracy        67.77
-Hamming Loss            32.23
-Macro F1                59.92
-Macro Jaccard           43.55
-Macro Precision         51.17
-Macro Recall            76.91
-Micro F1                60.89
-Micro Jaccard           43.77
-Micro Precision         49.66
-Micro Recall            78.67
-Subset 0/1 Loss         87.24
-Subset Accuracy         12.76
+Example-wise F1 (↑)         59
+Example-wise Jaccard (↑)    46.84
+Example-wise Precision (↑)  56.9
+Example-wise Recall (↑)     80.1
+Hamming Accuracy (↑)        68.62
+Hamming Loss (↓)            31.38
+Macro F1 (↑)                60.59
+Macro Jaccard (↑)           44.16
+Macro Precision (↑)         52.32
+Macro Recall (↑)            76.51
+Micro F1 (↑)                61.44
+Micro Jaccard (↑)           44.34
+Micro Precision (↑)         50.52
+Micro Recall (↑)            78.4
+Subset 0/1 Loss (↓)         88.27
+Subset Accuracy (↑)         11.73
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 300...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 300:
 
-Example-wise F1         55.87
-Example-wise Jaccard    44.49
-Example-wise Precision  58.12
-Example-wise Recall     76.28
-Hamming Accuracy        67.43
-Hamming Loss            32.57
-Macro F1                56.49
-Macro Jaccard           40.36
-Macro Precision         49.39
-Macro Recall            70.59
-Micro F1                58.68
-Micro Jaccard           41.53
-Micro Precision         49.28
-Micro Recall            72.53
-Subset 0/1 Loss         87.76
-Subset Accuracy         12.24
+Example-wise F1 (↑)         55.86
+Example-wise Jaccard (↑)    44.53
+Example-wise Precision (↑)  58.28
+Example-wise Recall (↑)     75.77
+Hamming Accuracy (↑)        67.86
+Hamming Loss (↓)            32.14
+Macro F1 (↑)                57.83
+Macro Jaccard (↑)           41.53
+Macro Precision (↑)         51.01
+Macro Recall (↑)            71.14
+Micro F1 (↑)                59.18
+Micro Jaccard (↑)           42.02
+Micro Precision (↑)         49.73
+Micro Recall (↑)            73.07
+Subset 0/1 Loss (↓)         87.24
+Subset Accuracy (↑)         12.76
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 350...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 350:
 
-Example-wise F1         55.11
-Example-wise Jaccard    43.81
-Example-wise Precision  58.32
-Example-wise Recall     74.74
-Hamming Accuracy        67.6
-Hamming Loss            32.4
-Macro F1                56.05
-Macro Jaccard           39.94
-Macro Precision         49.34
-Macro Recall            69.17
-Micro F1                58.36
-Micro Jaccard           41.2
-Micro Precision         49.44
-Micro Recall            71.2
-Subset 0/1 Loss         87.76
-Subset Accuracy         12.24
+Example-wise F1 (↑)         53.86
+Example-wise Jaccard (↑)    42.69
+Example-wise Precision (↑)  59.38
+Example-wise Recall (↑)     72.53
+Hamming Accuracy (↑)        67.77
+Hamming Loss (↓)            32.23
+Macro F1 (↑)                56.03
+Macro Jaccard (↑)           39.83
+Macro Precision (↑)         50.53
+Macro Recall (↑)            67.54
+Micro F1 (↑)                57.94
+Micro Jaccard (↑)           40.78
+Micro Precision (↑)         49.62
+Micro Recall (↑)            69.6
+Subset 0/1 Loss (↓)         88.78
+Subset Accuracy (↑)         11.22
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 400...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 400:
 
-Example-wise F1         54.22
-Example-wise Jaccard    42.86
-Example-wise Precision  57.93
-Example-wise Recall     72.45
-Hamming Accuracy        67.26
-Hamming Loss            32.74
-Macro F1                54.95
-Macro Jaccard           38.91
-Macro Precision         48.79
-Macro Recall            67.07
-Micro F1                57.46
-Micro Jaccard           40.31
-Micro Precision         49.06
-Micro Recall            69.33
-Subset 0/1 Loss         89.29
-Subset Accuracy         10.71
+Example-wise F1 (↑)         53.23
+Example-wise Jaccard (↑)    42.01
+Example-wise Precision (↑)  59.91
+Example-wise Recall (↑)     71
+Hamming Accuracy (↑)        68.11
+Hamming Loss (↓)            31.89
+Macro F1 (↑)                55.42
+Macro Jaccard (↑)           39.29
+Macro Precision (↑)         50.47
+Macro Recall (↑)            65.43
+Micro F1 (↑)                57.53
+Micro Jaccard (↑)           40.38
+Micro Precision (↑)         50
+Micro Recall (↑)            67.73
+Subset 0/1 Loss (↓)         90.31
+Subset Accuracy (↑)          9.69
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 450...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 450:
 
-Example-wise F1         52.19
-Example-wise Jaccard    41.11
-Example-wise Precision  59.49
-Example-wise Recall     69.3
-Hamming Accuracy        67.52
-Hamming Loss            32.48
-Macro F1                53.46
-Macro Jaccard           37.57
-Macro Precision         48.62
-Macro Recall            63.57
-Micro F1                56.39
-Micro Jaccard           39.27
-Micro Precision         49.3
-Micro Recall            65.87
-Subset 0/1 Loss         90.82
-Subset Accuracy          9.18
+Example-wise F1 (↑)         53.36
+Example-wise Jaccard (↑)    42.77
+Example-wise Precision (↑)  62.64
+Example-wise Recall (↑)     69.81
+Hamming Accuracy (↑)        69.22
+Hamming Loss (↓)            30.78
+Macro F1 (↑)                55.7
+Macro Jaccard (↑)           39.55
+Macro Precision (↑)         51.39
+Macro Recall (↑)            64.08
+Micro F1 (↑)                57.81
+Micro Jaccard (↑)           40.66
+Micro Precision (↑)         51.35
+Micro Recall (↑)            66.13
+Subset 0/1 Loss (↓)         87.76
+Subset Accuracy (↑)         12.24
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 500...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 500:
 
-Example-wise F1         51.38
-Example-wise Jaccard    40.57
-Example-wise Precision  60.67
-Example-wise Recall     67.6
-Hamming Accuracy        67.69
-Hamming Loss            32.31
-Macro F1                53.2
-Macro Jaccard           37.3
-Macro Precision         49.21
-Macro Recall            61.7
-Micro F1                55.81
-Micro Jaccard           38.71
-Micro Precision         49.48
-Micro Recall            64
-Subset 0/1 Loss         90.31
-Subset Accuracy          9.69
+Example-wise F1 (↑)         52.38
+Example-wise Jaccard (↑)    42.02
+Example-wise Precision (↑)  63.52
+Example-wise Recall (↑)     68.28
+Hamming Accuracy (↑)        69.56
+Hamming Loss (↓)            30.44
+Macro F1 (↑)                55.39
+Macro Jaccard (↑)           39.26
+Macro Precision (↑)         51.83
+Macro Recall (↑)            62.69
+Micro F1 (↑)                57.58
+Micro Jaccard (↑)           40.43
+Micro Precision (↑)         51.81
+Micro Recall (↑)            64.8
+Subset 0/1 Loss (↓)         88.27
+Subset Accuracy (↑)         11.73
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 550...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 550:
 
-Example-wise F1         50.79
-Example-wise Jaccard    40.41
-Example-wise Precision  61.77
-Example-wise Recall     66.58
-Hamming Accuracy        67.94
-Hamming Loss            32.06
-Macro F1                52.47
-Macro Jaccard           36.7
-Macro Precision         48.99
-Macro Recall            60.14
-Micro F1                55.38
-Micro Jaccard           38.3
-Micro Precision         49.79
-Micro Recall            62.4
-Subset 0/1 Loss         89.29
-Subset Accuracy         10.71
+Example-wise F1 (↑)         50.72
+Example-wise Jaccard (↑)    40.76
+Example-wise Precision (↑)  63.84
+Example-wise Recall (↑)     66.16
+Hamming Accuracy (↑)        69.3
+Hamming Loss (↓)            30.7
+Macro F1 (↑)                54.22
+Macro Jaccard (↑)           38.14
+Macro Precision (↑)         51.78
+Macro Recall (↑)            60.43
+Micro F1 (↑)                56.56
+Micro Jaccard (↑)           39.43
+Micro Precision (↑)         51.54
+Micro Recall (↑)            62.67
+Subset 0/1 Loss (↓)         88.27
+Subset Accuracy (↑)         11.73
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 600...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 600:
 
-Example-wise F1         49.82
-Example-wise Jaccard    39.86
-Example-wise Precision  62.53
-Example-wise Recall     64.63
-Hamming Accuracy        67.86
-Hamming Loss            32.14
-Macro F1                51.58
-Macro Jaccard           35.8
-Macro Precision         48.93
-Macro Recall            58.22
-Micro F1                54.57
-Micro Jaccard           37.52
-Micro Precision         49.67
-Micro Recall            60.53
-Subset 0/1 Loss         88.27
-Subset Accuracy         11.73
+Example-wise F1 (↑)         51.33
+Example-wise Jaccard (↑)    41.51
+Example-wise Precision (↑)  64.89
+Example-wise Recall (↑)     65.9
+Hamming Accuracy (↑)        70.07
+Hamming Loss (↓)            29.93
+Macro F1 (↑)                54.69
+Macro Jaccard (↑)           38.54
+Macro Precision (↑)         52.45
+Macro Recall (↑)            60.43
+Micro F1 (↑)                57.18
+Micro Jaccard (↑)           40.03
+Micro Precision (↑)         52.57
+Micro Recall (↑)            62.67
+Subset 0/1 Loss (↓)         87.24
+Subset Accuracy (↑)         12.76
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 650...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 650:
 
-Example-wise F1         48.99
-Example-wise Jaccard    39.34
-Example-wise Precision  63.84
-Example-wise Recall     63.35
-Hamming Accuracy        68.2
-Hamming Loss            31.8
-Macro F1                51.64
-Macro Jaccard           35.86
-Macro Precision         49.5
-Macro Recall            57.33
-Micro F1                54.5
-Micro Jaccard           37.46
-Micro Precision         50.11
-Micro Recall            59.73
-Subset 0/1 Loss         87.76
-Subset Accuracy         12.24
+Example-wise F1 (↑)         47.59
+Example-wise Jaccard (↑)    38.29
+Example-wise Precision (↑)  65.83
+Example-wise Recall (↑)     61.65
+Hamming Accuracy (↑)        69.22
+Hamming Loss (↓)            30.78
+Macro F1 (↑)                51.91
+Macro Jaccard (↑)           35.91
+Macro Precision (↑)         51.58
+Macro Recall (↑)            56.09
+Micro F1 (↑)                54.75
+Micro Jaccard (↑)           37.69
+Micro Precision (↑)         51.53
+Micro Recall (↑)            58.4
+Subset 0/1 Loss (↓)         88.27
+Subset Accuracy (↑)         11.73
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 700...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 700:
 
-Example-wise F1         46.98
-Example-wise Jaccard    37.6
-Example-wise Precision  64.72
-Example-wise Recall     60.88
-Hamming Accuracy        68.11
-Hamming Loss            31.89
-Macro F1                50.17
-Macro Jaccard           34.56
-Macro Precision         49.24
-Macro Recall            54.68
-Micro F1                53.3
-Micro Jaccard           36.33
-Micro Precision         50
-Micro Recall            57.07
-Subset 0/1 Loss         88.78
-Subset Accuracy         11.22
+Example-wise F1 (↑)         46.29
+Example-wise Jaccard (↑)    36.96
+Example-wise Precision (↑)  65.95
+Example-wise Recall (↑)     60.63
+Hamming Accuracy (↑)        68.54
+Hamming Loss (↓)            31.46
+Macro F1 (↑)                50.33
+Macro Jaccard (↑)           34.66
+Macro Precision (↑)         49.87
+Macro Recall (↑)            54.49
+Micro F1 (↑)                53.52
+Micro Jaccard (↑)           36.54
+Micro Precision (↑)         50.59
+Micro Recall (↑)            56.8
+Subset 0/1 Loss (↓)         89.29
+Subset Accuracy (↑)         10.71
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 750...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 750:
 
-Example-wise F1         45.95
-Example-wise Jaccard    36.79
-Example-wise Precision  64.94
-Example-wise Recall     59.35
-Hamming Accuracy        68.11
-Hamming Loss            31.89
-Macro F1                49.43
-Macro Jaccard           34
-Macro Precision         48.9
-Macro Recall            53.33
-Micro F1                52.71
-Micro Jaccard           35.79
-Micro Precision         50
-Micro Recall            55.73
-Subset 0/1 Loss         88.78
-Subset Accuracy         11.22
+Example-wise F1 (↑)         44.46
+Example-wise Jaccard (↑)    35.4
+Example-wise Precision (↑)  66.51
+Example-wise Recall (↑)     58.5
+Hamming Accuracy (↑)        68.37
+Hamming Loss (↓)            31.63
+Macro F1 (↑)                49.1
+Macro Jaccard (↑)           33.52
+Macro Precision (↑)         49.85
+Macro Recall (↑)            52.06
+Micro F1 (↑)                52.31
+Micro Jaccard (↑)           35.42
+Micro Precision (↑)         50.37
+Micro Recall (↑)            54.4
+Subset 0/1 Loss (↓)         90.31
+Subset Accuracy (↑)          9.69
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 800...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 800:
 
-Example-wise F1         45.46
-Example-wise Jaccard    36.25
-Example-wise Precision  65.37
-Example-wise Recall     59.35
-Hamming Accuracy        67.77
-Hamming Loss            32.23
-Macro F1                48.92
-Macro Jaccard           33.57
-Macro Precision         48.33
-Macro Recall            52.84
-Micro F1                52.21
-Micro Jaccard           35.32
-Micro Precision         49.52
-Micro Recall            55.2
-Subset 0/1 Loss         89.29
-Subset Accuracy         10.71
+Example-wise F1 (↑)         42.71
+Example-wise Jaccard (↑)    33.84
+Example-wise Precision (↑)  66.22
+Example-wise Recall (↑)     56.46
+Hamming Accuracy (↑)        67.94
+Hamming Loss (↓)            32.06
+Macro F1 (↑)                47.79
+Macro Jaccard (↑)           32.4
+Macro Precision (↑)         48.95
+Macro Recall (↑)            50.18
+Micro F1 (↑)                51.1
+Micro Jaccard (↑)           34.32
+Micro Precision (↑)         49.75
+Micro Recall (↑)            52.53
+Subset 0/1 Loss (↓)         90.82
+Subset Accuracy (↑)          9.18
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 850...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 850:
 
-Example-wise F1         43.77
-Example-wise Jaccard    34.71
-Example-wise Precision  65.99
-Example-wise Recall     57.06
-Hamming Accuracy        67.52
-Hamming Loss            32.48
-Macro F1                47.6
-Macro Jaccard           32.46
-Macro Precision         47.67
-Macro Recall            50.65
-Micro F1                51.03
-Micro Jaccard           34.25
-Micro Precision         49.14
-Micro Recall            53.07
-Subset 0/1 Loss         90.31
-Subset Accuracy          9.69
+Example-wise F1 (↑)         42.79
+Example-wise Jaccard (↑)    33.95
+Example-wise Precision (↑)  66.35
+Example-wise Recall (↑)     56.21
+Hamming Accuracy (↑)        68.03
+Hamming Loss (↓)            31.97
+Macro F1 (↑)                47.82
+Macro Jaccard (↑)           32.44
+Macro Precision (↑)         48.72
+Macro Recall (↑)            50.01
+Micro F1 (↑)                51.04
+Micro Jaccard (↑)           34.27
+Micro Precision (↑)         49.87
+Micro Recall (↑)            52.27
+Subset 0/1 Loss (↓)         90.82
+Subset Accuracy (↑)          9.18
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 900...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 900:
 
-Example-wise F1         42.17
-Example-wise Jaccard    33.31
-Example-wise Precision  67.27
-Example-wise Recall     54.93
-Hamming Accuracy        67.77
-Hamming Loss            32.23
-Macro F1                47.66
-Macro Jaccard           32.3
-Macro Precision         48.64
-Macro Recall            49.7
-Micro F1                50.72
-Micro Jaccard           33.97
-Micro Precision         49.49
-Micro Recall            52
-Subset 0/1 Loss         90.82
-Subset Accuracy          9.18
+Example-wise F1 (↑)         41.56
+Example-wise Jaccard (↑)    32.87
+Example-wise Precision (↑)  66.28
+Example-wise Recall (↑)     54.93
+Hamming Accuracy (↑)        67.69
+Hamming Loss (↓)            32.31
+Macro F1 (↑)                46.78
+Macro Jaccard (↑)           31.64
+Macro Precision (↑)         48.04
+Macro Recall (↑)            48.94
+Micro F1 (↑)                50.26
+Micro Jaccard (↑)           33.57
+Micro Precision (↑)         49.36
+Micro Recall (↑)            51.2
+Subset 0/1 Loss (↓)         91.33
+Subset Accuracy (↑)          8.67
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 950...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 950:
 
-Example-wise F1         41.43
-Example-wise Jaccard    32.6
-Example-wise Precision  67.64
-Example-wise Recall     54
-Hamming Accuracy        67.6
-Hamming Loss            32.4
-Macro F1                46.79
-Macro Jaccard           31.57
-Macro Precision         48.27
-Macro Recall            48.61
-Micro F1                50.07
-Micro Jaccard           33.39
-Micro Precision         49.23
-Micro Recall            50.93
-Subset 0/1 Loss         91.84
-Subset Accuracy          8.16
+Example-wise F1 (↑)         41.11
+Example-wise Jaccard (↑)    32.36
+Example-wise Precision (↑)  66.79
+Example-wise Recall (↑)     53.91
+Hamming Accuracy (↑)        67.69
+Hamming Loss (↓)            32.31
+Macro F1 (↑)                46.68
+Macro Jaccard (↑)           31.42
+Macro Precision (↑)         48.39
+Macro Recall (↑)            48.2
+Micro F1 (↑)                49.87
+Micro Jaccard (↑)           33.22
+Micro Precision (↑)         49.35
+Micro Recall (↑)            50.4
+Subset 0/1 Loss (↓)         91.33
+Subset Accuracy (↑)          8.67
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 1000...
 Successfully predicted in <duration>
 Evaluation result for test data using a model of size 1000:
 
-Example-wise F1         41.1
-Example-wise Jaccard    32.37
-Example-wise Precision  68.19
-Example-wise Recall     53.4
-Hamming Accuracy        68.11
-Hamming Loss            31.89
-Macro F1                47.41
-Macro Jaccard           31.94
-Macro Precision         49.32
-Macro Recall            48.37
-Micro F1                50.33
-Micro Jaccard           33.63
-Micro Precision         50
-Micro Recall            50.67
-Subset 0/1 Loss         92.35
-Subset Accuracy          7.65
+Example-wise F1 (↑)         39.68
+Example-wise Jaccard (↑)    30.94
+Example-wise Precision (↑)  66.72
+Example-wise Recall (↑)     52.13
+Hamming Accuracy (↑)        67.09
+Hamming Loss (↓)            32.91
+Macro F1 (↑)                45.29
+Macro Jaccard (↑)           30.25
+Macro Precision (↑)         47.36
+Macro Recall (↑)            46.26
+Micro F1 (↑)                48.47
+Micro Jaccard (↑)           31.99
+Micro Precision (↑)         48.4
+Micro Recall (↑)            48.53
+Subset 0/1 Loss (↓)         92.35
+Subset Accuracy (↑)          7.65
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Joint probability calibration model:
 
 ┌─────────────────────────────┬────────────────────────────────┐
 │   Label vector 1 thresholds │   Label vector 1 probabilities │
 ├─────────────────────────────┼────────────────────────────────┤
 │                      0      │                         0      │
-│                      0.0026 │                         0.0625 │
-│                      0.0306 │                         0.25   │
-│                      0.0517 │                         0.2763 │
-│                      0.3458 │                         0.4167 │
-│                      0.5272 │                         0.5    │
+│                      0.0021 │                         0.05   │
+│                      0.0425 │                         0.198  │
+│                      0.427  │                         0.3333 │
+│                      0.457  │                         0.4167 │
+│                      0.5125 │                         0.6    │
 └─────────────────────────────┴────────────────────────────────┘
 ┌─────────────────────────────┬────────────────────────────────┐
 │   Label vector 2 thresholds │   Label vector 2 probabilities │
 ├─────────────────────────────┼────────────────────────────────┤
-│                      0      │                         0      │
-│                      0.0597 │                         0.3333 │
+│                      0      │                            0   │
+│                      0.0392 │                            0.1 │
+│                      0.1205 │                            1   │
 └─────────────────────────────┴────────────────────────────────┘
 ┌─────────────────────────────┬────────────────────────────────┐
 │   Label vector 3 thresholds │   Label vector 3 probabilities │
 ├─────────────────────────────┼────────────────────────────────┤
-│                      0      │                         0.0045 │
-│                      0.0024 │                         0.0556 │
-│                      0.0094 │                         0.125  │
-│                      0.0256 │                         0.2252 │
-│                      0.3733 │                         0.3333 │
+│                      0      │                         0.0044 │
+│                      0.0091 │                         0.1667 │
+│                      0.0192 │                         0.2344 │
+│                      0.1367 │                         0.3125 │
+│                      0.339  │                         0.3333 │
 └─────────────────────────────┴────────────────────────────────┘
 ┌─────────────────────────────┬────────────────────────────────┐
 │   Label vector 4 thresholds │   Label vector 4 probabilities │
 ├─────────────────────────────┼────────────────────────────────┤
-│                      0      │                         0.0111 │
-│                      0.0014 │                         0.027  │
-│                      0.0608 │                         0.25   │
-│                      0.0633 │                         0.5396 │
-│                      0.112  │                         0.5702 │
-│                      0.3716 │                         1      │
+│                      0      │                         0.005  │
+│                      0.0558 │                         0.375  │
+│                      0.0721 │                         0.4688 │
+│                      0.1606 │                         0.5875 │
+│                      0.4129 │                         1      │
 └─────────────────────────────┴────────────────────────────────┘
 ┌─────────────────────────────┬────────────────────────────────┐
 │   Label vector 5 thresholds │   Label vector 5 probabilities │
 ├─────────────────────────────┼────────────────────────────────┤
 │                      0      │                         0      │
-│                      0      │                         0.04   │
-│                      0.004  │                         0.0833 │
-│                      0.0642 │                         0.2542 │
-│                      0.1657 │                         0.5    │
-│                      0.1746 │                         0.6667 │
-│                      0.4224 │                         1      │
+│                      0.0003 │                         0.0328 │
+│                      0.0879 │                         0.3654 │
+│                      0.1516 │                         0.5625 │
+│                      0.2281 │                         0.8571 │
 └─────────────────────────────┴────────────────────────────────┘
 ┌─────────────────────────────┬────────────────────────────────┐
 │   Label vector 6 thresholds │   Label vector 6 probabilities │
 ├─────────────────────────────┼────────────────────────────────┤
 │                      0      │                         0      │
-│                      0.0001 │                         0.0169 │
-│                      0.0282 │                         0.1429 │
-│                      0.0469 │                         0.25   │
-│                      0.086  │                         0.3333 │
-│                      0.3682 │                         0.5    │
-│                      0.3786 │                         0.6042 │
+│                      0.0218 │                         0.1667 │
+│                      0.0821 │                         0.3333 │
+│                      0.1753 │                         0.5    │
+│                      0.2483 │                         0.5312 │
 └─────────────────────────────┴────────────────────────────────┘
 ┌─────────────────────────────┬────────────────────────────────┐
 │   Label vector 7 thresholds │   Label vector 7 probabilities │
 ├─────────────────────────────┼────────────────────────────────┤
-│                      0      │                         0      │
-│                      0.0505 │                         0.0357 │
+│                      0      │                           0    │
+│                      0.0538 │                           0.04 │
 └─────────────────────────────┴────────────────────────────────┘
 ┌─────────────────────────────┬────────────────────────────────┐
 │   Label vector 8 thresholds │   Label vector 8 probabilities │
 ├─────────────────────────────┼────────────────────────────────┤
-│                      0      │                         0.0025 │
-│                      0.0041 │                         0.04   │
-│                      0.0334 │                         0.2857 │
-│                      0.0504 │                         0.3409 │
-│                      0.0911 │                         0.3958 │
-│                      0.5027 │                         1      │
+│                      0      │                         0.0024 │
+│                      0.0016 │                         0.0509 │
+│                      0.0397 │                         0.1938 │
+│                      0.1581 │                         0.6    │
+│                      0.5207 │                         1      │
 └─────────────────────────────┴────────────────────────────────┘
 ┌─────────────────────────────┬────────────────────────────────┐
 │   Label vector 9 thresholds │   Label vector 9 probabilities │
 ├─────────────────────────────┼────────────────────────────────┤
 │                      0      │                         0.0012 │
-│                      0.0021 │                         0.1429 │
-│                      0.0124 │                         0.2121 │
-│                      0.0316 │                         0.3214 │
-│                      0.0594 │                         0.3333 │
-│                      0.0681 │                         0.3381 │
-│                      0.1859 │                         0.3472 │
+│                      0.0032 │                         0.1615 │
+│                      0.0342 │                         0.25   │
+│                      0.0649 │                         0.2667 │
+│                      0.0929 │                         0.2917 │
+│                      0.124  │                         0.3482 │
+│                      0.4852 │                         1      │
 └─────────────────────────────┴────────────────────────────────┘
 ┌──────────────────────────────┬─────────────────────────────────┐
 │   Label vector 10 thresholds │   Label vector 10 probabilities │
 ├──────────────────────────────┼─────────────────────────────────┤
-│                       0      │                          0.0556 │
-│                       0.0002 │                          0.1633 │
-│                       0.0212 │                          0.2    │
-│                       0.0264 │                          0.2105 │
-│                       0.0476 │                          0.2833 │
-│                       0.0987 │                          0.3333 │
-│                       0.1106 │                          0.4444 │
+│                       0      │                          0.0294 │
+│                       0.0001 │                          0.1984 │
+│                       0.0894 │                          0.2719 │
+│                       0.3225 │                          1      │
 └──────────────────────────────┴─────────────────────────────────┘
 ┌──────────────────────────────┬─────────────────────────────────┐
 │   Label vector 11 thresholds │   Label vector 11 probabilities │
 ├──────────────────────────────┼─────────────────────────────────┤
 │                       0      │                          0      │
-│                       0.0122 │                          0.05   │
-│                       0.032  │                          0.125  │
-│                       0.0472 │                          0.1667 │
-│                       0.0564 │                          0.25   │
-│                       0.0596 │                          0.2917 │
+│                       0.015  │                          0.0794 │
+│                       0.0379 │                          0.2    │
+│                       0.0567 │                          0.2053 │
 └──────────────────────────────┴─────────────────────────────────┘
 ┌──────────────────────────────┬─────────────────────────────────┐
 │   Label vector 12 thresholds │   Label vector 12 probabilities │
 ├──────────────────────────────┼─────────────────────────────────┤
 │                       0      │                          0      │
-│                       0.0198 │                          0.1538 │
-│                       0.0605 │                          0.2336 │
-│                       0.2295 │                          0.35   │
-│                       0.3173 │                          0.375  │
-│                       0.4106 │                          0.4167 │
-│                       0.5461 │                          0.5    │
+│                       0.0062 │                          0.0955 │
+│                       0.0651 │                          0.1964 │
+│                       0.2948 │                          0.4583 │
 └──────────────────────────────┴─────────────────────────────────┘
 ┌──────────────────────────────┬─────────────────────────────────┐
 │   Label vector 13 thresholds │   Label vector 13 probabilities │
 ├──────────────────────────────┼─────────────────────────────────┤
-│                       0      │                          0      │
-│                       0.1266 │                          0.0455 │
+│                       0      │                             0   │
+│                       0.2428 │                             0.2 │
 └──────────────────────────────┴─────────────────────────────────┘
 ┌──────────────────────────────┬─────────────────────────────────┐
 │   Label vector 14 thresholds │   Label vector 14 probabilities │
 ├──────────────────────────────┼─────────────────────────────────┤
-│                       0      │                          0.0038 │
-│                       0.0034 │                          0.2939 │
-│                       0.0638 │                          0.6021 │
-│                       0.2448 │                          1      │
+│                       0      │                          0.0078 │
+│                       0      │                          0.2729 │
+│                       0.0202 │                          0.2866 │
+│                       0.0397 │                          0.3542 │
+│                       0.0699 │                          0.4333 │
+│                       0.0993 │                          0.5    │
+│                       0.1532 │                          0.8889 │
+│                       0.2254 │                          1      │
 └──────────────────────────────┴─────────────────────────────────┘
 ┌──────────────────────────────┬─────────────────────────────────┐
 │   Label vector 15 thresholds │   Label vector 15 probabilities │
 ├──────────────────────────────┼─────────────────────────────────┤
-│                       0      │                          0.001  │
-│                       0.0044 │                          0.0345 │
-│                       0.0198 │                          0.0694 │
-│                       0.0561 │                          0.1    │
+│                       0      │                          0.0014 │
+│                       0.0022 │                          0.0385 │
+│                       0.0166 │                          0.0533 │
+│                       0.0618 │                          0.0833 │
 └──────────────────────────────┴─────────────────────────────────┘
 ┌──────────────────────────────┬─────────────────────────────────┐
 │   Label vector 16 thresholds │   Label vector 16 probabilities │
 ├──────────────────────────────┼─────────────────────────────────┤
 │                       0      │                          0      │
-│                       0.0435 │                          0.0714 │
-│                       0.1401 │                          0.1667 │
+│                       0.0158 │                          0.0286 │
+│                       0.1745 │                          0.5    │
 └──────────────────────────────┴─────────────────────────────────┘
 ┌──────────────────────────────┬─────────────────────────────────┐
 │   Label vector 17 thresholds │   Label vector 17 probabilities │
 ├──────────────────────────────┼─────────────────────────────────┤
-│                       0      │                             0   │
-│                       0.0411 │                             0.5 │
+│                       0      │                            0    │
+│                       0.0416 │                            0.25 │
 └──────────────────────────────┴─────────────────────────────────┘
 ┌──────────────────────────────┬─────────────────────────────────┐
 │   Label vector 18 thresholds │   Label vector 18 probabilities │
@@ -614,14 +606,14 @@ Joint probability calibration model:
 │   Label vector 19 thresholds │   Label vector 19 probabilities │
 ├──────────────────────────────┼─────────────────────────────────┤
 │                       0      │                          0      │
-│                       0.0208 │                          0.0871 │
-│                       0.208  │                          1      │
+│                       0.0397 │                          0.2857 │
+│                       0.1934 │                          1      │
 └──────────────────────────────┴─────────────────────────────────┘
 ┌──────────────────────────────┬─────────────────────────────────┐
 │   Label vector 20 thresholds │   Label vector 20 probabilities │
 ├──────────────────────────────┼─────────────────────────────────┤
-│                       0      │                          0      │
-│                       0.0135 │                          0.0313 │
+│                       0      │                           0     │
+│                       0.0325 │                           0.125 │
 └──────────────────────────────┴─────────────────────────────────┘
 ┌──────────────────────────────┬─────────────────────────────────┐
 │   Label vector 21 thresholds │   Label vector 21 probabilities │
@@ -636,81 +628,92 @@ Joint probability calibration model:
 ┌──────────────────────────────┬─────────────────────────────────┐
 │   Label vector 23 thresholds │   Label vector 23 probabilities │
 ├──────────────────────────────┼─────────────────────────────────┤
-│                       0      │                          0.0145 │
-│                       0.0003 │                          0.0204 │
-│                       0.0052 │                          0.0357 │
-│                       0.1125 │                          0.3333 │
-│                       0.2246 │                          1      │
+│                       0      │                          0.021  │
+│                       0.0137 │                          0.0909 │
+│                       0.0508 │                          0.3333 │
+│                       0.0643 │                          0.375  │
+│                       0.1411 │                          0.5    │
 └──────────────────────────────┴─────────────────────────────────┘
 
-Writing output data to file "python/tests/res/tmp/results/joint_probability_calibration_model.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/joint_probability_calibration_model.csv"...
 Marginal probability calibration model:
 
 ┌──────────────────────┬─────────────────────────┐
 │   Label 1 thresholds │   Label 1 probabilities │
 ├──────────────────────┼─────────────────────────┤
 │               0      │                  0      │
-│               0.0012 │                  0.2441 │
-│               0.026  │                  0.3312 │
-│               0.2426 │                  0.4333 │
-│               0.404  │                  0.5    │
-│               0.7181 │                  0.6094 │
-│               0.9848 │                  1      │
+│               0.0006 │                  0.0769 │
+│               0.0023 │                  0.0952 │
+│               0.0212 │                  0.3042 │
+│               0.1312 │                  0.4    │
+│               0.2105 │                  0.4417 │
+│               0.5997 │                  0.5    │
+│               0.6951 │                  0.6333 │
+│               0.8326 │                  0.6667 │
+│               0.8922 │                  0.875  │
+│               0.9603 │                  1      │
 └──────────────────────┴─────────────────────────┘
 ┌──────────────────────┬─────────────────────────┐
 │   Label 2 thresholds │   Label 2 probabilities │
 ├──────────────────────┼─────────────────────────┤
 │               0      │                  0      │
-│               0.0015 │                  0.2    │
-│               0.0019 │                  0.2097 │
-│               0.0446 │                  0.2381 │
-│               0.0657 │                  0.375  │
-│               0.1106 │                  0.3823 │
-│               0.3771 │                  0.5    │
-│               0.7206 │                  0.7045 │
+│               0.0022 │                  0.2525 │
+│               0.0162 │                  0.2694 │
+│               0.086  │                  0.3333 │
+│               0.1316 │                  0.3479 │
+│               0.2913 │                  0.5    │
+│               0.3338 │                  0.5238 │
+│               0.6828 │                  0.8036 │
+│               0.9646 │                  1      │
 └──────────────────────┴─────────────────────────┘
 ┌──────────────────────┬─────────────────────────┐
 │   Label 3 thresholds │   Label 3 probabilities │
 ├──────────────────────┼─────────────────────────┤
 │               0      │                  0      │
-│               0.0285 │                  0.2    │
-│               0.0973 │                  0.5226 │
-│               0.9807 │                  0.5655 │
-│               0.9983 │                  1      │
+│               0.0408 │                  0.3333 │
+│               0.0923 │                  0.5    │
+│               0.5461 │                  0.5042 │
+│               0.9957 │                  0.6667 │
+│               0.997  │                  1      │
 └──────────────────────┴─────────────────────────┘
 ┌──────────────────────┬─────────────────────────┐
 │   Label 4 thresholds │   Label 4 probabilities │
 ├──────────────────────┼─────────────────────────┤
 │               0      │                  0      │
-│               0.0003 │                  0.0156 │
-│               0.0657 │                  0.2667 │
-│               0.3108 │                  0.3625 │
-│               0.9412 │                  0.7083 │
-│               0.9847 │                  1      │
+│               0.0003 │                  0.0159 │
+│               0.0483 │                  0.2    │
+│               0.3111 │                  0.3333 │
+│               0.518  │                  0.4167 │
+│               0.9344 │                  0.7333 │
+│               0.9868 │                  1      │
 └──────────────────────┴─────────────────────────┘
 ┌──────────────────────┬─────────────────────────┐
 │   Label 5 thresholds │   Label 5 probabilities │
 ├──────────────────────┼─────────────────────────┤
 │               0.0001 │                  0      │
-│               0.0018 │                  0.1429 │
-│               0.0034 │                  0.2162 │
-│               0.044  │                  0.25   │
-│               0.0566 │                  0.294  │
-│               0.5818 │                  0.3125 │
-│               0.9535 │                  1      │
+│               0.0031 │                  0.1849 │
+│               0.0202 │                  0.2    │
+│               0.0267 │                  0.2306 │
+│               0.0679 │                  0.25   │
+│               0.1198 │                  0.2946 │
+│               0.7024 │                  0.5    │
+│               0.953  │                  0.8    │
+│               0.9754 │                  1      │
 └──────────────────────┴─────────────────────────┘
 ┌──────────────────────┬─────────────────────────┐
 │   Label 6 thresholds │   Label 6 probabilities │
 ├──────────────────────┼─────────────────────────┤
 │               0      │                  0      │
-│               0.0008 │                  0.025  │
-│               0.0129 │                  0.1667 │
-│               0.0244 │                  0.25   │
-│               0.2021 │                  0.4664 │
-│               0.9622 │                  0.875  │
-│               0.9862 │                  1      │
+│               0.0011 │                  0.0286 │
+│               0.0138 │                  0.1429 │
+│               0.0186 │                  0.25   │
+│               0.1785 │                  0.5    │
+│               0.2218 │                  0.5208 │
+│               0.665  │                  0.5312 │
+│               0.9485 │                  0.6786 │
+│               0.9875 │                  1      │
 └──────────────────────┴─────────────────────────┘
 
-Writing output data to file "python/tests/res/tmp/results/marginal_probability_calibration_model.csv"...
-Writing output data to file "python/tests/res/tmp/models/model.pickle"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/marginal_probability_calibration_model.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/models/model.pickle"...
 Successfully finished experiment after <duration>

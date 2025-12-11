@@ -1,16 +1,18 @@
 mlrl-testbed mlrl.seco --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --data-split cross-validation --print-evaluation false --save-evaluation false --print-prediction-characteristics true --save-prediction-characteristics true
+Checking if output files do already exist...
 Starting experiment using the classification algorithm "SeCoClassifier"...
+DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Performing full 10-fold cross validation...
 Fold 1 / 10:
-Reading input data from file "python/tests/res/data/emotions.arff"...
-Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+DEBUG: Reading input data from file "python/tests/res/data/emotions.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 Fitting model to 533 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Predicting for 60 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted labels
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Prediction characteristics for test data (Fold 1):
 
@@ -21,15 +23,15 @@ Label Imbalance Ratio    2.06
 Label Cardinality        1.9
 Distinct Label Vectors  16
 
-Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-1.csv"...
 Fold 2 / 10:
 Fitting model to 533 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Predicting for 60 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted labels
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Prediction characteristics for test data (Fold 2):
 
@@ -40,15 +42,15 @@ Label Imbalance Ratio    7.11
 Label Cardinality        1.97
 Distinct Label Vectors  19
 
-Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-2.csv"...
 Fold 3 / 10:
 Fitting model to 533 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Predicting for 60 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted labels
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Prediction characteristics for test data (Fold 3):
 
@@ -59,15 +61,15 @@ Label Imbalance Ratio    2.1
 Label Cardinality        1.82
 Distinct Label Vectors  15
 
-Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-3.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-3.csv"...
 Fold 4 / 10:
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Predicting for 59 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted labels
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Prediction characteristics for test data (Fold 4):
 
@@ -78,15 +80,15 @@ Label Imbalance Ratio    1.92
 Label Cardinality        1.9
 Distinct Label Vectors  17
 
-Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-4.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-4.csv"...
 Fold 5 / 10:
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Predicting for 59 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted labels
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Prediction characteristics for test data (Fold 5):
 
@@ -97,15 +99,15 @@ Label Imbalance Ratio    1.8
 Label Cardinality        2.03
 Distinct Label Vectors  12
 
-Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-5.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-5.csv"...
 Fold 6 / 10:
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Predicting for 59 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted labels
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Prediction characteristics for test data (Fold 6):
 
@@ -116,15 +118,15 @@ Label Imbalance Ratio    2
 Label Cardinality        1.86
 Distinct Label Vectors  18
 
-Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-6.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-6.csv"...
 Fold 7 / 10:
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Predicting for 59 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted labels
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Prediction characteristics for test data (Fold 7):
 
@@ -135,15 +137,15 @@ Label Imbalance Ratio    2.66
 Label Cardinality        1.61
 Distinct Label Vectors  12
 
-Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-7.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-7.csv"...
 Fold 8 / 10:
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Predicting for 59 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted labels
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Prediction characteristics for test data (Fold 8):
 
@@ -154,15 +156,15 @@ Label Imbalance Ratio    1.75
 Label Cardinality        1.83
 Distinct Label Vectors  11
 
-Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-8.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-8.csv"...
 Fold 9 / 10:
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Predicting for 59 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted labels
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Prediction characteristics for test data (Fold 9):
 
@@ -173,15 +175,15 @@ Label Imbalance Ratio    2.1
 Label Cardinality        1.78
 Distinct Label Vectors  15
 
-Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-9.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-9.csv"...
 Fold 10 / 10:
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Predicting for 59 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted labels
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Prediction characteristics for test data (Fold 10):
 
@@ -192,5 +194,5 @@ Label Imbalance Ratio    4.61
 Label Cardinality        1.71
 Distinct Label Vectors  13
 
-Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-10.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-10.csv"...
 Successfully finished experiment after <duration>

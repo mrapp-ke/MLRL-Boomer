@@ -1,0 +1,829 @@
+mlrl-testbed mlrl.seco --mode read --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --save-all true
+Reading meta-data...
+DEBUG: Reading input data from file "python/tests/res/tmp/metadata.yml"...
+Successfully read meta-data
+DEBUG: Checking for version conflicts...
+DEBUG: Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is currently used
+DEBUG: No version conflicts detected
+Reading experimental results of 8 experiments...
+
+Reading experimental results of experiment (1 / 8)...
+The command "mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --heuristic f-measure --instance-sampling none --log-level debug --model-save-dir instance-sampling_none/heuristic_f-measure/dataset_emotions/models --parameter-save-dir instance-sampling_none/heuristic_f-measure/dataset_emotions/parameters --result-dir instance-sampling_none/heuristic_f-measure/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Using separate training and test sets...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_emotions/results/data_characteristics.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_emotions/results/evaluation_test.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_emotions/results/ground_truth_test.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_emotions/results/ground_truth_test.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_emotions/results/label_vectors.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_emotions/results/prediction_characteristics_test.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_emotions/results/predictions_test.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_emotions/results/predictions_test.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_emotions/results/rules.txt"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_emotions/results/model_characteristics.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_emotions/models/model.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_emotions/parameters/parameters.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_emotions/results/data_characteristics.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_emotions/parameters/parameters.csv"...
+Evaluation result for test data:
+
+Example-wise F1 (↑)         50.45
+Example-wise Jaccard (↑)    40.83
+Example-wise Precision (↑)  61.14
+Example-wise Recall (↑)     58.59
+Hamming Accuracy (↑)        69.56
+Hamming Loss (↓)            30.44
+Macro F1 (↑)                54.8
+Macro Jaccard (↑)           38.6
+Macro Precision (↑)         52.59
+Macro Recall (↑)            57.88
+Micro F1 (↑)                55.14
+Micro Jaccard (↑)           38.06
+Micro Precision (↑)         52.01
+Micro Recall (↑)            58.67
+Subset 0/1 Loss (↓)         86.22
+Subset Accuracy (↑)         13.78
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_emotions/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_emotions/results/ground_truth_test.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_emotions/results/prediction_characteristics_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_emotions/results/predictions_test.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_emotions/results/label_vectors.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_emotions/models/model.pickle"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_emotions/results/rules.txt"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_emotions/results/model_characteristics.csv"...
+
+Reading experimental results of experiment (2 / 8)...
+The command "mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --feature-format sparse --heuristic m-estimate --instance-sampling none --log-level debug --model-save-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/models --parameter-save-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/parameters --result-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Using separate training and test sets...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/data_characteristics.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/evaluation_test.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/ground_truth_test.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/ground_truth_test.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/label_vectors.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/prediction_characteristics_test.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/predictions_test.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/predictions_test.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/rules.txt"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/model_characteristics.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/models/model.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/parameters/parameters.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/data_characteristics.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/parameters/parameters.csv"...
+Evaluation result for test data:
+
+Example-wise F1 (↑)         52.04
+Example-wise Jaccard (↑)    43.31
+Example-wise Precision (↑)  60.75
+Example-wise Recall (↑)     57.82
+Hamming Accuracy (↑)        72.53
+Hamming Loss (↓)            27.47
+Macro F1 (↑)                57.69
+Macro Jaccard (↑)           41.2
+Macro Precision (↑)         56.35
+Macro Recall (↑)            59.42
+Micro F1 (↑)                58
+Micro Jaccard (↑)           40.84
+Micro Precision (↑)         56.6
+Micro Recall (↑)            59.47
+Subset 0/1 Loss (↓)         83.67
+Subset Accuracy (↑)         16.33
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/ground_truth_test.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/prediction_characteristics_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/predictions_test.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/label_vectors.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/models/model.pickle"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/rules.txt"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/model_characteristics.csv"...
+
+Reading experimental results of experiment (3 / 8)...
+The command "mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --heuristic f-measure --instance-sampling with-replacement{sample_size=0.5} --log-level debug --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/models --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/parameters --result-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Using separate training and test sets...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results/data_characteristics.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results/evaluation_test.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results/ground_truth_test.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results/ground_truth_test.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results/label_vectors.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results/prediction_characteristics_test.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results/predictions_test.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results/predictions_test.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results/rules.txt"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results/model_characteristics.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/models/model.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/parameters/parameters.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results/data_characteristics.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/parameters/parameters.csv"...
+Evaluation result for test data:
+
+Example-wise F1 (↑)         55.51
+Example-wise Jaccard (↑)    45.92
+Example-wise Precision (↑)  61.3
+Example-wise Recall (↑)     59.61
+Hamming Accuracy (↑)        73.89
+Hamming Loss (↓)            26.11
+Macro F1 (↑)                50.74
+Macro Jaccard (↑)           36.95
+Macro Precision (↑)         71.08
+Macro Recall (↑)            56.02
+Micro F1 (↑)                58.68
+Micro Jaccard (↑)           41.52
+Micro Precision (↑)         59.24
+Micro Recall (↑)            58.13
+Subset 0/1 Loss (↓)         81.63
+Subset Accuracy (↑)         18.37
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results/ground_truth_test.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results/prediction_characteristics_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results/predictions_test.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results/label_vectors.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/models/model.pickle"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results/rules.txt"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results/model_characteristics.csv"...
+
+Reading experimental results of experiment (4 / 8)...
+The command "mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --feature-format sparse --heuristic m-estimate --instance-sampling with-replacement{sample_size=0.5} --log-level debug --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/models --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/parameters --result-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Using separate training and test sets...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/data_characteristics.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/evaluation_test.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/ground_truth_test.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/ground_truth_test.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/label_vectors.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/prediction_characteristics_test.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/predictions_test.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/predictions_test.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/rules.txt"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/model_characteristics.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/models/model.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/parameters/parameters.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/data_characteristics.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/parameters/parameters.csv"...
+Evaluation result for test data:
+
+Example-wise F1 (↑)         57.05
+Example-wise Jaccard (↑)    47.87
+Example-wise Precision (↑)  66.83
+Example-wise Recall (↑)     61.9
+Hamming Accuracy (↑)        75.34
+Hamming Loss (↓)            24.66
+Macro F1 (↑)                57.86
+Macro Jaccard (↑)           42.62
+Macro Precision (↑)         57.6
+Macro Recall (↑)            60.23
+Micro F1 (↑)                61.94
+Micro Jaccard (↑)           44.87
+Micro Precision (↑)         60.98
+Micro Recall (↑)            62.93
+Subset 0/1 Loss (↓)         78.06
+Subset Accuracy (↑)         21.94
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/ground_truth_test.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/prediction_characteristics_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/predictions_test.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/label_vectors.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/models/model.pickle"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/rules.txt"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results/model_characteristics.csv"...
+
+Reading experimental results of experiment (5 / 8)...
+The command "mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset enron --heuristic f-measure --instance-sampling none --log-level debug --model-save-dir instance-sampling_none/heuristic_f-measure/dataset_enron/models --parameter-save-dir instance-sampling_none/heuristic_f-measure/dataset_enron/parameters --result-dir instance-sampling_none/heuristic_f-measure/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Using separate training and test sets...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_enron/results/data_characteristics.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_enron/results/evaluation_test.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_enron/results/ground_truth_test.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_enron/results/ground_truth_test.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_enron/results/label_vectors.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_enron/results/prediction_characteristics_test.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_enron/results/predictions_test.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_enron/results/predictions_test.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_enron/results/rules.txt"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_enron/results/model_characteristics.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_enron/models/model.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_f-measure/dataset_enron/parameters/parameters.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_enron/results/data_characteristics.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_enron/parameters/parameters.csv"...
+Evaluation result for test data:
+
+Example-wise F1 (↑)         50.32
+Example-wise Jaccard (↑)    36.37
+Example-wise Precision (↑)  49.03
+Example-wise Recall (↑)     59.04
+Hamming Accuracy (↑)        93.51
+Hamming Loss (↓)             6.49
+Macro F1 (↑)                17.42
+Macro Jaccard (↑)           12.31
+Macro Precision (↑)         54.99
+Macro Recall (↑)            17.89
+Micro F1 (↑)                52.7
+Micro Jaccard (↑)           35.78
+Micro Precision (↑)         49.07
+Micro Recall (↑)            56.92
+Subset 0/1 Loss (↓)         99.29
+Subset Accuracy (↑)          0.71
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_enron/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_enron/results/ground_truth_test.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_enron/results/prediction_characteristics_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_enron/results/predictions_test.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_enron/results/label_vectors.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_enron/models/model.pickle"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_enron/results/rules.txt"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_f-measure/dataset_enron/results/model_characteristics.csv"...
+
+Reading experimental results of experiment (6 / 8)...
+The command "mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset enron --feature-format sparse --heuristic m-estimate --instance-sampling none --log-level debug --model-save-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/models --parameter-save-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/parameters --result-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Using separate training and test sets...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/data_characteristics.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/evaluation_test.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/ground_truth_test.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/ground_truth_test.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/label_vectors.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/prediction_characteristics_test.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/predictions_test.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/predictions_test.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/rules.txt"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/model_characteristics.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/models/model.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/parameters/parameters.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/data_characteristics.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/parameters/parameters.csv"...
+Evaluation result for test data:
+
+Example-wise F1 (↑)         50.85
+Example-wise Jaccard (↑)    36.79
+Example-wise Precision (↑)  46.38
+Example-wise Recall (↑)     64.26
+Hamming Accuracy (↑)        92.87
+Hamming Loss (↓)             7.13
+Macro F1 (↑)                20.88
+Macro Jaccard (↑)           14.49
+Macro Precision (↑)         35.46
+Macro Recall (↑)            23.2
+Micro F1 (↑)                52.53
+Micro Jaccard (↑)           35.62
+Micro Precision (↑)         45.51
+Micro Recall (↑)            62.1
+Subset 0/1 Loss (↓)         99.82
+Subset Accuracy (↑)          0.18
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/ground_truth_test.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/prediction_characteristics_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/predictions_test.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/label_vectors.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/models/model.pickle"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/rules.txt"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/model_characteristics.csv"...
+
+Reading experimental results of experiment (7 / 8)...
+The command "mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset enron --heuristic f-measure --instance-sampling with-replacement{sample_size=0.5} --log-level debug --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/models --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/parameters --result-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Using separate training and test sets...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results/data_characteristics.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results/evaluation_test.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results/ground_truth_test.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results/ground_truth_test.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results/label_vectors.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results/prediction_characteristics_test.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results/predictions_test.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results/predictions_test.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results/rules.txt"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results/model_characteristics.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/models/model.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/parameters/parameters.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results/data_characteristics.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/parameters/parameters.csv"...
+Evaluation result for test data:
+
+Example-wise F1 (↑)         46.07
+Example-wise Jaccard (↑)    33.58
+Example-wise Precision (↑)  43.69
+Example-wise Recall (↑)     53.71
+Hamming Accuracy (↑)        92.9
+Hamming Loss (↓)             7.1
+Macro F1 (↑)                13
+Macro Jaccard (↑)            9.4
+Macro Precision (↑)         81.88
+Macro Recall (↑)            17.13
+Micro F1 (↑)                50.97
+Micro Jaccard (↑)           34.2
+Micro Precision (↑)         45.41
+Micro Recall (↑)            58.09
+Subset 0/1 Loss (↓)         99.47
+Subset Accuracy (↑)          0.53
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results/ground_truth_test.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results/prediction_characteristics_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results/predictions_test.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results/label_vectors.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/models/model.pickle"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results/rules.txt"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results/model_characteristics.csv"...
+
+Reading experimental results of experiment (8 / 8)...
+The command "mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset enron --feature-format sparse --heuristic m-estimate --instance-sampling with-replacement{sample_size=0.5} --log-level debug --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/models --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/parameters --result-dir instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Using separate training and test sets...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/data_characteristics.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/evaluation_test.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/ground_truth_test.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/ground_truth_test.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/label_vectors.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/prediction_characteristics_test.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/predictions_test.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/predictions_test.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/rules.txt"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/model_characteristics.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/models/model.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/parameters/parameters.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/data_characteristics.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/parameters/parameters.csv"...
+Evaluation result for test data:
+
+Example-wise F1 (↑)         53.32
+Example-wise Jaccard (↑)    38.99
+Example-wise Precision (↑)  51.87
+Example-wise Recall (↑)     62.07
+Hamming Accuracy (↑)        93.98
+Hamming Loss (↓)             6.02
+Macro F1 (↑)                14.65
+Macro Jaccard (↑)           10.84
+Macro Precision (↑)         86.41
+Macro Recall (↑)            15.99
+Micro F1 (↑)                55.64
+Micro Jaccard (↑)           38.54
+Micro Precision (↑)         52.28
+Micro Recall (↑)            59.46
+Subset 0/1 Loss (↓)         99.64
+Subset Accuracy (↑)          0.36
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/ground_truth_test.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/prediction_characteristics_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/predictions_test.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/label_vectors.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/models/model.pickle"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/rules.txt"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/results/model_characteristics.csv"...
+Evaluation results of several experiments for test data:
+
+Evaluation results for measure "Example-wise F1 (↑)":
+
+feature_format    heuristic    instance_sampling                    Example-wise F1 (↑)    Rank
+----------------  -----------  ---------------------------------  ---------------------  ------
+"emotions"
+----------------  -----------  ---------------------------------  ---------------------  ------
+                  f-measure    none                                               50.45     4
+sparse            m-estimate   none                                               52.04     3
+                  f-measure    with-replacement{sample_size=0.5}                  55.51     2
+sparse            m-estimate   with-replacement{sample_size=0.5}                  57.05     1
+----------------  -----------  ---------------------------------  ---------------------  ------
+"enron"
+----------------  -----------  ---------------------------------  ---------------------  ------
+                  f-measure    none                                               50.32     3
+sparse            m-estimate   none                                               50.85     2
+                  f-measure    with-replacement{sample_size=0.5}                  46.07     4
+sparse            m-estimate   with-replacement{sample_size=0.5}                  53.32     1
+----------------  -----------  ---------------------------------  ---------------------  ------
+Averages
+----------------  -----------  ---------------------------------  ---------------------  ------
+                  f-measure    none                                                         3.5
+sparse            m-estimate   none                                                         2.5
+                  f-measure    with-replacement{sample_size=0.5}                            3
+sparse            m-estimate   with-replacement{sample_size=0.5}                            1
+
+Evaluation results for measure "Example-wise Jaccard (↑)":
+
+feature_format    heuristic    instance_sampling                    Example-wise Jaccard (↑)    Rank
+----------------  -----------  ---------------------------------  --------------------------  ------
+"emotions"
+----------------  -----------  ---------------------------------  --------------------------  ------
+                  f-measure    none                                                    40.83     4
+sparse            m-estimate   none                                                    43.31     3
+                  f-measure    with-replacement{sample_size=0.5}                       45.92     2
+sparse            m-estimate   with-replacement{sample_size=0.5}                       47.87     1
+----------------  -----------  ---------------------------------  --------------------------  ------
+"enron"
+----------------  -----------  ---------------------------------  --------------------------  ------
+                  f-measure    none                                                    36.37     3
+sparse            m-estimate   none                                                    36.79     2
+                  f-measure    with-replacement{sample_size=0.5}                       33.58     4
+sparse            m-estimate   with-replacement{sample_size=0.5}                       38.99     1
+----------------  -----------  ---------------------------------  --------------------------  ------
+Averages
+----------------  -----------  ---------------------------------  --------------------------  ------
+                  f-measure    none                                                              3.5
+sparse            m-estimate   none                                                              2.5
+                  f-measure    with-replacement{sample_size=0.5}                                 3
+sparse            m-estimate   with-replacement{sample_size=0.5}                                 1
+
+Evaluation results for measure "Example-wise Precision (↑)":
+
+feature_format    heuristic    instance_sampling                    Example-wise Precision (↑)    Rank
+----------------  -----------  ---------------------------------  ----------------------------  ------
+"emotions"
+----------------  -----------  ---------------------------------  ----------------------------  ------
+                  f-measure    none                                                      61.14     3
+sparse            m-estimate   none                                                      60.75     4
+                  f-measure    with-replacement{sample_size=0.5}                         61.3      2
+sparse            m-estimate   with-replacement{sample_size=0.5}                         66.83     1
+----------------  -----------  ---------------------------------  ----------------------------  ------
+"enron"
+----------------  -----------  ---------------------------------  ----------------------------  ------
+                  f-measure    none                                                      49.03     2
+sparse            m-estimate   none                                                      46.38     3
+                  f-measure    with-replacement{sample_size=0.5}                         43.69     4
+sparse            m-estimate   with-replacement{sample_size=0.5}                         51.87     1
+----------------  -----------  ---------------------------------  ----------------------------  ------
+Averages
+----------------  -----------  ---------------------------------  ----------------------------  ------
+                  f-measure    none                                                                2.5
+sparse            m-estimate   none                                                                3.5
+                  f-measure    with-replacement{sample_size=0.5}                                   3
+sparse            m-estimate   with-replacement{sample_size=0.5}                                   1
+
+Evaluation results for measure "Example-wise Recall (↑)":
+
+feature_format    heuristic    instance_sampling                    Example-wise Recall (↑)    Rank
+----------------  -----------  ---------------------------------  -------------------------  ------
+"emotions"
+----------------  -----------  ---------------------------------  -------------------------  ------
+                  f-measure    none                                                   58.59     3
+sparse            m-estimate   none                                                   57.82     4
+                  f-measure    with-replacement{sample_size=0.5}                      59.61     2
+sparse            m-estimate   with-replacement{sample_size=0.5}                      61.9      1
+----------------  -----------  ---------------------------------  -------------------------  ------
+"enron"
+----------------  -----------  ---------------------------------  -------------------------  ------
+                  f-measure    none                                                   59.04     3
+sparse            m-estimate   none                                                   64.26     1
+                  f-measure    with-replacement{sample_size=0.5}                      53.71     4
+sparse            m-estimate   with-replacement{sample_size=0.5}                      62.07     2
+----------------  -----------  ---------------------------------  -------------------------  ------
+Averages
+----------------  -----------  ---------------------------------  -------------------------  ------
+                  f-measure    none                                                             3
+sparse            m-estimate   none                                                             2.5
+                  f-measure    with-replacement{sample_size=0.5}                                3
+sparse            m-estimate   with-replacement{sample_size=0.5}                                1.5
+
+Evaluation results for measure "Hamming Accuracy (↑)":
+
+feature_format    heuristic    instance_sampling                    Hamming Accuracy (↑)    Rank
+----------------  -----------  ---------------------------------  ----------------------  ------
+"emotions"
+----------------  -----------  ---------------------------------  ----------------------  ------
+                  f-measure    none                                                69.56     4
+sparse            m-estimate   none                                                72.53     3
+                  f-measure    with-replacement{sample_size=0.5}                   73.89     2
+sparse            m-estimate   with-replacement{sample_size=0.5}                   75.34     1
+----------------  -----------  ---------------------------------  ----------------------  ------
+"enron"
+----------------  -----------  ---------------------------------  ----------------------  ------
+                  f-measure    none                                                93.51     2
+sparse            m-estimate   none                                                92.87     4
+                  f-measure    with-replacement{sample_size=0.5}                   92.9      3
+sparse            m-estimate   with-replacement{sample_size=0.5}                   93.98     1
+----------------  -----------  ---------------------------------  ----------------------  ------
+Averages
+----------------  -----------  ---------------------------------  ----------------------  ------
+                  f-measure    none                                                          3
+sparse            m-estimate   none                                                          3.5
+                  f-measure    with-replacement{sample_size=0.5}                             2.5
+sparse            m-estimate   with-replacement{sample_size=0.5}                             1
+
+Evaluation results for measure "Hamming Loss (↓)":
+
+feature_format    heuristic    instance_sampling                    Hamming Loss (↓)    Rank
+----------------  -----------  ---------------------------------  ------------------  ------
+"emotions"
+----------------  -----------  ---------------------------------  ------------------  ------
+                  f-measure    none                                            30.44     4
+sparse            m-estimate   none                                            27.47     3
+                  f-measure    with-replacement{sample_size=0.5}               26.11     2
+sparse            m-estimate   with-replacement{sample_size=0.5}               24.66     1
+----------------  -----------  ---------------------------------  ------------------  ------
+"enron"
+----------------  -----------  ---------------------------------  ------------------  ------
+                  f-measure    none                                             6.49     2
+sparse            m-estimate   none                                             7.13     4
+                  f-measure    with-replacement{sample_size=0.5}                7.1      3
+sparse            m-estimate   with-replacement{sample_size=0.5}                6.02     1
+----------------  -----------  ---------------------------------  ------------------  ------
+Averages
+----------------  -----------  ---------------------------------  ------------------  ------
+                  f-measure    none                                                      3
+sparse            m-estimate   none                                                      3.5
+                  f-measure    with-replacement{sample_size=0.5}                         2.5
+sparse            m-estimate   with-replacement{sample_size=0.5}                         1
+
+Evaluation results for measure "Macro F1 (↑)":
+
+feature_format    heuristic    instance_sampling                    Macro F1 (↑)    Rank
+----------------  -----------  ---------------------------------  --------------  ------
+"emotions"
+----------------  -----------  ---------------------------------  --------------  ------
+                  f-measure    none                                        54.8      3
+sparse            m-estimate   none                                        57.69     2
+                  f-measure    with-replacement{sample_size=0.5}           50.74     4
+sparse            m-estimate   with-replacement{sample_size=0.5}           57.86     1
+----------------  -----------  ---------------------------------  --------------  ------
+"enron"
+----------------  -----------  ---------------------------------  --------------  ------
+                  f-measure    none                                        17.42     2
+sparse            m-estimate   none                                        20.88     1
+                  f-measure    with-replacement{sample_size=0.5}           13        4
+sparse            m-estimate   with-replacement{sample_size=0.5}           14.65     3
+----------------  -----------  ---------------------------------  --------------  ------
+Averages
+----------------  -----------  ---------------------------------  --------------  ------
+                  f-measure    none                                                  2.5
+sparse            m-estimate   none                                                  1.5
+                  f-measure    with-replacement{sample_size=0.5}                     4
+sparse            m-estimate   with-replacement{sample_size=0.5}                     2
+
+Evaluation results for measure "Macro Jaccard (↑)":
+
+feature_format    heuristic    instance_sampling                    Macro Jaccard (↑)    Rank
+----------------  -----------  ---------------------------------  -------------------  ------
+"emotions"
+----------------  -----------  ---------------------------------  -------------------  ------
+                  f-measure    none                                             38.6      3
+sparse            m-estimate   none                                             41.2      2
+                  f-measure    with-replacement{sample_size=0.5}                36.95     4
+sparse            m-estimate   with-replacement{sample_size=0.5}                42.62     1
+----------------  -----------  ---------------------------------  -------------------  ------
+"enron"
+----------------  -----------  ---------------------------------  -------------------  ------
+                  f-measure    none                                             12.31     2
+sparse            m-estimate   none                                             14.49     1
+                  f-measure    with-replacement{sample_size=0.5}                 9.4      4
+sparse            m-estimate   with-replacement{sample_size=0.5}                10.84     3
+----------------  -----------  ---------------------------------  -------------------  ------
+Averages
+----------------  -----------  ---------------------------------  -------------------  ------
+                  f-measure    none                                                       2.5
+sparse            m-estimate   none                                                       1.5
+                  f-measure    with-replacement{sample_size=0.5}                          4
+sparse            m-estimate   with-replacement{sample_size=0.5}                          2
+
+Evaluation results for measure "Macro Precision (↑)":
+
+feature_format    heuristic    instance_sampling                    Macro Precision (↑)    Rank
+----------------  -----------  ---------------------------------  ---------------------  ------
+"emotions"
+----------------  -----------  ---------------------------------  ---------------------  ------
+                  f-measure    none                                               52.59     4
+sparse            m-estimate   none                                               56.35     3
+                  f-measure    with-replacement{sample_size=0.5}                  71.08     1
+sparse            m-estimate   with-replacement{sample_size=0.5}                  57.6      2
+----------------  -----------  ---------------------------------  ---------------------  ------
+"enron"
+----------------  -----------  ---------------------------------  ---------------------  ------
+                  f-measure    none                                               54.99     3
+sparse            m-estimate   none                                               35.46     4
+                  f-measure    with-replacement{sample_size=0.5}                  81.88     2
+sparse            m-estimate   with-replacement{sample_size=0.5}                  86.41     1
+----------------  -----------  ---------------------------------  ---------------------  ------
+Averages
+----------------  -----------  ---------------------------------  ---------------------  ------
+                  f-measure    none                                                         3.5
+sparse            m-estimate   none                                                         3.5
+                  f-measure    with-replacement{sample_size=0.5}                            1.5
+sparse            m-estimate   with-replacement{sample_size=0.5}                            1.5
+
+Evaluation results for measure "Macro Recall (↑)":
+
+feature_format    heuristic    instance_sampling                    Macro Recall (↑)    Rank
+----------------  -----------  ---------------------------------  ------------------  ------
+"emotions"
+----------------  -----------  ---------------------------------  ------------------  ------
+                  f-measure    none                                            57.88     3
+sparse            m-estimate   none                                            59.42     2
+                  f-measure    with-replacement{sample_size=0.5}               56.02     4
+sparse            m-estimate   with-replacement{sample_size=0.5}               60.23     1
+----------------  -----------  ---------------------------------  ------------------  ------
+"enron"
+----------------  -----------  ---------------------------------  ------------------  ------
+                  f-measure    none                                            17.89     2
+sparse            m-estimate   none                                            23.2      1
+                  f-measure    with-replacement{sample_size=0.5}               17.13     3
+sparse            m-estimate   with-replacement{sample_size=0.5}               15.99     4
+----------------  -----------  ---------------------------------  ------------------  ------
+Averages
+----------------  -----------  ---------------------------------  ------------------  ------
+                  f-measure    none                                                      2.5
+sparse            m-estimate   none                                                      1.5
+                  f-measure    with-replacement{sample_size=0.5}                         3.5
+sparse            m-estimate   with-replacement{sample_size=0.5}                         2.5
+
+Evaluation results for measure "Micro F1 (↑)":
+
+feature_format    heuristic    instance_sampling                    Micro F1 (↑)    Rank
+----------------  -----------  ---------------------------------  --------------  ------
+"emotions"
+----------------  -----------  ---------------------------------  --------------  ------
+                  f-measure    none                                        55.14       4
+sparse            m-estimate   none                                        58          3
+                  f-measure    with-replacement{sample_size=0.5}           58.68       2
+sparse            m-estimate   with-replacement{sample_size=0.5}           61.94       1
+----------------  -----------  ---------------------------------  --------------  ------
+"enron"
+----------------  -----------  ---------------------------------  --------------  ------
+                  f-measure    none                                        52.7        2
+sparse            m-estimate   none                                        52.53       3
+                  f-measure    with-replacement{sample_size=0.5}           50.97       4
+sparse            m-estimate   with-replacement{sample_size=0.5}           55.64       1
+----------------  -----------  ---------------------------------  --------------  ------
+Averages
+----------------  -----------  ---------------------------------  --------------  ------
+                  f-measure    none                                                    3
+sparse            m-estimate   none                                                    3
+                  f-measure    with-replacement{sample_size=0.5}                       3
+sparse            m-estimate   with-replacement{sample_size=0.5}                       1
+
+Evaluation results for measure "Micro Jaccard (↑)":
+
+feature_format    heuristic    instance_sampling                    Micro Jaccard (↑)    Rank
+----------------  -----------  ---------------------------------  -------------------  ------
+"emotions"
+----------------  -----------  ---------------------------------  -------------------  ------
+                  f-measure    none                                             38.06       4
+sparse            m-estimate   none                                             40.84       3
+                  f-measure    with-replacement{sample_size=0.5}                41.52       2
+sparse            m-estimate   with-replacement{sample_size=0.5}                44.87       1
+----------------  -----------  ---------------------------------  -------------------  ------
+"enron"
+----------------  -----------  ---------------------------------  -------------------  ------
+                  f-measure    none                                             35.78       2
+sparse            m-estimate   none                                             35.62       3
+                  f-measure    with-replacement{sample_size=0.5}                34.2        4
+sparse            m-estimate   with-replacement{sample_size=0.5}                38.54       1
+----------------  -----------  ---------------------------------  -------------------  ------
+Averages
+----------------  -----------  ---------------------------------  -------------------  ------
+                  f-measure    none                                                         3
+sparse            m-estimate   none                                                         3
+                  f-measure    with-replacement{sample_size=0.5}                            3
+sparse            m-estimate   with-replacement{sample_size=0.5}                            1
+
+Evaluation results for measure "Micro Precision (↑)":
+
+feature_format    heuristic    instance_sampling                    Micro Precision (↑)    Rank
+----------------  -----------  ---------------------------------  ---------------------  ------
+"emotions"
+----------------  -----------  ---------------------------------  ---------------------  ------
+                  f-measure    none                                               52.01       4
+sparse            m-estimate   none                                               56.6        3
+                  f-measure    with-replacement{sample_size=0.5}                  59.24       2
+sparse            m-estimate   with-replacement{sample_size=0.5}                  60.98       1
+----------------  -----------  ---------------------------------  ---------------------  ------
+"enron"
+----------------  -----------  ---------------------------------  ---------------------  ------
+                  f-measure    none                                               49.07       2
+sparse            m-estimate   none                                               45.51       3
+                  f-measure    with-replacement{sample_size=0.5}                  45.41       4
+sparse            m-estimate   with-replacement{sample_size=0.5}                  52.28       1
+----------------  -----------  ---------------------------------  ---------------------  ------
+Averages
+----------------  -----------  ---------------------------------  ---------------------  ------
+                  f-measure    none                                                           3
+sparse            m-estimate   none                                                           3
+                  f-measure    with-replacement{sample_size=0.5}                              3
+sparse            m-estimate   with-replacement{sample_size=0.5}                              1
+
+Evaluation results for measure "Micro Recall (↑)":
+
+feature_format    heuristic    instance_sampling                    Micro Recall (↑)    Rank
+----------------  -----------  ---------------------------------  ------------------  ------
+"emotions"
+----------------  -----------  ---------------------------------  ------------------  ------
+                  f-measure    none                                            58.67     3
+sparse            m-estimate   none                                            59.47     2
+                  f-measure    with-replacement{sample_size=0.5}               58.13     4
+sparse            m-estimate   with-replacement{sample_size=0.5}               62.93     1
+----------------  -----------  ---------------------------------  ------------------  ------
+"enron"
+----------------  -----------  ---------------------------------  ------------------  ------
+                  f-measure    none                                            56.92     4
+sparse            m-estimate   none                                            62.1      1
+                  f-measure    with-replacement{sample_size=0.5}               58.09     3
+sparse            m-estimate   with-replacement{sample_size=0.5}               59.46     2
+----------------  -----------  ---------------------------------  ------------------  ------
+Averages
+----------------  -----------  ---------------------------------  ------------------  ------
+                  f-measure    none                                                      3.5
+sparse            m-estimate   none                                                      1.5
+                  f-measure    with-replacement{sample_size=0.5}                         3.5
+sparse            m-estimate   with-replacement{sample_size=0.5}                         1.5
+
+Evaluation results for measure "Prediction Time (seconds)":
+
+feature_format    heuristic    instance_sampling                    Prediction Time (seconds)    Rank
+----------------  -----------  ---------------------------------  ---------------------------  ------
+"emotions"
+----------------  -----------  ---------------------------------  ---------------------------  ------
+                  f-measure    none
+sparse            m-estimate   none
+                  f-measure    with-replacement{sample_size=0.5}
+sparse            m-estimate   with-replacement{sample_size=0.5}
+----------------  -----------  ---------------------------------  ---------------------------  ------
+"enron"
+----------------  -----------  ---------------------------------  ---------------------------  ------
+                  f-measure    none
+sparse            m-estimate   none
+                  f-measure    with-replacement{sample_size=0.5}
+sparse            m-estimate   with-replacement{sample_size=0.5}
+----------------  -----------  ---------------------------------  ---------------------------  ------
+Averages
+----------------  -----------  ---------------------------------  ---------------------------  ------
+                  f-measure    none
+sparse            m-estimate   none
+                  f-measure    with-replacement{sample_size=0.5}
+sparse            m-estimate   with-replacement{sample_size=0.5}
+
+Evaluation results for measure "Subset 0/1 Loss (↓)":
+
+feature_format    heuristic    instance_sampling                    Subset 0/1 Loss (↓)    Rank
+----------------  -----------  ---------------------------------  ---------------------  ------
+"emotions"
+----------------  -----------  ---------------------------------  ---------------------  ------
+                  f-measure    none                                               86.22     4
+sparse            m-estimate   none                                               83.67     3
+                  f-measure    with-replacement{sample_size=0.5}                  81.63     2
+sparse            m-estimate   with-replacement{sample_size=0.5}                  78.06     1
+----------------  -----------  ---------------------------------  ---------------------  ------
+"enron"
+----------------  -----------  ---------------------------------  ---------------------  ------
+                  f-measure    none                                               99.29     1
+sparse            m-estimate   none                                               99.82     4
+                  f-measure    with-replacement{sample_size=0.5}                  99.47     2
+sparse            m-estimate   with-replacement{sample_size=0.5}                  99.64     3
+----------------  -----------  ---------------------------------  ---------------------  ------
+Averages
+----------------  -----------  ---------------------------------  ---------------------  ------
+                  f-measure    none                                                         2.5
+sparse            m-estimate   none                                                         3.5
+                  f-measure    with-replacement{sample_size=0.5}                            2
+sparse            m-estimate   with-replacement{sample_size=0.5}                            2
+
+Evaluation results for measure "Subset Accuracy (↑)":
+
+feature_format    heuristic    instance_sampling                    Subset Accuracy (↑)    Rank
+----------------  -----------  ---------------------------------  ---------------------  ------
+"emotions"
+----------------  -----------  ---------------------------------  ---------------------  ------
+                  f-measure    none                                               13.78     4
+sparse            m-estimate   none                                               16.33     3
+                  f-measure    with-replacement{sample_size=0.5}                  18.37     2
+sparse            m-estimate   with-replacement{sample_size=0.5}                  21.94     1
+----------------  -----------  ---------------------------------  ---------------------  ------
+"enron"
+----------------  -----------  ---------------------------------  ---------------------  ------
+                  f-measure    none                                                0.71     1
+sparse            m-estimate   none                                                0.18     4
+                  f-measure    with-replacement{sample_size=0.5}                   0.53     2
+sparse            m-estimate   with-replacement{sample_size=0.5}                   0.36     3
+----------------  -----------  ---------------------------------  ---------------------  ------
+Averages
+----------------  -----------  ---------------------------------  ---------------------  ------
+                  f-measure    none                                                         2.5
+sparse            m-estimate   none                                                         3.5
+                  f-measure    with-replacement{sample_size=0.5}                            2
+sparse            m-estimate   with-replacement{sample_size=0.5}                            2
+
+Evaluation results for measure "Training Time (seconds)":
+
+feature_format    heuristic    instance_sampling                    Training Time (seconds)    Rank
+----------------  -----------  ---------------------------------  -------------------------  ------
+"emotions"
+----------------  -----------  ---------------------------------  -------------------------  ------
+                  f-measure    none
+sparse            m-estimate   none
+                  f-measure    with-replacement{sample_size=0.5}
+sparse            m-estimate   with-replacement{sample_size=0.5}
+----------------  -----------  ---------------------------------  -------------------------  ------
+"enron"
+----------------  -----------  ---------------------------------  -------------------------  ------
+                  f-measure    none
+sparse            m-estimate   none
+                  f-measure    with-replacement{sample_size=0.5}
+sparse            m-estimate   with-replacement{sample_size=0.5}
+----------------  -----------  ---------------------------------  -------------------------  ------
+Averages
+----------------  -----------  ---------------------------------  -------------------------  ------
+                  f-measure    none
+sparse            m-estimate   none
+                  f-measure    with-replacement{sample_size=0.5}
+sparse            m-estimate   with-replacement{sample_size=0.5}
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/aggregated_evaluation_test.csv"...

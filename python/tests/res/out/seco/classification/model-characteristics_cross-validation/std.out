@@ -1,12 +1,14 @@
 mlrl-testbed mlrl.seco --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --data-split cross-validation --print-evaluation false --save-evaluation false --print-model-characteristics true --save-model-characteristics true
+Checking if output files do already exist...
 Starting experiment using the classification algorithm "SeCoClassifier"...
+DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Performing full 10-fold cross validation...
 Fold 1 / 10:
-Reading input data from file "python/tests/res/data/emotions.arff"...
-Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+DEBUG: Reading input data from file "python/tests/res/data/emotions.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 Fitting model to 533 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model characteristics (Fold 1):
 
@@ -31,11 +33,11 @@ Model characteristics (Fold 1):
 │ Predictions                 │         1 │      1    │         1 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
-Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-1.csv"...
 Fold 2 / 10:
 Fitting model to 533 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model characteristics (Fold 2):
 
@@ -60,11 +62,11 @@ Model characteristics (Fold 2):
 │ Predictions                 │         1 │      1    │         1 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
-Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-2.csv"...
 Fold 3 / 10:
 Fitting model to 533 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model characteristics (Fold 3):
 
@@ -89,11 +91,11 @@ Model characteristics (Fold 3):
 │ Predictions                 │         1 │      1    │         1 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
-Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-3.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-3.csv"...
 Fold 4 / 10:
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model characteristics (Fold 4):
 
@@ -118,11 +120,11 @@ Model characteristics (Fold 4):
 │ Predictions                 │         1 │      1    │         1 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
-Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-4.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-4.csv"...
 Fold 5 / 10:
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model characteristics (Fold 5):
 
@@ -147,11 +149,11 @@ Model characteristics (Fold 5):
 │ Predictions                 │         1 │       1   │         1 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
-Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-5.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-5.csv"...
 Fold 6 / 10:
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model characteristics (Fold 6):
 
@@ -176,11 +178,11 @@ Model characteristics (Fold 6):
 │ Predictions                 │         1 │      1    │         1 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
-Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-6.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-6.csv"...
 Fold 7 / 10:
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model characteristics (Fold 7):
 
@@ -205,11 +207,11 @@ Model characteristics (Fold 7):
 │ Predictions                 │         1 │      1    │         1 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
-Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-7.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-7.csv"...
 Fold 8 / 10:
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model characteristics (Fold 8):
 
@@ -234,11 +236,11 @@ Model characteristics (Fold 8):
 │ Predictions                 │         1 │      1    │         1 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
-Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-8.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-8.csv"...
 Fold 9 / 10:
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model characteristics (Fold 9):
 
@@ -263,11 +265,11 @@ Model characteristics (Fold 9):
 │ Predictions                 │         1 │      1    │         1 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
-Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-9.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-9.csv"...
 Fold 10 / 10:
 Fitting model to 534 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Model characteristics (Fold 10):
 
@@ -292,5 +294,5 @@ Model characteristics (Fold 10):
 │ Predictions                 │         1 │      1    │         1 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
-Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-10.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-10.csv"...
 Successfully finished experiment after <duration>

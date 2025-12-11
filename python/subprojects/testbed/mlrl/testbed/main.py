@@ -3,26 +3,50 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Imports and invokes the program to be run by the command line utility.
 """
+import logging as log
 import sys
 
-from argparse import ArgumentParser, RawDescriptionHelpFormatter
+from argparse import ArgumentParser, HelpFormatter, Namespace
+from enum import Enum
 from importlib import import_module
 from importlib.metadata import version
 from importlib.util import module_from_spec, spec_from_file_location
-from typing import Optional
+from typing import Optional, Set, override
 
-from mlrl.testbed.modes import Mode
-from mlrl.testbed.modes.mode_batch import BatchMode
-from mlrl.testbed.modes.mode_single import SingleMode
+from mlrl.testbed.experiments.state import ExperimentMode
+from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
 from mlrl.testbed.program_info import ProgramInfo
 from mlrl.testbed.runnables import Runnable
 
-from mlrl.util.cli import CommandLineInterface
+from mlrl.util.cli import Argument, CommandLineInterface, EnumArgument
+from mlrl.util.validation import ValidationError
+
+
+class LogLevel(Enum):
+    """
+    Specifies all valid textual representations of log levels.
+    """
+    DEBUG = log.DEBUG
+    INFO = log.INFO
+    WARN = log.WARN
+    WARNING = log.WARNING
+    ERROR = log.ERROR
+    CRITICAL = log.CRITICAL
+    FATAL = log.FATAL
+    NOTSET = log.NOTSET
+
+
+LOG_LEVEL = EnumArgument(
+    '--log-level',
+    enum=LogLevel,
+    default=LogLevel.INFO,
+    description='The log level to be used.',
+)
 
 
 def __create_argument_parser() -> ArgumentParser:
     argument_parser = ArgumentParser(
-        formatter_class=RawDescriptionHelpFormatter,
+        formatter_class=lambda prog: HelpFormatter(prog, width=120),
         description='A command line utility for training and evaluating machine learning algorithms',
         add_help=False)
 
@@ -108,14 +132,11 @@ def __instantiate_via_default_constructor(module_or_source_file: str, class_name
         raise TypeError('Class "' + class_name + '" must provide a default constructor') from error
 
 
-def __get_mode(cli: CommandLineInterface, runnable: Optional[Runnable]) -> Mode:
-    cli.add_arguments(Mode.MODE)
-    args = cli.parse_known_args()
-    mode = Mode.MODE.get_value(args)
-
-    if mode == Mode.MODE_BATCH:
-        return runnable.configure_batch_mode(cli) if runnable else BatchMode()
-    return SingleMode()
+def __get_cli(runnable: Optional[Runnable], argument_parser: ArgumentParser) -> CommandLineInterface:
+    program_info = runnable.get_program_info() if runnable else __get_default_program_info()
+    cli = CommandLineInterface(argument_parser, version_text=str(program_info) if program_info else None)
+    cli.add_arguments(LOG_LEVEL)
+    return cli
 
 
 def __get_default_program_info() -> ProgramInfo:
@@ -128,19 +149,62 @@ def __get_default_program_info() -> ProgramInfo:
     )
 
 
+def __get_mode(cli: CommandLineInterface, runnable: Optional[Runnable]) -> Mode:
+    cli.add_arguments(Mode.MODE)
+    args = cli.parse_known_args()
+    mode = Mode.MODE.get_value(args)
+
+    if mode == ExperimentMode.BATCH:
+        return runnable.configure_batch_mode(cli) if runnable else BatchMode()
+    if mode == ExperimentMode.READ:
+        return runnable.configure_read_mode(cli) if runnable else ReadMode()
+    if mode == ExperimentMode.RUN:
+        return runnable.configure_run_mode(cli) if runnable else RunMode()
+    return SingleMode()
+
+
+def __configure_logger(args: Namespace):
+
+    class LogLevelFormatter(log.Formatter):
+        """
+        Prepends the log level to log messages unless the log level is INFO.
+        """
+
+        @override
+        def format(self, record):
+            if record.levelno != log.INFO:
+                record.msg = f'{record.levelname}: {record.msg}'
+            return super().format(record)
+
+    log_level = LOG_LEVEL.get_value(args).value
+    root = log.getLogger()
+    root.setLevel(log_level)
+    handler = log.StreamHandler(sys.stdout)
+    handler.setLevel(log_level)
+    handler.setFormatter(LogLevelFormatter('%(message)s'))
+    existing_handlers = list(root.handlers)
+
+    for existing_handler in existing_handlers:
+        root.removeHandler(existing_handler)
+
+    root.addHandler(handler)
+
+
 def main():
     """
     The main function to be executed when the program starts.
     """
     argument_parser = __create_argument_parser()
     runnable = __get_runnable(argument_parser)
-    program_info = runnable.get_program_info() if runnable else __get_default_program_info()
-    cli = CommandLineInterface(argument_parser, version_text=str(program_info) if program_info else None)
+    cli = __get_cli(runnable, argument_parser)
     mode = __get_mode(cli, runnable)
-    mode.configure_arguments(cli)
+    control_arguments: Set[Argument] = set()
+    algorithmic_arguments: Set[Argument] = set()
 
     if runnable:
-        runnable.configure_arguments(cli, mode)
+        control_arguments, algorithmic_arguments = runnable.configure_arguments(cli, mode)
+    else:
+        mode.configure_arguments(cli, control_arguments=[], algorithmic_arguments=[])
 
     argument_parser.add_argument('-h',
                                  '--help',
@@ -148,8 +212,15 @@ def main():
                                  default='==SUPPRESS==',
                                  help='Show this help message and exit')
 
+    args = argument_parser.parse_args()
+    __configure_logger(args)
+
     if runnable:
-        runnable.run(mode, argument_parser.parse_args())
+        try:
+            runnable.run(mode, control_arguments, algorithmic_arguments, args)
+        except ValidationError as error:
+            log.error('%s', error)
+            sys.exit(1)
 
 
 if __name__ == '__main__':
