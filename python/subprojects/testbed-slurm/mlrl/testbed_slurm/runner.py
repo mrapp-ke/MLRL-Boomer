@@ -13,8 +13,6 @@ from functools import partial
 from pathlib import Path
 from typing import Callable, Dict, List, Optional, Set, Tuple, cast, override
 
-import yamale
-
 from tabulate import tabulate
 
 from mlrl.testbed_slurm.arguments import SlurmArguments
@@ -27,6 +25,7 @@ from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDir
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.modes.mode_batch import Batch, BatchMode
 from mlrl.testbed.util.io import open_readable_file, open_writable_file
+from mlrl.testbed.util.yml import read_and_validate_yaml
 
 from mlrl.util.options import Options
 from mlrl.util.validation import ValidationError
@@ -108,11 +107,8 @@ class SlurmRunner(BatchMode.Runner):
             :param file_path:           The path to the configuration file
             :param schema_file_path:    The path to a YAML schema file
             """
-            schema = yamale.make_schema(schema_file_path)
-            data = yamale.make_data(file_path)
-            yamale.validate(schema, data)
             self.file_path = file_path
-            self.yaml_dict = data[0][0]
+            self.yaml_dict = read_and_validate_yaml(yaml_file_path=file_path, schema_file_path=schema_file_path)
 
         @property
         def sbatch_arguments(self) -> List[str]:
