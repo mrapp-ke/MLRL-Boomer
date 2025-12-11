@@ -10,8 +10,8 @@ from sklearn.utils.estimator_checks import check_estimator
 
 from ..common.cmd_runner import CmdRunner
 from ..common.datasets import Dataset
-from ..common.integration_tests_classification import ClassificationIntegrationTests, \
-    ClassificationRuleLearnerIntegrationTestsMixin
+from ..common.integration_tests_classification import ClassificationIntegrationTests
+from ..common.integration_tests_rule_learners import ClassificationRuleLearnerIntegrationTestsMixin
 from .cmd_builder_classification import BoomerClassifierCmdBuilder
 from .integration_tests import BoomerIntegrationTestsMixin
 
