@@ -14,8 +14,6 @@ from itertools import chain
 from pathlib import Path
 from typing import Any, Callable, Generator, Iterable, List, Optional, Set, override
 
-import yamale
-
 from mlrl.testbed_slurm.arguments import SlurmArguments
 
 from mlrl.testbed.command import ArgumentDict, ArgumentList, Command
@@ -35,6 +33,7 @@ from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.modes.mode import Mode
 from mlrl.testbed.modes.util import OutputUtil
+from mlrl.testbed.util.yml import read_and_validate_yaml
 
 from mlrl.util.cli import AUTO, Argument, BoolArgument, CommandLineInterface, FlagArgument, PathArgument, SetArgument
 from mlrl.util.options import BooleanOption, Options
@@ -194,11 +193,8 @@ class BatchMode(Mode):
             :param file_path:           The path to the configuration file
             :param schema_file_path:    The path to a YAML schema file
             """
-            schema = yamale.make_schema(schema_file_path)
-            data = yamale.make_data(file_path)
-            yamale.validate(schema, data)
             self.file_path = file_path
-            self.yaml_dict = data[0][0]
+            self.yaml_dict = read_and_validate_yaml(yaml_file_path=file_path, schema_file_path=schema_file_path)
 
         @cached_property
         def default_arguments(self) -> List[DefaultArgument]:
