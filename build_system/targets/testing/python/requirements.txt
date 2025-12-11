@@ -1,1 +1,2 @@
 pytest >= 9.0, < 9.1
+pytest-rerunfailures >= 16, < 17
