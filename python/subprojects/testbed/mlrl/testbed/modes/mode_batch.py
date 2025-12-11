@@ -36,7 +36,7 @@ from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.modes.mode import Mode
 from mlrl.testbed.modes.util import OutputUtil
 
-from mlrl.util.cli import AUTO, Argument, BoolArgument, CommandLineInterface, FlagArgument, SetArgument, StringArgument
+from mlrl.util.cli import AUTO, Argument, BoolArgument, CommandLineInterface, FlagArgument, PathArgument, SetArgument
 from mlrl.util.options import BooleanOption, Options
 
 Batch = List[Command]
@@ -189,7 +189,7 @@ class BatchMode(Mode):
 
             return parameter_values
 
-        def __init__(self, file_path: str, schema_file_path: str):
+        def __init__(self, file_path: Path, schema_file_path: Path):
             """
             :param file_path:           The path to the configuration file
             :param schema_file_path:    The path to a YAML schema file
@@ -262,9 +262,9 @@ class BatchMode(Mode):
 
         @override
         def __str__(self) -> str:
-            return self.file_path
+            return str(self.file_path)
 
-    CONFIG_FILE = StringArgument(
+    CONFIG_FILE = PathArgument(
         '--config',
         required=True,
         description='An absolute or relative path to a YAML file that configures the batch of experiments to be run.',
