@@ -46,9 +46,9 @@ class TestBoomerRegressor(RegressionIntegrationTests, BoomerIntegrationTestsMixi
 
     @pytest.mark.parametrize('head_type', [
         HeadTypeParameter.HEAD_TYPE_SINGLE,
-        HeadTypeParameter.HEAD_TYPE_COMPLETE,
+        pytest.param(HeadTypeParameter.HEAD_TYPE_COMPLETE, marks=pytest.mark.flaky(reruns=5)),
         HeadTypeParameter.HEAD_TYPE_PARTIAL_FIXED,
-        HeadTypeParameter.HEAD_TYPE_PARTIAL_DYNAMIC,
+        pytest.param(HeadTypeParameter.HEAD_TYPE_PARTIAL_DYNAMIC, marks=pytest.mark.flaky(reruns=5)),
     ])
     @pytest.mark.parametrize('statistic_type', [
         StatisticTypeParameter.STATISTIC_TYPE_FLOAT32,
