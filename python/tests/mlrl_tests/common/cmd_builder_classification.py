@@ -40,8 +40,7 @@ class ClassificationCmdBuilder(CmdBuilder):
         :return:                    The builder itself    
         """
         if print_label_vectors:
-            self.args.append('--print-label-vectors')
-            self.args.append(str(print_label_vectors).lower())
+            self.add_control_argument('--print-label-vectors', str(print_label_vectors).lower())
 
         return self
 
@@ -55,8 +54,7 @@ class ClassificationCmdBuilder(CmdBuilder):
         :return:                    The builder itself
         """
         self.label_vectors_stored = save_label_vectors
-        self.args.append('--save-label-vectors')
-        self.args.append(str(save_label_vectors).lower())
+        self.add_control_argument('--save-label-vectors', str(save_label_vectors).lower())
         return self
 
     def print_marginal_probability_calibration_model(self,
@@ -72,8 +70,8 @@ class ClassificationCmdBuilder(CmdBuilder):
         :return:                                                The builder itself    
         """
         if print_marginal_probability_calibration_model:
-            self.args.append('--print-marginal-probability-calibration-model')
-            self.args.append(str(print_marginal_probability_calibration_model).lower())
+            self.add_control_argument('--print-marginal-probability-calibration-model',
+                                      str(print_marginal_probability_calibration_model).lower())
 
         return self
 
@@ -90,8 +88,8 @@ class ClassificationCmdBuilder(CmdBuilder):
         """
         if save_marginal_probability_calibration_model:
             self.marginal_probability_calibration_model_stored = save_marginal_probability_calibration_model
-            self.args.append('--save-marginal-probability-calibration-model')
-            self.args.append(str(save_marginal_probability_calibration_model).lower())
+            self.add_control_argument('--save-marginal-probability-calibration-model',
+                                      str(save_marginal_probability_calibration_model).lower())
 
         return self
 
@@ -107,8 +105,8 @@ class ClassificationCmdBuilder(CmdBuilder):
         :return:                                            The builder itself    
         """
         if print_joint_probability_calibration_model:
-            self.args.append('--print-joint-probability-calibration-model')
-            self.args.append(str(print_joint_probability_calibration_model).lower())
+            self.add_control_argument('--print-joint-probability-calibration-model',
+                                      str(print_joint_probability_calibration_model).lower())
 
         return self
 
@@ -124,8 +122,8 @@ class ClassificationCmdBuilder(CmdBuilder):
         """
         if save_joint_probability_calibration_model:
             self.joint_probability_calibration_model_stored = save_joint_probability_calibration_model
-            self.args.append('--save-joint-probability-calibration-model')
-            self.args.append(str(save_joint_probability_calibration_model).lower())
+            self.add_control_argument('--save-joint-probability-calibration-model',
+                                      str(save_joint_probability_calibration_model).lower())
 
         return self
 
@@ -137,7 +135,6 @@ class ClassificationCmdBuilder(CmdBuilder):
         :return:                The builder itself
         """
         if prediction_type:
-            self.args.append('--prediction-type')
-            self.args.append(prediction_type)
+            self.add_control_argument('--prediction-type', prediction_type)
 
         return self
