@@ -17,7 +17,8 @@ from typing import Any, Dict, Iterable, List, Optional, Set, Type, override
 import docstring_parser
 import numpy as np
 
-from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMixin as SkLearnRegressorMixin
+from sklearn.base import BaseEstimator as SkLearnBaseEstimator, ClassifierMixin as SkLearnClassifierMixin, \
+    RegressorMixin as SkLearnRegressorMixin
 from sklearn.dummy import DummyClassifier, DummyRegressor
 from sklearn.utils import all_estimators
 
@@ -388,8 +389,6 @@ class SklearnEstimator:
 
             return default
 
-    EstimatorType = Type[SkLearnClassifierMixin] | Type[SkLearnRegressorMixin]
-
     @staticmethod
     def __format_argument_description(description: str) -> str:
         indent_delimiter = '.. '
@@ -453,7 +452,7 @@ class SklearnEstimator:
         except Exception:
             return False
 
-    def __init__(self, estimator_name: str, estimator_type: EstimatorType):
+    def __init__(self, estimator_name: str, estimator_type: Type[SkLearnBaseEstimator]):
         """
         :param estimator_name:  The name of the estimator
         :param estimator_type:  The type of the estimator
@@ -473,7 +472,7 @@ class SklearnEstimator:
                 lambda estimator: estimator.can_be_default_instantiated, {
                     SklearnEstimator(estimator_name=estimator_name, estimator_type=estimator_type)
                     for estimator_name, estimator_type in all_estimators(type_filter='regressor')
-                    if issubclass(estimator_type, SkLearnRegressorMixin)
+                    if issubclass(estimator_type, (SkLearnBaseEstimator, SkLearnRegressorMixin))
                 }))
 
     @staticmethod
@@ -488,7 +487,7 @@ class SklearnEstimator:
                 lambda estimator: estimator.can_be_default_instantiated, {
                     SklearnEstimator(estimator_name=estimator_name, estimator_type=estimator_type)
                     for estimator_name, estimator_type in all_estimators(type_filter='classifier')
-                    if issubclass(estimator_type, SkLearnClassifierMixin)
+                    if issubclass(estimator_type, (SkLearnBaseEstimator, SkLearnClassifierMixin))
                 }))
 
     @staticmethod
@@ -503,7 +502,7 @@ class SklearnEstimator:
                 lambda estimator: estimator.can_be_instantiated_with_estimator, {
                     SklearnEstimator(estimator_name=estimator_name, estimator_type=estimator_type)
                     for estimator_name, estimator_type in all_estimators(type_filter='regressor')
-                    if issubclass(estimator_type, SkLearnRegressorMixin)
+                    if issubclass(estimator_type, (SkLearnBaseEstimator, SkLearnRegressorMixin))
                 }))
 
     @staticmethod
@@ -518,7 +517,7 @@ class SklearnEstimator:
                 lambda estimator: estimator.can_be_instantiated_with_estimator, {
                     SklearnEstimator(estimator_name=estimator_name, estimator_type=estimator_type)
                     for estimator_name, estimator_type in all_estimators(type_filter='classifier')
-                    if issubclass(estimator_type, SkLearnClassifierMixin)
+                    if issubclass(estimator_type, (SkLearnBaseEstimator, SkLearnClassifierMixin))
                 }))
 
     @property
@@ -587,7 +586,7 @@ class SklearnEstimator:
         """
         return self.__can_be_instantiated(estimator=DummyRegressor() if self.is_regressor else DummyClassifier())
 
-    def instantiate(self, args: Optional[Namespace] = None, **kwargs) -> SkLearnClassifierMixin | SkLearnRegressorMixin:
+    def instantiate(self, args: Optional[Namespace] = None, **kwargs) -> SkLearnBaseEstimator:
         """
         Creates and returns a new instance of the estimator.
 
