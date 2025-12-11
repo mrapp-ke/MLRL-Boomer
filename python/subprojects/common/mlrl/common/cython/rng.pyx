@@ -21,9 +21,9 @@ cdef class RNGConfig:
         """
         Sets the seed that should be used by random number generators.
 
-        :param random_state:    The seed that should be used. Must be at least 1
+        :param random_state:    The seed that should be used. Must be at least 0
         :return:                An `RNGConfig` that allows further configuration of the random number generators
         """
-        assert_greater_or_equal('random_state', random_state, 1)
+        assert_greater_or_equal('random_state', random_state, 0)
         self.config_ptr.setRandomState(random_state)
         return self

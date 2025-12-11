@@ -4,6 +4,11 @@ requires = [
     "setuptools >= 80.9, < 80.10",
 ]
 
+[tool.setuptools.package-data]
+"mlrl.testbed" = [
+    "**/*.y*ml",
+]
+
 [project]
 name = "mlrl-testbed"
 description = "Provides utilities for the training and evaluation of machine learning algorithms"
@@ -27,7 +32,6 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "mlrl-testbed-sklearn",
     "mlrl-util",
     "pyyaml",
     "tabulate",
@@ -35,7 +39,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-testbed = ["mlrl-testbed-slurm"]
+testbed = ["mlrl-testbed-sklearn", "mlrl-testbed-slurm"]
 
 [project.urls]
 homepage = "https://github.com/mrapp-ke/MLRL-Boomer"

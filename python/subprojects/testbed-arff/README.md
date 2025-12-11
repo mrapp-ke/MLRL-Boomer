@@ -1,4 +1,4 @@
-# "MLRL-Testbed-Arff": Adds support for ARFF files to the package "mlrl-testbed"
+# "mlrl-testbed-arff": Adds support for ARFF files to the package "mlrl-testbed"
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![PyPI version](https://badge.fury.io/py/mlrl-testbed-arff.svg)](https://badge.fury.io/py/mlrl-testbed-arff) [![Documentation Status](https://readthedocs.org/projects/mlrl-boomer/badge/?version=latest)](https://mlrl-boomer.readthedocs.io/en/latest/?badge=latest)
 

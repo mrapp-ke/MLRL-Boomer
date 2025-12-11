@@ -1,0 +1,44 @@
+mlrl-testbed mlrl.seco --mode read --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --print-evaluation false --save-evaluation false --print-label-vectors true --save-label-vectors true
+Reading meta-data...
+DEBUG: Reading input data from file "python/tests/res/tmp/metadata.yml"...
+Successfully read meta-data
+DEBUG: Checking for version conflicts...
+DEBUG: Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is currently used
+DEBUG: No version conflicts detected
+Reading experimental results of 1 experiment...
+
+Reading experimental results of experiment (1 / 1)...
+The command "mlrl-testbed mlrl.seco --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --data-split train-test --print-evaluation false --save-evaluation false --print-label-vectors true --save-label-vectors true" has been used originally for running this experiment
+Using separate training and test sets...
+DEBUG: Reading input data from file "python/tests/res/tmp/results/label_vectors.csv"...
+Label vectors:
+
+┌─────────┬────────────────┬─────────────┐
+│   Index │ Label vector   │   Frequency │
+├─────────┼────────────────┼─────────────┤
+│       1 │ [0 5]          │          52 │
+│       2 │ [5]            │          50 │
+│       3 │ [1 2]          │          44 │
+│       4 │ [2 3 4]        │          42 │
+│       5 │ [2]            │          30 │
+│       6 │ [0 1]          │          26 │
+│       7 │ [3 4]          │          25 │
+│       8 │ [2 4]          │          20 │
+│       9 │ [2 3]          │          19 │
+│      10 │ [1]            │          18 │
+│      11 │ [0]            │          17 │
+│      12 │ [4]            │          10 │
+│      13 │ [4 5]          │           8 │
+│      14 │ [0 1 5]        │           7 │
+│      15 │ [0 1 2]        │           7 │
+│      16 │ [1 5]          │           5 │
+│      17 │ [1 2 3]        │           5 │
+│      18 │ [2 4 5]        │           3 │
+│      19 │ [3]            │           3 │
+│      20 │ [0 4 5]        │           2 │
+│      21 │ [0 4]          │           2 │
+│      22 │ [3 4 5]        │           1 │
+│      23 │ [2 5]          │           1 │
+└─────────┴────────────────┴─────────────┘
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/label_vectors.csv"...

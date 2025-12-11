@@ -6,11 +6,11 @@ package.
 """
 from abc import ABC, abstractmethod
 from argparse import Namespace
-from typing import Any, Set, Type, override
+from typing import Set, override
 
 from mlrl.testbed.experiments.experiment import Experiment
-from mlrl.testbed.modes import Mode
-from mlrl.testbed.modes.mode_batch import BatchMode
+from mlrl.testbed.experiments.state import ExperimentMode
+from mlrl.testbed.modes import BatchMode, ReadMode, RunMode
 
 from mlrl.util.cli import Argument
 
@@ -26,7 +26,7 @@ class Extension(ABC):
         """
         self._dependencies = set(dependencies)
 
-    def get_dependencies(self, mode: Mode) -> Set['Extension']:
+    def get_dependencies(self, mode: ExperimentMode) -> Set['Extension']:
         """
         Returns a set that contains all extensions, this extension depends on recursively, including only those that
         support a given mode of operation.
@@ -43,7 +43,7 @@ class Extension(ABC):
 
         return dependencies
 
-    def get_arguments(self, mode: Mode) -> Set[Argument]:
+    def get_arguments(self, mode: ExperimentMode) -> Set[Argument]:
         """
         Returns a set that contains the arguments that should be added to the command line API according to this
         extension, if it supported a given mode of operation. Dependencies that support the given mode are taken into
@@ -52,7 +52,7 @@ class Extension(ABC):
         :param mode:    The mode to be supported
         :return:        A set that contains the arguments
         """
-        arguments = self._get_arguments() if self.is_mode_supported(mode) else set()
+        arguments = self._get_arguments(mode) if self.is_mode_supported(mode) else set()
 
         for dependency in self._dependencies:
             for argument in dependency.get_arguments(mode):
@@ -60,15 +60,15 @@ class Extension(ABC):
 
         return arguments
 
-    def get_supported_modes(self) -> Set[Type[Mode]]:
+    @abstractmethod
+    def get_supported_modes(self) -> Set[ExperimentMode]:
         """
-        May be overridden by subclasses in order to return the modes of operation supported by this extension.
+        Must be implemented by subclasses in order to return the modes of operation supported by this extension.
 
         :return: A set that contains the supported modes or an empty set, if all modes are supported
         """
-        return set()
 
-    def is_mode_supported(self, mode: Mode) -> bool:
+    def is_mode_supported(self, mode: ExperimentMode) -> bool:
         """
         Returns whether this extension supports a given mode of operation or not.
 
@@ -76,15 +76,16 @@ class Extension(ABC):
         :return:        True, if the extension supports the given mode, False otherwise
         """
         supported_modes = self.get_supported_modes()
-        return type(mode) in supported_modes if supported_modes else True
+        return mode in supported_modes if supported_modes else True
 
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, mode: ExperimentMode):
         """
         May be overridden by subclasses in order to configure an experiment according to the command line arguments
         specified by the user.
 
         :param args:                The command line arguments specified by the user
         :param experiment_builder:  A builder that allows to configure the experiment
+        :param mode:                The mode of operation
         """
 
     def configure_batch_mode(self, args: Namespace, batch_mode: BatchMode):
@@ -96,22 +97,33 @@ class Extension(ABC):
         :param batch_mode:  The batch mode to be configured
         """
 
+    def configure_read_mode(self, args: Namespace, read_mode: ReadMode):
+        """
+        May be overridden by subclasses in order to configure the read mode according to the command line arguments
+        specified by the user.
+
+        :param args:        The command line arguments specified by the user
+        :param read_mode:   The read mode to be configured
+        """
+
+    def configure_run_mode(self, args: Namespace, run_mode: RunMode):
+        """
+        May be overridden by subclasses in order to configure the run mode according to the command line arguments
+        specified by the user.
+
+        :param args:        The command line arguments specified by the user
+        :param run_mode:    The run mode to be configured
+        """
+
     @abstractmethod
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, mode: ExperimentMode) -> Set[Argument]:
         """
         Must be implemented by subclasses in order to return the arguments that should be added to the command line API
         according to this extension.
 
-        :return: A set that contains the arguments that should be added to the command line API
+        :mode:      The mode of operation
+        :return:    A set that contains the arguments that should be added to the command line API
         """
-
-    @override
-    def __hash__(self) -> int:
-        return hash(type(self))
-
-    @override
-    def __eq__(self, other: Any) -> bool:
-        return isinstance(other, type(self))
 
 
 class NopExtension(Extension):
@@ -120,5 +132,12 @@ class NopExtension(Extension):
     """
 
     @override
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
+        return set()
+
+    @override
+    def get_supported_modes(self) -> Set[ExperimentMode]:
+        """
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+        """
         return set()

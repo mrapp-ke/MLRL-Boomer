@@ -1,8 +1,11 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes that allow reading datasets from a source.
+Provides classes that allow reading datasets from one or several sources.
 """
+import logging as log
+import sys
+
 from dataclasses import replace
 from typing import List, Optional, override
 
@@ -15,15 +18,15 @@ from mlrl.testbed.experiments.state import ExperimentState
 
 class DatasetReader(InputReader):
     """
-    Allows reading a dataset from a source.
+    Allows reading a dataset from one or several sources.
     """
 
-    def __init__(self, source: Source, input_data: InputDataset):
+    def __init__(self, input_data: InputDataset, *sources: Source):
         """
-        :param source:      The source, the input dataset should be read from
         :param input_data:  The dataset that should be read
+        :param sources:     The sources, the input dataset should be read from
         """
-        super().__init__(source=source, input_data=input_data)
+        super().__init__(input_data, *sources)
         self.preprocessors: List[Preprocessor] = []
         self.encoders: Optional[List[Preprocessor.Encoder]] = None
 
@@ -38,12 +41,26 @@ class DatasetReader(InputReader):
             self.preprocessors.extend(preprocessors)
         return self
 
+    def __read_all(self, state: ExperimentState) -> ExperimentState:
+        for source in self.sources:
+            try:
+                new_state = replace(state)
+
+                if source.read_from_source(new_state, self.input_data):
+                    return new_state
+            # pylint: disable=broad-exception-caught
+            except Exception as error:
+                log.error(str(error))
+
+        log.error('Failed to load dataset!')
+        sys.exit(1)
+
     @override
     def read(self, state: ExperimentState) -> ExperimentState:
         """
         See :func:`mlrl.testbed.experiments.input.reader.InputReader.read`
         """
-        state = super().read(state)
+        state = self.__read_all(state)
         encoders = self.encoders
 
         if encoders is None:

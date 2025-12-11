@@ -4,18 +4,17 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write calibration models to one or several sinks.
 """
 from argparse import Namespace
-from pathlib import Path
 from typing import List, Set, override
 
 from mlrl.boosting.testbed.experiments.output.probability_calibration.writer import \
     JointProbabilityCalibrationModelWriter, MarginalProbabilityCalibrationModelWriter
 
 from mlrl.testbed.experiments.experiment import Experiment
+from mlrl.testbed.experiments.input.sources.source_csv import CsvFileSource
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
-from mlrl.testbed.experiments.output.sinks.sink import Sink
-from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
-from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
+from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, Sink
+from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.util.format import OPTION_DECIMALS
 
@@ -49,35 +48,36 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
         super().__init__(OutputExtension(), ResultDirectoryExtension(), *dependencies)
 
     @override
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
         return {self.PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL, self.SAVE_MARGINAL_PROBABILITY_CALIBRATION_MODEL}
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
-        value, options = self.PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL.get_value(
+        value, options = self.PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL.get_value_and_options(
             args, default=OutputArguments.PRINT_ALL.get_value(args))
 
         if value:
-            return [LogSink(options)]
+            return [LogSink(options=options, source_factory=CsvFileSource)]
         return []
 
     def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
-        value, options = self.SAVE_MARGINAL_PROBABILITY_CALIBRATION_MODEL.get_value(
+        value, options = self.SAVE_MARGINAL_PROBABILITY_CALIBRATION_MODEL.get_value_and_options(
             args, default=OutputArguments.SAVE_ALL.get_value(args))
+        base_dir = OutputArguments.BASE_DIR.get_value(args)
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
-        if value and result_directory:
+        if value and base_dir and result_directory:
             return [
-                CsvFileSink(directory=Path(result_directory),
+                CsvFileSink(directory=base_dir / result_directory,
                             create_directory=OutputArguments.CREATE_DIRS.get_value(args),
                             options=options)
             ]
         return []
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: ExperimentMode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
@@ -86,6 +86,13 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
         if sinks:
             writer = MarginalProbabilityCalibrationModelWriter().add_sinks(*sinks)
             experiment_builder.add_post_training_output_writers(writer)
+
+    @override
+    def get_supported_modes(self) -> Set[ExperimentMode]:
+        """
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+        """
+        return {ExperimentMode.SINGLE, ExperimentMode.BATCH, ExperimentMode.READ, ExperimentMode.RUN}
 
 
 class JointProbabilityCalibrationModelExtension(Extension):
@@ -115,34 +122,42 @@ class JointProbabilityCalibrationModelExtension(Extension):
         super().__init__(OutputExtension(), ResultDirectoryExtension(), *dependencies)
 
     @override
-    def _get_arguments(self) -> Set[Argument]:
+    def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
         return {self.PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL, self.SAVE_JOINT_PROBABILITY_CALIBRATION_MODEL}
 
     @override
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: ExperimentMode):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
         sinks = []
-        value, options = self.PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL.get_value(
+        value, options = self.PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL.get_value_and_options(
             args, default=OutputArguments.PRINT_ALL.get_value(args))
 
         if value:
-            sinks.append(LogSink(options))
+            sinks.append(LogSink(options=options, source_factory=CsvFileSource))
 
-        value, options = self.SAVE_JOINT_PROBABILITY_CALIBRATION_MODEL.get_value(
+        value, options = self.SAVE_JOINT_PROBABILITY_CALIBRATION_MODEL.get_value_and_options(
             args, default=OutputArguments.SAVE_ALL.get_value(args))
+        base_dir = OutputArguments.BASE_DIR.get_value(args)
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
-        if value and result_directory:
+        if value and base_dir and result_directory:
             sinks.append(
-                CsvFileSink(directory=Path(result_directory),
+                CsvFileSink(directory=base_dir / result_directory,
                             create_directory=OutputArguments.CREATE_DIRS.get_value(args),
                             options=options))
 
         if sinks:
             writer = JointProbabilityCalibrationModelWriter().add_sinks(*sinks)
             experiment_builder.add_post_training_output_writers(writer)
+
+    @override
+    def get_supported_modes(self) -> Set[ExperimentMode]:
+        """
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+        """
+        return {ExperimentMode.SINGLE, ExperimentMode.BATCH, ExperimentMode.READ, ExperimentMode.RUN}

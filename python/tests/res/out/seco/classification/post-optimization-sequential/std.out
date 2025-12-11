@@ -1,35 +1,36 @@
 mlrl-testbed mlrl.seco --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --post-optimization sequential
+Checking if output files do already exist...
 Starting experiment using the classification algorithm "SeCoClassifier"...
-Writing output data to file "python/tests/res/tmp/metadata.yml"...
+DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Using separate training and test sets...
-Reading input data from file "python/tests/res/data/emotions.arff"...
-Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+DEBUG: Reading input data from file "python/tests/res/data/emotions.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 Fitting model to 397 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Predicting for 196 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted labels
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Example-wise F1         57.49
-Example-wise Jaccard    48.25
-Example-wise Precision  64.74
-Example-wise Recall     64.71
-Hamming Accuracy        74.06
-Hamming Loss            25.94
-Macro F1                54.09
-Macro Jaccard           40.14
-Macro Precision         65.4
-Macro Recall            61.82
-Micro F1                61.05
-Micro Jaccard           43.93
-Micro Precision         58.58
-Micro Recall            63.73
-Subset 0/1 Loss         78.57
-Subset Accuracy         21.43
+Example-wise F1 (↑)         57.49
+Example-wise Jaccard (↑)    48.25
+Example-wise Precision (↑)  64.74
+Example-wise Recall (↑)     64.71
+Hamming Accuracy (↑)        74.06
+Hamming Loss (↓)            25.94
+Macro F1 (↑)                54.09
+Macro Jaccard (↑)           40.14
+Macro Precision (↑)         65.4
+Macro Recall (↑)            61.82
+Micro F1 (↑)                61.05
+Micro Jaccard (↑)           43.93
+Micro Precision (↑)         58.58
+Micro Recall (↑)            63.73
+Subset 0/1 Loss (↓)         78.57
+Subset Accuracy (↑)         21.43
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Successfully finished experiment after <duration>

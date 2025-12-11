@@ -35,13 +35,11 @@ class LabelVectorHistogram:
     Stores unique label vectors and their respective frequency.
     """
 
-    def __init__(self, num_labels: int, unique_label_vectors: Optional[List[LabelVector]] = None):
+    def __init__(self, unique_label_vectors: Optional[List[LabelVector]] = None):
         """
-        :param num_labels:              The total number of available labels
-        :param unique_label_vectors:    A list that contains the unique label vectors, as well as their frequency, or
-                                        None if not label vectors should be stored
+        :param unique_label_vectors: A list that contains the unique label vectors, as well as their frequency, or None
+                                     if not label vectors should be stored
         """
-        self.num_labels = num_labels
         self.unique_label_vectors = unique_label_vectors if unique_label_vectors else []
 
     @staticmethod
@@ -66,4 +64,4 @@ class LabelVectorHistogram:
             label_vector = np.asarray([int(label_index) for label_index in label_vector_string.split(separator)])
             unique_label_vectors.append(LabelVector(label_indices=label_vector, frequency=frequency))
 
-        return LabelVectorHistogram(dataset.num_outputs, unique_label_vectors)
+        return LabelVectorHistogram(unique_label_vectors)

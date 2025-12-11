@@ -1,215 +1,216 @@
-mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --save-evaluation true --problem-type regression --data-split cross-validation --save-models true --load-models true --model-load-dir models --model-save-dir models
+mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --data-split cross-validation --save-models true --load-models true --model-load-dir models --model-save-dir models
+Checking if output files do already exist...
 Starting experiment using the regression algorithm "BoomerRegressor"...
-Writing output data to file "python/tests/res/tmp/metadata.yml"...
+DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Performing full 10-fold cross validation...
 Fold 1 / 10:
-Reading input data from file "python/tests/res/data/atp7d.arff"...
-Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
-Reading input data from file "models/model_fold-1.pickle"...
-Failed to unpickle file "models/model_fold-1.pickle"
+DEBUG: Reading input data from file "python/tests/res/data/atp7d.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
+DEBUG: Reading input data from file "models/model_fold-1.pickle"...
+ERROR: The file "models/model_fold-1.pickle" does not exist
 Fitting model to 266 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 30 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 1):
 
-Mean Absolute Error               28.78
-Mean Absolute Percentage Error     0.08
-Mean Squared Error              2827.78
-Median Absolute Error             14.58
+Mean Absolute Error (↓)               28.78
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2827.78
+Median Absolute Error (↓)             14.58
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-1.csv"...
-Writing output data to file "python/tests/res/tmp/models/model_fold-1.pickle"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/models/model_fold-1.pickle"...
 Fold 2 / 10:
-Reading input data from file "models/model_fold-2.pickle"...
-Failed to unpickle file "models/model_fold-2.pickle"
+DEBUG: Reading input data from file "models/model_fold-2.pickle"...
+ERROR: The file "models/model_fold-2.pickle" does not exist
 Fitting model to 266 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 30 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 2):
 
-Mean Absolute Error               23.5
-Mean Absolute Percentage Error     0.06
-Mean Squared Error              1826.78
-Median Absolute Error             13.96
+Mean Absolute Error (↓)               23.5
+Mean Absolute Percentage Error (↓)     0.06
+Mean Squared Error (↓)              1826.78
+Median Absolute Error (↓)             13.96
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-2.csv"...
-Writing output data to file "python/tests/res/tmp/models/model_fold-2.pickle"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/models/model_fold-2.pickle"...
 Fold 3 / 10:
-Reading input data from file "models/model_fold-3.pickle"...
-Failed to unpickle file "models/model_fold-3.pickle"
+DEBUG: Reading input data from file "models/model_fold-3.pickle"...
+ERROR: The file "models/model_fold-3.pickle" does not exist
 Fitting model to 266 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 30 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 3):
 
-Mean Absolute Error               32.95
-Mean Absolute Percentage Error     0.08
-Mean Squared Error              3917.13
-Median Absolute Error             15.45
+Mean Absolute Error (↓)               32.95
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              3917.13
+Median Absolute Error (↓)             15.45
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-3.csv"...
-Writing output data to file "python/tests/res/tmp/models/model_fold-3.pickle"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-3.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/models/model_fold-3.pickle"...
 Fold 4 / 10:
-Reading input data from file "models/model_fold-4.pickle"...
-Failed to unpickle file "models/model_fold-4.pickle"
+DEBUG: Reading input data from file "models/model_fold-4.pickle"...
+ERROR: The file "models/model_fold-4.pickle" does not exist
 Fitting model to 266 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 30 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 4):
 
-Mean Absolute Error              18.68
-Mean Absolute Percentage Error    0.06
-Mean Squared Error              750.6
-Median Absolute Error            12.73
+Mean Absolute Error (↓)              18.68
+Mean Absolute Percentage Error (↓)    0.06
+Mean Squared Error (↓)              750.6
+Median Absolute Error (↓)            12.73
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-4.csv"...
-Writing output data to file "python/tests/res/tmp/models/model_fold-4.pickle"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-4.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/models/model_fold-4.pickle"...
 Fold 5 / 10:
-Reading input data from file "models/model_fold-5.pickle"...
-Failed to unpickle file "models/model_fold-5.pickle"
+DEBUG: Reading input data from file "models/model_fold-5.pickle"...
+ERROR: The file "models/model_fold-5.pickle" does not exist
 Fitting model to 266 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 30 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 5):
 
-Mean Absolute Error               28.76
-Mean Absolute Percentage Error     0.08
-Mean Squared Error              2439.06
-Median Absolute Error             12.68
+Mean Absolute Error (↓)               29.23
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2516.64
+Median Absolute Error (↓)             12.87
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-5.csv"...
-Writing output data to file "python/tests/res/tmp/models/model_fold-5.pickle"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-5.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/models/model_fold-5.pickle"...
 Fold 6 / 10:
-Reading input data from file "models/model_fold-6.pickle"...
-Failed to unpickle file "models/model_fold-6.pickle"
+DEBUG: Reading input data from file "models/model_fold-6.pickle"...
+ERROR: The file "models/model_fold-6.pickle" does not exist
 Fitting model to 266 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 30 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 6):
 
-Mean Absolute Error              16.77
-Mean Absolute Percentage Error    0.05
-Mean Squared Error              711.67
-Median Absolute Error            10.87
+Mean Absolute Error (↓)              16.77
+Mean Absolute Percentage Error (↓)    0.05
+Mean Squared Error (↓)              711.67
+Median Absolute Error (↓)            10.87
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-6.csv"...
-Writing output data to file "python/tests/res/tmp/models/model_fold-6.pickle"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-6.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/models/model_fold-6.pickle"...
 Fold 7 / 10:
-Reading input data from file "models/model_fold-7.pickle"...
-Failed to unpickle file "models/model_fold-7.pickle"
+DEBUG: Reading input data from file "models/model_fold-7.pickle"...
+ERROR: The file "models/model_fold-7.pickle" does not exist
 Fitting model to 267 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 29 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 7):
 
-Mean Absolute Error               24.33
-Mean Absolute Percentage Error     0.06
-Mean Squared Error              1692.33
-Median Absolute Error             12.87
+Mean Absolute Error (↓)               24.53
+Mean Absolute Percentage Error (↓)     0.07
+Mean Squared Error (↓)              1697.13
+Median Absolute Error (↓)             12.87
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-7.csv"...
-Writing output data to file "python/tests/res/tmp/models/model_fold-7.pickle"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-7.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/models/model_fold-7.pickle"...
 Fold 8 / 10:
-Reading input data from file "models/model_fold-8.pickle"...
-Failed to unpickle file "models/model_fold-8.pickle"
+DEBUG: Reading input data from file "models/model_fold-8.pickle"...
+ERROR: The file "models/model_fold-8.pickle" does not exist
 Fitting model to 267 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 29 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 8):
 
-Mean Absolute Error               21.27
-Mean Absolute Percentage Error     0.06
-Mean Squared Error              1197
-Median Absolute Error             13.1
+Mean Absolute Error (↓)               21.26
+Mean Absolute Percentage Error (↓)     0.06
+Mean Squared Error (↓)              1195.54
+Median Absolute Error (↓)             12.97
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-8.csv"...
-Writing output data to file "python/tests/res/tmp/models/model_fold-8.pickle"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-8.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/models/model_fold-8.pickle"...
 Fold 9 / 10:
-Reading input data from file "models/model_fold-9.pickle"...
-Failed to unpickle file "models/model_fold-9.pickle"
+DEBUG: Reading input data from file "models/model_fold-9.pickle"...
+ERROR: The file "models/model_fold-9.pickle" does not exist
 Fitting model to 267 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 29 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 9):
 
-Mean Absolute Error               23.17
-Mean Absolute Percentage Error     0.06
-Mean Squared Error              2005.85
-Median Absolute Error             13.7
+Mean Absolute Error (↓)               23.17
+Mean Absolute Percentage Error (↓)     0.06
+Mean Squared Error (↓)              2005.85
+Median Absolute Error (↓)             13.7
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-9.csv"...
-Writing output data to file "python/tests/res/tmp/models/model_fold-9.pickle"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-9.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/models/model_fold-9.pickle"...
 Fold 10 / 10:
-Reading input data from file "models/model_fold-10.pickle"...
-Failed to unpickle file "models/model_fold-10.pickle"
+DEBUG: Reading input data from file "models/model_fold-10.pickle"...
+ERROR: The file "models/model_fold-10.pickle" does not exist
 Fitting model to 267 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 29 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 10):
 
-Mean Absolute Error               32.52
-Mean Absolute Percentage Error     0.08
-Mean Squared Error              2710.9
-Median Absolute Error             18.24
+Mean Absolute Error (↓)               32.52
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2710.9
+Median Absolute Error (↓)             18.24
 
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-10.csv"...
 Evaluation result for test data (Average across 10 folds):
 
-Mean Absolute Error               25.07  ±5.25
-Mean Absolute Percentage Error     0.07  ±0.01
-Mean Squared Error              2007.91  ±951.23
-Median Absolute Error             13.82  ±1.88
+Mean Absolute Error (↓)               25.14  ±5.28
+Mean Absolute Percentage Error (↓)     0.07  ±0.01
+Mean Squared Error (↓)              2016     ±954.99
+Median Absolute Error (↓)             13.82  ±1.88
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-10.csv"...
-Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-Writing output data to file "python/tests/res/tmp/models/model_fold-10.pickle"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/models/model_fold-10.pickle"...
 Successfully finished experiment after <duration>

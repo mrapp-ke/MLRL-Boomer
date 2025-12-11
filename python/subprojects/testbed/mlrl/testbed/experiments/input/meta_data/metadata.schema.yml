@@ -1,0 +1,5 @@
+---
+version: str()
+timestamp: str()
+command: str()
+child-commands: list(str(), required=False)

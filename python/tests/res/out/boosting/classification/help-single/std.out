@@ -1,426 +1,319 @@
 mlrl-testbed mlrl.boosting --mode single --help
-usage: mlrl-testbed [-r RUNNABLE] [-v] [--mode MODE] [--base-dir BASE_DIR]
-                    [--binary-predictor BINARY_PREDICTOR]
-                    [--create-dirs CREATE_DIRS] [--data-dir DATA_DIR]
-                    [--data-split DATA_SPLIT] [--dataset DATASET]
-                    [--default-rule DEFAULT_RULE]
-                    [--exit-on-error EXIT_ON_ERROR]
-                    [--feature-binning FEATURE_BINNING]
-                    [--feature-format FEATURE_FORMAT]
-                    [--feature-sampling FEATURE_SAMPLING]
-                    [--global-pruning GLOBAL_PRUNING] [--head-type HEAD_TYPE]
-                    [--holdout HOLDOUT]
-                    [--incremental-evaluation INCREMENTAL_EVALUATION]
-                    [--instance-sampling INSTANCE_SAMPLING]
-                    [--joint-probability-calibration JOINT_PROBABILITY_CALIBRATION]
-                    [--l1-regularization-weight L1_REGULARIZATION_WEIGHT]
-                    [--l2-regularization-weight L2_REGULARIZATION_WEIGHT]
-                    [--label-binning LABEL_BINNING]
-                    [--load-models LOAD_MODELS]
-                    [--load-parameters LOAD_PARAMETERS]
-                    [--log-level LOG_LEVEL] [--loss LOSS]
-                    [--marginal-probability-calibration MARGINAL_PROBABILITY_CALIBRATION]
-                    [--max-rules MAX_RULES] [--model-load-dir MODEL_LOAD_DIR]
-                    [--model-save-dir MODEL_SAVE_DIR]
-                    [--one-hot-encoding ONE_HOT_ENCODING]
-                    [--output-format OUTPUT_FORMAT]
-                    [--output-sampling OUTPUT_SAMPLING]
-                    [--parallel-prediction PARALLEL_PREDICTION]
-                    [--parallel-rule-refinement PARALLEL_RULE_REFINEMENT]
-                    [--parallel-statistic-update PARALLEL_STATISTIC_UPDATE]
-                    [--parameter-load-dir PARAMETER_LOAD_DIR]
-                    [--parameter-save-dir PARAMETER_SAVE_DIR]
-                    [--post-optimization POST_OPTIMIZATION]
+usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE] [--base-dir BASE_DIR]
+                    [--create-dirs CREATE_DIRS] [--data-dir DATA_DIR] [--data-split DATA_SPLIT] [--dataset DATASET]
+                    [--dataset-format DATASET_FORMAT] [--if-input-missing IF_INPUT_MISSING]
+                    [--if-output-error IF_OUTPUT_ERROR] [--if-outputs-exist IF_OUTPUTS_EXIST]
+                    [--incremental-evaluation INCREMENTAL_EVALUATION] [--load-models LOAD_MODELS]
+                    [--load-parameters LOAD_PARAMETERS] [--model-load-dir MODEL_LOAD_DIR]
+                    [--model-save-dir MODEL_SAVE_DIR] [--one-hot-encoding ONE_HOT_ENCODING]
+                    [--parameter-load-dir PARAMETER_LOAD_DIR] [--parameter-save-dir PARAMETER_SAVE_DIR]
                     [--predict-for-test-data PREDICT_FOR_TEST_DATA]
-                    [--predict-for-training-data PREDICT_FOR_TRAINING_DATA]
-                    [--prediction-format PREDICTION_FORMAT]
-                    [--prediction-type PREDICTION_TYPE]
-                    [--print-all PRINT_ALL]
-                    [--print-data-characteristics PRINT_DATA_CHARACTERISTICS]
-                    [--print-evaluation PRINT_EVALUATION]
+                    [--predict-for-training-data PREDICT_FOR_TRAINING_DATA] [--prediction-format PREDICTION_FORMAT]
+                    [--prediction-type PREDICTION_TYPE] [--print-all PRINT_ALL]
+                    [--print-data-characteristics PRINT_DATA_CHARACTERISTICS] [--print-evaluation PRINT_EVALUATION]
                     [--print-ground-truth PRINT_GROUND_TRUTH]
                     [--print-joint-probability-calibration-model PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL]
                     [--print-label-vectors PRINT_LABEL_VECTORS]
                     [--print-marginal-probability-calibration-model PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL]
-                    [--print-model-characteristics PRINT_MODEL_CHARACTERISTICS]
+                    [--print-meta-data PRINT_META_DATA] [--print-model-characteristics PRINT_MODEL_CHARACTERISTICS]
                     [--print-parameters PRINT_PARAMETERS]
                     [--print-prediction-characteristics PRINT_PREDICTION_CHARACTERISTICS]
-                    [--print-predictions PRINT_PREDICTIONS]
-                    [--print-rules PRINT_RULES]
-                    [--probability-predictor PROBABILITY_PREDICTOR]
-                    [--problem-type PROBLEM_TYPE]
-                    [--random-state RANDOM_STATE] [--result-dir RESULT_DIR]
-                    [--rule-induction RULE_INDUCTION]
-                    [--rule-pruning RULE_PRUNING] [--save-all SAVE_ALL]
-                    [--save-data-characteristics SAVE_DATA_CHARACTERISTICS]
-                    [--save-evaluation SAVE_EVALUATION]
+                    [--print-predictions PRINT_PREDICTIONS] [--print-rules PRINT_RULES] [--problem-type PROBLEM_TYPE]
+                    [--random-state RANDOM_STATE] [--result-dir RESULT_DIR] [--save-all SAVE_ALL]
+                    [--save-data-characteristics SAVE_DATA_CHARACTERISTICS] [--save-evaluation SAVE_EVALUATION]
                     [--save-ground-truth SAVE_GROUND_TRUTH]
                     [--save-joint-probability-calibration-model SAVE_JOINT_PROBABILITY_CALIBRATION_MODEL]
                     [--save-label-vectors SAVE_LABEL_VECTORS]
                     [--save-marginal-probability-calibration-model SAVE_MARGINAL_PROBABILITY_CALIBRATION_MODEL]
-                    [--save-meta-data SAVE_META_DATA]
-                    [--save-model-characteristics SAVE_MODEL_CHARACTERISTICS]
-                    [--save-models SAVE_MODELS]
-                    [--save-parameters SAVE_PARAMETERS]
+                    [--save-meta-data SAVE_META_DATA] [--save-model-characteristics SAVE_MODEL_CHARACTERISTICS]
+                    [--save-models SAVE_MODELS] [--save-parameters SAVE_PARAMETERS]
                     [--save-prediction-characteristics SAVE_PREDICTION_CHARACTERISTICS]
-                    [--save-predictions SAVE_PREDICTIONS]
-                    [--save-rules SAVE_RULES] [--shrinkage SHRINKAGE]
-                    [--sparse-feature-value SPARSE_FEATURE_VALUE]
-                    [--statistic-format STATISTIC_FORMAT]
-                    [--statistic-type STATISTIC_TYPE]
-                    [--time-limit TIME_LIMIT]
-                    [--wipe-result-dir WIPE_RESULT_DIR] [-h]
+                    [--save-predictions SAVE_PREDICTIONS] [--save-rules SAVE_RULES]
+                    [--sparse-feature-value SPARSE_FEATURE_VALUE] [--binary-predictor BINARY_PREDICTOR]
+                    [--default-rule DEFAULT_RULE] [--feature-binning FEATURE_BINNING] [--feature-format FEATURE_FORMAT]
+                    [--feature-sampling FEATURE_SAMPLING] [--global-pruning GLOBAL_PRUNING] [--head-type HEAD_TYPE]
+                    [--holdout HOLDOUT] [--instance-sampling INSTANCE_SAMPLING]
+                    [--joint-probability-calibration JOINT_PROBABILITY_CALIBRATION]
+                    [--l1-regularization-weight L1_REGULARIZATION_WEIGHT]
+                    [--l2-regularization-weight L2_REGULARIZATION_WEIGHT] [--label-binning LABEL_BINNING] [--loss LOSS]
+                    [--marginal-probability-calibration MARGINAL_PROBABILITY_CALIBRATION] [--max-rules MAX_RULES]
+                    [--output-format OUTPUT_FORMAT] [--output-sampling OUTPUT_SAMPLING]
+                    [--parallel-prediction PARALLEL_PREDICTION] [--parallel-rule-refinement PARALLEL_RULE_REFINEMENT]
+                    [--parallel-statistic-update PARALLEL_STATISTIC_UPDATE] [--post-optimization POST_OPTIMIZATION]
+                    [--probability-predictor PROBABILITY_PREDICTOR] [--rule-induction RULE_INDUCTION]
+                    [--rule-pruning RULE_PRUNING] [--shrinkage SHRINKAGE] [--statistic-format STATISTIC_FORMAT]
+                    [--statistic-type STATISTIC_TYPE] [--time-limit TIME_LIMIT] [-h]
                     runnable_module_or_source_file
 
 A command line utility for training and evaluating machine learning algorithms
 
 positional arguments:
   runnable_module_or_source_file
-                        The Python module or source file of the program that
-                        should be run
+                        The Python module or source file of the program that should be run
 
 options:
   -r, --runnable RUNNABLE
-                        The Python class name of the program that should be
-                        run
+                        The Python class name of the program that should be run
   -v, --version         Display information about the program.
-  --mode MODE           The mode of operation to be used. Must be one of
-                        {"batch", "single"}.
-  --base-dir BASE_DIR   If relative paths to directories, where files should
-                        be saved, are given, they are considered relative to
-                        the directory specified via this argument.
-  --binary-predictor BINARY_PREDICTOR
-                        The name of the strategy to be used for predicting
-                        binary labels If set to "auto", the most suitable
-                        strategy is chosen automatically based on the
-                        parameter --loss. Must be one of {"auto", "example-
-                        wise", "gfm", "output-wise"}. For additional options
-                        refer to the documentation.
-  --create-dirs CREATE_DIRS
-                        Whether the directories, where files should be saved,
-                        should be created automatically, if they do not exist,
-                        or not. Must be one of {"false", "true"}.
-  --data-dir DATA_DIR   The path to the directory where the dataset files are
-                        located.
-  --data-split DATA_SPLIT
-                        The strategy to be used for splitting the available
-                        data into training and test sets. Must be one of
-                        {"cross-validation", "none", "train-test"}. For
-                        additional options refer to the documentation.
-  --dataset DATASET     The name of the dataset.
-  --default-rule DEFAULT_RULE
-                        Whether a default rule should be induced or not. Must
-                        be one of {"auto", "false", "true"}.
-  --exit-on-error EXIT_ON_ERROR
-                        Whether the program should exit if an error occurs
-                        while writing experimental results or not. Must be one
-                        of {"false", "true"}.
-  --feature-binning FEATURE_BINNING
-                        The name of the strategy to be used for feature
-                        binning. Must be one of {"equal-frequency", "equal-
-                        width", "none"}. For additional options refer to the
-                        documentation.
-  --feature-format FEATURE_FORMAT
-                        The format to be used for the representation of the
-                        feature matrix. Must be one of {"auto", "dense",
-                        "sparse"}.
-  --feature-sampling FEATURE_SAMPLING
-                        The name of the strategy to be used for feature
-                        sampling. Must be one of {"none", "without-
-                        replacement"}. For additional options refer to the
-                        documentation.
-  --global-pruning GLOBAL_PRUNING
-                        The name of the strategy to be used for pruning entire
-                        rules. Must be one of {"none", "post-pruning", "pre-
-                        pruning"}. For additional options refer to the
-                        documentation.
-  --head-type HEAD_TYPE
-                        The type of the rule heads that should be used If set
-                        to "auto", the most suitable strategy is chosen
-                        automatically based on the parameter --loss. Must be
-                        one of {"auto", "complete", "partial-dynamic",
-                        "partial-fixed", "single"}. For additional options
-                        refer to the documentation.
-  --holdout HOLDOUT     The name of the strategy to be used for creating a
-                        holdout set. Must be one of {"none", "random",
-                        "stratified-example-wise", "stratified-output-wise"}.
-                        For additional options refer to the documentation.
-  --incremental-evaluation INCREMENTAL_EVALUATION
-                        Whether models should be evaluated repeatedly, using
-                        only a subset of the induced rules with increasing
-                        size, or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
-  --instance-sampling INSTANCE_SAMPLING
-                        The name of the strategy to be used for instance
-                        sampling. Must be one of {"none", "stratified-example-
-                        wise", "stratified-output-wise", "with-replacement",
-                        "without-replacement"}. For additional options refer
-                        to the documentation.
-  --joint-probability-calibration JOINT_PROBABILITY_CALIBRATION
-                        The name of the method to be used for the calibration
-                        of joint probabilities. Must be one of {"isotonic",
-                        "none"}. For additional options refer to the
-                        documentation.
-  --l1-regularization-weight L1_REGULARIZATION_WEIGHT
-                        The weight of the L1 regularization. Must be at least
-                        0
-  --l2-regularization-weight L2_REGULARIZATION_WEIGHT
-                        The weight of the L2 regularization. Must be at least
-                        0
-  --label-binning LABEL_BINNING
-                        The name of the strategy to be used for gradient-based
-                        label binning (GBLB) If set to "auto", the most
-                        suitable strategy is chosen automatically based on the
-                        parameters --loss and --head-type. Must be one of
-                        {"auto", "equal-width", "none"}. For additional
-                        options refer to the documentation.
-  --load-models LOAD_MODELS
-                        Whether models should be loaded from input files or
-                        not. Must be one of {"false", "true"}.
-  --load-parameters LOAD_PARAMETERS
-                        Whether parameters should be loaded from input files
-                        or not. Must be one of {"false", "true"}.
   --log-level LOG_LEVEL
-                        The log level to be used. Must be one of {"critical",
-                        "debug", "error", "info", "notset", "warn"}.
-  --loss LOSS           The name of the loss function to be minimized during
-                        training. Must be one of {"logistic-decomposable",
-                        "logistic-non-decomposable", "squared-error-
-                        decomposable", "squared-error-non-decomposable",
-                        "squared-hinge-decomposable", "squared-hinge-non-
-                        decomposable"}.
-  --marginal-probability-calibration MARGINAL_PROBABILITY_CALIBRATION
-                        The name of the method to be used for the calibration
-                        of marginal probabilities. Must be one of {"isotonic",
-                        "none"}. For additional options refer to the
-                        documentation.
-  --max-rules MAX_RULES
-                        The maximum number of rules to be induced. Must be at
-                        least 1 or 0, if the number of rules should not be
-                        restricted
+                        The log level to be used. Must be one of {"critical", "debug", "error", "info", "notset",
+                        "warn"}. The default value is "info".
+  --mode MODE           The mode of operation to be used. Must be one of {"batch", "read", "run", "single"}. The default
+                        value is "single".
+  -h, --help            Show this help message and exit
+
+control arguments:
+  --base-dir BASE_DIR   If relative paths to directories, where files should be saved, are given, they are considered
+                        relative to the directory specified via this argument. The default value is "experiments/YYY-MM-
+                        DD_hh-mm".
+  --create-dirs CREATE_DIRS
+                        Whether the directories, where files should be saved, should be created automatically, if they
+                        do not exist, or not. Must be one of {"false", "true"}. The default value is "true".
+  --data-dir DATA_DIR   The path to the directory where the dataset files are located.
+  --data-split DATA_SPLIT
+                        The strategy to be used for splitting the available data into training and test sets. Must be
+                        one of {"cross-validation", "none", "train-test"}. For additional options refer to the
+                        documentation. The default value is "train-test".
+  --dataset DATASET     The name of the dataset.
+  --dataset-format DATASET_FORMAT
+                        The dataset format to be used. Must be one of {"arff", "auto", "svm"}. The default value is
+                        "auto".
+  --if-input-missing IF_INPUT_MISSING
+                        What to do if an error occurs while reading input data. Must be one of {"exit", "log"}. The
+                        default value is "log".
+  --if-output-error IF_OUTPUT_ERROR
+                        Whether the program should exit if an error occurs while writing experimental results or not.
+                        Must be one of {"exit", "log"}. The default value is "log".
+  --if-outputs-exist IF_OUTPUTS_EXIST
+                        What to do if experimental results do already exist. Must be one of {"cancel", "overwrite"}. The
+                        default value is "cancel".
+  --incremental-evaluation INCREMENTAL_EVALUATION
+                        Whether models should be evaluated repeatedly, using only a subset of the induced rules with
+                        increasing size, or not. Must be one of {"false", "true"}. For additional options refer to the
+                        documentation. The default value is "false".
+  --load-models LOAD_MODELS
+                        Whether models should be loaded from input files or not. Must be one of {"false", "true"}. The
+                        default value is "false".
+  --load-parameters LOAD_PARAMETERS
+                        Whether parameters should be loaded from input files or not. Must be one of {"false", "true"}.
+                        The default value is "false".
   --model-load-dir MODEL_LOAD_DIR
-                        The path to the directory from which models should be
-                        loaded.
+                        The path to the directory from which models should be loaded. The default value is "models".
   --model-save-dir MODEL_SAVE_DIR
-                        The path to the directory where models should be
-                        saved.
+                        The path to the directory where models should be saved. The default value is "models".
   --one-hot-encoding ONE_HOT_ENCODING
-                        Whether one-hot-encoding should be used to encode
-                        nominal features or not. Must be one of {"false",
-                        "true"}.
-  --output-format OUTPUT_FORMAT
-                        The format to be used for the representation of the
-                        output matrix. Must be one of {"auto", "dense",
-                        "sparse"}.
-  --output-sampling OUTPUT_SAMPLING
-                        The name of the strategy to be used for output
-                        sampling. Must be one of {"none", "round-robin",
-                        "without-replacement"}. For additional options refer
-                        to the documentation.
-  --parallel-prediction PARALLEL_PREDICTION
-                        Whether predictions for different examples should be
-                        obtained in parallel or not. Must be one of {"false",
-                        "true"}. For additional options refer to the
-                        documentation.
-  --parallel-rule-refinement PARALLEL_RULE_REFINEMENT
-                        Whether potential refinements of rules should be
-                        searched for in parallel or not. Must be one of
-                        {"false", "true"}. For additional options refer to the
-                        documentation.
-  --parallel-statistic-update PARALLEL_STATISTIC_UPDATE
-                        Whether the statistics for different examples should
-                        be updated in parallel or not. Must be one of
-                        {"false", "true"}. For additional options refer to the
-                        documentation.
+                        Whether one-hot-encoding should be used to encode nominal features or not. Must be one of
+                        {"false", "true"}. The default value is "false".
   --parameter-load-dir PARAMETER_LOAD_DIR
-                        The path to the directory from which parameters to be
-                        used by the algorithm should be loaded.
+                        The path to the directory from which parameters to be used by the algorithm should be loaded.
+                        The default value is "parameters".
   --parameter-save-dir PARAMETER_SAVE_DIR
-                        The path to the directory where configuration files,
-                        which specify the parameters used by the algorithm,
-                        should be saved.
-  --post-optimization POST_OPTIMIZATION
-                        The method that should be used for post-optimization
-                        of a previous learned model. Must be one of {"none",
-                        "sequential"}. For additional options refer to the
-                        documentation.
+                        The path to the directory where configuration files, which specify the parameters used by the
+                        algorithm, should be saved. The default value is "parameters".
   --predict-for-test-data PREDICT_FOR_TEST_DATA
-                        Whether predictions should be obtained for the test
-                        data or not. Must be one of {"false", "true"}.
+                        Whether predictions should be obtained for the test data or not. Must be one of {"false",
+                        "true"}. The default value is "true".
   --predict-for-training-data PREDICT_FOR_TRAINING_DATA
-                        Whether predictions should be obtained for the
-                        training data or not. Must be one of {"false",
-                        "true"}.
+                        Whether predictions should be obtained for the training data or not. Must be one of {"false",
+                        "true"}. The default value is "false".
   --prediction-format PREDICTION_FORMAT
-                        The format to be used for the representation of
-                        predictions. Must be one of {"auto", "dense",
+                        The format to be used for the representation of predictions. Must be one of {"auto", "dense",
                         "sparse"}.
   --prediction-type PREDICTION_TYPE
-                        The type of predictions that should be obtained from
-                        the learner. Must be one of {"binary",
-                        "probabilities", "scores"}.
+                        The type of predictions that should be obtained from the learner. Must be one of {"binary",
+                        "probabilities", "scores"}. The default value is "binary".
   --print-all PRINT_ALL
-                        Whether all output data should be printed on the
-                        console or not. Must be one of {"false", "true"}.
+                        Whether all output data should be printed on the console or not. Must be one of {"false",
+                        "true"}. The default value is "false".
   --print-data-characteristics PRINT_DATA_CHARACTERISTICS
-                        Whether the characteristics of the training data
-                        should be printed on the console or not. Must be one
-                        of {"false", "true"}. For additional options refer to
-                        the documentation.
+                        Whether the characteristics of the training data should be printed on the console or not. Must
+                        be one of {"false", "true"}. For additional options refer to the documentation. The default
+                        value is "false".
   --print-evaluation PRINT_EVALUATION
-                        Whether the evaluation results should be printed on
-                        the console or not. Must be one of {"false", "true"}.
-                        For additional options refer to the documentation.
+                        Whether the evaluation results should be printed on the console or not. Must be one of {"false",
+                        "true"}. For additional options refer to the documentation. The default value is "true".
   --print-ground-truth PRINT_GROUND_TRUTH
-                        Whether the ground truth should be printed on the
-                        console or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        Whether the ground truth should be printed on the console or not. Must be one of {"false",
+                        "true"}. For additional options refer to the documentation. The default value is "false".
   --print-joint-probability-calibration-model PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL
-                        Whether the model for the calibration of joint
-                        probabilities should be printed on the console or not.
-                        Must be one of {"false", "true"}. For additional
-                        options refer to the documentation.
+                        Whether the model for the calibration of joint probabilities should be printed on the console or
+                        not. Must be one of {"false", "true"}. For additional options refer to the documentation. The
+                        default value is "false".
   --print-label-vectors PRINT_LABEL_VECTORS
-                        Whether the unique label vectors contained in the
-                        training data should be printed on the console or not.
-                        Must be one of {"false", "true"}. For additional
-                        options refer to the documentation.
+                        Whether the unique label vectors contained in the training data should be printed on the console
+                        or not. Must be one of {"false", "true"}. The default value is "false".
   --print-marginal-probability-calibration-model PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL
-                        Whether the model for the calibration of marginal
-                        probabilities should be printed on the console or not.
-                        Must be one of {"false", "true"}. For additional
-                        options refer to the documentation.
+                        Whether the model for the calibration of marginal probabilities should be printed on the console
+                        or not. Must be one of {"false", "true"}. For additional options refer to the documentation. The
+                        default value is "false".
+  --print-meta-data PRINT_META_DATA
+                        Whether meta-data should be printed on the console or not. Must be one of {"false", "true"}. The
+                        default value is "false".
   --print-model-characteristics PRINT_MODEL_CHARACTERISTICS
-                        Whether the characteristics of models should be
-                        printed on the console or not. Must be one of
-                        {"false", "true"}.
+                        Whether the characteristics of models should be printed on the console or not. Must be one of
+                        {"false", "true"}. The default value is "false".
   --print-parameters PRINT_PARAMETERS
-                        Whether the parameter setting should be printed on the
-                        console or not. Must be one of {"false", "true"}.
+                        Whether the parameter setting should be printed on the console or not. Must be one of {"false",
+                        "true"}. The default value is "false".
   --print-prediction-characteristics PRINT_PREDICTION_CHARACTERISTICS
-                        Whether the characteristics of binary predictions
-                        should be printed on the console or not. Does only
-                        have an effect if the argument --prediction-type is
-                        set to binary. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        Whether the characteristics of binary predictions should be printed on the console or not. Does
+                        only have an effect if the argument --prediction-type is set to binary. Must be one of {"false",
+                        "true"}. For additional options refer to the documentation. The default value is "false".
   --print-predictions PRINT_PREDICTIONS
-                        Whether predictions should be printed on the console
-                        or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        Whether predictions should be printed on the console or not. Must be one of {"false", "true"}.
+                        For additional options refer to the documentation. The default value is "false".
   --print-rules PRINT_RULES
-                        Whether the induced rules should be printed on the
-                        console or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
-  --probability-predictor PROBABILITY_PREDICTOR
-                        The name of the strategy to be used for predicting
-                        probabilities If set to "auto", the most suitable
-                        strategy is chosen automatically based on the
-                        parameter --loss. Must be one of {"auto",
-                        "marginalized", "output-wise"}. For additional options
-                        refer to the documentation.
+                        Whether the induced rules should be printed on the console or not. Must be one of {"false",
+                        "true"}. For additional options refer to the documentation. The default value is "false".
   --problem-type PROBLEM_TYPE
-                        The type of the machine learning problem to be solved.
-                        Must be one of {"classification", "regression"}.
+                        The type of the machine learning problem to be solved. Must be one of {"classification",
+                        "regression"}. The default value is "classification".
   --random-state RANDOM_STATE
-                        The seed to be used by random number generators. Must
-                        be at least 1.
+                        The seed to be used by random number generators. Must be at least 0. The default value is 1.
   --result-dir RESULT_DIR
-                        The path to the directory where experimental results
-                        should be saved.
-  --rule-induction RULE_INDUCTION
-                        The name of the algorithm to be used for the induction
-                        of individual rules. Must be one of {"top-down-beam-
-                        search", "top-down-greedy"}. For additional options
-                        refer to the documentation.
-  --rule-pruning RULE_PRUNING
-                        The name of the strategy to be used for pruning
-                        individual rules. Must be one of {"irep", "none"}.
-  --save-all SAVE_ALL   Whether all output data should be written to files or
-                        not. Must be one of {"false", "true"}.
+                        The path to the directory where experimental results should be saved. The default value is
+                        "results".
+  --save-all SAVE_ALL   Whether all output data should be written to files or not. Must be one of {"false", "true"}. The
+                        default value is "false".
   --save-data-characteristics SAVE_DATA_CHARACTERISTICS
-                        Whether the characteristics of the training data
-                        should be written to output files or not. Must be one
-                        of {"false", "true"}. For additional options refer to
-                        the documentation.
+                        Whether the characteristics of the training data should be written to output files or not. Must
+                        be one of {"false", "true"}. For additional options refer to the documentation. The default
+                        value is "false".
   --save-evaluation SAVE_EVALUATION
-                        Whether evaluation results should be written to output
-                        files or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        Whether evaluation results should be written to output files or not. Must be one of {"false",
+                        "true"}. For additional options refer to the documentation. The default value is "false".
   --save-ground-truth SAVE_GROUND_TRUTH
-                        Whether the ground truth should be written to output
-                        files or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        Whether the ground truth should be written to output files or not. Must be one of {"false",
+                        "true"}. For additional options refer to the documentation. The default value is "false".
   --save-joint-probability-calibration-model SAVE_JOINT_PROBABILITY_CALIBRATION_MODEL
-                        Whether the model for the calibration of joint
-                        probabilities should be written to an output file or
-                        not. Must be one of {"false", "true"}. For additional
-                        options refer to the documentation.
+                        Whether the model for the calibration of joint probabilities should be written to an output file
+                        or not. Must be one of {"false", "true"}. For additional options refer to the documentation. The
+                        default value is "false".
   --save-label-vectors SAVE_LABEL_VECTORS
-                        Whether the unique label vectors contained in the
-                        training data should be written to output files or
-                        not. Must be one of {"false", "true"}. For additional
-                        options refer to the documentation.
+                        Whether the unique label vectors contained in the training data should be written to output
+                        files or not. Must be one of {"false", "true"}. The default value is "false".
   --save-marginal-probability-calibration-model SAVE_MARGINAL_PROBABILITY_CALIBRATION_MODEL
-                        Whether the model for the calibration of marginal
-                        probabilities should be written to an output file or
-                        not. Must be one of {"false", "true"}. For additional
-                        options refer to the documentation.
+                        Whether the model for the calibration of marginal probabilities should be written to an output
+                        file or not. Must be one of {"false", "true"}. For additional options refer to the
+                        documentation. The default value is "false".
   --save-meta-data SAVE_META_DATA
-                        Whether meta-data should be saved to output files or
-                        not. If set to "auto", meta-data is saved whenever
-                        other output files are written as well. Must be one of
-                        {"auto", "false", "true"}.
+                        Whether meta-data should be saved to output files or not. If set to "auto", meta-data is saved
+                        whenever other output files are written as well. Must be one of {"auto", "false", "true"}. The
+                        default value is "auto".
   --save-model-characteristics SAVE_MODEL_CHARACTERISTICS
-                        Whether the characteristics of models should be
-                        written to output files or not. Must be one of
-                        {"false", "true"}.
+                        Whether the characteristics of models should be written to output files or not. Must be one of
+                        {"false", "true"}. The default value is "false".
   --save-models SAVE_MODELS
-                        Whether models should be saved to output files or not.
-                        Must be one of {"false", "true"}.
+                        Whether models should be saved to output files or not. Must be one of {"false", "true"}. The
+                        default value is "false".
   --save-parameters SAVE_PARAMETERS
-                        Whether the parameter setting should be written to
-                        output files or not. Must be one of {"false", "true"}.
+                        Whether the parameter setting should be written to output files or not. Must be one of {"false",
+                        "true"}. The default value is "false".
   --save-prediction-characteristics SAVE_PREDICTION_CHARACTERISTICS
-                        Whether the characteristics of binary predictions
-                        should be written to output files or not. Does only
-                        have an effect if the argument --prediction-type is
-                        set to binary and if the argument --result-dir is
-                        specified. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        Whether the characteristics of binary predictions should be written to output files or not. Does
+                        only have an effect if the argument --prediction-type is set to binary and if the argument
+                        --result-dir is specified. Must be one of {"false", "true"}. For additional options refer to the
+                        documentation. The default value is "false".
   --save-predictions SAVE_PREDICTIONS
-                        Whether predictions should be written to output files
-                        or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
+                        Whether predictions should be written to output files or not. Must be one of {"false", "true"}.
+                        For additional options refer to the documentation. The default value is "false".
   --save-rules SAVE_RULES
-                        Whether the induced rules should be written to a text
-                        file or not. Must be one of {"false", "true"}. For
-                        additional options refer to the documentation.
-  --shrinkage SHRINKAGE
-                        The shrinkage parameter, a.k.a. the learning rate, to
-                        be used. Must be in (0, 1].
+                        Whether the induced rules should be written to a text file or not. Must be one of {"false",
+                        "true"}. For additional options refer to the documentation. The default value is "false".
   --sparse-feature-value SPARSE_FEATURE_VALUE
-                        The value that should be used for sparse elements in
-                        the feature matrix. Does only have an effect if a
-                        sparse format is used for the representation of the
-                        feature matrix, depending on the argument --feature-
-                        format.
+                        The value that should be used for sparse elements in the feature matrix. Does only have an
+                        effect if a sparse format is used for the representation of the feature matrix, depending on the
+                        argument --feature-format. The default value is 0.0.
+
+algorithmic arguments:
+  --binary-predictor BINARY_PREDICTOR
+                        The name of the strategy to be used for predicting binary labels If set to "auto", the most
+                        suitable strategy is chosen automatically based on the parameter --loss. Must be one of {"auto",
+                        "example-wise", "gfm", "output-wise"}. For additional options refer to the documentation.
+  --default-rule DEFAULT_RULE
+                        Whether a default rule should be induced or not. Must be one of {"auto", "false", "true"}.
+  --feature-binning FEATURE_BINNING
+                        The name of the strategy to be used for feature binning. Must be one of {"equal-frequency",
+                        "equal-width", "none"}. For additional options refer to the documentation.
+  --feature-format FEATURE_FORMAT
+                        The format to be used for the representation of the feature matrix. Must be one of {"auto",
+                        "dense", "sparse"}.
+  --feature-sampling FEATURE_SAMPLING
+                        The name of the strategy to be used for feature sampling. Must be one of {"none", "without-
+                        replacement"}. For additional options refer to the documentation.
+  --global-pruning GLOBAL_PRUNING
+                        The name of the strategy to be used for pruning entire rules. Must be one of {"none", "post-
+                        pruning", "pre-pruning"}. For additional options refer to the documentation.
+  --head-type HEAD_TYPE
+                        The type of the rule heads that should be used If set to "auto", the most suitable strategy is
+                        chosen automatically based on the parameter --loss. Must be one of {"auto", "complete",
+                        "partial-dynamic", "partial-fixed", "single"}. For additional options refer to the
+                        documentation.
+  --holdout HOLDOUT     The name of the strategy to be used for creating a holdout set. Must be one of {"none",
+                        "random", "stratified-example-wise", "stratified-output-wise"}. For additional options refer to
+                        the documentation.
+  --instance-sampling INSTANCE_SAMPLING
+                        The name of the strategy to be used for instance sampling. Must be one of {"none", "stratified-
+                        example-wise", "stratified-output-wise", "with-replacement", "without-replacement"}. For
+                        additional options refer to the documentation.
+  --joint-probability-calibration JOINT_PROBABILITY_CALIBRATION
+                        The name of the method to be used for the calibration of joint probabilities. Must be one of
+                        {"isotonic", "none"}. For additional options refer to the documentation.
+  --l1-regularization-weight L1_REGULARIZATION_WEIGHT
+                        The weight of the L1 regularization. Must be at least 0.
+  --l2-regularization-weight L2_REGULARIZATION_WEIGHT
+                        The weight of the L2 regularization. Must be at least 0.
+  --label-binning LABEL_BINNING
+                        The name of the strategy to be used for gradient-based label binning (GBLB) If set to "auto",
+                        the most suitable strategy is chosen automatically based on the parameters --loss and --head-
+                        type. Must be one of {"auto", "equal-width", "none"}. For additional options refer to the
+                        documentation.
+  --loss LOSS           The name of the loss function to be minimized during training. Must be one of {"logistic-
+                        decomposable", "logistic-non-decomposable", "squared-error-decomposable", "squared-error-non-
+                        decomposable", "squared-hinge-decomposable", "squared-hinge-non-decomposable"}.
+  --marginal-probability-calibration MARGINAL_PROBABILITY_CALIBRATION
+                        The name of the method to be used for the calibration of marginal probabilities. Must be one of
+                        {"isotonic", "none"}. For additional options refer to the documentation.
+  --max-rules MAX_RULES
+                        The maximum number of rules to be induced. Must be at least 1 or 0, if the number of rules
+                        should not be restricted.
+  --output-format OUTPUT_FORMAT
+                        The format to be used for the representation of the output matrix. Must be one of {"auto",
+                        "dense", "sparse"}.
+  --output-sampling OUTPUT_SAMPLING
+                        The name of the strategy to be used for output sampling. Must be one of {"none", "round-robin",
+                        "without-replacement"}. For additional options refer to the documentation.
+  --parallel-prediction PARALLEL_PREDICTION
+                        Whether predictions for different examples should be obtained in parallel or not. Must be one of
+                        {"false", "true"}. For additional options refer to the documentation.
+  --parallel-rule-refinement PARALLEL_RULE_REFINEMENT
+                        Whether potential refinements of rules should be searched for in parallel or not. Must be one of
+                        {"false", "true"}. For additional options refer to the documentation.
+  --parallel-statistic-update PARALLEL_STATISTIC_UPDATE
+                        Whether the statistics for different examples should be updated in parallel or not. Must be one
+                        of {"false", "true"}. For additional options refer to the documentation.
+  --post-optimization POST_OPTIMIZATION
+                        The method that should be used for post-optimization of a previous learned model. Must be one of
+                        {"none", "sequential"}. For additional options refer to the documentation.
+  --probability-predictor PROBABILITY_PREDICTOR
+                        The name of the strategy to be used for predicting probabilities If set to "auto", the most
+                        suitable strategy is chosen automatically based on the parameter --loss. Must be one of {"auto",
+                        "marginalized", "output-wise"}. For additional options refer to the documentation.
+  --rule-induction RULE_INDUCTION
+                        The name of the algorithm to be used for the induction of individual rules. Must be one of
+                        {"top-down-beam-search", "top-down-greedy"}. For additional options refer to the documentation.
+  --rule-pruning RULE_PRUNING
+                        The name of the strategy to be used for pruning individual rules. Must be one of {"irep",
+                        "none"}.
+  --shrinkage SHRINKAGE
+                        The shrinkage parameter, a.k.a. the learning rate, to be used. Must be in (0, 1].
   --statistic-format STATISTIC_FORMAT
-                        The format to be used for the representation of
-                        gradients and Hessians If set to "auto", the most
-                        suitable format is chosen automatically based on the
-                        parameters --loss, --head-type, --default-rule and the
-                        characteristics of the label matrix. Must be one of
-                        {"auto", "dense", "sparse"}.
+                        The format to be used for the representation of gradients and Hessians If set to "auto", the
+                        most suitable format is chosen automatically based on the parameters --loss, --head-type,
+                        --default-rule and the characteristics of the label matrix. Must be one of {"auto", "dense",
+                        "sparse"}.
   --statistic-type STATISTIC_TYPE
-                        The data type for representing gradients and Hessians.
-                        Must be one of {"32-bit", "64-bit"}.
+                        The data type for representing gradients and Hessians. Must be one of {"32-bit", "64-bit"}.
   --time-limit TIME_LIMIT
-                        The duration in seconds after which the induction of
-                        rules should be canceled. Must be at least 1 or 0, if
-                        no time limit should be set
-  --wipe-result-dir WIPE_RESULT_DIR
-                        Whether all files in the directory specified via the
-                        argument --result-dir should be deleted before an
-                        experiment starts or not. Must be one of {"false",
-                        "true"}.
-  -h, --help            Show this help message and exit
+                        The duration in seconds after which the induction of rules should be canceled. Must be at least
+                        1 or 0, if no time limit should be set.
