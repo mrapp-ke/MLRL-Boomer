@@ -21,7 +21,7 @@ class BoomerIntegrationTestsMixin(IntegrationTests):
 
     @pytest.mark.parametrize('loss', [
         RegressionLossParameter.LOSS_SQUARED_ERROR_DECOMPOSABLE,
-        pytest.param(RegressionLossParameter.LOSS_SQUARED_ERROR_NON_DECOMPOSABLE, marks=pytest.mark.flaky(reruns=5)),
+        RegressionLossParameter.LOSS_SQUARED_ERROR_NON_DECOMPOSABLE,
     ])
     @pytest.mark.parametrize('statistic_type', [
         StatisticTypeParameter.STATISTIC_TYPE_FLOAT32,
