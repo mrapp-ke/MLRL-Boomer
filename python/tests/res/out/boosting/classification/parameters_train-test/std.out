@@ -1,4 +1,4 @@
-mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --parameter-save-dir results --save-evaluation true --data-split train-test --print-evaluation false --save-evaluation false --print-model-characteristics true --print-parameters true --save-parameters true --load-parameters true --parameter-load-dir python/tests/res/in/boosting
+mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --parameter-save-dir results --save-evaluation true --data-split train-test --print-evaluation false --save-evaluation false --print-parameters true --save-parameters true --load-parameters true --parameter-load-dir python/tests/res/in/boosting
 Checking if output files do already exist...
 Starting experiment using the classification algorithm "BoomerClassifier"...
 DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
@@ -17,27 +17,4 @@ Fitting model to 397 training examples...
 DEBUG: A dense matrix is used to store the feature values of the training examples
 DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
-Model characteristics:
-
-┌───────────────────────────────┬─────────┬─────────────────────────┬────────────────────────┬───────────────────────┬──────────────────────┬───────────────────────┬───────────────────────┐
-│ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
-├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
-│ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
-│ 9 local rules                 │       9 │                  77.78% │                 22.22% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
-└───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
-
-┌────────────────────────────────┬─────────┬────────────┬────────────┐
-│ Statistics about predictions   │   Total │   Positive │   Negative │
-├────────────────────────────────┼─────────┼────────────┼────────────┤
-│ Default rule                   │       6 │      0.00% │    100.00% │
-│ 9 local rules                  │      54 │     48.15% │     51.85% │
-└────────────────────────────────┴─────────┴────────────┴────────────┘
-
-┌─────────────────────────────┬───────────┬───────────┬───────────┐
-│ Statistics per local rule   │   Minimum │   Average │   Maximum │
-├─────────────────────────────┼───────────┼───────────┼───────────┤
-│ Conditions                  │         1 │         1 │         1 │
-│ Predictions                 │         6 │         6 │         6 │
-└─────────────────────────────┴───────────┴───────────┴───────────┘
-
 Successfully finished experiment after <duration>

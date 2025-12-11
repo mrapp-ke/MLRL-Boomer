@@ -1,4 +1,4 @@
-mlrl-testbed mlrl.seco --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --parameter-save-dir results --save-evaluation true --data-split cross-validation{first_fold=1,last_fold=1} --print-evaluation false --save-evaluation false --print-model-characteristics true --print-parameters true --save-parameters true --load-parameters true --parameter-load-dir python/tests/res/in/seco
+mlrl-testbed mlrl.seco --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --parameter-save-dir results --save-evaluation true --data-split cross-validation{first_fold=1,last_fold=1} --print-evaluation false --save-evaluation false --print-parameters true --save-parameters true --load-parameters true --parameter-load-dir python/tests/res/in/seco
 Checking if output files do already exist...
 Starting experiment using the classification algorithm "SeCoClassifier"...
 DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
@@ -18,27 +18,4 @@ Fitting model to 533 training examples...
 DEBUG: A dense matrix is used to store the feature values of the training examples
 DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
-Model characteristics (Fold 1):
-
-┌───────────────────────────────┬─────────┬─────────────────────────┬────────────────────────┬───────────────────────┬──────────────────────┬───────────────────────┬───────────────────────┐
-│ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
-├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
-│ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
-│ 9 local rules                 │       9 │                  44.44% │                 55.56% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
-└───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
-
-┌────────────────────────────────┬─────────┬────────────┬────────────┐
-│ Statistics about predictions   │   Total │   Positive │   Negative │
-├────────────────────────────────┼─────────┼────────────┼────────────┤
-│ Default rule                   │       6 │      0.00% │    100.00% │
-│ 9 local rules                  │       9 │    100.00% │      0.00% │
-└────────────────────────────────┴─────────┴────────────┴────────────┘
-
-┌─────────────────────────────┬───────────┬───────────┬───────────┐
-│ Statistics per local rule   │   Minimum │   Average │   Maximum │
-├─────────────────────────────┼───────────┼───────────┼───────────┤
-│ Conditions                  │         1 │         1 │         1 │
-│ Predictions                 │         1 │         1 │         1 │
-└─────────────────────────────┴───────────┴───────────┴───────────┘
-
 Successfully finished experiment after <duration>
