@@ -1,6 +1,6 @@
 command: mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp
   --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation
-  true --loss logistic-non-decomposable --statistic-type 32-bit --head-type partial-dynamic
-  --label-binning none --print-model-characteristics true
+  true --print-model-characteristics true --loss logistic-non-decomposable --statistic-type
+  32-bit --head-type partial-dynamic --label-binning none
 timestamp: <timestamp>
 version: <version>

@@ -1,8 +1,8 @@
 command: mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp
-  --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation
-  true --marginal-probability-calibration isotonic --print-marginal-probability-calibration-model
-  true --save-marginal-probability-calibration-model true --binary-predictor output-wise{based_on_probabilities=true}
-  --print-predictions true --print-ground-truth true --save-models true --load-models
-  true --model-load-dir models --model-save-dir models
+  --data-dir python/tests/res/data --dataset emotions --result-dir results --load-models
+  true --model-load-dir models --model-save-dir models --save-evaluation true --print-marginal-probability-calibration-model
+  true --save-marginal-probability-calibration-model true --print-predictions true
+  --print-ground-truth true --save-models true --marginal-probability-calibration
+  isotonic --binary-predictor output-wise{based_on_probabilities=true}
 timestamp: <timestamp>
 version: <version>
