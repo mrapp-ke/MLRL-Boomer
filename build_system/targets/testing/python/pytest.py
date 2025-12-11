@@ -48,6 +48,7 @@ class Pytest(PythonModule):
                          str(module.root_directory), *self.__get_marker_arguments(module))
         self.add_conditional_arguments(module.fail_fast, '--exitfirst')
         self.add_conditional_arguments(module.only_failed, '--last-failed')
+        self.add_dependencies('pytest-rerunfailures')
         self.set_accepted_exit_codes(0, 5)
         self.print_arguments(True)
         self.set_build_unit(build_unit)

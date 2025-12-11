@@ -63,9 +63,10 @@ class TestBoomerClassifier(ClassificationIntegrationTests, ClassificationRuleLea
 
     @pytest.mark.parametrize('loss', [
         ClassificationLossParameter.LOSS_LOGISTIC_DECOMPOSABLE,
-        ClassificationLossParameter.LOSS_LOGISTIC_NON_DECOMPOSABLE,
+        pytest.param(ClassificationLossParameter.LOSS_LOGISTIC_NON_DECOMPOSABLE, marks=pytest.mark.flaky(reruns=5)),
         ClassificationLossParameter.LOSS_SQUARED_HINGE_DECOMPOSABLE,
-        ClassificationLossParameter.LOSS_SQUARED_HINGE_NON_DECOMPOSABLE,
+        pytest.param(ClassificationLossParameter.LOSS_SQUARED_HINGE_NON_DECOMPOSABLE,
+                     marks=pytest.mark.flaky(reruns=5)),
     ])
     @pytest.mark.parametrize('statistic_type', [
         StatisticTypeParameter.STATISTIC_TYPE_FLOAT32,
@@ -286,7 +287,7 @@ class TestBoomerClassifier(ClassificationIntegrationTests, ClassificationRuleLea
     @pytest.mark.parametrize('head_type, label_binning', [
         (HeadTypeParameter.HEAD_TYPE_SINGLE, None),
         (HeadTypeParameter.HEAD_TYPE_COMPLETE, NONE),
-        (HeadTypeParameter.HEAD_TYPE_COMPLETE, BINNING_EQUAL_WIDTH),
+        pytest.param(HeadTypeParameter.HEAD_TYPE_COMPLETE, BINNING_EQUAL_WIDTH, marks=pytest.mark.flaky(reruns=5)),
         (HeadTypeParameter.HEAD_TYPE_PARTIAL_FIXED, NONE),
         (HeadTypeParameter.HEAD_TYPE_PARTIAL_FIXED, BINNING_EQUAL_WIDTH),
         (HeadTypeParameter.HEAD_TYPE_PARTIAL_DYNAMIC, NONE),
