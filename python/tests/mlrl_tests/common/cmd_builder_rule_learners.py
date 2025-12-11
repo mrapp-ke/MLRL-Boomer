@@ -22,8 +22,7 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
         :param sparse_feature_value:    The value that should be used for sparse elements in the feature matrix
         :return:                        The builder itself
         """
-        self.args.append('--sparse-feature-value')
-        self.args.append(str(sparse_feature_value))
+        self.add_algorithmic_argument('--sparse-feature-value', str(sparse_feature_value))
         return self
 
     def incremental_evaluation(self, incremental_evaluation: bool = True, step_size: int = 50):
@@ -35,13 +34,12 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
         :param step_size:               The number of additional rules to be evaluated at each repetition
         :return:                        The builder itself
         """
-        self.args.append('--incremental-evaluation')
         value = str(incremental_evaluation).lower()
 
         if incremental_evaluation:
             value += '{step_size=' + str(step_size) + '}'
 
-        self.args.append(value)
+        self.add_control_argument('--incremental-evaluation', value)
         return self
 
     def print_model_characteristics(self, print_model_characteristics: bool = True):
@@ -51,8 +49,7 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
         :param print_model_characteristics: True, if the characteristics of models should be printed, False otherwise
         :return:                            The builder itself
         """
-        self.args.append('--print-model-characteristics')
-        self.args.append(str(print_model_characteristics).lower())
+        self.add_control_argument('--print-model-characteristics', str(print_model_characteristics).lower())
         return self
 
     def save_model_characteristics(self, save_model_characteristics: bool = True):
@@ -63,8 +60,7 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
                                             False otherwise
         :return:                            The builder itself
         """
-        self.args.append('--save-model-characteristics')
-        self.args.append(str(save_model_characteristics).lower())
+        self.add_control_argument('--save-model-characteristics', str(save_model_characteristics).lower())
         return self
 
     def print_rules(self, print_rules: bool = True):
@@ -74,8 +70,7 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
         :param print_rules: True, if textual representations of rules should be printed, False otherwise
         :return:            The builder itself
         """
-        self.args.append('--print-rules')
-        self.args.append(str(print_rules).lower())
+        self.add_control_argument('--print-rules', str(print_rules).lower())
         return self
 
     def save_rules(self, save_rules: bool = True):
@@ -86,8 +81,7 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
                             otherwise
         :return:            The builder itself
         """
-        self.args.append('--save-rules')
-        self.args.append(str(save_rules).lower())
+        self.add_control_argument('--save-rules', str(save_rules).lower())
         return self
 
     def feature_format(self, feature_format: Optional[str] = SparsePolicy.FORCE_SPARSE):
@@ -98,8 +92,7 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
         :return:                The builder itself
         """
         if feature_format:
-            self.args.append('--feature-format')
-            self.args.append(feature_format)
+            self.add_algorithmic_argument('--feature-format', feature_format)
 
         return self
 
@@ -111,8 +104,7 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
         :return:                The builder itself
         """
         if output_format:
-            self.args.append('--output-format')
-            self.args.append(output_format)
+            self.add_algorithmic_argument('--output-format', output_format)
 
         return self
 
@@ -124,8 +116,7 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
         :return:                    The builder itself
         """
         if prediction_format:
-            self.args.append('--prediction-format')
-            self.args.append(prediction_format)
+            self.add_algorithmic_argument('--prediction-format', prediction_format)
 
         return self
 
@@ -137,8 +128,7 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
         :return:                    The builder itself
         """
         if instance_sampling:
-            self.args.append('--instance-sampling')
-            self.args.append(instance_sampling)
+            self.add_algorithmic_argument('--instance-sampling', instance_sampling)
 
         return self
 
@@ -150,8 +140,7 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
         :return:                    The builder itself
         """
         if feature_sampling:
-            self.args.append('--feature-sampling')
-            self.args.append(feature_sampling)
+            self.add_algorithmic_argument('--feature-sampling', feature_sampling)
 
         return self
 
@@ -163,8 +152,7 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
         :return:                The builder itself
         """
         if output_sampling:
-            self.args.append('--output-sampling')
-            self.args.append(output_sampling)
+            self.add_algorithmic_argument('--output-sampling', output_sampling)
 
         return self
 
@@ -176,8 +164,7 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
         :return:                The builder itself
         """
         if rule_pruning:
-            self.args.append('--rule-pruning')
-            self.args.append(rule_pruning)
+            self.add_algorithmic_argument('--rule-pruning', rule_pruning)
 
         return self
 
@@ -189,8 +176,7 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
         :return:                The builder itself
         """
         if rule_induction:
-            self.args.append('--rule-induction')
-            self.args.append(rule_induction)
+            self.add_algorithmic_argument('--rule-induction', rule_induction)
 
         return self
 
@@ -203,8 +189,7 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
         :return:                    The builder itself
         """
         if post_optimization:
-            self.args.append('--post-optimization')
-            self.args.append(post_optimization)
+            self.add_algorithmic_argument('--post-optimization', post_optimization)
 
         return self
 
@@ -216,8 +201,7 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
         :return:        The builder itself
         """
         if holdout:
-            self.args.append('--holdout')
-            self.args.append(holdout)
+            self.add_algorithmic_argument('--holdout', holdout)
 
         return self
 
@@ -229,7 +213,6 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
         :return:                The builder itself
         """
         if feature_binning:
-            self.args.append('--feature-binning')
-            self.args.append(feature_binning)
+            self.add_algorithmic_argument('--feature-binning', feature_binning)
 
         return self

@@ -36,8 +36,7 @@ class BoomerClassifierCmdBuilder(ClassificationCmdBuilder, BoomerCmdBuilderMixin
         :return:                        The builder itself
         """
         if probability_calibrator:
-            self.args.append('--marginal-probability-calibration')
-            self.args.append(probability_calibrator)
+            self.add_algorithmic_argument('--marginal-probability-calibration', probability_calibrator)
 
         return self
 
@@ -49,8 +48,7 @@ class BoomerClassifierCmdBuilder(ClassificationCmdBuilder, BoomerCmdBuilderMixin
         :return:                        The builder itself
         """
         if probability_calibrator:
-            self.args.append('--joint-probability-calibration')
-            self.args.append(probability_calibrator)
+            self.add_algorithmic_argument('--joint-probability-calibration', probability_calibrator)
 
         return self
 
@@ -63,8 +61,7 @@ class BoomerClassifierCmdBuilder(ClassificationCmdBuilder, BoomerCmdBuilderMixin
         :return:                    The builder itself
         """
         if binary_predictor:
-            self.args.append('--binary-predictor')
-            self.args.append(binary_predictor + (str(options) if options else ''))
+            self.add_algorithmic_argument('--binary-predictor', binary_predictor + (str(options) if options else ''))
 
         return self
 
@@ -76,8 +73,7 @@ class BoomerClassifierCmdBuilder(ClassificationCmdBuilder, BoomerCmdBuilderMixin
         :return:                        The builder itself
         """
         if probability_predictor:
-            self.args.append('--probability-predictor')
-            self.args.append(probability_predictor)
+            self.add_algorithmic_argument('--probability-predictor', probability_predictor)
 
         return self
 
@@ -89,7 +85,6 @@ class BoomerClassifierCmdBuilder(ClassificationCmdBuilder, BoomerCmdBuilderMixin
         :return:                The builder itself
         """
         if label_binning:
-            self.args.append('--label-binning')
-            self.args.append(label_binning)
+            self.add_algorithmic_argument('--label-binning', label_binning)
 
         return self
