@@ -58,9 +58,9 @@ class TestBoomerRegressor(RegressionIntegrationTests, RuleLearnerIntegrationTest
 
     @pytest.mark.parametrize('head_type', [
         HeadTypeParameter.HEAD_TYPE_SINGLE,
-        pytest.param(HeadTypeParameter.HEAD_TYPE_COMPLETE, marks=pytest.mark.flaky(reruns=5)),
+        HeadTypeParameter.HEAD_TYPE_COMPLETE,
         HeadTypeParameter.HEAD_TYPE_PARTIAL_FIXED,
-        pytest.param(HeadTypeParameter.HEAD_TYPE_PARTIAL_DYNAMIC, marks=pytest.mark.flaky(reruns=5)),
+        HeadTypeParameter.HEAD_TYPE_PARTIAL_DYNAMIC,
     ])
     @pytest.mark.parametrize('statistic_type', [
         StatisticTypeParameter.STATISTIC_TYPE_FLOAT32,
