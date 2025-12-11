@@ -23,6 +23,7 @@ class BoomerClassifierCmdBuilder(ClassificationCmdBuilder, BoomerCmdBuilderMixin
 
     def __init__(self, dataset: str = Dataset.EMOTIONS):
         super().__init__(expected_output_dir=CmdBuilder.EXPECTED_OUTPUT_DIR / 'boosting' / 'classification',
+                         input_dir=CmdBuilder.INPUT_DIR / 'boosting',
                          batch_config=CmdBuilder.CONFIG_DIR / 'boosting' / 'classification' / 'batch_config.yml',
                          runnable_module_name='mlrl.boosting',
                          dataset=dataset)
