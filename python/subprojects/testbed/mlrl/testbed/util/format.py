@@ -28,6 +28,19 @@ def format_number(value: Any, decimals: int = 2) -> str:
     return str(value)
 
 
+def parse_value(value: Any) -> Any:
+    """
+    Parses a given value and converts it into a number, if possible.
+
+    :param value:   The value to be parsed
+    :return:        The given value or a number
+    """
+    try:
+        return to_int_or_float(str(value))
+    except ValueError:
+        return value
+
+
 def parse_number(value: Any, percentage: bool = False) -> Number:
     """
     Parses a given value and converts it into a number. If the value cannot be parsed, a `ValueError` is raised.
