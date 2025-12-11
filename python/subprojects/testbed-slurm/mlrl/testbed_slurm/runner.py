@@ -103,7 +103,7 @@ class SlurmRunner(BatchMode.Runner):
         A YAML configuration file that configures Slurm jobs to be run.
         """
 
-        def __init__(self, file_path: str, schema_file_path: str):
+        def __init__(self, file_path: Path, schema_file_path: Path):
             """
             :param file_path:           The path to the configuration file
             :param schema_file_path:    The path to a YAML schema file
@@ -146,7 +146,7 @@ class SlurmRunner(BatchMode.Runner):
 
         @override
         def __str__(self) -> str:
-            return self.file_path
+            return str(self.file_path)
 
     @staticmethod
     def __is_command_available() -> bool:
@@ -165,7 +165,7 @@ class SlurmRunner(BatchMode.Runner):
 
         if config_file_path:
             schema_file_path = Path(__file__).parent / 'slurm_config.schema.yml'
-            return SlurmRunner.ConfigFile(file_path=config_file_path, schema_file_path=str(schema_file_path))
+            return SlurmRunner.ConfigFile(file_path=config_file_path, schema_file_path=schema_file_path)
 
         return None
 
@@ -249,7 +249,7 @@ class SlurmRunner(BatchMode.Runner):
     @staticmethod
     def __write_sbatch_file(args: Namespace, command: Command, config_file: Optional[ConfigFile],
                             job_array: Optional[JobArray], job_name: str) -> Path:
-        path = Path(SlurmArguments.SLURM_SAVE_DIR.get_value(args)) / (job_name + '.sh')
+        path = SlurmArguments.SLURM_SAVE_DIR.get_value(args) / (job_name + '.sh')
 
         with open_writable_file(path) as sbatch_file:
             sbatch_file.write(
