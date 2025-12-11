@@ -31,8 +31,7 @@ class SeCoClassifierCmdBuilder(ClassificationCmdBuilder, RuleLearnerCmdBuilderMi
         :return:            The builder itself
         """
         if heuristic:
-            self.args.append('--heuristic')
-            self.args.append(heuristic)
+            self.add_algorithmic_argument('--heuristic', heuristic)
 
         return self
 
@@ -44,8 +43,7 @@ class SeCoClassifierCmdBuilder(ClassificationCmdBuilder, RuleLearnerCmdBuilderMi
         :return:            The builder itself
         """
         if heuristic:
-            self.args.append('--pruning-heuristic')
-            self.args.append(heuristic)
+            self.add_algorithmic_argument('--pruning-heuristic', heuristic)
 
         return self
 
@@ -57,8 +55,7 @@ class SeCoClassifierCmdBuilder(ClassificationCmdBuilder, RuleLearnerCmdBuilderMi
         :return:            The builder itself
         """
         if head_type:
-            self.args.append('--head-type')
-            self.args.append(head_type)
+            self.add_algorithmic_argument('--head-type', head_type)
 
         return self
 
@@ -71,7 +68,6 @@ class SeCoClassifierCmdBuilder(ClassificationCmdBuilder, RuleLearnerCmdBuilderMi
         :return:                The builder itself
         """
         if lift_function:
-            self.args.append('--lift-function')
-            self.args.append(lift_function)
+            self.add_algorithmic_argument('--lift-function', lift_function)
 
         return self
