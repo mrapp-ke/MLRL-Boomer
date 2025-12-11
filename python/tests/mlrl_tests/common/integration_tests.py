@@ -364,7 +364,6 @@ class IntegrationTests(ABC):
             .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
             .save_evaluation(False) \
-            .print_model_characteristics() \
             .print_parameters() \
             .save_parameters() \
             .load_parameters()
