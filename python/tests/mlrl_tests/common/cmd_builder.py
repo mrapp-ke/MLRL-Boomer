@@ -23,16 +23,20 @@ class CmdBuilder:
 
     EXPECTED_OUTPUT_DIR = RESOURCE_DIR / 'out'
 
+    INPUT_DIR = RESOURCE_DIR / 'in'
+
     RERUN_DIR = Path('rerun')
 
     def __init__(self,
                  expected_output_dir: Path,
+                 input_dir: Path,
                  batch_config: Path,
                  runnable_module_name: str,
                  runnable_class_name: Optional[str] = None,
                  dataset: str = Dataset.EMOTIONS):
         """
         :param expected_output_dir:     The path to the directory that contains the file with the expected output
+        :param input_dir:               The path to the directory from which input data should be read
         :param runnable_module_name:    The fully qualified name of the runnable to be invoked by the program
                                         'mlrl-testbed'
         :param batch_config:            The path to the config file that should be used in batch mode
@@ -40,6 +44,7 @@ class CmdBuilder:
         :param dataset:                 The name of the dataset
         """
         self.expected_output_dir = expected_output_dir
+        self.input_dir = input_dir
         self.batch_config = batch_config
         self.runnable_module_name = runnable_module_name
         self.runnable_class_name = runnable_class_name
@@ -254,7 +259,7 @@ class CmdBuilder:
         :return: The builder itself
         """
         self.add_control_argument('--load-parameters', str(True).lower())
-        self.add_control_argument('--parameter-load-dir', str(self.RESOURCE_DIR / 'in'))
+        self.add_control_argument('--parameter-load-dir', str(self.input_dir))
         return self
 
     def save_parameters(self):
