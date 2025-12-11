@@ -5,13 +5,14 @@ from typing import Optional
 
 from ..common.cmd_builder import CmdBuilder
 from ..common.cmd_builder_classification import ClassificationCmdBuilder
+from ..common.cmd_builder_rule_learners import RuleLearnerCmdBuilderMixin
 from ..common.datasets import Dataset
 
 from mlrl.seco.config.parameters import HEURISTIC_ACCURACY, HEURISTIC_F_MEASURE, HeadTypeParameter, \
     LiftFunctionParameter
 
 
-class SeCoClassifierCmdBuilder(ClassificationCmdBuilder):
+class SeCoClassifierCmdBuilder(ClassificationCmdBuilder, RuleLearnerCmdBuilderMixin):
     """
     A builder that allows to configure a command for running the separate-and-conquer (SeCo) algorithm.
     """

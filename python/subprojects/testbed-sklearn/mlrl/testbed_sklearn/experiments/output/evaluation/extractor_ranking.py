@@ -36,8 +36,9 @@ class RankingEvaluationDataExtractor(EvaluationDataExtractor):
             evaluation_measures = chain(ranking_evaluation_measures, regression_evaluation_measures)
         else:
             evaluation_measures = regression_evaluation_measures
+            shape = predictions.shape
 
-            if predictions.shape[1] > 1:
+            if len(shape) > 1 and shape[1] > 1:
                 predictions = predictions[:, -1]
 
         for evaluation_measure in evaluation_measures:

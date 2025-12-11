@@ -1,13 +1,14 @@
 mlrl-testbed mlrl.boosting --mode batch --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/boosting/classification/batch_config.yml --runner slurm --slurm-config python/tests/res/config/slurm_config.yml --print-slurm-scripts true --save-slurm-scripts true --slurm-save-dir python/tests/res/tmp --save-evaluation true
-Writing output data to file "python/tests/res/tmp/metadata.yml"...
+DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Submitting 8 experiments to Slurm...
 
-Submitting experiment (1 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --instance-sampling none --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_none/loss_logistic-decomposable/dataset_emotions/models --parameter-save-dir instance-sampling_none/loss_logistic-decomposable/dataset_emotions/parameters --result-dir instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results --save-evaluation true --save-meta-data false"
-Slurm script saved to file "python/tests/res/tmp/sbatch_1.sh"
+Submitting Slurm job (1 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --instance-sampling none --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_none/loss_logistic-decomposable/dataset_emotions/models --parameter-save-dir instance-sampling_none/loss_logistic-decomposable/dataset_emotions/parameters --result-dir instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results --save-evaluation true --save-meta-data false"
+Slurm script saved to file "python/tests/res/tmp/emotions_1.sh"
 Content of Slurm script is:
 
 #!/bin/sh
 
+#SBATCH --job-name=emotions_1
 #SBATCH --output=python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results/std.out
 #SBATCH --error=python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results/std.err
 #SBATCH --time=2:30:00
@@ -20,12 +21,13 @@ mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tes
 deactivate
 
 
-Submitting experiment (2 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --feature-format sparse --instance-sampling none --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/models --parameter-save-dir instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/parameters --result-dir instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results --save-evaluation true --save-meta-data false"
-Slurm script saved to file "python/tests/res/tmp/sbatch_2.sh"
+Submitting Slurm job (2 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --feature-format sparse --instance-sampling none --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/models --parameter-save-dir instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/parameters --result-dir instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results --save-evaluation true --save-meta-data false"
+Slurm script saved to file "python/tests/res/tmp/emotions_2.sh"
 Content of Slurm script is:
 
 #!/bin/sh
 
+#SBATCH --job-name=emotions_2
 #SBATCH --output=python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/std.out
 #SBATCH --error=python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/std.err
 #SBATCH --time=2:30:00
@@ -38,12 +40,13 @@ mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tes
 deactivate
 
 
-Submitting experiment (3 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --instance-sampling with-replacement{sample_size=0.5} --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/models --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/parameters --result-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/results --save-evaluation true --save-meta-data false"
-Slurm script saved to file "python/tests/res/tmp/sbatch_3.sh"
+Submitting Slurm job (3 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --instance-sampling with-replacement{sample_size=0.5} --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/models --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/parameters --result-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/results --save-evaluation true --save-meta-data false"
+Slurm script saved to file "python/tests/res/tmp/emotions_3.sh"
 Content of Slurm script is:
 
 #!/bin/sh
 
+#SBATCH --job-name=emotions_3
 #SBATCH --output=python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/results/std.out
 #SBATCH --error=python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/results/std.err
 #SBATCH --time=2:30:00
@@ -52,16 +55,17 @@ Content of Slurm script is:
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
-mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --instance-sampling with-replacement'{sample_size=0.5}' --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_logistic-decomposable/dataset_emotions/models --parameter-save-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_logistic-decomposable/dataset_emotions/parameters --result-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_logistic-decomposable/dataset_emotions/results --save-evaluation true --save-meta-data false
+mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --instance-sampling with-replacement\{sample_size=0.5\} --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_with-replacement\{sample_size=0.5\}/loss_logistic-decomposable/dataset_emotions/models --parameter-save-dir instance-sampling_with-replacement\{sample_size=0.5\}/loss_logistic-decomposable/dataset_emotions/parameters --result-dir instance-sampling_with-replacement\{sample_size=0.5\}/loss_logistic-decomposable/dataset_emotions/results --save-evaluation true --save-meta-data false
 deactivate
 
 
-Submitting experiment (4 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --feature-format sparse --instance-sampling with-replacement{sample_size=0.5} --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/models --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/parameters --result-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results --save-evaluation true --save-meta-data false"
-Slurm script saved to file "python/tests/res/tmp/sbatch_4.sh"
+Submitting Slurm job (4 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --feature-format sparse --instance-sampling with-replacement{sample_size=0.5} --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/models --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/parameters --result-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results --save-evaluation true --save-meta-data false"
+Slurm script saved to file "python/tests/res/tmp/emotions_4.sh"
 Content of Slurm script is:
 
 #!/bin/sh
 
+#SBATCH --job-name=emotions_4
 #SBATCH --output=python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/std.out
 #SBATCH --error=python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/std.err
 #SBATCH --time=2:30:00
@@ -70,16 +74,17 @@ Content of Slurm script is:
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
-mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --feature-format sparse --instance-sampling with-replacement'{sample_size=0.5}' --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/models --parameter-save-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/parameters --result-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results --save-evaluation true --save-meta-data false
+mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --feature-format sparse --instance-sampling with-replacement\{sample_size=0.5\} --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_with-replacement\{sample_size=0.5\}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/models --parameter-save-dir instance-sampling_with-replacement\{sample_size=0.5\}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/parameters --result-dir instance-sampling_with-replacement\{sample_size=0.5\}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results --save-evaluation true --save-meta-data false
 deactivate
 
 
-Submitting experiment (5 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset enron --instance-sampling none --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_none/loss_logistic-decomposable/dataset_enron/models --parameter-save-dir instance-sampling_none/loss_logistic-decomposable/dataset_enron/parameters --result-dir instance-sampling_none/loss_logistic-decomposable/dataset_enron/results --save-evaluation true --save-meta-data false"
-Slurm script saved to file "python/tests/res/tmp/sbatch_5.sh"
+Submitting Slurm job (5 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset enron --instance-sampling none --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_none/loss_logistic-decomposable/dataset_enron/models --parameter-save-dir instance-sampling_none/loss_logistic-decomposable/dataset_enron/parameters --result-dir instance-sampling_none/loss_logistic-decomposable/dataset_enron/results --save-evaluation true --save-meta-data false"
+Slurm script saved to file "python/tests/res/tmp/enron_5.sh"
 Content of Slurm script is:
 
 #!/bin/sh
 
+#SBATCH --job-name=enron_5
 #SBATCH --output=python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_enron/results/std.out
 #SBATCH --error=python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_enron/results/std.err
 #SBATCH --time=2:30:00
@@ -92,12 +97,13 @@ mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tes
 deactivate
 
 
-Submitting experiment (6 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset enron --feature-format sparse --instance-sampling none --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/models --parameter-save-dir instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/parameters --result-dir instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results --save-evaluation true --save-meta-data false"
-Slurm script saved to file "python/tests/res/tmp/sbatch_6.sh"
+Submitting Slurm job (6 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset enron --feature-format sparse --instance-sampling none --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/models --parameter-save-dir instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/parameters --result-dir instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results --save-evaluation true --save-meta-data false"
+Slurm script saved to file "python/tests/res/tmp/enron_6.sh"
 Content of Slurm script is:
 
 #!/bin/sh
 
+#SBATCH --job-name=enron_6
 #SBATCH --output=python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/std.out
 #SBATCH --error=python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/std.err
 #SBATCH --time=2:30:00
@@ -110,12 +116,13 @@ mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tes
 deactivate
 
 
-Submitting experiment (7 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset enron --instance-sampling with-replacement{sample_size=0.5} --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/models --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/parameters --result-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results --save-evaluation true --save-meta-data false"
-Slurm script saved to file "python/tests/res/tmp/sbatch_7.sh"
+Submitting Slurm job (7 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset enron --instance-sampling with-replacement{sample_size=0.5} --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/models --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/parameters --result-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results --save-evaluation true --save-meta-data false"
+Slurm script saved to file "python/tests/res/tmp/enron_7.sh"
 Content of Slurm script is:
 
 #!/bin/sh
 
+#SBATCH --job-name=enron_7
 #SBATCH --output=python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results/std.out
 #SBATCH --error=python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results/std.err
 #SBATCH --time=2:30:00
@@ -124,16 +131,17 @@ Content of Slurm script is:
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
-mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset enron --instance-sampling with-replacement'{sample_size=0.5}' --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_logistic-decomposable/dataset_enron/models --parameter-save-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_logistic-decomposable/dataset_enron/parameters --result-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_logistic-decomposable/dataset_enron/results --save-evaluation true --save-meta-data false
+mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset enron --instance-sampling with-replacement\{sample_size=0.5\} --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_with-replacement\{sample_size=0.5\}/loss_logistic-decomposable/dataset_enron/models --parameter-save-dir instance-sampling_with-replacement\{sample_size=0.5\}/loss_logistic-decomposable/dataset_enron/parameters --result-dir instance-sampling_with-replacement\{sample_size=0.5\}/loss_logistic-decomposable/dataset_enron/results --save-evaluation true --save-meta-data false
 deactivate
 
 
-Submitting experiment (8 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset enron --feature-format sparse --instance-sampling with-replacement{sample_size=0.5} --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/models --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/parameters --result-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results --save-evaluation true --save-meta-data false"
-Slurm script saved to file "python/tests/res/tmp/sbatch_8.sh"
+Submitting Slurm job (8 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset enron --feature-format sparse --instance-sampling with-replacement{sample_size=0.5} --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/models --parameter-save-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/parameters --result-dir instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results --save-evaluation true --save-meta-data false"
+Slurm script saved to file "python/tests/res/tmp/enron_8.sh"
 Content of Slurm script is:
 
 #!/bin/sh
 
+#SBATCH --job-name=enron_8
 #SBATCH --output=python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/std.out
 #SBATCH --error=python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/std.err
 #SBATCH --time=2:30:00
@@ -142,6 +150,6 @@ Content of Slurm script is:
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
-mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset enron --feature-format sparse --instance-sampling with-replacement'{sample_size=0.5}' --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_logistic-decomposable/feature-format_sparse/dataset_enron/models --parameter-save-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_logistic-decomposable/feature-format_sparse/dataset_enron/parameters --result-dir instance-sampling_with-replacement'{sample_size=0.5}'/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results --save-evaluation true --save-meta-data false
+mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset enron --feature-format sparse --instance-sampling with-replacement\{sample_size=0.5\} --log-level debug --loss logistic-decomposable --model-save-dir instance-sampling_with-replacement\{sample_size=0.5\}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/models --parameter-save-dir instance-sampling_with-replacement\{sample_size=0.5\}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/parameters --result-dir instance-sampling_with-replacement\{sample_size=0.5\}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results --save-evaluation true --save-meta-data false
 deactivate
 

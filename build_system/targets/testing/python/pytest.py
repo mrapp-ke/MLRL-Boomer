@@ -52,3 +52,4 @@ class Pytest(PythonModule):
         self.set_accepted_exit_codes(0, 5)
         self.print_arguments(True)
         self.set_build_unit(build_unit)
+        self.add_dependencies('pandas')

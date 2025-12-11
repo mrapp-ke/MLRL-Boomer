@@ -4,12 +4,13 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for handling arrays.
 """
 from enum import StrEnum
-from typing import Optional, Set, Union
+from itertools import chain
+from typing import Any, Optional, Set, Union
 
 import numpy as np
 
-from scipy.sparse import issparse, isspmatrix_coo, isspmatrix_csc, isspmatrix_csr, isspmatrix_dok, isspmatrix_lil, \
-    sparray
+from scipy.sparse import issparse, isspmatrix_bsr, isspmatrix_coo, isspmatrix_csc, isspmatrix_csr, isspmatrix_dia, \
+    isspmatrix_dok, isspmatrix_lil, sparray
 
 from mlrl.util.format import format_iterable
 
@@ -23,6 +24,8 @@ class SparseFormat(StrEnum):
     DOK = 'dok'
     CSC = 'csc'
     CSR = 'csr'
+    DIA = 'dia'
+    BSR = 'bsr'
 
 
 def is_lil(array) -> bool:
@@ -75,6 +78,26 @@ def is_csr(array) -> bool:
     return isspmatrix_csr(array) or (isinstance(array, sparray) and array.format == 'csr')
 
 
+def is_dia(array) -> bool:
+    """
+    Returns whether a given `scipy_sparse.spmatrix` or `scipy.sparse.sparray` uses the DIA format or not.
+
+    :param array:   A `scipy.sparse.spmatrix` or `scipy.sparse.sparray` to be checked
+    :return:        True, if the given array uses the DIA format, False otherwise
+    """
+    return isspmatrix_dia(array) or (isinstance(array, sparray) and array.format == 'dia')
+
+
+def is_bsr(array) -> bool:
+    """
+    Returns whether a given `scipy_sparse.spmatrix` or `scipy.sparse.sparray` uses the BSR format or not.
+
+    :param array:   A `scipy.sparse.spmatrix` or `scipy.sparse.sparray` to be checked
+    :return:        True, if the given array uses the BSR format, False otherwise
+    """
+    return isspmatrix_bsr(array) or (isinstance(array, sparray) and array.format == 'bsr')
+
+
 def is_sparse(array, supported_formats: Optional[Set[SparseFormat]] = None) -> bool:
     """
     Returns whether a given array is a `scipy.sparse.spmatrix` or `scipy.sparse.sparray` or not.
@@ -91,8 +114,11 @@ def is_sparse(array, supported_formats: Optional[Set[SparseFormat]] = None) -> b
         dok = SparseFormat.DOK in supported_formats and is_dok(array)
         csc = SparseFormat.CSC in supported_formats and is_csc(array)
         csr = SparseFormat.CSR in supported_formats and is_csr(array)
+        dia = SparseFormat.DIA in supported_formats and is_dia(array)
+        bsr = SparseFormat.BSR in supported_formats and is_bsr(array)
 
-        if lil or coo or dok or csc or csr:
+        # pylint: disable=too-many-boolean-expressions
+        if lil or coo or dok or csc or csr or dia or bsr:
             return True
         return False
 
@@ -134,6 +160,34 @@ def is_sparse_and_memory_efficient(array,
     return False
 
 
+def get_unique_values(matrix) -> np.ndarray:
+    """
+    Returns a `np.ndarray` that stores all unique values contains in a given matrix, sorted in increasing order.
+
+    :param matrix:  A `np.ndarray` or `scipy.sparse.sparray`
+    :return:        A `np.ndarray` that stores the unique values
+    """
+    if is_sparse(matrix):
+        matrix_size = matrix.shape[0] * matrix.shape[1]
+        values = np.fromiter(chain(np.unique(matrix.data), [0] if matrix.nnz < matrix_size else []), dtype=matrix.dtype)
+    else:
+        values = np.unique(matrix)
+
+    values.sort()
+    return values
+
+
+def ensure_no_complex_data(array) -> Any:
+    """
+    Raises a `ValueError` if the given array stores complex numbers.
+
+    :return: The given array
+    """
+    if hasattr(array, 'dtype') and np.issubdtype(array.dtype, np.complexfloating):
+        raise ValueError('Complex data not supported')
+    return array
+
+
 def enforce_dense(array,
                   order: str,
                   dtype: Optional[np.dtype] = None,
@@ -148,9 +202,9 @@ def enforce_dense(array,
     :param sparse_value:    The value that should be used for sparse elements in the given array
     :return:                A `np.ndarray` that uses the given memory layout and data type
     """
-    dtype = dtype if dtype else array.dtype
-
     if is_sparse(array):
+        dtype = dtype if dtype else array.dtype
+
         if sparse_value != 0:
             dense_array = np.full(
                 shape=array.shape,  # type: ignore[call-overload]
@@ -160,7 +214,9 @@ def enforce_dense(array,
             dense_array[array.nonzero()] = 0
             dense_array += array
             return np.asarray(dense_array, dtype=dtype, order=order)  # type: ignore[call-overload]
+
         return np.require(array.toarray(order=order), dtype=dtype)
+
     return np.require(array, dtype=dtype, requirements=[order])  # type: ignore[list-item, arg-type]
 
 
@@ -171,6 +227,8 @@ def enforce_2d(array: np.ndarray) -> np.ndarray:
     :param array:   A `np.ndarray` to be converted
     :return:        A `np.ndarray` with at least two dimensions
     """
+    if array.ndim == 0:
+        return array.reshape(1, -1)
     if array.ndim == 1:
         return np.expand_dims(array, axis=1)
     return array

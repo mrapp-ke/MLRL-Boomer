@@ -8,8 +8,6 @@ import logging as log
 from abc import ABC, abstractmethod
 from typing import Any, Callable, Generator, Optional
 
-from sklearn.base import ClassifierMixin, RegressorMixin
-
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.prediction_type import PredictionType
@@ -22,22 +20,22 @@ class PredictionFunction:
     """
 
     def __init__(self, learner: Any, predict_function: Optional[Callable[..., Any]],
-                 predict_proba_function: Optional[Callable[..., Any]]):
+                 decision_function: Optional[Callable[..., Any]], predict_proba_function: Optional[Callable[..., Any]]):
         """
         :param learner:                 The learner, the predictions should be obtained from
-        :param predict_function:        The function to be invoked for obtaining binary predictions or scores
+        :param predict_function:        The function to be invoked for obtaining binary predictions
+        :param decision_function:       The function to be invoked for obtaining scores
         :param predict_proba_function:  The function to be invoked for obtaining probability estimates
         """
         self.learner = learner
         self.predict_function = predict_function
+        self.decision_function = decision_function
         self.predict_proba_function = predict_proba_function
 
     def __predict_scores(self, dataset: Dataset, **kwargs) -> Any:
         try:
-            if isinstance(self.learner, ClassifierMixin) and self.predict_function:
-                return self.predict_function(dataset.x, predict_scores=True, **kwargs)
-            if isinstance(self.learner, RegressorMixin) and self.predict_function:
-                return self.predict_function(dataset.x, **kwargs)
+            if self.decision_function:
+                return self.decision_function(dataset.x, **kwargs)
             raise RuntimeError()
         except RuntimeError:
             log.error('Prediction of scores not supported')

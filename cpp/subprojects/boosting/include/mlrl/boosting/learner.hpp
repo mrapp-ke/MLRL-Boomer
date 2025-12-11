@@ -656,7 +656,7 @@ namespace boosting {
              */
             virtual void useDefaults() override {
                 IRuleLearnerMixin::useDefaults();
-                this->use64BitStatistics();
+                this->use32BitStatistics();
                 this->useNoL1Regularization();
                 this->useNoL2Regularization();
                 this->useNoLabelBinning();

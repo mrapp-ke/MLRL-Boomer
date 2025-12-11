@@ -7,11 +7,13 @@ import logging as log
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, Optional, override
+from typing import Any, Dict, Optional, override
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.file_path import FilePath
-from mlrl.testbed.experiments.input.data import DatasetInputData, InputData, TabularInputData
+from mlrl.testbed.experiments.input.data import DatasetInputData, InputData, StructuralInputData, TabularInputData, \
+    TextualInputData
+from mlrl.testbed.experiments.input.policies import MissingInputPolicy
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
 
@@ -20,6 +22,9 @@ class Source(ABC):
     """
     An abstract base class for all sources, input data may be read from.
     """
+
+    def __init__(self):
+        self.missing_input_policy = MissingInputPolicy.EXIT
 
     @abstractmethod
     def is_available(self, state: ExperimentState, input_data: InputData) -> bool:
@@ -32,12 +37,13 @@ class Source(ABC):
         """
 
     @abstractmethod
-    def read_from_source(self, state: ExperimentState, input_data: InputData):
+    def read_from_source(self, state: ExperimentState, input_data: InputData) -> bool:
         """
         Must be implemented by subclasses in order to read input data from the source.
 
         :param state:       The state that should be used to store the input data
         :param input_data:  The input data that should be read
+        :return:            True, if any input data has been read, False otherwise
         """
 
 
@@ -51,6 +57,7 @@ class FileSource(Source, ABC):
         :param directory:   The path to the directory of the file
         :param suffix:      The suffix of the file
         """
+        super().__init__()
         self.directory = directory
         self.suffix = suffix
 
@@ -72,13 +79,22 @@ class FileSource(Source, ABC):
         return self._get_file_path(state, input_data).is_file()
 
     @override
-    def read_from_source(self, state: ExperimentState, input_data: InputData):
+    def read_from_source(self, state: ExperimentState, input_data: InputData) -> bool:
         file_path = self._get_file_path(state, input_data)
         log.debug('Reading input data from file "%s"...', file_path)
-        data = self._read_from_file(state, file_path, input_data)
 
-        if data:
-            input_data.update_state(state, data)
+        if file_path.is_file():
+            data = self._read_from_file(state, file_path, input_data)
+
+            if data:
+                input_data.update_state(state, data)
+                return True
+        elif self.missing_input_policy == MissingInputPolicy.EXIT:
+            raise IOError(f'The file "{file_path}" does not exist')
+        else:
+            log.error('The file "%s" does not exist', file_path)
+
+        return False
 
     @abstractmethod
     def _read_from_file(self, state: ExperimentState, file_path: Path, input_data: InputData) -> Optional[Any]:
@@ -88,6 +104,30 @@ class FileSource(Source, ABC):
         :param state:       The state that should be used to store the input data
         :param file_path:   The path to the file from which the input data should be read
         :param input_data:  The input data that should be read
+        """
+
+
+class TextualFileSource(FileSource, ABC):
+    """
+    An abstract base class for all classes that allow to read textual input data from a file.
+    """
+
+    @override
+    def _read_from_file(self, state: ExperimentState, file_path: Path, input_data: InputData) -> Optional[Any]:
+        if isinstance(input_data, TextualInputData):
+            return self._read_text_from_file(state, file_path, input_data)
+        return None
+
+    @abstractmethod
+    def _read_text_from_file(self, state: ExperimentState, file_path: Path,
+                             input_data: TextualInputData) -> Optional[str]:
+        """
+        Must be implemented by subclasses in order to read text from a specific file.
+
+        :param state:       The current state of the experiment
+        :param file_path:   The path to the file from which the input data should be read
+        :param input_data:  The input data that should be read
+        :return:            The text that has been read from the file
         """
 
 
@@ -120,13 +160,6 @@ class TabularFileSource(FileSource, ABC):
     An abstract base class for all classes that allow to read tabular input data from a file.
     """
 
-    def __init__(self, directory: Path, suffix: str):
-        """
-        :param directory:   The path to the directory of the file
-        :param suffix:      The suffix of the file
-        """
-        super().__init__(directory=directory, suffix=suffix)
-
     @override
     def _read_from_file(self, _: ExperimentState, file_path: Path, input_data: InputData) -> Optional[Any]:
         if isinstance(input_data, TabularInputData):
@@ -141,4 +174,26 @@ class TabularFileSource(FileSource, ABC):
         :param file_path:   The path to the file from which the input data should be read
         :param input_data:  The tabular input data that should be read
         :return:            A table that has been read from the file
+        """
+
+
+class StructuralFileSource(FileSource, ABC):
+    """
+    An abstract base class for all classes that allow to read structural input data from a file.
+    """
+
+    @override
+    def _read_from_file(self, _: ExperimentState, file_path: Path, input_data: InputData) -> Optional[Any]:
+        if isinstance(input_data, StructuralInputData):
+            return self._read_dictionary_from_file(file_path, input_data)
+        return None
+
+    @abstractmethod
+    def _read_dictionary_from_file(self, file_path: Path, input_data: StructuralInputData) -> Optional[Dict[Any, Any]]:
+        """
+        Must be implemented by subclasses in order to read structural input data from a specific file.
+
+        :param file_path:   The path to the file from which the input data should be read
+        :param input_data:  The structural input data that should be read
+        :return:            A dictionary that has been read from the file
         """

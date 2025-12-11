@@ -1,2 +1,2 @@
-Mean Absolute Error,Mean Absolute Percentage Error,Mean Squared Error,Median Absolute Error,Prediction Time,Training Time
-32.68946141102325,0.08731680614590213,3209.715258405511,17.81237059106341,<duration>,<duration>
+Mean Absolute Error (↓),Mean Absolute Percentage Error (↓),Mean Squared Error (↓),Median Absolute Error (↓),Prediction Time (seconds),Training Time (seconds)
+32.56797148200419,0.08854788276118199,3121.4633627656544,18.434667557998182,<duration>,<duration>

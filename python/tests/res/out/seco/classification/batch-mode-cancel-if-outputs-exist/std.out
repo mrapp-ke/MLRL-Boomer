@@ -1,0 +1,4 @@
+mlrl-testbed mlrl.seco --mode batch --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/seco/classification/batch_config.yml --save-evaluation true
+Skipping 8 of 8 experiments, because all of their output files do already exist. Use the argument "--if-outputs-exist overwrite" to force-run all experiments.
+DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
+Successfully finished 0 experiment after <duration>
