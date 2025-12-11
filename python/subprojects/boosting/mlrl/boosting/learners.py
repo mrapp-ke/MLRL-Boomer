@@ -5,15 +5,14 @@ Provides scikit-learn implementations of boosting algorithms.
 """
 from typing import Any, Optional, override
 
-from mlrl.common.learners import ClassificationRuleLearner, RegressionRuleLearner, configure_rule_learner
-from mlrl.common.mixins import ClassifierMixin, RegressorMixin
+from mlrl.common.learners import ProbabilisticClassificationRuleLearner, RegressionRuleLearner, configure_rule_learner
 
 from mlrl.boosting.config.parameters import BOOMER_CLASSIFIER_PARAMETERS, BOOMER_REGRESSOR_PARAMETERS
 from mlrl.boosting.cython.learner_boomer import BoomerClassifier as BoomerClassifierWrapper, BoomerClassifierConfig, \
     BoomerRegressor as BoomerRegressorWrapper, BoomerRegressorConfig
 
 
-class BoomerClassifier(ClassificationRuleLearner, ClassifierMixin):
+class BoomerClassifier(ProbabilisticClassificationRuleLearner):
     """
     A scikit-learn implementation of "BOOMER", an algorithm for learning gradient boosted multi-output rules, that can
     be used in classification problems.
@@ -52,7 +51,7 @@ class BoomerClassifier(ClassificationRuleLearner, ClassifierMixin):
                  parallel_statistic_update: Optional[str] = None,
                  parallel_prediction: Optional[str] = None):
         """
-        :param random_state:                        The seed to be used by RNGs. Must be at least 1
+        :param random_state:                        The seed to be used by RNGs. Must be at least 0
         :param statistic_format:                    The format to be used for representing gradients and Hessians. Must
                                                     be 'dense', 'sparse' or 'auto', if the most suitable format should
                                                     be chosen automatically
@@ -184,7 +183,7 @@ class BoomerClassifier(ClassificationRuleLearner, ClassifierMixin):
         return BoomerClassifierWrapper(config)
 
 
-class BoomerRegressor(RegressionRuleLearner, RegressorMixin):
+class BoomerRegressor(RegressionRuleLearner):
     """
     A scikit-learn implementation of "BOOMER", an algorithm for learning gradient boosted multi-output rules, that can
     be used in regression problems.
@@ -218,7 +217,7 @@ class BoomerRegressor(RegressionRuleLearner, RegressorMixin):
                  parallel_statistic_update: Optional[str] = None,
                  parallel_prediction: Optional[str] = None):
         """
-        :param random_state:                The seed to be used by RNGs. Must be at least 1
+        :param random_state:                The seed to be used by RNGs. Must be at least 0
         :param statistic_format:            The format to be used for representing gradients and Hessians. Must be
                                             'dense', 'sparse' or 'auto', if the most suitable format should be chosen
                                             automatically

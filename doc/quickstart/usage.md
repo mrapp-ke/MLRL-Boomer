@@ -8,6 +8,8 @@ The BOOMER algorithm and the SeCo algorithm provided by this project are publish
 
 Whereas the SeCo algorithm is restricted to {ref}`classification problems <user-guide-classification>`, the BOOMER algorithm can also be used for solving {ref}`regression problems <user-guide-regression>`. In the following, we demonstrate the use of these algorithms.
 
+For simplicity, the following examples use small, hard-coded data matrices as inputs to the algorithms. In practice, one usually retrieves the data from files rather than manually specifying the values of the feature and ground truth matrices. Information about supported datasets can be found {ref}`here <testbed-datasets>`.
+
 ### Classification Problems
 
 An illustration of how the classification algorithms can be fit to exemplary training data is shown in the following:
@@ -80,10 +82,10 @@ clf.fit(x, y, nominal_feature_indices=[0, 2], ordinal_feature_indices=[1])
 
 ### Custom Weights for Training Examples
 
-By default, all training examples have identical weights. This means that incorrect predictions for each of these examples are penalized in the same way by the training algorithm. However, in some use cases, e.g., when dealing with imbalanced data, it might be desirable to penalize incorrect predictions for some examples more heavily than for others. For this reason, it is possible to provide arbitrary (positive) integer- or real-valued weights to an algorithm's `fit`-method via the keyword argument `sample_weights`:
+By default, all training examples have identical weights. This means that incorrect predictions for each of these examples are penalized in the same way by the training algorithm. However, in some use cases, e.g., when dealing with imbalanced data, it might be desirable to penalize incorrect predictions for some examples more heavily than for others. For this reason, it is possible to provide arbitrary (positive) integer- or real-valued weights to an algorithm's `fit`-method via the keyword argument `sample_weight`:
 
 ```python
-clf.fit(x, y, sample_weights=[1.5, 1])
+clf.fit(x, y, sample_weight=[1.5, 1])
 ```
 
 ### Setting Algorithmic Parameters
@@ -105,6 +107,8 @@ In the previous example the algorithms' default configurations are used. However
 
 A description of all available parameters is available for both, the {ref}`BOOMER<parameters>` and the {ref}`SeCo<seco-parameters>` algorithm.
 
+(usage-prediction)=
+
 ## Making Predictions
 
 Once an estimator has been fitted to the training data, its `predict` method can be used to obtain predictions for previously unseen examples:
@@ -121,13 +125,57 @@ In this example, we use the estimator to predict for the same data that has prev
  [0 1]]
 ```
 
-In practice, one usually retrieves the data from files rather than manually specifying the values of the feature and ground truth matrices. A collection of benchmark datasets can be found [here](https://github.com/mrapp-ke/Boomer-Datasets).
-
 The argument `x` that must be passed to the `predict` method, has the same semantics as for the `fit` method. It can either be a [numpy array](https://numpy.org/doc/stable/reference/generated/numpy.array.html), an equivalent [array-like](https://scikit-learn.org/stable/glossary.html#term-array-like) data type, or a [scipy sparse matrix](https://docs.scipy.org/doc/scipy/reference/sparse.html). In the latter case, the value that should be used for sparse elements in the feature matrix `x` can be specified via the keyword argument `sparse_feature_value`:
 
 ```python
 pred = clf.predict(x, sparse_feature_value = 0.0)
 ```
+
+By default, the data type of the ground truth is also used for the predictions. If a different type should be used, it can be specified via the keyword argument `dtype`:
+
+```python
+import numpy as np
+
+pred = clf.predict(x, dtype=np.float32)
+```
+
+### Predicting Probabilities
+
+As a probabilistic machine learning method, the {py:class}`mlrl.boosting.BoomerClassifier <mlrl.boosting.learners.BoomerClassifier>` is capable of predicting probability estimates. These probabilities can be obtained by invoking a previously fitted estimator's `predict_proba` method:
+
+```python
+pred = clf.predict_proba(x)
+print(pred)
+```
+
+In case of a multi-label classification problem, the probabilities are given as a matrix, where each row and column corresponds to a query example and label, respectively. Each value in the matrix specifies the probability of the respective label being relevant to an example. Furthermore, as shown in the following example, all values are in the range \[0, 1\]:
+
+```python
+[[0.98 0.23]
+ [0.19 0.84]]
+```
+
+Following scikit-learn conventions, when dealing with single-label problems, the output format differs from the format used above. In the single-label case, a matrix with two columns is returned. The values in these columns correspond to the probability of the positive or negative class being correct for an example, respectively.
+
+Finally, it should be noted that the `predict_proba` function supports the same keyword arguments as {ref}`previously described <usage-prediction>` with regard to the `predict` function.
+
+### Predicting Scores
+
+In addition to probabilities, the {py:class}`mlrl.boosting.BoomerClassifier <mlrl.boosting.learners.BoomerClassifier>` may also provide real-valued scores as predictions. These scores are the raw predictions from which binary predictions and probabilities are derived. As shown in the example below, scores can be obtained from a fitted estimator via the function `decision_function`:
+
+```python
+pred = clf.decision_function(x)
+print(pred)
+```
+
+The scores are given as a matrix, where each row and column corresponds to a query example and label. As shown in the example below, a single score is in the range \[$-\infty$, $+\infty$\]. It indicates whether the corresponding label is likely to be relevant to an example, if it is positive, or irrelevant, if it is negative. Moreover, the absolute value of a score corresponds to the confidence of the model being correct.
+
+```python
+[[ 4.62 -2.48]
+ [-1.92  3.34]]
+```
+
+The function `decision_function` supports the same keyword arguments as the `predict` function discussed {ref}`earlier <usage-prediction>`.
 
 ## Accessing the Rules in a Model
 

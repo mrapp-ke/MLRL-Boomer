@@ -1,57 +1,58 @@
 mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --global-pruning pre-pruning --holdout stratified-example-wise --print-model-characteristics true
+Checking if output files do already exist...
 Starting experiment using the classification algorithm "BoomerClassifier"...
-Writing output data to file "python/tests/res/tmp/metadata.yml"...
+DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Using separate training and test sets...
-Reading input data from file "python/tests/res/data/emotions.arff"...
-Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+DEBUG: Reading input data from file "python/tests/res/data/emotions.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 Fitting model to 397 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the labels of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
 Predicting for 196 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted labels
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Example-wise F1         59.63
-Example-wise Jaccard    51.49
-Example-wise Precision  77.98
-Example-wise Recall     59.95
-Hamming Accuracy        80.1
-Hamming Loss            19.9
-Macro F1                63.09
-Macro Jaccard           47.07
-Macro Precision         73.12
-Macro Recall            57.37
-Micro F1                65.28
-Micro Jaccard           48.46
-Micro Precision         73.58
-Micro Recall            58.67
-Subset 0/1 Loss         73.47
-Subset Accuracy         26.53
+Example-wise F1 (↑)         55.85
+Example-wise Jaccard (↑)    48.15
+Example-wise Precision (↑)  73.47
+Example-wise Recall (↑)     56.63
+Hamming Accuracy (↑)        78.32
+Hamming Loss (↓)            21.68
+Macro F1 (↑)                59.61
+Macro Jaccard (↑)           43.51
+Macro Precision (↑)         69.87
+Macro Recall (↑)            54.59
+Micro F1 (↑)                62.22
+Micro Jaccard (↑)           45.16
+Micro Precision (↑)         70
+Micro Recall (↑)            56
+Subset 0/1 Loss (↓)         76.02
+Subset Accuracy (↑)         23.98
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Model characteristics:
 
 ┌───────────────────────────────┬─────────┬─────────────────────────┬────────────────────────┬───────────────────────┬──────────────────────┬───────────────────────┬───────────────────────┐
 │ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
 ├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
 │ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
-│ 148 local rules               │    1272 │                  55.11% │                 44.89% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+│ 112 local rules               │     902 │                  56.76% │                 43.24% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
 └───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
 
 ┌────────────────────────────────┬─────────┬────────────┬────────────┐
 │ Statistics about predictions   │   Total │   Positive │   Negative │
 ├────────────────────────────────┼─────────┼────────────┼────────────┤
 │ Default rule                   │       6 │      0.00% │    100.00% │
-│ 148 local rules                │     888 │     37.50% │     62.50% │
+│ 112 local rules                │     672 │     38.10% │     61.90% │
 └────────────────────────────────┴─────────┴────────────┴────────────┘
 
 ┌─────────────────────────────┬───────────┬───────────┬───────────┐
 │ Statistics per local rule   │   Minimum │   Average │   Maximum │
 ├─────────────────────────────┼───────────┼───────────┼───────────┤
-│ Conditions                  │         1 │      8.59 │        28 │
+│ Conditions                  │         1 │      8.05 │        16 │
 │ Predictions                 │         6 │      6    │         6 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 

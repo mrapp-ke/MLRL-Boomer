@@ -2,7 +2,55 @@
 
 # Saving and Loading Data
 
-The {ref}`command line API <arguments>` of MLRL-Testbed provides a diverse set of options for saving data that is collected during an experiment. In some cases, e.g., models or algorithmic parameters, such data can also be read from input files. Both aspects, saving and loading data, are discussed below.
+The {ref}`command line API <arguments>` of mlrl-testbed provides a diverse set of options for saving data that is collected during an experiment. In some cases, e.g., models or algorithmic parameters, such data can also be read from input files. Both aspects, saving and loading data, are discussed below.
+
+```{tip}
+By default, mlrl-testbed checks if the output files that should be produced by an experiments according to the given arguments do already exist. If this is the case, the experiment is canceled to avoid unnecessary computations. By providing the argument `--if-outputs-exist overwrite`, the experiment can be forced to be run anyway.
+```
+
+(meta-data)=
+
+## Saving Meta-Data
+
+Saving meta-data can help improving the reproducibility of experiments. Among other information, it contains the command that has been used for running an experiment and the version of mlrl-testbed used. Based on this information the experiment can be re-run later using the {ref}`run mode <testbed-run-mode>`. By default, a `metadata.yml` file is saved to the directory specified via the argument `--base-dir`, if any other output data is saved as well. To explicitly enforce saving meta-data, the argument `--save-meta-data` can be used:
+
+````{tab} BOOMER
+   ```text
+   mlrl-testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --save-meta-data true
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   mlrl-testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --save-meta-data true
+   ```
+````
+
+Alternatively, the meta-data can be printed via the command line argument `--print-meta-data`:
+
+````{tab} BOOMER
+   ```text
+   mlrl-testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --print-meta-data true
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   mlrl-testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --print-meta-data true
+   ```
+````
 
 (model-persistence)=
 
@@ -159,7 +207,7 @@ The path to the directory, where experimental results should be saved, can be ei
 ```
 
 ```{tip}
-By default, the directory specified via the argument `--result-dir` is created automatically if it does not exist. This functionality can be turned off via the argument `--create-dirs false`. Moreover, all files in the specified directory are usually deleted before an experiment starts. By providing the argument `--wipe-result-dir false`, the deletion of files can be prevented.
+By default, the directory specified via the argument `--result-dir` is created automatically if it does not exist. This functionality can be turned off via the argument `--create-dirs false`.
 ```
 
 ```{tip}
@@ -190,7 +238,7 @@ By default, the predictive performance of all models trained during an experimen
    ```
 ````
 
-Accordingly, the argument `--save-evaluation` allows to enable or disable saving the evaluation results to [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files:
+Accordingly, the argument `--save-evaluation` allows to enable or disable saving the evaluation results to [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) files:
 
 ````{tab} BOOMER
    ```text
@@ -330,7 +378,7 @@ By using the command line argument `--print-prediction-characteristics`, charact
    ```
 ````
 
-Alternatively, they statistics can be written to a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file by using the argument `--save-prediction-characteristics`:
+Alternatively, they statistics can be written to a [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) file by using the argument `--save-prediction-characteristics`:
 
 ````{tab} BOOMER
    ```text
@@ -404,7 +452,7 @@ To obtain insightful statistics regarding the characteristics of a dataset, the 
    ```
 ````
 
-If you prefer to write the statistics into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file, the argument `--save-data-characteristics` can be used:
+If you prefer to write the statistics into a [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) file, the argument `--save-data-characteristics` can be used:
 
 ````{tab} BOOMER
    ```text
@@ -512,23 +560,19 @@ When using a {ref}`cross validation<cross-validation>`, several models are train
 - `label_vectors_fold-4.csv`
 - `label_vectors_fold-5.csv`
 
-The above commands output each label vector present in a dataset, as well as their frequency, i.e., the number of examples they are associated with. Moreover, each label vector is assigned a unique index. By default, feature vectors are given in the following format, where the n-th element indicates whether the n-th label is relevant (1) or not (0):
-
-```text
-[0 0 1 1 1 0]
-```
-
-By setting the option `sparse` to the value `true`, an alternative representation can be used (see {ref}`here<arguments-label-vectors>`). It consists of the indices of all relevant labels in a label vector (counting from zero and sorted in increasing order), while all irrelevant ones are omitted. Due to its compactness, this representation is particularly well-suited when dealing with a large number of labels:
+The above commands output each label vector present in a dataset, as well as their frequency, i.e., the number of examples they are associated with. Moreover, each label vector is assigned a unique index. By default, feature vectors are given in the following sparse format:
 
 ```text
 [2 3 4]
 ```
 
+This notation specifies the indices of all relevant labels in a label vector (counting from zero and sorted in increasing order), while all irrelevant ones are omitted. The example above corresponds to the binary label vector `[0 0 1 1 1 0]`. Due to its compactness, the sparse representation is particularly well-suited when dealing with a large number of labels.
+
 (output-rule-specific)=
 
 ### Rule-specific Results
 
-The rule learning algorithms developed by this project extend the functionality of MLRL-Testbed with rule-specific options. In the following, we discuss options for saving experiment results that are specific to this particular type of algorithms. Unless noted otherwise, the following options are available when using the packages [mlrl-boomer](https://pypi.org/project/mlrl-boomer/) and [mlrl-seco](https://pypi.org/project/mlrl-seco/) with MLRL-Testbed.
+The rule learning algorithms developed by this project extend the functionality of mlrl-testbed with rule-specific options. In the following, we discuss options for saving experiment results that are specific to this particular type of algorithms. Unless noted otherwise, the following options are available when using the packages [mlrl-boomer](https://pypi.org/project/mlrl-boomer/) and [mlrl-seco](https://pypi.org/project/mlrl-seco/) with mlrl-testbed.
 
 (output-model-characteristics)=
 
@@ -554,7 +598,7 @@ To obtain a quick overview of some statistics that characterize a rule-based mod
    ```
 ````
 
-The above command results in a tabular representation of the characteristics being printed on the console. If one intends to write them into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file instead, the argument `--save-model-characteristics` may be used:
+The above command results in a tabular representation of the characteristics being printed on the console. If one intends to write them into a [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) file instead, the argument `--save-model-characteristics` may be used:
 
 ````{tab} BOOMER
    ```text
@@ -704,7 +748,7 @@ The gradient boosting algorithms provided by this project allow to obtain probab
    ```
 ````
 
-Alternatively, a representations of the calibration models can be written to [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files by using the arguments `--save-marginal-probability-calibration-model` and `--save-joint-probability-calibration-model`
+Alternatively, a representations of the calibration models can be written to [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) files by using the arguments `--save-marginal-probability-calibration-model` and `--save-joint-probability-calibration-model`
 
 ````{tab} BOOMER
    ```text

@@ -1,0 +1,132 @@
+mlrl-testbed mlrl.boosting --mode read --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --print-evaluation false --save-evaluation false --print-prediction-characteristics true --save-prediction-characteristics true
+Reading meta-data...
+DEBUG: Reading input data from file "python/tests/res/tmp/metadata.yml"...
+Successfully read meta-data
+DEBUG: Checking for version conflicts...
+DEBUG: Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is currently used
+DEBUG: No version conflicts detected
+Reading experimental results of 1 experiment...
+
+Reading experimental results of experiment (1 / 1)...
+The command "mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --data-split cross-validation --print-evaluation false --save-evaluation false --print-prediction-characteristics true --save-prediction-characteristics true" has been used originally for running this experiment
+Performing full 10-fold cross validation...
+Fold 1 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/prediction_characteristics_test_fold-1.csv"...
+Prediction characteristics for test data (Fold 1):
+
+Outputs                  6
+Output Density          28.06
+Output Sparsity         71.94
+Label Imbalance Ratio    2.21
+Label Cardinality        1.68
+Distinct Label Vectors  13
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/prediction_characteristics_test_fold-1.csv"...
+Fold 2 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/prediction_characteristics_test_fold-2.csv"...
+Prediction characteristics for test data (Fold 2):
+
+Outputs                  6
+Output Density          26.67
+Output Sparsity         73.33
+Label Imbalance Ratio    2.04
+Label Cardinality        1.6
+Distinct Label Vectors  13
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/prediction_characteristics_test_fold-2.csv"...
+Fold 3 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/prediction_characteristics_test_fold-3.csv"...
+Prediction characteristics for test data (Fold 3):
+
+Outputs                  6
+Output Density          28.89
+Output Sparsity         71.11
+Label Imbalance Ratio    1.85
+Label Cardinality        1.73
+Distinct Label Vectors  14
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/prediction_characteristics_test_fold-3.csv"...
+Fold 4 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/prediction_characteristics_test_fold-4.csv"...
+Prediction characteristics for test data (Fold 4):
+
+Outputs                  6
+Output Density          24.58
+Output Sparsity         75.42
+Label Imbalance Ratio    2.37
+Label Cardinality        1.47
+Distinct Label Vectors  15
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/prediction_characteristics_test_fold-4.csv"...
+Fold 5 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/prediction_characteristics_test_fold-5.csv"...
+Prediction characteristics for test data (Fold 5):
+
+Outputs                  6
+Output Density          28.53
+Output Sparsity         71.47
+Label Imbalance Ratio    1.91
+Label Cardinality        1.71
+Distinct Label Vectors  11
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/prediction_characteristics_test_fold-5.csv"...
+Fold 6 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/prediction_characteristics_test_fold-6.csv"...
+Prediction characteristics for test data (Fold 6):
+
+Outputs                  6
+Output Density          27.4
+Output Sparsity         72.6
+Label Imbalance Ratio    1.93
+Label Cardinality        1.64
+Distinct Label Vectors  13
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/prediction_characteristics_test_fold-6.csv"...
+Fold 7 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/prediction_characteristics_test_fold-7.csv"...
+Prediction characteristics for test data (Fold 7):
+
+Outputs                  6
+Output Density          27.12
+Output Sparsity         72.88
+Label Imbalance Ratio    2.05
+Label Cardinality        1.63
+Distinct Label Vectors  12
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/prediction_characteristics_test_fold-7.csv"...
+Fold 8 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/prediction_characteristics_test_fold-8.csv"...
+Prediction characteristics for test data (Fold 8):
+
+Outputs                  6
+Output Density          31.07
+Output Sparsity         68.93
+Label Imbalance Ratio    1.6
+Label Cardinality        1.86
+Distinct Label Vectors  13
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/prediction_characteristics_test_fold-8.csv"...
+Fold 9 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/prediction_characteristics_test_fold-9.csv"...
+Prediction characteristics for test data (Fold 9):
+
+Outputs                  6
+Output Density          30.79
+Output Sparsity         69.21
+Label Imbalance Ratio    2.25
+Label Cardinality        1.85
+Distinct Label Vectors  15
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/prediction_characteristics_test_fold-9.csv"...
+Fold 10 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/prediction_characteristics_test_fold-10.csv"...
+Prediction characteristics for test data (Fold 10):
+
+Outputs                  6
+Output Density          26.27
+Output Sparsity         73.73
+Label Imbalance Ratio    1.83
+Label Cardinality        1.58
+Distinct Label Vectors  12
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/prediction_characteristics_test_fold-10.csv"...

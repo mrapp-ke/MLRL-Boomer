@@ -41,7 +41,7 @@ Both arguments that are included in the above command are mandatory:
 - `--data-dir` An absolute or relative path to the directory where the dataset files are located.
 - `--dataset` The name of the dataset (without any file suffix).
 
-Detailed information on the supported dataset formats can be found {ref}`here <testbed-datasets>`. We provide a collection of publicly available benchmark datasets in supported formats [here](https://github.com/mrapp-ke/Boomer-Datasets).
+Detailed information on the supported dataset formats can be found {ref}`here <testbed-datasets>`. We provide a collection of publicly available benchmark datasets in supported formats \{ref}\`here <testbed-datasets>.
 
 ### Regression Problems
 

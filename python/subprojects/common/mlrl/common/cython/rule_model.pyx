@@ -612,7 +612,7 @@ cdef class RuleList(RuleModel):
             elif dtype == np.float64:
                 return move(self.__deserialize_partial_64bit_head(head_state))
             else:
-                raise RuntimeError('Encountered partial head with unexpected score type: ' + str(dtype))
+                raise ValueError('Encountered partial head with unexpected score type: ' + str(dtype))
         else:
             if dtype == np.uint8:
                 return move(self.__deserialize_complete_binary_head(head_state))
@@ -621,7 +621,7 @@ cdef class RuleList(RuleModel):
             elif dtype == np.float64:
                 return move(self.__deserialize_complete_64bit_head(head_state))
             else:
-                raise RuntimeError('Encountered complete head with unexpected score type: ' + str(dtype))
+                raise ValueError('Encountered complete head with unexpected score type: ' + str(dtype))
 
     cdef unique_ptr[IHead] __deserialize_complete_binary_head(self, object head_state):
         cdef const uint8[::1] scores = head_state[0]

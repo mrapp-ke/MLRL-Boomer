@@ -1,203 +1,204 @@
-mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d-predefined --result-dir results --save-evaluation true --problem-type regression --data-split cross-validation --print-evaluation true --save-evaluation true
+mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d-predefined --result-dir results --problem-type regression --save-evaluation true --data-split cross-validation --print-evaluation true --save-evaluation true
+Checking if output files do already exist...
 Starting experiment using the regression algorithm "BoomerRegressor"...
-Writing output data to file "python/tests/res/tmp/metadata.yml"...
+DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Performing full 10-fold cross validation...
 Fold 1 / 10:
-Reading input data from file "python/tests/res/data/atp7d-predefined_fold-2.arff"...
-Parsing meta-data from file "python/tests/res/data/atp7d-predefined.xml"...
-Reading input data from file "python/tests/res/data/atp7d-predefined_fold-3.arff"...
-Parsing meta-data from file "python/tests/res/data/atp7d-predefined.xml"...
-Reading input data from file "python/tests/res/data/atp7d-predefined_fold-4.arff"...
-Parsing meta-data from file "python/tests/res/data/atp7d-predefined.xml"...
-Reading input data from file "python/tests/res/data/atp7d-predefined_fold-5.arff"...
-Parsing meta-data from file "python/tests/res/data/atp7d-predefined.xml"...
-Reading input data from file "python/tests/res/data/atp7d-predefined_fold-6.arff"...
-Parsing meta-data from file "python/tests/res/data/atp7d-predefined.xml"...
-Reading input data from file "python/tests/res/data/atp7d-predefined_fold-7.arff"...
-Parsing meta-data from file "python/tests/res/data/atp7d-predefined.xml"...
-Reading input data from file "python/tests/res/data/atp7d-predefined_fold-8.arff"...
-Parsing meta-data from file "python/tests/res/data/atp7d-predefined.xml"...
-Reading input data from file "python/tests/res/data/atp7d-predefined_fold-9.arff"...
-Parsing meta-data from file "python/tests/res/data/atp7d-predefined.xml"...
-Reading input data from file "python/tests/res/data/atp7d-predefined_fold-10.arff"...
-Parsing meta-data from file "python/tests/res/data/atp7d-predefined.xml"...
+DEBUG: Reading input data from file "python/tests/res/data/atp7d-predefined_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/atp7d-predefined.xml"...
+DEBUG: Reading input data from file "python/tests/res/data/atp7d-predefined_fold-3.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/atp7d-predefined.xml"...
+DEBUG: Reading input data from file "python/tests/res/data/atp7d-predefined_fold-4.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/atp7d-predefined.xml"...
+DEBUG: Reading input data from file "python/tests/res/data/atp7d-predefined_fold-5.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/atp7d-predefined.xml"...
+DEBUG: Reading input data from file "python/tests/res/data/atp7d-predefined_fold-6.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/atp7d-predefined.xml"...
+DEBUG: Reading input data from file "python/tests/res/data/atp7d-predefined_fold-7.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/atp7d-predefined.xml"...
+DEBUG: Reading input data from file "python/tests/res/data/atp7d-predefined_fold-8.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/atp7d-predefined.xml"...
+DEBUG: Reading input data from file "python/tests/res/data/atp7d-predefined_fold-9.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/atp7d-predefined.xml"...
+DEBUG: Reading input data from file "python/tests/res/data/atp7d-predefined_fold-10.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/atp7d-predefined.xml"...
 Fitting model to 266 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
-Reading input data from file "python/tests/res/data/atp7d-predefined_fold-1.arff"...
-Parsing meta-data from file "python/tests/res/data/atp7d-predefined.xml"...
+DEBUG: Reading input data from file "python/tests/res/data/atp7d-predefined_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/atp7d-predefined.xml"...
 Predicting for 30 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 1):
 
-Mean Absolute Error                84.54
-Mean Absolute Percentage Error      0.17
-Mean Squared Error              21298.9
-Median Absolute Error              58.34
+Mean Absolute Error (↓)                84.48
+Mean Absolute Percentage Error (↓)      0.17
+Mean Squared Error (↓)              21184.9
+Median Absolute Error (↓)              59.33
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-1.csv"...
 Fold 2 / 10:
 Fitting model to 266 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 30 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 2):
 
-Mean Absolute Error               29.82
-Mean Absolute Percentage Error     0.08
-Mean Squared Error              2439.75
-Median Absolute Error             16.86
+Mean Absolute Error (↓)               29.82
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2439.75
+Median Absolute Error (↓)             16.86
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-2.csv"...
 Fold 3 / 10:
 Fitting model to 266 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 30 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 3):
 
-Mean Absolute Error               36.34
-Mean Absolute Percentage Error     0.09
-Mean Squared Error              3652.85
-Median Absolute Error             21.59
+Mean Absolute Error (↓)               36.6
+Mean Absolute Percentage Error (↓)     0.09
+Mean Squared Error (↓)              3661.1
+Median Absolute Error (↓)             21.46
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-3.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-3.csv"...
 Fold 4 / 10:
 Fitting model to 266 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 30 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 4):
 
-Mean Absolute Error               26.86
-Mean Absolute Percentage Error     0.09
-Mean Squared Error              1284.06
-Median Absolute Error             21.21
+Mean Absolute Error (↓)               26.91
+Mean Absolute Percentage Error (↓)     0.09
+Mean Squared Error (↓)              1294.63
+Median Absolute Error (↓)             21.24
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-4.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-4.csv"...
 Fold 5 / 10:
 Fitting model to 266 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 30 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 5):
 
-Mean Absolute Error              17.22
-Mean Absolute Percentage Error    0.06
-Mean Squared Error              530.87
-Median Absolute Error            14.04
+Mean Absolute Error (↓)              17.22
+Mean Absolute Percentage Error (↓)    0.06
+Mean Squared Error (↓)              530.87
+Median Absolute Error (↓)            14.04
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-5.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-5.csv"...
 Fold 6 / 10:
 Fitting model to 266 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 30 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 6):
 
-Mean Absolute Error               31
-Mean Absolute Percentage Error     0.11
-Mean Squared Error              1728.45
-Median Absolute Error             24.84
+Mean Absolute Error (↓)               31
+Mean Absolute Percentage Error (↓)     0.11
+Mean Squared Error (↓)              1728.46
+Median Absolute Error (↓)             24.84
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-6.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-6.csv"...
 Fold 7 / 10:
 Fitting model to 267 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 29 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 7):
 
-Mean Absolute Error               48.48
-Mean Absolute Percentage Error     0.14
-Mean Squared Error              9183.04
-Median Absolute Error             23.85
+Mean Absolute Error (↓)               48.65
+Mean Absolute Percentage Error (↓)     0.14
+Mean Squared Error (↓)              9136.09
+Median Absolute Error (↓)             24.2
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-7.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-7.csv"...
 Fold 8 / 10:
 Fitting model to 267 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 29 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 8):
 
-Mean Absolute Error               57.13
-Mean Absolute Percentage Error     0.14
-Mean Squared Error              5545.78
-Median Absolute Error             51.35
+Mean Absolute Error (↓)               57.13
+Mean Absolute Percentage Error (↓)     0.14
+Mean Squared Error (↓)              5545.78
+Median Absolute Error (↓)             51.35
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-8.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-8.csv"...
 Fold 9 / 10:
 Fitting model to 267 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 29 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 9):
 
-Mean Absolute Error               39.91
-Mean Absolute Percentage Error     0.12
-Mean Squared Error              2673.66
-Median Absolute Error             33.38
+Mean Absolute Error (↓)               40.6
+Mean Absolute Percentage Error (↓)     0.12
+Mean Squared Error (↓)              2805.54
+Median Absolute Error (↓)             37.41
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-9.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-9.csv"...
 Fold 10 / 10:
 Fitting model to 267 training examples...
-A dense matrix is used to store the feature values of the training examples
-A dense matrix is used to store the regression scores of the training examples
+DEBUG: A dense matrix is used to store the feature values of the training examples
+DEBUG: A dense matrix is used to store the regression scores of the training examples
 Successfully fit model in <duration>
 Predicting for 29 test examples...
-A dense matrix is used to store the feature values of the query examples
-A dense matrix is used to store the predicted scores
+DEBUG: A dense matrix is used to store the feature values of the query examples
+DEBUG: A dense matrix is used to store the predicted scores
 Successfully predicted in <duration>
 Evaluation result for test data (Fold 10):
 
-Mean Absolute Error               58.32
-Mean Absolute Percentage Error     0.18
-Mean Squared Error              4792.35
-Median Absolute Error             51.29
+Mean Absolute Error (↓)               58.32
+Mean Absolute Percentage Error (↓)     0.18
+Mean Squared Error (↓)              4792.35
+Median Absolute Error (↓)             51.29
 
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-10.csv"...
 Evaluation result for test data (Average across 10 folds):
 
-Mean Absolute Error               42.96  ±18.67
-Mean Absolute Percentage Error     0.12  ±0.04
-Mean Squared Error              5312.97  ±5837.64
-Median Absolute Error             31.67  ±15.28
+Mean Absolute Error (↓)               43.07  ±18.64
+Mean Absolute Percentage Error (↓)     0.12  ±0.04
+Mean Squared Error (↓)              5311.94  ±5796.50
+Median Absolute Error (↓)             32.2   ±15.53
 
-Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-10.csv"...
-Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Successfully finished experiment after <duration>

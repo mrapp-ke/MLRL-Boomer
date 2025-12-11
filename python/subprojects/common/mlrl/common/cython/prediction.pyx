@@ -72,7 +72,7 @@ cdef class BinaryPredictor:
         cdef uint32 num_cols = prediction_matrix_ptr.get().getNumCols()
         cdef uint8* array = prediction_matrix_ptr.get().release()
         cdef uint8[:, ::1] prediction_matrix = c_matrix_uint8(array, num_rows, num_cols)
-        return np.asarray(prediction_matrix)
+        return np.asarray(prediction_matrix) if num_cols > 1 else np.asarray(prediction_matrix).ravel()
 
     def can_predict_incrementally(self) -> bool:
         """
@@ -248,7 +248,7 @@ cdef class ScorePredictor:
         cdef uint32 num_cols = prediction_matrix_ptr.get().getNumCols()
         cdef float64* array = prediction_matrix_ptr.get().release()
         cdef float64[:, ::1] prediction_matrix = c_matrix_float64(array, num_rows, num_cols)
-        return np.asarray(prediction_matrix)
+        return np.asarray(prediction_matrix) if num_cols > 1 else np.asarray(prediction_matrix).ravel()
 
     def can_predict_incrementally(self) -> bool:
         """
@@ -332,7 +332,7 @@ cdef class ProbabilityPredictor:
         cdef uint32 num_cols = prediction_matrix_ptr.get().getNumCols()
         cdef float64* array = prediction_matrix_ptr.get().release()
         cdef float64[:, ::1] prediction_matrix = c_matrix_float64(array, num_rows, num_cols)
-        return np.asarray(prediction_matrix)
+        return np.asarray(prediction_matrix) if num_cols > 1 else np.asarray(prediction_matrix).ravel()
 
     def can_predict_incrementally(self) -> bool:
         """

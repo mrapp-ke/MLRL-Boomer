@@ -4,12 +4,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing characteristics of an output matrix that are part of output data.
 """
 from numbers import Number
-from typing import Any, Callable, Optional, override
-
-from mlrl.testbed_sklearn.experiments.output.characteristics.data.matrix_output import OutputMatrix
+from typing import Any, Callable, List, Optional, Tuple, override
 
 from mlrl.testbed.experiments.context import Context
-from mlrl.testbed.experiments.output.data import OutputData, OutputValue, TabularOutputData
+from mlrl.testbed.experiments.data import Properties
+from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain
 from mlrl.testbed.experiments.table import RowWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
@@ -31,13 +30,6 @@ class Characteristic(OutputValue):
         super().__init__(option_key=option_key, name=name, percentage=percentage)
         self.function = function
 
-    @override
-    def format(self, value, **kwargs) -> str:
-        """
-        See :func:`mlrl.testbed.experiments.output.data.OutputValue.format`
-        """
-        return super().format(self.function(value), **kwargs)
-
 
 class OutputCharacteristics(TabularOutputData):
     """
@@ -56,26 +48,16 @@ class OutputCharacteristics(TabularOutputData):
 
     OPTION_DISTINCT_LABEL_VECTORS = 'distinct_label_vectors'
 
-    def __init__(self,
-                 problem_domain: ProblemDomain,
-                 output_matrix: OutputMatrix,
-                 properties: OutputData.Properties,
-                 context: Context = Context()):
+    def __init__(self, values: List[Tuple[Characteristic, Any]], properties: Properties, context: Context = Context()):
         """
-
-        :param problem_domain:  The problem domain, the output matrix corresponds to
-        :param output_matrix:   An output matrix
+        :param values:          A list that stores different data characteristics and their corresponding values
         :param properties:      The properties of the output data
         :param context:         A `Context` to be used by default for finding a suitable sink this output data can be
                                 written to
         """
         super().__init__(properties=properties, context=context)
-        self.output_matrix = output_matrix
-
-        if isinstance(problem_domain, ClassificationProblem):
-            self.characteristics = LABEL_CHARACTERISTICS
-        else:
-            self.characteristics = OUTPUT_CHARACTERISTICS
+        self.values = values
+        self.characteristics = [characteristic for characteristic, _ in values]
 
     @override
     def to_text(self, options: Options, **kwargs) -> Optional[str]:
@@ -94,9 +76,10 @@ class OutputCharacteristics(TabularOutputData):
         percentage = options.get_bool(OPTION_PERCENTAGE, kwargs.get(OPTION_PERCENTAGE, True))
         decimals = options.get_int(OPTION_DECIMALS, kwargs.get(OPTION_DECIMALS, 0))
         characteristics = Characteristic.filter_values(self.characteristics, options)
-        values = map(
-            lambda characteristic: characteristic.format(self.output_matrix, percentage=percentage, decimals=decimals),
-            characteristics)
+        values = [
+            characteristic.format(value, percentage=percentage, decimals=decimals)
+            for characteristic, value in self.values
+        ]
         return RowWiseTable(*characteristics).add_row(*values)
 
 
@@ -137,3 +120,16 @@ LABEL_CHARACTERISTICS = OUTPUT_CHARACTERISTICS + [
         function=lambda x: x.num_distinct_label_vectors,
     )
 ]
+
+
+def get_output_characteristics(problem_domain: ProblemDomain) -> List[Characteristic]:
+    """
+    Returns the output characteristics to be used, depending on the problem domain.
+
+    :param problem_domain:  The problem domain
+    :return:                A list that stores the output characteristics
+    """
+    if isinstance(problem_domain, ClassificationProblem):
+        return LABEL_CHARACTERISTICS
+
+    return OUTPUT_CHARACTERISTICS

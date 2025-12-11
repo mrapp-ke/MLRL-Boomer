@@ -7,10 +7,11 @@ import logging as log
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import override
+from typing import Optional, override
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.file_path import FilePath
+from mlrl.testbed.experiments.input.sources import Source
 from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData, TabularOutputData
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
@@ -36,6 +37,14 @@ class Sink(ABC):
 
         :param state:       The state from which the output data has been generated
         :param output_data: The output data that should be written to the sink
+        """
+
+    @abstractmethod
+    def create_source(self, input_directory: Path) -> Optional[Source]:
+        """
+        Must be implemented by subclasses in order to create a `Source` that can read the data written to this sink.
+
+        :return: The `Source` that has been created or None, if no source is available
         """
 
 
@@ -104,8 +113,8 @@ class TabularFileSink(FileSink, ABC):
     @override
     def _write_to_file(self, file_path: Path, state: ExperimentState, output_data: OutputData, **kwargs):
         if not isinstance(output_data, TabularOutputData):
-            raise RuntimeError('Output data of type "' + type(output_data).__name__
-                               + '" cannot be converted into a tabular representation')
+            raise ValueError('Output data of type "' + type(output_data).__name__
+                             + '" cannot be converted into a tabular representation')
 
         tabular_data = output_data.to_table(self.options, **kwargs)
 
@@ -141,8 +150,8 @@ class DatasetFileSink(FileSink, ABC):
     @override
     def _write_to_file(self, file_path: Path, state: ExperimentState, output_data: OutputData, **kwargs):
         if not isinstance(output_data, DatasetOutputData):
-            raise RuntimeError('Output data of type "' + type(output_data).__name__
-                               + '" cannot be converted into a dataset')
+            raise ValueError('Output data of type "' + type(output_data).__name__
+                             + '" cannot be converted into a dataset')
 
         dataset = output_data.to_dataset(self.options, **kwargs)
 
