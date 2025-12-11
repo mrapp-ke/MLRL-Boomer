@@ -162,7 +162,7 @@ class CmdBuilder:
 
         args.extend(self.control_args)
 
-        if self.mode != ExperimentMode.READ:
+        if self.mode not in {ExperimentMode.RUN, ExperimentMode.READ}:
             args.extend(self.algorithmic_args)
 
         return args
