@@ -1,6 +1,6 @@
 command: mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp
   --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation
-  true --binary-predictor output-wise --print-predictions true --print-ground-truth
-  true --prediction-format sparse
+  true --print-predictions true --print-ground-truth true --binary-predictor output-wise
+  --prediction-format sparse
 timestamp: <timestamp>
 version: <version>

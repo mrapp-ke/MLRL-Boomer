@@ -1,6 +1,6 @@
 command: mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp
   --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type
-  regression --save-evaluation true --global-pruning pre-pruning --holdout none --print-model-characteristics
-  true
+  regression --save-evaluation true --print-model-characteristics true --global-pruning
+  pre-pruning --holdout none
 timestamp: <timestamp>
 version: <version>
