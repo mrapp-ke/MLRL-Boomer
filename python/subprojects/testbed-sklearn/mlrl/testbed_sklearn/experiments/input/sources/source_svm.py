@@ -9,10 +9,8 @@ from typing import List, Optional, override
 
 import numpy as np
 
-from scipy.sparse import sparray
+from scipy.sparse import csr_array, sparray
 from sklearn.datasets import load_svmlight_file
-
-from mlrl.common.cython.prediction import csr_array
 
 from mlrl.testbed_sklearn.experiments.dataset import Attribute, AttributeType, TabularDataset
 
