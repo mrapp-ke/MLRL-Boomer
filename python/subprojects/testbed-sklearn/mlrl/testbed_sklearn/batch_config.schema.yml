@@ -13,5 +13,5 @@ parameter:
   name: str()
   values: list(any(str(), int(), num(), bool(), include('value_object')))
 value_object:
-  value: str()
+  value: any(str(), int(), num(), bool())
   additional_arguments: list(str(), required=False)
