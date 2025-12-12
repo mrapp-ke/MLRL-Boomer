@@ -183,7 +183,7 @@ class BatchMode(Mode):
                     node = value.get('additional_arguments', [])
                     additional_arguments = node if node else []
                     parameter_values.append(
-                        BatchMode.ConfigFile.ParameterValue(value=value['value'],
+                        BatchMode.ConfigFile.ParameterValue(value=str(value['value']),
                                                             additional_arguments=additional_arguments))
 
             return parameter_values
