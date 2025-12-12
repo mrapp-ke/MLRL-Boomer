@@ -40,6 +40,7 @@ from mlrl.testbed.command import ArgumentList, Command
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.input.dataset.extension import DatasetFileExtension
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
+from mlrl.testbed.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 from mlrl.testbed.experiments.input.model.extension import ModelInputExtension
 from mlrl.testbed.experiments.input.parameters.extension import ParameterInputExtension
 from mlrl.testbed.experiments.meta_data import MetaData
@@ -603,6 +604,7 @@ class SklearnEstimator:
                 if value is not None:
                     constructor_kwargs[argument.parameter_name] = value
 
+        constructor_kwargs['random_state'] = DatasetSplitterArguments.RANDOM_STATE.get_value(args) if args else 1
         return self.estimator_type(**constructor_kwargs)
 
     @override
