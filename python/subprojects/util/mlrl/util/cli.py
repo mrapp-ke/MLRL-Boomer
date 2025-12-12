@@ -118,6 +118,10 @@ class Argument:
     def __eq__(self, other: Any) -> bool:
         return isinstance(other, type(self)) and self.key == other.key
 
+    @override
+    def __str__(self) -> str:
+        return self.name
+
 
 class FlagArgument(Argument):
     """
