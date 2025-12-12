@@ -7,7 +7,9 @@ from abc import ABC, abstractmethod
 from os import environ
 from typing import Any, Iterable, List, Optional, override
 
-from util.env import get_env
+from util.env import get_env, get_env_array
+
+from targets.modules import SubprojectModule
 
 
 class BuildOption(ABC):
@@ -31,7 +33,12 @@ class BuildOption(ABC):
         subprojects = self.subprojects
 
         if subprojects:
-            return [subproject + ':' + self.name for subproject in subprojects]
+            subproject_names = set(get_env_array(environ, SubprojectModule.ENV_SUBPROJECTS))
+
+            if not subproject_names or any(subproject in subproject_names for subproject in subprojects):
+                return [subproject + ':' + self.name for subproject in subprojects]
+
+            return []
 
         return [self.name]
 

@@ -9,10 +9,22 @@ on:
       python_version:
         required: true
         type: string
+      multi_threading_support:
+        required: false
+        type: string
+        default: enabled
+      gpu_support:
+        required: false
+        type: string
+        default: enabled
+      ccache:
+        required: false
+        type: boolean
+        default: true
 env:
   SUBPROJECTS: ${{ inputs.subproject }}
-  MULTI_THREADING_SUPPORT: enabled
-  GPU_SUPPORT: enabled
+  MULTI_THREADING_SUPPORT: ${{ inputs.multi_threading_support }}
+  GPU_SUPPORT: ${{ inputs.gpu_support }}
 jobs:
   macos_build:
     name: Test MacOS build
@@ -37,12 +49,15 @@ jobs:
           cache: pip
           cache-dependency-path: '**/requirements.txt'
       - name: Install OpenMP
+        if: ${{ inputs.multi_threading_support }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./build dependency_libomp
       - name: Install OpenCL
+        if: ${{ inputs.gpu_support }}
         run: brew install opencl-clhpp-headers
       - name: Prepare ccache
+        if: ${{ inputs.ccache }}
         uses: hendrikmuhs/ccache-action@v1
         with:
           key: ccache-${{ runner.os }}-${{ runner.arch }}-${{ inputs.subproject }}

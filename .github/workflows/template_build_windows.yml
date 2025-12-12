@@ -9,10 +9,22 @@ on:
       python_version:
         required: true
         type: string
+      multi_threading_support:
+        required: false
+        type: string
+        default: enabled
+      gpu_support:
+        required: false
+        type: string
+        default: enabled
+      ccache:
+        required: false
+        type: boolean
+        default: true
 env:
   SUBPROJECTS: ${{ inputs.subproject }}
-  MULTI_THREADING_SUPPORT: enabled
-  GPU_SUPPORT: enabled
+  MULTI_THREADING_SUPPORT: ${{ inputs.multi_threading_support }}
+  GPU_SUPPORT: ${{ inputs.gpu_support }}
 jobs:
   windows_build:
     name: Test Windows build
@@ -32,12 +44,14 @@ jobs:
       - name: Prepare MSVC
         uses: ilammy/msvc-dev-cmd@v1
       - name: Install OpenCL
+        if: ${{ inputs.gpu_support }}
         uses: johnwason/vcpkg-action@v7
         with:
           pkgs: opencl
           triplet: x64-windows
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Prepare ccache
+        if: ${{ inputs.ccache }}
         uses: hendrikmuhs/ccache-action@v1
         with:
           key: ccache-${{ runner.os }}-${{ runner.arch }}-${{ inputs.subproject }}
