@@ -27,6 +27,14 @@ on:
       run_python_tests:
         required: false
         type: boolean
+      multi_threading_support:
+        required: false
+        type: string
+        default: enabled
+      gpu_support:
+        required: false
+        type: string
+        default: enabled
 jobs:
   linux_build:
     if: ${{ inputs.linux == true || inputs.compile == true || inputs.run_cpp_tests == true || inputs.run_python_tests == true }}
@@ -38,6 +46,8 @@ jobs:
       run_cpp_tests: ${{ inputs.run_cpp_tests == true }}
       run_python_tests: ${{ inputs.run_python_tests == true }}
       python_version: ${{ inputs.python_version }}
+      multi_threading_support: ${{ inputs.multi_threading_support }}
+      gpu_support: ${{ inputs.gpu_support }}
     secrets: inherit
   python_tests:
     if: ${{ inputs.run_python_tests == true }}
@@ -55,6 +65,8 @@ jobs:
     with:
       subproject: ${{ inputs.subproject }}
       python_version: ${{ inputs.python_version }}
+      multi_threading_support: ${{ inputs.multi_threading_support }}
+      gpu_support: ${{ inputs.gpu_support }}
   windows_build:
     if: ${{ inputs.windows == true || inputs.compile == true }}
     name: Test windows build (${{ inputs.subproject }})
@@ -62,3 +74,5 @@ jobs:
     with:
       subproject: ${{ inputs.subproject }}
       python_version: ${{ inputs.python_version }}
+      multi_threading_support: ${{ inputs.multi_threading_support }}
+      gpu_support: ${{ inputs.gpu_support }}

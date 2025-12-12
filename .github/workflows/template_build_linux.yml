@@ -18,10 +18,18 @@ on:
       run_python_tests:
         required: false
         type: boolean
+      multi_threading_support:
+        required: false
+        type: string
+        default: enabled
+      gpu_support:
+        required: false
+        type: string
+        default: enabled
 env:
   SUBPROJECTS: ${{ inputs.subproject }}
-  MULTI_THREADING_SUPPORT: enabled
-  GPU_SUPPORT: enabled
+  MULTI_THREADING_SUPPORT: ${{ inputs.multi_threading_support }}
+  GPU_SUPPORT: ${{ inputs.gpu_support }}
 jobs:
   linux_build:
     name: Test Linux build
@@ -45,6 +53,7 @@ jobs:
           cache: pip
           cache-dependency-path: '**/requirements.txt'
       - name: Install OpenCL
+        if: ${{ inputs.gpu_support == true }}
         run: sudo apt update && sudo apt install -y opencl-headers ocl-icd-opencl-dev
       - name: Install GoogleTest
         if: ${{ matrix.os == 'ubuntu-24.04' && inputs.run_cpp_tests == true}}
