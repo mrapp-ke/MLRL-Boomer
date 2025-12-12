@@ -723,19 +723,23 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
                         mode: ExperimentMode,
                         args: Namespace,
                         problem_type: Optional[str] = None) -> Optional[SklearnEstimator]:
-        estimators = self._regressors if problem_type == RegressionProblem.NAME else self._classifiers
+        regressors = self._regressors
+        classifiers = self._classifiers
         estimator_name = SkLearnEstimatorRunnable.EstimatorExtension.create_estimator_argument(
             supported_classifiers=self._classifiers, supported_regressors=self._regressors, mode=mode).get_value(args)
-        return self.__get_estimator_by_name(estimators, estimator_name, problem_type=problem_type)
+        return self.__get_estimator_by_name(chain(regressors, classifiers), estimator_name, problem_type=problem_type)
 
     def __get_meta_estimator(self, args: Namespace, problem_type: Optional[str] = None) -> Optional[SklearnEstimator]:
-        meta_estimators = self._meta_regressors if problem_type == RegressionProblem.NAME else self._meta_classifiers
+        meta_regressors = self._meta_regressors
+        meta_classifiers = self._meta_classifiers
         meta_estimator_name = SkLearnEstimatorRunnable.EstimatorExtension.create_meta_estimator_argument(
             supported_meta_classifiers=self._meta_classifiers,
             supported_meta_regressors=self._meta_regressors).get_value(args)
 
         if meta_estimator_name:
-            return self.__get_estimator_by_name(meta_estimators, meta_estimator_name, problem_type=problem_type)
+            return self.__get_estimator_by_name(chain(meta_regressors, meta_classifiers),
+                                                meta_estimator_name,
+                                                problem_type=problem_type)
 
         return None
 
