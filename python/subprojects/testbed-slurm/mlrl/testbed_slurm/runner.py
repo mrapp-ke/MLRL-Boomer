@@ -13,8 +13,6 @@ from functools import partial
 from pathlib import Path
 from typing import Callable, Dict, List, Optional, Set, Tuple, cast, override
 
-import yamale
-
 from tabulate import tabulate
 
 from mlrl.testbed_slurm.arguments import SlurmArguments
@@ -27,6 +25,7 @@ from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDir
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.modes.mode_batch import Batch, BatchMode
 from mlrl.testbed.util.io import open_readable_file, open_writable_file
+from mlrl.testbed.util.yml import read_and_validate_yaml
 
 from mlrl.util.options import Options
 from mlrl.util.validation import ValidationError
@@ -103,16 +102,13 @@ class SlurmRunner(BatchMode.Runner):
         A YAML configuration file that configures Slurm jobs to be run.
         """
 
-        def __init__(self, file_path: str, schema_file_path: str):
+        def __init__(self, file_path: Path, schema_file_path: Path):
             """
             :param file_path:           The path to the configuration file
             :param schema_file_path:    The path to a YAML schema file
             """
-            schema = yamale.make_schema(schema_file_path)
-            data = yamale.make_data(file_path)
-            yamale.validate(schema, data)
             self.file_path = file_path
-            self.yaml_dict = data[0][0]
+            self.yaml_dict = read_and_validate_yaml(yaml_file_path=file_path, schema_file_path=schema_file_path)
 
         @property
         def sbatch_arguments(self) -> List[str]:
@@ -146,7 +142,7 @@ class SlurmRunner(BatchMode.Runner):
 
         @override
         def __str__(self) -> str:
-            return self.file_path
+            return str(self.file_path)
 
     @staticmethod
     def __is_command_available() -> bool:
@@ -165,7 +161,7 @@ class SlurmRunner(BatchMode.Runner):
 
         if config_file_path:
             schema_file_path = Path(__file__).parent / 'slurm_config.schema.yml'
-            return SlurmRunner.ConfigFile(file_path=config_file_path, schema_file_path=str(schema_file_path))
+            return SlurmRunner.ConfigFile(file_path=config_file_path, schema_file_path=schema_file_path)
 
         return None
 
@@ -249,7 +245,7 @@ class SlurmRunner(BatchMode.Runner):
     @staticmethod
     def __write_sbatch_file(args: Namespace, command: Command, config_file: Optional[ConfigFile],
                             job_array: Optional[JobArray], job_name: str) -> Path:
-        path = Path(SlurmArguments.SLURM_SAVE_DIR.get_value(args)) / (job_name + '.sh')
+        path = SlurmArguments.SLURM_SAVE_DIR.get_value(args) / (job_name + '.sh')
 
         with open_writable_file(path) as sbatch_file:
             sbatch_file.write(

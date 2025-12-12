@@ -7,12 +7,9 @@ Provides classes that allow reading input data from YAML files.
 from pathlib import Path
 from typing import Any, Dict, Optional, override
 
-import yamale
-import yaml
-
 from mlrl.testbed.experiments.input.data import StructuralInputData
 from mlrl.testbed.experiments.input.sources.source import StructuralFileSource
-from mlrl.testbed.util.io import open_readable_file
+from mlrl.testbed.util.yml import read_and_validate_yaml, read_yaml
 
 
 class YamlFileSource(StructuralFileSource):
@@ -35,11 +32,6 @@ class YamlFileSource(StructuralFileSource):
         schema_file_path = self.schema_file_path
 
         if schema_file_path:
-            schema = yamale.make_schema(schema_file_path)
-            data = yamale.make_data(file_path)
-            yamale.validate(schema, data)
-            yaml_dict = data[0][0]
-            return yaml_dict
+            return read_and_validate_yaml(yaml_file_path=file_path, schema_file_path=schema_file_path)
 
-        with open_readable_file(file_path) as yaml_file:
-            return yaml.safe_load(yaml_file)
+        return read_yaml(yaml_file_path=file_path)

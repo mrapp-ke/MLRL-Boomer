@@ -14,8 +14,6 @@ from itertools import chain
 from pathlib import Path
 from typing import Any, Callable, Generator, Iterable, List, Optional, Set, override
 
-import yamale
-
 from mlrl.testbed_slurm.arguments import SlurmArguments
 
 from mlrl.testbed.command import ArgumentDict, ArgumentList, Command
@@ -35,8 +33,9 @@ from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.modes.mode import Mode
 from mlrl.testbed.modes.util import OutputUtil
+from mlrl.testbed.util.yml import read_and_validate_yaml
 
-from mlrl.util.cli import AUTO, Argument, BoolArgument, CommandLineInterface, FlagArgument, SetArgument, StringArgument
+from mlrl.util.cli import AUTO, Argument, BoolArgument, CommandLineInterface, FlagArgument, PathArgument, SetArgument
 from mlrl.util.options import BooleanOption, Options
 
 Batch = List[Command]
@@ -189,16 +188,13 @@ class BatchMode(Mode):
 
             return parameter_values
 
-        def __init__(self, file_path: str, schema_file_path: str):
+        def __init__(self, file_path: Path, schema_file_path: Path):
             """
             :param file_path:           The path to the configuration file
             :param schema_file_path:    The path to a YAML schema file
             """
-            schema = yamale.make_schema(schema_file_path)
-            data = yamale.make_data(file_path)
-            yamale.validate(schema, data)
             self.file_path = file_path
-            self.yaml_dict = data[0][0]
+            self.yaml_dict = read_and_validate_yaml(yaml_file_path=file_path, schema_file_path=schema_file_path)
 
         @cached_property
         def default_arguments(self) -> List[DefaultArgument]:
@@ -262,9 +258,9 @@ class BatchMode(Mode):
 
         @override
         def __str__(self) -> str:
-            return self.file_path
+            return str(self.file_path)
 
-    CONFIG_FILE = StringArgument(
+    CONFIG_FILE = PathArgument(
         '--config',
         required=True,
         description='An absolute or relative path to a YAML file that configures the batch of experiments to be run.',
