@@ -17,6 +17,10 @@ on:
         required: false
         type: string
         default: enabled
+      ccache:
+        required: false
+        type: boolean
+        default: true
 env:
   SUBPROJECTS: ${{ inputs.subproject }}
   MULTI_THREADING_SUPPORT: ${{ inputs.multi_threading_support }}
@@ -53,6 +57,7 @@ jobs:
         if: ${{ inputs.gpu_support }}
         run: brew install opencl-clhpp-headers
       - name: Prepare ccache
+        if: ${{ inputs.ccache }}
         uses: hendrikmuhs/ccache-action@v1
         with:
           key: ccache-${{ runner.os }}-${{ runner.arch }}-${{ inputs.subproject }}
