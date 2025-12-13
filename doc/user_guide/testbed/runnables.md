@@ -74,6 +74,8 @@ The method {py:meth}`get_algorithmic_arguments <mlrl.testbed.runnables.Runnable.
 - {py:class}`StringArgument <mlrl.util.cli.StringArgument>`: For specifying an arbitrary string.
 - {py:class}`SetArgument <mlrl.util.cli.SetArgument>`: For specifying one out of a predefined set of string values.
 - {py:class}`EnumArgument <mlrl.util.cli.EnumArgument>`: For specifying one out of a predefined set of enum values.
+- {py:class}`FlagArgument <mlrl.util.cli.FlagArgument>`: For flags that are disabled by default.
+- {py:class}`PathArgument <mlrl.util.cli.PathArgument>`: For file system paths.
 
 Instead of retrieving the value specified by the user directly from the given `Namespace` object, we recommend to use the method {py:meth}`get_value <mlrl.util.cli.Argument.get_value>`, as it validates the given value and prints helpful information in the case of validation errors.
 
