@@ -26,54 +26,47 @@ The package [mlrl-testbed-sklearn](https://pypi.org/project/mlrl-testbed-sklearn
 pip install mlrl-testbed-sklearn
 ```
 
-### 💡 Example
+### 💡 Example 1: Running an Experiment
 
-By writing just a small amount of code, any scikit-learn compatible [estimator](https://scikit-learn.org/stable/glossary.html#term-estimators) can be integrated with mlrl-testbed and used in experiments. For example, the following code integrates scikit-learn's [RandomForestClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier):
-
-```python
-from argparse import Namespace
-from mlrl.testbed.experiments.state import ExperimentMode
-from mlrl.testbed_sklearn.runnables import SkLearnRunnable
-from mlrl.util.cli import Argument, IntArgument
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.base import ClassifierMixin, RegressorMixin
-from typing import Optional, Set
-
-
-class Runnable(SkLearnRunnable):
-
-    N_ESTIMATORS = IntArgument(
-        '--n-estimators',
-        description='The number of trees in the forest',
-        default=100,
-    )
-
-    def get_algorithmic_arguments(self, known_args: Namespace) -> Set[Argument]:
-        return { self.N_ESTIMATORS }
-
-    def create_classifier(self, mode: ExperimentMode, args: Namespace) -> Optional[ClassifierMixin]:
-        return RandomForestClassifier()
-
-    def create_regressor(self, mode: ExperimentMode, args: Namespace) -> Optional[RegressorMixin]:
-        return None  # Not needed in this case
-
-```
-
-The previously integrated algorithm can then be used in experiments controlled via a command line API. Assuming that the source code shown above is saved to a file named `custom_runnable.py` in the working directory, we are now capable of fitting a [RandomForestClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier) to a dataset by using the command below.
+After installing the package the machine learning algorithms offered by the scikit-learn project can be configured and experimented with via a command line API. For example, the following command runs an experiment using scikit-learn's [RandomForestClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier):
 
 ```text
-mlrl-testbed custom_runnable.py \
+mlrl-testbed mlrl.testbed_sklearn \
     --data-dir path/to/datasets/ \
     --dataset dataset-name \
+    --estimator RandomForestClassifier
     --n-estimators 50
 ```
 
-The above command does not only train a model, but also evaluates it according to common measures and prints the evaluation results. It does also demonstrate how algorithmic parameters can be controlled via command line arguments.
+The above command does not only train a model, but also evaluates it according to common measures and prints the evaluation results. It also demonstrates how algorithmic parameters, like `--n-estimator`, can be controlled via command line arguments. A description of all available arguments can be obtained by specifying the `--help` flag.
 
-It is also possible to run multiple experiments at once by defining the datasets and algorithmic parameters to be used in the different runs in a YAML file:
+### 💡 Example 2: Using a Meta-Estimator
+
+By using the argument `--meta-estimator`, it is also possible to use so-called "meta-estimators" in experiments. These are algorithms that decompose the given problem in some way and make use of a "base estimator" to solve the subproblems individually. The following example demonstrates how the meta-estimator [ClassifierChain](https://scikit-learn.org/stable/modules/generated/sklearn.multioutput.ClassifierChain) can be used with the base estimator [DecisionTreeClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier):
 
 ```text
-mlrl-testbed custom_runnable.py --mode batch --config path/to/config.yaml
+mlrl-testbed mlrl.testbed_sklearn \
+    --data-dir path/to/datasets/ \
+    --dataset dataset-name \
+    --meta-estimator ClassifierChain \
+    --estimator DecisionTreeClassifier \
+    --max-depth 5 \
+    --meta-verbose true
+```
+
+Whereas the argument `--max-depth` belongs to the base learner (and controls the maximum depths of individual trees), the argument `--meta-verbose` belongs to the meta-estimator (and instructs it to produce more verbose log output). All arguments associated with meta-estimators start with the "meta" prefix.
+
+### 💡 Example 3: Running Multiple Experiments
+
+It is also possible to run multiple experiments at once by defining the datasets and algorithmic parameters to be used in the different runs in a YAML file (if the package [mlrl-testbed-slurm](https://pypi.org/project/mlrl-testbed-slurm/) is installed, individual experiments can be submitted to a SLURM cluster by appending the argument `--runner slurm`):
+
+```text
+mlrl-testbed mlrl.testbed_sklearn \
+    --mode batch \
+    --estimator RandomForestClassifier \
+    --config path/to/config.yaml \
+    --base-dir path/to/results
+    --store-evaluation true
 ```
 
 An exemplary YAML file is shown below. Each combination of the specified parameter values is applied to each dataset defined in the file.
@@ -91,6 +84,15 @@ parameters:
       - 100
 ```
 
+The experimental results produced before, can afterward be viewed by using read mode. The output of the following command does only include results for individual experiments, but also aggregates them into a condensed overview:
+
+```text
+mlrl-testbed mlrl.testbed_sklearn \
+    --mode read \
+    --input-dir path/to/results \
+    --print-evaluation true
+```
+
 ### 🏁 Advantages
 
 Making use of mlrl-testbed does not only help with the burdens of training and evaluating machine learning models, it can also help making your own methods and algorithms more accessible to users. This is demonstrated by the rule learning algorithms [mlrl-boomer](https://pypi.org/project/mlrl-boomer/) and [mlrl-seco](https://pypi.org/project/mlrl-seco/) that can easily be run via the command line API described above and even extend it with rule-specific functionalities.
@@ -99,7 +101,7 @@ Making use of mlrl-testbed does not only help with the burdens of training and e
 
 The package [mlrl-testbed-sklearn](https://pypi.org/project/mlrl-testbed-sklearn/) provides a command line API that allows configuring and running machine learning algorithms. It allows to apply machine learning algorithms to different datasets and can evaluate their predictive performance in terms of commonly used measures. In detail, it supports the following functionalities:
 
-- Single- and multi-output datasets in the [Mulan](https://github.com/tsoumakas/mulan) and [MEKA](https://waikato.github.io/meka/) format are supported (with the help of the package [mlrl-testbed-arff](https://pypi.org/project/mlrl-testbed-arff/)).
+- Single- and multi-output datasets in the [LIBSVM](https://en.wikipedia.org/wiki/LIBSVM) are supported out-of the box. Datasets in the [Mulan](https://github.com/tsoumakas/mulan) and [MEKA](https://waikato.github.io/meka/) format are supported with the help of the package [mlrl-testbed-arff](https://pypi.org/project/mlrl-testbed-arff/).
 - Datasets can automatically be split into training and test data, including the possibility to use cross validation. Alternatively, predefined splits can be provided as separate files.
 - One-hot-encoding can be applied to nominal or binary features.
 - Binary predictions, scores, or probability estimates can be obtained from machine learning algorithms, if supported. Evaluation measures that are suited for the respective type of predictions are picked automatically.
