@@ -10,6 +10,7 @@ from typing import Any, Iterable, List, Optional, override
 from util.env import get_env, get_env_array
 
 from targets.modules import SubprojectModule
+from targets.project import Project
 
 
 class BuildOption(ABC):
@@ -38,7 +39,10 @@ class BuildOption(ABC):
             if not subproject_names or any(subproject in subproject_names for subproject in subprojects):
                 return [subproject + ':' + self.name for subproject in subprojects]
 
-            return []
+            cpp_subprojects = {subproject.name for subproject in Project.Cpp.find_subprojects()}
+
+            if any(subproject_name in cpp_subprojects for subproject_name in subproject_names):
+                return [subproject + ':' + self.name for subproject in subprojects if subproject == 'common']
 
         return [self.name]
 
