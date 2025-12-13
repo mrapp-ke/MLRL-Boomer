@@ -13,7 +13,7 @@ max_rules       10
 rule_induction  top-down-greedy{max_conditions=1}
 
 DEBUG: Writing output data to file "python/tests/res/tmp/results/parameters_fold-1.csv"...
-Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
+Successfully applied parameter setting: {'max_rules': 10, 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 Fitting model to 266 training examples...
 DEBUG: A dense matrix is used to store the feature values of the training examples
 DEBUG: A dense matrix is used to store the regression scores of the training examples
@@ -26,7 +26,7 @@ max_rules       10
 rule_induction  top-down-greedy{max_conditions=1}
 
 DEBUG: Writing output data to file "python/tests/res/tmp/results/parameters_fold-2.csv"...
-Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
+Successfully applied parameter setting: {'max_rules': 10, 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 Fitting model to 266 training examples...
 DEBUG: A dense matrix is used to store the feature values of the training examples
 DEBUG: A dense matrix is used to store the regression scores of the training examples
@@ -39,7 +39,7 @@ max_rules       10
 rule_induction  top-down-greedy{max_conditions=1}
 
 DEBUG: Writing output data to file "python/tests/res/tmp/results/parameters_fold-3.csv"...
-Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
+Successfully applied parameter setting: {'max_rules': 10, 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 Fitting model to 266 training examples...
 DEBUG: A dense matrix is used to store the feature values of the training examples
 DEBUG: A dense matrix is used to store the regression scores of the training examples
@@ -52,7 +52,7 @@ max_rules       10
 rule_induction  top-down-greedy{max_conditions=1}
 
 DEBUG: Writing output data to file "python/tests/res/tmp/results/parameters_fold-4.csv"...
-Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
+Successfully applied parameter setting: {'max_rules': 10, 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 Fitting model to 266 training examples...
 DEBUG: A dense matrix is used to store the feature values of the training examples
 DEBUG: A dense matrix is used to store the regression scores of the training examples
@@ -65,7 +65,7 @@ max_rules       10
 rule_induction  top-down-greedy{max_conditions=1}
 
 DEBUG: Writing output data to file "python/tests/res/tmp/results/parameters_fold-5.csv"...
-Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
+Successfully applied parameter setting: {'max_rules': 10, 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 Fitting model to 266 training examples...
 DEBUG: A dense matrix is used to store the feature values of the training examples
 DEBUG: A dense matrix is used to store the regression scores of the training examples
@@ -78,7 +78,7 @@ max_rules       10
 rule_induction  top-down-greedy{max_conditions=1}
 
 DEBUG: Writing output data to file "python/tests/res/tmp/results/parameters_fold-6.csv"...
-Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
+Successfully applied parameter setting: {'max_rules': 10, 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 Fitting model to 266 training examples...
 DEBUG: A dense matrix is used to store the feature values of the training examples
 DEBUG: A dense matrix is used to store the regression scores of the training examples
@@ -91,7 +91,7 @@ max_rules       10
 rule_induction  top-down-greedy{max_conditions=1}
 
 DEBUG: Writing output data to file "python/tests/res/tmp/results/parameters_fold-7.csv"...
-Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
+Successfully applied parameter setting: {'max_rules': 10, 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 Fitting model to 267 training examples...
 DEBUG: A dense matrix is used to store the feature values of the training examples
 DEBUG: A dense matrix is used to store the regression scores of the training examples
@@ -104,7 +104,7 @@ max_rules       10
 rule_induction  top-down-greedy{max_conditions=1}
 
 DEBUG: Writing output data to file "python/tests/res/tmp/results/parameters_fold-8.csv"...
-Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
+Successfully applied parameter setting: {'max_rules': 10, 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 Fitting model to 267 training examples...
 DEBUG: A dense matrix is used to store the feature values of the training examples
 DEBUG: A dense matrix is used to store the regression scores of the training examples
@@ -117,7 +117,7 @@ max_rules       10
 rule_induction  top-down-greedy{max_conditions=1}
 
 DEBUG: Writing output data to file "python/tests/res/tmp/results/parameters_fold-9.csv"...
-Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
+Successfully applied parameter setting: {'max_rules': 10, 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 Fitting model to 267 training examples...
 DEBUG: A dense matrix is used to store the feature values of the training examples
 DEBUG: A dense matrix is used to store the regression scores of the training examples
@@ -130,7 +130,7 @@ max_rules       10
 rule_induction  top-down-greedy{max_conditions=1}
 
 DEBUG: Writing output data to file "python/tests/res/tmp/results/parameters_fold-10.csv"...
-Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
+Successfully applied parameter setting: {'max_rules': 10, 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 Fitting model to 267 training examples...
 DEBUG: A dense matrix is used to store the feature values of the training examples
 DEBUG: A dense matrix is used to store the regression scores of the training examples

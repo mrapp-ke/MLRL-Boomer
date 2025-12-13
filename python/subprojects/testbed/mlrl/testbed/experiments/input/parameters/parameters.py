@@ -10,6 +10,7 @@ from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.input.data import TabularInputData
 from mlrl.testbed.experiments.state import ExperimentState, ParameterDict
 from mlrl.testbed.experiments.table import Table
+from mlrl.testbed.util.format import parse_value
 
 
 class InputParameters(TabularInputData):
@@ -34,6 +35,6 @@ class InputParameters(TabularInputData):
             if parameter_name:
                 for parameter_value in column:
                     if parameter_value:
-                        parameter_dict[parameter_name] = parameter_value
+                        parameter_dict[parameter_name] = parse_value(parameter_value)
 
         state.parameters = parameter_dict

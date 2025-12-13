@@ -1,0 +1,34 @@
+mlrl-testbed mlrl.testbed_sklearn --mode read --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --print-evaluation false --save-evaluation false --print-prediction-characteristics true --save-prediction-characteristics true --estimator RandomForestClassifier
+Reading meta-data...
+DEBUG: Reading input data from file "python/tests/res/tmp/metadata.yml"...
+Successfully read meta-data
+DEBUG: Checking for version conflicts...
+DEBUG: Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is currently used
+DEBUG: No version conflicts detected
+Reading experimental results of 1 experiment...
+
+Reading experimental results of experiment (1 / 1)...
+The command "mlrl-testbed mlrl.testbed_sklearn --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --predict-for-training-data true --print-evaluation false --save-evaluation false --print-prediction-characteristics true --save-prediction-characteristics true --n-estimators 1 --estimator RandomForestClassifier" has been used originally for running this experiment
+Using separate training and test sets...
+DEBUG: Reading input data from file "python/tests/res/tmp/results/prediction_characteristics_training.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/results/prediction_characteristics_test.csv"...
+Prediction characteristics for training data:
+
+Outputs                  6
+Output Density          30.98
+Output Sparsity         69.02
+Label Imbalance Ratio    1.37
+Label Cardinality        1.86
+Distinct Label Vectors  22
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/prediction_characteristics_training.csv"...
+Prediction characteristics for test data:
+
+Outputs                  6
+Output Density          31.63
+Output Sparsity         68.37
+Label Imbalance Ratio    1.44
+Label Cardinality        1.9
+Distinct Label Vectors  21
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/prediction_characteristics_test.csv"...

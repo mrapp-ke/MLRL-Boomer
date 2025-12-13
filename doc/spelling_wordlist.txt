@@ -133,6 +133,7 @@ Qinbin
 Qiwei
 Rapp
 refactorings
+regressors
 Rijsbergen
 rng
 runnables

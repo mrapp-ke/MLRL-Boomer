@@ -1,0 +1,1277 @@
+mlrl-testbed mlrl.testbed_sklearn --mode read --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --save-all true --estimator RandomForestClassifier
+Reading meta-data...
+DEBUG: Reading input data from file "python/tests/res/tmp/metadata.yml"...
+Successfully read meta-data
+DEBUG: Checking for version conflicts...
+DEBUG: Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is currently used
+DEBUG: No version conflicts detected
+Reading experimental results of 8 experiments...
+
+Reading experimental results of experiment (1 / 8)...
+The command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion gini --data-dir python/tests/res/data --data-split cross-validation{num_folds=2} --dataset emotions --estimator RandomForestClassifier --log-level debug --model-save-dir n-estimators_1/criterion_gini/dataset_emotions/models --n-estimators 1 --parameter-save-dir n-estimators_1/criterion_gini/dataset_emotions/parameters --result-dir n-estimators_1/criterion_gini/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Performing full 2-fold cross validation...
+Fold 1 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_emotions/results/data_characteristics_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_emotions/results/evaluation_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_emotions/results/ground_truth_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_emotions/results/ground_truth_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_emotions/results/label_vectors_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_emotions/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_emotions/results/predictions_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_emotions/results/predictions_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_emotions/models/model_fold-1.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_emotions/parameters/parameters_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_emotions/results/data_characteristics_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_emotions/parameters/parameters_fold-1.csv"...
+Evaluation result for test data (Fold 1):
+
+Example-wise F1 (↑)         51.28
+Example-wise Jaccard (↑)    42.42
+Example-wise Precision (↑)  56.79
+Example-wise Recall (↑)     51.63
+Hamming Accuracy (↑)        71.55
+Hamming Loss (↓)            28.45
+Macro F1 (↑)                53.42
+Macro Jaccard (↑)           36.77
+Macro Precision (↑)         55.12
+Macro Recall (↑)            52.07
+Micro F1 (↑)                53.7
+Micro Jaccard (↑)           36.7
+Micro Precision (↑)         55.58
+Micro Recall (↑)            51.94
+Subset 0/1 Loss (↓)         82.83
+Subset Accuracy (↑)         17.17
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_emotions/results/evaluation_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_emotions/results/ground_truth_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_emotions/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_emotions/results/predictions_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_emotions/results/label_vectors_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_emotions/models/model_fold-1.pickle"...
+Fold 2 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_emotions/results/data_characteristics_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_emotions/results/evaluation_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_emotions/results/ground_truth_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_emotions/results/ground_truth_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_emotions/results/label_vectors_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_emotions/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_emotions/results/predictions_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_emotions/results/predictions_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_emotions/models/model_fold-2.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_emotions/parameters/parameters_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_emotions/results/data_characteristics_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_emotions/parameters/parameters_fold-2.csv"...
+Evaluation result for test data (Fold 2):
+
+Example-wise F1 (↑)         51.97
+Example-wise Jaccard (↑)    44.25
+Example-wise Precision (↑)  53.66
+Example-wise Recall (↑)     55.07
+Hamming Accuracy (↑)        71.68
+Hamming Loss (↓)            28.32
+Macro F1 (↑)                54.8
+Macro Jaccard (↑)           38.59
+Macro Precision (↑)         53.98
+Macro Recall (↑)            55.84
+Micro F1 (↑)                54.73
+Micro Jaccard (↑)           37.67
+Micro Precision (↑)         53.43
+Micro Recall (↑)            56.09
+Subset 0/1 Loss (↓)         78.72
+Subset Accuracy (↑)         21.28
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_emotions/results/evaluation_test_fold-2.csv"...
+Evaluation result for test data (Average across 2 folds):
+
+Example-wise F1 (↑)         51.63  ±0.35
+Example-wise Jaccard (↑)    43.34  ±0.91
+Example-wise Precision (↑)  55.23  ±1.57
+Example-wise Recall (↑)     53.35  ±1.72
+Hamming Accuracy (↑)        71.61  ±0.06
+Hamming Loss (↓)            28.39  ±0.06
+Macro F1 (↑)                54.11  ±0.69
+Macro Jaccard (↑)           37.68  ±0.91
+Macro Precision (↑)         54.55  ±0.57
+Macro Recall (↑)            53.96  ±1.88
+Micro F1 (↑)                54.21  ±0.51
+Micro Jaccard (↑)           37.19  ±0.48
+Micro Precision (↑)         54.5   ±1.07
+Micro Recall (↑)            54.02  ±2.07
+Subset 0/1 Loss (↓)         80.77  ±2.06
+Subset Accuracy (↑)         19.23  ±2.06
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_emotions/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_emotions/results/ground_truth_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_emotions/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_emotions/results/predictions_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_emotions/results/label_vectors_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_emotions/models/model_fold-2.pickle"...
+
+Reading experimental results of experiment (2 / 8)...
+The command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion entropy --data-dir python/tests/res/data --data-split cross-validation{num_folds=2} --dataset emotions --estimator RandomForestClassifier --log-level debug --max-depth 5 --model-save-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/models --n-estimators 1 --parameter-save-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/parameters --result-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Performing full 2-fold cross validation...
+Fold 1 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/data_characteristics_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/evaluation_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/ground_truth_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/ground_truth_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/label_vectors_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/predictions_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/predictions_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/models/model_fold-1.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/parameters/parameters_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/data_characteristics_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/parameters/parameters_fold-1.csv"...
+Evaluation result for test data (Fold 1):
+
+Example-wise F1 (↑)         52.28
+Example-wise Jaccard (↑)    44.36
+Example-wise Precision (↑)  61.28
+Example-wise Recall (↑)     51.8
+Hamming Accuracy (↑)        73.63
+Hamming Loss (↓)            26.37
+Macro F1 (↑)                49.78
+Macro Jaccard (↑)           35.14
+Macro Precision (↑)         57.74
+Macro Recall (↑)            48.24
+Micro F1 (↑)                54.55
+Micro Jaccard (↑)           37.5
+Micro Precision (↑)         60.26
+Micro Recall (↑)            49.82
+Subset 0/1 Loss (↓)         78.11
+Subset Accuracy (↑)         21.89
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/evaluation_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/ground_truth_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/predictions_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/label_vectors_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/models/model_fold-1.pickle"...
+Fold 2 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/data_characteristics_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/evaluation_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/ground_truth_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/ground_truth_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/label_vectors_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/predictions_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/predictions_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/models/model_fold-2.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/parameters/parameters_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/data_characteristics_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/parameters/parameters_fold-2.csv"...
+Evaluation result for test data (Fold 2):
+
+Example-wise F1 (↑)         49.49
+Example-wise Jaccard (↑)    42.51
+Example-wise Precision (↑)  56.59
+Example-wise Recall (↑)     49.66
+Hamming Accuracy (↑)        73.37
+Hamming Loss (↓)            26.63
+Macro F1 (↑)                50.94
+Macro Jaccard (↑)           35.03
+Macro Precision (↑)         57
+Macro Recall (↑)            50.44
+Micro F1 (↑)                54.39
+Micro Jaccard (↑)           37.35
+Micro Precision (↑)         56.97
+Micro Recall (↑)            52.03
+Subset 0/1 Loss (↓)         78.72
+Subset Accuracy (↑)         21.28
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/evaluation_test_fold-2.csv"...
+Evaluation result for test data (Average across 2 folds):
+
+Example-wise F1 (↑)         50.89  ±1.39
+Example-wise Jaccard (↑)    43.44  ±0.92
+Example-wise Precision (↑)  58.93  ±2.35
+Example-wise Recall (↑)     50.73  ±1.07
+Hamming Accuracy (↑)        73.5   ±0.13
+Hamming Loss (↓)            26.5   ±0.13
+Macro F1 (↑)                50.36  ±0.58
+Macro Jaccard (↑)           35.09  ±0.05
+Macro Precision (↑)         57.37  ±0.37
+Macro Recall (↑)            49.34  ±1.10
+Micro F1 (↑)                54.47  ±0.08
+Micro Jaccard (↑)           37.43  ±0.07
+Micro Precision (↑)         58.61  ±1.64
+Micro Recall (↑)            50.93  ±1.10
+Subset 0/1 Loss (↓)         78.42  ±0.30
+Subset Accuracy (↑)         21.58  ±0.30
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/ground_truth_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/predictions_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/label_vectors_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/models/model_fold-2.pickle"...
+
+Reading experimental results of experiment (3 / 8)...
+The command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion gini --data-dir python/tests/res/data --data-split cross-validation{num_folds=2} --dataset emotions --estimator RandomForestClassifier --log-level debug --model-save-dir n-estimators_2/criterion_gini/dataset_emotions/models --n-estimators 2 --parameter-save-dir n-estimators_2/criterion_gini/dataset_emotions/parameters --result-dir n-estimators_2/criterion_gini/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Performing full 2-fold cross validation...
+Fold 1 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_emotions/results/data_characteristics_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_emotions/results/evaluation_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_emotions/results/ground_truth_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_emotions/results/ground_truth_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_emotions/results/label_vectors_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_emotions/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_emotions/results/predictions_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_emotions/results/predictions_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_emotions/models/model_fold-1.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_emotions/parameters/parameters_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_emotions/results/data_characteristics_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_emotions/parameters/parameters_fold-1.csv"...
+Evaluation result for test data (Fold 1):
+
+Example-wise F1 (↑)         29.33
+Example-wise Jaccard (↑)    23.77
+Example-wise Precision (↑)  79.01
+Example-wise Recall (↑)     26.32
+Hamming Accuracy (↑)        72.17
+Hamming Loss (↓)            27.83
+Macro F1 (↑)                37.63
+Macro Jaccard (↑)           23.65
+Macro Precision (↑)         62.8
+Macro Recall (↑)            27.14
+Micro F1 (↑)                38.92
+Micro Jaccard (↑)           24.16
+Micro Precision (↑)         64.23
+Micro Recall (↑)            27.92
+Subset 0/1 Loss (↓)         92.59
+Subset Accuracy (↑)          7.41
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_emotions/results/evaluation_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_emotions/results/ground_truth_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_emotions/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_emotions/results/predictions_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_emotions/results/label_vectors_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_emotions/models/model_fold-1.pickle"...
+Fold 2 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_emotions/results/data_characteristics_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_emotions/results/evaluation_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_emotions/results/ground_truth_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_emotions/results/ground_truth_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_emotions/results/label_vectors_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_emotions/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_emotions/results/predictions_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_emotions/results/predictions_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_emotions/models/model_fold-2.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_emotions/parameters/parameters_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_emotions/results/data_characteristics_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_emotions/parameters/parameters_fold-2.csv"...
+Evaluation result for test data (Fold 2):
+
+Example-wise F1 (↑)         38.4
+Example-wise Jaccard (↑)    32.8
+Example-wise Precision (↑)  78.89
+Example-wise Recall (↑)     36.15
+Hamming Accuracy (↑)        75.79
+Hamming Loss (↓)            24.21
+Macro F1 (↑)                47.87
+Macro Jaccard (↑)           32.36
+Macro Precision (↑)         67.92
+Macro Recall (↑)            37.2
+Micro F1 (↑)                48.56
+Micro Jaccard (↑)           32.07
+Micro Precision (↑)         69.05
+Micro Recall (↑)            37.45
+Subset 0/1 Loss (↓)         84.8
+Subset Accuracy (↑)         15.2
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_emotions/results/evaluation_test_fold-2.csv"...
+Evaluation result for test data (Average across 2 folds):
+
+Example-wise F1 (↑)         33.86  ±4.54
+Example-wise Jaccard (↑)    28.28  ±4.52
+Example-wise Precision (↑)  78.95  ±0.06
+Example-wise Recall (↑)     31.23  ±4.91
+Hamming Accuracy (↑)        73.98  ±1.81
+Hamming Loss (↓)            26.02  ±1.81
+Macro F1 (↑)                42.75  ±5.12
+Macro Jaccard (↑)           28     ±4.36
+Macro Precision (↑)         65.36  ±2.56
+Macro Recall (↑)            32.17  ±5.03
+Micro F1 (↑)                43.74  ±4.82
+Micro Jaccard (↑)           28.11  ±3.96
+Micro Precision (↑)         66.64  ±2.41
+Micro Recall (↑)            32.68  ±4.77
+Subset 0/1 Loss (↓)         88.69  ±3.90
+Subset Accuracy (↑)         11.31  ±3.90
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_emotions/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_emotions/results/ground_truth_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_emotions/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_emotions/results/predictions_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_emotions/results/label_vectors_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_emotions/models/model_fold-2.pickle"...
+
+Reading experimental results of experiment (4 / 8)...
+The command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion entropy --data-dir python/tests/res/data --data-split cross-validation{num_folds=2} --dataset emotions --estimator RandomForestClassifier --log-level debug --max-depth 5 --model-save-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/models --n-estimators 2 --parameter-save-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/parameters --result-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Performing full 2-fold cross validation...
+Fold 1 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/data_characteristics_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/evaluation_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/ground_truth_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/ground_truth_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/label_vectors_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/predictions_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/predictions_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/models/model_fold-1.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/parameters/parameters_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/data_characteristics_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/parameters/parameters_fold-1.csv"...
+Evaluation result for test data (Fold 1):
+
+Example-wise F1 (↑)         47.74
+Example-wise Jaccard (↑)    39.25
+Example-wise Precision (↑)  64.76
+Example-wise Recall (↑)     48.93
+Hamming Accuracy (↑)        73.57
+Hamming Loss (↓)            26.43
+Macro F1 (↑)                51.55
+Macro Jaccard (↑)           35.79
+Macro Precision (↑)         57.99
+Macro Recall (↑)            47.86
+Micro F1 (↑)                53.87
+Micro Jaccard (↑)           36.86
+Micro Precision (↑)         60.44
+Micro Recall (↑)            48.59
+Subset 0/1 Loss (↓)         86.53
+Subset Accuracy (↑)         13.47
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/evaluation_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/ground_truth_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/predictions_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/label_vectors_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/models/model_fold-1.pickle"...
+Fold 2 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/data_characteristics_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/evaluation_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/ground_truth_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/ground_truth_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/label_vectors_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/predictions_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/predictions_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/models/model_fold-2.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/parameters/parameters_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/data_characteristics_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/parameters/parameters_fold-2.csv"...
+Evaluation result for test data (Fold 2):
+
+Example-wise F1 (↑)         50.39
+Example-wise Jaccard (↑)    43.58
+Example-wise Precision (↑)  67.68
+Example-wise Recall (↑)     50.9
+Hamming Accuracy (↑)        76.63
+Hamming Loss (↓)            23.37
+Macro F1 (↑)                55.34
+Macro Jaccard (↑)           39.49
+Macro Precision (↑)         64.25
+Macro Recall (↑)            50.02
+Micro F1 (↑)                57.52
+Micro Jaccard (↑)           40.37
+Micro Precision (↑)         64.6
+Micro Recall (↑)            51.85
+Subset 0/1 Loss (↓)         76.01
+Subset Accuracy (↑)         23.99
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/evaluation_test_fold-2.csv"...
+Evaluation result for test data (Average across 2 folds):
+
+Example-wise F1 (↑)         49.07  ±1.33
+Example-wise Jaccard (↑)    41.42  ±2.16
+Example-wise Precision (↑)  66.22  ±1.46
+Example-wise Recall (↑)     49.92  ±0.98
+Hamming Accuracy (↑)        75.1   ±1.53
+Hamming Loss (↓)            24.9   ±1.53
+Macro F1 (↑)                53.45  ±1.90
+Macro Jaccard (↑)           37.64  ±1.85
+Macro Precision (↑)         61.12  ±3.13
+Macro Recall (↑)            48.94  ±1.08
+Micro F1 (↑)                55.7   ±1.83
+Micro Jaccard (↑)           38.62  ±1.76
+Micro Precision (↑)         62.52  ±2.08
+Micro Recall (↑)            50.22  ±1.63
+Subset 0/1 Loss (↓)         81.27  ±5.26
+Subset Accuracy (↑)         18.73  ±5.26
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/ground_truth_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/predictions_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/label_vectors_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/models/model_fold-2.pickle"...
+
+Reading experimental results of experiment (5 / 8)...
+The command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion gini --data-dir python/tests/res/data --data-split cross-validation{num_folds=2} --dataset enron --estimator RandomForestClassifier --log-level debug --model-save-dir n-estimators_1/criterion_gini/dataset_enron/models --n-estimators 1 --parameter-save-dir n-estimators_1/criterion_gini/dataset_enron/parameters --result-dir n-estimators_1/criterion_gini/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Performing full 2-fold cross validation...
+Fold 1 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_enron/results/data_characteristics_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_enron/results/evaluation_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_enron/results/ground_truth_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_enron/results/ground_truth_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_enron/results/label_vectors_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_enron/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_enron/results/predictions_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_enron/results/predictions_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_enron/models/model_fold-1.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_enron/parameters/parameters_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_enron/results/data_characteristics_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_enron/parameters/parameters_fold-1.csv"...
+Evaluation result for test data (Fold 1):
+
+Example-wise F1 (↑)         41.13
+Example-wise Jaccard (↑)    31.68
+Example-wise Precision (↑)  46.58
+Example-wise Recall (↑)     42.42
+Hamming Accuracy (↑)        92.82
+Hamming Loss (↓)             7.18
+Macro F1 (↑)                17.05
+Macro Jaccard (↑)           11.33
+Macro Precision (↑)         27.6
+Macro Recall (↑)            17.35
+Micro F1 (↑)                41.87
+Micro Jaccard (↑)           26.48
+Micro Precision (↑)         43.2
+Micro Recall (↑)            40.63
+Subset 0/1 Loss (↓)         90.95
+Subset Accuracy (↑)          9.05
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_enron/results/evaluation_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_enron/results/ground_truth_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_enron/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_enron/results/predictions_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_enron/results/label_vectors_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_enron/models/model_fold-1.pickle"...
+Fold 2 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_enron/results/data_characteristics_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_enron/results/evaluation_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_enron/results/ground_truth_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_enron/results/ground_truth_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_enron/results/label_vectors_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_enron/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_enron/results/predictions_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_enron/results/predictions_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_enron/models/model_fold-2.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_enron/parameters/parameters_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_enron/results/data_characteristics_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_enron/parameters/parameters_fold-2.csv"...
+Evaluation result for test data (Fold 2):
+
+Example-wise F1 (↑)         43.33
+Example-wise Jaccard (↑)    33.01
+Example-wise Precision (↑)  46.1
+Example-wise Recall (↑)     44.75
+Hamming Accuracy (↑)        92.85
+Hamming Loss (↓)             7.15
+Macro F1 (↑)                14.98
+Macro Jaccard (↑)            9.46
+Macro Precision (↑)         24.92
+Macro Recall (↑)            14.37
+Micro F1 (↑)                43.33
+Micro Jaccard (↑)           27.66
+Micro Precision (↑)         43.86
+Micro Recall (↑)            42.81
+Subset 0/1 Loss (↓)         91.89
+Subset Accuracy (↑)          8.11
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_enron/results/evaluation_test_fold-2.csv"...
+Evaluation result for test data (Average across 2 folds):
+
+Example-wise F1 (↑)         42.23  ±1.10
+Example-wise Jaccard (↑)    32.35  ±0.67
+Example-wise Precision (↑)  46.34  ±0.24
+Example-wise Recall (↑)     43.58  ±1.17
+Hamming Accuracy (↑)        92.84  ±0.01
+Hamming Loss (↓)             7.16  ±0.01
+Macro F1 (↑)                16.02  ±1.03
+Macro Jaccard (↑)           10.4   ±0.93
+Macro Precision (↑)         26.26  ±1.34
+Macro Recall (↑)            15.86  ±1.49
+Micro F1 (↑)                42.6   ±0.73
+Micro Jaccard (↑)           27.07  ±0.59
+Micro Precision (↑)         43.53  ±0.33
+Micro Recall (↑)            41.72  ±1.09
+Subset 0/1 Loss (↓)         91.42  ±0.47
+Subset Accuracy (↑)          8.58  ±0.47
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_enron/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_enron/results/ground_truth_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_enron/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_enron/results/predictions_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_enron/results/label_vectors_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_gini/dataset_enron/models/model_fold-2.pickle"...
+
+Reading experimental results of experiment (6 / 8)...
+The command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion entropy --data-dir python/tests/res/data --data-split cross-validation{num_folds=2} --dataset enron --estimator RandomForestClassifier --log-level debug --max-depth 5 --model-save-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/models --n-estimators 1 --parameter-save-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/parameters --result-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Performing full 2-fold cross validation...
+Fold 1 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/data_characteristics_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/evaluation_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/ground_truth_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/ground_truth_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/label_vectors_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/predictions_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/predictions_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/models/model_fold-1.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/parameters/parameters_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/data_characteristics_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/parameters/parameters_fold-1.csv"...
+Evaluation result for test data (Fold 1):
+
+Example-wise F1 (↑)         22.15
+Example-wise Jaccard (↑)    15.95
+Example-wise Precision (↑)  81.08
+Example-wise Recall (↑)     18.65
+Hamming Accuracy (↑)        94.11
+Hamming Loss (↓)             5.89
+Macro F1 (↑)                 9.17
+Macro Jaccard (↑)            6.55
+Macro Precision (↑)         79
+Macro Recall (↑)             7.45
+Micro F1 (↑)                30.54
+Micro Jaccard (↑)           18.02
+Micro Precision (↑)         61.15
+Micro Recall (↑)            20.35
+Subset 0/1 Loss (↓)         98.59
+Subset Accuracy (↑)          1.41
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/evaluation_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/ground_truth_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/predictions_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/label_vectors_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/models/model_fold-1.pickle"...
+Fold 2 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/data_characteristics_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/evaluation_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/ground_truth_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/ground_truth_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/label_vectors_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/predictions_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/predictions_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/models/model_fold-2.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/parameters/parameters_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/data_characteristics_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/parameters/parameters_fold-2.csv"...
+Evaluation result for test data (Fold 2):
+
+Example-wise F1 (↑)         30.57
+Example-wise Jaccard (↑)    22.17
+Example-wise Precision (↑)  74.18
+Example-wise Recall (↑)     25.8
+Hamming Accuracy (↑)        94.23
+Hamming Loss (↓)             5.77
+Macro F1 (↑)                 6.9
+Macro Jaccard (↑)            4.71
+Macro Precision (↑)         73.59
+Macro Recall (↑)             6
+Micro F1 (↑)                38.69
+Micro Jaccard (↑)           23.98
+Micro Precision (↑)         60.19
+Micro Recall (↑)            28.51
+Subset 0/1 Loss (↓)         98.82
+Subset Accuracy (↑)          1.18
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/evaluation_test_fold-2.csv"...
+Evaluation result for test data (Average across 2 folds):
+
+Example-wise F1 (↑)         26.36  ±4.21
+Example-wise Jaccard (↑)    19.06  ±3.11
+Example-wise Precision (↑)  77.63  ±3.45
+Example-wise Recall (↑)     22.23  ±3.58
+Hamming Accuracy (↑)        94.17  ±0.06
+Hamming Loss (↓)             5.83  ±0.06
+Macro F1 (↑)                 8.03  ±1.13
+Macro Jaccard (↑)            5.63  ±0.92
+Macro Precision (↑)         76.29  ±2.70
+Macro Recall (↑)             6.72  ±0.73
+Micro F1 (↑)                34.61  ±4.08
+Micro Jaccard (↑)           21     ±2.98
+Micro Precision (↑)         60.67  ±0.48
+Micro Recall (↑)            24.43  ±4.08
+Subset 0/1 Loss (↓)         98.71  ±0.12
+Subset Accuracy (↑)          1.29  ±0.12
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/ground_truth_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/predictions_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/label_vectors_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/models/model_fold-2.pickle"...
+
+Reading experimental results of experiment (7 / 8)...
+The command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion gini --data-dir python/tests/res/data --data-split cross-validation{num_folds=2} --dataset enron --estimator RandomForestClassifier --log-level debug --model-save-dir n-estimators_2/criterion_gini/dataset_enron/models --n-estimators 2 --parameter-save-dir n-estimators_2/criterion_gini/dataset_enron/parameters --result-dir n-estimators_2/criterion_gini/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Performing full 2-fold cross validation...
+Fold 1 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_enron/results/data_characteristics_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_enron/results/evaluation_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_enron/results/ground_truth_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_enron/results/ground_truth_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_enron/results/label_vectors_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_enron/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_enron/results/predictions_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_enron/results/predictions_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_enron/models/model_fold-1.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_enron/parameters/parameters_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_enron/results/data_characteristics_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_enron/parameters/parameters_fold-1.csv"...
+Evaluation result for test data (Fold 1):
+
+Example-wise F1 (↑)         30.98
+Example-wise Jaccard (↑)    23.86
+Example-wise Precision (↑)  75.57
+Example-wise Recall (↑)     26.32
+Hamming Accuracy (↑)        94.33
+Hamming Loss (↓)             5.67
+Macro F1 (↑)                13.85
+Macro Jaccard (↑)            9.47
+Macro Precision (↑)         56.05
+Macro Recall (↑)            10.42
+Micro F1 (↑)                35.7
+Micro Jaccard (↑)           21.73
+Micro Precision (↑)         64.08
+Micro Recall (↑)            24.74
+Subset 0/1 Loss (↓)         93.65
+Subset Accuracy (↑)          6.35
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_enron/results/evaluation_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_enron/results/ground_truth_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_enron/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_enron/results/predictions_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_enron/results/label_vectors_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_enron/models/model_fold-1.pickle"...
+Fold 2 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_enron/results/data_characteristics_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_enron/results/evaluation_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_enron/results/ground_truth_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_enron/results/ground_truth_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_enron/results/label_vectors_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_enron/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_enron/results/predictions_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_enron/results/predictions_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_enron/models/model_fold-2.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_enron/parameters/parameters_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_enron/results/data_characteristics_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_enron/parameters/parameters_fold-2.csv"...
+Evaluation result for test data (Fold 2):
+
+Example-wise F1 (↑)         33.34
+Example-wise Jaccard (↑)    25.72
+Example-wise Precision (↑)  73.49
+Example-wise Recall (↑)     28.14
+Hamming Accuracy (↑)        94.33
+Hamming Loss (↓)             5.67
+Macro F1 (↑)                10.58
+Macro Jaccard (↑)            6.51
+Macro Precision (↑)         61.25
+Macro Recall (↑)             7.32
+Micro F1 (↑)                36.65
+Micro Jaccard (↑)           22.44
+Micro Precision (↑)         63.9
+Micro Recall (↑)            25.69
+Subset 0/1 Loss (↓)         92.48
+Subset Accuracy (↑)          7.52
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_enron/results/evaluation_test_fold-2.csv"...
+Evaluation result for test data (Average across 2 folds):
+
+Example-wise F1 (↑)         32.16  ±1.18
+Example-wise Jaccard (↑)    24.79  ±0.93
+Example-wise Precision (↑)  74.53  ±1.04
+Example-wise Recall (↑)     27.23  ±0.91
+Hamming Accuracy (↑)        94.33  ±0.00
+Hamming Loss (↓)             5.67  ±0.00
+Macro F1 (↑)                12.21  ±1.63
+Macro Jaccard (↑)            7.99  ±1.48
+Macro Precision (↑)         58.65  ±2.60
+Macro Recall (↑)             8.87  ±1.55
+Micro F1 (↑)                36.17  ±0.48
+Micro Jaccard (↑)           22.08  ±0.36
+Micro Precision (↑)         63.99  ±0.09
+Micro Recall (↑)            25.22  ±0.48
+Subset 0/1 Loss (↓)         93.07  ±0.59
+Subset Accuracy (↑)          6.93  ±0.59
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_enron/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_enron/results/ground_truth_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_enron/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_enron/results/predictions_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_enron/results/label_vectors_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_gini/dataset_enron/models/model_fold-2.pickle"...
+
+Reading experimental results of experiment (8 / 8)...
+The command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion entropy --data-dir python/tests/res/data --data-split cross-validation{num_folds=2} --dataset enron --estimator RandomForestClassifier --log-level debug --max-depth 5 --model-save-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/models --n-estimators 2 --parameter-save-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/parameters --result-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Performing full 2-fold cross validation...
+Fold 1 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/data_characteristics_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/evaluation_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/ground_truth_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/ground_truth_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/label_vectors_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/predictions_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/predictions_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/models/model_fold-1.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/parameters/parameters_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/data_characteristics_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/parameters/parameters_fold-1.csv"...
+Evaluation result for test data (Fold 1):
+
+Example-wise F1 (↑)         24
+Example-wise Jaccard (↑)    17.02
+Example-wise Precision (↑)  80.12
+Example-wise Recall (↑)     19.84
+Hamming Accuracy (↑)        94.16
+Hamming Loss (↓)             5.84
+Macro F1 (↑)                 7.48
+Macro Jaccard (↑)            5.66
+Macro Precision (↑)         77.32
+Macro Recall (↑)             6.42
+Micro F1 (↑)                32.21
+Micro Jaccard (↑)           19.2
+Micro Precision (↑)         61.55
+Micro Recall (↑)            21.81
+Subset 0/1 Loss (↓)         99.06
+Subset Accuracy (↑)          0.94
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/evaluation_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/ground_truth_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/predictions_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/label_vectors_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/models/model_fold-1.pickle"...
+Fold 2 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/data_characteristics_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/evaluation_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/ground_truth_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/ground_truth_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/label_vectors_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/predictions_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/predictions_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/models/model_fold-2.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/parameters/parameters_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/data_characteristics_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/parameters/parameters_fold-2.csv"...
+Evaluation result for test data (Fold 2):
+
+Example-wise F1 (↑)         29.06
+Example-wise Jaccard (↑)    20.67
+Example-wise Precision (↑)  76.37
+Example-wise Recall (↑)     22.99
+Hamming Accuracy (↑)        94.4
+Hamming Loss (↓)             5.6
+Macro F1 (↑)                 5.91
+Macro Jaccard (↑)            4.04
+Macro Precision (↑)         83.03
+Macro Recall (↑)             4.94
+Micro F1 (↑)                36.64
+Micro Jaccard (↑)           22.43
+Micro Precision (↑)         66.06
+Micro Recall (↑)            25.35
+Subset 0/1 Loss (↓)         99.41
+Subset Accuracy (↑)          0.59
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/evaluation_test_fold-2.csv"...
+Evaluation result for test data (Average across 2 folds):
+
+Example-wise F1 (↑)         26.53  ±2.53
+Example-wise Jaccard (↑)    18.85  ±1.82
+Example-wise Precision (↑)  78.24  ±1.87
+Example-wise Recall (↑)     21.41  ±1.57
+Hamming Accuracy (↑)        94.28  ±0.12
+Hamming Loss (↓)             5.72  ±0.12
+Macro F1 (↑)                 6.69  ±0.79
+Macro Jaccard (↑)            4.85  ±0.81
+Macro Precision (↑)         80.18  ±2.86
+Macro Recall (↑)             5.68  ±0.74
+Micro F1 (↑)                34.42  ±2.21
+Micro Jaccard (↑)           20.81  ±1.62
+Micro Precision (↑)         63.81  ±2.25
+Micro Recall (↑)            23.58  ±1.77
+Subset 0/1 Loss (↓)         99.24  ±0.18
+Subset Accuracy (↑)          0.76  ±0.18
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/ground_truth_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/predictions_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/label_vectors_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/models/model_fold-2.pickle"...
+Evaluation results of several experiments for test data:
+
+Evaluation results for measure "Example-wise F1 (↑)":
+
+criterion      max_depth    n_estimators    Example-wise F1 (↑)  Std.-dev.      Rank
+-----------  -----------  --------------  ---------------------  -----------  ------
+"emotions"
+-----------  -----------  --------------  ---------------------  -----------  ------
+gini                                   1                  51.63  ±0.35             1
+entropy                5               1                  50.89  ±1.39             2
+gini                                   2                  33.86  ±4.54             4
+entropy                5               2                  49.07  ±1.33             3
+-----------  -----------  --------------  ---------------------  -----------  ------
+"enron"
+-----------  -----------  --------------  ---------------------  -----------  ------
+gini                                   1                  42.23  ±1.10             1
+entropy                5               1                  26.36  ±4.21             4
+gini                                   2                  32.16  ±1.18             2
+entropy                5               2                  26.53  ±2.53             3
+-----------  -----------  --------------  ---------------------  -----------  ------
+Averages
+-----------  -----------  --------------  ---------------------  -----------  ------
+gini                                   1                                           1
+entropy                5               1                                           3
+gini                                   2                                           3
+entropy                5               2                                           3
+
+Evaluation results for measure "Example-wise Jaccard (↑)":
+
+criterion      max_depth    n_estimators    Example-wise Jaccard (↑)  Std.-dev.      Rank
+-----------  -----------  --------------  --------------------------  -----------  ------
+"emotions"
+-----------  -----------  --------------  --------------------------  -----------  ------
+gini                                   1                       43.34  ±0.91           2
+entropy                5               1                       43.44  ±0.92           1
+gini                                   2                       28.28  ±4.52           4
+entropy                5               2                       41.42  ±2.16           3
+-----------  -----------  --------------  --------------------------  -----------  ------
+"enron"
+-----------  -----------  --------------  --------------------------  -----------  ------
+gini                                   1                       32.35  ±0.67           1
+entropy                5               1                       19.06  ±3.11           3
+gini                                   2                       24.79  ±0.93           2
+entropy                5               2                       18.85  ±1.82           4
+-----------  -----------  --------------  --------------------------  -----------  ------
+Averages
+-----------  -----------  --------------  --------------------------  -----------  ------
+gini                                   1                                              1.5
+entropy                5               1                                              2
+gini                                   2                                              3
+entropy                5               2                                              3.5
+
+Evaluation results for measure "Example-wise Precision (↑)":
+
+criterion      max_depth    n_estimators    Example-wise Precision (↑)  Std.-dev.      Rank
+-----------  -----------  --------------  ----------------------------  -----------  ------
+"emotions"
+-----------  -----------  --------------  ----------------------------  -----------  ------
+gini                                   1                         55.23  ±1.57           4
+entropy                5               1                         58.93  ±2.35           3
+gini                                   2                         78.95  ±0.06           1
+entropy                5               2                         66.22  ±1.46           2
+-----------  -----------  --------------  ----------------------------  -----------  ------
+"enron"
+-----------  -----------  --------------  ----------------------------  -----------  ------
+gini                                   1                         46.34  ±0.24           4
+entropy                5               1                         77.63  ±3.45           2
+gini                                   2                         74.53  ±1.04           3
+entropy                5               2                         78.24  ±1.87           1
+-----------  -----------  --------------  ----------------------------  -----------  ------
+Averages
+-----------  -----------  --------------  ----------------------------  -----------  ------
+gini                                   1                                                4
+entropy                5               1                                                2.5
+gini                                   2                                                2
+entropy                5               2                                                1.5
+
+Evaluation results for measure "Example-wise Recall (↑)":
+
+criterion      max_depth    n_estimators    Example-wise Recall (↑)  Std.-dev.      Rank
+-----------  -----------  --------------  -------------------------  -----------  ------
+"emotions"
+-----------  -----------  --------------  -------------------------  -----------  ------
+gini                                   1                      53.35  ±1.72           1
+entropy                5               1                      50.73  ±1.07           2
+gini                                   2                      31.23  ±4.91           4
+entropy                5               2                      49.92  ±0.98           3
+-----------  -----------  --------------  -------------------------  -----------  ------
+"enron"
+-----------  -----------  --------------  -------------------------  -----------  ------
+gini                                   1                      43.58  ±1.17           1
+entropy                5               1                      22.23  ±3.58           3
+gini                                   2                      27.23  ±0.91           2
+entropy                5               2                      21.41  ±1.57           4
+-----------  -----------  --------------  -------------------------  -----------  ------
+Averages
+-----------  -----------  --------------  -------------------------  -----------  ------
+gini                                   1                                             1
+entropy                5               1                                             2.5
+gini                                   2                                             3
+entropy                5               2                                             3.5
+
+Evaluation results for measure "Hamming Accuracy (↑)":
+
+criterion      max_depth    n_estimators    Hamming Accuracy (↑)  Std.-dev.      Rank
+-----------  -----------  --------------  ----------------------  -----------  ------
+"emotions"
+-----------  -----------  --------------  ----------------------  -----------  ------
+gini                                   1                   71.61  ±0.06           4
+entropy                5               1                   73.5   ±0.13           3
+gini                                   2                   73.98  ±1.81           2
+entropy                5               2                   75.1   ±1.53           1
+-----------  -----------  --------------  ----------------------  -----------  ------
+"enron"
+-----------  -----------  --------------  ----------------------  -----------  ------
+gini                                   1                   92.84  ±0.01           4
+entropy                5               1                   94.17  ±0.06           3
+gini                                   2                   94.33  ±0.00           1
+entropy                5               2                   94.28  ±0.12           2
+-----------  -----------  --------------  ----------------------  -----------  ------
+Averages
+-----------  -----------  --------------  ----------------------  -----------  ------
+gini                                   1                                          4
+entropy                5               1                                          3
+gini                                   2                                          1.5
+entropy                5               2                                          1.5
+
+Evaluation results for measure "Hamming Loss (↓)":
+
+criterion      max_depth    n_estimators    Hamming Loss (↓)  Std.-dev.      Rank
+-----------  -----------  --------------  ------------------  -----------  ------
+"emotions"
+-----------  -----------  --------------  ------------------  -----------  ------
+gini                                   1               28.39  ±0.06           4
+entropy                5               1               26.5   ±0.13           3
+gini                                   2               26.02  ±1.81           2
+entropy                5               2               24.9   ±1.53           1
+-----------  -----------  --------------  ------------------  -----------  ------
+"enron"
+-----------  -----------  --------------  ------------------  -----------  ------
+gini                                   1                7.16  ±0.01           4
+entropy                5               1                5.83  ±0.06           3
+gini                                   2                5.67  ±0.00           1
+entropy                5               2                5.72  ±0.12           2
+-----------  -----------  --------------  ------------------  -----------  ------
+Averages
+-----------  -----------  --------------  ------------------  -----------  ------
+gini                                   1                                      4
+entropy                5               1                                      3
+gini                                   2                                      1.5
+entropy                5               2                                      1.5
+
+Evaluation results for measure "Macro F1 (↑)":
+
+criterion      max_depth    n_estimators    Macro F1 (↑)  Std.-dev.      Rank
+-----------  -----------  --------------  --------------  -----------  ------
+"emotions"
+-----------  -----------  --------------  --------------  -----------  ------
+gini                                   1           54.11  ±0.69             1
+entropy                5               1           50.36  ±0.58             3
+gini                                   2           42.75  ±5.12             4
+entropy                5               2           53.45  ±1.90             2
+-----------  -----------  --------------  --------------  -----------  ------
+"enron"
+-----------  -----------  --------------  --------------  -----------  ------
+gini                                   1           16.02  ±1.03             1
+entropy                5               1            8.03  ±1.13             3
+gini                                   2           12.21  ±1.63             2
+entropy                5               2            6.69  ±0.79             4
+-----------  -----------  --------------  --------------  -----------  ------
+Averages
+-----------  -----------  --------------  --------------  -----------  ------
+gini                                   1                                    1
+entropy                5               1                                    3
+gini                                   2                                    3
+entropy                5               2                                    3
+
+Evaluation results for measure "Macro Jaccard (↑)":
+
+criterion      max_depth    n_estimators    Macro Jaccard (↑)  Std.-dev.      Rank
+-----------  -----------  --------------  -------------------  -----------  ------
+"emotions"
+-----------  -----------  --------------  -------------------  -----------  ------
+gini                                   1                37.68  ±0.91             1
+entropy                5               1                35.09  ±0.05             3
+gini                                   2                28     ±4.36             4
+entropy                5               2                37.64  ±1.85             2
+-----------  -----------  --------------  -------------------  -----------  ------
+"enron"
+-----------  -----------  --------------  -------------------  -----------  ------
+gini                                   1                10.4   ±0.93             1
+entropy                5               1                 5.63  ±0.92             3
+gini                                   2                 7.99  ±1.48             2
+entropy                5               2                 4.85  ±0.81             4
+-----------  -----------  --------------  -------------------  -----------  ------
+Averages
+-----------  -----------  --------------  -------------------  -----------  ------
+gini                                   1                                         1
+entropy                5               1                                         3
+gini                                   2                                         3
+entropy                5               2                                         3
+
+Evaluation results for measure "Macro Precision (↑)":
+
+criterion      max_depth    n_estimators    Macro Precision (↑)  Std.-dev.      Rank
+-----------  -----------  --------------  ---------------------  -----------  ------
+"emotions"
+-----------  -----------  --------------  ---------------------  -----------  ------
+gini                                   1                  54.55  ±0.57           4
+entropy                5               1                  57.37  ±0.37           3
+gini                                   2                  65.36  ±2.56           1
+entropy                5               2                  61.12  ±3.13           2
+-----------  -----------  --------------  ---------------------  -----------  ------
+"enron"
+-----------  -----------  --------------  ---------------------  -----------  ------
+gini                                   1                  26.26  ±1.34           4
+entropy                5               1                  76.29  ±2.70           2
+gini                                   2                  58.65  ±2.60           3
+entropy                5               2                  80.18  ±2.86           1
+-----------  -----------  --------------  ---------------------  -----------  ------
+Averages
+-----------  -----------  --------------  ---------------------  -----------  ------
+gini                                   1                                         4
+entropy                5               1                                         2.5
+gini                                   2                                         2
+entropy                5               2                                         1.5
+
+Evaluation results for measure "Macro Recall (↑)":
+
+criterion      max_depth    n_estimators    Macro Recall (↑)  Std.-dev.      Rank
+-----------  -----------  --------------  ------------------  -----------  ------
+"emotions"
+-----------  -----------  --------------  ------------------  -----------  ------
+gini                                   1               53.96  ±1.88           1
+entropy                5               1               49.34  ±1.10           2
+gini                                   2               32.17  ±5.03           4
+entropy                5               2               48.94  ±1.08           3
+-----------  -----------  --------------  ------------------  -----------  ------
+"enron"
+-----------  -----------  --------------  ------------------  -----------  ------
+gini                                   1               15.86  ±1.49           1
+entropy                5               1                6.72  ±0.73           3
+gini                                   2                8.87  ±1.55           2
+entropy                5               2                5.68  ±0.74           4
+-----------  -----------  --------------  ------------------  -----------  ------
+Averages
+-----------  -----------  --------------  ------------------  -----------  ------
+gini                                   1                                      1
+entropy                5               1                                      2.5
+gini                                   2                                      3
+entropy                5               2                                      3.5
+
+Evaluation results for measure "Micro F1 (↑)":
+
+criterion      max_depth    n_estimators    Micro F1 (↑)  Std.-dev.      Rank
+-----------  -----------  --------------  --------------  -----------  ------
+"emotions"
+-----------  -----------  --------------  --------------  -----------  ------
+gini                                   1           54.21  ±0.51           3
+entropy                5               1           54.47  ±0.08           2
+gini                                   2           43.74  ±4.82           4
+entropy                5               2           55.7   ±1.83           1
+-----------  -----------  --------------  --------------  -----------  ------
+"enron"
+-----------  -----------  --------------  --------------  -----------  ------
+gini                                   1           42.6   ±0.73           1
+entropy                5               1           34.61  ±4.08           3
+gini                                   2           36.17  ±0.48           2
+entropy                5               2           34.42  ±2.21           4
+-----------  -----------  --------------  --------------  -----------  ------
+Averages
+-----------  -----------  --------------  --------------  -----------  ------
+gini                                   1                                  2
+entropy                5               1                                  2.5
+gini                                   2                                  3
+entropy                5               2                                  2.5
+
+Evaluation results for measure "Micro Jaccard (↑)":
+
+criterion      max_depth    n_estimators    Micro Jaccard (↑)  Std.-dev.      Rank
+-----------  -----------  --------------  -------------------  -----------  ------
+"emotions"
+-----------  -----------  --------------  -------------------  -----------  ------
+gini                                   1                37.19  ±0.48           3
+entropy                5               1                37.43  ±0.07           2
+gini                                   2                28.11  ±3.96           4
+entropy                5               2                38.62  ±1.76           1
+-----------  -----------  --------------  -------------------  -----------  ------
+"enron"
+-----------  -----------  --------------  -------------------  -----------  ------
+gini                                   1                27.07  ±0.59           1
+entropy                5               1                21     ±2.98           3
+gini                                   2                22.08  ±0.36           2
+entropy                5               2                20.81  ±1.62           4
+-----------  -----------  --------------  -------------------  -----------  ------
+Averages
+-----------  -----------  --------------  -------------------  -----------  ------
+gini                                   1                                       2
+entropy                5               1                                       2.5
+gini                                   2                                       3
+entropy                5               2                                       2.5
+
+Evaluation results for measure "Micro Precision (↑)":
+
+criterion      max_depth    n_estimators    Micro Precision (↑)  Std.-dev.      Rank
+-----------  -----------  --------------  ---------------------  -----------  ------
+"emotions"
+-----------  -----------  --------------  ---------------------  -----------  ------
+gini                                   1                  54.5   ±1.07             4
+entropy                5               1                  58.61  ±1.64             3
+gini                                   2                  66.64  ±2.41             1
+entropy                5               2                  62.52  ±2.08             2
+-----------  -----------  --------------  ---------------------  -----------  ------
+"enron"
+-----------  -----------  --------------  ---------------------  -----------  ------
+gini                                   1                  43.53  ±0.33             4
+entropy                5               1                  60.67  ±0.48             3
+gini                                   2                  63.99  ±0.09             1
+entropy                5               2                  63.81  ±2.25             2
+-----------  -----------  --------------  ---------------------  -----------  ------
+Averages
+-----------  -----------  --------------  ---------------------  -----------  ------
+gini                                   1                                           4
+entropy                5               1                                           3
+gini                                   2                                           1
+entropy                5               2                                           2
+
+Evaluation results for measure "Micro Recall (↑)":
+
+criterion      max_depth    n_estimators    Micro Recall (↑)  Std.-dev.      Rank
+-----------  -----------  --------------  ------------------  -----------  ------
+"emotions"
+-----------  -----------  --------------  ------------------  -----------  ------
+gini                                   1               54.02  ±2.07           1
+entropy                5               1               50.93  ±1.10           2
+gini                                   2               32.68  ±4.77           4
+entropy                5               2               50.22  ±1.63           3
+-----------  -----------  --------------  ------------------  -----------  ------
+"enron"
+-----------  -----------  --------------  ------------------  -----------  ------
+gini                                   1               41.72  ±1.09           1
+entropy                5               1               24.43  ±4.08           3
+gini                                   2               25.22  ±0.48           2
+entropy                5               2               23.58  ±1.77           4
+-----------  -----------  --------------  ------------------  -----------  ------
+Averages
+-----------  -----------  --------------  ------------------  -----------  ------
+gini                                   1                                      1
+entropy                5               1                                      2.5
+gini                                   2                                      3
+entropy                5               2                                      3.5
+
+Evaluation results for measure "Prediction Time (seconds)":
+
+criterion      max_depth    n_estimators    Prediction Time (seconds)  Std.-dev.      Rank
+-----------  -----------  --------------  ---------------------------  -----------  ------
+"emotions"
+-----------  -----------  --------------  ---------------------------  -----------  ------
+gini                                   1
+entropy                5               1
+gini                                   2
+entropy                5               2
+-----------  -----------  --------------  ---------------------------  -----------  ------
+"enron"
+-----------  -----------  --------------  ---------------------------  -----------  ------
+gini                                   1
+entropy                5               1
+gini                                   2
+entropy                5               2
+-----------  -----------  --------------  ---------------------------  -----------  ------
+Averages
+-----------  -----------  --------------  ---------------------------  -----------  ------
+gini                                   1
+entropy                5               1
+gini                                   2
+entropy                5               2
+
+Evaluation results for measure "Subset 0/1 Loss (↓)":
+
+criterion      max_depth    n_estimators    Subset 0/1 Loss (↓)  Std.-dev.      Rank
+-----------  -----------  --------------  ---------------------  -----------  ------
+"emotions"
+-----------  -----------  --------------  ---------------------  -----------  ------
+gini                                   1                  80.77  ±2.06           2
+entropy                5               1                  78.42  ±0.30           1
+gini                                   2                  88.69  ±3.90           4
+entropy                5               2                  81.27  ±5.26           3
+-----------  -----------  --------------  ---------------------  -----------  ------
+"enron"
+-----------  -----------  --------------  ---------------------  -----------  ------
+gini                                   1                  91.42  ±0.47           1
+entropy                5               1                  98.71  ±0.12           3
+gini                                   2                  93.07  ±0.59           2
+entropy                5               2                  99.24  ±0.18           4
+-----------  -----------  --------------  ---------------------  -----------  ------
+Averages
+-----------  -----------  --------------  ---------------------  -----------  ------
+gini                                   1                                         1.5
+entropy                5               1                                         2
+gini                                   2                                         3
+entropy                5               2                                         3.5
+
+Evaluation results for measure "Subset Accuracy (↑)":
+
+criterion      max_depth    n_estimators    Subset Accuracy (↑)  Std.-dev.      Rank
+-----------  -----------  --------------  ---------------------  -----------  ------
+"emotions"
+-----------  -----------  --------------  ---------------------  -----------  ------
+gini                                   1                  19.23  ±2.06           2
+entropy                5               1                  21.58  ±0.30           1
+gini                                   2                  11.31  ±3.90           4
+entropy                5               2                  18.73  ±5.26           3
+-----------  -----------  --------------  ---------------------  -----------  ------
+"enron"
+-----------  -----------  --------------  ---------------------  -----------  ------
+gini                                   1                   8.58  ±0.47           1
+entropy                5               1                   1.29  ±0.12           3
+gini                                   2                   6.93  ±0.59           2
+entropy                5               2                   0.76  ±0.18           4
+-----------  -----------  --------------  ---------------------  -----------  ------
+Averages
+-----------  -----------  --------------  ---------------------  -----------  ------
+gini                                   1                                         1.5
+entropy                5               1                                         2
+gini                                   2                                         3
+entropy                5               2                                         3.5
+
+Evaluation results for measure "Training Time (seconds)":
+
+criterion      max_depth    n_estimators    Training Time (seconds)  Std.-dev.      Rank
+-----------  -----------  --------------  -------------------------  -----------  ------
+"emotions"
+-----------  -----------  --------------  -------------------------  -----------  ------
+gini                                   1
+entropy                5               1
+gini                                   2
+entropy                5               2
+-----------  -----------  --------------  -------------------------  -----------  ------
+"enron"
+-----------  -----------  --------------  -------------------------  -----------  ------
+gini                                   1
+entropy                5               1
+gini                                   2
+entropy                5               2
+-----------  -----------  --------------  -------------------------  -----------  ------
+Averages
+-----------  -----------  --------------  -------------------------  -----------  ------
+gini                                   1
+entropy                5               1
+gini                                   2
+entropy                5               2
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/aggregated_evaluation_test.csv"...

@@ -1,0 +1,54 @@
+mlrl-testbed mlrl.testbed_sklearn --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --predict-for-training-data true --print-evaluation true --save-evaluation true --n-estimators 1 --estimator RandomForestClassifier
+Checking if output files do already exist...
+Starting experiment using the classification algorithm "RandomForestClassifier"...
+DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
+Using separate training and test sets...
+DEBUG: Reading input data from file "python/tests/res/data/emotions.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+Fitting model to 397 training examples...
+Successfully fit model in <duration>
+Predicting for 397 training examples...
+Successfully predicted in <duration>
+Evaluation result for training data:
+
+Example-wise F1 (↑)         83.18
+Example-wise Jaccard (↑)    80.63
+Example-wise Precision (↑)  83.96
+Example-wise Recall (↑)     84.05
+Hamming Accuracy (↑)        90.47
+Hamming Loss (↓)             9.53
+Macro F1 (↑)                84.53
+Macro Jaccard (↑)           73.29
+Macro Precision (↑)         84.27
+Macro Recall (↑)            84.96
+Micro F1 (↑)                84.57
+Micro Jaccard (↑)           73.26
+Micro Precision (↑)         84.28
+Micro Recall (↑)            84.86
+Subset 0/1 Loss (↓)         27.2
+Subset Accuracy (↑)         72.8
+
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_training.csv"...
+Predicting for 196 test examples...
+Successfully predicted in <duration>
+Evaluation result for test data:
+
+Example-wise F1 (↑)         50.49
+Example-wise Jaccard (↑)    42.39
+Example-wise Precision (↑)  53.32
+Example-wise Recall (↑)     53.15
+Hamming Accuracy (↑)        70.32
+Hamming Loss (↓)            29.68
+Macro F1 (↑)                52.15
+Macro Jaccard (↑)           35.93
+Macro Precision (↑)         52.55
+Macro Recall (↑)            52.16
+Micro F1 (↑)                53.28
+Micro Jaccard (↑)           36.31
+Micro Precision (↑)         53.49
+Micro Recall (↑)            53.07
+Subset 0/1 Loss (↓)         81.12
+Subset Accuracy (↑)         18.88
+
+DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Successfully finished experiment after <duration>

@@ -1,0 +1,24 @@
+mlrl-testbed mlrl.testbed_sklearn --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --print-evaluation true --save-evaluation false --n-estimators 1 --meta-verbose True --meta-estimator RegressorChain --estimator RandomForestRegressor
+Checking if output files do already exist...
+Starting experiment using the regression algorithm "RegressorChain"...
+Using separate training and test sets...
+DEBUG: Reading input data from file "python/tests/res/data/atp7d.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
+Fitting model to 198 training examples...
+[Chain] ................... (1 of 6) Processing order 0, total=   0.0s
+[Chain] ................... (2 of 6) Processing order 1, total=   0.0s
+[Chain] ................... (3 of 6) Processing order 2, total=   0.0s
+[Chain] ................... (4 of 6) Processing order 3, total=   0.0s
+[Chain] ................... (5 of 6) Processing order 4, total=   0.0s
+[Chain] ................... (6 of 6) Processing order 5, total=   0.0s
+Successfully fit model in <duration>
+Predicting for 98 test examples...
+Successfully predicted in <duration>
+Evaluation result for test data:
+
+Mean Absolute Error (↓)               40.22
+Mean Absolute Percentage Error (↓)     0.11
+Mean Squared Error (↓)              6777.63
+Median Absolute Error (↓)             13.5
+
+Successfully finished experiment after <duration>

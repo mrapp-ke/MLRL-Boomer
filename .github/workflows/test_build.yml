@@ -23,6 +23,7 @@ jobs:
       cpp_tests_seco: ${{ steps.filter.outputs.cpp_tests_seco }}
       python_tests_boosting: ${{ steps.filter.outputs.python_tests_boosting }}
       python_tests_seco: ${{ steps.filter.outputs.python_tests_seco }}
+      python_tests_testbed-sklearn: ${{ steps.filter.outputs.python_tests_testbed-sklearn }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -78,14 +79,7 @@ jobs:
               - *cpp_tests_common
               - *cpp_seco
               - 'cpp/subprojects/seco/test/**'
-            python_tests_common: &python_tests_common
-              - *cpp_tests_common
-              - 'build_system/targets/compilation/cython/*'
-              - 'build_system/targets/testing/python/*'
-              - 'python/subprojects/common/pyproject.template.toml'
-              - 'python/subprojects/common/requirements.txt'
-              - 'python/subprojects/common/setup.py'
-              - 'python/subprojects/common/mlrl/**'
+            python_tests_testbed: &python_tests_testbed
               - 'python/subprojects/testbed/pyproject.template.toml'
               - 'python/subprojects/testbed/requirements.txt'
               - 'python/subprojects/testbed/setup.py'
@@ -94,18 +88,27 @@ jobs:
               - 'python/subprojects/testbed-arff/requirements.txt'
               - 'python/subprojects/testbed-arff/setup.py'
               - 'python/subprojects/testbed-arff/mlrl/**'
-              - 'python/subprojects/testbed-sklearn/pyproject.template.toml'
-              - 'python/subprojects/testbed-sklearn/requirements.txt'
-              - 'python/subprojects/testbed-sklearn/setup.py'
-              - 'python/subprojects/testbed-sklearn/mlrl/**'
               - 'python/subprojects/testbed-slurm/pyproject.template.toml'
               - 'python/subprojects/testbed-slurm/requirements.txt'
               - 'python/subprojects/testbed-slurm/setup.py'
               - 'python/subprojects/testbed-slurm/mlrl/**'
+              - 'python/subprojects/testbed-sklearn/pyproject.template.toml'
+              - 'python/subprojects/testbed-sklearn/requirements.txt'
+              - 'python/subprojects/testbed-sklearn/setup.py'
+              - 'python/subprojects/testbed-sklearn/mlrl/**'
               - 'python/subprojects/util/pyproject.template.toml'
               - 'python/subprojects/util/requirements.txt'
               - 'python/subprojects/util/setup.py'
               - 'python/subprojects/util/mlrl/**'
+            python_tests_common: &python_tests_common
+              - *cpp_tests_common
+              - *python_tests_testbed
+              - 'build_system/targets/compilation/cython/*'
+              - 'build_system/targets/testing/python/*'
+              - 'python/subprojects/common/pyproject.template.toml'
+              - 'python/subprojects/common/requirements.txt'
+              - 'python/subprojects/common/setup.py'
+              - 'python/subprojects/common/mlrl/**'
               - 'python/tests/mlrl_tests/common/**'
               - 'python/tests/res/data/**'
               - 'python/tests/res/in/**'
@@ -128,9 +131,10 @@ jobs:
               - 'python/subprojects/seco/mlrl/**'
               - 'python/tests/mlrl_tests/seco/**'
               - 'python/tests/res/out/seco/**'
-            python_tests: &python_tests
-              - *python_tests_boosting
-              - *python_tests_seco
+            python_tests_testbed-sklearn:
+              - *python_tests_testbed
+              - 'python/tests/res/mlrl_tests/testbed_sklearn/**'
+              - 'python/tests/res/out/testbed_sklearn/**'
             linux:
               - *cpp_common
               - *cpp_boosting
@@ -160,7 +164,7 @@ jobs:
       - name: Determine supported Python versions
         id: python_version
         run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
-  test_build:
+  test_binary_packages:
     needs:
       - changes
       - python_version
@@ -182,8 +186,29 @@ jobs:
       run_python_tests: ${{ needs.changes.outputs[format('python_tests_{0}', matrix.subproject)] == 'true' }}
       python_version: ${{ needs.python_version.outputs.python_version }}
     secrets: inherit
+  test_pure_packages:
+    needs:
+      - changes
+      - python_version
+    name: Test build
+    strategy:
+      fail-fast: false
+      matrix:
+        subproject:
+          - testbed-sklearn
+    uses: ./.github/workflows/template_build.yml
+    with:
+      subproject: ${{ matrix.subproject }}
+      run_python_tests: ${{ needs.changes.outputs[format('python_tests_{0}', matrix.subproject)] == 'true' }}
+      python_version: ${{ needs.python_version.outputs.python_version }}
+      multi_threading_support: disabled
+      gpu_support: disabled
+      ccache: false
+    secrets: inherit
   publish_test_results:
-    needs: test_build
+    needs:
+      - test_binary_packages
+      - test_pure_packages
     if: always()
     name: Publish test results
     runs-on: ubuntu-24.04
@@ -209,13 +234,16 @@ jobs:
           check_name: Python Test Results
           files: python_test_results/**/*.xml
   check_success:
-    needs: test_build
+    needs:
+      - test_binary_packages
+      - test_pure_packages
     if: ${{ always() && !cancelled() }}
     name: Test build succeeded
     runs-on: ubuntu-24.04
     steps:
       - name: Check for success
         run: |-
-          if [[ "${{ needs.test_build.result }}" == "failure" ]]; then
+          if [[ "${{ needs.test_binary_packages.result }}" == "failure" \
+             || "${{ needs.test_pure_packages.result }}" == "failure" ]]; then
             exit 1
           fi

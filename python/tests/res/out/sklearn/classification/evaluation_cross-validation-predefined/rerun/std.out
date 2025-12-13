@@ -1,0 +1,252 @@
+mlrl-testbed mlrl.testbed_sklearn --mode read --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --print-evaluation true --save-evaluation true --estimator RandomForestClassifier
+Reading meta-data...
+DEBUG: Reading input data from file "python/tests/res/tmp/metadata.yml"...
+Successfully read meta-data
+DEBUG: Checking for version conflicts...
+DEBUG: Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is currently used
+DEBUG: No version conflicts detected
+Reading experimental results of 1 experiment...
+
+Reading experimental results of experiment (1 / 1)...
+The command "mlrl-testbed mlrl.testbed_sklearn --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions-predefined --result-dir results --save-evaluation true --data-split cross-validation --print-evaluation true --save-evaluation true --n-estimators 1 --estimator RandomForestClassifier" has been used originally for running this experiment
+Performing full 10-fold cross validation...
+Fold 1 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/evaluation_test_fold-1.csv"...
+Evaluation result for test data (Fold 1):
+
+Example-wise F1 (↑)         57.68
+Example-wise Jaccard (↑)    49.86
+Example-wise Precision (↑)  59.6
+Example-wise Recall (↑)     61.02
+Hamming Accuracy (↑)        75.14
+Hamming Loss (↓)            24.86
+Macro F1 (↑)                60.22
+Macro Jaccard (↑)           43.5
+Macro Precision (↑)         61.39
+Macro Recall (↑)            60.16
+Micro F1 (↑)                59.63
+Micro Jaccard (↑)           42.48
+Micro Precision (↑)         60.75
+Micro Recall (↑)            58.56
+Subset 0/1 Loss (↓)         72.88
+Subset Accuracy (↑)         27.12
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test_fold-1.csv"...
+Fold 2 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/evaluation_test_fold-2.csv"...
+Evaluation result for test data (Fold 2):
+
+Example-wise F1 (↑)         61.07
+Example-wise Jaccard (↑)    54.66
+Example-wise Precision (↑)  63.56
+Example-wise Recall (↑)     63.56
+Hamming Accuracy (↑)        76.84
+Hamming Loss (↓)            23.16
+Macro F1 (↑)                61.94
+Macro Jaccard (↑)           45.13
+Macro Precision (↑)         66.07
+Macro Recall (↑)            60.61
+Micro F1 (↑)                62.39
+Micro Jaccard (↑)           45.33
+Micro Precision (↑)         62.96
+Micro Recall (↑)            61.82
+Subset 0/1 Loss (↓)         64.41
+Subset Accuracy (↑)         35.59
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test_fold-2.csv"...
+Fold 3 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/evaluation_test_fold-3.csv"...
+Evaluation result for test data (Fold 3):
+
+Example-wise F1 (↑)         52.89
+Example-wise Jaccard (↑)    45
+Example-wise Precision (↑)  57.5
+Example-wise Recall (↑)     54.17
+Hamming Accuracy (↑)        71.94
+Hamming Loss (↓)            28.06
+Macro F1 (↑)                51.58
+Macro Jaccard (↑)           36.11
+Macro Precision (↑)         54.42
+Macro Recall (↑)            51.11
+Micro F1 (↑)                53.88
+Micro Jaccard (↑)           36.88
+Micro Precision (↑)         55.66
+Micro Recall (↑)            52.21
+Subset 0/1 Loss (↓)         75
+Subset Accuracy (↑)         25
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test_fold-3.csv"...
+Fold 4 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/evaluation_test_fold-4.csv"...
+Evaluation result for test data (Fold 4):
+
+Example-wise F1 (↑)         44.63
+Example-wise Jaccard (↑)    36.16
+Example-wise Precision (↑)  47.18
+Example-wise Recall (↑)     47.46
+Hamming Accuracy (↑)        68.93
+Hamming Loss (↓)            31.07
+Macro F1 (↑)                50.22
+Macro Jaccard (↑)           33.99
+Macro Precision (↑)         52.52
+Macro Recall (↑)            49.81
+Micro F1 (↑)                50
+Micro Jaccard (↑)           33.33
+Micro Precision (↑)         50
+Micro Recall (↑)            50
+Subset 0/1 Loss (↓)         89.83
+Subset Accuracy (↑)         10.17
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test_fold-4.csv"...
+Fold 5 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/evaluation_test_fold-5.csv"...
+Evaluation result for test data (Fold 5):
+
+Example-wise F1 (↑)         55.76
+Example-wise Jaccard (↑)    47.88
+Example-wise Precision (↑)  56.5
+Example-wise Recall (↑)     59.04
+Hamming Accuracy (↑)        74.86
+Hamming Loss (↓)            25.14
+Macro F1 (↑)                59.37
+Macro Jaccard (↑)           44.15
+Macro Precision (↑)         60.6
+Macro Recall (↑)            60.26
+Micro F1 (↑)                60.09
+Micro Jaccard (↑)           42.95
+Micro Precision (↑)         58.77
+Micro Recall (↑)            61.47
+Subset 0/1 Loss (↓)         76.27
+Subset Accuracy (↑)         23.73
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test_fold-5.csv"...
+Fold 6 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/evaluation_test_fold-6.csv"...
+Evaluation result for test data (Fold 6):
+
+Example-wise F1 (↑)         56.89
+Example-wise Jaccard (↑)    49.29
+Example-wise Precision (↑)  57.91
+Example-wise Recall (↑)     61.3
+Hamming Accuracy (↑)        74.58
+Hamming Loss (↓)            25.42
+Macro F1 (↑)                58.15
+Macro Jaccard (↑)           41.35
+Macro Precision (↑)         58.69
+Macro Recall (↑)            57.93
+Micro F1 (↑)                59.09
+Micro Jaccard (↑)           41.94
+Micro Precision (↑)         59.09
+Micro Recall (↑)            59.09
+Subset 0/1 Loss (↓)         72.88
+Subset Accuracy (↑)         27.12
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test_fold-6.csv"...
+Fold 7 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/evaluation_test_fold-7.csv"...
+Evaluation result for test data (Fold 7):
+
+Example-wise F1 (↑)         45.28
+Example-wise Jaccard (↑)    39.5
+Example-wise Precision (↑)  50.28
+Example-wise Recall (↑)     45
+Hamming Accuracy (↑)        68.33
+Hamming Loss (↓)            31.67
+Macro F1 (↑)                47.9
+Macro Jaccard (↑)           31.85
+Macro Precision (↑)         49.57
+Macro Recall (↑)            47.79
+Micro F1 (↑)                49.11
+Micro Jaccard (↑)           32.54
+Micro Precision (↑)         49.55
+Micro Recall (↑)            48.67
+Subset 0/1 Loss (↓)         75
+Subset Accuracy (↑)         25
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test_fold-7.csv"...
+Fold 8 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/evaluation_test_fold-8.csv"...
+Evaluation result for test data (Fold 8):
+
+Example-wise F1 (↑)         56.67
+Example-wise Jaccard (↑)    47.51
+Example-wise Precision (↑)  59.89
+Example-wise Recall (↑)     60.17
+Hamming Accuracy (↑)        74.01
+Hamming Loss (↓)            25.99
+Macro F1 (↑)                56.16
+Macro Jaccard (↑)           39.95
+Macro Precision (↑)         59.53
+Macro Recall (↑)            56.44
+Micro F1 (↑)                57.8
+Micro Jaccard (↑)           40.65
+Micro Precision (↑)         57.8
+Micro Recall (↑)            57.8
+Subset 0/1 Loss (↓)         77.97
+Subset Accuracy (↑)         22.03
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test_fold-8.csv"...
+Fold 9 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/evaluation_test_fold-9.csv"...
+Evaluation result for test data (Fold 9):
+
+Example-wise F1 (↑)         47.63
+Example-wise Jaccard (↑)    37.29
+Example-wise Precision (↑)  52.26
+Example-wise Recall (↑)     50.85
+Hamming Accuracy (↑)        69.21
+Hamming Loss (↓)            30.79
+Macro F1 (↑)                47.13
+Macro Jaccard (↑)           31.6
+Macro Precision (↑)         48.6
+Macro Recall (↑)            46.45
+Micro F1 (↑)                49.77
+Micro Jaccard (↑)           33.13
+Micro Precision (↑)         50.47
+Micro Recall (↑)            49.09
+Subset 0/1 Loss (↓)         89.83
+Subset Accuracy (↑)         10.17
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test_fold-9.csv"...
+Fold 10 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/evaluation_test_fold-10.csv"...
+Evaluation result for test data (Fold 10):
+
+Example-wise F1 (↑)         48.44
+Example-wise Jaccard (↑)    40.19
+Example-wise Precision (↑)  48.89
+Example-wise Recall (↑)     52.78
+Hamming Accuracy (↑)        67.78
+Hamming Loss (↓)            32.22
+Macro F1 (↑)                49.19
+Macro Jaccard (↑)           33.55
+Macro Precision (↑)         47.46
+Macro Recall (↑)            52.36
+Micro F1 (↑)                50.85
+Micro Jaccard (↑)           34.09
+Micro Precision (↑)         48.78
+Micro Recall (↑)            53.1
+Subset 0/1 Loss (↓)         80
+Subset Accuracy (↑)         20
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test_fold-10.csv"...
+Evaluation result for test data (Average across 10 folds):
+
+Example-wise F1 (↑)         52.7   ±5.49
+Example-wise Jaccard (↑)    44.73  ±5.83
+Example-wise Precision (↑)  55.36  ±5.12
+Example-wise Recall (↑)     55.53  ±6.08
+Hamming Accuracy (↑)        72.16  ±3.17
+Hamming Loss (↓)            27.84  ±3.17
+Macro F1 (↑)                54.19  ±5.29
+Macro Jaccard (↑)           38.12  ±5.02
+Macro Precision (↑)         55.88  ±5.96
+Macro Recall (↑)            54.29  ±5.15
+Micro F1 (↑)                55.26  ±4.81
+Micro Jaccard (↑)           38.33  ±4.60
+Micro Precision (↑)         55.38  ±4.98
+Micro Recall (↑)            55.18  ±4.86
+Subset 0/1 Loss (↓)         77.41  ±7.34
+Subset Accuracy (↑)         22.59  ±7.34
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...

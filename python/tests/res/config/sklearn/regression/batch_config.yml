@@ -1,0 +1,19 @@
+---
+datasets:
+  - directory: python/tests/res/data
+    names: emotions
+  - directory: python/tests/res/data
+    names:
+      - enron
+default_arguments:
+parameters:
+  - name: --n-estimators
+    values:
+      - 1
+      - 2
+  - name: --max-leaf-nodes
+    values:
+      - 10
+      - value: 20
+        additional_arguments:
+          - --max_depth 5

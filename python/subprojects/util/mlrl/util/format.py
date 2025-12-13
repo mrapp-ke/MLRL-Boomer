@@ -6,7 +6,7 @@ Provides utility functions for creating textual representations.
 from enum import Enum
 from functools import reduce
 from pathlib import Path
-from typing import Any, Iterable, Type
+from typing import Any, Iterable, List, Optional, Type
 
 
 def format_iterable(objects: Iterable[Any], separator: str = ', ', delimiter: str = '') -> str:
@@ -19,6 +19,25 @@ def format_iterable(objects: Iterable[Any], separator: str = ', ', delimiter: st
     :return:            The textual representation that has been created
     """
     return reduce(lambda aggr, obj: aggr + (separator if aggr else '') + delimiter + str(obj) + delimiter, objects, '')
+
+
+def format_list(objects: List[Any],
+                separator: str = ',  ',
+                delimiter: str = '',
+                last_separator: Optional[str] = None) -> str:
+    """
+    Creates and returns a textual representation of objects in a list.
+
+    :param objects:         The list of objects to be formatted
+    :param separator:       The string that should be used as a separator
+    :param delimiter:       The string that should be added at the beginning and end of each object
+    :param last_separator:  The string that should be used as the last separator or None, if `separator` should be used
+    :return:                The textual representation that has been created
+    """
+    last_separator = separator if last_separator is None else last_separator
+    return reduce(
+        lambda aggr, entry: aggr + ((last_separator if entry[0] == len(objects) - 1 else separator)
+                                    if aggr else '') + delimiter + str(entry[1]) + delimiter, enumerate(objects), '')
 
 
 def format_enum_values(enum: Type[Enum]) -> str:
