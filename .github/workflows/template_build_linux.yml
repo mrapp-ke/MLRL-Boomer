@@ -57,10 +57,10 @@ jobs:
           cache: pip
           cache-dependency-path: '**/requirements.txt'
       - name: Install OpenCL
-        if: ${{ inputs.gpu_support == true }}
+        if: ${{ inputs.gpu_support == 'enabled' }}
         run: sudo apt update && sudo apt install -y opencl-headers ocl-icd-opencl-dev
       - name: Install GoogleTest
-        if: ${{ matrix.os == 'ubuntu-24.04' && inputs.run_cpp_tests == true}}
+        if: ${{ matrix.os == 'ubuntu-24.04' && inputs.run_cpp_tests == true }}
         run: sudo apt install -y googletest
       - name: Prepare ccache
         if: ${{ inputs.ccache }}
