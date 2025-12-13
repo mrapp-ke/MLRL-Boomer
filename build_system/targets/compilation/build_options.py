@@ -44,6 +44,8 @@ class BuildOption(ABC):
             if any(subproject_name in cpp_subprojects for subproject_name in subproject_names):
                 return [subproject + ':' + self.name for subproject in subprojects if subproject == 'common']
 
+            return []
+
         return [self.name]
 
     @property
