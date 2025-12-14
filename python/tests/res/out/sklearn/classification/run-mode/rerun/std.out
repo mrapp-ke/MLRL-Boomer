@@ -1,0 +1,505 @@
+mlrl-testbed mlrl.testbed_sklearn --mode run --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --save-all true --print-all true --estimator RandomForestClassifier
+Reading meta-data...
+DEBUG: Reading input data from file "python/tests/res/tmp/metadata.yml"...
+Successfully read meta-data
+DEBUG: Checking for version conflicts...
+DEBUG: Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is currently used
+DEBUG: No version conflicts detected
+Re-running experiment "mlrl-testbed mlrl.testbed_sklearn --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --save-meta-data true --n-estimators 1 --estimator RandomForestClassifier"...
+Arguments "--log-level debug --base-dir python/tests/res/tmp/rerun --save-evaluation true --save-all true --print-all true --estimator RandomForestClassifier" modifying the original experiments have been provided. The resulting command is "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/rerun --data-dir python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --n-estimators 1 --print-all true --result-dir results --save-all true --save-evaluation true --save-meta-data true"...
+
+Checking if output files do already exist...
+Starting experiment using the classification algorithm "RandomForestClassifier"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/metadata.yml"...
+Using separate training and test sets...
+DEBUG: Reading input data from file "python/tests/res/data/emotions.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+Data characteristics:
+
+Examples                397
+Features                 72
+Numerical Features       72
+Ordinal Features          0
+Nominal Features          0
+Feature Density          99.67
+Feature Sparsity          0.33
+Outputs                   6
+Output Density           30.77
+Output Sparsity          69.23
+Label Imbalance Ratio     1.45
+Label Cardinality         1.85
+Distinct Label Vectors   23
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/data_characteristics.csv"...
+Custom parameters:
+
+<no data available>
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/parameters/parameters.csv"...
+Fitting model to 397 training examples...
+Successfully fit model in <duration>
+Predicting for 196 test examples...
+Successfully predicted in <duration>
+Evaluation result for test data:
+
+Example-wise F1 (↑)         50.49
+Example-wise Jaccard (↑)    42.39
+Example-wise Precision (↑)  53.32
+Example-wise Recall (↑)     53.15
+Hamming Accuracy (↑)        70.32
+Hamming Loss (↓)            29.68
+Macro F1 (↑)                52.15
+Macro Jaccard (↑)           35.93
+Macro Precision (↑)         52.55
+Macro Recall (↑)            52.16
+Micro F1 (↑)                53.28
+Micro Jaccard (↑)           36.31
+Micro Precision (↑)         53.49
+Micro Recall (↑)            53.07
+Subset 0/1 Loss (↓)         81.12
+Subset Accuracy (↑)         18.88
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...
+Ground truth for test data:
+
+[[1 0 0 0 0 1]
+ [1 0 0 0 0 0]
+ [0 0 0 0 1 0]
+ [0 1 1 0 0 0]
+ [0 0 1 1 1 0]
+ [0 0 1 1 1 0]
+ [1 0 0 0 0 1]
+ [0 1 0 0 0 0]
+ [0 0 1 1 1 0]
+ [0 1 1 0 0 0]
+ [0 0 0 0 0 1]
+ [0 1 1 0 0 0]
+ [1 0 0 0 0 0]
+ [0 0 0 0 0 1]
+ [1 0 0 0 0 1]
+ [1 0 0 0 0 1]
+ [0 0 1 0 1 0]
+ [0 0 0 1 1 0]
+ [0 0 1 1 1 0]
+ [0 0 0 1 1 0]
+ [1 0 0 0 0 1]
+ [0 0 1 0 0 0]
+ [1 1 1 0 0 0]
+ [1 0 0 0 0 1]
+ [1 0 0 0 0 1]
+ [0 0 1 1 0 0]
+ [0 0 0 1 0 0]
+ [0 1 1 0 0 0]
+ [1 1 1 0 0 0]
+ [1 0 0 0 0 1]
+ [1 0 0 0 0 1]
+ [1 0 0 0 0 1]
+ [0 0 0 0 0 1]
+ [0 0 1 1 1 0]
+ [1 0 0 0 1 0]
+ [0 1 0 0 1 0]
+ [0 0 1 0 0 1]
+ [0 1 1 0 0 0]
+ [1 1 0 0 0 0]
+ [1 1 0 0 0 0]
+ [0 0 1 1 1 0]
+ [0 0 0 0 0 1]
+ [1 1 1 0 0 0]
+ [1 0 0 0 1 0]
+ [0 0 0 0 1 0]
+ [0 1 1 0 0 0]
+ [1 0 0 0 1 0]
+ [0 1 1 0 0 0]
+ [0 0 0 1 1 0]
+ [1 0 0 0 0 1]
+ [1 0 0 0 0 0]
+ [0 0 0 0 0 1]
+ [0 0 1 0 0 0]
+ [0 0 1 1 1 0]
+ [0 0 1 0 0 0]
+ [0 0 1 1 1 0]
+ [0 1 1 0 0 0]
+ [0 0 1 1 1 0]
+ [0 0 1 1 1 0]
+ [0 0 0 0 0 1]
+ [0 0 1 1 0 0]
+ [0 0 1 0 0 0]
+ [0 1 0 0 0 0]
+ [0 1 1 0 0 0]
+ [0 1 1 0 0 0]
+ [1 0 0 0 0 1]
+ [0 0 1 1 0 0]
+ [0 0 1 0 1 0]
+ [0 0 0 1 1 0]
+ [0 0 1 1 1 0]
+ [0 0 1 1 1 0]
+ [0 0 0 1 1 0]
+ [0 0 1 0 0 0]
+ [0 1 1 0 0 0]
+ [1 0 0 0 0 1]
+ [0 0 0 0 0 1]
+ [0 0 1 1 1 0]
+ [1 0 0 0 0 1]
+ [0 1 1 0 0 0]
+ [1 0 0 0 1 0]
+ [0 0 1 1 1 0]
+ [1 0 0 0 0 1]
+ [0 0 0 1 1 0]
+ [0 0 1 1 0 0]
+ [0 1 1 0 0 0]
+ [1 0 0 0 1 1]
+ [0 0 0 0 0 1]
+ [0 0 0 0 0 1]
+ [0 0 0 0 1 1]
+ [0 0 1 1 0 0]
+ [0 0 1 0 1 0]
+ [0 0 1 0 0 0]
+ [0 1 1 0 0 0]
+ [0 0 1 1 1 0]
+ [1 1 0 0 0 0]
+ [1 0 1 0 0 0]
+ [0 0 1 1 1 0]
+ [0 1 1 0 0 0]
+ [0 0 0 1 1 0]
+ [0 0 1 1 0 0]
+ [0 0 0 1 1 0]
+ [0 0 0 0 1 1]
+ [0 1 1 0 0 0]
+ [0 0 0 1 1 0]
+ [1 0 0 0 0 1]
+ [1 0 0 0 0 1]
+ [1 0 0 0 0 1]
+ [0 1 0 0 0 0]
+ [0 0 0 0 0 1]
+ [0 1 1 0 0 0]
+ [1 0 0 0 0 1]
+ [0 1 1 0 0 0]
+ [1 1 1 0 0 0]
+ [0 1 1 0 0 0]
+ [1 1 0 0 0 0]
+ [0 1 1 0 0 0]
+ [0 0 1 0 1 0]
+ [0 0 1 1 0 1]
+ [0 0 0 0 0 1]
+ [0 0 1 1 1 0]
+ [1 1 0 0 0 0]
+ [0 0 1 1 1 0]
+ [1 0 0 0 0 1]
+ [1 0 0 0 0 0]
+ [1 0 0 0 1 1]
+ [0 0 1 1 1 0]
+ [1 0 0 0 0 0]
+ [1 0 0 0 0 1]
+ [1 0 0 0 0 1]
+ [0 0 1 0 0 0]
+ [1 0 0 0 0 1]
+ [0 1 1 0 0 0]
+ [0 0 1 1 0 0]
+ [0 0 1 0 0 1]
+ [0 0 0 0 0 1]
+ [0 1 0 0 0 0]
+ [1 0 1 0 0 0]
+ [0 0 1 1 0 0]
+ [0 1 1 0 0 0]
+ [0 0 0 0 0 1]
+ [1 1 0 0 0 0]
+ [0 1 1 0 0 0]
+ [0 0 0 0 0 1]
+ [0 0 1 0 0 0]
+ [0 0 1 1 1 0]
+ [0 1 1 0 0 0]
+ [1 0 0 0 0 1]
+ [0 0 0 1 0 0]
+ [0 1 1 0 0 0]
+ [0 0 0 0 1 1]
+ [1 0 0 0 0 1]
+ [0 0 1 1 1 0]
+ [1 1 0 0 0 0]
+ [0 0 1 1 1 0]
+ [0 0 1 0 1 0]
+ [1 0 0 0 0 0]
+ [0 0 0 0 0 1]
+ [1 1 0 0 0 0]
+ [1 1 0 0 0 0]
+ [0 1 1 0 0 0]
+ [0 0 1 1 1 0]
+ [0 1 1 0 0 0]
+ [0 0 1 0 0 0]
+ [1 1 0 0 0 0]
+ [0 0 0 0 1 1]
+ [0 0 0 1 1 0]
+ [0 0 1 0 0 0]
+ [0 0 0 0 0 1]
+ [0 0 0 0 0 1]
+ [0 0 0 0 0 1]
+ [1 0 0 0 0 1]
+ [0 1 0 1 0 0]
+ [0 0 1 1 0 0]
+ [0 0 1 1 1 0]
+ [0 1 1 0 0 0]
+ [0 1 1 1 0 0]
+ [1 1 0 0 0 0]
+ [1 0 0 0 0 1]
+ [0 0 0 1 1 0]
+ [0 0 1 1 1 0]
+ [0 0 1 1 0 0]
+ [0 1 1 0 0 0]
+ [0 0 0 1 1 0]
+ [1 1 0 0 0 0]
+ [0 0 0 0 0 1]
+ [0 0 0 0 0 1]
+ [0 1 1 0 0 0]
+ [1 0 0 0 0 0]
+ [0 1 0 0 0 0]
+ [0 0 0 0 0 1]
+ [0 0 1 0 0 0]
+ [0 0 1 0 0 0]
+ [0 0 0 0 0 1]
+ [1 0 0 0 0 1]
+ [0 0 1 1 0 0]
+ [1 0 0 0 0 1]]
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/ground_truth_test.arff"...
+Prediction characteristics for test data:
+
+Outputs                  6
+Output Density          31.63
+Output Sparsity         68.37
+Label Imbalance Ratio    1.44
+Label Cardinality        1.9
+Distinct Label Vectors  21
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/prediction_characteristics_test.csv"...
+Predictions for test data:
+
+[[1 1 0 0 0 1]
+ [1 0 0 0 1 0]
+ [0 0 1 0 0 0]
+ [0 1 0 0 0 0]
+ [0 0 0 1 0 0]
+ [0 0 0 1 1 0]
+ [0 0 1 0 0 0]
+ [0 0 0 0 1 1]
+ [0 0 0 1 1 0]
+ [0 0 1 1 1 0]
+ [0 0 1 0 1 1]
+ [0 0 1 0 0 0]
+ [1 0 0 0 0 1]
+ [1 0 0 0 0 1]
+ [1 0 0 0 0 1]
+ [1 1 0 0 0 0]
+ [0 0 1 0 0 0]
+ [0 0 1 0 0 0]
+ [0 0 0 1 1 0]
+ [0 0 1 1 1 0]
+ [1 1 0 0 0 0]
+ [0 0 1 1 0 0]
+ [0 1 1 0 0 0]
+ [1 0 0 0 0 1]
+ [0 0 1 1 1 0]
+ [0 0 1 1 1 0]
+ [0 0 1 1 1 0]
+ [0 0 1 0 0 0]
+ [0 1 1 0 0 0]
+ [1 0 0 0 0 1]
+ [0 0 0 0 0 1]
+ [0 1 1 0 0 0]
+ [1 0 0 0 0 1]
+ [0 0 1 1 0 0]
+ [0 1 0 0 0 0]
+ [0 1 0 0 0 0]
+ [1 0 0 0 0 1]
+ [0 0 1 0 0 0]
+ [0 1 1 0 0 0]
+ [1 0 0 0 0 0]
+ [0 0 1 0 0 0]
+ [1 0 0 0 0 1]
+ [0 0 1 0 1 0]
+ [0 0 0 0 0 1]
+ [0 0 0 1 1 0]
+ [0 0 0 0 0 1]
+ [1 0 0 0 1 0]
+ [0 0 0 1 1 0]
+ [1 1 0 0 0 0]
+ [0 0 0 1 0 0]
+ [0 0 0 0 1 1]
+ [1 0 0 0 0 0]
+ [1 1 0 0 0 0]
+ [0 0 1 1 1 0]
+ [0 0 0 1 1 0]
+ [0 0 1 1 1 0]
+ [0 0 1 0 0 0]
+ [0 0 1 1 1 0]
+ [0 1 1 0 0 0]
+ [0 0 0 0 1 1]
+ [1 0 0 0 0 1]
+ [0 0 1 0 0 0]
+ [0 0 1 0 1 0]
+ [0 0 1 0 1 1]
+ [0 0 0 0 0 1]
+ [0 0 0 0 1 0]
+ [0 0 1 0 0 0]
+ [1 1 0 0 0 0]
+ [0 0 1 1 1 0]
+ [0 1 1 0 0 0]
+ [0 0 1 1 1 0]
+ [0 0 1 1 1 0]
+ [0 0 0 0 1 1]
+ [0 0 0 0 0 1]
+ [1 0 0 0 0 1]
+ [0 0 0 0 1 1]
+ [0 0 1 1 1 0]
+ [0 1 1 1 0 0]
+ [1 1 0 0 0 0]
+ [0 0 0 0 0 1]
+ [0 0 1 1 1 0]
+ [1 0 0 0 0 1]
+ [0 0 0 1 1 0]
+ [0 0 0 1 1 0]
+ [0 0 1 0 1 0]
+ [0 0 1 0 1 0]
+ [1 0 0 0 0 1]
+ [0 0 0 0 1 1]
+ [0 0 0 0 0 1]
+ [0 0 1 1 0 0]
+ [0 0 1 0 0 0]
+ [0 0 1 0 0 0]
+ [0 0 1 1 1 0]
+ [0 0 0 0 1 0]
+ [0 0 0 0 0 1]
+ [0 1 1 0 0 0]
+ [0 0 0 1 1 0]
+ [0 0 1 1 1 0]
+ [0 1 1 0 0 0]
+ [0 1 1 0 0 0]
+ [0 0 1 1 1 0]
+ [0 0 0 0 0 1]
+ [0 0 0 1 1 0]
+ [0 0 1 1 1 0]
+ [0 0 0 1 1 0]
+ [1 0 0 0 0 1]
+ [1 0 0 0 0 1]
+ [1 0 0 0 0 1]
+ [1 1 0 0 0 1]
+ [0 1 1 0 0 0]
+ [0 1 1 0 0 0]
+ [0 0 1 0 0 0]
+ [0 1 1 0 0 0]
+ [0 0 0 1 1 0]
+ [0 1 0 0 0 0]
+ [0 0 1 1 1 0]
+ [0 0 0 1 1 0]
+ [1 1 0 0 0 0]
+ [1 0 0 0 0 1]
+ [0 0 0 1 1 0]
+ [0 0 0 0 0 1]
+ [1 0 0 0 0 1]
+ [0 0 0 0 1 1]
+ [0 0 0 0 1 0]
+ [1 0 0 0 0 1]
+ [0 0 1 0 0 0]
+ [1 0 0 0 0 1]
+ [0 1 1 0 0 0]
+ [1 0 0 0 0 0]
+ [0 1 1 0 0 0]
+ [0 0 0 0 1 1]
+ [1 1 0 0 0 0]
+ [0 0 0 0 1 0]
+ [1 0 0 0 0 1]
+ [1 0 0 0 0 0]
+ [1 0 0 0 0 0]
+ [0 0 1 1 1 0]
+ [0 0 1 1 0 0]
+ [0 0 1 0 1 0]
+ [1 0 0 0 1 1]
+ [1 1 0 0 0 0]
+ [0 0 1 1 0 0]
+ [1 1 0 0 0 0]
+ [0 0 1 0 0 0]
+ [0 0 0 1 1 0]
+ [0 1 1 0 0 0]
+ [1 1 0 0 0 0]
+ [0 0 1 1 0 0]
+ [0 1 1 0 0 0]
+ [0 0 0 0 1 0]
+ [0 0 0 0 1 0]
+ [0 0 1 1 1 0]
+ [1 0 0 0 0 1]
+ [0 1 1 0 0 0]
+ [0 1 0 0 0 0]
+ [0 0 1 1 1 0]
+ [1 0 0 0 0 1]
+ [1 1 0 0 0 0]
+ [0 1 1 0 0 0]
+ [0 0 1 0 1 0]
+ [0 0 1 1 1 0]
+ [0 0 1 1 1 0]
+ [0 0 1 0 0 0]
+ [1 1 0 0 0 0]
+ [0 1 1 1 0 0]
+ [0 1 1 0 0 0]
+ [0 0 1 0 0 0]
+ [1 0 0 0 0 1]
+ [1 0 0 0 0 0]
+ [1 0 0 0 0 1]
+ [0 1 0 0 0 0]
+ [0 0 1 0 1 0]
+ [0 0 1 1 1 0]
+ [0 0 1 1 1 0]
+ [0 1 0 0 0 0]
+ [0 0 1 1 0 0]
+ [0 0 0 0 1 0]
+ [1 0 0 0 0 1]
+ [0 0 1 1 1 0]
+ [0 0 1 1 0 0]
+ [0 0 0 0 0 1]
+ [0 1 1 0 0 0]
+ [0 0 0 1 1 0]
+ [0 1 0 0 0 1]
+ [1 1 1 0 0 0]
+ [0 0 0 0 0 1]
+ [0 0 0 1 1 0]
+ [0 0 0 1 0 0]
+ [1 1 0 0 0 0]
+ [1 1 0 0 0 0]
+ [1 0 0 0 0 1]
+ [0 0 1 0 0 0]
+ [1 1 0 0 0 0]
+ [1 0 0 0 0 1]
+ [0 0 0 0 0 1]
+ [0 0 1 0 1 1]]
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/predictions_test.arff"...
+Label vectors:
+
+┌─────────┬────────────────┬─────────────┐
+│   Index │ Label vector   │   Frequency │
+├─────────┼────────────────┼─────────────┤
+│      12 │ [0 5]          │          52 │
+│       5 │ [5]            │          50 │
+│       9 │ [1 2]          │          44 │
+│       1 │ [2 3 4]        │          42 │
+│       4 │ [2]            │          30 │
+│       8 │ [0 1]          │          26 │
+│       6 │ [3 4]          │          25 │
+│      11 │ [2 4]          │          20 │
+│       3 │ [2 3]          │          19 │
+│      10 │ [1]            │          18 │
+│      14 │ [0]            │          17 │
+│      15 │ [4]            │          10 │
+│       2 │ [4 5]          │           8 │
+│      13 │ [0 1 5]        │           7 │
+│      16 │ [0 1 2]        │           7 │
+│       7 │ [1 5]          │           5 │
+│      19 │ [1 2 3]        │           5 │
+│      17 │ [2 4 5]        │           3 │
+│      23 │ [3]            │           3 │
+│      18 │ [0 4 5]        │           2 │
+│      20 │ [0 4]          │           2 │
+│      21 │ [3 4 5]        │           1 │
+│      22 │ [2 5]          │           1 │
+└─────────┴────────────────┴─────────────┘
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/label_vectors.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/models/model.pickle"...
+Successfully finished experiment after <duration>

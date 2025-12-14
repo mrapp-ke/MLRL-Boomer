@@ -1,0 +1,43 @@
+mlrl-testbed mlrl.testbed_sklearn --mode read --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --print-all true --estimator RandomForestClassifier
+Reading meta-data...
+DEBUG: Reading input data from file "python/tests/res/tmp/metadata.yml"...
+Successfully read meta-data
+DEBUG: Checking for version conflicts...
+DEBUG: Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is currently used
+DEBUG: No version conflicts detected
+Reading experimental results of 1 experiment...
+
+Reading experimental results of experiment (1 / 1)...
+The command "mlrl-testbed mlrl.testbed_sklearn --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --print-all true --n-estimators 1 --estimator RandomForestClassifier" has been used originally for running this experiment
+Using separate training and test sets...
+DEBUG: Reading input data from file "python/tests/res/tmp/results/data_characteristics.csv"...
+ERROR: The file "python/tests/res/tmp/results/data_characteristics.csv" does not exist
+DEBUG: Reading input data from file "python/tests/res/tmp/results/evaluation_test.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/results/label_vectors.csv"...
+ERROR: The file "python/tests/res/tmp/results/label_vectors.csv" does not exist
+DEBUG: Reading input data from file "python/tests/res/tmp/results/prediction_characteristics_training.csv"...
+ERROR: The file "python/tests/res/tmp/results/prediction_characteristics_training.csv" does not exist
+Custom parameters:
+
+<no data available>
+
+Evaluation result for test data:
+
+Example-wise F1 (↑)         50.49
+Example-wise Jaccard (↑)    42.39
+Example-wise Precision (↑)  53.32
+Example-wise Recall (↑)     53.15
+Hamming Accuracy (↑)        70.32
+Hamming Loss (↓)            29.68
+Macro F1 (↑)                52.15
+Macro Jaccard (↑)           35.93
+Macro Precision (↑)         52.55
+Macro Recall (↑)            52.16
+Micro F1 (↑)                53.28
+Micro Jaccard (↑)           36.31
+Micro Precision (↑)         53.49
+Micro Recall (↑)            53.07
+Subset 0/1 Loss (↓)         81.12
+Subset Accuracy (↑)         18.88
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...

@@ -1,0 +1,111 @@
+child-commands:
+- mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion gini
+  --data-dir python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2}
+  --dataset emotions --estimator RandomForestClassifier --log-level debug --model-save-dir
+  n-estimators_1/criterion_gini/dataset_emotions/models --n-estimators 1 --parameter-save-dir
+  n-estimators_1/criterion_gini/dataset_emotions/parameters --result-dir n-estimators_1/criterion_gini/dataset_emotions/results
+  --save-all true --save-evaluation true --save-meta-data false
+- mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion gini
+  --data-dir python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2}
+  --dataset emotions --estimator RandomForestClassifier --log-level debug --model-save-dir
+  n-estimators_1/criterion_gini/dataset_emotions/models --n-estimators 1 --parameter-save-dir
+  n-estimators_1/criterion_gini/dataset_emotions/parameters --result-dir n-estimators_1/criterion_gini/dataset_emotions/results
+  --save-all true --save-evaluation true --save-meta-data false
+- mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion entropy
+  --data-dir python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2}
+  --dataset emotions --estimator RandomForestClassifier --log-level debug --max-depth
+  5 --model-save-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/models
+  --n-estimators 1 --parameter-save-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/parameters
+  --result-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results
+  --save-all true --save-evaluation true --save-meta-data false
+- mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion entropy
+  --data-dir python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2}
+  --dataset emotions --estimator RandomForestClassifier --log-level debug --max-depth
+  5 --model-save-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/models
+  --n-estimators 1 --parameter-save-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/parameters
+  --result-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results
+  --save-all true --save-evaluation true --save-meta-data false
+- mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion gini
+  --data-dir python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2}
+  --dataset emotions --estimator RandomForestClassifier --log-level debug --model-save-dir
+  n-estimators_2/criterion_gini/dataset_emotions/models --n-estimators 2 --parameter-save-dir
+  n-estimators_2/criterion_gini/dataset_emotions/parameters --result-dir n-estimators_2/criterion_gini/dataset_emotions/results
+  --save-all true --save-evaluation true --save-meta-data false
+- mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion gini
+  --data-dir python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2}
+  --dataset emotions --estimator RandomForestClassifier --log-level debug --model-save-dir
+  n-estimators_2/criterion_gini/dataset_emotions/models --n-estimators 2 --parameter-save-dir
+  n-estimators_2/criterion_gini/dataset_emotions/parameters --result-dir n-estimators_2/criterion_gini/dataset_emotions/results
+  --save-all true --save-evaluation true --save-meta-data false
+- mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion entropy
+  --data-dir python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2}
+  --dataset emotions --estimator RandomForestClassifier --log-level debug --max-depth
+  5 --model-save-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/models
+  --n-estimators 2 --parameter-save-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/parameters
+  --result-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results
+  --save-all true --save-evaluation true --save-meta-data false
+- mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion entropy
+  --data-dir python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2}
+  --dataset emotions --estimator RandomForestClassifier --log-level debug --max-depth
+  5 --model-save-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/models
+  --n-estimators 2 --parameter-save-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/parameters
+  --result-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results
+  --save-all true --save-evaluation true --save-meta-data false
+- mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion gini
+  --data-dir python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2}
+  --dataset enron --estimator RandomForestClassifier --log-level debug --model-save-dir
+  n-estimators_1/criterion_gini/dataset_enron/models --n-estimators 1 --parameter-save-dir
+  n-estimators_1/criterion_gini/dataset_enron/parameters --result-dir n-estimators_1/criterion_gini/dataset_enron/results
+  --save-all true --save-evaluation true --save-meta-data false
+- mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion gini
+  --data-dir python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2}
+  --dataset enron --estimator RandomForestClassifier --log-level debug --model-save-dir
+  n-estimators_1/criterion_gini/dataset_enron/models --n-estimators 1 --parameter-save-dir
+  n-estimators_1/criterion_gini/dataset_enron/parameters --result-dir n-estimators_1/criterion_gini/dataset_enron/results
+  --save-all true --save-evaluation true --save-meta-data false
+- mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion entropy
+  --data-dir python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2}
+  --dataset enron --estimator RandomForestClassifier --log-level debug --max-depth
+  5 --model-save-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/models
+  --n-estimators 1 --parameter-save-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/parameters
+  --result-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results
+  --save-all true --save-evaluation true --save-meta-data false
+- mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion entropy
+  --data-dir python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2}
+  --dataset enron --estimator RandomForestClassifier --log-level debug --max-depth
+  5 --model-save-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/models
+  --n-estimators 1 --parameter-save-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/parameters
+  --result-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results
+  --save-all true --save-evaluation true --save-meta-data false
+- mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion gini
+  --data-dir python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2}
+  --dataset enron --estimator RandomForestClassifier --log-level debug --model-save-dir
+  n-estimators_2/criterion_gini/dataset_enron/models --n-estimators 2 --parameter-save-dir
+  n-estimators_2/criterion_gini/dataset_enron/parameters --result-dir n-estimators_2/criterion_gini/dataset_enron/results
+  --save-all true --save-evaluation true --save-meta-data false
+- mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion gini
+  --data-dir python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2}
+  --dataset enron --estimator RandomForestClassifier --log-level debug --model-save-dir
+  n-estimators_2/criterion_gini/dataset_enron/models --n-estimators 2 --parameter-save-dir
+  n-estimators_2/criterion_gini/dataset_enron/parameters --result-dir n-estimators_2/criterion_gini/dataset_enron/results
+  --save-all true --save-evaluation true --save-meta-data false
+- mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion entropy
+  --data-dir python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2}
+  --dataset enron --estimator RandomForestClassifier --log-level debug --max-depth
+  5 --model-save-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/models
+  --n-estimators 2 --parameter-save-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/parameters
+  --result-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results
+  --save-all true --save-evaluation true --save-meta-data false
+- mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion entropy
+  --data-dir python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2}
+  --dataset enron --estimator RandomForestClassifier --log-level debug --max-depth
+  5 --model-save-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/models
+  --n-estimators 2 --parameter-save-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/parameters
+  --result-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results
+  --save-all true --save-evaluation true --save-meta-data false
+command: mlrl-testbed mlrl.testbed_sklearn --mode batch --log-level debug --base-dir
+  python/tests/res/tmp --config python/tests/res/config/sklearn/classification/batch_config.yml
+  --save-evaluation true --save-all true --data-split cross-validation{num_folds=2}
+  --n-estimators 1 --estimator RandomForestClassifier
+timestamp: <timestamp>
+version: <version>
