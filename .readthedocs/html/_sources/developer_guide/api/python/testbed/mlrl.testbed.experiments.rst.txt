@@ -22,6 +22,7 @@ Submodules
    :maxdepth: 4
 
    mlrl.testbed.experiments.context
+   mlrl.testbed.experiments.data
    mlrl.testbed.experiments.dataset
    mlrl.testbed.experiments.dataset_type
    mlrl.testbed.experiments.experiment

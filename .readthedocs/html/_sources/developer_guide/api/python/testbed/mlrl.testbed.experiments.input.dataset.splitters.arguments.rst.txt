@@ -1,0 +1,7 @@
+mlrl.testbed.experiments.input.dataset.splitters.arguments module
+=================================================================
+
+.. automodule:: mlrl.testbed.experiments.input.dataset.splitters.arguments
+   :members:
+   :show-inheritance:
+   :undoc-members:

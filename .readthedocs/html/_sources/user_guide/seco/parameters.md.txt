@@ -304,7 +304,7 @@ The duration in seconds after which the induction of rules should be canceled. T
 
 > *Default value = `1`.*
 
-The seed to be used by random number generators. The given value must be at least 1.
+The seed to be used by random number generators. The given value must be at least 0.
 
 ### `output_sampling`
 

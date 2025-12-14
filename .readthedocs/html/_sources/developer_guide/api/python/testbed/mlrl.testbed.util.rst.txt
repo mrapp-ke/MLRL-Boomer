@@ -15,3 +15,4 @@ Submodules
    mlrl.testbed.util.format
    mlrl.testbed.util.io
    mlrl.testbed.util.math
+   mlrl.testbed.util.yml

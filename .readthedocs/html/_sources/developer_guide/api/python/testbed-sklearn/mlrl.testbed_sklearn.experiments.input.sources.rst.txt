@@ -1,0 +1,15 @@
+mlrl.testbed\_sklearn.experiments.input.sources package
+=======================================================
+
+.. automodule:: mlrl.testbed_sklearn.experiments.input.sources
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed_sklearn.experiments.input.sources.source_svm

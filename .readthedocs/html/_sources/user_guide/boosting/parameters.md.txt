@@ -349,7 +349,7 @@ The following parameters allow to employ various sampling techniques that may he
 
 > *Default value = `1`.*
 
-The seed to be used by random number generators. The given value must be at least 1.
+The seed to be used by random number generators. The given value must be at least 0.
 
 ### `output_sampling`
 
@@ -546,7 +546,7 @@ The following parameters can be used to control various approximation and optimi
 
 ### `statistic_type`
 
-> *Default value = `'float64'`.*
+> *Default value = `'32-bit'`.*
 
 `'32-bit'`
 : 32-bit floating point values are used for representing gradients and Hessians.
