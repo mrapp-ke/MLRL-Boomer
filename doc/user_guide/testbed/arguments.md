@@ -141,9 +141,9 @@ The package mlrl-testbed is able to conduct experiments for classification and r
 
 (setting-algorithmic-parameters)=
 
-## Setting Algorithmic Parameters
+## Algorithmic Arguments
 
-> Algorithmic parameters can only be specified in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode` and {bdg-ref-info-line}`testbed-run-mode`.
+> Algorithmic arguments can only be specified in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode` and {bdg-ref-info-line}`testbed-run-mode`.
 
 In addition to the command line arguments discussed above, it is often desirable to not rely on the default configuration of the BOOMER algorithm in an experiment, but to use a custom configuration. For this purpose, all algorithmic parameters that are discussed in the section {ref}`parameters` may be set by providing corresponding arguments to the command line API.
 
@@ -626,9 +626,25 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
   - `false` The unique label vectors contained in the training data are not written to a [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) file.
 
+# Scikit-Learn-specific Arguments
+
+> The following arguments are available in {bdg-secondary-line}`Single Mode` and {bdg-ref-primary-line}`testbed-batch-mode`.
+
+When the package [mlrl-testbed-sklearn](https://pypi.org/project/mlrl-testbed-sklearn/) is installed, it is possible to run experiments with algorithms offered by the [scikit-learn](https://scikit-learn.org) framework using commands that start with `mlrl-testbed mlrl.testbed_sklearn`. In this case, the following argument is mandatory:
+
+- `--estimator` The class name of a scikit-learn estimator (e.g. `RandomForestClassifier`) to be used in the experiment.
+
+In addition, the following optional arguments may be given:
+
+- `--meta-estimator` The class name of a meta-estimator (e.g. `ClassifierChain`) to be used in the experiment. If this argument is present, the estimator specified via the argument `--estimator` is used as the base estimator.
+
+# Rule-specific Arguments
+
+The following arguments are only available when using the {ref}`BOOMER algorithm <user-guide-boomer>` or the {ref}`SeCO algorithm <user-guide-seco>` via commands that start with `mlrl-testbed mlrl.boosting` or `mlrl.testbed mlrl.seco`.
+
 (arguments-model-characteristics)=
 
-#### Model Characteristics
+## Model Characteristics
 
 > The following arguments are available in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-success-line}`testbed-read-mode` and {bdg-ref-info-line}`testbed-run-mode`.
 
@@ -644,7 +660,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 (arguments-output-rules)=
 
-#### Rules
+## Rules
 
 > The following arguments are available in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-success-line}`testbed-read-mode` and {bdg-ref-info-line}`testbed-run-mode`.
 
@@ -678,7 +694,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 (arguments-probability-calibration-models)=
 
-#### Probability Calibration Models
+## Probability Calibration Models
 
 > The following arguments are available in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-success-line}`testbed-read-mode` and {bdg-ref-info-line}`testbed-run-mode`.
 

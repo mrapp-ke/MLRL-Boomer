@@ -33,15 +33,23 @@ class Mode(ABC):
     )
 
     @abstractmethod
-    def configure_arguments(self, cli: CommandLineInterface, control_arguments: List[Argument],
-                            algorithmic_arguments: List[Argument]):
+    def configure_control_arguments(self, cli: CommandLineInterface, control_arguments: List[Argument]):
+        """
+        Must be implemented by subclasses in order to configure the command line interface according to the mode of
+        operation.
+
+        :param cli:                 The command line interface to be configured
+        :param control_arguments:   The arguments that should be added to the command line interface for controlling
+                                    mlrl-testbed's behavior
+        """
+
+    @abstractmethod
+    def configure_algorithmic_arguments(self, cli: CommandLineInterface, algorithmic_arguments: List[Argument]):
         """
         Must be implemented by subclasses in order to configure the command line interface according to the mode of
         operation.
 
         :param cli:                     The command line interface to be configured
-        :param control_arguments:       The arguments that should be added to the command line interface for controlling
-                                        mlrl-testbed's behavior
         :param algorithmic_arguments:   The arguments that should be added to the command line interface for configuring
                                         the algorithm's hyperparameters
         """
@@ -85,7 +93,7 @@ class InputMode(Mode, ABC):
 
     def __read_meta_data(self, args: Namespace, recipe: Recipe, input_directory: Path) -> MetaData:
         log.info('Reading meta-data...')
-        problem_domain = recipe.create_problem_domain(args)
+        problem_domain = recipe.create_problem_domain(self.to_enum(), args)
         state = ExperimentState(mode=self.to_enum(), args=args, meta_data=MetaData(), problem_domain=problem_domain)
         reader = MetaDataReader(
             YamlFileSource(directory=input_directory, schema_file_path=InputMetaData.SCHEMA_FILE_PATH))
@@ -110,10 +118,13 @@ class InputMode(Mode, ABC):
             log.debug('No version conflicts detected')
 
     @override
-    def configure_arguments(self, cli: CommandLineInterface, control_arguments: List[Argument],
-                            algorithmic_arguments: List[Argument]):
+    def configure_control_arguments(self, cli: CommandLineInterface, control_arguments: List[Argument]):
         cli.add_arguments(self.INPUT_DIR, group='read-mode arguments')
         cli.add_arguments(*control_arguments, group='control arguments')
+
+    @override
+    def configure_algorithmic_arguments(self, cli: CommandLineInterface, algorithmic_arguments: List[Argument]):
+        pass
 
     @override
     def run_experiment(self, control_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
