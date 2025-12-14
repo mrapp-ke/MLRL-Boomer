@@ -33,7 +33,7 @@ jobs:
       - name: Delete old documentation
         run: rm -rf .readthedocs/html/
       - name: Download documentation
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           pattern: doc
           path: .readthedocs/
