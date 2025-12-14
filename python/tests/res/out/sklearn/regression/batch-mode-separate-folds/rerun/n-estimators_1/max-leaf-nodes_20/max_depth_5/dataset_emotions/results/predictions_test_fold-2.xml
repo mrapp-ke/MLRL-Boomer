@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<labels xmlns="http://mulan.sourceforge.net/labels">
+	<label name="Prediction amazed-suprised"/>
+	<label name="Prediction happy-pleased"/>
+	<label name="Prediction relaxing-calm"/>
+	<label name="Prediction quiet-still"/>
+	<label name="Prediction sad-lonely"/>
+	<label name="Prediction angry-aggresive"/>
+</labels>

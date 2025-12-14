@@ -125,8 +125,8 @@ class Runnable(Recipe, ABC):
                 self.runnable = runnable
 
             @override
-            def create_problem_domain(self, args: Namespace) -> ProblemDomain:
-                return self.runnable.create_problem_domain(args)
+            def create_problem_domain(self, mode: ExperimentMode, args: Namespace) -> ProblemDomain:
+                return self.runnable.create_problem_domain(mode, args)
 
             @override
             def create_dataset_splitter(self, args: Namespace, load_dataset: bool = True) -> DatasetSplitter:
@@ -216,18 +216,20 @@ class Runnable(Recipe, ABC):
         """
         control_arguments: Set[Argument] = reduce(
             lambda aggr, extension: aggr | extension.get_arguments(mode.to_enum()), self.get_extensions(), set())
-        algorithmic_arguments = self.get_algorithmic_arguments(cli.parse_known_args())
-        mode.configure_arguments(cli,
-                                 control_arguments=sorted(control_arguments, key=lambda arg: arg.name),
-                                 algorithmic_arguments=sorted(algorithmic_arguments, key=lambda arg: arg.name))
+        mode.configure_control_arguments(cli, sorted(control_arguments, key=lambda arg: arg.name))
+
+        algorithmic_arguments = self.get_algorithmic_arguments(mode.to_enum(), cli.parse_known_args())
+        mode.configure_algorithmic_arguments(cli, sorted(algorithmic_arguments, key=lambda arg: arg.name))
+
         return control_arguments, set(algorithmic_arguments)
 
     # pylint: disable=unused-argument
-    def get_algorithmic_arguments(self, known_args: Namespace) -> Set[Argument]:
+    def get_algorithmic_arguments(self, mode: ExperimentMode, known_args: Namespace) -> Set[Argument]:
         """
         May be overridden by subclasses in order to return the arguments for configuring algorithmic parameters that
         should be added to the command line API.
 
+        :param mode:        The mode of operation
         :param known_args:  The command line arguments specified by the user
         :return:            A set that contains the arguments that should be added to the command line API
         """

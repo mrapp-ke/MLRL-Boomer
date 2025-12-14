@@ -1,0 +1,378 @@
+mlrl-testbed mlrl.testbed_sklearn --mode read --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --print-evaluation false --save-evaluation false --print-label-vectors true --save-label-vectors true --estimator RandomForestClassifier
+Reading meta-data...
+DEBUG: Reading input data from file "python/tests/res/tmp/metadata.yml"...
+Successfully read meta-data
+DEBUG: Checking for version conflicts...
+DEBUG: Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is currently used
+DEBUG: No version conflicts detected
+Reading experimental results of 1 experiment...
+
+Reading experimental results of experiment (1 / 1)...
+The command "mlrl-testbed mlrl.testbed_sklearn --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --data-split cross-validation --print-evaluation false --save-evaluation false --print-label-vectors true --save-label-vectors true --n-estimators 1 --estimator RandomForestClassifier" has been used originally for running this experiment
+Performing full 10-fold cross validation...
+Fold 1 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/label_vectors_fold-1.csv"...
+Label vectors (Fold 1):
+
+┌─────────┬────────────────┬─────────────┐
+│   Index │ Label vector   │   Frequency │
+├─────────┼────────────────┼─────────────┤
+│       1 │ [0 5]          │          70 │
+│       2 │ [1 2]          │          66 │
+│       3 │ [5]            │          66 │
+│       4 │ [2 3 4]        │          57 │
+│       5 │ [2]            │          39 │
+│       6 │ [0 1]          │          36 │
+│       7 │ [3 4]          │          34 │
+│       8 │ [2 3]          │          29 │
+│       9 │ [2 4]          │          24 │
+│      10 │ [1]            │          22 │
+│      11 │ [0]            │          21 │
+│      12 │ [4 5]          │          12 │
+│      13 │ [4]            │          10 │
+│      14 │ [0 1 2]        │           8 │
+│      15 │ [0 1 5]        │           7 │
+│      16 │ [1 2 3]        │           6 │
+│      17 │ [1 5]          │           5 │
+│      18 │ [3]            │           4 │
+│      19 │ [0 4 5]        │           4 │
+│      20 │ [2 4 5]        │           3 │
+│      21 │ [0 4]          │           3 │
+│      22 │ [2 5]          │           2 │
+│      23 │ [0 2]          │           2 │
+│      24 │ [1 3]          │           1 │
+│      25 │ [2 3 5]        │           1 │
+│      26 │ [3 4 5]        │           1 │
+└─────────┴────────────────┴─────────────┘
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/label_vectors_fold-1.csv"...
+Fold 2 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/label_vectors_fold-2.csv"...
+Label vectors (Fold 2):
+
+┌─────────┬────────────────┬─────────────┐
+│   Index │ Label vector   │   Frequency │
+├─────────┼────────────────┼─────────────┤
+│       1 │ [0 5]          │          73 │
+│       2 │ [5]            │          67 │
+│       3 │ [1 2]          │          62 │
+│       4 │ [2 3 4]        │          60 │
+│       5 │ [2]            │          39 │
+│       6 │ [0 1]          │          36 │
+│       7 │ [3 4]          │          31 │
+│       8 │ [2 3]          │          25 │
+│       9 │ [0]            │          24 │
+│      10 │ [2 4]          │          22 │
+│      11 │ [1]            │          21 │
+│      12 │ [4]            │          12 │
+│      13 │ [4 5]          │          10 │
+│      14 │ [0 1 2]        │          10 │
+│      15 │ [0 1 5]        │           7 │
+│      16 │ [1 2 3]        │           6 │
+│      17 │ [1 5]          │           5 │
+│      18 │ [3]            │           5 │
+│      19 │ [0 4]          │           5 │
+│      20 │ [2 5]          │           3 │
+│      21 │ [2 4 5]        │           3 │
+│      22 │ [0 4 5]        │           3 │
+│      23 │ [1 4]          │           1 │
+│      24 │ [0 2]          │           1 │
+│      25 │ [1 3]          │           1 │
+│      26 │ [3 4 5]        │           1 │
+└─────────┴────────────────┴─────────────┘
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/label_vectors_fold-2.csv"...
+Fold 3 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/label_vectors_fold-3.csv"...
+Label vectors (Fold 3):
+
+┌─────────┬────────────────┬─────────────┐
+│   Index │ Label vector   │   Frequency │
+├─────────┼────────────────┼─────────────┤
+│       1 │ [0 5]          │          73 │
+│       2 │ [1 2]          │          66 │
+│       3 │ [5]            │          65 │
+│       4 │ [2 3 4]        │          59 │
+│       5 │ [2]            │          38 │
+│       6 │ [3 4]          │          35 │
+│       7 │ [0 1]          │          31 │
+│       8 │ [2 3]          │          27 │
+│       9 │ [2 4]          │          24 │
+│      10 │ [1]            │          22 │
+│      11 │ [0]            │          21 │
+│      12 │ [4]            │          12 │
+│      13 │ [0 1 2]        │          11 │
+│      14 │ [4 5]          │          10 │
+│      15 │ [0 1 5]        │           7 │
+│      16 │ [0 4]          │           6 │
+│      17 │ [1 5]          │           5 │
+│      18 │ [1 2 3]        │           5 │
+│      19 │ [3]            │           4 │
+│      20 │ [2 4 5]        │           3 │
+│      21 │ [0 4 5]        │           3 │
+│      22 │ [2 5]          │           2 │
+│      23 │ [1 4]          │           1 │
+│      24 │ [0 2]          │           1 │
+│      25 │ [2 3 5]        │           1 │
+│      26 │ [3 4 5]        │           1 │
+└─────────┴────────────────┴─────────────┘
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/label_vectors_fold-3.csv"...
+Fold 4 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/label_vectors_fold-4.csv"...
+Label vectors (Fold 4):
+
+┌─────────┬────────────────┬─────────────┐
+│   Index │ Label vector   │   Frequency │
+├─────────┼────────────────┼─────────────┤
+│       1 │ [0 5]          │          77 │
+│       2 │ [1 2]          │          69 │
+│       3 │ [2 3 4]        │          63 │
+│       4 │ [5]            │          61 │
+│       5 │ [2]            │          35 │
+│       6 │ [3 4]          │          32 │
+│       7 │ [0 1]          │          29 │
+│       8 │ [2 3]          │          26 │
+│       9 │ [0]            │          23 │
+│      10 │ [2 4]          │          22 │
+│      11 │ [1]            │          21 │
+│      12 │ [4]            │          12 │
+│      13 │ [0 1 2]        │          11 │
+│      14 │ [4 5]          │          10 │
+│      15 │ [0 1 5]        │           6 │
+│      16 │ [0 4]          │           6 │
+│      17 │ [1 2 3]        │           6 │
+│      18 │ [3]            │           5 │
+│      19 │ [1 5]          │           4 │
+│      20 │ [0 4 5]        │           4 │
+│      21 │ [2 5]          │           3 │
+│      22 │ [2 4 5]        │           3 │
+│      23 │ [0 2]          │           2 │
+│      24 │ [1 4]          │           1 │
+│      25 │ [1 3]          │           1 │
+│      26 │ [2 3 5]        │           1 │
+│      27 │ [3 4 5]        │           1 │
+└─────────┴────────────────┴─────────────┘
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/label_vectors_fold-4.csv"...
+Fold 5 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/label_vectors_fold-5.csv"...
+Label vectors (Fold 5):
+
+┌─────────┬────────────────┬─────────────┐
+│   Index │ Label vector   │   Frequency │
+├─────────┼────────────────┼─────────────┤
+│       1 │ [0 5]          │          74 │
+│       2 │ [1 2]          │          68 │
+│       3 │ [5]            │          64 │
+│       4 │ [2 3 4]        │          58 │
+│       5 │ [2]            │          40 │
+│       6 │ [0 1]          │          35 │
+│       7 │ [3 4]          │          33 │
+│       8 │ [2 3]          │          27 │
+│       9 │ [0]            │          22 │
+│      10 │ [2 4]          │          21 │
+│      11 │ [1]            │          20 │
+│      12 │ [4 5]          │          12 │
+│      13 │ [4]            │          11 │
+│      14 │ [0 1 2]        │          10 │
+│      15 │ [0 4]          │           6 │
+│      16 │ [1 2 3]        │           6 │
+│      17 │ [3]            │           5 │
+│      18 │ [0 1 5]        │           4 │
+│      19 │ [0 4 5]        │           4 │
+│      20 │ [2 5]          │           3 │
+│      21 │ [2 4 5]        │           3 │
+│      22 │ [0 2]          │           2 │
+│      23 │ [1 5]          │           2 │
+│      24 │ [1 4]          │           1 │
+│      25 │ [1 3]          │           1 │
+│      26 │ [2 3 5]        │           1 │
+│      27 │ [3 4 5]        │           1 │
+└─────────┴────────────────┴─────────────┘
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/label_vectors_fold-5.csv"...
+Fold 6 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/label_vectors_fold-6.csv"...
+Label vectors (Fold 6):
+
+┌─────────┬────────────────┬─────────────┐
+│   Index │ Label vector   │   Frequency │
+├─────────┼────────────────┼─────────────┤
+│       1 │ [0 5]          │          73 │
+│       2 │ [1 2]          │          64 │
+│       3 │ [5]            │          64 │
+│       4 │ [2 3 4]        │          63 │
+│       5 │ [2]            │          38 │
+│       6 │ [3 4]          │          33 │
+│       7 │ [0 1]          │          32 │
+│       8 │ [2 3]          │          29 │
+│       9 │ [2 4]          │          24 │
+│      10 │ [0]            │          23 │
+│      11 │ [1]            │          18 │
+│      12 │ [4 5]          │          11 │
+│      13 │ [0 1 2]        │          10 │
+│      14 │ [4]            │           9 │
+│      15 │ [0 1 5]        │           6 │
+│      16 │ [0 4]          │           6 │
+│      17 │ [1 2 3]        │           6 │
+│      18 │ [1 5]          │           5 │
+│      19 │ [3]            │           5 │
+│      20 │ [0 4 5]        │           4 │
+│      21 │ [2 5]          │           3 │
+│      22 │ [0 2]          │           2 │
+│      23 │ [2 4 5]        │           2 │
+│      24 │ [1 4]          │           1 │
+│      25 │ [1 3]          │           1 │
+│      26 │ [2 3 5]        │           1 │
+│      27 │ [3 4 5]        │           1 │
+└─────────┴────────────────┴─────────────┘
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/label_vectors_fold-6.csv"...
+Fold 7 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/label_vectors_fold-7.csv"...
+Label vectors (Fold 7):
+
+┌─────────┬────────────────┬─────────────┐
+│   Index │ Label vector   │   Frequency │
+├─────────┼────────────────┼─────────────┤
+│       1 │ [0 5]          │          74 │
+│       2 │ [1 2]          │          68 │
+│       3 │ [5]            │          64 │
+│       4 │ [2 3 4]        │          61 │
+│       5 │ [0 1]          │          35 │
+│       6 │ [2]            │          34 │
+│       7 │ [3 4]          │          34 │
+│       8 │ [2 3]          │          27 │
+│       9 │ [1]            │          22 │
+│      10 │ [2 4]          │          21 │
+│      11 │ [0]            │          19 │
+│      12 │ [4]            │          12 │
+│      13 │ [4 5]          │          11 │
+│      14 │ [0 1 2]        │          10 │
+│      15 │ [0 1 5]        │           7 │
+│      16 │ [0 4]          │           6 │
+│      17 │ [1 5]          │           5 │
+│      18 │ [3]            │           5 │
+│      19 │ [1 2 3]        │           5 │
+│      20 │ [2 5]          │           3 │
+│      21 │ [2 4 5]        │           3 │
+│      22 │ [0 2]          │           2 │
+│      23 │ [0 4 5]        │           2 │
+│      24 │ [1 4]          │           1 │
+│      25 │ [1 3]          │           1 │
+│      26 │ [2 3 5]        │           1 │
+│      27 │ [3 4 5]        │           1 │
+└─────────┴────────────────┴─────────────┘
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/label_vectors_fold-7.csv"...
+Fold 8 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/label_vectors_fold-8.csv"...
+Label vectors (Fold 8):
+
+┌─────────┬────────────────┬─────────────┐
+│   Index │ Label vector   │   Frequency │
+├─────────┼────────────────┼─────────────┤
+│       1 │ [0 5]          │          72 │
+│       2 │ [1 2]          │          66 │
+│       3 │ [5]            │          66 │
+│       4 │ [2 3 4]        │          62 │
+│       5 │ [2]            │          39 │
+│       6 │ [0 1]          │          38 │
+│       7 │ [3 4]          │          31 │
+│       8 │ [2 3]          │          28 │
+│       9 │ [2 4]          │          23 │
+│      10 │ [0]            │          20 │
+│      11 │ [1]            │          19 │
+│      12 │ [0 1 2]        │          11 │
+│      13 │ [4 5]          │          10 │
+│      14 │ [4]            │           9 │
+│      15 │ [0 1 5]        │           6 │
+│      16 │ [1 5]          │           5 │
+│      17 │ [3]            │           5 │
+│      18 │ [0 4]          │           5 │
+│      19 │ [0 4 5]        │           4 │
+│      20 │ [2 5]          │           3 │
+│      21 │ [2 4 5]        │           3 │
+│      22 │ [1 2 3]        │           3 │
+│      23 │ [0 2]          │           2 │
+│      24 │ [1 4]          │           1 │
+│      25 │ [1 3]          │           1 │
+│      26 │ [2 3 5]        │           1 │
+│      27 │ [3 4 5]        │           1 │
+└─────────┴────────────────┴─────────────┘
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/label_vectors_fold-8.csv"...
+Fold 9 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/label_vectors_fold-9.csv"...
+Label vectors (Fold 9):
+
+┌─────────┬────────────────┬─────────────┐
+│   Index │ Label vector   │   Frequency │
+├─────────┼────────────────┼─────────────┤
+│       1 │ [0 5]          │          76 │
+│       2 │ [1 2]          │          68 │
+│       3 │ [5]            │          66 │
+│       4 │ [2 3 4]        │          59 │
+│       5 │ [2]            │          38 │
+│       6 │ [0 1]          │          34 │
+│       7 │ [3 4]          │          33 │
+│       8 │ [2 3]          │          24 │
+│       9 │ [0]            │          21 │
+│      10 │ [1]            │          21 │
+│      11 │ [2 4]          │          20 │
+│      12 │ [4]            │          11 │
+│      13 │ [4 5]          │          10 │
+│      14 │ [0 1 2]        │          10 │
+│      15 │ [0 1 5]        │           7 │
+│      16 │ [0 4]          │           6 │
+│      17 │ [1 2 3]        │           6 │
+│      18 │ [1 5]          │           5 │
+│      19 │ [3]            │           5 │
+│      20 │ [0 4 5]        │           4 │
+│      21 │ [2 5]          │           3 │
+│      22 │ [2 4 5]        │           2 │
+│      23 │ [0 2]          │           2 │
+│      24 │ [1 4]          │           1 │
+│      25 │ [1 3]          │           1 │
+│      26 │ [2 3 5]        │           1 │
+└─────────┴────────────────┴─────────────┘
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/label_vectors_fold-9.csv"...
+Fold 10 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/label_vectors_fold-10.csv"...
+Label vectors (Fold 10):
+
+┌─────────┬────────────────┬─────────────┐
+│   Index │ Label vector   │   Frequency │
+├─────────┼────────────────┼─────────────┤
+│       1 │ [1 2]          │          69 │
+│       2 │ [0 5]          │          67 │
+│       3 │ [5]            │          65 │
+│       4 │ [2 3 4]        │          61 │
+│       5 │ [2]            │          38 │
+│       6 │ [3 4]          │          37 │
+│       7 │ [0 1]          │          36 │
+│       8 │ [2 3]          │          28 │
+│       9 │ [2 4]          │          24 │
+│      10 │ [0]            │          22 │
+│      11 │ [1]            │          21 │
+│      12 │ [4 5]          │          12 │
+│      13 │ [4]            │          10 │
+│      14 │ [0 1 2]        │           8 │
+│      15 │ [0 1 5]        │           6 │
+│      16 │ [0 4]          │           5 │
+│      17 │ [1 2 3]        │           5 │
+│      18 │ [1 5]          │           4 │
+│      19 │ [0 4 5]        │           4 │
+│      20 │ [3]            │           2 │
+│      21 │ [2 4 5]        │           2 │
+│      22 │ [0 2]          │           2 │
+│      23 │ [2 5]          │           2 │
+│      24 │ [1 4]          │           1 │
+│      25 │ [1 3]          │           1 │
+│      26 │ [2 3 5]        │           1 │
+│      27 │ [3 4 5]        │           1 │
+└─────────┴────────────────┴─────────────┘
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/label_vectors_fold-10.csv"...
