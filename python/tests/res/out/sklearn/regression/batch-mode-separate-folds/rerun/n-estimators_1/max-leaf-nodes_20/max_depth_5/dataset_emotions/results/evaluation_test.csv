@@ -1,0 +1,2 @@
+Mean Absolute Error (↓),Mean Absolute Percentage Error (↓),Mean Squared Error (↓),Median Absolute Error (↓),Prediction Time (seconds),Std.-dev. Mean Absolute Error (↓),Std.-dev. Mean Absolute Percentage Error (↓),Std.-dev. Mean Squared Error (↓),Std.-dev. Median Absolute Error (↓),Std.-dev. Prediction Time (seconds),Std.-dev. Training Time (seconds),Training Time (seconds)
+0.2825925200417463,626569742042956.2,0.2032693076493755,0.105049394399724,<duration>,0.014314614295933475,11360589414496.812,0.019029203699549274,0.011576102064482133,<duration>,<duration>,<duration>

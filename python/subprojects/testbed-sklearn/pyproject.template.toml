@@ -30,6 +30,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
+    "docstring-parser",
     "mlrl-testbed",
     "mlrl-testbed-arff",
     "scikit-learn",

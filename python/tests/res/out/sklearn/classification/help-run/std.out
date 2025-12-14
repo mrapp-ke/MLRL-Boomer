@@ -1,0 +1,160 @@
+mlrl-testbed mlrl.testbed_sklearn --mode run --help --estimator RandomForestClassifier
+usage: mlrl-testbed [-r RUNNABLE] [--log-level LOG_LEVEL] [--mode MODE] [--input-dir INPUT_DIR] [--base-dir BASE_DIR]
+                    [--create-dirs CREATE_DIRS] [--estimator ESTIMATOR] [--if-input-missing IF_INPUT_MISSING]
+                    [--if-output-error IF_OUTPUT_ERROR] [--load-models LOAD_MODELS] [--load-parameters LOAD_PARAMETERS]
+                    [--meta-estimator META_ESTIMATOR] [--model-load-dir MODEL_LOAD_DIR]
+                    [--model-save-dir MODEL_SAVE_DIR] [--parameter-load-dir PARAMETER_LOAD_DIR]
+                    [--parameter-save-dir PARAMETER_SAVE_DIR] [--predict-for-test-data PREDICT_FOR_TEST_DATA]
+                    [--predict-for-training-data PREDICT_FOR_TRAINING_DATA] [--print-all PRINT_ALL]
+                    [--print-data-characteristics PRINT_DATA_CHARACTERISTICS] [--print-evaluation PRINT_EVALUATION]
+                    [--print-ground-truth PRINT_GROUND_TRUTH] [--print-label-vectors PRINT_LABEL_VECTORS]
+                    [--print-meta-data PRINT_META_DATA] [--print-parameters PRINT_PARAMETERS]
+                    [--print-prediction-characteristics PRINT_PREDICTION_CHARACTERISTICS]
+                    [--print-predictions PRINT_PREDICTIONS] [--result-dir RESULT_DIR] [--save-all SAVE_ALL]
+                    [--save-data-characteristics SAVE_DATA_CHARACTERISTICS] [--save-evaluation SAVE_EVALUATION]
+                    [--save-ground-truth SAVE_GROUND_TRUTH] [--save-label-vectors SAVE_LABEL_VECTORS]
+                    [--save-meta-data SAVE_META_DATA] [--save-models SAVE_MODELS] [--save-parameters SAVE_PARAMETERS]
+                    [--save-prediction-characteristics SAVE_PREDICTION_CHARACTERISTICS]
+                    [--save-predictions SAVE_PREDICTIONS] [-h]
+                    runnable_module_or_source_file
+
+A command line utility for training and evaluating machine learning algorithms
+
+positional arguments:
+  runnable_module_or_source_file
+                        The Python module or source file of the program that should be run
+
+options:
+  -r, --runnable RUNNABLE
+                        The Python class name of the program that should be run
+  --log-level LOG_LEVEL
+                        The log level to be used. Must be one of {"critical", "debug", "error", "info", "notset",
+                        "warn"}. The default value is "info".
+  --mode MODE           The mode of operation to be used. Must be one of {"batch", "read", "run", "single"}. The default
+                        value is "single".
+  -h, --help            Show this help message and exit
+
+read-mode arguments:
+  --input-dir INPUT_DIR
+                        An absolute or relative path to a directory that contains a metadata.yml file that has been
+                        created when running one or several experiments in the past.
+
+control arguments:
+  --base-dir BASE_DIR   If relative paths to directories, where files should be saved, are given, they are considered
+                        relative to the directory specified via this argument. The default value is "experiments/YYY-MM-
+                        DD_hh-mm".
+  --create-dirs CREATE_DIRS
+                        Whether the directories, where files should be saved, should be created automatically, if they
+                        do not exist, or not. Must be one of {"false", "true"}. The default value is "true".
+  --estimator ESTIMATOR
+                        The name of the scikit-learn estimator to be used. Must be one of {"AdaBoostClassifier",
+                        "BaggingClassifier", "DecisionTreeClassifier", "DummyClassifier", "ExtraTreeClassifier",
+                        "ExtraTreesClassifier", "GaussianProcessClassifier", "GradientBoostingClassifier",
+                        "HistGradientBoostingClassifier", "LinearSVC", "LogisticRegression", "LogisticRegressionCV",
+                        "MLPClassifier", "NuSVC", "PassiveAggressiveClassifier", "Perceptron", "RandomForestClassifier",
+                        "RidgeClassifier", "SGDClassifier", "SVC"}, if the argument --problem-type is set to
+                        "classification", or {"AdaBoostRegressor", "BaggingRegressor", "DecisionTreeRegressor",
+                        "ElasticNet", "ElasticNetCV", "ExtraTreeRegressor", "ExtraTreesRegressor",
+                        "GaussianProcessRegressor", "GradientBoostingRegressor", "HistGradientBoostingRegressor",
+                        "Lars", "Lasso", "LassoCV", "LassoLars", "LinearSVR", "MLPRegressor", "MultiTaskElasticNet",
+                        "MultiTaskElasticNetCV", "MultiTaskLasso", "MultiTaskLassoCV", "PassiveAggressiveRegressor",
+                        "RANSACRegressor", "RandomForestRegressor", "Ridge", "SGDRegressor", "TheilSenRegressor"}, if it
+                        is set to "regression".
+  --if-input-missing IF_INPUT_MISSING
+                        What to do if an error occurs while reading input data. Must be one of {"exit", "log"}. The
+                        default value is "log".
+  --if-output-error IF_OUTPUT_ERROR
+                        Whether the program should exit if an error occurs while writing experimental results or not.
+                        Must be one of {"exit", "log"}. The default value is "log".
+  --load-models LOAD_MODELS
+                        Whether models should be loaded from input files or not. Must be one of {"false", "true"}. The
+                        default value is "false".
+  --load-parameters LOAD_PARAMETERS
+                        Whether parameters should be loaded from input files or not. Must be one of {"false", "true"}.
+                        The default value is "false".
+  --meta-estimator META_ESTIMATOR
+                        The name of a scikit-learn meta estimator to be used. Must be one of {"AdaBoostClassifier",
+                        "BaggingClassifier", "ClassifierChain", "OutputCodeClassifier"}, if the argument --problem-type
+                        is set to "classification", or {"AdaBoostRegressor", "BaggingRegressor", "RegressorChain"}, if
+                        it is set to "regression".
+  --model-load-dir MODEL_LOAD_DIR
+                        The path to the directory from which models should be loaded. The default value is "models".
+  --model-save-dir MODEL_SAVE_DIR
+                        The path to the directory where models should be saved. The default value is "models".
+  --parameter-load-dir PARAMETER_LOAD_DIR
+                        The path to the directory from which parameters to be used by the algorithm should be loaded.
+                        The default value is "parameters".
+  --parameter-save-dir PARAMETER_SAVE_DIR
+                        The path to the directory where configuration files, which specify the parameters used by the
+                        algorithm, should be saved. The default value is "parameters".
+  --predict-for-test-data PREDICT_FOR_TEST_DATA
+                        Whether predictions should be obtained for the test data or not. Must be one of {"false",
+                        "true"}. The default value is "true".
+  --predict-for-training-data PREDICT_FOR_TRAINING_DATA
+                        Whether predictions should be obtained for the training data or not. Must be one of {"false",
+                        "true"}. The default value is "false".
+  --print-all PRINT_ALL
+                        Whether all output data should be printed on the console or not. Must be one of {"false",
+                        "true"}. The default value is "false".
+  --print-data-characteristics PRINT_DATA_CHARACTERISTICS
+                        Whether the characteristics of the training data should be printed on the console or not. Must
+                        be one of {"false", "true"}. For additional options refer to the documentation. The default
+                        value is "false".
+  --print-evaluation PRINT_EVALUATION
+                        Whether the evaluation results should be printed on the console or not. Must be one of {"false",
+                        "true"}. For additional options refer to the documentation. The default value is "true".
+  --print-ground-truth PRINT_GROUND_TRUTH
+                        Whether the ground truth should be printed on the console or not. Must be one of {"false",
+                        "true"}. For additional options refer to the documentation. The default value is "false".
+  --print-label-vectors PRINT_LABEL_VECTORS
+                        Whether the unique label vectors contained in the training data should be printed on the console
+                        or not. Must be one of {"false", "true"}. The default value is "false".
+  --print-meta-data PRINT_META_DATA
+                        Whether meta-data should be printed on the console or not. Must be one of {"false", "true"}. The
+                        default value is "false".
+  --print-parameters PRINT_PARAMETERS
+                        Whether the parameter setting should be printed on the console or not. Must be one of {"false",
+                        "true"}. The default value is "false".
+  --print-prediction-characteristics PRINT_PREDICTION_CHARACTERISTICS
+                        Whether the characteristics of binary predictions should be printed on the console or not. Does
+                        only have an effect if the argument --prediction-type is set to binary. Must be one of {"false",
+                        "true"}. For additional options refer to the documentation. The default value is "false".
+  --print-predictions PRINT_PREDICTIONS
+                        Whether predictions should be printed on the console or not. Must be one of {"false", "true"}.
+                        For additional options refer to the documentation. The default value is "false".
+  --result-dir RESULT_DIR
+                        The path to the directory where experimental results should be saved. The default value is
+                        "results".
+  --save-all SAVE_ALL   Whether all output data should be written to files or not. Must be one of {"false", "true"}. The
+                        default value is "false".
+  --save-data-characteristics SAVE_DATA_CHARACTERISTICS
+                        Whether the characteristics of the training data should be written to output files or not. Must
+                        be one of {"false", "true"}. For additional options refer to the documentation. The default
+                        value is "false".
+  --save-evaluation SAVE_EVALUATION
+                        Whether evaluation results should be written to output files or not. Must be one of {"false",
+                        "true"}. For additional options refer to the documentation. The default value is "false".
+  --save-ground-truth SAVE_GROUND_TRUTH
+                        Whether the ground truth should be written to output files or not. Must be one of {"false",
+                        "true"}. For additional options refer to the documentation. The default value is "false".
+  --save-label-vectors SAVE_LABEL_VECTORS
+                        Whether the unique label vectors contained in the training data should be written to output
+                        files or not. Must be one of {"false", "true"}. The default value is "false".
+  --save-meta-data SAVE_META_DATA
+                        Whether meta-data should be saved to output files or not. If set to "auto", meta-data is saved
+                        whenever other output files are written as well. Must be one of {"auto", "false", "true"}. The
+                        default value is "auto".
+  --save-models SAVE_MODELS
+                        Whether models should be saved to output files or not. Must be one of {"false", "true"}. The
+                        default value is "false".
+  --save-parameters SAVE_PARAMETERS
+                        Whether the parameter setting should be written to output files or not. Must be one of {"false",
+                        "true"}. The default value is "false".
+  --save-prediction-characteristics SAVE_PREDICTION_CHARACTERISTICS
+                        Whether the characteristics of binary predictions should be written to output files or not. Does
+                        only have an effect if the argument --prediction-type is set to binary and if the argument
+                        --result-dir is specified. Must be one of {"false", "true"}. For additional options refer to the
+                        documentation. The default value is "false".
+  --save-predictions SAVE_PREDICTIONS
+                        Whether predictions should be written to output files or not. Must be one of {"false", "true"}.
+                        For additional options refer to the documentation. The default value is "false".
