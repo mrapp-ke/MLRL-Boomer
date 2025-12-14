@@ -12,5 +12,6 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   mlrl.testbed.experiments.input.dataset.splitters.arguments
    mlrl.testbed.experiments.input.dataset.splitters.splitter
    mlrl.testbed.experiments.input.dataset.splitters.splitter_no

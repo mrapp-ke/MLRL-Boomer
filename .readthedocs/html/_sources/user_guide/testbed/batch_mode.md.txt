@@ -2,7 +2,7 @@
 
 # Batch Mode
 
-The batch mode of MLRL-Testbed allows to run multiple experiments at once by defining the datasets and algorithmic parameters to be used in the different runs via a YAML configuration file. For example, this can be useful for measuring the performance of a machine learning algorithm across several datasets or for studying the effects of different parameter settings. As seen below, the batch mode can be activated by passing the argument `--mode batch` to the command line API:
+The batch mode of mlrl-testbed allows to run multiple experiments at once by defining the datasets and algorithmic parameters to be used in the different runs via a YAML configuration file. For example, this can be useful for measuring the performance of a machine learning algorithm across several datasets or for studying the effects of different parameter settings. As seen below, the batch mode can be activated by passing the argument `--mode batch` to the command line API:
 
 ````{tab} BOOMER
    ```text
@@ -36,6 +36,11 @@ datasets:
       - second-dataset
   - directory: path/to/other/datasets/
     names: third-dataset
+default_arguments:
+  - name: --first-default-argument
+    value: first-value
+  - name: --second-default-argument
+    value: second-value
 parameters:
   - name: --first-parameter
     values:
@@ -49,7 +54,7 @@ parameters:
           --third-parameter true
 ```
 
-The YAML file must contain the definition of at least one dataset (a schema file can be found {repo-file}`here <python/subprojects/testbed-sklearn/mlrl/testbed_sklearn/batch_config.schema.yml>`), consisting of the path to the directory where the dataset is located, as well as the name of the dataset (see {ref}`testbed-datasets`). In addition, several parameters and corresponding values can be specified. Each combination of the values given for different parameters will be used in experiments conducted on each available dataset. If two or more parameter values should be set jointly, they can be listed under `additional_arguments`.
+The YAML file must contain the definition of at least one dataset (a schema file can be found {repo-file}`here <python/subprojects/testbed-sklearn/mlrl/testbed_sklearn/batch_config.schema.yml>`), consisting of the path to the directory where the dataset is located, as well as the name of the dataset (see {ref}`testbed-datasets`). In addition, several parameters and corresponding values can be specified. Each combination of the values given for different parameters will be used in experiments conducted on each available dataset. If two or more parameter values should be set jointly, they can be listed under `additional_arguments`. Finally, it is also possible to define arbitrary default arguments under the optional section `default_arguments`. Default arguments are the same for all experiments.
 
 ```{tip}
 By default, when using a cross validation, a separate experiment is run for each cross validation fold. If a single experiment should perform all folds, the default behavior can be disabled via the argument `--separate-folds false`. 
@@ -77,6 +82,8 @@ mlrl-testbed mlrl.boosting \
     --parameter-save-dir first-parameter_50/second-parameter_true/third-parameter_true/dataset_first-dataset/parameters \
     --data-dir path/to/datasets/ \
     --dataset first-dataset \
+    --first-default-argument first-value \
+    --second-default-argument second-value \
     --first-parameter 50 \
     --second-parameter true \
     --third-parameter true \
@@ -84,6 +91,8 @@ mlrl-testbed mlrl.boosting \
 ```
 
 We can see that the argument `--save-all true`, which has been given as a command line argument, is used for this particular experiment since these arguments are global. In contrast, the arguments `--instance-sampling none` and `--loss logistic-decomposable` are one particular combination of the parameters defined in the configuration file to be used in this experiment. Hence, their values are different in each experiment. Similarly, the arguments `--data-dir data` and `--dataset bibtex` correspond to one particular dataset defined in the configuration file. Finally, the paths specified via the arguments `--result-dir`, `--model-save-dir` and `--parameter-save-dir` are set automatically to ensure that output data produced by an individual experiment will end up in a distinct directory, independent of other experiments.
+
+(testbed-slurm)=
 
 ## Slurm Support
 
@@ -93,7 +102,7 @@ Slurm support is provided by the optional package [mlrl-testbed-slurm](https://p
 
 ### Installation
 
-By installing the optional package [mlrl-testbed-slurm](https://pypi.org/project/mlrl-testbed-slurm/), support for the [Slurm Workload Manager](https://wikipedia.org/wiki/Slurm_Workload_Manager) is added to MLRL-Testbed's batch mode. This enables to run experiments on a network of different compute nodes. The package can be installed as follows:
+By installing the optional package [mlrl-testbed-slurm](https://pypi.org/project/mlrl-testbed-slurm/), support for the [Slurm Workload Manager](https://wikipedia.org/wiki/Slurm_Workload_Manager) is added to mlrl-testbed's batch mode. This enables to run experiments on a network of different compute nodes. The package can be installed as follows:
 
 ```text
 pip install mlrl-testbed-slurm
@@ -102,10 +111,10 @@ pip install mlrl-testbed-slurm
 ### Usage
 
 ```{important}
-MLRL-Testbed's Slurm support requires the command `sbatch` to be available, as it is usually the case for local installations of Slurm or login nodes of computing clusters. 
+The Slurm support of mlrl-testbed requires the command `sbatch` to be available, as it is usually the case for local installations of Slurm or login nodes of computing clusters. 
 ```
 
-After the installation, experiments can be registered at the Slurm scheduler by passing argument `--runner slurm` to MLRL-Testbed's command line API.
+After the installation, experiments can be registered at the Slurm scheduler by passing argument `--runner slurm` to mlrl-testbed's command line API.
 
 ````{tab} BOOMER
    ```text
@@ -187,7 +196,7 @@ When printing the content of Slurm scripts or saving them to output files, they 
 
 ### Customizing Slurm Scripts
 
-To provide maximum flexibility, it is possible to customize the contents of Slurm scripts generated by MLRL-Testbed:
+To provide maximum flexibility, it is possible to customize the contents of Slurm scripts generated by mlrl-testbed:
 
 1. Arguments to be interpreted by the `sbatch` command, e.g., for providing job meta-data, controlling the scheduling of the job, or setting resource requests (a full list can be found [here](https://slurm.schedmd.com/sbatch.html#SECTION_OPTIONS)). In the generated scripts, these arguments start with `#SBATCH`.
 2. Shell commands to be executed before or after an experiment, e.g., for implementing the experimental setup and archiving experiment results afterward.

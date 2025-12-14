@@ -12,7 +12,6 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   mlrl.testbed_sklearn.experiments.input.dataset.splitters.arguments
    mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension
    mlrl.testbed_sklearn.experiments.input.dataset.splitters.splitter_bipartition
    mlrl.testbed_sklearn.experiments.input.dataset.splitters.splitter_cross_validation
