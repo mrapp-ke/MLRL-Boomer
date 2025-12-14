@@ -53,7 +53,7 @@ jobs:
           git add .github/workflows/*.y*ml
       - name: Submit pull request
         id: pull-request
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ steps.app-token.outputs.token }}
           commit-message: Update GitHub runners.

@@ -96,7 +96,7 @@ jobs:
       id-token: write
     steps:
       - name: Download wheels
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           pattern: wheels-*
           path: wheelhouse
