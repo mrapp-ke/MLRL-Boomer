@@ -9,6 +9,10 @@ tags:
 authors:
   - name: Michael Rapp
     orcid: 0000-0001-8570-8240
+    affiliation: 1
+affiliations:
+ - name: Independent Researcher, Germany
+   index: 1
 date: 14 December 2025
 bibliography: paper.bib
 ---
