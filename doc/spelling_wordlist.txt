@@ -36,6 +36,7 @@ csr
 csv
 Curk
 Davison
+DCG
 Dembczyński
 Demšar
 discretization
@@ -246,6 +247,7 @@ wra
 XGBoost
 Xie
 Xorshift
+yml
 Yan
 Yannik
 Yoav
