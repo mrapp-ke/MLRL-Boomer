@@ -17,14 +17,27 @@ env:
 jobs:
   publish_windows_wheels:
     name: Publish ${{ inputs.subproject }} (Windows)
-    runs-on: windows-2025
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - windows-2025
+          - windows-11-arm
     steps:
+      - name: Determine architecture
+        uses: ASzc/change-string-case-action@v6
+        id: arch
+        with:
+          string: ${{ runner.arch }}
       - name: Enable support for long paths
         run: git config --system core.longpaths true
       - name: Checkout
         uses: actions/checkout@v6
       - name: Prepare MSVC
         uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ steps.arch.outputs.lowercase }}
       - name: Remove conflicting link.exe
         uses: JesseTG/rm@v1.0.3
         with:
