@@ -626,7 +626,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
   - `false` The unique label vectors contained in the training data are not written to a [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) file.
 
-# Scikit-Learn-specific Arguments
+## Scikit-Learn-specific Arguments
 
 > The following arguments are available in {bdg-secondary-line}`Single Mode` and {bdg-ref-primary-line}`testbed-batch-mode`.
 
@@ -638,13 +638,13 @@ In addition, the following optional arguments may be given:
 
 - `--meta-estimator` The class name of a meta-estimator (e.g. `ClassifierChain`) to be used in the experiment. If this argument is present, the estimator specified via the argument `--estimator` is used as the base estimator.
 
-# Rule-specific Arguments
+## Rule-specific Arguments
 
 The following arguments are only available when using the {ref}`BOOMER algorithm <user-guide-boomer>` or the {ref}`SeCO algorithm <user-guide-seco>` via commands that start with `mlrl-testbed mlrl.boosting` or `mlrl.testbed mlrl.seco`.
 
 (arguments-model-characteristics)=
 
-## Model Characteristics
+### Model Characteristics
 
 > The following arguments are available in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-success-line}`testbed-read-mode` and {bdg-ref-info-line}`testbed-run-mode`.
 
@@ -660,7 +660,7 @@ The following arguments are only available when using the {ref}`BOOMER algorithm
 
 (arguments-output-rules)=
 
-## Rules
+### Rules
 
 > The following arguments are available in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-success-line}`testbed-read-mode` and {bdg-ref-info-line}`testbed-run-mode`.
 
@@ -694,7 +694,7 @@ The following arguments are only available when using the {ref}`BOOMER algorithm
 
 (arguments-probability-calibration-models)=
 
-## Probability Calibration Models
+### Probability Calibration Models
 
 > The following arguments are available in {bdg-secondary-line}`Single Mode`, {bdg-ref-primary-line}`testbed-batch-mode`, {bdg-ref-success-line}`testbed-read-mode` and {bdg-ref-info-line}`testbed-run-mode`.
 
