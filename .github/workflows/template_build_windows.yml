@@ -28,8 +28,19 @@ env:
 jobs:
   windows_build:
     name: Test Windows build
-    runs-on: windows-2025
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - windows-2025
+          - windows-11-arm
     steps:
+      - name: Determine architecture
+        uses: ASzc/change-string-case-action@v6
+        id: arch
+        with:
+          string: ${{ runner.arch }}
       - name: Enable support for long paths
         run: git config --system core.longpaths true
       - name: Checkout
@@ -43,12 +54,14 @@ jobs:
           cache-dependency-path: '**/requirements.txt'
       - name: Prepare MSVC
         uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ steps.arch.outputs.lowercase }}
       - name: Install OpenCL
         if: ${{ inputs.gpu_support }}
         uses: johnwason/vcpkg-action@v7
         with:
           pkgs: opencl
-          triplet: x64-windows
+          triplet: ${{ steps.arch.outputs.lowercase }}-windows
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Prepare ccache
         if: ${{ inputs.ccache }}
@@ -57,6 +70,6 @@ jobs:
           key: ccache-${{ runner.os }}-${{ runner.arch }}-${{ inputs.subproject }}
       - name: Compile via MSVC
         run: |-
-          $env:INCLUDE += ";$($pwd.Path)\vcpkg\packages\opencl_x64-windows\include"
-          $env:LIB += ";$($pwd.Path)\vcpkg\packages\opencl_x64-windows\lib"
+          $env:INCLUDE += ";$($pwd.Path)\vcpkg\packages\opencl_${{ steps.arch.outputs.lowercase }}-windows\include"
+          $env:LIB += ";$($pwd.Path)\vcpkg\packages\opencl_${{ steps.arch.outputs.lowercase }}-windows\lib"
           ./build.bat compile
