@@ -37,7 +37,6 @@ jobs:
         env:
           CIBW_ENVIRONMENT_PASS_LINUX: SUBPROJECTS RELEASE TEST_SUPPORT GPU_SUPPORT
           CIBW_BEFORE_BUILD: ./build --clean && ./build pyproject_toml
-          CIBW_BUILD_FRONTEND: build
           CIBW_ARCHS: auto64
           CIBW_SKIP: '*musllinux*'
           CIBW_PROJECT_REQUIRES_PYTHON: ${{ steps.python_version.outputs.content }}
