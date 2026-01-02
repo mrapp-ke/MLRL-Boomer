@@ -9,16 +9,16 @@ on:
       - Test building documentation
 jobs:
   retry_failed_workflow:
+    name: Retry failed workflows
     runs-on: ubuntu-24.04
     permissions:
       actions: write
     steps:
-      - name: retry
+      - name: Rerun failed jobs
         if: >-
           ${{ github.event.workflow_run.conclusion == 'failure'
           && github.event.workflow_run.run_attempt < 3
-          && github.event.workflow_run.event == 'pull_request'
-          && github.event.workflow_run.pull_requests[0].head.repo.full_name == github.repository }}
+          && github.event.workflow_run.event == 'pull_request' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |-
