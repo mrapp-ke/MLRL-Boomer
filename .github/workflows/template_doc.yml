@@ -62,6 +62,9 @@ jobs:
         with:
           app-id: ${{ secrets.TOKEN_APP_ID }}
           private-key: ${{ secrets.TOKEN_APP_SECRET }}
+      - name: Fail
+        if: ${{ inputs.sphinx_builder != 'spelling' }}
+        run: exit 1
       - name: Generate documentation
         if: ${{ inputs.doc == true }}
         env:
