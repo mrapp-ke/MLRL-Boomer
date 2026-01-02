@@ -6,6 +6,12 @@ on:
       subproject:
         required: true
         type: string
+      os:
+        required: true
+        type: string
+      python_version:
+        required: true
+        type: string
       release:
         required: false
         type: boolean
@@ -15,15 +21,47 @@ env:
   TEST_SUPPORT: disabled
   GPU_SUPPORT: disabled
 jobs:
+  build_identifiers:
+    name: Determine build identifiers for ${{ inputs.subproject }} (${{ inputs.os }})
+    runs-on: ${{ inputs.os }}
+    outputs:
+      build_identifiers: ${{ steps.build_identifiers.outputs.build_identifiers }}
+    steps:
+      - name: Enable support for long paths
+        run: git config --system core.longpaths true
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ inputs.python_version }}
+          check-latest: true
+          cache: pip
+          cache-dependency-path: '**/requirements.txt'
+      - name: Determine supported Python versions
+        uses: juliangruber/read-file-action@v1
+        id: python_version
+        with:
+          path: python/.version-python
+      - name: Create virtual environment
+        run: .\build.bat venv
+      - name: Determine build identifiers
+        id: build_identifiers
+        env:
+          CIBW_PACKAGE_DIR: python\subprojects\${{ inputs.subproject }}
+          CIBW_ARCHS: auto64
+          CIBW_SKIP: cp???t-win*
+          CIBW_PROJECT_REQUIRES_PYTHON: ${{ steps.python_version.outputs.content }}
+        run: |
+          "build_identifiers=$(.\build.bat print_cibuildwheel_identifiers)" >> $env:GITHUB_OUTPUT
   publish_windows_wheels:
-    name: Publish ${{ inputs.subproject }} (Windows)
-    runs-on: ${{ matrix.os }}
+    needs: build_identifiers
+    name: Publish ${{ inputs.subproject }} (${{ matrix.build_identifier }})
+    runs-on: ${{ inputs.os }}
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - windows-2025
-          - windows-11-arm
+        build_identifier: ${{ fromJson(needs.build_identifiers.outputs.build_identifiers) }}
     steps:
       - name: Determine architecture
         uses: ASzc/change-string-case-action@v6
@@ -42,23 +80,16 @@ jobs:
         uses: JesseTG/rm@v1.0.3
         with:
           path: C:\Program Files\Git\usr\bin\link.EXE
-      - name: Determine supported Python versions
-        uses: juliangruber/read-file-action@v1
-        id: python_version
-        with:
-          path: python/.version-python
       - name: Build package
         uses: pypa/cibuildwheel@v3.3
         env:
-          CIBW_BEFORE_BUILD: .\build.bat --clean && .\build.bat pyproject_toml
-          CIBW_ARCHS: auto64
-          CIBW_SKIP: cp???t-win*
-          CIBW_PROJECT_REQUIRES_PYTHON: ${{ steps.python_version.outputs.content }}
+          CIBW_BUILD: ${{ matrix.build_identifier }}
+          CIBW_BEFORE_BUILD: .\build.bat pyproject_toml
         with:
           package-dir: python/subprojects/${{ inputs.subproject }}/
       - name: Upload wheels as artifacts
         uses: actions/upload-artifact@v6
         with:
-          name: wheels-${{ inputs.subproject }}-${{ runner.os }}-${{ runner.arch }}
+          name: wheels-${{ inputs.subproject }}-${{ matrix.build_identifier }}
           path: wheelhouse/*.whl
           if-no-files-found: error
