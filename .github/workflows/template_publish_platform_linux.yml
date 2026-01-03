@@ -48,7 +48,6 @@ jobs:
         env:
           CIBW_PACKAGE_DIR: python/subprojects/${{ inputs.subproject }}
           CIBW_ARCHS: auto64
-          CIBW_SKIP: '*musllinux*'
           CIBW_PROJECT_REQUIRES_PYTHON: ${{ steps.python_version.outputs.content }}
         run: echo "build_identifiers=$(./build print_cibuildwheel_identifiers)" >> $GITHUB_OUTPUT
   publish_linux_wheels:
