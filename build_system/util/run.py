@@ -29,6 +29,7 @@ class Program(Command):
             super().__init__()
             self.build_unit = build_unit
             self.install_program = True
+            self.install_silent = False
             self.dependencies: Set[str] = set()
 
         @override
@@ -39,7 +40,7 @@ class Program(Command):
                 dependencies.append(command.command)
 
             dependencies.extend(self.dependencies)
-            Pip.for_build_unit(self.build_unit).install_packages(*dependencies)
+            Pip.for_build_unit(self.build_unit).install_packages(*dependencies, silent=self.install_silent)
             return super().run(command, capture_output)
 
     def __init__(self, program: str, *arguments: str):
@@ -61,14 +62,16 @@ class Program(Command):
         self.program_run_options.build_unit = build_unit
         return self
 
-    def install_program(self, install_program: bool) -> 'Program':
+    def install_program(self, install_program: bool, silent: bool = False) -> 'Program':
         """
         Sets whether the program should be installed via pip before being run or not.
 
         :param install_program: True, if the program should be installed before being run, False otherwise
+        :param silent:          True, if any log output should be suppressed, False otherwise
         :return:                The `Program` itself
         """
         self.program_run_options.install_program = install_program
+        self.program_run_options.install_silent = silent
         return self
 
     def add_dependencies(self, *dependencies: str) -> 'Program':
@@ -107,8 +110,8 @@ class PythonModule(Program):
         self.install_program(True)
 
     @override
-    def install_program(self, install_program: bool) -> Program:
-        super().install_program(False)
+    def install_program(self, install_program: bool, silent: bool = False) -> Program:
+        super().install_program(False, silent=silent)
 
         if install_program:
             super().add_dependencies(self.module)

@@ -333,11 +333,12 @@ class Pip:
         return Pip(*[RequirementsTextFile(file) for file in build_unit.find_requirements_files()])
 
     @staticmethod
-    def install_requirements(*requirements: Requirement):
+    def install_requirements(*requirements: Requirement, silent: bool = False):
         """
         Installs one or several requirements.
 
-        :param requirements: The requirements to be installed
+        :param requirements:    The requirements to be installed
+        :param silent:          True, if any log output should be suppressed, False otherwise
         """
         if requirements:
             stdout = Pip.InstallCommand(*requirements, dry_run=True) \
@@ -346,9 +347,12 @@ class Pip:
                 .capture_output()
 
             if Pip.__would_install_requirements(stdout, *requirements):
-                Pip.InstallCommand(*requirements) \
-                    .print_arguments(True) \
-                    .run()
+                install_command = Pip.InstallCommand(*requirements)
+
+                if silent:
+                    install_command.capture_output()
+                else:
+                    install_command.print_arguments(True).run()
 
     def lookup_requirements(self,
                             *package_names: str,
@@ -397,19 +401,20 @@ class Pip:
             for requirements_file, requirements in looked_up_requirements.items() if requirements
         }
 
-    def install_packages(self, *package_names: str, accept_missing: bool = False):
+    def install_packages(self, *package_names: str, accept_missing: bool = False, silent: bool = False):
         """
         Installs one or several dependencies.
 
         :param package_names:   The names of the packages that should be installed
         :param accept_missing:  False, if an error should be raised if the requirement for a package is not found, True,
                                 if it should simply be ignored
+        :param silent:          True, if any log output should be suppressed, False otherwise
         """
         looked_up_requirements = self.lookup_requirements(*package_names, accept_missing=accept_missing)
         requirements_to_be_installed: Set[Requirement] = set()
         requirements_to_be_installed = reduce(lambda aggr, requirements: aggr | requirements,
                                               looked_up_requirements.values(), requirements_to_be_installed)
-        self.install_requirements(*requirements_to_be_installed)
+        self.install_requirements(*requirements_to_be_installed, silent=silent)
 
     def install_all_packages(self):
         """
