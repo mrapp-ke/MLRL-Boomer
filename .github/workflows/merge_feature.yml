@@ -10,22 +10,26 @@ jobs:
     runs-on: ubuntu-24.04
     if: "!contains(github.event.head_commit.message, '[Bot]')"
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-        with:
-          ref: main
-      - name: Reset feature branch
-        run: |
-          export MAIN_VERSION="$(cat build_system/res/versioning/version)"
-          git fetch origin feature:feature
-          git reset --hard feature
-          echo -n "${MAIN_VERSION}" > build_system/res/versioning/version
       - name: Generate token
         uses: actions/create-github-app-token@v2
         id: app-token
         with:
           app-id: ${{ secrets.TOKEN_APP_ID }}
           private-key: ${{ secrets.TOKEN_APP_SECRET }}
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          token: ${{ steps.app-token.outputs.token }}
+      - name: Setup git
+        uses: fregante/setup-git-user@v2
+      - name: Auto-resolve merge conflicts
+        run: |
+          git branch tmp main
+          git fetch origin feature:feature
+          git reset --hard feature
+          git checkout tmp -- .readthedocs/
+          git checkout tmp -- build_system/res/versioning/version
       - name: Submit pull request
         id: pull-request
         uses: peter-evans/create-pull-request@v8
