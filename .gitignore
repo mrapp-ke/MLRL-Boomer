@@ -1,6 +1,7 @@
 # Cache files
 **/__pycache__/
 .ccache/
+.git-changes
 
 # Virtual Environment
 .venv/
