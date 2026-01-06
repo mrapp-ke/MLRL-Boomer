@@ -1,0 +1,59 @@
+---
+name: Perform upstream merge
+on:
+  workflow_call:
+    inputs:
+      source_branch:
+        required: true
+        type: string
+      target_branch:
+        required: true
+        type: string
+jobs:
+  merge:
+    name: Merge ${{ inputs.source_branch }} into ${{ inputs.target_branch }} branch
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Generate token
+        uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ secrets.TOKEN_APP_ID }}
+          private-key: ${{ secrets.TOKEN_APP_SECRET }}
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.target_branch }}
+          token: ${{ steps.app-token.outputs.token }}
+          fetch-depth: 0
+      - name: Setup git
+        uses: fregante/setup-git-user@v2
+      - name: Determine changes
+        run: |
+          git fetch origin ${{ inputs.source_branch }}:${{ inputs.source_branch }}
+          echo "Merge branch \"${{ inputs.source_branch }}\" into \"${{ inputs.target_branch }}\"." >> .git-changes
+          echo "" >> .git-changes
+          git log ${{ inputs.target_branch }}..${{ inputs.source_branch }} \
+            --pretty=format:"* %h %s" \
+            --right-only >> .git-changes
+      - name: Auto-resolve merge conflicts
+        run: |
+          git branch tmp ${{ inputs.target_branch }}
+          git reset --hard ${{ inputs.source_branch }}
+          git checkout tmp -- .readthedocs/
+          git checkout tmp -- build_system/res/versioning/version
+      - name: Submit pull request
+        id: pull-request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          commit-message: '[Bot] Merge ${{ inputs.source_branch }} into ${{ inputs.target_branch }} branch.'
+          branch: merge-${{ inputs.source_branch }}
+          title: Merge ${{ inputs.source_branch }} into ${{ inputs.target_branch }} branch
+          labels: bot
+          body-path: .git-changes
+      - name: Enable auto-merge
+        if: ${{ steps.pull-request.outputs.pull-request-operation == 'created' }}
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: gh pr merge --merge --auto "${{ steps.pull-request.outputs.pull-request-number }}"
