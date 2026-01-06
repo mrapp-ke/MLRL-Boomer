@@ -45,6 +45,7 @@ jobs:
           labels: bot
           body: Merge branch "${{ inputs.source_branch }}" into "${{ inputs.target_branch }}".
       - name: Enable auto-merge
+        if: ${{ steps.pull-request.outputs.pull-request-operation == 'created' }}
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: gh pr merge --merge --auto "${{ steps.pull-request.outputs.pull-request-number }}"
