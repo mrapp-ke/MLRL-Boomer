@@ -6,37 +6,10 @@ on:
       - bugfix
 jobs:
   merge_bugfix:
-    name: Merge bugfix into feature branch
-    runs-on: ubuntu-24.04
     if: "!contains(github.event.head_commit.message, '[Bot]')"
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-        with:
-          ref: feature
-      - name: Reset bugfix branch
-        run: |
-          export FEATURE_VERSION="$(cat build_system/res/versioning/version)"
-          git fetch origin bugfix:bugfix
-          git reset --hard bugfix
-          echo -n "${FEATURE_VERSION}" > build_system/res/versioning/version
-      - name: Generate token
-        uses: actions/create-github-app-token@v2
-        id: app-token
-        with:
-          app-id: ${{ secrets.TOKEN_APP_ID }}
-          private-key: ${{ secrets.TOKEN_APP_SECRET }}
-      - name: Submit pull request
-        id: pull-request
-        uses: peter-evans/create-pull-request@v8
-        with:
-          token: ${{ steps.app-token.outputs.token }}
-          commit-message: '[Bot] Merge bugfix into feature branch.'
-          branch: merge-bugfix
-          title: Merge bugfix into feature branch
-          labels: bot
-          body: Merge branch "bugfix" into "feature".
-      - name: Enable auto-merge
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-        run: gh pr merge --merge --auto "${{ steps.pull-request.outputs.pull-request-number }}"
+    name: Perform upstream merge
+    uses: ./.github/workflows/template_merge.yml
+    with:
+      source_branch: bugfix
+      target_branch: feature
+    secrets: inherit
