@@ -1,0 +1,10 @@
+Merge branch "feature" into "main".
+
+* 7418cf64f4 Merge pull request #2533 from mrapp-ke/merge-bugfix
+* 5060117038 [Bot] Merge bugfix into feature branch.
+* 9b0a6345ff Merge pull request #2532 from mrapp-ke/update-build-dependencies
+* af676bf3ac Update build dependencies.
+* 305e63b7d1 Merge pull request #2530 from mrapp-ke/merge-bugfix
+* 5c2dd5eeec [Bot] Update version from 0.15.1 to 0.15.2.
+* 9e919e1050 [Bot] Merge bugfix into feature branch.
+* 2a789efa8a Generate documentation.
