@@ -25,12 +25,20 @@ jobs:
         with:
           ref: ${{ inputs.target_branch }}
           token: ${{ steps.app-token.outputs.token }}
+          fetch-depth: 0
       - name: Setup git
         uses: fregante/setup-git-user@v2
+      - name: Determine changes
+        run: |
+          git fetch origin ${{ inputs.source_branch }}:${{ inputs.source_branch }}
+          echo "Merge branch \"${{ inputs.source_branch }}\" into \"${{ inputs.target_branch }}\"." >> .git-changes
+          echo "" >> .git-changes
+          git log ${{ inputs.target_branch }}..${{ inputs.source_branch }} \
+            --pretty=format:"* %h %s" \
+            --right-only >> .git-changes
       - name: Auto-resolve merge conflicts
         run: |
           git branch tmp ${{ inputs.target_branch }}
-          git fetch origin ${{ inputs.source_branch }}:${{ inputs.source_branch }}
           git reset --hard ${{ inputs.source_branch }}
           git checkout tmp -- .readthedocs/
           git checkout tmp -- build_system/res/versioning/version
@@ -43,7 +51,7 @@ jobs:
           branch: merge-${{ inputs.source_branch }}
           title: Merge ${{ inputs.source_branch }} into ${{ inputs.target_branch }} branch
           labels: bot
-          body: Merge branch "${{ inputs.source_branch }}" into "${{ inputs.target_branch }}".
+          body-path: .git-changes
       - name: Enable auto-merge
         if: ${{ steps.pull-request.outputs.pull-request-operation == 'created' }}
         env:
