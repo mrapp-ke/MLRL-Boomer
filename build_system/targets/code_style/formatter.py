@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for formatting code.
 """
 from abc import ABC
+from pathlib import Path
 from typing import List, Optional, override
 
 from core.build_unit import BuildUnit
@@ -11,6 +12,36 @@ from core.changes import ChangeDetection
 from util.run import Program
 
 from targets.code_style.modules import CodeModule
+
+
+class CodeChangeDetection:
+    """
+    Allows to keep track of modified source files.
+    """
+
+    def __init__(self, module: CodeModule, cache_file_name: str):
+        """
+        :param module:          A module that provides access to source code
+        :param cache_file_name: The name of the file that should be used for tracking modified source files
+        """
+        self.change_detection = ChangeDetection(BuildUnit().build_directory / (cache_file_name + '.json'))
+        self.module = module
+
+    def find_modified_source_files(self) -> List[Path]:
+        """
+        Finds and returns all modified source files.
+
+        :return: A list that contains the paths of the source files that have been found
+        """
+        module = self.module
+        return self.change_detection.get_changed_files(module, *module.find_source_files())
+
+    def update_cache(self):
+        """
+        Updates the cache to keep track of source files.
+        """
+        module = self.module
+        self.change_detection.track_files(module, *module.find_source_files())
 
 
 class CodeFormatterProgram(Program, ABC):
@@ -34,7 +65,7 @@ class CodeFormatterProgram(Program, ABC):
         """
         super().__init__(program, *arguments)
         self.set_build_unit(build_unit)
-        self.cache_file = BuildUnit().build_directory / (cache_file_name + '.json') if cache_file_name else None
+        self.change_detection = CodeChangeDetection(module, cache_file_name) if cache_file_name else None
         self.module = module
         self._original_arguments: Optional[List[str]] = None
 
@@ -44,11 +75,8 @@ class CodeFormatterProgram(Program, ABC):
             self._original_arguments = list(self.arguments)
 
         module = self.module
-        source_files = module.find_source_files()
-        cache_file = self.cache_file
-
-        if cache_file:
-            source_files = ChangeDetection(cache_file).get_changed_files(module, *source_files)
+        change_detection = self.change_detection
+        source_files = change_detection.find_modified_source_files() if change_detection else module.find_source_files()
 
         if source_files:
             self.arguments = self._original_arguments + list(map(str, source_files))
@@ -58,8 +86,7 @@ class CodeFormatterProgram(Program, ABC):
 
     @override
     def _after(self):
-        cache_file = self.cache_file
+        change_detection = self.change_detection
 
-        if cache_file:
-            module = self.module
-            ChangeDetection(cache_file).track_files(module, *module.find_source_files())
+        if change_detection:
+            change_detection.update_cache()
