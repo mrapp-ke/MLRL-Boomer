@@ -4,12 +4,12 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow to run the external program "isort".
 """
 from core.build_unit import BuildUnit
-from util.run import Program
 
+from targets.code_style.formatter import CodeFormatterProgram
 from targets.code_style.modules import CodeModule
 
 
-class ISort(Program):
+class ISort(CodeFormatterProgram):
     """
     Allows to run the external program "isort".
     """
@@ -20,7 +20,13 @@ class ISort(Program):
         :param module:          The module, the program should be applied to
         :param enforce_changes: True, if changes should be applied to files, False otherwise
         """
-        super().__init__('isort', '--settings-path', str(build_unit.root_directory), '--virtual-env', '.venv',
-                         '--skip-gitignore', *map(str, module.find_source_files()))
+        super().__init__(build_unit,
+                         module,
+                         'isort',
+                         '--settings-path',
+                         str(build_unit.root_directory),
+                         '--virtual-env',
+                         '.venv',
+                         '--skip-gitignore',
+                         cache_file_name='isort' + ('_enforce_changes' if enforce_changes else ''))
         self.add_conditional_arguments(not enforce_changes, '--check')
-        self.set_build_unit(build_unit)
