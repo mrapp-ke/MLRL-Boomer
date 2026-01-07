@@ -4,12 +4,12 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow to run the external program "autoflake".
 """
 from core.build_unit import BuildUnit
-from util.run import Program
 
+from targets.code_style.formatter import CodeFormatterProgram
 from targets.code_style.modules import CodeModule
 
 
-class Autoflake(Program):
+class Autoflake(CodeFormatterProgram):
     """
     Allows to run the external program "autoflake".
     """
@@ -20,8 +20,13 @@ class Autoflake(Program):
         :param module:          The module, the program should be applied to
         :param enforce_changes: True, if changes should be applied to files, False otherwise
         """
-        super().__init__('autoflake', '--config', str(build_unit.root_directory / '.autoflake.toml'), '--jobs', '0',
-                         *map(str, module.find_source_files()))
+        super().__init__(build_unit,
+                         module,
+                         'autoflake',
+                         '--config',
+                         str(build_unit.root_directory / '.autoflake.toml'),
+                         '--jobs',
+                         '0',
+                         cache_file_name='autoflake' + ('_enforce_changes' if enforce_changes else ''))
         self.add_conditional_arguments(enforce_changes, '--in-place', '--verbose')
         self.add_conditional_arguments(not enforce_changes, '--check-diff', '--quiet')
-        self.set_build_unit(build_unit)

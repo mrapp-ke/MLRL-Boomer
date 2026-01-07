@@ -5,15 +5,16 @@ Provides classes that allow to run the external program "taplo".
 """
 from abc import ABC
 from os import environ
-from pathlib import Path
-from typing import List
+from typing import Optional
 
 from core.build_unit import BuildUnit
 from util.env import Env
-from util.run import Program
+
+from targets.code_style.formatter import CodeFormatterProgram
+from targets.code_style.modules import CodeModule
 
 
-class Taplo(Program, ABC):
+class Taplo(CodeFormatterProgram, ABC):
     """
     An abstract base class for all classes that allow to run the external program "taplo".
     """
@@ -24,14 +25,21 @@ class Taplo(Program, ABC):
         env['RUST_LOG'] = 'warn'
         return env
 
-    def __init__(self, build_unit: BuildUnit, taplo_command: str, *arguments: str):
+    def __init__(self,
+                 build_unit: BuildUnit,
+                 module: CodeModule,
+                 taplo_command: str,
+                 *arguments: str,
+                 cache_file_name: Optional[str] = None):
         """
-        :param build_unit:  The build unit from which the program should be run
-        :param program:     The taplo command to be run
-        :param arguments:   Optional arguments to be passed to taplo
+        :param build_unit:      The build unit from which the program should be run
+        :param module:          The module, the program should be applied to
+        :param taplo_command:   The taplo command to be run
+        :param arguments:       Optional arguments to be passed to taplo
+        :param cache_file_name: The name of the file that should be used for tracking modified source files or None, if
+                                no change detection should be used
         """
-        super().__init__('taplo', taplo_command, *arguments)
-        self.set_build_unit(build_unit)
+        super().__init__(build_unit, module, 'taplo', taplo_command, *arguments)
         self.print_arguments(True)
         self.use_environment(self.__create_environment())
 
@@ -41,15 +49,19 @@ class TaploFormat(Taplo):
     Allows to run the external program "taplo format".
     """
 
-    def __init__(self, build_unit: BuildUnit, files: List[Path], enforce_changes: bool = False):
+    def __init__(self, build_unit: BuildUnit, module: CodeModule, enforce_changes: bool = False):
         """
         :param build_unit:      The build unit from which the program should be run
-        :param files:           A list that contains the files, the program should be applied to
+        :param module:          The module, the program should be applied to
         :param enforce_changes: True, if changes should be applied to files, False otherwise
         """
-        super().__init__(build_unit, 'format', '--config', str(build_unit.root_directory / '.taplo.toml'))
+        super().__init__(build_unit,
+                         module,
+                         'format',
+                         '--config',
+                         str(build_unit.root_directory / '.taplo.toml'),
+                         cache_file_name='taplo_format' + ('_enforce_changes' if enforce_changes else ''))
         self.add_conditional_arguments(not enforce_changes, '--check')
-        self.add_arguments(*map(str, files))
 
 
 class TaploLint(Taplo):
@@ -57,10 +69,9 @@ class TaploLint(Taplo):
     Allows to run the external program "taplo lint".
     """
 
-    def __init__(self, build_unit: BuildUnit, files: List[Path]):
+    def __init__(self, build_unit: BuildUnit, module: CodeModule):
         """
         :param build_unit:  The build unit from which the program should be run
-        :param files:       A list that contains the files, the program should be applied to
+        :param module:      The module, the program should be applied to
         """
-        super().__init__(build_unit, 'lint')
-        self.add_arguments(*map(str, files))
+        super().__init__(build_unit, module, 'lint', cache_file_name='taplo_lint')
