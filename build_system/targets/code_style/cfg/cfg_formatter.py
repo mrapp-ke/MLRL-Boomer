@@ -10,6 +10,7 @@ from util.io import ENCODING_UTF8
 from util.log import Log
 from util.pip import Pip
 
+from targets.code_style.formatter import CodeChangeDetection
 from targets.code_style.modules import CodeModule
 
 
@@ -25,38 +26,43 @@ class CfgFormatter:
         :param enforce_changes: True, if changes should be applied to files, False otherwise
         """
         self.build_unit = build_unit
-        self.module = module
         self.enforce_changes = enforce_changes
+        self.change_detection = CodeChangeDetection(module, 'cfg_formatter')
 
     def run(self):
         """
         Runs the formatter.
         """
-        malformed_files = []
+        change_detection = self.change_detection
+        source_files = change_detection.find_modified_source_files()
 
-        Pip.for_build_unit(self.build_unit).install_packages('config-formatter')
-        # pylint: disable=import-outside-toplevel
-        from config_formatter import ConfigFormatter
+        if source_files:
+            malformed_files = []
 
-        for config_file in self.module.find_source_files():
-            with open(config_file, mode='r+' if self.enforce_changes else 'r', encoding=ENCODING_UTF8) as file:
-                try:
-                    content = file.read()
-                    Log.verbose('Formatting file "%s"', config_file)
-                    formatted_content = ConfigFormatter().prettify(content)
+            Pip.for_build_unit(self.build_unit).install_packages('config-formatter')
+            # pylint: disable=import-outside-toplevel
+            from config_formatter import ConfigFormatter
 
-                    if content != formatted_content:
-                        if self.enforce_changes:
-                            Log.info('Formatting file "%s"...', config_file)
-                            file.seek(0)
-                            file.write(formatted_content)
-                            file.truncate()
-                        else:
-                            Log.info('File "%s" is not properly formatted!', config_file)
-                            malformed_files.append(config_file)
-                except ConfigParserError as error:
-                    Log.error('Failed to format file "%s"', config_file, error=error)
+            for source_file in source_files:
+                with open(source_file, mode='r+' if self.enforce_changes else 'r', encoding=ENCODING_UTF8) as file:
+                    try:
+                        content = file.read()
+                        formatted_content = ConfigFormatter().prettify(content)
 
-        if malformed_files:
-            Log.error('%s %s not properly formatted!', len(malformed_files),
-                      'files are' if len(malformed_files) > 1 else 'file is')
+                        if content != formatted_content:
+                            if self.enforce_changes:
+                                Log.info('Formatting file "%s"...', source_file)
+                                file.seek(0)
+                                file.write(formatted_content)
+                                file.truncate()
+                            else:
+                                Log.info('File "%s" is not properly formatted!', source_file)
+                                malformed_files.append(source_file)
+                    except ConfigParserError as error:
+                        Log.error('Failed to format file "%s"', source_file, error=error)
+
+            if malformed_files:
+                Log.error('%s %s not properly formatted!', len(malformed_files),
+                          'files are' if len(malformed_files) > 1 else 'file is')
+
+            change_detection.update_cache()
