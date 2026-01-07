@@ -5,12 +5,12 @@ Provides classes that allow to run the external program "taplo".
 """
 from abc import ABC
 from os import environ
-from pathlib import Path
-from typing import List
 
 from core.build_unit import BuildUnit
 from util.env import Env
 from util.run import Program
+
+from targets.code_style.modules import CodeModule
 
 
 class Taplo(Program, ABC):
@@ -41,15 +41,15 @@ class TaploFormat(Taplo):
     Allows to run the external program "taplo format".
     """
 
-    def __init__(self, build_unit: BuildUnit, files: List[Path], enforce_changes: bool = False):
+    def __init__(self, build_unit: BuildUnit, module: CodeModule, enforce_changes: bool = False):
         """
         :param build_unit:      The build unit from which the program should be run
-        :param files:           A list that contains the files, the program should be applied to
+        :param module:          The module, the program should be applied to
         :param enforce_changes: True, if changes should be applied to files, False otherwise
         """
         super().__init__(build_unit, 'format', '--config', str(build_unit.root_directory / '.taplo.toml'))
         self.add_conditional_arguments(not enforce_changes, '--check')
-        self.add_arguments(*map(str, files))
+        self.add_arguments(*map(str, module.find_source_files()))
 
 
 class TaploLint(Taplo):
@@ -57,10 +57,10 @@ class TaploLint(Taplo):
     Allows to run the external program "taplo lint".
     """
 
-    def __init__(self, build_unit: BuildUnit, files: List[Path]):
+    def __init__(self, build_unit: BuildUnit, module: CodeModule):
         """
         :param build_unit:  The build unit from which the program should be run
-        :param files:       A list that contains the files, the program should be applied to
+        :param module:      The module, the program should be applied to
         """
         super().__init__(build_unit, 'lint')
-        self.add_arguments(*map(str, files))
+        self.add_arguments(*map(str, module.find_source_files()))
