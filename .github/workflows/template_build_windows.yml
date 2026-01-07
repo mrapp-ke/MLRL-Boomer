@@ -87,6 +87,8 @@ jobs:
           key: ccache-${{ runner.os }}-${{ runner.arch }}
       - name: Compile via MSVC
         run: |-
+          $env:INCLUDE += ";$($pwd.Path)\vcpkg\packages\hdf5_${{ steps.arch.outputs.lowercase }}-windows\include"
+          $env:LIB += ";$($pwd.Path)\vcpkg\packages\hdf5_${{ steps.arch.outputs.lowercase }}-windows\lib"
           $env:INCLUDE += ";$($pwd.Path)\vcpkg\packages\opencl_${{ steps.arch.outputs.lowercase }}-windows\include"
           $env:LIB += ";$($pwd.Path)\vcpkg\packages\opencl_${{ steps.arch.outputs.lowercase }}-windows\lib"
           ./build.bat compile
