@@ -139,6 +139,7 @@ opencl_dep = dependency('OpenCL', required : get_option('gpu_support'))
 xsimd_dep = dependency('xsimd', fallback : ['xsimd', 'xsimd_dep'], required : get_option('simd_support'))
 
 dependencies = [
+    dependency('hdf5', language: 'cpp'),
     opencl_dep,
     xsimd_dep
 ]
