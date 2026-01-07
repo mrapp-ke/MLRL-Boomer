@@ -31,6 +31,7 @@ source_files = [
     'src/mlrl/common/model/body_empty.cpp',
     'src/mlrl/common/model/condition_list.cpp',
     'src/mlrl/common/model/rule_list.cpp',
+    'src/mlrl/common/model/rule_model_hdf5.cpp',
     'src/mlrl/common/multi_threading/multi_threading_manual.cpp',
     'src/mlrl/common/multi_threading/multi_threading_no.cpp',
     'src/mlrl/common/post_optimization/model_builder_intermediate.cpp',
