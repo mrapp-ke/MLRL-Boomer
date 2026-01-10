@@ -23,60 +23,59 @@ namespace boosting {
     template<typename StatisticType>
     void DenseDecomposableStatisticVector<StatisticType>::add(const DenseDecomposableStatisticView<StatisticType>& view,
                                                               uint32 row) {
-        util::addToView(this->begin(), view.values_cbegin(row), this->getNumElements());
+        // TODO util::addToView(this->begin(), view.values_cbegin(row), this->getNumElements());
     }
 
     template<typename StatisticType>
     void DenseDecomposableStatisticVector<StatisticType>::add(const DenseDecomposableStatisticView<StatisticType>& view,
                                                               uint32 row, StatisticType weight) {
-        util::addToViewWeighted(this->begin(), view.values_cbegin(row), this->getNumElements(), weight);
+        // TODO util::addToViewWeighted(this->begin(), view.values_cbegin(row), this->getNumElements(), weight);
     }
 
     template<typename StatisticType>
     void DenseDecomposableStatisticVector<StatisticType>::remove(
       const DenseDecomposableStatisticView<StatisticType>& view, uint32 row) {
-        util::removeFromView(this->begin(), view.values_cbegin(row), this->getNumElements());
+        // TODO util::removeFromView(this->begin(), view.values_cbegin(row), this->getNumElements());
     }
 
     template<typename StatisticType>
     void DenseDecomposableStatisticVector<StatisticType>::remove(
       const DenseDecomposableStatisticView<StatisticType>& view, uint32 row, StatisticType weight) {
-        util::removeFromViewWeighted(this->begin(), view.values_cbegin(row), this->getNumElements(), weight);
+        // TODO util::removeFromViewWeighted(this->begin(), view.values_cbegin(row), this->getNumElements(), weight);
     }
 
     template<typename StatisticType>
     void DenseDecomposableStatisticVector<StatisticType>::addToSubset(
       const DenseDecomposableStatisticView<StatisticType>& view, uint32 row, const CompleteIndexVector& indices) {
-        util::addToView(this->begin(), view.values_cbegin(row), this->getNumElements());
+        // TODO util::addToView(this->begin(), view.values_cbegin(row), this->getNumElements());
     }
 
     template<typename StatisticType>
     void DenseDecomposableStatisticVector<StatisticType>::addToSubset(
       const DenseDecomposableStatisticView<StatisticType>& view, uint32 row, const PartialIndexVector& indices) {
-        PartialIndexVector::const_iterator indexIterator = indices.cbegin();
-        util::addToView(this->begin(), view.values_cbegin(row), indexIterator, this->getNumElements());
+        // TODO util::addToView(this->begin(), view.values_cbegin(row), indices.cbegin(), this->getNumElements());
     }
 
     template<typename StatisticType>
     void DenseDecomposableStatisticVector<StatisticType>::addToSubset(
       const DenseDecomposableStatisticView<StatisticType>& view, uint32 row, const CompleteIndexVector& indices,
       StatisticType weight) {
-        util::addToViewWeighted(this->begin(), view.values_cbegin(row), this->getNumElements(), weight);
+        // TODO util::addToViewWeighted(this->begin(), view.values_cbegin(row), this->getNumElements(), weight);
     }
 
     template<typename StatisticType>
     void DenseDecomposableStatisticVector<StatisticType>::addToSubset(
       const DenseDecomposableStatisticView<StatisticType>& view, uint32 row, const PartialIndexVector& indices,
       StatisticType weight) {
-        PartialIndexVector::const_iterator indexIterator = indices.cbegin();
-        util::addToViewWeighted(this->begin(), view.values_cbegin(row), indexIterator, this->getNumElements(), weight);
+        // TODO util::addToViewWeighted(this->begin(), view.values_cbegin(row), indices.cbegin(),
+        // this->getNumElements(), weight);
     }
 
     template<typename StatisticType>
     void DenseDecomposableStatisticVector<StatisticType>::difference(
       const DenseDecomposableStatisticVector<StatisticType>& first, const CompleteIndexVector& firstIndices,
       const DenseDecomposableStatisticVector<StatisticType>& second) {
-        util::setViewToDifference(this->begin(), first.cbegin(), second.cbegin(), this->getNumElements());
+        // TODO util::setViewToDifference(this->begin(), first.cbegin(), second.cbegin(), this->getNumElements());
     }
 
     template<typename StatisticType>

@@ -344,17 +344,18 @@ namespace boosting {
       schedule(dynamic) num_threads(numThreads)
 #endif
                 for (int64 i = 0; i < numRows; i++) {
-                    typename DenseDecomposableStatisticView<statistic_type>::value_iterator iterator =
-                      decomposableStatisticMatrixRawPtr->values_begin(i);
+                    typename DenseDecomposableStatisticView<statistic_type>::gradient_iterator gradientIterator =
+                      decomposableStatisticMatrixRawPtr->gradients_begin(i);
+                    typename DenseDecomposableStatisticView<statistic_type>::hessian_iterator hessianIterator =
+                      decomposableStatisticMatrixRawPtr->hessians_begin(i);
                     typename DenseNonDecomposableStatisticView<statistic_type>::gradient_const_iterator
-                      gradientIterator = nonDecomposableStatisticViewRawPtr->gradients_cbegin(i);
+                      gradientConstIterator = nonDecomposableStatisticViewRawPtr->gradients_cbegin(i);
                     typename DenseNonDecomposableStatisticView<statistic_type>::hessian_diagonal_const_iterator
-                      hessianIterator = nonDecomposableStatisticViewRawPtr->hessians_diagonal_cbegin(i);
+                      hessianConstIterator = nonDecomposableStatisticViewRawPtr->hessians_diagonal_cbegin(i);
 
                     for (uint32 j = 0; j < numCols; j++) {
-                        Statistic<statistic_type>& statistic = iterator[j];
-                        statistic.gradient = gradientIterator[j];
-                        statistic.hessian = hessianIterator[j];
+                        gradientIterator[j] = gradientConstIterator[j];
+                        hessianIterator[j] = hessianConstIterator[j];
                     }
                 }
 

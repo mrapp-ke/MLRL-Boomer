@@ -12,10 +12,11 @@ namespace boosting {
     template<typename GroundTruthIterator>
     using GroundTruthConversionFunction = std::function<float32(typename util::iterator_value<GroundTruthIterator>)>;
 
-    template<typename ScoreIterator, typename GroundTruthIterator, typename StatisticIterator>
+    template<typename ScoreIterator, typename GroundTruthIterator, typename GradientIterator, typename HessianIterator>
     static inline void updateDecomposableStatisticsInternally(
-      ScoreIterator scoreIterator, GroundTruthIterator groundTruthIterator, StatisticIterator statisticIterator,
-      uint32 numOutputs, GroundTruthConversionFunction<GroundTruthIterator> groundTruthConversionFunction) {
+      ScoreIterator scoreIterator, GroundTruthIterator groundTruthIterator, GradientIterator gradientIterator,
+      HessianIterator hessianIterator, uint32 numOutputs,
+      GroundTruthConversionFunction<GroundTruthIterator> groundTruthConversionFunction) {
         typedef typename util::iterator_value<ScoreIterator> statistic_type;
         typedef typename util::iterator_value<GroundTruthIterator> ground_truth_type;
         GroundTruthIterator groundTruthIterator2 = groundTruthIterator;
@@ -30,7 +31,7 @@ namespace boosting {
             ground_truth_type groundTruth = *groundTruthIterator;
             statistic_type expectedScore = groundTruthConversionFunction(groundTruth);
             statistic_type x = (predictedScore * predictedScore) + (-2 * expectedScore * predictedScore) + 1;
-            statisticIterator[i].gradient = x;  // Temporarily store `x` in the array of gradients
+            gradientIterator[i] = x;  // Temporarily store `x` in the array of gradients
             denominator += x;
             groundTruthIterator++;
         }
@@ -46,15 +47,14 @@ namespace boosting {
             statistic_type predictedScore = scoreIterator[i];
             ground_truth_type groundTruth = *groundTruthIterator2;
             statistic_type expectedScore = groundTruthConversionFunction(groundTruth);
-            Statistic<statistic_type>& statistic = statisticIterator[i];
-            statistic_type x = statistic.gradient;
+            statistic_type x = gradientIterator[i];
 
             // Calculate the gradient as `(predictedScore_i - expectedScore_i) / sqrt(x_1 + x_2 + ...)`...
-            statistic.gradient = util::divideOrZero(predictedScore - expectedScore, denominatorGradient);
+            gradientIterator[i] = util::divideOrZero(predictedScore - expectedScore, denominatorGradient);
 
             // Calculate the Hessian on the diagonal of the Hessian matrix as
             // `(x_1 + ... + x_i-1 + x_i+1 + ...) / (x_1 + x_2 + ...)^1.5`...
-            statistic.hessian = util::divideOrZero(denominator - x, denominatorHessian);
+            hessianIterator[i] = util::divideOrZero(denominator - x, denominatorHessian);
             groundTruthIterator2++;
         }
     }
@@ -170,7 +170,8 @@ namespace boosting {
               DenseDecomposableStatisticView<StatisticType>& statisticView) const override {
                 updateDecomposableStatisticsInternally(
                   scoreMatrix.values_cbegin(exampleIndex), labelMatrix.values_cbegin(exampleIndex),
-                  statisticView.values_begin(exampleIndex), labelMatrix.numCols, &binaryConversionFunction);
+                  statisticView.gradients_begin(exampleIndex), statisticView.hessians_begin(exampleIndex),
+                  labelMatrix.numCols, &binaryConversionFunction);
             }
 
             virtual void updateDecomposableStatistics(
@@ -180,7 +181,8 @@ namespace boosting {
               DenseDecomposableStatisticView<StatisticType>& statisticView) const override {
                 updateDecomposableStatisticsInternally(
                   scoreMatrix.values_cbegin(exampleIndex), labelMatrix.values_cbegin(exampleIndex),
-                  statisticView.values_begin(exampleIndex), labelMatrix.numCols, &binaryConversionFunction);
+                  statisticView.gradients_begin(exampleIndex), statisticView.hessians_begin(exampleIndex),
+                  labelMatrix.numCols, &binaryConversionFunction);
             }
 
             virtual void updateDecomposableStatistics(
@@ -190,7 +192,8 @@ namespace boosting {
                 auto groundTruthIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                              labelMatrix.indices_cend(exampleIndex));
                 updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), groundTruthIterator,
-                                                       statisticView.values_begin(exampleIndex), labelMatrix.numCols,
+                                                       statisticView.gradients_begin(exampleIndex),
+                                                       statisticView.hessians_begin(exampleIndex), labelMatrix.numCols,
                                                        &binaryConversionFunction);
             }
 
@@ -201,7 +204,8 @@ namespace boosting {
                 auto groundTruthIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                              labelMatrix.indices_cend(exampleIndex));
                 updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), groundTruthIterator,
-                                                       statisticView.values_begin(exampleIndex), labelMatrix.numCols,
+                                                       statisticView.gradients_begin(exampleIndex),
+                                                       statisticView.hessians_begin(exampleIndex), labelMatrix.numCols,
                                                        &binaryConversionFunction);
             }
 
@@ -212,7 +216,8 @@ namespace boosting {
               DenseDecomposableStatisticView<StatisticType>& statisticView) const override {
                 updateDecomposableStatisticsInternally(
                   scoreMatrix.values_cbegin(exampleIndex), regressionMatrix.values_cbegin(exampleIndex),
-                  statisticView.values_begin(exampleIndex), regressionMatrix.numCols, &scoreConversionFunction);
+                  statisticView.gradients_begin(exampleIndex), statisticView.hessians_begin(exampleIndex),
+                  regressionMatrix.numCols, &scoreConversionFunction);
             }
 
             void updateDecomposableStatistics(
@@ -222,7 +227,8 @@ namespace boosting {
               DenseDecomposableStatisticView<StatisticType>& statisticView) const override {
                 updateDecomposableStatisticsInternally(
                   scoreMatrix.values_cbegin(exampleIndex), regressionMatrix.values_cbegin(exampleIndex),
-                  statisticView.values_begin(exampleIndex), regressionMatrix.numCols, &binaryConversionFunction);
+                  statisticView.gradients_begin(exampleIndex), statisticView.hessians_begin(exampleIndex),
+                  regressionMatrix.numCols, &binaryConversionFunction);
             }
 
             void updateDecomposableStatistics(
@@ -234,7 +240,8 @@ namespace boosting {
                   regressionMatrix.indices_cbegin(exampleIndex), regressionMatrix.indices_cend(exampleIndex),
                   regressionMatrix.values_cbegin(exampleIndex), regressionMatrix.values_cend(exampleIndex));
                 updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), groundTruthIterator,
-                                                       statisticView.values_begin(exampleIndex),
+                                                       statisticView.gradients_begin(exampleIndex),
+                                                       statisticView.hessians_begin(exampleIndex),
                                                        regressionMatrix.numCols, &scoreConversionFunction);
             }
 
@@ -247,7 +254,8 @@ namespace boosting {
                   regressionMatrix.indices_cbegin(exampleIndex), regressionMatrix.indices_cend(exampleIndex),
                   regressionMatrix.values_cbegin(exampleIndex), regressionMatrix.values_cend(exampleIndex));
                 updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), groundTruthIterator,
-                                                       statisticView.values_begin(exampleIndex),
+                                                       statisticView.gradients_begin(exampleIndex),
+                                                       statisticView.hessians_begin(exampleIndex),
                                                        regressionMatrix.numCols, &scoreConversionFunction);
             }
 

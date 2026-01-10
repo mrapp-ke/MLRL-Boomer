@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/boosting/data/statistic.hpp"
 #include "mlrl/boosting/data/view_statistic_decomposable_dense.hpp"
 #include "mlrl/common/data/vector_dense.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
