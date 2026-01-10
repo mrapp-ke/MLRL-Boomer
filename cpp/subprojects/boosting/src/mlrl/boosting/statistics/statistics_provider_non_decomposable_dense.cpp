@@ -335,7 +335,7 @@ namespace boosting {
                   std::make_unique<DenseDecomposableStatisticMatrix<statistic_type>>(numRows, numCols);
                 CContiguousView<Statistic<statistic_type>>* decomposableStatisticMatrixRawPtr =
                   &decomposableStatisticMatrixPtr->getView();
-                DenseNonDecomposableStatisticView<statistic_type>* NonDecomposableStatisticViewRawPtr =
+                DenseNonDecomposableStatisticView<statistic_type>* nonDecomposableStatisticViewRawPtr =
                   &this->statePtr_->statisticMatrixPtr->getView();
 
 #if MULTI_THREADING_SUPPORT_ENABLED
@@ -347,9 +347,9 @@ namespace boosting {
                     typename CContiguousView<Statistic<statistic_type>>::value_iterator iterator =
                       decomposableStatisticMatrixRawPtr->values_begin(i);
                     typename DenseNonDecomposableStatisticView<statistic_type>::gradient_const_iterator
-                      gradientIterator = NonDecomposableStatisticViewRawPtr->gradients_cbegin(i);
+                      gradientIterator = nonDecomposableStatisticViewRawPtr->gradients_cbegin(i);
                     typename DenseNonDecomposableStatisticView<statistic_type>::hessian_diagonal_const_iterator
-                      hessianIterator = NonDecomposableStatisticViewRawPtr->hessians_diagonal_cbegin(i);
+                      hessianIterator = nonDecomposableStatisticViewRawPtr->hessians_diagonal_cbegin(i);
 
                     for (uint32 j = 0; j < numCols; j++) {
                         Statistic<statistic_type>& statistic = iterator[j];
