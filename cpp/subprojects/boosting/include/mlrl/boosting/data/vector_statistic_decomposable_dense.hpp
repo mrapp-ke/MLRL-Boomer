@@ -3,9 +3,8 @@
  */
 #pragma once
 
-#include "mlrl/boosting/data/statistic.hpp"
+#include "mlrl/boosting/data/view_statistic_decomposable_dense.hpp"
 #include "mlrl/common/data/vector_dense.hpp"
-#include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 
@@ -49,95 +48,96 @@ namespace boosting {
             void add(const DenseDecomposableStatisticVector<StatisticType>& vector);
 
             /**
-             * Adds all gradients and Hessians in a single row of a `CContiguousView` to this vector.
+             * Adds all gradients and Hessians in a single row of a `DenseDecomposableStatisticView` to this vector.
              *
-             * @param view  A reference to an object of type `CContiguousView` that stores the gradients and Hessians to
-             *              be added to this vector
+             * @param view  A reference to an object of type `DenseDecomposableStatisticView` that stores the gradients
+             *              and Hessians to be added to this vector
              * @param row   The index of the row to be added to this vector
              */
-            void add(const CContiguousView<Statistic<StatisticType>>& view, uint32 row);
+            void add(const DenseDecomposableStatisticView<StatisticType>& view, uint32 row);
 
             /**
-             * Adds all gradients and Hessians in a single row of a `CContiguousView` to this vector. The gradients and
-             * Hessians to be added are multiplied by a specific weight.
+             * Adds all gradients and Hessians in a single row of a `DenseDecomposableStatisticView` to this vector. The
+             * gradients and Hessians to be added are multiplied by a specific weight.
              *
-             * @param view      A reference to an object of type `CContiguousView` that stores the gradients and
-             *                  Hessians to be added to this vector
+             * @param view      A reference to an object of type `DenseDecomposableStatisticView` that stores the
+             *                  gradients and Hessians to be added to this vector
              * @param row       The index of the row to be added to this vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void add(const CContiguousView<Statistic<StatisticType>>& view, uint32 row, StatisticType weight);
+            void add(const DenseDecomposableStatisticView<StatisticType>& view, uint32 row, StatisticType weight);
 
             /**
-             * Removes all gradients and Hessians in a single row of a `CContiguousView` from this vector.
+             * Removes all gradients and Hessians in a single row of a `DenseDecomposableStatisticView` from this
+             * vector.
              *
-             * @param view  A reference to an object of type `CContiguousView` that stores the gradients and Hessians to
-             *              be removed from this vector
+             * @param view  A reference to an object of type `DenseDecomposableStatisticView` that stores the gradients
+             *              and Hessians to be removed from this vector
              * @param row   The index of the row to be removed from this vector
              */
-            void remove(const CContiguousView<Statistic<StatisticType>>& view, uint32 row);
+            void remove(const DenseDecomposableStatisticView<StatisticType>& view, uint32 row);
 
             /**
-             * Removes all gradients and Hessians in a single row of a `CContiguousView` from this vector. The gradients
-             * and Hessians to be removed are multiplied by a specific weight.
+             * Removes all gradients and Hessians in a single row of a `DenseDecomposableStatisticView` from this
+             * vector. The gradients and Hessians to be removed are multiplied by a specific weight.
              *
-             * @param view      A reference to an object of type `CContiguousView` that stores the gradients and
-             *                  Hessians to be removed from this vector
+             * @param view      A reference to an object of type `DenseDecomposableStatisticView` that stores the
+             *                  gradients and Hessians to be removed from this vector
              * @param row       The index of the row to be removed from this vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void remove(const CContiguousView<Statistic<StatisticType>>& view, uint32 row, StatisticType weight);
+            void remove(const DenseDecomposableStatisticView<StatisticType>& view, uint32 row, StatisticType weight);
 
             /**
-             * Adds certain gradients and Hessians in a single row of a `CContiguousView`, whose positions are given as
-             * a `CompleteIndexVector`, to this vector.
+             * Adds certain gradients and Hessians in a single row of a `DenseDecomposableStatisticView`, whose
+             * positions are given as a `CompleteIndexVector`, to this vector.
              *
-             * @param view      A reference to an object of type `CContiguousView` that stores the gradients and
-             *                  Hessians to be added to this vector
+             * @param view      A reference to an object of type `DenseDecomposableStatisticView` that stores the
+             *                  gradients and Hessians to be added to this vector
              * @param row       The index of the row to be added to this vector
              * @param indices   A reference to a `CompleteIndexVector` that provides access to the indices
              */
-            void addToSubset(const CContiguousView<Statistic<StatisticType>>& view, uint32 row,
+            void addToSubset(const DenseDecomposableStatisticView<StatisticType>& view, uint32 row,
                              const CompleteIndexVector& indices);
 
             /**
-             * Adds certain gradients and Hessians in single row of a `CContiguousView`, whose positions are given as a
-             * `PartialIndexVector`, to this vector.
+             * Adds certain gradients and Hessians in single row of a `DenseDecomposableStatisticView`, whose positions
+             * are given as a `PartialIndexVector`, to this vector.
              *
-             * @param view      A reference to an object of type `CContiguousView` that stores the gradients and
-             *                  Hessians to be added to this vector
+             * @param view      A reference to an object of type `DenseDecomposableStatisticView` that stores the
+             *                  gradients and Hessians to be added to this vector
              * @param row       The index of the row to be added to this vector
              * @param indices   A reference to a `PartialIndexVector` that provides access to the indices
              */
-            void addToSubset(const CContiguousView<Statistic<StatisticType>>& view, uint32 row,
+            void addToSubset(const DenseDecomposableStatisticView<StatisticType>& view, uint32 row,
                              const PartialIndexVector& indices);
 
             /**
-             * Adds certain gradients and Hessians in a single row of a `CContiguousView`, whose positions are given as
-             * a `CompleteIndexVector`, to this vector. The gradients and Hessians to be added are multiplied by a
-             * specific weight.
+             * Adds certain gradients and Hessians in a single row of a `DenseDecomposableStatisticView`, whose
+             * positions are given as a `CompleteIndexVector`, to this vector. The gradients and Hessians to be added
+             * are multiplied by a specific weight.
              *
-             * @param view      A reference to an object of type `CContiguousView` that stores the gradients and
-             *                  Hessians to be added to this vector
+             * @param view      A reference to an object of type `DenseDecomposableStatisticView` that stores the
+             *                  gradients and Hessians to be added to this vector
              * @param row       The index of the row to be added to this vector
              * @param indices   A reference to a `CompleteIndexVector` that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(const CContiguousView<Statistic<StatisticType>>& view, uint32 row,
+            void addToSubset(const DenseDecomposableStatisticView<StatisticType>& view, uint32 row,
                              const CompleteIndexVector& indices, StatisticType weight);
 
             /**
-             * Adds certain gradients and Hessians in single row of a `CContiguousView`, whose positions are given as a
-             * `PartialIndexVector`, to this vector. The gradients and Hessians to be added are multiplied by a specific
-             * weight.
+             * Adds certain gradients and Hessians in single row of a `DenseDecomposableStatisticView`, whose positions
+             * are given as a `PartialIndexVector`, to this vector. The gradients and Hessians to be added are
+             * multiplied by a specific weight.
              *
-             * @param view      A reference to an object of type `CContiguousView` that stores the gradients and
-             *                  Hessians to be added to this vector
+             * @param view      A reference to an object of type `DenseDecomposableStatisticView` that stores the
+             *                  gradients and Hessians to be added to this vector
              * @param row       The index of the row to be added to this vector
              * @param indices   A reference to a `PartialIndexVector` that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(const CContiguousView<Statistic<StatisticType>>& view, uint32 row,
+            void addToSubset(const DenseDecomposableStatisticView<StatisticType>& view, uint32 row,
                              const PartialIndexVector& indices, StatisticType weight);
 
             /**
