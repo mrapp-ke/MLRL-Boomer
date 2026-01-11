@@ -156,7 +156,7 @@ namespace boosting {
                     /**
                      * The type of a reference to an element, the iterator provides access to.
                      */
-                    typedef const Statistic<float64>& reference;
+                    typedef const Statistic<StatisticType>& reference;
 
                     /**
                      * The tag that specifies the capabilities of the iterator.
