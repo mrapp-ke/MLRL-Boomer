@@ -52,9 +52,10 @@ namespace boosting {
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
                 uint32 numElements = statisticVector.getNumElements();
                 uint32 numPredictions = indexVector_.getNumElements();
-                typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
+                typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
+                typename StatisticVector::hessian_const_iterator hessianIterator = statisticVector.hessians_cbegin();
                 typename SparseArrayVector<statistic_type>::iterator tmpIterator = tmpVector_.begin();
-                sortOutputWiseScores(tmpIterator, statisticIterator, numElements, numPredictions,
+                sortOutputWiseScores(tmpIterator, gradientIterator, hessianIterator, numElements, numPredictions,
                                      l1RegularizationWeight_, l2RegularizationWeight_);
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
                 typename DenseScoreVector<statistic_type, PartialIndexVector>::value_iterator valueIterator =
@@ -68,9 +69,9 @@ namespace boosting {
                     statistic_type predictedScore = entry.value;
                     indexIterator[i] = outputIndexIterator[index];
                     valueIterator[i] = predictedScore;
-                    const Statistic<statistic_type>& statistic = statisticIterator[index];
-                    quality += calculateOutputWiseQuality(predictedScore, statistic.gradient, statistic.hessian,
-                                                          l1RegularizationWeight_, l2RegularizationWeight_);
+                    quality +=
+                      calculateOutputWiseQuality(predictedScore, gradientIterator[index], hessianIterator[index],
+                                                 l1RegularizationWeight_, l2RegularizationWeight_);
                 }
 
                 scoreVector_.quality = quality;

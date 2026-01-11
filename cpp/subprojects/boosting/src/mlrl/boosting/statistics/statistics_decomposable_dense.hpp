@@ -38,14 +38,19 @@ namespace boosting {
              * Adds all gradients and Hessians in a vector to a specific row of this matrix. The gradients and Hessians
              * to be added are multiplied by a specific weight.
              *
-             * @param row       The row
-             * @param begin     An iterator to the beginning of the vector
-             * @param end       An iterator to the end of the vector
-             * @param weight    The weight, the gradients and Hessians should be multiplied by
+             * @param row             The row
+             * @param gradientsBegin  An iterator to the beginning of the gradients
+             * @param gradientsEnd    An iterator to the end of the gradients
+             * @param hessiansBegin   An iterator to the beginning of the Hessians
+             * @param hessiansEnd     An iterator to the end of the Hessians
+             * @param weight          The weight, the gradients and Hessians should be multiplied by
              */
-            void addToRow(uint32 row, typename View<Statistic<StatisticType>>::const_iterator begin,
-                          typename View<Statistic<StatisticType>>::const_iterator end, uint32 weight) {
-                // TODO util::addToViewWeighted(this->view.values_begin(row), begin, this->getNumCols(), weight);
+            void addToRow(uint32 row, typename View<StatisticType>::const_iterator gradientsBegin,
+                          typename View<StatisticType>::const_iterator gradientsEnd,
+                          typename View<StatisticType>::const_iterator hessiansBegin,
+                          typename View<StatisticType>::const_iterator hessiansEnd, uint32 weight) {
+                util::addToViewWeighted(this->view.gradients_begin(row), gradientsBegin, this->getNumCols(), weight);
+                util::addToViewWeighted(this->view.hessians_begin(row), hessiansBegin, this->getNumCols(), weight);
             }
     };
 

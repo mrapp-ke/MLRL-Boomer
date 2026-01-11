@@ -36,9 +36,10 @@ namespace boosting {
                                                float32 l1RegularizationWeight,
                                                float32 l2RegularizationWeight) override {
                 uint32 numElements = statisticVector.getNumElements();
-                typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                const std::pair<statistic_type, statistic_type> pair =
-                  getMinAndMaxScore(statisticIterator, numElements, l1RegularizationWeight, l2RegularizationWeight);
+                typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
+                typename StatisticVector::hessian_const_iterator hessianIterator = statisticVector.hessians_cbegin();
+                const std::pair<statistic_type, statistic_type> pair = getMinAndMaxScore(
+                  gradientIterator, hessianIterator, numElements, l1RegularizationWeight, l2RegularizationWeight);
                 statistic_type minAbsScore = pair.first;
                 statistic_type threshold = calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
                 PartialIndexVector::iterator indexIterator = indexVectorPtr_->begin();
@@ -46,8 +47,7 @@ namespace boosting {
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numElements; i++) {
-                    const Statistic<statistic_type>& statistic = statisticIterator[i];
-                    statistic_type score = calculateOutputWiseScore(statistic.gradient, statistic.hessian,
+                    statistic_type score = calculateOutputWiseScore(gradientIterator[i], hessianIterator[i],
                                                                     l1RegularizationWeight, l2RegularizationWeight);
 
                     if (calculateWeightedScore(score, minAbsScore, exponent_) >= threshold) {

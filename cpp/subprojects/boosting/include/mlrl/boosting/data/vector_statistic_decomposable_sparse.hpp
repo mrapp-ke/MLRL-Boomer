@@ -147,7 +147,7 @@ namespace boosting {
                     /**
                      * The type of the elements, the iterator provides access to.
                      */
-                    typedef const StatisticType value_type;
+                    typedef StatisticType value_type;
 
                     /**
                      * The type of a pointer to an element, the iterator provides access to.
@@ -262,7 +262,7 @@ namespace boosting {
                     /**
                      * The type of the elements, the iterator provides access to.
                      */
-                    typedef const StatisticType value_type;
+                    typedef StatisticType value_type;
 
                     /**
                      * The type of a pointer to an element, the iterator provides access to.
@@ -503,28 +503,28 @@ namespace boosting {
              *
              * @return a `gradient_const_iterator` to the beginning
              */
-            gradient_const_iterator gradients_cbegin();
+            gradient_const_iterator gradients_cbegin() const;
 
             /**
              * Returns a `gradient_const_iterator` to the end of the gradients.
              *
              * @return a `gradient_const_iterator` to the end
              */
-            gradient_const_iterator gradients_cend();
+            gradient_const_iterator gradients_cend() const;
 
             /**
              * Returns a `hessian_const_iterator` to the beginning of the Hessians.
              *
              * @return a `hessian_const_iterator` to the beginning
              */
-            hessian_const_iterator hessians_cbegin();
+            hessian_const_iterator hessians_cbegin() const;
 
             /**
              * Returns a `hessian_const_iterator` to the end of the Hessians.
              *
              * @return a `hessian_const_iterator` to the end
              */
-            hessian_const_iterator hessians_cend();
+            hessian_const_iterator hessians_cend() const;
 
             /**
              * Returns a `const_iterator` to the beginning of the vector.

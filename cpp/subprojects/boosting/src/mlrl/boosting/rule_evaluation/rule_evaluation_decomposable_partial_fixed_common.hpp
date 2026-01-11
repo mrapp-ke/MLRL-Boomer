@@ -40,26 +40,27 @@ namespace boosting {
      * Calculates the scores to be predicted for individual outputs and sorts them by their quality, such that the first
      * `numPredictions` elements are the best-rated ones.
      *
-     * @tparam StatisticIterator        The type of the iterator that provides access to the gradients and Hessians
+     * @tparam GradientIterator         The type of the iterator that provides access to the gradients
+     * @tparam HessianIterator          The type of the iterator that provides access to the Hessians
      * @param scoreIterator             An iterator, the calculated scores and their corresponding indices should be
      *                                  written to
-     * @param statisticIterator         An iterator that provides access to the gradients and Hessians for each output
+     * @param gradientIterator          An iterator that provides access to the gradients for each output
+     * @param hessianIterator           An iterator that provides access to the Hessians for each output
      * @param numOutputs                The total number of available outputs
      * @param numPredictions            The number of the best-rated predictions to be determined
      * @param l1RegularizationWeight    The l2 regularization weight
      * @param l2RegularizationWeight    The L1 regularization weight
      */
-    template<typename ScoreIterator, typename StatisticIterator>
-    static inline void sortOutputWiseScores(ScoreIterator scoreIterator, StatisticIterator& statisticIterator,
-                                            uint32 numOutputs, uint32 numPredictions, float32 l1RegularizationWeight,
-                                            float32 l2RegularizationWeight) {
-        typedef typename util::iterator_value<StatisticIterator>::statistic_type statistic_type;
+    template<typename ScoreIterator, typename GradientIterator, typename HessianIterator>
+    static inline void sortOutputWiseScores(ScoreIterator scoreIterator, GradientIterator gradientIterator,
+                                            HessianIterator hessianIterator, uint32 numOutputs, uint32 numPredictions,
+                                            float32 l1RegularizationWeight, float32 l2RegularizationWeight) {
+        typedef typename util::iterator_value<GradientIterator> statistic_type;
 
         for (uint32 i = 0; i < numOutputs; i++) {
-            const Statistic<statistic_type>& statistic = statisticIterator[i];
             IndexedValue<statistic_type>& entry = scoreIterator[i];
             entry.index = i;
-            entry.value = calculateOutputWiseScore(statistic.gradient, statistic.hessian, l1RegularizationWeight,
+            entry.value = calculateOutputWiseScore(gradientIterator[i], hessianIterator[i], l1RegularizationWeight,
                                                    l2RegularizationWeight);
         }
 

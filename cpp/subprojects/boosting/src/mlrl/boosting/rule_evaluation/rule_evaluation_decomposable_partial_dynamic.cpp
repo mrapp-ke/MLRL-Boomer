@@ -57,9 +57,10 @@ namespace boosting {
 
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
                 uint32 numElements = statisticVector.getNumElements();
-                typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                const std::pair<statistic_type, statistic_type> pair =
-                  getMinAndMaxScore(statisticIterator, numElements, l1RegularizationWeight_, l2RegularizationWeight_);
+                typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
+                typename StatisticVector::hessian_const_iterator hessianIterator = statisticVector.hessians_cbegin();
+                const std::pair<statistic_type, statistic_type> pair = getMinAndMaxScore(
+                  gradientIterator, hessianIterator, numElements, l1RegularizationWeight_, l2RegularizationWeight_);
                 statistic_type minAbsScore = pair.first;
                 statistic_type threshold = calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
@@ -70,15 +71,16 @@ namespace boosting {
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numElements; i++) {
-                    const Statistic<statistic_type>& statistic = statisticIterator[i];
-                    statistic_type score = calculateOutputWiseScore(statistic.gradient, statistic.hessian,
-                                                                    l1RegularizationWeight_, l2RegularizationWeight_);
+                    statistic_type gradient = gradientIterator[i];
+                    statistic_type hessian = hessianIterator[i];
+                    statistic_type score =
+                      calculateOutputWiseScore(gradient, hessian, l1RegularizationWeight_, l2RegularizationWeight_);
 
                     if (calculateWeightedScore(score, minAbsScore, exponent_) >= threshold) {
                         indexIterator[n] = outputIndexIterator[i];
                         valueIterator[n] = score;
-                        quality += calculateOutputWiseQuality(score, statistic.gradient, statistic.hessian,
-                                                              l1RegularizationWeight_, l2RegularizationWeight_);
+                        quality += calculateOutputWiseQuality(score, gradient, hessian, l1RegularizationWeight_,
+                                                              l2RegularizationWeight_);
                         n++;
                     }
                 }

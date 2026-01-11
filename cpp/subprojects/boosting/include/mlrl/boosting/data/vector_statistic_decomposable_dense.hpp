@@ -3,9 +3,8 @@
  */
 #pragma once
 
-#include "mlrl/boosting/data/statistic.hpp"
 #include "mlrl/boosting/data/view_statistic_decomposable_dense.hpp"
-#include "mlrl/common/data/vector_dense.hpp"
+#include "mlrl/common/data/view_vector_composite.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 
@@ -20,7 +19,8 @@ namespace boosting {
      */
     template<typename StatisticType>
     class DenseDecomposableStatisticVector final
-        : public ClearableViewDecorator<DenseVectorDecorator<AllocatedVector<Statistic<StatisticType>>>> {
+        : public ClearableViewDecorator<
+            ViewDecorator<CompositeVector<AllocatedVector<StatisticType>, AllocatedVector<StatisticType>>>> {
         public:
 
             /**
@@ -39,6 +39,89 @@ namespace boosting {
              * The type of the gradients and Hessians.
              */
             typedef StatisticType statistic_type;
+
+            /**
+             * An iterator that provides access to the gradients in the vector and allows to modify them.
+             */
+            typedef typename View<StatisticType>::iterator gradient_iterator;
+
+            /**
+             * An iterator that provides read-only access to the gradients in the vector.
+             */
+            typedef typename View<StatisticType>::const_iterator gradient_const_iterator;
+
+            /**
+             * An iterator that provides access to the Hessians in the vector and allows to modify them.
+             */
+            typedef typename View<StatisticType>::iterator hessian_iterator;
+
+            /**
+             * An iterator that provides read-only access to the Hessians in the vector.
+             */
+            typedef typename View<StatisticType>::const_iterator hessian_const_iterator;
+
+            /**
+             * Returns a `gradient_iterator` to the beginning of the gradients.
+             *
+             * @return A `gradient_iterator` to the beginning
+             */
+            gradient_iterator gradients_begin();
+
+            /**
+             * Returns a `gradient_iterator` to the end of the gradients.
+             *
+             * @return A `gradient_iterator` to the end
+             */
+            gradient_iterator gradients_end();
+
+            /**
+             * Returns a `gradient_const_iterator` to the beginning of the gradients.
+             *
+             * @return A `gradient_const_iterator` to the beginning
+             */
+            gradient_const_iterator gradients_cbegin() const;
+
+            /**
+             * Returns a `gradient_const_iterator` to the end of the gradients.
+             *
+             * @return A `gradient_const_iterator` to the end
+             */
+            gradient_const_iterator gradients_cend() const;
+
+            /**
+             * Returns a `hessian_iterator` to the beginning of the Hessians.
+             *
+             * @return A `hessian_iterator` to the beginning
+             */
+            hessian_iterator hessians_begin();
+
+            /**
+             * Returns a `hessian_iterator` to the end of the Hessians.
+             *
+             * @return A `hessian_iterator` to the end
+             */
+            hessian_iterator hessians_end();
+
+            /**
+             * Returns a `hessian_const_iterator` to the beginning of the Hessians.
+             *
+             * @return A `hessian_const_iterator` to the beginning
+             */
+            hessian_const_iterator hessians_cbegin() const;
+
+            /**
+             * Returns a `hessian_const_iterator` to the end of the Hessians.
+             *
+             * @return A `hessian_const_iterator` to the end
+             */
+            hessian_const_iterator hessians_cend() const;
+
+            /**
+             * Returns the number of elements in the vector.
+             *
+             * @return The number of elements
+             */
+            uint32 getNumElements() const;
 
             /**
              * Adds all gradients and Hessians in another vector to this vector.
