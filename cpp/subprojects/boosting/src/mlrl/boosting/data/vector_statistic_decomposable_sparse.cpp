@@ -301,25 +301,25 @@ namespace boosting {
 
     template<typename StatisticType, typename WeightType>
     typename SparseDecomposableStatisticVector<StatisticType, WeightType>::gradient_const_iterator
-      SparseDecomposableStatisticVector<StatisticType, WeightType>::gradients_cbegin() {
+      SparseDecomposableStatisticVector<StatisticType, WeightType>::gradients_cbegin() const {
         return GradientConstIterator(this->view.cbegin(), sumOfWeights_);
     }
 
     template<typename StatisticType, typename WeightType>
     typename SparseDecomposableStatisticVector<StatisticType, WeightType>::gradient_const_iterator
-      SparseDecomposableStatisticVector<StatisticType, WeightType>::gradients_cend() {
+      SparseDecomposableStatisticVector<StatisticType, WeightType>::gradients_cend() const {
         return GradientConstIterator(this->view.cend(), sumOfWeights_);
     }
 
     template<typename StatisticType, typename WeightType>
     typename SparseDecomposableStatisticVector<StatisticType, WeightType>::hessian_const_iterator
-      SparseDecomposableStatisticVector<StatisticType, WeightType>::hessians_cbegin() {
+      SparseDecomposableStatisticVector<StatisticType, WeightType>::hessians_cbegin() const {
         return HessianConstIterator(this->view.cbegin(), sumOfWeights_);
     }
 
     template<typename StatisticType, typename WeightType>
     typename SparseDecomposableStatisticVector<StatisticType, WeightType>::hessian_const_iterator
-      SparseDecomposableStatisticVector<StatisticType, WeightType>::hessians_cend() {
+      SparseDecomposableStatisticVector<StatisticType, WeightType>::hessians_cend() const {
         return HessianConstIterator(this->view.cend(), sumOfWeights_);
     }
 
