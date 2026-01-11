@@ -118,10 +118,10 @@ namespace boosting {
         private:
 
             /**
-             * An iterator that provides random read-only access to the statistics in a
+             * An iterator that provides random read-only access to the gradients in a
              * `SparseDecomposableStatisticVector`.
              */
-            class ConstIterator final {
+            class GradientConstIterator final {
                 private:
 
                     typename View<SparseStatistic<StatisticType, WeightType>>::const_iterator iterator_;
@@ -135,8 +135,9 @@ namespace boosting {
                      *                      `SparseDecomposableStatisticVector`
                      * @param sumOfWeights  The sum of the weights of all statistics that have been added to the vector
                      */
-                    ConstIterator(typename View<SparseStatistic<StatisticType, WeightType>>::const_iterator iterator,
-                                  WeightType sumOfWeights);
+                    GradientConstIterator(
+                      typename View<SparseStatistic<StatisticType, WeightType>>::const_iterator iterator,
+                      WeightType sumOfWeights);
 
                     /**
                      * The type that is used to represent the difference between two iterators.
@@ -146,17 +147,17 @@ namespace boosting {
                     /**
                      * The type of the elements, the iterator provides access to.
                      */
-                    typedef const Statistic<StatisticType> value_type;
+                    typedef StatisticType value_type;
 
                     /**
                      * The type of a pointer to an element, the iterator provides access to.
                      */
-                    typedef const Statistic<StatisticType>* pointer;
+                    typedef const StatisticType* pointer;
 
                     /**
                      * The type of a reference to an element, the iterator provides access to.
                      */
-                    typedef const Statistic<float64>& reference;
+                    typedef const StatisticType& reference;
 
                     /**
                      * The tag that specifies the capabilities of the iterator.
@@ -183,28 +184,28 @@ namespace boosting {
                      *
                      * @return A reference to an iterator that refers to the next element
                      */
-                    ConstIterator& operator++();
+                    GradientConstIterator& operator++();
 
                     /**
                      * Returns an iterator to the next element.
                      *
                      * @return A reference to an iterator that refers to the next element
                      */
-                    ConstIterator& operator++(int n);
+                    GradientConstIterator& operator++(int n);
 
                     /**
                      * Returns an iterator to the previous element.
                      *
                      * @return A reference to an iterator that refers to the previous element
                      */
-                    ConstIterator& operator--();
+                    GradientConstIterator& operator--();
 
                     /**
                      * Returns an iterator to the previous element.
                      *
                      * @return A reference to an iterator that refers to the previous element
                      */
-                    ConstIterator& operator--(int n);
+                    GradientConstIterator& operator--(int n);
 
                     /**
                      * Returns whether this iterator and another one refer to the same element.
@@ -212,7 +213,7 @@ namespace boosting {
                      * @param rhs   A reference to another iterator
                      * @return      True, if the iterators do not refer to the same element, false otherwise
                      */
-                    bool operator!=(const ConstIterator& rhs) const;
+                    bool operator!=(const GradientConstIterator& rhs) const;
 
                     /**
                      * Returns whether this iterator and another one refer to the same element.
@@ -220,7 +221,7 @@ namespace boosting {
                      * @param rhs   A reference to another iterator
                      * @return      True, if the iterators refer to the same element, false otherwise
                      */
-                    bool operator==(const ConstIterator& rhs) const;
+                    bool operator==(const GradientConstIterator& rhs) const;
 
                     /**
                      * Returns the difference between this iterator and another one.
@@ -228,7 +229,122 @@ namespace boosting {
                      * @param rhs   A reference to another iterator
                      * @return      The difference between the iterators
                      */
-                    difference_type operator-(const ConstIterator& rhs) const;
+                    difference_type operator-(const GradientConstIterator& rhs) const;
+            };
+
+            /**
+             * An iterator that provides random read-only access to the Hessians in a
+             * `SparseDecomposableStatisticVector`.
+             */
+            class HessianConstIterator final {
+                private:
+
+                    typename View<SparseStatistic<StatisticType, WeightType>>::const_iterator iterator_;
+
+                    const WeightType sumOfWeights_;
+
+                public:
+
+                    /**
+                     * @param iterator      An iterator that provides access to the elements in a
+                     *                      `SparseDecomposableStatisticVector`
+                     * @param sumOfWeights  The sum of the weights of all statistics that have been added to the vector
+                     */
+                    HessianConstIterator(
+                      typename View<SparseStatistic<StatisticType, WeightType>>::const_iterator iterator,
+                      WeightType sumOfWeights);
+
+                    /**
+                     * The type that is used to represent the difference between two iterators.
+                     */
+                    typedef int difference_type;
+
+                    /**
+                     * The type of the elements, the iterator provides access to.
+                     */
+                    typedef StatisticType value_type;
+
+                    /**
+                     * The type of a pointer to an element, the iterator provides access to.
+                     */
+                    typedef const StatisticType* pointer;
+
+                    /**
+                     * The type of a reference to an element, the iterator provides access to.
+                     */
+                    typedef const StatisticType& reference;
+
+                    /**
+                     * The tag that specifies the capabilities of the iterator.
+                     */
+                    typedef std::random_access_iterator_tag iterator_category;
+
+                    /**
+                     * Returns the element at a specific index.
+                     *
+                     * @param index The index of the element to be returned
+                     * @return      The element at the given index
+                     */
+                    value_type operator[](uint32 index) const;
+
+                    /**
+                     * Returns the element, the iterator currently refers to.
+                     *
+                     * @return The element, the iterator currently refers to
+                     */
+                    value_type operator*() const;
+
+                    /**
+                     * Returns an iterator to the next element.
+                     *
+                     * @return A reference to an iterator that refers to the next element
+                     */
+                    HessianConstIterator& operator++();
+
+                    /**
+                     * Returns an iterator to the next element.
+                     *
+                     * @return A reference to an iterator that refers to the next element
+                     */
+                    HessianConstIterator& operator++(int n);
+
+                    /**
+                     * Returns an iterator to the previous element.
+                     *
+                     * @return A reference to an iterator that refers to the previous element
+                     */
+                    HessianConstIterator& operator--();
+
+                    /**
+                     * Returns an iterator to the previous element.
+                     *
+                     * @return A reference to an iterator that refers to the previous element
+                     */
+                    HessianConstIterator& operator--(int n);
+
+                    /**
+                     * Returns whether this iterator and another one refer to the same element.
+                     *
+                     * @param rhs   A reference to another iterator
+                     * @return      True, if the iterators do not refer to the same element, false otherwise
+                     */
+                    bool operator!=(const HessianConstIterator& rhs) const;
+
+                    /**
+                     * Returns whether this iterator and another one refer to the same element.
+                     *
+                     * @param rhs   A reference to another iterator
+                     * @return      True, if the iterators refer to the same element, false otherwise
+                     */
+                    bool operator==(const HessianConstIterator& rhs) const;
+
+                    /**
+                     * Returns the difference between this iterator and another one.
+                     *
+                     * @param rhs   A reference to another iterator
+                     * @return      The difference between the iterators
+                     */
+                    difference_type operator-(const HessianConstIterator& rhs) const;
             };
 
             WeightType sumOfWeights_;
@@ -254,23 +370,42 @@ namespace boosting {
             typedef StatisticType statistic_type;
 
             /**
-             * An iterator that provides read-only access to the elements in the vector.
+             * An iterator that provides read-only access to the gradients in the vector.
              */
-            typedef ConstIterator const_iterator;
+            typedef GradientConstIterator gradient_const_iterator;
 
             /**
-             * Returns a `const_iterator` to the beginning of the vector.
-             *
-             * @return A `const_iterator` to the beginning
+             * An iterator that provides read-only access to the Hessians in the vector.
              */
-            const_iterator cbegin() const;
+            typedef HessianConstIterator hessian_const_iterator;
 
             /**
-             * Returns a `const_iterator` to the end of the vector.
+             * Returns a `gradient_const_iterator` to the beginning of the gradients.
              *
-             * @return A `const_iterator` to the end
+             * @return a `gradient_const_iterator` to the beginning
              */
-            const_iterator cend() const;
+            gradient_const_iterator gradients_cbegin() const;
+
+            /**
+             * Returns a `gradient_const_iterator` to the end of the gradients.
+             *
+             * @return a `gradient_const_iterator` to the end
+             */
+            gradient_const_iterator gradients_cend() const;
+
+            /**
+             * Returns a `hessian_const_iterator` to the beginning of the Hessians.
+             *
+             * @return a `hessian_const_iterator` to the beginning
+             */
+            hessian_const_iterator hessians_cbegin() const;
+
+            /**
+             * Returns a `hessian_const_iterator` to the end of the Hessians.
+             *
+             * @return a `hessian_const_iterator` to the end
+             */
+            hessian_const_iterator hessians_cend() const;
 
             /**
              * Adds all gradients and Hessians in another vector to this vector.

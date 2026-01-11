@@ -29,9 +29,8 @@ class CheckTomlCodeStyle(PhonyTarget.Runnable):
     def run(self, build_unit: BuildUnit, module: Module):
         code_module = cast(CodeModule, module)
         Log.info('Checking TOML files in the directory "%s"...', code_module.root_directory)
-        source_files = code_module.find_source_files()
-        TaploLint(build_unit, source_files).run()
-        TaploFormat(build_unit, source_files).run()
+        TaploLint(build_unit, code_module).run()
+        TaploFormat(build_unit, code_module).run()
 
 
 class EnforceTomlCodeStyle(PhonyTarget.Runnable):
@@ -46,4 +45,4 @@ class EnforceTomlCodeStyle(PhonyTarget.Runnable):
     def run(self, build_unit: BuildUnit, module: Module):
         code_module = cast(CodeModule, module)
         Log.info('Formatting TOML files in the directory "%s"...', code_module.root_directory)
-        TaploFormat(build_unit, code_module.find_source_files(), enforce_changes=True).run()
+        TaploFormat(build_unit, code_module, enforce_changes=True).run()
