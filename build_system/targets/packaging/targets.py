@@ -209,6 +209,15 @@ class InstallPythonWheels(BuildTarget.Runnable):
             super().__init__('uninstall', '--yes', *package_names)
             self.print_arguments(True)
 
+    class ListCommand(Pip.Command):
+        """
+        Allows to list installed packages via the command `pip list`.
+        """
+
+        def __init__(self):
+            super().__init__('list', '--format', 'freeze')
+            self.print_arguments(True)
+
     def __init__(self):
         super().__init__(MODULE_FILTER)
 
@@ -222,10 +231,19 @@ class InstallPythonWheels(BuildTarget.Runnable):
             InstallPythonWheels.InstallWheelCommand(wheel).run()
 
     @override
-    def get_input_files(self, _: BuildUnit, module: Module) -> List[Path]:
+    def get_input_files(self, build_unit: BuildUnit, module: Module) -> List[Path]:
         package_module = cast(PythonPackageModule, module)
-        wheel = package_module.find_wheel()
-        return [wheel] if wheel else []
+        installed_packages = InstallPythonWheels.ListCommand().capture_output().split('\n')
+        pyproject_toml_file = PyprojectTomlFile(build_unit, package_module.pyproject_toml_file)
+        required_package = f'{pyproject_toml_file.package_name}=={pyproject_toml_file.version}'
+
+        if any(package == required_package for package in installed_packages):
+            # If the correct version of the package is already installed, we check if the wheel has changed...
+            wheel = package_module.find_wheel()
+            return [wheel] if wheel else []
+
+        # If the package is not already installed or the version differs, we force a re-installation...
+        return []
 
     @override
     def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[Path]:
