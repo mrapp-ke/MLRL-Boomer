@@ -22,6 +22,13 @@ class PyprojectTomlFile(TomlFile):
         return self.toml_dict['project']['name']
 
     @property
+    def version(self) -> str:
+        """
+        The version declared in the pyproject.toml file.
+        """
+        return self.toml_dict['project']['version']
+
+    @property
     def mandatory_dependencies(self) -> List[str]:
         """
         A list that contains the mandatory dependencies declared in the pyproject.toml file.
