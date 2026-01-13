@@ -6,7 +6,6 @@
 #include "mlrl/common/data/types.hpp"
 
 #include <algorithm>
-#include <cstddef>
 
 namespace util {
 
@@ -203,51 +202,4 @@ namespace util {
             a[i] = b[index] - c[i];
         }
     }
-
-    /**
-     * Calculates and returns a hash value from a view.
-     *
-     * @tparam Iterator     The type of the iterator that provides access to the values in the view
-     * @param iterator      An iterator to the beginning of the view
-     * @param numElements   The number of elements in the view
-     * @return              The hash value that has been calculated
-     */
-    template<typename Iterator>
-    static inline constexpr std::size_t hashView(Iterator iterator, uint32 numElements) {
-        std::size_t hashValue = (std::size_t) numElements;
-
-        for (uint32 i = 0; i < numElements; i++) {
-            hashValue ^= iterator[i] + 0x9e3779b9 + (hashValue << 6) + (hashValue >> 2);
-        }
-
-        return hashValue;
-    }
-
-    /**
-     * Returns whether all elements of two views are equal or not.
-     *
-     * @tparam FirstIterator    The type of the iterator that provides access to the values in the first view
-     * @tparam SecondIterator   The type of the iterator that provides access to the values in the second view
-     * @param first             An iterator to the beginning of the first view
-     * @param numFirst          The number of elements in the first view
-     * @param second            An iterator to the beginning of the second view
-     * @param numSecond         The number of elements in the second view
-     * @return                  True, if all elements of both views are equal, false otherwise
-     */
-    template<typename FirstIterator, typename SecondIterator>
-    static inline constexpr bool compareViews(FirstIterator first, uint32 numFirst, SecondIterator second,
-                                              uint32 numSecond) {
-        if (numFirst != numSecond) {
-            return false;
-        }
-
-        for (uint32 i = 0; i < numFirst; i++) {
-            if (!isEqual(first[i], second[i])) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
 }
