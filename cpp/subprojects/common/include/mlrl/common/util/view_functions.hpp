@@ -17,7 +17,7 @@ namespace util {
      * @param numElements   The number of elements to be copied
      */
     template<typename FromIterator, typename ToIterator>
-    static inline void copyView(FromIterator from, ToIterator to, uint32 numElements) {
+    static inline void copy(FromIterator from, ToIterator to, uint32 numElements) {
         for (uint32 i = 0; i < numElements; i++) {
             to[i] = from[i];
         }
@@ -33,7 +33,7 @@ namespace util {
      * @param numElements   The number of elements in the views `a` and `b`
      */
     template<typename IteratorA, typename IteratorB>
-    static inline void addToView(IteratorA a, IteratorB b, uint32 numElements) {
+    static inline void add(IteratorA a, IteratorB b, uint32 numElements) {
         for (uint32 i = 0; i < numElements; i++) {
             a[i] += b[i];
         }
@@ -52,7 +52,7 @@ namespace util {
      * @param weight        The weight, the elements in the view `b` should be multiplied by
      */
     template<typename IteratorA, typename IteratorB, typename Weight>
-    static inline void addToViewWeighted(IteratorA a, IteratorB b, uint32 numElements, Weight weight) {
+    static inline void addWeighted(IteratorA a, IteratorB b, uint32 numElements, Weight weight) {
         for (uint32 i = 0; i < numElements; i++) {
             a[i] += (b[i] * weight);
         }
@@ -72,7 +72,7 @@ namespace util {
      *                          view `b` that correspond to the elements in the view `a`
      */
     template<typename IteratorA, typename IteratorB, typename IndexIterator>
-    static inline void addToView(IteratorA a, IteratorB b, IndexIterator indices, uint32 numElements) {
+    static inline void add(IteratorA a, IteratorB b, IndexIterator indices, uint32 numElements) {
         for (uint32 i = 0; i < numElements; i++) {
             uint32 index = indices[i];
             a[i] += b[index];
@@ -96,8 +96,7 @@ namespace util {
      *                          view `b` that correspond to the elements in the view `a`
      */
     template<typename IteratorA, typename IteratorB, typename IndexIterator, typename Weight>
-    static inline void addToViewWeighted(IteratorA a, IteratorB b, IndexIterator indices, uint32 numElements,
-                                         Weight weight) {
+    static inline void addWeighted(IteratorA a, IteratorB b, IndexIterator indices, uint32 numElements, Weight weight) {
         for (uint32 i = 0; i < numElements; i++) {
             uint32 index = indices[i];
             a[i] += (b[index] * weight);
@@ -114,7 +113,7 @@ namespace util {
      * @param numElements   The number of elements in the views `a` and `b`
      */
     template<typename IteratorA, typename IteratorB>
-    static inline void removeFromView(IteratorA a, IteratorB b, uint32 numElements) {
+    static inline void subtract(IteratorA a, IteratorB b, uint32 numElements) {
         for (uint32 i = 0; i < numElements; i++) {
             a[i] -= b[i];
         }
@@ -133,7 +132,7 @@ namespace util {
      * @param weight        The weight, the elements in the view `b` should be multiplied by
      */
     template<typename IteratorA, typename IteratorB, typename Weight>
-    static inline void removeFromViewWeighted(IteratorA a, IteratorB b, uint32 numElements, Weight weight) {
+    static inline void subtractWeighted(IteratorA a, IteratorB b, uint32 numElements, Weight weight) {
         for (uint32 i = 0; i < numElements; i++) {
             a[i] -= (b[i] * weight);
         }
@@ -152,7 +151,7 @@ namespace util {
      * @param numElements   The number of elements in the views `a`, `b` and `c`
      */
     template<typename IteratorA, typename IteratorB, typename IteratorC>
-    static inline void setViewToDifference(IteratorA a, IteratorB b, IteratorC c, uint32 numElements) {
+    static inline void difference(IteratorA a, IteratorB b, IteratorC c, uint32 numElements) {
         for (uint32 i = 0; i < numElements; i++) {
             a[i] = b[i] - c[i];
         }
@@ -175,8 +174,8 @@ namespace util {
      * @param numElements       The number of elements in the view `a`
      */
     template<typename IteratorA, typename IteratorB, typename IteratorC, typename IndexIterator>
-    static inline void setViewToDifference(IteratorA a, const IteratorB b, const IteratorC c, IndexIterator indices,
-                                           uint32 numElements) {
+    static inline void difference(IteratorA a, const IteratorB b, const IteratorC c, IndexIterator indices,
+                                  uint32 numElements) {
         for (uint32 i = 0; i < numElements; i++) {
             uint32 index = indices[i];
             a[i] = b[index] - c[i];

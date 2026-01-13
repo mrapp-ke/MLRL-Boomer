@@ -50,8 +50,8 @@ namespace boosting {
                           typename View<StatisticType>::const_iterator gradientsEnd,
                           typename View<StatisticType>::const_iterator hessiansBegin,
                           typename View<StatisticType>::const_iterator hessiansEnd, uint32 weight) {
-                util::addToViewWeighted(this->view.gradients_begin(row), gradientsBegin, this->getNumCols(), weight);
-                util::addToViewWeighted(this->view.hessians_begin(row), hessiansBegin, this->getNumCols(), weight);
+                util::addWeighted(this->view.gradients_begin(row), gradientsBegin, this->getNumCols(), weight);
+                util::addWeighted(this->view.hessians_begin(row), hessiansBegin, this->getNumCols(), weight);
             }
     };
 
