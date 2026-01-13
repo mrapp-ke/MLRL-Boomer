@@ -336,7 +336,7 @@ namespace boosting {
 
                     scoreVector_.quality = quality;
                 } else {
-                    util::setViewToValue(scoreVector_.bin_indices_begin(), numCriteria, maxBins_);
+                    std::fill(scoreVector_.bin_indices_begin(), scoreVector_.bin_indices_end(), maxBins_);
                     scoreVector_.quality = 0;
                 }
 
