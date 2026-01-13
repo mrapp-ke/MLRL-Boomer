@@ -29,20 +29,6 @@ namespace util {
     }
 
     /**
-     * Sets all elements in a view to a specific value.
-     *
-     * @tparam Iterator     The type of the iterator that provides access to the values in the view
-     * @tparam Value        The type of the value to be set
-     * @param iterator      An iterator to to the beginning of the view
-     * @param numElements   The number of elements in the view
-     * @param value         The value to be set
-     */
-    template<typename Iterator, typename Value>
-    static inline void setViewToValue(Iterator iterator, uint32 numElements, Value value) {
-        std::fill(iterator, iterator + numElements, value);
-    }
-
-    /**
      * Sets the elements in a view to increasing values.
      *
      * @tparam Iterator     The type of the iterator that provides access to the values in the view
