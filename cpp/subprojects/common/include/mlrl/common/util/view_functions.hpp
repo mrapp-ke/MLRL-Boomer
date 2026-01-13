@@ -29,26 +29,6 @@ namespace util {
     }
 
     /**
-     * Sets the elements in a view to increasing values.
-     *
-     * @tparam Iterator     The type of the iterator that provides access to the values in the view
-     * @tparam Value        The type of the values to be set
-     * @param iterator      An iterator to the beginning of the view
-     * @param numElements   The number of elements in the view
-     * @param start         The value to start at
-     * @param increment     The difference between the values
-     */
-    template<typename Iterator, typename Value>
-    static inline void setViewToIncreasingValues(Iterator iterator, uint32 numElements, Value start, Value increment) {
-        Value nextValue = start;
-
-        for (uint32 i = 0; i < numElements; i++) {
-            iterator[i] = nextValue;
-            nextValue += increment;
-        }
-    }
-
-    /**
      * Copy all elements from one view to another.
      *
      * @tparam FromIterator The type of the iterator that provides access to the values in the view to copy from
