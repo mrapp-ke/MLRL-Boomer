@@ -5,27 +5,7 @@
 
 #include "mlrl/common/data/types.hpp"
 
-#include <algorithm>
-
 namespace util {
-
-    /**
-     * Sets all elements in a view to zero.
-     *
-     * @tparam Iterator     The type of the iterator that provides access to the values in the view
-     * @param iterator      An iterator to the beginning of the view
-     * @param numElements   The number of elements in the view
-     */
-    template<typename Iterator>
-    static inline void setViewToZeros(Iterator iterator, uint32 numElements) {
-#ifdef _WIN32
-    #pragma warning(disable : 4244)  // Supress MSVC compiler warning C4244 ("possible loss of data")
-#endif
-        std::fill(iterator, iterator + numElements, 0);
-#ifdef _WIN32
-    #pragma warning(default : 4244)
-#endif
-    }
 
     /**
      * Copy all elements from one view to another.
