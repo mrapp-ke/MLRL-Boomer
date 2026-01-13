@@ -86,7 +86,7 @@ class BinnedIterator final {
          * @return The element, the iterator currently refers to
          */
         reference operator*() const {
-            uint32 binIndex = *binIndexView_[index_];
+            uint32 binIndex = binIndexView_[index_];
             return valueView_[binIndex];
         }
 
@@ -96,7 +96,7 @@ class BinnedIterator final {
          * @return The element, the iterator currently refers to
          */
         reference operator*() {
-            uint32 binIndex = *binIndexView_[index_];
+            uint32 binIndex = binIndexView_[index_];
             return valueView_[binIndex];
         }
 
