@@ -16,6 +16,7 @@ if not "%1"=="" if "%2"=="" (
 if not exist "%VENV_DIR%" (
     echo Creating virtual Python environment...
     python -m venv "%VENV_DIR%" || exit
+    python -m ensurepip --upgrade --default-pip
 )
 
 if exist "%VENV_DIR%" (
