@@ -5,6 +5,8 @@
 #include "mlrl/common/rule_refinement/prediction_complete.hpp"
 #include "mlrl/common/rule_refinement/prediction_partial.hpp"
 
+#include <memory>
+
 template<typename ScoreVector>
 static inline void processCompleteScores(
   std::unique_ptr<IEvaluatedPrediction>& existingHeadPtr, const ScoreVector& scoreVector,

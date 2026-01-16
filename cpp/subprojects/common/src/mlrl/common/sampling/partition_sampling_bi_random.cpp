@@ -4,6 +4,9 @@
 #include "mlrl/common/sampling/partition_bi.hpp"
 #include "mlrl/common/util/validation.hpp"
 
+#include <memory>
+#include <utility>
+
 /**
  * Allows to randomly split the training examples into two mutually exclusive sets that may be used as a training set
  * and a holdout set.

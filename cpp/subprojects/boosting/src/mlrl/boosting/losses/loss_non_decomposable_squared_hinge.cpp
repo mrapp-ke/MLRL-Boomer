@@ -3,6 +3,8 @@
 #include "mlrl/common/iterator/iterator_forward_sparse_binary.hpp"
 #include "mlrl/common/util/math.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     template<typename ScoreIterator, typename LabelIterator, typename StatisticIterator>

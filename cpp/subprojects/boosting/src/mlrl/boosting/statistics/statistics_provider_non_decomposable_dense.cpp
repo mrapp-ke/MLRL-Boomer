@@ -8,6 +8,9 @@
 #include "statistics_non_decomposable_common.hpp"
 #include "statistics_provider_non_decomposable.hpp"
 
+#include <memory>
+#include <utility>
+
 namespace boosting {
 
     /**

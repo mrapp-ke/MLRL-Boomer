@@ -6,6 +6,7 @@
 #include "mlrl/common/util/math.hpp"
 
 #include <functional>
+#include <memory>
 
 namespace boosting {
 

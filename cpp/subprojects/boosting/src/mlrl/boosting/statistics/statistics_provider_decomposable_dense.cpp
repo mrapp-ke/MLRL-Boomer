@@ -4,6 +4,9 @@
 #include "statistics_decomposable_dense.hpp"
 #include "statistics_provider_decomposable.hpp"
 
+#include <memory>
+#include <utility>
+
 namespace boosting {
 
     template<typename Loss, typename OutputMatrix, typename EvaluationMeasure>

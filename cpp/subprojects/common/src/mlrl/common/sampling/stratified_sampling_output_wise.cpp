@@ -6,8 +6,10 @@
 #include "mlrl/common/util/math.hpp"
 #include "stratified_sampling_common.hpp"
 
+#include <memory>
 #include <set>
 #include <unordered_map>
+#include <utility>
 
 template<typename IndexIterator>
 static inline uint32* copyLabelMatrix(uint32* indices, uint32* indptr, const CContiguousView<const uint8>& labelMatrix,

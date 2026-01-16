@@ -3,6 +3,10 @@
 #include "mlrl/common/data/array.hpp"
 #include "mlrl/common/util/math.hpp"
 
+#include <algorithm>
+#include <memory>
+#include <utility>
+
 static inline void sortByThresholdsAndEliminateDuplicates(ListOfLists<std::pair<float64, float64>>::row bins) {
     // Sort bins in increasing order by their threshold...
     std::sort(bins.begin(), bins.end(),

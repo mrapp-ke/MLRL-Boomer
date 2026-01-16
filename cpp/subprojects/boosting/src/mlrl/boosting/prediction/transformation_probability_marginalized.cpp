@@ -1,5 +1,8 @@
 #include "mlrl/boosting/prediction/transformation_probability_marginalized.hpp"
 
+#include <memory>
+#include <utility>
+
 namespace boosting {
 
     MarginalizedProbabilityTransformation::MarginalizedProbabilityTransformation(

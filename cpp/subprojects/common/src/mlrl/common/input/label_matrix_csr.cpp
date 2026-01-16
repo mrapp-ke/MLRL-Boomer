@@ -7,6 +7,8 @@
 #include "mlrl/common/statistics/statistics_provider.hpp"
 #include "mlrl/common/util/math.hpp"
 
+#include <memory>
+
 /**
  * Implements row-wise read-only access to the labels of individual training examples that are stored in a pre-allocated
  * sparse matrix in the compressed sparse row (CSR) format.

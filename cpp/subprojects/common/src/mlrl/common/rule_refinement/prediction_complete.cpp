@@ -5,6 +5,8 @@
 #include "mlrl/common/rule_refinement/rule_refinement.hpp"
 #include "mlrl/common/statistics/statistics.hpp"
 
+#include <memory>
+
 static inline std::unique_ptr<IHead> createHeadInternally(const CompletePrediction<uint8>& prediction) {
     uint32 numElements = prediction.getNumElements();
     std::unique_ptr<CompleteHead<uint8>> headPtr = std::make_unique<CompleteHead<uint8>>(numElements);

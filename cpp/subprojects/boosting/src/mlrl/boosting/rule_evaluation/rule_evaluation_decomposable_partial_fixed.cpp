@@ -3,6 +3,8 @@
 #include "rule_evaluation_decomposable_complete_common.hpp"
 #include "rule_evaluation_decomposable_partial_fixed_common.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

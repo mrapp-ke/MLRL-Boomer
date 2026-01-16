@@ -4,6 +4,8 @@
 #include "mlrl/common/data/vector_sparse_array.hpp"
 
 #include <algorithm>
+#include <memory>
+#include <utility>
 
 namespace boosting {
 

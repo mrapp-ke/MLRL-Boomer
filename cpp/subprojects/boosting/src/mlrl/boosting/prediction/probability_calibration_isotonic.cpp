@@ -7,6 +7,8 @@
 #include "mlrl/common/prediction/probability_calibration_no.hpp"
 
 #include <algorithm>
+#include <memory>
+#include <utility>
 
 namespace boosting {
 

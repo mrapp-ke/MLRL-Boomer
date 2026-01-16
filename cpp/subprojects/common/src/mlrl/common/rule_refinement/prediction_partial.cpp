@@ -6,6 +6,9 @@
 #include "mlrl/common/rule_refinement/rule_refinement.hpp"
 #include "mlrl/common/statistics/statistics.hpp"
 
+#include <algorithm>
+#include <memory>
+
 static inline std::unique_ptr<IHead> createHeadInternally(const PartialPrediction<uint8>& prediction) {
     uint32 numElements = prediction.getNumElements();
     std::unique_ptr<PartialHead<uint8>> headPtr = std::make_unique<PartialHead<uint8>>(numElements);

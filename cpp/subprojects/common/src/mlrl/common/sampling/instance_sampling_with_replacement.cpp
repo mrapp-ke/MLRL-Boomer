@@ -6,6 +6,9 @@
 #include "mlrl/common/util/math.hpp"
 #include "mlrl/common/util/validation.hpp"
 
+#include <memory>
+#include <utility>
+
 template<typename ExampleWeights, typename WeightType>
 static inline void sampleInternally(const SinglePartition& partition, const ExampleWeights& exampleWeights,
                                     float32 sampleSize, uint32 minSamples, uint32 maxSamples,
