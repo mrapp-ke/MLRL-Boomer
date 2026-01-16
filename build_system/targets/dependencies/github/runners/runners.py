@@ -131,21 +131,29 @@ class Runners(Workflow):
     Allows to access and update GitHub-hosted runners used in a workflow.
     """
 
-    def __parse_runs_on_clause(self, runs_on_clause: str) -> Runner:
-        try:
-            return Runner.parse(runs_on_clause)
-        except ValueError as error:
-            raise RuntimeError('Failed to parse runs-on-clause in workflow "' + str(self.file) + '"') from error
+    def __get_runners_from_runs_on_clause(self, yaml_dict: Dict[Any, Any]) -> Set[Runner]:
+        runs_on_clause = self.find_tag(yaml_dict, 'runs-on')
 
-    def __parse_strategy(self, strategy: Dict[Any, Any]) -> Set[Runner]:
-        runners = set()
-
-        for os in self.find_tag(strategy, 'os', default=[]):
+        if runs_on_clause and runs_on_clause.replace(' ', '') not in {'${{matrix.os}}', '${{inputs.os}}'}:
             try:
-                runners.add(Runner.parse(os))
+                return {Runner.parse(runs_on_clause)}
             except ValueError as error:
-                raise RuntimeError('Failed to parse strategy.matrix.os-clause in workflow "' + str(self.file)
-                                   + '"') from error
+                raise RuntimeError('Failed to parse runs-on-clause "' + runs_on_clause + '" in workflow "'
+                                   + str(self.file) + '"') from error
+
+        return set()
+
+    def __get_runners_from_strategy(self, yaml_dict: Dict[Any, Any]) -> Set[Runner]:
+        runners = set()
+        strategy = self.find_tag(yaml_dict, 'strategy')
+
+        if strategy:
+            for os in self.find_tag(strategy, 'os', default=[]):
+                try:
+                    runners.add(Runner.parse(os))
+                except ValueError as error:
+                    raise RuntimeError('Failed to parse strategy.matrix.os-clause "' + os + '" in workflow "'
+                                       + str(self.file) + '"') from error
 
         return runners
 
@@ -157,16 +165,8 @@ class Runners(Workflow):
         runners = set()
 
         for job in self.find_tag(self.yaml_dict, 'jobs', default={}).values():
-            runs_on_clause = self.find_tag(job, 'runs-on')
-
-            if runs_on_clause:
-                if runs_on_clause.replace(' ', '') == '${{matrix.os}}':
-                    strategy = self.find_tag(job, 'strategy')
-
-                    if strategy:
-                        runners.update(self.__parse_strategy(strategy))
-                else:
-                    runners.add(self.__parse_runs_on_clause(runs_on_clause))
+            runners.update(self.__get_runners_from_runs_on_clause(job))
+            runners.update(self.__get_runners_from_strategy(job))
 
         return runners
 
