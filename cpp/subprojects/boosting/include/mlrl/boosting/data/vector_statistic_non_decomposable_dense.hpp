@@ -179,11 +179,6 @@ namespace boosting {
             DenseNonDecomposableStatisticVector(const DenseNonDecomposableStatisticVector<StatisticType>& other);
 
             /**
-             * The type of the gradients and Hessians.
-             */
-            typedef typename DenseNonDecomposableStatisticVectorView<StatisticType>::statistic_type statistic_type;
-
-            /**
              * Returns the number of gradients in the vector.
              *
              * @return The number of gradients

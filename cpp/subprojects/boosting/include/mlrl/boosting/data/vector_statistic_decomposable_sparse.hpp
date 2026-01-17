@@ -445,12 +445,6 @@ namespace boosting {
               const SparseDecomposableStatisticVector<StatisticType, WeightType>& other);
 
             /**
-             * The type of the gradients and Hessians.
-             */
-            typedef
-              typename SparseDecomposableStatisticVectorView<StatisticType, WeightType>::statistic_type statistic_type;
-
-            /**
              * Adds all gradients and Hessians in another vector to this vector.
              *
              * @param vector A reference to an object of type `SparseDecomposableStatisticVector` that stores the
