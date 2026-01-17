@@ -282,7 +282,8 @@ namespace boosting {
 
                 if (numBins > 0) {
                     // Reset arrays to zero...
-                    util::setViewToZeros(numElementsPerBin_.begin(), numBins);
+                    Array<uint32>::iterator numElementsPerBinIterator = numElementsPerBin_.begin();
+                    std::fill(numElementsPerBinIterator, numElementsPerBinIterator + numBins, 0);
 
                     // Apply binning method in order to aggregate the gradients and Hessians that belong to the same
                     // bins...
@@ -302,21 +303,24 @@ namespace boosting {
                     scoreVector_.setNumBins(numBins, false);
 
                     // Aggregate gradients and Hessians...
-                    util::setViewToZeros(aggregatedGradients_.begin(), numBins);
-                    util::setViewToZeros(aggregatedHessians_.begin(), util::triangularNumber(numBins));
+                    typename Array<statistic_type>::iterator aggregatedGradientIterator = aggregatedGradients_.begin();
+                    typename Array<statistic_type>::iterator aggregatedHessianIterator = aggregatedHessians_.begin();
+                    std::fill(aggregatedGradientIterator, aggregatedGradientIterator + maxBins_, (statistic_type) 0);
+                    std::fill(aggregatedHessianIterator, aggregatedHessianIterator + util::triangularNumber(maxBins_),
+                              (statistic_type) 0);
                     aggregateGradientsAndHessians(statisticVector.gradients_cbegin(), statisticVector.hessians_cbegin(),
                                                   numCriteria, binIndexIterator, binIndices_.cbegin(),
-                                                  aggregatedGradients_.begin(), aggregatedHessians_.begin(), maxBins_);
+                                                  aggregatedGradientIterator, aggregatedHessianIterator, maxBins_);
 
                     // Copy Hessians to the matrix of coefficients and add regularization weight to its diagonal...
-                    copyCoefficients(aggregatedHessians_.cbegin(), this->sysvTmpArray1_.begin(), numBins);
+                    copyCoefficients(aggregatedHessianIterator, this->sysvTmpArray1_.begin(), numBins);
                     addL2RegularizationWeight(this->sysvTmpArray1_.begin(), numBins, numElementsPerBin_.cbegin(),
                                               l2RegularizationWeight_);
 
                     // Copy gradients to the vector of ordinates...
                     typename DenseBinnedScoreVector<statistic_type, IndexVector>::bin_value_iterator binValueIterator =
                       scoreVector_.bin_values_begin();
-                    copyOrdinates(aggregatedGradients_.cbegin(), binValueIterator, numBins);
+                    copyOrdinates(aggregatedGradientIterator, binValueIterator, numBins);
                     addL1RegularizationWeight(binValueIterator, numBins, numElementsPerBin_.cbegin(),
                                               l1RegularizationWeight_);
 

@@ -8,6 +8,7 @@
 #include "mlrl/boosting/data/view_statistic_decomposable_dense.hpp"
 #include "mlrl/boosting/losses/loss_decomposable.hpp"
 #include "mlrl/common/measures/measure_evaluation.hpp"
+#include "mlrl/common/util/view_functions.hpp"
 #include "statistics_decomposable_common.hpp"
 
 #include <memory>

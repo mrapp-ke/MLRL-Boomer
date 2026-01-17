@@ -1,8 +1,7 @@
 #include "mlrl/seco/data/vector_confusion_matrix_dense.hpp"
 
 #include "mlrl/common/iterator/iterator_forward_sparse_binary.hpp"
-
-#include <algorithm>
+#include "mlrl/common/util/view_functions.hpp"
 
 namespace seco {
 

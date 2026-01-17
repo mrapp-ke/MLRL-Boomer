@@ -4,8 +4,8 @@
 #pragma once
 
 #include "mlrl/common/data/view.hpp"
-#include "mlrl/common/util/view_functions.hpp"
 
+#include <algorithm>
 #include <utility>
 
 /**
@@ -130,7 +130,7 @@ class MLRLCOMMON_API Vector : public View<T> {
          * Sets all values stored in the view to zero.
          */
         void clear() {
-            util::setViewToZeros(BaseView<T>::array, numElements);
+            std::fill(this->begin(), this->end(), (T) 0);
         }
 };
 

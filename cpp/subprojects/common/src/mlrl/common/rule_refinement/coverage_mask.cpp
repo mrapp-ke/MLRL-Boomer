@@ -14,7 +14,7 @@ CoverageMask::CoverageMask(const CoverageMask& other)
 
 void CoverageMask::reset() {
     indicatorValue = 0;
-    util::setViewToZeros(this->begin(), this->getNumElements());
+    std::fill(this->begin(), this->end(), 0);
 }
 
 bool CoverageMask::operator[](uint32 index) const {

@@ -146,19 +146,20 @@ namespace boosting {
                   aggregatedGradientVector_.begin();
                 typename DenseVector<statistic_type>::iterator aggregatedHessianIterator =
                   aggregatedHessianVector_.begin();
-                util::setViewToZeros(aggregatedGradientIterator, numBins);
-                util::setViewToZeros(aggregatedHessianIterator, numBins);
-                util::setViewToZeros(numElementsPerBin_.begin(), numBins);
+                Array<uint32>::iterator numElementsPerBinIterator = numElementsPerBin_.begin();
+                std::fill(aggregatedGradientIterator, aggregatedGradientIterator + numBins, (statistic_type) 0);
+                std::fill(aggregatedHessianIterator, aggregatedHessianIterator + numBins, (statistic_type) 0);
+                std::fill(numElementsPerBinIterator, numElementsPerBinIterator + numBins, 0);
 
                 // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
                 typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
                 typename StatisticVector::hessian_const_iterator hessianIterator = statisticVector.hessians_cbegin();
                 typename DenseBinnedScoreVector<statistic_type, IndexVector>::bin_index_iterator binIndexIterator =
                   scoreVector_.bin_indices_begin();
-                auto callback = [=, this](uint32 binIndex, uint32 labelIndex) {
+                auto callback = [=](uint32 binIndex, uint32 labelIndex) {
                     aggregatedGradientIterator[binIndex] += gradientIterator[labelIndex];
                     aggregatedHessianIterator[binIndex] += hessianIterator[labelIndex];
-                    numElementsPerBin_[binIndex] += 1;
+                    numElementsPerBinIterator[binIndex] += 1;
                     binIndexIterator[labelIndex] = binIndex;
                 };
                 auto zeroCallback = [=, this](uint32 labelIndex) {
