@@ -1,7 +1,7 @@
 #include "mlrl/boosting/data/vector_statistic_non_decomposable_dense.hpp"
 
 #include "mlrl/boosting/util/math.hpp"
-#include "mlrl/common/util/view_functions.hpp"
+#include "mlrl/common/util/array_operations.hpp"
 
 namespace boosting {
 
