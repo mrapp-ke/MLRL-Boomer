@@ -5,71 +5,137 @@
 namespace boosting {
 
     template<typename StatisticType>
-    DenseDecomposableStatisticVector<StatisticType>::DenseDecomposableStatisticVector(uint32 numElements, bool init)
-        : ClearableViewDecorator<
-            ViewDecorator<CompositeVector<AllocatedVector<StatisticType>, AllocatedVector<StatisticType>>>>(
-            CompositeVector<AllocatedVector<StatisticType>, AllocatedVector<StatisticType>>(
-              AllocatedVector<StatisticType>(numElements, init), AllocatedVector<StatisticType>(numElements, init))) {}
+    DenseDecomposableStatisticVectorView<StatisticType>::DenseDecomposableStatisticVectorView(uint32 numElements,
+                                                                                              bool init)
+        : CompositeVector<AllocatedVector<StatisticType>, AllocatedVector<StatisticType>>(
+            AllocatedVector<StatisticType>(numElements, init), AllocatedVector<StatisticType>(numElements, init)) {}
 
     template<typename StatisticType>
-    DenseDecomposableStatisticVector<StatisticType>::DenseDecomposableStatisticVector(
-      const DenseDecomposableStatisticVector<StatisticType>& other)
-        : DenseDecomposableStatisticVector<StatisticType>(other.getNumElements()) {
+    DenseDecomposableStatisticVectorView<StatisticType>::DenseDecomposableStatisticVectorView(
+      const DenseDecomposableStatisticVectorView<StatisticType>& other)
+        : DenseDecomposableStatisticVectorView<StatisticType>(other.getNumElements()) {
         util::copy(other.gradients_cbegin(), this->gradients_begin(), this->getNumElements());
         util::copy(other.hessians_cbegin(), this->hessians_begin(), this->getNumElements());
     }
 
     template<typename StatisticType>
+    typename DenseDecomposableStatisticVectorView<StatisticType>::gradient_iterator
+      DenseDecomposableStatisticVectorView<StatisticType>::gradients_begin() {
+        return this->firstView.begin();
+    }
+
+    template<typename StatisticType>
+    typename DenseDecomposableStatisticVectorView<StatisticType>::gradient_iterator
+      DenseDecomposableStatisticVectorView<StatisticType>::gradients_end() {
+        return this->firstView.end();
+    }
+
+    template<typename StatisticType>
+    typename DenseDecomposableStatisticVectorView<StatisticType>::gradient_const_iterator
+      DenseDecomposableStatisticVectorView<StatisticType>::gradients_cbegin() const {
+        return this->firstView.cbegin();
+    }
+
+    template<typename StatisticType>
+    typename DenseDecomposableStatisticVectorView<StatisticType>::gradient_const_iterator
+      DenseDecomposableStatisticVectorView<StatisticType>::gradients_cend() const {
+        return this->firstView.cend();
+    }
+
+    template<typename StatisticType>
+    typename DenseDecomposableStatisticVectorView<StatisticType>::hessian_iterator
+      DenseDecomposableStatisticVectorView<StatisticType>::hessians_begin() {
+        return this->secondView.begin();
+    }
+
+    template<typename StatisticType>
+    typename DenseDecomposableStatisticVectorView<StatisticType>::hessian_iterator
+      DenseDecomposableStatisticVectorView<StatisticType>::hessians_end() {
+        return this->secondView.end();
+    }
+
+    template<typename StatisticType>
+    typename DenseDecomposableStatisticVectorView<StatisticType>::hessian_const_iterator
+      DenseDecomposableStatisticVectorView<StatisticType>::hessians_cbegin() const {
+        return this->secondView.cbegin();
+    }
+
+    template<typename StatisticType>
+    typename DenseDecomposableStatisticVectorView<StatisticType>::hessian_const_iterator
+      DenseDecomposableStatisticVectorView<StatisticType>::hessians_cend() const {
+        return this->secondView.cend();
+    }
+
+    template<typename StatisticType>
+    uint32 DenseDecomposableStatisticVectorView<StatisticType>::getNumElements() const {
+        return this->firstView.numElements;
+    }
+
+    template class DenseDecomposableStatisticVectorView<float32>;
+    template class DenseDecomposableStatisticVectorView<float64>;
+
+    template<typename StatisticType>
+    DenseDecomposableStatisticVector<StatisticType>::DenseDecomposableStatisticVector(uint32 numElements, bool init)
+        : ClearableViewDecorator<ViewDecorator<DenseDecomposableStatisticVectorView<StatisticType>>>(
+            DenseDecomposableStatisticVectorView<StatisticType>(numElements, init)) {}
+
+    template<typename StatisticType>
+    DenseDecomposableStatisticVector<StatisticType>::DenseDecomposableStatisticVector(
+      const DenseDecomposableStatisticVector<StatisticType>& other)
+        : ClearableViewDecorator<ViewDecorator<DenseDecomposableStatisticVectorView<StatisticType>>>(
+            DenseDecomposableStatisticVectorView<StatisticType>(other.getView())) {}
+
+    template<typename StatisticType>
     typename DenseDecomposableStatisticVector<StatisticType>::gradient_iterator
       DenseDecomposableStatisticVector<StatisticType>::gradients_begin() {
-        return this->view.firstView.begin();
+        return this->view.gradients_begin();
     }
 
     template<typename StatisticType>
     typename DenseDecomposableStatisticVector<StatisticType>::gradient_iterator
       DenseDecomposableStatisticVector<StatisticType>::gradients_end() {
-        return this->view.firstView.end();
+        return this->view.gradients_end();
     }
 
     template<typename StatisticType>
     typename DenseDecomposableStatisticVector<StatisticType>::gradient_const_iterator
       DenseDecomposableStatisticVector<StatisticType>::gradients_cbegin() const {
-        return this->view.firstView.cbegin();
+        return this->view.gradients_cbegin();
     }
 
     template<typename StatisticType>
     typename DenseDecomposableStatisticVector<StatisticType>::gradient_const_iterator
       DenseDecomposableStatisticVector<StatisticType>::gradients_cend() const {
-        return this->view.firstView.cend();
+        return this->view.gradients_cend();
     }
 
     template<typename StatisticType>
     typename DenseDecomposableStatisticVector<StatisticType>::hessian_iterator
       DenseDecomposableStatisticVector<StatisticType>::hessians_begin() {
-        return this->view.secondView.begin();
+        return this->view.hessians_begin();
     }
 
     template<typename StatisticType>
     typename DenseDecomposableStatisticVector<StatisticType>::hessian_iterator
       DenseDecomposableStatisticVector<StatisticType>::hessians_end() {
-        return this->view.secondView.end();
+        return this->view.hessians_end();
     }
 
     template<typename StatisticType>
     typename DenseDecomposableStatisticVector<StatisticType>::hessian_const_iterator
       DenseDecomposableStatisticVector<StatisticType>::hessians_cbegin() const {
-        return this->view.secondView.cbegin();
+        return this->view.hessians_cbegin();
     }
 
     template<typename StatisticType>
     typename DenseDecomposableStatisticVector<StatisticType>::hessian_const_iterator
       DenseDecomposableStatisticVector<StatisticType>::hessians_cend() const {
-        return this->view.secondView.cend();
+        return this->view.hessians_cend();
     }
 
     template<typename StatisticType>
     uint32 DenseDecomposableStatisticVector<StatisticType>::getNumElements() const {
-        return this->view.firstView.numElements;
+        return this->view.getNumElements();
     }
 
     template<typename StatisticType>
