@@ -12,6 +12,148 @@
 namespace boosting {
 
     /**
+     * A one-dimensional view that provides access to aggregated gradients and Hessians that have been calculated using
+     * a non-decomposable loss function and are stored in pre-allocated arrays.
+     *
+     * @tparam StatisticType The type of the gradient and Hessians
+     */
+    template<typename StatisticType>
+    class MLRLBOOSTING_API DenseNonDecomposableStatisticVectorView final
+        : public CompositeVector<AllocatedVector<StatisticType>, AllocatedVector<StatisticType>> {
+        public:
+
+            /**
+             * @param numGradients  The number of gradients in the view
+             * @param init          True, if all elements in the view should be value-initialized, false otherwise
+             */
+            DenseNonDecomposableStatisticVectorView(uint32 numGradients, bool init = false);
+
+            /**
+             * @param other A reference to an object of type `DenseNonDecomposableStatisticVectorView` that should be
+             *              copied
+             */
+            DenseNonDecomposableStatisticVectorView(
+              const DenseNonDecomposableStatisticVectorView<StatisticType>& other);
+
+            /**
+             * The type of the gradients and Hessians.
+             */
+            typedef StatisticType statistic_type;
+
+            /**
+             * An iterator that provides access to the gradients in the view and allows to modify them.
+             */
+            typedef typename View<StatisticType>::iterator gradient_iterator;
+
+            /**
+             * An iterator that provides read-only access to the gradients in the view.
+             */
+            typedef typename View<StatisticType>::const_iterator gradient_const_iterator;
+
+            /**
+             * An iterator that provides access to the Hessians in the view and allows to modify them.
+             */
+            typedef typename View<StatisticType>::iterator hessian_iterator;
+
+            /**
+             * An iterator that provides read-only access to the Hessians in the view.
+             */
+            typedef typename View<StatisticType>::const_iterator hessian_const_iterator;
+
+            /**
+             * An iterator that provides read-only access to the Hessians that correspond to the diagonal of the Hessian
+             * matrix.
+             */
+            typedef DiagonalIterator<const StatisticType> hessian_diagonal_const_iterator;
+
+            /**
+             * Returns a `gradient_iterator` to the beginning of the gradients.
+             *
+             * @return A `gradient_iterator` to the beginning
+             */
+            gradient_iterator gradients_begin();
+
+            /**
+             * Returns a `gradient_iterator` to the end of the gradients.
+             *
+             * @return A `gradient_iterator` to the end
+             */
+            gradient_iterator gradients_end();
+
+            /**
+             * Returns a `gradient_const_iterator` to the beginning of the gradients.
+             *
+             * @return A `gradient_const_iterator` to the beginning
+             */
+            gradient_const_iterator gradients_cbegin() const;
+
+            /**
+             * Returns a `gradient_const_iterator` to the end of the gradients.
+             *
+             * @return A `gradient_const_iterator` to the end
+             */
+            gradient_const_iterator gradients_cend() const;
+
+            /**
+             * Returns a `hessian_iterator` to the beginning of the Hessians.
+             *
+             * @return A `hessian_iterator` to the beginning
+             */
+            hessian_iterator hessians_begin();
+
+            /**
+             * Returns a `hessian_iterator` to the end of the Hessians.
+             *
+             * @return A `hessian_iterator` to the end
+             */
+            hessian_iterator hessians_end();
+
+            /**
+             * Returns a `hessian_const_iterator` to the beginning of the Hessians.
+             *
+             * @return A `hessian_const_iterator` to the beginning
+             */
+            hessian_const_iterator hessians_cbegin() const;
+
+            /**
+             * Returns a `hessian_const_iterator` to the end of the Hessians.
+             *
+             * @return A `hessian_const_iterator` to the end
+             */
+            hessian_const_iterator hessians_cend() const;
+
+            /**
+             * Returns a `hessian_diagonal_const_iterator` to the beginning of the Hessians that correspond to the
+             * diagonal of the Hessian matrix.
+             *
+             * @return A `hessian_diagonal_const_iterator` to the beginning
+             */
+            hessian_diagonal_const_iterator hessians_diagonal_cbegin() const;
+
+            /**
+             * Returns a `hessian_diagonal_const_iterator` to the end of the Hessians that correspond to the diagonal of
+             * the Hessian matrix.
+             *
+             * @return A `hessian_diagonal_const_iterator` to the end
+             */
+            hessian_diagonal_const_iterator hessians_diagonal_cend() const;
+
+            /**
+             * Returns the number of gradients in the view.
+             *
+             * @return The number of gradients
+             */
+            uint32 getNumGradients() const;
+
+            /**
+             * Returns the number of Hessians in the view.
+             *
+             + @return The number of Hessians
+             */
+            uint32 getNumHessians() const;
+    };
+
+    /**
      * An one-dimensional vector that stores gradients and Hessians that have been calculated using a non-decomposable
      * loss function in C-contiguous arrays. For each element in the vector a single gradient, but multiple Hessians are
      * stored. In a vector that stores `n` gradients `(n * (n + 1)) / 2` Hessians are stored. The Hessians can be viewed
@@ -21,8 +163,7 @@ namespace boosting {
      */
     template<typename StatisticType>
     class DenseNonDecomposableStatisticVector final
-        : public ClearableViewDecorator<
-            ViewDecorator<CompositeVector<AllocatedVector<StatisticType>, AllocatedVector<StatisticType>>>> {
+        : public ClearableViewDecorator<ViewDecorator<DenseNonDecomposableStatisticVectorView<StatisticType>>> {
         public:
 
             /**
@@ -38,35 +179,39 @@ namespace boosting {
             DenseNonDecomposableStatisticVector(const DenseNonDecomposableStatisticVector<StatisticType>& other);
 
             /**
-             * The type of the gradients and Hessians in the vector.
+             * The type of the gradients and Hessians.
              */
-            typedef StatisticType statistic_type;
+            typedef typename DenseNonDecomposableStatisticVectorView<StatisticType>::statistic_type statistic_type;
 
             /**
              * An iterator that provides access to the gradients in the vector and allows to modify them.
              */
-            typedef typename View<StatisticType>::iterator gradient_iterator;
+            typedef
+              typename DenseNonDecomposableStatisticVectorView<StatisticType>::gradient_iterator gradient_iterator;
 
             /**
              * An iterator that provides read-only access to the gradients in the vector.
              */
-            typedef typename View<StatisticType>::const_iterator gradient_const_iterator;
+            typedef typename DenseNonDecomposableStatisticVectorView<StatisticType>::gradient_const_iterator
+              gradient_const_iterator;
 
             /**
              * An iterator that provides access to the Hessians in the vector and allows to modify them.
              */
-            typedef typename View<StatisticType>::iterator hessian_iterator;
+            typedef typename DenseNonDecomposableStatisticVectorView<StatisticType>::hessian_iterator hessian_iterator;
 
             /**
              * An iterator that provides read-only access to the Hessians in the vector.
              */
-            typedef typename View<StatisticType>::const_iterator hessian_const_iterator;
+            typedef typename DenseNonDecomposableStatisticVectorView<StatisticType>::hessian_const_iterator
+              hessian_const_iterator;
 
             /**
              * An iterator that provides read-only access to the Hessians that correspond to the diagonal of the Hessian
              * matrix.
              */
-            typedef DiagonalIterator<const StatisticType> hessian_diagonal_const_iterator;
+            typedef typename DenseNonDecomposableStatisticVectorView<StatisticType>::hessian_diagonal_const_iterator
+              hessian_diagonal_const_iterator;
 
             /**
              * Returns a `gradient_iterator` to the beginning of the gradients.
