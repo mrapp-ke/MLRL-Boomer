@@ -37,20 +37,20 @@ namespace boosting {
               float32 l1RegularizationWeight, float32 l2RegularizationWeight,
               std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr);
 
-            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float32>>> create(
-              const DenseDecomposableStatisticVector<float32>& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float32>>> create(
+              const DenseDecomposableStatisticVectorView<float32>& statisticVector,
               const CompleteIndexVector& indexVector) const override;
 
-            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float32>>> create(
-              const DenseDecomposableStatisticVector<float32>& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float32>>> create(
+              const DenseDecomposableStatisticVectorView<float32>& statisticVector,
               const PartialIndexVector& indexVector) const override;
 
-            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float64>>> create(
-              const DenseDecomposableStatisticVector<float64>& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float64>>> create(
+              const DenseDecomposableStatisticVectorView<float64>& statisticVector,
               const CompleteIndexVector& indexVector) const override;
 
-            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float64>>> create(
-              const DenseDecomposableStatisticVector<float64>& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float64>>> create(
+              const DenseDecomposableStatisticVectorView<float64>& statisticVector,
               const PartialIndexVector& indexVector) const override;
     };
 
