@@ -226,7 +226,7 @@ namespace util {
      * @param b                 An iterator to the beginning of the view `b`
      * @param c                 An iterator to the beginning of the view `c`
      * @param indices           An iterator to the beginning of the view that provides access to the indices of the
-     * elements in the view `b` that correspond to the elements in the views `a` and `c`
+     *                          elements in the view `b` that correspond to the elements in the views `a` and `c`
      * @param numElements       The number of elements in the view `a`
      */
     template<typename IteratorA, typename IteratorB, typename IteratorC, typename IndexIterator>
