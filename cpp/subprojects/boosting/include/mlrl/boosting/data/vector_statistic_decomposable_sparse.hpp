@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/boosting/data/statistic.hpp"
+#include "mlrl/boosting/util/dll_exports.hpp"
 #include "mlrl/common/data/view_matrix_sparse_set.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
@@ -105,21 +106,21 @@ namespace boosting {
     };
 
     /**
-     * An one-dimensional vector that stores aggregated gradients and Hessians that have been calculated using a
-     * decomposable loss function in a C-contiguous array. For each element in the vector, a single gradient and
-     * Hessian, as well as the sums of the weights of the aggregated gradients and Hessians, is stored.
+     * A one-dimensional view that provides access to aggregated gradients and Hessians, as well as the sums of the
+     * weights of the aggregated gradients and Hessians, that have been calculated using a decomposable loss function
+     * and are stored in pre-allocated arrays.
      *
      * @tparam StatisticType    The type of the gradients and Hessians
      * @tparam WeightType       The type of the weights
      */
     template<typename StatisticType, typename WeightType>
-    class SparseDecomposableStatisticVector final
-        : public VectorDecorator<AllocatedVector<SparseStatistic<StatisticType, WeightType>>> {
+    class MLRLBOOSTING_API SparseDecomposableStatisticVectorView final
+        : public AllocatedVector<SparseStatistic<StatisticType, WeightType>> {
         private:
 
             /**
              * An iterator that provides random read-only access to the gradients in a
-             * `SparseDecomposableStatisticVector`.
+             * `SparseDecomposableStatisticVectorView`.
              */
             class GradientConstIterator final {
                 private:
@@ -132,8 +133,8 @@ namespace boosting {
 
                     /**
                      * @param iterator      An iterator that provides access to the elements in a
-                     *                      `SparseDecomposableStatisticVector`
-                     * @param sumOfWeights  The sum of the weights of all statistics that have been added to the vector
+                     *                      `SparseDecomposableStatisticVectorView`
+                     * @param sumOfWeights  The sum of the weights of all statistics that have been added to the view
                      */
                     GradientConstIterator(
                       typename View<SparseStatistic<StatisticType, WeightType>>::const_iterator iterator,
@@ -234,7 +235,7 @@ namespace boosting {
 
             /**
              * An iterator that provides random read-only access to the Hessians in a
-             * `SparseDecomposableStatisticVector`.
+             * `SparseDecomposableStatisticVectorView`.
              */
             class HessianConstIterator final {
                 private:
@@ -247,8 +248,8 @@ namespace boosting {
 
                     /**
                      * @param iterator      An iterator that provides access to the elements in a
-                     *                      `SparseDecomposableStatisticVector`
-                     * @param sumOfWeights  The sum of the weights of all statistics that have been added to the vector
+                     *                      `SparseDecomposableStatisticVectorView`
+                     * @param sumOfWeights  The sum of the weights of all statistics that have been added to the view
                      */
                     HessianConstIterator(
                       typename View<SparseStatistic<StatisticType, WeightType>>::const_iterator iterator,
@@ -347,8 +348,87 @@ namespace boosting {
                     difference_type operator-(const HessianConstIterator& rhs) const;
             };
 
-            WeightType sumOfWeights_;
+        public:
 
+            /**
+             * The sum of the weights of all statistics that have been added to the view.
+             */
+            WeightType sumOfWeights;
+
+            /**
+             * @param numElements The number of gradients and Hessians in the view
+             * @param init        True, if all elements in the view should be value-initialized, false otherwise
+             */
+            SparseDecomposableStatisticVectorView(uint32 numElements, bool init = false);
+
+            /**
+             * @param other A reference to an object of type `SparseDecomposableStatisticVectorView` to be copied
+             */
+            SparseDecomposableStatisticVectorView(
+              const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& other);
+
+            /**
+             * The type of the gradients and Hessians.
+             */
+            typedef StatisticType statistic_type;
+
+            /**
+             * An iterator that provides read-only access to the gradients in the view.
+             */
+            typedef GradientConstIterator gradient_const_iterator;
+
+            /**
+             * An iterator that provides read-only access to the Hessians in the view.
+             */
+            typedef HessianConstIterator hessian_const_iterator;
+
+            /**
+             * Returns a `gradient_const_iterator` to the beginning of the gradients.
+             *
+             * @return a `gradient_const_iterator` to the beginning
+             */
+            gradient_const_iterator gradients_cbegin() const;
+
+            /**
+             * Returns a `gradient_const_iterator` to the end of the gradients.
+             *
+             * @return a `gradient_const_iterator` to the end
+             */
+            gradient_const_iterator gradients_cend() const;
+
+            /**
+             * Returns a `hessian_const_iterator` to the beginning of the Hessians.
+             *
+             * @return a `hessian_const_iterator` to the beginning
+             */
+            hessian_const_iterator hessians_cbegin() const;
+
+            /**
+             * Returns a `hessian_const_iterator` to the end of the Hessians.
+             *
+             * @return a `hessian_const_iterator` to the end
+             */
+            hessian_const_iterator hessians_cend() const;
+
+            /**
+             * Returns the number of elements in the view.
+             *
+             * @return The number of elements in the view
+             */
+            const uint32 getNumElements() const;
+    };
+
+    /**
+     * An one-dimensional vector that stores aggregated gradients and Hessians that have been calculated using a
+     * decomposable loss function in a C-contiguous array. For each element in the vector, a single gradient and
+     * Hessian, as well as the sums of the weights of the aggregated gradients and Hessians, is stored.
+     *
+     * @tparam StatisticType    The type of the gradients and Hessians
+     * @tparam WeightType       The type of the weights
+     */
+    template<typename StatisticType, typename WeightType>
+    class SparseDecomposableStatisticVector final
+        : public VectorDecorator<SparseDecomposableStatisticVectorView<StatisticType, WeightType>> {
         public:
 
             /**
@@ -367,17 +447,20 @@ namespace boosting {
             /**
              * The type of the gradients and Hessians.
              */
-            typedef StatisticType statistic_type;
+            typedef
+              typename SparseDecomposableStatisticVectorView<StatisticType, WeightType>::statistic_type statistic_type;
 
             /**
              * An iterator that provides read-only access to the gradients in the vector.
              */
-            typedef GradientConstIterator gradient_const_iterator;
+            typedef typename SparseDecomposableStatisticVectorView<StatisticType, WeightType>::gradient_const_iterator
+              gradient_const_iterator;
 
             /**
              * An iterator that provides read-only access to the Hessians in the vector.
              */
-            typedef HessianConstIterator hessian_const_iterator;
+            typedef typename SparseDecomposableStatisticVectorView<StatisticType, WeightType>::hessian_const_iterator
+              hessian_const_iterator;
 
             /**
              * Returns a `gradient_const_iterator` to the beginning of the gradients.
