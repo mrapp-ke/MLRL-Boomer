@@ -109,8 +109,8 @@ namespace boosting {
      * decomposable loss function in a C-contiguous array. For each element in the vector, a single gradient and
      * Hessian, as well as the sums of the weights of the aggregated gradients and Hessians, is stored.
      *
-     * @param StatisticType The type of the gradients and Hessians
-     * @tparam WeightType   The type of the weights
+     * @tparam StatisticType    The type of the gradients and Hessians
+     * @tparam WeightType       The type of the weights
      */
     template<typename StatisticType, typename WeightType>
     class SparseDecomposableStatisticVector final
