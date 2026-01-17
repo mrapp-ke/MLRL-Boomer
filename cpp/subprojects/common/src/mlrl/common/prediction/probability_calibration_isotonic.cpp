@@ -3,6 +3,8 @@
 #include "mlrl/common/data/array.hpp"
 #include "mlrl/common/util/math.hpp"
 
+#include <numeric>
+
 static inline void sortByThresholdsAndEliminateDuplicates(ListOfLists<std::pair<float64, float64>>::row bins) {
     // Sort bins in increasing order by their threshold...
     std::sort(bins.begin(), bins.end(),
@@ -42,7 +44,7 @@ static inline void aggregateNonIncreasingBins(ListOfLists<std::pair<float64, flo
     // `pools[j] = i`...
     uint32 numBins = static_cast<uint32>(bins.size());
     Array<uint32> pools(numBins);
-    util::setViewToIncreasingValues(pools.begin(), numBins, 0, 1);
+    std::iota(pools.begin(), pools.begin() + numBins, 0);
     uint32 i = 0;
     uint32 j = 0;
 

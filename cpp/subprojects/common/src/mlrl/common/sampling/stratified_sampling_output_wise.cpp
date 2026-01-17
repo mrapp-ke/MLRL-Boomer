@@ -40,7 +40,7 @@ static inline uint32* copyLabelMatrix(uint32* indices, uint32* indptr, const Bin
     uint32 numLabels = labelMatrix.numCols;
 
     // Set column indices of the CSC matrix to zero...
-    util::setViewToZeros(indptr, numLabels);
+    std::fill(indptr, indptr + numLabels, 0);
 
     // Determine the number of dense elements per column...
     for (uint32 i = 0; i < numExamples; i++) {

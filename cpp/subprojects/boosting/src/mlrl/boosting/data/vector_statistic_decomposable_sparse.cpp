@@ -1,5 +1,7 @@
 #include "mlrl/boosting/data/vector_statistic_decomposable_sparse.hpp"
 
+#include "mlrl/common/util/array_operations.hpp"
+
 namespace boosting {
 
     template<typename StatisticType, typename WeightType>
@@ -213,7 +215,7 @@ namespace boosting {
     SparseDecomposableStatisticVector<StatisticType, WeightType>::SparseDecomposableStatisticVector(
       const SparseDecomposableStatisticVector<StatisticType, WeightType>& other)
         : SparseDecomposableStatisticVector(other.getNumElements()) {
-        util::copyView(other.view.cbegin(), this->view.begin(), this->getNumElements());
+        util::copy(other.view.cbegin(), this->view.begin(), this->getNumElements());
         sumOfWeights_ = other.sumOfWeights_;
     }
 
@@ -245,7 +247,7 @@ namespace boosting {
     void SparseDecomposableStatisticVector<StatisticType, WeightType>::add(
       const SparseDecomposableStatisticVector& vector) {
         sumOfWeights_ += vector.sumOfWeights_;
-        util::addToView(this->view.begin(), vector.view.cbegin(), this->getNumElements());
+        util::add(this->view.begin(), vector.view.cbegin(), this->getNumElements());
     }
 
     template<typename StatisticType, typename WeightType>
@@ -356,8 +358,7 @@ namespace boosting {
       const CompleteIndexVector& firstIndices,
       const SparseDecomposableStatisticVector<StatisticType, WeightType>& second) {
         sumOfWeights_ = first.sumOfWeights_ - second.sumOfWeights_;
-        util::setViewToDifference(this->view.begin(), first.view.cbegin(), second.view.cbegin(),
-                                  this->getNumElements());
+        util::difference(this->view.begin(), first.view.cbegin(), second.view.cbegin(), this->getNumElements());
     }
 
     template<typename StatisticType, typename WeightType>
@@ -365,8 +366,8 @@ namespace boosting {
       const SparseDecomposableStatisticVector<StatisticType, WeightType>& first, const PartialIndexVector& firstIndices,
       const SparseDecomposableStatisticVector<StatisticType, WeightType>& second) {
         sumOfWeights_ = first.sumOfWeights_ - second.sumOfWeights_;
-        util::setViewToDifference(this->view.begin(), first.view.cbegin(), second.view.cbegin(), firstIndices.cbegin(),
-                                  this->getNumElements());
+        util::difference(this->view.begin(), first.view.cbegin(), second.view.cbegin(), firstIndices.cbegin(),
+                         this->getNumElements());
     }
 
     template<typename StatisticType, typename WeightType>

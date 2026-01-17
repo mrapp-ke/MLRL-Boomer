@@ -1,8 +1,7 @@
 #include "mlrl/seco/data/vector_confusion_matrix_dense.hpp"
 
 #include "mlrl/common/iterator/iterator_forward_sparse_binary.hpp"
-
-#include <algorithm>
+#include "mlrl/common/util/array_operations.hpp"
 
 namespace seco {
 
@@ -64,12 +63,12 @@ namespace seco {
     template<typename StatisticType>
     DenseConfusionMatrixVector<StatisticType>::DenseConfusionMatrixVector(const DenseConfusionMatrixVector& other)
         : DenseConfusionMatrixVector(other.getNumElements()) {
-        util::copyView(other.cbegin(), this->begin(), this->getNumElements());
+        util::copy(other.cbegin(), this->begin(), this->getNumElements());
     }
 
     template<typename StatisticType>
     void DenseConfusionMatrixVector<StatisticType>::add(const DenseConfusionMatrixVector<StatisticType>& other) {
-        util::addToView(this->begin(), other.cbegin(), this->getNumElements());
+        util::add(this->begin(), other.cbegin(), this->getNumElements());
     }
 
     template<typename StatisticType>
@@ -191,7 +190,7 @@ namespace seco {
       typename View<ConfusionMatrix<StatisticType>>::const_iterator firstEnd, const CompleteIndexVector& firstIndices,
       typename View<ConfusionMatrix<StatisticType>>::const_iterator secondBegin,
       typename View<ConfusionMatrix<StatisticType>>::const_iterator secondEnd) {
-        util::setViewToDifference(this->begin(), firstBegin, secondBegin, this->getNumElements());
+        util::difference(this->begin(), firstBegin, secondBegin, this->getNumElements());
     }
 
     template<typename StatisticType>
@@ -201,7 +200,7 @@ namespace seco {
       typename View<ConfusionMatrix<StatisticType>>::const_iterator secondBegin,
       typename View<ConfusionMatrix<StatisticType>>::const_iterator secondEnd) {
         PartialIndexVector::const_iterator indexIterator = firstIndices.cbegin();
-        util::setViewToDifference(this->begin(), firstBegin, secondBegin, indexIterator, this->getNumElements());
+        util::difference(this->begin(), firstBegin, secondBegin, indexIterator, this->getNumElements());
     }
 
     template class DenseConfusionMatrixVector<uint32>;
