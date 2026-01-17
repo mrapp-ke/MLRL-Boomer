@@ -264,30 +264,6 @@ namespace boosting {
             SparseDecomposableStatisticVectorView<StatisticType, WeightType>(other.getView())) {}
 
     template<typename StatisticType, typename WeightType>
-    typename SparseDecomposableStatisticVector<StatisticType, WeightType>::gradient_const_iterator
-      SparseDecomposableStatisticVector<StatisticType, WeightType>::gradients_cbegin() const {
-        return this->view.gradients_cbegin();
-    }
-
-    template<typename StatisticType, typename WeightType>
-    typename SparseDecomposableStatisticVector<StatisticType, WeightType>::gradient_const_iterator
-      SparseDecomposableStatisticVector<StatisticType, WeightType>::gradients_cend() const {
-        return this->view.gradients_cend();
-    }
-
-    template<typename StatisticType, typename WeightType>
-    typename SparseDecomposableStatisticVector<StatisticType, WeightType>::hessian_const_iterator
-      SparseDecomposableStatisticVector<StatisticType, WeightType>::hessians_cbegin() const {
-        return this->view.hessians_cbegin();
-    }
-
-    template<typename StatisticType, typename WeightType>
-    typename SparseDecomposableStatisticVector<StatisticType, WeightType>::hessian_const_iterator
-      SparseDecomposableStatisticVector<StatisticType, WeightType>::hessians_cend() const {
-        return this->view.hessians_cend();
-    }
-
-    template<typename StatisticType, typename WeightType>
     void SparseDecomposableStatisticVector<StatisticType, WeightType>::add(
       const SparseDecomposableStatisticVector& vector) {
         this->view.sumOfWeights += vector.view.sumOfWeights;

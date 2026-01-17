@@ -184,108 +184,6 @@ namespace boosting {
             typedef typename DenseNonDecomposableStatisticVectorView<StatisticType>::statistic_type statistic_type;
 
             /**
-             * An iterator that provides access to the gradients in the vector and allows to modify them.
-             */
-            typedef
-              typename DenseNonDecomposableStatisticVectorView<StatisticType>::gradient_iterator gradient_iterator;
-
-            /**
-             * An iterator that provides read-only access to the gradients in the vector.
-             */
-            typedef typename DenseNonDecomposableStatisticVectorView<StatisticType>::gradient_const_iterator
-              gradient_const_iterator;
-
-            /**
-             * An iterator that provides access to the Hessians in the vector and allows to modify them.
-             */
-            typedef typename DenseNonDecomposableStatisticVectorView<StatisticType>::hessian_iterator hessian_iterator;
-
-            /**
-             * An iterator that provides read-only access to the Hessians in the vector.
-             */
-            typedef typename DenseNonDecomposableStatisticVectorView<StatisticType>::hessian_const_iterator
-              hessian_const_iterator;
-
-            /**
-             * An iterator that provides read-only access to the Hessians that correspond to the diagonal of the Hessian
-             * matrix.
-             */
-            typedef typename DenseNonDecomposableStatisticVectorView<StatisticType>::hessian_diagonal_const_iterator
-              hessian_diagonal_const_iterator;
-
-            /**
-             * Returns a `gradient_iterator` to the beginning of the gradients.
-             *
-             * @return A `gradient_iterator` to the beginning
-             */
-            gradient_iterator gradients_begin();
-
-            /**
-             * Returns a `gradient_iterator` to the end of the gradients.
-             *
-             * @return A `gradient_iterator` to the end
-             */
-            gradient_iterator gradients_end();
-
-            /**
-             * Returns a `gradient_const_iterator` to the beginning of the gradients.
-             *
-             * @return A `gradient_const_iterator` to the beginning
-             */
-            gradient_const_iterator gradients_cbegin() const;
-
-            /**
-             * Returns a `gradient_const_iterator` to the end of the gradients.
-             *
-             * @return A `gradient_const_iterator` to the end
-             */
-            gradient_const_iterator gradients_cend() const;
-
-            /**
-             * Returns a `hessian_iterator` to the beginning of the Hessians.
-             *
-             * @return A `hessian_iterator` to the beginning
-             */
-            hessian_iterator hessians_begin();
-
-            /**
-             * Returns a `hessian_iterator` to the end of the Hessians.
-             *
-             * @return A `hessian_iterator` to the end
-             */
-            hessian_iterator hessians_end();
-
-            /**
-             * Returns a `hessian_const_iterator` to the beginning of the Hessians.
-             *
-             * @return A `hessian_const_iterator` to the beginning
-             */
-            hessian_const_iterator hessians_cbegin() const;
-
-            /**
-             * Returns a `hessian_const_iterator` to the end of the Hessians.
-             *
-             * @return A `hessian_const_iterator` to the end
-             */
-            hessian_const_iterator hessians_cend() const;
-
-            /**
-             * Returns a `hessian_diagonal_const_iterator` to the beginning of the Hessians that correspond to the
-             * diagonal of the Hessian matrix.
-             *
-             * @return A `hessian_diagonal_const_iterator` to the beginning
-             */
-            hessian_diagonal_const_iterator hessians_diagonal_cbegin() const;
-
-            /**
-             * Returns a `hessian_diagonal_const_iterator` to the end of the Hessians that correspond to the diagonal of
-             * the Hessian matrix.
-             *
-             * @return A `hessian_diagonal_const_iterator` to the end
-             */
-            hessian_diagonal_const_iterator hessians_diagonal_cend() const;
-
-            /**
              * Returns the number of gradients in the vector.
              *
              * @return The number of gradients
@@ -302,10 +200,10 @@ namespace boosting {
             /**
              * Adds all gradients and Hessians in another vector to this vector.
              *
-             * @param view A reference to an object of type `DenseNonDecomposableStatisticVector` that stores the
-             *             gradients and Hessians to be added to this vector
+             * @param vector A reference to an object of type `DenseNonDecomposableStatisticVector` that stores the
+             *               gradients and Hessians to be added to this vector
              */
-            void add(const DenseNonDecomposableStatisticVector<StatisticType>& view);
+            void add(const DenseNonDecomposableStatisticVector<StatisticType>& vector);
 
             /**
              * Adds all gradients and Hessians in a single row of a `DenseNonDecomposableStatisticView` to this vector.

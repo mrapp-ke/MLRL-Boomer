@@ -451,46 +451,6 @@ namespace boosting {
               typename SparseDecomposableStatisticVectorView<StatisticType, WeightType>::statistic_type statistic_type;
 
             /**
-             * An iterator that provides read-only access to the gradients in the vector.
-             */
-            typedef typename SparseDecomposableStatisticVectorView<StatisticType, WeightType>::gradient_const_iterator
-              gradient_const_iterator;
-
-            /**
-             * An iterator that provides read-only access to the Hessians in the vector.
-             */
-            typedef typename SparseDecomposableStatisticVectorView<StatisticType, WeightType>::hessian_const_iterator
-              hessian_const_iterator;
-
-            /**
-             * Returns a `gradient_const_iterator` to the beginning of the gradients.
-             *
-             * @return a `gradient_const_iterator` to the beginning
-             */
-            gradient_const_iterator gradients_cbegin() const;
-
-            /**
-             * Returns a `gradient_const_iterator` to the end of the gradients.
-             *
-             * @return a `gradient_const_iterator` to the end
-             */
-            gradient_const_iterator gradients_cend() const;
-
-            /**
-             * Returns a `hessian_const_iterator` to the beginning of the Hessians.
-             *
-             * @return a `hessian_const_iterator` to the beginning
-             */
-            hessian_const_iterator hessians_cbegin() const;
-
-            /**
-             * Returns a `hessian_const_iterator` to the end of the Hessians.
-             *
-             * @return a `hessian_const_iterator` to the end
-             */
-            hessian_const_iterator hessians_cend() const;
-
-            /**
              * Adds all gradients and Hessians in another vector to this vector.
              *
              * @param vector A reference to an object of type `SparseDecomposableStatisticVector` that stores the
