@@ -5,7 +5,7 @@ Provides classes for configuring the arguments of a command line interface.
 """
 import sys
 
-from argparse import ArgumentError, ArgumentParser, Namespace, _ArgumentGroup
+from argparse import Action, ArgumentError, ArgumentParser, Namespace, _ArgumentGroup
 from enum import Enum
 from functools import cached_property
 from pathlib import Path
@@ -470,10 +470,21 @@ class CommandLineInterface:
         self._argument_groups: Dict[str, _ArgumentGroup] = {}
 
         if version_text:
+
+            class VersionAction(Action):
+                """
+                Prints the version text.
+                """
+
+                @override
+                def __call__(self, parser, namespace, values, option_string=None):
+                    print(version_text)
+                    parser.exit()
+
             argument_parser.add_argument('-v',
                                          '--version',
-                                         action='version',
-                                         version=version_text,
+                                         nargs=0,
+                                         action=VersionAction,
                                          help='Display information about the program.')
 
     def add_arguments(self, *arguments: Argument, group: Optional[str] = None):
