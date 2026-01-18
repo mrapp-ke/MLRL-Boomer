@@ -57,8 +57,8 @@ namespace seco {
 
     template<typename StatisticType>
     DenseConfusionMatrixVector<StatisticType>::DenseConfusionMatrixVector(uint32 numElements, bool init)
-        : ClearableViewDecorator<DenseVectorDecorator<AllocatedVector<ConfusionMatrix<StatisticType>>>>(
-            AllocatedVector<ConfusionMatrix<StatisticType>>(numElements, init)) {}
+        : ClearableViewDecorator<DenseVectorDecorator<DenseConfusionMatrixVectorView<StatisticType>>>(
+            DenseConfusionMatrixVectorView<StatisticType>(numElements, init)) {}
 
     template<typename StatisticType>
     DenseConfusionMatrixVector<StatisticType>::DenseConfusionMatrixVector(const DenseConfusionMatrixVector& other)

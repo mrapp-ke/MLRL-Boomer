@@ -104,8 +104,8 @@ namespace seco {
             std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresAccumulated() override {
                 const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(
                   this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
-                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), this->subsetSumVector_,
-                  *accumulatedSumVectorPtr_);
+                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), this->subsetSumVector_.getView(),
+                  accumulatedSumVectorPtr_->getView());
                 return this->state_.createUpdateCandidate(scoreVector);
             }
 
@@ -117,7 +117,8 @@ namespace seco {
                                       this->sumVector_.cbegin(), this->sumVector_.cend());
                 const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(
                   this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
-                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), this->subsetSumVector_, tmpVector_);
+                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), this->subsetSumVector_.getView(),
+                  tmpVector_.getView());
                 return this->state_.createUpdateCandidate(scoreVector);
             }
 
@@ -129,7 +130,8 @@ namespace seco {
                                       accumulatedSumVectorPtr_->cbegin(), accumulatedSumVectorPtr_->cend());
                 const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(
                   this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
-                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), this->subsetSumVector_, tmpVector_);
+                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), this->subsetSumVector_.getView(),
+                  tmpVector_.getView());
                 return this->state_.createUpdateCandidate(scoreVector);
             }
     };
