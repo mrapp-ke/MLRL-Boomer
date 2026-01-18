@@ -165,10 +165,6 @@ if host_machine.system() == 'windows'
     if multi_threading_support_enabled
         cpp_args += '/openmp'
     endif
-
-    if gpu_support_enabled
-        link_args += 'OpenCL.lib'
-    endif
 elif host_machine.system() == 'darwin'
     cpp_args += '-Xclang'
 
@@ -176,19 +172,10 @@ elif host_machine.system() == 'darwin'
         cpp_args += '-fopenmp'
         link_args += '-lomp'
     endif
-
-    if gpu_support_enabled
-        link_args += '-framework'
-        link_args += 'OpenCL'
-    endif
 else
     if multi_threading_support_enabled
         cpp_args += '-fopenmp'
         link_args += '-fopenmp'
-    endif
-
-    if gpu_support_enabled
-        link_args += '-lOpenCL'
     endif
 endif
 
