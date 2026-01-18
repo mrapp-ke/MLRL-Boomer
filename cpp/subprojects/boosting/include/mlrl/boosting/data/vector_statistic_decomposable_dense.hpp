@@ -11,29 +11,27 @@
 namespace boosting {
 
     /**
-     * An one-dimensional vector that stores aggregated gradients and Hessians that have been calculated using a
-     * decomposable loss function in a C-contiguous array. For each element in the vector a single gradient and Hessian
-     * is stored.
+     * A one-dimensional view that provides access to aggregated gradients and Hessians that have been calculated using
+     * a decomposable loss function and are stored in pre-allocated arrays.
      *
      * @tparam StatisticType The type of the gradient and Hessians
      */
     template<typename StatisticType>
-    class DenseDecomposableStatisticVector final
-        : public ClearableViewDecorator<
-            ViewDecorator<CompositeVector<AllocatedVector<StatisticType>, AllocatedVector<StatisticType>>>> {
+    class MLRLBOOSTING_API DenseDecomposableStatisticVectorView final
+        : public CompositeVector<AllocatedVector<StatisticType>, AllocatedVector<StatisticType>> {
         public:
 
             /**
-             * @param numElements   The number of gradients and Hessians in the vector
-             * @param init          True, if all gradients and Hessians in the vector should be initialized with zero,
-             *                      false otherwise
+             * @param numElements The number of elements in the view
+             * @param init        True, if all elements in the view should be value-initialized, false otherwise
              */
-            DenseDecomposableStatisticVector(uint32 numElements, bool init = false);
+            DenseDecomposableStatisticVectorView(uint32 numElements, bool init = false);
 
             /**
-             * @param other A reference to an object of type `DenseDecomposableStatisticVector` to be copied
+             * @param other A reference to an object of type `DenseDecomposableStatisticVectorView` that should be
+             *              copied
              */
-            DenseDecomposableStatisticVector(const DenseDecomposableStatisticVector<StatisticType>& other);
+            DenseDecomposableStatisticVectorView(const DenseDecomposableStatisticVectorView<StatisticType>& other);
 
             /**
              * The type of the gradients and Hessians.
@@ -41,22 +39,22 @@ namespace boosting {
             typedef StatisticType statistic_type;
 
             /**
-             * An iterator that provides access to the gradients in the vector and allows to modify them.
+             * An iterator that provides access to the gradients in the view and allows to modify them.
              */
             typedef typename View<StatisticType>::iterator gradient_iterator;
 
             /**
-             * An iterator that provides read-only access to the gradients in the vector.
+             * An iterator that provides read-only access to the gradients in the view.
              */
             typedef typename View<StatisticType>::const_iterator gradient_const_iterator;
 
             /**
-             * An iterator that provides access to the Hessians in the vector and allows to modify them.
+             * An iterator that provides access to the Hessians in the view and allows to modify them.
              */
             typedef typename View<StatisticType>::iterator hessian_iterator;
 
             /**
-             * An iterator that provides read-only access to the Hessians in the vector.
+             * An iterator that provides read-only access to the Hessians in the view.
              */
             typedef typename View<StatisticType>::const_iterator hessian_const_iterator;
 
@@ -115,6 +113,38 @@ namespace boosting {
              * @return A `hessian_const_iterator` to the end
              */
             hessian_const_iterator hessians_cend() const;
+
+            /**
+             * Returns the number of elements in the view.
+             *
+             * @return The number of elements
+             */
+            uint32 getNumElements() const;
+    };
+
+    /**
+     * An one-dimensional vector that stores aggregated gradients and Hessians that have been calculated using a
+     * decomposable loss function in a C-contiguous array. For each element in the vector a single gradient and Hessian
+     * is stored.
+     *
+     * @tparam StatisticType The type of the gradient and Hessians
+     */
+    template<typename StatisticType>
+    class DenseDecomposableStatisticVector final
+        : public ClearableViewDecorator<ViewDecorator<DenseDecomposableStatisticVectorView<StatisticType>>> {
+        public:
+
+            /**
+             * @param numElements   The number of gradients and Hessians in the vector
+             * @param init          True, if all gradients and Hessians in the vector should be initialized with zero,
+             *                      false otherwise
+             */
+            DenseDecomposableStatisticVector(uint32 numElements, bool init = false);
+
+            /**
+             * @param other A reference to an object of type `DenseDecomposableStatisticVector` to be copied
+             */
+            DenseDecomposableStatisticVector(const DenseDecomposableStatisticVector<StatisticType>& other);
 
             /**
              * Returns the number of elements in the vector.

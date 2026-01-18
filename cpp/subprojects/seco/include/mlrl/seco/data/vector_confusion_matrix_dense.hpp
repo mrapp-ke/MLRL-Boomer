@@ -12,13 +12,22 @@
 namespace seco {
 
     /**
+     * An one-dimensional view that provides access to a fixed number of confusion matrices in a pre-allocated
+     * C-contiguous array.
+     *
+     * @tparam StatisticType The type of the elements stored in the confusion matrices
+     */
+    template<typename StatisticType>
+    using DenseConfusionMatrixVectorView = AllocatedVector<ConfusionMatrix<StatisticType>>;
+
+    /**
      * An one-dimensional vector that stores a fixed number of confusion matrices in a C-contiguous array.
      *
      * @tparam StatisticType The type of the elements stored in the confusion matrices
      */
     template<typename StatisticType>
     class DenseConfusionMatrixVector final
-        : public ClearableViewDecorator<DenseVectorDecorator<AllocatedVector<ConfusionMatrix<StatisticType>>>> {
+        : public ClearableViewDecorator<DenseVectorDecorator<DenseConfusionMatrixVectorView<StatisticType>>> {
         public:
 
             /**

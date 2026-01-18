@@ -96,7 +96,8 @@ namespace boosting {
              * @see `IResettableStatisticsSubset::calculateScoresAccumulated`
              */
             std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresAccumulated() override {
-                const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(*accumulatedSumVectorPtr_);
+                const IScoreVector& scoreVector =
+                  this->ruleEvaluationPtr_->calculateScores(accumulatedSumVectorPtr_->getView());
                 return this->state_.createUpdateCandidate(scoreVector);
             }
 
@@ -105,7 +106,7 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresUncovered() override {
                 tmpVector_.difference(*totalSumVector_, this->outputIndices_, this->sumVector_);
-                const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(tmpVector_);
+                const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(tmpVector_.getView());
                 return this->state_.createUpdateCandidate(scoreVector);
             }
 
@@ -114,7 +115,7 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresUncoveredAccumulated() override {
                 tmpVector_.difference(*totalSumVector_, this->outputIndices_, *accumulatedSumVectorPtr_);
-                const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(tmpVector_);
+                const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(tmpVector_.getView());
                 return this->state_.createUpdateCandidate(scoreVector);
             }
     };
