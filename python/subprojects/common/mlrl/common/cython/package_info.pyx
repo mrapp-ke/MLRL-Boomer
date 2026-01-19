@@ -179,3 +179,12 @@ def is_simd_support_enabled() -> bool:
     :return: True, if the SIMD support is enabled, False otherwise
     """
     return isSimdSupportEnabled()
+
+
+def get_supported_simd_extensions() -> List[str]:
+    """
+    Returns the names of all instruction set extensions for SIMD operations available on the machine.
+
+    :return: A list that contains the names of all supported instruction set extensions
+    """
+    return getSupportedSimdExtensions()

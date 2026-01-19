@@ -168,3 +168,10 @@ MLRLCOMMON_API std::vector<std::string> getGpuDevices();
  * @return True, if SIMD support is enabled, false otherwise
  */
 MLRLCOMMON_API bool isSimdSupportEnabled();
+
+/**
+ * Returns the names of all instruction set extensions for SIMD operations available on the machine.
+ *
+ * @return An `std::vector` that contains the names of all supported instruction set extensions
+ */
+MLRLCOMMON_API std::vector<std::string> getSupportedSimdExtensions();

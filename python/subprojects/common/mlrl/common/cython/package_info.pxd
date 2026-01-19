@@ -56,6 +56,8 @@ cdef extern from "mlrl/common/library_info.hpp" nogil:
 
     bool isSimdSupportEnabled()
 
+    vector[string] getSupportedSimdExtensions()
+
 
 cdef extern from *:
     """

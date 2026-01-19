@@ -5,18 +5,16 @@
 #include "mlrl/common/util/threads.hpp"
 #include "mlrl/common/util/xsimd.hpp"
 
-static inline std::string formatGpuDevices() {
-    std::vector<std::string> devices = util::getSupportedGpuDevices();
-
-    if (!devices.empty()) {
+static inline std::string formatVector(const std::vector<std::string>& vector) {
+    if (!vector.empty()) {
         std::string result = "";
 
-        for (auto it = devices.cbegin(); it != devices.cend(); it++) {
+        for (auto element : vector) {
             if (!result.empty()) {
                 result += ", ";
             }
 
-            result += *it;
+            result += element;
         }
 
         return result;
@@ -64,8 +62,15 @@ class CommonLibraryInfo final : public ILibraryInfo {
             }
 
             if (GPU_SUPPORT_ENABLED) {
-                HardwareResource gpuHardwareResource("supported GPU devices", formatGpuDevices());
+                HardwareResource gpuHardwareResource("supported GPU devices",
+                                                     formatVector(util::getSupportedGpuDevices()));
                 visitor(gpuHardwareResource);
+            }
+
+            if (SIMD_SUPPORT_ENABLED) {
+                HardwareResource simdHardwareResource("supported SIMD extensions",
+                                                      formatVector(util::getSupportedSimdExtensions()));
+                visitor(simdHardwareResource);
             }
         }
 };
@@ -96,4 +101,8 @@ std::vector<std::string> getGpuDevices() {
 
 bool isSimdSupportEnabled() {
     return SIMD_SUPPORT_ENABLED ? true : false;
+}
+
+std::vector<std::string> getSupportedSimdExtensions() {
+    return util::getSupportedSimdExtensions();
 }
