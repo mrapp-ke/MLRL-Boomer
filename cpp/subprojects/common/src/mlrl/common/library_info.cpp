@@ -93,3 +93,7 @@ bool isGpuAvailable() {
 std::vector<std::string> getGpuDevices() {
     return util::getSupportedGpuDevices();
 }
+
+bool isSimdSupportEnabled() {
+    return SIMD_SUPPORT_ENABLED ? true : false;
+}

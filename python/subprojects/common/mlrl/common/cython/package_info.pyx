@@ -170,3 +170,12 @@ def get_gpu_devices() -> List[str]:
     :return: A list that contains the names of all supported GPUs
     """
     return getGpuDevices()
+
+
+def is_simd_support_enabled() -> bool:
+    """
+    Returns whether SIMD support was enabled at compile-time or not.
+
+    :return: True, if the SIMD support is enabled, False otherwise
+    """
+    return isSimdSupportEnabled()

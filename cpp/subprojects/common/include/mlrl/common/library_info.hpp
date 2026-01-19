@@ -161,3 +161,10 @@ MLRLCOMMON_API bool isGpuAvailable();
  * @return An `std::vector` that contains the names of all supported GPUs
  */
 MLRLCOMMON_API std::vector<std::string> getGpuDevices();
+
+/**
+ * Returns whether SIMD support was enabled at compile-time or not.
+ *
+ * @return True, if SIMD support is enabled, false otherwise
+ */
+MLRLCOMMON_API bool isSimdSupportEnabled();
