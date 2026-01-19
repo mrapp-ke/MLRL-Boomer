@@ -3,6 +3,7 @@
 #include "config.hpp"
 #include "mlrl/common/util/opencl.hpp"
 #include "mlrl/common/util/threads.hpp"
+#include "mlrl/common/util/xsimd.hpp"
 
 static inline std::string formatGpuDevices() {
     std::vector<std::string> devices = util::getSupportedGpuDevices();
@@ -50,6 +51,10 @@ class CommonLibraryInfo final : public ILibraryInfo {
             BuildOption gpuBuildOption("GPU_SUPPORT_ENABLED", "GPU support",
                                        GPU_SUPPORT_ENABLED ? "enabled" : "disabled");
             visitor(gpuBuildOption);
+
+            BuildOption simdBuildOption("SIMD_SUPPORT_ENABLED", "SIMD support",
+                                        SIMD_SUPPORT_ENABLED ? "enabled" : "disabled");
+            visitor(simdBuildOption);
         }
 
         void visitHardwareResources(HardwareResourceVisitor visitor) const override {
