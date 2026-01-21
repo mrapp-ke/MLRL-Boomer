@@ -132,7 +132,7 @@ target_architecture = host_machine.cpu_family() + '-' + host_machine.system()
 
 # Dependencies
 opencl_dep = dependency('OpenCL', required : get_option('gpu_support'))
-xsimd_dep = dependency('xsimd', required : get_option('simd_support'))
+xsimd_dep = dependency('xsimd', fallback : ['xsimd', 'xsimd_dep'], required : get_option('simd_support'))
 
 dependencies = [
     opencl_dep,

@@ -217,7 +217,8 @@ class Project:
             """
             return FileSearch() \
                 .set_recursive(True) \
-                .exclude_subdirectories_by_name(Project.Cpp.build_directory_name)
+                .exclude_subdirectories_by_name(Project.Cpp.build_directory_name) \
+                .exclude_subdirectories_by_name('xsimd')
 
         @staticmethod
         def find_subprojects() -> Set[Path]:
@@ -228,8 +229,10 @@ class Project:
             """
             return {
                 meson_file.parent
-                for meson_file in Project.Cpp.file_search().filter_by_name('meson.build').list(
-                    Project.Cpp.root_directory) if not meson_file.parent.samefile(Project.Cpp.root_directory)
+                for meson_file in Project.Cpp.file_search() \
+                    .exclude_subdirectories_by_name('packagefiles') \
+                    .filter_by_name('meson.build') \
+                    .list(Project.Cpp.root_directory) if not meson_file.parent.samefile(Project.Cpp.root_directory)
             }
 
     class Documentation:
