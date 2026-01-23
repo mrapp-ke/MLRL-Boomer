@@ -12,7 +12,7 @@ concurrency:
 jobs:
   changes:
     name: Detect changes
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     outputs:
       linux: ${{ steps.filter.outputs.linux }}
       macos: ${{ steps.filter.outputs.macos }}
@@ -65,7 +65,7 @@ jobs:
     needs: test_release
     if: ${{ always() && !cancelled() && needs.changes.outputs.build_files == 'true' }}
     name: Test publishing packages succeeded
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     steps:
       - name: Check for success
         run: |-

@@ -12,7 +12,7 @@ on:
 jobs:
   merge:
     name: Merge ${{ inputs.source_branch }} into ${{ inputs.target_branch }} branch
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     steps:
       - name: Generate token
         uses: actions/create-github-app-token@v2
