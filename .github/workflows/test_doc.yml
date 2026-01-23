@@ -12,7 +12,7 @@ concurrency:
 jobs:
   changes:
     name: Detect changes
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     outputs:
       cpp: ${{ steps.filter.outputs.cpp }}
       python: ${{ steps.filter.outputs.python }}
@@ -91,7 +91,7 @@ jobs:
       - check_spelling
     if: ${{ always() && !cancelled() }}
     name: Test building documentation succeeded
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     steps:
       - name: Check for success
         run: |-

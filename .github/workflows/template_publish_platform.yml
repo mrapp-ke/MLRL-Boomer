@@ -21,7 +21,7 @@ on:
 jobs:
   python_version:
     name: Determine supported Python versions
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     outputs:
       python_version: ${{ steps.python_version.outputs.python_version }}
     steps:
