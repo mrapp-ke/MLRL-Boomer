@@ -10,7 +10,7 @@ on:
 jobs:
   retry_failed_workflow:
     name: Retry failed workflows
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     permissions:
       actions: write
     steps:

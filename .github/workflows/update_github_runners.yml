@@ -23,7 +23,7 @@ on:
 jobs:
   update_github_runners:
     name: Update GitHub runners
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     steps:
       - name: Checkout
         uses: actions/checkout@v6

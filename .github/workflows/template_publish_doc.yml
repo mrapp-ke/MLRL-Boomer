@@ -16,7 +16,7 @@ jobs:
   push_doc:
     needs: build_doc
     name: Push documentation
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     steps:
       - name: Generate token
         uses: actions/create-github-app-token@v2

@@ -12,7 +12,7 @@ concurrency:
 jobs:
   changes:
     name: Detect changes
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     outputs:
       linux: ${{ steps.filter.outputs.linux }}
       macos: ${{ steps.filter.outputs.macos }}
@@ -155,7 +155,7 @@ jobs:
               - '.github/workflows/template_build_windows.yml'
   python_version:
     name: Determine supported Python versions
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     outputs:
       python_version: ${{ steps.python_version.outputs.python_version }}
     steps:
@@ -239,7 +239,7 @@ jobs:
       - test_pure_packages
     if: ${{ always() && !cancelled() }}
     name: Test build succeeded
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     steps:
       - name: Check for success
         run: |-
