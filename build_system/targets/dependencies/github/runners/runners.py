@@ -37,7 +37,7 @@ class RunnerVersion:
 
         :return: True, if the version is the latest, False otherwise
         """
-        return self.version == 'latest'
+        return self.version in {'latest', 'slim'}
 
     @property
     def version_numbers(self) -> List[int]:

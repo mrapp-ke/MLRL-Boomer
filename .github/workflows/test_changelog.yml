@@ -12,7 +12,7 @@ concurrency:
 jobs:
   test_changelog:
     name: Validate changelog
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     steps:
       - name: Checkout
         uses: actions/checkout@v6
