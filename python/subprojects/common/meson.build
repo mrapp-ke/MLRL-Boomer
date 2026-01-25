@@ -64,7 +64,6 @@ cpp_args = [
 ]
 
 # Directory into which the extension modules and Python source files should be installed
-python_version = python.language_version()
 package_dir = 'mlrl' / meson.project_name()
 install_dir = meson.current_source_dir() / package_dir / cython_dir
 

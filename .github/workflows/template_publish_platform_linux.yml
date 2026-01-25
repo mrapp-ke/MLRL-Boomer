@@ -19,6 +19,7 @@ env:
   SUBPROJECTS: ${{ inputs.subproject }}
   RELEASE: ${{ inputs.release == true }}
   TEST_SUPPORT: disabled
+  SIMD_SUPPORT: disabled
   GPU_SUPPORT: disabled
 jobs:
   build_identifiers:
@@ -64,7 +65,7 @@ jobs:
       - name: Build package
         uses: pypa/cibuildwheel@v3.3
         env:
-          CIBW_ENVIRONMENT_PASS_LINUX: SUBPROJECTS RELEASE TEST_SUPPORT GPU_SUPPORT
+          CIBW_ENVIRONMENT_PASS_LINUX: SUBPROJECTS RELEASE TEST_SUPPORT SIMD_SUPPORT GPU_SUPPORT
           CIBW_BUILD: ${{ matrix.build_identifier }}
           CIBW_BEFORE_BUILD: ./build pyproject_toml
         with:

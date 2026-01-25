@@ -202,6 +202,7 @@ jobs:
       run_python_tests: ${{ needs.changes.outputs[format('python_tests_{0}', matrix.subproject)] == 'true' }}
       python_version: ${{ needs.python_version.outputs.python_version }}
       multi_threading_support: disabled
+      simd_support: disabled
       gpu_support: disabled
       ccache: false
     secrets: inherit
