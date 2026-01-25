@@ -7,6 +7,7 @@
 #include "mlrl/common/data/view_vector_composite.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
+#include "mlrl/common/util/array_operations.hpp"
 
 namespace boosting {
 
@@ -121,9 +122,10 @@ namespace boosting {
      * decomposable loss function in a C-contiguous array. For each element in the vector a single gradient and Hessian
      * is stored.
      *
-     * @tparam StatisticType The type of the gradient and Hessians
+     * @tparam StatisticType    The type of the gradient and Hessians
+     * @tparam ArrayOperations  The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename StatisticType>
+    template<typename StatisticType, typename ArrayOperations = SequentialArrayOperations>
     class DenseDecomposableStatisticVector final
         : public ClearableViewDecorator<ViewDecorator<DenseDecomposableStatisticVectorView<StatisticType>>> {
         public:
@@ -138,7 +140,8 @@ namespace boosting {
             /**
              * @param other A reference to an object of type `DenseDecomposableStatisticVector` to be copied
              */
-            DenseDecomposableStatisticVector(const DenseDecomposableStatisticVector<StatisticType>& other);
+            DenseDecomposableStatisticVector(
+              const DenseDecomposableStatisticVector<StatisticType, ArrayOperations>& other);
 
             /**
              * Returns the number of elements in the vector.
