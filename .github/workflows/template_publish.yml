@@ -48,3 +48,82 @@ jobs:
       macos: ${{ inputs.macos }}
       windows: ${{ inputs.windows }}
     secrets: inherit
+  run_wheels:
+    needs:
+      - publish_pure
+      - publish_platform
+    if: ${{ inputs.release == false }}
+    name: Run wheels
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-24.04
+          - ubuntu-24.04-arm
+          - macos-26
+          - macos-15-intel
+          - windows-2025
+          - windows-11-arm
+        subproject:
+          - boosting
+          - seco
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Determine supported Python versions
+        id: python_version
+        run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ steps.python_version.outputs.python_version }}
+          check-latest: true
+          cache: pip
+          cache-dependency-path: '**/requirements.txt'
+      - name: Create virtual environment
+        if: ${{ !startsWith(matrix.os, 'windows-') }}
+        run: ./build install_runtime_dependencies
+      - name: Create virtual environment
+        if: ${{ startsWith(matrix.os, 'windows-') }}
+        run: .\build.bat install_runtime_dependencies
+      - name: Download wheels
+        uses: actions/download-artifact@v7
+        with:
+          pattern: wheels-*
+          path: wheelhouse
+          merge-multiple: true
+      - name: Install wheels
+        if: ${{ !startsWith(matrix.os, 'windows-') }}
+        env:
+          PACKAGE_NAME: mlrl-${{ matrix.subproject == 'boosting' && 'boomer' || matrix.subproject }}
+        run: |
+          . .venv/bin/activate
+          python -m pip install --find-links wheelhouse --no-index --no-deps mlrl-util
+          python -m pip install --find-links wheelhouse --no-index --no-deps mlrl-testbed
+          python -m pip install --find-links wheelhouse --no-index --no-deps mlrl-testbed-arff
+          python -m pip install --find-links wheelhouse --no-index --no-deps mlrl-testbed-sklearn
+          python -m pip install --find-links wheelhouse --no-index --no-deps mlrl-common
+          python -m pip install --find-links wheelhouse --no-index --no-deps $PACKAGE_NAME
+      - name: Install wheels
+        if: ${{ startsWith(matrix.os, 'windows-') }}
+        env:
+          PACKAGE_NAME: mlrl-${{ matrix.subproject == 'boosting' && 'boomer' || matrix.subproject }}
+        run: |
+          call .venv\Scripts\activate.bat
+          python -m pip install --find-links wheelhouse --no-index --no-deps mlrl-util
+          python -m pip install --find-links wheelhouse --no-index --no-deps mlrl-testbed
+          python -m pip install --find-links wheelhouse --no-index --no-deps mlrl-testbed-arff
+          python -m pip install --find-links wheelhouse --no-index --no-deps mlrl-testbed-sklearn
+          python -m pip install --find-links wheelhouse --no-index --no-deps mlrl-common
+          python -m pip install --find-links wheelhouse --no-index --no-deps $PACKAGE_NAME
+      - name: Run wheel
+        if: ${{ !startsWith(matrix.os, 'windows-') }}
+        run: |
+          . .venv/bin/activate
+          mlrl-testbed mlrl.${{ matrix.subproject }} --version
+      - name: Run wheel
+        if: ${{ startsWith(matrix.os, 'windows-') }}
+        run: |-
+          call .venv\Scripts\activate.bat
+          mlrl-testbed mlrl.${{ matrix.subproject }} --version
