@@ -1,7 +1,6 @@
 #include "mlrl/boosting/data/vector_statistic_non_decomposable_dense.hpp"
 
 #include "mlrl/boosting/util/math.hpp"
-#include "mlrl/common/util/array_operations.hpp"
 
 namespace boosting {
 
@@ -86,144 +85,136 @@ namespace boosting {
     template class DenseNonDecomposableStatisticVectorView<float32>;
     template class DenseNonDecomposableStatisticVectorView<float64>;
 
-    template<typename StatisticType>
-    DenseNonDecomposableStatisticVector<StatisticType>::DenseNonDecomposableStatisticVector(uint32 numGradients,
-                                                                                            bool init)
+    template<typename StatisticType, typename ArrayOperations>
+    DenseNonDecomposableStatisticVector<StatisticType, ArrayOperations>::DenseNonDecomposableStatisticVector(
+      uint32 numGradients, bool init)
         : ClearableViewDecorator<ViewDecorator<DenseNonDecomposableStatisticVectorView<StatisticType>>>(
             DenseNonDecomposableStatisticVectorView<StatisticType>(numGradients, init)) {}
 
-    template<typename StatisticType>
-    DenseNonDecomposableStatisticVector<StatisticType>::DenseNonDecomposableStatisticVector(
-      const DenseNonDecomposableStatisticVector<StatisticType>& other)
-        : DenseNonDecomposableStatisticVector<StatisticType>(other.getNumGradients()) {
-        SequentialArrayOperations::copy(other.view.gradients_cbegin(), this->view.gradients_begin(),
-                                        this->getNumGradients());
-        SequentialArrayOperations::copy(other.view.hessians_cbegin(), this->view.hessians_begin(),
-                                        this->getNumHessians());
+    template<typename StatisticType, typename ArrayOperations>
+    DenseNonDecomposableStatisticVector<StatisticType, ArrayOperations>::DenseNonDecomposableStatisticVector(
+      const DenseNonDecomposableStatisticVector<StatisticType, ArrayOperations>& other)
+        : DenseNonDecomposableStatisticVector<StatisticType, ArrayOperations>(other.getNumGradients()) {
+        ArrayOperations::copy(other.view.gradients_cbegin(), this->view.gradients_begin(), this->getNumGradients());
+        ArrayOperations::copy(other.view.hessians_cbegin(), this->view.hessians_begin(), this->getNumHessians());
     }
 
-    template<typename StatisticType>
-    uint32 DenseNonDecomposableStatisticVector<StatisticType>::getNumGradients() const {
+    template<typename StatisticType, typename ArrayOperations>
+    uint32 DenseNonDecomposableStatisticVector<StatisticType, ArrayOperations>::getNumGradients() const {
         return this->view.getNumGradients();
     }
 
-    template<typename StatisticType>
-    uint32 DenseNonDecomposableStatisticVector<StatisticType>::getNumHessians() const {
+    template<typename StatisticType, typename ArrayOperations>
+    uint32 DenseNonDecomposableStatisticVector<StatisticType, ArrayOperations>::getNumHessians() const {
         return this->view.getNumHessians();
     }
 
-    template<typename StatisticType>
-    void DenseNonDecomposableStatisticVector<StatisticType>::add(
+    template<typename StatisticType, typename ArrayOperations>
+    void DenseNonDecomposableStatisticVector<StatisticType, ArrayOperations>::add(
       const DenseNonDecomposableStatisticVectorView<StatisticType>& vector) {
-        SequentialArrayOperations::add(this->view.gradients_begin(), vector.gradients_cbegin(),
-                                       this->getNumGradients());
-        SequentialArrayOperations::add(this->view.hessians_begin(), vector.hessians_cbegin(), this->getNumHessians());
+        ArrayOperations::add(this->view.gradients_begin(), vector.gradients_cbegin(), this->getNumGradients());
+        ArrayOperations::add(this->view.hessians_begin(), vector.hessians_cbegin(), this->getNumHessians());
     }
 
-    template<typename StatisticType>
-    void DenseNonDecomposableStatisticVector<StatisticType>::add(
+    template<typename StatisticType, typename ArrayOperations>
+    void DenseNonDecomposableStatisticVector<StatisticType, ArrayOperations>::add(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row) {
-        SequentialArrayOperations::add(this->view.gradients_begin(), view.gradients_cbegin(row),
-                                       this->getNumGradients());
-        SequentialArrayOperations::add(this->view.hessians_begin(), view.hessians_cbegin(row), this->getNumHessians());
+        ArrayOperations::add(this->view.gradients_begin(), view.gradients_cbegin(row), this->getNumGradients());
+        ArrayOperations::add(this->view.hessians_begin(), view.hessians_cbegin(row), this->getNumHessians());
     }
 
-    template<typename StatisticType>
-    void DenseNonDecomposableStatisticVector<StatisticType>::add(
+    template<typename StatisticType, typename ArrayOperations>
+    void DenseNonDecomposableStatisticVector<StatisticType, ArrayOperations>::add(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row, StatisticType weight) {
-        SequentialArrayOperations::addWeighted(this->view.gradients_begin(), view.gradients_cbegin(row),
-                                               this->getNumGradients(), weight);
-        SequentialArrayOperations::addWeighted(this->view.hessians_begin(), view.hessians_cbegin(row),
-                                               this->getNumHessians(), weight);
+        ArrayOperations::addWeighted(this->view.gradients_begin(), view.gradients_cbegin(row), this->getNumGradients(),
+                                     weight);
+        ArrayOperations::addWeighted(this->view.hessians_begin(), view.hessians_cbegin(row), this->getNumHessians(),
+                                     weight);
     }
 
-    template<typename StatisticType>
-    void DenseNonDecomposableStatisticVector<StatisticType>::remove(
+    template<typename StatisticType, typename ArrayOperations>
+    void DenseNonDecomposableStatisticVector<StatisticType, ArrayOperations>::remove(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row) {
-        SequentialArrayOperations::subtract(this->view.gradients_begin(), view.gradients_cbegin(row),
-                                            this->getNumGradients());
-        SequentialArrayOperations::subtract(this->view.hessians_begin(), view.hessians_cbegin(row),
-                                            this->getNumHessians());
+        ArrayOperations::subtract(this->view.gradients_begin(), view.gradients_cbegin(row), this->getNumGradients());
+        ArrayOperations::subtract(this->view.hessians_begin(), view.hessians_cbegin(row), this->getNumHessians());
     }
 
-    template<typename StatisticType>
-    void DenseNonDecomposableStatisticVector<StatisticType>::remove(
+    template<typename StatisticType, typename ArrayOperations>
+    void DenseNonDecomposableStatisticVector<StatisticType, ArrayOperations>::remove(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row, StatisticType weight) {
-        SequentialArrayOperations::subtractWeighted(this->view.gradients_begin(), view.gradients_cbegin(row),
-                                                    this->getNumGradients(), weight);
-        SequentialArrayOperations::subtractWeighted(this->view.hessians_begin(), view.hessians_cbegin(row),
-                                                    this->getNumHessians(), weight);
+        ArrayOperations::subtractWeighted(this->view.gradients_begin(), view.gradients_cbegin(row),
+                                          this->getNumGradients(), weight);
+        ArrayOperations::subtractWeighted(this->view.hessians_begin(), view.hessians_cbegin(row),
+                                          this->getNumHessians(), weight);
     }
 
-    template<typename StatisticType>
-    void DenseNonDecomposableStatisticVector<StatisticType>::addToSubset(
+    template<typename StatisticType, typename ArrayOperations>
+    void DenseNonDecomposableStatisticVector<StatisticType, ArrayOperations>::addToSubset(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row, const CompleteIndexVector& indices) {
-        SequentialArrayOperations::add(this->view.gradients_begin(), view.gradients_cbegin(row),
-                                       this->getNumGradients());
-        SequentialArrayOperations::add(this->view.hessians_begin(), view.hessians_cbegin(row), this->getNumHessians());
+        ArrayOperations::add(this->view.gradients_begin(), view.gradients_cbegin(row), this->getNumGradients());
+        ArrayOperations::add(this->view.hessians_begin(), view.hessians_cbegin(row), this->getNumHessians());
     }
 
-    template<typename StatisticType>
-    void DenseNonDecomposableStatisticVector<StatisticType>::addToSubset(
+    template<typename StatisticType, typename ArrayOperations>
+    void DenseNonDecomposableStatisticVector<StatisticType, ArrayOperations>::addToSubset(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row, const PartialIndexVector& indices) {
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
-        SequentialArrayOperations::add(this->view.gradients_begin(), view.gradients_cbegin(row), indexIterator,
-                                       this->getNumGradients());
+        ArrayOperations::add(this->view.gradients_begin(), view.gradients_cbegin(row), indexIterator,
+                             this->getNumGradients());
         typename DenseNonDecomposableStatisticView<StatisticType>::hessian_const_iterator hessiansBegin =
           view.hessians_cbegin(row);
 
         for (uint32 i = 0; i < this->getNumGradients(); i++) {
             uint32 index = indexIterator[i];
-            SequentialArrayOperations::add(&this->view.hessians_begin()[util::triangularNumber(i)],
-                                           &hessiansBegin[util::triangularNumber(index)], indexIterator, i + 1);
+            ArrayOperations::add(&this->view.hessians_begin()[util::triangularNumber(i)],
+                                 &hessiansBegin[util::triangularNumber(index)], indexIterator, i + 1);
         }
     }
 
-    template<typename StatisticType>
-    void DenseNonDecomposableStatisticVector<StatisticType>::addToSubset(
+    template<typename StatisticType, typename ArrayOperations>
+    void DenseNonDecomposableStatisticVector<StatisticType, ArrayOperations>::addToSubset(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row, const CompleteIndexVector& indices,
       StatisticType weight) {
-        SequentialArrayOperations::addWeighted(this->view.gradients_begin(), view.gradients_cbegin(row),
-                                               this->getNumGradients(), weight);
-        SequentialArrayOperations::addWeighted(this->view.hessians_begin(), view.hessians_cbegin(row),
-                                               this->getNumHessians(), weight);
+        ArrayOperations::addWeighted(this->view.gradients_begin(), view.gradients_cbegin(row), this->getNumGradients(),
+                                     weight);
+        ArrayOperations::addWeighted(this->view.hessians_begin(), view.hessians_cbegin(row), this->getNumHessians(),
+                                     weight);
     }
 
-    template<typename StatisticType>
-    void DenseNonDecomposableStatisticVector<StatisticType>::addToSubset(
+    template<typename StatisticType, typename ArrayOperations>
+    void DenseNonDecomposableStatisticVector<StatisticType, ArrayOperations>::addToSubset(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row, const PartialIndexVector& indices,
       StatisticType weight) {
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
-        SequentialArrayOperations::addWeighted(this->view.gradients_begin(), view.gradients_cbegin(row), indexIterator,
-                                               this->getNumGradients(), weight);
+        ArrayOperations::addWeighted(this->view.gradients_begin(), view.gradients_cbegin(row), indexIterator,
+                                     this->getNumGradients(), weight);
         typename DenseNonDecomposableStatisticView<StatisticType>::hessian_const_iterator hessiansBegin =
           view.hessians_cbegin(row);
 
         for (uint32 i = 0; i < this->getNumGradients(); i++) {
             uint32 index = indexIterator[i];
-            SequentialArrayOperations::addWeighted(&this->view.hessians_begin()[util::triangularNumber(i)],
-                                                   &hessiansBegin[util::triangularNumber(index)], indexIterator, i + 1,
-                                                   weight);
+            ArrayOperations::addWeighted(&this->view.hessians_begin()[util::triangularNumber(i)],
+                                         &hessiansBegin[util::triangularNumber(index)], indexIterator, i + 1, weight);
         }
     }
 
-    template<typename StatisticType>
-    void DenseNonDecomposableStatisticVector<StatisticType>::difference(
+    template<typename StatisticType, typename ArrayOperations>
+    void DenseNonDecomposableStatisticVector<StatisticType, ArrayOperations>::difference(
       const DenseNonDecomposableStatisticVectorView<StatisticType>& first, const CompleteIndexVector& firstIndices,
       const DenseNonDecomposableStatisticVectorView<StatisticType>& second) {
-        SequentialArrayOperations::difference(this->view.gradients_begin(), first.gradients_cbegin(),
-                                              second.gradients_cbegin(), this->getNumGradients());
-        SequentialArrayOperations::difference(this->view.hessians_begin(), first.hessians_cbegin(),
-                                              second.hessians_cbegin(), this->getNumHessians());
+        ArrayOperations::difference(this->view.gradients_begin(), first.gradients_cbegin(), second.gradients_cbegin(),
+                                    this->getNumGradients());
+        ArrayOperations::difference(this->view.hessians_begin(), first.hessians_cbegin(), second.hessians_cbegin(),
+                                    this->getNumHessians());
     }
 
-    template<typename StatisticType>
-    void DenseNonDecomposableStatisticVector<StatisticType>::difference(
+    template<typename StatisticType, typename ArrayOperations>
+    void DenseNonDecomposableStatisticVector<StatisticType, ArrayOperations>::difference(
       const DenseNonDecomposableStatisticVectorView<StatisticType>& first, const PartialIndexVector& firstIndices,
       const DenseNonDecomposableStatisticVectorView<StatisticType>& second) {
         PartialIndexVector::const_iterator indexIterator = firstIndices.cbegin();
-        SequentialArrayOperations::difference(this->view.gradients_begin(), first.gradients_cbegin(),
-                                              second.gradients_cbegin(), indexIterator, this->getNumGradients());
+        ArrayOperations::difference(this->view.gradients_begin(), first.gradients_cbegin(), second.gradients_cbegin(),
+                                    indexIterator, this->getNumGradients());
         typename DenseNonDecomposableStatisticVectorView<StatisticType>::hessian_const_iterator firstHessiansBegin =
           first.hessians_cbegin();
         typename DenseNonDecomposableStatisticVectorView<StatisticType>::hessian_const_iterator secondHessiansBegin =
@@ -232,9 +223,9 @@ namespace boosting {
         for (uint32 i = 0; i < this->getNumGradients(); i++) {
             uint32 offset = util::triangularNumber(i);
             uint32 index = indexIterator[i];
-            SequentialArrayOperations::difference(&this->view.hessians_begin()[offset],
-                                                  &firstHessiansBegin[util::triangularNumber(index)],
-                                                  &secondHessiansBegin[offset], indexIterator, i + 1);
+            ArrayOperations::difference(&this->view.hessians_begin()[offset],
+                                        &firstHessiansBegin[util::triangularNumber(index)],
+                                        &secondHessiansBegin[offset], indexIterator, i + 1);
         }
     }
 

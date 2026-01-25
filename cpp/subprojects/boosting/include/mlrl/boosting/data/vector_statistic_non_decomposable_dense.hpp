@@ -8,6 +8,7 @@
 #include "mlrl/common/data/view_vector_composite.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
+#include "mlrl/common/util/array_operations.hpp"
 
 namespace boosting {
 
@@ -152,9 +153,10 @@ namespace boosting {
      * stored. In a vector that stores `n` gradients `(n * (n + 1)) / 2` Hessians are stored. The Hessians can be viewed
      * as a symmetric Hessian matrix with `n` rows and columns.
      *
-     * @tparam StatisticType The type of the gradients and Hessians
+     * @tparam StatisticType    The type of the gradients and Hessians
+     * @tparam ArrayOperations  The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename StatisticType>
+    template<typename StatisticType, typename ArrayOperations = SequentialArrayOperations>
     class DenseNonDecomposableStatisticVector final
         : public ClearableViewDecorator<ViewDecorator<DenseNonDecomposableStatisticVectorView<StatisticType>>> {
         public:
@@ -169,7 +171,8 @@ namespace boosting {
             /**
              * @param other A reference to an object of type `DenseNonDecomposableStatisticVector` to be copied
              */
-            DenseNonDecomposableStatisticVector(const DenseNonDecomposableStatisticVector<StatisticType>& other);
+            DenseNonDecomposableStatisticVector(
+              const DenseNonDecomposableStatisticVector<StatisticType, ArrayOperations>& other);
 
             /**
              * Returns the number of gradients in the vector.
