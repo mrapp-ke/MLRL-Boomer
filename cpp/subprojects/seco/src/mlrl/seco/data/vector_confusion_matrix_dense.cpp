@@ -63,12 +63,12 @@ namespace seco {
     template<typename StatisticType>
     DenseConfusionMatrixVector<StatisticType>::DenseConfusionMatrixVector(const DenseConfusionMatrixVector& other)
         : DenseConfusionMatrixVector(other.getNumElements()) {
-        util::copy(other.cbegin(), this->begin(), this->getNumElements());
+        SequentialArrayOperations::copy(other.cbegin(), this->begin(), this->getNumElements());
     }
 
     template<typename StatisticType>
     void DenseConfusionMatrixVector<StatisticType>::add(const DenseConfusionMatrixVector<StatisticType>& other) {
-        util::add(this->begin(), other.cbegin(), this->getNumElements());
+        SequentialArrayOperations::add(this->begin(), other.cbegin(), this->getNumElements());
     }
 
     template<typename StatisticType>
@@ -190,7 +190,7 @@ namespace seco {
       typename View<ConfusionMatrix<StatisticType>>::const_iterator firstEnd, const CompleteIndexVector& firstIndices,
       typename View<ConfusionMatrix<StatisticType>>::const_iterator secondBegin,
       typename View<ConfusionMatrix<StatisticType>>::const_iterator secondEnd) {
-        util::difference(this->begin(), firstBegin, secondBegin, this->getNumElements());
+        SequentialArrayOperations::difference(this->begin(), firstBegin, secondBegin, this->getNumElements());
     }
 
     template<typename StatisticType>
@@ -200,7 +200,8 @@ namespace seco {
       typename View<ConfusionMatrix<StatisticType>>::const_iterator secondBegin,
       typename View<ConfusionMatrix<StatisticType>>::const_iterator secondEnd) {
         PartialIndexVector::const_iterator indexIterator = firstIndices.cbegin();
-        util::difference(this->begin(), firstBegin, secondBegin, indexIterator, this->getNumElements());
+        SequentialArrayOperations::difference(this->begin(), firstBegin, secondBegin, indexIterator,
+                                              this->getNumElements());
     }
 
     template class DenseConfusionMatrixVector<uint32>;

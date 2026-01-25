@@ -145,7 +145,7 @@ namespace boosting {
     SparseDecomposableStatisticVectorView<StatisticType, WeightType>::SparseDecomposableStatisticVectorView(
       const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& other)
         : SparseDecomposableStatisticVectorView<StatisticType, WeightType>(other.numElements) {
-        util::copy(other.cbegin(), this->begin(), this->numElements);
+        SequentialArrayOperations::copy(other.cbegin(), this->begin(), this->numElements);
         sumOfWeights = other.sumOfWeights;
     }
 
@@ -267,7 +267,7 @@ namespace boosting {
     void SparseDecomposableStatisticVector<StatisticType, WeightType>::add(
       const SparseDecomposableStatisticVector& vector) {
         this->view.sumOfWeights += vector.view.sumOfWeights;
-        util::add(this->view.begin(), vector.view.cbegin(), this->getNumElements());
+        SequentialArrayOperations::add(this->view.begin(), vector.view.cbegin(), this->getNumElements());
     }
 
     template<typename StatisticType, typename WeightType>
@@ -378,7 +378,8 @@ namespace boosting {
       const CompleteIndexVector& firstIndices,
       const SparseDecomposableStatisticVector<StatisticType, WeightType>& second) {
         this->view.sumOfWeights = first.view.sumOfWeights - second.view.sumOfWeights;
-        util::difference(this->view.begin(), first.view.cbegin(), second.view.cbegin(), this->getNumElements());
+        SequentialArrayOperations::difference(this->view.begin(), first.view.cbegin(), second.view.cbegin(),
+                                              this->getNumElements());
     }
 
     template<typename StatisticType, typename WeightType>
@@ -386,8 +387,8 @@ namespace boosting {
       const SparseDecomposableStatisticVector<StatisticType, WeightType>& first, const PartialIndexVector& firstIndices,
       const SparseDecomposableStatisticVector<StatisticType, WeightType>& second) {
         this->view.sumOfWeights = first.view.sumOfWeights - second.view.sumOfWeights;
-        util::difference(this->view.begin(), first.view.cbegin(), second.view.cbegin(), firstIndices.cbegin(),
-                         this->getNumElements());
+        SequentialArrayOperations::difference(this->view.begin(), first.view.cbegin(), second.view.cbegin(),
+                                              firstIndices.cbegin(), this->getNumElements());
     }
 
     template<typename StatisticType, typename WeightType>
