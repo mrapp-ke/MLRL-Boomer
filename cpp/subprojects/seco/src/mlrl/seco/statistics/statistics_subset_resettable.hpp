@@ -91,7 +91,7 @@ namespace seco {
                     accumulatedSumVectorPtr_ = std::make_unique<StatisticVector>(this->sumVector_);
                 } else {
                     // Add the sums of statistics to the accumulated sums of statistics...
-                    accumulatedSumVectorPtr_->add(this->sumVector_);
+                    accumulatedSumVectorPtr_->add(this->sumVector_.getView());
                 }
 
                 // Reset the sums of statistics to zero...
@@ -113,8 +113,7 @@ namespace seco {
              * @see `IResettableStatisticsSubset::calculateScoresUncovered`
              */
             std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresUncovered() override {
-                tmpVector_.difference(totalSumVector_->cbegin(), totalSumVector_->cend(), this->outputIndices_,
-                                      this->sumVector_.cbegin(), this->sumVector_.cend());
+                tmpVector_.difference(totalSumVector_->getView(), this->outputIndices_, this->sumVector_.getView());
                 const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(
                   this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
                   this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), this->subsetSumVector_.getView(),
@@ -126,8 +125,8 @@ namespace seco {
              * @see `IResettableStatisticsSubset::calculateScoresUncoveredAccumulated`
              */
             std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresUncoveredAccumulated() override {
-                tmpVector_.difference(totalSumVector_->cbegin(), totalSumVector_->cend(), this->outputIndices_,
-                                      accumulatedSumVectorPtr_->cbegin(), accumulatedSumVectorPtr_->cend());
+                tmpVector_.difference(totalSumVector_->getView(), this->outputIndices_,
+                                      accumulatedSumVectorPtr_->getView());
                 const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(
                   this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
                   this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), this->subsetSumVector_.getView(),

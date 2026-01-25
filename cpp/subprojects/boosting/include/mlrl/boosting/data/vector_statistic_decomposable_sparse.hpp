@@ -441,10 +441,10 @@ namespace boosting {
             /**
              * Adds all gradients and Hessians in another vector to this vector.
              *
-             * @param vector A reference to an object of type `SparseDecomposableStatisticVector` that stores the
+             * @param vector A reference to an object of type `SparseDecomposableStatisticVectorView` that stores the
              *               gradients and Hessians to be added to this vector
              */
-            void add(const SparseDecomposableStatisticVector<StatisticType, WeightType>& vector);
+            void add(const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& vector);
 
             /**
              * Adds all gradients and Hessians in a single row of a `SparseSetView` to this vector.
@@ -543,32 +543,32 @@ namespace boosting {
              * and Hessians in two other vectors, considering only the gradients and Hessians in the first vector that
              * correspond to the positions provided by a `CompleteIndexVector`.
              *
-             * @param first         A reference to an object of type `SparseDecomposableStatisticVector` that stores the
-             *                      gradients and Hessians in the first vector
+             * @param first         A reference to an object of type `SparseDecomposableStatisticVectorView` that stores
+             *                      the gradients and Hessians in the first vector
              * @param firstIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
              *                      indices
-             * @param second        A reference to an object of type `SparseDecomposableStatisticVector` that stores the
-             *                      gradients and Hessians in the second vector
+             * @param second        A reference to an object of type `SparseDecomposableStatisticVectorView` that stores
+             *                      the gradients and Hessians in the second vector
              */
-            void difference(const SparseDecomposableStatisticVector<StatisticType, WeightType>& first,
+            void difference(const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& first,
                             const CompleteIndexVector& firstIndices,
-                            const SparseDecomposableStatisticVector<StatisticType, WeightType>& second);
+                            const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& second);
 
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
              * and Hessians in two other vectors, considering only the gradients and Hessians in the first vector that
              * correspond to the positions provided by a `PartialIndexVector`.
              *
-             * @param first         A reference to an object of type `SparseDecomposableStatisticVector` that stores the
-             *                      gradients and Hessians in the first vector
+             * @param first         A reference to an object of type `SparseDecomposableStatisticVectorView` that stores
+             *                      the gradients and Hessians in the first vector
              * @param firstIndices  A reference to an object of type `PartialIndexVector` that provides access to the
              *                      indices
-             * @param second        A reference to an object of type `SparseDecomposableStatisticVector` that stores the
-             *                      gradients and Hessians in the second vector
+             * @param second        A reference to an object of type `SparseDecomposableStatisticVectorView` that stores
+             *                      the gradients and Hessians in the second vector
              */
-            void difference(const SparseDecomposableStatisticVector<StatisticType, WeightType>& first,
+            void difference(const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& first,
                             const PartialIndexVector& firstIndices,
-                            const SparseDecomposableStatisticVector<StatisticType, WeightType>& second);
+                            const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& second);
 
             /**
              * Sets all gradients and Hessians stored in this vector to zero.

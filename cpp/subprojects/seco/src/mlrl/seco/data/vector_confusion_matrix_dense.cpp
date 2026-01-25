@@ -68,7 +68,7 @@ namespace seco {
     }
 
     template<typename StatisticType>
-    void DenseConfusionMatrixVector<StatisticType>::add(const DenseConfusionMatrixVector<StatisticType>& other) {
+    void DenseConfusionMatrixVector<StatisticType>::add(const DenseConfusionMatrixVectorView<StatisticType>& other) {
         SequentialArrayOperations::add(this->begin(), other.cbegin(), this->getNumElements());
     }
 
@@ -187,21 +187,17 @@ namespace seco {
 
     template<typename StatisticType>
     void DenseConfusionMatrixVector<StatisticType>::difference(
-      typename View<ConfusionMatrix<StatisticType>>::const_iterator firstBegin,
-      typename View<ConfusionMatrix<StatisticType>>::const_iterator firstEnd, const CompleteIndexVector& firstIndices,
-      typename View<ConfusionMatrix<StatisticType>>::const_iterator secondBegin,
-      typename View<ConfusionMatrix<StatisticType>>::const_iterator secondEnd) {
-        SequentialArrayOperations::difference(this->begin(), firstBegin, secondBegin, this->getNumElements());
+      const DenseConfusionMatrixVectorView<StatisticType>& first, const CompleteIndexVector& firstIndices,
+      const DenseConfusionMatrixVectorView<StatisticType>& second) {
+        SequentialArrayOperations::difference(this->begin(), first.cbegin(), second.cbegin(), this->getNumElements());
     }
 
     template<typename StatisticType>
     void DenseConfusionMatrixVector<StatisticType>::difference(
-      typename View<ConfusionMatrix<StatisticType>>::const_iterator firstBegin,
-      typename View<ConfusionMatrix<StatisticType>>::const_iterator firstEnd, const PartialIndexVector& firstIndices,
-      typename View<ConfusionMatrix<StatisticType>>::const_iterator secondBegin,
-      typename View<ConfusionMatrix<StatisticType>>::const_iterator secondEnd) {
+      const DenseConfusionMatrixVectorView<StatisticType>& first, const PartialIndexVector& firstIndices,
+      const DenseConfusionMatrixVectorView<StatisticType>& second) {
         PartialIndexVector::const_iterator indexIterator = firstIndices.cbegin();
-        SequentialArrayOperations::difference(this->begin(), firstBegin, secondBegin, indexIterator,
+        SequentialArrayOperations::difference(this->begin(), first.cbegin(), second.cbegin(), indexIterator,
                                               this->getNumElements());
     }
 

@@ -150,10 +150,10 @@ namespace boosting {
             /**
              * Adds all gradients and Hessians in another vector to this vector.
              *
-             * @param vector A reference to an object of type `DenseDecomposableStatisticVector` that stores the
+             * @param vector A reference to an object of type `DenseDecomposableStatisticVectorView` that stores the
              *               gradients and Hessians to be added to this vector
              */
-            void add(const DenseDecomposableStatisticVector<StatisticType>& vector);
+            void add(const DenseDecomposableStatisticVectorView<StatisticType>& vector);
 
             /**
              * Adds all gradients and Hessians in a single row of a `DenseDecomposableStatisticView` to this vector.
@@ -253,32 +253,32 @@ namespace boosting {
              * and Hessians in two other vectors, considering only the gradients and Hessians in the first vector that
              * correspond to the positions provided by a `CompleteIndexVector`.
              *
-             * @param first         A reference to an object of type `DenseDecomposableStatisticVector` that stores the
-             *                      gradients and Hessians in the first vector
+             * @param first         A reference to an object of type `DenseDecomposableStatisticVectorView` that stores
+             *                      the gradients and Hessians in the first vector
              * @param firstIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
              *                      indices
-             * @param second        A reference to an object of type `DenseDecomposableStatisticVector` that stores the
-             *                      gradients and Hessians in the second vector
+             * @param second        A reference to an object of type `DenseDecomposableStatisticVectorView` that stores
+             *                      the gradients and Hessians in the second vector
              */
-            void difference(const DenseDecomposableStatisticVector<StatisticType>& first,
+            void difference(const DenseDecomposableStatisticVectorView<StatisticType>& first,
                             const CompleteIndexVector& firstIndices,
-                            const DenseDecomposableStatisticVector<StatisticType>& second);
+                            const DenseDecomposableStatisticVectorView<StatisticType>& second);
 
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
              * and Hessians in two other vectors, considering only the gradients and Hessians in the first vector that
              * correspond to the positions provided by a `PartialIndexVector`.
              *
-             * @param first         A reference to an object of type `DenseDecomposableStatisticVector` that stores the
-             *                      gradients and Hessians in the first vector
+             * @param first         A reference to an object of type `DenseDecomposableStatisticVectorView` that stores
+             *                      the gradients and Hessians in the first vector
              * @param firstIndices  A reference to an object of type `PartialIndexVector` that provides access to the
              *                      indices
-             * @param second        A reference to an object of type `DenseDecomposableStatisticVector` that stores the
-             *                      gradients and Hessians in the second vector
+             * @param second        A reference to an object of type `DenseDecomposableStatisticVectorView` that stores
+             *                      the gradients and Hessians in the second vector
              */
-            void difference(const DenseDecomposableStatisticVector<StatisticType>& first,
+            void difference(const DenseDecomposableStatisticVectorView<StatisticType>& first,
                             const PartialIndexVector& firstIndices,
-                            const DenseDecomposableStatisticVector<StatisticType>& second);
+                            const DenseDecomposableStatisticVectorView<StatisticType>& second);
     };
 
 }

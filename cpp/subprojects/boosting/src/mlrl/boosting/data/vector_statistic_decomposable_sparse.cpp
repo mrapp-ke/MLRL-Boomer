@@ -259,9 +259,9 @@ namespace boosting {
 
     template<typename StatisticType, typename WeightType>
     void SparseDecomposableStatisticVector<StatisticType, WeightType>::add(
-      const SparseDecomposableStatisticVector& vector) {
-        this->view.sumOfWeights += vector.view.sumOfWeights;
-        SequentialArrayOperations::add(this->view.begin(), vector.view.cbegin(), this->getNumElements());
+      const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& vector) {
+        this->view.sumOfWeights += vector.sumOfWeights;
+        SequentialArrayOperations::add(this->view.begin(), vector.cbegin(), this->getNumElements());
     }
 
     template<typename StatisticType, typename WeightType>
@@ -368,20 +368,21 @@ namespace boosting {
 
     template<typename StatisticType, typename WeightType>
     void SparseDecomposableStatisticVector<StatisticType, WeightType>::difference(
-      const SparseDecomposableStatisticVector<StatisticType, WeightType>& first,
+      const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& first,
       const CompleteIndexVector& firstIndices,
-      const SparseDecomposableStatisticVector<StatisticType, WeightType>& second) {
-        this->view.sumOfWeights = first.view.sumOfWeights - second.view.sumOfWeights;
-        SequentialArrayOperations::difference(this->view.begin(), first.view.cbegin(), second.view.cbegin(),
+      const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& second) {
+        this->view.sumOfWeights = first.sumOfWeights - second.sumOfWeights;
+        SequentialArrayOperations::difference(this->view.begin(), first.cbegin(), second.cbegin(),
                                               this->getNumElements());
     }
 
     template<typename StatisticType, typename WeightType>
     void SparseDecomposableStatisticVector<StatisticType, WeightType>::difference(
-      const SparseDecomposableStatisticVector<StatisticType, WeightType>& first, const PartialIndexVector& firstIndices,
-      const SparseDecomposableStatisticVector<StatisticType, WeightType>& second) {
-        this->view.sumOfWeights = first.view.sumOfWeights - second.view.sumOfWeights;
-        SequentialArrayOperations::difference(this->view.begin(), first.view.cbegin(), second.view.cbegin(),
+      const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& first,
+      const PartialIndexVector& firstIndices,
+      const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& second) {
+        this->view.sumOfWeights = first.sumOfWeights - second.sumOfWeights;
+        SequentialArrayOperations::difference(this->view.begin(), first.cbegin(), second.cbegin(),
                                               firstIndices.cbegin(), this->getNumElements());
     }
 

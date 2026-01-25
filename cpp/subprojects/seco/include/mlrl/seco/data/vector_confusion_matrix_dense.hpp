@@ -44,9 +44,10 @@ namespace seco {
             /**
              * Adds all confusion matrix elements in another vector to this vector.
              *
-             * @param other A reference to an object of type `DenseConfusionMatrixVector` to be copied
+             * @param other A reference to an object of type `DenseConfusionMatrixVectorView`  that stores the confusion
+             *              matrices to be added to this vector
              */
-            void add(const DenseConfusionMatrixVector<StatisticType>& other);
+            void add(const DenseConfusionMatrixVectorView<StatisticType>& other);
 
             /**
              * Adds the confusion matrix elements that correspond to an example at a specific index to this vector. The
@@ -161,36 +162,32 @@ namespace seco {
              * in two other vectors, considering only the elements in the first vector that correspond to the positions
              * provided by a `CompleteIndexVector`.
              *
-             * @param firstBegin    A `const_iterator` to the beginning of the first vector
-             * @param firstEnd      A `const_iterator` to the end of the first vector
+             * @param first         A reference to an object of type `DenseConfusionMatrixVectorView` that stores the
+             *                      confusion matrices in the first vector
              * @param firstIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
              *                      indices
-             * @param secondBegin  A `const_iterator` to the beginning of the second vector
-             * @param secondEnd    A `const_iterator` to the end of the second vector
+             * @param second        A reference to an object of type `DenseConfusionMatrixVectorView` that stores the
+             *                      confusion matrices in the second vector
              */
-            void difference(typename View<ConfusionMatrix<StatisticType>>::const_iterator firstBegin,
-                            typename View<ConfusionMatrix<StatisticType>>::const_iterator firstEnd,
+            void difference(const DenseConfusionMatrixVectorView<StatisticType>& first,
                             const CompleteIndexVector& firstIndices,
-                            typename View<ConfusionMatrix<StatisticType>>::const_iterator secondBegin,
-                            typename View<ConfusionMatrix<StatisticType>>::const_iterator secondEnd);
+                            const DenseConfusionMatrixVectorView<StatisticType>& second);
 
             /**
              * Sets the confusion matrix elements in this vector to the difference `first - second` between the elements
              * in two other vectors, considering only the elements in the first vector that correspond to the positions
              * provided by a `PartialIndexVector`.
              *
-             * @param firstBegin    A `const_iterator` to the beginning of the first vector
-             * @param firstEnd      A `const_iterator` to the end of the first vector
+             * @param first         A reference to an object of type `DenseConfusionMatrixVectorView` that stores the
+             *                      confusion matrices in the first vector
              * @param firstIndices  A reference to an object of type `PartialIndexVector` that provides access to the
              *                      indices
-             * @param secondBegin   A `const_iterator` to the beginning of the second vector
-             * @param secondEnd     A `const_iterator` to the end of the second vector
+             * @param second        A reference to an object of type `DenseConfusionMatrixVectorView` that stores the
+             *                      confusion matrices in the second vector
              */
-            void difference(typename View<ConfusionMatrix<StatisticType>>::const_iterator firstBegin,
-                            typename View<ConfusionMatrix<StatisticType>>::const_iterator firstEnd,
+            void difference(const DenseConfusionMatrixVectorView<StatisticType>& first,
                             const PartialIndexVector& firstIndices,
-                            typename View<ConfusionMatrix<StatisticType>>::const_iterator secondBegin,
-                            typename View<ConfusionMatrix<StatisticType>>::const_iterator secondEnd);
+                            const DenseConfusionMatrixVectorView<StatisticType>& second);
     };
 
 }
