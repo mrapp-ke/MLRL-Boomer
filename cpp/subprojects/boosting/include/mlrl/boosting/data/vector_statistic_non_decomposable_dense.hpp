@@ -8,6 +8,7 @@
 #include "mlrl/common/data/view_vector_composite.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
+#include "mlrl/common/util/array_operations.hpp"
 
 namespace boosting {
 
@@ -27,13 +28,6 @@ namespace boosting {
              * @param init          True, if all elements in the view should be value-initialized, false otherwise
              */
             DenseNonDecomposableStatisticVectorView(uint32 numGradients, bool init = false);
-
-            /**
-             * @param other A reference to an object of type `DenseNonDecomposableStatisticVectorView` that should be
-             *              copied
-             */
-            DenseNonDecomposableStatisticVectorView(
-              const DenseNonDecomposableStatisticVectorView<StatisticType>& other);
 
             /**
              * The type of the gradients and Hessians.
@@ -159,9 +153,10 @@ namespace boosting {
      * stored. In a vector that stores `n` gradients `(n * (n + 1)) / 2` Hessians are stored. The Hessians can be viewed
      * as a symmetric Hessian matrix with `n` rows and columns.
      *
-     * @tparam StatisticType The type of the gradients and Hessians
+     * @tparam StatisticType    The type of the gradients and Hessians
+     * @tparam ArrayOperations  The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename StatisticType>
+    template<typename StatisticType, typename ArrayOperations = SequentialArrayOperations>
     class DenseNonDecomposableStatisticVector final
         : public ClearableViewDecorator<ViewDecorator<DenseNonDecomposableStatisticVectorView<StatisticType>>> {
         public:
@@ -176,7 +171,8 @@ namespace boosting {
             /**
              * @param other A reference to an object of type `DenseNonDecomposableStatisticVector` to be copied
              */
-            DenseNonDecomposableStatisticVector(const DenseNonDecomposableStatisticVector<StatisticType>& other);
+            DenseNonDecomposableStatisticVector(
+              const DenseNonDecomposableStatisticVector<StatisticType, ArrayOperations>& other);
 
             /**
              * Returns the number of gradients in the vector.
@@ -195,10 +191,10 @@ namespace boosting {
             /**
              * Adds all gradients and Hessians in another vector to this vector.
              *
-             * @param vector A reference to an object of type `DenseNonDecomposableStatisticVector` that stores the
+             * @param vector A reference to an object of type `DenseNonDecomposableStatisticVectorView` that stores the
              *               gradients and Hessians to be added to this vector
              */
-            void add(const DenseNonDecomposableStatisticVector<StatisticType>& vector);
+            void add(const DenseNonDecomposableStatisticVectorView<StatisticType>& vector);
 
             /**
              * Adds all gradients and Hessians in a single row of a `DenseNonDecomposableStatisticView` to this vector.
@@ -298,32 +294,32 @@ namespace boosting {
              * and Hessians in two other vectors, considering only the gradients and Hessians in the first vector that
              * correspond to the positions provided by a `CompleteIndexVector`.
              *
-             * @param first         A reference to an object of type `DenseNonDecomposableStatisticVector` that stores
-             *                      the gradients and Hessians in the first vector
+             * @param first         A reference to an object of type `DenseNonDecomposableStatisticVectorView` that
+             *                      stores the gradients and Hessians in the first vector
              * @param firstIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
              *                      indices
-             * @param second        A reference to an object of type `DenseNonDecomposableStatisticVector` that stores
-             *                      the gradients and Hessians in the second vector
+             * @param second        A reference to an object of type `DenseNonDecomposableStatisticVectorView` that
+             *                      stores the gradients and Hessians in the second vector
              */
-            void difference(const DenseNonDecomposableStatisticVector<StatisticType>& first,
+            void difference(const DenseNonDecomposableStatisticVectorView<StatisticType>& first,
                             const CompleteIndexVector& firstIndices,
-                            const DenseNonDecomposableStatisticVector<StatisticType>& second);
+                            const DenseNonDecomposableStatisticVectorView<StatisticType>& second);
 
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
              * and Hessians in two other vectors, considering only the gradients and Hessians in the first vector that
              * correspond to the positions provided by a `PartialIndexVector`.
              *
-             * @param first         A reference to an object of type `DenseNonDecomposableStatisticVector` that stores
-             *                      the gradients and Hessians in the first vector
+             * @param first         A reference to an object of type `DenseNonDecomposableStatisticVectorView` that
+             *                      stores the gradients and Hessians in the first vector
              * @param firstIndices  A reference to an object of type `PartialIndexVector` that provides access to the
              *                      indices
-             * @param second        A reference to an object of type `DenseNonDecomposableStatisticVector` that stores
-             *                      the gradients and Hessians in the second vector
+             * @param second        A reference to an object of type `DenseNonDecomposableStatisticVectorView` that
+             *                      stores the gradients and Hessians in the second vector
              */
-            void difference(const DenseNonDecomposableStatisticVector<StatisticType>& first,
+            void difference(const DenseNonDecomposableStatisticVectorView<StatisticType>& first,
                             const PartialIndexVector& firstIndices,
-                            const DenseNonDecomposableStatisticVector<StatisticType>& second);
+                            const DenseNonDecomposableStatisticVectorView<StatisticType>& second);
     };
 
 }

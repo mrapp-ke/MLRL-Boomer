@@ -85,7 +85,7 @@ namespace boosting {
                     accumulatedSumVectorPtr_ = std::make_unique<StatisticVector>(this->sumVector_);
                 } else {
                     // Add the sums of statistics to the accumulated sums of statistics...
-                    accumulatedSumVectorPtr_->add(this->sumVector_);
+                    accumulatedSumVectorPtr_->add(this->sumVector_.getView());
                 }
 
                 // Reset the sums of statistics to zero...
@@ -105,7 +105,7 @@ namespace boosting {
              * @see `IResettableStatisticsSubset::calculateScoresUncovered`
              */
             std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresUncovered() override {
-                tmpVector_.difference(*totalSumVector_, this->outputIndices_, this->sumVector_);
+                tmpVector_.difference(totalSumVector_->getView(), this->outputIndices_, this->sumVector_.getView());
                 const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(tmpVector_.getView());
                 return this->state_.createUpdateCandidate(scoreVector);
             }
@@ -114,7 +114,8 @@ namespace boosting {
              * @see `IResettableStatisticsSubset::calculateScoresUncoveredAccumulated`
              */
             std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresUncoveredAccumulated() override {
-                tmpVector_.difference(*totalSumVector_, this->outputIndices_, *accumulatedSumVectorPtr_);
+                tmpVector_.difference(totalSumVector_->getView(), this->outputIndices_,
+                                      accumulatedSumVectorPtr_->getView());
                 const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(tmpVector_.getView());
                 return this->state_.createUpdateCandidate(scoreVector);
             }

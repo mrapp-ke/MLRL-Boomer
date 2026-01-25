@@ -20,9 +20,10 @@ namespace boosting {
      * A matrix that stores gradients and Hessians that have been calculated using a decomposable loss function using
      * C-contiguous arrays.
      *
-     * @tparam StatisticType The type of the gradients and Hessians
+     * @tparam StatisticType    The type of the gradients and Hessians
+     * @tparam ArrayOperations  The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename StatisticType>
+    template<typename StatisticType, typename ArrayOperations = SequentialArrayOperations>
     class DenseDecomposableStatisticMatrix final
         : public ClearableViewDecorator<MatrixDecorator<DenseDecomposableStatisticView<StatisticType>>> {
         public:
@@ -50,8 +51,9 @@ namespace boosting {
                           typename View<StatisticType>::const_iterator gradientsEnd,
                           typename View<StatisticType>::const_iterator hessiansBegin,
                           typename View<StatisticType>::const_iterator hessiansEnd, uint32 weight) {
-                util::addWeighted(this->view.gradients_begin(row), gradientsBegin, this->getNumCols(), weight);
-                util::addWeighted(this->view.hessians_begin(row), hessiansBegin, this->getNumCols(), weight);
+                ArrayOperations::addWeighted(this->view.gradients_begin(row), gradientsBegin, this->getNumCols(),
+                                             weight);
+                ArrayOperations::addWeighted(this->view.hessians_begin(row), hessiansBegin, this->getNumCols(), weight);
             }
     };
 
