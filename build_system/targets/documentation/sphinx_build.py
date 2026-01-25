@@ -49,6 +49,7 @@ class SphinxBuild(Program):
         self.set_build_unit(build_unit)
         self.add_dependencies(
             'furo',
+            'matplotlib',
             'myst-parser',
             'sphinx',
             'sphinx-copybutton',
