@@ -362,12 +362,6 @@ namespace boosting {
             SparseDecomposableStatisticVectorView(uint32 numElements, bool init = false);
 
             /**
-             * @param other A reference to an object of type `SparseDecomposableStatisticVectorView` to be copied
-             */
-            SparseDecomposableStatisticVectorView(
-              const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& other);
-
-            /**
              * The type of the gradients and Hessians.
              */
             typedef StatisticType statistic_type;

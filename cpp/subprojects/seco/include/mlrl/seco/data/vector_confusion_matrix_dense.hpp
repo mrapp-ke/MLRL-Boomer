@@ -39,7 +39,7 @@ namespace seco {
             /**
              * @param other A reference to an object of type `DenseConfusionMatrixVector` to be copied
              */
-            DenseConfusionMatrixVector(const DenseConfusionMatrixVector& other);
+            DenseConfusionMatrixVector(const DenseConfusionMatrixVector<StatisticType>& other);
 
             /**
              * Adds all confusion matrix elements in another vector to this vector.

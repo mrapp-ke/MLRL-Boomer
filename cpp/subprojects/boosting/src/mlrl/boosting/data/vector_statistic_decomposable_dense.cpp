@@ -11,14 +11,6 @@ namespace boosting {
             AllocatedVector<StatisticType>(numElements, init), AllocatedVector<StatisticType>(numElements, init)) {}
 
     template<typename StatisticType>
-    DenseDecomposableStatisticVectorView<StatisticType>::DenseDecomposableStatisticVectorView(
-      const DenseDecomposableStatisticVectorView<StatisticType>& other)
-        : DenseDecomposableStatisticVectorView<StatisticType>(other.getNumElements()) {
-        SequentialArrayOperations::copy(other.gradients_cbegin(), this->gradients_begin(), this->getNumElements());
-        SequentialArrayOperations::copy(other.hessians_cbegin(), this->hessians_begin(), this->getNumElements());
-    }
-
-    template<typename StatisticType>
     typename DenseDecomposableStatisticVectorView<StatisticType>::gradient_iterator
       DenseDecomposableStatisticVectorView<StatisticType>::gradients_begin() {
         return this->firstView.begin();
@@ -82,8 +74,12 @@ namespace boosting {
     template<typename StatisticType>
     DenseDecomposableStatisticVector<StatisticType>::DenseDecomposableStatisticVector(
       const DenseDecomposableStatisticVector<StatisticType>& other)
-        : ClearableViewDecorator<ViewDecorator<DenseDecomposableStatisticVectorView<StatisticType>>>(
-            DenseDecomposableStatisticVectorView<StatisticType>(other.getView())) {}
+        : DenseDecomposableStatisticVector<StatisticType>(other.getNumElements()) {
+        SequentialArrayOperations::copy(other.view.gradients_cbegin(), this->view.gradients_begin(),
+                                        this->getNumElements());
+        SequentialArrayOperations::copy(other.view.hessians_cbegin(), this->view.hessians_begin(),
+                                        this->getNumElements());
+    }
 
     template<typename StatisticType>
     uint32 DenseDecomposableStatisticVector<StatisticType>::getNumElements() const {

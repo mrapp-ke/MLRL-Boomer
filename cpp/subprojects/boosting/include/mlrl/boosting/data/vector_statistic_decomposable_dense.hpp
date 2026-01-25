@@ -28,12 +28,6 @@ namespace boosting {
             DenseDecomposableStatisticVectorView(uint32 numElements, bool init = false);
 
             /**
-             * @param other A reference to an object of type `DenseDecomposableStatisticVectorView` that should be
-             *              copied
-             */
-            DenseDecomposableStatisticVectorView(const DenseDecomposableStatisticVectorView<StatisticType>& other);
-
-            /**
              * The type of the gradients and Hessians.
              */
             typedef StatisticType statistic_type;

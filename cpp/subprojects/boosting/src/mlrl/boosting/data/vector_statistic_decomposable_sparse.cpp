@@ -142,14 +142,6 @@ namespace boosting {
         : AllocatedVector<SparseStatistic<StatisticType, WeightType>>(numElements, init), sumOfWeights(0) {}
 
     template<typename StatisticType, typename WeightType>
-    SparseDecomposableStatisticVectorView<StatisticType, WeightType>::SparseDecomposableStatisticVectorView(
-      const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& other)
-        : SparseDecomposableStatisticVectorView<StatisticType, WeightType>(other.numElements) {
-        SequentialArrayOperations::copy(other.cbegin(), this->begin(), this->numElements);
-        sumOfWeights = other.sumOfWeights;
-    }
-
-    template<typename StatisticType, typename WeightType>
     typename SparseDecomposableStatisticVectorView<StatisticType, WeightType>::gradient_const_iterator
       SparseDecomposableStatisticVectorView<StatisticType, WeightType>::gradients_cbegin() const {
         return GradientConstIterator(this->cbegin(), sumOfWeights);
@@ -260,8 +252,10 @@ namespace boosting {
     template<typename StatisticType, typename WeightType>
     SparseDecomposableStatisticVector<StatisticType, WeightType>::SparseDecomposableStatisticVector(
       const SparseDecomposableStatisticVector<StatisticType, WeightType>& other)
-        : VectorDecorator<SparseDecomposableStatisticVectorView<StatisticType, WeightType>>(
-            SparseDecomposableStatisticVectorView<StatisticType, WeightType>(other.getView())) {}
+        : SparseDecomposableStatisticVector<StatisticType, WeightType>(other.getNumElements()) {
+        SequentialArrayOperations::copy(other.view.cbegin(), this->view.begin(), this->getNumElements());
+        this->view.sumOfWeights = other.view.sumOfWeights;
+    }
 
     template<typename StatisticType, typename WeightType>
     void SparseDecomposableStatisticVector<StatisticType, WeightType>::add(

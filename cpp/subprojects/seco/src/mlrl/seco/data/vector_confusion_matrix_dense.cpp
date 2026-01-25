@@ -61,7 +61,8 @@ namespace seco {
             DenseConfusionMatrixVectorView<StatisticType>(numElements, init)) {}
 
     template<typename StatisticType>
-    DenseConfusionMatrixVector<StatisticType>::DenseConfusionMatrixVector(const DenseConfusionMatrixVector& other)
+    DenseConfusionMatrixVector<StatisticType>::DenseConfusionMatrixVector(
+      const DenseConfusionMatrixVector<StatisticType>& other)
         : DenseConfusionMatrixVector(other.getNumElements()) {
         SequentialArrayOperations::copy(other.cbegin(), this->begin(), this->getNumElements());
     }
