@@ -31,6 +31,10 @@ on:
         required: false
         type: string
         default: enabled
+      simd_support:
+        required: false
+        type: string
+        default: enabled
       gpu_support:
         required: false
         type: string
@@ -51,6 +55,7 @@ jobs:
       run_python_tests: ${{ inputs.run_python_tests == true }}
       python_version: ${{ inputs.python_version }}
       multi_threading_support: ${{ inputs.multi_threading_support }}
+      simd_support: ${{ inputs.simd_support }}
       gpu_support: ${{ inputs.gpu_support }}
       ccache: ${{ inputs.ccache }}
     secrets: inherit
@@ -71,6 +76,7 @@ jobs:
       subproject: ${{ inputs.subproject }}
       python_version: ${{ inputs.python_version }}
       multi_threading_support: ${{ inputs.multi_threading_support }}
+      simd_support: ${{ inputs.simd_support }}
       gpu_support: ${{ inputs.gpu_support }}
       ccache: ${{ inputs.ccache }}
   windows_build:
@@ -81,5 +87,6 @@ jobs:
       subproject: ${{ inputs.subproject }}
       python_version: ${{ inputs.python_version }}
       multi_threading_support: ${{ inputs.multi_threading_support }}
+      simd_support: ${{ inputs.simd_support }}
       gpu_support: ${{ inputs.gpu_support }}
       ccache: ${{ inputs.ccache }}
