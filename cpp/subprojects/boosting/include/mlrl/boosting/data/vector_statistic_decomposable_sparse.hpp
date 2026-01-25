@@ -8,6 +8,7 @@
 #include "mlrl/common/data/view_matrix_sparse_set.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
+#include "mlrl/common/util/array_operations.hpp"
 
 namespace boosting {
 
@@ -419,8 +420,9 @@ namespace boosting {
      *
      * @tparam StatisticType    The type of the gradients and Hessians
      * @tparam WeightType       The type of the weights
+     * @tparam ArrayOperations  The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename StatisticType, typename WeightType>
+    template<typename StatisticType, typename WeightType, typename ArrayOperations = SequentialArrayOperations>
     class SparseDecomposableStatisticVector final
         : public VectorDecorator<SparseDecomposableStatisticVectorView<StatisticType, WeightType>> {
         public:
@@ -436,7 +438,7 @@ namespace boosting {
              * @param other A reference to an object of type `SparseDecomposableStatisticVector` to be copied
              */
             SparseDecomposableStatisticVector(
-              const SparseDecomposableStatisticVector<StatisticType, WeightType>& other);
+              const SparseDecomposableStatisticVector<StatisticType, WeightType, ArrayOperations>& other);
 
             /**
              * Adds all gradients and Hessians in another vector to this vector.
