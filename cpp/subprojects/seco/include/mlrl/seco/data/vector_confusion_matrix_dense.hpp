@@ -6,6 +6,7 @@
 #include "mlrl/common/data/vector_dense.hpp"
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 #include "mlrl/common/data/view_matrix_csr_binary.hpp"
+#include "mlrl/common/util/array_operations.hpp"
 #include "mlrl/seco/data/confusion_matrix.hpp"
 #include "mlrl/seco/data/matrix_statistic_decomposable_dense.hpp"
 
@@ -23,9 +24,10 @@ namespace seco {
     /**
      * An one-dimensional vector that stores a fixed number of confusion matrices in a C-contiguous array.
      *
-     * @tparam StatisticType The type of the elements stored in the confusion matrices
+     * @tparam StatisticType    The type of the elements stored in the confusion matrices
+     * @tparam ArrayOperations  The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename StatisticType>
+    template<typename StatisticType, typename ArrayOperations = SequentialArrayOperations>
     class DenseConfusionMatrixVector final
         : public ClearableViewDecorator<DenseVectorDecorator<DenseConfusionMatrixVectorView<StatisticType>>> {
         public:
@@ -39,7 +41,7 @@ namespace seco {
             /**
              * @param other A reference to an object of type `DenseConfusionMatrixVector` to be copied
              */
-            DenseConfusionMatrixVector(const DenseConfusionMatrixVector<StatisticType>& other);
+            DenseConfusionMatrixVector(const DenseConfusionMatrixVector<StatisticType, ArrayOperations>& other);
 
             /**
              * Adds all confusion matrix elements in another vector to this vector.
