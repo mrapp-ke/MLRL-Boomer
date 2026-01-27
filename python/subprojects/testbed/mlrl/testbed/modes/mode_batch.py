@@ -14,8 +14,6 @@ from itertools import chain
 from pathlib import Path
 from typing import Any, Callable, Generator, Iterable, List, Optional, Set, override
 
-from mlrl.testbed_slurm.arguments import SlurmArguments
-
 from mlrl.testbed.command import ArgumentDict, ArgumentList, Command
 from mlrl.testbed.experiments.fold import FoldingStrategy
 from mlrl.testbed.experiments.input.dataset.arguments import DatasetArguments
@@ -434,6 +432,8 @@ class BatchMode(Mode):
     @staticmethod
     def __filter_arguments(argument_list: ArgumentList) -> ArgumentDict:
         try:
+            # pylint: disable=import-outside-toplevel
+            from mlrl.testbed_slurm.arguments import SlurmArguments
             slurm_arguments = list(
                 chain(SlurmArguments.PRINT_SLURM_SCRIPTS.names, SlurmArguments.SAVE_SLURM_SCRIPTS.names,
                       SlurmArguments.SLURM_SAVE_DIR.names, SlurmArguments.SLURM_CONFIG_FILE.names))
