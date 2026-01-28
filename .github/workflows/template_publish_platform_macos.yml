@@ -9,7 +9,7 @@ on:
       os:
         required: true
         type: string
-      python_version:
+      workflow_python_version:
         required: true
         type: string
       release:
@@ -33,13 +33,13 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
-          python-version: ${{ inputs.python_version }}
+          python-version: ${{ inputs.workflow_python_version }}
           check-latest: true
           cache: pip
           cache-dependency-path: '**/requirements.txt'
       - name: Determine supported Python versions
         uses: juliangruber/read-file-action@v1
-        id: python_version
+        id: python_requires
         with:
           path: python/.version-python
       - name: Create virtual environment
@@ -49,7 +49,7 @@ jobs:
         env:
           CIBW_PACKAGE_DIR: python/subprojects/${{ inputs.subproject }}
           CIBW_ARCHS: auto64
-          CIBW_PROJECT_REQUIRES_PYTHON: ${{ steps.python_version.outputs.content }}
+          CIBW_PROJECT_REQUIRES_PYTHON: ${{ steps.python_requires.outputs.content }}
         run: echo "build_identifiers=$(./build print_cibuildwheel_identifiers)" >> $GITHUB_OUTPUT
   publish_macos_wheels:
     needs: build_identifiers
