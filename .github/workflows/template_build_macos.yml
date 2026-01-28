@@ -43,9 +43,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-      - name: Determine supported Python versions
-        id: python_version
-        run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
