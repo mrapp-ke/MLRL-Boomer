@@ -1,0 +1,77 @@
+---
+name: Run wheel
+on:
+  workflow_call:
+    inputs:
+      os:
+        required: true
+        type: string
+      subproject:
+        required: true
+        type: string
+jobs:
+  run_wheel:
+    name: Run wheel ${{ inputs.subproject }} (${{ inputs.os }})
+    runs-on: ${{ inputs.os }}
+    steps:
+      - name: Enable support for long paths
+        if: ${{ startsWith(inputs.os, 'windows-') }}
+        run: git config --system core.longpaths true
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Determine supported Python versions
+        id: python_version
+        run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ steps.python_version.outputs.python_version }}
+          check-latest: true
+          cache: pip
+          cache-dependency-path: '**/requirements.txt'
+      - name: Create virtual environment
+        if: ${{ !startsWith(inputs.os, 'windows-') }}
+        run: ./build install_runtime_dependencies
+      - name: Create virtual environment
+        if: ${{ startsWith(inputs.os, 'windows-') }}
+        run: .\build.bat install_runtime_dependencies
+      - name: Download wheels
+        uses: actions/download-artifact@v7
+        with:
+          pattern: wheels-*
+          path: wheelhouse
+          merge-multiple: true
+      - name: Install wheels
+        if: ${{ !startsWith(inputs.os, 'windows-') }}
+        env:
+          PACKAGE_NAME: mlrl-${{ inputs.subproject == 'boosting' && 'boomer' || inputs.subproject }}
+        run: |
+          . .venv/bin/activate
+          python -m pip install --find-links wheelhouse --no-index --no-deps mlrl-util
+          python -m pip install --find-links wheelhouse --no-index --no-deps mlrl-testbed
+          python -m pip install --find-links wheelhouse --no-index --no-deps mlrl-testbed-arff
+          python -m pip install --find-links wheelhouse --no-index --no-deps mlrl-testbed-sklearn
+          python -m pip install --find-links wheelhouse --no-index --no-deps mlrl-common
+          python -m pip install --find-links wheelhouse --no-index --no-deps $PACKAGE_NAME
+      - name: Install wheels
+        if: ${{ startsWith(inputs.os, 'windows-') }}
+        env:
+          PACKAGE_NAME: mlrl-${{ inputs.subproject == 'boosting' && 'boomer' || inputs.subproject }}
+        run: |
+          call .venv\Scripts\activate.bat
+          python -m pip install --find-links wheelhouse --no-index --no-deps mlrl-util
+          python -m pip install --find-links wheelhouse --no-index --no-deps mlrl-testbed
+          python -m pip install --find-links wheelhouse --no-index --no-deps mlrl-testbed-arff
+          python -m pip install --find-links wheelhouse --no-index --no-deps mlrl-testbed-sklearn
+          python -m pip install --find-links wheelhouse --no-index --no-deps mlrl-common
+          python -m pip install --find-links wheelhouse --no-index --no-deps $PACKAGE_NAME
+      - name: Run wheel
+        if: ${{ !startsWith(inputs.os, 'windows-') }}
+        run: |
+          . .venv/bin/activate
+          mlrl-testbed mlrl.${{ inputs.subproject }} --version
+      - name: Run wheel
+        if: ${{ startsWith(inputs.os, 'windows-') }}
+        run: |-
+          call .venv\Scripts\activate.bat
+          mlrl-testbed mlrl.${{ inputs.subproject }} --version
