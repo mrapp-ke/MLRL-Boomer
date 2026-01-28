@@ -34,6 +34,9 @@ This project uses [Meson](https://mesonbuild.com/) as a build system for compili
    * - **OpenMP**
      - Yes
      - [OpenMP](https://en.wikipedia.org/wiki/OpenMP), which is optionally required for {ref}`multi-threading support <multi-threading-support>`, should be installable via your Linux distribution's package manager.         
+   * - **xsimd**
+     - Yes
+     - To compile the project with {ref}`SIMD support <simd-support>` enabled, version 14 or newer of the library [xsimd](https://github.com/xtensor-stack/xsimd) must be available. On Linux, it can usually be installed via your distribution's package manager. If unavailable, the build system pulls this particular dependency automatically.
    * - **OpenCL**
      - Yes
      - If the project should be compiled with {ref}`GPU support <gpu-support>`, [OpenCL](https://en.wikipedia.org/wiki/OpenCL) must be available. On Linux, it should be installable via your distribution's package manager.
@@ -60,6 +63,9 @@ This project uses [Meson](https://mesonbuild.com/) as a build system for compili
    * - **OpenMP**
      - Yes
      - If the project should be compiled with {ref}`multi-threading support <multi-threading-support>` enabled, the [OpenMP](https://en.wikipedia.org/wiki/OpenMP) library must be installed. We recommend to install it via [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) by running the command `brew install libomp`.
+   * - **xsimd**
+     - Yes
+     - To compile the project with {ref}`SIMD support <simd-support>` enabled, the library [xsimd](https://github.com/xtensor-stack/xsimd) must be available. On macOS, we recommend [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) to install it via the command `brew install xsimd`. If unavailable, the build system pulls this particular dependency automatically.
    * - **OpenCL**
      - Yes
      - The [Xcode](https://developer.apple.com/support/xcode/) developer toolset should include [OpenCL](https://en.wikipedia.org/wiki/OpenCL), which are needed for {ref}`GPU support <gpu-support>`. However, the [OpenCL C++ headers](https://github.com/KhronosGroup/OpenCL-Headers) must be installed manually. The easiest way to do so is via the [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) command `brew install opencl-clhpp-headers`.
@@ -86,6 +92,9 @@ This project uses [Meson](https://mesonbuild.com/) as a build system for compili
    * - **OpenMP**
      - Yes
      - The [Build Tools for Visual Studio](https://visualstudio.microsoft.com/downloads/) also include the [OpenMP](https://en.wikipedia.org/wiki/OpenMP) library, which is utilized by the project for {ref}`multi-threading support <multi-threading-support>`.
+   * - **xsimd**
+     - Yes
+     - To compile the project with {ref}`SIMD support <simd-support>` enabled, the library [xsimd](https://github.com/xtensor-stack/xsimd) must be available. On Windows, we recommend to install the package `xsimd` via the package manager [vcpkg](https://github.com/microsoft/vcpkg). If unavailable, the build system pulls this particular dependency automatically.
    * - **OpenCL**
      - Yes
      - If you intend to compile the project with {ref}`GPU support <gpu-support>` enabled, [OpenCL](https://en.wikipedia.org/wiki/OpenCL) must be installed manually. In order to do so, we recommend to install the package `opencl` via the package manager [vcpkg](https://github.com/microsoft/vcpkg).
@@ -446,6 +455,39 @@ If you need to access this information programmatically in your own Python or C+
 
    bool multiThreadingSupportEnabled = isMultiThreadingSupportEnabled();
    uint32 numCpuCores = getNumCpuCores();
+   ```
+````
+
+(simd-support)=
+
+### SIMD Support
+
+```{hint}
+So far, SIMD support is still at an early stage of development. No algorithm provided by this project makes use of it yet.
+```
+
+The algorithms provided by this project may use [single instruction, multiple data (SIMD)](https://en.wikipedia.org/wiki/Single_instruction,_multiple_data) instructions supported by modern CPUs. Support for SIMD instructions is enabled by default when compiled on a system where [xsimd](https://github.com/xtensor-stack/xsimd) is available. At compile time, the usage of SIMD instructions can be controlled explicitly by setting the build option `simd_support` to `enabled` or `disabled`. Alternatively, these values can be provided via the environment variable `SIMD_SUPPORT`.
+
+When running the command `mlrl-testbed mlrl.boosting --version` or `mlrl-testbed mlrl.boosting -v`, the resulting output contains information about whether the program was built with SIMD support enabled or not. It also lists the instruction set extensions supported by the CPU for SIMD computations. At runtime, algorithms automatically pick an implementation best suited for the supported extensions.
+
+Information on the support of SIMD instruction can also be retrieved programmatically via the Python or C++ API (see {ref}`python-apidoc` and {ref}`cpp-apidoc`). An example is given below:
+
+````{tab} Python
+   ```python
+   from mlrl.common import is_simd_support_enabled, get_supported_simd_extensions
+   from typing import List
+
+   simd_support_enabled: bool = is_simd_support_enabled()
+   simd_extensions: List[str] = get_supported_simd_extensions()
+   ```
+````
+
+````{tab} C++
+   ```cpp
+   #include "mlrl/common/library_info.hpp"
+
+   bool simdSupportEnabled = isSimdSupportEnabled();
+   std::vector<std::string> simdExtensions = getSupportedSimdExtensions();
    ```
 ````
 

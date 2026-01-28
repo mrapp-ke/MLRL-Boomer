@@ -494,7 +494,7 @@ class FileType:
 
         :return: The `FileType` that has been created
         """
-        return FileType(name=".cfg", suffixes={'cfg', 'yapf', 'ini'})
+        return FileType(name=".cfg", suffixes={'cfg', 'yapf', 'ini', 'wrap'})
 
     @staticmethod
     def markdown() -> 'FileType':

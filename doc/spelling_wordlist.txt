@@ -247,6 +247,7 @@ wra
 XGBoost
 Xie
 Xorshift
+xsimd
 yml
 Yan
 Yannik

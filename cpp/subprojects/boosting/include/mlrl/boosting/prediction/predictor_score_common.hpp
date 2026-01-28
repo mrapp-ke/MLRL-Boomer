@@ -8,6 +8,7 @@
 #include "mlrl/common/model/head_partial.hpp"
 #include "mlrl/common/prediction/predictor_common.hpp"
 #include "mlrl/common/prediction/predictor_score.hpp"
+#include "mlrl/common/util/array_operations.hpp"
 #include "mlrl/common/util/validation.hpp"
 
 #include <memory>
@@ -18,7 +19,10 @@ namespace boosting {
     static inline void applyHead(const CompleteHead<ScoreType>& head, View<float64>::iterator iterator) {
         typename CompleteHead<ScoreType>::value_const_iterator valueIterator = head.values_cbegin();
         uint32 numElements = head.getNumElements();
-        util::addToView(iterator, valueIterator, numElements);
+
+        for (uint32 i = 0; i < numElements; i++) {
+            iterator[i] += valueIterator[i];
+        }
     }
 
     template<typename ScoreType>

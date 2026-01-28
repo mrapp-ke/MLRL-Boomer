@@ -30,13 +30,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-      - name: Determine supported Python versions
-        id: python_version
-        run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
+      - name: Determine Python version for workflow
+        id: workflow_python_version
+        run: echo "workflow_python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
-          python-version: ${{ steps.python_version.outputs.python_version }}
+          python-version: ${{ steps.workflow_python_version.outputs.workflow_python_version }}
           check-latest: true
           cache: pip
           cache-dependency-path: '**/requirements.txt'

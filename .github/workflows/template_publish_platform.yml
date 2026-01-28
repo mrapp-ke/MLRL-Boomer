@@ -19,19 +19,19 @@ on:
         required: false
         type: boolean
 jobs:
-  python_version:
-    name: Determine supported Python versions
+  workflow_python_version:
+    name: Determine Python version for workflow
     runs-on: ubuntu-slim
     outputs:
-      python_version: ${{ steps.python_version.outputs.python_version }}
+      workflow_python_version: ${{ steps.workflow_python_version.outputs.workflow_python_version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Determine supported Python versions
-        id: python_version
-        run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
+        id: workflow_python_version
+        run: echo "workflow_python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
   publish_linux_wheels:
-    needs: python_version
+    needs: workflow_python_version
     if: ${{ inputs.linux == true }}
     name: Publish ${{ inputs.subproject }} (Linux)
     strategy:
@@ -44,10 +44,10 @@ jobs:
     with:
       subproject: ${{ inputs.subproject }}
       os: ${{ matrix.os }}
-      python_version: ${{ needs.python_version.outputs.python_version }}
+      workflow_python_version: ${{ needs.workflow_python_version.outputs.workflow_python_version }}
       release: ${{ inputs.release }}
   publish_macos_wheels:
-    needs: python_version
+    needs: workflow_python_version
     if: ${{ inputs.macos == true }}
     name: Publish ${{ inputs.subproject }} (macOS)
     strategy:
@@ -60,11 +60,11 @@ jobs:
     with:
       subproject: ${{ inputs.subproject }}
       os: ${{ matrix.os }}
-      python_version: ${{ needs.python_version.outputs.python_version }}
+      workflow_python_version: ${{ needs.workflow_python_version.outputs.workflow_python_version }}
       release: ${{ inputs.release }}
     secrets: inherit
   publish_windows_wheels:
-    needs: python_version
+    needs: workflow_python_version
     if: ${{ inputs.windows == true }}
     name: Publish ${{ inputs.subproject }} (Windows)
     strategy:
@@ -77,5 +77,5 @@ jobs:
     with:
       subproject: ${{ inputs.subproject }}
       os: ${{ matrix.os }}
-      python_version: ${{ needs.python_version.outputs.python_version }}
+      workflow_python_version: ${{ needs.workflow_python_version.outputs.workflow_python_version }}
       release: ${{ inputs.release }}
