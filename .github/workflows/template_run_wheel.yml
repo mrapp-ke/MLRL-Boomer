@@ -10,22 +10,59 @@ on:
         required: true
         type: string
 jobs:
-  run_wheel:
-    name: Run wheel ${{ inputs.subproject }} (${{ inputs.os }})
+  python_versions:
+    name: Determine Python versions supported by ${{ inputs.subproject }} (${{ inputs.os }})
     runs-on: ${{ inputs.os }}
+    outputs:
+      python_versions: ${{ steps.python_versions.outputs.python_versions }}
     steps:
       - name: Enable support for long paths
         if: ${{ startsWith(inputs.os, 'windows-') }}
         run: git config --system core.longpaths true
       - name: Checkout
         uses: actions/checkout@v6
-      - name: Determine supported Python versions
-        id: python_version
-        run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
+      - name: Determine Python version for workflow
+        id: workflow_python_version
+        run: echo "workflow_python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
-          python-version: ${{ steps.python_version.outputs.python_version }}
+          python-version: ${{ steps.workflow_python_version.outputs.workflow_python_version }}
+          check-latest: true
+          cache: pip
+          cache-dependency-path: '**/requirements.txt'
+      - name: Determine supported Python versions
+        uses: juliangruber/read-file-action@v1
+        id: python_requires
+        with:
+          path: python/.version-python
+      - name: Create virtual environment
+        run: ./build venv
+      - name: Determine built Python versions
+        id: python_versions
+        env:
+          CIBW_PACKAGE_DIR: python/subprojects/${{ inputs.subproject }}
+          CIBW_ARCHS: auto64
+          CIBW_PROJECT_REQUIRES_PYTHON: ${{ steps.python_requires.outputs.content }}
+        run: echo "python_versions=$(./build print_cibuildwheel_python_versions)" >> $GITHUB_OUTPUT
+  run_wheel:
+    needs: python_versions
+    name: Run wheel ${{ inputs.subproject }} (${{ inputs.os }})
+    runs-on: ${{ inputs.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python_version: ${{ fromJson(needs.python_versions.outputs.python_versions) }}
+    steps:
+      - name: Enable support for long paths
+        if: ${{ startsWith(inputs.os, 'windows-') }}
+        run: git config --system core.longpaths true
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python_version }}
           check-latest: true
           cache: pip
           cache-dependency-path: '**/requirements.txt'
