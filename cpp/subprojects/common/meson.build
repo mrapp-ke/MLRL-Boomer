@@ -90,6 +90,7 @@ source_files = [
     'src/mlrl/common/sampling/weight_vector_equal.cpp',
     'src/mlrl/common/sampling/weight_vector_out_of_sample.cpp',
     'src/mlrl/common/simd/simd_no.cpp',
+    'src/mlrl/common/simd/simd_yes.cpp',
     'src/mlrl/common/stopping/global_pruning_no.cpp',
     'src/mlrl/common/stopping/global_pruning_post.cpp',
     'src/mlrl/common/stopping/global_pruning_pre.cpp',
