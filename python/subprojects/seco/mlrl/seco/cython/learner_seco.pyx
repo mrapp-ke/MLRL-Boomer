@@ -2,6 +2,7 @@
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from libcpp.utility cimport move
+from typing import override
 
 from mlrl.common.cython.feature_binning cimport EqualFrequencyFeatureBinningConfig, EqualWidthFeatureBinningConfig, \
     IEqualFrequencyFeatureBinningConfig, IEqualWidthFeatureBinningConfig
@@ -118,21 +119,26 @@ cdef class SeCoClassifierConfig(RuleLearnerConfig,
     def __cinit__(self):
         self.config_ptr = createSeCoClassifierConfig()
 
+    @override
     def use_rng(self) -> RNGConfig:
         cdef IRNGConfig* config_ptr = &self.config_ptr.get().useRNG()
         cdef RNGConfig config = RNGConfig.__new__(RNGConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_sequential_rule_model_assemblage(self):
         self.config_ptr.get().useSequentialRuleModelAssemblage()
 
+    @override
     def use_default_rule(self):
         self.config_ptr.get().useDefaultRule()
 
+    @override
     def use_no_coverage_stopping_criterion(self):
         self.config_ptr.get().useNoCoverageStoppingCriterion()
 
+    @override
     def use_coverage_stopping_criterion(self) -> CoverageStoppingCriterionConfig:
         cdef ICoverageStoppingCriterionConfig* config_ptr = \
             &self.config_ptr.get().useCoverageStoppingCriterion()
@@ -141,81 +147,101 @@ cdef class SeCoClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_single_output_heads(self):
         self.config_ptr.get().useSingleOutputHeads()
 
+    @override
     def use_partial_heads(self):
         self.config_ptr.get().usePartialHeads()
 
+    @override
     def use_no_lift_function(self):
         self.config_ptr.get().useNoLiftFunction()
 
+    @override
     def use_peak_lift_function(self) -> PeakLiftFunctionConfig:
         cdef IPeakLiftFunctionConfig* config_ptr = &self.config_ptr.get().usePeakLiftFunction()
         cdef PeakLiftFunctionConfig config = PeakLiftFunctionConfig.__new__(PeakLiftFunctionConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_kln_lift_function(self) -> KlnLiftFunctionConfig:
         cdef IKlnLiftFunctionConfig* config_ptr = &self.config_ptr.get().useKlnLiftFunction()
         cdef KlnLiftFunctionConfig config = KlnLiftFunctionConfig.__new__(KlnLiftFunctionConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_accuracy_heuristic(self):
         self.config_ptr.get().useAccuracyHeuristic()
 
+    @override
     def use_accuracy_pruning_heuristic(self):
         self.config_ptr.get().useAccuracyPruningHeuristic()
 
+    @override
     def use_f_measure_heuristic(self) -> FMeasureConfig:
         cdef IFMeasureConfig* config_ptr = &self.config_ptr.get().useFMeasureHeuristic()
         cdef FMeasureConfig config = FMeasureConfig.__new__(FMeasureConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_f_measure_pruning_heuristic(self) -> FMeasureConfig:
         cdef IFMeasureConfig* config_ptr = &self.config_ptr.get().useFMeasurePruningHeuristic()
         cdef FMeasureConfig config = FMeasureConfig.__new__(FMeasureConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_m_estimate_heuristic(self) -> MEstimateConfig:
         cdef IMEstimateConfig* config_ptr = &self.config_ptr.get().useMEstimateHeuristic()
         cdef MEstimateConfig config = MEstimateConfig.__new__(MEstimateConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_m_estimate_pruning_heuristic(self) -> MEstimateConfig:
         cdef IMEstimateConfig* config_ptr = &self.config_ptr.get().useMEstimatePruningHeuristic()
         cdef MEstimateConfig config = MEstimateConfig.__new__(MEstimateConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_laplace_heuristic(self):
         self.config_ptr.get().useLaplaceHeuristic()
 
+    @override
     def use_laplace_pruning_heuristic(self):
         self.config_ptr.get().useLaplacePruningHeuristic()
 
+    @override
     def use_precision_heuristic(self):
         self.config_ptr.get().usePrecisionHeuristic()
 
+    @override
     def use_precision_pruning_heuristic(self):
         self.config_ptr.get().usePrecisionPruningHeuristic()
 
+    @override
     def use_recall_heuristic(self):
         self.config_ptr.get().useRecallHeuristic()
 
+    @override
     def use_recall_pruning_heuristic(self):
         self.config_ptr.get().useRecallPruningHeuristic()
 
+    @override
     def use_wra_heuristic(self):
         self.config_ptr.get().useWraHeuristic()
 
+    @override
     def use_wra_pruning_heuristic(self):
         self.config_ptr.get().useWraPruningHeuristic()
 
+    @override
     def use_greedy_top_down_rule_induction(self) -> GreedyTopDownRuleInductionConfig:
         cdef IGreedyTopDownRuleInductionConfig* config_ptr = \
             &self.config_ptr.get().useGreedyTopDownRuleInduction()
@@ -224,6 +250,7 @@ cdef class SeCoClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_beam_search_top_down_rule_induction(self) -> BeamSearchTopDownRuleInductionConfig:
         cdef IBeamSearchTopDownRuleInductionConfig* config_ptr = \
             &self.config_ptr.get().useBeamSearchTopDownRuleInduction()
@@ -232,9 +259,11 @@ cdef class SeCoClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_feature_binning(self):
         self.config_ptr.get().useNoFeatureBinning()
 
+    @override
     def use_equal_width_feature_binning(self) -> EqualWidthFeatureBinningConfig:
         cdef IEqualWidthFeatureBinningConfig* config_ptr = \
             &self.config_ptr.get().useEqualWidthFeatureBinning()
@@ -243,6 +272,7 @@ cdef class SeCoClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_equal_frequency_feature_binning(self) -> EqualFrequencyFeatureBinningConfig:
         cdef IEqualFrequencyFeatureBinningConfig* config_ptr = \
             &self.config_ptr.get().useEqualFrequencyFeatureBinning()
@@ -251,12 +281,15 @@ cdef class SeCoClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_output_sampling(self):
         self.config_ptr.get().useNoOutputSampling()
 
+    @override
     def use_round_robin_output_sampling(self):
         self.config_ptr.get().useRoundRobinOutputSampling()
 
+    @override
     def use_output_sampling_without_replacement(self) -> OutputSamplingWithoutReplacementConfig:
         cdef IOutputSamplingWithoutReplacementConfig* config_ptr = \
             &self.config_ptr.get().useOutputSamplingWithoutReplacement()
@@ -265,9 +298,11 @@ cdef class SeCoClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_instance_sampling(self):
         self.config_ptr.get().useNoInstanceSampling()
 
+    @override
     def use_instance_sampling_with_replacement(self) -> InstanceSamplingWithReplacementConfig:
         cdef IInstanceSamplingWithReplacementConfig* config_ptr = \
             &self.config_ptr.get().useInstanceSamplingWithReplacement()
@@ -276,6 +311,7 @@ cdef class SeCoClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_instance_sampling_without_replacement(self) -> InstanceSamplingWithoutReplacementConfig:
         cdef IInstanceSamplingWithoutReplacementConfig* config_ptr = \
             &self.config_ptr.get().useInstanceSamplingWithoutReplacement()
@@ -284,6 +320,7 @@ cdef class SeCoClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_output_wise_stratified_instance_sampling(self) -> OutputWiseStratifiedInstanceSamplingConfig:
         cdef IOutputWiseStratifiedInstanceSamplingConfig* config_ptr = \
             &self.config_ptr.get().useOutputWiseStratifiedInstanceSampling()
@@ -292,6 +329,7 @@ cdef class SeCoClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_example_wise_stratified_instance_sampling(self) -> ExampleWiseStratifiedInstanceSamplingConfig:
         cdef IExampleWiseStratifiedInstanceSamplingConfig* config_ptr = \
             &self.config_ptr.get().useExampleWiseStratifiedInstanceSampling()
@@ -300,9 +338,11 @@ cdef class SeCoClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_feature_sampling(self):
         self.config_ptr.get().useNoFeatureSampling()
 
+    @override
     def use_feature_sampling_without_replacement(self) -> FeatureSamplingWithoutReplacementConfig:
         cdef IFeatureSamplingWithoutReplacementConfig* config_ptr = \
             &self.config_ptr.get().useFeatureSamplingWithoutReplacement()
@@ -311,9 +351,11 @@ cdef class SeCoClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_partition_sampling(self):
         self.config_ptr.get().useNoPartitionSampling()
 
+    @override
     def use_random_bi_partition_sampling(self) -> RandomBiPartitionSamplingConfig:
         cdef IRandomBiPartitionSamplingConfig* config_ptr = \
             &self.config_ptr.get().useRandomBiPartitionSampling()
@@ -322,6 +364,7 @@ cdef class SeCoClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_output_wise_stratified_bi_partition_sampling(self) -> OutputWiseStratifiedBiPartitionSamplingConfig:
         cdef IOutputWiseStratifiedBiPartitionSamplingConfig* config_ptr = \
             &self.config_ptr.get().useOutputWiseStratifiedBiPartitionSampling()
@@ -330,6 +373,7 @@ cdef class SeCoClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_example_wise_stratified_bi_partition_sampling(self) -> ExampleWiseStratifiedBiPartitionSamplingConfig:
         cdef IExampleWiseStratifiedBiPartitionSamplingConfig* config_ptr = \
             &self.config_ptr.get().useExampleWiseStratifiedBiPartitionSampling()
@@ -338,60 +382,74 @@ cdef class SeCoClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_rule_pruning(self):
         self.config_ptr.get().useNoRulePruning()
 
+    @override
     def use_irep_rule_pruning(self):
         self.config_ptr.get().useIrepRulePruning()
 
+    @override
     def use_no_parallel_rule_refinement(self):
         self.config_ptr.get().useNoParallelRuleRefinement()
 
+    @override
     def use_parallel_rule_refinement(self) -> ManualMultiThreadingConfig:
         cdef IManualMultiThreadingConfig* config_ptr = &self.config_ptr.get().useParallelRuleRefinement()
         cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_parallel_statistic_update(self):
         self.config_ptr.get().useNoParallelStatisticUpdate()
 
+    @override
     def use_parallel_statistic_update(self) -> ManualMultiThreadingConfig:
         cdef IManualMultiThreadingConfig* config_ptr = &self.config_ptr.get().useParallelStatisticUpdate()
         cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_parallel_prediction(self):
         self.config_ptr.get().useNoParallelPrediction()
 
+    @override
     def use_parallel_prediction(self) -> ManualMultiThreadingConfig:
         cdef IManualMultiThreadingConfig* config_ptr = &self.config_ptr.get().useParallelPrediction()
         cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_size_stopping_criterion(self):
         self.config_ptr.get().useNoSizeStoppingCriterion()
 
+    @override
     def use_size_stopping_criterion(self) -> SizeStoppingCriterionConfig:
         cdef ISizeStoppingCriterionConfig* config_ptr = &self.config_ptr.get().useSizeStoppingCriterion()
         cdef SizeStoppingCriterionConfig config = SizeStoppingCriterionConfig.__new__(SizeStoppingCriterionConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_time_stopping_criterion(self):
         self.config_ptr.get().useNoTimeStoppingCriterion()
 
+    @override
     def use_time_stopping_criterion(self) -> TimeStoppingCriterionConfig:
         cdef ITimeStoppingCriterionConfig* config_ptr = &self.config_ptr.get().useTimeStoppingCriterion()
         cdef TimeStoppingCriterionConfig config = TimeStoppingCriterionConfig.__new__(TimeStoppingCriterionConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_sequential_post_optimization(self):
         self.config_ptr.get().useNoSequentialPostOptimization()
 
+    @override
     def use_sequential_post_optimization(self) -> SequentialPostOptimizationConfig:
         cdef ISequentialPostOptimizationConfig* config_ptr = &self.config_ptr.get().useSequentialPostOptimization()
         cdef SequentialPostOptimizationConfig config = \
@@ -399,6 +457,7 @@ cdef class SeCoClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_output_wise_binary_predictor(self):
         self.config_ptr.get().useOutputWiseBinaryPredictor()
 
