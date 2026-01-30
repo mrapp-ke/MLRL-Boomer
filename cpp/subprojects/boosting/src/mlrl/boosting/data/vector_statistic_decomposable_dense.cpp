@@ -1,5 +1,8 @@
 #include "mlrl/boosting/data/vector_statistic_decomposable_dense.hpp"
 
+#include "mlrl/common/util/array_operations.hpp"
+#include "mlrl/common/util/xsimd.hpp"
+
 namespace boosting {
 
     template<typename StatisticType>
@@ -185,6 +188,11 @@ namespace boosting {
                                     indexIterator, numElements);
     }
 
-    template class DenseDecomposableStatisticVector<float32>;
-    template class DenseDecomposableStatisticVector<float64>;
+    template class DenseDecomposableStatisticVector<float32, SequentialArrayOperations>;
+    template class DenseDecomposableStatisticVector<float64, SequentialArrayOperations>;
+
+#if SIMD_SUPPORT_ENABLED
+    template class DenseDecomposableStatisticVector<float32, SimdArrayOperations>;
+    template class DenseDecomposableStatisticVector<float64, SimdArrayOperations>;
+#endif
 }

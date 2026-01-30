@@ -140,8 +140,8 @@ namespace seco {
              * Configures the rule learner to induce rules with single-output heads that predict for a single output.
              */
             virtual void useSingleOutputHeads() {
-                this->getHeadConfig().set(std::make_unique<SingleOutputHeadConfig>(this->getHeuristicConfig(),
-                                                                                   this->getPruningHeuristicConfig()));
+                this->getHeadConfig().set(std::make_unique<SingleOutputHeadConfig>(
+                  this->getHeuristicConfig(), this->getPruningHeuristicConfig(), this->getSimdConfig()));
             }
     };
 
@@ -158,8 +158,9 @@ namespace seco {
              * labels.
              */
             virtual void usePartialHeads() {
-                this->getHeadConfig().set(std::make_unique<PartialHeadConfig>(
-                  this->getHeuristicConfig(), this->getPruningHeuristicConfig(), this->getLiftFunctionConfig()));
+                this->getHeadConfig().set(
+                  std::make_unique<PartialHeadConfig>(this->getHeuristicConfig(), this->getPruningHeuristicConfig(),
+                                                      this->getLiftFunctionConfig(), this->getSimdConfig()));
             }
     };
 

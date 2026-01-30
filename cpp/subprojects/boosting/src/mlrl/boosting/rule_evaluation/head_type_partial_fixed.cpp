@@ -3,7 +3,9 @@
 #include "mlrl/boosting/statistics/statistics_provider_decomposable_dense.hpp"
 #include "mlrl/boosting/statistics/statistics_provider_decomposable_sparse.hpp"
 #include "mlrl/boosting/statistics/statistics_provider_non_decomposable_dense.hpp"
+#include "mlrl/common/util/array_operations.hpp"
 #include "mlrl/common/util/validation.hpp"
+#include "mlrl/common/util/xsimd.hpp"
 
 namespace boosting {
 
@@ -31,6 +33,8 @@ namespace boosting {
 
             ReadableProperty<IMultiThreadingConfig> multiThreadingConfig_;
 
+            ReadableProperty<ISimdConfig> simdConfig_;
+
             float32 outputRatio_;
 
             uint32 minOutputs_;
@@ -40,10 +44,12 @@ namespace boosting {
         public:
 
             PartialFixedHeadPreset(ReadableProperty<ILabelBinningConfig> labelBinningConfig,
-                                   ReadableProperty<IMultiThreadingConfig> multiThreadingConfig, float32 outputRatio,
-                                   uint32 minOutputs, uint32 maxOutputs)
+                                   ReadableProperty<IMultiThreadingConfig> multiThreadingConfig,
+                                   ReadableProperty<ISimdConfig> simdConfig, float32 outputRatio, uint32 minOutputs,
+                                   uint32 maxOutputs)
                 : labelBinningConfig_(labelBinningConfig), multiThreadingConfig_(multiThreadingConfig),
-                  outputRatio_(outputRatio), minOutputs_(minOutputs), maxOutputs_(maxOutputs) {}
+                  simdConfig_(simdConfig), outputRatio_(outputRatio), minOutputs_(minOutputs), maxOutputs_(maxOutputs) {
+            }
 
             std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
@@ -61,7 +67,19 @@ namespace boosting {
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
                   labelBinningConfig_.get().createDecomposableFixedPartialRuleEvaluationFactory(
                     outputRatio, minOutputs_, maxOutputs_);
-                return std::make_unique<DenseDecomposableClassificationStatisticsProviderFactory<StatisticType>>(
+
+#if SIMD_SUPPORT_ENABLED
+                if (labelMatrix.getNumOutputs() > 1 && simdConfig_.get().isSimdEnabled()) {
+                    return std::make_unique<
+                      DenseDecomposableClassificationStatisticsProviderFactory<StatisticType, SimdArrayOperations>>(
+                      std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
+                      std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
+                      std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
+                }
+#endif
+
+                return std::make_unique<
+                  DenseDecomposableClassificationStatisticsProviderFactory<StatisticType, SequentialArrayOperations>>(
                   std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
                   std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
                   std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
@@ -81,7 +99,19 @@ namespace boosting {
                 std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
                   labelBinningConfig_.get().createDecomposableFixedPartialRuleEvaluationFactory(
                     outputRatio, minOutputs_, maxOutputs_);
-                return std::make_unique<SparseDecomposableClassificationStatisticsProviderFactory<StatisticType>>(
+
+#if SIMD_SUPPORT_ENABLED
+                if (labelMatrix.getNumOutputs() > 1 && simdConfig_.get().isSimdEnabled()) {
+                    return std::make_unique<
+                      SparseDecomposableClassificationStatisticsProviderFactory<StatisticType, SimdArrayOperations>>(
+                      std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
+                      std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr),
+                      multiThreadingSettings);
+                }
+#endif
+
+                return std::make_unique<
+                  SparseDecomposableClassificationStatisticsProviderFactory<StatisticType, SequentialArrayOperations>>(
                   std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
                   std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr),
                   multiThreadingSettings);
@@ -104,7 +134,19 @@ namespace boosting {
                 std::unique_ptr<INonDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
                   labelBinningConfig_.get().createNonDecomposableFixedPartialRuleEvaluationFactory(
                     outputRatio, minOutputs_, maxOutputs_, blasFactory, lapackFactory);
-                return std::make_unique<DenseNonDecomposableClassificationStatisticsProviderFactory<StatisticType>>(
+
+#if SIMD_SUPPORT_ENABLED
+                if (labelMatrix.getNumOutputs() > 1 && simdConfig_.get().isSimdEnabled()) {
+                    return std::make_unique<
+                      DenseNonDecomposableClassificationStatisticsProviderFactory<StatisticType, SimdArrayOperations>>(
+                      std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
+                      std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
+                      std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
+                }
+#endif
+
+                return std::make_unique<DenseNonDecomposableClassificationStatisticsProviderFactory<
+                  StatisticType, SequentialArrayOperations>>(
                   std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
                   std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
                   std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
@@ -126,7 +168,19 @@ namespace boosting {
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
                   labelBinningConfig_.get().createDecomposableFixedPartialRuleEvaluationFactory(
                     outputRatio, minOutputs_, maxOutputs_);
-                return std::make_unique<DenseDecomposableRegressionStatisticsProviderFactory<StatisticType>>(
+
+#if SIMD_SUPPORT_ENABLED
+                if (regressionMatrix.getNumOutputs() > 1 && simdConfig_.get().isSimdEnabled()) {
+                    return std::make_unique<
+                      DenseDecomposableRegressionStatisticsProviderFactory<StatisticType, SimdArrayOperations>>(
+                      std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
+                      std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
+                      std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
+                }
+#endif
+
+                return std::make_unique<
+                  DenseDecomposableRegressionStatisticsProviderFactory<StatisticType, SequentialArrayOperations>>(
                   std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
                   std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
                   std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
@@ -149,7 +203,19 @@ namespace boosting {
                 std::unique_ptr<INonDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
                   labelBinningConfig_.get().createNonDecomposableFixedPartialRuleEvaluationFactory(
                     outputRatio, minOutputs_, maxOutputs_, blasFactory, lapackFactory);
-                return std::make_unique<DenseNonDecomposableRegressionStatisticsProviderFactory<StatisticType>>(
+
+#if SIMD_SUPPORT_ENABLED
+                if (regressionMatrix.getNumOutputs() > 1 && simdConfig_.get().isSimdEnabled()) {
+                    return std::make_unique<
+                      DenseNonDecomposableRegressionStatisticsProviderFactory<StatisticType, SimdArrayOperations>>(
+                      std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
+                      std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
+                      std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
+                }
+#endif
+
+                return std::make_unique<
+                  DenseNonDecomposableRegressionStatisticsProviderFactory<StatisticType, SequentialArrayOperations>>(
                   std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
                   std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
                   std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
@@ -157,9 +223,10 @@ namespace boosting {
     };
 
     FixedPartialHeadConfig::FixedPartialHeadConfig(ReadableProperty<ILabelBinningConfig> labelBinningConfig,
-                                                   ReadableProperty<IMultiThreadingConfig> multiThreadingConfig)
+                                                   ReadableProperty<IMultiThreadingConfig> multiThreadingConfig,
+                                                   ReadableProperty<ISimdConfig> simdConfig)
         : outputRatio_(0.0f), minOutputs_(2), maxOutputs_(0), labelBinningConfig_(labelBinningConfig),
-          multiThreadingConfig_(multiThreadingConfig) {}
+          multiThreadingConfig_(multiThreadingConfig), simdConfig_(simdConfig) {}
 
     float32 FixedPartialHeadConfig::getOutputRatio() const {
         return outputRatio_;
@@ -197,12 +264,12 @@ namespace boosting {
 
     std::unique_ptr<IHeadConfig::IPreset<float32>> FixedPartialHeadConfig::create32BitPreset() const {
         return std::make_unique<PartialFixedHeadPreset<float32>>(labelBinningConfig_, multiThreadingConfig_,
-                                                                 outputRatio_, minOutputs_, maxOutputs_);
+                                                                 simdConfig_, outputRatio_, minOutputs_, maxOutputs_);
     }
 
     std::unique_ptr<IHeadConfig::IPreset<float64>> FixedPartialHeadConfig::create64BitPreset() const {
         return std::make_unique<PartialFixedHeadPreset<float64>>(labelBinningConfig_, multiThreadingConfig_,
-                                                                 outputRatio_, minOutputs_, maxOutputs_);
+                                                                 simdConfig_, outputRatio_, minOutputs_, maxOutputs_);
     }
 
     bool FixedPartialHeadConfig::isPartial() const {
