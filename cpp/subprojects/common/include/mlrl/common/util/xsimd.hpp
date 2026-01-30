@@ -5,6 +5,9 @@
 
 #include "config.hpp"
 
+#include <string>
+#include <vector>
+
 #if SIMD_SUPPORT_ENABLED
     #include <xsimd/xsimd.hpp>
 #endif
