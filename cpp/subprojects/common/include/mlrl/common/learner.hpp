@@ -43,6 +43,7 @@
 #include "mlrl/common/sampling/partition_sampling_bi_random.hpp"
 #include "mlrl/common/sampling/partition_sampling_no.hpp"
 #include "mlrl/common/simd/simd_no.hpp"
+#include "mlrl/common/simd/simd_yes.hpp"
 #include "mlrl/common/stopping/global_pruning_no.hpp"
 #include "mlrl/common/stopping/global_pruning_post.hpp"
 #include "mlrl/common/stopping/global_pruning_pre.hpp"
@@ -1001,6 +1002,23 @@ class MLRLCOMMON_API INoSimdMixin : virtual public IRuleLearnerConfig {
          */
         virtual void useNoSimdOperations() {
             this->getSimdConfig().set(std::make_unique<NoSimdConfig>());
+        }
+};
+
+/**
+ * Defines an interface for all classes that allow to configure a rule learner to use single instruction, multiple data
+ * (SIMD) operations.
+ */
+class MLRLCOMMON_API ISimdMixin : virtual public IRuleLearnerConfig {
+    public:
+
+        virtual ~ISimdMixin() override {}
+
+        /**
+         * Configures the rule learner to use single instruction, multiple data (SIMD) operations.
+         */
+        virtual void useSimdOperations() {
+            this->getSimdConfig().set(std::make_unique<SimdConfig>());
         }
 };
 

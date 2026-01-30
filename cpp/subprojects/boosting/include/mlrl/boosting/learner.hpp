@@ -641,6 +641,7 @@ namespace boosting {
      * to use a simple default configuration.
      */
     class MLRLBOOSTING_API IBoostedRuleLearnerMixin : virtual public IRuleLearnerMixin,
+                                                      virtual public ISimdMixin,
                                                       virtual public IDefaultRuleMixin,
                                                       virtual public IFloat32StatisticsMixin,
                                                       virtual public IFloat64StatisticsMixin,
@@ -656,6 +657,7 @@ namespace boosting {
              */
             virtual void useDefaults() override {
                 IRuleLearnerMixin::useDefaults();
+                this->useSimdOperations();
                 this->use32BitStatistics();
                 this->useNoL1Regularization();
                 this->useNoL2Regularization();

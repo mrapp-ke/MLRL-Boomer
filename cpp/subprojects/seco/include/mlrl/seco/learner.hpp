@@ -517,6 +517,7 @@ namespace seco {
      * separate-and-conquer (SeCo) paradigm to use a simple default configuration.
      */
     class ISeCoRuleLearnerMixin : virtual public IRuleLearnerMixin,
+                                  virtual public ISimdMixin,
                                   virtual public INoCoverageStoppingCriterionMixin,
                                   virtual public INoLiftFunctionMixin {
         public:
@@ -528,6 +529,7 @@ namespace seco {
              */
             virtual void useDefaults() override {
                 IRuleLearnerMixin::useDefaults();
+                this->useSimdOperations();
                 this->useNoCoverageStoppingCriterion();
                 this->useNoLiftFunction();
             }
