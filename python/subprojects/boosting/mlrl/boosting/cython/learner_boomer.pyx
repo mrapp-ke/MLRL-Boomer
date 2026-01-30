@@ -1,6 +1,7 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+from typing import override
 from libcpp.utility cimport move
 from scipy.linalg.cython_blas cimport ddot, dspmv, sdot, sspmv
 from scipy.linalg.cython_lapack cimport dsysv, ssysv
@@ -163,18 +164,22 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
     def __cinit__(self):
         self.config_ptr = createBoomerClassifierConfig()
 
+    @override
     def use_rng(self) -> RNGConfig:
         cdef IRNGConfig* config_ptr = &self.config_ptr.get().useRNG()
         cdef RNGConfig config = RNGConfig.__new__(RNGConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_sequential_rule_model_assemblage(self):
         self.config_ptr.get().useSequentialRuleModelAssemblage()
 
+    @override
     def use_default_rule(self):
         self.config_ptr.get().useDefaultRule()
 
+    @override
     def use_greedy_top_down_rule_induction(self) -> GreedyTopDownRuleInductionConfig:
         cdef IGreedyTopDownRuleInductionConfig* config_ptr = &self.config_ptr.get().useGreedyTopDownRuleInduction()
         cdef GreedyTopDownRuleInductionConfig config = \
@@ -182,6 +187,7 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_beam_search_top_down_rule_induction(self) -> BeamSearchTopDownRuleInductionConfig:
         cdef IBeamSearchTopDownRuleInductionConfig* config_ptr = \
             &self.config_ptr.get().useBeamSearchTopDownRuleInduction()
@@ -190,12 +196,15 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_post_processor(self):
         self.config_ptr.get().useNoPostProcessor()
 
+    @override
     def use_no_feature_binning(self):
         self.config_ptr.get().useNoFeatureBinning()
 
+    @override
     def use_equal_width_feature_binning(self) -> EqualWidthFeatureBinningConfig:
         cdef IEqualWidthFeatureBinningConfig* config_ptr = \
             &self.config_ptr.get().useEqualWidthFeatureBinning()
@@ -204,6 +213,7 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_equal_frequency_feature_binning(self) -> EqualFrequencyFeatureBinningConfig:
         cdef IEqualFrequencyFeatureBinningConfig* config_ptr = \
             &self.config_ptr.get().useEqualFrequencyFeatureBinning()
@@ -212,12 +222,15 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_output_sampling(self):
         self.config_ptr.get().useNoOutputSampling()
 
+    @override
     def use_round_robin_output_sampling(self):
         self.config_ptr.get().useRoundRobinOutputSampling()
 
+    @override
     def use_output_sampling_without_replacement(self) -> OutputSamplingWithoutReplacementConfig:
         cdef IOutputSamplingWithoutReplacementConfig* config_ptr = \
             &self.config_ptr.get().useOutputSamplingWithoutReplacement()
@@ -226,9 +239,11 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_instance_sampling(self):
         self.config_ptr.get().useNoInstanceSampling()
 
+    @override
     def use_instance_sampling_with_replacement(self) -> InstanceSamplingWithReplacementConfig:
         cdef IInstanceSamplingWithReplacementConfig* config_ptr = \
             &self.config_ptr.get().useInstanceSamplingWithReplacement()
@@ -237,6 +252,7 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_instance_sampling_without_replacement(self) -> InstanceSamplingWithoutReplacementConfig:
         cdef IInstanceSamplingWithoutReplacementConfig* config_ptr = \
             &self.config_ptr.get().useInstanceSamplingWithoutReplacement()
@@ -245,6 +261,7 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_output_wise_probability_predictor(self) -> OutputWiseProbabilityPredictorConfig:
         cdef IOutputWiseProbabilityPredictorConfig* config_ptr = \
             &self.config_ptr.get().useOutputWiseProbabilityPredictor()
@@ -253,6 +270,7 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_marginalized_probability_predictor(self) -> MarginalizedProbabilityPredictorConfig:
         cdef IMarginalizedProbabilityPredictorConfig* config_ptr = \
             &self.config_ptr.get().useMarginalizedProbabilityPredictor()
@@ -261,9 +279,11 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_automatic_probability_predictor(self):
         self.config_ptr.get().useAutomaticProbabilityPredictor()
 
+    @override
     def use_output_wise_stratified_instance_sampling(self) -> OutputWiseStratifiedInstanceSamplingConfig:
         cdef IOutputWiseStratifiedInstanceSamplingConfig* config_ptr = \
             &self.config_ptr.get().useOutputWiseStratifiedInstanceSampling()
@@ -272,6 +292,7 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_example_wise_stratified_instance_sampling(self) -> ExampleWiseStratifiedInstanceSamplingConfig:
         cdef IExampleWiseStratifiedInstanceSamplingConfig* config_ptr = \
             &self.config_ptr.get().useExampleWiseStratifiedInstanceSampling()
@@ -280,9 +301,11 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_feature_sampling(self):
         self.config_ptr.get().useNoFeatureSampling()
 
+    @override
     def use_feature_sampling_without_replacement(self) -> FeatureSamplingWithoutReplacementConfig:
         cdef IFeatureSamplingWithoutReplacementConfig* config_ptr = \
             &self.config_ptr.get().useFeatureSamplingWithoutReplacement()
@@ -291,9 +314,11 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_partition_sampling(self):
         self.config_ptr.get().useNoPartitionSampling()
 
+    @override
     def use_random_bi_partition_sampling(self) -> RandomBiPartitionSamplingConfig:
         cdef IRandomBiPartitionSamplingConfig* config_ptr = \
             &self.config_ptr.get().useRandomBiPartitionSampling()
@@ -302,6 +327,7 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_output_wise_stratified_bi_partition_sampling(self) -> OutputWiseStratifiedBiPartitionSamplingConfig:
         cdef IOutputWiseStratifiedBiPartitionSamplingConfig* config_ptr = \
             &self.config_ptr.get().useOutputWiseStratifiedBiPartitionSampling()
@@ -310,6 +336,7 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_example_wise_stratified_bi_partition_sampling(self) -> ExampleWiseStratifiedBiPartitionSamplingConfig:
         cdef IExampleWiseStratifiedBiPartitionSamplingConfig* config_ptr = \
             &self.config_ptr.get().useExampleWiseStratifiedBiPartitionSampling()
@@ -318,78 +345,96 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_automatic_partition_sampling(self):
         self.config_ptr.get().useAutomaticPartitionSampling()
 
+    @override
     def use_no_rule_pruning(self):
         self.config_ptr.get().useNoRulePruning()
 
+    @override
     def use_irep_rule_pruning(self):
         self.config_ptr.get().useIrepRulePruning()
 
+    @override
     def use_no_parallel_rule_refinement(self):
         self.config_ptr.get().useNoParallelRuleRefinement()
 
+    @override
     def use_parallel_rule_refinement(self) -> ManualMultiThreadingConfig:
         cdef IManualMultiThreadingConfig* config_ptr = &self.config_ptr.get().useParallelRuleRefinement()
         cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_parallel_statistic_update(self):
         self.config_ptr.get().useNoParallelStatisticUpdate()
 
+    @override
     def use_parallel_statistic_update(self) -> ManualMultiThreadingConfig:
         cdef IManualMultiThreadingConfig* config_ptr = &self.config_ptr.get().useParallelStatisticUpdate()
         cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_parallel_prediction(self):
         self.config_ptr.get().useNoParallelPrediction()
 
+    @override
     def use_parallel_prediction(self) -> ManualMultiThreadingConfig:
         cdef IManualMultiThreadingConfig* config_ptr = &self.config_ptr.get().useParallelPrediction()
         cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_size_stopping_criterion(self):
         self.config_ptr.get().useNoSizeStoppingCriterion()
 
+    @override
     def use_size_stopping_criterion(self) -> SizeStoppingCriterionConfig:
         cdef ISizeStoppingCriterionConfig* config_ptr = &self.config_ptr.get().useSizeStoppingCriterion()
         cdef SizeStoppingCriterionConfig config = SizeStoppingCriterionConfig.__new__(SizeStoppingCriterionConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_time_stopping_criterion(self):
         self.config_ptr.get().useNoTimeStoppingCriterion()
 
+    @override
     def use_time_stopping_criterion(self) -> TimeStoppingCriterionConfig:
         cdef ITimeStoppingCriterionConfig* config_ptr = &self.config_ptr.get().useTimeStoppingCriterion()
         cdef TimeStoppingCriterionConfig config = TimeStoppingCriterionConfig.__new__(TimeStoppingCriterionConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_global_pre_pruning(self) -> PrePruningConfig:
         cdef IPrePruningConfig* config_ptr = &self.config_ptr.get().useGlobalPrePruning()
         cdef PrePruningConfig config = PrePruningConfig.__new__(PrePruningConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_global_pruning(self):
         self.config_ptr.get().useNoGlobalPruning()
 
+    @override
     def use_global_post_pruning(self) -> PostPruningConfig:
         cdef IPostPruningConfig* config_ptr = &self.config_ptr.get().useGlobalPostPruning()
         cdef PostPruningConfig config = PostPruningConfig.__new__(PostPruningConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_sequential_post_optimization(self):
         self.config_ptr.get().useNoSequentialPostOptimization()
 
+    @override
     def use_sequential_post_optimization(self) -> SequentialPostOptimizationConfig:
         cdef ISequentialPostOptimizationConfig* config_ptr = &self.config_ptr.get().useSequentialPostOptimization()
         cdef SequentialPostOptimizationConfig config = \
@@ -397,114 +442,145 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_default_rule(self):
         self.config_ptr.get().useNoDefaultRule()
 
+    @override
     def use_automatic_default_rule(self):
         self.config_ptr.get().useAutomaticDefaultRule()
 
+    @override
     def use_automatic_feature_binning(self):
         self.config_ptr.get().useAutomaticFeatureBinning()
 
+    @override
     def use_constant_shrinkage_post_processor(self) -> ConstantShrinkageConfig:
         cdef IConstantShrinkageConfig* config_ptr = &self.config_ptr.get().useConstantShrinkagePostProcessor()
         cdef ConstantShrinkageConfig config = ConstantShrinkageConfig.__new__(ConstantShrinkageConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_automatic_parallel_rule_refinement(self):
         self.config_ptr.get().useAutomaticParallelRuleRefinement()
 
+    @override
     def use_automatic_parallel_statistic_update(self):
         self.config_ptr.get().useAutomaticParallelStatisticUpdate()
 
+    @override
     def use_automatic_heads(self):
         self.config_ptr.get().useAutomaticHeads()
 
+    @override
     def use_complete_heads(self):
         self.config_ptr.get().useCompleteHeads()
 
+    @override
     def use_fixed_partial_heads(self) -> FixedPartialHeadConfig:
         cdef IFixedPartialHeadConfig* config_ptr = &self.config_ptr.get().useFixedPartialHeads()
         cdef FixedPartialHeadConfig config = FixedPartialHeadConfig.__new__(FixedPartialHeadConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_dynamic_partial_heads(self) -> DynamicPartialHeadConfig:
         cdef IDynamicPartialHeadConfig* config_ptr = &self.config_ptr.get().useDynamicPartialHeads()
         cdef DynamicPartialHeadConfig config = DynamicPartialHeadConfig.__new__(DynamicPartialHeadConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_single_output_heads(self):
         self.config_ptr.get().useSingleOutputHeads()
 
+    @override
     def use_automatic_statistics(self):
         self.config_ptr.get().useAutomaticStatistics()
 
+    @override
     def use_dense_statistics(self):
         self.config_ptr.get().useDenseStatistics()
 
+    @override
     def use_sparse_statistics(self):
         self.config_ptr.get().useSparseStatistics()
 
+    @override
     def use_32_bit_statistics(self):
         self.config_ptr.get().use32BitStatistics()
 
+    @override
     def use_64_bit_statistics(self):
         self.config_ptr.get().use64BitStatistics()
 
+    @override
     def use_no_l1_regularization(self):
         self.config_ptr.get().useNoL1Regularization()
 
+    @override
     def use_l1_regularization(self) -> ManualRegularizationConfig:
         cdef IManualRegularizationConfig* config_ptr = &self.config_ptr.get().useL1Regularization()
         cdef ManualRegularizationConfig config = ManualRegularizationConfig.__new__(ManualRegularizationConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_l2_regularization(self):
         self.config_ptr.get().useNoL2Regularization()
 
+    @override
     def use_l2_regularization(self) -> ManualRegularizationConfig:
         cdef IManualRegularizationConfig* config_ptr = &self.config_ptr.get().useL2Regularization()
         cdef ManualRegularizationConfig config = ManualRegularizationConfig.__new__(ManualRegularizationConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_non_decomposable_logistic_loss(self):
         self.config_ptr.get().useNonDecomposableLogisticLoss()
 
+    @override
     def use_non_decomposable_squared_error_loss(self):
         self.config_ptr.get().useNonDecomposableSquaredErrorLoss()
 
+    @override
     def use_non_decomposable_squared_hinge_loss(self):
         self.config_ptr.get().useNonDecomposableSquaredHingeLoss()
 
+    @override
     def use_decomposable_logistic_loss(self):
         self.config_ptr.get().useDecomposableLogisticLoss()
 
+    @override
     def use_decomposable_squared_error_loss(self):
         self.config_ptr.get().useDecomposableSquaredErrorLoss()
 
+    @override
     def use_decomposable_squared_hinge_loss(self):
         self.config_ptr.get().useDecomposableSquaredHingeLoss()
 
+    @override
     def use_no_label_binning(self):
         self.config_ptr.get().useNoLabelBinning()
 
+    @override
     def use_automatic_label_binning(self):
         self.config_ptr.get().useAutomaticLabelBinning()
 
+    @override
     def use_equal_width_label_binning(self) -> EqualWidthLabelBinningConfig:
         cdef IEqualWidthLabelBinningConfig* config_ptr = &self.config_ptr.get().useEqualWidthLabelBinning()
         cdef EqualWidthLabelBinningConfig config = EqualWidthLabelBinningConfig.__new__(EqualWidthLabelBinningConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_marginal_probability_calibration(self):
         self.config_ptr.get().useNoMarginalProbabilityCalibration()
 
+    @override
     def use_isotonic_marginal_probability_calibration(self) -> IsotonicMarginalProbabilityCalibratorConfig:
         cdef IIsotonicMarginalProbabilityCalibratorConfig* config_ptr = \
             &self.config_ptr.get().useIsotonicMarginalProbabilityCalibration()
@@ -513,9 +589,11 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_joint_probability_calibration(self):
         self.config_ptr.get().useNoJointProbabilityCalibration()
 
+    @override
     def use_isotonic_joint_probability_calibration(self) -> IsotonicJointProbabilityCalibratorConfig:
         cdef IIsotonicJointProbabilityCalibratorConfig* config_ptr = \
             &self.config_ptr.get().useIsotonicJointProbabilityCalibration()
@@ -524,9 +602,11 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_output_wise_score_predictor(self):
         self.config_ptr.get().useOutputWiseScorePredictor()
 
+    @override
     def use_output_wise_probability_predictor(self) -> OutputWiseProbabilityPredictorConfig:
         cdef IOutputWiseProbabilityPredictorConfig* config_ptr = \
             &self.config_ptr.get().useOutputWiseProbabilityPredictor()
@@ -535,6 +615,7 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_marginalized_probability_predictor(self) -> MarginalizedProbabilityPredictorConfig:
         cdef IMarginalizedProbabilityPredictorConfig* config_ptr = \
             &self.config_ptr.get().useMarginalizedProbabilityPredictor()
@@ -543,9 +624,11 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_automatic_probability_predictor(self):
         self.config_ptr.get().useAutomaticProbabilityPredictor()
 
+    @override
     def use_output_wise_binary_predictor(self) -> OutputWiseBinaryPredictorConfig:
         cdef IOutputWiseBinaryPredictorConfig* config_ptr = &self.config_ptr.get().useOutputWiseBinaryPredictor()
         cdef OutputWiseBinaryPredictorConfig config = \
@@ -553,6 +636,7 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_example_wise_binary_predictor(self) -> ExampleWiseBinaryPredictorConfig:
         cdef IExampleWiseBinaryPredictorConfig* config_ptr = &self.config_ptr.get().useExampleWiseBinaryPredictor()
         cdef ExampleWiseBinaryPredictorConfig config = \
@@ -560,12 +644,14 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_gfm_binary_predictor(self) -> GfmBinaryPredictorConfig:
         cdef IGfmBinaryPredictorConfig* config_ptr = &self.config_ptr.get().useGfmBinaryPredictor()
         cdef GfmBinaryPredictorConfig config = GfmBinaryPredictorConfig.__new__(GfmBinaryPredictorConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_automatic_binary_predictor(self):
         self.config_ptr.get().useOutputWiseBinaryPredictor()
 
@@ -652,12 +738,15 @@ cdef class BoomerRegressorConfig(RuleLearnerConfig,
     def __cinit__(self):
         self.config_ptr = createBoomerRegressorConfig()
 
+    @override
     def use_sequential_rule_model_assemblage(self):
         self.config_ptr.get().useSequentialRuleModelAssemblage()
 
+    @override
     def use_default_rule(self):
         self.config_ptr.get().useDefaultRule()
 
+    @override
     def use_greedy_top_down_rule_induction(self) -> GreedyTopDownRuleInductionConfig:
         cdef IGreedyTopDownRuleInductionConfig* config_ptr = &self.config_ptr.get().useGreedyTopDownRuleInduction()
         cdef GreedyTopDownRuleInductionConfig config = \
@@ -665,6 +754,7 @@ cdef class BoomerRegressorConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_beam_search_top_down_rule_induction(self) -> BeamSearchTopDownRuleInductionConfig:
         cdef IBeamSearchTopDownRuleInductionConfig* config_ptr = \
             &self.config_ptr.get().useBeamSearchTopDownRuleInduction()
@@ -673,12 +763,15 @@ cdef class BoomerRegressorConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_post_processor(self):
         self.config_ptr.get().useNoPostProcessor()
 
+    @override
     def use_no_feature_binning(self):
         self.config_ptr.get().useNoFeatureBinning()
 
+    @override
     def use_equal_width_feature_binning(self) -> EqualWidthFeatureBinningConfig:
         cdef IEqualWidthFeatureBinningConfig* config_ptr = \
             &self.config_ptr.get().useEqualWidthFeatureBinning()
@@ -687,6 +780,7 @@ cdef class BoomerRegressorConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_equal_frequency_feature_binning(self) -> EqualFrequencyFeatureBinningConfig:
         cdef IEqualFrequencyFeatureBinningConfig* config_ptr = \
             &self.config_ptr.get().useEqualFrequencyFeatureBinning()
@@ -695,12 +789,15 @@ cdef class BoomerRegressorConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_output_sampling(self):
         self.config_ptr.get().useNoOutputSampling()
 
+    @override
     def use_round_robin_output_sampling(self):
         self.config_ptr.get().useRoundRobinOutputSampling()
 
+    @override
     def use_output_sampling_without_replacement(self) -> OutputSamplingWithoutReplacementConfig:
         cdef IOutputSamplingWithoutReplacementConfig* config_ptr = \
             &self.config_ptr.get().useOutputSamplingWithoutReplacement()
@@ -709,9 +806,11 @@ cdef class BoomerRegressorConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_instance_sampling(self):
         self.config_ptr.get().useNoInstanceSampling()
 
+    @override
     def use_instance_sampling_with_replacement(self) -> InstanceSamplingWithReplacementConfig:
         cdef IInstanceSamplingWithReplacementConfig* config_ptr = \
             &self.config_ptr.get().useInstanceSamplingWithReplacement()
@@ -720,6 +819,7 @@ cdef class BoomerRegressorConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_instance_sampling_without_replacement(self) -> InstanceSamplingWithoutReplacementConfig:
         cdef IInstanceSamplingWithoutReplacementConfig* config_ptr = \
             &self.config_ptr.get().useInstanceSamplingWithoutReplacement()
@@ -728,9 +828,11 @@ cdef class BoomerRegressorConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_feature_sampling(self):
         self.config_ptr.get().useNoFeatureSampling()
 
+    @override
     def use_feature_sampling_without_replacement(self) -> FeatureSamplingWithoutReplacementConfig:
         cdef IFeatureSamplingWithoutReplacementConfig* config_ptr = \
             &self.config_ptr.get().useFeatureSamplingWithoutReplacement()
@@ -739,9 +841,11 @@ cdef class BoomerRegressorConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_partition_sampling(self):
         self.config_ptr.get().useNoPartitionSampling()
 
+    @override
     def use_random_bi_partition_sampling(self) -> RandomBiPartitionSamplingConfig:
         cdef IRandomBiPartitionSamplingConfig* config_ptr = \
             &self.config_ptr.get().useRandomBiPartitionSampling()
@@ -750,78 +854,96 @@ cdef class BoomerRegressorConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_automatic_partition_sampling(self):
         self.config_ptr.get().useAutomaticPartitionSampling()
 
+    @override
     def use_no_rule_pruning(self):
         self.config_ptr.get().useNoRulePruning()
 
+    @override
     def use_irep_rule_pruning(self):
         self.config_ptr.get().useIrepRulePruning()
 
+    @override
     def use_no_parallel_rule_refinement(self):
         self.config_ptr.get().useNoParallelRuleRefinement()
 
+    @override
     def use_parallel_rule_refinement(self) -> ManualMultiThreadingConfig:
         cdef IManualMultiThreadingConfig* config_ptr = &self.config_ptr.get().useParallelRuleRefinement()
         cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_parallel_statistic_update(self):
         self.config_ptr.get().useNoParallelStatisticUpdate()
 
+    @override
     def use_parallel_statistic_update(self) -> ManualMultiThreadingConfig:
         cdef IManualMultiThreadingConfig* config_ptr = &self.config_ptr.get().useParallelStatisticUpdate()
         cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_parallel_prediction(self):
         self.config_ptr.get().useNoParallelPrediction()
 
+    @override
     def use_parallel_prediction(self) -> ManualMultiThreadingConfig:
         cdef IManualMultiThreadingConfig* config_ptr = &self.config_ptr.get().useParallelPrediction()
         cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_size_stopping_criterion(self):
         self.config_ptr.get().useNoSizeStoppingCriterion()
 
+    @override
     def use_size_stopping_criterion(self) -> SizeStoppingCriterionConfig:
         cdef ISizeStoppingCriterionConfig* config_ptr = &self.config_ptr.get().useSizeStoppingCriterion()
         cdef SizeStoppingCriterionConfig config = SizeStoppingCriterionConfig.__new__(SizeStoppingCriterionConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_time_stopping_criterion(self):
         self.config_ptr.get().useNoTimeStoppingCriterion()
 
+    @override
     def use_time_stopping_criterion(self) -> TimeStoppingCriterionConfig:
         cdef ITimeStoppingCriterionConfig* config_ptr = &self.config_ptr.get().useTimeStoppingCriterion()
         cdef TimeStoppingCriterionConfig config = TimeStoppingCriterionConfig.__new__(TimeStoppingCriterionConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_global_pre_pruning(self) -> PrePruningConfig:
         cdef IPrePruningConfig* config_ptr = &self.config_ptr.get().useGlobalPrePruning()
         cdef PrePruningConfig config = PrePruningConfig.__new__(PrePruningConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_global_pruning(self):
         self.config_ptr.get().useNoGlobalPruning()
 
+    @override
     def use_global_post_pruning(self) -> PostPruningConfig:
         cdef IPostPruningConfig* config_ptr = &self.config_ptr.get().useGlobalPostPruning()
         cdef PostPruningConfig config = PostPruningConfig.__new__(PostPruningConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_sequential_post_optimization(self):
         self.config_ptr.get().useNoSequentialPostOptimization()
 
+    @override
     def use_sequential_post_optimization(self) -> SequentialPostOptimizationConfig:
         cdef ISequentialPostOptimizationConfig* config_ptr = &self.config_ptr.get().useSequentialPostOptimization()
         cdef SequentialPostOptimizationConfig config = \
@@ -829,87 +951,110 @@ cdef class BoomerRegressorConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_default_rule(self):
         self.config_ptr.get().useNoDefaultRule()
 
+    @override
     def use_automatic_default_rule(self):
         self.config_ptr.get().useAutomaticDefaultRule()
 
+    @override
     def use_automatic_feature_binning(self):
         self.config_ptr.get().useAutomaticFeatureBinning()
 
+    @override
     def use_constant_shrinkage_post_processor(self) -> ConstantShrinkageConfig:
         cdef IConstantShrinkageConfig* config_ptr = &self.config_ptr.get().useConstantShrinkagePostProcessor()
         cdef ConstantShrinkageConfig config = ConstantShrinkageConfig.__new__(ConstantShrinkageConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_automatic_parallel_rule_refinement(self):
         self.config_ptr.get().useAutomaticParallelRuleRefinement()
 
+    @override
     def use_automatic_parallel_statistic_update(self):
         self.config_ptr.get().useAutomaticParallelStatisticUpdate()
 
+    @override
     def use_automatic_heads(self):
         self.config_ptr.get().useAutomaticHeads()
 
+    @override
     def use_complete_heads(self):
         self.config_ptr.get().useCompleteHeads()
 
+    @override
     def use_fixed_partial_heads(self) -> FixedPartialHeadConfig:
         cdef IFixedPartialHeadConfig* config_ptr = &self.config_ptr.get().useFixedPartialHeads()
         cdef FixedPartialHeadConfig config = FixedPartialHeadConfig.__new__(FixedPartialHeadConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_dynamic_partial_heads(self) -> DynamicPartialHeadConfig:
         cdef IDynamicPartialHeadConfig* config_ptr = &self.config_ptr.get().useDynamicPartialHeads()
         cdef DynamicPartialHeadConfig config = DynamicPartialHeadConfig.__new__(DynamicPartialHeadConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_single_output_heads(self):
         self.config_ptr.get().useSingleOutputHeads()
 
+    @override
     def use_automatic_statistics(self):
         self.config_ptr.get().useAutomaticStatistics()
 
+    @override
     def use_dense_statistics(self):
         self.config_ptr.get().useDenseStatistics()
 
+    @override
     def use_sparse_statistics(self):
         self.config_ptr.get().useSparseStatistics()
 
+    @override
     def use_32_bit_statistics(self):
         self.config_ptr.get().use32BitStatistics()
 
+    @override
     def use_64_bit_statistics(self):
         self.config_ptr.get().use64BitStatistics()
 
+    @override
     def use_no_l1_regularization(self):
         self.config_ptr.get().useNoL1Regularization()
 
+    @override
     def use_l1_regularization(self) -> ManualRegularizationConfig:
         cdef IManualRegularizationConfig* config_ptr = &self.config_ptr.get().useL1Regularization()
         cdef ManualRegularizationConfig config = ManualRegularizationConfig.__new__(ManualRegularizationConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_no_l2_regularization(self):
         self.config_ptr.get().useNoL2Regularization()
 
+    @override
     def use_l2_regularization(self) -> ManualRegularizationConfig:
         cdef IManualRegularizationConfig* config_ptr = &self.config_ptr.get().useL2Regularization()
         cdef ManualRegularizationConfig config = ManualRegularizationConfig.__new__(ManualRegularizationConfig)
         config.config_ptr = config_ptr
         return config
 
+    @override
     def use_non_decomposable_squared_error_loss(self):
         self.config_ptr.get().useNonDecomposableSquaredErrorLoss()
 
+    @override
     def use_decomposable_squared_error_loss(self):
         self.config_ptr.get().useDecomposableSquaredErrorLoss()
 
+    @override
     def use_output_wise_score_predictor(self):
         self.config_ptr.get().useOutputWiseScorePredictor()
 
