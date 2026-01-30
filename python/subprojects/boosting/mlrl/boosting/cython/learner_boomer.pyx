@@ -2,7 +2,11 @@
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from typing import override
+
 from libcpp.utility cimport move
+
+from typing import override
+
 from scipy.linalg.cython_blas cimport ddot, dspmv, sdot, sspmv
 from scipy.linalg.cython_lapack cimport dsysv, ssysv
 
@@ -49,10 +53,10 @@ from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, Defa
     NoInstanceSamplingMixin, NoJointProbabilityCalibrationMixin, NoMarginalProbabilityCalibrationMixin, \
     NoOutputSamplingMixin, NoParallelPredictionMixin, NoParallelRuleRefinementMixin, NoParallelStatisticUpdateMixin, \
     NoPartitionSamplingMixin, NoPostProcessorMixin, NoRulePruningMixin, NoSequentialPostOptimizationMixin, \
-    NoSizeStoppingCriterionMixin, NoTimeStoppingCriterionMixin, OutputSamplingWithoutReplacementMixin, \
+    NoSimdMixin, NoSizeStoppingCriterionMixin, NoTimeStoppingCriterionMixin, OutputSamplingWithoutReplacementMixin, \
     ParallelPredictionMixin, ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, PostPruningMixin, \
     PrePruningMixin, RandomBiPartitionSamplingMixin, RNGMixin, RoundRobinOutputSamplingMixin, \
-    SequentialPostOptimizationMixin, SequentialRuleModelAssemblageMixin, SizeStoppingCriterionMixin, \
+    SequentialPostOptimizationMixin, SequentialRuleModelAssemblageMixin, SimdMixin, SizeStoppingCriterionMixin, \
     TimeStoppingCriterionMixin
 from mlrl.common.cython.learner_classification import ExampleWiseStratifiedBiPartitionSamplingMixin, \
     ExampleWiseStratifiedInstanceSamplingMixin, OutputWiseStratifiedBiPartitionSamplingMixin, \
@@ -146,6 +150,8 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
                                   ParallelStatisticUpdateMixin,
                                   NoParallelPredictionMixin,
                                   ParallelPredictionMixin,
+                                  NoSimdMixin,
+                                  SimdMixin,
                                   NoSizeStoppingCriterionMixin,
                                   SizeStoppingCriterionMixin,
                                   NoTimeStoppingCriterionMixin,
@@ -389,6 +395,14 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
         cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
         config.config_ptr = config_ptr
         return config
+
+    @override
+    def use_no_simd_operations(self):
+        self.config_ptr.get().useNoSimdOperations()
+
+    @override
+    def use_simd_operations(self):
+        self.config_ptr.get().useSimdOperations()
 
     @override
     def use_no_size_stopping_criterion(self):
@@ -722,6 +736,8 @@ cdef class BoomerRegressorConfig(RuleLearnerConfig,
                                  ParallelStatisticUpdateMixin,
                                  NoParallelPredictionMixin,
                                  ParallelPredictionMixin,
+                                 NoSimdMixin,
+                                 SimdMixin,
                                  NoSizeStoppingCriterionMixin,
                                  SizeStoppingCriterionMixin,
                                  NoTimeStoppingCriterionMixin,
@@ -898,6 +914,14 @@ cdef class BoomerRegressorConfig(RuleLearnerConfig,
         cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
         config.config_ptr = config_ptr
         return config
+
+    @override
+    def use_no_simd_operations(self):
+        self.config_ptr.get().useNoSimdOperations()
+
+    @override
+    def use_simd_operations(self):
+        self.config_ptr.get().useSimdOperations()
 
     @override
     def use_no_size_stopping_criterion(self):
