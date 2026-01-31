@@ -48,3 +48,26 @@ jobs:
       macos: ${{ inputs.macos }}
       windows: ${{ inputs.windows }}
     secrets: inherit
+  run_wheels:
+    needs:
+      - publish_pure
+      - publish_platform
+    if: ${{ inputs.release == false }}
+    name: Run wheels
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-24.04
+          - ubuntu-24.04-arm
+          - macos-26
+          - macos-15-intel
+          - windows-2025
+          - windows-11-arm
+        subproject:
+          - boosting
+          - seco
+    uses: ./.github/workflows/template_run_wheel.yml
+    with:
+      os: ${{ matrix.os }}
+      subproject: ${{ matrix.subproject }}

@@ -13,7 +13,7 @@ static inline void sampleInternally(const SinglePartition& partition, const Exam
     uint32 numExamples = partition.getNumElements();
     uint32 numSamples = util::calculateBoundedFraction(numExamples, sampleSize, minSamples, maxSamples);
     typename DenseWeightVector<WeightType>::iterator weightIterator = weightVector.begin();
-    util::setViewToZeros(weightIterator, numExamples);
+    std::fill(weightIterator, weightVector.end(), (WeightType) 0);
     uint32 numNonZeroWeights = 0;
 
     for (uint32 i = 0; i < numSamples; i++) {
@@ -37,12 +37,11 @@ template<typename ExampleWeights, typename WeightType>
 static inline void sampleInternally(BiPartition& partition, const ExampleWeights& exampleWeights, float32 sampleSize,
                                     uint32 minSamples, uint32 maxSamples, DenseWeightVector<WeightType>& weightVector,
                                     RNG& rng) {
-    uint32 numExamples = partition.getNumElements();
     uint32 numTrainingExamples = partition.getNumFirst();
     uint32 numSamples = util::calculateBoundedFraction(numTrainingExamples, sampleSize, minSamples, maxSamples);
     BiPartition::const_iterator indexIterator = partition.first_cbegin();
     typename DenseWeightVector<WeightType>::iterator weightIterator = weightVector.begin();
-    util::setViewToZeros(weightIterator, numExamples);
+    std::fill(weightIterator, weightVector.end(), (WeightType) 0);
     uint32 numNonZeroWeights = 0;
 
     for (uint32 i = 0; i < numSamples; i++) {

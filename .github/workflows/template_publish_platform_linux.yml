@@ -9,7 +9,7 @@ on:
       os:
         required: true
         type: string
-      python_version:
+      workflow_python_version:
         required: true
         type: string
       release:
@@ -19,6 +19,7 @@ env:
   SUBPROJECTS: ${{ inputs.subproject }}
   RELEASE: ${{ inputs.release == true }}
   TEST_SUPPORT: disabled
+  SIMD_SUPPORT: disabled
   GPU_SUPPORT: disabled
 jobs:
   build_identifiers:
@@ -32,13 +33,13 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
-          python-version: ${{ inputs.python_version }}
+          python-version: ${{ inputs.workflow_python_version }}
           check-latest: true
           cache: pip
           cache-dependency-path: '**/requirements.txt'
       - name: Determine supported Python versions
         uses: juliangruber/read-file-action@v1
-        id: python_version
+        id: python_requires
         with:
           path: python/.version-python
       - name: Create virtual environment
@@ -48,7 +49,7 @@ jobs:
         env:
           CIBW_PACKAGE_DIR: python/subprojects/${{ inputs.subproject }}
           CIBW_ARCHS: auto64
-          CIBW_PROJECT_REQUIRES_PYTHON: ${{ steps.python_version.outputs.content }}
+          CIBW_PROJECT_REQUIRES_PYTHON: ${{ steps.python_requires.outputs.content }}
         run: echo "build_identifiers=$(./build print_cibuildwheel_identifiers)" >> $GITHUB_OUTPUT
   publish_linux_wheels:
     needs: build_identifiers
@@ -64,7 +65,7 @@ jobs:
       - name: Build package
         uses: pypa/cibuildwheel@v3.3
         env:
-          CIBW_ENVIRONMENT_PASS_LINUX: SUBPROJECTS RELEASE TEST_SUPPORT GPU_SUPPORT
+          CIBW_ENVIRONMENT_PASS_LINUX: SUBPROJECTS RELEASE TEST_SUPPORT SIMD_SUPPORT GPU_SUPPORT
           CIBW_BUILD: ${{ matrix.build_identifier }}
           CIBW_BEFORE_BUILD: ./build pyproject_toml
         with:

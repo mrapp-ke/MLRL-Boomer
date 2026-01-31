@@ -9,12 +9,12 @@ CoverageMask::CoverageMask(uint32 numElements)
 CoverageMask::CoverageMask(const CoverageMask& other)
     : DenseVectorDecorator<AllocatedVector<uint32>>(AllocatedVector<uint32>(other.getNumElements())),
       indicatorValue(other.indicatorValue) {
-    util::copyView(other.cbegin(), this->begin(), this->getNumElements());
+    std::copy(other.cbegin(), other.cend(), this->begin());
 }
 
 void CoverageMask::reset() {
     indicatorValue = 0;
-    util::setViewToZeros(this->begin(), this->getNumElements());
+    std::fill(this->begin(), this->end(), 0);
 }
 
 bool CoverageMask::operator[](uint32 index) const {

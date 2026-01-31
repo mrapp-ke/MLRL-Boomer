@@ -17,7 +17,8 @@ namespace boosting {
     /**
      * Calculates the score to be predicted for individual bins and returns the overall quality of the predictions.
      *
-     * @tparam StatisticIterator        The type of the iterator that provides access to the gradients and Hessians
+     * @tparam GradientIterator         The type of the iterator that provides access to the gradients
+     * @tparam HessianIterator          The type of the iterator that provides access to the Hessians
      * @tparam ScoreIterator            The type of the iterator, the calculated scores should be written to
      * @param statisticIterator         An iterator that provides random access to the gradients and Hessians
      * @param scoreIterator             An iterator, the calculated scores should be written to
@@ -27,20 +28,21 @@ namespace boosting {
      * @param l2RegularizationWeight    The L2 regularization weight
      * @return                          The overall quality that has been calculated
      */
-    template<typename StatisticIterator, typename ScoreIterator>
-    static inline typename util::iterator_value<StatisticIterator>::statistic_type calculateBinnedScores(
-      StatisticIterator statisticIterator, ScoreIterator scoreIterator, View<uint32>::const_iterator weights,
-      uint32 numElements, float32 l1RegularizationWeight, float32 l2RegularizationWeight) {
+    template<typename GradientIterator, typename HessianIterator, typename ScoreIterator>
+    static inline typename util::iterator_value<GradientIterator> calculateBinnedScores(
+      GradientIterator gradientIterator, HessianIterator hessianIterator, ScoreIterator scoreIterator,
+      View<uint32>::const_iterator weights, uint32 numElements, float32 l1RegularizationWeight,
+      float32 l2RegularizationWeight) {
         typedef typename util::iterator_value<ScoreIterator> statistic_type;
         statistic_type quality = 0;
 
         for (uint32 i = 0; i < numElements; i++) {
             uint32 weight = weights[i];
-            const Statistic<statistic_type>& statistic = statisticIterator[i];
-            statistic_type predictedScore = calculateOutputWiseScore(
-              statistic.gradient, statistic.hessian, weight * l1RegularizationWeight, weight * l2RegularizationWeight);
+            statistic_type predictedScore =
+              calculateOutputWiseScore(gradientIterator[i], hessianIterator[i], weight * l1RegularizationWeight,
+                                       weight * l2RegularizationWeight);
             scoreIterator[i] = predictedScore;
-            quality += calculateOutputWiseQuality(predictedScore, statistic.gradient, statistic.hessian,
+            quality += calculateOutputWiseQuality(predictedScore, gradientIterator[i], hessianIterator[i],
                                                   weight * l1RegularizationWeight, weight * l2RegularizationWeight);
         }
 
@@ -66,7 +68,9 @@ namespace boosting {
 
             DenseBinnedScoreVector<statistic_type, IndexVector> scoreVector_;
 
-            DenseVector<Statistic<statistic_type>> aggregatedStatisticVector_;
+            DenseVector<statistic_type> aggregatedGradientVector_;
+
+            DenseVector<statistic_type> aggregatedHessianVector_;
 
             Array<uint32> numElementsPerBin_;
 
@@ -114,10 +118,10 @@ namespace boosting {
                                                      float32 l1RegularizationWeight, float32 l2RegularizationWeight,
                                                      std::unique_ptr<ILabelBinning<statistic_type>> binningPtr)
                 : maxBins_(binningPtr->getMaxBins(labelIndices.getNumElements())),
-                  scoreVector_(labelIndices, maxBins_ + 1, indicesSorted), aggregatedStatisticVector_(maxBins_),
-                  numElementsPerBin_(maxBins_), criteria_(labelIndices.getNumElements()),
-                  l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
-                  binningPtr_(std::move(binningPtr)) {
+                  scoreVector_(labelIndices, maxBins_ + 1, indicesSorted), aggregatedGradientVector_(maxBins_),
+                  aggregatedHessianVector_(maxBins_), numElementsPerBin_(maxBins_),
+                  criteria_(labelIndices.getNumElements()), l1RegularizationWeight_(l1RegularizationWeight),
+                  l2RegularizationWeight_(l2RegularizationWeight), binningPtr_(std::move(binningPtr)) {
                 // The last bin is used for labels for which the corresponding criterion is zero. For this particular
                 // bin, the prediction is always zero.
                 scoreVector_.bin_values_begin()[maxBins_] = 0;
@@ -138,18 +142,24 @@ namespace boosting {
                 scoreVector_.setNumBins(numBins, false);
 
                 // Reset arrays to zero...
-                typename DenseVector<Statistic<statistic_type>>::iterator aggregatedStatisticIterator =
-                  aggregatedStatisticVector_.begin();
-                util::setViewToZeros(aggregatedStatisticIterator, numBins);
-                util::setViewToZeros(numElementsPerBin_.begin(), numBins);
+                typename DenseVector<statistic_type>::iterator aggregatedGradientIterator =
+                  aggregatedGradientVector_.begin();
+                typename DenseVector<statistic_type>::iterator aggregatedHessianIterator =
+                  aggregatedHessianVector_.begin();
+                Array<uint32>::iterator numElementsPerBinIterator = numElementsPerBin_.begin();
+                std::fill(aggregatedGradientIterator, aggregatedGradientIterator + numBins, (statistic_type) 0);
+                std::fill(aggregatedHessianIterator, aggregatedHessianIterator + numBins, (statistic_type) 0);
+                std::fill(numElementsPerBinIterator, numElementsPerBinIterator + numBins, 0);
 
                 // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
-                typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
+                typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
+                typename StatisticVector::hessian_const_iterator hessianIterator = statisticVector.hessians_cbegin();
                 typename DenseBinnedScoreVector<statistic_type, IndexVector>::bin_index_iterator binIndexIterator =
                   scoreVector_.bin_indices_begin();
-                auto callback = [=, this](uint32 binIndex, uint32 labelIndex) {
-                    aggregatedStatisticIterator[binIndex] += statisticIterator[labelIndex];
-                    numElementsPerBin_[binIndex] += 1;
+                auto callback = [=](uint32 binIndex, uint32 labelIndex) {
+                    aggregatedGradientIterator[binIndex] += gradientIterator[labelIndex];
+                    aggregatedHessianIterator[binIndex] += hessianIterator[labelIndex];
+                    numElementsPerBinIterator[binIndex] += 1;
                     binIndexIterator[labelIndex] = binIndex;
                 };
                 auto zeroCallback = [=, this](uint32 labelIndex) {
@@ -160,9 +170,9 @@ namespace boosting {
                 // Compute predictions, as well as their overall quality...
                 typename DenseBinnedScoreVector<statistic_type, IndexVector>::bin_value_iterator binValueIterator =
                   scoreVector_.bin_values_begin();
-                scoreVector_.quality =
-                  calculateBinnedScores(aggregatedStatisticIterator, binValueIterator, numElementsPerBin_.cbegin(),
-                                        numBins, l1RegularizationWeight_, l2RegularizationWeight_);
+                scoreVector_.quality = calculateBinnedScores(aggregatedGradientIterator, aggregatedHessianIterator,
+                                                             binValueIterator, numElementsPerBin_.cbegin(), numBins,
+                                                             l1RegularizationWeight_, l2RegularizationWeight_);
                 return scoreVector_;
             }
     };
@@ -189,11 +199,11 @@ namespace boosting {
                                                typename View<statistic_type>::iterator criteria, uint32 numCriteria,
                                                float32 l1RegularizationWeight,
                                                float32 l2RegularizationWeight) override {
-                typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
+                typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
+                typename StatisticVector::hessian_const_iterator hessianIterator = statisticVector.hessians_cbegin();
 
                 for (uint32 i = 0; i < numCriteria; i++) {
-                    const Statistic<statistic_type>& statistic = statisticIterator[i];
-                    criteria[i] = calculateOutputWiseScore(statistic.gradient, statistic.hessian,
+                    criteria[i] = calculateOutputWiseScore(gradientIterator[i], hessianIterator[i],
                                                            l1RegularizationWeight, l2RegularizationWeight);
                 }
 
