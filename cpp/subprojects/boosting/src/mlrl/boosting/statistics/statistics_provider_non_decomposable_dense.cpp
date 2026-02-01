@@ -341,7 +341,7 @@ namespace boosting {
 
 #if MULTI_THREADING_SUPPORT_ENABLED
     #pragma omp parallel for firstprivate(numRows) firstprivate(numCols) \
-      firstprivate(decomposableStatisticMatrixRawPtr) firstprivate(NonDecomposableStatisticViewRawPtr) \
+      firstprivate(decomposableStatisticMatrixRawPtr) firstprivate(nonDecomposableStatisticViewRawPtr) \
       schedule(dynamic) num_threads(multiThreadingSettings.numThreads)
 #endif
                 for (int64 i = 0; i < numRows; i++) {
