@@ -6,3 +6,6 @@
 #define MLRLBOOSTING_LIBRARY_NAME "@mlrlboosting_library_name@"
 #define MLRLBOOSTING_LIBRARY_VERSION "@mlrlboosting_library_version@"
 #define MLRLBOOSTING_TARGET_ARCHITECTURE "@mlrlboosting_target_architecture@"
+
+#define MULTI_THREADING_SUPPORT_ENABLED @multi_threading_support_enabled@
+#define GPU_SUPPORT_ENABLED @gpu_support_enabled@

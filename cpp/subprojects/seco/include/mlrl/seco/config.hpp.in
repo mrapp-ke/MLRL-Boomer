@@ -6,3 +6,6 @@
 #define MLRLSECO_LIBRARY_NAME "@mlrlseco_library_name@"
 #define MLRLSECO_LIBRARY_VERSION "@mlrlseco_library_version@"
 #define MLRLSECO_TARGET_ARCHITECTURE "@mlrlseco_target_architecture@"
+
+#define MULTI_THREADING_SUPPORT_ENABLED @multi_threading_support_enabled@
+#define GPU_SUPPORT_ENABLED @gpu_support_enabled@
