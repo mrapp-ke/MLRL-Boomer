@@ -17,6 +17,12 @@ struct ConfusionMatrix final {
         ConfusionMatrix() : in(0), ip(0), rn(0), rp(0) {}
 
         /**
+         * @param defaultValue The default value, the elements in the confusion matrix should be initialized with
+         */
+        ConfusionMatrix(StatisticType defaultValue)
+            : in(defaultValue), ip(defaultValue), rn(defaultValue), rp(defaultValue) {}
+
+        /**
          * Irrelevant labels for which a rule predicts negatively.
          */
         StatisticType in;

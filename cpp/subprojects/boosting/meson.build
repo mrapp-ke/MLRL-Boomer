@@ -10,6 +10,7 @@ source_files = [
     'src/mlrl/boosting/data/vector_statistic_decomposable_dense.cpp',
     'src/mlrl/boosting/data/vector_statistic_decomposable_sparse.cpp',
     'src/mlrl/boosting/data/vector_statistic_non_decomposable_dense.cpp',
+    'src/mlrl/boosting/data/view_statistic_decomposable_dense.cpp',
     'src/mlrl/boosting/data/view_statistic_non_decomposable_dense.cpp',
     'src/mlrl/boosting/input/feature_binning_auto.cpp',
     'src/mlrl/boosting/losses/loss_decomposable_logistic.cpp',
