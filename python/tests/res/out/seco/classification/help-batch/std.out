@@ -32,7 +32,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE] [--
                     [--parallel-prediction PARALLEL_PREDICTION] [--parallel-rule-refinement PARALLEL_RULE_REFINEMENT]
                     [--parallel-statistic-update PARALLEL_STATISTIC_UPDATE] [--post-optimization POST_OPTIMIZATION]
                     [--pruning-heuristic PRUNING_HEURISTIC] [--rule-induction RULE_INDUCTION]
-                    [--rule-pruning RULE_PRUNING] [--time-limit TIME_LIMIT] [-h]
+                    [--rule-pruning RULE_PRUNING] [--simd SIMD] [--time-limit TIME_LIMIT] [-h]
                     runnable_module_or_source_file
 
 A command line utility for training and evaluating machine learning algorithms
@@ -266,6 +266,8 @@ algorithmic arguments:
   --rule-pruning RULE_PRUNING
                         The name of the strategy to be used for pruning individual rules. Must be one of {"irep",
                         "none"}.
+  --simd SIMD           Whether single instruction, multiple data (SIMD) operations should be used or not. Must be one
+                        of {"false", "true"}.
   --time-limit TIME_LIMIT
                         The duration in seconds after which the induction of rules should be canceled. Must be at least
                         1 or 0, if no time limit should be set.
