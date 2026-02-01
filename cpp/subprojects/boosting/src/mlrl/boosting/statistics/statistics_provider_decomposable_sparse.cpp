@@ -2,7 +2,9 @@
 
 #include "mlrl/boosting/data/matrix_sparse_set_numeric.hpp"
 #include "mlrl/boosting/data/vector_statistic_decomposable_sparse.hpp"
+#include "mlrl/common/util/array_operations.hpp"
 #include "mlrl/common/util/openmp.hpp"
+#include "mlrl/common/util/xsimd.hpp"
 #include "statistics_decomposable_common.hpp"
 #include "statistics_provider_decomposable.hpp"
 
@@ -47,8 +49,9 @@ namespace boosting {
      * @tparam OutputMatrix         The type of the matrix that provides access to the ground truth of the training
      *                              examples
      * @tparam EvaluationMeasure    The type of the evaluation that should be used to access the quality of predictions
+     * @tparam ArrayOperations      The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename Loss, typename OutputMatrix, typename EvaluationMeasure>
+    template<typename Loss, typename OutputMatrix, typename EvaluationMeasure, typename ArrayOperations>
     class SparseDecomposableStatistics final
         : public AbstractDecomposableStatistics<OutputMatrix,
                                                 SparseDecomposableStatisticMatrix<typename Loss::statistic_type>,
@@ -62,15 +65,17 @@ namespace boosting {
                                                         NumericSparseSetMatrix<statistic_type>, Loss>
               StatisticsState;
 
+            template<typename WeightType>
+            using StatisticVector = SparseDecomposableStatisticVector<statistic_type, WeightType, ArrayOperations>;
+
             template<typename WeightVector, typename IndexVector, typename WeightType>
             using StatisticsSubset =
-              BoostingStatisticsSubset<StatisticsState, SparseDecomposableStatisticVector<statistic_type, WeightType>,
-                                       WeightVector, IndexVector, ISparseDecomposableRuleEvaluationFactory>;
+              BoostingStatisticsSubset<StatisticsState, StatisticVector<WeightType>, WeightVector, IndexVector,
+                                       ISparseDecomposableRuleEvaluationFactory>;
 
             template<typename WeightVector, typename WeightType>
-            using WeightedStatistics =
-              WeightedStatistics<StatisticsState, SparseDecomposableStatisticVector<statistic_type, WeightType>,
-                                 WeightVector, ISparseDecomposableRuleEvaluationFactory>;
+            using WeightedStatistics = WeightedStatistics<StatisticsState, StatisticVector<WeightType>, WeightVector,
+                                                          ISparseDecomposableRuleEvaluationFactory>;
 
         public:
 
@@ -311,11 +316,12 @@ namespace boosting {
             }
     };
 
-    template<typename Loss, typename OutputMatrix, typename EvaluationMeasure>
+    template<typename Loss, typename OutputMatrix, typename EvaluationMeasure, typename ArrayOperations>
     static inline std::unique_ptr<IDecomposableStatistics<ISparseDecomposableRuleEvaluationFactory>> createStatistics(
       std::unique_ptr<Loss> lossPtr, std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
       const ISparseDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
-      MultiThreadingSettings multiThreadingSettings, const OutputMatrix& outputMatrix) {
+      MultiThreadingSettings multiThreadingSettings, const OutputMatrix& outputMatrix,
+      std::type_identity<ArrayOperations> arrayOperations) {
         typedef typename Loss::statistic_type statistic_type;
         uint32 numExamples = outputMatrix.numRows;
         uint32 numOutputs = outputMatrix.numCols;
@@ -338,13 +344,13 @@ namespace boosting {
                                                      IndexIterator(outputMatrixPtr->numCols), *statisticMatrixRawPtr);
         }
 
-        return std::make_unique<SparseDecomposableStatistics<Loss, OutputMatrix, EvaluationMeasure>>(
+        return std::make_unique<SparseDecomposableStatistics<Loss, OutputMatrix, EvaluationMeasure, ArrayOperations>>(
           std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
           std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
     }
 
-    template<typename StatisticType>
-    SparseDecomposableClassificationStatisticsProviderFactory<StatisticType>::
+    template<typename StatisticType, typename ArrayOperations>
+    SparseDecomposableClassificationStatisticsProviderFactory<StatisticType, ArrayOperations>::
       SparseDecomposableClassificationStatisticsProviderFactory(
         std::unique_ptr<ISparseDecomposableClassificationLossFactory<StatisticType>> lossFactoryPtr,
         std::unique_ptr<ISparseEvaluationMeasureFactory<StatisticType>> evaluationMeasureFactoryPtr,
@@ -357,9 +363,9 @@ namespace boosting {
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)),
           multiThreadingSettings_(multiThreadingSettings) {}
 
-    template<typename StatisticType>
+    template<typename StatisticType, typename ArrayOperations>
     std::unique_ptr<IStatisticsProvider>
-      SparseDecomposableClassificationStatisticsProviderFactory<StatisticType>::create(
+      SparseDecomposableClassificationStatisticsProviderFactory<StatisticType, ArrayOperations>::create(
         const CContiguousView<const uint8>& labelMatrix) const {
         std::unique_ptr<ISparseDecomposableClassificationLoss<StatisticType>> lossPtr =
           lossFactoryPtr_->createSparseDecomposableClassificationLoss();
@@ -367,14 +373,14 @@ namespace boosting {
           evaluationMeasureFactoryPtr_->createSparseEvaluationMeasure();
         std::unique_ptr<IDecomposableStatistics<ISparseDecomposableRuleEvaluationFactory>> statisticsPtr =
           createStatistics(std::move(lossPtr), std::move(evaluationMeasurePtr), *regularRuleEvaluationFactoryPtr_,
-                           multiThreadingSettings_, labelMatrix);
+                           multiThreadingSettings_, labelMatrix, std::type_identity<ArrayOperations> {});
         return std::make_unique<DecomposableStatisticsProvider<ISparseDecomposableRuleEvaluationFactory>>(
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
-    template<typename StatisticType>
+    template<typename StatisticType, typename ArrayOperations>
     std::unique_ptr<IStatisticsProvider>
-      SparseDecomposableClassificationStatisticsProviderFactory<StatisticType>::create(
+      SparseDecomposableClassificationStatisticsProviderFactory<StatisticType, ArrayOperations>::create(
         const BinaryCsrView& labelMatrix) const {
         std::unique_ptr<ISparseDecomposableClassificationLoss<StatisticType>> lossPtr =
           lossFactoryPtr_->createSparseDecomposableClassificationLoss();
@@ -382,11 +388,16 @@ namespace boosting {
           evaluationMeasureFactoryPtr_->createSparseEvaluationMeasure();
         std::unique_ptr<IDecomposableStatistics<ISparseDecomposableRuleEvaluationFactory>> statisticsPtr =
           createStatistics(std::move(lossPtr), std::move(evaluationMeasurePtr), *regularRuleEvaluationFactoryPtr_,
-                           multiThreadingSettings_, labelMatrix);
+                           multiThreadingSettings_, labelMatrix, std::type_identity<ArrayOperations> {});
         return std::make_unique<DecomposableStatisticsProvider<ISparseDecomposableRuleEvaluationFactory>>(
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
-    template class SparseDecomposableClassificationStatisticsProviderFactory<float32>;
-    template class SparseDecomposableClassificationStatisticsProviderFactory<float64>;
+    template class SparseDecomposableClassificationStatisticsProviderFactory<float32, SequentialArrayOperations>;
+    template class SparseDecomposableClassificationStatisticsProviderFactory<float64, SequentialArrayOperations>;
+
+#if SIMD_SUPPORT_ENABLED
+    template class SparseDecomposableClassificationStatisticsProviderFactory<float32, SimdArrayOperations>;
+    template class SparseDecomposableClassificationStatisticsProviderFactory<float64, SimdArrayOperations>;
+#endif
 }

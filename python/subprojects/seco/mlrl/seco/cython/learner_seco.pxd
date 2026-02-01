@@ -6,10 +6,10 @@ from mlrl.common.cython.learner cimport IBeamSearchTopDownRuleInductionMixin, ID
     IIrepRulePruningMixin, INoFeatureBinningMixin, INoFeatureSamplingMixin, INoInstanceSamplingMixin, \
     INoOutputSamplingMixin, INoParallelPredictionMixin, INoParallelRuleRefinementMixin, \
     INoParallelStatisticUpdateMixin, INoPartitionSamplingMixin, INoRulePruningMixin, \
-    INoSequentialPostOptimizationMixin, INoSizeStoppingCriterionMixin, INoTimeStoppingCriterionMixin, \
+    INoSequentialPostOptimizationMixin, INoSimdMixin, INoSizeStoppingCriterionMixin, INoTimeStoppingCriterionMixin, \
     IOutputSamplingWithoutReplacementMixin, IParallelPredictionMixin, IParallelRuleRefinementMixin, \
     IParallelStatisticUpdateMixin, IRandomBiPartitionSamplingMixin, IRNGMixin, IRoundRobinOutputSamplingMixin, \
-    ISequentialPostOptimizationMixin, ISequentialRuleModelAssemblageMixin, ISizeStoppingCriterionMixin, \
+    ISequentialPostOptimizationMixin, ISequentialRuleModelAssemblageMixin, ISimdMixin, ISizeStoppingCriterionMixin, \
     ITimeStoppingCriterionMixin, RuleLearnerConfig
 from mlrl.common.cython.learner_classification cimport ClassificationRuleLearner, IClassificationRuleLearner, \
     IExampleWiseStratifiedBiPartitionSamplingMixin, IExampleWiseStratifiedInstanceSamplingMixin, \
@@ -77,6 +77,8 @@ cdef extern from "mlrl/seco/learner_seco_classifier.hpp" namespace "seco" nogil:
                                                                         IParallelStatisticUpdateMixin,
                                                                         INoParallelPredictionMixin,
                                                                         IParallelPredictionMixin,
+                                                                        INoSimdMixin,
+                                                                        ISimdMixin,
                                                                         INoSizeStoppingCriterionMixin,
                                                                         ISizeStoppingCriterionMixin,
                                                                         INoTimeStoppingCriterionMixin,

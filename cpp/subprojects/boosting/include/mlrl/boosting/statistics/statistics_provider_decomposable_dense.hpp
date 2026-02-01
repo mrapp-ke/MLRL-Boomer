@@ -18,9 +18,10 @@ namespace boosting {
      * provide access to an object of type `IDecomposableStatistics` using dense data structures for storing the
      * statistics.
      *
-     * @tparam StatisticType The type of the statistics
+     * @tparam StatisticType    The type of the statistics
+     * @tparam ArrayOperations  The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename StatisticType>
+    template<typename StatisticType, typename ArrayOperations>
     class DenseDecomposableClassificationStatisticsProviderFactory final
         : public IClassificationStatisticsProviderFactory {
         private:
@@ -87,9 +88,10 @@ namespace boosting {
      * Allows to create instances of the class `IStatisticsProvider` that can be used in regression problems and provide
      * access to an object of type `IDecomposableStatistics` using dense data structures for storing the statistics.
      *
-     * @tparam StatisticType The type of the statistics
+     * @tparam StatisticType    The type of the statistics
+     * @tparam ArrayOperations  The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename StatisticType>
+    template<typename StatisticType, typename ArrayOperations>
     class DenseDecomposableRegressionStatisticsProviderFactory final : public IRegressionStatisticsProviderFactory {
         private:
 

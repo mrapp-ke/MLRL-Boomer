@@ -10,6 +10,8 @@
  * element in the arrays sequentially.
  */
 struct SequentialArrayOperations {
+    public:
+
         /**
          * Copy all elements from one array to another.
          *

@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/common/simd/simd.hpp"
 #include "mlrl/common/util/properties.hpp"
 #include "mlrl/seco/heuristics/heuristic.hpp"
 #include "mlrl/seco/lift_functions/lift_function.hpp"
@@ -24,6 +25,8 @@ namespace seco {
 
             const ReadableProperty<ILiftFunctionConfig> liftFunctionConfig_;
 
+            const ReadableProperty<ISimdConfig> simdConfig_;
+
         public:
 
             /**
@@ -35,10 +38,13 @@ namespace seco {
              *                                  that stores the configuration of the lift function that should affect
              *                                  the quality of rules, depending on the number of labels for which they
              *                                  predict
+             * @param simdConfig                A `ReadableProperty` that allows to access the `ISimdConfig` that stores
+             *                                  the configuration of SIMD operations
              */
             PartialHeadConfig(ReadableProperty<IHeuristicConfig> heuristicConfig,
                               ReadableProperty<IHeuristicConfig> pruningHeuristicConfig,
-                              ReadableProperty<ILiftFunctionConfig> liftFunctionConfig);
+                              ReadableProperty<ILiftFunctionConfig> liftFunctionConfig,
+                              ReadableProperty<ISimdConfig> simdConfig);
 
             std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
               const IRowWiseLabelMatrix& labelMatrix) const override;

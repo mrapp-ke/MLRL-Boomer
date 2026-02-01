@@ -6,7 +6,6 @@
 #include "mlrl/common/data/vector_dense.hpp"
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 #include "mlrl/common/data/view_matrix_csr_binary.hpp"
-#include "mlrl/common/util/array_operations.hpp"
 #include "mlrl/seco/data/confusion_matrix.hpp"
 #include "mlrl/seco/data/matrix_statistic_decomposable_dense.hpp"
 
@@ -27,7 +26,7 @@ namespace seco {
      * @tparam StatisticType    The type of the elements stored in the confusion matrices
      * @tparam ArrayOperations  The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename StatisticType, typename ArrayOperations = SequentialArrayOperations>
+    template<typename StatisticType, typename ArrayOperations>
     class DenseConfusionMatrixVector final
         : public ClearableViewDecorator<DenseVectorDecorator<DenseConfusionMatrixVectorView<StatisticType>>> {
         public:
