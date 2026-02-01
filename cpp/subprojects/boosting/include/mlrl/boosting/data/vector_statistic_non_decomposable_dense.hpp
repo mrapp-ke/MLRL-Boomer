@@ -8,7 +8,6 @@
 #include "mlrl/common/data/view_vector_composite.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
-#include "mlrl/common/util/array_operations.hpp"
 
 namespace boosting {
 
@@ -156,7 +155,7 @@ namespace boosting {
      * @tparam StatisticType    The type of the gradients and Hessians
      * @tparam ArrayOperations  The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename StatisticType, typename ArrayOperations = SequentialArrayOperations>
+    template<typename StatisticType, typename ArrayOperations>
     class DenseNonDecomposableStatisticVector final
         : public ClearableViewDecorator<ViewDecorator<DenseNonDecomposableStatisticVectorView<StatisticType>>> {
         public:

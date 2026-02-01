@@ -464,7 +464,7 @@ namespace boosting {
              */
             virtual void useCompleteHeads() {
                 this->getHeadConfig().set(std::make_unique<CompleteHeadConfig>(
-                  this->getLabelBinningConfig(), this->getParallelStatisticUpdateConfig(),
+                  this->getLabelBinningConfig(), this->getParallelStatisticUpdateConfig(), this->getSimdConfig(),
                   this->getL1RegularizationConfig(), this->getL2RegularizationConfig()));
             }
     };
@@ -486,8 +486,8 @@ namespace boosting {
              *         the rule heads
              */
             virtual IFixedPartialHeadConfig& useFixedPartialHeads() {
-                auto ptr = std::make_unique<FixedPartialHeadConfig>(this->getLabelBinningConfig(),
-                                                                    this->getParallelStatisticUpdateConfig());
+                auto ptr = std::make_unique<FixedPartialHeadConfig>(
+                  this->getLabelBinningConfig(), this->getParallelStatisticUpdateConfig(), this->getSimdConfig());
                 IFixedPartialHeadConfig& ref = *ptr;
                 this->getHeadConfig().set(std::move(ptr));
                 return ref;
@@ -512,8 +512,8 @@ namespace boosting {
              *         the rule heads
              */
             virtual IDynamicPartialHeadConfig& useDynamicPartialHeads() {
-                auto ptr = std::make_unique<DynamicPartialHeadConfig>(this->getLabelBinningConfig(),
-                                                                      this->getParallelStatisticUpdateConfig());
+                auto ptr = std::make_unique<DynamicPartialHeadConfig>(
+                  this->getLabelBinningConfig(), this->getParallelStatisticUpdateConfig(), this->getSimdConfig());
                 IDynamicPartialHeadConfig& ref = *ptr;
                 this->getHeadConfig().set(std::move(ptr));
                 return ref;
@@ -534,7 +534,7 @@ namespace boosting {
              */
             virtual void useSingleOutputHeads() {
                 this->getHeadConfig().set(std::make_unique<SingleOutputHeadConfig>(
-                  this->getLabelBinningConfig(), this->getParallelStatisticUpdateConfig(),
+                  this->getLabelBinningConfig(), this->getParallelStatisticUpdateConfig(), this->getSimdConfig(),
                   this->getL1RegularizationConfig(), this->getL2RegularizationConfig()));
             }
     };
@@ -554,7 +554,7 @@ namespace boosting {
             virtual void useAutomaticHeads() {
                 this->getHeadConfig().set(std::make_unique<AutomaticHeadConfig>(
                   this->getLossConfig(), this->getLabelBinningConfig(), this->getParallelStatisticUpdateConfig(),
-                  this->getL1RegularizationConfig(), this->getL2RegularizationConfig()));
+                  this->getSimdConfig(), this->getL1RegularizationConfig(), this->getL2RegularizationConfig()));
             }
     };
 
@@ -641,6 +641,7 @@ namespace boosting {
      * to use a simple default configuration.
      */
     class MLRLBOOSTING_API IBoostedRuleLearnerMixin : virtual public IRuleLearnerMixin,
+                                                      virtual public ISimdMixin,
                                                       virtual public IDefaultRuleMixin,
                                                       virtual public IFloat32StatisticsMixin,
                                                       virtual public IFloat64StatisticsMixin,
@@ -656,6 +657,7 @@ namespace boosting {
              */
             virtual void useDefaults() override {
                 IRuleLearnerMixin::useDefaults();
+                this->useSimdOperations();
                 this->use32BitStatistics();
                 this->useNoL1Regularization();
                 this->useNoL2Regularization();

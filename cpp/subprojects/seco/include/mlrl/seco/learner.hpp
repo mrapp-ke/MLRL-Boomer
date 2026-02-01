@@ -140,8 +140,8 @@ namespace seco {
              * Configures the rule learner to induce rules with single-output heads that predict for a single output.
              */
             virtual void useSingleOutputHeads() {
-                this->getHeadConfig().set(std::make_unique<SingleOutputHeadConfig>(this->getHeuristicConfig(),
-                                                                                   this->getPruningHeuristicConfig()));
+                this->getHeadConfig().set(std::make_unique<SingleOutputHeadConfig>(
+                  this->getHeuristicConfig(), this->getPruningHeuristicConfig(), this->getSimdConfig()));
             }
     };
 
@@ -158,8 +158,9 @@ namespace seco {
              * labels.
              */
             virtual void usePartialHeads() {
-                this->getHeadConfig().set(std::make_unique<PartialHeadConfig>(
-                  this->getHeuristicConfig(), this->getPruningHeuristicConfig(), this->getLiftFunctionConfig()));
+                this->getHeadConfig().set(
+                  std::make_unique<PartialHeadConfig>(this->getHeuristicConfig(), this->getPruningHeuristicConfig(),
+                                                      this->getLiftFunctionConfig(), this->getSimdConfig()));
             }
     };
 
@@ -517,6 +518,7 @@ namespace seco {
      * separate-and-conquer (SeCo) paradigm to use a simple default configuration.
      */
     class ISeCoRuleLearnerMixin : virtual public IRuleLearnerMixin,
+                                  virtual public ISimdMixin,
                                   virtual public INoCoverageStoppingCriterionMixin,
                                   virtual public INoLiftFunctionMixin {
         public:
@@ -528,6 +530,7 @@ namespace seco {
              */
             virtual void useDefaults() override {
                 IRuleLearnerMixin::useDefaults();
+                this->useSimdOperations();
                 this->useNoCoverageStoppingCriterion();
                 this->useNoLiftFunction();
             }

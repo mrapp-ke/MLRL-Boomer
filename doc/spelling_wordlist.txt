@@ -195,6 +195,7 @@ sexualized
 Shi
 Sholom
 Siddharth
+simd
 sklearn
 Slurm
 Smarkanov

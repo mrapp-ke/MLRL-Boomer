@@ -1,5 +1,8 @@
 #include "mlrl/boosting/data/vector_statistic_decomposable_sparse.hpp"
 
+#include "mlrl/common/util/array_operations.hpp"
+#include "mlrl/common/util/xsimd.hpp"
+
 namespace boosting {
 
     template<typename StatisticType, typename WeightType>
@@ -398,8 +401,15 @@ namespace boosting {
         this->view.sumOfWeights = 0;
     }
 
-    template class SparseDecomposableStatisticVector<float32, uint32>;
-    template class SparseDecomposableStatisticVector<float32, float32>;
-    template class SparseDecomposableStatisticVector<float64, uint32>;
-    template class SparseDecomposableStatisticVector<float64, float32>;
+    template class SparseDecomposableStatisticVector<float32, uint32, SequentialArrayOperations>;
+    template class SparseDecomposableStatisticVector<float32, float32, SequentialArrayOperations>;
+    template class SparseDecomposableStatisticVector<float64, uint32, SequentialArrayOperations>;
+    template class SparseDecomposableStatisticVector<float64, float32, SequentialArrayOperations>;
+
+#if SIMD_SUPPORT_ENABLED
+    template class SparseDecomposableStatisticVector<float32, uint32, SimdArrayOperations>;
+    template class SparseDecomposableStatisticVector<float32, float32, SimdArrayOperations>;
+    template class SparseDecomposableStatisticVector<float64, uint32, SimdArrayOperations>;
+    template class SparseDecomposableStatisticVector<float64, float32, SimdArrayOperations>;
+#endif
 }
