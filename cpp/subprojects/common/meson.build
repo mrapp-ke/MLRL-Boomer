@@ -139,13 +139,14 @@ dependencies = [
 
 # Set configuration options
 multi_threading_support_enabled = get_option('multi_threading_support').enabled()
+gpu_support_enabled = opencl_dep.found()
 
 configuration = configuration_data()
 configuration.set('mlrlcommon_library_name', 'lib' + library_name)
 configuration.set('mlrlcommon_library_version', library_version)
 configuration.set('mlrlcommon_target_architecture', target_architecture)
 configuration.set10('multi_threading_support_enabled', multi_threading_support_enabled)
-configuration.set10('gpu_support_enabled', opencl_dep.found())
+configuration.set10('gpu_support_enabled', gpu_support_enabled)
 configure_file(input : 'include/mlrl/common/config.hpp.in', output : 'config.hpp', configuration: configuration)
 
 # Compiler and linker arguments

@@ -341,7 +341,7 @@ namespace boosting {
 #if MULTI_THREADING_SUPPORT_ENABLED
     #pragma omp parallel for firstprivate(numRows) firstprivate(numCols) \
       firstprivate(decomposableStatisticMatrixRawPtr) firstprivate(NonDecomposableStatisticViewRawPtr) \
-      schedule(dynamic) num_threads(numThreads)
+      schedule(dynamic) num_threads(multiThreadingSettings.numThreads)
 #endif
                 for (int64 i = 0; i < numRows; i++) {
                     typename CContiguousView<Statistic<statistic_type>>::value_iterator iterator =
@@ -385,7 +385,8 @@ namespace boosting {
 
 #if MULTI_THREADING_SUPPORT_ENABLED
     #pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(outputMatrixPtr) \
-      firstprivate(scoreMatrixRawPtr) firstprivate(statisticMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
+      firstprivate(scoreMatrixRawPtr) firstprivate(statisticMatrixRawPtr) schedule(dynamic) \
+      num_threads(multiThreadingSettings.numThreads)
 #endif
         for (int64 i = 0; i < numExamples; i++) {
             lossRawPtr->updateNonDecomposableStatistics(i, *outputMatrixPtr, *scoreMatrixRawPtr,
