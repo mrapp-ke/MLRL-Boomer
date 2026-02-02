@@ -1,5 +1,5 @@
 autoflake >= 2.3, < 2.4
-cython-lint >= 0.18, < 0.19
+cython-lint >= 0.19, < 0.20
 isort >= 7.0, < 7.1
 mypy >= 1.19, < 1.20
 pylint >= 4.0, < 4.1
