@@ -45,7 +45,7 @@ jobs:
         with:
           key: ccache-${{ runner.os }}-${{ runner.arch }}-doc
       - name: Install Doxygen
-        uses: ssciwr/doxygen-install@v1
+        uses: ssciwr/doxygen-install@v2
       - name: Generate C++ Apidoc
         if: ${{ inputs.apidoc_cpp == true && inputs.doc != true }}
         run: ./build apidoc_cpp
