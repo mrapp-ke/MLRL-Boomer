@@ -33,14 +33,15 @@ struct DefaultMemoryAllocator final {
         /**
          * Reallocates the memory used by an array in order to resize it.
          *
-         * @tparam T            The type of the values stored in the array
-         * @param array         A pointer to an array of template type `T`
-         * @param numElements   The number of elements in the resized array
-         * @return              A pointer to the reallocated memory
+         * @tparam T                The type of the values stored in the array
+         * @param array             A pointer to an array of template type `T`
+         * @param previousElements  The number of elements in the original array
+         * @param newElements       The number of elements in the resized array
+         * @return                  A pointer to the reallocated memory
          */
         template<typename T>
-        static inline constexpr T* reallocateMemory(T* array, uint32 numElements) {
-            return reinterpret_cast<T*>(realloc(array, numElements * sizeof(T)));
+        static inline constexpr T* reallocateMemory(T* array, uint32 previousElements, uint32 newElements) {
+            return reinterpret_cast<T*>(realloc(array, newElements * sizeof(T)));
         }
 
         /**
