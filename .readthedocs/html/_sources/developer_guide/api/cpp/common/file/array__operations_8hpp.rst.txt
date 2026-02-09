@@ -1,0 +1,5 @@
+File array_operations.hpp
+=========================
+
+.. doxygenfile:: array_operations.hpp
+   :project: common
