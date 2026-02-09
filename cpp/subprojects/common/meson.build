@@ -200,7 +200,7 @@ if gtest_test_dep.found()
     test_dependencies = [
         gtest_test_dep,
         common_test_dep
-    ]
+    ] + dependencies
 
     test_name = library_name + 'tests'
     common_tests = executable(test_name, test_files, dependencies : test_dependencies)
