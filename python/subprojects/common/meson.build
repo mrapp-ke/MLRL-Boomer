@@ -37,8 +37,12 @@ numpy_dep = declare_dependency(include_directories : include_directories(numpy_c
 
 cpp = meson.get_compiler('cpp')
 cpp_dir = '../../../cpp/'
-common_lib = cpp.find_library('mlrlcommon', dirs : meson.current_source_dir() / cpp_dir / 'build/subprojects/common/')
-common_include = declare_dependency(include_directories : include_directories(cpp_dir / 'subprojects/common/include/'))
+cpp_build_dir = cpp_dir / 'build/subprojects/common/'
+common_lib = cpp.find_library('mlrlcommon', dirs : meson.current_source_dir() / cpp_build_dir)
+common_include = declare_dependency(include_directories : [
+    cpp_build_dir,
+    cpp_dir / 'subprojects/common/include/'
+])
 
 dependencies = [
     python_dep,

@@ -19,8 +19,12 @@ common_include = common_project.get_variable('common_include')
 
 cpp = meson.get_compiler('cpp')
 cpp_dir = common_project.get_variable('cpp_dir')
-seco_lib = cpp.find_library('mlrlseco', dirs : meson.current_source_dir() / cpp_dir / 'build/subprojects/seco/')
-seco_include = declare_dependency(include_directories : include_directories(cpp_dir / 'subprojects/seco/include/'))
+cpp_build_dir = cpp_dir / 'build/subprojects/seco/'
+seco_lib = cpp.find_library('mlrlseco', dirs : meson.current_source_dir() / cpp_build_dir)
+seco_include = declare_dependency(include_directories : [
+    cpp_build_dir,
+    cpp_dir / 'subprojects/seco/include/'
+])
 
 dependencies = [
     python_dep,
