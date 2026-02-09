@@ -82,7 +82,7 @@ if gtest_test_dep.found()
         gtest_test_dep,
         common_test_dep,
         declare_dependency(include_directories : [include_dir, include_directories('src')], link_with : seco_lib)
-    ]
+    ] + dependencies
 
     test_name = library_name + 'tests'
     seco_tests = executable(test_name, test_files, dependencies : test_dependencies)
