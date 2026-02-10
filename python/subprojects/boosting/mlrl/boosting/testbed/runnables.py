@@ -53,7 +53,7 @@ class BoomerRunnable(RuleLearnerRunnable):
             program_info=ProgramInfo(
                 name='BOOMER',
                 version=package_info.package_version,
-                year='2020 - 2025',
+                year='2020 - 2026',
                 authors=['Michael Rapp et al.'],
             ),
             python_packages=[package_info],

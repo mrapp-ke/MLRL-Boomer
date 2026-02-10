@@ -144,7 +144,7 @@ def __get_default_program_info() -> ProgramInfo:
     return ProgramInfo(
         name=package_name,
         version=version(package_name),
-        year='2020 - 2025',
+        year='2020 - 2026',
         authors=['Michael Rapp et al.'],
     )
 
