@@ -254,7 +254,7 @@ namespace boosting {
     SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>::SparseDecomposableStatisticVector(
       const SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>& other)
         : SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>(other.getNumElements()) {
-        VectorMath::copy(other.view.cbegin(), this->view.begin(), this->getNumElements());
+        SequentialVectorMath::copy(other.view.cbegin(), this->view.begin(), this->getNumElements());
         this->view.sumOfWeights = other.view.sumOfWeights;
     }
 
@@ -262,7 +262,7 @@ namespace boosting {
     void SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>::add(
       const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& vector) {
         this->view.sumOfWeights += vector.sumOfWeights;
-        VectorMath::add(this->view.begin(), vector.cbegin(), this->getNumElements());
+        SequentialVectorMath::add(this->view.begin(), vector.cbegin(), this->getNumElements());
     }
 
     template<typename StatisticType, typename WeightType, typename VectorMath>
@@ -373,7 +373,7 @@ namespace boosting {
       const CompleteIndexVector& firstIndices,
       const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& second) {
         this->view.sumOfWeights = first.sumOfWeights - second.sumOfWeights;
-        VectorMath::difference(this->view.begin(), first.cbegin(), second.cbegin(), this->getNumElements());
+        SequentialVectorMath::difference(this->view.begin(), first.cbegin(), second.cbegin(), this->getNumElements());
     }
 
     template<typename StatisticType, typename WeightType, typename VectorMath>
@@ -382,8 +382,8 @@ namespace boosting {
       const PartialIndexVector& firstIndices,
       const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& second) {
         this->view.sumOfWeights = first.sumOfWeights - second.sumOfWeights;
-        VectorMath::difference(this->view.begin(), first.cbegin(), second.cbegin(), firstIndices.cbegin(),
-                               this->getNumElements());
+        SequentialVectorMath::difference(this->view.begin(), first.cbegin(), second.cbegin(), firstIndices.cbegin(),
+                                         this->getNumElements());
     }
 
     template<typename StatisticType, typename WeightType, typename VectorMath>
