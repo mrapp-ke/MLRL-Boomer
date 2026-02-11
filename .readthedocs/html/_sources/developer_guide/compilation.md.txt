@@ -16,45 +16,78 @@ This project uses [Meson](https://mesonbuild.com/) as a build system for compili
 
 ````{tab} Linux
    ```{list-table}
+   ---
+   header-rows: 1
+   ---
+   * - Dependency
+     - Optional
+     - Description
    * - **Python**
+     - No
      - Nowadays, most Linux distributions include a pre-installed version of Python 3. If this is not the case, instructions on how to install a recent Python version can be found in Python’s [Beginners Guide](https://wiki.python.org/moin/BeginnersGuide/Download). As noted in this guide, Python should be installed via the distribution’s package manager if possible.
    * - **C++ compiler**
+     - No
      - Most Linux distributions provide the [GNU Compiler Collection](https://gcc.gnu.org/) (GCC), which includes a C++ compiler, as part of their software repositories. If this is the case, it can be installed via the distribution's package manager.
    * - **GoogleTest**
+     - Yes
      - The [GoogleTest](https://github.com/google/googletest) framework must optionally be available in order to compile the project with {ref}`testing support <testing-support>` enabled. It should be possible to install it via the package manager of your Linux distribution.
    * - **OpenMP**
+     - Yes
      - [OpenMP](https://en.wikipedia.org/wiki/OpenMP), which is optionally required for {ref}`multi-threading support <multi-threading-support>`, should be installable via your Linux distribution's package manager.         
    * - **OpenCL**
+     - Yes
      - If the project should be compiled with {ref}`GPU support <gpu-support>`, [OpenCL](https://en.wikipedia.org/wiki/OpenCL) must be available. On Linux, it should be installable via your distribution's package manager.
    ```
 ````
 
 ````{tab} macOS
    ```{list-table}
+   ---
+   header-rows: 1
+   ---
+   * - Dependency
+     - Optional
+     - Description
    * - **Python**
+     - No
      - Recent versions of macOS do not include Python by default. A suitable Python version can manually be downloaded from the [project's website](https://www.python.org/downloads/macos/). Alternatively, the package manager [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) can be used for installation via the command `brew install python`.
    * - **C++ compiler**
+     - No
      - macOS relies on the [Clang](https://en.wikipedia.org/wiki/Clang) compiler for building C++ code. It is part of the [Xcode](https://developer.apple.com/support/xcode/) developer toolset.
    * - **GoogleTest**
+     - Yes
      - The [GoogleTest](https://github.com/google/googletest) framework must optionally be installed in order to compile the project with {ref}`testing support <testing-support>` enabled. It can easily be installed via [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) by running the command `brew install googletest`.
    * - **OpenMP**
+     - Yes
      - If the project should be compiled with {ref}`multi-threading support <multi-threading-support>` enabled, the [OpenMP](https://en.wikipedia.org/wiki/OpenMP) library must be installed. We recommend to install it via [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) by running the command `brew install libomp`.
    * - **OpenCL**
+     - Yes
      - The [Xcode](https://developer.apple.com/support/xcode/) developer toolset should include [OpenCL](https://en.wikipedia.org/wiki/OpenCL), which are needed for {ref}`GPU support <gpu-support>`. However, the [OpenCL C++ headers](https://github.com/KhronosGroup/OpenCL-Headers) must be installed manually. The easiest way to do so is via the [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) command `brew install opencl-clhpp-headers`.
    ```
 ````
 
 ````{tab} Windows
    ```{list-table}
+   ---
+   header-rows: 1
+   ---
+   * - Dependency
+     - Optional
+     - Description
    * - **Python**
+     - No
      - Python releases for Windows are available at the [project's website](https://www.python.org/downloads/windows/), where you can download an installer.
    * - **C++ compiler**
+     - No
      - For the compilation of the project's source code, the MSVC compiler must be used. It is included in [Visual Studio](https://visualstudio.microsoft.com/downloads/).
    * - **GoogleTest**
+     - Yes
      - The [GoogleTest](https://github.com/google/googletest) framework must optionally be available on your system to compile the project with {ref}`testing support <testing-support>` enabled. It should already be included in recent versions of [Visual Studio](https://learn.microsoft.com/en-us/visualstudio/test/how-to-use-google-test-for-cpp).
    * - **OpenMP**
+     - Yes
      - The [Build Tools for Visual Studio](https://visualstudio.microsoft.com/downloads/) also include the [OpenMP](https://en.wikipedia.org/wiki/OpenMP) library, which is utilized by the project for {ref}`multi-threading support <multi-threading-support>`.
    * - **OpenCL**
+     - Yes
      - If you intend to compile the project with {ref}`GPU support <gpu-support>` enabled, [OpenCL](https://en.wikipedia.org/wiki/OpenCL) must be installed manually. In order to do so, we recommend to install the package `opencl` via the package manager [vcpkg](https://github.com/microsoft/vcpkg).
    ```
 ````
