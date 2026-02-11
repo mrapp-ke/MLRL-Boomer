@@ -65,13 +65,13 @@ namespace seco {
     DenseConfusionMatrixVector<StatisticType, VectorMath>::DenseConfusionMatrixVector(
       const DenseConfusionMatrixVector<StatisticType, VectorMath>& other)
         : DenseConfusionMatrixVector(other.getNumElements()) {
-        VectorMath::copy(other.cbegin(), this->begin(), this->getNumElements());
+        SequentialVectorMath::copy(other.cbegin(), this->begin(), this->getNumElements());
     }
 
     template<typename StatisticType, typename VectorMath>
     void DenseConfusionMatrixVector<StatisticType, VectorMath>::add(
       const DenseConfusionMatrixVectorView<StatisticType>& other) {
-        VectorMath::add(this->begin(), other.cbegin(), this->getNumElements());
+        SequentialVectorMath::add(this->begin(), other.cbegin(), this->getNumElements());
     }
 
     template<typename StatisticType, typename VectorMath>
@@ -192,7 +192,7 @@ namespace seco {
     void DenseConfusionMatrixVector<StatisticType, VectorMath>::difference(
       const DenseConfusionMatrixVectorView<StatisticType>& first, const CompleteIndexVector& firstIndices,
       const DenseConfusionMatrixVectorView<StatisticType>& second) {
-        VectorMath::difference(this->begin(), first.cbegin(), second.cbegin(), this->getNumElements());
+        SequentialVectorMath::difference(this->begin(), first.cbegin(), second.cbegin(), this->getNumElements());
     }
 
     template<typename StatisticType, typename VectorMath>
@@ -200,7 +200,8 @@ namespace seco {
       const DenseConfusionMatrixVectorView<StatisticType>& first, const PartialIndexVector& firstIndices,
       const DenseConfusionMatrixVectorView<StatisticType>& second) {
         PartialIndexVector::const_iterator indexIterator = firstIndices.cbegin();
-        VectorMath::difference(this->begin(), first.cbegin(), second.cbegin(), indexIterator, this->getNumElements());
+        SequentialVectorMath::difference(this->begin(), first.cbegin(), second.cbegin(), indexIterator,
+                                         this->getNumElements());
     }
 
     template class DenseConfusionMatrixVector<uint32, SequentialVectorMath>;
