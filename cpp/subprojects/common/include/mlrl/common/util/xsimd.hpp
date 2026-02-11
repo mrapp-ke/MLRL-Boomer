@@ -106,7 +106,18 @@ struct SimdVectorMath {
          */
         template<typename T, typename Weight>
         static inline void addWeighted(T* a, const T* b, uint32 numElements, Weight weight) {
-            for (uint32 i = 0; i < numElements; i++) {
+            typedef xsimd::batch<T> batch;
+            constexpr std::size_t batchSize = batch::size;
+            uint32 batchEnd = numElements - (numElements % batchSize);
+            uint32 i = 0;
+
+            for (; i < batchEnd; i += batchSize) {
+                batch batchA = batch::load_unaligned(a + i);
+                batch batchB = batch::load_unaligned(b + i);
+                (batchA + (batchB * weight)).store_unaligned(a + i);
+            }
+
+            for (; i < numElements; i++) {
                 a[i] += (b[i] * weight);
             }
         }
@@ -165,7 +176,25 @@ struct SimdVectorMath {
          */
         template<typename T, typename Weight>
         static inline void addWeighted(T* a, const T* b, const uint32* indices, uint32 numElements, Weight weight) {
-            for (uint32 i = 0; i < numElements; i++) {
+            typedef xsimd::batch<T> batch;
+            constexpr std::size_t batchSize = batch::size;
+            uint32 batchEnd = numElements - (numElements % batchSize);
+            uint32 i = 0;
+
+            for (; i < batchEnd; i += batchSize) {
+                T tmp[batchSize];
+
+                for (std::size_t j = 0; j < batchSize; j++) {
+                    uint32 index = indices[i + j];
+                    tmp[j] = b[index];
+                }
+
+                batch batchA = batch::load_unaligned(a + i);
+                batch batchTmp = batch::load_unaligned(tmp);
+                (batchA + (batchTmp * weight)).store_unaligned(a + i);
+            }
+
+            for (; i < numElements; i++) {
                 uint32 index = indices[i];
                 a[i] += (b[index] * weight);
             }
