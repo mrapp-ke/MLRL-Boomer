@@ -101,7 +101,7 @@ struct SimdVectorMath {
          * @param b             A pointer to the beginning of the array `b`
          * @param numElements   The number of elements in the arrays `a` and `b`
          * @param indices       A pointer to the beginning of an array that stores the indices of the elements in the
-         * array `b` that correspond to the elements in the array `a`
+         *                      array `b` that correspond to the elements in the array `a`
          */
         template<typename T>
         static inline void add(T* a, const T* b, const uint32* indices, uint32 numElements) {
@@ -123,7 +123,7 @@ struct SimdVectorMath {
          * @param numElements   The number of elements in the arrays `a` and `b`
          * @param weight        The weight, the elements in the array `b` should be multiplied by
          * @param indices       A pointer to the beginning of a array that stores the indices of the elements in the
-         * array `b` that correspond to the elements in the array `a`
+         *                      array `b` that correspond to the elements in the array `a`
          */
         template<typename T, typename Weight>
         static inline void addWeighted(T* a, const T* b, const uint32* indices, uint32 numElements, Weight weight) {
@@ -193,7 +193,7 @@ struct SimdVectorMath {
          * @param b             A pointer to the beginning of the array `b`
          * @param c             A pointer to the beginning of the array `c`
          * @param indices       A pointer to the beginning of the array that provides access to the indices of the
-         * elements in the array `b` that correspond to the elements in the arrays `a` and `c`
+         *                      elements in the array `b` that correspond to the elements in the arrays `a` and `c`
          * @param numElements   The number of elements in the array `a`
          */
         template<typename T>
