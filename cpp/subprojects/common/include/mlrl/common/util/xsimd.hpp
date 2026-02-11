@@ -267,7 +267,18 @@ struct SimdVectorMath {
          */
         template<typename T>
         static inline void difference(T* a, const T* b, const T* c, uint32 numElements) {
-            for (uint32 i = 0; i < numElements; i++) {
+            typedef xsimd::batch<T> batch;
+            constexpr std::size_t batchSize = batch::size;
+            uint32 batchEnd = numElements - (numElements % batchSize);
+            uint32 i = 0;
+
+            for (; i < batchEnd; i += batchSize) {
+                batch batchB = batch::load_unaligned(b + i);
+                batch batchC = batch::load_unaligned(c + i);
+                (batchB - batchC).store_unaligned(a + i);
+            }
+
+            for (; i < numElements; i++) {
                 a[i] = b[i] - c[i];
             }
         }
@@ -287,7 +298,25 @@ struct SimdVectorMath {
          */
         template<typename T>
         static inline void difference(T* a, const T* b, const T* c, const uint32* indices, uint32 numElements) {
-            for (uint32 i = 0; i < numElements; i++) {
+            typedef xsimd::batch<T> batch;
+            constexpr std::size_t batchSize = batch::size;
+            uint32 batchEnd = numElements - (numElements % batchSize);
+            uint32 i = 0;
+
+            for (; i < batchEnd; i += batchSize) {
+                T tmp[batchSize];
+
+                for (std::size_t j = 0; j < batchSize; j++) {
+                    uint32 index = indices[i + j];
+                    tmp[j] = b[index];
+                }
+
+                batch batchTmp = batch::load_unaligned(tmp);
+                batch batchC = batch::load_unaligned(c + i);
+                (batchTmp - batchC).store_unaligned(a + i);
+            }
+
+            for (; i < numElements; i++) {
                 uint32 index = indices[i];
                 a[i] = b[index] - c[i];
             }
