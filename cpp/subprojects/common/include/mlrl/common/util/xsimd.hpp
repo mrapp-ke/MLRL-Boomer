@@ -53,7 +53,16 @@ struct SimdVectorMath {
          */
         template<typename T>
         static inline void copy(const T* from, T* to, uint32 numElements) {
-            for (uint32 i = 0; i < numElements; i++) {
+            typedef xsimd::batch<T> batch;
+            constexpr std::size_t batchSize = batch::size;
+            uint32 batchEnd = numElements - (numElements % batchSize);
+            uint32 i = 0;
+
+            for (; i < batchEnd; i += batchSize) {
+                batch::load_unaligned(from + i).store_unaligned(to + i);
+            }
+
+            for (; i < numElements; i++) {
                 to[i] = from[i];
             }
         }
