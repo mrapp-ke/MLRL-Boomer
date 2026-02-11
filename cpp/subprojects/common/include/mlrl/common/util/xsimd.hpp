@@ -239,7 +239,18 @@ struct SimdVectorMath {
          */
         template<typename T, typename Weight>
         static inline void subtractWeighted(T* a, const T* b, uint32 numElements, Weight weight) {
-            for (uint32 i = 0; i < numElements; i++) {
+            typedef xsimd::batch<T> batch;
+            constexpr std::size_t batchSize = batch::size;
+            uint32 batchEnd = numElements - (numElements % batchSize);
+            uint32 i = 0;
+
+            for (; i < batchEnd; i += batchSize) {
+                batch batchA = batch::load_unaligned(a + i);
+                batch batchB = batch::load_unaligned(b + i);
+                (batchA - (batchB * weight)).store_unaligned(a + i);
+            }
+
+            for (; i < numElements; i++) {
                 a[i] -= (b[i] * weight);
             }
         }
