@@ -3,8 +3,15 @@
  */
 #pragma once
 
-#include "mlrl/common/data/types.hpp"
-#include "mlrl/common/util/xsimd.hpp"
+#include "mlrl/common/simd/functions/add.hpp"
+#include "mlrl/common/simd/functions/add_from_subset.hpp"
+#include "mlrl/common/simd/functions/add_weighted.hpp"
+#include "mlrl/common/simd/functions/add_weighted_from_subset.hpp"
+#include "mlrl/common/simd/functions/copy.hpp"
+#include "mlrl/common/simd/functions/difference.hpp"
+#include "mlrl/common/simd/functions/difference_with_subset.hpp"
+#include "mlrl/common/simd/functions/subtract.hpp"
+#include "mlrl/common/simd/functions/subtract_weighted.hpp"
 
 #if SIMD_SUPPORT_ENABLED
 /**
@@ -12,6 +19,14 @@
  * operations.
  */
 struct SimdVectorMath {
+    private:
+
+    #if defined(__aarch64__) || defined(_M_ARM64)
+        using arch_list = xsimd::arch_list<xsimd::neon64>;
+    #else
+        using arch_list = xsimd::arch_list<xsimd::avx512f, xsimd::avx2, xsimd::avx, xsimd::sse2>;
+    #endif
+
     public:
 
         /**
@@ -24,18 +39,10 @@ struct SimdVectorMath {
          */
         template<typename T>
         static inline void copy(const T* from, T* to, uint32 numElements) {
-            typedef xsimd::batch<T> batch;
-            constexpr std::size_t batchSize = batch::size;
-            uint32 batchEnd = numElements - (numElements % batchSize);
-            uint32 i = 0;
-
-            for (; i < batchEnd; i += batchSize) {
-                batch::load_unaligned(from + i).store_unaligned(to + i);
-            }
-
-            for (; i < numElements; i++) {
-                to[i] = from[i];
-            }
+            auto dispatched = xsimd::dispatch<arch_list>([&](auto arch) {
+                simd::copy(arch, from, to, numElements);
+            });
+            dispatched();
         }
 
         /**
@@ -48,20 +55,10 @@ struct SimdVectorMath {
          */
         template<typename T>
         static inline void add(T* a, const T* b, uint32 numElements) {
-            typedef xsimd::batch<T> batch;
-            constexpr std::size_t batchSize = batch::size;
-            uint32 batchEnd = numElements - (numElements % batchSize);
-            uint32 i = 0;
-
-            for (; i < batchEnd; i += batchSize) {
-                batch batchA = batch::load_unaligned(a + i);
-                batch batchB = batch::load_unaligned(b + i);
-                (batchA + batchB).store_unaligned(a + i);
-            }
-
-            for (; i < numElements; i++) {
-                a[i] += b[i];
-            }
+            auto dispatched = xsimd::dispatch<arch_list>([&](auto arch) {
+                simd::add(arch, a, b, numElements);
+            });
+            dispatched();
         }
 
         /**
@@ -77,20 +74,10 @@ struct SimdVectorMath {
          */
         template<typename T, typename Weight>
         static inline void addWeighted(T* a, const T* b, uint32 numElements, Weight weight) {
-            typedef xsimd::batch<T> batch;
-            constexpr std::size_t batchSize = batch::size;
-            uint32 batchEnd = numElements - (numElements % batchSize);
-            uint32 i = 0;
-
-            for (; i < batchEnd; i += batchSize) {
-                batch batchA = batch::load_unaligned(a + i);
-                batch batchB = batch::load_unaligned(b + i);
-                (batchA + (batchB * weight)).store_unaligned(a + i);
-            }
-
-            for (; i < numElements; i++) {
-                a[i] += (b[i] * weight);
-            }
+            auto dispatched = xsimd::dispatch<arch_list>([&](auto arch) {
+                simd::addWeighted(arch, a, b, numElements, weight);
+            });
+            dispatched();
         }
 
         /**
@@ -107,28 +94,10 @@ struct SimdVectorMath {
          */
         template<typename T>
         static inline void add(T* a, const T* b, const uint32* indices, uint32 numElements) {
-            typedef xsimd::batch<T> batch;
-            constexpr std::size_t batchSize = batch::size;
-            uint32 batchEnd = numElements - (numElements % batchSize);
-            uint32 i = 0;
-
-            for (; i < batchEnd; i += batchSize) {
-                T tmp[batchSize];
-
-                for (std::size_t j = 0; j < batchSize; j++) {
-                    uint32 index = indices[i + j];
-                    tmp[j] = b[index];
-                }
-
-                batch batchA = batch::load_unaligned(a + i);
-                batch batchTmp = batch::load_unaligned(tmp);
-                (batchA + batchTmp).store_unaligned(a + i);
-            }
-
-            for (; i < numElements; i++) {
-                uint32 index = indices[i];
-                a[i] += b[index];
-            }
+            auto dispatched = xsimd::dispatch<arch_list>([&](auto arch) {
+                simd::addFromSubset(arch, a, b, indices, numElements);
+            });
+            dispatched();
         }
 
         /**
@@ -147,28 +116,10 @@ struct SimdVectorMath {
          */
         template<typename T, typename Weight>
         static inline void addWeighted(T* a, const T* b, const uint32* indices, uint32 numElements, Weight weight) {
-            typedef xsimd::batch<T> batch;
-            constexpr std::size_t batchSize = batch::size;
-            uint32 batchEnd = numElements - (numElements % batchSize);
-            uint32 i = 0;
-
-            for (; i < batchEnd; i += batchSize) {
-                T tmp[batchSize];
-
-                for (std::size_t j = 0; j < batchSize; j++) {
-                    uint32 index = indices[i + j];
-                    tmp[j] = b[index];
-                }
-
-                batch batchA = batch::load_unaligned(a + i);
-                batch batchTmp = batch::load_unaligned(tmp);
-                (batchA + (batchTmp * weight)).store_unaligned(a + i);
-            }
-
-            for (; i < numElements; i++) {
-                uint32 index = indices[i];
-                a[i] += (b[index] * weight);
-            }
+            auto dispatched = xsimd::dispatch<arch_list>([&](auto arch) {
+                simd::addWeightedFromSubset(arch, a, b, indices, numElements, weight);
+            });
+            dispatched();
         }
 
         /**
@@ -181,20 +132,10 @@ struct SimdVectorMath {
          */
         template<typename T>
         static inline void subtract(T* a, const T* b, uint32 numElements) {
-            typedef xsimd::batch<T> batch;
-            constexpr std::size_t batchSize = batch::size;
-            uint32 batchEnd = numElements - (numElements % batchSize);
-            uint32 i = 0;
-
-            for (; i < batchEnd; i += batchSize) {
-                batch batchA = batch::load_unaligned(a + i);
-                batch batchB = batch::load_unaligned(b + i);
-                (batchA - batchB).store_unaligned(a + i);
-            }
-
-            for (; i < numElements; i++) {
-                a[i] -= b[i];
-            }
+            auto dispatched = xsimd::dispatch<arch_list>([&](auto arch) {
+                simd::subtract(arch, a, b, numElements);
+            });
+            dispatched();
         }
 
         /**
@@ -210,20 +151,10 @@ struct SimdVectorMath {
          */
         template<typename T, typename Weight>
         static inline void subtractWeighted(T* a, const T* b, uint32 numElements, Weight weight) {
-            typedef xsimd::batch<T> batch;
-            constexpr std::size_t batchSize = batch::size;
-            uint32 batchEnd = numElements - (numElements % batchSize);
-            uint32 i = 0;
-
-            for (; i < batchEnd; i += batchSize) {
-                batch batchA = batch::load_unaligned(a + i);
-                batch batchB = batch::load_unaligned(b + i);
-                (batchA - (batchB * weight)).store_unaligned(a + i);
-            }
-
-            for (; i < numElements; i++) {
-                a[i] -= (b[i] * weight);
-            }
+            auto dispatched = xsimd::dispatch<arch_list>([&](auto arch) {
+                simd::subtractWeighted(arch, a, b, numElements, weight);
+            });
+            dispatched();
         }
 
         /**
@@ -238,20 +169,10 @@ struct SimdVectorMath {
          */
         template<typename T>
         static inline void difference(T* a, const T* b, const T* c, uint32 numElements) {
-            typedef xsimd::batch<T> batch;
-            constexpr std::size_t batchSize = batch::size;
-            uint32 batchEnd = numElements - (numElements % batchSize);
-            uint32 i = 0;
-
-            for (; i < batchEnd; i += batchSize) {
-                batch batchB = batch::load_unaligned(b + i);
-                batch batchC = batch::load_unaligned(c + i);
-                (batchB - batchC).store_unaligned(a + i);
-            }
-
-            for (; i < numElements; i++) {
-                a[i] = b[i] - c[i];
-            }
+            auto dispatched = xsimd::dispatch<arch_list>([&](auto arch) {
+                simd::difference(arch, a, b, c, numElements);
+            });
+            dispatched();
         }
 
         /**
@@ -269,28 +190,10 @@ struct SimdVectorMath {
          */
         template<typename T>
         static inline void difference(T* a, const T* b, const T* c, const uint32* indices, uint32 numElements) {
-            typedef xsimd::batch<T> batch;
-            constexpr std::size_t batchSize = batch::size;
-            uint32 batchEnd = numElements - (numElements % batchSize);
-            uint32 i = 0;
-
-            for (; i < batchEnd; i += batchSize) {
-                T tmp[batchSize];
-
-                for (std::size_t j = 0; j < batchSize; j++) {
-                    uint32 index = indices[i + j];
-                    tmp[j] = b[index];
-                }
-
-                batch batchTmp = batch::load_unaligned(tmp);
-                batch batchC = batch::load_unaligned(c + i);
-                (batchTmp - batchC).store_unaligned(a + i);
-            }
-
-            for (; i < numElements; i++) {
-                uint32 index = indices[i];
-                a[i] = b[index] - c[i];
-            }
+            auto dispatched = xsimd::dispatch<arch_list>([&](auto arch) {
+                simd::differenceWithSubset(arch, a, b, c, indices, numElements);
+            });
+            dispatched();
         }
 };
 #endif
