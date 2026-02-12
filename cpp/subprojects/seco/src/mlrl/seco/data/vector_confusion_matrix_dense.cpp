@@ -2,7 +2,7 @@
 
 #include "mlrl/common/iterator/iterator_forward_sparse_binary.hpp"
 #include "mlrl/common/math/vector_math.hpp"
-#include "mlrl/common/util/xsimd.hpp"
+#include "mlrl/common/simd/vector_math.hpp"
 
 namespace seco {
 
