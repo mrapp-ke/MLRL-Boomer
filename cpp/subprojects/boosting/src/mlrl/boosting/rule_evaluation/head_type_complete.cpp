@@ -4,7 +4,7 @@
 #include "mlrl/boosting/statistics/statistics_provider_decomposable_dense.hpp"
 #include "mlrl/boosting/statistics/statistics_provider_non_decomposable_dense.hpp"
 #include "mlrl/common/math/vector_math.hpp"
-#include "mlrl/common/util/xsimd.hpp"
+#include "mlrl/common/simd/vector_math.hpp"
 
 namespace boosting {
 

@@ -2,7 +2,7 @@
 
 #include "mlrl/boosting/math/scalar_math.hpp"
 #include "mlrl/common/math/vector_math.hpp"
-#include "mlrl/common/util/xsimd.hpp"
+#include "mlrl/common/simd/vector_math.hpp"
 
 namespace boosting {
 
