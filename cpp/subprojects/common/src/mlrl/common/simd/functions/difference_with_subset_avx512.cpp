@@ -1,0 +1,11 @@
+#include "mlrl/common/simd/functions/difference_with_subset.hpp"
+
+#if SIMD_SUPPORT_ENABLED
+namespace simd {
+
+    template void differenceWithSubset<xsimd::avx512f, float32>(xsimd::avx512f, float32*, const float32*,
+                                                                const float32*, const uint32*, uint32);
+    template void differenceWithSubset<xsimd::avx512f, float64>(xsimd::avx512f, float64*, const float64*,
+                                                                const float64*, const uint32*, uint32);
+}
+#endif
