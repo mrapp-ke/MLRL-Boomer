@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/boosting/util/math.hpp"
+#include "mlrl/boosting/math/scalar_math.hpp"
 #include "mlrl/common/data/view.hpp"
 
 #include <iterator>

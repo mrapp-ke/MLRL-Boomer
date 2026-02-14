@@ -1,6 +1,6 @@
 #include "mlrl/boosting/data/view_statistic_non_decomposable_dense.hpp"
 
-#include "mlrl/boosting/util/math.hpp"
+#include "mlrl/boosting/math/scalar_math.hpp"
 
 namespace boosting {
 
