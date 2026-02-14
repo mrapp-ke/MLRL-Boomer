@@ -1,10 +1,10 @@
 #include "mlrl/common/sampling/instance_sampling_without_replacement.hpp"
 
 #include "mlrl/common/iterator/iterator_index.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 #include "mlrl/common/sampling/partition_bi.hpp"
 #include "mlrl/common/sampling/partition_single.hpp"
 #include "mlrl/common/sampling/weight_sampling.hpp"
-#include "mlrl/common/util/math.hpp"
 #include "mlrl/common/util/validation.hpp"
 
 template<typename ExampleWeights, typename WeightVector>

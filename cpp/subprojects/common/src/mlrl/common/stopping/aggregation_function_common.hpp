@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/ring_buffer.hpp"
-#include "mlrl/common/util/math.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 
 #include <memory>
 

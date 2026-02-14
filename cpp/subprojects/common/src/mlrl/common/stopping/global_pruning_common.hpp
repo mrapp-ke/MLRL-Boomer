@@ -3,10 +3,10 @@
  */
 #pragma once
 
+#include "mlrl/common/math/scalar_math.hpp"
 #include "mlrl/common/sampling/partition_bi.hpp"
 #include "mlrl/common/sampling/partition_single.hpp"
 #include "mlrl/common/statistics/statistics.hpp"
-#include "mlrl/common/util/math.hpp"
 
 /**
  * Calculates and returns a numerical score that assesses the quality of a model's predictions for the examples in a

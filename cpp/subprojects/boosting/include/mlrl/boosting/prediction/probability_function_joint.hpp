@@ -6,8 +6,8 @@
 #include "mlrl/boosting/prediction/probability_function_marginal.hpp"
 #include "mlrl/common/data/vector_dense.hpp"
 #include "mlrl/common/data/view_matrix_sparse_set.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 #include "mlrl/common/measures/measure_distance.hpp"
-#include "mlrl/common/util/math.hpp"
 
 #include <memory>
 

@@ -1,6 +1,6 @@
 #include "mlrl/seco/heuristics/heuristic_accuracy.hpp"
 
-#include "mlrl/common/util/math.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 
 namespace seco {
 

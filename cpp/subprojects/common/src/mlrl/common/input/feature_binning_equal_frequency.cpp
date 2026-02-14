@@ -2,7 +2,7 @@
 
 #include "feature_type_numerical_common.hpp"
 #include "feature_vector_decorator_binned.hpp"
-#include "mlrl/common/util/math.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 #include "mlrl/common/util/validation.hpp"
 
 static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(

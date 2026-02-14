@@ -1,7 +1,7 @@
 #include "mlrl/boosting/losses/loss_non_decomposable_squared_hinge.hpp"
 
 #include "mlrl/common/iterator/iterator_forward_sparse_binary.hpp"
-#include "mlrl/common/util/math.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 
 namespace boosting {
 

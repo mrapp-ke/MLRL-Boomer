@@ -3,8 +3,8 @@
 #include "index_sampling.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 #include "mlrl/common/iterator/iterator_index.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 #include "mlrl/common/sampling/feature_sampling_predefined.hpp"
-#include "mlrl/common/util/math.hpp"
 #include "mlrl/common/util/validation.hpp"
 
 /**

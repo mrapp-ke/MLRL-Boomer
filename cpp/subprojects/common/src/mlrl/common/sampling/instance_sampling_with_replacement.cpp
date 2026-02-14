@@ -1,9 +1,9 @@
 #include "mlrl/common/sampling/instance_sampling_with_replacement.hpp"
 
+#include "mlrl/common/math/scalar_math.hpp"
 #include "mlrl/common/sampling/partition_bi.hpp"
 #include "mlrl/common/sampling/partition_single.hpp"
 #include "mlrl/common/sampling/weight_vector_dense.hpp"
-#include "mlrl/common/util/math.hpp"
 #include "mlrl/common/util/validation.hpp"
 
 template<typename ExampleWeights, typename WeightType>

@@ -1,7 +1,7 @@
 #include "mlrl/common/prediction/probability_calibration_isotonic.hpp"
 
 #include "mlrl/common/data/array.hpp"
-#include "mlrl/common/util/math.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 
 #include <numeric>
 

@@ -4,9 +4,9 @@
 #pragma once
 
 #include "mlrl/common/input/feature_vector_numerical.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 #include "mlrl/common/rule_refinement/refinement.hpp"
 #include "mlrl/common/statistics/statistics_subset_resettable.hpp"
-#include "mlrl/common/util/math.hpp"
 
 template<typename Comparator>
 static inline void searchForNumericalRefinementInternally(const NumericalFeatureVector& featureVector,

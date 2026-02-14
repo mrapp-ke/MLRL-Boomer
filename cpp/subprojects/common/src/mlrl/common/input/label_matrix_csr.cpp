@@ -1,11 +1,11 @@
 #include "mlrl/common/input/label_matrix_csr.hpp"
 
 #include "mlrl/common/data/view_matrix_csr_binary.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 #include "mlrl/common/prediction/probability_calibration_joint.hpp"
 #include "mlrl/common/sampling/instance_sampling.hpp"
 #include "mlrl/common/sampling/partition_sampling.hpp"
 #include "mlrl/common/statistics/statistics_provider.hpp"
-#include "mlrl/common/util/math.hpp"
 
 /**
  * Implements row-wise read-only access to the labels of individual training examples that are stored in a pre-allocated

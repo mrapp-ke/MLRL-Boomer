@@ -6,7 +6,7 @@
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_non_decomposable_complete_binned.hpp"
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_non_decomposable_partial_dynamic_binned.hpp"
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_non_decomposable_partial_fixed_binned.hpp"
-#include "mlrl/common/util/math.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 #include "mlrl/common/util/validation.hpp"
 
 namespace boosting {

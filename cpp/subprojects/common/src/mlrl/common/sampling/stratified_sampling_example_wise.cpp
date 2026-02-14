@@ -1,7 +1,7 @@
 #include "mlrl/common/sampling/stratified_sampling_example_wise.hpp"
 
+#include "mlrl/common/math/scalar_math.hpp"
 #include "mlrl/common/sampling/partition_single.hpp"
-#include "mlrl/common/util/math.hpp"
 #include "stratified_sampling_common.hpp"
 
 #include <algorithm>
