@@ -3,8 +3,8 @@
  */
 #pragma once
 
+#include "mlrl/boosting/math/blas.hpp"
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_non_decomposable.hpp"
-#include "mlrl/boosting/util/blas.hpp"
 #include "mlrl/boosting/util/lapack.hpp"
 
 #include <memory>

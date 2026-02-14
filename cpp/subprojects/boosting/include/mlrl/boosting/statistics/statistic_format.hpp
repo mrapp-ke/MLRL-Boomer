@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/boosting/util/blas.hpp"
+#include "mlrl/boosting/math/blas.hpp"
 #include "mlrl/boosting/util/lapack.hpp"
 #include "mlrl/common/input/feature_matrix.hpp"
 #include "mlrl/common/input/label_matrix_row_wise.hpp"
