@@ -24,7 +24,7 @@ This project uses [Meson](https://mesonbuild.com/) as a build system for compili
      - Description
    * - **Python**
      - No
-     - Nowadays, most Linux distributions include a pre-installed version of Python 3. If this is not the case, instructions on how to install a recent Python version can be found in Python’s [Beginners Guide](https://wiki.python.org/moin/BeginnersGuide/Download). As noted in this guide, Python should be installed via the distribution’s package manager if possible.
+     - Nowadays, most Linux distributions include a pre-installed version of Python 3. If this is not the case, instructions on how to install a recent Python version can be found in Python’s [documentation](https://www.python.org/doc/). As noted in this guide, Python should be installed via the distribution’s package manager if possible.
    * - **C++ compiler**
      - No
      - Most Linux distributions provide the [GNU Compiler Collection](https://gcc.gnu.org/) (GCC), which includes a C++ compiler, as part of their software repositories. If this is the case, it can be installed via the distribution's package manager.
