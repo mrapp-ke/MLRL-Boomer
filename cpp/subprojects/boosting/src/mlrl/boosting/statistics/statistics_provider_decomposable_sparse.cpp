@@ -2,7 +2,7 @@
 
 #include "mlrl/boosting/data/matrix_sparse_set_numeric.hpp"
 #include "mlrl/boosting/data/vector_statistic_decomposable_sparse.hpp"
-#include "mlrl/common/util/array_operations.hpp"
+#include "mlrl/common/math/vector_math.hpp"
 #include "mlrl/common/util/openmp.hpp"
 #include "mlrl/common/util/xsimd.hpp"
 #include "statistics_decomposable_common.hpp"

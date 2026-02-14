@@ -1,6 +1,6 @@
 #include "mlrl/seco/rule_evaluation/head_type_single.hpp"
 
-#include "mlrl/common/util/array_operations.hpp"
+#include "mlrl/common/math/vector_math.hpp"
 #include "mlrl/common/util/xsimd.hpp"
 #include "mlrl/seco/rule_evaluation/rule_evaluation_decomposable_single.hpp"
 #include "mlrl/seco/statistics/statistics_provider_decomposable_dense.hpp"

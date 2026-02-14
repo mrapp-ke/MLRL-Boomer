@@ -1,6 +1,6 @@
 #include "mlrl/boosting/data/vector_statistic_decomposable_sparse.hpp"
 
-#include "mlrl/common/util/array_operations.hpp"
+#include "mlrl/common/math/vector_math.hpp"
 #include "mlrl/common/util/xsimd.hpp"
 
 namespace boosting {

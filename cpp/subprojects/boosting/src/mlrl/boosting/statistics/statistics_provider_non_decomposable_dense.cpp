@@ -3,7 +3,7 @@
 #include "mlrl/boosting/data/matrix_c_contiguous_numeric.hpp"
 #include "mlrl/boosting/data/vector_statistic_non_decomposable_dense.hpp"
 #include "mlrl/boosting/data/view_statistic_non_decomposable_dense.hpp"
-#include "mlrl/common/util/array_operations.hpp"
+#include "mlrl/common/math/vector_math.hpp"
 #include "mlrl/common/util/openmp.hpp"
 #include "mlrl/common/util/xsimd.hpp"
 #include "statistics_decomposable_dense.hpp"
