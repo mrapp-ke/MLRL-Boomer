@@ -1,9 +1,9 @@
 #include "mlrl/boosting/losses/loss_decomposable_logistic.hpp"
 
 #include "loss_decomposable_common.hpp"
+#include "mlrl/boosting/math/vector_math.hpp"
 #include "mlrl/boosting/prediction/probability_function_chain_rule.hpp"
 #include "mlrl/boosting/prediction/probability_function_logistic.hpp"
-#include "mlrl/boosting/util/math.hpp"
 
 namespace boosting {
 

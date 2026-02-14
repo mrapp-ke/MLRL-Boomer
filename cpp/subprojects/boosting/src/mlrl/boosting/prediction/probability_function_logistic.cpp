@@ -1,6 +1,6 @@
 #include "mlrl/boosting/prediction/probability_function_logistic.hpp"
 
-#include "mlrl/boosting/util/math.hpp"
+#include "mlrl/boosting/math/vector_math.hpp"
 
 namespace boosting {
 

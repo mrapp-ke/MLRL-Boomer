@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/boosting/math/scalar_math.hpp"
-#include "mlrl/boosting/util/math.hpp"
+#include "mlrl/boosting/math/vector_math.hpp"
 #include "mlrl/common/rule_evaluation/score_vector_binned_dense.hpp"
 #include "rule_evaluation_non_decomposable_complete_common.hpp"
 
