@@ -30,13 +30,13 @@ namespace seco {
 
 #if SIMD_SUPPORT_ENABLED
         if (labelMatrix.getNumOutputs() > 1 && simdConfig_.get().isSimdEnabled()) {
-            return std::make_unique<DenseDecomposableStatisticsProviderFactory<SimdArrayOperations>>(
+            return std::make_unique<DenseDecomposableStatisticsProviderFactory<SimdVectorMath>>(
               std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
               std::move(pruningRuleEvaluationFactoryPtr));
         }
 #endif
 
-        return std::make_unique<DenseDecomposableStatisticsProviderFactory<SequentialArrayOperations>>(
+        return std::make_unique<DenseDecomposableStatisticsProviderFactory<SequentialVectorMath>>(
           std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
           std::move(pruningRuleEvaluationFactoryPtr));
     }

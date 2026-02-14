@@ -19,9 +19,9 @@ namespace boosting {
      * statistics.
      *
      * @tparam StatisticType    The type of the statistics
-     * @tparam ArrayOperations  The type that implements basic operations for calculating with numerical arrays
+     * @tparam VectorMath       The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename StatisticType, typename ArrayOperations>
+    template<typename StatisticType, typename VectorMath>
     class SparseDecomposableClassificationStatisticsProviderFactory final
         : public IClassificationStatisticsProviderFactory {
         private:

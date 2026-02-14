@@ -244,37 +244,37 @@ namespace boosting {
         }
     }
 
-    template<typename StatisticType, typename WeightType, typename ArrayOperations>
-    SparseDecomposableStatisticVector<StatisticType, WeightType, ArrayOperations>::SparseDecomposableStatisticVector(
+    template<typename StatisticType, typename WeightType, typename VectorMath>
+    SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>::SparseDecomposableStatisticVector(
       uint32 numElements, bool init)
         : VectorDecorator<SparseDecomposableStatisticVectorView<StatisticType, WeightType>>(
             SparseDecomposableStatisticVectorView<StatisticType, WeightType>(numElements, init)) {}
 
-    template<typename StatisticType, typename WeightType, typename ArrayOperations>
-    SparseDecomposableStatisticVector<StatisticType, WeightType, ArrayOperations>::SparseDecomposableStatisticVector(
-      const SparseDecomposableStatisticVector<StatisticType, WeightType, ArrayOperations>& other)
-        : SparseDecomposableStatisticVector<StatisticType, WeightType, ArrayOperations>(other.getNumElements()) {
-        ArrayOperations::copy(other.view.cbegin(), this->view.begin(), this->getNumElements());
+    template<typename StatisticType, typename WeightType, typename VectorMath>
+    SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>::SparseDecomposableStatisticVector(
+      const SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>& other)
+        : SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>(other.getNumElements()) {
+        VectorMath::copy(other.view.cbegin(), this->view.begin(), this->getNumElements());
         this->view.sumOfWeights = other.view.sumOfWeights;
     }
 
-    template<typename StatisticType, typename WeightType, typename ArrayOperations>
-    void SparseDecomposableStatisticVector<StatisticType, WeightType, ArrayOperations>::add(
+    template<typename StatisticType, typename WeightType, typename VectorMath>
+    void SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>::add(
       const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& vector) {
         this->view.sumOfWeights += vector.sumOfWeights;
-        ArrayOperations::add(this->view.begin(), vector.cbegin(), this->getNumElements());
+        VectorMath::add(this->view.begin(), vector.cbegin(), this->getNumElements());
     }
 
-    template<typename StatisticType, typename WeightType, typename ArrayOperations>
-    void SparseDecomposableStatisticVector<StatisticType, WeightType, ArrayOperations>::add(
+    template<typename StatisticType, typename WeightType, typename VectorMath>
+    void SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>::add(
       const SparseSetView<Statistic<StatisticType>>& view, uint32 row) {
         this->view.sumOfWeights += 1;
         addToSparseDecomposableStatisticVector<StatisticType, WeightType>(this->view.begin(), view.values_cbegin(row),
                                                                           view.values_cend(row));
     }
 
-    template<typename StatisticType, typename WeightType, typename ArrayOperations>
-    void SparseDecomposableStatisticVector<StatisticType, WeightType, ArrayOperations>::add(
+    template<typename StatisticType, typename WeightType, typename VectorMath>
+    void SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>::add(
       const SparseSetView<Statistic<StatisticType>>& view, uint32 row, WeightType weight) {
         if (!isEqualToZero(weight)) {
             this->view.sumOfWeights += weight;
@@ -283,16 +283,16 @@ namespace boosting {
         }
     }
 
-    template<typename StatisticType, typename WeightType, typename ArrayOperations>
-    void SparseDecomposableStatisticVector<StatisticType, WeightType, ArrayOperations>::remove(
+    template<typename StatisticType, typename WeightType, typename VectorMath>
+    void SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>::remove(
       const SparseSetView<Statistic<StatisticType>>& view, uint32 row) {
         this->view.sumOfWeights -= 1;
         removeFromSparseDecomposableStatisticVector<StatisticType, WeightType>(
           this->view.begin(), view.values_cbegin(row), view.values_cend(row));
     }
 
-    template<typename StatisticType, typename WeightType, typename ArrayOperations>
-    void SparseDecomposableStatisticVector<StatisticType, WeightType, ArrayOperations>::remove(
+    template<typename StatisticType, typename WeightType, typename VectorMath>
+    void SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>::remove(
       const SparseSetView<Statistic<StatisticType>>& view, uint32 row, WeightType weight) {
         if (!isEqualToZero(weight)) {
             this->view.sumOfWeights -= weight;
@@ -301,16 +301,16 @@ namespace boosting {
         }
     }
 
-    template<typename StatisticType, typename WeightType, typename ArrayOperations>
-    void SparseDecomposableStatisticVector<StatisticType, WeightType, ArrayOperations>::addToSubset(
+    template<typename StatisticType, typename WeightType, typename VectorMath>
+    void SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>::addToSubset(
       const SparseSetView<Statistic<StatisticType>>& view, uint32 row, const CompleteIndexVector& indices) {
         this->view.sumOfWeights += 1;
         addToSparseDecomposableStatisticVector<StatisticType, WeightType>(this->view.begin(), view.values_cbegin(row),
                                                                           view.values_cend(row));
     }
 
-    template<typename StatisticType, typename WeightType, typename ArrayOperations>
-    void SparseDecomposableStatisticVector<StatisticType, WeightType, ArrayOperations>::addToSubset(
+    template<typename StatisticType, typename WeightType, typename VectorMath>
+    void SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>::addToSubset(
       const SparseSetView<Statistic<StatisticType>>& view, uint32 row, const PartialIndexVector& indices) {
         this->view.sumOfWeights += 1;
         typename SparseSetView<Statistic<StatisticType>>::const_row viewRow = view[row];
@@ -331,8 +331,8 @@ namespace boosting {
         }
     }
 
-    template<typename StatisticType, typename WeightType, typename ArrayOperations>
-    void SparseDecomposableStatisticVector<StatisticType, WeightType, ArrayOperations>::addToSubset(
+    template<typename StatisticType, typename WeightType, typename VectorMath>
+    void SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>::addToSubset(
       const SparseSetView<Statistic<StatisticType>>& view, uint32 row, const CompleteIndexVector& indices,
       WeightType weight) {
         if (!isEqualToZero(weight)) {
@@ -342,8 +342,8 @@ namespace boosting {
         }
     }
 
-    template<typename StatisticType, typename WeightType, typename ArrayOperations>
-    void SparseDecomposableStatisticVector<StatisticType, WeightType, ArrayOperations>::addToSubset(
+    template<typename StatisticType, typename WeightType, typename VectorMath>
+    void SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>::addToSubset(
       const SparseSetView<Statistic<StatisticType>>& view, uint32 row, const PartialIndexVector& indices,
       WeightType weight) {
         if (!isEqualToZero(weight)) {
@@ -367,27 +367,27 @@ namespace boosting {
         }
     }
 
-    template<typename StatisticType, typename WeightType, typename ArrayOperations>
-    void SparseDecomposableStatisticVector<StatisticType, WeightType, ArrayOperations>::difference(
+    template<typename StatisticType, typename WeightType, typename VectorMath>
+    void SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>::difference(
       const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& first,
       const CompleteIndexVector& firstIndices,
       const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& second) {
         this->view.sumOfWeights = first.sumOfWeights - second.sumOfWeights;
-        ArrayOperations::difference(this->view.begin(), first.cbegin(), second.cbegin(), this->getNumElements());
+        VectorMath::difference(this->view.begin(), first.cbegin(), second.cbegin(), this->getNumElements());
     }
 
-    template<typename StatisticType, typename WeightType, typename ArrayOperations>
-    void SparseDecomposableStatisticVector<StatisticType, WeightType, ArrayOperations>::difference(
+    template<typename StatisticType, typename WeightType, typename VectorMath>
+    void SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>::difference(
       const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& first,
       const PartialIndexVector& firstIndices,
       const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& second) {
         this->view.sumOfWeights = first.sumOfWeights - second.sumOfWeights;
-        ArrayOperations::difference(this->view.begin(), first.cbegin(), second.cbegin(), firstIndices.cbegin(),
-                                    this->getNumElements());
+        VectorMath::difference(this->view.begin(), first.cbegin(), second.cbegin(), firstIndices.cbegin(),
+                               this->getNumElements());
     }
 
-    template<typename StatisticType, typename WeightType, typename ArrayOperations>
-    void SparseDecomposableStatisticVector<StatisticType, WeightType, ArrayOperations>::clear() {
+    template<typename StatisticType, typename WeightType, typename VectorMath>
+    void SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>::clear() {
         uint32 numElements = this->getNumElements();
         typename View<SparseStatistic<StatisticType, WeightType>>::iterator iterator = this->view.begin();
 
@@ -401,15 +401,15 @@ namespace boosting {
         this->view.sumOfWeights = 0;
     }
 
-    template class SparseDecomposableStatisticVector<float32, uint32, SequentialArrayOperations>;
-    template class SparseDecomposableStatisticVector<float32, float32, SequentialArrayOperations>;
-    template class SparseDecomposableStatisticVector<float64, uint32, SequentialArrayOperations>;
-    template class SparseDecomposableStatisticVector<float64, float32, SequentialArrayOperations>;
+    template class SparseDecomposableStatisticVector<float32, uint32, SequentialVectorMath>;
+    template class SparseDecomposableStatisticVector<float32, float32, SequentialVectorMath>;
+    template class SparseDecomposableStatisticVector<float64, uint32, SequentialVectorMath>;
+    template class SparseDecomposableStatisticVector<float64, float32, SequentialVectorMath>;
 
 #if SIMD_SUPPORT_ENABLED
-    template class SparseDecomposableStatisticVector<float32, uint32, SimdArrayOperations>;
-    template class SparseDecomposableStatisticVector<float32, float32, SimdArrayOperations>;
-    template class SparseDecomposableStatisticVector<float64, uint32, SimdArrayOperations>;
-    template class SparseDecomposableStatisticVector<float64, float32, SimdArrayOperations>;
+    template class SparseDecomposableStatisticVector<float32, uint32, SimdVectorMath>;
+    template class SparseDecomposableStatisticVector<float32, float32, SimdVectorMath>;
+    template class SparseDecomposableStatisticVector<float64, uint32, SimdVectorMath>;
+    template class SparseDecomposableStatisticVector<float64, float32, SimdVectorMath>;
 #endif
 }

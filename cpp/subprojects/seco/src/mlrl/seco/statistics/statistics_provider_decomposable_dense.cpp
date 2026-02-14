@@ -14,17 +14,17 @@ namespace seco {
      * Provides access to the elements of confusion matrices that are computed independently for each output and are
      * stored using dense data structures.
      *
-     * @tparam LabelMatrix      The type of the matrix that provides access to the labels of the training examples
-     * @tparam ArrayOperations  The type that implements basic operations for calculating with numerical arrays
+     * @tparam LabelMatrix  The type of the matrix that provides access to the labels of the training examples
+     * @tparam VectorMath   The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename LabelMatrix, typename ArrayOperations>
+    template<typename LabelMatrix, typename VectorMath>
     class DenseDecomposableStatistics final
         : public AbstractDecomposableStatistics<DenseDecomposableStatisticMatrix<LabelMatrix>,
                                                 IDecomposableRuleEvaluationFactory> {
         private:
 
             template<typename StatisticType>
-            using StatisticVector = DenseConfusionMatrixVector<StatisticType, ArrayOperations>;
+            using StatisticVector = DenseConfusionMatrixVector<StatisticType, VectorMath>;
 
             template<typename WeightVector, typename IndexVector, typename StatisticType>
             using StatisticsSubset =
@@ -305,10 +305,10 @@ namespace seco {
             }
     };
 
-    template<typename ArrayOperations>
+    template<typename VectorMath>
     static inline std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> createStatistics(
       const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory, const CContiguousView<const uint8>& labelMatrix,
-      std::type_identity<ArrayOperations>) {
+      std::type_identity<VectorMath>) {
         uint32 numExamples = labelMatrix.numRows;
         uint32 numLabels = labelMatrix.numCols;
         std::unique_ptr<ResizableBinarySparseArrayVector> majorityLabelVectorPtr =
@@ -338,16 +338,16 @@ namespace seco {
         majorityLabelVectorPtr->setNumElements(n, true);
         std::unique_ptr<DenseCoverageMatrix> coverageMatrixPtr =
           std::make_unique<DenseCoverageMatrix>(numExamples, numLabels, sumOfUncoveredWeights);
-        return std::make_unique<DenseDecomposableStatistics<CContiguousView<const uint8>, ArrayOperations>>(
+        return std::make_unique<DenseDecomposableStatistics<CContiguousView<const uint8>, VectorMath>>(
           labelMatrix, std::move(coverageMatrixPtr),
           std::make_unique<BinarySparseArrayVector>(std::move(majorityLabelVectorPtr->getView())),
           ruleEvaluationFactory);
     }
 
-    template<typename ArrayOperations>
+    template<typename VectorMath>
     static inline std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> createStatistics(
       const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory, const BinaryCsrView& labelMatrix,
-      std::type_identity<ArrayOperations> arrayOperations) {
+      std::type_identity<VectorMath> vectorMath) {
         uint32 numExamples = labelMatrix.numRows;
         uint32 numLabels = labelMatrix.numCols;
         std::unique_ptr<ResizableBinarySparseArrayVector> majorityLabelVectorPtr =
@@ -383,14 +383,14 @@ namespace seco {
         majorityLabelVectorPtr->setNumElements(n, true);
         std::unique_ptr<DenseCoverageMatrix> coverageMatrixPtr =
           std::make_unique<DenseCoverageMatrix>(numExamples, numLabels, sumOfUncoveredWeights);
-        return std::make_unique<DenseDecomposableStatistics<BinaryCsrView, ArrayOperations>>(
+        return std::make_unique<DenseDecomposableStatistics<BinaryCsrView, VectorMath>>(
           labelMatrix, std::move(coverageMatrixPtr),
           std::make_unique<BinarySparseArrayVector>(std::move(majorityLabelVectorPtr->getView())),
           ruleEvaluationFactory);
     }
 
-    template<typename ArrayOperations>
-    DenseDecomposableStatisticsProviderFactory<ArrayOperations>::DenseDecomposableStatisticsProviderFactory(
+    template<typename VectorMath>
+    DenseDecomposableStatisticsProviderFactory<VectorMath>::DenseDecomposableStatisticsProviderFactory(
       std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
       std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
       std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr)
@@ -398,27 +398,27 @@ namespace seco {
           regularRuleEvaluationFactoryPtr_(std::move(regularRuleEvaluationFactoryPtr)),
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)) {}
 
-    template<typename ArrayOperations>
-    std::unique_ptr<IStatisticsProvider> DenseDecomposableStatisticsProviderFactory<ArrayOperations>::create(
+    template<typename VectorMath>
+    std::unique_ptr<IStatisticsProvider> DenseDecomposableStatisticsProviderFactory<VectorMath>::create(
       const CContiguousView<const uint8>& labelMatrix) const {
         std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> statisticsPtr =
-          createStatistics(*defaultRuleEvaluationFactoryPtr_, labelMatrix, std::type_identity<ArrayOperations> {});
+          createStatistics(*defaultRuleEvaluationFactoryPtr_, labelMatrix, std::type_identity<VectorMath> {});
         return std::make_unique<DecomposableStatisticsProvider<IDecomposableRuleEvaluationFactory>>(
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
-    template<typename ArrayOperations>
-    std::unique_ptr<IStatisticsProvider> DenseDecomposableStatisticsProviderFactory<ArrayOperations>::create(
+    template<typename VectorMath>
+    std::unique_ptr<IStatisticsProvider> DenseDecomposableStatisticsProviderFactory<VectorMath>::create(
       const BinaryCsrView& labelMatrix) const {
         std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> statisticsPtr =
-          createStatistics(*defaultRuleEvaluationFactoryPtr_, labelMatrix, std::type_identity<ArrayOperations> {});
+          createStatistics(*defaultRuleEvaluationFactoryPtr_, labelMatrix, std::type_identity<VectorMath> {});
         return std::make_unique<DecomposableStatisticsProvider<IDecomposableRuleEvaluationFactory>>(
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
-    template class DenseDecomposableStatisticsProviderFactory<SequentialArrayOperations>;
+    template class DenseDecomposableStatisticsProviderFactory<SequentialVectorMath>;
 
 #if SIMD_SUPPORT_ENABLED
-    template class DenseDecomposableStatisticsProviderFactory<SimdArrayOperations>;
+    template class DenseDecomposableStatisticsProviderFactory<SimdVectorMath>;
 #endif
 }

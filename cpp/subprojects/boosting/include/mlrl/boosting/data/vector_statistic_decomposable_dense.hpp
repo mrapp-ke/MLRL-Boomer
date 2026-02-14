@@ -122,9 +122,9 @@ namespace boosting {
      * is stored.
      *
      * @tparam StatisticType    The type of the gradient and Hessians
-     * @tparam ArrayOperations  The type that implements basic operations for calculating with numerical arrays
+     * @tparam VectorMath       The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename StatisticType, typename ArrayOperations>
+    template<typename StatisticType, typename VectorMath>
     class DenseDecomposableStatisticVector final
         : public ClearableViewDecorator<ViewDecorator<DenseDecomposableStatisticVectorView<StatisticType>>> {
         public:
@@ -139,8 +139,7 @@ namespace boosting {
             /**
              * @param other A reference to an object of type `DenseDecomposableStatisticVector` to be copied
              */
-            DenseDecomposableStatisticVector(
-              const DenseDecomposableStatisticVector<StatisticType, ArrayOperations>& other);
+            DenseDecomposableStatisticVector(const DenseDecomposableStatisticVector<StatisticType, VectorMath>& other);
 
             /**
              * Returns the number of elements in the vector.

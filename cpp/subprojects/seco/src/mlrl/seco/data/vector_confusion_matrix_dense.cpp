@@ -56,27 +56,26 @@ namespace seco {
         }
     }
 
-    template<typename StatisticType, typename ArrayOperations>
-    DenseConfusionMatrixVector<StatisticType, ArrayOperations>::DenseConfusionMatrixVector(uint32 numElements,
-                                                                                           bool init)
+    template<typename StatisticType, typename VectorMath>
+    DenseConfusionMatrixVector<StatisticType, VectorMath>::DenseConfusionMatrixVector(uint32 numElements, bool init)
         : ClearableViewDecorator<DenseVectorDecorator<DenseConfusionMatrixVectorView<StatisticType>>>(
             DenseConfusionMatrixVectorView<StatisticType>(numElements, init)) {}
 
-    template<typename StatisticType, typename ArrayOperations>
-    DenseConfusionMatrixVector<StatisticType, ArrayOperations>::DenseConfusionMatrixVector(
-      const DenseConfusionMatrixVector<StatisticType, ArrayOperations>& other)
+    template<typename StatisticType, typename VectorMath>
+    DenseConfusionMatrixVector<StatisticType, VectorMath>::DenseConfusionMatrixVector(
+      const DenseConfusionMatrixVector<StatisticType, VectorMath>& other)
         : DenseConfusionMatrixVector(other.getNumElements()) {
-        ArrayOperations::copy(other.cbegin(), this->begin(), this->getNumElements());
+        VectorMath::copy(other.cbegin(), this->begin(), this->getNumElements());
     }
 
-    template<typename StatisticType, typename ArrayOperations>
-    void DenseConfusionMatrixVector<StatisticType, ArrayOperations>::add(
+    template<typename StatisticType, typename VectorMath>
+    void DenseConfusionMatrixVector<StatisticType, VectorMath>::add(
       const DenseConfusionMatrixVectorView<StatisticType>& other) {
-        ArrayOperations::add(this->begin(), other.cbegin(), this->getNumElements());
+        VectorMath::add(this->begin(), other.cbegin(), this->getNumElements());
     }
 
-    template<typename StatisticType, typename ArrayOperations>
-    void DenseConfusionMatrixVector<StatisticType, ArrayOperations>::add(
+    template<typename StatisticType, typename VectorMath>
+    void DenseConfusionMatrixVector<StatisticType, VectorMath>::add(
       const DenseDecomposableStatisticMatrix<CContiguousView<const uint8>>::View& view, uint32 row,
       StatisticType weight) {
         addInternally(this->begin(), view.labelMatrix.values_cbegin(row), view.majorityLabelVector.cbegin(),
@@ -84,8 +83,8 @@ namespace seco {
                       this->getNumElements());
     }
 
-    template<typename StatisticType, typename ArrayOperations>
-    void DenseConfusionMatrixVector<StatisticType, ArrayOperations>::add(
+    template<typename StatisticType, typename VectorMath>
+    void DenseConfusionMatrixVector<StatisticType, VectorMath>::add(
       const DenseDecomposableStatisticMatrix<BinaryCsrView>::View& view, uint32 row, StatisticType weight) {
         auto labelIterator =
           createBinarySparseForwardIterator(view.labelMatrix.indices_cbegin(row), view.labelMatrix.indices_cend(row));
@@ -93,8 +92,8 @@ namespace seco {
                       view.coverageMatrix.values_cbegin(row), weight, this->getNumElements());
     }
 
-    template<typename StatisticType, typename ArrayOperations>
-    void DenseConfusionMatrixVector<StatisticType, ArrayOperations>::remove(
+    template<typename StatisticType, typename VectorMath>
+    void DenseConfusionMatrixVector<StatisticType, VectorMath>::remove(
       const DenseDecomposableStatisticMatrix<CContiguousView<const uint8>>::View& view, uint32 row,
       StatisticType weight) {
         removeInternally(this->begin(), view.labelMatrix.values_cbegin(row), view.majorityLabelVector.cbegin(),
@@ -102,8 +101,8 @@ namespace seco {
                          this->getNumElements());
     }
 
-    template<typename StatisticType, typename ArrayOperations>
-    void DenseConfusionMatrixVector<StatisticType, ArrayOperations>::remove(
+    template<typename StatisticType, typename VectorMath>
+    void DenseConfusionMatrixVector<StatisticType, VectorMath>::remove(
       const DenseDecomposableStatisticMatrix<BinaryCsrView>::View& view, uint32 row, StatisticType weight) {
         auto labelIterator =
           createBinarySparseForwardIterator(view.labelMatrix.indices_cbegin(row), view.labelMatrix.indices_cend(row));
@@ -112,8 +111,8 @@ namespace seco {
                          this->getNumElements());
     }
 
-    template<typename StatisticType, typename ArrayOperations>
-    void DenseConfusionMatrixVector<StatisticType, ArrayOperations>::addToSubset(
+    template<typename StatisticType, typename VectorMath>
+    void DenseConfusionMatrixVector<StatisticType, VectorMath>::addToSubset(
       const DenseDecomposableStatisticMatrix<CContiguousView<const uint8>>::View& view, uint32 row,
       const CompleteIndexVector& indices, StatisticType weight) {
         addInternally(this->begin(), view.labelMatrix.values_cbegin(row), view.majorityLabelVector.cbegin(),
@@ -121,8 +120,8 @@ namespace seco {
                       this->getNumElements());
     }
 
-    template<typename StatisticType, typename ArrayOperations>
-    void DenseConfusionMatrixVector<StatisticType, ArrayOperations>::addToSubset(
+    template<typename StatisticType, typename VectorMath>
+    void DenseConfusionMatrixVector<StatisticType, VectorMath>::addToSubset(
       const DenseDecomposableStatisticMatrix<BinaryCsrView>::View& view, uint32 row, const CompleteIndexVector& indices,
       StatisticType weight) {
         auto labelIterator =
@@ -131,8 +130,8 @@ namespace seco {
                       view.coverageMatrix.values_cbegin(row), weight, this->getNumElements());
     }
 
-    template<typename StatisticType, typename ArrayOperations>
-    void DenseConfusionMatrixVector<StatisticType, ArrayOperations>::addToSubset(
+    template<typename StatisticType, typename VectorMath>
+    void DenseConfusionMatrixVector<StatisticType, VectorMath>::addToSubset(
       const DenseDecomposableStatisticMatrix<CContiguousView<const uint8>>::View& view, uint32 row,
       const PartialIndexVector& indices, StatisticType weight) {
         auto majorityIterator =
@@ -159,8 +158,8 @@ namespace seco {
         }
     }
 
-    template<typename StatisticType, typename ArrayOperations>
-    void DenseConfusionMatrixVector<StatisticType, ArrayOperations>::addToSubset(
+    template<typename StatisticType, typename VectorMath>
+    void DenseConfusionMatrixVector<StatisticType, VectorMath>::addToSubset(
       const DenseDecomposableStatisticMatrix<BinaryCsrView>::View& view, uint32 row, const PartialIndexVector& indices,
       StatisticType weight) {
         auto majorityIterator =
@@ -189,27 +188,26 @@ namespace seco {
         }
     }
 
-    template<typename StatisticType, typename ArrayOperations>
-    void DenseConfusionMatrixVector<StatisticType, ArrayOperations>::difference(
+    template<typename StatisticType, typename VectorMath>
+    void DenseConfusionMatrixVector<StatisticType, VectorMath>::difference(
       const DenseConfusionMatrixVectorView<StatisticType>& first, const CompleteIndexVector& firstIndices,
       const DenseConfusionMatrixVectorView<StatisticType>& second) {
-        ArrayOperations::difference(this->begin(), first.cbegin(), second.cbegin(), this->getNumElements());
+        VectorMath::difference(this->begin(), first.cbegin(), second.cbegin(), this->getNumElements());
     }
 
-    template<typename StatisticType, typename ArrayOperations>
-    void DenseConfusionMatrixVector<StatisticType, ArrayOperations>::difference(
+    template<typename StatisticType, typename VectorMath>
+    void DenseConfusionMatrixVector<StatisticType, VectorMath>::difference(
       const DenseConfusionMatrixVectorView<StatisticType>& first, const PartialIndexVector& firstIndices,
       const DenseConfusionMatrixVectorView<StatisticType>& second) {
         PartialIndexVector::const_iterator indexIterator = firstIndices.cbegin();
-        ArrayOperations::difference(this->begin(), first.cbegin(), second.cbegin(), indexIterator,
-                                    this->getNumElements());
+        VectorMath::difference(this->begin(), first.cbegin(), second.cbegin(), indexIterator, this->getNumElements());
     }
 
-    template class DenseConfusionMatrixVector<uint32, SequentialArrayOperations>;
-    template class DenseConfusionMatrixVector<float32, SequentialArrayOperations>;
+    template class DenseConfusionMatrixVector<uint32, SequentialVectorMath>;
+    template class DenseConfusionMatrixVector<float32, SequentialVectorMath>;
 
 #if SIMD_SUPPORT_ENABLED
-    template class DenseConfusionMatrixVector<uint32, SimdArrayOperations>;
-    template class DenseConfusionMatrixVector<float32, SimdArrayOperations>;
+    template class DenseConfusionMatrixVector<uint32, SimdVectorMath>;
+    template class DenseConfusionMatrixVector<float32, SimdVectorMath>;
 #endif
 }

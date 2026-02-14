@@ -19,10 +19,10 @@ namespace boosting {
      * A matrix that stores gradients and Hessians that have been calculated using a decomposable loss function using
      * C-contiguous arrays.
      *
-     * @tparam StatisticType    The type of the gradients and Hessians
-     * @tparam ArrayOperations  The type that implements basic operations for calculating with numerical arrays
+     * @tparam StatisticType  The type of the gradients and Hessians
+     * @tparam VectorMath     The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename StatisticType, typename ArrayOperations>
+    template<typename StatisticType, typename VectorMath>
     class DenseDecomposableStatisticMatrix final
         : public ClearableViewDecorator<MatrixDecorator<DenseDecomposableStatisticView<StatisticType>>> {
         public:
@@ -50,9 +50,8 @@ namespace boosting {
                           typename View<StatisticType>::const_iterator gradientsEnd,
                           typename View<StatisticType>::const_iterator hessiansBegin,
                           typename View<StatisticType>::const_iterator hessiansEnd, uint32 weight) {
-                ArrayOperations::addWeighted(this->view.gradients_begin(row), gradientsBegin, this->getNumCols(),
-                                             weight);
-                ArrayOperations::addWeighted(this->view.hessians_begin(row), hessiansBegin, this->getNumCols(), weight);
+                VectorMath::addWeighted(this->view.gradients_begin(row), gradientsBegin, this->getNumCols(), weight);
+                VectorMath::addWeighted(this->view.hessians_begin(row), hessiansBegin, this->getNumCols(), weight);
             }
     };
 
@@ -72,29 +71,29 @@ namespace boosting {
      * Provides access to gradients and Hessians that have been calculated according to a decomposable loss function and
      * are stored using dense data structures.
      *
-     * @tparam Loss                 The type of the loss function
-     * @tparam OutputMatrix         The type of the matrix that provides access to the ground truth of the training
-     *                              examples
-     * @tparam EvaluationMeasure    The type of the evaluation that should be used to access the quality of predictions
-     * @tparam ArrayOperations      The type that implements basic operations for calculating with numerical arrays
+     * @tparam Loss               The type of the loss function
+     * @tparam OutputMatrix       The type of the matrix that provides access to the ground truth of the training
+     *                            examples
+     * @tparam EvaluationMeasure  The type of the evaluation that should be used to access the quality of predictions
+     * @tparam VectorMath         The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename Loss, typename OutputMatrix, typename EvaluationMeasure, typename ArrayOperations>
+    template<typename Loss, typename OutputMatrix, typename EvaluationMeasure, typename VectorMath>
     class DenseDecomposableStatistics final
         : public AbstractDecomposableStatistics<
-            OutputMatrix, DenseDecomposableStatisticMatrix<typename Loss::statistic_type, ArrayOperations>,
+            OutputMatrix, DenseDecomposableStatisticMatrix<typename Loss::statistic_type, VectorMath>,
             NumericCContiguousMatrix<typename Loss::statistic_type>, Loss, EvaluationMeasure,
             IDecomposableRuleEvaluationFactory> {
         private:
 
             typedef typename Loss::statistic_type statistic_type;
 
-            typedef DenseDecomposableStatisticMatrix<statistic_type, ArrayOperations> StatisticMatrix;
+            typedef DenseDecomposableStatisticMatrix<statistic_type, VectorMath> StatisticMatrix;
 
             typedef DecomposableBoostingStatisticsState<OutputMatrix, StatisticMatrix,
                                                         NumericCContiguousMatrix<statistic_type>, Loss>
               StatisticsState;
 
-            typedef DenseDecomposableStatisticVector<statistic_type, ArrayOperations> StatisticVector;
+            typedef DenseDecomposableStatisticVector<statistic_type, VectorMath> StatisticVector;
 
             template<typename WeightVector, typename IndexVector>
             using StatisticsSubset = BoostingStatisticsSubset<StatisticsState, StatisticVector, WeightVector,

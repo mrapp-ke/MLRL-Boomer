@@ -45,13 +45,13 @@ namespace boosting {
      * Provides access to gradients and Hessians that have been calculated according to a decomposable loss function
      * and are stored using sparse data structures.
      *
-     * @tparam Loss                 The type of the loss function
-     * @tparam OutputMatrix         The type of the matrix that provides access to the ground truth of the training
-     *                              examples
-     * @tparam EvaluationMeasure    The type of the evaluation that should be used to access the quality of predictions
-     * @tparam ArrayOperations      The type that implements basic operations for calculating with numerical arrays
+     * @tparam Loss               The type of the loss function
+     * @tparam OutputMatrix       The type of the matrix that provides access to the ground truth of the training
+     *                            examples
+     * @tparam EvaluationMeasure  The type of the evaluation that should be used to access the quality of predictions
+     * @tparam VectorMath         The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename Loss, typename OutputMatrix, typename EvaluationMeasure, typename ArrayOperations>
+    template<typename Loss, typename OutputMatrix, typename EvaluationMeasure, typename VectorMath>
     class SparseDecomposableStatistics final
         : public AbstractDecomposableStatistics<OutputMatrix,
                                                 SparseDecomposableStatisticMatrix<typename Loss::statistic_type>,
@@ -66,7 +66,7 @@ namespace boosting {
               StatisticsState;
 
             template<typename WeightType>
-            using StatisticVector = SparseDecomposableStatisticVector<statistic_type, WeightType, ArrayOperations>;
+            using StatisticVector = SparseDecomposableStatisticVector<statistic_type, WeightType, VectorMath>;
 
             template<typename WeightVector, typename IndexVector, typename WeightType>
             using StatisticsSubset =
@@ -316,12 +316,12 @@ namespace boosting {
             }
     };
 
-    template<typename Loss, typename OutputMatrix, typename EvaluationMeasure, typename ArrayOperations>
+    template<typename Loss, typename OutputMatrix, typename EvaluationMeasure, typename VectorMath>
     static inline std::unique_ptr<IDecomposableStatistics<ISparseDecomposableRuleEvaluationFactory>> createStatistics(
       std::unique_ptr<Loss> lossPtr, std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
       const ISparseDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
       MultiThreadingSettings multiThreadingSettings, const OutputMatrix& outputMatrix,
-      std::type_identity<ArrayOperations> arrayOperations) {
+      std::type_identity<VectorMath> vectorMath) {
         typedef typename Loss::statistic_type statistic_type;
         uint32 numExamples = outputMatrix.numRows;
         uint32 numOutputs = outputMatrix.numCols;
@@ -344,13 +344,13 @@ namespace boosting {
                                                      IndexIterator(outputMatrixPtr->numCols), *statisticMatrixRawPtr);
         }
 
-        return std::make_unique<SparseDecomposableStatistics<Loss, OutputMatrix, EvaluationMeasure, ArrayOperations>>(
+        return std::make_unique<SparseDecomposableStatistics<Loss, OutputMatrix, EvaluationMeasure, VectorMath>>(
           std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
           std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
     }
 
-    template<typename StatisticType, typename ArrayOperations>
-    SparseDecomposableClassificationStatisticsProviderFactory<StatisticType, ArrayOperations>::
+    template<typename StatisticType, typename VectorMath>
+    SparseDecomposableClassificationStatisticsProviderFactory<StatisticType, VectorMath>::
       SparseDecomposableClassificationStatisticsProviderFactory(
         std::unique_ptr<ISparseDecomposableClassificationLossFactory<StatisticType>> lossFactoryPtr,
         std::unique_ptr<ISparseEvaluationMeasureFactory<StatisticType>> evaluationMeasureFactoryPtr,
@@ -363,9 +363,9 @@ namespace boosting {
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)),
           multiThreadingSettings_(multiThreadingSettings) {}
 
-    template<typename StatisticType, typename ArrayOperations>
+    template<typename StatisticType, typename VectorMath>
     std::unique_ptr<IStatisticsProvider>
-      SparseDecomposableClassificationStatisticsProviderFactory<StatisticType, ArrayOperations>::create(
+      SparseDecomposableClassificationStatisticsProviderFactory<StatisticType, VectorMath>::create(
         const CContiguousView<const uint8>& labelMatrix) const {
         std::unique_ptr<ISparseDecomposableClassificationLoss<StatisticType>> lossPtr =
           lossFactoryPtr_->createSparseDecomposableClassificationLoss();
@@ -373,14 +373,14 @@ namespace boosting {
           evaluationMeasureFactoryPtr_->createSparseEvaluationMeasure();
         std::unique_ptr<IDecomposableStatistics<ISparseDecomposableRuleEvaluationFactory>> statisticsPtr =
           createStatistics(std::move(lossPtr), std::move(evaluationMeasurePtr), *regularRuleEvaluationFactoryPtr_,
-                           multiThreadingSettings_, labelMatrix, std::type_identity<ArrayOperations> {});
+                           multiThreadingSettings_, labelMatrix, std::type_identity<VectorMath> {});
         return std::make_unique<DecomposableStatisticsProvider<ISparseDecomposableRuleEvaluationFactory>>(
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
-    template<typename StatisticType, typename ArrayOperations>
+    template<typename StatisticType, typename VectorMath>
     std::unique_ptr<IStatisticsProvider>
-      SparseDecomposableClassificationStatisticsProviderFactory<StatisticType, ArrayOperations>::create(
+      SparseDecomposableClassificationStatisticsProviderFactory<StatisticType, VectorMath>::create(
         const BinaryCsrView& labelMatrix) const {
         std::unique_ptr<ISparseDecomposableClassificationLoss<StatisticType>> lossPtr =
           lossFactoryPtr_->createSparseDecomposableClassificationLoss();
@@ -388,16 +388,16 @@ namespace boosting {
           evaluationMeasureFactoryPtr_->createSparseEvaluationMeasure();
         std::unique_ptr<IDecomposableStatistics<ISparseDecomposableRuleEvaluationFactory>> statisticsPtr =
           createStatistics(std::move(lossPtr), std::move(evaluationMeasurePtr), *regularRuleEvaluationFactoryPtr_,
-                           multiThreadingSettings_, labelMatrix, std::type_identity<ArrayOperations> {});
+                           multiThreadingSettings_, labelMatrix, std::type_identity<VectorMath> {});
         return std::make_unique<DecomposableStatisticsProvider<ISparseDecomposableRuleEvaluationFactory>>(
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
-    template class SparseDecomposableClassificationStatisticsProviderFactory<float32, SequentialArrayOperations>;
-    template class SparseDecomposableClassificationStatisticsProviderFactory<float64, SequentialArrayOperations>;
+    template class SparseDecomposableClassificationStatisticsProviderFactory<float32, SequentialVectorMath>;
+    template class SparseDecomposableClassificationStatisticsProviderFactory<float64, SequentialVectorMath>;
 
 #if SIMD_SUPPORT_ENABLED
-    template class SparseDecomposableClassificationStatisticsProviderFactory<float32, SimdArrayOperations>;
-    template class SparseDecomposableClassificationStatisticsProviderFactory<float64, SimdArrayOperations>;
+    template class SparseDecomposableClassificationStatisticsProviderFactory<float32, SimdVectorMath>;
+    template class SparseDecomposableClassificationStatisticsProviderFactory<float64, SimdVectorMath>;
 #endif
 }
