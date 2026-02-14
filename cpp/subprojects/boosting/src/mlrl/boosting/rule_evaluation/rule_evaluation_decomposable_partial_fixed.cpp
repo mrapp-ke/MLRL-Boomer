@@ -90,7 +90,7 @@ namespace boosting {
         const DenseDecomposableStatisticVectorView<float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
-          util::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
+          math::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
         return std::make_unique<
           DecomposableFixedPartialRuleEvaluation<DenseDecomposableStatisticVectorView<float32>, CompleteIndexVector>>(
           indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);
@@ -110,7 +110,7 @@ namespace boosting {
         const DenseDecomposableStatisticVectorView<float64>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
-          util::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
+          math::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
         return std::make_unique<
           DecomposableFixedPartialRuleEvaluation<DenseDecomposableStatisticVectorView<float64>, CompleteIndexVector>>(
           indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);
@@ -130,7 +130,7 @@ namespace boosting {
         const SparseDecomposableStatisticVectorView<float32, uint32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
-          util::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
+          math::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
         return std::make_unique<DecomposableFixedPartialRuleEvaluation<
           SparseDecomposableStatisticVectorView<float32, uint32>, CompleteIndexVector>>(
           indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);
@@ -150,7 +150,7 @@ namespace boosting {
         const SparseDecomposableStatisticVectorView<float32, float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
-          util::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
+          math::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
         return std::make_unique<DecomposableFixedPartialRuleEvaluation<
           SparseDecomposableStatisticVectorView<float32, float32>, CompleteIndexVector>>(
           indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);
@@ -170,7 +170,7 @@ namespace boosting {
         const SparseDecomposableStatisticVectorView<float64, uint32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
-          util::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
+          math::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
         return std::make_unique<DecomposableFixedPartialRuleEvaluation<
           SparseDecomposableStatisticVectorView<float64, uint32>, CompleteIndexVector>>(
           indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);
@@ -190,7 +190,7 @@ namespace boosting {
         const SparseDecomposableStatisticVectorView<float64, float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
-          util::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
+          math::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
         return std::make_unique<DecomposableFixedPartialRuleEvaluation<
           SparseDecomposableStatisticVectorView<float64, float32>, CompleteIndexVector>>(
           indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);

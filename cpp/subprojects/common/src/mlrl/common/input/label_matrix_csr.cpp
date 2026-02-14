@@ -48,7 +48,7 @@ class CsrLabelMatrix final : public IterableBinarySparseMatrixDecorator<MatrixDe
                 index_const_iterator indicesBegin = this->indices_cbegin(i);
                 index_const_iterator indicesEnd = this->indices_cend(i);
                 uint32 numRelevantLabels = indicesEnd - indicesBegin;
-                labelCardinality = util::iterativeArithmeticMean(i + 1, (float32) numRelevantLabels, labelCardinality);
+                labelCardinality = math::iterativeArithmeticMean(i + 1, (float32) numRelevantLabels, labelCardinality);
             }
 
             return labelCardinality;

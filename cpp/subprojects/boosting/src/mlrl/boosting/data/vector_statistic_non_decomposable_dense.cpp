@@ -11,7 +11,7 @@ namespace boosting {
                                                                                                     bool init)
         : CompositeVector<AllocatedVector<StatisticType>, AllocatedVector<StatisticType>>(
             AllocatedVector<StatisticType>(numGradients, init),
-            AllocatedVector<StatisticType>(util::triangularNumber(numGradients), init)) {}
+            AllocatedVector<StatisticType>(math::triangularNumber(numGradients), init)) {}
 
     template<typename StatisticType>
     typename DenseNonDecomposableStatisticVectorView<StatisticType>::gradient_iterator
@@ -167,8 +167,8 @@ namespace boosting {
 
         for (uint32 i = 0; i < this->getNumGradients(); i++) {
             uint32 index = indexIterator[i];
-            VectorMath::add(&this->view.hessians_begin()[util::triangularNumber(i)],
-                            &hessiansBegin[util::triangularNumber(index)], indexIterator, i + 1);
+            VectorMath::add(&this->view.hessians_begin()[math::triangularNumber(i)],
+                            &hessiansBegin[math::triangularNumber(index)], indexIterator, i + 1);
         }
     }
 
@@ -193,8 +193,8 @@ namespace boosting {
 
         for (uint32 i = 0; i < this->getNumGradients(); i++) {
             uint32 index = indexIterator[i];
-            VectorMath::addWeighted(&this->view.hessians_begin()[util::triangularNumber(i)],
-                                    &hessiansBegin[util::triangularNumber(index)], indexIterator, i + 1, weight);
+            VectorMath::addWeighted(&this->view.hessians_begin()[math::triangularNumber(i)],
+                                    &hessiansBegin[math::triangularNumber(index)], indexIterator, i + 1, weight);
         }
     }
 
@@ -221,10 +221,10 @@ namespace boosting {
           second.hessians_cbegin();
 
         for (uint32 i = 0; i < this->getNumGradients(); i++) {
-            uint32 offset = util::triangularNumber(i);
+            uint32 offset = math::triangularNumber(i);
             uint32 index = indexIterator[i];
             VectorMath::difference(&this->view.hessians_begin()[offset],
-                                   &firstHessiansBegin[util::triangularNumber(index)], &secondHessiansBegin[offset],
+                                   &firstHessiansBegin[math::triangularNumber(index)], &secondHessiansBegin[offset],
                                    indexIterator, i + 1);
         }
     }

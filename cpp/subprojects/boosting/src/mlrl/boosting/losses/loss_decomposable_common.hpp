@@ -59,7 +59,7 @@ namespace boosting {
             score_type predictedScore = scoreIterator[i];
             typename util::iterator_value<GroundTruthIterator> groundTruth = *groundTruthIterator;
             score_type score = (*evaluateFunction)(groundTruth, predictedScore);
-            mean = util::iterativeArithmeticMean(i + 1, score, mean);
+            mean = math::iterativeArithmeticMean(i + 1, score, mean);
             groundTruthIterator++;
         }
 
@@ -204,7 +204,7 @@ namespace boosting {
                     StatisticType predictedScore = scoresBegin[i];
                     bool trueLabel = *labelIterator;
                     StatisticType score = (*evaluateFunction_)(trueLabel, predictedScore);
-                    mean = util::iterativeArithmeticMean(i + 1, score, mean);
+                    mean = math::iterativeArithmeticMean(i + 1, score, mean);
                     labelIterator++;
                 }
 

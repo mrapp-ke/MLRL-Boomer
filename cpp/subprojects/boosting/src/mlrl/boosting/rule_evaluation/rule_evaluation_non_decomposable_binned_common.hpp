@@ -75,8 +75,8 @@ namespace boosting {
 
                 // Add the Hessian that corresponds to the `i`-th element on the diagonal of the original Hessian matrix
                 // to the corresponding element of the aggregated Hessian matrix...
-                aggregatedHessians[util::triangularNumber(binIndex + 1) - 1] +=
-                  hessians[util::triangularNumber(i + 1) - 1];
+                aggregatedHessians[math::triangularNumber(binIndex + 1) - 1] +=
+                  hessians[math::triangularNumber(i + 1) - 1];
             }
         }
 
@@ -101,7 +101,7 @@ namespace boosting {
                             c = binIndex;
                         }
 
-                        aggregatedHessians[util::triangularNumber(c) + r] += hessians[util::triangularNumber(i) + j];
+                        aggregatedHessians[math::triangularNumber(c) + r] += hessians[math::triangularNumber(i) + j];
                     }
                 }
             }
@@ -259,7 +259,7 @@ namespace boosting {
                                                         std::unique_ptr<Lapack<statistic_type>> lapackPtr)
                 : AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector>(maxBins, *lapackPtr),
                   maxBins_(maxBins), scoreVector_(labelIndices, maxBins + 1, indicesSorted),
-                  aggregatedGradients_(maxBins), aggregatedHessians_(util::triangularNumber(maxBins)),
+                  aggregatedGradients_(maxBins), aggregatedHessians_(math::triangularNumber(maxBins)),
                   binIndices_(maxBins), numElementsPerBin_(maxBins), criteria_(labelIndices.getNumElements()),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
                   binningPtr_(std::move(binningPtr)), blasPtr_(std::move(blasPtr)), lapackPtr_(std::move(lapackPtr)) {
@@ -307,7 +307,7 @@ namespace boosting {
                     typename Array<statistic_type>::iterator aggregatedGradientIterator = aggregatedGradients_.begin();
                     typename Array<statistic_type>::iterator aggregatedHessianIterator = aggregatedHessians_.begin();
                     std::fill(aggregatedGradientIterator, aggregatedGradientIterator + maxBins_, (statistic_type) 0);
-                    std::fill(aggregatedHessianIterator, aggregatedHessianIterator + util::triangularNumber(maxBins_),
+                    std::fill(aggregatedHessianIterator, aggregatedHessianIterator + math::triangularNumber(maxBins_),
                               (statistic_type) 0);
                     aggregateGradientsAndHessians(statisticVector.gradients_cbegin(), statisticVector.hessians_cbegin(),
                                                   numCriteria, binIndexIterator, binIndices_.cbegin(),

@@ -150,7 +150,7 @@ std::unique_ptr<IFeatureSamplingFactory> FeatureSamplingWithoutReplacementConfig
     uint32 numSamples;
 
     if (sampleSize_ > 0) {
-        numSamples = util::calculateBoundedFraction(numRemainingFeatures, sampleSize_, minSamples_, maxSamples_);
+        numSamples = math::calculateBoundedFraction(numRemainingFeatures, sampleSize_, minSamples_, maxSamples_);
     } else {
         numSamples = static_cast<uint32>(log2(numRemainingFeatures - 1) + 1);
     }

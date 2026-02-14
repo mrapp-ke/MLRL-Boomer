@@ -41,7 +41,7 @@ namespace boosting {
     static inline constexpr StatisticType calculateOutputWiseScore(StatisticType gradient, StatisticType hessian,
                                                                    float32 l1RegularizationWeight,
                                                                    float32 l2RegularizationWeight) {
-        return util::divideOrZero(-gradient + getL1RegularizationWeight(gradient, l1RegularizationWeight),
+        return math::divideOrZero(-gradient + getL1RegularizationWeight(gradient, l1RegularizationWeight),
                                   hessian + l2RegularizationWeight);
     }
 

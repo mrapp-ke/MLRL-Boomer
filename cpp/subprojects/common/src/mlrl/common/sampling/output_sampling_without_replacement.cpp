@@ -104,7 +104,7 @@ IOutputSamplingWithoutReplacementConfig& OutputSamplingWithoutReplacementConfig:
 std::unique_ptr<IOutputSamplingFactory> OutputSamplingWithoutReplacementConfig::createOutputSamplingFactory(
   const IOutputMatrix& outputMatrix) const {
     uint32 numOutputs = outputMatrix.getNumOutputs();
-    uint32 numSamples = util::calculateBoundedFraction(numOutputs, sampleSize_, minSamples_, maxSamples_);
+    uint32 numSamples = math::calculateBoundedFraction(numOutputs, sampleSize_, minSamples_, maxSamples_);
     return std::make_unique<OutputSamplingWithoutReplacementFactory>(rngConfig_.get().createRNGFactory(),
                                                                      outputMatrix.getNumOutputs(), numSamples);
 }

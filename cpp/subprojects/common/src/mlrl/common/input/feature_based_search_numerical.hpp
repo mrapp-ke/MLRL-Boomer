@@ -69,7 +69,7 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                             refinement.inverse = false;
                             refinement.numCovered = numCovered;
                             refinement.comparator = NUMERICAL_LEQ;
-                            refinement.threshold = util::arithmeticMean(previousValue, currentValue);
+                            refinement.threshold = math::arithmeticMean(previousValue, currentValue);
                             comparator.pushRefinement(refinement, *updateCandidatePtr);
                         }
                     }
@@ -89,7 +89,7 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                             refinement.inverse = true;
                             refinement.numCovered = numUncovered;
                             refinement.comparator = NUMERICAL_GR;
-                            refinement.threshold = util::arithmeticMean(previousValue, currentValue);
+                            refinement.threshold = math::arithmeticMean(previousValue, currentValue);
                             comparator.pushRefinement(refinement, *updateCandidatePtr);
                         }
                     }
@@ -153,7 +153,7 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                             refinement.inverse = false;
                             refinement.numCovered = numCovered;
                             refinement.comparator = NUMERICAL_GR;
-                            refinement.threshold = util::arithmeticMean(currentValue, previousValue);
+                            refinement.threshold = math::arithmeticMean(currentValue, previousValue);
                             comparator.pushRefinement(refinement, *updateCandidatePtr);
                         }
                     }
@@ -173,7 +173,7 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                             refinement.inverse = true;
                             refinement.numCovered = numUncovered;
                             refinement.comparator = NUMERICAL_LEQ;
-                            refinement.threshold = util::arithmeticMean(currentValue, previousValue);
+                            refinement.threshold = math::arithmeticMean(currentValue, previousValue);
                             comparator.pushRefinement(refinement, *updateCandidatePtr);
                         }
                     }
@@ -208,7 +208,7 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                 refinement.numCovered = numCovered;
                 refinement.inverse = false;
                 refinement.comparator = NUMERICAL_GR;
-                refinement.threshold = util::arithmeticMean(sparseValue, previousValue);
+                refinement.threshold = math::arithmeticMean(sparseValue, previousValue);
                 comparator.pushRefinement(refinement, *updateCandidatePtr);
             }
         }
@@ -229,7 +229,7 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                 refinement.numCovered = numUncovered;
                 refinement.inverse = true;
                 refinement.comparator = NUMERICAL_LEQ;
-                refinement.threshold = util::arithmeticMean(sparseValue, previousValue);
+                refinement.threshold = math::arithmeticMean(sparseValue, previousValue);
                 comparator.pushRefinement(refinement, *updateCandidatePtr);
             }
         }
@@ -256,11 +256,11 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                 if (sparse) {
                     // If the condition separates an example with feature value `f < sparseValue` from an example with
                     // sparse feature value...
-                    refinement.threshold = util::arithmeticMean(lastValueLessThanSparseValue, sparseValue);
+                    refinement.threshold = math::arithmeticMean(lastValueLessThanSparseValue, sparseValue);
                 } else {
                     // If the condition separates an example with feature value `f < 0` from an example with feature
                     // value `f > sparseValue`...
-                    refinement.threshold = util::arithmeticMean(lastValueLessThanSparseValue, previousValue);
+                    refinement.threshold = math::arithmeticMean(lastValueLessThanSparseValue, previousValue);
                 }
 
                 comparator.pushRefinement(refinement, *updateCandidatePtr);
@@ -287,11 +287,11 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                 if (sparse) {
                     // If the condition separates an example with feature value `f < sparseValue` from an example with
                     // sparse feature value...
-                    refinement.threshold = util::arithmeticMean(lastValueLessThanSparseValue, sparseValue);
+                    refinement.threshold = math::arithmeticMean(lastValueLessThanSparseValue, sparseValue);
                 } else {
                     // If the condition separates an example with feature value `f < sparseValue` from an example with
                     // feature value `f > sparseValue`...
-                    refinement.threshold = util::arithmeticMean(lastValueLessThanSparseValue, previousValue);
+                    refinement.threshold = math::arithmeticMean(lastValueLessThanSparseValue, previousValue);
                 }
 
                 comparator.pushRefinement(refinement, *updateCandidatePtr);

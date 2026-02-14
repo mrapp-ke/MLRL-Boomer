@@ -239,7 +239,7 @@ std::unique_ptr<IRuleInductionFactory> GreedyTopDownRuleInductionConfig::createR
     uint32 minCoverage;
 
     if (minSupport_ > 0) {
-        minCoverage = util::calculateBoundedFraction(numExamples, minSupport_, minCoverage_, numExamples);
+        minCoverage = math::calculateBoundedFraction(numExamples, minSupport_, minCoverage_, numExamples);
     } else {
         minCoverage = std::min(numExamples, minCoverage_);
     }

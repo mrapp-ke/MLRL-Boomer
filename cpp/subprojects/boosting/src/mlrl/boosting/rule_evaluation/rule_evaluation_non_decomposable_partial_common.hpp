@@ -24,7 +24,7 @@ namespace boosting {
                                         CoefficientIterator coefficients, uint32 n) {
         for (uint32 c = 0; c < n; c++) {
             uint32 offset = c * n;
-            uint32 offset2 = util::triangularNumber(indexIterator[c]);
+            uint32 offset2 = math::triangularNumber(indexIterator[c]);
 
             for (uint32 r = 0; r <= c; r++) {
                 coefficients[offset + r] = hessianIterator[offset2 + indexIterator[r]];

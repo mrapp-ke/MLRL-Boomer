@@ -50,11 +50,11 @@ namespace boosting {
             statistic_type x = gradientIterator[i];
 
             // Calculate the gradient as `(predictedScore_i - expectedScore_i) / sqrt(x_1 + x_2 + ...)`...
-            gradientIterator[i] = util::divideOrZero(predictedScore - expectedScore, denominatorGradient);
+            gradientIterator[i] = math::divideOrZero(predictedScore - expectedScore, denominatorGradient);
 
             // Calculate the Hessian on the diagonal of the Hessian matrix as
             // `(x_1 + ... + x_i-1 + x_i+1 + ...) / (x_1 + x_2 + ...)^1.5`...
-            hessianIterator[i] = util::divideOrZero(denominator - x, denominatorHessian);
+            hessianIterator[i] = math::divideOrZero(denominator - x, denominatorHessian);
             groundTruthIterator2++;
         }
     }
@@ -106,18 +106,18 @@ namespace boosting {
                 statistic_type predictedScore2 = scoreIterator[j];
                 ground_truth_type groundTruth2 = *groundTruthIterator4;
                 statistic_type expectedScore2 = groundTruthConversionFunction(groundTruth2);
-                *hessianIterator = util::divideOrZero(
+                *hessianIterator = math::divideOrZero(
                   -(predictedScore - expectedScore) * (predictedScore2 - expectedScore2), denominatorHessian);
                 hessianIterator++;
                 groundTruthIterator4++;
             }
 
             // Calculate the gradient as `(predictedScore_i - expectedScore_i) / sqrt(x_1 + x_2 + ...)`...
-            gradientIterator[i] = util::divideOrZero(predictedScore - expectedScore, denominatorGradient);
+            gradientIterator[i] = math::divideOrZero(predictedScore - expectedScore, denominatorGradient);
 
             // Calculate the Hessian on the diagonal of the Hessian matrix as
             // `(x_1 + ... + x_i-1 + x_i+1 + ...) / (x_1 + x_2 + ...)^1.5`...
-            *hessianIterator = util::divideOrZero(denominator - x, denominatorHessian);
+            *hessianIterator = math::divideOrZero(denominator - x, denominatorHessian);
             hessianIterator++;
             groundTruthIterator2++;
         }

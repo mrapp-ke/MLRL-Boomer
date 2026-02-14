@@ -372,7 +372,7 @@ static inline void sampleWeightsInternally(WeightVector& weightVector, WeightIte
                                            uint32 minSamples, uint32 maxSamples, RNG& rng) {
     uint32 numRows = stratificationMatrix.getNumRows();
     uint32 numCols = stratificationMatrix.getNumCols();
-    uint32 numTotalSamples = util::calculateBoundedFraction(numRows, sampleSize, minSamples, maxSamples);
+    uint32 numTotalSamples = math::calculateBoundedFraction(numRows, sampleSize, minSamples, maxSamples);
     uint32 numTotalOutOfSamples = numRows - numTotalSamples;
     uint32 numNonZeroWeights = 0;
     uint32 numZeroWeights = 0;

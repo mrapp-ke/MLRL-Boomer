@@ -63,7 +63,7 @@ namespace boosting {
              * @return      The element at the given index
              */
             reference operator[](uint32 index) const {
-                return view_.array[util::triangularNumber(index + 1) - 1];
+                return view_.array[math::triangularNumber(index + 1) - 1];
             }
 
             /**
@@ -73,7 +73,7 @@ namespace boosting {
              * @return      The element at the given index
              */
             reference operator[](uint32 index) {
-                return view_.array[util::triangularNumber(index + 1) - 1];
+                return view_.array[math::triangularNumber(index + 1) - 1];
             }
 
             /**
@@ -82,7 +82,7 @@ namespace boosting {
              * @return The element, the iterator currently refers to
              */
             reference operator*() const {
-                return view_.array[util::triangularNumber(index_ + 1) - 1];
+                return view_.array[math::triangularNumber(index_ + 1) - 1];
             }
 
             /**
@@ -91,7 +91,7 @@ namespace boosting {
              * @return The element, the iterator currently refers to
              */
             reference operator*() {
-                return view_.array[util::triangularNumber(index_ + 1) - 1];
+                return view_.array[math::triangularNumber(index_ + 1) - 1];
             }
 
             /**

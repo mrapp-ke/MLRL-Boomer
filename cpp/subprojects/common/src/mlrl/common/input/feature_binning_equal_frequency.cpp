@@ -8,7 +8,7 @@
 static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
   AllocatedMissingFeatureVector&& missingFeatureVector, const NumericalFeatureVector& numericalFeatureVector,
   uint32 numExamples, float32 binRatio, uint32 minBins, uint32 maxBins) {
-    uint32 numBins = util::calculateBoundedFraction(numExamples, binRatio, minBins, maxBins);
+    uint32 numBins = math::calculateBoundedFraction(numExamples, binRatio, minBins, maxBins);
 
     if (numBins > 1) {
         uint32 numElements = numericalFeatureVector.numElements;
@@ -38,7 +38,7 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
             if (!isEqual(currentValue, previousValue)) {
                 // Check, if the bin is fully occupied...
                 if (numElementsInCurrentBin >= numElementsPerBin) {
-                    thresholdIterator[binIndex] = util::arithmeticMean(previousValue, currentValue);
+                    thresholdIterator[binIndex] = math::arithmeticMean(previousValue, currentValue);
                     indptrIterator[binIndex + 1] = numIndices;
                     numElementsInCurrentBin = 0;
                     binIndex++;
@@ -58,7 +58,7 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
 
             if (numElementsInCurrentBin >= numElementsPerBin) {
                 // The sparse values belong to the next bin...
-                thresholdIterator[binIndex] = util::arithmeticMean(previousValue, sparseValue);
+                thresholdIterator[binIndex] = math::arithmeticMean(previousValue, sparseValue);
                 indptrIterator[binIndex + 1] = numIndices;
                 numElementsInCurrentBin = numSparseValues;
                 binIndex++;
@@ -93,7 +93,7 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
             if (!isEqual(currentValue, previousValue)) {
                 // Check, if the bin is fully occupied...
                 if (numElementsInCurrentBin >= numElementsPerBin) {
-                    thresholdIterator[binIndex] = util::arithmeticMean(previousValue, currentValue);
+                    thresholdIterator[binIndex] = math::arithmeticMean(previousValue, currentValue);
                     indptrIterator[binIndex + 1] = numIndices;
                     numElementsInCurrentBin = 0;
                     binIndex++;
