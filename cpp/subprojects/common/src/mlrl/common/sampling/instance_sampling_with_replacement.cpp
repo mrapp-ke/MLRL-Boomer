@@ -1,9 +1,9 @@
 #include "mlrl/common/sampling/instance_sampling_with_replacement.hpp"
 
+#include "mlrl/common/math/scalar_math.hpp"
 #include "mlrl/common/sampling/partition_bi.hpp"
 #include "mlrl/common/sampling/partition_single.hpp"
 #include "mlrl/common/sampling/weight_vector_dense.hpp"
-#include "mlrl/common/util/math.hpp"
 #include "mlrl/common/util/validation.hpp"
 
 template<typename ExampleWeights, typename WeightType>
@@ -11,7 +11,7 @@ static inline void sampleInternally(const SinglePartition& partition, const Exam
                                     float32 sampleSize, uint32 minSamples, uint32 maxSamples,
                                     DenseWeightVector<WeightType>& weightVector, RNG& rng) {
     uint32 numExamples = partition.getNumElements();
-    uint32 numSamples = util::calculateBoundedFraction(numExamples, sampleSize, minSamples, maxSamples);
+    uint32 numSamples = math::calculateBoundedFraction(numExamples, sampleSize, minSamples, maxSamples);
     typename DenseWeightVector<WeightType>::iterator weightIterator = weightVector.begin();
     std::fill(weightIterator, weightVector.end(), (WeightType) 0);
     uint32 numNonZeroWeights = 0;
@@ -38,7 +38,7 @@ static inline void sampleInternally(BiPartition& partition, const ExampleWeights
                                     uint32 minSamples, uint32 maxSamples, DenseWeightVector<WeightType>& weightVector,
                                     RNG& rng) {
     uint32 numTrainingExamples = partition.getNumFirst();
-    uint32 numSamples = util::calculateBoundedFraction(numTrainingExamples, sampleSize, minSamples, maxSamples);
+    uint32 numSamples = math::calculateBoundedFraction(numTrainingExamples, sampleSize, minSamples, maxSamples);
     BiPartition::const_iterator indexIterator = partition.first_cbegin();
     typename DenseWeightVector<WeightType>::iterator weightIterator = weightVector.begin();
     std::fill(weightIterator, weightVector.end(), (WeightType) 0);

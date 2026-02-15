@@ -1,10 +1,10 @@
 #include "mlrl/common/sampling/instance_sampling_without_replacement.hpp"
 
 #include "mlrl/common/iterator/iterator_index.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 #include "mlrl/common/sampling/partition_bi.hpp"
 #include "mlrl/common/sampling/partition_single.hpp"
 #include "mlrl/common/sampling/weight_sampling.hpp"
-#include "mlrl/common/util/math.hpp"
 #include "mlrl/common/util/validation.hpp"
 
 template<typename ExampleWeights, typename WeightVector>
@@ -12,7 +12,7 @@ static inline void sampleInternally(const SinglePartition& partition, const Exam
                                     float32 sampleSize, uint32 minSamples, uint32 maxSamples,
                                     WeightVector& weightVector, RNG& rng) {
     uint32 numExamples = partition.getNumElements();
-    uint32 numSamples = util::calculateBoundedFraction(numExamples, sampleSize, minSamples, maxSamples);
+    uint32 numSamples = math::calculateBoundedFraction(numExamples, sampleSize, minSamples, maxSamples);
     sampleWeightsWithoutReplacement<WeightVector, SinglePartition::const_iterator,
                                     typename ExampleWeights::const_iterator>(
       weightVector, partition.cbegin(), exampleWeights.cbegin(), numExamples, numSamples, rng);
@@ -22,7 +22,7 @@ template<typename ExampleWeights, typename WeightVector>
 static inline void sampleInternally(BiPartition& partition, const ExampleWeights& exampleWeights, float32 sampleSize,
                                     uint32 minSamples, uint32 maxSamples, WeightVector& weightVector, RNG& rng) {
     uint32 numTrainingExamples = partition.getNumFirst();
-    uint32 numSamples = util::calculateBoundedFraction(numTrainingExamples, sampleSize, minSamples, maxSamples);
+    uint32 numSamples = math::calculateBoundedFraction(numTrainingExamples, sampleSize, minSamples, maxSamples);
     sampleWeightsWithoutReplacement<WeightVector, BiPartition::const_iterator, typename ExampleWeights::const_iterator>(
       weightVector, partition.first_cbegin(), exampleWeights.cbegin(), numTrainingExamples, numSamples, rng);
 }

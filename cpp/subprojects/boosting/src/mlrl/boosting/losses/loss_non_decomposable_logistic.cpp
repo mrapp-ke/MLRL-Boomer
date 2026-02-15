@@ -3,7 +3,8 @@
 #include "mlrl/boosting/prediction/probability_function_chain_rule.hpp"
 #include "mlrl/boosting/prediction/probability_function_logistic.hpp"
 #include "mlrl/common/iterator/iterator_forward_sparse_binary.hpp"
-#include "mlrl/common/util/math.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
+#include "mlrl/common/util/iterators.hpp"
 
 namespace boosting {
 
@@ -14,7 +15,7 @@ namespace boosting {
         // `-expectedScore_c * exp(x_c) / (1 + exp(x_1) + exp(x_2) + ...)`, which can be rewritten as
         // `-expectedScore_c * (exp(x_c - max) / sumExp)`
         StatisticType xExp = std::exp(x - max);
-        StatisticType tmp = util::divideOrZero(xExp, sumExp);
+        StatisticType tmp = math::divideOrZero(xExp, sumExp);
         gradient = invertedExpectedScore * tmp;
 
         // Calculate the Hessian on the diagonal of the Hessian matrix that corresponds to the current label. Such
@@ -129,7 +130,7 @@ namespace boosting {
 
         // Calculate `zeroExp / sumExp2` (it is needed multiple times for calculating Hessians that belong to the upper
         // triangle of the Hessian matrix)...
-        zeroExp = util::divideOrZero(zeroExp, sumExp2);
+        zeroExp = math::divideOrZero(zeroExp, sumExp2);
 
         // Calculate the gradients and Hessians...
         for (uint32 c = 0; c < numLabels; c++) {
@@ -150,7 +151,7 @@ namespace boosting {
                 statistic_type expectedScore2 = trueLabel2 ? 1.0f : -1.0f;
                 statistic_type x2 = predictedScore2 * -expectedScore2;
                 *hessianIterator = invertedExpectedScore * expectedScore2
-                                   * util::divideOrZero(std::exp(x + x2 - max2), sumExp2) * zeroExp;
+                                   * math::divideOrZero(std::exp(x + x2 - max2), sumExp2) * zeroExp;
                 hessianIterator++;
                 labelIterator4++;
             }

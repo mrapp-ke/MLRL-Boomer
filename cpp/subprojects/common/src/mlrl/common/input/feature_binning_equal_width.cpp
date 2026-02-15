@@ -3,7 +3,7 @@
 #include "feature_type_numerical_common.hpp"
 #include "feature_vector_decorator_binned.hpp"
 #include "mlrl/common/data/array.hpp"
-#include "mlrl/common/util/math.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 #include "mlrl/common/util/validation.hpp"
 
 #include <utility>
@@ -45,7 +45,7 @@ static inline uint32 getBinIndex(float32 value, float32 min, float32 width, uint
 static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
   AllocatedMissingFeatureVector&& missingFeatureVector, const NumericalFeatureVector& numericalFeatureVector,
   uint32 numExamples, float32 binRatio, uint32 minBins, uint32 maxBins) {
-    uint32 numWidths = util::calculateBoundedFraction(numExamples, binRatio, minBins, maxBins);
+    uint32 numWidths = math::calculateBoundedFraction(numExamples, binRatio, minBins, maxBins);
 
     if (numWidths > 0) {
         const std::pair<float32, float32> pair = getMinAndMaxFeatureValue(numericalFeatureVector);
