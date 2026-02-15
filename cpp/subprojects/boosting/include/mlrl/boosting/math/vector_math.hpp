@@ -6,7 +6,7 @@
 #include "mlrl/common/data/types.hpp"
 #include "mlrl/common/util/iterators.hpp"
 
-namespace util {
+namespace math {
 
     /**
      * Computes and returns the L1 norm of a specific vector, i.e., the sum of the absolute values of its elements.

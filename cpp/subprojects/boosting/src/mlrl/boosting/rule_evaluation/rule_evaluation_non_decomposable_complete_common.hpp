@@ -122,13 +122,13 @@ namespace boosting {
         typename util::iterator_value<ScoreIterator> regularizationTerm;
 
         if (l1RegularizationWeight > 0) {
-            regularizationTerm = l1RegularizationWeight * util::l1Norm(scores, numPredictions);
+            regularizationTerm = l1RegularizationWeight * math::l1Norm(scores, numPredictions);
         } else {
             regularizationTerm = 0;
         }
 
         if (l2RegularizationWeight > 0) {
-            regularizationTerm += 0.5 * l2RegularizationWeight * util::l2NormPow(scores, numPredictions);
+            regularizationTerm += 0.5 * l2RegularizationWeight * math::l2NormPow(scores, numPredictions);
         }
 
         return regularizationTerm;
