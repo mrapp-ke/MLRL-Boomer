@@ -40,7 +40,7 @@ namespace util {
  * Implements basic operations for calculating with numerical arrays using single instruction, multiple data (SIMD)
  * operations.
  */
-struct SimdArrayOperations {
+struct SimdVectorMath {
     public:
 
         /**

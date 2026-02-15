@@ -1,6 +1,6 @@
 #include "mlrl/seco/rule_evaluation/head_type_partial.hpp"
 
-#include "mlrl/common/util/array_operations.hpp"
+#include "mlrl/common/math/vector_math.hpp"
 #include "mlrl/common/util/xsimd.hpp"
 #include "mlrl/seco/rule_evaluation/rule_evaluation_decomposable_partial.hpp"
 #include "mlrl/seco/statistics/statistics_provider_decomposable_dense.hpp"
@@ -30,13 +30,13 @@ namespace seco {
 
 #if SIMD_SUPPORT_ENABLED
         if (labelMatrix.getNumOutputs() > 1 && simdConfig_.get().isSimdEnabled()) {
-            return std::make_unique<DenseDecomposableStatisticsProviderFactory<SimdArrayOperations>>(
+            return std::make_unique<DenseDecomposableStatisticsProviderFactory<SimdVectorMath>>(
               std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
               std::move(pruningRuleEvaluationFactoryPtr));
         }
 #endif
 
-        return std::make_unique<DenseDecomposableStatisticsProviderFactory<SequentialArrayOperations>>(
+        return std::make_unique<DenseDecomposableStatisticsProviderFactory<SequentialVectorMath>>(
           std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
           std::move(pruningRuleEvaluationFactoryPtr));
     }

@@ -85,7 +85,7 @@ namespace boosting {
                     uint32 numSparse = numSparsePerLabel[j] + 1;
 
                     if (numSparse > 1) {
-                        firstBin.second = util::iterativeArithmeticMean(numSparse, trueProbability, firstBin.second);
+                        firstBin.second = math::iterativeArithmeticMean(numSparse, trueProbability, firstBin.second);
                     } else {
                         firstBin.second = trueProbability;
                     }

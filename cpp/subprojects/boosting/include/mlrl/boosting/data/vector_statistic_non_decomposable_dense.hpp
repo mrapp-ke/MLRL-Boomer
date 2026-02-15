@@ -153,9 +153,9 @@ namespace boosting {
      * as a symmetric Hessian matrix with `n` rows and columns.
      *
      * @tparam StatisticType    The type of the gradients and Hessians
-     * @tparam ArrayOperations  The type that implements basic operations for calculating with numerical arrays
+     * @tparam VectorMath       The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename StatisticType, typename ArrayOperations>
+    template<typename StatisticType, typename VectorMath>
     class DenseNonDecomposableStatisticVector final
         : public ClearableViewDecorator<ViewDecorator<DenseNonDecomposableStatisticVectorView<StatisticType>>> {
         public:
@@ -171,7 +171,7 @@ namespace boosting {
              * @param other A reference to an object of type `DenseNonDecomposableStatisticVector` to be copied
              */
             DenseNonDecomposableStatisticVector(
-              const DenseNonDecomposableStatisticVector<StatisticType, ArrayOperations>& other);
+              const DenseNonDecomposableStatisticVector<StatisticType, VectorMath>& other);
 
             /**
              * Returns the number of gradients in the vector.

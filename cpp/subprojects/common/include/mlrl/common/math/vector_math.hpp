@@ -9,7 +9,7 @@
  * Implements basic operations for calculating with numerical arrays by applying the respective operations to each
  * element in the arrays sequentially.
  */
-struct SequentialArrayOperations {
+struct SequentialVectorMath {
     public:
 
         /**
