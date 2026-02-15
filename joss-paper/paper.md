@@ -29,7 +29,7 @@ The Python package [mlrl-testbed](https://pypi.org/project/mlrl-testbed/) provid
 
 By default, mlrl-testbed executes a single experiment using a given dataset and parameter setting. However, it can also be operated in the following modes:
 
-* **Batch mode:** Allows running multiple independent experiments with varying datasets and parameter settings. Installing the optional package [mlrl-testbed-slurm](https://pypi.org/project/mlrl-testbed/) enables to run experiments via the *Slurm Workload Manager*[^1].
+* **Batch mode:** Allows running multiple independent experiments with varying datasets and parameter settings. Installing the optional package [mlrl-testbed-slurm](https://pypi.org/project/mlrl-testbed-slurm/) enables to run experiments via the *Slurm Workload Manager*[^1].
 * **Read mode:** Allows inspecting the results of previous experiments and saving them to new output files. When view results obtained in batch mode, results are automatically aggregated across different experiments.
 * **Run mode:** Allows re-running previously conducted experiments with the option to partly override their configuration. Experiments for which results are already available can be skipped.
 
@@ -49,7 +49,7 @@ All commands for executing mlrl-testbed follow the following scheme:
 mlrl-testbed <runnable> [mode] <[control arguments]> [hyperparameters]
 ```
 
-In contrast to optional arguments (enclosed by `[` and `]`), mandatory arguments (surrounded by `<` and `>`) must always be specified. These include arguments for specifying a *runnable*. This is a Python source file or module implementing a simple API to integrate an algorithm with mlrl-testbed and possibly extend it with additional functionality. This abstraction allows users to integrate custom methods with little effort, as described in our documentation[^9]. For tabular machine learning tasks, no custom code is required: The package [mlrl-testbed-sklearn](https://pypi.org/project/mlrl-testbed/) provides a ready-to-use integration with the scikit-learn framework. It can easily be installed via a Python package manager such as *pip*:
+In contrast to optional arguments (enclosed by `[` and `]`), mandatory arguments (surrounded by `<` and `>`) must always be specified. These include arguments for specifying a *runnable*. This is a Python source file or module implementing a simple API to integrate an algorithm with mlrl-testbed and possibly extend it with additional functionality. This abstraction allows users to integrate custom methods with little effort, as described in our documentation[^9]. For tabular machine learning tasks, no custom code is required: The package [mlrl-testbed-sklearn](https://pypi.org/project/mlrl-testbed-sklearn/) provides a ready-to-use integration with the scikit-learn framework. It can easily be installed via a Python package manager such as *pip*:
 
 ```text
 python -m pip install mlrl-testbed-sklearn
