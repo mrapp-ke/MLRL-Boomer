@@ -197,7 +197,7 @@ Sholom
 Siddharth
 simd
 sklearn
-Slurm
+slurm
 Smarkanov
 socio
 Starič
