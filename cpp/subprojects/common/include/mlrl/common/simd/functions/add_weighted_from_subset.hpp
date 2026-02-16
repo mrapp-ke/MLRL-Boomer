@@ -6,6 +6,8 @@
 #include "mlrl/common/data/types.hpp"
 #include "mlrl/common/util/xsimd.hpp"
 
+#include <array>
+
 #if SIMD_SUPPORT_ENABLED
 namespace simd {
 
@@ -14,18 +16,17 @@ namespace simd {
         typedef xsimd::batch<T, Arch> batch;
         constexpr std::size_t batchSize = batch::size;
         uint32 batchEnd = numElements - (numElements % batchSize);
+        std::array<T, batchSize> tmp;
         uint32 i = 0;
 
         for (; i < batchEnd; i += batchSize) {
-            T tmp[batchSize];
-
             for (std::size_t j = 0; j < batchSize; j++) {
                 uint32 index = indices[i + j];
                 tmp[j] = b[index];
             }
 
             batch batchA = batch::load_unaligned(a + i);
-            batch batchTmp = batch::load_unaligned(tmp);
+            batch batchTmp = batch::load_unaligned(tmp.data());
             (batchA + (batchTmp * weight)).store_unaligned(a + i);
         }
 
