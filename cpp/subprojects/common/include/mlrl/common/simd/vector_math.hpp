@@ -19,14 +19,6 @@
  * operations.
  */
 struct SimdVectorMath {
-    private:
-
-    #if defined(__aarch64__) || defined(_M_ARM64)
-        using arch_list = xsimd::arch_list<xsimd::neon64>;
-    #else
-        using arch_list = xsimd::arch_list<xsimd::avx512f, xsimd::avx2, xsimd::avx, xsimd::sse2>;
-    #endif
-
     public:
 
         /**
@@ -39,7 +31,7 @@ struct SimdVectorMath {
          */
         template<typename T>
         static inline void copy(const T* from, T* to, uint32 numElements) {
-            auto dispatched = xsimd::dispatch<arch_list>([&](auto arch) {
+            auto dispatched = xsimd::dispatch<util::simd_architectures>([&](auto arch) {
                 simd::copy(arch, from, to, numElements);
             });
             dispatched();
@@ -55,7 +47,7 @@ struct SimdVectorMath {
          */
         template<typename T>
         static inline void add(T* a, const T* b, uint32 numElements) {
-            auto dispatched = xsimd::dispatch<arch_list>([&](auto arch) {
+            auto dispatched = xsimd::dispatch<util::simd_architectures>([&](auto arch) {
                 simd::add(arch, a, b, numElements);
             });
             dispatched();
@@ -74,7 +66,7 @@ struct SimdVectorMath {
          */
         template<typename T, typename Weight>
         static inline void addWeighted(T* a, const T* b, uint32 numElements, Weight weight) {
-            auto dispatched = xsimd::dispatch<arch_list>([&](auto arch) {
+            auto dispatched = xsimd::dispatch<util::simd_architectures>([&](auto arch) {
                 simd::addWeighted(arch, a, b, numElements, weight);
             });
             dispatched();
@@ -94,7 +86,7 @@ struct SimdVectorMath {
          */
         template<typename T>
         static inline void add(T* a, const T* b, const uint32* indices, uint32 numElements) {
-            auto dispatched = xsimd::dispatch<arch_list>([&](auto arch) {
+            auto dispatched = xsimd::dispatch<util::simd_architectures>([&](auto arch) {
                 simd::addFromSubset(arch, a, b, indices, numElements);
             });
             dispatched();
@@ -116,7 +108,7 @@ struct SimdVectorMath {
          */
         template<typename T, typename Weight>
         static inline void addWeighted(T* a, const T* b, const uint32* indices, uint32 numElements, Weight weight) {
-            auto dispatched = xsimd::dispatch<arch_list>([&](auto arch) {
+            auto dispatched = xsimd::dispatch<util::simd_architectures>([&](auto arch) {
                 simd::addWeightedFromSubset(arch, a, b, indices, numElements, weight);
             });
             dispatched();
@@ -132,7 +124,7 @@ struct SimdVectorMath {
          */
         template<typename T>
         static inline void subtract(T* a, const T* b, uint32 numElements) {
-            auto dispatched = xsimd::dispatch<arch_list>([&](auto arch) {
+            auto dispatched = xsimd::dispatch<util::simd_architectures>([&](auto arch) {
                 simd::subtract(arch, a, b, numElements);
             });
             dispatched();
@@ -151,7 +143,7 @@ struct SimdVectorMath {
          */
         template<typename T, typename Weight>
         static inline void subtractWeighted(T* a, const T* b, uint32 numElements, Weight weight) {
-            auto dispatched = xsimd::dispatch<arch_list>([&](auto arch) {
+            auto dispatched = xsimd::dispatch<util::simd_architectures>([&](auto arch) {
                 simd::subtractWeighted(arch, a, b, numElements, weight);
             });
             dispatched();
@@ -169,7 +161,7 @@ struct SimdVectorMath {
          */
         template<typename T>
         static inline void difference(T* a, const T* b, const T* c, uint32 numElements) {
-            auto dispatched = xsimd::dispatch<arch_list>([&](auto arch) {
+            auto dispatched = xsimd::dispatch<util::simd_architectures>([&](auto arch) {
                 simd::difference(arch, a, b, c, numElements);
             });
             dispatched();
@@ -190,7 +182,7 @@ struct SimdVectorMath {
          */
         template<typename T>
         static inline void difference(T* a, const T* b, const T* c, const uint32* indices, uint32 numElements) {
-            auto dispatched = xsimd::dispatch<arch_list>([&](auto arch) {
+            auto dispatched = xsimd::dispatch<util::simd_architectures>([&](auto arch) {
                 simd::differenceWithSubset(arch, a, b, c, indices, numElements);
             });
             dispatched();

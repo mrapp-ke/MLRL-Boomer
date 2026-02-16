@@ -14,6 +14,14 @@
 
 namespace util {
 
+#if SIMD_SUPPORT_ENABLED
+    #if defined(__aarch64__) || defined(_M_ARM64)
+    using simd_architectures = xsimd::arch_list<xsimd::neon64>;
+    #else
+    using simd_architectures = xsimd::arch_list<xsimd::avx512f, xsimd::avx2, xsimd::avx, xsimd::sse2>;
+    #endif
+#endif
+
     /**
      * Returns the names of all instruction set extensions for SIMD operations available on the machine.
      *
@@ -23,7 +31,7 @@ namespace util {
         std::vector<std::string> names;
 
 #if SIMD_SUPPORT_ENABLED
-        xsimd::all_architectures::for_each([&](auto architecture) {
+        simd_architectures::for_each([&](auto architecture) {
             if (xsimd::available_architectures().has(architecture)) {
                 names.emplace_back(architecture.name());
             }
