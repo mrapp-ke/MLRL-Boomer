@@ -131,7 +131,7 @@ install_dir = install_root / meson.project_name() / 'mlrl' / meson.project_name(
 library_name = 'mlrl' + meson.project_name()
 library_version = get_option('library_version')
 os = host_machine.system()
-target_architecture = host_machine.cpu_family() + '-' + os
+target_architecture = host_machine.cpu_family()
 
 # Dependencies
 opencl_dep = dependency('OpenCL', required : get_option('gpu_support'))
@@ -145,12 +145,15 @@ dependencies = [
 # Set configuration options
 multi_threading_support_enabled = get_option('multi_threading_support').enabled()
 gpu_support_enabled = opencl_dep.found()
-simd_support_enabled = xsimd_dep.found()
+# Note: SIMD support is forced to be disabled on Windows arm64 systems due to
+# https://github.com/xtensor-stack/xsimd/issues/611
+windows_arm64 = os == 'windows' and target_architecture == 'aarch64'
+simd_support_enabled = xsimd_dep.found() and not windows_arm64
 
 configuration = configuration_data()
 configuration.set('mlrlcommon_library_name', 'lib' + library_name)
 configuration.set('mlrlcommon_library_version', library_version)
-configuration.set('mlrlcommon_target_architecture', target_architecture)
+configuration.set('mlrlcommon_target_architecture', target_architecture + '-' + os)
 configuration.set10('multi_threading_support_enabled', multi_threading_support_enabled)
 configuration.set10('gpu_support_enabled', gpu_support_enabled)
 configuration.set10('simd_support_enabled', simd_support_enabled)
@@ -160,7 +163,7 @@ configure_file(input : 'include/mlrl/common/config.hpp.in', output : 'config.hpp
 simd_libs = []
 
 if simd_support_enabled
-    if host_machine.cpu_family() == 'aarch64'
+    if target_architecture == 'aarch64'
         simd_cpp_args = {
             'neon64': [],
         }
