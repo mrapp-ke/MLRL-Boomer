@@ -11,8 +11,12 @@ namespace simd {
     template<typename Arch, typename T>
     void differenceWithSubset(Arch, T* a, const T* b, const T* c, const uint32* indices, uint32 numElements) {
         using batch = xsimd::batch<T, Arch>;
+    #ifdef _WIN32
+        using index_type = uint32;
+    #else
         using index_type =
           std::conditional_t<xsimd::batch<T, Arch>::size == xsimd::batch<uint32, Arch>::size, uint32, uint64>;
+    #endif
         using index_batch = xsimd::batch<index_type, Arch>;
         constexpr std::size_t batchSize = batch::size;
         uint32 batchEnd = numElements - (numElements % batchSize);
