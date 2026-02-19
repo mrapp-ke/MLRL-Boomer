@@ -8,7 +8,7 @@
 
 #if SIMD_SUPPORT_ENABLED
 namespace simd {
-template<typename Arch, typename T>
+    template<typename Arch, typename T>
     void difference(Arch, T* a, const T* b, const T* c, uint32 numElements);
 
     #if defined(__aarch64__) || defined(_M_ARM64)
