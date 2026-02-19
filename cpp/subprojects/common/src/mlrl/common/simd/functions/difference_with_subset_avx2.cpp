@@ -1,4 +1,4 @@
-#include "mlrl/common/simd/functions/difference_with_subset.hpp"
+#include "mlrl/common/simd/functions/difference_with_subset_generic.hpp"
 
 #if SIMD_SUPPORT_ENABLED
 namespace simd {

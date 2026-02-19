@@ -1,4 +1,4 @@
-#include "mlrl/common/simd/functions/subtract.hpp"
+#include "mlrl/common/simd/functions/subtract_generic.hpp"
 
 #if SIMD_SUPPORT_ENABLED
 namespace simd {

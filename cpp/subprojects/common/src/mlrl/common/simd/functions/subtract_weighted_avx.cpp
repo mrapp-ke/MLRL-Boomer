@@ -1,4 +1,4 @@
-#include "mlrl/common/simd/functions/subtract_weighted.hpp"
+#include "mlrl/common/simd/functions/subtract_weighted_generic.hpp"
 
 #if SIMD_SUPPORT_ENABLED
 namespace simd {
