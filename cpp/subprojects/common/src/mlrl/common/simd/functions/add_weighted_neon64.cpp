@@ -1,4 +1,4 @@
-#include "mlrl/common/simd/functions/add_weighted.hpp"
+#include "mlrl/common/simd/functions/add_weighted_generic.hpp"
 
 #if SIMD_SUPPORT_ENABLED
 namespace simd {

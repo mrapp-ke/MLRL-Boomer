@@ -1,4 +1,4 @@
-#include "mlrl/common/simd/functions/difference.hpp"
+#include "mlrl/common/simd/functions/difference_generic.hpp"
 
 #if SIMD_SUPPORT_ENABLED
 namespace simd {

@@ -10,20 +10,7 @@
 namespace simd {
 
     template<typename Arch, typename T>
-    void copy(Arch, const T* from, T* to, uint32 numElements) {
-        typedef xsimd::batch<T, Arch> batch;
-        constexpr std::size_t batchSize = batch::size;
-        uint32 batchEnd = numElements - (numElements % batchSize);
-        uint32 i = 0;
-
-        for (; i < batchEnd; i += batchSize) {
-            batch::load_unaligned(from + i).store_unaligned(to + i);
-        }
-
-        for (; i < numElements; i++) {
-            to[i] = from[i];
-        }
-    }
+    void copy(Arch, const T* from, T* to, uint32 numElements);
 
     #if defined(__aarch64__) || defined(_M_ARM64)
     extern template void copy<xsimd::neon64, float32>(xsimd::neon64, const float32*, float32*, uint32);
