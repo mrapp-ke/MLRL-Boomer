@@ -1,4 +1,4 @@
-#include "mlrl/common/simd/functions/add_weighted_from_subset_generic.hpp"
+#include "mlrl/common/simd/functions/add_weighted_from_subset_gather.hpp"
 
 #if SIMD_SUPPORT_ENABLED
 namespace simd {
