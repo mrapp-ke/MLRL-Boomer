@@ -6,7 +6,7 @@ Rule-based machine learning models are a popular approach in symbolic learning w
 
 ## Rule-based Models
 
-Rule-based models express domain knowledge in terms of conditional clauses that refer to attributes present in the data. Each rule consists of a *body* and a *head*. Whereas the former consists of a set of *conditions*, the latter provides predictions. In accordance with existing work on the topic, we use the notation
+Rule-based models express domain knowledge in terms of conditional clauses that refer to features present in the data. Each rule consists of a *body* and a *head*. Whereas the former consists of a set of *conditions*, the latter provides predictions. In accordance with existing work on the topic, we use the notation
 
 ```{math}
 Head \leftarrow Body

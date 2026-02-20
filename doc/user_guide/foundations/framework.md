@@ -14,7 +14,7 @@ Following the notion of rules traditionally used in classification, i.e., for ta
 f : Head \leftarrow Body
 ```
 
-The body of a rule consists of one or several conditions that specify the examples to which the rule applies, and the head provides a prediction for these covered examples. Each condition refers to one of the attributes in a dataset. Such a condition $c_l$ compares an example's value for the $l$-th attribute to a constant using a relational operator, such as $=$ and $\neq$, if the attribute $A_l$ is nominal, or $\leq$ and $>$, if the attribute is numerical or ordinal.
+The body of a rule consists of one or several conditions that specify the examples to which the rule applies, and the head provides a prediction for these covered examples. Each condition refers to one of the features in a dataset. Such a condition $c_l$ compares an example's value for the $l$-th feature to a constant using a relational operator, such as $=$ and $\neq$, if the feature $A_l$ is nominal, or $\leq$ and $>$, if the feature is numerical or ordinal.
 
 When dealing with multi-output classification or regression tasks, a variety of options exist when it comes to the heads of rules. Whereas single-label rules must assign a prediction to the only available output, the heads of multi-output rules may comprise information for more than a single output. The following table shows examples of different types of rules.
 
