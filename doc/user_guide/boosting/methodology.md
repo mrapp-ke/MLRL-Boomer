@@ -117,12 +117,12 @@ In the following, we outline the algorithm used by BOOMER for learning an ensemb
 \\
 \text{1:} \quad & S = \{( \boldsymbol{g}_n, H_n ) \}_n^N = \text{calculate gradients and Hessians w.r.t.} \ell' \text{and} \ell'' \\
 \text{2:} \quad & \boldsymbol{w}_1 = \text{set weights for each example to 1} \\
-\text{3:} \quad & f_1 : \boldsymbol{\hat{y}}_1 \leftarrow b_1 \text{ with } b_1 ( \boldsymbol{x} ) = 1, \forall \boldsymbol{x} \text{ and } \boldsymbol{\hat{y}}_1 = \texttt{FIND_HEAD} ( D, \boldsymbol{w}_1, S, b_1 ) \\ 
+\text{3:} \quad & f_1 : \boldsymbol{\hat{y}}_1 \leftarrow b_1 \text{ with } b_1 ( \boldsymbol{x} ) = 1, \forall \boldsymbol{x} \text{ and } \boldsymbol{\hat{y}}_1 = \texttt{FIND\_HEAD} ( D, \boldsymbol{w}_1, S, b_1 ) \\ 
 \text{4:} \quad & \textbf{for } t = 2 \textbf{ to } T \textbf{ do} \\
 \text{5:} \quad & \quad S = \text{ update gradients and Hessians of examples covered by } f_{t-1} \\
 \text{6:} \quad & \quad \boldsymbol{w}_t = \text{ obtain a weight for each example via instance sampling} \\
-\text{7:} \quad & \quad f_t : \boldsymbol{\hat{y}}_t \leftarrow b_t = \texttt{REFINE_RULE} ( D, \boldsymbol{w}_t, S) \\
-\text{8:} \quad & \quad \boldsymbol{\hat{y}} = \texttt{FIND_HEAD} ( D, \boldsymbol{w}_t, S, b_t ) \\
+\text{7:} \quad & \quad f_t : \boldsymbol{\hat{y}}_t \leftarrow b_t = \texttt{REFINE\_RULE} ( D, \boldsymbol{w}_t, S) \\
+\text{8:} \quad & \quad \boldsymbol{\hat{y}} = \texttt{FIND\_HEAD} ( D, \boldsymbol{w}_t, S, b_t ) \\
 \text{9:} \quad & \quad \boldsymbol{\hat{y}} = \eta \cdot \boldsymbol{\hat{y}}_t \\
 \text{10:} \quad & \textbf{return} \text{ ensemble of rules } F = \{ f_1, \dots, f_T \}
 ```
@@ -135,7 +135,7 @@ To learn the rules $f_2, \dots, f_T$, we use a greedy top-down search, where the
 
 ### Computation of Predictions
 
-As can be seen in the pseudocode above, the function $\texttt{FIND_HEAD}$ is used to find optimal confidence scores to be predicted by a particular rule $f_t$, i.e., scores that minimize the objective function $\widetilde{R}$ introduced in {eq}`training_objective`. In addition, it provides an estimate of their quality. Because rules provide the same predictions for all examples they cover and abstain for others, the objective function in {eq}`training_objective` can further be simplified. We can sum up the gradient vectors and Hessian matrices that correspond to the covered examples, resulting in the objective
+As can be seen in the pseudocode above, the function $\texttt{FIND\_HEAD}$ is used to find optimal confidence scores to be predicted by a particular rule $f_t$, i.e., scores that minimize the objective function $\widetilde{R}$ introduced in {eq}`training_objective`. In addition, it provides an estimate of their quality. Because rules provide the same predictions for all examples they cover and abstain for others, the objective function in {eq}`training_objective` can further be simplified. We can sum up the gradient vectors and Hessian matrices that correspond to the covered examples, resulting in the objective
 
 ```{math}
 ---
@@ -144,7 +144,7 @@ label: simplified_objective
 \widetilde{R} ( f_t ) = \boldsymbol{g} \boldsymbol{\hat{p}} + \frac{1}{2} \boldsymbol{\hat{p}} H \boldsymbol{\hat{p}} + \Omega ( f_t ),
 ```
 
-where $\boldsymbol{g} = \sum_n ( b ( \boldsymbol{x}_n ) w_n \boldsymbol{g}_n )$ denotes the element-wise weighted sum of the gradient vectors and $H = \sum_n ( b ( \boldsymbol{x}_n ) w_n \boldsymbol{g}_n )$ corresponds to the sum of the Hessian matrices. As shown in the pseudocode below, the sums of gradients and Hessians are provided to the function $\texttt{FIND_HEAD}$ to determine a rule's predictions and a corresponding estimate of its quality.
+where $\boldsymbol{g} = \sum_n ( b ( \boldsymbol{x}_n ) w_n \boldsymbol{g}_n )$ denotes the element-wise weighted sum of the gradient vectors and $H = \sum_n ( b ( \boldsymbol{x}_n ) w_n \boldsymbol{g}_n )$ corresponds to the sum of the Hessian matrices. As shown in the pseudocode below, the sums of gradients and Hessians are provided to the function $\texttt{FIND\_HEAD}$ to determine a rule's predictions and a corresponding estimate of its quality.
 
 ```{math}
 \textbf{in:}\quad & \text{Sums of gradients } \boldsymbol{g} = \sum\nolimits_n ( b ( \boldsymbol{x}_n ) w_n \boldsymbol{g}_n ), \\
@@ -229,16 +229,16 @@ To learn a new rule, we use a greedy top-down search, also referred to as top-do
 \text{4:} \quad & \quad f' : b' \rightarrow \boldsymbol{\hat{p}} = \text{ copy of current rule } f \\
 \text{5:} \quad & \quad \text{add condition } c \text{ to body } b' \\
 \text{6:} \quad & \quad \text{Calculate } \boldsymbol{g} = \sum\nolimits_n ( b ( \boldsymbol{x}_n ) w_n \boldsymbol{g}_n ) \text{ and } H = \sum\nolimits_n ( b ( \boldsymbol{x}_n ) w_n H_n ) \\
-\text{7:} \quad & \quad \text{head } \boldsymbol{\hat{p}}, \text{ quality } q' = \texttt{FIND_HEAD} ( \boldsymbol{g}, H ) \\
+\text{7:} \quad & \quad \text{head } \boldsymbol{\hat{p}}, \text{ quality } q' = \texttt{FIND\_HEAD} ( \boldsymbol{g}, H ) \\
 \text{8:} \quad & \quad \textbf{if } q' < q^* \textbf{ then} \\
 \text{9:} \quad & \quad\quad \text{update best rule } f^* = f' and its quality q^* = q' \\
 \text{10:} \quad & \textbf{if } f^* \neq f \textbf{ then} \\
 \text{11:} \quad & \quad D' = \text{ subset of } D \text{ covered by } f^* \\
-\text{12:} \quad & \quad \textbf{return } \texttt{REFINE_RULE} ( D', \boldsymbol{w}, S, f^*, q^* ) \\
+\text{12:} \quad & \quad \textbf{return } \texttt{REFINE\_RULE} ( D', \boldsymbol{w}, S, f^*, q^* ) \\
 \text{13:} \quad & \textbf{return} \text{ best rule } f^*
 ```
 
-The search for a new rule starts with an empty body that is successively refined by adding additional conditions. Adding conditions to its body causes a rule to become more specific and results in fewer examples being covered. The conditions, which may be used to refine an existing body, result from the feature values of the training examples in the case of nominal features or from averaging adjacent values in the case of numerical attributes. In addition to instance sampling, we use {ref}`feature sampling <user-guide-feature-sampling>` to select a subset of the available features whenever a new condition should be added. This leads to more diverse ensembles of rules and reduces the computational costs by limiting the number of potential candidate rules. For each condition that may be added to the current body at a particular iteration, the head of the rule is updated via the function $\texttt{FIND_HEAD}$ discussed in the previous section. When learning single-label rules and if not configured otherwise, each refinement of the current rule is obliged to predict for the same label (omitted in the code above for brevity). Among all refinements, the one that minimizes the regularized objective in {eq}`training_objective` is chosen. If no refinement results in an improvement according to said objective, the refinement process stops. By default, no additional stopping criteria are used, and therefore they are omitted from the code above.
+The search for a new rule starts with an empty body that is successively refined by adding additional conditions. Adding conditions to its body causes a rule to become more specific and results in fewer examples being covered. The conditions, which may be used to refine an existing body, result from the feature values of the training examples in the case of nominal features or from averaging adjacent values in the case of numerical attributes. In addition to instance sampling, we use {ref}`feature sampling <user-guide-feature-sampling>` to select a subset of the available features whenever a new condition should be added. This leads to more diverse ensembles of rules and reduces the computational costs by limiting the number of potential candidate rules. For each condition that may be added to the current body at a particular iteration, the head of the rule is updated via the function $\texttt{FIND\_HEAD}$ discussed in the previous section. When learning single-label rules and if not configured otherwise, each refinement of the current rule is obliged to predict for the same label (omitted in the code above for brevity). Among all refinements, the one that minimizes the regularized objective in {eq}`training_objective` is chosen. If no refinement results in an improvement according to said objective, the refinement process stops. By default, no additional stopping criteria are used, and therefore they are omitted from the code above.
 
 [^dembczynski2010]: Krzysztof Dembczyński, Wojciech Kotłowski, and Roman Słowiński (2010). ‘ENDER: A statistical framework for boosting decision rules’. In: *Data Mining and Knowledge Discovery* 21.1, pp. 52–90.
 
