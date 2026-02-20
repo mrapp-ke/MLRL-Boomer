@@ -231,7 +231,7 @@ To learn a new rule, we use a greedy top-down search, also referred to as top-do
 \text{6:} \quad & \quad \text{Calculate } \boldsymbol{g} = \sum\nolimits_n ( b ( \boldsymbol{x}_n ) w_n \boldsymbol{g}_n ) \text{ and } H = \sum\nolimits_n ( b ( \boldsymbol{x}_n ) w_n H_n ) \\
 \text{7:} \quad & \quad \text{head } \boldsymbol{\hat{p}}, \text{ quality } q' = \texttt{FIND\_HEAD} ( \boldsymbol{g}, H ) \\
 \text{8:} \quad & \quad \textbf{if } q' < q^* \textbf{ then} \\
-\text{9:} \quad & \quad\quad \text{update best rule } f^* = f' and its quality q^* = q' \\
+\text{9:} \quad & \quad\quad \text{update best rule } f^* = f' \text{ and its quality } q^* = q' \\
 \text{10:} \quad & \textbf{if } f^* \neq f \textbf{ then} \\
 \text{11:} \quad & \quad D' = \text{ subset of } D \text{ covered by } f^* \\
 \text{12:} \quad & \quad \textbf{return } \texttt{REFINE\_RULE} ( D', \boldsymbol{w}, S, f^*, q^* ) \\
