@@ -16,7 +16,7 @@ On the one hand, because only non-zero values must be processed, this reduces th
 
 An example is given in the following. It shows a sparse representation of a numerical feature vector, where values that are equal to zero are omitted. The thresholds that result from averaging adjacent feature values are shown to the right. The numbers in parentheses (I, II, III) specify the phases of the sparsity-aware search algorithm that are responsible for the evaluation of individual thresholds.
 
-```{image} ../../_static/feature_vector_sparse_light.svg
+```{image} ../../_static/user_guide/optimizations/feature_vector_sparse_light.svg
 ---
 align: center
 width: 22%
@@ -26,7 +26,7 @@ class: only-light
 ---
 ```
 
-```{image} ../../_static/feature_vector_sparse_dark.svg
+```{image} ../../_static/user_guide/optimizations/feature_vector_sparse_dark.svg
 ---
 align: center
 width: 22%
@@ -50,7 +50,7 @@ The second phase, where examples with positive feature values are considered, fo
 
 After the second phase has finished, the algorithm is able to decide whether any examples with zero feature values, which are neither stored by a sparse representation of the feature values nor can explicitly be accessed by the rule induction algorithm, are available. This is the case if the sum of the weights of all examples processed until this point is smaller than the total sum of weights of all examples in a dataset or a sample thereof. In any case, it is necessary to evaluate potential conditions that separate the examples with positive feature values from the remaining ones (possibly including examples with zero feature values). As shown on the left side of the image below, this requires considering two conditions with the operator $\leq$ and $>$, respectively. The statistics of examples that satisfy the latter correspond to the statistics aggregated during the algorithm's second phase ($\boldsymbol{s}''$). To obtain the statistics of examples that are covered by the former, the difference ($\boldsymbol{s} - \boldsymbol{s}''$) between the statistics aggregated during the second phase and the globally aggregated ones must be computed. In addition, if any examples with zero feature values are available, additional conditions using the operators $\leq$ and $>$ that separate the examples with negative feature values from the remaining ones must be considered. The statistics of examples that are covered by the former correspond to the statistics that have been aggregated during the first phase of the algorithm ($\boldsymbol{s}'$). In contrast, the statistics of examples that satisfy the latter must again be computed by taking the globally aggregated statistics into account. They calculate as the difference ($\boldsymbol{s} - \boldsymbol{s}'$) between the statistics corresponding to examples with negative feature values, which have been processed during the first phase, and the globally aggregated ones that have been computed beforehand. An example of how the aggregated statistics for the evaluation of these conditions are obtained is given on the right side of the image below. If no examples with zero feature values are available, the evaluation of additional conditions, as depicted in this image, can be omitted.
 
-```{image} ../../_static/aggregation_sparse_light.svg
+```{image} ../../_static/user_guide/optimizations/aggregation_sparse_light.svg
 ---
 align: center
 width: 80%
@@ -60,7 +60,7 @@ class: only-light
 ---
 ```
 
-```{image} ../../_static/aggregation_sparse_dark.svg
+```{image} ../../_static/user_guide/optimizations/aggregation_sparse_dark.svg
 ---
 align: center
 width: 80%
@@ -77,7 +77,7 @@ Once the best condition among all available candidates has been added to a rule,
 1. If the examples that satisfy the condition do not have zero feature values, the corresponding elements and the indicator value are both set to the total number of conditions.
 2. Otherwise, the elements that correspond to uncovered examples are updated, whereas the indicator value remains unchanged.
 
-```{image} ../../_static/coverage_mask_light.svg
+```{image} ../../_static/user_guide/optimizations/coverage_mask_light.svg
 ---
 align: center
 width: 60%
@@ -87,7 +87,7 @@ class: only-light
 ---
 ```
 
-```{image} ../../_static/coverage_mask_dark.svg
+```{image} ../../_static/user_guide/optimizations/coverage_mask_dark.svg
 ---
 align: center
 width: 60%

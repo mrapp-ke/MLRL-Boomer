@@ -14,7 +14,7 @@ When searching for the best condition that may be added to a rule, the available
 2. For each value in *values*, *row_indices* stores the index of the corresponding row, starting at zero.
 3. The $i$-th element in *column_indices* specifies the index of the first element in *values* and *row_indices* that belongs to the $i$-th column.
 
-```{image} ../../_static/memory_layout_fortran_csc_light.svg
+```{image} ../../_static/user_guide/optimizations/memory_layout_fortran_csc_light.svg
 ---
 align: center
 width: 60%
@@ -24,7 +24,7 @@ class: only-light
 ---
 ```
 
-```{image} ../../_static/memory_layout_fortran_csc_dark.svg
+```{image} ../../_static/user_guide/optimizations/memory_layout_fortran_csc_dark.svg
 ---
 align: center
 width: 60%
@@ -47,7 +47,7 @@ label: sorted_feature_vector
 
 An exemplary vector of sorted feature values, together with the corresponding thresholds, is shown below. Each of the thresholds is typically computed by averaging two adjacent feature values. Because these values do not change as additional conditions or rules should be learned, sorting the values that correspond to a particular feature is necessary only once during training, and previously sorted vectors can be kept in memory for repeated access.
 
-```{image} ../../_static/feature_vector_numerical_light.svg
+```{image} ../../_static/user_guide/optimizations/feature_vector_numerical_light.svg
 ---
 align: center
 width: 18%
@@ -57,7 +57,7 @@ class: only-light
 ---
 ```
 
-```{image} ../../_static/feature_vector_numerical_dark.svg
+```{image} ../../_static/user_guide/optimizations/feature_vector_numerical_dark.svg
 ---
 align: center
 width: 18%
@@ -118,7 +118,7 @@ As shown in the pseudocode below, the feature values that correspond to a partic
 
 As can be seen in the image below, when a condition that uses the former operator is added to a rule, it results in all examples that correspond to the previously processed feature values being covered. In contrast, a condition that uses the latter operator covers all the other examples.
 
-```{image} ../../_static/feature_vector_numerical_coverage_light.svg
+```{image} ../../_static/user_guide/optimizations/feature_vector_numerical_coverage_light.svg
 ---
 align: center
 width: 17%
@@ -128,7 +128,7 @@ class: only-light
 ---
 ```
 
-```{image} ../../_static/feature_vector_numerical_coverage_dark.svg
+```{image} ../../_static/user_guide/optimizations/feature_vector_numerical_coverage_dark.svg
 ---
 align: center
 width: 17%
@@ -142,7 +142,7 @@ class: only-dark
 
 As can be seen in the lines 10 and 13 of the pseudocode given above, it is necessary to construct a head for each candidate rule that results from adding a new condition to a rule. In addition, the quality of the resulting rule must be assessed in terms of a numerical score. Both the predictions provided by a head and the estimated quality depend on the aggregated label space statistics of the covered examples. We exploit the fact that conditions using the $\leq$ operator, when evaluated in sorted order by increasing thresholds, are satisfied by a superset of the examples covered by the previous condition using the same operator but a smaller threshold. Processing the possible conditions in the aforementioned order enables the pre-sorted search algorithm to compute the aggregated statistics (corresponding to a vector of gradients and Hessians in case of the {ref}`BOOMER algorithm <user-guide-boomer>` and confusion matrices in case of the {ref}`SeCo algorithm <user-guide-seco>`) incrementally (cf. line 8). For the efficient evaluation of conditions that use the $>$ operator, the search algorithm is provided with the statistics that result from the aggregation over all training examples that are currently covered and have a non-zero weight (denoted as $\boldsymbol{s}$). The difference between the globally aggregated statistics and the previously aggregated ones ($\boldsymbol{s} - \boldsymbol{s}'$) yields the aggregated statistics of the examples covered by such a condition (cf. line 13). As the global aggregation of statistics does not depend on a particular feature, this operation must be performed only once per rule, even when searching for a rule's best refinement across multiple features. The following image provides an example of how the aggregated statistics are computed for the conditions that can be created from a single threshold.
 
-```{image} ../../_static/aggregation_numerical_light.svg
+```{image} ../../_static/user_guide/optimizations/aggregation_numerical_light.svg
 ---
 align: center
 width: 28%
@@ -152,7 +152,7 @@ class: only-light
 ---
 ```
 
-```{image} ../../_static/aggregation_numerical_dark.svg
+```{image} ../../_static/user_guide/optimizations/aggregation_numerical_dark.svg
 ---
 align: center
 width: 28%
