@@ -15,7 +15,7 @@ namespace boosting {
       std::unique_ptr<Loss> lossPtr, std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
       const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory, MultiThreadingSettings multiThreadingSettings,
       const OutputMatrix& outputMatrix, std::type_identity<VectorMath> vectorMath) {
-        typedef typename Loss::statistic_type statistic_type;
+        using statistic_type = Loss::statistic_type;
         uint32 numExamples = outputMatrix.numRows;
         uint32 numOutputs = outputMatrix.numCols;
         std::unique_ptr<DenseDecomposableStatisticMatrix<statistic_type, VectorMath>> statisticMatrixPtr =

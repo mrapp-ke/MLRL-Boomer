@@ -20,7 +20,7 @@ namespace boosting {
     class DecomposableCompleteRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
         private:
 
-            typedef typename StatisticVector::statistic_type statistic_type;
+            using statistic_type = StatisticVector::statistic_type;
 
             DenseScoreVector<statistic_type, IndexVector> scoreVector_;
 

@@ -10,6 +10,7 @@
 #include "mlrl/common/util/iterators.hpp"
 
 #include <algorithm>
+#include <functional>
 
 namespace boosting {
 
@@ -25,7 +26,7 @@ namespace boosting {
             typename util::iterator_value<ScoreIterator> predictedScore = scoreIterator[i];
             typename util::iterator_value<GradientIterator>& gradient = gradientIterator[i];
             typename util::iterator_value<HessianIterator>& hessian = hessianIterator[i];
-            (*updateFunction)(groundTruth, predictedScore, gradient, hessian);
+            updateFunction(groundTruth, predictedScore, gradient, hessian);
             groundTruthIterator++;
         }
     }
@@ -44,7 +45,7 @@ namespace boosting {
             typename util::iterator_value<ScoreIterator> predictedScore = scoreIterator[index];
             typename util::iterator_value<GradientIterator>& gradient = gradientIterator[index];
             typename util::iterator_value<HessianIterator>& hessian = hessianIterator[index];
-            (*updateFunction)(groundTruth, predictedScore, gradient, hessian);
+            updateFunction(groundTruth, predictedScore, gradient, hessian);
         }
     }
 
@@ -52,13 +53,13 @@ namespace boosting {
     static inline typename util::iterator_value<ScoreIterator> evaluateInternally(
       ScoreIterator scoreIterator, GroundTruthIterator groundTruthIterator, uint32 numOutputs,
       EvaluateFunction evaluateFunction) {
-        typedef util::iterator_value<ScoreIterator> score_type;
+        using score_type = util::iterator_value<ScoreIterator>;
         score_type mean = 0;
 
         for (uint32 i = 0; i < numOutputs; i++) {
             score_type predictedScore = scoreIterator[i];
             typename util::iterator_value<GroundTruthIterator> groundTruth = *groundTruthIterator;
-            score_type score = (*evaluateFunction)(groundTruth, predictedScore);
+            score_type score = evaluateFunction(groundTruth, predictedScore);
             mean = math::iterativeArithmeticMean(i + 1, score, mean);
             groundTruthIterator++;
         }
@@ -82,15 +83,14 @@ namespace boosting {
              * accepts the ground truth label, the predicted score, as well as references to the gradient and Hessian to
              * be updated, as arguments.
              */
-            typedef void (*UpdateFunction)(bool trueLabel, StatisticType predictedScore, StatisticType& gradient,
-                                           StatisticType& hessian);
+            using UpdateFunction = std::function<void(bool, StatisticType, StatisticType&, StatisticType&)>;
 
             /**
              * A function that allows to calculate a numerical score that assesses the quality of the prediction for a
              * single example and label. The function accepts the ground truth label and the predicted score as
              * arguments and returns a numerical score.
              */
-            typedef StatisticType (*EvaluateFunction)(bool trueLabel, StatisticType predictedScore);
+            using EvaluateFunction = std::function<StatisticType(bool, StatisticType)>;
 
             /**
              * The "update function" that is used for updating gradients and Hessians.
@@ -165,7 +165,7 @@ namespace boosting {
                     StatisticType predictedScore = scoreIterator[index];
                     StatisticType& gradient = gradientIterator[index];
                     StatisticType& hessian = hessianIterator[index];
-                    (*updateFunction_)(trueLabel, predictedScore, gradient, hessian);
+                    updateFunction_(trueLabel, predictedScore, gradient, hessian);
                 }
             }
 
@@ -203,7 +203,7 @@ namespace boosting {
                 for (uint32 i = 0; i < numLabels; i++) {
                     StatisticType predictedScore = scoresBegin[i];
                     bool trueLabel = *labelIterator;
-                    StatisticType score = (*evaluateFunction_)(trueLabel, predictedScore);
+                    StatisticType score = evaluateFunction_(trueLabel, predictedScore);
                     mean = math::iterativeArithmeticMean(i + 1, score, mean);
                     labelIterator++;
                 }
@@ -228,15 +228,14 @@ namespace boosting {
              * accepts the ground truth regression score, the predicted score, as well as references to the gradient and
              * Hessian to be updated, as arguments.
              */
-            typedef void (*UpdateFunction)(float32 groundTruthScore, StatisticType predictedScore,
-                                           StatisticType& gradient, StatisticType& hessian);
+            using UpdateFunction = std::function<void(float32, StatisticType, StatisticType&, StatisticType&)>;
 
             /**
              * A function that allows to calculate a numerical score that assesses the quality of the prediction for a
              * single example and output. The function accepts the ground truth regression score and the predicted score
              * as arguments and returns a numerical score.
              */
-            typedef StatisticType (*EvaluateFunction)(float32 groundTruthScore, StatisticType predictedScore);
+            using EvaluateFunction = std::function<StatisticType(float32, StatisticType)>;
 
             /**
              * The "update function" that is used for updating gradients and Hessians.
@@ -324,7 +323,7 @@ namespace boosting {
                     StatisticType predictedScore = scoreIterator[index];
                     StatisticType& gradient = gradientIterator[index];
                     StatisticType& hessian = hessianIterator[index];
-                    (*updateFunction_)(groundTruth, predictedScore, gradient, hessian);
+                    updateFunction_(groundTruth, predictedScore, gradient, hessian);
                 }
             }
 

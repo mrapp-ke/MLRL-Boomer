@@ -28,12 +28,12 @@ class MLRLCOMMON_API IndexedVectorDecorator : public ViewDecorator<CompositeVect
         /**
          * The type of the indices that are stored in the vector.
          */
-        typedef typename IndexView::value_type index_type;
+        using index_type = typename IndexView::value_type;
 
         /**
          * The type of the values that are stored in the vector.
          */
-        typedef typename ValueView::value_type value_type;
+        using value_type = typename ValueView::value_type;
 
         /**
          * Returns the number of elements in the vector.
@@ -64,22 +64,22 @@ class MLRLCOMMON_API IterableIndexedVectorDecorator : public Vector {
         /**
          * An iterator that provides read-only access to the indices stored in the vector.
          */
-        typedef typename Vector::view_type::first_view_type::const_iterator index_const_iterator;
+        using index_const_iterator = typename Vector::view_type::first_view_type::const_iterator;
 
         /**
          * An iterator that provides read-only access to the values stored in the vector.
          */
-        typedef typename Vector::view_type::second_view_type::const_iterator value_const_iterator;
+        using value_const_iterator = typename Vector::view_type::second_view_type::const_iterator;
 
         /**
          * An iterator that provides access to the indices stored in the vector and allows to modify them.
          */
-        typedef typename Vector::view_type::first_view_type::iterator index_iterator;
+        using index_iterator = typename Vector::view_type::first_view_type::iterator;
 
         /**
          * An iterator that provides access to the values stored in the vector and allows to modify them.
          */
-        typedef typename Vector::view_type::second_view_type::iterator value_iterator;
+        using value_iterator = typename Vector::view_type::second_view_type::iterator;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the vector.

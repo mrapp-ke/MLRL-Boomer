@@ -51,10 +51,10 @@ class MLRLCOMMON_API CompositeView {
         /**
          * The type of the first view, the view is backed by.
          */
-        typedef FirstView first_view_type;
+        using first_view_type = FirstView;
 
         /**
          * The type of the second view, the view is backed by.
          */
-        typedef SecondView second_view_type;
+        using second_view_type = SecondView;
 };

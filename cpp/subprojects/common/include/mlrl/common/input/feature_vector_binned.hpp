@@ -51,17 +51,17 @@ class MLRLCOMMON_API BinnedFeatureVector : public CompressedVector {
         /**
          * The type of the thresholds, the view provides access to.
          */
-        typedef float32 threshold_type;
+        using threshold_type = float32;
 
         /**
          * An iterator that provides read-only access to all thresholds.
          */
-        typedef const float32* threshold_const_iterator;
+        using threshold_const_iterator = const float32*;
 
         /**
          * An iterator that provides access to all thresholds and allows to modify them.
          */
-        typedef float32* threshold_iterator;
+        using threshold_iterator = float32*;
 
         /**
          * Returns a `threshold_const_iterator` to the beginning of the thresholds.

@@ -147,7 +147,7 @@ namespace boosting {
         : public AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector> {
         private:
 
-            typedef typename StatisticVector::statistic_type statistic_type;
+            using statistic_type = StatisticVector::statistic_type;
 
             DenseScoreVector<statistic_type, IndexVector> scoreVector_;
 

@@ -12,9 +12,9 @@
 LabelVectorSet::LabelVectorSet() {}
 
 LabelVectorSet::LabelVectorSet(const IRowWiseLabelMatrix& labelMatrix) {
-    typedef typename LabelVector::view_type Key;
-    typedef typename LabelVector::view_type::Hash Hash;
-    typedef typename LabelVector::view_type::Equal Equal;
+    using Key = LabelVector::view_type;
+    using Hash = LabelVector::view_type::Hash;
+    using Equal = LabelVector::view_type::Equal;
     std::unordered_map<std::reference_wrapper<Key>, uint32, Hash, Equal> map;
     uint32 numExamples = labelMatrix.getNumExamples();
 

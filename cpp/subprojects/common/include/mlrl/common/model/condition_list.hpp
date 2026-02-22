@@ -32,7 +32,7 @@ class ConditionList final {
         /**
          * An iterator that provides read-only access to the conditions in the list.
          */
-        typedef std::vector<Condition>::const_iterator const_iterator;
+        using const_iterator = std::vector<Condition>::const_iterator;
 
         /**
          * Returns a `const_iterator` to the beginning of the list.

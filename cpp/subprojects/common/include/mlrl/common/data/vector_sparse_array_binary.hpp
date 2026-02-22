@@ -9,10 +9,10 @@
  * A vector that provides random read and write access, as well as read and write access via iterators, to indices
  * stored in a newly allocated array.
  */
-typedef DenseVector<uint32> BinarySparseArrayVector;
+using BinarySparseArrayVector = DenseVector<uint32>;
 
 /**
  * A vector that provides random read and write access, as well as read and write access via iterators, to indices
  * stored in a newly allocated array, which can be resized
  */
-typedef ResizableDenseVector<uint32> ResizableBinarySparseArrayVector;
+using ResizableBinarySparseArrayVector = ResizableDenseVector<uint32>;

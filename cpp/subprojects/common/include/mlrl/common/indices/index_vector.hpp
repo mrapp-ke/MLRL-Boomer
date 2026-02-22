@@ -23,12 +23,12 @@ class IIndexVector {
         /**
          * A visitor function for handling objects of the type `PartialIndexVector`.
          */
-        typedef std::function<void(const PartialIndexVector&)> PartialIndexVectorVisitor;
+        using PartialIndexVectorVisitor = std::function<void(const PartialIndexVector&)>;
 
         /**
          * A visitor function for handling objects of the type `CompleteIndexVector`.
          */
-        typedef std::function<void(const CompleteIndexVector&)> CompleteIndexVectorVisitor;
+        using CompleteIndexVectorVisitor = std::function<void(const CompleteIndexVector&)>;
 
         /**
          * Returns the number of indices.

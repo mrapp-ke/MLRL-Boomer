@@ -27,7 +27,7 @@ namespace boosting {
             /**
              * The type of the gradient and Hessian.
              */
-            typedef StatisticType statistic_type;
+            using statistic_type = StatisticType;
 
             /**
              * The gradient.

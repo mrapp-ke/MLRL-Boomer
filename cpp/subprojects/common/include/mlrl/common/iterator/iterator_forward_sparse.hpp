@@ -58,27 +58,27 @@ class SparseForwardIterator final {
         /**
          * The type that is used to represent the difference between two iterators.
          */
-        typedef int difference_type;
+        using difference_type = int;
 
         /**
          * The type of the elements, the iterator provides access to.
          */
-        typedef typename util::iterator_value<ValueIterator> value_type;
+        using value_type = util::iterator_value<ValueIterator>;
 
         /**
          * The type of a pointer to an element, the iterator provides access to.
          */
-        typedef const value_type* pointer;
+        using pointer = const value_type*;
 
         /**
          * The type of a reference to an element, the iterator provides access to.
          */
-        typedef value_type& reference;
+        using reference = value_type&;
 
         /**
          * The tag that specifies the capabilities of the iterator.
          */
-        typedef std::forward_iterator_tag iterator_category;
+        using iterator_category = std::forward_iterator_tag;
 
         /**
          * Returns the element, the iterator currently refers to.

@@ -196,27 +196,27 @@ class RuleList final : public IRuleList {
                 /**
                  * The type that is used to represent the difference between two iterators.
                  */
-                typedef int difference_type;
+                using difference_type = int;
 
                 /**
                  * The type of the elements, the iterator provides access to.
                  */
-                typedef const Rule value_type;
+                using value_type = const Rule;
 
                 /**
                  * The type of a pointer to an element, the iterator provides access to.
                  */
-                typedef const Rule* pointer;
+                using pointer = const Rule*;
 
                 /**
                  * The type of a reference to an element, the iterator provides access to.
                  */
-                typedef const Rule& reference;
+                using reference = const Rule&;
 
                 /**
                  * The tag that specifies the capabilities of the iterator.
                  */
-                typedef std::forward_iterator_tag iterator_category;
+                using iterator_category = std::forward_iterator_tag;
 
                 /**
                  * Returns the element, the iterator currently refers to.
@@ -299,7 +299,7 @@ class RuleList final : public IRuleList {
         /**
          * An iterator that provides read-only access to rules.
          */
-        typedef ConstIterator const_iterator;
+        using const_iterator = ConstIterator;
 
         /**
          * Returns a `const_iterator` to the beginning of all rules, including the default rule, if available.

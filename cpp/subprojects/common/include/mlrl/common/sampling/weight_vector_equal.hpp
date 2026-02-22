@@ -26,12 +26,12 @@ class EqualWeightVector final : public IWeightVector {
         /**
          * The type of the weights, the vector provides access to.
          */
-        typedef bool weight_type;
+        using weight_type = bool;
 
         /**
          * An iterator that provides read-only access to the elements in the vector.
          */
-        typedef EqualIterator<weight_type> const_iterator;
+        using const_iterator = EqualIterator<weight_type>;
 
         /**
          * Returns a `const_iterator` to the beginning of the vector.

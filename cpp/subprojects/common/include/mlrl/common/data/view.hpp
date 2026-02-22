@@ -52,7 +52,7 @@ class MLRLCOMMON_API BaseView {
         /**
          * The type of the values, the view provides access to.
          */
-        typedef T value_type;
+        using value_type = T;
 
         /**
          * Releases the ownership of the array that stores the values, the view provides access to. As a result, the
@@ -105,12 +105,12 @@ class MLRLCOMMON_API View : public BaseView<T> {
         /**
          * An iterator that provides read-only access to the elements in the view.
          */
-        typedef const typename BaseView<T>::value_type* const_iterator;
+        using const_iterator = const BaseView<T>::value_type*;
 
         /**
          * An iterator that provides access to the elements in the view and allows to modify them.
          */
-        typedef typename BaseView<T>::value_type* iterator;
+        using iterator = BaseView<T>::value_type*;
 
         /**
          * Returns a `const_iterator` to the beginning of the view.
@@ -278,7 +278,7 @@ class MLRLCOMMON_API ViewDecorator {
         /**
          * The type of the view, the data structure is backed by.
          */
-        typedef View view_type;
+        using view_type = View;
 
         /**
          * Returns a const reference to the view, the data structure is backed by.
@@ -318,12 +318,12 @@ class MLRLCOMMON_API IndexableViewDecorator : public View {
         /**
          * An iterator that provides read-only access to the values stored in the view.
          */
-        typedef typename View::view_type::const_iterator const_iterator;
+        using const_iterator = View::view_type::const_iterator;
 
         /**
          * An iterator that provides access to the values stored in the view and allows to modify them.
          */
-        typedef typename View::view_type::iterator iterator;
+        using iterator = View::view_type::iterator;
 
         /**
          * Returns a `const_iterator` to the beginning of the view.

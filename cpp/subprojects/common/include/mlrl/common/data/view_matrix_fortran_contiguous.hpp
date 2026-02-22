@@ -40,12 +40,12 @@ class MLRLCOMMON_API FortranContiguousView : public DenseMatrix<T> {
         /**
          * Provides read-only access to an individual column in the view.
          */
-        typedef const Vector<const T> const_column;
+        using const_column = const Vector<const T>;
 
         /**
          * Provides access to an individual column in the view and allows to modify it.
          */
-        typedef Vector<T> column;
+        using column = Vector<T>;
 
         /**
          * Creates and returns a view that provides read-only access to a specific column in the view.

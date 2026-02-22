@@ -85,15 +85,14 @@ namespace boosting {
             IDecomposableRuleEvaluationFactory> {
         private:
 
-            typedef typename Loss::statistic_type statistic_type;
+            using statistic_type = Loss::statistic_type;
 
-            typedef DenseDecomposableStatisticMatrix<statistic_type, VectorMath> StatisticMatrix;
+            using StatisticMatrix = DenseDecomposableStatisticMatrix<statistic_type, VectorMath>;
 
-            typedef DecomposableBoostingStatisticsState<OutputMatrix, StatisticMatrix,
-                                                        NumericCContiguousMatrix<statistic_type>, Loss>
-              StatisticsState;
+            using StatisticsState = DecomposableBoostingStatisticsState<OutputMatrix, StatisticMatrix,
+                                                                        NumericCContiguousMatrix<statistic_type>, Loss>;
 
-            typedef DenseDecomposableStatisticVector<statistic_type, VectorMath> StatisticVector;
+            using StatisticVector = DenseDecomposableStatisticVector<statistic_type, VectorMath>;
 
             template<typename WeightVector, typename IndexVector>
             using StatisticsSubset = BoostingStatisticsSubset<StatisticsState, StatisticVector, WeightVector,

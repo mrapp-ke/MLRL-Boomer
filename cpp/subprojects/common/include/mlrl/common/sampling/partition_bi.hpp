@@ -35,12 +35,12 @@ class BiPartition final : public VectorDecorator<AllocatedVector<uint32>>,
          * An iterator that provides access to the indices that are contained by the first or second set and allows to
          * modify them.
          */
-        typedef View<uint32>::iterator iterator;
+        using iterator = View<uint32>::iterator;
 
         /**
          * An iterator that provides read-only access to the indices that are contained in the first or second set.
          */
-        typedef View<uint32>::const_iterator const_iterator;
+        using const_iterator = View<uint32>::const_iterator;
 
         /**
          * Returns an `iterator` to the beginning of the elements that are contained by the first set.

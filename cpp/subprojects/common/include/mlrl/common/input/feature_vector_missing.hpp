@@ -8,9 +8,9 @@
 /**
  * A view that provides access to the indices of training examples with missing values for a certain feature.
  */
-typedef BinaryDokVector MissingFeatureVector;
+using MissingFeatureVector = BinaryDokVector;
 
 /**
  * Allocates the memory, a `MissingFeatureVector` provides access to.
  */
-typedef AllocatedBinaryDokVector AllocatedMissingFeatureVector;
+using AllocatedMissingFeatureVector = AllocatedBinaryDokVector;

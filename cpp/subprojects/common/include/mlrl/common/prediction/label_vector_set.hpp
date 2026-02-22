@@ -21,7 +21,7 @@ class MLRLCOMMON_API ILabelVectorSet : public IOutputSpaceInfo {
         /**
          * A visitor function for handling objects of the type `LabelVector` and their frequencies.
          */
-        typedef std::function<void(const LabelVector&, uint32)> LabelVectorVisitor;
+        using LabelVectorVisitor = std::function<void(const LabelVector&, uint32)>;
 
         /**
          * Adds a label vector to the set.
@@ -63,13 +63,13 @@ class LabelVectorSet final : public ILabelVectorSet {
         /**
          * An iterator that provides read-only access to the label vectors.
          */
-        typedef std::vector<std::unique_ptr<LabelVector>>::const_iterator const_iterator;
+        using const_iterator = std::vector<std::unique_ptr<LabelVector>>::const_iterator;
 
         /**
          * An iterator that provides read-only access to the frequency of the label lectors.
          *
          */
-        typedef std::vector<uint32>::const_iterator frequency_const_iterator;
+        using frequency_const_iterator = std::vector<uint32>::const_iterator;
 
         /**
          * Returns a `const_iterator` to the beginning of the label vectors in the set.
