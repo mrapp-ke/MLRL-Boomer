@@ -89,11 +89,10 @@ namespace boosting {
 
             using StatisticMatrix = DenseDecomposableStatisticMatrix<statistic_type, VectorMath>;
 
-            using StatisticsState =
-                DecomposableBoostingStatisticsState<OutputMatrix, StatisticMatrix,
-                                                    NumericCContiguousMatrix<statistic_type>, Loss>;
+            using StatisticsState = DecomposableBoostingStatisticsState<OutputMatrix, StatisticMatrix,
+                                                                        NumericCContiguousMatrix<statistic_type>, Loss>;
 
-            typedef DenseDecomposableStatisticVector<statistic_type, VectorMath> StatisticVector;
+            using StatisticVector = DenseDecomposableStatisticVector<statistic_type, VectorMath>;
 
             template<typename WeightVector, typename IndexVector>
             using StatisticsSubset = BoostingStatisticsSubset<StatisticsState, StatisticVector, WeightVector,
