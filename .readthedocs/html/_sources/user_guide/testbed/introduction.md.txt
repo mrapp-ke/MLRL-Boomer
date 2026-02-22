@@ -42,7 +42,7 @@ We further distinguish between {ref}`control arguments <arguments-control>` and 
 
 Depending on the runnable and the mode of operation (some steps may be unnecessary in certain modes), mlrl-testbed follows the experimental procedure outlined in the illustration below.
 
-```{image} ../../_static/workflow_testbed_light.svg
+```{image} ../../_static/user_guide/testbed/workflow_testbed_light.svg
 ---
 align: center
 alt: Workflow of an experiment
@@ -50,7 +50,7 @@ class: only-light
 ---
 ```
 
-```{image} ../../_static/workflow_testbed_dark.svg
+```{image} ../../_static/user_guide/testbed/workflow_testbed_dark.svg
 ---
 align: center
 alt: Workflow of an experiment
