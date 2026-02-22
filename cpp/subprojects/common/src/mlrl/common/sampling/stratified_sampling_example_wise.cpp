@@ -1,7 +1,7 @@
 #include "mlrl/common/sampling/stratified_sampling_example_wise.hpp"
 
+#include "mlrl/common/math/scalar_math.hpp"
 #include "mlrl/common/sampling/partition_single.hpp"
-#include "mlrl/common/util/math.hpp"
 #include "stratified_sampling_common.hpp"
 
 #include <algorithm>
@@ -50,7 +50,7 @@ static inline void sampleWeightsInternally(WeightVector& weightVector, WeightIte
                                            const std::vector<std::unique_ptr<std::vector<uint32>>>& order,
                                            uint32 numTotal, float32 sampleSize, uint32 minSamples, uint32 maxSamples,
                                            RNG& rng) {
-    uint32 numTotalSamples = util::calculateBoundedFraction(numTotal, sampleSize, minSamples, maxSamples);
+    uint32 numTotalSamples = math::calculateBoundedFraction(numTotal, sampleSize, minSamples, maxSamples);
     uint32 numTotalOutOfSamples = numTotal - numTotalSamples;
     uint32 numNonZeroWeights = 0;
     uint32 numZeroWeights = 0;

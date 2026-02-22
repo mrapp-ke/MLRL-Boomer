@@ -18,7 +18,10 @@ namespace boosting {
     static inline void applyHead(const CompleteHead<ScoreType>& head, View<float64>::iterator iterator) {
         typename CompleteHead<ScoreType>::value_const_iterator valueIterator = head.values_cbegin();
         uint32 numElements = head.getNumElements();
-        util::addToView(iterator, valueIterator, numElements);
+
+        for (uint32 i = 0; i < numElements; i++) {
+            iterator[i] += valueIterator[i];
+        }
     }
 
     template<typename ScoreType>

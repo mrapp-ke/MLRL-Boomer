@@ -64,35 +64,35 @@ namespace seco {
     class DecomposableMajorityRuleEvaluationFactory final : public IDecomposableRuleEvaluationFactory {
         public:
 
-            std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVector<uint32>>> create(
-              const DenseConfusionMatrixVector<uint32>& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVectorView<uint32>>> create(
+              const DenseConfusionMatrixVectorView<uint32>& statisticVector,
               const CompleteIndexVector& indexVector) const override {
                 return std::make_unique<
-                  DecomposableMajorityRuleEvaluation<DenseConfusionMatrixVector<uint32>, CompleteIndexVector>>(
+                  DecomposableMajorityRuleEvaluation<DenseConfusionMatrixVectorView<uint32>, CompleteIndexVector>>(
                   indexVector);
             }
 
-            std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVector<uint32>>> create(
-              const DenseConfusionMatrixVector<uint32>& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVectorView<uint32>>> create(
+              const DenseConfusionMatrixVectorView<uint32>& statisticVector,
               const PartialIndexVector& indexVector) const override {
                 return std::make_unique<
-                  DecomposableMajorityRuleEvaluation<DenseConfusionMatrixVector<uint32>, PartialIndexVector>>(
+                  DecomposableMajorityRuleEvaluation<DenseConfusionMatrixVectorView<uint32>, PartialIndexVector>>(
                   indexVector);
             }
 
-            std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVector<float32>>> create(
-              const DenseConfusionMatrixVector<float32>& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVectorView<float32>>> create(
+              const DenseConfusionMatrixVectorView<float32>& statisticVector,
               const CompleteIndexVector& indexVector) const override {
                 return std::make_unique<
-                  DecomposableMajorityRuleEvaluation<DenseConfusionMatrixVector<float32>, CompleteIndexVector>>(
+                  DecomposableMajorityRuleEvaluation<DenseConfusionMatrixVectorView<float32>, CompleteIndexVector>>(
                   indexVector);
             }
 
-            std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVector<float32>>> create(
-              const DenseConfusionMatrixVector<float32>& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVectorView<float32>>> create(
+              const DenseConfusionMatrixVectorView<float32>& statisticVector,
               const PartialIndexVector& indexVector) const override {
                 return std::make_unique<
-                  DecomposableMajorityRuleEvaluation<DenseConfusionMatrixVector<float32>, PartialIndexVector>>(
+                  DecomposableMajorityRuleEvaluation<DenseConfusionMatrixVectorView<float32>, PartialIndexVector>>(
                   indexVector);
             }
     };

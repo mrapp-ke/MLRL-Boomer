@@ -3,10 +3,10 @@
  */
 #pragma once
 
+#include "mlrl/common/math/scalar_math.hpp"
 #include "mlrl/common/sampling/partition_bi.hpp"
 #include "mlrl/common/sampling/partition_single.hpp"
 #include "mlrl/common/statistics/statistics.hpp"
-#include "mlrl/common/util/math.hpp"
 
 /**
  * Calculates and returns a numerical score that assesses the quality of a model's predictions for the examples in a
@@ -28,7 +28,7 @@ static inline float64 evaluate(const SinglePartition& partition, bool useHoldout
     for (uint32 i = 0; i < numExamples; i++) {
         uint32 exampleIndex = iterator[i];
         float64 score = statistics.evaluatePrediction(exampleIndex);
-        mean = util::iterativeArithmeticMean<float64>(i + 1, score, mean);
+        mean = math::iterativeArithmeticMean<float64>(i + 1, score, mean);
     }
 
     return mean;
@@ -63,7 +63,7 @@ static inline float64 evaluate(const BiPartition& partition, bool useHoldoutSet,
     for (uint32 i = 0; i < numExamples; i++) {
         uint32 exampleIndex = iterator[i];
         float64 score = statistics.evaluatePrediction(exampleIndex);
-        mean = util::iterativeArithmeticMean<float64>(i + 1, score, mean);
+        mean = math::iterativeArithmeticMean<float64>(i + 1, score, mean);
     }
 
     return mean;

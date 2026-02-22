@@ -2,6 +2,7 @@
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from libcpp.utility cimport move
+
 from typing import override
 
 from mlrl.common.cython.feature_binning cimport EqualFrequencyFeatureBinningConfig, EqualWidthFeatureBinningConfig, \
@@ -36,11 +37,11 @@ from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, Defa
     GreedyTopDownRuleInductionMixin, InstanceSamplingWithoutReplacementMixin, InstanceSamplingWithReplacementMixin, \
     IrepRulePruningMixin, NoFeatureBinningMixin, NoFeatureSamplingMixin, NoInstanceSamplingMixin, \
     NoOutputSamplingMixin, NoParallelPredictionMixin, NoParallelRuleRefinementMixin, NoParallelStatisticUpdateMixin, \
-    NoPartitionSamplingMixin, NoRulePruningMixin, NoSequentialPostOptimizationMixin, NoSizeStoppingCriterionMixin, \
-    NoTimeStoppingCriterionMixin, OutputSamplingWithoutReplacementMixin, ParallelPredictionMixin, \
-    ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, RandomBiPartitionSamplingMixin, RNGMixin, \
-    RoundRobinOutputSamplingMixin, SequentialPostOptimizationMixin, SequentialRuleModelAssemblageMixin, \
-    SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
+    NoPartitionSamplingMixin, NoRulePruningMixin, NoSequentialPostOptimizationMixin, NoSimdMixin, \
+    NoSizeStoppingCriterionMixin, NoTimeStoppingCriterionMixin, OutputSamplingWithoutReplacementMixin, \
+    ParallelPredictionMixin, ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, \
+    RandomBiPartitionSamplingMixin, RNGMixin, RoundRobinOutputSamplingMixin, SequentialPostOptimizationMixin, \
+    SequentialRuleModelAssemblageMixin, SimdMixin, SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
 from mlrl.common.cython.learner_classification import ExampleWiseStratifiedBiPartitionSamplingMixin, \
     ExampleWiseStratifiedInstanceSamplingMixin, OutputWiseStratifiedBiPartitionSamplingMixin, \
     OutputWiseStratifiedInstanceSamplingMixin
@@ -106,6 +107,8 @@ cdef class SeCoClassifierConfig(RuleLearnerConfig,
                                 ParallelStatisticUpdateMixin,
                                 NoParallelPredictionMixin,
                                 ParallelPredictionMixin,
+                                NoSimdMixin,
+                                SimdMixin,
                                 NoSizeStoppingCriterionMixin,
                                 SizeStoppingCriterionMixin,
                                 NoTimeStoppingCriterionMixin,
@@ -422,6 +425,14 @@ cdef class SeCoClassifierConfig(RuleLearnerConfig,
         cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
         config.config_ptr = config_ptr
         return config
+
+    @override
+    def use_no_simd_operations(self):
+        self.config_ptr.get().useNoSimdOperations()
+
+    @override
+    def use_simd_operations(self):
+        self.config_ptr.get().useSimdOperations()
 
     @override
     def use_no_size_stopping_criterion(self):

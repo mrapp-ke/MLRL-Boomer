@@ -41,8 +41,9 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE] [--
                     [--parallel-prediction PARALLEL_PREDICTION] [--parallel-rule-refinement PARALLEL_RULE_REFINEMENT]
                     [--parallel-statistic-update PARALLEL_STATISTIC_UPDATE] [--post-optimization POST_OPTIMIZATION]
                     [--probability-predictor PROBABILITY_PREDICTOR] [--rule-induction RULE_INDUCTION]
-                    [--rule-pruning RULE_PRUNING] [--shrinkage SHRINKAGE] [--statistic-format STATISTIC_FORMAT]
-                    [--statistic-type STATISTIC_TYPE] [--time-limit TIME_LIMIT] [-h]
+                    [--rule-pruning RULE_PRUNING] [--shrinkage SHRINKAGE] [--simd SIMD]
+                    [--statistic-format STATISTIC_FORMAT] [--statistic-type STATISTIC_TYPE] [--time-limit TIME_LIMIT]
+                    [-h]
                     runnable_module_or_source_file
 
 A command line utility for training and evaluating machine learning algorithms
@@ -307,6 +308,8 @@ algorithmic arguments:
                         "none"}.
   --shrinkage SHRINKAGE
                         The shrinkage parameter, a.k.a. the learning rate, to be used. Must be in (0, 1].
+  --simd SIMD           Whether single instruction, multiple data (SIMD) operations should be used or not. Must be one
+                        of {"false", "true"}.
   --statistic-format STATISTIC_FORMAT
                         The format to be used for the representation of gradients and Hessians If set to "auto", the
                         most suitable format is chosen automatically based on the parameters --loss, --head-type,

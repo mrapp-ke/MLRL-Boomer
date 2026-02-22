@@ -14,28 +14,28 @@ namespace boosting {
     /**
      * Determines and returns the minimum and maximum absolute score to be predicted for an output.
      *
-     * @tparam StatisticIterator        The type of the iterator that provides access to the gradients and Hessians
-     * @param statisticIterator         An iterator that provides access to the gradients and Hessians for each output
+     * @tparam GradientIterator         The type of the iterator that provides access to the gradients
+     * @tparam HessianIterator          The type of the iterator that provides access to the Hessians
+     * @param gradientIterator          An iterator that provides access to the gradients for each output
+     * @param hessianIterator           An iterator that provides access to the Hessians for each output
      * @param numOutputs                The total number of available outputs
      * @param l1RegularizationWeight    The l2 regularization weight
      * @param l2RegularizationWeight    The L1 regularization weight
      * @return                          A `std::pair` that stores the minimum and maximum absolute score
      */
-    template<typename StatisticIterator>
-    static inline std::pair<typename util::iterator_value<StatisticIterator>::statistic_type,
-                            typename util::iterator_value<StatisticIterator>::statistic_type>
-      getMinAndMaxScore(StatisticIterator& statisticIterator, uint32 numOutputs, float32 l1RegularizationWeight,
-                        float32 l2RegularizationWeight) {
-        using statistic_type = util::iterator_value<StatisticIterator>::statistic_type;
-        const Statistic<statistic_type>& firstStatistic = statisticIterator[0];
-        statistic_type maxAbsScore = std::abs(calculateOutputWiseScore(firstStatistic.gradient, firstStatistic.hessian,
+    template<typename GradientIterator, typename HessianIterator>
+    static inline std::pair<typename util::iterator_value<GradientIterator>,
+                            typename util::iterator_value<HessianIterator>>
+      getMinAndMaxScore(GradientIterator gradientIterator, HessianIterator hessianIterator, uint32 numOutputs,
+                        float32 l1RegularizationWeight, float32 l2RegularizationWeight) {
+        using statistic_type = util::iterator_value<GradientIterator>;
+        statistic_type maxAbsScore = std::abs(calculateOutputWiseScore(gradientIterator[0], hessianIterator[0],
                                                                        l1RegularizationWeight, l2RegularizationWeight));
         statistic_type minAbsScore = maxAbsScore;
 
         for (uint32 i = 1; i < numOutputs; i++) {
-            const Statistic<statistic_type>& statistic = statisticIterator[i];
             statistic_type absScore = std::abs(calculateOutputWiseScore(
-              statistic.gradient, statistic.hessian, l1RegularizationWeight, l2RegularizationWeight));
+              gradientIterator[i], hessianIterator[i], l1RegularizationWeight, l2RegularizationWeight));
 
             if (absScore > maxAbsScore) {
                 maxAbsScore = absScore;

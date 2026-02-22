@@ -28,4 +28,9 @@ MODULES = [
         root_directory=Project.BuildSystem.root_directory,
         source_file_search=Project.BuildSystem.file_search().set_hidden(True),
     ),
+    CodeModule(
+        file_type=FileType.cfg(),
+        root_directory=Project.Cpp.root_directory,
+        source_file_search=Project.Cpp.file_search().exclude_by_name('.cpplint.cfg'),
+    ),
 ]

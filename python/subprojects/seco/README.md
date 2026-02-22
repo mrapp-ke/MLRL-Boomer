@@ -32,6 +32,7 @@ In addition, the following features that may speed up training or reduce the mem
 - **Sparse label matrices** can be used for training. This may reduce the memory footprint in case of large datasets.
 - **Sparse prediction matrices** can be used to store predicted labels. This may reduce the memory footprint in case of large datasets.
 - **Multi-threading** can be used to parallelize the evaluation of a rule's potential refinements across several features or to obtain predictions for several examples in parallel.
+- **Single instruction, multiple data (SIMD)** operations supported by modern CPUs are used for parallelizing vector calculations.
 
 <!-- documentation-end -->
 
