@@ -1,7 +1,7 @@
 #include "mlrl/boosting/data/vector_statistic_decomposable_dense.hpp"
 
 #include "mlrl/common/math/vector_math.hpp"
-#include "mlrl/common/util/xsimd.hpp"
+#include "mlrl/common/simd/vector_math.hpp"
 
 namespace boosting {
 
