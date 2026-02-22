@@ -32,7 +32,7 @@ namespace boosting {
             /**
              * The type of the gradients and Hessians that are calculated by the loss function.
              */
-            typedef StatisticType statistic_type;
+            using statistic_type = StatisticType;
     };
 
     /**

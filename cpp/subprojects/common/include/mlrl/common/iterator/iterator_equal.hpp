@@ -36,27 +36,27 @@ class EqualIterator final {
         /**
          * The type that is used to represent the difference between two iterators.
          */
-        typedef int difference_type;
+        using difference_type = int;
 
         /**
          * The type of the elements, the iterator provides access to.
          */
-        typedef T value_type;
+        using value_type = T;
 
         /**
          * The type of a pointer to an element, the iterator provides access to.
          */
-        typedef const T* pointer;
+        using pointer = const T*;
 
         /**
          * The type of a reference to an element, the iterator provides access to.
          */
-        typedef T& reference;
+        using reference = T&;
 
         /**
          * The tag that specifies the capabilities of the iterator.
          */
-        typedef std::random_access_iterator_tag iterator_category;
+        using iterator_category = std::random_access_iterator_tag;
 
         /**
          * Returns the element at a specific index.

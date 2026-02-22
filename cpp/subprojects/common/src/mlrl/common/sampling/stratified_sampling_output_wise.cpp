@@ -243,7 +243,7 @@ class StratificationMatrix final : public AllocatedBinaryCscView {
             // well as a sorted map that stores all label indices in increasing order of the number of associated
             // examples...
             Array<uint32> numExamplesPerLabel(Matrix::numCols);
-            typedef std::set<IndexedValue<uint32>, CompareIndexedValue> SortedSet;
+            using SortedSet = std::set<IndexedValue<uint32>, CompareIndexedValue>;
             SortedSet sortedLabelIndices;
 
             for (uint32 i = 0; i < Matrix::numCols; i++) {

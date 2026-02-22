@@ -10,7 +10,7 @@ namespace boosting {
     static inline void updateDecomposableStatisticsInternally(ScoreIterator scoreIterator, LabelIterator labelIterator,
                                                               GradientIterator gradientIterator,
                                                               HessianIterator hessianIterator, uint32 numLabels) {
-        typedef typename util::iterator_value<ScoreIterator> statistic_type;
+        using statistic_type = util::iterator_value<ScoreIterator>;
         LabelIterator labelIterator2 = labelIterator;
 
         // For each label `i`, calculate `x_i = predictedScore_i^2 - 2 * predictedScore_i + 1` if trueLabel_i = 1 and
@@ -85,7 +85,7 @@ namespace boosting {
                                                                  LabelIterator labelIterator,
                                                                  GradientIterator gradientIterator,
                                                                  HessianIterator hessianIterator, uint32 numLabels) {
-        typedef typename util::iterator_value<ScoreIterator> statistic_type;
+        using statistic_type = util::iterator_value<ScoreIterator>;
         LabelIterator labelIterator2 = labelIterator;
         LabelIterator labelIterator3 = labelIterator;
 
@@ -201,7 +201,7 @@ namespace boosting {
     static inline typename util::iterator_value<ScoreIterator> evaluateInternally(ScoreIterator scoreIterator,
                                                                                   LabelIterator labelIterator,
                                                                                   uint32 numLabels) {
-        typedef typename util::iterator_value<ScoreIterator> score_type;
+        using score_type = util::iterator_value<ScoreIterator>;
 
         // The example-wise squared hinge loss calculates as `sqrt((L_1 + ...)` with
         // `L_i = max(1 - predictedScore_i, 0)^2` if `trueLabel_i = 1` or `L_i = max(predictedScore_i, 0)^2` if

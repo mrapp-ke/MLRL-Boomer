@@ -28,7 +28,7 @@ namespace boosting {
             /**
              * The type of the values that are stored by the matrix.
              */
-            typedef T value_type;
+            using value_type = T;
 
             /**
              * Adds all values in another vector to certain elements, whose positions are given as a

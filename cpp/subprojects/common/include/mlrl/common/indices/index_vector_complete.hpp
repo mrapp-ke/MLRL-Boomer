@@ -26,7 +26,7 @@ class CompleteIndexVector final : public IIndexVector {
         /**
          * An iterator that provides read-only access to the indices in the vector.
          */
-        typedef IndexIterator const_iterator;
+        using const_iterator = IndexIterator;
 
         /**
          * Returns a `const_iterator` to the beginning of the indices.

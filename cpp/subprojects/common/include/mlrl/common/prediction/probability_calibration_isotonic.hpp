@@ -22,7 +22,7 @@ class MLRLCOMMON_API IIsotonicProbabilityCalibrationModel : public IMarginalProb
         /**
          * A visitor function for handling individual bins.
          */
-        typedef std::function<void(uint32 listIndex, float64 threshold, float64 probability)> BinVisitor;
+        using BinVisitor = std::function<void(uint32 listIndex, float64 threshold, float64 probability)>;
 
         /**
          * Returns the number of available list of bins.

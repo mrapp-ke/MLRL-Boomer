@@ -28,8 +28,8 @@ namespace boosting {
     class NonDecomposableStatisticsProvider final : public IStatisticsProvider {
         private:
 
-            typedef INonDecomposableStatistics<NonDecomposableRuleEvaluationFactory, DecomposableRuleEvaluationFactory>
-              NonDecomposableStatistics;
+            using NonDecomposableStatistics =
+              INonDecomposableStatistics<NonDecomposableRuleEvaluationFactory, DecomposableRuleEvaluationFactory>;
 
             const NonDecomposableRuleEvaluationFactory& regularRuleEvaluationFactory_;
 
@@ -95,8 +95,8 @@ namespace boosting {
     class ConvertibleNonDecomposableStatisticsProvider final : public IStatisticsProvider {
         private:
 
-            typedef INonDecomposableStatistics<NonDecomposableRuleEvaluationFactory, DecomposableRuleEvaluationFactory>
-              NonDecomposableStatistics;
+            using NonDecomposableStatistics =
+              INonDecomposableStatistics<NonDecomposableRuleEvaluationFactory, DecomposableRuleEvaluationFactory>;
 
             const DecomposableRuleEvaluationFactory& regularRuleEvaluationFactory_;
 

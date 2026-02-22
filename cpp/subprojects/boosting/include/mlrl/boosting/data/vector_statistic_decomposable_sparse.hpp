@@ -143,27 +143,27 @@ namespace boosting {
                     /**
                      * The type that is used to represent the difference between two iterators.
                      */
-                    typedef int difference_type;
+                    using difference_type = int;
 
                     /**
                      * The type of the elements, the iterator provides access to.
                      */
-                    typedef StatisticType value_type;
+                    using value_type = StatisticType;
 
                     /**
                      * The type of a pointer to an element, the iterator provides access to.
                      */
-                    typedef const StatisticType* pointer;
+                    using pointer = const StatisticType*;
 
                     /**
                      * The type of a reference to an element, the iterator provides access to.
                      */
-                    typedef const StatisticType& reference;
+                    using reference = const StatisticType&;
 
                     /**
                      * The tag that specifies the capabilities of the iterator.
                      */
-                    typedef std::random_access_iterator_tag iterator_category;
+                    using iterator_category = std::random_access_iterator_tag;
 
                     /**
                      * Returns the element at a specific index.
@@ -258,27 +258,27 @@ namespace boosting {
                     /**
                      * The type that is used to represent the difference between two iterators.
                      */
-                    typedef int difference_type;
+                    using difference_type = int;
 
                     /**
                      * The type of the elements, the iterator provides access to.
                      */
-                    typedef StatisticType value_type;
+                    using value_type = StatisticType;
 
                     /**
                      * The type of a pointer to an element, the iterator provides access to.
                      */
-                    typedef const StatisticType* pointer;
+                    using pointer = const StatisticType*;
 
                     /**
                      * The type of a reference to an element, the iterator provides access to.
                      */
-                    typedef const StatisticType& reference;
+                    using reference = const StatisticType&;
 
                     /**
                      * The tag that specifies the capabilities of the iterator.
                      */
-                    typedef std::random_access_iterator_tag iterator_category;
+                    using iterator_category = std::random_access_iterator_tag;
 
                     /**
                      * Returns the element at a specific index.
@@ -364,17 +364,17 @@ namespace boosting {
             /**
              * The type of the gradients and Hessians.
              */
-            typedef StatisticType statistic_type;
+            using statistic_type = StatisticType;
 
             /**
              * An iterator that provides read-only access to the gradients in the view.
              */
-            typedef GradientConstIterator gradient_const_iterator;
+            using gradient_const_iterator = GradientConstIterator;
 
             /**
              * An iterator that provides read-only access to the Hessians in the view.
              */
-            typedef HessianConstIterator hessian_const_iterator;
+            using hessian_const_iterator = HessianConstIterator;
 
             /**
              * Returns a `gradient_const_iterator` to the beginning of the gradients.

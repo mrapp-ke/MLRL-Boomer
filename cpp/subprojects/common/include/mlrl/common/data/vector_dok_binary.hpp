@@ -43,12 +43,12 @@ class MLRLCOMMON_API BinaryDokVector {
         /**
          * The type of the indices, the view provides access to.
          */
-        typedef uint32 index_type;
+        using index_type = uint32;
 
         /**
          * An iterator that provides read-only access to the indices in the view.
          */
-        typedef std::unordered_set<uint32>::const_iterator index_const_iterator;
+        using index_const_iterator = std::unordered_set<uint32>::const_iterator;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices in the view.
@@ -143,4 +143,4 @@ class MLRLCOMMON_API BinaryDokVectorAllocator : public Vector {
 /**
  * Allocates the memory, a `BinaryDokVector` provides access to.
  */
-typedef BinaryDokVectorAllocator<BinaryDokVector> AllocatedBinaryDokVector;
+using AllocatedBinaryDokVector = BinaryDokVectorAllocator<BinaryDokVector>;

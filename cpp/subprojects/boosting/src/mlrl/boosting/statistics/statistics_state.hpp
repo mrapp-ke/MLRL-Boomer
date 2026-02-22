@@ -144,7 +144,7 @@ namespace boosting {
             /**
              * The type of the scores that are used for updating the state.
              */
-            typedef typename ScoreMatrix::value_type score_type;
+            using score_type = ScoreMatrix::value_type;
 
             /**
              * A reference to an object of template type `OutputMatrix` that provides access to the ground truth of the

@@ -36,22 +36,22 @@ namespace boosting {
             /**
              * An iterator that provides read-only access to the gradients.
              */
-            typedef typename AllocatedCContiguousView<StatisticType>::value_const_iterator gradient_const_iterator;
+            using gradient_const_iterator = AllocatedCContiguousView<StatisticType>::value_const_iterator;
 
             /**
              * An iterator that provides access to the gradients and allows to modify them.
              */
-            typedef typename AllocatedCContiguousView<StatisticType>::value_iterator gradient_iterator;
+            using gradient_iterator = AllocatedCContiguousView<StatisticType>::value_iterator;
 
             /**
              * An iterator that provides read-only access to the Hessians.
              */
-            typedef typename AllocatedCContiguousView<StatisticType>::value_const_iterator hessian_const_iterator;
+            using hessian_const_iterator = AllocatedCContiguousView<StatisticType>::value_const_iterator;
 
             /**
              * An iterator that provides access to the Hessians and allows to modify them.
              */
-            typedef typename AllocatedCContiguousView<StatisticType>::value_iterator hessian_iterator;
+            using hessian_iterator = AllocatedCContiguousView<StatisticType>::value_iterator;
 
             /**
              * Returns a `gradient_const_iterator` to the beginning of the gradients at a specific row.

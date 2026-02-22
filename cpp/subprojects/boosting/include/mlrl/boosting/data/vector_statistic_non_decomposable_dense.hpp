@@ -31,33 +31,33 @@ namespace boosting {
             /**
              * The type of the gradients and Hessians.
              */
-            typedef StatisticType statistic_type;
+            using statistic_type = StatisticType;
 
             /**
              * An iterator that provides access to the gradients in the view and allows to modify them.
              */
-            typedef typename View<StatisticType>::iterator gradient_iterator;
+            using gradient_iterator = View<StatisticType>::iterator;
 
             /**
              * An iterator that provides read-only access to the gradients in the view.
              */
-            typedef typename View<StatisticType>::const_iterator gradient_const_iterator;
+            using gradient_const_iterator = View<StatisticType>::const_iterator;
 
             /**
              * An iterator that provides access to the Hessians in the view and allows to modify them.
              */
-            typedef typename View<StatisticType>::iterator hessian_iterator;
+            using hessian_iterator = View<StatisticType>::iterator;
 
             /**
              * An iterator that provides read-only access to the Hessians in the view.
              */
-            typedef typename View<StatisticType>::const_iterator hessian_const_iterator;
+            using hessian_const_iterator = View<StatisticType>::const_iterator;
 
             /**
              * An iterator that provides read-only access to the Hessians that correspond to the diagonal of the Hessian
              * matrix.
              */
-            typedef DiagonalIterator<const StatisticType> hessian_diagonal_const_iterator;
+            using hessian_diagonal_const_iterator = DiagonalIterator<const StatisticType>;
 
             /**
              * Returns a `gradient_iterator` to the beginning of the gradients.

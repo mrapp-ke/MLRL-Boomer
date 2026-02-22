@@ -29,7 +29,7 @@ class BitWeightVector final : public IWeightVector {
         /**
          * The type of the weights, the vector provides access to.
          */
-        typedef bool weight_type;
+        using weight_type = bool;
 
         /**
          * Returns the number of elements in the vector.

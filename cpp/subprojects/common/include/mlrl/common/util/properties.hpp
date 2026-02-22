@@ -20,7 +20,7 @@ struct ReadableProperty {
         /**
          * A getter function.
          */
-        typedef std::function<T&()> GetterFunction;
+        using GetterFunction = std::function<T&()>;
 
         /**
          * The getter function.
@@ -46,7 +46,7 @@ struct WritableProperty {
         /**
          * A setter function.
          */
-        typedef std::function<void(Ptr&&)> SetterFunction;
+        using SetterFunction = std::function<void(Ptr&&)>;
 
         /**
          * The setter function.

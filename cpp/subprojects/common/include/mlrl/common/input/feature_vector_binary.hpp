@@ -9,4 +9,4 @@
  * A feature vector that stores the indices of all examples that are associated with the minority value, i.e., the least
  * frequent value, of a binary feature.
  */
-typedef NominalFeatureVector BinaryFeatureVector;
+using BinaryFeatureVector = NominalFeatureVector;

@@ -17,7 +17,7 @@ struct RuleCompareFunction {
          * A function for comparing two objects of type `Quality`. It should return true, if the first object is better
          * than the second one, false otherwise.
          */
-        typedef std::function<bool(const Quality&, const Quality&)> CompareFunction;
+        using CompareFunction = std::function<bool(const Quality&, const Quality&)>;
 
         /**
          * @param compareFunction   A function of type `CompareFunction` for comparing the quality of different rules

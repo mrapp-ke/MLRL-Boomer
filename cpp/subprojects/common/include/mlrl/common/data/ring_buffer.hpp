@@ -31,7 +31,7 @@ class RingBuffer final : ViewDecorator<AllocatedVector<T>> {
         /**
          * An iterator that provides read-only access to the elements in the buffer.
          */
-        typedef typename View<T>::const_iterator const_iterator;
+        using const_iterator = View<T>::const_iterator;
 
         /**
          * Returns a `const_iterator` to the beginning of the buffer.

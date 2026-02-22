@@ -14,9 +14,9 @@ ExampleWiseStratification<LabelMatrix, IndexIterator>::ExampleWiseStratification
                                                                                  IndexIterator indicesEnd)
     : rngPtr_(std::move(rngPtr)), numTotal_(indicesEnd - indicesBegin) {
     // Create a map that stores the indices of the examples that are associated with each unique label vector...
-    typedef typename LabelMatrix::const_row Key;
-    typedef typename LabelMatrix::const_row::Hash Hash;
-    typedef typename LabelMatrix::const_row::Equal Equal;
+    using Key = LabelMatrix::const_row;
+    using Hash = LabelMatrix::const_row::Hash;
+    using Equal = LabelMatrix::const_row::Equal;
     std::unordered_map<Key, std::unique_ptr<std::vector<uint32>>, Hash, Equal> map;
 
     for (uint32 i = 0; i < numTotal_; i++) {

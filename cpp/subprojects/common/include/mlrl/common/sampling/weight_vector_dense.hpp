@@ -31,7 +31,7 @@ class DenseWeightVector final : public ClearableViewDecorator<DenseVectorDecorat
         /**
          * The type of the weights, the vector provides access to.
          */
-        typedef T weight_type;
+        using weight_type = T;
 
         /**
          * Sets the weight at a specific position.
