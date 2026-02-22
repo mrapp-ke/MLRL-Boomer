@@ -49,7 +49,8 @@ class BoomerClassifier(ProbabilisticClassificationRuleLearner):
                  l2_regularization_weight: Optional[float] = None,
                  parallel_rule_refinement: Optional[str] = None,
                  parallel_statistic_update: Optional[str] = None,
-                 parallel_prediction: Optional[str] = None):
+                 parallel_prediction: Optional[str] = None,
+                 simd: Optional[str] = None):
         """
         :param random_state:                        The seed to be used by RNGs. Must be at least 0
         :param statistic_format:                    The format to be used for representing gradients and Hessians. Must
@@ -145,6 +146,8 @@ class BoomerClassifier(ProbabilisticClassificationRuleLearner):
         :param parallel_prediction:                 Whether predictions for different examples should be obtained in
                                                     parallel or not. Must be 'true' or 'false'. For additional options
                                                     refer to the documentation
+        :param simd:                                Whether single instruction, multiple data (SIMD) operations should
+                                                    be used or not. Must be 'true' or 'false'
         """
         super().__init__(feature_format, output_format, prediction_format)
         self.random_state = random_state
@@ -175,6 +178,7 @@ class BoomerClassifier(ProbabilisticClassificationRuleLearner):
         self.parallel_rule_refinement = parallel_rule_refinement
         self.parallel_statistic_update = parallel_statistic_update
         self.parallel_prediction = parallel_prediction
+        self.simd = simd
 
     @override
     def _create_learner(self) -> Any:
@@ -215,7 +219,8 @@ class BoomerRegressor(RegressionRuleLearner):
                  l2_regularization_weight: Optional[float] = None,
                  parallel_rule_refinement: Optional[str] = None,
                  parallel_statistic_update: Optional[str] = None,
-                 parallel_prediction: Optional[str] = None):
+                 parallel_prediction: Optional[str] = None,
+                 simd: Optional[str] = None):
         """
         :param random_state:                The seed to be used by RNGs. Must be at least 0
         :param statistic_format:            The format to be used for representing gradients and Hessians. Must be
@@ -283,6 +288,8 @@ class BoomerRegressor(RegressionRuleLearner):
         :param parallel_prediction:         Whether predictions for different examples should be obtained in parallel or
                                             not. Must be 'true' or 'false'. For additional options refer to the
                                             documentation
+        :param simd:                        Whether single instruction, multiple data (SIMD) operations should be used
+                                            or not. Must be 'true' or 'false'
         """
         super().__init__(feature_format, output_format, prediction_format)
         self.random_state = random_state
@@ -308,6 +315,7 @@ class BoomerRegressor(RegressionRuleLearner):
         self.parallel_rule_refinement = parallel_rule_refinement
         self.parallel_statistic_update = parallel_statistic_update
         self.parallel_prediction = parallel_prediction
+        self.simd = simd
 
     @override
     def _create_learner(self) -> Any:

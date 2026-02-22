@@ -10,6 +10,7 @@ source_files = [
     'src/mlrl/boosting/data/vector_statistic_decomposable_dense.cpp',
     'src/mlrl/boosting/data/vector_statistic_decomposable_sparse.cpp',
     'src/mlrl/boosting/data/vector_statistic_non_decomposable_dense.cpp',
+    'src/mlrl/boosting/data/view_statistic_decomposable_dense.cpp',
     'src/mlrl/boosting/data/view_statistic_non_decomposable_dense.cpp',
     'src/mlrl/boosting/input/feature_binning_auto.cpp',
     'src/mlrl/boosting/losses/loss_decomposable_logistic.cpp',
@@ -107,6 +108,7 @@ configuration.set('mlrlboosting_library_version', library_version)
 configuration.set('mlrlboosting_target_architecture', target_architecture)
 configuration.set10('multi_threading_support_enabled', common_project.get_variable('multi_threading_support_enabled'))
 configuration.set10('gpu_support_enabled', common_project.get_variable('gpu_support_enabled'))
+configuration.set10('simd_support_enabled', common_project.get_variable('simd_support_enabled'))
 configure_file(input : 'include/mlrl/boosting/config.hpp.in', output : 'config.hpp', configuration: configuration)
 
 # Library declaration

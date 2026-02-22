@@ -3,7 +3,8 @@
 #include "mlrl/boosting/prediction/probability_function_chain_rule.hpp"
 #include "mlrl/boosting/prediction/probability_function_logistic.hpp"
 #include "mlrl/common/iterator/iterator_forward_sparse_binary.hpp"
-#include "mlrl/common/util/math.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
+#include "mlrl/common/util/iterators.hpp"
 
 namespace boosting {
 
@@ -14,7 +15,7 @@ namespace boosting {
         // `-expectedScore_c * exp(x_c) / (1 + exp(x_1) + exp(x_2) + ...)`, which can be rewritten as
         // `-expectedScore_c * (exp(x_c - max) / sumExp)`
         StatisticType xExp = std::exp(x - max);
-        StatisticType tmp = util::divideOrZero(xExp, sumExp);
+        StatisticType tmp = math::divideOrZero(xExp, sumExp);
         gradient = invertedExpectedScore * tmp;
 
         // Calculate the Hessian on the diagonal of the Hessian matrix that corresponds to the current label. Such
@@ -23,9 +24,10 @@ namespace boosting {
         hessian = tmp * (1 - tmp);
     }
 
-    template<typename ScoreIterator, typename LabelIterator, typename StatisticIterator>
+    template<typename ScoreIterator, typename LabelIterator, typename GradientIterator, typename HessianIterator>
     static inline void updateDecomposableStatisticsInternally(ScoreIterator scoreIterator, LabelIterator labelIterator,
-                                                              StatisticIterator statisticIterator, uint32 numLabels) {
+                                                              GradientIterator gradientIterator,
+                                                              HessianIterator hessianIterator, uint32 numLabels) {
         typedef typename util::iterator_value<ScoreIterator> statistic_type;
 
         // This implementation uses the so-called "exp-normalize-trick" to increase numerical stability (see, e.g.,
@@ -44,7 +46,7 @@ namespace boosting {
             statistic_type predictedScore = scoreIterator[c];
             bool trueLabel = *labelIterator;
             statistic_type x = trueLabel ? -predictedScore : predictedScore;
-            statisticIterator[c].gradient = x;  // Temporarily store `x` in the array of statistics
+            gradientIterator[c] = x;  // Temporarily store `x` in the array of gradients
 
             if (x > max) {
                 max = x;
@@ -57,7 +59,7 @@ namespace boosting {
         statistic_type sumExp = std::exp(0.0 - max);
 
         for (uint32 c = 0; c < numLabels; c++) {
-            statistic_type x = statisticIterator[c].gradient;
+            statistic_type x = gradientIterator[c];
             sumExp += std::exp(x - max);
         }
 
@@ -67,8 +69,9 @@ namespace boosting {
             bool trueLabel = *labelIterator2;
             statistic_type invertedExpectedScore = trueLabel ? -1.0f : 1.0f;
             statistic_type x = predictedScore * invertedExpectedScore;
-            Statistic<statistic_type>& statistic = statisticIterator[c];
-            updateGradientAndHessian(invertedExpectedScore, x, max, sumExp, statistic.gradient, statistic.hessian);
+            statistic_type& gradient = gradientIterator[c];
+            statistic_type& hessian = hessianIterator[c];
+            updateGradientAndHessian(invertedExpectedScore, x, max, sumExp, gradient, hessian);
             labelIterator2++;
         }
     }
@@ -127,7 +130,7 @@ namespace boosting {
 
         // Calculate `zeroExp / sumExp2` (it is needed multiple times for calculating Hessians that belong to the upper
         // triangle of the Hessian matrix)...
-        zeroExp = util::divideOrZero(zeroExp, sumExp2);
+        zeroExp = math::divideOrZero(zeroExp, sumExp2);
 
         // Calculate the gradients and Hessians...
         for (uint32 c = 0; c < numLabels; c++) {
@@ -148,7 +151,7 @@ namespace boosting {
                 statistic_type expectedScore2 = trueLabel2 ? 1.0f : -1.0f;
                 statistic_type x2 = predictedScore2 * -expectedScore2;
                 *hessianIterator = invertedExpectedScore * expectedScore2
-                                   * util::divideOrZero(std::exp(x + x2 - max2), sumExp2) * zeroExp;
+                                   * math::divideOrZero(std::exp(x + x2 - max2), sumExp2) * zeroExp;
                 hessianIterator++;
                 labelIterator4++;
             }
@@ -216,40 +219,44 @@ namespace boosting {
               uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
               const CContiguousView<StatisticType>& scoreMatrix, CompleteIndexVector::const_iterator indicesBegin,
               CompleteIndexVector::const_iterator indicesEnd,
-              CContiguousView<Statistic<StatisticType>>& statisticView) const override {
+              DenseDecomposableStatisticView<StatisticType>& statisticView) const override {
                 updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex),
                                                        labelMatrix.values_cbegin(exampleIndex),
-                                                       statisticView.values_begin(exampleIndex), labelMatrix.numCols);
+                                                       statisticView.gradients_begin(exampleIndex),
+                                                       statisticView.hessians_begin(exampleIndex), labelMatrix.numCols);
             }
 
             virtual void updateDecomposableStatistics(
               uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
               const CContiguousView<StatisticType>& scoreMatrix, PartialIndexVector::const_iterator indicesBegin,
               PartialIndexVector::const_iterator indicesEnd,
-              CContiguousView<Statistic<StatisticType>>& statisticView) const override {
+              DenseDecomposableStatisticView<StatisticType>& statisticView) const override {
                 updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex),
                                                        labelMatrix.values_cbegin(exampleIndex),
-                                                       statisticView.values_begin(exampleIndex), labelMatrix.numCols);
+                                                       statisticView.gradients_begin(exampleIndex),
+                                                       statisticView.hessians_begin(exampleIndex), labelMatrix.numCols);
             }
 
             virtual void updateDecomposableStatistics(
               uint32 exampleIndex, const BinaryCsrView& labelMatrix, const CContiguousView<StatisticType>& scoreMatrix,
               CompleteIndexVector::const_iterator indicesBegin, CompleteIndexVector::const_iterator indicesEnd,
-              CContiguousView<Statistic<StatisticType>>& statisticView) const override {
+              DenseDecomposableStatisticView<StatisticType>& statisticView) const override {
                 auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                        labelMatrix.indices_cend(exampleIndex));
                 updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), labelIterator,
-                                                       statisticView.values_begin(exampleIndex), labelMatrix.numCols);
+                                                       statisticView.gradients_begin(exampleIndex),
+                                                       statisticView.hessians_begin(exampleIndex), labelMatrix.numCols);
             }
 
             virtual void updateDecomposableStatistics(
               uint32 exampleIndex, const BinaryCsrView& labelMatrix, const CContiguousView<StatisticType>& scoreMatrix,
               PartialIndexVector::const_iterator indicesBegin, PartialIndexVector::const_iterator indicesEnd,
-              CContiguousView<Statistic<StatisticType>>& statisticView) const override {
+              DenseDecomposableStatisticView<StatisticType>& statisticView) const override {
                 auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                        labelMatrix.indices_cend(exampleIndex));
                 updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), labelIterator,
-                                                       statisticView.values_begin(exampleIndex), labelMatrix.numCols);
+                                                       statisticView.gradients_begin(exampleIndex),
+                                                       statisticView.hessians_begin(exampleIndex), labelMatrix.numCols);
             }
 
             void updateNonDecomposableStatistics(

@@ -131,7 +131,7 @@ namespace boosting {
 
         while (fetchNextNonZeroEvaluation(indicesBegin, indicesEnd, scoresBegin, scoresEnd, score, evaluateFunction)
                < LIMIT) {
-            mean = util::iterativeArithmeticMean(i + 1, score, mean);
+            mean = math::iterativeArithmeticMean(i + 1, score, mean);
             i++;
         }
 

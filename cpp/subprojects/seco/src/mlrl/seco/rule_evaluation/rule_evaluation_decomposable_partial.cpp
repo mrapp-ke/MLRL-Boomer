@@ -193,41 +193,41 @@ namespace seco {
         : heuristicFactoryPtr_(std::move(heuristicFactoryPtr)),
           liftFunctionFactoryPtr_(std::move(liftFunctionFactoryPtr)) {}
 
-    std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVector<uint32>>>
-      DecomposablePartialRuleEvaluationFactory::create(const DenseConfusionMatrixVector<uint32>& statisticVector,
+    std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVectorView<uint32>>>
+      DecomposablePartialRuleEvaluationFactory::create(const DenseConfusionMatrixVectorView<uint32>& statisticVector,
                                                        const CompleteIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         std::unique_ptr<ILiftFunction> liftFunctionPtr = liftFunctionFactoryPtr_->create();
         return std::make_unique<
-          DecomposablePartialRuleEvaluation<DenseConfusionMatrixVector<uint32>, CompleteIndexVector>>(
+          DecomposablePartialRuleEvaluation<DenseConfusionMatrixVectorView<uint32>, CompleteIndexVector>>(
           indexVector, std::move(heuristicPtr), std::move(liftFunctionPtr));
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVector<uint32>>>
-      DecomposablePartialRuleEvaluationFactory::create(const DenseConfusionMatrixVector<uint32>& statisticVector,
+    std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVectorView<uint32>>>
+      DecomposablePartialRuleEvaluationFactory::create(const DenseConfusionMatrixVectorView<uint32>& statisticVector,
                                                        const PartialIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         std::unique_ptr<ILiftFunction> liftFunctionPtr = liftFunctionFactoryPtr_->create();
-        return std::make_unique<DecomposableCompleteRuleEvaluation<DenseConfusionMatrixVector<uint32>>>(
+        return std::make_unique<DecomposableCompleteRuleEvaluation<DenseConfusionMatrixVectorView<uint32>>>(
           indexVector, std::move(heuristicPtr), std::move(liftFunctionPtr));
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVector<float32>>>
-      DecomposablePartialRuleEvaluationFactory::create(const DenseConfusionMatrixVector<float32>& statisticVector,
+    std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVectorView<float32>>>
+      DecomposablePartialRuleEvaluationFactory::create(const DenseConfusionMatrixVectorView<float32>& statisticVector,
                                                        const CompleteIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         std::unique_ptr<ILiftFunction> liftFunctionPtr = liftFunctionFactoryPtr_->create();
         return std::make_unique<
-          DecomposablePartialRuleEvaluation<DenseConfusionMatrixVector<float32>, CompleteIndexVector>>(
+          DecomposablePartialRuleEvaluation<DenseConfusionMatrixVectorView<float32>, CompleteIndexVector>>(
           indexVector, std::move(heuristicPtr), std::move(liftFunctionPtr));
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVector<float32>>>
-      DecomposablePartialRuleEvaluationFactory::create(const DenseConfusionMatrixVector<float32>& statisticVector,
+    std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVectorView<float32>>>
+      DecomposablePartialRuleEvaluationFactory::create(const DenseConfusionMatrixVectorView<float32>& statisticVector,
                                                        const PartialIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         std::unique_ptr<ILiftFunction> liftFunctionPtr = liftFunctionFactoryPtr_->create();
-        return std::make_unique<DecomposableCompleteRuleEvaluation<DenseConfusionMatrixVector<float32>>>(
+        return std::make_unique<DecomposableCompleteRuleEvaluation<DenseConfusionMatrixVectorView<float32>>>(
           indexVector, std::move(heuristicPtr), std::move(liftFunctionPtr));
     }
 
