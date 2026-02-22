@@ -63,12 +63,12 @@ class MLRLCOMMON_API IBody : public IConditional {
         /**
          * A visitor function for handling objects of the type `EmptyBody`.
          */
-        typedef std::function<void(const EmptyBody&)> EmptyBodyVisitor;
+        using EmptyBodyVisitor = std::function<void(const EmptyBody&)>;
 
         /**
          * A visitor function for handling objects of the type `ConjunctiveBody`.
          */
-        typedef std::function<void(const ConjunctiveBody&)> ConjunctiveBodyVisitor;
+        using ConjunctiveBodyVisitor = std::function<void(const ConjunctiveBody&)>;
 
         /**
          * Invokes one of the given visitor functions, depending on which one is able to handle this particular type of

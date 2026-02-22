@@ -29,7 +29,7 @@ namespace boosting {
       GradientIterator gradients, HessianIterator hessians,
 
       uint32 numOutputs, uint32 numPredictions, float32 l1RegularizationWeight, float32 l2RegularizationWeight) {
-        typedef typename util::iterator_value<GradientIterator> statistic_type;
+        using statistic_type = util::iterator_value<GradientIterator>;
 
         for (uint32 i = 0; i < numOutputs; i++) {
             IndexedValue<statistic_type>& entry = tmpArray[i];

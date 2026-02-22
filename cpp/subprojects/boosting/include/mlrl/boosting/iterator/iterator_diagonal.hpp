@@ -34,27 +34,27 @@ namespace boosting {
             /**
              * The type that is used to represent the difference between two iterators.
              */
-            typedef int difference_type;
+            using difference_type = int;
 
             /**
              * The type of the elements, the iterator provides access to.
              */
-            typedef typename View<T>::value_type value_type;
+            using value_type = View<T>::value_type;
 
             /**
              * The type of a pointer to an element, the iterator provides access to.
              */
-            typedef typename View<T>::value_type* pointer;
+            using pointer = View<T>::value_type*;
 
             /**
              * The type of a reference to an element, the iterator provides access to.
              */
-            typedef typename View<T>::value_type& reference;
+            using reference = View<T>::value_type&;
 
             /**
              * The tag that specifies the capabilities of the iterator.
              */
-            typedef std::random_access_iterator_tag iterator_category;
+            using iterator_category = std::random_access_iterator_tag;
 
             /**
              * Returns the element at a specific index.

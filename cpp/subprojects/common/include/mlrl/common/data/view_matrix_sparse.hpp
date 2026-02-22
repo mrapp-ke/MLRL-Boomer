@@ -60,17 +60,17 @@ class MLRLCOMMON_API SparseMatrix : public BinarySparseMatrix {
         /**
          * The type of the values, the view provides access to.
          */
-        typedef T value_type;
+        using value_type = T;
 
         /**
          * An iterator that provides read-only access to the values in the view.
          */
-        typedef typename View<value_type>::const_iterator value_const_iterator;
+        using value_const_iterator = View<value_type>::const_iterator;
 
         /**
          * An iterator that provides access to the values in the view and allows to modify them.
          */
-        typedef typename View<value_type>::iterator value_iterator;
+        using value_iterator = View<value_type>::iterator;
 
         /**
          * Releases the ownership of the array that stores the values of all dense elements explicitly stored in the
@@ -106,12 +106,12 @@ class MLRLCOMMON_API IterableSparseMatrixDecorator : public IterableBinarySparse
         /**
          * An iterator that provides read-only access to the values in the matrix.
          */
-        typedef typename Matrix::view_type::value_const_iterator value_const_iterator;
+        using value_const_iterator = Matrix::view_type::value_const_iterator;
 
         /**
          * An iterator that provides access to the values in the matrix and allows to modify them.
          */
-        typedef typename Matrix::view_type::value_iterator value_iterator;
+        using value_iterator = Matrix::view_type::value_iterator;
 
         /**
          * Returns a `value_const_iterator` to the beginning of the values in a specific row or column of the matrix,

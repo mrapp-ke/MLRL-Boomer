@@ -51,17 +51,17 @@ class MLRLCOMMON_API NominalFeatureVector : public CompressedVector {
         /**
          * The type of the values, the view provides access to.
          */
-        typedef int32 value_type;
+        using value_type = int32;
 
         /**
          * An iterator that provides read-only access to all nominal values.
          */
-        typedef const int32* value_const_iterator;
+        using value_const_iterator = const int32*;
 
         /**
          * An iterator that provides access to all nominal values and allows to modify them.
          */
-        typedef int32* value_iterator;
+        using value_iterator = int32*;
 
         /**
          * Returns a `value_const_iterator` to the beginning of the nominal values.

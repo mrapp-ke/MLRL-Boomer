@@ -53,7 +53,7 @@ namespace boosting {
     static inline void sortOutputWiseScores(ScoreIterator scoreIterator, StatisticIterator& statisticIterator,
                                             uint32 numOutputs, uint32 numPredictions, float32 l1RegularizationWeight,
                                             float32 l2RegularizationWeight) {
-        typedef typename util::iterator_value<StatisticIterator>::statistic_type statistic_type;
+        using statistic_type = util::iterator_value<StatisticIterator>::statistic_type;
 
         for (uint32 i = 0; i < numOutputs; i++) {
             const Statistic<statistic_type>& statistic = statisticIterator[i];

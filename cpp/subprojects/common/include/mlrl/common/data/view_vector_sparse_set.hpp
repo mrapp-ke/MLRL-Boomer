@@ -75,17 +75,17 @@ class SparseSetVector {
         /**
          * The type of the values in the view.
          */
-        typedef IndexedValue<T> value_type;
+        using value_type = IndexedValue<T>;
 
         /**
          * An iterator that provides read-only access to the sparse elements in the view.
          */
-        typedef typename ValueArray::const_iterator const_iterator;
+        using const_iterator = ValueArray::const_iterator;
 
         /**
          * An iterator that provides access to the sparse elements in the row and allows to modify them.
          */
-        typedef typename ValueArray::iterator iterator;
+        using iterator = ValueArray::iterator;
 
         /**
          * Returns a `const_iterator` to the beginning of the view.

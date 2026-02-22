@@ -68,13 +68,13 @@ namespace boosting {
              * A callback function that is invoked when a label is assigned to a bin. It takes the index of the bin and
              * the index of the label as arguments.
              */
-            typedef std::function<void(uint32 binIndex, uint32 labelIndex)> Callback;
+            using Callback = std::function<void(uint32 binIndex, uint32 labelIndex)>;
 
             /**
              * A callback function that is invoked when a label with zero statistics is encountered. It takes the index
              * of the label as an argument.
              */
-            typedef std::function<void(uint32 labelIndex)> ZeroCallback;
+            using ZeroCallback = std::function<void(uint32 labelIndex)>;
 
             /**
              * Returns an upper bound for the number of bins used by the binning method, given a specific number of

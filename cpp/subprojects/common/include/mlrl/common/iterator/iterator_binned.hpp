@@ -36,27 +36,27 @@ class BinnedIterator final {
         /**
          * The type that is used to represent the difference between two iterators.
          */
-        typedef int difference_type;
+        using difference_type = int;
 
         /**
          * The type of the elements, the iterator provides access to.
          */
-        typedef ValueType value_type;
+        using value_type = ValueType;
 
         /**
          * The type of a pointer to an element, the iterator provides access to.
          */
-        typedef ValueType* pointer;
+        using pointer = ValueType*;
 
         /**
          * The type of a reference to an element, the iterator provides access to.
          */
-        typedef ValueType& reference;
+        using reference = ValueType&;
 
         /**
          * The tag that specifies the capabilities of the iterator.
          */
-        typedef std::random_access_iterator_tag iterator_category;
+        using iterator_category = std::random_access_iterator_tag;
 
         /**
          * Returns the element at a specific index.

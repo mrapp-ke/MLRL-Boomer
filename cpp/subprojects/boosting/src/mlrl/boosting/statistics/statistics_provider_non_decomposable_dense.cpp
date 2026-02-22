@@ -68,12 +68,11 @@ namespace boosting {
             INonDecomposableRuleEvaluationFactory, IDecomposableRuleEvaluationFactory> {
         private:
 
-            typedef typename Loss::statistic_type statistic_type;
+            using statistic_type = Loss::statistic_type;
 
-            typedef NonDecomposableBoostingStatisticsState<OutputMatrix,
-                                                           DenseNonDecomposableStatisticMatrix<statistic_type>,
-                                                           NumericCContiguousMatrix<statistic_type>, Loss>
-              StatisticsState;
+            using StatisticsState =
+              NonDecomposableBoostingStatisticsState<OutputMatrix, DenseNonDecomposableStatisticMatrix<statistic_type>,
+                                                     NumericCContiguousMatrix<statistic_type>, Loss>;
 
             template<typename WeightVector, typename IndexVector>
             using StatisticsSubset =
@@ -371,7 +370,7 @@ namespace boosting {
       createStatistics(std::unique_ptr<Loss> lossPtr, std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
                        const INonDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
                        MultiThreadingSettings multiThreadingSettings, const OutputMatrix& outputMatrix) {
-        typedef typename Loss::statistic_type statistic_type;
+        using statistic_type = Loss::statistic_type;
         uint32 numExamples = outputMatrix.numRows;
         uint32 numOutputs = outputMatrix.numCols;
         std::unique_ptr<DenseNonDecomposableStatisticMatrix<statistic_type>> statisticMatrixPtr =

@@ -369,7 +369,7 @@ namespace seco {
     class OutputWiseSparseBinaryPredictor final : public ISparseBinaryPredictor {
         private:
 
-            typedef BinarySparsePredictionDispatcher<FeatureMatrix, Model> Dispatcher;
+            using Dispatcher = BinarySparsePredictionDispatcher<FeatureMatrix, Model>;
 
             class Delegate final : public Dispatcher::IPredictionDelegate {
                 private:

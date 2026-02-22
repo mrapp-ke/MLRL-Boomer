@@ -22,7 +22,7 @@ enum Comparator : uint8 {
 /**
  * A union of types that may be used for the threshold used by a condition of a rule.
  */
-typedef std::variant<float32, int32> Threshold;
+using Threshold = std::variant<float32, int32>;
 
 /**
  * Stores the properties of a condition of a rule. It consists of the index of the feature, the condition corresponds

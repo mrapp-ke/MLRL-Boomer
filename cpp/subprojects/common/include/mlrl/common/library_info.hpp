@@ -73,12 +73,12 @@ class MLRLCOMMON_API ILibraryInfo {
         /**
          * A visitor function for handling objects of the type `BuildOption`.
          */
-        typedef std::function<void(const BuildOption&)> BuildOptionVisitor;
+        using BuildOptionVisitor = std::function<void(const BuildOption&)>;
 
         /**
          * A visitor function for handling objects of the type `HardwareResource`.
          */
-        typedef std::function<void(const HardwareResource&)> HardwareResourceVisitor;
+        using HardwareResourceVisitor = std::function<void(const HardwareResource&)>;
 
         virtual ~ILibraryInfo() {}
 

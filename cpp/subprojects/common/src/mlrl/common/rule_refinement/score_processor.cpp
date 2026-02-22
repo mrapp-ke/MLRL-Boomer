@@ -9,7 +9,7 @@ template<typename ScoreVector>
 static inline void processCompleteScores(
   std::unique_ptr<IEvaluatedPrediction>& existingHeadPtr, const ScoreVector& scoreVector,
   IStatisticsUpdateFactory<typename ScoreVector::value_type>& statisticsUpdateFactory) {
-    typedef typename ScoreVector::value_type score_type;
+    using score_type = ScoreVector::value_type;
     CompletePrediction<score_type>* existingHead = dynamic_cast<CompletePrediction<score_type>*>(existingHeadPtr.get());
     uint32 numElements = scoreVector.getNumElements();
 
@@ -27,7 +27,7 @@ template<typename ScoreVector>
 static inline void processPartialScores(
   std::unique_ptr<IEvaluatedPrediction>& existingHeadPtr, const ScoreVector& scoreVector,
   IStatisticsUpdateFactory<typename ScoreVector::value_type>& statisticsUpdateFactory) {
-    typedef typename ScoreVector::value_type score_type;
+    using score_type = ScoreVector::value_type;
     PartialPrediction<score_type>* existingHead = dynamic_cast<PartialPrediction<score_type>*>(existingHeadPtr.get());
     uint32 numElements = scoreVector.getNumElements();
 

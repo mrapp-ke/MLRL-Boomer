@@ -57,27 +57,27 @@ class MLRLCOMMON_API BitView : public Vector<uint32> {
                 /**
                  * The type that is used to represent the difference between two iterators.
                  */
-                typedef int difference_type;
+                using difference_type = int;
 
                 /**
                  * The type of the elements, the iterator provides access to.
                  */
-                typedef const bool value_type;
+                using value_type = const bool;
 
                 /**
                  * The type of a pointer to an element, the iterator provides access to.
                  */
-                typedef const bool* pointer;
+                using pointer = const bool*;
 
                 /**
                  * The type of a reference to an element, the iterator provides access to.
                  */
-                typedef const bool& reference;
+                using reference = const bool&;
 
                 /**
                  * The tag that specifies the capabilities of the iterator.
                  */
-                typedef std::random_access_iterator_tag iterator_category;
+                using iterator_category = std::random_access_iterator_tag;
 
                 /**
                  * Returns whether the bit at a specific index is set or unset.
@@ -197,7 +197,7 @@ class MLRLCOMMON_API BitView : public Vector<uint32> {
         /**
          * An iterator that provides read-only access to the binary values in the vector.
          */
-        typedef ConstIterator bit_const_iterator;
+        using bit_const_iterator = ConstIterator;
 
         /**
          * Returns a `bit_const_iterator` to the beginning of the binary values in the vector.
@@ -273,7 +273,7 @@ class MLRLCOMMON_API BitVectorAllocator : public Allocator<View> {
 /**
  * Allocates the memory, a `BitView` provides access to.
  */
-typedef BitVectorAllocator<BitView> AllocatedBitVector;
+using AllocatedBitVector = BitVectorAllocator<BitView>;
 
 /**
  * A vector that stores binary values in a `BitView`.

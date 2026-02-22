@@ -31,7 +31,7 @@ namespace boosting {
     static inline typename util::iterator_value<StatisticIterator>::statistic_type calculateBinnedScores(
       StatisticIterator statisticIterator, ScoreIterator scoreIterator, View<uint32>::const_iterator weights,
       uint32 numElements, float32 l1RegularizationWeight, float32 l2RegularizationWeight) {
-        typedef typename util::iterator_value<ScoreIterator> statistic_type;
+        using statistic_type = util::iterator_value<ScoreIterator>;
         statistic_type quality = 0;
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -60,7 +60,7 @@ namespace boosting {
     class AbstractDecomposableBinnedRuleEvaluation : public IRuleEvaluation<StatisticVector> {
         private:
 
-            typedef typename StatisticVector::statistic_type statistic_type;
+            using statistic_type = StatisticVector::statistic_type;
 
             const uint32 maxBins_;
 
@@ -181,7 +181,7 @@ namespace boosting {
         : public AbstractDecomposableBinnedRuleEvaluation<StatisticVector, IndexVector> {
         private:
 
-            typedef typename StatisticVector::statistic_type statistic_type;
+            using statistic_type = StatisticVector::statistic_type;
 
         protected:
 

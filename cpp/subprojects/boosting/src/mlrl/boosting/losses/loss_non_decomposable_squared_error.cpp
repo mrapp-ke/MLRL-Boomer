@@ -16,8 +16,8 @@ namespace boosting {
     static inline void updateDecomposableStatisticsInternally(
       ScoreIterator scoreIterator, GroundTruthIterator groundTruthIterator, StatisticIterator statisticIterator,
       uint32 numOutputs, GroundTruthConversionFunction<GroundTruthIterator> groundTruthConversionFunction) {
-        typedef typename util::iterator_value<ScoreIterator> statistic_type;
-        typedef typename util::iterator_value<GroundTruthIterator> ground_truth_type;
+        using statistic_type = util::iterator_value<ScoreIterator>;
+        using ground_truth_type = util::iterator_value<GroundTruthIterator>;
         GroundTruthIterator groundTruthIterator2 = groundTruthIterator;
 
         // For each output `i`, calculate `x_i = predictedScore_i^2 + (-2 * expectedScore_i * predictedScore_i) + 1` and
@@ -64,8 +64,8 @@ namespace boosting {
       ScoreIterator scoreIterator, GroundTruthIterator groundTruthIterator, GradientIterator gradientIterator,
       HessianIterator hessianIterator, uint32 numOutputs,
       GroundTruthConversionFunction<GroundTruthIterator> groundTruthConversionFunction) {
-        typedef typename util::iterator_value<ScoreIterator> statistic_type;
-        typedef typename util::iterator_value<GroundTruthIterator> ground_truth_type;
+        using statistic_type = util::iterator_value<ScoreIterator>;
+        using ground_truth_type = util::iterator_value<GroundTruthIterator>;
         GroundTruthIterator groundTruthIterator2 = groundTruthIterator;
         GroundTruthIterator groundTruthIterator3 = groundTruthIterator;
 
@@ -127,7 +127,7 @@ namespace boosting {
     static inline typename util::iterator_value<ScoreIterator> evaluateInternally(
       ScoreIterator scoreIterator, GroundTruthIterator groundTruthIterator, uint32 numOutputs,
       GroundTruthConversionFunction<GroundTruthIterator> groundTruthConversionFunction) {
-        typedef typename util::iterator_value<ScoreIterator> score_type;
+        using score_type = util::iterator_value<ScoreIterator>;
 
         // The example-wise squared error loss calculates as `sqrt((expectedScore_1 - predictedScore_1)^2 + ...)`.
         score_type sumOfSquares = 0;

@@ -38,7 +38,7 @@ class SingleRefinementComparator final {
         /**
          * An iterator that provides access to the refinements the comparator keeps track of and allows to modify them.
          */
-        typedef Refinement* iterator;
+        using iterator = Refinement*;
 
         /**
          * Returns an `iterator` to the beginning of the refinements, starting with the best one.

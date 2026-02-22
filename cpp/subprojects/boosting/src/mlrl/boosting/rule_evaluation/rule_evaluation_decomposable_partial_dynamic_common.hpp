@@ -26,7 +26,7 @@ namespace boosting {
                             typename util::iterator_value<StatisticIterator>::statistic_type>
       getMinAndMaxScore(StatisticIterator& statisticIterator, uint32 numOutputs, float32 l1RegularizationWeight,
                         float32 l2RegularizationWeight) {
-        typedef typename util::iterator_value<StatisticIterator>::statistic_type statistic_type;
+        using statistic_type = util::iterator_value<StatisticIterator>::statistic_type;
         const Statistic<statistic_type>& firstStatistic = statisticIterator[0];
         statistic_type maxAbsScore = std::abs(calculateOutputWiseScore(firstStatistic.gradient, firstStatistic.hessian,
                                                                        l1RegularizationWeight, l2RegularizationWeight));

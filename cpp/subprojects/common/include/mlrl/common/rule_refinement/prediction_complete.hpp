@@ -32,17 +32,17 @@ class CompletePrediction final : public VectorDecorator<AllocatedVector<ScoreTyp
         /**
          * An iterator that provides access to the predicted scores and allows to modify them.
          */
-        typedef typename View<ScoreType>::iterator value_iterator;
+        using value_iterator = View<ScoreType>::iterator;
 
         /**
          * An iterator that provides read-only access to the predicted scores.
          */
-        typedef typename View<ScoreType>::const_iterator value_const_iterator;
+        using value_const_iterator = View<ScoreType>::const_iterator;
 
         /**
          * An iterator that provides read-only access to the indices of the outputs for which the rule predicts.
          */
-        typedef CompleteIndexVector::const_iterator index_const_iterator;
+        using index_const_iterator = CompleteIndexVector::const_iterator;
 
         /**
          * Returns a `value_iterator` to the beginning of the predicted scores.

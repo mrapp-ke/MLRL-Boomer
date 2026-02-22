@@ -38,7 +38,7 @@ namespace boosting {
             /**
              * The type of the gradients and Hessians.
              */
-            typedef StatisticType statistic_type;
+            using statistic_type = StatisticType;
 
             /**
              * Adds all gradients and Hessians in another vector to this vector.

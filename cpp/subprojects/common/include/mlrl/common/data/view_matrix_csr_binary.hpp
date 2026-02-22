@@ -42,12 +42,12 @@ class MLRLCOMMON_API BinaryCsrView : public BinarySparseMatrix {
         /**
          * Provides read-only access to an individual row in the view.
          */
-        typedef const Vector<const uint32> const_row;
+        using const_row = const Vector<const uint32>;
 
         /**
          * Provides access to an individual row in the view and allows to modify it.
          */
-        typedef Vector<uint32> row;
+        using row = Vector<uint32>;
 
         /**
          * Creates and returns a view that provides read-only access to a specific row in the view.
@@ -165,4 +165,4 @@ class MLRLCOMMON_API BinaryCsrViewAllocator : public Matrix {
 /**
  * Allocates the memory, a `BinaryCsrView` provides access to
  */
-typedef BinaryCsrViewAllocator<BinaryCsrView> AllocatedBinaryCsrView;
+using AllocatedBinaryCsrView = BinaryCsrViewAllocator<BinaryCsrView>;

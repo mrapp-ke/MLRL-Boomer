@@ -187,47 +187,47 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
          * An iterator that provides access to the thresholds that are used by numerical conditions in the body and
          * allows to modify them.
          */
-        typedef View<float32>::iterator numerical_threshold_iterator;
+        using numerical_threshold_iterator = View<float32>::iterator;
 
         /**
          * An iterator that provides read-only access to the thresholds that are used by numerical conditions in the
          * body.
          */
-        typedef View<float32>::const_iterator numerical_threshold_const_iterator;
+        using numerical_threshold_const_iterator = View<float32>::const_iterator;
 
         /**
          * An iterator that provides access to the thresholds that are used by ordinal conditions in the body and allows
          * to modify them.
          */
-        typedef View<int32>::iterator ordinal_threshold_iterator;
+        using ordinal_threshold_iterator = View<int32>::iterator;
 
         /**
          * An iterator that provides read-only access to the thresholds that are used by ordinal conditions in the body.
          */
-        typedef View<int32>::const_iterator ordinal_threshold_const_iterator;
+        using ordinal_threshold_const_iterator = View<int32>::const_iterator;
 
         /**
          * An iterator that provides access to the threshold that are used by nominal conditions in the body and allows
          * to modify them.
          */
-        typedef View<int32>::iterator nominal_threshold_iterator;
+        using nominal_threshold_iterator = View<int32>::iterator;
 
         /**
          * An iterator that provides read-only access to the thresholds that are used by nominal conditions in the body.
          */
-        typedef View<int32>::const_iterator nominal_threshold_const_iterator;
+        using nominal_threshold_const_iterator = View<int32>::const_iterator;
 
         /**
          * An iterator that provides access to the feature indices that correspond to the conditions in the body and
          * allows to modify them.
          */
-        typedef View<uint32>::iterator index_iterator;
+        using index_iterator = View<uint32>::iterator;
 
         /**
          * An iterator that provides read-only access to the feature indices that correspond to the conditions in the
          * body.
          */
-        typedef View<uint32>::const_iterator index_const_iterator;
+        using index_const_iterator = View<uint32>::const_iterator;
 
         /**
          * Returns the number of numerical conditions that use the <= operator.

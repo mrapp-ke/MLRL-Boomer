@@ -24,15 +24,15 @@ namespace boosting {
         uint32 scoreIndex = scoreIterator == scoresEnd ? LIMIT : (*scoreIterator).index;
 
         if (scoreIndex < outputIndex) {
-            (*updateFunction)(false, (*scoreIterator).value, statistic.gradient, statistic.hessian);
+            updateFunction(false, (*scoreIterator).value, statistic.gradient, statistic.hessian);
             scoreIterator++;
             return scoreIndex;
         } else if (outputIndex < scoreIndex) {
-            (*updateFunction)(true, 0, statistic.gradient, statistic.hessian);
+            updateFunction(true, 0, statistic.gradient, statistic.hessian);
             indexIterator++;
             return outputIndex;
         } else if (outputIndex < LIMIT) {
-            (*updateFunction)(true, (*scoreIterator).value, statistic.gradient, statistic.hessian);
+            updateFunction(true, (*scoreIterator).value, statistic.gradient, statistic.hessian);
             scoreIterator++;
             indexIterator++;
             return outputIndex;
@@ -86,15 +86,15 @@ namespace boosting {
         uint32 scoreIndex = scoreIterator == scoresEnd ? LIMIT : (*scoreIterator).index;
 
         if (scoreIndex < outputIndex) {
-            score = (*evaluateFunction)(false, (*scoreIterator).value);
+            score = evaluateFunction(false, (*scoreIterator).value);
             scoreIterator++;
             return scoreIndex;
         } else if (outputIndex < scoreIndex) {
-            score = (*evaluateFunction)(true, 0);
+            score = evaluateFunction(true, 0);
             indexIterator++;
             return outputIndex;
         } else if (outputIndex < LIMIT) {
-            score = (*evaluateFunction)(true, (*scoreIterator).value);
+            score = evaluateFunction(true, (*scoreIterator).value);
             scoreIterator++;
             indexIterator++;
             return outputIndex;
@@ -192,7 +192,7 @@ namespace boosting {
                     const IndexedValue<StatisticType>* scoreMatrixEntry = scoreMatrixRow[index];
                     StatisticType predictedScore = scoreMatrixEntry ? scoreMatrixEntry->value : 0;
                     bool trueLabel = labelIterator[index];
-                    (*this->updateFunction_)(trueLabel, predictedScore, statistic.gradient, statistic.hessian);
+                    this->updateFunction_(trueLabel, predictedScore, statistic.gradient, statistic.hessian);
 
                     if (!isEqualToZero(statistic.gradient)) {
                         IndexedValue<Statistic<StatisticType>>& statisticViewEntry = statisticViewRow.emplace(index);
@@ -232,7 +232,7 @@ namespace boosting {
                     bool trueLabel = labelIndicesBegin != labelIndicesEnd && *labelIndicesBegin == index;
                     const IndexedValue<StatisticType>* scoreMatrixEntry = scoreMatrixRow[index];
                     StatisticType predictedScore = scoreMatrixEntry ? scoreMatrixEntry->value : 0;
-                    (*this->updateFunction_)(trueLabel, predictedScore, statistic.gradient, statistic.hessian);
+                    this->updateFunction_(trueLabel, predictedScore, statistic.gradient, statistic.hessian);
 
                     if (!isEqualToZero(statistic.gradient)) {
                         IndexedValue<Statistic<StatisticType>>& statisticViewEntry = statisticViewRow.emplace(index);
