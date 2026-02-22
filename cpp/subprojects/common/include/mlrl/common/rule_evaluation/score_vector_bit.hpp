@@ -35,17 +35,17 @@ class BitScoreVector final : public IndexableBitVectorDecorator<ViewDecorator<Al
         /**
          * The type of the predicted scores that are stored by the vector.
          */
-        typedef uint8 value_type;
+        using value_type = uint8;
 
         /**
          * An iterator that provides read-only access to the indices.
          */
-        typedef typename IndexVector::const_iterator index_const_iterator;
+        using index_const_iterator = IndexVector::const_iterator;
 
         /**
          * An iterator that provides read-only access to the predicted scores.
          */
-        typedef typename BitView::bit_const_iterator value_const_iterator;
+        using value_const_iterator = BitView::bit_const_iterator;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices.

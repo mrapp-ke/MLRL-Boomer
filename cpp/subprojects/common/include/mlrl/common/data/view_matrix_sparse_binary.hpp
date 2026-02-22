@@ -43,12 +43,12 @@ class MLRLCOMMON_API BinarySparseMatrix : public CompressedView,
         /**
          * An iterator that provides read-only access to the indices in the view.
          */
-        typedef View<index_type>::const_iterator index_const_iterator;
+        using index_const_iterator = View<index_type>::const_iterator;
 
         /**
          * An iterator that provides access to the indices in the view and allows to modify them.
          */
-        typedef View<index_type>::iterator index_iterator;
+        using index_iterator = View<index_type>::iterator;
 };
 
 /**
@@ -70,12 +70,12 @@ class MLRLCOMMON_API IterableBinarySparseMatrixDecorator : public Matrix {
         /**
          * An iterator that provides read-only access to the indices in the matrix.
          */
-        typedef typename Matrix::view_type::index_const_iterator index_const_iterator;
+        using index_const_iterator = typename Matrix::view_type::index_const_iterator;
 
         /**
          * An iterator that provides access to the indices in the matrix and allows to modify them.
          */
-        typedef typename Matrix::view_type::index_iterator index_iterator;
+        using index_iterator = typename Matrix::view_type::index_iterator;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices in a specific row or column of the matrix,

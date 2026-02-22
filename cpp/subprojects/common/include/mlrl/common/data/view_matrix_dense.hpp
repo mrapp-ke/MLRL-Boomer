@@ -41,12 +41,12 @@ class MLRLCOMMON_API DenseMatrix : public BaseView<T>,
         /**
          * An iterator that provides read-only access to the values in the view.
          */
-        typedef const typename BaseView<T>::value_type* value_const_iterator;
+        using value_const_iterator = const BaseView<T>::value_type*;
 
         /**
          * An iterator that provides access to the values in the view and allows to modify them.
          */
-        typedef typename BaseView<T>::value_type* value_iterator;
+        using value_iterator = BaseView<T>::value_type*;
 
         /**
          * Sets all values stored in the matrix to zero.
@@ -111,12 +111,12 @@ class MLRLCOMMON_API IterableDenseMatrixDecorator : public Matrix {
         /**
          * An iterator that provides read-only access to the values stored in the matrix.
          */
-        typedef typename Matrix::view_type::value_const_iterator value_const_iterator;
+        using value_const_iterator = Matrix::view_type::value_const_iterator;
 
         /**
          * An iterator that provides access to the values stored in the matrix and allows to modify them.
          */
-        typedef typename Matrix::view_type::value_iterator value_iterator;
+        using value_iterator = Matrix::view_type::value_iterator;
 
         /**
          * Returns a `value_const_iterator` to the beginning of a specific row or column in the matrix, depending on the

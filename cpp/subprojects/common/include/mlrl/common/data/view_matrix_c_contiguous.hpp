@@ -40,12 +40,12 @@ class MLRLCOMMON_API CContiguousView : public DenseMatrix<T> {
         /**
          * Provides read-only access to an individual row in the view.
          */
-        typedef const Vector<const T> const_row;
+        using const_row = const Vector<const T>;
 
         /**
          * Provides access to an individual row in the view and allows to modify it.
          */
-        typedef Vector<T> row;
+        using row = Vector<T>;
 
         /**
          * Creates and returns a view that provides read-only access to a specific row in the view.

@@ -10,9 +10,9 @@
 class TimeStoppingCriterion final : public IStoppingCriterion {
     private:
 
-        typedef std::chrono::steady_clock timer;
+        using timer = std::chrono::steady_clock;
 
-        typedef std::chrono::seconds timer_unit;
+        using timer_unit = std::chrono::seconds;
 
         const timer_unit timeLimit_;
 

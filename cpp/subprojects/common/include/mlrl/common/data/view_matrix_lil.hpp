@@ -46,27 +46,27 @@ class MLRLCOMMON_API ListOfLists : public Matrix {
         /**
          * The type of the values, the view provides access to.
          */
-        typedef T value_type;
+        using value_type = T;
 
         /**
          * An iterator that provides read-only access to the values in the view.
          */
-        typedef typename std::vector<T>::const_iterator value_const_iterator;
+        using value_const_iterator = std::vector<T>::const_iterator;
 
         /**
          * An iterator that provides access to the values in the view and allows to modify them.
          */
-        typedef typename std::vector<T>::iterator value_iterator;
+        using value_iterator = std::vector<T>::iterator;
 
         /**
          * Provides read-only access to an individual row in the view.
          */
-        typedef const typename std::vector<T>& const_row;
+        using const_row = const std::vector<T>&;
 
         /**
          * Provides access to an individual row in the view and allows to modify it.
          */
-        typedef typename std::vector<T>& row;
+        using row = std::vector<T>&;
 
         /**
          * Returns a view that provides read-only access to a specific row in the view.
@@ -209,22 +209,22 @@ class MLRLCOMMON_API IterableListOfListsDecorator : public Matrix {
         /**
          * An iterator that provides read-only access to the values in the matrix.
          */
-        typedef typename Matrix::view_type::value_const_iterator value_const_iterator;
+        using value_const_iterator = Matrix::view_type::value_const_iterator;
 
         /**
          * An iterator that provides access to the values in the matrix and allows to modify them.
          */
-        typedef typename Matrix::view_type::value_iterator value_iterator;
+        using value_iterator = Matrix::view_type::value_iterator;
 
         /**
          * Provides read-only access to an individual row in the matrix.
          */
-        typedef typename Matrix::view_type::const_row const_row;
+        using const_row = Matrix::view_type::const_row;
 
         /**
          * Provides access to an individual row in the matrix and allows to modify it.
          */
-        typedef typename Matrix::view_type::row row;
+        using row = Matrix::view_type::row;
 
         /**
          * Returns a view that provides read-only access to a specific row in the matrix.

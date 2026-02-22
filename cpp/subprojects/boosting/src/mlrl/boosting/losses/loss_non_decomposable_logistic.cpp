@@ -26,7 +26,7 @@ namespace boosting {
     template<typename ScoreIterator, typename LabelIterator, typename StatisticIterator>
     static inline void updateDecomposableStatisticsInternally(ScoreIterator scoreIterator, LabelIterator labelIterator,
                                                               StatisticIterator statisticIterator, uint32 numLabels) {
-        typedef typename util::iterator_value<ScoreIterator> statistic_type;
+        using statistic_type = typename util::iterator_value<ScoreIterator>;
 
         // This implementation uses the so-called "exp-normalize-trick" to increase numerical stability (see, e.g.,
         // https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/). It is based on rewriting a fraction
@@ -78,7 +78,7 @@ namespace boosting {
                                                                  LabelIterator labelIterator,
                                                                  GradientIterator gradientIterator,
                                                                  HessianIterator hessianIterator, uint32 numLabels) {
-        typedef typename util::iterator_value<GradientIterator> statistic_type;
+        using statistic_type = typename util::iterator_value<GradientIterator>;
 
         // This implementation uses the so-called "exp-normalize-trick" to increase numerical stability (see, e.g.,
         // https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/). It is based on rewriting a fraction
@@ -163,7 +163,7 @@ namespace boosting {
     static inline typename util::iterator_value<ScoreIterator> evaluateInternally(ScoreIterator scoreIterator,
                                                                                   LabelIterator labelIterator,
                                                                                   uint32 numLabels) {
-        typedef typename util::iterator_value<ScoreIterator> score_type;
+        using score_type = typename util::iterator_value<ScoreIterator>;
 
         // The example-wise logistic loss calculates as
         // `log(1 + exp(-expectedScore_1 * predictedScore_1) + ... + exp(-expectedScore_2 * predictedScore_2) + ...)`.

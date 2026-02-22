@@ -27,7 +27,7 @@ class SinglePartition final : public IPartition {
         /**
          * An iterator that provides read-only access to the indices of the elements that are included in the partition.
          */
-        typedef IndexIterator const_iterator;
+        using const_iterator = IndexIterator;
 
         /**
          * Returns a `const_iterator` to the beginning of the indices that are contained in the partition.

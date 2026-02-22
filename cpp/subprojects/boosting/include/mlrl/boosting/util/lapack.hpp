@@ -5,6 +5,7 @@
 
 #include "mlrl/common/data/types.hpp"
 
+#include <functional>
 #include <memory>
 
 namespace boosting {
@@ -21,8 +22,7 @@ namespace boosting {
             /**
              * A function pointer to LAPACK'S SYSV routine.
              */
-            typedef void (*SysvFunction)(char* uplo, int* n, int* nrhs, T* a, int* lda, int* ipiv, T* b, int* ldb,
-                                         T* work, int* lwork, int* info);
+            using SysvFunction = std::function<void(char*, int*, int*, T*, int*, int*, T*, int*, T*, int*, int*)>;
 
             /**
              * A struct that stores function pointers to all supported LAPACK routines.

@@ -5,6 +5,7 @@
 
 #include "mlrl/common/data/types.hpp"
 
+#include <functional>
 #include <memory>
 
 namespace boosting {
@@ -21,13 +22,12 @@ namespace boosting {
             /**
              * A function pointer to BLAS' DOT routine.
              */
-            typedef T (*DotFunction)(int* n, T* x, int* incx, T* y, int* incy);
+            using DotFunction = std::function<T(int*, T*, int*, T*, int*)>;
 
             /**
              * A function pointer to BLAS' SPMV routine.
              */
-            typedef void (*SpmvFunction)(char* uplo, int* n, T* alpha, T* ap, T* x, int* incx, T* beta, T* y,
-                                         int* incy);
+            using SpmvFunction = std::function<void(char*, int*, T*, T*, T*, int*, T*, T*, int*)>;
 
             /**
              * A struct that stores function pointers to all supported BLAS routines.

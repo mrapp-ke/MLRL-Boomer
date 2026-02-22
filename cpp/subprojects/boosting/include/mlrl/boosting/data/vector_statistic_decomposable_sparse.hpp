@@ -141,27 +141,27 @@ namespace boosting {
                     /**
                      * The type that is used to represent the difference between two iterators.
                      */
-                    typedef int difference_type;
+                    using difference_type = int;
 
                     /**
                      * The type of the elements, the iterator provides access to.
                      */
-                    typedef const Statistic<StatisticType> value_type;
+                    using value_type = const Statistic<StatisticType>;
 
                     /**
                      * The type of a pointer to an element, the iterator provides access to.
                      */
-                    typedef const Statistic<StatisticType>* pointer;
+                    using pointer = const Statistic<StatisticType>*;
 
                     /**
                      * The type of a reference to an element, the iterator provides access to.
                      */
-                    typedef const Statistic<float64>& reference;
+                    using reference = const Statistic<float64>&;
 
                     /**
                      * The tag that specifies the capabilities of the iterator.
                      */
-                    typedef std::random_access_iterator_tag iterator_category;
+                    using iterator_category = std::random_access_iterator_tag;
 
                     /**
                      * Returns the element at a specific index.
@@ -251,12 +251,12 @@ namespace boosting {
             /**
              * The type of the gradients and Hessians.
              */
-            typedef StatisticType statistic_type;
+            using statistic_type = StatisticType;
 
             /**
              * An iterator that provides read-only access to the elements in the vector.
              */
-            typedef ConstIterator const_iterator;
+            using const_iterator = ConstIterator;
 
             /**
              * Returns a `const_iterator` to the beginning of the vector.

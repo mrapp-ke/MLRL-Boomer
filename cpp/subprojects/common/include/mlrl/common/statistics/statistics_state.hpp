@@ -21,7 +21,7 @@ class IStatisticsState {
         /**
          * The type of the scores that are used for updating statistics.
          */
-        typedef ScoreType score_type;
+        using score_type = ScoreType;
 
         /**
          * Adds given scores to the predictions for all available outputs and updates affected statistics at a specific

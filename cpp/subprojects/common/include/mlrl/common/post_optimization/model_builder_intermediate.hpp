@@ -20,7 +20,7 @@ class IntermediateModelBuilder final : public IModelBuilder {
         /**
          * The type of a rule, which can still be modified.
          */
-        typedef std::pair<std::unique_ptr<ConditionList>, std::unique_ptr<IEvaluatedPrediction>> IntermediateRule;
+        using IntermediateRule = std::pair<std::unique_ptr<ConditionList>, std::unique_ptr<IEvaluatedPrediction>>;
 
     private:
 
@@ -43,7 +43,7 @@ class IntermediateModelBuilder final : public IModelBuilder {
         /**
          * An iterator that provides access to the intermediate representations of rules and allows to modify them.
          */
-        typedef std::vector<IntermediateRule>::iterator iterator;
+        using iterator = std::vector<IntermediateRule>::iterator;
 
         /**
          * Returns an `iterator` to the beginning of the intermediate representations of rules.

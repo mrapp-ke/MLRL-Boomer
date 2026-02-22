@@ -41,12 +41,12 @@ class MLRLCOMMON_API CompressedVector : public CompressedView {
         /**
          * An iterator that provides read-only access to the indices.
          */
-        typedef const uint32* index_const_iterator;
+        using index_const_iterator = const uint32*;
 
         /**
          * An iterator that provides access to the indices and allows to modify them.
          */
-        typedef uint32* index_iterator;
+        using index_iterator = uint32*;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices that are associated with a specific bin.

@@ -44,7 +44,7 @@ class MLRLCOMMON_API CompressedView {
         /**
          * The type of the indices, the view provides access to.
          */
-        typedef uint32 index_type;
+        using index_type = uint32;
 
         /**
          * Releases the ownership of the array that stores the indices. As a result, the behavior of this view becomes

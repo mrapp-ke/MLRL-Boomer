@@ -20,7 +20,7 @@ namespace boosting {
         : public AbstractNonDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector> {
         private:
 
-            typedef typename StatisticVector::statistic_type statistic_type;
+            using statistic_type = StatisticVector::statistic_type;
 
             const IndexVector& labelIndices_;
 

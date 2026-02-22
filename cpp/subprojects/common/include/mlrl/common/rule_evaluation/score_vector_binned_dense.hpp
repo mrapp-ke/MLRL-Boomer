@@ -42,38 +42,38 @@ class DenseBinnedScoreVector final
         /**
          * The type of the predicted scores that are stored by the vector.
          */
-        typedef ScoreType value_type;
+        using value_type = ScoreType;
 
         /**
          * An iterator that provides read-only access to the indices of the output for which the rule predicts.
          */
-        typedef typename IndexVector::const_iterator index_const_iterator;
+        using index_const_iterator = IndexVector::const_iterator;
 
         /**
          * An iterator that provides read-only access to the predicted scores that correspond to individual outputs.
          */
-        typedef BinnedIterator<const ScoreType> value_const_iterator;
+        using value_const_iterator = BinnedIterator<const ScoreType>;
 
         /**
          * An iterator that provides access to the indices that correspond to individual bins and allows to modify them.
          */
-        typedef typename View<uint32>::iterator bin_index_iterator;
+        using bin_index_iterator = View<uint32>::iterator;
 
         /**
          * An iterator that provides read-only access to the indices that correspond to individual bins.
          */
-        typedef typename View<uint32>::const_iterator bin_index_const_iterator;
+        using bin_index_const_iterator = View<uint32>::const_iterator;
 
         /**
          * An iterator that provides access to the predicted scores that correspond to individual bins and allows to
          * modify them.
          */
-        typedef typename View<ScoreType>::iterator bin_value_iterator;
+        using bin_value_iterator = View<ScoreType>::iterator;
 
         /**
          * An iterator that provides read-only access to the predicted scores that correspond to individual bins.
          */
-        typedef typename View<ScoreType>::const_iterator bin_value_const_iterator;
+        using bin_value_const_iterator = View<ScoreType>::const_iterator;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices that correspond to individual outputs.

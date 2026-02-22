@@ -6,13 +6,13 @@
 #include <cmath>
 #include <limits>
 
-typedef int int32;
-typedef long int int64;
-typedef unsigned char uint8;
-typedef unsigned short uint16;
-typedef unsigned int uint32;
-typedef float float32;
-typedef double float64;
+using int32 = int;
+using int64 = long int;
+using uint8 = unsigned char;
+using uint16 = unsigned short;
+using uint32 = unsigned int;
+using float32 = float;
+using float64 = double;
 
 /**
  * Returns whether two values `a` and `b` are equal or not.

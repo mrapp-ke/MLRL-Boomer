@@ -42,12 +42,12 @@ class MLRLCOMMON_API BinaryCscView : public BinarySparseMatrix {
         /**
          * Provides read-only access to an individual column in the view.
          */
-        typedef const Vector<const uint32> const_column;
+        using const_column = const Vector<const uint32>;
 
         /**
          * Provides access to an individual column in the view and allows to modify it.
          */
-        typedef Vector<uint32> column;
+        using column = Vector<uint32>;
 
         /**
          * Creates and returns a view that provides read-only access to a specific column in the view.
@@ -165,4 +165,4 @@ class MLRLCOMMON_API BinaryCscViewAllocator : public Matrix {
 /**
  * Allocates the memory, a `BinaryCscView` provides access to
  */
-typedef BinaryCscViewAllocator<BinaryCscView> AllocatedBinaryCscView;
+using AllocatedBinaryCscView = BinaryCscViewAllocator<BinaryCscView>;
