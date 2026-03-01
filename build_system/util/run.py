@@ -10,6 +10,7 @@ from typing import Any, Set, override
 from core.build_unit import BuildUnit
 from util.cmd import Command
 from util.pip import Pip
+from util.requirements import RequirementsFiles
 
 
 class Program(Command):
@@ -40,7 +41,9 @@ class Program(Command):
                 dependencies.append(command.command)
 
             dependencies.extend(self.dependencies)
-            Pip.for_build_unit(self.build_unit).install_packages(*dependencies, silent=self.install_silent)
+            Pip.install_packages(RequirementsFiles.for_build_unit(self.build_unit),
+                                 *dependencies,
+                                 silent=self.install_silent)
             return super().run(command, capture_output)
 
     def __init__(self, program: str, *arguments: str):

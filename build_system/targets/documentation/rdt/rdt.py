@@ -10,6 +10,7 @@ from core.build_unit import BuildUnit
 from util.env import get_env
 from util.log import Log
 from util.pip import Pip
+from util.requirements import RequirementsFiles
 
 
 class ReadTheDocsApi:
@@ -64,7 +65,7 @@ class ReadTheDocsApi:
         """
         :param build_unit: The build unit to access the readthedocs API from
         """
-        Pip.for_build_unit(build_unit).install_packages('requests')
+        Pip.install_packages(RequirementsFiles.for_build_unit(build_unit), 'requests')
         self.token = self.__get_token_from_env()
 
     def set_project(self, project_name: str) -> Project:

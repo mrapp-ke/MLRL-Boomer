@@ -10,6 +10,7 @@ from core.build_unit import BuildUnit
 from util.env import get_env
 from util.log import Log
 from util.pip import Pip
+from util.requirements import RequirementsFiles
 
 
 class GithubApi:
@@ -86,7 +87,7 @@ class GithubApi:
         """
         :param build_unit: The build unit to access the GitHub API from
         """
-        Pip.for_build_unit(build_unit).install_packages('pygithub')
+        Pip.install_packages(RequirementsFiles.for_build_unit(build_unit), 'pygithub')
         self.token: Optional[str] = None
 
     def set_token(self, token: Optional[str]) -> 'GithubApi':

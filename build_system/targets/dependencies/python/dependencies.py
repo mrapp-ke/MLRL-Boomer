@@ -9,7 +9,7 @@ from typing import Any, Dict, Set, override
 from core.build_unit import BuildUnit
 from util.log import Log
 from util.pip import Pip
-from util.requirements import Package, RequirementsFile, RequirementVersion
+from util.requirements import Package, RequirementsFile, RequirementsFiles, RequirementVersion
 from util.version import Version
 
 
@@ -54,7 +54,7 @@ class DependencyUpdater:
 
     @staticmethod
     def __query_latest_package_version(build_unit: BuildUnit, package: Package) -> Version:
-        Pip.for_build_unit(build_unit).install_packages('requests')
+        Pip.install_packages(RequirementsFiles.for_build_unit(build_unit), 'requests')
         # pylint: disable=import-outside-toplevel
         import requests
         url = 'https://pypi.org/pypi/' + package.name + '/json'
@@ -125,7 +125,8 @@ class DependencyUpdater:
                     min_version=str(Version(tuple(min_version_numbers[:num_version_numbers]))),
                     max_version=str(Version(tuple(max_version_numbers[:num_version_numbers]))))
 
-            looked_up_requirements = Pip(*self.requirements_files).lookup_requirement(outdated_dependency.package.name)
+            looked_up_requirements = RequirementsFiles(*self.requirements_files).lookup_requirement(
+                outdated_dependency.package.name)
 
             for requirements_file, outdated_requirement in looked_up_requirements.items():
                 requirements_file.update(outdated_requirement, replace(outdated_requirement, version=updated_version))

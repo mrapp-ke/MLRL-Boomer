@@ -5,13 +5,10 @@ Provides classes for installing Python packages via pip.
 """
 from abc import ABC
 from functools import reduce
-from pathlib import Path
-from typing import Dict, Set
+from typing import Set
 
-from core.build_unit import BuildUnit
 from util.cmd import Command as Cmd
-from util.format import format_iterable
-from util.requirements import Package, Requirement, RequirementsFile, RequirementsTextFile
+from util.requirements import Package, Requirement, RequirementsFiles
 
 
 class Pip:
@@ -59,22 +56,6 @@ class Pip:
 
         return False
 
-    def __init__(self, *requirements_files: RequirementsFile):
-        """
-        :param requirements_files: The requirements files that specify the versions of the packages to be installed
-        """
-        self.requirements_files = list(requirements_files)
-
-    @staticmethod
-    def for_build_unit(build_unit: BuildUnit = BuildUnit.for_file(Path(__file__))):
-        """
-        Creates and returns a new `Pip` instance for installing packages for a specific build unit.
-
-        :param build_unit:  The build unit for which packages should be installed
-        :return:            The `Pip` instance that has been created
-        """
-        return Pip(*[RequirementsTextFile(file) for file in build_unit.find_requirements_files()])
-
     @staticmethod
     def install_requirements(*requirements: Requirement, silent: bool = False):
         """
@@ -97,73 +78,32 @@ class Pip:
                 else:
                     install_command.print_arguments(True).run()
 
-    def lookup_requirements(self,
-                            *package_names: str,
-                            accept_missing: bool = False) -> Dict[RequirementsFile, Set[Requirement]]:
-        """
-        Looks up the requirements for given packages.
-
-        :param package_names:   The names of the packages that should be looked up
-        :param accept_missing:  False, if an error should be raised if the requirement for a package is not found, True,
-                                if it should simply be ignored
-        :return:                A dictionary that contains requirement files, as well as their requirements for the
-                                given packages
-        """
-        packages = [Package(package_name) for package_name in package_names]
-        missing_package_names = {package.normalized_name for package in packages}
-        result: Dict[RequirementsFile, Set[Requirement]] = {}
-
-        for requirements_file in self.requirements_files:
-            requirements = requirements_file.lookup_requirements(*packages, accept_missing=True)
-
-            for requirement in requirements:
-                missing_package_names.discard(requirement.package.normalized_name)
-                result.setdefault(requirements_file, set()).add(requirement)
-
-        if missing_package_names and not accept_missing:
-            raise RuntimeError('Requirements for packages ' + format_iterable(missing_package_names, delimiter='"')
-                               + ' not found')
-
-        return result
-
-    def lookup_requirement(self,
-                           package_name: str,
-                           accept_missing: bool = False) -> Dict[RequirementsFile, Requirement]:
-        """
-        Looks up the requirement for a given package.
-
-        :param package_name:    The name of the package that should be looked up
-        :param accept_missing:  False, if an error should be raised if the requirement for the package is not found,
-                                True, if it should simply be ignored
-        :return:                A dictionary that contains requirement files, as well as their requirements for the
-                                given packages
-        """
-        looked_up_requirements = self.lookup_requirements(package_name, accept_missing=accept_missing)
-        return {
-            requirements_file: requirements.pop()
-            for requirements_file, requirements in looked_up_requirements.items() if requirements
-        }
-
-    def install_packages(self, *package_names: str, accept_missing: bool = False, silent: bool = False):
+    @staticmethod
+    def install_packages(requirements_files: RequirementsFiles,
+                         *package_names: str,
+                         accept_missing: bool = False,
+                         silent: bool = False):
         """
         Installs one or several dependencies.
 
-        :param package_names:   The names of the packages that should be installed
-        :param accept_missing:  False, if an error should be raised if the requirement for a package is not found, True,
-                                if it should simply be ignored
-        :param silent:          True, if any log output should be suppressed, False otherwise
+        :param requirements_files: The requirements files that specify the versions of the packages to be installed
+        :param package_names:       The names of the packages that should be installed
+        :param accept_missing:      False, if an error should be raised if the requirement for a package is not found,
+                                    True, if it should simply be ignored
+        :param silent:              True, if any log output should be suppressed, False otherwise
         """
-        looked_up_requirements = self.lookup_requirements(*package_names, accept_missing=accept_missing)
+        looked_up_requirements = requirements_files.lookup_requirements(*package_names, accept_missing=accept_missing)
         requirements_to_be_installed: Set[Requirement] = set()
         requirements_to_be_installed = reduce(lambda aggr, requirements: aggr | requirements,
                                               looked_up_requirements.values(), requirements_to_be_installed)
-        self.install_requirements(*requirements_to_be_installed, silent=silent)
+        Pip.install_requirements(*requirements_to_be_installed, silent=silent)
 
-    def install_all_packages(self):
+    @staticmethod
+    def install_all_packages(requirements_files: RequirementsFiles):
         """
         Installs all dependencies in the requirements file.
         """
         requirements: Set[Requirement] = set()
-        requirements = reduce(lambda aggr, requirements_file: aggr | requirements_file.requirements,
-                              self.requirements_files, requirements)
+        requirements = reduce(lambda aggr, requirements_file: aggr | requirements_file.requirements, requirements_files,
+                              requirements)
         Pip.install_requirements(*requirements)

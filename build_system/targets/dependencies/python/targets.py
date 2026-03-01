@@ -11,7 +11,7 @@ from core.modules import Module
 from core.targets import PhonyTarget
 from util.log import Log
 from util.pip import Pip
-from util.requirements import RequirementsFile
+from util.requirements import RequirementsFile, RequirementsFiles
 
 from targets.dependencies.python.dependencies import DependencyUpdater
 from targets.dependencies.python.modules import DependencyType, PythonDependencyModule
@@ -38,11 +38,10 @@ class InstallPythonDependencies(PhonyTarget.Runnable):
         requirements_files = reduce(
             lambda aggr, module: aggr + module.find_requirements_files(build_unit, self.dependency_type),
             dependency_modules, requirements_files)
-        pip = Pip(*requirements_files)
         Log.info('Installing %s dependencies...',
                  ('all build-time' if self.dependency_type == DependencyType.BUILD_TIME else 'all runtime')
                  if self.dependency_type else 'all')
-        pip.install_all_packages()
+        Pip.install_all_packages(RequirementsFiles(*requirements_files))
 
 
 class CheckPythonDependencies(PhonyTarget.Runnable):
