@@ -13,7 +13,8 @@ from core.targets import BuildTarget
 from util.env import get_env_bool
 from util.files import DirectorySearch, FileType
 from util.log import Log
-from util.pip import Package, Pip, Requirement, RequirementsTextFile, RequirementVersion
+from util.pip import Pip
+from util.requirements import Package, Requirement, RequirementsTextFile, RequirementVersion
 
 from targets.packaging.auditwheel import Auditwheel
 from targets.packaging.build import Build

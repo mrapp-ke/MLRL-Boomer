@@ -10,7 +10,8 @@ from core.build_unit import BuildUnit
 from core.modules import Module
 from core.targets import PhonyTarget
 from util.log import Log
-from util.pip import Pip, RequirementsFile
+from util.pip import Pip
+from util.requirements import RequirementsFile
 
 from targets.dependencies.python.dependencies import DependencyUpdater
 from targets.dependencies.python.modules import DependencyType, PythonDependencyModule

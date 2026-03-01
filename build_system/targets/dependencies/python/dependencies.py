@@ -8,7 +8,8 @@ from typing import Any, Dict, Set, override
 
 from core.build_unit import BuildUnit
 from util.log import Log
-from util.pip import Package, Pip, RequirementsFile, RequirementVersion
+from util.pip import Pip
+from util.requirements import Package, RequirementsFile, RequirementVersion
 from util.version import Version
 
 
