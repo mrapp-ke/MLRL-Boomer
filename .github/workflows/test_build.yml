@@ -214,7 +214,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Download C++ test results
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           pattern: cpp-test-results-*
           path: cpp_test_results
@@ -224,7 +224,7 @@ jobs:
           check_name: C++ Test Results
           files: cpp_test_results/**/*.xml
       - name: Download Python test results
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           pattern: python-test-results-*
           path: python_test_results

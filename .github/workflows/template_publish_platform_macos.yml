@@ -73,7 +73,7 @@ jobs:
         with:
           package-dir: python/subprojects/${{ inputs.subproject }}/
       - name: Upload wheels as artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: wheels-${{ inputs.subproject }}-${{ matrix.build_identifier }}
           path: wheelhouse/*.whl
