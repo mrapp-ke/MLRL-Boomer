@@ -13,7 +13,7 @@ from core.targets import BuildTarget
 from util.env import get_env_bool
 from util.files import DirectorySearch, FileType
 from util.log import Log
-from util.pip import Pip
+from util.package_manager import PackageManager
 from util.requirements import Package, Requirement, RequirementsTextFile, RequirementVersion
 
 from targets.packaging.auditwheel import Auditwheel
@@ -186,7 +186,7 @@ class InstallPythonWheels(BuildTarget.Runnable):
     Installs Python wheel packages.
     """
 
-    class InstallWheelCommand(Pip.Command):
+    class InstallWheelCommand(PackageManager.Command):
         """
         Allows to install wheel packages via the command `pip install`.
         """
@@ -198,7 +198,7 @@ class InstallPythonWheels(BuildTarget.Runnable):
             super().__init__('install', '--force-reinstall', '--no-deps', *map(str, wheels))
             self.print_arguments(True)
 
-    class UninstallCommand(Pip.Command):
+    class UninstallCommand(PackageManager.Command):
         """
         Allows to uninstall packages via the command `pip uninstall`.
         """
@@ -210,7 +210,7 @@ class InstallPythonWheels(BuildTarget.Runnable):
             super().__init__('uninstall', '--yes', *package_names)
             self.print_arguments(True)
 
-    class ListCommand(Pip.Command):
+    class ListCommand(PackageManager.Command):
         """
         Allows to list installed packages via the command `pip list`.
         """

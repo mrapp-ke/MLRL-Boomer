@@ -9,7 +9,7 @@ from typing import Any, Dict, override
 
 from core.build_unit import BuildUnit
 from util.io import TextFile, read_file
-from util.pip import Pip
+from util.package_manager import PackageManager
 from util.requirements import RequirementsFiles
 
 
@@ -31,7 +31,7 @@ class YamlFile(TextFile):
         """
         A dictionary that stores the content of the YAML file.
         """
-        Pip.install_packages(RequirementsFiles.for_build_unit(self.build_unit), 'pyyaml')
+        PackageManager.install_packages(RequirementsFiles.for_build_unit(self.build_unit), 'pyyaml')
         # pylint: disable=import-outside-toplevel
         import yaml
         with read_file(self.file) as file:

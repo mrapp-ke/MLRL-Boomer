@@ -10,7 +10,7 @@ from core.build_unit import BuildUnit
 from core.modules import Module
 from core.targets import PhonyTarget
 from util.log import Log
-from util.pip import Pip
+from util.package_manager import PackageManager
 from util.requirements import RequirementsFile, RequirementsFiles
 
 from targets.dependencies.python.dependencies import DependencyUpdater
@@ -41,7 +41,7 @@ class InstallPythonDependencies(PhonyTarget.Runnable):
         Log.info('Installing %s dependencies...',
                  ('all build-time' if self.dependency_type == DependencyType.BUILD_TIME else 'all runtime')
                  if self.dependency_type else 'all')
-        Pip.install_all_packages(RequirementsFiles(*requirements_files))
+        PackageManager.install_all_packages(RequirementsFiles(*requirements_files))
 
 
 class CheckPythonDependencies(PhonyTarget.Runnable):

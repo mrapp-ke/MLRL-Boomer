@@ -11,7 +11,7 @@ from util.cmd import Command as Cmd
 from util.requirements import Package, Requirement, RequirementsFiles
 
 
-class Pip:
+class PackageManager:
     """
     Allows to install Python packages via pip.
     """
@@ -65,13 +65,13 @@ class Pip:
         :param silent:          True, if any log output should be suppressed, False otherwise
         """
         if requirements:
-            stdout = Pip.InstallCommand(*requirements, dry_run=True) \
+            stdout = PackageManager.InstallCommand(*requirements, dry_run=True) \
                 .print_command(False) \
                 .exit_on_error(False) \
                 .capture_output()
 
-            if Pip.__would_install_requirements(stdout, *requirements):
-                install_command = Pip.InstallCommand(*requirements)
+            if PackageManager.__would_install_requirements(stdout):
+                install_command = PackageManager.InstallCommand(*requirements)
 
                 if silent:
                     install_command.capture_output()
@@ -96,7 +96,7 @@ class Pip:
         requirements_to_be_installed: Set[Requirement] = set()
         requirements_to_be_installed = reduce(lambda aggr, requirements: aggr | requirements,
                                               looked_up_requirements.values(), requirements_to_be_installed)
-        Pip.install_requirements(*requirements_to_be_installed, silent=silent)
+        PackageManager.install_requirements(*requirements_to_be_installed, silent=silent)
 
     @staticmethod
     def install_all_packages(requirements_files: RequirementsFiles):
@@ -106,4 +106,4 @@ class Pip:
         requirements: Set[Requirement] = set()
         requirements = reduce(lambda aggr, requirements_file: aggr | requirements_file.requirements, requirements_files,
                               requirements)
-        Pip.install_requirements(*requirements)
+        PackageManager.install_requirements(*requirements)

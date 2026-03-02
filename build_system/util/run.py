@@ -9,7 +9,7 @@ from typing import Any, Set, override
 
 from core.build_unit import BuildUnit
 from util.cmd import Command
-from util.pip import Pip
+from util.package_manager import PackageManager
 from util.requirements import RequirementsFiles
 
 
@@ -41,9 +41,9 @@ class Program(Command):
                 dependencies.append(command.command)
 
             dependencies.extend(self.dependencies)
-            Pip.install_packages(RequirementsFiles.for_build_unit(self.build_unit),
-                                 *dependencies,
-                                 silent=self.install_silent)
+            PackageManager.install_packages(RequirementsFiles.for_build_unit(self.build_unit),
+                                            *dependencies,
+                                            silent=self.install_silent)
             return super().run(command, capture_output)
 
     def __init__(self, program: str, *arguments: str):
@@ -67,7 +67,7 @@ class Program(Command):
 
     def install_program(self, install_program: bool, silent: bool = False) -> 'Program':
         """
-        Sets whether the program should be installed via pip before being run or not.
+        Sets whether the program should be installed via the package manager before being run or not.
 
         :param install_program: True, if the program should be installed before being run, False otherwise
         :param silent:          True, if any log output should be suppressed, False otherwise

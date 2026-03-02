@@ -7,7 +7,7 @@ from dataclasses import replace
 
 from core.build_unit import BuildUnit
 from util.log import Log
-from util.pip import Pip
+from util.package_manager import PackageManager
 from util.requirements import RequirementsFiles
 from util.version import Version
 
@@ -15,7 +15,7 @@ from targets.project import Project
 
 
 def __query_latest_python_version(build_unit: BuildUnit) -> Version:
-    Pip.install_packages(RequirementsFiles.for_build_unit(build_unit), 'requests')
+    PackageManager.install_packages(RequirementsFiles.for_build_unit(build_unit), 'requests')
     # pylint: disable=import-outside-toplevel
     import requests
     url = 'https://raw.githubusercontent.com/actions/python-versions/refs/heads/main/versions-manifest.json'
