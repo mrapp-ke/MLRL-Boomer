@@ -55,7 +55,7 @@ jobs:
       matrix:
         os:
           - macos-26
-          - macos-15-intel
+          - macos-26-intel
     uses: ./.github/workflows/template_publish_platform_macos.yml
     with:
       subproject: ${{ inputs.subproject }}
