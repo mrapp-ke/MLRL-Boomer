@@ -5,7 +5,7 @@ Provides classes that allow to configure build options.
 """
 from abc import ABC, abstractmethod
 from os import environ
-from typing import Any, Iterable, List, Optional, override
+from typing import Any, Iterable, Iterator, List, Optional, override
 
 from util.env import get_env, get_env_array
 
@@ -133,7 +133,7 @@ class BuildOptions(Iterable[BuildOption]):
         return self
 
     @override
-    def __iter__(self):
+    def __iter__(self) -> Iterator[BuildOption]:
         return iter(self.build_options)
 
     def __bool__(self) -> bool:

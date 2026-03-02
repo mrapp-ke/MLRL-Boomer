@@ -13,7 +13,8 @@ from xml.etree import ElementTree
 
 from core.build_unit import BuildUnit
 from util.log import Log
-from util.pip import Pip
+from util.package_manager import PackageManager
+from util.requirements import RequirementsFiles
 
 from targets.dependencies.github.modules import GithubWorkflowModule
 from targets.dependencies.github.workflows import Workflow, Workflows
@@ -252,7 +253,7 @@ class RunnerUpdater(Workflows):
             return hash(self.updated)
 
     def __download_runner_documentation(self) -> str:
-        Pip.for_build_unit(self.build_unit).install_packages('requests')
+        PackageManager.install_packages(RequirementsFiles.for_build_unit(self.build_unit), 'requests')
         # pylint: disable=import-outside-toplevel
         import requests
         repository = 'github/docs'

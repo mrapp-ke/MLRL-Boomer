@@ -9,7 +9,7 @@ from argparse import Namespace
 from copy import copy
 from dataclasses import dataclass
 from itertools import chain
-from typing import Any, Dict, Iterable, List, Optional, Set, override
+from typing import Any, Dict, Iterable, Iterator, List, Optional, Set, override
 
 from mlrl.util.cli import Argument
 from mlrl.util.format import format_iterable
@@ -193,7 +193,7 @@ class Command(Iterable[str]):
         return Command.from_dict(module_name=command.module_name, argument_dict=argument_dict)
 
     @override
-    def __iter__(self):
+    def __iter__(self) -> Iterator[str]:
         return iter(chain(['mlrl-testbed', self.module_name], self.argument_list))
 
     @override

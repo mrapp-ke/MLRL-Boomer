@@ -12,7 +12,7 @@ from typing import List, Set
 from core.build_unit import BuildUnit
 from util.env import get_env_bool
 from util.files import FileSearch, FileType
-from util.pip import RequirementVersion
+from util.requirements import RequirementVersion
 
 from targets.version_files import DevelopmentVersionFile, PythonVersionFile, SemanticVersion, VersionFile, \
     VersionTextFile
