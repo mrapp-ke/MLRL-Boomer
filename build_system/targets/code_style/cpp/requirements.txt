@@ -1,2 +1,2 @@
 cpplint >= 2.0, < 2.1
-clang-format >= 21.1, < 21.2
+clang-format >= 22.1, < 22.2
