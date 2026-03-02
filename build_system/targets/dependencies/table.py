@@ -6,7 +6,8 @@ Provides classes for creating tables.
 from typing import List, override
 
 from core.build_unit import BuildUnit
-from util.pip import Pip
+from util.package_manager import PackageManager
+from util.requirements import RequirementsFiles
 
 
 class Table:
@@ -42,7 +43,7 @@ class Table:
 
     @override
     def __str__(self) -> str:
-        Pip.for_build_unit(self.build_unit).install_packages('tabulate')
+        PackageManager.install_packages(RequirementsFiles.for_build_unit(self.build_unit), 'tabulate')
         # pylint: disable=import-outside-toplevel
         from tabulate import tabulate
         return tabulate(self.rows, headers=self.headers)

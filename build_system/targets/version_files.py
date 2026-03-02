@@ -10,7 +10,7 @@ from typing import Optional, override
 
 from util.io import TextFile
 from util.log import Log
-from util.pip import RequirementVersion
+from util.requirements import RequirementVersion
 from util.version import Version
 
 

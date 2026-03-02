@@ -8,7 +8,8 @@ from configparser import Error as ConfigParserError
 from core.build_unit import BuildUnit
 from util.io import ENCODING_UTF8
 from util.log import Log
-from util.pip import Pip
+from util.package_manager import PackageManager
+from util.requirements import RequirementsFiles
 
 from targets.code_style.formatter import CodeChangeDetection
 from targets.code_style.modules import CodeModule
@@ -39,7 +40,7 @@ class CfgFormatter:
         if source_files:
             malformed_files = []
 
-            Pip.for_build_unit(self.build_unit).install_packages('config-formatter')
+            PackageManager.install_packages(RequirementsFiles.for_build_unit(self.build_unit), 'config-formatter')
             # pylint: disable=import-outside-toplevel
             from config_formatter import ConfigFormatter
 

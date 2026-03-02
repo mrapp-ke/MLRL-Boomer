@@ -10,7 +10,7 @@ from typing import List, Optional, override
 from core.build_unit import BuildUnit
 from core.modules import Module, ModuleRegistry
 from util.files import FileSearch
-from util.pip import RequirementsFile, RequirementsTextFile
+from util.requirements import RequirementsFile, RequirementsTextFile
 
 from targets.dependencies.python.pyproject_toml_file import PyprojectTomlFile
 from targets.modules import SubprojectModule

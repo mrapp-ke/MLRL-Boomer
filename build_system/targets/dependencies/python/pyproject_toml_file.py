@@ -6,7 +6,7 @@ Provides utilities for reading and writing pyproject.toml files.
 from pathlib import Path
 from typing import Dict, override
 
-from util.pip import Package, Requirement, RequirementsFile
+from util.requirements import Package, Requirement, RequirementsFile
 from util.toml_file import TomlFile
 
 
