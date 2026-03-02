@@ -16,7 +16,17 @@ if not "%1"=="" if "%2"=="" (
 if not exist "%VENV_DIR%" (
     echo Creating virtual Python environment...
     python -m venv "%VENV_DIR%" || exit
-    python -m ensurepip --upgrade --default-pip
+    echo Installing uv...
+    call %VENV_DIR%\Scripts\activate || exit
+    python -m ensurepip --upgrade --default-pip || exit
+    python3 -m pip install uv^
+        --no-input^
+        --quiet^
+        --disable-pip-version-check^
+        --upgrade^
+        --upgrade-strategy eager^
+        --prefer-binary || exit
+     call deactivate || exit
 )
 
 if exist "%VENV_DIR%" (

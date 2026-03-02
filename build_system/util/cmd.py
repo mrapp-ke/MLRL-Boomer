@@ -211,7 +211,8 @@ class Command:
             self._before()
             output = self.run_options.run(self, capture_output=True)
             self._after()
-            return output.stdout
+            stdout = output.stdout
+            return stdout if stdout else output.stderr
 
         return ''
 
