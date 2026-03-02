@@ -188,31 +188,31 @@ class InstallPythonWheels(BuildTarget.Runnable):
 
     class InstallWheelCommand(PackageManager.Command):
         """
-        Allows to install wheel packages via the command `pip install`.
+        Allows to install wheel packages.
         """
 
         def __init__(self, *wheels: Path):
             """
             :param wheels: The paths to the wheel packages to be installed
             """
-            super().__init__('install', '--force-reinstall', '--no-deps', *map(str, wheels))
+            super().__init__('install', '--reinstall', '--no-deps', *map(str, wheels))
             self.print_arguments(True)
 
     class UninstallCommand(PackageManager.Command):
         """
-        Allows to uninstall packages via the command `pip uninstall`.
+        Allows to uninstall packages.
         """
 
         def __init__(self, *package_names: str):
             """
             :param package_names: The names of the packages to be uninstalled
             """
-            super().__init__('uninstall', '--yes', *package_names)
+            super().__init__('uninstall', *package_names)
             self.print_arguments(True)
 
     class ListCommand(PackageManager.Command):
         """
-        Allows to list installed packages via the command `pip list`.
+        Allows to list installed packages.
         """
 
         def __init__(self):

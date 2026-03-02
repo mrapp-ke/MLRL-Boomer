@@ -1,36 +1,36 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes for installing Python packages via pip.
+Provides classes for installing Python packages via uv.
 """
 from abc import ABC
 from functools import reduce
 from typing import Set
 
 from util.cmd import Command as Cmd
-from util.requirements import Package, Requirement, RequirementsFiles
+from util.requirements import Requirement, RequirementsFiles
 
 
 class PackageManager:
     """
-    Allows to install Python packages via pip.
+    Allows to install Python packages via "uv".
     """
 
     class Command(Cmd, ABC):
         """
-        An abstract base class for all classes that allow to run pip on the command line.
+        An abstract base class for all classes that allow to run "uv" on the command line.
         """
 
-        def __init__(self, pip_command: str, *arguments: str):
+        def __init__(self, command: str, *arguments: str):
             """
-            :param pip_command: The pip command to be run, e.g., "install"
-            :param arguments:   Optional arguments to be passed to pip
+            :param command:     The command to be run, e.g., "install"
+            :param arguments:   Optional arguments to be passed to "uv"
             """
-            super().__init__('python', '-m', 'pip', pip_command, *arguments, '--disable-pip-version-check')
+            super().__init__('uv', 'pip', command, *arguments)
 
     class InstallCommand(Command):
         """
-        Allows to install requirements via the command `pip install`.
+        Allows to install requirements.
         """
 
         def __init__(self, *requirements: Requirement, dry_run: bool = False):
@@ -38,23 +38,12 @@ class PackageManager:
             :param requirement: The requirements to be installed
             :param dry_run:     True, if the --dry-run flag should be set, False otherwise
             """
-            super().__init__('install', *[str(requirement) for requirement in requirements], '--upgrade',
-                             '--upgrade-strategy', 'eager', '--prefer-binary')
-            self.add_conditional_arguments(dry_run, '--dry-run')
+            super().__init__('install', *[str(requirement) for requirement in requirements], '--upgrade')
+            self.add_conditional_arguments(dry_run, '--dry-run', '--no-progress', '--color', 'never')
 
     @staticmethod
-    def __would_install_requirements(stdout: str, *requirements: Requirement) -> bool:
-        prefix = 'Would install'
-
-        for line in stdout.split('\n'):
-            if line.strip().startswith(prefix):
-                package = Package(line[len(prefix):].strip())
-
-                for requirement in requirements:
-                    if package.normalized_name.find(requirement.package.normalized_name) >= 0:
-                        return True
-
-        return False
+    def __would_install_requirements(stdout: str) -> bool:
+        return not any(line.strip() == 'Would make no changes' for line in reversed(stdout.split('\n')))
 
     @staticmethod
     def install_requirements(*requirements: Requirement, silent: bool = False):
