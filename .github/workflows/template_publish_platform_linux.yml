@@ -62,7 +62,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Build package
-        uses: pypa/cibuildwheel@v3.3
+        uses: pypa/cibuildwheel@v3.4
         env:
           CIBW_ENVIRONMENT_PASS_LINUX: SUBPROJECTS RELEASE TEST_SUPPORT GPU_SUPPORT
           CIBW_BUILD: ${{ matrix.build_identifier }}
