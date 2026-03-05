@@ -3,9 +3,12 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for writing log messages.
 """
-import logging
 
 from typing import Optional
+
+from rich.console import Console
+
+console = Console(soft_wrap=True)
 
 
 class Log:
@@ -23,9 +26,11 @@ class Log:
         :param error:   An optional error to be included in the log message
         """
         if error:
-            logging.error((message + ': {}').format(*args, error))
+            message = message + ': {}'.format(*args, error)
         else:
-            logging.error(message.format(*args))
+            message = message.format(*args)
+
+        console.print(message)
 
     @staticmethod
     def warning(message: str, *args):
@@ -35,7 +40,7 @@ class Log:
         :param message: The log message to be written
         :param args:    Optional arguments to be included in the log message
         """
-        logging.warning(message.format(*args))
+        console.print('WARNING: ' + message.format(*args))
 
     @staticmethod
     def success(message: str, *args):
@@ -45,7 +50,7 @@ class Log:
         :param message: The log message to be written
         :param args:    Optional arguments to be included in the log message
         """
-        Log.info('✓ ' + message.format(*args))
+        console.print('✓ ' + message.format(*args))
 
     @staticmethod
     def info(message: str, *args):
@@ -55,7 +60,7 @@ class Log:
         :param message: The log message to be written
         :param args:    Optional arguments to be included in the log message
         """
-        logging.info(message.format(*args))
+        console.print(message.format(*args))
 
     @staticmethod
     def verbose(message: str, *args):
@@ -65,4 +70,4 @@ class Log:
         :param message: The log message to be written
         :param args:    Optional arguments to be included in the log message
         """
-        logging.debug(message.format(*args))
+        console.print('DEBUG: ' + message.format(*args))
