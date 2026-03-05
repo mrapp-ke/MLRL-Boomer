@@ -29,7 +29,7 @@ class RunMode(InputMode):
     def _run_experiment(self, control_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
                         recipe: Recipe, meta_data: MetaData, input_directory: Path):
         meta_data_command = meta_data.command
-        Log.info('Re-running experiment "%s"...', meta_data_command)
+        Log.info('Re-running experiment "{}"...', meta_data_command)
         overridden_arguments = Command.from_argv().argument_list.filter(*self.INPUT_DIR.names, *Mode.MODE.names)
 
         if overridden_arguments:
@@ -37,8 +37,8 @@ class RunMode(InputMode):
             merged_arguments = meta_data_arguments | overridden_arguments.to_dict()
             meta_data_command = Command.from_dict(meta_data_command.module_name, ArgumentDict(merged_arguments))
             Log.info(
-                'Arguments "%s" modifying the original experiments have been provided. The resulting command is '
-                + '"%s"...', format_iterable(overridden_arguments, separator=' '), meta_data_command)
+                'Arguments "{}" modifying the original experiments have been provided. The resulting command is '
+                + '"{}"...', format_iterable(overridden_arguments, separator=' '), meta_data_command)
 
         Log.info('')
         subprocess.run(list(meta_data_command), check=False)

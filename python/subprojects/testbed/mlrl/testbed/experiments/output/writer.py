@@ -156,7 +156,7 @@ class OutputWriter:
             if self.output_error_policy == OutputErrorPolicy.EXIT:
                 raise error
 
-            Log.error('Failed to extract output data from experimental state via extractor of type %s',
+            Log.error('Failed to extract output data from experimental state via extractor of type {}',
                       type(extractor).__name__,
                       error=error)
             return []
@@ -171,7 +171,7 @@ class OutputWriter:
                 if result:
                     return result
         else:
-            Log.warning('No extractors have been added to output writer of type %s', type(self).__name__)
+            Log.warning('No extractors have been added to output writer of type {}', type(self).__name__)
 
         return []
 
@@ -183,7 +183,7 @@ class OutputWriter:
             if self.output_error_policy == OutputErrorPolicy.EXIT:
                 raise error
 
-            Log.error('Failed to write output data of type "%s" to sink %s',
+            Log.error('Failed to write output data of type "{}" to sink {}',
                       type(output_data).__name__,
                       type(sink).__name__,
                       error=error)

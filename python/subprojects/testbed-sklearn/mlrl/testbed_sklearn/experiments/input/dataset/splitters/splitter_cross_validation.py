@@ -214,7 +214,7 @@ class CrossValidationSplitter(DatasetSplitter):
         num_folds = folding_strategy.num_folds
 
         Log.info(
-            'Performing %s %s-fold cross validation...', 'fold ' + str(folding_strategy.first + 1) +
+            'Performing {} {}-fold cross validation...', 'fold ' + str(folding_strategy.first + 1) +
             (' to ' + str(folding_strategy.last) if folding_strategy.num_folds_in_subset > 1 else '')
             + ' of' if folding_strategy.is_subset else 'full', num_folds)
 
@@ -225,7 +225,7 @@ class CrossValidationSplitter(DatasetSplitter):
             dataset_reader.is_available(replace(state, fold=Fold(fold_index))) for fold_index in range(num_folds))
 
         for fold in folding_strategy.folds:
-            Log.info('Fold %s / %s:', (fold.index + 1), num_folds)
+            Log.info('Fold {} / {}:', (fold.index + 1), num_folds)
             state = replace(state, fold=fold)
 
             if predefined_splits_available:

@@ -81,7 +81,7 @@ class FileSink(Sink, ABC):
                              file_name=output_data.properties.file_name,
                              suffix=self.suffix,
                              context=context).resolve(state)
-        Log.verbose('Writing output data to file "%s"...', file_path)
+        Log.verbose('Writing output data to file "{}"...', file_path)
         self._write_to_file(file_path, state, output_data, **kwargs)
 
     @abstractmethod

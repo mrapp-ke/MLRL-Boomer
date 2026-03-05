@@ -75,7 +75,7 @@ class SkLearnExperiment(Experiment):
 
             if parameters:
                 learner.set_params(**parameters)
-                Log.success('Successfully applied parameter setting: %s', parameters)
+                Log.success('Successfully applied parameter setting: {}', parameters)
 
             return learner
 
@@ -98,7 +98,7 @@ class SkLearnExperiment(Experiment):
                     changes, '')
                 Log.warning(
                     'The loaded model\'s values for the following parameters differ from the expected configuration: '
-                    + '%s', formatted_changes)
+                    + '{}', formatted_changes)
 
         def __init__(self, base_learner: BaseEstimator, fit_kwargs: Optional[Dict[str, Any]] = None):
             """
@@ -121,9 +121,9 @@ class SkLearnExperiment(Experiment):
                                                    actual_parameters=learner.get_params())
                 return TrainingState(learner=learner)
 
-            Log.info('Fitting model to %s training examples...', dataset.num_examples)
+            Log.info('Fitting model to {} training examples...', dataset.num_examples)
             training_duration = self._fit(new_learner, dataset, fit_kwargs=self.fit_kwargs)
-            Log.success('Successfully fit model in %s', training_duration)
+            Log.success('Successfully fit model in {}', training_duration)
             return TrainingState(learner=new_learner, training_duration=training_duration)
 
         def _fit(self, estimator: BaseEstimator, dataset: TabularDataset,

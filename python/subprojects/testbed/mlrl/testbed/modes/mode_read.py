@@ -134,7 +134,7 @@ class ReadMode(InputMode):
     @staticmethod
     def __run_single_experiment(args: Namespace, recipe: Recipe, input_directory: Path,
                                 command: Command) -> ExperimentState:
-        Log.info('The command "%s" has been used originally for running this experiment', str(command))
+        Log.info('The command "{}" has been used originally for running this experiment', str(command))
         return OutputUtil(args=args, recipe=recipe, command=command,
                           input_directory=input_directory).read_output_files()
 
@@ -166,7 +166,7 @@ class ReadMode(InputMode):
 
             if num_missing > 0:
                 if num_tables > 0:
-                    Log.error('Evaluation results for %s data of the dataset "%s" are incomplete. %s of %s %s missing.',
+                    Log.error('Evaluation results for {} data of the dataset "{}" are incomplete. {} of {} {} missing.',
                               dataset_type, dataset_name, num_missing, num_commands,
                               'files are' if num_missing > 1 else 'file is')
             else:
@@ -209,7 +209,7 @@ class ReadMode(InputMode):
                         recipe: Recipe, meta_data: MetaData, input_directory: Path):
         batch = self.__get_batch(control_arguments, args, meta_data)
         num_experiments = len(batch)
-        Log.info('Reading experimental results of %s %s...', num_experiments,
+        Log.info('Reading experimental results of {} {}...', num_experiments,
                  'experiments' if num_experiments > 1 else 'experiment')
         i = 1
 
@@ -219,7 +219,7 @@ class ReadMode(InputMode):
             commands_and_their_states: List[Tuple[Command, ExperimentState]] = []
 
             for command, command_args in commands:
-                Log.info('\nReading experimental results of experiment (%s / %s)...', i, num_experiments)
+                Log.info('\nReading experimental results of experiment ({} / {})...', i, num_experiments)
                 state = self.__run_single_experiment(command_args, recipe, input_directory, command)
                 commands_and_their_states.append((command, state))
                 i += 1

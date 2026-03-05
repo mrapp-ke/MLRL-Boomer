@@ -95,7 +95,7 @@ class BatchMode(Mode):
                 if i > 0:
                     Log.info('')
 
-                Log.info('%s', self.__format_command(command))
+                Log.info('{}', self.__format_command(command))
 
     class SequentialRunner(Runner):
         """
@@ -112,16 +112,16 @@ class BatchMode(Mode):
 
             for i, command in enumerate(batch):
                 if i == 0:
-                    Log.info('Running %s %s...', num_experiments,
+                    Log.info('Running {} {}...', num_experiments,
                              'experiments' if num_experiments > 1 else 'experiment')
 
-                Log.info('\nRunning experiment (%s / %s): "%s"', i + 1, num_experiments, str(command))
+                Log.info('\nRunning experiment ({} / {}): "{}"', i + 1, num_experiments, str(command))
                 recipe.create_experiment_builder(experiment_mode=ExperimentMode.BATCH,
                                                  args=command.apply_to_namespace(args),
                                                  command=command).run(args)
 
             run_time = Timer.stop(start_time)
-            Log.success('Successfully finished %s %s after %s', num_experiments,
+            Log.success('Successfully finished {} {} after {}', num_experiments,
                         'experiments' if num_experiments > 1 else 'experiment', run_time)
 
     class ConfigFile(ABC):
@@ -316,7 +316,7 @@ class BatchMode(Mode):
 
         if num_skipped > 0:
             Log.info(
-                'Skipping %s of %s %s, because all of their output files do already exist. Use the argument "%s %s" to '
+                'Skipping {} of {} {}, because all of their output files do already exist. Use the argument "{} {}" to '
                 + 'force-run all experiments.', num_skipped, len(batch),
                 'experiments' if num_skipped > 1 else 'experiment', OutputArguments.IF_OUTPUTS_EXIST.name,
                 OutputExistsPolicy.OVERWRITE)

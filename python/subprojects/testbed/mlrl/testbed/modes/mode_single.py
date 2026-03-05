@@ -55,7 +55,7 @@ class SingleMode(Mode):
 
         if self.__should_experiment_be_cancelled(args=args, recipe=recipe, command=command):
             Log.info(
-                'Cancelling experiment, because all output files do already exist. Use the argument "%s %s" to '
+                'Cancelling experiment, because all output files do already exist. Use the argument "{} {}" to '
                 + 'force-run the experiment.', OutputArguments.IF_OUTPUTS_EXIST.name, OutputExistsPolicy.OVERWRITE)
         else:
             recipe.create_experiment_builder(experiment_mode=self.to_enum(), args=args, command=command).run(args)

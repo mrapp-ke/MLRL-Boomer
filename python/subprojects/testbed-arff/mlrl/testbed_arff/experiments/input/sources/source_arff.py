@@ -177,14 +177,14 @@ class ArffFileSource(DatasetFileSource):
             :return:                The ARFF dataset that has been created
             """
             if file_path.is_file():
-                Log.verbose('Parsing meta-data from file \"%s\"...', file_path)
+                Log.verbose('Parsing meta-data from file \"{}\"...', file_path)
                 xml_doc = minidom.parse(str(file_path))
                 tags = xml_doc.getElementsByTagName('label')
                 output_names = {normalize_attribute_name(tag.getAttribute('name')) for tag in tags}
             else:
                 output_names = None
                 Log.verbose(
-                    'Mulan XML file \"%s\" does not exist. If possible, information about the dataset\'s outputs is '
+                    'Mulan XML file \"{}\" does not exist. If possible, information about the dataset\'s outputs is '
                     + 'parsed from the ARFF file\'s @relation declaration as intended by the MEKA dataset format...',
                     file_path)
 

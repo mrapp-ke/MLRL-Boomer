@@ -518,7 +518,7 @@ class DefaultProcedure(ExperimentalProcedure):
     @override
     def _before_experiment(self, experiment: Experiment, state: ExperimentState) -> ExperimentState:
         problem_domain = state.problem_domain
-        Log.info('Starting experiment using the %s algorithm "%s"...', problem_domain.problem_name,
+        Log.info('Starting experiment using the {} algorithm "{}"...', problem_domain.problem_name,
                  problem_domain.learner_name)
 
         for listener in experiment.listeners:
@@ -568,7 +568,7 @@ class DefaultProcedure(ExperimentalProcedure):
 
         if start_time:
             run_time = Timer.stop(start_time)
-            Log.success('Successfully finished experiment after %s', run_time)
+            Log.success('Successfully finished experiment after {}', run_time)
         else:
             Log.success('Successfully finished experiment')
 

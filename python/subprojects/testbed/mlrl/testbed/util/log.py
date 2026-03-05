@@ -23,9 +23,9 @@ class Log:
         :param error:   An optional error to be included in the log message
         """
         if error:
-            logging.error(message + ': %s', *args, error)
+            logging.error((message + ': {}').format(*args, error))
         else:
-            logging.error(message, *args)
+            logging.error(message.format(*args))
 
     @staticmethod
     def warning(message: str, *args):
@@ -35,7 +35,7 @@ class Log:
         :param message: The log message to be written
         :param args:    Optional arguments to be included in the log message
         """
-        logging.warning(message, *args)
+        logging.warning(message.format(*args))
 
     @staticmethod
     def success(message: str, *args):
@@ -45,7 +45,7 @@ class Log:
         :param message: The log message to be written
         :param args:    Optional arguments to be included in the log message
         """
-        Log.info(f'✓ {message}', *args)
+        Log.info('✓ ' + message.format(*args))
 
     @staticmethod
     def info(message: str, *args):
@@ -55,7 +55,7 @@ class Log:
         :param message: The log message to be written
         :param args:    Optional arguments to be included in the log message
         """
-        logging.info(message, *args)
+        logging.info(message.format(*args))
 
     @staticmethod
     def verbose(message: str, *args):
@@ -65,4 +65,4 @@ class Log:
         :param message: The log message to be written
         :param args:    Optional arguments to be included in the log message
         """
-        logging.debug(message, *args)
+        logging.debug(message.format(*args))

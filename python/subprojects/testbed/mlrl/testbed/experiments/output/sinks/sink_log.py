@@ -43,7 +43,7 @@ class LogSink(Sink):
             if text:
                 context = output_data.get_context(type(self))
                 title = TextualOutputData.Title(title=output_data.properties.name, context=context)
-                Log.info('%s:\n\n%s\n', title.format(state), text)
+                Log.info('{}:\n\n{}\n', title.format(state), text)
 
     @override
     def create_source(self, input_directory: Path) -> Optional[Source]:

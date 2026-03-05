@@ -221,7 +221,7 @@ def main():
         try:
             runnable.run(mode, control_arguments, algorithmic_arguments, args)
         except ValidationError as error:
-            Log.error('%s', error)
+            Log.error('{}', error)
             sys.exit(1)
 
 
