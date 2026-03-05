@@ -36,6 +36,7 @@ jobs:
               - 'build'
               - 'build.bat'
               - 'build_system/main.py'
+              - 'build_system/requirements.txt'
               - 'build_system/core/**'
               - 'build_system/util/**'
               - 'build_system/targets/*.py'
