@@ -75,7 +75,7 @@ class SkLearnExperiment(Experiment):
 
             if parameters:
                 learner.set_params(**parameters)
-                Log.info('Successfully applied parameter setting: %s', parameters)
+                Log.success('Successfully applied parameter setting: %s', parameters)
 
             return learner
 
@@ -123,7 +123,7 @@ class SkLearnExperiment(Experiment):
 
             Log.info('Fitting model to %s training examples...', dataset.num_examples)
             training_duration = self._fit(new_learner, dataset, fit_kwargs=self.fit_kwargs)
-            Log.info('Successfully fit model in %s', training_duration)
+            Log.success('Successfully fit model in %s', training_duration)
             return TrainingState(learner=new_learner, training_duration=training_duration)
 
         def _fit(self, estimator: BaseEstimator, dataset: TabularDataset,

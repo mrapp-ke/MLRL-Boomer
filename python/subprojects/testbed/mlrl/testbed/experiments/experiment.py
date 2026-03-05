@@ -568,8 +568,8 @@ class DefaultProcedure(ExperimentalProcedure):
 
         if start_time:
             run_time = Timer.stop(start_time)
-            Log.info('Successfully finished experiment after %s', run_time)
+            Log.success('Successfully finished experiment after %s', run_time)
         else:
-            Log.info('Successfully finished experiment')
+            Log.success('Successfully finished experiment')
 
         return state

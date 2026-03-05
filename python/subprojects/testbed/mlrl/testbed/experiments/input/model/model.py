@@ -30,5 +30,5 @@ class InputModel(InputData):
         """
         See :func:`mlrl.testbed.experiments.input.data.InputData.update_state`
         """
-        Log.info('Successfully loaded model')
+        Log.success('Successfully loaded model')
         state.training_result = TrainingState(learner=input_data)

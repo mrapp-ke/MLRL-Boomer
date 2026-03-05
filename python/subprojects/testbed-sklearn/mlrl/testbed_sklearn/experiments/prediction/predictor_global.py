@@ -51,7 +51,7 @@ class GlobalPredictor(Predictor):
         prediction_duration = Timer.stop(start_time)
 
         if predictions is not None:
-            Log.info('Successfully predicted in %s', prediction_duration)
+            Log.success('Successfully predicted in %s', prediction_duration)
             yield PredictionState(prediction_scope=GlobalPredictionScope(),
                                   prediction_result=PredictionResult(predictions=predictions,
                                                                      prediction_type=self.prediction_type,

@@ -38,6 +38,16 @@ class Log:
         logging.warning(message, *args)
 
     @staticmethod
+    def success(message: str, *args):
+        """
+        Writes a log message at level `Log.Level.INFO` indicating successful operation of an operation.
+
+        :param message: The log message to be written
+        :param args:    Optional arguments to be included in the log message
+        """
+        Log.info(f'✓ {message}', *args)
+
+    @staticmethod
     def info(message: str, *args):
         """
         Writes a log message at level `Log.Level.INFO`.

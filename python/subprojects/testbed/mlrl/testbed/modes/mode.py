@@ -98,7 +98,7 @@ class InputMode(Mode, ABC):
         reader = MetaDataReader(
             YamlFileSource(directory=input_directory, schema_file_path=InputMetaData.SCHEMA_FILE_PATH))
         meta_data = reader.read(state).meta_data
-        Log.info('Successfully read meta-data')
+        Log.success('Successfully read meta-data')
         return meta_data
 
     @staticmethod

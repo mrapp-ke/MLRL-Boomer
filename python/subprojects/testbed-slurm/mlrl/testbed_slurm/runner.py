@@ -268,8 +268,8 @@ class SlurmRunner(BatchMode.Runner):
         if result.ok:
             job_name = sbatch_file.stem
             job_id = result.output.split(' ')[-1]
-            Log.info('Successfully submitted job:\n\n%s',
-                     tabulate([['JOBID', job_id], ['NAME', job_name]], tablefmt='plain'))
+            Log.success('Successfully submitted job:\n\n%s',
+                        tabulate([['JOBID', job_id], ['NAME', job_name]], tablefmt='plain'))
             return 0
 
         Log.error('Submission to Slurm failed:\n%s', result.output)
