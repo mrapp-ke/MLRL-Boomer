@@ -3,7 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that implement a mode of operation for performing multiple experiments.
 """
-import logging as log
 import re as regex
 
 from abc import ABC, abstractmethod
@@ -31,6 +30,7 @@ from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.modes.mode import Mode
 from mlrl.testbed.modes.util import OutputUtil
+from mlrl.testbed.util.log import Log
 from mlrl.testbed.util.yml import read_and_validate_yaml
 
 from mlrl.util.cli import AUTO, Argument, BoolArgument, CommandLineInterface, FlagArgument, PathArgument, SetArgument
@@ -93,9 +93,9 @@ class BatchMode(Mode):
         def run_batch(self, args: Namespace, batch: Batch, recipe: Recipe):
             for i, command in enumerate(batch):
                 if i > 0:
-                    log.info('')
+                    Log.info('')
 
-                log.info('%s', self.__format_command(command))
+                Log.info('%s', self.__format_command(command))
 
     class SequentialRunner(Runner):
         """
@@ -112,16 +112,16 @@ class BatchMode(Mode):
 
             for i, command in enumerate(batch):
                 if i == 0:
-                    log.info('Running %s %s...', num_experiments,
+                    Log.info('Running %s %s...', num_experiments,
                              'experiments' if num_experiments > 1 else 'experiment')
 
-                log.info('\nRunning experiment (%s / %s): "%s"', i + 1, num_experiments, str(command))
+                Log.info('\nRunning experiment (%s / %s): "%s"', i + 1, num_experiments, str(command))
                 recipe.create_experiment_builder(experiment_mode=ExperimentMode.BATCH,
                                                  args=command.apply_to_namespace(args),
                                                  command=command).run(args)
 
             run_time = Timer.stop(start_time)
-            log.info('Successfully finished %s %s after %s', num_experiments,
+            Log.info('Successfully finished %s %s after %s', num_experiments,
                      'experiments' if num_experiments > 1 else 'experiment', run_time)
 
     class ConfigFile(ABC):
@@ -315,7 +315,7 @@ class BatchMode(Mode):
         num_skipped = len(batch) - len(filtered_batch)
 
         if num_skipped > 0:
-            log.info(
+            Log.info(
                 'Skipping %s of %s %s, because all of their output files do already exist. Use the argument "%s %s" to '
                 + 'force-run all experiments.', num_skipped, len(batch),
                 'experiments' if num_skipped > 1 else 'experiment', OutputArguments.IF_OUTPUTS_EXIST.name,

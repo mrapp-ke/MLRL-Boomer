@@ -3,7 +3,6 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing output data to the log.
 """
-import logging as log
 
 from pathlib import Path
 from typing import Callable, Optional, override
@@ -12,6 +11,7 @@ from mlrl.testbed.experiments.input.sources import Source
 from mlrl.testbed.experiments.output.data import OutputData, TextualOutputData
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.util.log import Log
 
 from mlrl.util.options import Options
 
@@ -43,7 +43,7 @@ class LogSink(Sink):
             if text:
                 context = output_data.get_context(type(self))
                 title = TextualOutputData.Title(title=output_data.properties.name, context=context)
-                log.info('%s:\n\n%s\n', title.format(state), text)
+                Log.info('%s:\n\n%s\n', title.format(state), text)
 
     @override
     def create_source(self, input_directory: Path) -> Optional[Source]:

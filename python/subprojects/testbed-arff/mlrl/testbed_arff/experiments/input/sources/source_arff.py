@@ -3,7 +3,6 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow reading datasets from ARFF files.
 """
-import logging as log
 
 from dataclasses import replace
 from functools import cached_property
@@ -26,6 +25,7 @@ from mlrl.testbed.experiments.input.data import DatasetInputData
 from mlrl.testbed.experiments.input.sources.source import DatasetFileSource
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.io import open_readable_file
+from mlrl.testbed.util.log import Log
 
 
 def normalize_attribute_name(name: str) -> str:
@@ -177,13 +177,13 @@ class ArffFileSource(DatasetFileSource):
             :return:                The ARFF dataset that has been created
             """
             if file_path.is_file():
-                log.debug('Parsing meta-data from file \"%s\"...', file_path)
+                Log.verbose('Parsing meta-data from file \"%s\"...', file_path)
                 xml_doc = minidom.parse(str(file_path))
                 tags = xml_doc.getElementsByTagName('label')
                 output_names = {normalize_attribute_name(tag.getAttribute('name')) for tag in tags}
             else:
                 output_names = None
-                log.debug(
+                Log.verbose(
                     'Mulan XML file \"%s\" does not exist. If possible, information about the dataset\'s outputs is '
                     + 'parsed from the ARFF file\'s @relation declaration as intended by the MEKA dataset format...',
                     file_path)

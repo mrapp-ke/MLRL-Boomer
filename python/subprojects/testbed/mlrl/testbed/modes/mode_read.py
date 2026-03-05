@@ -3,7 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that implement a mode of operation for reading experimental results.
 """
-import logging as log
 
 from argparse import Namespace
 from dataclasses import replace
@@ -24,6 +23,7 @@ from mlrl.testbed.experiments.table import Cell, RowWiseTable, Table
 from mlrl.testbed.modes.mode import InputMode
 from mlrl.testbed.modes.mode_batch import BatchMode
 from mlrl.testbed.modes.util import OutputUtil
+from mlrl.testbed.util.log import Log
 
 from mlrl.util.cli import Argument
 from mlrl.util.options import Options
@@ -134,7 +134,7 @@ class ReadMode(InputMode):
     @staticmethod
     def __run_single_experiment(args: Namespace, recipe: Recipe, input_directory: Path,
                                 command: Command) -> ExperimentState:
-        log.info('The command "%s" has been used originally for running this experiment', str(command))
+        Log.info('The command "%s" has been used originally for running this experiment', str(command))
         return OutputUtil(args=args, recipe=recipe, command=command,
                           input_directory=input_directory).read_output_files()
 
@@ -166,7 +166,7 @@ class ReadMode(InputMode):
 
             if num_missing > 0:
                 if num_tables > 0:
-                    log.error('Evaluation results for %s data of the dataset "%s" are incomplete. %s of %s %s missing.',
+                    Log.error('Evaluation results for %s data of the dataset "%s" are incomplete. %s of %s %s missing.',
                               dataset_type, dataset_name, num_missing, num_commands,
                               'files are' if num_missing > 1 else 'file is')
             else:
@@ -209,7 +209,7 @@ class ReadMode(InputMode):
                         recipe: Recipe, meta_data: MetaData, input_directory: Path):
         batch = self.__get_batch(control_arguments, args, meta_data)
         num_experiments = len(batch)
-        log.info('Reading experimental results of %s %s...', num_experiments,
+        Log.info('Reading experimental results of %s %s...', num_experiments,
                  'experiments' if num_experiments > 1 else 'experiment')
         i = 1
 
@@ -219,7 +219,7 @@ class ReadMode(InputMode):
             commands_and_their_states: List[Tuple[Command, ExperimentState]] = []
 
             for command, command_args in commands:
-                log.info('\nReading experimental results of experiment (%s / %s)...', i, num_experiments)
+                Log.info('\nReading experimental results of experiment (%s / %s)...', i, num_experiments)
                 state = self.__run_single_experiment(command_args, recipe, input_directory, command)
                 commands_and_their_states.append((command, state))
                 i += 1
