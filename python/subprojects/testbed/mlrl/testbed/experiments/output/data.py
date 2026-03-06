@@ -54,13 +54,15 @@ class TextualOutputData(OutputData, ABC):
         A title that is printed before textual output data.
         """
 
-        def __init__(self, title: str, context: Context):
+        def __init__(self, title: str, context: Context, symbol: Optional[str] = None):
             """
             :param title:   A title
             :param context: A `Context` to be used for formatting the title
+            :param symbol:  An optional symbol that represents the output data
             """
             self.title = title
             self.context = context
+            self.symbol = symbol
 
         def __format_dataset_type(self, state: ExperimentState) -> str:
             if self.context.include_dataset_type:
@@ -105,8 +107,9 @@ class TextualOutputData(OutputData, ABC):
 
             :param state: The state from which the output data has been generated
             """
-            return self.title + self.__format_dataset_type(state) + self.__format_prediction_scope(
-                state) + self.__format_fold(state)
+            symbol = self.symbol
+            return (symbol + ' ' if symbol else '') + self.title + self.__format_dataset_type(
+                state) + self.__format_prediction_scope(state) + self.__format_fold(state)
 
     @staticmethod
     def from_text(properties: Properties, context: Context, text: str) -> 'TextualOutputData':
