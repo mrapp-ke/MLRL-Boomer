@@ -13,6 +13,7 @@ from typing import Optional, override
 from rich.console import Console, ConsoleRenderable
 from rich.logging import LogRecord, RichHandler
 from rich.style import Style
+from rich.syntax import Syntax
 from rich.text import Text
 
 from mlrl.testbed.util.io import ENCODING_UTF8
@@ -137,6 +138,17 @@ class Log:
         log_level = logging.INFO
         console.print(LogHandler.format_message(message.format(*args), log_level),
                       style=LogHandler.get_style(log_level))
+
+    @staticmethod
+    def source_code(source_code: str, *args, language: str):
+        """
+        Writes source code using a specific language to the log at level `Log.Level.INFO`.
+
+        :param source_code: The source code to be written
+        :param args:        Optional arguments to be included in the log message
+        :param language:    The language used by the source code
+        """
+        console.print(Syntax(source_code.format(*args), language))
 
     @staticmethod
     def verbose(message: str, *args):

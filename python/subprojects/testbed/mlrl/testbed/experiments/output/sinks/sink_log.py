@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Callable, Optional, override
 
 from mlrl.testbed.experiments.input.sources import Source
-from mlrl.testbed.experiments.output.data import OutputData, TextualOutputData
+from mlrl.testbed.experiments.output.data import OutputData, StructuralOutputData, TextualOutputData
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.log import Log
@@ -37,13 +37,23 @@ class LogSink(Sink):
         """
         See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.write_to_sink`
         """
-        if isinstance(output_data, TextualOutputData):
+        text: Optional[str] = None
+        language: Optional[str] = None
+
+        if isinstance(output_data, StructuralOutputData):
+            text, language = output_data.to_source_code(self.options, **kwargs)
+        elif isinstance(output_data, TextualOutputData):
             text = output_data.to_text(self.options, **kwargs)
 
-            if text:
-                context = output_data.get_context(type(self))
-                title = TextualOutputData.Title(title=output_data.properties.name, context=context)
-                Log.info('{}:\n\n{}\n', title.format(state), text)
+        if text:
+            context = output_data.get_context(type(self))
+            title = TextualOutputData.Title(title=output_data.properties.name, context=context)
+            Log.info('{}:\n', title.format(state))
+
+            if language:
+                Log.source_code('{}\n', text, language=language)
+            else:
+                Log.info('{}\n', text)
 
     @override
     def create_source(self, input_directory: Path) -> Optional[Source]:

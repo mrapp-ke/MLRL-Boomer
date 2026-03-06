@@ -7,7 +7,7 @@ import json
 
 from abc import ABC, abstractmethod
 from dataclasses import replace
-from typing import Any, Dict, Iterable, List, Optional, Type, override
+from typing import Any, Dict, Iterable, List, Optional, Tuple, Type, override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties, TabularProperties
@@ -196,6 +196,16 @@ class StructuralOutputData(TextualOutputData, ABC):
     representation, e.g., YAML or JSON.
     """
 
+    def __init__(self, properties: Properties, context: Context = Context(), language: Optional[str] = None):
+        """
+        :param properties:  The properties of the output data
+        :param context:     A `Context` to be used by default for finding a suitable sink this output data can be
+                            written to
+        :param language:    The language of the source code that represents the output data, if any
+        """
+        super().__init__(properties=properties, context=context)
+        self.language = language
+
     @abstractmethod
     def to_dict(self, options: Options, **kwargs) -> Optional[Dict[Any, Any]]:
         """
@@ -204,6 +214,16 @@ class StructuralOutputData(TextualOutputData, ABC):
         :param options: Options to be taken into account
         :return:        The dictionary that has been created
         """
+
+    def to_source_code(self, options: Options, **kwargs) -> Tuple[Optional[str], Optional[str]]:
+        """
+        Creates and returns a tuple containing the source code of the output data, together with the language it uses.
+
+        :param options: Options to be taken into account
+        :return:        A tuple that contains the source code and the language it uses
+        """
+        language = self.language
+        return self.to_text(options, **kwargs), language if language else None
 
     @override
     def to_text(self, options: Options, **kwargs) -> Optional[str]:
