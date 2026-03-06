@@ -82,7 +82,7 @@ jobs:
         with:
           path: C:\Program Files\Git\usr\bin\link.EXE
       - name: Build package
-        uses: pypa/cibuildwheel@v3.3
+        uses: pypa/cibuildwheel@v3.4
         env:
           CIBW_BUILD: ${{ matrix.build_identifier }}
           CIBW_BEFORE_BUILD: .\build.bat pyproject_toml
