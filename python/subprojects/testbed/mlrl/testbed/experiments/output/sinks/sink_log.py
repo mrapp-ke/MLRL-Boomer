@@ -48,12 +48,15 @@ class LogSink(Sink):
         if text:
             context = output_data.get_context(type(self))
             title = TextualOutputData.Title(title=output_data.properties.name, context=context)
-            Log.info('{}:\n', title.format(state))
+            box_title = title.format(state)
+            Log.info('')
 
             if language:
-                Log.source_code('{}\n', text, language=language)
+                Log.source_code('{}', text, language=language, box=True, box_title=box_title)
             else:
-                Log.info('{}\n', text)
+                Log.info('{}', text, box=True, box_title=box_title)
+
+            Log.info('')
 
     @override
     def create_source(self, input_directory: Path) -> Optional[Source]:
