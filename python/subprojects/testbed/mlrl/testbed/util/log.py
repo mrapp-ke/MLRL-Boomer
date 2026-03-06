@@ -99,11 +99,13 @@ class Log:
         :param error:   An optional error to be included in the log message
         """
         log_level = logging.ERROR
-        console.print(LogHandler.format_message(message.format(*args), log_level),
-                      style=LogHandler.get_style(log_level))
 
-        if error:
-            console.print_exception(extra_lines=2)
+        if logging.getLogger().isEnabledFor(log_level):
+            console.print(LogHandler.format_message(message.format(*args), log_level),
+                          style=LogHandler.get_style(log_level))
+
+            if error:
+                console.print_exception(extra_lines=2)
 
     @staticmethod
     def warning(message: str, *args):
@@ -114,8 +116,10 @@ class Log:
         :param args:    Optional arguments to be included in the log message
         """
         log_level = logging.WARNING
-        console.print(LogHandler.format_message(message.format(*args), log_level),
-                      style=LogHandler.get_style(log_level))
+
+        if logging.getLogger().isEnabledFor(log_level):
+            console.print(LogHandler.format_message(message.format(*args), log_level),
+                          style=LogHandler.get_style(log_level))
 
     @staticmethod
     def success(message: str, *args):
@@ -125,7 +129,10 @@ class Log:
         :param message: The log message to be written
         :param args:    Optional arguments to be included in the log message
         """
-        console.print('✓ ' + message.format(*args), style=Style(color='green', bold=True))
+        log_level = logging.INFO
+
+        if logging.getLogger().isEnabledFor(log_level):
+            console.print('✓ ' + message.format(*args), style=Style(color='green', bold=True))
 
     @staticmethod
     def info(message: str, *args):
@@ -136,8 +143,10 @@ class Log:
         :param args:    Optional arguments to be included in the log message
         """
         log_level = logging.INFO
-        console.print(LogHandler.format_message(message.format(*args), log_level),
-                      style=LogHandler.get_style(log_level))
+
+        if logging.getLogger().isEnabledFor(log_level):
+            console.print(LogHandler.format_message(message.format(*args), log_level),
+                          style=LogHandler.get_style(log_level))
 
     @staticmethod
     def source_code(source_code: str, *args, language: str):
@@ -148,7 +157,10 @@ class Log:
         :param args:        Optional arguments to be included in the log message
         :param language:    The language used by the source code
         """
-        console.print(Syntax(source_code.format(*args), language))
+        log_level = logging.INFO
+
+        if logging.getLogger().isEnabledFor(log_level):
+            console.print(Syntax(source_code.format(*args), language))
 
     @staticmethod
     def verbose(message: str, *args):
@@ -159,5 +171,7 @@ class Log:
         :param args:    Optional arguments to be included in the log message
         """
         log_level = logging.DEBUG
-        console.print(LogHandler.format_message(message.format(*args), log_level),
-                      style=LogHandler.get_style(log_level))
+
+        if logging.getLogger().isEnabledFor(log_level):
+            console.print(LogHandler.format_message(message.format(*args), log_level),
+                          style=LogHandler.get_style(log_level))
