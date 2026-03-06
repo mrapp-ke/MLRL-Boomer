@@ -3,7 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility classes to be used by different modes of operation.
 """
-import logging as log
 
 from argparse import Namespace
 from dataclasses import replace
@@ -17,6 +16,7 @@ from mlrl.testbed.experiments.input.policies import MissingInputPolicy
 from mlrl.testbed.experiments.output.sinks.sink import FileSink
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
+from mlrl.testbed.util.log import disable_log
 
 
 class OutputUtil:
@@ -107,21 +107,19 @@ class OutputUtil:
 
         :return: True, if all experimental results do already exist, False otherwise
         """
-        try:
-            log.disable(log.CRITICAL)  # Temporarily disable logging
-            experiment_builder = self.experiment_builder
+        with disable_log():
+            try:
+                experiment_builder = self.experiment_builder
 
-            if experiment_builder.input_readers:
-                for output_writer in experiment_builder.output_writers:
-                    output_writer.sinks.clear()
+                if experiment_builder.input_readers:
+                    for output_writer in experiment_builder.output_writers:
+                        output_writer.sinks.clear()
 
-                experiment_builder.set_missing_input_policy(MissingInputPolicy.EXIT)
-                experiment = experiment_builder.build(self.args)
-                OutputUtil.ReadProcedure().conduct_experiment(experiment)
-                return True
-        except IOError:
-            return False
-        finally:
-            log.disable(log.NOTSET)  # Re-enable logging
+                    experiment_builder.set_missing_input_policy(MissingInputPolicy.EXIT)
+                    experiment = experiment_builder.build(self.args)
+                    OutputUtil.ReadProcedure().conduct_experiment(experiment)
+                    return True
+            except IOError:
+                return False
 
         return False

@@ -3,8 +3,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for writing log messages.
 """
+import contextlib
 import logging
+import os
 
+from contextlib import contextmanager
 from typing import Optional, override
 
 from rich.console import Console, ConsoleRenderable
@@ -12,7 +15,19 @@ from rich.logging import LogRecord, RichHandler
 from rich.style import Style
 from rich.text import Text
 
+from mlrl.testbed.util.io import ENCODING_UTF8
+
 console = Console(soft_wrap=True)
+
+
+@contextmanager
+def disable_log():
+    """
+    Prevents any output from being written to stdout or stderr.
+    """
+    with open(os.devnull, mode='w', encoding=ENCODING_UTF8) as devnull:
+        with contextlib.redirect_stdout(devnull), contextlib.redirect_stderr(devnull):
+            yield
 
 
 class LogHandler(RichHandler):
