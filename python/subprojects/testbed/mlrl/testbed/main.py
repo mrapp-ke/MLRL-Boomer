@@ -206,6 +206,10 @@ def main():
         except ValidationError as error:
             Log.error('{}', error)
             sys.exit(1)
+        # pylint: disable=broad-exception-caught
+        except Exception as error:
+            Log.error('An unexpected error occurred', error=error)
+            sys.exit(1)
 
 
 if __name__ == '__main__':

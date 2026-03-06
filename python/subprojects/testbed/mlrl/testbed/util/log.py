@@ -82,13 +82,12 @@ class Log:
         :param args:    Optional arguments to be included in the log message
         :param error:   An optional error to be included in the log message
         """
-        if error:
-            message = message + ': {}'.format(*args, error)
-        else:
-            message = message.format(*args)
-
         log_level = logging.ERROR
-        console.print(LogHandler.format_message(message, log_level), style=LogHandler.get_style(log_level))
+        console.print(LogHandler.format_message(message.format(*args), log_level),
+                      style=LogHandler.get_style(log_level))
+
+        if error:
+            console.print_exception(extra_lines=2)
 
     @staticmethod
     def warning(message: str, *args):
