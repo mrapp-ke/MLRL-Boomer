@@ -158,7 +158,7 @@ class TextFileComparison(FileComparison):
         return regex.sub(regex_version, '"' + PLACEHOLDER_VERSION + '"', line)
 
     def __mask_line(self, line_index: int, line: str) -> str:
-        masked_line = self.__replace_durations_with_placeholders(line_index, line.strip('\n'))
+        masked_line = self.__replace_durations_with_placeholders(line_index, line.rstrip())
         masked_line = self.__replace_timestamps_with_placeholders(masked_line)
         masked_line = self.__replace_versions_with_placeholders(masked_line)
         return masked_line
@@ -176,7 +176,7 @@ class TextFileComparison(FileComparison):
 
             for line_index, (actual_line, expected_line) in enumerate(zip(self.lines, expected_lines)):
                 actual_line = self.__mask_line(line_index, actual_line)
-                expected_line = expected_line.strip('\n')
+                expected_line = expected_line.rstrip()
 
                 if actual_line != expected_line:
                     return FileComparison.LineDifference(line_index=line_index,

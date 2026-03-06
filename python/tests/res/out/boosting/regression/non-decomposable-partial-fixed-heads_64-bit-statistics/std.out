@@ -1,47 +1,43 @@
-mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --print-model-characteristics true --loss squared-error-non-decomposable --statistic-type 64-bit --head-type partial-fixed
+mlrl-testbed mlrl.boosting --log-width 120 --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --print-model-characteristics true --loss squared-error-non-decomposable --statistic-type 64-bit --head-type partial-fixed
 Checking if output files do already exist...
 Starting experiment using the regression algorithm "BoomerRegressor"...
-DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
+○ Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Using separate training and test sets...
-DEBUG: Reading input data from file "python/tests/res/data/atp7d.arff"...
-DEBUG: Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
+○ Reading input data from file "python/tests/res/data/atp7d.arff"...
+○ Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
 Fitting model to 198 training examples...
-DEBUG: A dense matrix is used to store the feature values of the training examples
-DEBUG: A dense matrix is used to store the regression scores of the training examples
-Successfully fit model in <duration>
+○ A dense matrix is used to store the feature values of the training examples
+○ A dense matrix is used to store the regression scores of the training examples
+✓ Successfully fit model in <duration>
 Predicting for 98 test examples...
-DEBUG: A dense matrix is used to store the feature values of the query examples
-DEBUG: A dense matrix is used to store the predicted scores
-Successfully predicted in <duration>
-Evaluation result for test data:
+○ A dense matrix is used to store the feature values of the query examples
+○ A dense matrix is used to store the predicted scores
+✓ Successfully predicted in <duration>
 
-Mean Absolute Error (↓)                359.48
-Mean Absolute Percentage Error (↓)       1
-Mean Squared Error (↓)              146159
-Median Absolute Error (↓)              324
+╭────── 🗀 Evaluation result for test data ──────╮
+│ Mean Absolute Error (↓)                359.48 │
+│ Mean Absolute Percentage Error (↓)       1    │
+│ Mean Squared Error (↓)              146159    │
+│ Median Absolute Error (↓)              324    │
+╰───────────────────────────────────────────────╯
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-Model characteristics:
+○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 
-┌───────────────────────────────┬─────────┬─────────────────────────┬────────────────────────┬───────────────────────┬──────────────────────┬───────────────────────┬───────────────────────┐
-│ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
-├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
-│ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
-│ 4 local rules                 │       4 │                  25.00% │                 75.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
-└───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
+╭────────────────────────────────────────────── 🗀 Model characteristics ───────────────────────────────────────────────╮
+│ Statistics about conditions      Total    Numerical <= operator    Numerical > operator    Ordinal <= operator       │
+│ Ordinal > operator    Nominal == operator    Nominal != operator                                                     │
+│ Default rule                         0                    0.00%                   0.00%                  0.00%       │
+│ 0.00%                  0.00%                  0.00%                                                                  │
+│ 4 local rules                        4                   25.00%                  75.00%                  0.00%       │
+│ 0.00%                  0.00%                  0.00%                                                                  │
+│                                                                                                                      │
+│ Statistics about predictions      Total    Positive    Negative                                                      │
+│ Default rule                          6       0.00%     100.00%                                                      │
+│ 4 local rules                         8       0.00%     100.00%                                                      │
+│                                                                                                                      │
+│ Statistics per local rule      Minimum    Average    Maximum                                                         │
+│ Conditions                           1          1          1                                                         │
+│ Predictions                          2          2          2                                                         │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 
-┌────────────────────────────────┬─────────┬────────────┬────────────┐
-│ Statistics about predictions   │   Total │   Positive │   Negative │
-├────────────────────────────────┼─────────┼────────────┼────────────┤
-│ Default rule                   │       6 │      0.00% │    100.00% │
-│ 4 local rules                  │       8 │      0.00% │    100.00% │
-└────────────────────────────────┴─────────┴────────────┴────────────┘
-
-┌─────────────────────────────┬───────────┬───────────┬───────────┐
-│ Statistics per local rule   │   Minimum │   Average │   Maximum │
-├─────────────────────────────┼───────────┼───────────┼───────────┤
-│ Conditions                  │         1 │         1 │         1 │
-│ Predictions                 │         2 │         2 │         2 │
-└─────────────────────────────┴───────────┴───────────┴───────────┘
-
-Successfully finished experiment after <duration>
+✓ Successfully finished experiment after <duration>

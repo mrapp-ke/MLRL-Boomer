@@ -10,5 +10,5 @@
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
-mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset emotions --estimator RandomForestRegressor --log-level debug --max-leaf-nodes 10 --model-save-dir n-estimators_1/max-leaf-nodes_10/dataset_emotions/models --n-estimators 1 --parameter-save-dir n-estimators_1/max-leaf-nodes_10/dataset_emotions/parameters --problem-type regression --result-dir n-estimators_1/max-leaf-nodes_10/dataset_emotions/results --save-evaluation true --save-meta-data false
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset emotions --estimator RandomForestRegressor --log-level debug --log-width 120 --max-leaf-nodes 10 --model-save-dir n-estimators_1/max-leaf-nodes_10/dataset_emotions/models --n-estimators 1 --parameter-save-dir n-estimators_1/max-leaf-nodes_10/dataset_emotions/parameters --problem-type regression --result-dir n-estimators_1/max-leaf-nodes_10/dataset_emotions/results --save-evaluation true --save-meta-data false
 deactivate

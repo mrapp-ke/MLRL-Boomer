@@ -1,10 +1,11 @@
 mlrl-testbed mlrl.testbed_sklearn --mode run --help --estimator RandomForestRegressor
-usage: mlrl-testbed [-r RUNNABLE] [--log-level LOG_LEVEL] [--mode MODE] [--input-dir INPUT_DIR] [--base-dir BASE_DIR]
-                    [--create-dirs CREATE_DIRS] [--estimator ESTIMATOR] [--if-input-missing IF_INPUT_MISSING]
-                    [--if-output-error IF_OUTPUT_ERROR] [--load-models LOAD_MODELS] [--load-parameters LOAD_PARAMETERS]
-                    [--meta-estimator META_ESTIMATOR] [--model-load-dir MODEL_LOAD_DIR]
-                    [--model-save-dir MODEL_SAVE_DIR] [--parameter-load-dir PARAMETER_LOAD_DIR]
-                    [--parameter-save-dir PARAMETER_SAVE_DIR] [--predict-for-test-data PREDICT_FOR_TEST_DATA]
+usage: mlrl-testbed [-r RUNNABLE] [--log-level LOG_LEVEL] [--log-width LOG_WIDTH] [--mode MODE] [--input-dir INPUT_DIR]
+                    [--base-dir BASE_DIR] [--create-dirs CREATE_DIRS] [--estimator ESTIMATOR]
+                    [--if-input-missing IF_INPUT_MISSING] [--if-output-error IF_OUTPUT_ERROR]
+                    [--load-models LOAD_MODELS] [--load-parameters LOAD_PARAMETERS] [--meta-estimator META_ESTIMATOR]
+                    [--model-load-dir MODEL_LOAD_DIR] [--model-save-dir MODEL_SAVE_DIR]
+                    [--parameter-load-dir PARAMETER_LOAD_DIR] [--parameter-save-dir PARAMETER_SAVE_DIR]
+                    [--predict-for-test-data PREDICT_FOR_TEST_DATA]
                     [--predict-for-training-data PREDICT_FOR_TRAINING_DATA] [--print-all PRINT_ALL]
                     [--print-data-characteristics PRINT_DATA_CHARACTERISTICS] [--print-evaluation PRINT_EVALUATION]
                     [--print-ground-truth PRINT_GROUND_TRUTH] [--print-label-vectors PRINT_LABEL_VECTORS]
@@ -28,8 +29,10 @@ options:
   -r, --runnable RUNNABLE
                         The Python class name of the program that should be run
   --log-level LOG_LEVEL
-                        The log level to be used. Must be one of {"critical", "debug", "error", "info", "notset",
-                        "warn"}. The default value is "info".
+                        The log level to be used. Must be one of {"debug", "error", "info", "warning"}. The default
+                        value is "info".
+  --log-width LOG_WIDTH
+                        The width of the console output.
   --mode MODE           The mode of operation to be used. Must be one of {"batch", "read", "run", "single"}. The default
                         value is "single".
   -h, --help            Show this help message and exit

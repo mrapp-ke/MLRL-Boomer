@@ -1,5 +1,5 @@
 mlrl-testbed mlrl.seco --mode batch --help
-usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE] [--config CONFIG]
+usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--log-width LOG_WIDTH] [--mode MODE] [--config CONFIG]
                     [--separate-folds SEPARATE_FOLDS] [--list] [--runner RUNNER] [--base-dir BASE_DIR]
                     [--create-dirs CREATE_DIRS] [--data-split DATA_SPLIT] [--dataset-format DATASET_FORMAT]
                     [--if-input-missing IF_INPUT_MISSING] [--if-output-error IF_OUTPUT_ERROR]
@@ -46,8 +46,10 @@ options:
                         The Python class name of the program that should be run
   -v, --version         Display information about the program.
   --log-level LOG_LEVEL
-                        The log level to be used. Must be one of {"critical", "debug", "error", "info", "notset",
-                        "warn"}. The default value is "info".
+                        The log level to be used. Must be one of {"debug", "error", "info", "warning"}. The default
+                        value is "info".
+  --log-width LOG_WIDTH
+                        The width of the console output.
   --mode MODE           The mode of operation to be used. Must be one of {"batch", "read", "run", "single"}. The default
                         value is "single".
   -h, --help            Show this help message and exit
