@@ -16,7 +16,7 @@ from mlrl.testbed.experiments.input.policies import MissingInputPolicy
 from mlrl.testbed.experiments.output.sinks.sink import FileSink
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
-from mlrl.testbed.util.log import disable_log
+from mlrl.testbed.log import disable_log
 
 
 class OutputUtil:

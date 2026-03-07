@@ -14,7 +14,7 @@ from mlrl.testbed.experiments.input.sources import Source
 from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData, TabularOutputData
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
-from mlrl.testbed.util.log import Log
+from mlrl.testbed.log import Log
 
 from mlrl.util.options import Options
 

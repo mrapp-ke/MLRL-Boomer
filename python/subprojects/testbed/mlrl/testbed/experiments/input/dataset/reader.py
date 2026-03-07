@@ -13,7 +13,7 @@ from mlrl.testbed.experiments.input.dataset.preprocessors import Preprocessor
 from mlrl.testbed.experiments.input.reader import InputReader
 from mlrl.testbed.experiments.input.sources import Source
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.util.log import Log
+from mlrl.testbed.log import Log
 
 
 class DatasetReader(InputReader):

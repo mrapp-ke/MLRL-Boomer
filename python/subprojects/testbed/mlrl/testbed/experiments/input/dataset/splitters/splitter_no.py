@@ -12,7 +12,7 @@ from mlrl.testbed.experiments.fold import FoldingStrategy
 from mlrl.testbed.experiments.input.dataset import DatasetReader
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.util.log import Log
+from mlrl.testbed.log import Log
 
 
 class NoSplitter(DatasetSplitter):

@@ -24,8 +24,8 @@ from mlrl.testbed.experiments.file_path import FilePath
 from mlrl.testbed.experiments.input.data import DatasetInputData
 from mlrl.testbed.experiments.input.sources.source import DatasetFileSource
 from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.log import Log
 from mlrl.testbed.util.io import open_readable_file
-from mlrl.testbed.util.log import Log
 
 
 def normalize_attribute_name(name: str) -> str:

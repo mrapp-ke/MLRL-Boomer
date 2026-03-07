@@ -3,46 +3,23 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Imports and invokes the program to be run by the command line utility.
 """
-import logging as log
 import sys
 
-from argparse import ArgumentParser, HelpFormatter, Namespace
-from enum import Enum
+from argparse import ArgumentParser, HelpFormatter
 from importlib import import_module
 from importlib.metadata import version
 from importlib.util import module_from_spec, spec_from_file_location
 from typing import Optional, Set
 
 from mlrl.testbed.experiments.state import ExperimentMode
+from mlrl.testbed.log import Log
+from mlrl.testbed.log.arguments import LogArguments, configure_logger
 from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
 from mlrl.testbed.program_info import ProgramInfo
 from mlrl.testbed.runnables import Runnable
-from mlrl.testbed.util.log import Log, LogHandler
 
-from mlrl.util.cli import Argument, CommandLineInterface, EnumArgument
+from mlrl.util.cli import Argument, CommandLineInterface
 from mlrl.util.validation import ValidationError
-
-
-class LogLevel(Enum):
-    """
-    Specifies all valid textual representations of log levels.
-    """
-    DEBUG = log.DEBUG
-    INFO = log.INFO
-    WARN = log.WARN
-    WARNING = log.WARNING
-    ERROR = log.ERROR
-    CRITICAL = log.CRITICAL
-    FATAL = log.FATAL
-    NOTSET = log.NOTSET
-
-
-LOG_LEVEL = EnumArgument(
-    '--log-level',
-    enum=LogLevel,
-    default=LogLevel.INFO,
-    description='The log level to be used.',
-)
 
 
 def __create_argument_parser() -> ArgumentParser:
@@ -136,7 +113,7 @@ def __instantiate_via_default_constructor(module_or_source_file: str, class_name
 def __get_cli(runnable: Optional[Runnable], argument_parser: ArgumentParser) -> CommandLineInterface:
     program_info = runnable.get_program_info() if runnable else __get_default_program_info()
     cli = CommandLineInterface(argument_parser, version_text=str(program_info) if program_info else None)
-    cli.add_arguments(LOG_LEVEL)
+    cli.add_arguments(LogArguments.LOG_LEVEL, LogArguments.LOG_WIDTH)
     return cli
 
 
@@ -164,16 +141,6 @@ def __get_mode(cli: CommandLineInterface, runnable: Optional[Runnable]) -> Mode:
     return SingleMode()
 
 
-def __configure_logger(args: Namespace):
-    root = log.getLogger()
-    root.setLevel(LOG_LEVEL.get_value(args).value)
-
-    for existing_handler in root.handlers:
-        root.removeHandler(existing_handler)
-
-    root.addHandler(LogHandler())
-
-
 def main():
     """
     The main function to be executed when the program starts.
@@ -198,7 +165,7 @@ def main():
                                  help='Show this help message and exit')
 
     args = argument_parser.parse_args()
-    __configure_logger(args)
+    configure_logger(args)
 
     if runnable:
         try:

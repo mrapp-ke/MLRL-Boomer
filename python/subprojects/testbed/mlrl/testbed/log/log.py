@@ -19,7 +19,14 @@ from rich.text import Text
 
 from mlrl.testbed.util.io import ENCODING_UTF8
 
-console = Console(soft_wrap=True)
+WIDTH: Optional[int] = None
+
+
+def get_console() -> Console:
+    """
+    Returns the console to be used for logging.
+    """
+    return Console(width=WIDTH)
 
 
 @contextmanager
@@ -44,7 +51,7 @@ class LogHandler(RichHandler):
         logging.CRITICAL: Style(color='red', bold=True),
     }
 
-    PREFIX_PER_LOG_LEVEL = {
+    SYMBOL_PER_LOG_LEVEL = {
         logging.DEBUG: '○',
         logging.WARNING: '⚠',
         logging.ERROR: '✗',
@@ -52,7 +59,7 @@ class LogHandler(RichHandler):
     }
 
     def __init__(self):
-        super().__init__(show_time=False, show_level=False, show_path=False)
+        super().__init__(console=get_console(), show_time=False, show_level=False, show_path=False)
 
     @staticmethod
     def format_message(message: str, log_level: int) -> str:
@@ -63,8 +70,8 @@ class LogHandler(RichHandler):
         :param log_level:   The log level
         :return:            The formatted message
         """
-        prefix = LogHandler.PREFIX_PER_LOG_LEVEL.get(log_level, '')
-        return prefix + (' ' if prefix else '') + message
+        symbol = LogHandler.SYMBOL_PER_LOG_LEVEL.get(log_level, '')
+        return symbol + (' ' if symbol else '') + message
 
     @staticmethod
     def get_style(log_level: int) -> Optional[Style]:
@@ -93,6 +100,19 @@ class Log:
     """
 
     @staticmethod
+    def __decorate_with_box(renderable: ConsoleRenderable, box_title: Optional[str] = None) -> ConsoleRenderable:
+        return Panel.fit(renderable, title=Text(box_title, style=Style(bold=True)) if box_title else None)
+
+    @staticmethod
+    def __print(message: str, style: Optional[Style] = None, box: bool = False, box_title: Optional[str] = None):
+        if box:
+            renderable: ConsoleRenderable = Text(message, style=style) if style else Text(message)
+            renderable = Log.__decorate_with_box(renderable, box_title=box_title)
+            get_console().print(renderable, style=style)
+        else:
+            get_console().print(message, style=style)
+
+    @staticmethod
     def error(message: str,
               *args,
               error: Optional[Exception] = None,
@@ -112,15 +132,10 @@ class Log:
         if logging.getLogger().isEnabledFor(log_level):
             formatted_message = LogHandler.format_message(message.format(*args), log_level)
             style = LogHandler.get_style(log_level)
-
-            if box:
-                text = Text(formatted_message, style=style) if style else Text(formatted_message)
-                console.print(Panel.fit(text, title=box_title))
-            else:
-                console.print(formatted_message, style=style)
+            Log.__print(message=formatted_message, style=style, box=box, box_title=box_title)
 
             if error:
-                console.print_exception(extra_lines=2)
+                get_console().print_exception(extra_lines=2)
 
     @staticmethod
     def warning(message: str, *args, box: bool = False, box_title: Optional[str] = None):
@@ -137,12 +152,7 @@ class Log:
         if logging.getLogger().isEnabledFor(log_level):
             formatted_message = LogHandler.format_message(message.format(*args), log_level)
             style = LogHandler.get_style(log_level)
-
-            if box:
-                text = Text(formatted_message, style=style) if style else Text(formatted_message)
-                console.print(Panel.fit(text, title=box_title))
-            else:
-                console.print(formatted_message, style=style)
+            Log.__print(message=formatted_message, style=style, box=box, box_title=box_title)
 
     @staticmethod
     def success(message: str, *args, box: bool = False, box_title: Optional[str] = None):
@@ -159,12 +169,7 @@ class Log:
         if logging.getLogger().isEnabledFor(log_level):
             formatted_message = '✓ ' + message.format(*args)
             style = Style(color='green', bold=True)
-
-            if box:
-                text = Text(formatted_message, style=style) if style else Text(formatted_message)
-                console.print(Panel.fit(text, title=box_title))
-            else:
-                console.print(formatted_message, style=style)
+            Log.__print(message=formatted_message, style=style, box=box, box_title=box_title)
 
     @staticmethod
     def info(message: str, *args, box: bool = False, box_title: Optional[str] = None):
@@ -181,12 +186,7 @@ class Log:
         if logging.getLogger().isEnabledFor(log_level):
             formatted_message = LogHandler.format_message(message.format(*args), log_level)
             style = LogHandler.get_style(log_level)
-
-            if box:
-                text = Text(formatted_message, style=style) if style else Text(formatted_message)
-                console.print(Panel.fit(text, title=box_title))
-            else:
-                console.print(formatted_message, style=style)
+            Log.__print(message=formatted_message, style=style, box=box, box_title=box_title)
 
     @staticmethod
     def source_code(source_code: str, *args, language: str, box: bool = False, box_title: Optional[str] = None):
@@ -203,12 +203,12 @@ class Log:
 
         if logging.getLogger().isEnabledFor(log_level):
             formatted_message = source_code.format(*args)
-            renderable: ConsoleRenderable = Syntax(formatted_message, language)
+            renderable: ConsoleRenderable = Syntax(formatted_message, language, word_wrap=True)
 
             if box:
-                renderable = Panel.fit(renderable, title=box_title)
+                renderable = Log.__decorate_with_box(renderable, box_title=box_title)
 
-            console.print(renderable)
+            get_console().print(renderable)
 
     @staticmethod
     def verbose(message: str, *args, box: bool = False, box_title: Optional[str] = None):
@@ -225,9 +225,4 @@ class Log:
         if logging.getLogger().isEnabledFor(log_level):
             formatted_message = LogHandler.format_message(message.format(*args), log_level)
             style = LogHandler.get_style(log_level)
-
-            if box:
-                text = Text(formatted_message, style=style) if style else Text(formatted_message)
-                console.print(Panel.fit(text, title=box_title))
-            else:
-                console.print(formatted_message, style=style)
+            Log.__print(message=formatted_message, style=style, box=box, box_title=box_title)

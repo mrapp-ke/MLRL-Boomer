@@ -50,9 +50,9 @@ from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
 from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
 from mlrl.testbed.extensions.extension import Extension
+from mlrl.testbed.log import disable_log
 from mlrl.testbed.modes import BatchMode
 from mlrl.testbed.runnables import Runnable
-from mlrl.testbed.util.log import disable_log
 
 from mlrl.util.cli import Argument, BoolArgument, FloatArgument, IntArgument, SetArgument
 from mlrl.util.format import format_list, format_set

@@ -11,7 +11,7 @@ from mlrl.testbed.experiments.input.sources import Source
 from mlrl.testbed.experiments.output.data import OutputData, StructuralOutputData, TextualOutputData
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.util.log import Log
+from mlrl.testbed.log import Log
 
 from mlrl.util.options import Options
 

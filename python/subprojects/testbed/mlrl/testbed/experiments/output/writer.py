@@ -19,7 +19,7 @@ from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData, 
 from mlrl.testbed.experiments.output.policies import OutputErrorPolicy
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.util.log import Log
+from mlrl.testbed.log import Log
 
 
 class DataExtractor(ABC):

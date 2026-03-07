@@ -25,7 +25,7 @@ from mlrl.testbed.experiments.output.sinks import FileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState, ParameterDict, PredictionState, TrainingState
 from mlrl.testbed.experiments.timer import Timer
-from mlrl.testbed.util.log import Log
+from mlrl.testbed.log import Log
 
 
 class ExperimentListener(ABC):

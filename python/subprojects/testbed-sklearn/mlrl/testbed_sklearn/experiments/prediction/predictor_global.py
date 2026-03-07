@@ -13,7 +13,7 @@ from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.prediction_scope import GlobalPredictionScope
 from mlrl.testbed.experiments.state import PredictionResult, PredictionState
 from mlrl.testbed.experiments.timer import Timer
-from mlrl.testbed.util.log import Log
+from mlrl.testbed.log import Log
 
 
 class GlobalPredictionFunction(PredictionFunction):

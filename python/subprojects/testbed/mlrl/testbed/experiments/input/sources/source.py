@@ -15,7 +15,7 @@ from mlrl.testbed.experiments.input.data import DatasetInputData, InputData, Str
 from mlrl.testbed.experiments.input.policies import MissingInputPolicy
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
-from mlrl.testbed.util.log import Log
+from mlrl.testbed.log import Log
 
 
 class Source(ABC):

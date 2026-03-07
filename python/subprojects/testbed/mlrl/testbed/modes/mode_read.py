@@ -20,10 +20,10 @@ from mlrl.testbed.experiments.output.evaluation.evaluation_result import Aggrega
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
 from mlrl.testbed.experiments.table import Cell, RowWiseTable, Table
+from mlrl.testbed.log import Log
 from mlrl.testbed.modes.mode import InputMode
 from mlrl.testbed.modes.mode_batch import BatchMode
 from mlrl.testbed.modes.util import OutputUtil
-from mlrl.testbed.util.log import Log
 
 from mlrl.util.cli import Argument
 from mlrl.util.options import Options

@@ -10,7 +10,7 @@ from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties
 from mlrl.testbed.experiments.input.data import InputData
 from mlrl.testbed.experiments.state import ExperimentState, TrainingState
-from mlrl.testbed.util.log import Log
+from mlrl.testbed.log import Log
 
 
 class InputModel(InputData):

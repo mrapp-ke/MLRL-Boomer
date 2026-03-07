@@ -12,9 +12,9 @@ from mlrl.testbed.experiments.output.arguments import OutputArguments
 from mlrl.testbed.experiments.output.policies import OutputExistsPolicy
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.experiments.state import ExperimentMode
+from mlrl.testbed.log import Log
 from mlrl.testbed.modes.mode import Mode
 from mlrl.testbed.modes.util import OutputUtil
-from mlrl.testbed.util.log import Log
 
 from mlrl.util.cli import Argument, CommandLineInterface
 

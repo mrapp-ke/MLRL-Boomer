@@ -26,7 +26,7 @@ from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.state import ExperimentState, ParameterDict, PredictionState, TrainingState
 from mlrl.testbed.experiments.timer import Timer
-from mlrl.testbed.util.log import Log
+from mlrl.testbed.log import Log
 
 
 class SkLearnExperiment(Experiment):

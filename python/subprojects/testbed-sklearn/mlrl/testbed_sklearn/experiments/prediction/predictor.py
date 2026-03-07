@@ -11,7 +11,7 @@ from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.state import PredictionState
-from mlrl.testbed.util.log import Log
+from mlrl.testbed.log import Log
 
 
 class PredictionFunction:

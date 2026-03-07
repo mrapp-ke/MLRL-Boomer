@@ -13,8 +13,8 @@ from mlrl.testbed.command import ArgumentDict, Command
 from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.experiments.state import ExperimentMode
+from mlrl.testbed.log import Log
 from mlrl.testbed.modes.mode import InputMode, Mode
-from mlrl.testbed.util.log import Log
 
 from mlrl.util.cli import Argument
 from mlrl.util.format import format_iterable

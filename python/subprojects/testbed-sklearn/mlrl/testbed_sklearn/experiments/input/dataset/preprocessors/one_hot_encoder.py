@@ -14,7 +14,7 @@ from mlrl.testbed_sklearn.experiments.dataset import AttributeType
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.input.dataset.preprocessors.preprocessor import Preprocessor
-from mlrl.testbed.util.log import Log
+from mlrl.testbed.log import Log
 
 
 class OneHotEncoder(Preprocessor):
