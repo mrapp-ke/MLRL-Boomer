@@ -12,10 +12,6 @@ The arguments `-h` or `--help` result in a description of all available command 
 When running the program with the argument `-v` or `--version`, the version of the software package is printed. The output also includes information about third-party dependencies it uses, the {ref}`build options<build-options>` that have been used for building the package, as well as information about hardware resources it may utilize.
 ```
 
-```{note}
-The argument `--log-level` controls the level of detail used for log messages (Default value = `info`). It can be set to the values `debug`, `info`, `warn`, `warning`, `error`, `critical`, `fatal` or `notset`, where the first one provides the greatest level of detail and the last one disables logging entirely.
-```
-
 (arguments-basic-usage)=
 
 ## Basic Usage
@@ -39,6 +35,19 @@ The following optional arguments allow additional control over the loading mecha
 - `-r` or `--runnable` (Default value = `Runnable`) The name of the class extending {py:class}`mlrl.testbed.runnables.Runnable` that resides within the module or source file specified via the argument `<module_or_source_file>`.
 
 The arguments given above can be used to integrate any scikit-learn compatible machine learning algorithm with mlrl-testbed. You can learn about this {ref}`here<runnables>`.
+
+### Logging
+
+The following arguments can be used to control the detail and appearance of log messages:
+
+- `--log-level` (Default value = `info`) Controls the level of detail used for log messages. It can be set to the following values, where the first one provides the greatest level of detail and the last one disables logging entirely.
+
+  - `debug`
+  - `info`
+  - `warning`
+  - `error`
+
+- `--log-width` The width of the log output.
 
 (argument-mode)=
 
