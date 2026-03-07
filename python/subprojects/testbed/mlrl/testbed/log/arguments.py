@@ -20,12 +20,8 @@ class LogLevel(Enum):
     """
     DEBUG = logging.DEBUG
     INFO = logging.INFO
-    WARN = logging.WARN
     WARNING = logging.WARNING
     ERROR = logging.ERROR
-    CRITICAL = logging.CRITICAL
-    FATAL = logging.FATAL
-    NOTSET = logging.NOTSET
 
 
 class LogArguments:

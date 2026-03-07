@@ -48,14 +48,12 @@ class LogHandler(RichHandler):
         logging.DEBUG: Style(dim=True),
         logging.WARNING: Style(color='yellow'),
         logging.ERROR: Style(color='red', bold=True),
-        logging.CRITICAL: Style(color='red', bold=True),
     }
 
     SYMBOL_PER_LOG_LEVEL = {
         logging.DEBUG: '○',
         logging.WARNING: '⚠',
         logging.ERROR: '✗',
-        logging.CRITICAL: '✗',
     }
 
     def __init__(self):
