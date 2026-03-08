@@ -5,7 +5,7 @@ Provides classes that provide information about files and directories that belon
 to be dealt with by the targets of the build system.
 """
 from abc import ABC, abstractmethod
-from typing import Optional, Set, override
+from typing import Set, override
 
 from core.modules import Module, ModuleRegistry
 from util.env import Env, get_env_array
@@ -23,7 +23,7 @@ class SubprojectModule(Module, ABC):
         An abstract base class for all classes that allow to filter modules by subprojects.
         """
 
-        def __init__(self, subproject_names: Optional[Set[str]] = None):
+        def __init__(self, subproject_names: Set[str] | None = None):
             """
             :param subproject_names: A set that contains the names of the subprojects to be matched or None, if no
                                      restrictions should be imposed

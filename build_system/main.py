@@ -9,7 +9,7 @@ from argparse import ArgumentParser
 from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
 from types import ModuleType
-from typing import List, Optional
+from typing import List
 
 from core.build_unit import BuildUnit
 from core.modules import Module, ModuleRegistry
@@ -108,7 +108,7 @@ def __register_targets(init_files: List[Path]) -> TargetRegistry:
     return target_registry
 
 
-def __find_default_target(init_files: List[Path]) -> Optional[str]:
+def __find_default_target(init_files: List[Path]) -> str | None:
     Log.verbose('Searching for default target...')
     default_targets = []
 
@@ -129,7 +129,7 @@ def __find_default_target(init_files: List[Path]) -> Optional[str]:
     return None
 
 
-def __create_dependency_graph(target_registry: TargetRegistry, args, default_target: Optional[str]) -> DependencyGraph:
+def __create_dependency_graph(target_registry: TargetRegistry, args, default_target: str | None) -> DependencyGraph:
     targets = args.targets
     clean = args.clean
     graph_type = DependencyGraph.Type.CLEAN if clean else DependencyGraph.Type.RUN

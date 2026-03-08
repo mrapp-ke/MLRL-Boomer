@@ -8,7 +8,7 @@ from datetime import date
 from enum import Enum, StrEnum, auto
 from functools import cached_property
 from pathlib import Path
-from typing import Dict, List, Optional, override
+from typing import Dict, List, override
 
 from core.build_unit import BuildUnit
 from util.format import format_iterable
@@ -28,7 +28,7 @@ class LineType(Enum):
     ENUMERATION = auto()
 
     @staticmethod
-    def parse(line: str) -> Optional['LineType']:
+    def parse(line: str) -> 'LineType | None':
         """
         Parses a given line and returns its type.
 
@@ -151,7 +151,7 @@ class ChangesetFile(TextFile):
         """
         return ChangesetFile(ChangesetFile.CHANGELOG_DIRECTORY / 'changelog-bugfix.md')
 
-    def __validate_line(self, current_line: Optional[Line], previous_line: Optional[Line]):
+    def __validate_line(self, current_line: Line | None, previous_line: Line | None):
         current_line_is_enumeration = current_line and current_line.line_type == LineType.ENUMERATION
 
         if current_line_is_enumeration and not previous_line:

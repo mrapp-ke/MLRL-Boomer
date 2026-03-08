@@ -6,7 +6,7 @@ Provides utilities for dealing with Python dependencies via requirements.
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, Iterator, Optional, Set, override
+from typing import Any, Dict, Iterable, Iterator, Set, override
 
 from core.build_unit import BuildUnit
 from util.format import format_iterable
@@ -124,7 +124,7 @@ class Requirement:
         version:    The version of the package or None, if no version is specified
     """
     package: Package
-    version: Optional[RequirementVersion] = None
+    version: RequirementVersion | None = None
 
     @staticmethod
     def parse(requirement: str) -> 'Requirement':
@@ -208,7 +208,7 @@ class RequirementsFile(ABC):
 
         return requirements
 
-    def lookup_requirement(self, package: Package, accept_missing: bool = False) -> Optional[Requirement]:
+    def lookup_requirement(self, package: Package, accept_missing: bool = False) -> Requirement | None:
         """
         Looks up the requirement for a given package.
 

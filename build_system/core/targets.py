@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from enum import Enum, auto
 from functools import reduce
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple, override
+from typing import Any, Callable, Dict, List, Tuple, override
 
 from core.build_unit import BuildUnit
 from core.changes import ChangeDetection
@@ -496,8 +496,8 @@ class DependencyGraph:
             child:  The child of this node, if any
         """
         target: Target
-        parent: Optional['DependencyGraph.Node'] = None
-        child: Optional['DependencyGraph.Node'] = None
+        parent: 'DependencyGraph.Node | None' = None
+        child: 'DependencyGraph.Node | None' = None
 
         @staticmethod
         def from_name(targets_by_name: Dict[str, Target], target_name: str,
@@ -516,7 +516,7 @@ class DependencyGraph:
 
         @staticmethod
         def from_dependency(targets_by_name: Dict[str, Target], dependency: Target.Dependency,
-                            graph_type: 'DependencyGraph.Type') -> Optional['DependencyGraph.Node']:
+                            graph_type: 'DependencyGraph.Type') -> 'DependencyGraph.Node | None':
             """
             Creates and returns a new node of a dependency graph corresponding to the target referred to by a
             `Target.Dependency`.
@@ -646,7 +646,7 @@ class DependencyGraph:
 
             :param module_registry: A `ModuleRegistry` that may be used for looking up modules
             """
-            current_node: Optional[DependencyGraph.Node] = self.first
+            current_node: DependencyGraph.Node | None = self.first
 
             while current_node:
                 current_node.execute(module_registry)
@@ -697,7 +697,7 @@ class DependencyGraph:
         return DependencyGraph.__expand_sequence(targets_by_name, sequence, graph_type, follow_dependencies)
 
     @staticmethod
-    def __find_in_parents(node: Node, parent: Optional[Node]) -> Optional[Node]:
+    def __find_in_parents(node: Node, parent: Node | None) -> Node | None:
         while parent:
             if parent == node:
                 return parent
@@ -708,8 +708,8 @@ class DependencyGraph:
 
     @staticmethod
     def __merge_two_sequences(first_sequence: Sequence, second_sequence: Sequence) -> Sequence:
-        first_node: Optional[DependencyGraph.Node] = first_sequence.last
-        second_node: Optional[DependencyGraph.Node] = second_sequence.last
+        first_node: DependencyGraph.Node | None = first_sequence.last
+        second_node: DependencyGraph.Node | None = second_sequence.last
 
         while second_node:
             overlapping_node = DependencyGraph.__find_in_parents(second_node, first_node)

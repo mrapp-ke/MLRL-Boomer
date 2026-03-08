@@ -5,7 +5,7 @@ Provides classes for formatting code.
 """
 from abc import ABC
 from pathlib import Path
-from typing import List, Optional, override
+from typing import List, override
 
 from core.build_unit import BuildUnit
 from core.changes import ChangeDetection
@@ -54,7 +54,7 @@ class CodeFormatterProgram(Program, ABC):
                  module: CodeModule,
                  program: str,
                  *arguments: str,
-                 cache_file_name: Optional[str] = None):
+                 cache_file_name: str | None = None):
         """
         :param build_unit:      The build unit from which the program should be run
         :param module:          The module, the program should be applied to
@@ -67,7 +67,7 @@ class CodeFormatterProgram(Program, ABC):
         self.set_build_unit(build_unit)
         self.change_detection = CodeChangeDetection(module, cache_file_name) if cache_file_name else None
         self.module = module
-        self._original_arguments: Optional[List[str]] = None
+        self._original_arguments: List[str] | None = None
 
     @override
     def _should_be_skipped(self) -> bool:

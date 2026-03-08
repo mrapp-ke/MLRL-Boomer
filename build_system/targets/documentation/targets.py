@@ -6,7 +6,7 @@ Implements targets for generating documentations.
 from abc import ABC
 from os import environ
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, cast, override
+from typing import Dict, Iterable, List, cast, override
 
 from core.build_unit import BuildUnit
 from core.modules import Module
@@ -26,7 +26,7 @@ class ApidocIndex(BuildTarget.Runnable, ABC):
     """
 
     @staticmethod
-    def __get_template(module: ApidocModule) -> Optional[Path]:
+    def __get_template(module: ApidocModule) -> Path | None:
         parent_directory = module.output_directory.parent
         template = parent_directory / 'index.template.md'
         return template if template.is_file() else None

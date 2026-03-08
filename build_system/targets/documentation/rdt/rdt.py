@@ -4,7 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for accessing the readthedocs API (see https://docs.readthedocs.com/platform/stable/api/v3.html).
 """
 from os import environ
-from typing import Optional
 
 from core.build_unit import BuildUnit
 from util.env import get_env
@@ -25,7 +24,7 @@ class ReadTheDocsApi:
         Allows to access the readthedocs API for a single project.
         """
 
-        def __init__(self, project_name: str, token: Optional[str] = None):
+        def __init__(self, project_name: str, token: str | None = None):
             """
             :param project_name:    The name of the project
             :param token:           The token to be used for authentication or None, if no token should be used
@@ -52,7 +51,7 @@ class ReadTheDocsApi:
                 Log.error('Request POST %s failed with status code %s', url, response.status_code)
 
     @staticmethod
-    def __get_token_from_env() -> Optional[str]:
+    def __get_token_from_env() -> str | None:
         token = get_env(environ, ReadTheDocsApi.ENV_TOKEN)
 
         if not token:

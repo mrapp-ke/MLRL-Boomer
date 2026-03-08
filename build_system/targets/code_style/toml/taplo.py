@@ -5,7 +5,6 @@ Provides classes that allow to run the external program "taplo".
 """
 from abc import ABC
 from os import environ
-from typing import Optional
 
 from core.build_unit import BuildUnit
 from util.env import Env
@@ -30,7 +29,7 @@ class Taplo(CodeFormatterProgram, ABC):
                  module: CodeModule,
                  taplo_command: str,
                  *arguments: str,
-                 cache_file_name: Optional[str] = None):
+                 cache_file_name: str | None = None):
         """
         :param build_unit:      The build unit from which the program should be run
         :param module:          The module, the program should be applied to
