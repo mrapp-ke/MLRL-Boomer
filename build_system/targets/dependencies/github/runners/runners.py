@@ -8,7 +8,7 @@ import re
 
 from dataclasses import dataclass, replace
 from functools import cached_property
-from typing import Any, Dict, List, override
+from typing import Any, List, override
 from xml.etree import ElementTree
 
 from core.build_unit import BuildUnit
@@ -132,7 +132,7 @@ class Runners(Workflow):
     Allows to access and update GitHub-hosted runners used in a workflow.
     """
 
-    def __get_runners_from_runs_on_clause(self, yaml_dict: Dict[Any, Any]) -> set[Runner]:
+    def __get_runners_from_runs_on_clause(self, yaml_dict: dict[Any, Any]) -> set[Runner]:
         runs_on_clause = self.find_tag(yaml_dict, 'runs-on')
 
         if runs_on_clause and runs_on_clause.replace(' ', '') not in {'${{matrix.os}}', '${{inputs.os}}'}:
@@ -144,7 +144,7 @@ class Runners(Workflow):
 
         return set()
 
-    def __get_runners_from_strategy(self, yaml_dict: Dict[Any, Any]) -> set[Runner]:
+    def __get_runners_from_strategy(self, yaml_dict: dict[Any, Any]) -> set[Runner]:
         runners = set()
         strategy = self.find_tag(yaml_dict, 'strategy')
 
@@ -342,14 +342,14 @@ class RunnerUpdater(Workflows):
 
         return runners
 
-    def __get_latest_runners_from_documentation(self) -> Dict[tuple[str, str | None], RunnerVersion]:
+    def __get_latest_runners_from_documentation(self) -> dict[tuple[str, str | None], RunnerVersion]:
         Log.info('Retrieving the latest runners from the GitHub documentation...')
         runner_documentation = self.__download_runner_documentation()
         lines = runner_documentation.split('\n')
         lines = self.__find_relevant_section(lines)
         lines = self.__find_table(lines)
         versioned_runners = {runner for runner in self.__parse_table(lines) if not runner.version.is_latest()}
-        latest_runners: Dict[tuple[str, str | None], RunnerVersion] = {}
+        latest_runners: dict[tuple[str, str | None], RunnerVersion] = {}
 
         for runner in versioned_runners:
             arch = runner.architecture
@@ -384,15 +384,15 @@ class RunnerUpdater(Workflows):
         :param module:      The module, that contains the workflow definition files
         """
         super().__init__(build_unit, module)
-        self.version_cache: Dict[tuple[str, str | None], RunnerVersion] = {}
+        self.version_cache: dict[tuple[str, str | None], RunnerVersion] = {}
 
-    def find_outdated_workflows(self) -> Dict[Runners, set[OutdatedRunner]]:
+    def find_outdated_workflows(self) -> dict[Runners, set[OutdatedRunner]]:
         """
         Finds and returns all workflows with outdated runners.
 
         :return: A dictionary that contains for each workflow a set of outdated runners
         """
-        outdated_workflows: Dict[Runners, set[RunnerUpdater.OutdatedRunner]] = {}
+        outdated_workflows: dict[Runners, set[RunnerUpdater.OutdatedRunner]] = {}
 
         for workflow in self.workflows:
             Log.info('Searching for GitHub-hosted runners in workflow "%s"...', workflow.file)
@@ -408,13 +408,13 @@ class RunnerUpdater(Workflows):
 
         return outdated_workflows
 
-    def update_outdated_workflows(self) -> Dict[Runners, set[UpdatedRunner]]:
+    def update_outdated_workflows(self) -> dict[Runners, set[UpdatedRunner]]:
         """
         Updates all workflows with outdated GitHub runners.
 
         :return: A dictionary that contains for each workflow a set of updated runners
         """
-        updated_workflows: Dict[Runners, set[RunnerUpdater.UpdatedRunner]] = {}
+        updated_workflows: dict[Runners, set[RunnerUpdater.UpdatedRunner]] = {}
 
         for workflow, outdated_runners in self.find_outdated_workflows().items():
             updated_runners: set[RunnerUpdater.UpdatedRunner] = set()

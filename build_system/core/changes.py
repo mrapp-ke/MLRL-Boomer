@@ -7,7 +7,7 @@ import json
 
 from functools import cached_property
 from pathlib import Path
-from typing import Any, Dict, List, override
+from typing import Any, List, override
 
 from core.modules import Module
 from util.io import TextFile, create_directories
@@ -19,7 +19,7 @@ class JsonFile(TextFile):
     """
 
     @cached_property
-    def json(self) -> Dict[Any, Any]:
+    def json(self) -> dict[Any, Any]:
         """
         The content of the JSON file as a dictionary.
         """
@@ -30,7 +30,7 @@ class JsonFile(TextFile):
 
         return {}
 
-    def write_json(self, dictionary: Dict[Any, Any]):
+    def write_json(self, dictionary: dict[Any, Any]):
         """
         Writes a given dictionary to the JSON file.
 

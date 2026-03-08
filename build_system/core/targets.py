@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from enum import Enum, auto
 from functools import reduce
 from pathlib import Path
-from typing import Any, Callable, Dict, List, override
+from typing import Any, Callable, List, override
 
 from core.build_unit import BuildUnit
 from core.changes import ChangeDetection
@@ -500,7 +500,7 @@ class DependencyGraph:
         child: 'DependencyGraph.Node | None' = None
 
         @staticmethod
-        def from_name(targets_by_name: Dict[str, Target], target_name: str,
+        def from_name(targets_by_name: dict[str, Target], target_name: str,
                       graph_type: 'DependencyGraph.Type') -> 'DependencyGraph.Node':
             """
             Creates and returns a new node of a dependency graph corresponding to the target with a specific name.
@@ -515,7 +515,7 @@ class DependencyGraph:
                 target) if graph_type == DependencyGraph.Type.RUN else DependencyGraph.CleanNode(target)
 
         @staticmethod
-        def from_dependency(targets_by_name: Dict[str, Target], dependency: Target.Dependency,
+        def from_dependency(targets_by_name: dict[str, Target], dependency: Target.Dependency,
                             graph_type: 'DependencyGraph.Type') -> 'DependencyGraph.Node | None':
             """
             Creates and returns a new node of a dependency graph corresponding to the target referred to by a
@@ -667,7 +667,7 @@ class DependencyGraph:
             return result
 
     @staticmethod
-    def __expand_sequence(targets_by_name: Dict[str, Target], sequence: Sequence, graph_type: 'DependencyGraph.Type',
+    def __expand_sequence(targets_by_name: dict[str, Target], sequence: Sequence, graph_type: 'DependencyGraph.Type',
                           follow_dependencies: bool) -> List[Sequence]:
         sequences = []
         dependencies = sequence.first.target.dependencies if follow_dependencies else None
@@ -690,7 +690,7 @@ class DependencyGraph:
         return sequences
 
     @staticmethod
-    def __create_sequence(targets_by_name: Dict[str, Target], target_name: str, graph_type: 'DependencyGraph.Type',
+    def __create_sequence(targets_by_name: dict[str, Target], target_name: str, graph_type: 'DependencyGraph.Type',
                           follow_dependencies: bool) -> List[Sequence]:
         node = DependencyGraph.Node.from_name(targets_by_name, target_name, graph_type)
         sequence = DependencyGraph.Sequence.from_node(node)
@@ -748,7 +748,7 @@ class DependencyGraph:
         return sequences[0]
 
     def __init__(self,
-                 targets_by_name: Dict[str, Target],
+                 targets_by_name: dict[str, Target],
                  *target_names: str,
                  graph_type: 'DependencyGraph.Type',
                  follow_dependencies: bool = True):

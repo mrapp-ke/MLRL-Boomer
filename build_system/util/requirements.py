@@ -6,7 +6,7 @@ Provides utilities for dealing with Python dependencies via requirements.
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, Iterator, override
+from typing import Any, Iterable, Iterator, override
 
 from core.build_unit import BuildUnit
 from util.format import format_iterable
@@ -166,7 +166,7 @@ class RequirementsFile(ABC):
 
     @property
     @abstractmethod
-    def requirements_by_package(self) -> Dict[Package, Requirement]:
+    def requirements_by_package(self) -> dict[Package, Requirement]:
         """
         A dictionary that contains all requirements in the file by their package.
         """
@@ -245,7 +245,7 @@ class RequirementsTextFile(TextFile, RequirementsFile):
 
     @override
     @property
-    def requirements_by_package(self) -> Dict[Package, Requirement]:
+    def requirements_by_package(self) -> dict[Package, Requirement]:
         return {
             requirement.package: requirement
             for requirement in
@@ -292,7 +292,7 @@ class RequirementsFiles(Iterable[RequirementsFile]):
 
     def lookup_requirements(self,
                             *package_names: str,
-                            accept_missing: bool = False) -> Dict[RequirementsFile, set[Requirement]]:
+                            accept_missing: bool = False) -> dict[RequirementsFile, set[Requirement]]:
         """
         Looks up the requirements for given packages.
 
@@ -304,7 +304,7 @@ class RequirementsFiles(Iterable[RequirementsFile]):
         """
         packages = [Package(package_name) for package_name in package_names]
         missing_package_names = {package.normalized_name for package in packages}
-        result: Dict[RequirementsFile, set[Requirement]] = {}
+        result: dict[RequirementsFile, set[Requirement]] = {}
 
         for requirements_file in self._requirements_files:
             requirements = requirements_file.lookup_requirements(*packages, accept_missing=True)
@@ -321,7 +321,7 @@ class RequirementsFiles(Iterable[RequirementsFile]):
 
     def lookup_requirement(self,
                            package_name: str,
-                           accept_missing: bool = False) -> Dict[RequirementsFile, Requirement]:
+                           accept_missing: bool = False) -> dict[RequirementsFile, Requirement]:
         """
         Looks up the requirement for a given package.
 

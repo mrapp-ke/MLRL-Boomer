@@ -6,7 +6,7 @@ Implements targets for generating documentations.
 from abc import ABC
 from os import environ
 from pathlib import Path
-from typing import Dict, Iterable, List, cast, override
+from typing import Iterable, List, cast, override
 
 from core.build_unit import BuildUnit
 from core.modules import Module
@@ -32,8 +32,8 @@ class ApidocIndex(BuildTarget.Runnable, ABC):
         return template if template.is_file() else None
 
     @staticmethod
-    def __get_templates_and_modules(modules: Iterable[ApidocModule]) -> Dict[Path, List[ApidocModule]]:
-        modules_by_template: Dict[Path, List[ApidocModule]] = {}
+    def __get_templates_and_modules(modules: Iterable[ApidocModule]) -> dict[Path, List[ApidocModule]]:
+        modules_by_template: dict[Path, List[ApidocModule]] = {}
 
         for module in modules:
             template = ApidocIndex.__get_template(module)

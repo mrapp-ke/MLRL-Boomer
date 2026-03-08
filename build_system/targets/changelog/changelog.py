@@ -8,7 +8,7 @@ from datetime import date
 from enum import Enum, StrEnum, auto
 from functools import cached_property
 from pathlib import Path
-from typing import Dict, List, override
+from typing import List, override
 
 from core.build_unit import BuildUnit
 from util.format import format_iterable
@@ -364,7 +364,7 @@ def __validate_changeset(changeset_file: ChangesetFile):
 
 
 def __merge_changesets(*changeset_files: ChangesetFile) -> List[Changeset]:
-    changesets_by_header: Dict[str, Changeset] = {}
+    changesets_by_header: dict[str, Changeset] = {}
 
     for changeset_file in changeset_files:
         for changeset in changeset_file.changesets:

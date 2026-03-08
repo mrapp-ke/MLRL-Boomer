@@ -5,7 +5,7 @@ Implements targets for building and installing wheel packages.
 """
 from os import environ
 from pathlib import Path
-from typing import Dict, List, cast, override
+from typing import dict, List, cast, override
 
 from core.build_unit import BuildUnit
 from core.modules import Module
@@ -31,8 +31,8 @@ class GeneratePyprojectTomlFiles(BuildTarget.Runnable):
     """
 
     @staticmethod
-    def __get_requirements(template_file: PyprojectTomlFile) -> Dict[str, Requirement]:
-        requirements: Dict[str, Requirement] = {}
+    def __get_requirements(template_file: PyprojectTomlFile) -> dict[str, Requirement]:
+        requirements: dict[str, Requirement] = {}
         all_dependencies = template_file.dependencies
 
         if all_dependencies:
