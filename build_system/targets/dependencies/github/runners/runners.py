@@ -8,7 +8,7 @@ import re
 
 from dataclasses import dataclass, replace
 from functools import cached_property
-from typing import Any, Dict, List, Tuple, override
+from typing import Any, Dict, List, override
 from xml.etree import ElementTree
 
 from core.build_unit import BuildUnit
@@ -342,14 +342,14 @@ class RunnerUpdater(Workflows):
 
         return runners
 
-    def __get_latest_runners_from_documentation(self) -> Dict[Tuple[str, str | None], RunnerVersion]:
+    def __get_latest_runners_from_documentation(self) -> Dict[tuple[str, str | None], RunnerVersion]:
         Log.info('Retrieving the latest runners from the GitHub documentation...')
         runner_documentation = self.__download_runner_documentation()
         lines = runner_documentation.split('\n')
         lines = self.__find_relevant_section(lines)
         lines = self.__find_table(lines)
         versioned_runners = {runner for runner in self.__parse_table(lines) if not runner.version.is_latest()}
-        latest_runners: Dict[Tuple[str, str | None], RunnerVersion] = {}
+        latest_runners: Dict[tuple[str, str | None], RunnerVersion] = {}
 
         for runner in versioned_runners:
             arch = runner.architecture
@@ -384,7 +384,7 @@ class RunnerUpdater(Workflows):
         :param module:      The module, that contains the workflow definition files
         """
         super().__init__(build_unit, module)
-        self.version_cache: Dict[Tuple[str, str | None], RunnerVersion] = {}
+        self.version_cache: Dict[tuple[str, str | None], RunnerVersion] = {}
 
     def find_outdated_workflows(self) -> Dict[Runners, set[OutdatedRunner]]:
         """

@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from enum import Enum, auto
 from functools import reduce
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Tuple, override
+from typing import Any, Callable, Dict, List, override
 
 from core.build_unit import BuildUnit
 from core.changes import ChangeDetection
@@ -209,7 +209,7 @@ class BuildTarget(Target):
         def build(self, build_unit: BuildUnit) -> Target:
             return BuildTarget(self.target_name, self.dependencies, self.runnables, build_unit)
 
-    def __get_missing_output_files(self, runnable: Runnable, module: Module) -> Tuple[List[Path], List[Path]]:
+    def __get_missing_output_files(self, runnable: Runnable, module: Module) -> tuple[List[Path], List[Path]]:
         output_files = runnable.get_output_files(self.build_unit, module)
         missing_output_files = [output_file for output_file in output_files if not output_file.exists()]
 
@@ -234,7 +234,7 @@ class BuildTarget(Target):
 
         return output_files, missing_output_files
 
-    def __get_changed_input_files(self, runnable: Runnable, module: Module) -> Tuple[List[Path], List[Path]]:
+    def __get_changed_input_files(self, runnable: Runnable, module: Module) -> tuple[List[Path], List[Path]]:
         input_files = runnable.get_input_files(self.build_unit, module)
         changed_input_files = [
             input_file for input_file in input_files if self.change_detection.get_changed_files(module, *input_files)

@@ -7,7 +7,7 @@ import platform
 import shutil
 
 from pathlib import Path
-from typing import Any, Tuple
+from typing import Any
 
 from core.build_unit import BuildUnit
 from util.io import create_directories
@@ -38,7 +38,7 @@ def __get_download_url_and_file_name_from_release(release: Any, package_name: st
     return None
 
 
-def __get_download_url_and_file_name(github_api: GithubApi, package_name: str) -> Tuple[str | None, str | None]:
+def __get_download_url_and_file_name(github_api: GithubApi, package_name: str) -> tuple[str | None, str | None]:
     repository = github_api.open_repository('llvm/llvm-project')
     asset = __get_download_url_and_file_name_from_release(repository.get_latest_release(), package_name)
 
