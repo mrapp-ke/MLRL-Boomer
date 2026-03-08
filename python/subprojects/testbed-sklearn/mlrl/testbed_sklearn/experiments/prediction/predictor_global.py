@@ -3,7 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for obtaining predictions from global machine learning models.
 """
-import logging as log
 
 from typing import Any, Generator, override
 
@@ -14,6 +13,7 @@ from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.prediction_scope import GlobalPredictionScope
 from mlrl.testbed.experiments.state import PredictionResult, PredictionState
 from mlrl.testbed.experiments.timer import Timer
+from mlrl.testbed.log import Log
 
 
 class GlobalPredictionFunction(PredictionFunction):
@@ -44,14 +44,14 @@ class GlobalPredictor(Predictor):
         """
         See :func:`mlrl.testbed_sklearn.experiments.prediction.predictor.Predictor.obtain_predictions`
         """
-        log.info('Predicting for %s %s examples...', dataset.num_examples, dataset_type)
+        Log.info('Predicting for {} {} examples...', dataset.num_examples, dataset_type)
         start_time = Timer.start()
         prediction_function = GlobalPredictionFunction(learner)
         predictions = prediction_function.invoke(dataset, self.prediction_type, **kwargs)
         prediction_duration = Timer.stop(start_time)
 
         if predictions is not None:
-            log.info('Successfully predicted in %s', prediction_duration)
+            Log.success('Successfully predicted in {}', prediction_duration)
             yield PredictionState(prediction_scope=GlobalPredictionScope(),
                                   prediction_result=PredictionResult(predictions=predictions,
                                                                      prediction_type=self.prediction_type,

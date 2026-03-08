@@ -3,7 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow to run experiments via the Slurm Workload Manager.
 """
-import logging as log
 import re as regex
 import sys
 
@@ -23,6 +22,7 @@ from mlrl.testbed.experiments.input.dataset.arguments import DatasetArguments
 from mlrl.testbed.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.recipe import Recipe
+from mlrl.testbed.log import Log
 from mlrl.testbed.modes.mode_batch import Batch, BatchMode
 from mlrl.testbed.util.io import open_readable_file, open_writable_file
 from mlrl.testbed.util.yml import read_and_validate_yaml
@@ -150,7 +150,7 @@ class SlurmRunner(BatchMode.Runner):
         version = sbatch.version().run()
 
         if not version.ok:
-            log.error('Command "%s" not found: %s', sbatch.command, version.output)
+            Log.error('Command "{}" not found: {}', sbatch.command, version.output)
             return False
 
         return True
@@ -268,11 +268,11 @@ class SlurmRunner(BatchMode.Runner):
         if result.ok:
             job_name = sbatch_file.stem
             job_id = result.output.split(' ')[-1]
-            log.info('Successfully submitted job:\n\n%s',
-                     tabulate([['JOBID', job_id], ['NAME', job_name]], tablefmt='plain'))
+            Log.success('Successfully submitted job:\n\n{}',
+                        tabulate([['JOBID', job_id], ['NAME', job_name]], tablefmt='plain'))
             return 0
 
-        log.error('Submission to Slurm failed:\n%s', result.output)
+        Log.error('Submission to Slurm failed:\n{}', result.output)
         return result.exit_code
 
     @staticmethod
@@ -338,7 +338,7 @@ class SlurmRunner(BatchMode.Runner):
         print_file = SlurmArguments.PRINT_SLURM_SCRIPTS.get_value(args)
         submit_command = not save_file and not print_file and self.__is_command_available()
         num_experiments = len(batch)
-        log.info('Submitting %s %s to Slurm...', num_experiments,
+        Log.info('Submitting {} {} to Slurm...', num_experiments,
                  'experiments' if num_experiments > 1 else 'experiment')
         command_or_job_arrays = self.__assign_to_job_arrays(batch)
         num_jobs = len(command_or_job_arrays)
@@ -346,7 +346,7 @@ class SlurmRunner(BatchMode.Runner):
         for i, command_or_job_array in enumerate(command_or_job_arrays):
             job_array = command_or_job_array if isinstance(command_or_job_array, JobArray) else None
             command = job_array.modified_command if job_array else cast(Command, command_or_job_array)
-            log.info('\nSubmitting Slurm job (%s / %s): "%s"', i + 1, num_jobs, str(command))
+            Log.info('\nSubmitting Slurm job ({} / {}): "{}"', i + 1, num_jobs, str(command))
             dataset_name = DatasetArguments.DATASET_NAME.get_value(command.to_namespace())
             job_name = dataset_name if dataset_name else 'sbatch'
             slurm_config_file = SlurmRunner.__read_config_file(args)
@@ -357,10 +357,10 @@ class SlurmRunner(BatchMode.Runner):
                                                           job_name=f'{job_name}_{i + 1}')
 
             if save_file:
-                log.info('Slurm script saved to file "%s"', sbatch_file)
+                Log.info('Slurm script saved to file "{}"', sbatch_file)
 
             if print_file:
-                log.info('Content of Slurm script is:\n\n%s', self.__read_sbatch_file(sbatch_file))
+                Log.info('Content of Slurm script is:\n\n{}', self.__read_sbatch_file(sbatch_file))
 
             exit_code = self.__submit_command(sbatch_file) if submit_command else 0
 

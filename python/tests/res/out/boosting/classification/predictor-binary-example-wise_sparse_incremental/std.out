@@ -1,454 +1,474 @@
-mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --incremental-evaluation true{step_size=50} --print-evaluation true --save-evaluation true --binary-predictor example-wise --prediction-format sparse
+mlrl-testbed mlrl.boosting --log-width 120 --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --incremental-evaluation true{step_size=50} --print-evaluation true --save-evaluation true --binary-predictor example-wise --prediction-format sparse
 Checking if output files do already exist...
 Starting experiment using the classification algorithm "BoomerClassifier"...
-DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
+○ Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Using separate training and test sets...
-DEBUG: Reading input data from file "python/tests/res/data/emotions.arff"...
-DEBUG: Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+○ Reading input data from file "python/tests/res/data/emotions.arff"...
+○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 Fitting model to 397 training examples...
-DEBUG: A dense matrix is used to store the feature values of the training examples
-DEBUG: A dense matrix is used to store the labels of the training examples
-Successfully fit model in <duration>
-DEBUG: A dense matrix is used to store the feature values of the query examples
-DEBUG: A sparse matrix is used to store the predicted labels
+○ A dense matrix is used to store the feature values of the training examples
+○ A dense matrix is used to store the labels of the training examples
+✓ Successfully fit model in <duration>
+○ A dense matrix is used to store the feature values of the query examples
+○ A sparse matrix is used to store the predicted labels
 Predicting for 196 test examples using a model of size 50...
 Successfully predicted in <duration>
-Evaluation result for test data using a model of size 50:
 
-Example-wise F1 (↑)         62.81
-Example-wise Jaccard (↑)    54.38
-Example-wise Precision (↑)  72.7
-Example-wise Recall (↑)     60.71
-Hamming Accuracy (↑)        80.53
-Hamming Loss (↓)            19.47
-Macro F1 (↑)                62.4
-Macro Jaccard (↑)           47.03
-Macro Precision (↑)         74.2
-Macro Recall (↑)            57.35
-Micro F1 (↑)                66.27
-Micro Jaccard (↑)           49.56
-Micro Precision (↑)         74.01
-Micro Recall (↑)            60
-Subset 0/1 Loss (↓)         70.92
-Subset Accuracy (↑)         29.08
+╭─ 🗀 Evaluation result for test data using a model of size 50 ─╮
+│ Example-wise F1 (↑)         62.81                            │
+│ Example-wise Jaccard (↑)    54.38                            │
+│ Example-wise Precision (↑)  72.7                             │
+│ Example-wise Recall (↑)     60.71                            │
+│ Hamming Accuracy (↑)        80.53                            │
+│ Hamming Loss (↓)            19.47                            │
+│ Macro F1 (↑)                62.4                             │
+│ Macro Jaccard (↑)           47.03                            │
+│ Macro Precision (↑)         74.2                             │
+│ Macro Recall (↑)            57.35                            │
+│ Micro F1 (↑)                66.27                            │
+│ Micro Jaccard (↑)           49.56                            │
+│ Micro Precision (↑)         74.01                            │
+│ Micro Recall (↑)            60                               │
+│ Subset 0/1 Loss (↓)         70.92                            │
+│ Subset Accuracy (↑)         29.08                            │
+╰──────────────────────────────────────────────────────────────╯
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 100...
 Successfully predicted in <duration>
-Evaluation result for test data using a model of size 100:
 
-Example-wise F1 (↑)         62.84
-Example-wise Jaccard (↑)    54.25
-Example-wise Precision (↑)  71.94
-Example-wise Recall (↑)     61.39
-Hamming Accuracy (↑)        80.1
-Hamming Loss (↓)            19.9
-Macro F1 (↑)                62.54
-Macro Jaccard (↑)           46.94
-Macro Precision (↑)         73.69
-Macro Recall (↑)            57.86
-Micro F1 (↑)                65.79
-Micro Jaccard (↑)           49.02
-Micro Precision (↑)         72.82
-Micro Recall (↑)            60
-Subset 0/1 Loss (↓)         72.45
-Subset Accuracy (↑)         27.55
+╭─ 🗀 Evaluation result for test data using a model of size 100 ─╮
+│ Example-wise F1 (↑)         62.84                             │
+│ Example-wise Jaccard (↑)    54.25                             │
+│ Example-wise Precision (↑)  71.94                             │
+│ Example-wise Recall (↑)     61.39                             │
+│ Hamming Accuracy (↑)        80.1                              │
+│ Hamming Loss (↓)            19.9                              │
+│ Macro F1 (↑)                62.54                             │
+│ Macro Jaccard (↑)           46.94                             │
+│ Macro Precision (↑)         73.69                             │
+│ Macro Recall (↑)            57.86                             │
+│ Micro F1 (↑)                65.79                             │
+│ Micro Jaccard (↑)           49.02                             │
+│ Micro Precision (↑)         72.82                             │
+│ Micro Recall (↑)            60                                │
+│ Subset 0/1 Loss (↓)         72.45                             │
+│ Subset Accuracy (↑)         27.55                             │
+╰───────────────────────────────────────────────────────────────╯
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 150...
 Successfully predicted in <duration>
-Evaluation result for test data using a model of size 150:
 
-Example-wise F1 (↑)         64.17
-Example-wise Jaccard (↑)    56.21
-Example-wise Precision (↑)  71.85
-Example-wise Recall (↑)     63.27
-Hamming Accuracy (↑)        80.95
-Hamming Loss (↓)            19.05
-Macro F1 (↑)                66
-Macro Jaccard (↑)           49.97
-Macro Precision (↑)         74.91
-Macro Recall (↑)            61.35
-Micro F1 (↑)                67.72
-Micro Jaccard (↑)           51.2
-Micro Precision (↑)         73.67
-Micro Recall (↑)            62.67
-Subset 0/1 Loss (↓)         69.39
-Subset Accuracy (↑)         30.61
+╭─ 🗀 Evaluation result for test data using a model of size 150 ─╮
+│ Example-wise F1 (↑)         64.17                             │
+│ Example-wise Jaccard (↑)    56.21                             │
+│ Example-wise Precision (↑)  71.85                             │
+│ Example-wise Recall (↑)     63.27                             │
+│ Hamming Accuracy (↑)        80.95                             │
+│ Hamming Loss (↓)            19.05                             │
+│ Macro F1 (↑)                66                                │
+│ Macro Jaccard (↑)           49.97                             │
+│ Macro Precision (↑)         74.91                             │
+│ Macro Recall (↑)            61.35                             │
+│ Micro F1 (↑)                67.72                             │
+│ Micro Jaccard (↑)           51.2                              │
+│ Micro Precision (↑)         73.67                             │
+│ Micro Recall (↑)            62.67                             │
+│ Subset 0/1 Loss (↓)         69.39                             │
+│ Subset Accuracy (↑)         30.61                             │
+╰───────────────────────────────────────────────────────────────╯
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 200...
 Successfully predicted in <duration>
-Evaluation result for test data using a model of size 200:
 
-Example-wise F1 (↑)         63.55
-Example-wise Jaccard (↑)    55.7
-Example-wise Precision (↑)  71.34
-Example-wise Recall (↑)     62.41
-Hamming Accuracy (↑)        80.7
-Hamming Loss (↓)            19.3
-Macro F1 (↑)                64.87
-Macro Jaccard (↑)           48.77
-Macro Precision (↑)         75.35
-Macro Recall (↑)            60.01
-Micro F1 (↑)                67.05
-Micro Jaccard (↑)           50.44
-Micro Precision (↑)         73.57
-Micro Recall (↑)            61.6
-Subset 0/1 Loss (↓)         68.88
-Subset Accuracy (↑)         31.12
+╭─ 🗀 Evaluation result for test data using a model of size 200 ─╮
+│ Example-wise F1 (↑)         63.55                             │
+│ Example-wise Jaccard (↑)    55.7                              │
+│ Example-wise Precision (↑)  71.34                             │
+│ Example-wise Recall (↑)     62.41                             │
+│ Hamming Accuracy (↑)        80.7                              │
+│ Hamming Loss (↓)            19.3                              │
+│ Macro F1 (↑)                64.87                             │
+│ Macro Jaccard (↑)           48.77                             │
+│ Macro Precision (↑)         75.35                             │
+│ Macro Recall (↑)            60.01                             │
+│ Micro F1 (↑)                67.05                             │
+│ Micro Jaccard (↑)           50.44                             │
+│ Micro Precision (↑)         73.57                             │
+│ Micro Recall (↑)            61.6                              │
+│ Subset 0/1 Loss (↓)         68.88                             │
+│ Subset Accuracy (↑)         31.12                             │
+╰───────────────────────────────────────────────────────────────╯
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 250...
 Successfully predicted in <duration>
-Evaluation result for test data using a model of size 250:
 
-Example-wise F1 (↑)         63.79
-Example-wise Jaccard (↑)    55.95
-Example-wise Precision (↑)  71.51
-Example-wise Recall (↑)     62.84
-Hamming Accuracy (↑)        80.78
-Hamming Loss (↓)            19.22
-Macro F1 (↑)                65.28
-Macro Jaccard (↑)           49.18
-Macro Precision (↑)         75.48
-Macro Recall (↑)            60.47
-Micro F1 (↑)                67.25
-Micro Jaccard (↑)           50.66
-Micro Precision (↑)         73.65
-Micro Recall (↑)            61.87
-Subset 0/1 Loss (↓)         68.88
-Subset Accuracy (↑)         31.12
+╭─ 🗀 Evaluation result for test data using a model of size 250 ─╮
+│ Example-wise F1 (↑)         63.79                             │
+│ Example-wise Jaccard (↑)    55.95                             │
+│ Example-wise Precision (↑)  71.51                             │
+│ Example-wise Recall (↑)     62.84                             │
+│ Hamming Accuracy (↑)        80.78                             │
+│ Hamming Loss (↓)            19.22                             │
+│ Macro F1 (↑)                65.28                             │
+│ Macro Jaccard (↑)           49.18                             │
+│ Macro Precision (↑)         75.48                             │
+│ Macro Recall (↑)            60.47                             │
+│ Micro F1 (↑)                67.25                             │
+│ Micro Jaccard (↑)           50.66                             │
+│ Micro Precision (↑)         73.65                             │
+│ Micro Recall (↑)            61.87                             │
+│ Subset 0/1 Loss (↓)         68.88                             │
+│ Subset Accuracy (↑)         31.12                             │
+╰───────────────────────────────────────────────────────────────╯
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 300...
 Successfully predicted in <duration>
-Evaluation result for test data using a model of size 300:
 
-Example-wise F1 (↑)         64.47
-Example-wise Jaccard (↑)    55.99
-Example-wise Precision (↑)  72.28
-Example-wise Recall (↑)     63.78
-Hamming Accuracy (↑)        80.95
-Hamming Loss (↓)            19.05
-Macro F1 (↑)                65.83
-Macro Jaccard (↑)           49.8
-Macro Precision (↑)         75.64
-Macro Recall (↑)            61.43
-Micro F1 (↑)                67.82
-Micro Jaccard (↑)           51.3
-Micro Precision (↑)         73.52
-Micro Recall (↑)            62.93
-Subset 0/1 Loss (↓)         70.92
-Subset Accuracy (↑)         29.08
+╭─ 🗀 Evaluation result for test data using a model of size 300 ─╮
+│ Example-wise F1 (↑)         64.47                             │
+│ Example-wise Jaccard (↑)    55.99                             │
+│ Example-wise Precision (↑)  72.28                             │
+│ Example-wise Recall (↑)     63.78                             │
+│ Hamming Accuracy (↑)        80.95                             │
+│ Hamming Loss (↓)            19.05                             │
+│ Macro F1 (↑)                65.83                             │
+│ Macro Jaccard (↑)           49.8                              │
+│ Macro Precision (↑)         75.64                             │
+│ Macro Recall (↑)            61.43                             │
+│ Micro F1 (↑)                67.82                             │
+│ Micro Jaccard (↑)           51.3                              │
+│ Micro Precision (↑)         73.52                             │
+│ Micro Recall (↑)            62.93                             │
+│ Subset 0/1 Loss (↓)         70.92                             │
+│ Subset Accuracy (↑)         29.08                             │
+╰───────────────────────────────────────────────────────────────╯
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 350...
 Successfully predicted in <duration>
-Evaluation result for test data using a model of size 350:
 
-Example-wise F1 (↑)         65.15
-Example-wise Jaccard (↑)    56.93
-Example-wise Precision (↑)  73.38
-Example-wise Recall (↑)     63.78
-Hamming Accuracy (↑)        81.21
-Hamming Loss (↓)            18.79
-Macro F1 (↑)                66.28
-Macro Jaccard (↑)           50.28
-Macro Precision (↑)         76.07
-Macro Recall (↑)            61.72
-Micro F1 (↑)                68.11
-Micro Jaccard (↑)           51.64
-Micro Precision (↑)         74.21
-Micro Recall (↑)            62.93
-Subset 0/1 Loss (↓)         69.39
-Subset Accuracy (↑)         30.61
+╭─ 🗀 Evaluation result for test data using a model of size 350 ─╮
+│ Example-wise F1 (↑)         65.15                             │
+│ Example-wise Jaccard (↑)    56.93                             │
+│ Example-wise Precision (↑)  73.38                             │
+│ Example-wise Recall (↑)     63.78                             │
+│ Hamming Accuracy (↑)        81.21                             │
+│ Hamming Loss (↓)            18.79                             │
+│ Macro F1 (↑)                66.28                             │
+│ Macro Jaccard (↑)           50.28                             │
+│ Macro Precision (↑)         76.07                             │
+│ Macro Recall (↑)            61.72                             │
+│ Micro F1 (↑)                68.11                             │
+│ Micro Jaccard (↑)           51.64                             │
+│ Micro Precision (↑)         74.21                             │
+│ Micro Recall (↑)            62.93                             │
+│ Subset 0/1 Loss (↓)         69.39                             │
+│ Subset Accuracy (↑)         30.61                             │
+╰───────────────────────────────────────────────────────────────╯
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 400...
 Successfully predicted in <duration>
-Evaluation result for test data using a model of size 400:
 
-Example-wise F1 (↑)         66.12
-Example-wise Jaccard (↑)    58.29
-Example-wise Precision (↑)  73.38
-Example-wise Recall (↑)     65.31
-Hamming Accuracy (↑)        81.8
-Hamming Loss (↓)            18.2
-Macro F1 (↑)                67.63
-Macro Jaccard (↑)           51.74
-Macro Precision (↑)         76.43
-Macro Recall (↑)            63.32
-Micro F1 (↑)                69.34
-Micro Jaccard (↑)           53.07
-Micro Precision (↑)         74.92
-Micro Recall (↑)            64.53
-Subset 0/1 Loss (↓)         67.35
-Subset Accuracy (↑)         32.65
+╭─ 🗀 Evaluation result for test data using a model of size 400 ─╮
+│ Example-wise F1 (↑)         66.12                             │
+│ Example-wise Jaccard (↑)    58.29                             │
+│ Example-wise Precision (↑)  73.38                             │
+│ Example-wise Recall (↑)     65.31                             │
+│ Hamming Accuracy (↑)        81.8                              │
+│ Hamming Loss (↓)            18.2                              │
+│ Macro F1 (↑)                67.63                             │
+│ Macro Jaccard (↑)           51.74                             │
+│ Macro Precision (↑)         76.43                             │
+│ Macro Recall (↑)            63.32                             │
+│ Micro F1 (↑)                69.34                             │
+│ Micro Jaccard (↑)           53.07                             │
+│ Micro Precision (↑)         74.92                             │
+│ Micro Recall (↑)            64.53                             │
+│ Subset 0/1 Loss (↓)         67.35                             │
+│ Subset Accuracy (↑)         32.65                             │
+╰───────────────────────────────────────────────────────────────╯
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 450...
 Successfully predicted in <duration>
-Evaluation result for test data using a model of size 450:
 
-Example-wise F1 (↑)         64.85
-Example-wise Jaccard (↑)    56.8
-Example-wise Precision (↑)  72.28
-Example-wise Recall (↑)     64.03
-Hamming Accuracy (↑)        81.04
-Hamming Loss (↓)            18.96
-Macro F1 (↑)                65.69
-Macro Jaccard (↑)           49.97
-Macro Precision (↑)         74.16
-Macro Recall (↑)            61.81
-Micro F1 (↑)                68.01
-Micro Jaccard (↑)           51.52
-Micro Precision (↑)         73.6
-Micro Recall (↑)            63.2
-Subset 0/1 Loss (↓)         68.88
-Subset Accuracy (↑)         31.12
+╭─ 🗀 Evaluation result for test data using a model of size 450 ─╮
+│ Example-wise F1 (↑)         64.85                             │
+│ Example-wise Jaccard (↑)    56.8                              │
+│ Example-wise Precision (↑)  72.28                             │
+│ Example-wise Recall (↑)     64.03                             │
+│ Hamming Accuracy (↑)        81.04                             │
+│ Hamming Loss (↓)            18.96                             │
+│ Macro F1 (↑)                65.69                             │
+│ Macro Jaccard (↑)           49.97                             │
+│ Macro Precision (↑)         74.16                             │
+│ Macro Recall (↑)            61.81                             │
+│ Micro F1 (↑)                68.01                             │
+│ Micro Jaccard (↑)           51.52                             │
+│ Micro Precision (↑)         73.6                              │
+│ Micro Recall (↑)            63.2                              │
+│ Subset 0/1 Loss (↓)         68.88                             │
+│ Subset Accuracy (↑)         31.12                             │
+╰───────────────────────────────────────────────────────────────╯
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 500...
 Successfully predicted in <duration>
-Evaluation result for test data using a model of size 500:
 
-Example-wise F1 (↑)         65.03
-Example-wise Jaccard (↑)    56.68
-Example-wise Precision (↑)  72.62
-Example-wise Recall (↑)     64.37
-Hamming Accuracy (↑)        81.04
-Hamming Loss (↓)            18.96
-Macro F1 (↑)                65.72
-Macro Jaccard (↑)           49.97
-Macro Precision (↑)         74.27
-Macro Recall (↑)            61.96
-Micro F1 (↑)                68.1
-Micro Jaccard (↑)           51.63
-Micro Precision (↑)         73.46
-Micro Recall (↑)            63.47
-Subset 0/1 Loss (↓)         69.9
-Subset Accuracy (↑)         30.1
+╭─ 🗀 Evaluation result for test data using a model of size 500 ─╮
+│ Example-wise F1 (↑)         65.03                             │
+│ Example-wise Jaccard (↑)    56.68                             │
+│ Example-wise Precision (↑)  72.62                             │
+│ Example-wise Recall (↑)     64.37                             │
+│ Hamming Accuracy (↑)        81.04                             │
+│ Hamming Loss (↓)            18.96                             │
+│ Macro F1 (↑)                65.72                             │
+│ Macro Jaccard (↑)           49.97                             │
+│ Macro Precision (↑)         74.27                             │
+│ Macro Recall (↑)            61.96                             │
+│ Micro F1 (↑)                68.1                              │
+│ Micro Jaccard (↑)           51.63                             │
+│ Micro Precision (↑)         73.46                             │
+│ Micro Recall (↑)            63.47                             │
+│ Subset 0/1 Loss (↓)         69.9                              │
+│ Subset Accuracy (↑)         30.1                              │
+╰───────────────────────────────────────────────────────────────╯
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 550...
 Successfully predicted in <duration>
-Evaluation result for test data using a model of size 550:
 
-Example-wise F1 (↑)         64.51
-Example-wise Jaccard (↑)    55.99
-Example-wise Precision (↑)  72.11
-Example-wise Recall (↑)     63.86
-Hamming Accuracy (↑)        80.78
-Hamming Loss (↓)            19.22
-Macro F1 (↑)                65.28
-Macro Jaccard (↑)           49.51
-Macro Precision (↑)         74.06
-Macro Recall (↑)            61.66
-Micro F1 (↑)                67.71
-Micro Jaccard (↑)           51.19
-Micro Precision (↑)         72.92
-Micro Recall (↑)            63.2
-Subset 0/1 Loss (↓)         70.92
-Subset Accuracy (↑)         29.08
+╭─ 🗀 Evaluation result for test data using a model of size 550 ─╮
+│ Example-wise F1 (↑)         64.51                             │
+│ Example-wise Jaccard (↑)    55.99                             │
+│ Example-wise Precision (↑)  72.11                             │
+│ Example-wise Recall (↑)     63.86                             │
+│ Hamming Accuracy (↑)        80.78                             │
+│ Hamming Loss (↓)            19.22                             │
+│ Macro F1 (↑)                65.28                             │
+│ Macro Jaccard (↑)           49.51                             │
+│ Macro Precision (↑)         74.06                             │
+│ Macro Recall (↑)            61.66                             │
+│ Micro F1 (↑)                67.71                             │
+│ Micro Jaccard (↑)           51.19                             │
+│ Micro Precision (↑)         72.92                             │
+│ Micro Recall (↑)            63.2                              │
+│ Subset 0/1 Loss (↓)         70.92                             │
+│ Subset Accuracy (↑)         29.08                             │
+╰───────────────────────────────────────────────────────────────╯
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 600...
 Successfully predicted in <duration>
-Evaluation result for test data using a model of size 600:
 
-Example-wise F1 (↑)         64.74
-Example-wise Jaccard (↑)    56.42
-Example-wise Precision (↑)  72.79
-Example-wise Recall (↑)     63.95
-Hamming Accuracy (↑)        80.78
-Hamming Loss (↓)            19.22
-Macro F1 (↑)                64.94
-Macro Jaccard (↑)           49.19
-Macro Precision (↑)         74.07
-Macro Recall (↑)            61.34
-Micro F1 (↑)                67.62
-Micro Jaccard (↑)           51.08
-Micro Precision (↑)         73.07
-Micro Recall (↑)            62.93
-Subset 0/1 Loss (↓)         69.39
-Subset Accuracy (↑)         30.61
+╭─ 🗀 Evaluation result for test data using a model of size 600 ─╮
+│ Example-wise F1 (↑)         64.74                             │
+│ Example-wise Jaccard (↑)    56.42                             │
+│ Example-wise Precision (↑)  72.79                             │
+│ Example-wise Recall (↑)     63.95                             │
+│ Hamming Accuracy (↑)        80.78                             │
+│ Hamming Loss (↓)            19.22                             │
+│ Macro F1 (↑)                64.94                             │
+│ Macro Jaccard (↑)           49.19                             │
+│ Macro Precision (↑)         74.07                             │
+│ Macro Recall (↑)            61.34                             │
+│ Micro F1 (↑)                67.62                             │
+│ Micro Jaccard (↑)           51.08                             │
+│ Micro Precision (↑)         73.07                             │
+│ Micro Recall (↑)            62.93                             │
+│ Subset 0/1 Loss (↓)         69.39                             │
+│ Subset Accuracy (↑)         30.61                             │
+╰───────────────────────────────────────────────────────────────╯
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 650...
 Successfully predicted in <duration>
-Evaluation result for test data using a model of size 650:
 
-Example-wise F1 (↑)         64.9
-Example-wise Jaccard (↑)    56.34
-Example-wise Precision (↑)  72.62
-Example-wise Recall (↑)     64.54
-Hamming Accuracy (↑)        80.95
-Hamming Loss (↓)            19.05
-Macro F1 (↑)                65.55
-Macro Jaccard (↑)           49.82
-Macro Precision (↑)         74.03
-Macro Recall (↑)            62.04
-Micro F1 (↑)                68
-Micro Jaccard (↑)           51.52
-Micro Precision (↑)         73.23
-Micro Recall (↑)            63.47
-Subset 0/1 Loss (↓)         70.41
-Subset Accuracy (↑)         29.59
+╭─ 🗀 Evaluation result for test data using a model of size 650 ─╮
+│ Example-wise F1 (↑)         64.9                              │
+│ Example-wise Jaccard (↑)    56.34                             │
+│ Example-wise Precision (↑)  72.62                             │
+│ Example-wise Recall (↑)     64.54                             │
+│ Hamming Accuracy (↑)        80.95                             │
+│ Hamming Loss (↓)            19.05                             │
+│ Macro F1 (↑)                65.55                             │
+│ Macro Jaccard (↑)           49.82                             │
+│ Macro Precision (↑)         74.03                             │
+│ Macro Recall (↑)            62.04                             │
+│ Micro F1 (↑)                68                                │
+│ Micro Jaccard (↑)           51.52                             │
+│ Micro Precision (↑)         73.23                             │
+│ Micro Recall (↑)            63.47                             │
+│ Subset 0/1 Loss (↓)         70.41                             │
+│ Subset Accuracy (↑)         29.59                             │
+╰───────────────────────────────────────────────────────────────╯
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 700...
 Successfully predicted in <duration>
-Evaluation result for test data using a model of size 700:
 
-Example-wise F1 (↑)         64.9
-Example-wise Jaccard (↑)    56.34
-Example-wise Precision (↑)  72.53
-Example-wise Recall (↑)     64.46
-Hamming Accuracy (↑)        80.78
-Hamming Loss (↓)            19.22
-Macro F1 (↑)                65.32
-Macro Jaccard (↑)           49.62
-Macro Precision (↑)         73.59
-Macro Recall (↑)            62.05
-Micro F1 (↑)                67.81
-Micro Jaccard (↑)           51.29
-Micro Precision (↑)         72.78
-Micro Recall (↑)            63.47
-Subset 0/1 Loss (↓)         70.41
-Subset Accuracy (↑)         29.59
+╭─ 🗀 Evaluation result for test data using a model of size 700 ─╮
+│ Example-wise F1 (↑)         64.9                              │
+│ Example-wise Jaccard (↑)    56.34                             │
+│ Example-wise Precision (↑)  72.53                             │
+│ Example-wise Recall (↑)     64.46                             │
+│ Hamming Accuracy (↑)        80.78                             │
+│ Hamming Loss (↓)            19.22                             │
+│ Macro F1 (↑)                65.32                             │
+│ Macro Jaccard (↑)           49.62                             │
+│ Macro Precision (↑)         73.59                             │
+│ Macro Recall (↑)            62.05                             │
+│ Micro F1 (↑)                67.81                             │
+│ Micro Jaccard (↑)           51.29                             │
+│ Micro Precision (↑)         72.78                             │
+│ Micro Recall (↑)            63.47                             │
+│ Subset 0/1 Loss (↓)         70.41                             │
+│ Subset Accuracy (↑)         29.59                             │
+╰───────────────────────────────────────────────────────────────╯
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 750...
 Successfully predicted in <duration>
-Evaluation result for test data using a model of size 750:
 
-Example-wise F1 (↑)         64.98
-Example-wise Jaccard (↑)    56.68
-Example-wise Precision (↑)  72.79
-Example-wise Recall (↑)     64.2
-Hamming Accuracy (↑)        80.87
-Hamming Loss (↓)            19.13
-Macro F1 (↑)                65.27
-Macro Jaccard (↑)           49.58
-Macro Precision (↑)         73.87
-Macro Recall (↑)            61.78
-Micro F1 (↑)                67.81
-Micro Jaccard (↑)           51.3
-Micro Precision (↑)         73.15
-Micro Recall (↑)            63.2
-Subset 0/1 Loss (↓)         69.39
-Subset Accuracy (↑)         30.61
+╭─ 🗀 Evaluation result for test data using a model of size 750 ─╮
+│ Example-wise F1 (↑)         64.98                             │
+│ Example-wise Jaccard (↑)    56.68                             │
+│ Example-wise Precision (↑)  72.79                             │
+│ Example-wise Recall (↑)     64.2                              │
+│ Hamming Accuracy (↑)        80.87                             │
+│ Hamming Loss (↓)            19.13                             │
+│ Macro F1 (↑)                65.27                             │
+│ Macro Jaccard (↑)           49.58                             │
+│ Macro Precision (↑)         73.87                             │
+│ Macro Recall (↑)            61.78                             │
+│ Micro F1 (↑)                67.81                             │
+│ Micro Jaccard (↑)           51.3                              │
+│ Micro Precision (↑)         73.15                             │
+│ Micro Recall (↑)            63.2                              │
+│ Subset 0/1 Loss (↓)         69.39                             │
+│ Subset Accuracy (↑)         30.61                             │
+╰───────────────────────────────────────────────────────────────╯
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 800...
 Successfully predicted in <duration>
-Evaluation result for test data using a model of size 800:
 
-Example-wise F1 (↑)         65.48
-Example-wise Jaccard (↑)    57.1
-Example-wise Precision (↑)  73.3
-Example-wise Recall (↑)     64.63
-Hamming Accuracy (↑)        81.12
-Hamming Loss (↓)            18.88
-Macro F1 (↑)                65.73
-Macro Jaccard (↑)           50.07
-Macro Precision (↑)         74.73
-Macro Recall (↑)            62.23
-Micro F1 (↑)                68.29
-Micro Jaccard (↑)           51.84
-Micro Precision (↑)         73.54
-Micro Recall (↑)            63.73
-Subset 0/1 Loss (↓)         69.39
-Subset Accuracy (↑)         30.61
+╭─ 🗀 Evaluation result for test data using a model of size 800 ─╮
+│ Example-wise F1 (↑)         65.48                             │
+│ Example-wise Jaccard (↑)    57.1                              │
+│ Example-wise Precision (↑)  73.3                              │
+│ Example-wise Recall (↑)     64.63                             │
+│ Hamming Accuracy (↑)        81.12                             │
+│ Hamming Loss (↓)            18.88                             │
+│ Macro F1 (↑)                65.73                             │
+│ Macro Jaccard (↑)           50.07                             │
+│ Macro Precision (↑)         74.73                             │
+│ Macro Recall (↑)            62.23                             │
+│ Micro F1 (↑)                68.29                             │
+│ Micro Jaccard (↑)           51.84                             │
+│ Micro Precision (↑)         73.54                             │
+│ Micro Recall (↑)            63.73                             │
+│ Subset 0/1 Loss (↓)         69.39                             │
+│ Subset Accuracy (↑)         30.61                             │
+╰───────────────────────────────────────────────────────────────╯
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 850...
 Successfully predicted in <duration>
-Evaluation result for test data using a model of size 850:
 
-Example-wise F1 (↑)         65.48
-Example-wise Jaccard (↑)    57.1
-Example-wise Precision (↑)  73.3
-Example-wise Recall (↑)     64.63
-Hamming Accuracy (↑)        81.12
-Hamming Loss (↓)            18.88
-Macro F1 (↑)                65.67
-Macro Jaccard (↑)           50.01
-Macro Precision (↑)         74.19
-Macro Recall (↑)            62.23
-Micro F1 (↑)                68.29
-Micro Jaccard (↑)           51.84
-Micro Precision (↑)         73.54
-Micro Recall (↑)            63.73
-Subset 0/1 Loss (↓)         69.39
-Subset Accuracy (↑)         30.61
+╭─ 🗀 Evaluation result for test data using a model of size 850 ─╮
+│ Example-wise F1 (↑)         65.48                             │
+│ Example-wise Jaccard (↑)    57.1                              │
+│ Example-wise Precision (↑)  73.3                              │
+│ Example-wise Recall (↑)     64.63                             │
+│ Hamming Accuracy (↑)        81.12                             │
+│ Hamming Loss (↓)            18.88                             │
+│ Macro F1 (↑)                65.67                             │
+│ Macro Jaccard (↑)           50.01                             │
+│ Macro Precision (↑)         74.19                             │
+│ Macro Recall (↑)            62.23                             │
+│ Micro F1 (↑)                68.29                             │
+│ Micro Jaccard (↑)           51.84                             │
+│ Micro Precision (↑)         73.54                             │
+│ Micro Recall (↑)            63.73                             │
+│ Subset 0/1 Loss (↓)         69.39                             │
+│ Subset Accuracy (↑)         30.61                             │
+╰───────────────────────────────────────────────────────────────╯
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 900...
 Successfully predicted in <duration>
-Evaluation result for test data using a model of size 900:
 
-Example-wise F1 (↑)         65.34
-Example-wise Jaccard (↑)    57.02
-Example-wise Precision (↑)  73.21
-Example-wise Recall (↑)     64.46
-Hamming Accuracy (↑)        81.04
-Hamming Loss (↓)            18.96
-Macro F1 (↑)                65.73
-Macro Jaccard (↑)           49.89
-Macro Precision (↑)         75.34
-Macro Recall (↑)            62.09
-Micro F1 (↑)                68.1
-Micro Jaccard (↑)           51.63
-Micro Precision (↑)         73.46
-Micro Recall (↑)            63.47
-Subset 0/1 Loss (↓)         68.88
-Subset Accuracy (↑)         31.12
+╭─ 🗀 Evaluation result for test data using a model of size 900 ─╮
+│ Example-wise F1 (↑)         65.34                             │
+│ Example-wise Jaccard (↑)    57.02                             │
+│ Example-wise Precision (↑)  73.21                             │
+│ Example-wise Recall (↑)     64.46                             │
+│ Hamming Accuracy (↑)        81.04                             │
+│ Hamming Loss (↓)            18.96                             │
+│ Macro F1 (↑)                65.73                             │
+│ Macro Jaccard (↑)           49.89                             │
+│ Macro Precision (↑)         75.34                             │
+│ Macro Recall (↑)            62.09                             │
+│ Micro F1 (↑)                68.1                              │
+│ Micro Jaccard (↑)           51.63                             │
+│ Micro Precision (↑)         73.46                             │
+│ Micro Recall (↑)            63.47                             │
+│ Subset 0/1 Loss (↓)         68.88                             │
+│ Subset Accuracy (↑)         31.12                             │
+╰───────────────────────────────────────────────────────────────╯
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 950...
 Successfully predicted in <duration>
-Evaluation result for test data using a model of size 950:
 
-Example-wise F1 (↑)         65.39
-Example-wise Jaccard (↑)    57.19
-Example-wise Precision (↑)  73.04
-Example-wise Recall (↑)     64.63
-Hamming Accuracy (↑)        81.04
-Hamming Loss (↓)            18.96
-Macro F1 (↑)                65.73
-Macro Jaccard (↑)           49.96
-Macro Precision (↑)         74.27
-Macro Recall (↑)            62.26
-Micro F1 (↑)                68.19
-Micro Jaccard (↑)           51.73
-Micro Precision (↑)         73.31
-Micro Recall (↑)            63.73
-Subset 0/1 Loss (↓)         68.88
-Subset Accuracy (↑)         31.12
+╭─ 🗀 Evaluation result for test data using a model of size 950 ─╮
+│ Example-wise F1 (↑)         65.39                             │
+│ Example-wise Jaccard (↑)    57.19                             │
+│ Example-wise Precision (↑)  73.04                             │
+│ Example-wise Recall (↑)     64.63                             │
+│ Hamming Accuracy (↑)        81.04                             │
+│ Hamming Loss (↓)            18.96                             │
+│ Macro F1 (↑)                65.73                             │
+│ Macro Jaccard (↑)           49.96                             │
+│ Macro Precision (↑)         74.27                             │
+│ Macro Recall (↑)            62.26                             │
+│ Micro F1 (↑)                68.19                             │
+│ Micro Jaccard (↑)           51.73                             │
+│ Micro Precision (↑)         73.31                             │
+│ Micro Recall (↑)            63.73                             │
+│ Subset 0/1 Loss (↓)         68.88                             │
+│ Subset Accuracy (↑)         31.12                             │
+╰───────────────────────────────────────────────────────────────╯
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 Predicting for 196 test examples using a model of size 1000...
 Successfully predicted in <duration>
-Evaluation result for test data using a model of size 1000:
 
-Example-wise F1 (↑)         65.24
-Example-wise Jaccard (↑)    57.02
-Example-wise Precision (↑)  72.96
-Example-wise Recall (↑)     64.37
-Hamming Accuracy (↑)        80.95
-Hamming Loss (↓)            19.05
-Macro F1 (↑)                65.29
-Macro Jaccard (↑)           49.57
-Macro Precision (↑)         74.6
-Macro Recall (↑)            61.83
-Micro F1 (↑)                68
-Micro Jaccard (↑)           51.52
-Micro Precision (↑)         73.23
-Micro Recall (↑)            63.47
-Subset 0/1 Loss (↓)         68.88
-Subset Accuracy (↑)         31.12
+╭─ 🗀 Evaluation result for test data using a model of size 1000 ─╮
+│ Example-wise F1 (↑)         65.24                              │
+│ Example-wise Jaccard (↑)    57.02                              │
+│ Example-wise Precision (↑)  72.96                              │
+│ Example-wise Recall (↑)     64.37                              │
+│ Hamming Accuracy (↑)        80.95                              │
+│ Hamming Loss (↓)            19.05                              │
+│ Macro F1 (↑)                65.29                              │
+│ Macro Jaccard (↑)           49.57                              │
+│ Macro Precision (↑)         74.6                               │
+│ Macro Recall (↑)            61.83                              │
+│ Micro F1 (↑)                68                                 │
+│ Micro Jaccard (↑)           51.52                              │
+│ Micro Precision (↑)         73.23                              │
+│ Micro Recall (↑)            63.47                              │
+│ Subset 0/1 Loss (↓)         68.88                              │
+│ Subset Accuracy (↑)         31.12                              │
+╰────────────────────────────────────────────────────────────────╯
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-Successfully finished experiment after <duration>
+○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+✓ Successfully finished experiment after <duration>

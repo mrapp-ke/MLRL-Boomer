@@ -3,7 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for implementing experiments.
 """
-import logging as log
 
 from abc import ABC, abstractmethod
 from argparse import Namespace
@@ -26,6 +25,7 @@ from mlrl.testbed.experiments.output.sinks import FileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState, ParameterDict, PredictionState, TrainingState
 from mlrl.testbed.experiments.timer import Timer
+from mlrl.testbed.log import Log
 
 
 class ExperimentListener(ABC):
@@ -518,7 +518,7 @@ class DefaultProcedure(ExperimentalProcedure):
     @override
     def _before_experiment(self, experiment: Experiment, state: ExperimentState) -> ExperimentState:
         problem_domain = state.problem_domain
-        log.info('Starting experiment using the %s algorithm "%s"...', problem_domain.problem_name,
+        Log.info('Starting experiment using the {} algorithm "{}"...', problem_domain.problem_name,
                  problem_domain.learner_name)
 
         for listener in experiment.listeners:
@@ -568,8 +568,8 @@ class DefaultProcedure(ExperimentalProcedure):
 
         if start_time:
             run_time = Timer.stop(start_time)
-            log.info('Successfully finished experiment after %s', run_time)
+            Log.success('Successfully finished experiment after {}', run_time)
         else:
-            log.info('Successfully finished experiment')
+            Log.success('Successfully finished experiment')
 
         return state

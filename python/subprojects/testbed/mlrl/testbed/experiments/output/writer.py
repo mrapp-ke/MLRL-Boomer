@@ -3,7 +3,6 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for writing output data to sinks.
 """
-import logging as log
 
 from abc import ABC, abstractmethod
 from argparse import Namespace
@@ -20,6 +19,7 @@ from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData, 
 from mlrl.testbed.experiments.output.policies import OutputErrorPolicy
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.log import Log
 
 
 class DataExtractor(ABC):
@@ -156,9 +156,9 @@ class OutputWriter:
             if self.output_error_policy == OutputErrorPolicy.EXIT:
                 raise error
 
-            log.error('Failed to extract output data from experimental state via extractor of type %s',
+            Log.error('Failed to extract output data from experimental state via extractor of type {}',
                       type(extractor).__name__,
-                      exc_info=error)
+                      error=error)
             return []
 
     def __extract_data(self, state: ExperimentState) -> List[Tuple[ExperimentState, OutputData]]:
@@ -171,7 +171,7 @@ class OutputWriter:
                 if result:
                     return result
         else:
-            log.warning('No extractors have been added to output writer of type %s', type(self).__name__)
+            Log.warning('No extractors have been added to output writer of type {}', type(self).__name__)
 
         return []
 
@@ -183,10 +183,10 @@ class OutputWriter:
             if self.output_error_policy == OutputErrorPolicy.EXIT:
                 raise error
 
-            log.error('Failed to write output data of type "%s" to sink %s',
+            Log.error('Failed to write output data of type "{}" to sink {}',
                       type(output_data).__name__,
                       type(sink).__name__,
-                      exc_info=error)
+                      error=error)
 
     def __init__(self, *extractors: DataExtractor):
         """

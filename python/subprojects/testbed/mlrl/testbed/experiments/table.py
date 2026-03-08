@@ -236,7 +236,7 @@ class Table(ABC):
                              if alignment else None, self.alignments) if self.alignments else None
             return tabulate(rows,
                             headers=headers,
-                            tablefmt=table_format if table_format else Table.Format.OUTLINE,
+                            tablefmt=table_format if table_format else Table.Format.PLAIN,
                             colalign=alignments)
 
         return '<no data available>'

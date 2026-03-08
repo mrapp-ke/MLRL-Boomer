@@ -24,7 +24,7 @@ class NoCalibrationModel(TabularOutputData):
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
-        return 'No calibration model used'
+        return '<No calibration model used>'
 
     # pylint: disable=unused-argument
     @override

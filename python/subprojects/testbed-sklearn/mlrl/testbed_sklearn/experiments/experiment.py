@@ -3,7 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for performing experiments using the scikit-learn framework.
 """
-import logging as log
 
 from argparse import Namespace
 from dataclasses import replace
@@ -27,6 +26,7 @@ from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.state import ExperimentState, ParameterDict, PredictionState, TrainingState
 from mlrl.testbed.experiments.timer import Timer
+from mlrl.testbed.log import Log
 
 
 class SkLearnExperiment(Experiment):
@@ -75,7 +75,7 @@ class SkLearnExperiment(Experiment):
 
             if parameters:
                 learner.set_params(**parameters)
-                log.info('Successfully applied parameter setting: %s', parameters)
+                Log.success('Successfully applied parameter setting: {}', parameters)
 
             return learner
 
@@ -96,9 +96,9 @@ class SkLearnExperiment(Experiment):
                     (', '
                      if aggr else '') + '"' + change[0] + '" is "' + change[2] + '" instead of "' + change[1] + '"',
                     changes, '')
-                log.warning(
+                Log.warning(
                     'The loaded model\'s values for the following parameters differ from the expected configuration: '
-                    + '%s', formatted_changes)
+                    + '{}', formatted_changes)
 
         def __init__(self, base_learner: BaseEstimator, fit_kwargs: Optional[Dict[str, Any]] = None):
             """
@@ -121,9 +121,9 @@ class SkLearnExperiment(Experiment):
                                                    actual_parameters=learner.get_params())
                 return TrainingState(learner=learner)
 
-            log.info('Fitting model to %s training examples...', dataset.num_examples)
+            Log.info('Fitting model to {} training examples...', dataset.num_examples)
             training_duration = self._fit(new_learner, dataset, fit_kwargs=self.fit_kwargs)
-            log.info('Successfully fit model in %s', training_duration)
+            Log.success('Successfully fit model in {}', training_duration)
             return TrainingState(learner=new_learner, training_duration=training_duration)
 
         def _fit(self, estimator: BaseEstimator, dataset: TabularDataset,
