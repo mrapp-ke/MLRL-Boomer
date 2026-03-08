@@ -5,7 +5,7 @@ Implements modules that provide access to Python code that can be built as wheel
 """
 from os import environ
 from pathlib import Path
-from typing import Generator, List, Set, cast, override
+from typing import Generator, List, cast, override
 
 from core.build_unit import BuildUnit
 from core.modules import Module, ModuleRegistry
@@ -67,7 +67,7 @@ class PythonPackageModule(SubprojectModule):
                                       module: 'PythonPackageModule',
                                       other_module: 'PythonPackageModule',
                                       module_registry: ModuleRegistry,
-                                      dependencies_to_be_skipped: Set[str] | None = None) -> bool:
+                                      dependencies_to_be_skipped: set[str] | None = None) -> bool:
             package_name = module.get_package_name(self.build_unit)
             dependency_names = other_module.get_dependency_names(self.build_unit)
 

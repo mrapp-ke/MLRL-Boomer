@@ -5,7 +5,6 @@ Provides classes for installing Python packages via uv.
 """
 from abc import ABC
 from functools import reduce
-from typing import Set
 
 from util.cmd import Command as Cmd
 from util.requirements import Requirement, RequirementsFiles
@@ -82,7 +81,7 @@ class PackageManager:
         :param silent:              True, if any log output should be suppressed, False otherwise
         """
         looked_up_requirements = requirements_files.lookup_requirements(*package_names, accept_missing=accept_missing)
-        requirements_to_be_installed: Set[Requirement] = set()
+        requirements_to_be_installed: set[Requirement] = set()
         requirements_to_be_installed = reduce(lambda aggr, requirements: aggr | requirements,
                                               looked_up_requirements.values(), requirements_to_be_installed)
         PackageManager.install_requirements(*requirements_to_be_installed, silent=silent)
@@ -92,7 +91,7 @@ class PackageManager:
         """
         Installs all dependencies in the requirements file.
         """
-        requirements: Set[Requirement] = set()
+        requirements: set[Requirement] = set()
         requirements = reduce(lambda aggr, requirements_file: aggr | requirements_file.requirements, requirements_files,
                               requirements)
         PackageManager.install_requirements(*requirements)

@@ -7,7 +7,7 @@ from dataclasses import replace
 from functools import reduce
 from os import environ
 from pathlib import Path
-from typing import List, Set
+from typing import List
 
 from core.build_unit import BuildUnit
 from util.env import get_env_bool
@@ -158,7 +158,7 @@ class Project:
                 .exclude_subdirectories_by_substrings(ends_with=Project.Python.wheel_metadata_directory_suffix)
 
         @staticmethod
-        def find_subprojects() -> Set[Path]:
+        def find_subprojects() -> set[Path]:
             """
             Finds and returns the paths to all Python subprojects.
 
@@ -171,7 +171,7 @@ class Project:
             }
 
         @staticmethod
-        def find_test_directories() -> Set[Path]:
+        def find_test_directories() -> set[Path]:
             """
             Finds and returns the names of all directories that contain test files.
 
@@ -220,7 +220,7 @@ class Project:
                 .exclude_subdirectories_by_name(Project.Cpp.build_directory_name)
 
         @staticmethod
-        def find_subprojects() -> Set[Path]:
+        def find_subprojects() -> set[Path]:
             """
             Finds and returns the paths to all C++ subprojects.
 

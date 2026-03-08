@@ -7,7 +7,7 @@ import json
 
 from functools import cached_property
 from pathlib import Path
-from typing import Any, Dict, List, Set, override
+from typing import Any, Dict, List, override
 
 from core.modules import Module
 from util.io import TextFile, create_directories
@@ -69,7 +69,7 @@ class ChangeDetection:
             super().__init__(file, accept_missing=True)
             create_directories(file.parent)
 
-        def update(self, module_name: str, files: Set[Path]):
+        def update(self, module_name: str, files: set[Path]):
             """
             Updates the checksums of given files.
 

@@ -6,7 +6,7 @@ Provides classes for listing files and directories.
 from functools import partial
 from itertools import chain
 from pathlib import Path
-from typing import Any, Callable, List, Set, override
+from typing import Any, Callable, List, override
 
 
 class DirectorySearch:
@@ -49,7 +49,7 @@ class DirectorySearch:
         :return:        The `DirectorySearch` itself
         """
 
-        def filter_directory(filtered_names: Set[str], _: Path, directory_name: str):
+        def filter_directory(filtered_names: set[str], _: Path, directory_name: str):
             return directory_name in filtered_names
 
         return self.add_filters(partial(filter_directory, set(names)))
@@ -443,7 +443,7 @@ class FileType:
     Represents different types of files.
     """
 
-    def __init__(self, name: str, suffixes: Set[str], file_search_decorator: Callable[[FileSearch], Any] | None = None):
+    def __init__(self, name: str, suffixes: set[str], file_search_decorator: Callable[[FileSearch], Any] | None = None):
         """
         :param name:                    The name of the file type
         :param suffixes:                The suffixes that correspond to this file type (without leading dot)

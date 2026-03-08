@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility classes for accessing the project's GitHub workflows.
 """
 from functools import cached_property
-from typing import Any, Dict, List, Set
+from typing import Any, Dict, List
 
 from core.build_unit import BuildUnit
 
@@ -66,7 +66,7 @@ class Workflows:
         self.module = module
 
     @cached_property
-    def workflows(self) -> Set[Workflow]:
+    def workflows(self) -> set[Workflow]:
         """
         All GitHub workflows that are defined in the directory where workflow definition files are located.
         """

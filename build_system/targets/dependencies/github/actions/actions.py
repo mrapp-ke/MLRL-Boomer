@@ -5,7 +5,7 @@ Provides utility functions for checking the project's GitHub workflows for outda
 """
 from dataclasses import dataclass, replace
 from functools import cached_property, reduce
-from typing import Any, Dict, List, Set, override
+from typing import Any, Dict, List, override
 
 from core.build_unit import BuildUnit
 from util.files import FileType
@@ -126,7 +126,7 @@ class Actions(Workflow):
     TAG_USES = 'uses'
 
     @cached_property
-    def actions(self) -> Set[Action]:
+    def actions(self) -> set[Action]:
         """
         A set that contains all GitHub Actions used in the workflow.
         """
@@ -268,13 +268,13 @@ class ActionUpdater(Workflows):
         self.version_cache: Dict[str, ActionVersion] = {}
         self.github_api = GithubApi(build_unit).set_token_from_env()
 
-    def find_outdated_workflows(self) -> Dict[Actions, Set[OutdatedAction]]:
+    def find_outdated_workflows(self) -> Dict[Actions, set[OutdatedAction]]:
         """
         Finds and returns all workflows with outdated GitHub actions.
 
         :return: A dictionary that contains for each workflow a set of outdated Actions
         """
-        outdated_workflows: Dict[Actions, Set[ActionUpdater.OutdatedAction]] = {}
+        outdated_workflows: Dict[Actions, set[ActionUpdater.OutdatedAction]] = {}
 
         for workflow in self.workflows:
             Log.info('Searching for GitHub Actions in workflow "%s"...', workflow.file)
@@ -289,16 +289,16 @@ class ActionUpdater(Workflows):
 
         return outdated_workflows
 
-    def update_outdated_workflows(self) -> Dict[Actions, Set[UpdatedAction]]:
+    def update_outdated_workflows(self) -> Dict[Actions, set[UpdatedAction]]:
         """
         Updates all workflows with outdated GitHub Actions.
 
         :return: A dictionary that contains for each workflow a set of updated Actions
         """
-        updated_workflows: Dict[Actions, Set[ActionUpdater.UpdatedAction]] = {}
+        updated_workflows: Dict[Actions, set[ActionUpdater.UpdatedAction]] = {}
 
         for workflow, outdated_actions in self.find_outdated_workflows().items():
-            updated_actions: Set[ActionUpdater.UpdatedAction] = set()
+            updated_actions: set[ActionUpdater.UpdatedAction] = set()
 
             for outdated_action in outdated_actions:
                 previous_version = outdated_action.action.version

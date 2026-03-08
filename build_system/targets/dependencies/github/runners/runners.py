@@ -8,7 +8,7 @@ import re
 
 from dataclasses import dataclass, replace
 from functools import cached_property
-from typing import Any, Dict, List, Set, Tuple, override
+from typing import Any, Dict, List, Tuple, override
 from xml.etree import ElementTree
 
 from core.build_unit import BuildUnit
@@ -132,7 +132,7 @@ class Runners(Workflow):
     Allows to access and update GitHub-hosted runners used in a workflow.
     """
 
-    def __get_runners_from_runs_on_clause(self, yaml_dict: Dict[Any, Any]) -> Set[Runner]:
+    def __get_runners_from_runs_on_clause(self, yaml_dict: Dict[Any, Any]) -> set[Runner]:
         runs_on_clause = self.find_tag(yaml_dict, 'runs-on')
 
         if runs_on_clause and runs_on_clause.replace(' ', '') not in {'${{matrix.os}}', '${{inputs.os}}'}:
@@ -144,7 +144,7 @@ class Runners(Workflow):
 
         return set()
 
-    def __get_runners_from_strategy(self, yaml_dict: Dict[Any, Any]) -> Set[Runner]:
+    def __get_runners_from_strategy(self, yaml_dict: Dict[Any, Any]) -> set[Runner]:
         runners = set()
         strategy = self.find_tag(yaml_dict, 'strategy')
 
@@ -159,7 +159,7 @@ class Runners(Workflow):
         return runners
 
     @cached_property
-    def runners(self) -> Set[Runner]:
+    def runners(self) -> set[Runner]:
         """
         A set that contains all GitHub-hosted runners used in the workflow.
         """
@@ -304,7 +304,7 @@ class RunnerUpdater(Workflows):
         return relevant_lines
 
     @staticmethod
-    def __parse_table(lines: List[str]) -> Set[Runner]:
+    def __parse_table(lines: List[str]) -> set[Runner]:
         html = '\n'.join(lines)
         table = ElementTree.fromstring(html)
         header = table.find('./thead')
@@ -386,13 +386,13 @@ class RunnerUpdater(Workflows):
         super().__init__(build_unit, module)
         self.version_cache: Dict[Tuple[str, str | None], RunnerVersion] = {}
 
-    def find_outdated_workflows(self) -> Dict[Runners, Set[OutdatedRunner]]:
+    def find_outdated_workflows(self) -> Dict[Runners, set[OutdatedRunner]]:
         """
         Finds and returns all workflows with outdated runners.
 
         :return: A dictionary that contains for each workflow a set of outdated runners
         """
-        outdated_workflows: Dict[Runners, Set[RunnerUpdater.OutdatedRunner]] = {}
+        outdated_workflows: Dict[Runners, set[RunnerUpdater.OutdatedRunner]] = {}
 
         for workflow in self.workflows:
             Log.info('Searching for GitHub-hosted runners in workflow "%s"...', workflow.file)
@@ -408,16 +408,16 @@ class RunnerUpdater(Workflows):
 
         return outdated_workflows
 
-    def update_outdated_workflows(self) -> Dict[Runners, Set[UpdatedRunner]]:
+    def update_outdated_workflows(self) -> Dict[Runners, set[UpdatedRunner]]:
         """
         Updates all workflows with outdated GitHub runners.
 
         :return: A dictionary that contains for each workflow a set of updated runners
         """
-        updated_workflows: Dict[Runners, Set[RunnerUpdater.UpdatedRunner]] = {}
+        updated_workflows: Dict[Runners, set[RunnerUpdater.UpdatedRunner]] = {}
 
         for workflow, outdated_runners in self.find_outdated_workflows().items():
-            updated_runners: Set[RunnerUpdater.UpdatedRunner] = set()
+            updated_runners: set[RunnerUpdater.UpdatedRunner] = set()
 
             for outdated_runner in outdated_runners:
                 updated_runners = updated_workflows.setdefault(workflow, updated_runners)
