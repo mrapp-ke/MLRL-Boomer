@@ -9,7 +9,6 @@ from argparse import ArgumentParser
 from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
 from types import ModuleType
-from typing import List
 
 from core.build_unit import BuildUnit
 from core.modules import Module, ModuleRegistry
@@ -35,7 +34,7 @@ def __configure_log(args):
     Log.configure(log_level)
 
 
-def __find_init_files() -> List[Path]:
+def __find_init_files() -> list[Path]:
     return FileSearch() \
         .set_recursive(True) \
         .filter_by_name('__init__.py') \
@@ -60,7 +59,7 @@ def __import_source_file(source_file: Path) -> ModuleType:
         raise ImportError('Source file "' + str(source_file) + '" not found') from error
 
 
-def __register_modules(init_files: List[Path]) -> ModuleRegistry:
+def __register_modules(init_files: list[Path]) -> ModuleRegistry:
     Log.verbose('Registering modules...')
     module_registry = ModuleRegistry()
     num_modules = 0
@@ -84,7 +83,7 @@ def __register_modules(init_files: List[Path]) -> ModuleRegistry:
     return module_registry
 
 
-def __register_targets(init_files: List[Path]) -> TargetRegistry:
+def __register_targets(init_files: list[Path]) -> TargetRegistry:
     Log.verbose('Registering targets...')
     target_registry = TargetRegistry()
     num_targets = 0
@@ -108,7 +107,7 @@ def __register_targets(init_files: List[Path]) -> TargetRegistry:
     return target_registry
 
 
-def __find_default_target(init_files: List[Path]) -> str | None:
+def __find_default_target(init_files: list[Path]) -> str | None:
     Log.verbose('Searching for default target...')
     default_targets = []
 

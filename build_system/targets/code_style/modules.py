@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements modules that provide access to source code.
 """
 from pathlib import Path
-from typing import List, override
+from typing import override
 
 from core.modules import Module, ModuleRegistry
 from util.files import FileSearch, FileType
@@ -44,7 +44,7 @@ class CodeModule(Module):
         self.root_directory = root_directory
         self.source_file_search = source_file_search
 
-    def find_source_files(self) -> List[Path]:
+    def find_source_files(self) -> list[Path]:
         """
         Finds and returns all source files that belong to the module.
 

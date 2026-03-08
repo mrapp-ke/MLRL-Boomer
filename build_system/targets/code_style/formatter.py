@@ -5,7 +5,7 @@ Provides classes for formatting code.
 """
 from abc import ABC
 from pathlib import Path
-from typing import List, override
+from typing import override
 
 from core.build_unit import BuildUnit
 from core.changes import ChangeDetection
@@ -27,7 +27,7 @@ class CodeChangeDetection:
         self.change_detection = ChangeDetection(BuildUnit().build_directory / (cache_file_name + '.json'))
         self.module = module
 
-    def find_modified_source_files(self) -> List[Path]:
+    def find_modified_source_files(self) -> list[Path]:
         """
         Finds and returns all modified source files.
 
@@ -67,7 +67,7 @@ class CodeFormatterProgram(Program, ABC):
         self.set_build_unit(build_unit)
         self.change_detection = CodeChangeDetection(module, cache_file_name) if cache_file_name else None
         self.module = module
-        self._original_arguments: List[str] | None = None
+        self._original_arguments: list[str] | None = None
 
     @override
     def _should_be_skipped(self) -> bool:

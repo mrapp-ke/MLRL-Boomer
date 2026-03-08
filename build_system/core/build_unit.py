@@ -4,7 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that provide information about independent units of the build system.
 """
 from pathlib import Path
-from typing import List
 
 
 class BuildUnit:
@@ -39,7 +38,7 @@ class BuildUnit:
         """
         return self.root_directory / self.BUILD_DIRECTORY_NAME
 
-    def find_requirements_files(self) -> List[Path]:
+    def find_requirements_files(self) -> list[Path]:
         """
         A list that contains the paths to all requirements files that specify the build-time dependencies of this unit.
         """

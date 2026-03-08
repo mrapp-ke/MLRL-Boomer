@@ -3,8 +3,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for accessing the GitHub API via "pygithub".
 """
+from collections.abc import Iterable
 from os import environ
-from typing import Any, Iterable
+from typing import Any
 
 from core.build_unit import BuildUnit
 from util.env import get_env

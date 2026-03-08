@@ -4,8 +4,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow to configure build options.
 """
 from abc import ABC, abstractmethod
+from collections.abc import Iterable, Iterator
 from os import environ
-from typing import Any, Iterable, Iterator, List, override
+from typing import Any, override
 
 from util.env import get_env, get_env_array
 
@@ -27,7 +28,7 @@ class BuildOption(ABC):
         self.subprojects = list(subprojects)
 
     @property
-    def keys(self) -> List[str]:
+    def keys(self) -> list[str]:
         """
         A list of keys to be used for setting the build option.
         """

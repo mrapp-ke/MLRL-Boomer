@@ -4,9 +4,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utilities for dealing with Python dependencies via requirements.
 """
 from abc import ABC, abstractmethod
+from collections.abc import Iterable, Iterator
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable, Iterator, override
+from typing import Any, override
 
 from core.build_unit import BuildUnit
 from util.format import format_iterable

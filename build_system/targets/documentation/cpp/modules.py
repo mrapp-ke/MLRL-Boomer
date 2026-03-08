@@ -5,7 +5,7 @@ Implements modules that provide access to C++ code for which an API documentatio
 """
 from os import environ
 from pathlib import Path
-from typing import List, override
+from typing import override
 
 from core.modules import Module, ModuleRegistry
 from util.files import FileSearch, FileType
@@ -54,7 +54,7 @@ class CppApidocModule(ApidocModule):
         """
         return self.root_directory / self.include_directory_name
 
-    def find_header_files(self) -> List[Path]:
+    def find_header_files(self) -> list[Path]:
         """
         Finds and returns the header files to be included in the API documentation.
 

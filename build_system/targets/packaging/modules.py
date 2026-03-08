@@ -5,7 +5,7 @@ Implements modules that provide access to Python code that can be built as wheel
 """
 from os import environ
 from pathlib import Path
-from typing import Generator, List, cast, override
+from typing import Generator, cast, override
 
 from core.build_unit import BuildUnit
 from core.modules import Module, ModuleRegistry
@@ -104,7 +104,7 @@ class PythonPackageModule(SubprojectModule):
         self.root_directory = root_directory
         self.wheel_directory_name = wheel_directory_name
         self._pyproject_toml_file: PyprojectTomlFile | None = None
-        self._dependencies: List[PythonPackageModule] | None = None
+        self._dependencies: list[PythonPackageModule] | None = None
 
     @property
     def pyproject_toml_template_file(self) -> Path:
@@ -135,7 +135,7 @@ class PythonPackageModule(SubprojectModule):
 
         return pyproject_toml_file.package_name
 
-    def get_dependency_names(self, build_unit: BuildUnit) -> List[str]:
+    def get_dependency_names(self, build_unit: BuildUnit) -> list[str]:
         """
         Retrieves and returns the names of the dependencies of the package from the pyproject.toml file.
 

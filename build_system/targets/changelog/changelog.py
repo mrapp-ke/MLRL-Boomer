@@ -8,7 +8,7 @@ from datetime import date
 from enum import Enum, StrEnum, auto
 from functools import cached_property
 from pathlib import Path
-from typing import List, override
+from typing import override
 
 from core.build_unit import BuildUnit
 from util.format import format_iterable
@@ -105,7 +105,7 @@ class Changeset:
         changes:    A list that stores the textual descriptions of the changes
     """
     header: str
-    changes: List[str] = field(default_factory=list)
+    changes: list[str] = field(default_factory=list)
 
     @override
     def __str__(self) -> str:
@@ -164,7 +164,7 @@ class ChangesetFile(TextFile):
                                  + ' of file "' + str(self.file) + '" is not followed by any content')
 
     @cached_property
-    def parsed_lines(self) -> List[Line]:
+    def parsed_lines(self) -> list[Line]:
         """
         The lines in the changelog as `Line` objects.
         """
@@ -179,7 +179,7 @@ class ChangesetFile(TextFile):
         return parsed_lines
 
     @cached_property
-    def changesets(self) -> List[Changeset]:
+    def changesets(self) -> list[Changeset]:
         """
         A list that contains all changesets in the changelog.
         """
@@ -245,7 +245,7 @@ class Release:
     version: SemanticVersion
     release_date: date
     release_type: ReleaseType
-    changesets: List[Changeset] = field(default_factory=list)
+    changesets: list[Changeset] = field(default_factory=list)
 
     URL_DOCUMENTATION = 'https://mlrl-boomer.readthedocs.io/en/'
 
@@ -363,7 +363,7 @@ def __validate_changeset(changeset_file: ChangesetFile):
         Log.error('Changeset file "%s" is malformed!\n\n%s', changeset_file, str(error))
 
 
-def __merge_changesets(*changeset_files: ChangesetFile) -> List[Changeset]:
+def __merge_changesets(*changeset_files: ChangesetFile) -> list[Changeset]:
     changesets_by_header: dict[str, Changeset] = {}
 
     for changeset_file in changeset_files:

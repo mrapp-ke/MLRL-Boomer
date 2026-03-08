@@ -8,7 +8,7 @@ import re
 
 from dataclasses import dataclass, replace
 from functools import cached_property
-from typing import Any, List, override
+from typing import Any, override
 from xml.etree import ElementTree
 
 from core.build_unit import BuildUnit
@@ -41,7 +41,7 @@ class RunnerVersion:
         return self.version in {'latest', 'slim'}
 
     @property
-    def version_numbers(self) -> List[int]:
+    def version_numbers(self) -> list[int]:
         """
         A list that stores the individual version numbers, the full version consists of.
         """
@@ -268,7 +268,7 @@ class RunnerUpdater(Workflows):
         return response.text
 
     @staticmethod
-    def __find_relevant_section(lines: List[str]) -> List[str]:
+    def __find_relevant_section(lines: list[str]) -> list[str]:
         i = 0
 
         for i, line in enumerate(lines):
@@ -286,7 +286,7 @@ class RunnerUpdater(Workflows):
         return relevant_lines
 
     @staticmethod
-    def __find_table(lines: List[str]) -> List[str]:
+    def __find_table(lines: list[str]) -> list[str]:
         i = 0
 
         for i, line in enumerate(lines):
@@ -304,7 +304,7 @@ class RunnerUpdater(Workflows):
         return relevant_lines
 
     @staticmethod
-    def __parse_table(lines: List[str]) -> set[Runner]:
+    def __parse_table(lines: list[str]) -> set[Runner]:
         html = '\n'.join(lines)
         table = ElementTree.fromstring(html)
         header = table.find('./thead')

@@ -7,7 +7,7 @@ import json
 
 from functools import cached_property
 from pathlib import Path
-from typing import Any, List, override
+from typing import Any, override
 
 from core.modules import Module
 from util.io import TextFile, create_directories
@@ -127,7 +127,7 @@ class ChangeDetection:
         """
         self.cache_file.update(str(module), set(files))
 
-    def get_changed_files(self, module: Module, *files: Path) -> List[Path]:
+    def get_changed_files(self, module: Module, *files: Path) -> list[Path]:
         """
         Filters given files and returns only those that have changed.
 

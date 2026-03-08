@@ -5,7 +5,7 @@ Provides utility functions for checking the project's GitHub workflows for outda
 """
 from dataclasses import dataclass, replace
 from functools import cached_property, reduce
-from typing import Any, List, override
+from typing import Any, override
 
 from core.build_unit import BuildUnit
 from util.files import FileType
@@ -39,7 +39,7 @@ class ActionVersion:
         return ActionVersion(ActionVersion.SEPARATOR.join([str(version_number) for version_number in version_numbers]))
 
     @property
-    def version_numbers(self) -> List[int]:
+    def version_numbers(self) -> list[int]:
         """
         A list that stores the individual version numbers, the full version consists of.
         """

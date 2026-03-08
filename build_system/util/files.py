@@ -6,7 +6,7 @@ Provides classes for listing files and directories.
 from functools import partial
 from itertools import chain
 from pathlib import Path
-from typing import Any, Callable, List, override
+from typing import Any, Callable, override
 
 
 class DirectorySearch:
@@ -140,7 +140,7 @@ class DirectorySearch:
         return self.exclude(
             partial(filter_directory, starts_with, not_starts_with, ends_with, not_ends_with, contains, not_contains))
 
-    def list(self, *directories: Path) -> List[Path]:
+    def list(self, *directories: Path) -> list[Path]:
         """
         Lists all subdirectories that can be found in given directories.
 
@@ -159,7 +159,7 @@ class DirectorySearch:
 
             return False
 
-        def filter_subdirectory(subdirectory: Path, filters: List[DirectorySearch.Filter]) -> bool:
+        def filter_subdirectory(subdirectory: Path, filters: list[DirectorySearch.Filter]) -> bool:
             parent = subdirectory.parent
             directory_name = subdirectory.name
 
@@ -359,7 +359,7 @@ class FileSearch:
         :return:            The `FileSearch` itself
         """
 
-        def filter_file(filtered_suffixes: List[str], _: Path, file_name: str):
+        def filter_file(filtered_suffixes: list[str], _: Path, file_name: str):
             return any(file_name.endswith('.' + suffix) for suffix in filtered_suffixes)
 
         return self.add_filters(partial(filter_file, list(suffixes)))
@@ -402,7 +402,7 @@ class FileSearch:
 
         return self.exclude(*[partial(filter_file, name) for name in names])
 
-    def list(self, *directories: Path) -> List[Path]:
+    def list(self, *directories: Path) -> list[Path]:
         """
         Lists all files that can be found in given directories.
 

@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements targets for installing runtime requirements that are required by the project's source code.
 """
 from functools import reduce
-from typing import List, cast, override
+from typing import cast, override
 
 from core.build_unit import BuildUnit
 from core.modules import Module
@@ -32,9 +32,9 @@ class InstallPythonDependencies(PhonyTarget.Runnable):
         self.dependency_type = dependency_type
 
     @override
-    def run_all(self, build_unit: BuildUnit, modules: List[Module]):
+    def run_all(self, build_unit: BuildUnit, modules: list[Module]):
         dependency_modules = (cast(PythonDependencyModule, module) for module in modules)
-        requirements_files: List[RequirementsFile] = []
+        requirements_files: list[RequirementsFile] = []
         requirements_files = reduce(
             lambda aggr, module: aggr + module.find_requirements_files(build_unit, self.dependency_type),
             dependency_modules, requirements_files)
@@ -58,10 +58,10 @@ class CheckPythonDependencies(PhonyTarget.Runnable):
         self.dependency_type = dependency_type
 
     @override
-    def run_all(self, build_unit: BuildUnit, modules: List[Module]):
+    def run_all(self, build_unit: BuildUnit, modules: list[Module]):
         Log.info('Checking for outdated dependencies...')
         dependency_modules = (cast(PythonDependencyModule, module) for module in modules)
-        requirements_files: List[RequirementsFile] = []
+        requirements_files: list[RequirementsFile] = []
         requirements_files = reduce(
             lambda aggr, module: aggr + module.find_requirements_files(build_unit, self.dependency_type),
             dependency_modules, requirements_files)
@@ -94,10 +94,10 @@ class UpdatePythonDependencies(PhonyTarget.Runnable):
         self.dependency_type = dependency_type
 
     @override
-    def run_all(self, build_unit: BuildUnit, modules: List[Module]):
+    def run_all(self, build_unit: BuildUnit, modules: list[Module]):
         Log.info('Updating outdated dependencies...')
         dependency_modules = (cast(PythonDependencyModule, module) for module in modules)
-        requirements_files: List[RequirementsFile] = []
+        requirements_files: list[RequirementsFile] = []
         requirements_files = reduce(
             lambda aggr, module: aggr + module.find_requirements_files(build_unit, self.dependency_type),
             dependency_modules, requirements_files)
