@@ -21,12 +21,14 @@ from mlrl.testbed.util.io import ENCODING_UTF8
 
 WIDTH: int | None = None
 
+PLAIN: bool = False
+
 
 def get_console() -> Console:
     """
     Returns the console to be used for logging.
     """
-    return Console(width=WIDTH)
+    return Console(width=WIDTH, color_system=None if PLAIN else 'auto')
 
 
 @contextmanager
@@ -99,6 +101,12 @@ class Log:
 
     @staticmethod
     def __decorate_with_box(renderable: ConsoleRenderable, box_title: str | None = None) -> ConsoleRenderable:
+        if PLAIN:
+            if box_title:
+                get_console().print(f'{box_title}:\n')
+
+            return renderable
+
         return Panel.fit(renderable, title=Text(box_title, style=Style(bold=True)) if box_title else None)
 
     @staticmethod
