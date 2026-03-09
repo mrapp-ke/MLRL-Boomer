@@ -220,7 +220,7 @@ class BoomerRegressor(RegressionRuleLearner):
                  parallel_rule_refinement: str | None = None,
                  parallel_statistic_update: str | None = None,
                  parallel_prediction: str | None = None,
-                 simd: Optional[str] = None):
+                 simd: str | None = None):
         """
         :param random_state:                The seed to be used by RNGs. Must be at least 0
         :param statistic_format:            The format to be used for representing gradients and Hessians. Must be

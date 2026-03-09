@@ -4,7 +4,6 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing data.
 """
 from dataclasses import dataclass
-from typing import Optional
 
 
 @dataclass
@@ -19,7 +18,7 @@ class Properties:
     """
     name: str
     file_name: str
-    symbol: Optional[str] = '🗀'
+    symbol: str | None = '🗀'
 
 
 @dataclass

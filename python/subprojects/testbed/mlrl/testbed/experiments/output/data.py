@@ -55,7 +55,7 @@ class TextualOutputData(OutputData, ABC):
         A title that is printed before textual output data.
         """
 
-        def __init__(self, title: str, context: Context, symbol: Optional[str] = None):
+        def __init__(self, title: str, context: Context, symbol: str | None = None):
             """
             :param title:   A title
             :param context: A `Context` to be used for formatting the title
@@ -200,7 +200,7 @@ class StructuralOutputData(TextualOutputData, ABC):
     representation, e.g., YAML or JSON.
     """
 
-    def __init__(self, properties: Properties, context: Context = Context(), language: Optional[str] = None):
+    def __init__(self, properties: Properties, context: Context = Context(), language: str | None = None):
         """
         :param properties:  The properties of the output data
         :param context:     A `Context` to be used by default for finding a suitable sink this output data can be
@@ -219,7 +219,7 @@ class StructuralOutputData(TextualOutputData, ABC):
         :return:        The dictionary that has been created
         """
 
-    def to_source_code(self, options: Options, **kwargs) -> Tuple[Optional[str], Optional[str]]:
+    def to_source_code(self, options: Options, **kwargs) -> Tuple[str | None, str | None]:
         """
         Creates and returns a tuple containing the source code of the output data, together with the language it uses.
 

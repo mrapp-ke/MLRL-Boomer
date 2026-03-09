@@ -37,8 +37,8 @@ class LogSink(Sink):
         """
         See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.write_to_sink`
         """
-        text: Optional[str] = None
-        language: Optional[str] = None
+        text: str | None = None
+        language: str | None = None
 
         if isinstance(output_data, StructuralOutputData):
             text, language = output_data.to_source_code(self.options, **kwargs)
