@@ -4,8 +4,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to load datasets from ARFF files.
 """
 from argparse import Namespace
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Sequence, override
+from typing import override
 
 from mlrl.testbed_arff.experiments.input.sources import ArffFileSource
 

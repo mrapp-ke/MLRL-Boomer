@@ -7,7 +7,7 @@ Provides base classes for implementing different modes of operation.
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from pathlib import Path
-from typing import List, Set, override
+from typing import override
 
 from mlrl.testbed.experiments.input.meta_data.meta_data import InputMetaData
 from mlrl.testbed.experiments.input.meta_data.reader import MetaDataReader
@@ -33,7 +33,7 @@ class Mode(ABC):
     )
 
     @abstractmethod
-    def configure_control_arguments(self, cli: CommandLineInterface, control_arguments: List[Argument]):
+    def configure_control_arguments(self, cli: CommandLineInterface, control_arguments: list[Argument]):
         """
         Must be implemented by subclasses in order to configure the command line interface according to the mode of
         operation.
@@ -44,7 +44,7 @@ class Mode(ABC):
         """
 
     @abstractmethod
-    def configure_algorithmic_arguments(self, cli: CommandLineInterface, algorithmic_arguments: List[Argument]):
+    def configure_algorithmic_arguments(self, cli: CommandLineInterface, algorithmic_arguments: list[Argument]):
         """
         Must be implemented by subclasses in order to configure the command line interface according to the mode of
         operation.
@@ -55,7 +55,7 @@ class Mode(ABC):
         """
 
     @abstractmethod
-    def run_experiment(self, control_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
+    def run_experiment(self, control_arguments: set[Argument], algorithmic_arguments: set[Argument], args: Namespace,
                        recipe: Recipe):
         """
         Must be implemented by subclasses in order to run an experiment according to the command line arguments
@@ -118,16 +118,16 @@ class InputMode(Mode, ABC):
             Log.verbose('No version conflicts detected')
 
     @override
-    def configure_control_arguments(self, cli: CommandLineInterface, control_arguments: List[Argument]):
+    def configure_control_arguments(self, cli: CommandLineInterface, control_arguments: list[Argument]):
         cli.add_arguments(self.INPUT_DIR, group='read-mode arguments')
         cli.add_arguments(*control_arguments, group='control arguments')
 
     @override
-    def configure_algorithmic_arguments(self, cli: CommandLineInterface, algorithmic_arguments: List[Argument]):
+    def configure_algorithmic_arguments(self, cli: CommandLineInterface, algorithmic_arguments: list[Argument]):
         pass
 
     @override
-    def run_experiment(self, control_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
+    def run_experiment(self, control_arguments: set[Argument], algorithmic_arguments: set[Argument], args: Namespace,
                        recipe: Recipe):
         input_directory = self.INPUT_DIR.get_value(args)
 
@@ -137,7 +137,7 @@ class InputMode(Mode, ABC):
             self._run_experiment(control_arguments, algorithmic_arguments, args, recipe, meta_data, input_directory)
 
     @abstractmethod
-    def _run_experiment(self, control_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
+    def _run_experiment(self, control_arguments: set[Argument], algorithmic_arguments: set[Argument], args: Namespace,
                         recipe: Recipe, meta_data: MetaData, input_directory: Path):
         """
         Must be implemented by subclasses in order to run an experiment that accesses the meta-data of an earlie

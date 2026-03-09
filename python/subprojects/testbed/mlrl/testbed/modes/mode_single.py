@@ -5,7 +5,7 @@ Provides classes that implement a mode of operation for performing a single expe
 """
 
 from argparse import Namespace
-from typing import List, Set, override
+from typing import override
 
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments.output.arguments import OutputArguments
@@ -41,15 +41,15 @@ class SingleMode(Mode):
         return False
 
     @override
-    def configure_control_arguments(self, cli: CommandLineInterface, control_arguments: List[Argument]):
+    def configure_control_arguments(self, cli: CommandLineInterface, control_arguments: list[Argument]):
         cli.add_arguments(*control_arguments, group='control arguments')
 
     @override
-    def configure_algorithmic_arguments(self, cli: CommandLineInterface, algorithmic_arguments: List[Argument]):
+    def configure_algorithmic_arguments(self, cli: CommandLineInterface, algorithmic_arguments: list[Argument]):
         cli.add_arguments(*algorithmic_arguments, group='algorithmic arguments')
 
     @override
-    def run_experiment(self, control_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
+    def run_experiment(self, control_arguments: set[Argument], algorithmic_arguments: set[Argument], args: Namespace,
                        recipe: Recipe):
         command = Command.from_argv()
 

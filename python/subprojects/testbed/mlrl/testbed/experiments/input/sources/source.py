@@ -6,7 +6,7 @@ Provides classes for implementing sources, input data may be read from.
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, Dict, Optional, override
+from typing import Any, override
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.file_path import FilePath
@@ -97,7 +97,7 @@ class FileSource(Source, ABC):
         return False
 
     @abstractmethod
-    def _read_from_file(self, state: ExperimentState, file_path: Path, input_data: InputData) -> Optional[Any]:
+    def _read_from_file(self, state: ExperimentState, file_path: Path, input_data: InputData) -> Any | None:
         """
         Must be implemented by subclasses in order to read input data from a specific sink.
 
@@ -113,14 +113,13 @@ class TextualFileSource(FileSource, ABC):
     """
 
     @override
-    def _read_from_file(self, state: ExperimentState, file_path: Path, input_data: InputData) -> Optional[Any]:
+    def _read_from_file(self, state: ExperimentState, file_path: Path, input_data: InputData) -> Any | None:
         if isinstance(input_data, TextualInputData):
             return self._read_text_from_file(state, file_path, input_data)
         return None
 
     @abstractmethod
-    def _read_text_from_file(self, state: ExperimentState, file_path: Path,
-                             input_data: TextualInputData) -> Optional[str]:
+    def _read_text_from_file(self, state: ExperimentState, file_path: Path, input_data: TextualInputData) -> str | None:
         """
         Must be implemented by subclasses in order to read text from a specific file.
 
@@ -137,14 +136,14 @@ class DatasetFileSource(FileSource, ABC):
     """
 
     @override
-    def _read_from_file(self, state: ExperimentState, file_path: Path, input_data: InputData) -> Optional[Any]:
+    def _read_from_file(self, state: ExperimentState, file_path: Path, input_data: InputData) -> Any | None:
         if isinstance(input_data, DatasetInputData):
             return self._read_dataset_from_file(state, file_path, input_data)
         return None
 
     @abstractmethod
     def _read_dataset_from_file(self, state: ExperimentState, file_path: Path,
-                                input_data: DatasetInputData) -> Optional[Dataset]:
+                                input_data: DatasetInputData) -> Dataset | None:
         """
         Must be implemented by subclasses in order to read a dataset from a specific file.
 
@@ -161,13 +160,13 @@ class TabularFileSource(FileSource, ABC):
     """
 
     @override
-    def _read_from_file(self, _: ExperimentState, file_path: Path, input_data: InputData) -> Optional[Any]:
+    def _read_from_file(self, _: ExperimentState, file_path: Path, input_data: InputData) -> Any | None:
         if isinstance(input_data, TabularInputData):
             return self._read_table_from_file(file_path, input_data)
         return None
 
     @abstractmethod
-    def _read_table_from_file(self, file_path: Path, input_data: TabularInputData) -> Optional[Table]:
+    def _read_table_from_file(self, file_path: Path, input_data: TabularInputData) -> Table | None:
         """
         Must be implemented by subclasses in order to read tabular input data from a specific file.
 
@@ -183,13 +182,13 @@ class StructuralFileSource(FileSource, ABC):
     """
 
     @override
-    def _read_from_file(self, _: ExperimentState, file_path: Path, input_data: InputData) -> Optional[Any]:
+    def _read_from_file(self, _: ExperimentState, file_path: Path, input_data: InputData) -> Any | None:
         if isinstance(input_data, StructuralInputData):
             return self._read_dictionary_from_file(file_path, input_data)
         return None
 
     @abstractmethod
-    def _read_dictionary_from_file(self, file_path: Path, input_data: StructuralInputData) -> Optional[Dict[Any, Any]]:
+    def _read_dictionary_from_file(self, file_path: Path, input_data: StructuralInputData) -> dict[Any, Any] | None:
         """
         Must be implemented by subclasses in order to read structural input data from a specific file.
 

@@ -3,8 +3,8 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that implement ranking evaluation measures.
 """
+from collections.abc import Generator
 from itertools import chain
-from typing import Generator
 
 from sklearn import metrics
 

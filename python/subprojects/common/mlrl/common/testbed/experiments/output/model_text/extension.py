@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write rule models to one or several sinks.
 """
 from argparse import Namespace
-from typing import List, Set, override
+from typing import override
 
 from mlrl.common.testbed.experiments.output.model_text.model_text import RuleModelAsText
 from mlrl.common.testbed.experiments.output.model_text.writer import RuleModelAsTextWriter
@@ -58,13 +58,13 @@ class RuleModelAsTextExtension(Extension):
         super().__init__(OutputExtension(), ResultDirectoryExtension(), *dependencies)
 
     @override
-    def _get_arguments(self, mode: ExperimentMode) -> Set[Argument]:
+    def _get_arguments(self, mode: ExperimentMode) -> set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
         return {self.__create_argument_print_rules(mode), self.__create_argument_save_rules(mode)}
 
-    def __create_log_sinks(self, args: Namespace, mode: ExperimentMode) -> List[Sink]:
+    def __create_log_sinks(self, args: Namespace, mode: ExperimentMode) -> list[Sink]:
         value, options = self.__create_argument_print_rules(mode).get_value_and_options(
             args, default=OutputArguments.PRINT_ALL.get_value(args))
 
@@ -72,7 +72,7 @@ class RuleModelAsTextExtension(Extension):
             return [LogSink(options=options, source_factory=TextFileSource)]
         return []
 
-    def __create_text_file_sinks(self, args: Namespace, mode: ExperimentMode) -> List[Sink]:
+    def __create_text_file_sinks(self, args: Namespace, mode: ExperimentMode) -> list[Sink]:
         value, options = self.__create_argument_save_rules(mode).get_value_and_options(
             args, default=OutputArguments.SAVE_ALL.get_value(args))
         base_dir = OutputArguments.BASE_DIR.get_value(args)
@@ -98,7 +98,7 @@ class RuleModelAsTextExtension(Extension):
             experiment_builder.add_post_training_output_writers(writer)
 
     @override
-    def get_supported_modes(self) -> Set[ExperimentMode]:
+    def get_supported_modes(self) -> set[ExperimentMode]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """

@@ -6,7 +6,7 @@ Provides classes that allow reading datasets from one or several sources.
 import sys
 
 from dataclasses import replace
-from typing import List, Optional, override
+from typing import override
 
 from mlrl.testbed.experiments.input.dataset.dataset import InputDataset
 from mlrl.testbed.experiments.input.dataset.preprocessors import Preprocessor
@@ -27,8 +27,8 @@ class DatasetReader(InputReader):
         :param sources:     The sources, the input dataset should be read from
         """
         super().__init__(input_data, *sources)
-        self.preprocessors: List[Preprocessor] = []
-        self.encoders: Optional[List[Preprocessor.Encoder]] = None
+        self.preprocessors: list[Preprocessor] = []
+        self.encoders: list[Preprocessor.Encoder] | None = None
 
     def add_preprocessors(self, *preprocessors: Preprocessor):
         """

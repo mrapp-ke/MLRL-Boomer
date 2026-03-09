@@ -1,8 +1,6 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from typing import Optional
-
 from ..common.cmd_builder import CmdBuilder
 from ..common.cmd_builder_classification import ClassificationCmdBuilder
 from ..common.cmd_builder_rule_learners import RuleLearnerCmdBuilderMixin
@@ -24,7 +22,7 @@ class SeCoClassifierCmdBuilder(ClassificationCmdBuilder, RuleLearnerCmdBuilderMi
                          runnable_module_name='mlrl.seco',
                          dataset=dataset)
 
-    def heuristic(self, heuristic: Optional[str] = HEURISTIC_F_MEASURE):
+    def heuristic(self, heuristic: str | None = HEURISTIC_F_MEASURE):
         """
         Configures the algorithm to use a specific heuristic for learning rules.
 
@@ -36,7 +34,7 @@ class SeCoClassifierCmdBuilder(ClassificationCmdBuilder, RuleLearnerCmdBuilderMi
 
         return self
 
-    def pruning_heuristic(self, heuristic: Optional[str] = HEURISTIC_ACCURACY):
+    def pruning_heuristic(self, heuristic: str | None = HEURISTIC_ACCURACY):
         """
         Configures the algorithm to use a specific heuristic for pruning rules.
 
@@ -48,7 +46,7 @@ class SeCoClassifierCmdBuilder(ClassificationCmdBuilder, RuleLearnerCmdBuilderMi
 
         return self
 
-    def head_type(self, head_type: Optional[str] = HeadTypeParameter.HEAD_TYPE_SINGLE):
+    def head_type(self, head_type: str | None = HeadTypeParameter.HEAD_TYPE_SINGLE):
         """
         Configures the algorithm to use a specific type of rule heads.
 
@@ -60,7 +58,7 @@ class SeCoClassifierCmdBuilder(ClassificationCmdBuilder, RuleLearnerCmdBuilderMi
 
         return self
 
-    def lift_function(self, lift_function: Optional[str] = LiftFunctionParameter.LIFT_FUNCTION_PEAK):
+    def lift_function(self, lift_function: str | None = LiftFunctionParameter.LIFT_FUNCTION_PEAK):
         """
         Configures the algorithm to use a specific lift function for the induction of rules with partial heads.
 

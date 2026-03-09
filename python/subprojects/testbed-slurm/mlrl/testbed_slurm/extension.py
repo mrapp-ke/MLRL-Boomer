@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to run experiments via the Slurm Workload Manager.
 """
 from argparse import Namespace
-from typing import Set, override
+from typing import override
 
 from mlrl.testbed_slurm.arguments import SlurmArguments
 from mlrl.testbed_slurm.runner import SlurmRunner
@@ -29,7 +29,7 @@ class SlurmExtension(Extension):
         batch_mode.add_runner(SlurmRunner())
 
     @override
-    def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
+    def _get_arguments(self, _: ExperimentMode) -> set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
@@ -41,7 +41,7 @@ class SlurmExtension(Extension):
         }
 
     @override
-    def get_supported_modes(self) -> Set[ExperimentMode]:
+    def get_supported_modes(self) -> set[ExperimentMode]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """

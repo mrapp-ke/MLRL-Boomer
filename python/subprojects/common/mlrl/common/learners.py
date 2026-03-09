@@ -8,7 +8,7 @@ import re as regex
 
 from abc import ABC, abstractmethod
 from enum import StrEnum
-from typing import Any, Optional, Set, Tuple, override
+from typing import Any, override
 
 import numpy as np
 
@@ -111,8 +111,8 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
         def __init__(self,
                      feature_matrix: RowWiseFeatureMatrix,
                      incremental_predictor,
-                     label_encoder: Optional[LabelEncoder] = None,
-                     dtype: Optional[np.dtype] = None):
+                     label_encoder: LabelEncoder | None = None,
+                     dtype: np.dtype | None = None):
             """
             :param feature_matrix:          A `RowWiseFeatureMatrix` that stores the feature values of the query
                                             examples
@@ -163,8 +163,8 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
                      model: RuleModel,
                      max_rules: int,
                      predictor,
-                     label_encoder: Optional[LabelEncoder] = None,
-                     dtype: Optional[np.dtype] = None):
+                     label_encoder: LabelEncoder | None = None,
+                     dtype: np.dtype | None = None):
             """
             :param feature_matrix:  A `RowWiseFeatureMatrix` that stores the feature values of the query examples
             :param model:           The model to be used for obtaining predictions
@@ -212,7 +212,7 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
         Allows to obtain constant predictions from a `RuleLearner` incrementally.
         """
 
-        def __init__(self, constant_predictions: np.ndarray, label_encoder: Optional[LabelEncoder] = None):
+        def __init__(self, constant_predictions: np.ndarray, label_encoder: LabelEncoder | None = None):
             """
             :param constant_predictions:    The constant predictions to be returned by the predictor
             :param label_encoder:           An optional `LabelEncoder` that should be used to decode the predictions
@@ -225,7 +225,7 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
         def binary(num_examples: int,
                    num_outputs: int,
                    value,
-                   label_encoder: Optional[LabelEncoder] = None) -> 'RuleLearner.ConstantIncrementalPredictor':
+                   label_encoder: LabelEncoder | None = None) -> 'RuleLearner.ConstantIncrementalPredictor':
             """
             Creates a `ConstantIncrementalPredictor` that predicts a binary value.
 
@@ -283,7 +283,7 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
             predictions = self._constant_predictions
             return label_encoder.inverse_transform(predictions) if label_encoder else predictions
 
-    def __init__(self, feature_format: Optional[str], output_format: Optional[str], prediction_format: Optional[str]):
+    def __init__(self, feature_format: str | None, output_format: str | None, prediction_format: str | None):
         """
         :param feature_format:      The format to be used for the representation of the feature matrix. Must be
                                     `sparse`, `dense` or `auto`
@@ -465,7 +465,7 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
             return EqualFeatureInfo.create_nominal()
         return MixedFeatureInfo(num_features, ordinal_feature_indices, nominal_feature_indices)
 
-    def _create_example_weights(self, **kwargs) -> Optional[np.ndarray]:
+    def _create_example_weights(self, **kwargs) -> np.ndarray | None:
         """
         Creates and returns the `ExampleWeights` that provide access to the weights of individual training examples.
 
@@ -556,7 +556,7 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
         log.debug('A dense matrix is used to store the feature values of the query examples')
         return CContiguousFeatureMatrix(x)
 
-    def __create_row_wise_output_matrix(self, y, example_weights: Optional[np.ndarray]) -> Optional[Any]:
+    def __create_row_wise_output_matrix(self, y, example_weights: np.ndarray | None) -> Any | None:
         """
         Must be implemented by subclasses in order to create a matrix that provides row-wise access to the ground truth
         of training examples.
@@ -590,7 +590,7 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
 
     @abstractmethod
     def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool,
-                                       example_weights: Optional[np.ndarray], **kwargs) -> Optional[Any]:
+                                       example_weights: np.ndarray | None, **kwargs) -> Any | None:
         """
         Must be implemented by subclasses in order to create a matrix that provides row-wise access to the ground truth
         of training examples.
@@ -633,7 +633,7 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
     # pylint: disable=attribute-defined-outside-init
     @override
     def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool,
-                                       example_weights: Optional[np.ndarray], **_) -> Optional[Any]:
+                                       example_weights: np.ndarray | None, **_) -> Any | None:
         assert_all_finite(y, estimator_name=type(self).__name__, input_name='y')
         y, label_encoder = self._encode_labels(y)
         y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C')),
@@ -672,7 +672,7 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
         self.num_outputs_ = num_labels
         return None
 
-    def _encode_labels(self, y) -> Tuple[Any, Optional[LabelEncoder]]:
+    def _encode_labels(self, y) -> tuple[Any, LabelEncoder | None]:
         """
         Encodes the given label matrix, if necessary, depending on it type, using a `LabelEncoder`.
 
@@ -813,7 +813,7 @@ class RegressionRuleLearner(IncrementalRegressorMixin, RuleLearner, ABC):
 
     @override
     def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool,
-                                       example_weights: Optional[np.ndarray], **_) -> Optional[Any]:
+                                       example_weights: np.ndarray | None, **_) -> Any | None:
         assert_all_finite(y, estimator_name=type(self).__name__, input_name='y')
         y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C', dtype=np.float32)),
                         accept_sparse=sparse_format,
@@ -845,7 +845,7 @@ class RegressionRuleLearner(IncrementalRegressorMixin, RuleLearner, ABC):
         return super()._predict_scores_incrementally(x, **(dict(kwargs) | {self.KWARG_DTYPE: dtype}))
 
 
-def configure_rule_learner(learner: RuleLearner, config: RuleLearnerConfig, parameters: Set[Parameter]):
+def configure_rule_learner(learner: RuleLearner, config: RuleLearnerConfig, parameters: set[Parameter]):
     """
     Configures a rule learner by taking into account a given set of parameters.
 

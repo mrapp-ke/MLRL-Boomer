@@ -6,7 +6,7 @@ Provides classes that allow writing output data to files by using Python's pickl
 import pickle
 
 from pathlib import Path
-from typing import Optional, override
+from typing import override
 
 from mlrl.testbed.experiments.input.sources import PickleFileSource, Source
 from mlrl.testbed.experiments.output.data import OutputData
@@ -44,5 +44,5 @@ class PickleFileSink(FileSink):
                     pickle.dump(output_object, pickle_file, pickle.HIGHEST_PROTOCOL)
 
     @override
-    def create_source(self, input_directory: Path) -> Optional[Source]:
+    def create_source(self, input_directory: Path) -> Source | None:
         return PickleFileSource(input_directory)

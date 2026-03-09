@@ -8,7 +8,7 @@ import logging
 import os
 
 from contextlib import contextmanager
-from typing import Optional, override
+from typing import override
 
 from rich.console import Console, ConsoleRenderable
 from rich.logging import LogRecord, RichHandler
@@ -19,7 +19,7 @@ from rich.text import Text
 
 from mlrl.testbed.util.io import ENCODING_UTF8
 
-WIDTH: Optional[int] = None
+WIDTH: int | None = None
 
 
 def get_console() -> Console:
@@ -72,7 +72,7 @@ class LogHandler(RichHandler):
         return symbol + (' ' if symbol else '') + message
 
     @staticmethod
-    def get_style(log_level: int) -> Optional[Style]:
+    def get_style(log_level: int) -> Style | None:
         """
         Returns the style to be used for a given log level.
 
@@ -98,11 +98,11 @@ class Log:
     """
 
     @staticmethod
-    def __decorate_with_box(renderable: ConsoleRenderable, box_title: Optional[str] = None) -> ConsoleRenderable:
+    def __decorate_with_box(renderable: ConsoleRenderable, box_title: str | None = None) -> ConsoleRenderable:
         return Panel.fit(renderable, title=Text(box_title, style=Style(bold=True)) if box_title else None)
 
     @staticmethod
-    def __print(message: str, style: Optional[Style] = None, box: bool = False, box_title: Optional[str] = None):
+    def __print(message: str, style: Style | None = None, box: bool = False, box_title: str | None = None):
         if box:
             renderable: ConsoleRenderable = Text(message, style=style) if style else Text(message)
             renderable = Log.__decorate_with_box(renderable, box_title=box_title)
@@ -111,11 +111,7 @@ class Log:
             get_console().print(message, style=style)
 
     @staticmethod
-    def error(message: str,
-              *args,
-              error: Optional[Exception] = None,
-              box: bool = False,
-              box_title: Optional[str] = None):
+    def error(message: str, *args, error: Exception | None = None, box: bool = False, box_title: str | None = None):
         """
         Writes a log message at level `Log.Level.ERROR` and terminates the build system.
 
@@ -136,7 +132,7 @@ class Log:
                 get_console().print_exception(extra_lines=2)
 
     @staticmethod
-    def warning(message: str, *args, box: bool = False, box_title: Optional[str] = None):
+    def warning(message: str, *args, box: bool = False, box_title: str | None = None):
         """
         Writes a log message at level `Log.Level.WARNING`.
 
@@ -153,7 +149,7 @@ class Log:
             Log.__print(message=formatted_message, style=style, box=box, box_title=box_title)
 
     @staticmethod
-    def success(message: str, *args, box: bool = False, box_title: Optional[str] = None):
+    def success(message: str, *args, box: bool = False, box_title: str | None = None):
         """
         Writes a log message at level `Log.Level.INFO` indicating successful operation of an operation.
 
@@ -170,7 +166,7 @@ class Log:
             Log.__print(message=formatted_message, style=style, box=box, box_title=box_title)
 
     @staticmethod
-    def info(message: str, *args, box: bool = False, box_title: Optional[str] = None):
+    def info(message: str, *args, box: bool = False, box_title: str | None = None):
         """
         Writes a log message at level `Log.Level.INFO`.
 
@@ -187,7 +183,7 @@ class Log:
             Log.__print(message=formatted_message, style=style, box=box, box_title=box_title)
 
     @staticmethod
-    def source_code(source_code: str, *args, language: str, box: bool = False, box_title: Optional[str] = None):
+    def source_code(source_code: str, *args, language: str, box: bool = False, box_title: str | None = None):
         """
         Writes a log message containing source code in a specific language at level `Log.Level.INFO`.
 
@@ -209,7 +205,7 @@ class Log:
             get_console().print(renderable)
 
     @staticmethod
-    def verbose(message: str, *args, box: bool = False, box_title: Optional[str] = None):
+    def verbose(message: str, *args, box: bool = False, box_title: str | None = None):
         """
         Writes a log message at level `Log.Level.VERBOSE`.
 

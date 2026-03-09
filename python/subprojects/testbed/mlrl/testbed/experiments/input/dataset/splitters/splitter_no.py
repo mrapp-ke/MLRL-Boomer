@@ -4,8 +4,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that preserve a dataset instead of splitting it into training and test datasets.
 """
 
+from collections.abc import Generator
 from dataclasses import replace
-from typing import Generator, Optional, override
+from typing import override
 
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.fold import FoldingStrategy
@@ -32,13 +33,13 @@ class NoSplitter(DatasetSplitter):
             self.state = state
 
         @override
-        def get_state(self, dataset_type: DatasetType) -> Optional[ExperimentState]:
+        def get_state(self, dataset_type: DatasetType) -> ExperimentState | None:
             """
             See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.Split.get_state`
             """
             return self.state if dataset_type == DatasetType.TRAINING else None
 
-    def __init__(self, dataset_reader: Optional[DatasetReader]):
+    def __init__(self, dataset_reader: DatasetReader | None):
         """
         :param dataset_reader:  The reader that should be used for loading datasets or None, if datasets should not be
                                 loaded

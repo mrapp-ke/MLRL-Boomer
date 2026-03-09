@@ -9,7 +9,6 @@ from argparse import ArgumentParser, HelpFormatter
 from importlib import import_module
 from importlib.metadata import version
 from importlib.util import module_from_spec, spec_from_file_location
-from typing import Optional, Set
 
 from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.log import Log
@@ -41,7 +40,7 @@ def __create_argument_parser() -> ArgumentParser:
     return argument_parser
 
 
-def __get_runnable(argument_parser: ArgumentParser) -> Optional[Runnable]:
+def __get_runnable(argument_parser: ArgumentParser) -> Runnable | None:
     args = vars(argument_parser.parse_known_args()[0])
     runnable_module_or_source_file = args.get('runnable_module_or_source_file', None)
     runnable_class_name = args.get('runnable', None)
@@ -110,7 +109,7 @@ def __instantiate_via_default_constructor(module_or_source_file: str, class_name
         raise TypeError('Class "' + class_name + '" must provide a default constructor') from error
 
 
-def __get_cli(runnable: Optional[Runnable], argument_parser: ArgumentParser) -> CommandLineInterface:
+def __get_cli(runnable: Runnable | None, argument_parser: ArgumentParser) -> CommandLineInterface:
     program_info = runnable.get_program_info() if runnable else __get_default_program_info()
     cli = CommandLineInterface(argument_parser, version_text=str(program_info) if program_info else None)
     cli.add_arguments(LogArguments.LOG_LEVEL, LogArguments.LOG_WIDTH)
@@ -127,7 +126,7 @@ def __get_default_program_info() -> ProgramInfo:
     )
 
 
-def __get_mode(cli: CommandLineInterface, runnable: Optional[Runnable]) -> Mode:
+def __get_mode(cli: CommandLineInterface, runnable: Runnable | None) -> Mode:
     cli.add_arguments(Mode.MODE)
     args = cli.parse_known_args()
     mode = Mode.MODE.get_value(args)
@@ -149,8 +148,8 @@ def main():
     runnable = __get_runnable(argument_parser)
     cli = __get_cli(runnable, argument_parser)
     mode = __get_mode(cli, runnable)
-    control_arguments: Set[Argument] = set()
-    algorithmic_arguments: Set[Argument] = set()
+    control_arguments: set[Argument] = set()
+    algorithmic_arguments: set[Argument] = set()
 
     if runnable:
         control_arguments, algorithmic_arguments = runnable.configure_arguments(cli, mode)

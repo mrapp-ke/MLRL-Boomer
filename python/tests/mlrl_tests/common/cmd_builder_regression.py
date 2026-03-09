@@ -2,7 +2,6 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from pathlib import Path
-from typing import Optional
 
 from .cmd_builder import CmdBuilder
 from .datasets import Dataset
@@ -18,7 +17,7 @@ class RegressionCmdBuilder(CmdBuilder):
                  input_dir: Path,
                  batch_config: Path,
                  runnable_module_name: str,
-                 runnable_class_name: Optional[str] = None,
+                 runnable_class_name: str | None = None,
                  dataset: str = Dataset.ATP7D):
         super().__init__(expected_output_dir=expected_output_dir,
                          input_dir=input_dir,

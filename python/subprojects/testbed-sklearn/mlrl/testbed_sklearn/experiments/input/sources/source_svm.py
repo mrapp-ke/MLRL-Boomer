@@ -5,7 +5,7 @@ Provides classes that allow reading datasets from SVM (light) files.
 """
 from functools import cached_property
 from pathlib import Path
-from typing import List, Optional, override
+from typing import override
 
 import numpy as np
 
@@ -54,11 +54,11 @@ class SvmFileSource(DatasetFileSource):
             feature_matrix, output_matrix_rows = load_svmlight_file(file_path,
                                                                     dtype=problem_domain.feature_dtype,
                                                                     multilabel=True)
-            indptr: List[int] = []
-            indices: List[int] = []
+            indptr: list[int] = []
+            indices: list[int] = []
 
             if isinstance(problem_domain, RegressionProblem):
-                values: List[float] = []
+                values: list[float] = []
 
                 for row in output_matrix_rows:
                     indptr.append(len(indices))
@@ -79,7 +79,7 @@ class SvmFileSource(DatasetFileSource):
             return SvmFileSource.SvmFile(feature_matrix=feature_matrix, output_matrix=output_matrix)
 
         @cached_property
-        def features(self) -> List[Attribute]:
+        def features(self) -> list[Attribute]:
             """
             A list that stores all features contained in the SVM file.
             """
@@ -90,7 +90,7 @@ class SvmFileSource(DatasetFileSource):
             ]
 
         @cached_property
-        def outputs(self) -> List[Attribute]:
+        def outputs(self) -> list[Attribute]:
             """
             A list that stores all outputs contained in the SVM file.
             """
@@ -123,14 +123,14 @@ class SvmFileSource(DatasetFileSource):
             return SvmFileSource.SvmDataset(svm_file)
 
         @property
-        def features(self) -> List[Attribute]:
+        def features(self) -> list[Attribute]:
             """
             A list that stores all features contained in the dataset.
             """
             return self.svm_file.features
 
         @property
-        def outputs(self) -> List[Attribute]:
+        def outputs(self) -> list[Attribute]:
             """
             A list that stores all outputs contained in the dataset.
             """
@@ -157,8 +157,7 @@ class SvmFileSource(DatasetFileSource):
         super().__init__(directory=directory, suffix=self.SUFFIX_SVM)
 
     @override
-    def _read_dataset_from_file(self, state: ExperimentState, file_path: Path,
-                                _: DatasetInputData) -> Optional[Dataset]:
+    def _read_dataset_from_file(self, state: ExperimentState, file_path: Path, _: DatasetInputData) -> Dataset | None:
         problem_domain = state.problem_domain
         svm_file = SvmFileSource.SvmFile.from_file(file_path, problem_domain=problem_domain)
         svm_dataset = SvmFileSource.SvmDataset.from_file(svm_file)

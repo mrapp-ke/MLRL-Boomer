@@ -1,8 +1,6 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from typing import Optional
-
 from .cmd_builder import CmdBuilder
 
 from mlrl.common.config.parameters import BINNING_EQUAL_WIDTH, SAMPLING_WITHOUT_REPLACEMENT, \
@@ -84,7 +82,7 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
         self.add_control_argument('--save-rules', str(save_rules).lower())
         return self
 
-    def feature_format(self, feature_format: Optional[str] = SparsePolicy.FORCE_SPARSE):
+    def feature_format(self, feature_format: str | None = SparsePolicy.FORCE_SPARSE):
         """
         Configures the format to be used for the feature values of training examples.
 
@@ -96,7 +94,7 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
 
         return self
 
-    def output_format(self, output_format: Optional[str] = SparsePolicy.FORCE_SPARSE):
+    def output_format(self, output_format: str | None = SparsePolicy.FORCE_SPARSE):
         """
         Configures the format to be used for the ground truth of training examples.
 
@@ -108,7 +106,7 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
 
         return self
 
-    def prediction_format(self, prediction_format: Optional[str] = SparsePolicy.FORCE_SPARSE):
+    def prediction_format(self, prediction_format: str | None = SparsePolicy.FORCE_SPARSE):
         """
         Configures the format to be used for predictions.
 
@@ -120,7 +118,7 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
 
         return self
 
-    def instance_sampling(self, instance_sampling: Optional[str]):
+    def instance_sampling(self, instance_sampling: str | None):
         """
         Configures the rule learner to sample from the available training examples.
 
@@ -132,7 +130,7 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
 
         return self
 
-    def feature_sampling(self, feature_sampling: Optional[str] = SAMPLING_WITHOUT_REPLACEMENT):
+    def feature_sampling(self, feature_sampling: str | None = SAMPLING_WITHOUT_REPLACEMENT):
         """
         Configures the rule learner to sample from the available features.
 
@@ -144,7 +142,7 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
 
         return self
 
-    def output_sampling(self, output_sampling: Optional[str] = SAMPLING_WITHOUT_REPLACEMENT):
+    def output_sampling(self, output_sampling: str | None = SAMPLING_WITHOUT_REPLACEMENT):
         """
         Configures the rule learner to sample from the available outputs.
 
@@ -156,7 +154,7 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
 
         return self
 
-    def rule_pruning(self, rule_pruning: Optional[str] = RulePruningParameter.RULE_PRUNING_IREP):
+    def rule_pruning(self, rule_pruning: str | None = RulePruningParameter.RULE_PRUNING_IREP):
         """
         Configures the rule learner to use a specific method for pruning individual rules.
 
@@ -168,7 +166,7 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
 
         return self
 
-    def rule_induction(self, rule_induction: Optional[str] = RuleInductionParameter.RULE_INDUCTION_TOP_DOWN_GREEDY):
+    def rule_induction(self, rule_induction: str | None = RuleInductionParameter.RULE_INDUCTION_TOP_DOWN_GREEDY):
         """
         Configures the rule learner to use a specific algorithm for the induction of individual rules.
 
@@ -180,8 +178,7 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
 
         return self
 
-    def post_optimization(self,
-                          post_optimization: Optional[str] = PostOptimizationParameter.POST_OPTIMIZATION_SEQUENTIAL):
+    def post_optimization(self, post_optimization: str | None = PostOptimizationParameter.POST_OPTIMIZATION_SEQUENTIAL):
         """
         Configures the post-optimization method to be used by the algorithm.
 
@@ -193,7 +190,7 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
 
         return self
 
-    def holdout(self, holdout: Optional[str] = PartitionSamplingParameter.PARTITION_SAMPLING_RANDOM):
+    def holdout(self, holdout: str | None = PartitionSamplingParameter.PARTITION_SAMPLING_RANDOM):
         """
         Configures the algorithm to use a holdout set.
 
@@ -205,7 +202,7 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
 
         return self
 
-    def feature_binning(self, feature_binning: Optional[str] = BINNING_EQUAL_WIDTH):
+    def feature_binning(self, feature_binning: str | None = BINNING_EQUAL_WIDTH):
         """
         Configures the algorithm to use a specific method for feature binning.
 

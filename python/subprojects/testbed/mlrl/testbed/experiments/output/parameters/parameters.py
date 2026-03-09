@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing algorithmic parameters that are part of output data.
 """
-from typing import Optional, override
+from typing import override
 
 from mlrl.testbed.experiments.input.parameters.parameters import InputParameters
 from mlrl.testbed.experiments.output.data import TabularOutputData
@@ -26,7 +26,7 @@ class OutputParameters(TabularOutputData):
         self.custom_parameters = {key: value for key, value in parameter_dict.items() if value is not None}
 
     @override
-    def to_text(self, options: Options, **kwargs) -> Optional[str]:
+    def to_text(self, options: Options, **kwargs) -> str | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
@@ -37,7 +37,7 @@ class OutputParameters(TabularOutputData):
         return None
 
     @override
-    def to_table(self, options: Options, **_) -> Optional[Table]:
+    def to_table(self, options: Options, **_) -> Table | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """

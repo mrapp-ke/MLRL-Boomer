@@ -10,7 +10,7 @@ from argparse import Namespace
 from dataclasses import dataclass, field
 from functools import partial
 from pathlib import Path
-from typing import Callable, Dict, List, Optional, Set, Tuple, cast, override
+from typing import Callable, cast, override
 
 from tabulate import tabulate
 
@@ -45,7 +45,7 @@ class JobArray:
     command: Command
     command_modifier: Callable[[Command], Command]
     file_name_modifier: Callable[[str], str]
-    task_ids: Set[int] = field(default_factory=set)
+    task_ids: set[int] = field(default_factory=set)
 
     @property
     def modified_command(self) -> Command:
@@ -56,7 +56,7 @@ class JobArray:
         return self.command_modifier(command) if len(self.task_ids) > 1 else command
 
     @property
-    def formatted_task_ids(self) -> Optional[str]:
+    def formatted_task_ids(self) -> str | None:
         """
         The task ids to be used in the job array formatted such that they can be used as the value or the sbatch
         argument "--array".
@@ -65,7 +65,7 @@ class JobArray:
 
         if len(task_ids) > 1:
             task_ids.sort()
-            task_id_strings: List[str] = []
+            task_id_strings: list[str] = []
             current_range = (0, 0)
 
             for task_id in task_ids:
@@ -86,7 +86,7 @@ class JobArray:
         return None
 
     @staticmethod
-    def __format_range(start_and_end: Tuple[int, int]) -> str:
+    def __format_range(start_and_end: tuple[int, int]) -> str:
         start = start_and_end[0]
         end = start_and_end[1]
         return str(start) + '-' + str(end) if start < end else str(start)
@@ -111,7 +111,7 @@ class SlurmRunner(BatchMode.Runner):
             self.yaml_dict = read_and_validate_yaml(yaml_file_path=file_path, schema_file_path=schema_file_path)
 
         @property
-        def sbatch_arguments(self) -> List[str]:
+        def sbatch_arguments(self) -> list[str]:
             """
             The sbatch arguments (starting with #SBATCH) to be passed to a Slurm job.
             """
@@ -121,7 +121,7 @@ class SlurmRunner(BatchMode.Runner):
             ]
 
         @property
-        def before_script(self) -> List[str]:
+        def before_script(self) -> list[str]:
             """
             The shell commands to be executed before the experiment is started.
             """
@@ -131,7 +131,7 @@ class SlurmRunner(BatchMode.Runner):
             ]
 
         @property
-        def after_script(self) -> List[str]:
+        def after_script(self) -> list[str]:
             """
             The shell commands to be executed after the experiment has finished.
             """
@@ -156,7 +156,7 @@ class SlurmRunner(BatchMode.Runner):
         return True
 
     @staticmethod
-    def __read_config_file(args: Namespace) -> Optional[ConfigFile]:
+    def __read_config_file(args: Namespace) -> ConfigFile | None:
         config_file_path = SlurmArguments.SLURM_CONFIG_FILE.get_value(args)
 
         if config_file_path:
@@ -184,8 +184,8 @@ class SlurmRunner(BatchMode.Runner):
         return pattern.sub(replacer, str(command))
 
     @staticmethod
-    def __create_sbatch_script(command: Command, job_name: str, config_file: Optional[ConfigFile],
-                               job_array: Optional[JobArray]) -> str:
+    def __create_sbatch_script(command: Command, job_name: str, config_file: ConfigFile | None,
+                               job_array: JobArray | None) -> str:
         command_args = command.to_namespace()
         base_dir = Path(OutputArguments.BASE_DIR.get_value(command_args))
         result_dir = base_dir / ResultDirectoryArguments.RESULT_DIR.get_value(command_args)
@@ -243,8 +243,8 @@ class SlurmRunner(BatchMode.Runner):
         return file_name
 
     @staticmethod
-    def __write_sbatch_file(args: Namespace, command: Command, config_file: Optional[ConfigFile],
-                            job_array: Optional[JobArray], job_name: str) -> Path:
+    def __write_sbatch_file(args: Namespace, command: Command, config_file: ConfigFile | None,
+                            job_array: JobArray | None, job_name: str) -> Path:
         path = SlurmArguments.SLURM_SAVE_DIR.get_value(args) / (job_name + '.sh')
 
         with open_writable_file(path) as sbatch_file:
@@ -276,13 +276,13 @@ class SlurmRunner(BatchMode.Runner):
         return result.exit_code
 
     @staticmethod
-    def __assign_to_job_arrays(batch: Batch) -> List[JobArray | Command]:
-        job_arrays: Dict[Tuple[str, ...], JobArray] = {}
-        result: List[JobArray | Command] = []
+    def __assign_to_job_arrays(batch: Batch) -> list[JobArray | Command]:
+        job_arrays: dict[tuple[str, ...], JobArray] = {}
+        result: list[JobArray | Command] = []
 
         for command in batch:
             value, options = DatasetSplitterArguments.DATASET_SPLITTER.get_value_and_options(command.to_namespace())
-            job_array: Optional[JobArray] = None
+            job_array: JobArray | None = None
 
             if value == DatasetSplitterArguments.VALUE_CROSS_VALIDATION:
                 first_fold = options.get_int(DatasetSplitterArguments.OPTION_FIRST_FOLD, 0)

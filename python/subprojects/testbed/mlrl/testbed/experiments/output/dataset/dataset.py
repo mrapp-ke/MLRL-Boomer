@@ -5,7 +5,7 @@ Provides classes for representing datasets that are part of output data.
 """
 
 from abc import ABC
-from typing import Optional, override
+from typing import override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties
@@ -31,7 +31,7 @@ class OutputDataset(DatasetOutputData, ABC):
         self.dataset = dataset
 
     @override
-    def to_dataset(self, options: Options, **_) -> Optional[Dataset]:
+    def to_dataset(self, options: Options, **_) -> Dataset | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.DatasetOutputData.to_dataset`
         """

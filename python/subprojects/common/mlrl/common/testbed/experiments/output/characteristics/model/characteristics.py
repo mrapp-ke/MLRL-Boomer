@@ -6,7 +6,7 @@ Provides classes for representing characteristics of rule models that are part o
 
 from functools import reduce
 from itertools import chain
-from typing import List, Optional, override
+from typing import override
 
 from mlrl.common.testbed.experiments.output.characteristics.model.statistics import BodyStatistics, HeadStatistics, \
     RuleModelStatistics, RuleStatistics
@@ -67,7 +67,7 @@ class RuleModelCharacteristics(TabularOutputData):
 
     # pylint: disable=unused-argument
     @override
-    def to_text(self, options: Options, **_) -> Optional[str]:
+    def to_text(self, options: Options, **_) -> str | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
@@ -79,7 +79,7 @@ class RuleModelCharacteristics(TabularOutputData):
         return text
 
     @staticmethod
-    def __format_body_statistics(body_statistics: BodyStatistics) -> List[str]:
+    def __format_body_statistics(body_statistics: BodyStatistics) -> list[str]:
         return [
             str(body_statistics.num_conditions),
             format_percentage(body_statistics.fraction_numerical_leq),
@@ -109,7 +109,7 @@ class RuleModelCharacteristics(TabularOutputData):
         return table.format(auto_rotate=False)
 
     @staticmethod
-    def __format_head_statistics(head_statistics: HeadStatistics) -> List[str]:
+    def __format_head_statistics(head_statistics: HeadStatistics) -> list[str]:
         return [
             str(head_statistics.num_predictions),
             format_percentage(head_statistics.fraction_positive_predictions),
@@ -152,7 +152,7 @@ class RuleModelCharacteristics(TabularOutputData):
 
     # pylint: disable=unused-argument
     @override
-    def to_table(self, options: Options, **_) -> Optional[Table]:
+    def to_table(self, options: Options, **_) -> Table | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """

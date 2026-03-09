@@ -1,8 +1,6 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from typing import Optional
-
 from ..common.cmd_builder import CmdBuilder
 from ..common.cmd_builder_classification import ClassificationCmdBuilder
 from ..common.datasets import Dataset
@@ -28,8 +26,7 @@ class BoomerClassifierCmdBuilder(ClassificationCmdBuilder, BoomerCmdBuilderMixin
                          runnable_module_name='mlrl.boosting',
                          dataset=dataset)
 
-    def marginal_probability_calibration(self,
-                                         probability_calibrator: Optional[str] = PROBABILITY_CALIBRATION_ISOTONIC):
+    def marginal_probability_calibration(self, probability_calibrator: str | None = PROBABILITY_CALIBRATION_ISOTONIC):
         """
         Configures the algorithm to fit a model for the calibration of marginal probabilities.
 
@@ -41,7 +38,7 @@ class BoomerClassifierCmdBuilder(ClassificationCmdBuilder, BoomerCmdBuilderMixin
 
         return self
 
-    def joint_probability_calibration(self, probability_calibrator: Optional[str] = PROBABILITY_CALIBRATION_ISOTONIC):
+    def joint_probability_calibration(self, probability_calibrator: str | None = PROBABILITY_CALIBRATION_ISOTONIC):
         """
         Configures the algorithm to fit a model for the calibration of joint probabilities.
 
@@ -53,7 +50,7 @@ class BoomerClassifierCmdBuilder(ClassificationCmdBuilder, BoomerCmdBuilderMixin
 
         return self
 
-    def binary_predictor(self, binary_predictor: Optional[str] = AUTO, options: Options = Options()):
+    def binary_predictor(self, binary_predictor: str | None = AUTO, options: Options = Options()):
         """
         Configures the algorithm to use a specific method for predicting binary labels.
 
@@ -66,7 +63,7 @@ class BoomerClassifierCmdBuilder(ClassificationCmdBuilder, BoomerCmdBuilderMixin
 
         return self
 
-    def probability_predictor(self, probability_predictor: Optional[str] = AUTO):
+    def probability_predictor(self, probability_predictor: str | None = AUTO):
         """
         Configures the algorithm to use a specific method for predicting probabilities.
 
@@ -78,7 +75,7 @@ class BoomerClassifierCmdBuilder(ClassificationCmdBuilder, BoomerCmdBuilderMixin
 
         return self
 
-    def label_binning(self, label_binning: Optional[str] = BINNING_EQUAL_WIDTH):
+    def label_binning(self, label_binning: str | None = BINNING_EQUAL_WIDTH):
         """
         Configures the algorithm to use a specific method for the assignment of labels to bins.
 

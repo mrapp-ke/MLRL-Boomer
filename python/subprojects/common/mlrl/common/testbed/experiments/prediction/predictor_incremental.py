@@ -6,7 +6,8 @@ members.
 """
 import logging as log
 
-from typing import Any, Generator, override
+from collections.abc import Generator
+from typing import Any, override
 
 from sklearn.base import BaseEstimator
 

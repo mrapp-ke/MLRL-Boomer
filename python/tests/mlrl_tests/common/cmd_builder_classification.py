@@ -2,7 +2,6 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from pathlib import Path
-from typing import Optional
 
 from .cmd_builder import CmdBuilder
 from .datasets import Dataset
@@ -20,7 +19,7 @@ class ClassificationCmdBuilder(CmdBuilder):
                  input_dir: Path,
                  batch_config: Path,
                  runnable_module_name: str,
-                 runnable_class_name: Optional[str] = None,
+                 runnable_class_name: str | None = None,
                  dataset: str = Dataset.EMOTIONS):
         super().__init__(expected_output_dir=expected_output_dir,
                          input_dir=input_dir,
@@ -32,7 +31,7 @@ class ClassificationCmdBuilder(CmdBuilder):
         self.marginal_probability_calibration_model_stored = False
         self.joint_probability_calibration_model_stored = False
 
-    def print_label_vectors(self, print_label_vectors: Optional[bool] = True):
+    def print_label_vectors(self, print_label_vectors: bool | None = True):
         """
         Configures whether the unique label vectors contained in the training data should be printed on the console or
         not.
@@ -60,8 +59,7 @@ class ClassificationCmdBuilder(CmdBuilder):
         return self
 
     def print_marginal_probability_calibration_model(self,
-                                                     print_marginal_probability_calibration_model: Optional[bool] = True
-                                                     ):
+                                                     print_marginal_probability_calibration_model: bool | None = True):
         """
         Configures whether textual representations of models for the calibration of marginal probabilities should be
         printed on the console or not.
@@ -78,7 +76,7 @@ class ClassificationCmdBuilder(CmdBuilder):
         return self
 
     def save_marginal_probability_calibration_model(self,
-                                                    save_marginal_probability_calibration_model: Optional[bool] = True):
+                                                    save_marginal_probability_calibration_model: bool | None = True):
         """
         Configures whether textual representations of models for the calibration of marginal probabilities should be
         written to output files or not.
@@ -95,8 +93,7 @@ class ClassificationCmdBuilder(CmdBuilder):
 
         return self
 
-    def print_joint_probability_calibration_model(self,
-                                                  print_joint_probability_calibration_model: Optional[bool] = True):
+    def print_joint_probability_calibration_model(self, print_joint_probability_calibration_model: bool | None = True):
         """
         Configures whether textual representations of models for the calibration of joint probabilities should be
         printed on the console or not.
@@ -112,7 +109,7 @@ class ClassificationCmdBuilder(CmdBuilder):
 
         return self
 
-    def save_joint_probability_calibration_model(self, save_joint_probability_calibration_model: Optional[bool] = True):
+    def save_joint_probability_calibration_model(self, save_joint_probability_calibration_model: bool | None = True):
         """
         Configures whether textual representations of models for the calibration of joint probabilities should be
         written to output files or not.
@@ -129,7 +126,7 @@ class ClassificationCmdBuilder(CmdBuilder):
 
         return self
 
-    def prediction_type(self, prediction_type: Optional[str] = PredictionType.BINARY):
+    def prediction_type(self, prediction_type: str | None = PredictionType.BINARY):
         """
         Configures the type of predictions that should be obtained from the algorithm.
 

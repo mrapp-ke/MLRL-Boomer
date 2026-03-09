@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides base classes for programs that can be configured via command line arguments.
 """
 from argparse import Namespace
-from typing import Any, Dict, List, Optional, Set, Type, override
+from typing import Any, override
 
 from sklearn.base import BaseEstimator, ClassifierMixin as SkLearnClassifierMixin, \
     RegressorMixin as SkLearnRegressorMixin
@@ -83,14 +83,14 @@ class RuleLearnerRunnable(SkLearnRunnable):
         )
 
         @override
-        def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
+        def _get_arguments(self, _: ExperimentMode) -> set[Argument]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
             """
             return {self.INCREMENTAL_EVALUATION}
 
         @override
-        def get_supported_modes(self) -> Set[ExperimentMode]:
+        def get_supported_modes(self) -> set[ExperimentMode]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
             """
@@ -156,22 +156,22 @@ class RuleLearnerRunnable(SkLearnRunnable):
         )
 
         @override
-        def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
+        def _get_arguments(self, _: ExperimentMode) -> set[Argument]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
             """
             return {self.PREDICTION_FORMAT, self.SPARSE_FEATURE_VALUE}
 
         @override
-        def get_supported_modes(self) -> Set[ExperimentMode]:
+        def get_supported_modes(self) -> set[ExperimentMode]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
             """
             return {ExperimentMode.SINGLE, ExperimentMode.BATCH}
 
         @staticmethod
-        def get_estimator(args: Namespace, estimator_type: Type[BaseEstimator],
-                          parameters: Optional[Set[Parameter]]) -> Any:
+        def get_estimator(args: Namespace, estimator_type: type[BaseEstimator],
+                          parameters: set[Parameter] | None) -> Any:
             """
             Returns the scikit-learn estimator to be used in an experiment.
 
@@ -198,7 +198,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
             return estimator_type(**kwargs)
 
         @staticmethod
-        def get_fit_kwargs(args: Namespace) -> Dict[str, Any]:
+        def get_fit_kwargs(args: Namespace) -> dict[str, Any]:
             """
             Returns the keyword arguments that should be passed to the estimators `fit` function.
 
@@ -211,7 +211,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
             }
 
         @staticmethod
-        def get_predict_kwargs(args: Namespace) -> Dict[str, Any]:
+        def get_predict_kwargs(args: Namespace) -> dict[str, Any]:
             """
             Returns the keyword arguments that should be passed to the estimators `predict` function.
 
@@ -220,11 +220,10 @@ class RuleLearnerRunnable(SkLearnRunnable):
             """
             return RuleLearnerRunnable.RuleLearnerExtension.get_fit_kwargs(args)
 
-    def __init__(self, classifier_type: Optional[Type[SkLearnClassifierMixin]],
-                 classifier_config_type: Optional[Type[RuleLearnerConfig]],
-                 classifier_parameters: Optional[Set[Parameter]], regressor_type: Optional[Type[SkLearnRegressorMixin]],
-                 regressor_config_type: Optional[Type[RuleLearnerConfig]],
-                 regressor_parameters: Optional[Set[Parameter]]):
+    def __init__(self, classifier_type: type[SkLearnClassifierMixin] | None,
+                 classifier_config_type: type[RuleLearnerConfig] | None, classifier_parameters: set[Parameter] | None,
+                 regressor_type: type[SkLearnRegressorMixin] | None,
+                 regressor_config_type: type[RuleLearnerConfig] | None, regressor_parameters: set[Parameter] | None):
         """
         :param classifier_type:         The type of the rule learner to be used in classification problems or None, if
                                         classification problems are not supported
@@ -247,7 +246,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
         self.regressor_parameters = regressor_parameters
 
     @override
-    def get_extensions(self) -> List[Extension]:
+    def get_extensions(self) -> list[Extension]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_extensions`
         """
@@ -260,7 +259,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
         ] + super().get_extensions()
 
     @override
-    def get_algorithmic_arguments(self, mode: ExperimentMode, known_args: Namespace) -> Set[Argument]:
+    def get_algorithmic_arguments(self, mode: ExperimentMode, known_args: Namespace) -> set[Argument]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_algorithmic_arguments`
         """
@@ -315,7 +314,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
                                              dataset_splitter=self.create_dataset_splitter(args, load_dataset))
 
     @override
-    def create_classifier(self, _: ExperimentMode, args: Namespace) -> Optional[SkLearnClassifierMixin]:
+    def create_classifier(self, _: ExperimentMode, args: Namespace) -> SkLearnClassifierMixin | None:
         """
         See :func:`mlrl.testbed.runnables.Runnable.create_classifier`
         """
@@ -328,7 +327,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
         return None
 
     @override
-    def create_regressor(self, _: ExperimentMode, args: Namespace) -> Optional[SkLearnRegressorMixin]:
+    def create_regressor(self, _: ExperimentMode, args: Namespace) -> SkLearnRegressorMixin | None:
         """
         See :func:`mlrl.testbed_sklearn.runnables.SkLearnRunnable.create_regressor`
         """
