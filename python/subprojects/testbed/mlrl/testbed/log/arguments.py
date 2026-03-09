@@ -11,7 +11,7 @@ from enum import Enum
 from mlrl.testbed.log import log
 from mlrl.testbed.log.log import LogHandler
 
-from mlrl.util.cli import EnumArgument, IntArgument
+from mlrl.util.cli import EnumArgument, FlagArgument, IntArgument
 
 
 class LogLevel(Enum):
@@ -37,8 +37,13 @@ class LogArguments:
     )
 
     LOG_WIDTH = IntArgument(
-        "--log-width",
+        '--log-width',
         description='The width of the console output.',
+    )
+
+    LOG_PLAIN = FlagArgument(
+        '--log-plain',
+        description='Restrict the console output to plain text without any colors or structural elements.',
     )
 
 
@@ -49,6 +54,7 @@ def configure_logger(args: Namespace):
     :param args: The command line arguments provided by the user
     """
     log.WIDTH = LogArguments.LOG_WIDTH.get_value(args)
+    log.PLAIN = LogArguments.LOG_PLAIN.get_value(args, default=False)
     logger = logging.getLogger()
 
     for existing_handler in logger.handlers:
