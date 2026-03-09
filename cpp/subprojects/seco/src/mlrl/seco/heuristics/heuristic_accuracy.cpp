@@ -1,6 +1,6 @@
 #include "mlrl/seco/heuristics/heuristic_accuracy.hpp"
 
-#include "mlrl/common/util/math.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 
 namespace seco {
 
@@ -17,7 +17,7 @@ namespace seco {
                 float32 numUncoveredCorrect = uin + uip;
                 float32 numCorrect = numCoveredCorrect + numUncoveredCorrect;
                 float32 numTotal = numCorrect + cip + crn + urn + urp;
-                return util::divideOrZero(numCorrect, numTotal);
+                return math::divideOrZero(numCorrect, numTotal);
             }
     };
 

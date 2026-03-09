@@ -1,4 +1,4 @@
-command: mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp
+command: mlrl-testbed mlrl.boosting --log-width 120 --log-level debug --base-dir python/tests/res/tmp
   --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type
   regression --save-evaluation true --predict-for-training-data true --print-evaluation
   true --save-evaluation true

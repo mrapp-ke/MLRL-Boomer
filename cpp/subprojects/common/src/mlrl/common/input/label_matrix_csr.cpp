@@ -1,11 +1,11 @@
 #include "mlrl/common/input/label_matrix_csr.hpp"
 
 #include "mlrl/common/data/view_matrix_csr_binary.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 #include "mlrl/common/prediction/probability_calibration_joint.hpp"
 #include "mlrl/common/sampling/instance_sampling.hpp"
 #include "mlrl/common/sampling/partition_sampling.hpp"
 #include "mlrl/common/statistics/statistics_provider.hpp"
-#include "mlrl/common/util/math.hpp"
 
 /**
  * Implements row-wise read-only access to the labels of individual training examples that are stored in a pre-allocated
@@ -48,19 +48,18 @@ class CsrLabelMatrix final : public IterableBinarySparseMatrixDecorator<MatrixDe
                 index_const_iterator indicesBegin = this->indices_cbegin(i);
                 index_const_iterator indicesEnd = this->indices_cend(i);
                 uint32 numRelevantLabels = indicesEnd - indicesBegin;
-                labelCardinality = util::iterativeArithmeticMean(i + 1, (float32) numRelevantLabels, labelCardinality);
+                labelCardinality = math::iterativeArithmeticMean(i + 1, (float32) numRelevantLabels, labelCardinality);
             }
 
             return labelCardinality;
         }
 
         std::unique_ptr<LabelVector> createLabelVector(uint32 row) const override {
-            index_const_iterator indexIterator = this->indices_cbegin(row);
+            index_const_iterator indicesBegin = this->indices_cbegin(row);
             index_const_iterator indicesEnd = this->indices_cend(row);
-            uint32 numElements = indicesEnd - indexIterator;
+            uint32 numElements = indicesEnd - indicesBegin;
             std::unique_ptr<LabelVector> labelVectorPtr = std::make_unique<LabelVector>(numElements);
-            LabelVector::iterator iterator = labelVectorPtr->begin();
-            util::copyView(indexIterator, iterator, numElements);
+            std::copy(indicesBegin, indicesEnd, labelVectorPtr->begin());
             return labelVectorPtr;
         }
 

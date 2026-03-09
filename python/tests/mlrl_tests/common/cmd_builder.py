@@ -128,6 +128,7 @@ class CmdBuilder:
         rerun = self.mode in {ExperimentMode.RUN, ExperimentMode.READ}
         base_dir = self.base_dir / self.RERUN_DIR if rerun else self.base_dir
 
+        args.extend(('--log-width', str(120)))
         args.extend(('--log-level', 'debug'))
         args.extend(('--base-dir', str(base_dir)))
 

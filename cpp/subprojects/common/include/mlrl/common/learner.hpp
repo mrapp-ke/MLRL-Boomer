@@ -42,6 +42,8 @@
 #include "mlrl/common/sampling/output_sampling_without_replacement.hpp"
 #include "mlrl/common/sampling/partition_sampling_bi_random.hpp"
 #include "mlrl/common/sampling/partition_sampling_no.hpp"
+#include "mlrl/common/simd/simd_no.hpp"
+#include "mlrl/common/simd/simd_yes.hpp"
 #include "mlrl/common/stopping/global_pruning_no.hpp"
 #include "mlrl/common/stopping/global_pruning_post.hpp"
 #include "mlrl/common/stopping/global_pruning_pre.hpp"
@@ -309,6 +311,15 @@ class MLRLCOMMON_API IRuleLearnerConfig {
          *         multi-threading behavior that is used to predict for several query examples in parallel
          */
         virtual Property<IMultiThreadingConfig> getParallelPredictionConfig() = 0;
+
+        /**
+         * Returns a `Property` that allows to access the `ISimdConfig` that stores the configuration of single
+         * instruction, multiple data (SIMD) operations.
+         *
+         * @return A `Property` that allows to access the `ISimdConfig` that stores the configuration of single
+         *         instruction, multiple data (SIMD) operations
+         */
+        virtual Property<ISimdConfig> getSimdConfig() = 0;
 
         /**
          * Returns a `Property` that allows to access the `IStoppingCriterionConfig` that stores the configuration of
@@ -978,6 +989,40 @@ class MLRLCOMMON_API IParallelPredictionMixin : virtual public IRuleLearnerConfi
 };
 
 /**
+ * Defines an interface for all classes that allow to configure a rule learner to not use any single instruction,
+ * multiple data (SIMD) operations.
+ */
+class MLRLCOMMON_API INoSimdMixin : virtual public IRuleLearnerConfig {
+    public:
+
+        virtual ~INoSimdMixin() override {}
+
+        /**
+         * Configures the rule learner to not use any single instruction, multiple data (SIMD) operations.
+         */
+        virtual void useNoSimdOperations() {
+            this->getSimdConfig().set(std::make_unique<NoSimdConfig>());
+        }
+};
+
+/**
+ * Defines an interface for all classes that allow to configure a rule learner to use single instruction, multiple data
+ * (SIMD) operations.
+ */
+class MLRLCOMMON_API ISimdMixin : virtual public IRuleLearnerConfig {
+    public:
+
+        virtual ~ISimdMixin() override {}
+
+        /**
+         * Configures the rule learner to use single instruction, multiple data (SIMD) operations.
+         */
+        virtual void useSimdOperations() {
+            this->getSimdConfig().set(std::make_unique<SimdConfig>());
+        }
+};
+
+/**
  * Defines an interface for all classes that allow to configure a rule learner to not use a stopping criterion that
  * ensures that the number of induced rules does not exceed a certain maximum.
  */
@@ -1264,6 +1309,7 @@ class MLRLCOMMON_API IRuleLearnerMixin : virtual public IRuleLearnerConfig,
                                          virtual public INoParallelStatisticAggregationMixin,
                                          virtual public INoParallelStatisticUpdateMixin,
                                          virtual public INoParallelPredictionMixin,
+                                         virtual public INoSimdMixin,
                                          virtual public INoSizeStoppingCriterionMixin,
                                          virtual public INoTimeStoppingCriterionMixin,
                                          virtual public INoSequentialPostOptimizationMixin,
@@ -1291,6 +1337,7 @@ class MLRLCOMMON_API IRuleLearnerMixin : virtual public IRuleLearnerConfig,
             this->useNoParallelStatisticAggregation();
             this->useNoParallelStatisticUpdate();
             this->useNoParallelPrediction();
+            this->useNoSimdOperations();
             this->useNoSizeStoppingCriterion();
             this->useNoTimeStoppingCriterion();
             this->useNoSequentialPostOptimization();

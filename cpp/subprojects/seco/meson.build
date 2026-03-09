@@ -57,6 +57,7 @@ configuration.set('mlrlseco_library_version', library_version)
 configuration.set('mlrlseco_target_architecture', target_architecture)
 configuration.set10('multi_threading_support_enabled', common_project.get_variable('multi_threading_support_enabled'))
 configuration.set10('gpu_support_enabled', common_project.get_variable('gpu_support_enabled'))
+configuration.set10('simd_support_enabled', common_project.get_variable('simd_support_enabled'))
 configure_file(input : 'include/mlrl/seco/config.hpp.in', output : 'config.hpp', configuration: configuration)
 
 # Library declaration

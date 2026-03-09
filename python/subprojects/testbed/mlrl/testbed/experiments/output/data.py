@@ -8,7 +8,7 @@ import json
 from abc import ABC, abstractmethod
 from collections.abc import Iterable
 from dataclasses import replace
-from typing import Any, override
+from typing import Any, Tuple, override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties, TabularProperties
@@ -55,13 +55,15 @@ class TextualOutputData(OutputData, ABC):
         A title that is printed before textual output data.
         """
 
-        def __init__(self, title: str, context: Context):
+        def __init__(self, title: str, context: Context, symbol: Optional[str] = None):
             """
             :param title:   A title
             :param context: A `Context` to be used for formatting the title
+            :param symbol:  An optional symbol that represents the output data
             """
             self.title = title
             self.context = context
+            self.symbol = symbol
 
         def __format_dataset_type(self, state: ExperimentState) -> str:
             if self.context.include_dataset_type:
@@ -106,8 +108,9 @@ class TextualOutputData(OutputData, ABC):
 
             :param state: The state from which the output data has been generated
             """
-            return self.title + self.__format_dataset_type(state) + self.__format_prediction_scope(
-                state) + self.__format_fold(state)
+            symbol = self.symbol
+            return (symbol + ' ' if symbol else '') + self.title + self.__format_dataset_type(
+                state) + self.__format_prediction_scope(state) + self.__format_fold(state)
 
     @staticmethod
     def from_text(properties: Properties, context: Context, text: str) -> 'TextualOutputData':
@@ -197,6 +200,16 @@ class StructuralOutputData(TextualOutputData, ABC):
     representation, e.g., YAML or JSON.
     """
 
+    def __init__(self, properties: Properties, context: Context = Context(), language: Optional[str] = None):
+        """
+        :param properties:  The properties of the output data
+        :param context:     A `Context` to be used by default for finding a suitable sink this output data can be
+                            written to
+        :param language:    The language of the source code that represents the output data, if any
+        """
+        super().__init__(properties=properties, context=context)
+        self.language = language
+
     @abstractmethod
     def to_dict(self, options: Options, **kwargs) -> dict[Any, Any] | None:
         """
@@ -205,6 +218,16 @@ class StructuralOutputData(TextualOutputData, ABC):
         :param options: Options to be taken into account
         :return:        The dictionary that has been created
         """
+
+    def to_source_code(self, options: Options, **kwargs) -> Tuple[Optional[str], Optional[str]]:
+        """
+        Creates and returns a tuple containing the source code of the output data, together with the language it uses.
+
+        :param options: Options to be taken into account
+        :return:        A tuple that contains the source code and the language it uses
+        """
+        language = self.language
+        return self.to_text(options, **kwargs), language if language else None
 
     @override
     def to_text(self, options: Options, **kwargs) -> str | None:
