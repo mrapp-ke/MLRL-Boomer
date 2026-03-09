@@ -5,7 +5,7 @@ Provides classes for implementing splitters that split datasets into training an
 """
 
 from abc import ABC, abstractmethod
-from typing import Generator
+from collections.abc import Generator
 
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.fold import FoldingStrategy

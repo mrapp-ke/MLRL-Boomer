@@ -5,8 +5,9 @@ Provides classes for splitting datasets into multiple, equally sized, folds cons
 """
 import logging as log
 
+from collections.abc import Generator
 from dataclasses import dataclass, field, replace
-from typing import Any, Generator, cast, override
+from typing import Any, cast, override
 
 from scipy.sparse import vstack
 from sklearn.model_selection import KFold

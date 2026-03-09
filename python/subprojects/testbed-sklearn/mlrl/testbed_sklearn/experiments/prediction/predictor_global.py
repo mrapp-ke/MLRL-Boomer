@@ -5,7 +5,8 @@ Provides classes for obtaining predictions from global machine learning models.
 """
 import logging as log
 
-from typing import Any, Generator, override
+from collections.abc import Generator
+from typing import Any, override
 
 from mlrl.testbed_sklearn.experiments.prediction.predictor import PredictionFunction, Predictor
 

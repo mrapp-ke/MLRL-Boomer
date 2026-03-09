@@ -3,9 +3,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements modules that provide access to Python code that can be built as wheel packages.
 """
+from collections.abc import Generator
 from os import environ
 from pathlib import Path
-from typing import Generator, cast, override
+from typing import cast, override
 
 from core.build_unit import BuildUnit
 from core.modules import Module, ModuleRegistry

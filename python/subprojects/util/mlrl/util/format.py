@@ -3,10 +3,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for creating textual representations.
 """
+from collections.abc import Iterable
 from enum import Enum
 from functools import reduce
 from pathlib import Path
-from typing import Any, Iterable, Type
+from typing import Any, Type
 
 
 def format_iterable(objects: Iterable[Any], separator: str = ', ', delimiter: str = '') -> str:

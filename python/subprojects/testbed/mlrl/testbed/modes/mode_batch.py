@@ -8,11 +8,12 @@ import re as regex
 
 from abc import ABC, abstractmethod
 from argparse import Namespace
+from collections.abc import Generator, Iterable
 from dataclasses import dataclass, field
 from functools import cached_property, reduce
 from itertools import chain
 from pathlib import Path
-from typing import Any, Callable, Generator, Iterable, override
+from typing import Any, Callable, override
 
 from mlrl.testbed.command import ArgumentDict, ArgumentList, Command
 from mlrl.testbed.experiments.fold import FoldingStrategy

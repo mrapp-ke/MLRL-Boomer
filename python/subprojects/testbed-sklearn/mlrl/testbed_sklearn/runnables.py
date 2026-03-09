@@ -9,10 +9,11 @@ import re as regex
 
 from abc import ABC, abstractmethod
 from argparse import Namespace
+from collections.abc import Iterable
 from functools import cached_property
 from itertools import chain
 from pathlib import Path
-from typing import Any, Iterable, Type, override
+from typing import Any, Type, override
 
 import docstring_parser
 import numpy as np

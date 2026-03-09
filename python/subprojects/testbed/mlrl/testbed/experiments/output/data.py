@@ -6,8 +6,9 @@ Provides classes for representing output data.
 import json
 
 from abc import ABC, abstractmethod
+from collections.abc import Iterable
 from dataclasses import replace
-from typing import Any, Iterable, Type, override
+from typing import Any, Type, override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties, TabularProperties

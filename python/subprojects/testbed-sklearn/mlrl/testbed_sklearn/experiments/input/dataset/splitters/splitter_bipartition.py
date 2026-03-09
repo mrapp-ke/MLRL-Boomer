@@ -5,8 +5,9 @@ Provides classes for splitting dataset into distinct training and test datasets.
 """
 import logging as log
 
+from collections.abc import Generator
 from dataclasses import dataclass, replace
-from typing import Any, Generator, override
+from typing import Any, override
 
 from sklearn.model_selection import train_test_split
 

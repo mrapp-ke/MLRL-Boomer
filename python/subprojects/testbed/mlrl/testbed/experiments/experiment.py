@@ -7,9 +7,10 @@ import logging as log
 
 from abc import ABC, abstractmethod
 from argparse import Namespace
+from collections.abc import Generator, Iterable
 from dataclasses import replace
 from itertools import chain
-from typing import Any, Callable, Generator, Iterable, override
+from typing import Any, Callable, override
 
 from mlrl.testbed.arguments import PredictionDatasetArguments
 from mlrl.testbed.experiments.dataset import Dataset

@@ -4,8 +4,9 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing tables.
 """
 from abc import ABC, abstractmethod
+from collections.abc import Generator, Iterable, Iterator
 from enum import Enum, StrEnum
-from typing import Any, Generator, Iterable, Iterator, override
+from typing import Any, override
 
 from tabulate import SEPARATING_LINE, tabulate
 

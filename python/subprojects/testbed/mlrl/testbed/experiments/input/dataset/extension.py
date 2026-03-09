@@ -5,8 +5,9 @@ Provides classes that allow configuring the functionality to load datasets.
 """
 from abc import ABC, abstractmethod
 from argparse import Namespace
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Sequence, override
+from typing import override
 
 from mlrl.testbed.command import ArgumentList
 from mlrl.testbed.experiments.input.dataset.arguments import DatasetArguments

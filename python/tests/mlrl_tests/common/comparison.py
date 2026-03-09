@@ -5,9 +5,10 @@ import csv
 import re as regex
 
 from abc import ABC, abstractmethod
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable, override
+from typing import Any, override
 
 import yaml
 

@@ -3,7 +3,8 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for implementing evaluation measures.
 """
-from typing import Any, Callable, Iterable
+from collections.abc import Iterable
+from typing import Any, Callable
 
 from mlrl.testbed.experiments.output.data import OutputValue
 

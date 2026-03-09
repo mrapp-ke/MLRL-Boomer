@@ -4,9 +4,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing evaluation results that are part of output data.
 """
 from abc import ABC
+from collections.abc import Iterable
 from functools import partial
 from itertools import chain
-from typing import Iterable, override
+from typing import override
 
 import numpy as np
 

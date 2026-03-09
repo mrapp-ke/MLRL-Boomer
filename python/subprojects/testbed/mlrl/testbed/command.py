@@ -6,10 +6,11 @@ Provides classes for dealing with commands and their arguments.
 import sys
 
 from argparse import Namespace
+from collections.abc import Iterable, Iterator
 from copy import copy
 from dataclasses import dataclass
 from itertools import chain
-from typing import Any, Iterable, Iterator, override
+from typing import Any, override
 
 from mlrl.util.cli import Argument
 from mlrl.util.format import format_iterable

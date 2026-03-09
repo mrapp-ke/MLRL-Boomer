@@ -6,9 +6,10 @@ Provides classes for performing experiments using the scikit-learn framework.
 import logging as log
 
 from argparse import Namespace
+from collections.abc import Generator
 from dataclasses import replace
 from functools import reduce
-from typing import Any, Generator, override
+from typing import Any, override
 
 from sklearn.base import BaseEstimator, clone
 

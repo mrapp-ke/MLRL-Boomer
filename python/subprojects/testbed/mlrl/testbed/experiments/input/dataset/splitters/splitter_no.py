@@ -5,8 +5,9 @@ Provides classes that preserve a dataset instead of splitting it into training a
 """
 import logging as log
 
+from collections.abc import Generator
 from dataclasses import replace
-from typing import Generator, override
+from typing import override
 
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.fold import FoldingStrategy
