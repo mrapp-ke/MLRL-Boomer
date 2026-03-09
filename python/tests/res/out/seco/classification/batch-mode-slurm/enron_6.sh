@@ -9,5 +9,5 @@
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
-mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset enron --feature-format sparse --heuristic m-estimate --instance-sampling none --log-level debug --log-width 120 --model-save-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/models --parameter-save-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/parameters --result-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results --save-evaluation true --save-meta-data false
+mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset enron --feature-format sparse --heuristic m-estimate --instance-sampling none --log-level debug --log-plain --log-width 120 --model-save-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/models --parameter-save-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/parameters --result-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results --save-evaluation true --save-meta-data false
 deactivate
