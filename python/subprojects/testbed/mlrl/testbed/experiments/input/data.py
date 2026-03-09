@@ -4,7 +4,7 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing input data.
 """
 from pathlib import Path
-from typing import Any, Dict, override
+from typing import Any, override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties, TabularProperties
@@ -121,7 +121,7 @@ class StructuralInputData(InputData):
         super().update_state(state, input_data)
         self._update_state(state, input_data)
 
-    def _update_state(self, state: ExperimentState, dictionary: Dict[Any, Any]):
+    def _update_state(self, state: ExperimentState, dictionary: dict[Any, Any]):
         """
         May be overridden by subclasses in order to update the state of an experiment based on structural input data.
 

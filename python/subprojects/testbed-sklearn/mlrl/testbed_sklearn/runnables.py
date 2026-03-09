@@ -12,7 +12,7 @@ from argparse import Namespace
 from functools import cached_property
 from itertools import chain
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Type, override
+from typing import Any, Iterable, List, Type, override
 
 import docstring_parser
 import numpy as np
@@ -135,8 +135,8 @@ class SkLearnRunnable(Runnable, ABC):
         def get_problem_domain(mode: ExperimentMode,
                                args: Namespace,
                                runnable: 'SkLearnRunnable',
-                               fit_kwargs: Dict[str, Any] | None = None,
-                               predict_kwargs: Dict[str, Any] | None = None) -> ProblemDomain:
+                               fit_kwargs: dict[str, Any] | None = None,
+                               predict_kwargs: dict[str, Any] | None = None) -> ProblemDomain:
             """
             Returns the problem domain that should be tackled by an experiment.
 
@@ -594,7 +594,7 @@ class SklearnEstimator:
         :param kwargs:  Optional keyword arguments to be passed to the estimator's constructor
         :return:        The instance that has been created
         """
-        constructor_kwargs: Dict[str, Any] = dict(kwargs)
+        constructor_kwargs: dict[str, Any] = dict(kwargs)
 
         if args:
             for argument in self.algorithmic_arguments:

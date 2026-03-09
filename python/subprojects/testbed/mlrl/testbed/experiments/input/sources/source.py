@@ -7,7 +7,7 @@ import logging as log
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, Dict, override
+from typing import Any, override
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.file_path import FilePath
@@ -188,7 +188,7 @@ class StructuralFileSource(FileSource, ABC):
         return None
 
     @abstractmethod
-    def _read_dictionary_from_file(self, file_path: Path, input_data: StructuralInputData) -> Dict[Any, Any] | None:
+    def _read_dictionary_from_file(self, file_path: Path, input_data: StructuralInputData) -> dict[Any, Any] | None:
         """
         Must be implemented by subclasses in order to read structural input data from a specific file.
 

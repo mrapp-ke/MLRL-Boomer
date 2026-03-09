@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for providing the text to be shown when the "--version" flag is passed to the command line API.
 """
 from dataclasses import dataclass, field
-from typing import Dict, Iterable, List, override
+from typing import Iterable, List, override
 
 from tabulate import tabulate
 
@@ -36,8 +36,8 @@ class RuleLearnerProgramInfo:
 
         return unique_packages
 
-    def __collect_dependencies(self, python_packages: Iterable[PackageInfo]) -> Dict[str, set[str]]:
-        unique_dependencies: Dict[str, set[str]] = {}
+    def __collect_dependencies(self, python_packages: Iterable[PackageInfo]) -> dict[str, set[str]]:
+        unique_dependencies: dict[str, set[str]] = {}
 
         for python_package in python_packages:
 
@@ -51,8 +51,8 @@ class RuleLearnerProgramInfo:
 
         return unique_dependencies
 
-    def __collect_cpp_libraries(self, python_packages: Iterable[PackageInfo]) -> Dict[str, set[str]]:
-        unique_libraries: Dict[str, set[str]] = {}
+    def __collect_cpp_libraries(self, python_packages: Iterable[PackageInfo]) -> dict[str, set[str]]:
+        unique_libraries: dict[str, set[str]] = {}
 
         for python_package in python_packages:
             for cpp_library in python_package.cpp_libraries:
@@ -65,8 +65,8 @@ class RuleLearnerProgramInfo:
 
         return unique_libraries
 
-    def __collect_build_options(self, python_packages: Iterable[PackageInfo]) -> Dict[str, set[str]]:
-        unique_build_options: Dict[str, set[str]] = {}
+    def __collect_build_options(self, python_packages: Iterable[PackageInfo]) -> dict[str, set[str]]:
+        unique_build_options: dict[str, set[str]] = {}
 
         for python_package in python_packages:
             for cpp_library in python_package.cpp_libraries:
@@ -80,8 +80,8 @@ class RuleLearnerProgramInfo:
 
         return unique_build_options
 
-    def __collect_hardware_resources(self, python_packages: Iterable[PackageInfo]) -> Dict[str, set[str]]:
-        unique_hardware_resources: Dict[str, set[str]] = {}
+    def __collect_hardware_resources(self, python_packages: Iterable[PackageInfo]) -> dict[str, set[str]]:
+        unique_hardware_resources: dict[str, set[str]] = {}
 
         for python_package in python_packages:
             for cpp_library in python_package.cpp_libraries:

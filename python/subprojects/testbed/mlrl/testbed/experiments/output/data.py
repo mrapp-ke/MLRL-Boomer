@@ -7,7 +7,7 @@ import json
 
 from abc import ABC, abstractmethod
 from dataclasses import replace
-from typing import Any, Dict, Iterable, List, Type, override
+from typing import Any, Iterable, List, Type, override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties, TabularProperties
@@ -32,7 +32,7 @@ class OutputData(ABC):
         """
         self.properties = properties
         self.context = context
-        self.custom_context: Dict[Type[Any], Context] = {}
+        self.custom_context: dict[Type[Any], Context] = {}
 
     def get_context(self, lookup_type: Type[Any]) -> Context:
         """
@@ -197,7 +197,7 @@ class StructuralOutputData(TextualOutputData, ABC):
     """
 
     @abstractmethod
-    def to_dict(self, options: Options, **kwargs) -> Dict[Any, Any] | None:
+    def to_dict(self, options: Options, **kwargs) -> dict[Any, Any] | None:
         """
         Creates and returns a dictionary from the object.
 

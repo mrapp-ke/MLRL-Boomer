@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides base classes for programs that can be configured via command line arguments.
 """
 from argparse import Namespace
-from typing import Any, Dict, List, Type, override
+from typing import Any, List, Type, override
 
 from sklearn.base import BaseEstimator, ClassifierMixin as SkLearnClassifierMixin, \
     RegressorMixin as SkLearnRegressorMixin
@@ -198,7 +198,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
             return estimator_type(**kwargs)
 
         @staticmethod
-        def get_fit_kwargs(args: Namespace) -> Dict[str, Any]:
+        def get_fit_kwargs(args: Namespace) -> dict[str, Any]:
             """
             Returns the keyword arguments that should be passed to the estimators `fit` function.
 
@@ -211,7 +211,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
             }
 
         @staticmethod
-        def get_predict_kwargs(args: Namespace) -> Dict[str, Any]:
+        def get_predict_kwargs(args: Namespace) -> dict[str, Any]:
             """
             Returns the keyword arguments that should be passed to the estimators `predict` function.
 

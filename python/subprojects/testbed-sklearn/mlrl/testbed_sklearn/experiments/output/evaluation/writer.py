@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 from dataclasses import replace
 from functools import reduce
 from itertools import chain
-from typing import Any, Dict, List, override
+from typing import Any, List, override
 
 from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import EVALUATION_MEASURE_PREDICTION_TIME, \
     EVALUATION_MEASURE_TRAINING_TIME, TabularEvaluationResult
@@ -37,7 +37,7 @@ class EvaluationDataExtractor(DataExtractor, ABC):
     measures.
     """
 
-    measurements: Dict[DatasetType, Measurements] = {}
+    measurements: dict[DatasetType, Measurements] = {}
 
     @override
     def extract_data(self, state: ExperimentState, sinks: List[Sink]) -> List[tuple[ExperimentState, OutputData]]:
@@ -102,7 +102,7 @@ class EvaluationWriter(ResultWriter):
             chain(MULTI_LABEL_EVALUATION_MEASURES, SINGLE_LABEL_EVALUATION_MEASURES, RANKING_EVALUATION_MEASURES,
                   REGRESSION_EVALUATION_MEASURES))
 
-        measurements: Dict[DatasetType, Dict[int, Measurements]] = {}
+        measurements: dict[DatasetType, dict[int, Measurements]] = {}
 
         @override
         def extract_data(self, state: ExperimentState, sinks: List[Sink]) -> List[tuple[ExperimentState, OutputData]]:

@@ -9,7 +9,7 @@ from argparse import Namespace
 from copy import copy
 from dataclasses import dataclass
 from itertools import chain
-from typing import Any, Dict, Iterable, Iterator, List, override
+from typing import Any, Iterable, Iterator, List, override
 
 from mlrl.util.cli import Argument
 from mlrl.util.format import format_iterable
@@ -45,7 +45,7 @@ class ArgumentList(List[str]):
 
         :return: The `ArgumentDict` that has been created
         """
-        argument_dict: Dict[str, str | None] = {}
+        argument_dict: dict[str, str | None] = {}
         previous_argument = None
 
         for argument in self:
@@ -59,7 +59,7 @@ class ArgumentList(List[str]):
         return ArgumentDict(argument_dict)
 
 
-class ArgumentDict(Dict[str, str | None]):
+class ArgumentDict(dict[str, str | None]):
     """
     A dictionary that stores the names of command line arguments, as well as their associated values, if available.
     """

@@ -7,7 +7,7 @@ import re as regex
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, override
+from typing import Any, Iterable, List, override
 
 import yaml
 
@@ -431,11 +431,11 @@ class MetaDataFileComparison(FileComparison):
 
     FIELD_TIMESTAMP = 'timestamp'
 
-    def __load_yaml(self, path: Path) -> Dict[Any, Any]:
+    def __load_yaml(self, path: Path) -> dict[Any, Any]:
         with open_readable_file(path) as yaml_file:
             return yaml.safe_load(yaml_file)
 
-    def __write_yaml(self, yaml_dict: Dict[Any, Any], path: Path):
+    def __write_yaml(self, yaml_dict: dict[Any, Any], path: Path):
         with open_writable_file(path) as yaml_file:
             yaml.dump(yaml_dict, yaml_file)
 

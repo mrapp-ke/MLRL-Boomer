@@ -8,7 +8,7 @@ import logging as log
 from argparse import Namespace
 from dataclasses import replace
 from pathlib import Path
-from typing import Dict, List, override
+from typing import List, override
 
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments.dataset_type import DatasetType
@@ -40,7 +40,7 @@ class ReadMode(InputMode):
         one or several sinks.
         """
 
-        def __init__(self, evaluation_by_dataset_type: Dict[DatasetType, Dict[str, Table]]):
+        def __init__(self, evaluation_by_dataset_type: dict[DatasetType, dict[str, Table]]):
             """
             :param evaluation_by_dataset_type: A dictionary that stores aggregated evaluation results for different
                                                datasets, mapped to a dataset type
@@ -120,8 +120,8 @@ class ReadMode(InputMode):
 
     @staticmethod
     def __group_batch_by_dataset(arguments: set[Argument], args: Namespace,
-                                 batch: List[Command]) -> Dict[str, List[tuple[Command, Namespace]]]:
-        commands_by_dataset: Dict[str, List[tuple[Command, Namespace]]] = {}
+                                 batch: List[Command]) -> dict[str, List[tuple[Command, Namespace]]]:
+        commands_by_dataset: dict[str, List[tuple[Command, Namespace]]] = {}
 
         for command in batch:
             command_args = ReadMode.__create_command_args(arguments, args, command)
@@ -195,7 +195,7 @@ class ReadMode(InputMode):
         return aggregated_table
 
     def __write_aggregated_evaluation_result(self, args: Namespace, recipe: Recipe, command: Command,
-                                             evaluation_by_dataset_type: Dict[DatasetType, Dict[str, Table]]):
+                                             evaluation_by_dataset_type: dict[DatasetType, dict[str, Table]]):
         experiment_builder = recipe.create_experiment_builder(experiment_mode=self.to_enum(),
                                                               args=args,
                                                               command=command,
@@ -213,7 +213,7 @@ class ReadMode(InputMode):
                  'experiments' if num_experiments > 1 else 'experiment')
         i = 1
 
-        evaluation_by_dataset_type: Dict[DatasetType, Dict[str, Table]] = {}
+        evaluation_by_dataset_type: dict[DatasetType, dict[str, Table]] = {}
 
         for dataset_name, commands in self.__group_batch_by_dataset(control_arguments, args, batch).items():
             commands_and_their_states: List[tuple[Command, ExperimentState]] = []

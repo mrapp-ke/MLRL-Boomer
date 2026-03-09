@@ -11,7 +11,7 @@ from argparse import Namespace
 from dataclasses import dataclass, field
 from functools import partial
 from pathlib import Path
-from typing import Callable, Dict, List, cast, override
+from typing import Callable, List, cast, override
 
 from tabulate import tabulate
 
@@ -277,7 +277,7 @@ class SlurmRunner(BatchMode.Runner):
 
     @staticmethod
     def __assign_to_job_arrays(batch: Batch) -> List[JobArray | Command]:
-        job_arrays: Dict[tuple[str, ...], JobArray] = {}
+        job_arrays: dict[tuple[str, ...], JobArray] = {}
         result: List[JobArray | Command] = []
 
         for command in batch:

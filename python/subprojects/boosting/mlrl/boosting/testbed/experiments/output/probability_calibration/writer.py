@@ -6,7 +6,7 @@ Provides classes that allow writing textual representations of probability calib
 import logging as log
 
 from abc import ABC, abstractmethod
-from typing import Dict, List, override
+from typing import List, override
 
 from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibrationModel, \
     NoProbabilityCalibrationModel
@@ -39,7 +39,7 @@ class ProbabilityCalibrationModelWriter(ResultWriter, ABC):
         """
 
         def __create_isotonic_calibration_model(self, table: ColumnWiseTable) -> IsotonicRegressionModel | None:
-            bin_lists: Dict[int, IsotonicRegressionModel.BinList] = {}
+            bin_lists: dict[int, IsotonicRegressionModel.BinList] = {}
 
             for column in table.columns:
                 header = column.header
@@ -76,7 +76,7 @@ class ProbabilityCalibrationModelWriter(ResultWriter, ABC):
 
         @abstractmethod
         def _create_isotonic_calibration_model(
-                self, bin_lists: Dict[int, IsotonicRegressionModel.BinList]) -> IsotonicRegressionModel:
+                self, bin_lists: dict[int, IsotonicRegressionModel.BinList]) -> IsotonicRegressionModel:
             """
             Must be implemented by subclasses in order to create objects of type `IsotonicRegressionModel`.
 
@@ -131,7 +131,7 @@ class MarginalProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWrite
 
         @override
         def _create_isotonic_calibration_model(
-                self, bin_lists: Dict[int, IsotonicRegressionModel.BinList]) -> IsotonicRegressionModel:
+                self, bin_lists: dict[int, IsotonicRegressionModel.BinList]) -> IsotonicRegressionModel:
             return IsotonicRegressionModel(bin_lists=bin_lists,
                                            properties=MarginalProbabilityCalibrationModelWriter.PROPERTIES,
                                            context=MarginalProbabilityCalibrationModelWriter.CONTEXT,
@@ -191,7 +191,7 @@ class JointProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWriter):
 
         @override
         def _create_isotonic_calibration_model(
-                self, bin_lists: Dict[int, IsotonicRegressionModel.BinList]) -> IsotonicRegressionModel:
+                self, bin_lists: dict[int, IsotonicRegressionModel.BinList]) -> IsotonicRegressionModel:
             return IsotonicRegressionModel(bin_lists=bin_lists,
                                            properties=JointProbabilityCalibrationModelWriter.PROPERTIES,
                                            context=JointProbabilityCalibrationModelWriter.CONTEXT,

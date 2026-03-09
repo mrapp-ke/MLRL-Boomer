@@ -7,7 +7,7 @@ Provides classes for representing the state of experiments.
 from argparse import Namespace
 from dataclasses import dataclass, field
 from enum import StrEnum
-from typing import Any, Dict, Type
+from typing import Any, Type
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
@@ -18,7 +18,7 @@ from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.timer import Timer
 
-ParameterDict = Dict[str, Any]
+ParameterDict = dict[str, Any]
 
 
 class ExperimentMode(StrEnum):
@@ -102,7 +102,7 @@ class ExperimentState:
     parameters: ParameterDict = field(default_factory=dict)
     training_result: TrainingState | None = None
     prediction_result: PredictionState | None = None
-    extras: Dict[str, Any] = field(default_factory=dict)
+    extras: dict[str, Any] = field(default_factory=dict)
 
     def dataset_as(self, *types: Type[Dataset]) -> Dataset | None:
         """

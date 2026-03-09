@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing evaluation results that are part of output data.
 """
 from itertools import tee
-from typing import Any, Dict, List, override
+from typing import Any, List, override
 
 from mlrl.testbed.experiments.output.data import OutputValue
 from mlrl.testbed.experiments.output.evaluation.evaluation_result import AggregatedEvaluationResult, EvaluationResult
@@ -112,7 +112,7 @@ class TabularEvaluationResult(EvaluationResult):
         if table:
             header_row = table.header_row
             fold = kwargs.get(self.KWARG_FOLD)
-            variants_by_measure: Dict[str, List[tuple[str, int]]] = {}
+            variants_by_measure: dict[str, List[tuple[str, int]]] = {}
 
             for column_index in range(0, table.num_columns, 2 if fold is None else 1):
                 header = header_row[column_index] if header_row else None

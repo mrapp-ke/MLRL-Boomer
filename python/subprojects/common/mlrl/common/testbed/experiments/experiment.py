@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for performing experiments using rule learning algorithms.
 """
 from argparse import Namespace
-from typing import Any, Dict, override
+from typing import Any, override
 
 from sklearn.base import BaseEstimator
 
@@ -40,7 +40,7 @@ class RuleLearnerExperiment(SkLearnExperiment):
 
         @override
         def _fit(self, estimator: BaseEstimator, dataset: TabularDataset,
-                 fit_kwargs: Dict[str, Any] | None) -> Timer.Duration:
+                 fit_kwargs: dict[str, Any] | None) -> Timer.Duration:
             fit_kwargs = fit_kwargs if fit_kwargs else {}
 
             # Set the indices of ordinal features, if supported...

@@ -4,8 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for keeping track of several measurements according to different measures.
 """
 
-from typing import Dict
-
 import numpy as np
 
 from mlrl.testbed.experiments.output.data import OutputValue
@@ -22,7 +20,7 @@ class Measurements:
         :param num_values_per_measure: The number of values to be tracked of for each measure
         """
         self.num_values_per_measure = num_values_per_measure
-        self._values_per_measure: Dict[OutputValue, np.ndarray] = {}
+        self._values_per_measure: dict[OutputValue, np.ndarray] = {}
 
     def values_by_measure(self, measure: Measure) -> np.ndarray:
         """
@@ -45,7 +43,7 @@ class Measurements:
         values = self._values_per_measure[measure]
         return np.average(values), np.std(values)
 
-    def values_as_dict(self, index: int) -> Dict[OutputValue, float]:
+    def values_as_dict(self, index: int) -> dict[OutputValue, float]:
         """
         Returns a dictionary that contains the value at a specific index that has been tracked for each measure.
 
@@ -54,7 +52,7 @@ class Measurements:
         """
         return {measure: values[index] for measure, values in self._values_per_measure.items()}
 
-    def averages_as_dict(self) -> Dict[OutputValue, float]:
+    def averages_as_dict(self) -> dict[OutputValue, float]:
         """
         Returns a dictionary that stores an average and a corresponding standard deviation for each measure. The
         averages are calculated as the arithmetic mean of all values that have been tracked for an individual measure.

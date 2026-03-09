@@ -5,7 +5,7 @@ Provides classes that allow reading input data from YAML files.
 """
 
 from pathlib import Path
-from typing import Any, Dict, override
+from typing import Any, override
 
 from mlrl.testbed.experiments.input.data import StructuralInputData
 from mlrl.testbed.experiments.input.sources.source import StructuralFileSource
@@ -28,7 +28,7 @@ class YamlFileSource(StructuralFileSource):
         self.schema_file_path = schema_file_path
 
     @override
-    def _read_dictionary_from_file(self, file_path: Path, _: StructuralInputData) -> Dict[Any, Any] | None:
+    def _read_dictionary_from_file(self, file_path: Path, _: StructuralInputData) -> dict[Any, Any] | None:
         schema_file_path = self.schema_file_path
 
         if schema_file_path:

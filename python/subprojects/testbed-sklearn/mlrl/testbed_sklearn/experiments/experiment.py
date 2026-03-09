@@ -8,7 +8,7 @@ import logging as log
 from argparse import Namespace
 from dataclasses import replace
 from functools import reduce
-from typing import Any, Dict, Generator, override
+from typing import Any, Generator, override
 
 from sklearn.base import BaseEstimator, clone
 
@@ -80,7 +80,7 @@ class SkLearnExperiment(Experiment):
             return learner
 
         @staticmethod
-        def __check_for_parameter_changes(expected_parameters: Dict[str, Any], actual_parameters: Dict[str, Any]):
+        def __check_for_parameter_changes(expected_parameters: dict[str, Any], actual_parameters: dict[str, Any]):
             changes = []
 
             for key, expected_value in expected_parameters.items():
@@ -100,7 +100,7 @@ class SkLearnExperiment(Experiment):
                     'The loaded model\'s values for the following parameters differ from the expected configuration: '
                     + '%s', formatted_changes)
 
-        def __init__(self, base_learner: BaseEstimator, fit_kwargs: Dict[str, Any] | None = None):
+        def __init__(self, base_learner: BaseEstimator, fit_kwargs: dict[str, Any] | None = None):
             """
             :param base_learner:    A sklearn estimator to be used in the experiment
             :param fit_kwargs:      Optional keyword arguments to be passed to the learner when fitting a model
@@ -127,7 +127,7 @@ class SkLearnExperiment(Experiment):
             return TrainingState(learner=new_learner, training_duration=training_duration)
 
         def _fit(self, estimator: BaseEstimator, dataset: TabularDataset,
-                 fit_kwargs: Dict[str, Any] | None) -> Timer.Duration:
+                 fit_kwargs: dict[str, Any] | None) -> Timer.Duration:
             """
             May be overridden by subclasses in order to fit a scikit-learn estimator to a dataset.
 

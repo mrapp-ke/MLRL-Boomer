@@ -5,7 +5,7 @@ Provides a data structure that allows to store and parse options that are provid
 """
 from enum import Enum, StrEnum
 from functools import reduce
-from typing import Any, Dict, Type, override
+from typing import Any, Type, override
 
 from mlrl.util.format import format_enum_values, format_set
 from mlrl.util.validation import ValidationError
@@ -44,7 +44,7 @@ class Options:
 
     ERROR_MESSAGE_INVALID_OPTION = 'Expected comma-separated list of key-value pairs'
 
-    def __init__(self, dictionary: Dict[str, Any] | None = None):
+    def __init__(self, dictionary: dict[str, Any] | None = None):
         self.dictionary = dictionary if dictionary is not None else {}
 
     @staticmethod
@@ -222,7 +222,7 @@ def parse_param(name: str, value: str, allowed_values: set[str]) -> str:
                           + name + '": Must be one of ' + format_set(allowed_values) + ', but is "' + str(value) + '"')
 
 
-def parse_param_and_options(name: str, value: str, allowed_values_and_options: Dict[str,
+def parse_param_and_options(name: str, value: str, allowed_values_and_options: dict[str,
                                                                                     set[str]]) -> tuple[str, Options]:
     """
     Parses and returns an argument or parameter value, as well as additional `Options` that may be associated with it.

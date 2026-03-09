@@ -6,7 +6,7 @@ Provides classes for representing evaluation results that are part of output dat
 from abc import ABC
 from functools import partial
 from itertools import chain
-from typing import Dict, Iterable, List, override
+from typing import Iterable, List, override
 
 import numpy as np
 
@@ -62,7 +62,7 @@ class AggregatedEvaluationResult(TabularOutputData):
         ),
     ]
 
-    def __init__(self, evaluation_by_dataset: Dict[str, Table]):
+    def __init__(self, evaluation_by_dataset: dict[str, Table]):
         """
         :param evaluation_by_dataset: A dictionary that stores a table with evaluation results, mapped to the names of
                                       different datasets
@@ -84,8 +84,8 @@ class AggregatedEvaluationResult(TabularOutputData):
             dataset_column_index = 0
             parameter_column_indices: List[int] = []
             measures: List[tuple[int, str]] = []
-            std_dev_column_indices: Dict[str, int] = {}
-            aggregation_measure_column_indices: Dict[str, Dict[AggregationMeasure, int]] = {}
+            std_dev_column_indices: dict[str, int] = {}
+            aggregation_measure_column_indices: dict[str, dict[AggregationMeasure, int]] = {}
 
             for column_index, column in enumerate(column_wise_table.columns):
                 header = str(column.header)
@@ -154,7 +154,7 @@ class AggregatedEvaluationResult(TabularOutputData):
 
     # pylint: disable=too-many-nested-blocks
     @staticmethod
-    def __get_average_rows(table: ColumnWiseTable, aggregation_measure_indices: Dict[AggregationMeasure, int],
+    def __get_average_rows(table: ColumnWiseTable, aggregation_measure_indices: dict[AggregationMeasure, int],
                            parameter_columns: List[Column], num_columns: int, decimals: int) -> List[List[Cell]]:
         result = []
 
@@ -183,9 +183,9 @@ class AggregatedEvaluationResult(TabularOutputData):
         return result
 
     @staticmethod
-    def __get_unique_parameter_settings(parameter_columns: List[Column]) -> Dict[tuple[Cell, ...], List[int]]:
+    def __get_unique_parameter_settings(parameter_columns: List[Column]) -> dict[tuple[Cell, ...], List[int]]:
         num_rows = parameter_columns[0].num_rows if parameter_columns else 0
-        unique_parameters: Dict[tuple[Cell, ...], List[int]] = {}
+        unique_parameters: dict[tuple[Cell, ...], List[int]] = {}
 
         for row_index in range(num_rows):
             parameters = tuple((parameter_column[row_index] for parameter_column in parameter_columns))

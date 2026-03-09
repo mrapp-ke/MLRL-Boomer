@@ -6,7 +6,7 @@ Provides utilities that ease the configuration of rule learning algorithms.
 import logging as log
 
 from abc import ABC, abstractmethod
-from typing import Dict, override
+from typing import override
 
 from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, EqualFrequencyFeatureBinningMixin, \
     EqualWidthFeatureBinningMixin, FeatureSamplingWithoutReplacementMixin, GreedyTopDownRuleInductionMixin, \
@@ -139,7 +139,7 @@ class NominalParameter(Parameter, ABC):
 
     def __init__(self, name: str, description: str):
         super().__init__(name, description)
-        self.values: Dict[str, NominalParameter.Value] = {}
+        self.values: dict[str, NominalParameter.Value] = {}
 
     def add_value(self, name: str, mixin: type, options: set[str] | None = None, description: str | None = None):
         """
@@ -165,7 +165,7 @@ class NominalParameter(Parameter, ABC):
         :param options: Additional options that have eventually been specified
         """
 
-    def __get_supported_values(self, config_type: type) -> set[str] | Dict[str, Options]:
+    def __get_supported_values(self, config_type: type) -> set[str] | dict[str, Options]:
         num_options = 0
         supported_values = {}
 

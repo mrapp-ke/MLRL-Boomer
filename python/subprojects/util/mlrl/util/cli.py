@@ -9,7 +9,7 @@ from argparse import Action, ArgumentError, ArgumentParser, Namespace, _Argument
 from enum import Enum
 from functools import cached_property
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Type, override
+from typing import Any, Callable, List, Type, override
 
 from mlrl.util.format import format_enum_values, format_set, format_value
 from mlrl.util.options import BooleanOption, Options, parse_enum, parse_param, parse_param_and_options
@@ -356,7 +356,7 @@ class SetArgument(Argument):
     An argument of a command line interface for which the user can provide one out of a predefined set of string values.
     """
 
-    Values = set[str] | Dict[str, set[str]]
+    Values = set[str] | dict[str, set[str]]
 
     @staticmethod
     def __format_description(description: str | None, values: Values) -> str:
@@ -467,7 +467,7 @@ class CommandLineInterface:
         """
         self.arguments: List[Argument] = []
         self._argument_parser = argument_parser
-        self._argument_groups: Dict[str, _ArgumentGroup] = {}
+        self._argument_groups: dict[str, _ArgumentGroup] = {}
 
         if version_text:
 
