@@ -1,4 +1,4 @@
-mlrl-testbed mlrl.boosting --mode read --log-width 120 --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --save-all true
+mlrl-testbed mlrl.boosting --mode read --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --save-all true
 Reading meta-data...
 ○ Reading input data from file "python/tests/res/tmp/metadata.yml"...
 ✓ Successfully read meta-data
@@ -10,11 +10,12 @@ Reading experimental results of 8 experiments...
 
 Reading experimental results of experiment (1 / 8)...
 The command "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split
-cross-validation{num_folds=2} --dataset atp7d --instance-sampling none --log-level debug --log-width 120 --loss
-squared-error-decomposable --model-save-dir instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/models
---parameter-save-dir instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/parameters --problem-type
-regression --result-dir instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/results --save-all true
---save-evaluation true --save-meta-data false" has been used originally for running this experiment
+cross-validation{num_folds=2} --dataset atp7d --instance-sampling none --log-level debug --log-plain --log-width 120
+--loss squared-error-decomposable --model-save-dir
+instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/models --parameter-save-dir
+instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/parameters --problem-type regression --result-dir
+instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/results --save-all true --save-evaluation true
+--save-meta-data false" has been used originally for running this experiment
 Performing full 2-fold cross validation...
 Fold 1 / 2:
 ○ Reading input data from file
@@ -72,12 +73,12 @@ stics_fold-1.csv"...
 "python/tests/res/tmp/rerun/instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/parameters/parameters_f
 old-1.csv"...
 
-╭─ 🗀 Evaluation result for test data (Fold 1) ─╮
-│ Mean Absolute Error (↓)               30.8   │
-│ Mean Absolute Percentage Error (↓)     0.08  │
-│ Mean Squared Error (↓)              3069.57  │
-│ Median Absolute Error (↓)             16.5   │
-╰──────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 1):
+
+Mean Absolute Error (↓)               30.8
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              3069.57
+Median Absolute Error (↓)             16.5
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/results/evaluation_test
@@ -159,23 +160,23 @@ stics_fold-2.csv"...
 "python/tests/res/tmp/rerun/instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/parameters/parameters_f
 old-2.csv"...
 
-╭─ 🗀 Evaluation result for test data (Fold 2) ─╮
-│ Mean Absolute Error (↓)               28.55  │
-│ Mean Absolute Percentage Error (↓)     0.08  │
-│ Mean Squared Error (↓)              2521.18  │
-│ Median Absolute Error (↓)             16.27  │
-╰──────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 2):
+
+Mean Absolute Error (↓)               28.55
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2521.18
+Median Absolute Error (↓)             16.27
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/results/evaluation_test
 _fold-2.csv"...
 
-╭─ 🗀 Evaluation result for test data (Average across 2 folds) ─╮
-│ Mean Absolute Error (↓)               29.67  ±1.12           │
-│ Mean Absolute Percentage Error (↓)     0.08  ±0.00           │
-│ Mean Squared Error (↓)              2795.38  ±274.19         │
-│ Median Absolute Error (↓)             16.38  ±0.11           │
-╰──────────────────────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Average across 2 folds):
+
+Mean Absolute Error (↓)               29.67  ±1.12
+Mean Absolute Percentage Error (↓)     0.08  ±0.00
+Mean Squared Error (↓)              2795.38  ±274.19
+Median Absolute Error (↓)             16.38  ±0.11
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/results/evaluation_test
@@ -205,7 +206,7 @@ istics_fold-2.csv"...
 Reading experimental results of experiment (2 / 8)...
 The command "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split
 cross-validation{num_folds=2} --dataset atp7d --feature-format sparse --instance-sampling none --log-level debug
---log-width 120 --loss squared-error-decomposable --model-save-dir
+--log-plain --log-width 120 --loss squared-error-decomposable --model-save-dir
 instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/models --parameter-save-dir
 instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/parameters --problem-type
 regression --result-dir
@@ -269,12 +270,12 @@ esults/data_characteristics_fold-1.csv"...
 "python/tests/res/tmp/rerun/instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/p
 arameters/parameters_fold-1.csv"...
 
-╭─ 🗀 Evaluation result for test data (Fold 1) ─╮
-│ Mean Absolute Error (↓)               30.45  │
-│ Mean Absolute Percentage Error (↓)     0.08  │
-│ Mean Squared Error (↓)              2878.84  │
-│ Median Absolute Error (↓)             16.47  │
-╰──────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 1):
+
+Mean Absolute Error (↓)               30.45
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2878.84
+Median Absolute Error (↓)             16.47
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/r
@@ -357,23 +358,23 @@ esults/data_characteristics_fold-2.csv"...
 "python/tests/res/tmp/rerun/instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/p
 arameters/parameters_fold-2.csv"...
 
-╭─ 🗀 Evaluation result for test data (Fold 2) ─╮
-│ Mean Absolute Error (↓)               29.07  │
-│ Mean Absolute Percentage Error (↓)     0.08  │
-│ Mean Squared Error (↓)              2295.35  │
-│ Median Absolute Error (↓)             16.7   │
-╰──────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 2):
+
+Mean Absolute Error (↓)               29.07
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2295.35
+Median Absolute Error (↓)             16.7
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/r
 esults/evaluation_test_fold-2.csv"...
 
-╭─ 🗀 Evaluation result for test data (Average across 2 folds) ─╮
-│ Mean Absolute Error (↓)               29.76  ±0.69           │
-│ Mean Absolute Percentage Error (↓)     0.08  ±0.00           │
-│ Mean Squared Error (↓)              2587.1   ±291.75         │
-│ Median Absolute Error (↓)             16.58  ±0.11           │
-╰──────────────────────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Average across 2 folds):
+
+Mean Absolute Error (↓)               29.76  ±0.69
+Mean Absolute Percentage Error (↓)     0.08  ±0.00
+Mean Squared Error (↓)              2587.1   ±291.75
+Median Absolute Error (↓)             16.58  ±0.11
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/r
@@ -403,7 +404,7 @@ esults/model_characteristics_fold-2.csv"...
 Reading experimental results of experiment (3 / 8)...
 The command "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split
 cross-validation{num_folds=2} --dataset atp7d --instance-sampling with-replacement{sample_size=0.5} --log-level debug
---log-width 120 --loss squared-error-decomposable --model-save-dir
+--log-plain --log-width 120 --loss squared-error-decomposable --model-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_atp7d/models
 --parameter-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_atp7d/parameters
@@ -468,12 +469,12 @@ atp7d/results/data_characteristics_fold-1.csv"...
 "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_
 atp7d/parameters/parameters_fold-1.csv"...
 
-╭─ 🗀 Evaluation result for test data (Fold 1) ─╮
-│ Mean Absolute Error (↓)               34.46  │
-│ Mean Absolute Percentage Error (↓)     0.1   │
-│ Mean Squared Error (↓)              3395.9   │
-│ Median Absolute Error (↓)             20.82  │
-╰──────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 1):
+
+Mean Absolute Error (↓)               34.46
+Mean Absolute Percentage Error (↓)     0.1
+Mean Squared Error (↓)              3395.9
+Median Absolute Error (↓)             20.82
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_
@@ -556,23 +557,23 @@ atp7d/results/data_characteristics_fold-2.csv"...
 "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_
 atp7d/parameters/parameters_fold-2.csv"...
 
-╭─ 🗀 Evaluation result for test data (Fold 2) ─╮
-│ Mean Absolute Error (↓)               30.24  │
-│ Mean Absolute Percentage Error (↓)     0.08  │
-│ Mean Squared Error (↓)              3135     │
-│ Median Absolute Error (↓)             17.99  │
-╰──────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 2):
+
+Mean Absolute Error (↓)               30.24
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              3135
+Median Absolute Error (↓)             17.99
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_
 atp7d/results/evaluation_test_fold-2.csv"...
 
-╭─ 🗀 Evaluation result for test data (Average across 2 folds) ─╮
-│ Mean Absolute Error (↓)               32.35  ±2.11           │
-│ Mean Absolute Percentage Error (↓)     0.09  ±0.01           │
-│ Mean Squared Error (↓)              3265.45  ±130.45         │
-│ Median Absolute Error (↓)             19.41  ±1.42           │
-╰──────────────────────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Average across 2 folds):
+
+Mean Absolute Error (↓)               32.35  ±2.11
+Mean Absolute Percentage Error (↓)     0.09  ±0.01
+Mean Squared Error (↓)              3265.45  ±130.45
+Median Absolute Error (↓)             19.41  ±1.42
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_
@@ -602,7 +603,8 @@ atp7d/results/model_characteristics_fold-2.csv"...
 Reading experimental results of experiment (4 / 8)...
 The command "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split
 cross-validation{num_folds=2} --dataset atp7d --feature-format sparse --instance-sampling
-with-replacement{sample_size=0.5} --log-level debug --log-width 120 --loss squared-error-decomposable --model-save-dir
+with-replacement{sample_size=0.5} --log-level debug --log-plain --log-width 120 --loss squared-error-decomposable
+--model-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/
 models --parameter-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/
@@ -668,12 +670,12 @@ format_sparse/dataset_atp7d/results/data_characteristics_fold-1.csv"...
 "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-
 format_sparse/dataset_atp7d/parameters/parameters_fold-1.csv"...
 
-╭─ 🗀 Evaluation result for test data (Fold 1) ─╮
-│ Mean Absolute Error (↓)               32.63  │
-│ Mean Absolute Percentage Error (↓)     0.09  │
-│ Mean Squared Error (↓)              3168.82  │
-│ Median Absolute Error (↓)             18.08  │
-╰──────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 1):
+
+Mean Absolute Error (↓)               32.63
+Mean Absolute Percentage Error (↓)     0.09
+Mean Squared Error (↓)              3168.82
+Median Absolute Error (↓)             18.08
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-
@@ -756,23 +758,23 @@ format_sparse/dataset_atp7d/results/data_characteristics_fold-2.csv"...
 "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-
 format_sparse/dataset_atp7d/parameters/parameters_fold-2.csv"...
 
-╭─ 🗀 Evaluation result for test data (Fold 2) ─╮
-│ Mean Absolute Error (↓)               28.2   │
-│ Mean Absolute Percentage Error (↓)     0.08  │
-│ Mean Squared Error (↓)              2917.31  │
-│ Median Absolute Error (↓)             15.86  │
-╰──────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 2):
+
+Mean Absolute Error (↓)               28.2
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2917.31
+Median Absolute Error (↓)             15.86
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-
 format_sparse/dataset_atp7d/results/evaluation_test_fold-2.csv"...
 
-╭─ 🗀 Evaluation result for test data (Average across 2 folds) ─╮
-│ Mean Absolute Error (↓)               30.42  ±2.21           │
-│ Mean Absolute Percentage Error (↓)     0.08  ±0.01           │
-│ Mean Squared Error (↓)              3043.06  ±125.76         │
-│ Median Absolute Error (↓)             16.97  ±1.11           │
-╰──────────────────────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Average across 2 folds):
+
+Mean Absolute Error (↓)               30.42  ±2.21
+Mean Absolute Percentage Error (↓)     0.08  ±0.01
+Mean Squared Error (↓)              3043.06  ±125.76
+Median Absolute Error (↓)             16.97  ±1.11
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-
@@ -801,8 +803,8 @@ format_sparse/dataset_atp7d/results/model_characteristics_fold-2.csv"...
 
 Reading experimental results of experiment (5 / 8)...
 The command "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split
-cross-validation{num_folds=2} --dataset atp7d-binary --instance-sampling none --log-level debug --log-width 120 --loss
-squared-error-decomposable --model-save-dir
+cross-validation{num_folds=2} --dataset atp7d-binary --instance-sampling none --log-level debug --log-plain --log-width
+120 --loss squared-error-decomposable --model-save-dir
 instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/models --parameter-save-dir
 instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/parameters --problem-type regression
 --result-dir instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/results --save-all true
@@ -865,12 +867,12 @@ racteristics_fold-1.csv"...
 "python/tests/res/tmp/rerun/instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/parameters/param
 eters_fold-1.csv"...
 
-╭─ 🗀 Evaluation result for test data (Fold 1) ─╮
-│ Mean Absolute Error (↓)               32.57  │
-│ Mean Absolute Percentage Error (↓)     0.09  │
-│ Mean Squared Error (↓)              3121.46  │
-│ Median Absolute Error (↓)             18.43  │
-╰──────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 1):
+
+Mean Absolute Error (↓)               32.57
+Mean Absolute Percentage Error (↓)     0.09
+Mean Squared Error (↓)              3121.46
+Median Absolute Error (↓)             18.43
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/results/evaluati
@@ -953,23 +955,23 @@ racteristics_fold-2.csv"...
 "python/tests/res/tmp/rerun/instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/parameters/param
 eters_fold-2.csv"...
 
-╭─ 🗀 Evaluation result for test data (Fold 2) ─╮
-│ Mean Absolute Error (↓)               35.14  │
-│ Mean Absolute Percentage Error (↓)     0.09  │
-│ Mean Squared Error (↓)              4501.48  │
-│ Median Absolute Error (↓)             19.11  │
-╰──────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 2):
+
+Mean Absolute Error (↓)               35.14
+Mean Absolute Percentage Error (↓)     0.09
+Mean Squared Error (↓)              4501.48
+Median Absolute Error (↓)             19.11
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/results/evaluati
 on_test_fold-2.csv"...
 
-╭─ 🗀 Evaluation result for test data (Average across 2 folds) ─╮
-│ Mean Absolute Error (↓)               33.85  ±1.28           │
-│ Mean Absolute Percentage Error (↓)     0.09  ±0.00           │
-│ Mean Squared Error (↓)              3811.47  ±690.01         │
-│ Median Absolute Error (↓)             18.77  ±0.34           │
-╰──────────────────────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Average across 2 folds):
+
+Mean Absolute Error (↓)               33.85  ±1.28
+Mean Absolute Percentage Error (↓)     0.09  ±0.00
+Mean Squared Error (↓)              3811.47  ±690.01
+Median Absolute Error (↓)             18.77  ±0.34
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/results/evaluati
@@ -999,7 +1001,7 @@ aracteristics_fold-2.csv"...
 Reading experimental results of experiment (6 / 8)...
 The command "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split
 cross-validation{num_folds=2} --dataset atp7d-binary --feature-format sparse --instance-sampling none --log-level debug
---log-width 120 --loss squared-error-decomposable --model-save-dir
+--log-plain --log-width 120 --loss squared-error-decomposable --model-save-dir
 instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/models
 --parameter-save-dir
 instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/parameters
@@ -1064,12 +1066,12 @@ inary/results/data_characteristics_fold-1.csv"...
 "python/tests/res/tmp/rerun/instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-b
 inary/parameters/parameters_fold-1.csv"...
 
-╭─ 🗀 Evaluation result for test data (Fold 1) ─╮
-│ Mean Absolute Error (↓)               32.57  │
-│ Mean Absolute Percentage Error (↓)     0.09  │
-│ Mean Squared Error (↓)              3121.46  │
-│ Median Absolute Error (↓)             18.43  │
-╰──────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 1):
+
+Mean Absolute Error (↓)               32.57
+Mean Absolute Percentage Error (↓)     0.09
+Mean Squared Error (↓)              3121.46
+Median Absolute Error (↓)             18.43
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-b
@@ -1152,23 +1154,23 @@ inary/results/data_characteristics_fold-2.csv"...
 "python/tests/res/tmp/rerun/instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-b
 inary/parameters/parameters_fold-2.csv"...
 
-╭─ 🗀 Evaluation result for test data (Fold 2) ─╮
-│ Mean Absolute Error (↓)               35.14  │
-│ Mean Absolute Percentage Error (↓)     0.09  │
-│ Mean Squared Error (↓)              4501.48  │
-│ Median Absolute Error (↓)             19.11  │
-╰──────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 2):
+
+Mean Absolute Error (↓)               35.14
+Mean Absolute Percentage Error (↓)     0.09
+Mean Squared Error (↓)              4501.48
+Median Absolute Error (↓)             19.11
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-b
 inary/results/evaluation_test_fold-2.csv"...
 
-╭─ 🗀 Evaluation result for test data (Average across 2 folds) ─╮
-│ Mean Absolute Error (↓)               33.85  ±1.28           │
-│ Mean Absolute Percentage Error (↓)     0.09  ±0.00           │
-│ Mean Squared Error (↓)              3811.47  ±690.01         │
-│ Median Absolute Error (↓)             18.77  ±0.34           │
-╰──────────────────────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Average across 2 folds):
+
+Mean Absolute Error (↓)               33.85  ±1.28
+Mean Absolute Percentage Error (↓)     0.09  ±0.00
+Mean Squared Error (↓)              3811.47  ±690.01
+Median Absolute Error (↓)             18.77  ±0.34
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-b
@@ -1198,7 +1200,7 @@ inary/results/model_characteristics_fold-2.csv"...
 Reading experimental results of experiment (7 / 8)...
 The command "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split
 cross-validation{num_folds=2} --dataset atp7d-binary --instance-sampling with-replacement{sample_size=0.5} --log-level
-debug --log-width 120 --loss squared-error-decomposable --model-save-dir
+debug --log-plain --log-width 120 --loss squared-error-decomposable --model-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_atp7d-binary/models
 --parameter-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_atp7d-binary/parameters
@@ -1263,12 +1265,12 @@ atp7d-binary/results/data_characteristics_fold-1.csv"...
 "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_
 atp7d-binary/parameters/parameters_fold-1.csv"...
 
-╭─ 🗀 Evaluation result for test data (Fold 1) ─╮
-│ Mean Absolute Error (↓)               36.72  │
-│ Mean Absolute Percentage Error (↓)     0.1   │
-│ Mean Squared Error (↓)              3689.02  │
-│ Median Absolute Error (↓)             21.47  │
-╰──────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 1):
+
+Mean Absolute Error (↓)               36.72
+Mean Absolute Percentage Error (↓)     0.1
+Mean Squared Error (↓)              3689.02
+Median Absolute Error (↓)             21.47
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_
@@ -1351,23 +1353,23 @@ atp7d-binary/results/data_characteristics_fold-2.csv"...
 "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_
 atp7d-binary/parameters/parameters_fold-2.csv"...
 
-╭─ 🗀 Evaluation result for test data (Fold 2) ─╮
-│ Mean Absolute Error (↓)               33.5   │
-│ Mean Absolute Percentage Error (↓)     0.09  │
-│ Mean Squared Error (↓)              3992.48  │
-│ Median Absolute Error (↓)             18.65  │
-╰──────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 2):
+
+Mean Absolute Error (↓)               33.5
+Mean Absolute Percentage Error (↓)     0.09
+Mean Squared Error (↓)              3992.48
+Median Absolute Error (↓)             18.65
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_
 atp7d-binary/results/evaluation_test_fold-2.csv"...
 
-╭─ 🗀 Evaluation result for test data (Average across 2 folds) ─╮
-│ Mean Absolute Error (↓)               35.11  ±1.61           │
-│ Mean Absolute Percentage Error (↓)     0.1   ±0.01           │
-│ Mean Squared Error (↓)              3840.75  ±151.73         │
-│ Median Absolute Error (↓)             20.06  ±1.41           │
-╰──────────────────────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Average across 2 folds):
+
+Mean Absolute Error (↓)               35.11  ±1.61
+Mean Absolute Percentage Error (↓)     0.1   ±0.01
+Mean Squared Error (↓)              3840.75  ±151.73
+Median Absolute Error (↓)             20.06  ±1.41
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_
@@ -1397,7 +1399,8 @@ atp7d-binary/results/model_characteristics_fold-2.csv"...
 Reading experimental results of experiment (8 / 8)...
 The command "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split
 cross-validation{num_folds=2} --dataset atp7d-binary --feature-format sparse --instance-sampling
-with-replacement{sample_size=0.5} --log-level debug --log-width 120 --loss squared-error-decomposable --model-save-dir
+with-replacement{sample_size=0.5} --log-level debug --log-plain --log-width 120 --loss squared-error-decomposable
+--model-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-
 binary/models --parameter-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-
@@ -1463,12 +1466,12 @@ format_sparse/dataset_atp7d-binary/results/data_characteristics_fold-1.csv"...
 "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-
 format_sparse/dataset_atp7d-binary/parameters/parameters_fold-1.csv"...
 
-╭─ 🗀 Evaluation result for test data (Fold 1) ─╮
-│ Mean Absolute Error (↓)               36.72  │
-│ Mean Absolute Percentage Error (↓)     0.1   │
-│ Mean Squared Error (↓)              3689.02  │
-│ Median Absolute Error (↓)             21.47  │
-╰──────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 1):
+
+Mean Absolute Error (↓)               36.72
+Mean Absolute Percentage Error (↓)     0.1
+Mean Squared Error (↓)              3689.02
+Median Absolute Error (↓)             21.47
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-
@@ -1551,23 +1554,23 @@ format_sparse/dataset_atp7d-binary/results/data_characteristics_fold-2.csv"...
 "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-
 format_sparse/dataset_atp7d-binary/parameters/parameters_fold-2.csv"...
 
-╭─ 🗀 Evaluation result for test data (Fold 2) ─╮
-│ Mean Absolute Error (↓)               33.5   │
-│ Mean Absolute Percentage Error (↓)     0.09  │
-│ Mean Squared Error (↓)              3992.48  │
-│ Median Absolute Error (↓)             18.65  │
-╰──────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 2):
+
+Mean Absolute Error (↓)               33.5
+Mean Absolute Percentage Error (↓)     0.09
+Mean Squared Error (↓)              3992.48
+Median Absolute Error (↓)             18.65
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-
 format_sparse/dataset_atp7d-binary/results/evaluation_test_fold-2.csv"...
 
-╭─ 🗀 Evaluation result for test data (Average across 2 folds) ─╮
-│ Mean Absolute Error (↓)               35.11  ±1.61           │
-│ Mean Absolute Percentage Error (↓)     0.1   ±0.01           │
-│ Mean Squared Error (↓)              3840.75  ±151.73         │
-│ Median Absolute Error (↓)             20.06  ±1.41           │
-╰──────────────────────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Average across 2 folds):
+
+Mean Absolute Error (↓)               35.11  ±1.61
+Mean Absolute Percentage Error (↓)     0.1   ±0.01
+Mean Squared Error (↓)              3840.75  ±151.73
+Median Absolute Error (↓)             20.06  ±1.41
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-
@@ -1594,156 +1597,156 @@ format_sparse/dataset_atp7d-binary/results/rules_fold-2.txt"...
 "python/tests/res/tmp/rerun/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-
 format_sparse/dataset_atp7d-binary/results/model_characteristics_fold-2.csv"...
 
-╭────────────────────────── 🗀 Evaluation results of several experiments for test data ───────────────────────────╮
-│ Evaluation results for measure "Mean Absolute Error (↓)":                                                      │
-│                                                                                                                │
-│ feature_format    instance_sampling                    Mean Absolute Error (↓)  Std.-dev.      Rank            │
-│ ----------------  ---------------------------------  -------------------------  -----------  ------            │
-│ "atp7d"                                                                                                        │
-│ ----------------  ---------------------------------  -------------------------  -----------  ------            │
-│                   none                                                   29.67  ±1.12          1               │
-│ sparse            none                                                   29.76  ±0.69          2               │
-│                   with-replacement{sample_size=0.5}                      32.35  ±2.11          4               │
-│ sparse            with-replacement{sample_size=0.5}                      30.42  ±2.21          3               │
-│ ----------------  ---------------------------------  -------------------------  -----------  ------            │
-│ "atp7d-binary"                                                                                                 │
-│ ----------------  ---------------------------------  -------------------------  -----------  ------            │
-│                   none                                                   33.85  ±1.28          1.5             │
-│ sparse            none                                                   33.85  ±1.28          1.5             │
-│                   with-replacement{sample_size=0.5}                      35.11  ±1.61          3.5             │
-│ sparse            with-replacement{sample_size=0.5}                      35.11  ±1.61          3.5             │
-│ ----------------  ---------------------------------  -------------------------  -----------  ------            │
-│ Averages                                                                                                       │
-│ ----------------  ---------------------------------  -------------------------  -----------  ------            │
-│                   none                                                                         1.25            │
-│ sparse            none                                                                         1.75            │
-│                   with-replacement{sample_size=0.5}                                            3.75            │
-│ sparse            with-replacement{sample_size=0.5}                                            3.25            │
-│                                                                                                                │
-│ Evaluation results for measure "Mean Absolute Percentage Error (↓)":                                           │
-│                                                                                                                │
-│ feature_format    instance_sampling                    Mean Absolute Percentage Error (↓)  Std.-dev.      Rank │
-│ ----------------  ---------------------------------  ------------------------------------  -----------  ------ │
-│ "atp7d"                                                                                                        │
-│ ----------------  ---------------------------------  ------------------------------------  -----------  ------ │
-│                   none                                                               0.08  ±0.00          2    │
-│ sparse            none                                                               0.08  ±0.00          1    │
-│                   with-replacement{sample_size=0.5}                                  0.09  ±0.01          4    │
-│ sparse            with-replacement{sample_size=0.5}                                  0.08  ±0.01          3    │
-│ ----------------  ---------------------------------  ------------------------------------  -----------  ------ │
-│ "atp7d-binary"                                                                                                 │
-│ ----------------  ---------------------------------  ------------------------------------  -----------  ------ │
-│                   none                                                               0.09  ±0.00          1.5  │
-│ sparse            none                                                               0.09  ±0.00          1.5  │
-│                   with-replacement{sample_size=0.5}                                  0.1   ±0.01          3.5  │
-│ sparse            with-replacement{sample_size=0.5}                                  0.1   ±0.01          3.5  │
-│ ----------------  ---------------------------------  ------------------------------------  -----------  ------ │
-│ Averages                                                                                                       │
-│ ----------------  ---------------------------------  ------------------------------------  -----------  ------ │
-│                   none                                                                                    1.75 │
-│ sparse            none                                                                                    1.25 │
-│                   with-replacement{sample_size=0.5}                                                       3.75 │
-│ sparse            with-replacement{sample_size=0.5}                                                       3.25 │
-│                                                                                                                │
-│ Evaluation results for measure "Mean Squared Error (↓)":                                                       │
-│                                                                                                                │
-│ feature_format    instance_sampling                    Mean Squared Error (↓)  Std.-dev.      Rank             │
-│ ----------------  ---------------------------------  ------------------------  -----------  ------             │
-│ "atp7d"                                                                                                        │
-│ ----------------  ---------------------------------  ------------------------  -----------  ------             │
-│                   none                                                2795.38  ±274.19        2                │
-│ sparse            none                                                2587.1   ±291.75        1                │
-│                   with-replacement{sample_size=0.5}                   3265.45  ±130.45        4                │
-│ sparse            with-replacement{sample_size=0.5}                   3043.06  ±125.76        3                │
-│ ----------------  ---------------------------------  ------------------------  -----------  ------             │
-│ "atp7d-binary"                                                                                                 │
-│ ----------------  ---------------------------------  ------------------------  -----------  ------             │
-│                   none                                                3811.47  ±690.01        1.5              │
-│ sparse            none                                                3811.47  ±690.01        1.5              │
-│                   with-replacement{sample_size=0.5}                   3840.75  ±151.73        3.5              │
-│ sparse            with-replacement{sample_size=0.5}                   3840.75  ±151.73        3.5              │
-│ ----------------  ---------------------------------  ------------------------  -----------  ------             │
-│ Averages                                                                                                       │
-│ ----------------  ---------------------------------  ------------------------  -----------  ------             │
-│                   none                                                                        1.75             │
-│ sparse            none                                                                        1.25             │
-│                   with-replacement{sample_size=0.5}                                           3.75             │
-│ sparse            with-replacement{sample_size=0.5}                                           3.25             │
-│                                                                                                                │
-│ Evaluation results for measure "Median Absolute Error (↓)":                                                    │
-│                                                                                                                │
-│ feature_format    instance_sampling                    Median Absolute Error (↓)  Std.-dev.      Rank          │
-│ ----------------  ---------------------------------  ---------------------------  -----------  ------          │
-│ "atp7d"                                                                                                        │
-│ ----------------  ---------------------------------  ---------------------------  -----------  ------          │
-│                   none                                                     16.38  ±0.11          1             │
-│ sparse            none                                                     16.58  ±0.11          2             │
-│                   with-replacement{sample_size=0.5}                        19.41  ±1.42          4             │
-│ sparse            with-replacement{sample_size=0.5}                        16.97  ±1.11          3             │
-│ ----------------  ---------------------------------  ---------------------------  -----------  ------          │
-│ "atp7d-binary"                                                                                                 │
-│ ----------------  ---------------------------------  ---------------------------  -----------  ------          │
-│                   none                                                     18.77  ±0.34          1.5           │
-│ sparse            none                                                     18.77  ±0.34          1.5           │
-│                   with-replacement{sample_size=0.5}                        20.06  ±1.41          3.5           │
-│ sparse            with-replacement{sample_size=0.5}                        20.06  ±1.41          3.5           │
-│ ----------------  ---------------------------------  ---------------------------  -----------  ------          │
-│ Averages                                                                                                       │
-│ ----------------  ---------------------------------  ---------------------------  -----------  ------          │
-│                   none                                                                           1.25          │
-│ sparse            none                                                                           1.75          │
-│                   with-replacement{sample_size=0.5}                                              3.75          │
-│ sparse            with-replacement{sample_size=0.5}                                              3.25          │
-│                                                                                                                │
-│ Evaluation results for measure "Prediction Time (seconds)":                                                    │
-│
-│ feature_format    instance_sampl
-│ ----------------  --------------
-│ "atp7d"
-│ ----------------  --------------
-│                   none
-│ sparse            none
-│                   with-replaceme
-│ sparse            with-replaceme
-│ ----------------  --------------
-│ "atp7d-binary"
-│ ----------------  --------------
-│                   none
-│ sparse            none
-│                   with-replaceme
-│ sparse            with-replaceme
-│ ----------------  --------------
-│ Averages
-│ ----------------  --------------
-│                   none
-│ sparse            none
-│                   with-replaceme
-│ sparse            with-replaceme
-│
-│ Evaluation results for measure "
-│
-│ feature_format    instance_sampl
-│ ----------------  --------------
-│ "atp7d"
-│ ----------------  --------------
-│                   none
-│ sparse            none
-│                   with-replaceme
-│ sparse            with-replaceme
-│ ----------------  --------------
-│ "atp7d-binary"
-│ ----------------  --------------
-│                   none
-│ sparse            none
-│                   with-replaceme
-│ sparse            with-replaceme
-│ ----------------  --------------
-│ Averages
-│ ----------------  --------------
-│                   none
-│ sparse            none
-│                   with-replaceme
-│ sparse            with-replaceme
-╰─────────────────────────────────
+🗀 Evaluation results of several experiments for test data:
+
+Evaluation results for measure "Mean Absolute Error (↓)":
+
+feature_format    instance_sampling                    Mean Absolute Error (↓)  Std.-dev.      Rank
+----------------  ---------------------------------  -------------------------  -----------  ------
+"atp7d"
+----------------  ---------------------------------  -------------------------  -----------  ------
+                  none                                                   29.67  ±1.12          1
+sparse            none                                                   29.76  ±0.69          2
+                  with-replacement{sample_size=0.5}                      32.35  ±2.11          4
+sparse            with-replacement{sample_size=0.5}                      30.42  ±2.21          3
+----------------  ---------------------------------  -------------------------  -----------  ------
+"atp7d-binary"
+----------------  ---------------------------------  -------------------------  -----------  ------
+                  none                                                   33.85  ±1.28          1.5
+sparse            none                                                   33.85  ±1.28          1.5
+                  with-replacement{sample_size=0.5}                      35.11  ±1.61          3.5
+sparse            with-replacement{sample_size=0.5}                      35.11  ±1.61          3.5
+----------------  ---------------------------------  -------------------------  -----------  ------
+Averages
+----------------  ---------------------------------  -------------------------  -----------  ------
+                  none                                                                         1.25
+sparse            none                                                                         1.75
+                  with-replacement{sample_size=0.5}                                            3.75
+sparse            with-replacement{sample_size=0.5}                                            3.25
+
+Evaluation results for measure "Mean Absolute Percentage Error (↓)":
+
+feature_format    instance_sampling                    Mean Absolute Percentage Error (↓)  Std.-dev.      Rank
+----------------  ---------------------------------  ------------------------------------  -----------  ------
+"atp7d"
+----------------  ---------------------------------  ------------------------------------  -----------  ------
+                  none                                                               0.08  ±0.00          2
+sparse            none                                                               0.08  ±0.00          1
+                  with-replacement{sample_size=0.5}                                  0.09  ±0.01          4
+sparse            with-replacement{sample_size=0.5}                                  0.08  ±0.01          3
+----------------  ---------------------------------  ------------------------------------  -----------  ------
+"atp7d-binary"
+----------------  ---------------------------------  ------------------------------------  -----------  ------
+                  none                                                               0.09  ±0.00          1.5
+sparse            none                                                               0.09  ±0.00          1.5
+                  with-replacement{sample_size=0.5}                                  0.1   ±0.01          3.5
+sparse            with-replacement{sample_size=0.5}                                  0.1   ±0.01          3.5
+----------------  ---------------------------------  ------------------------------------  -----------  ------
+Averages
+----------------  ---------------------------------  ------------------------------------  -----------  ------
+                  none                                                                                    1.75
+sparse            none                                                                                    1.25
+                  with-replacement{sample_size=0.5}                                                       3.75
+sparse            with-replacement{sample_size=0.5}                                                       3.25
+
+Evaluation results for measure "Mean Squared Error (↓)":
+
+feature_format    instance_sampling                    Mean Squared Error (↓)  Std.-dev.      Rank
+----------------  ---------------------------------  ------------------------  -----------  ------
+"atp7d"
+----------------  ---------------------------------  ------------------------  -----------  ------
+                  none                                                2795.38  ±274.19        2
+sparse            none                                                2587.1   ±291.75        1
+                  with-replacement{sample_size=0.5}                   3265.45  ±130.45        4
+sparse            with-replacement{sample_size=0.5}                   3043.06  ±125.76        3
+----------------  ---------------------------------  ------------------------  -----------  ------
+"atp7d-binary"
+----------------  ---------------------------------  ------------------------  -----------  ------
+                  none                                                3811.47  ±690.01        1.5
+sparse            none                                                3811.47  ±690.01        1.5
+                  with-replacement{sample_size=0.5}                   3840.75  ±151.73        3.5
+sparse            with-replacement{sample_size=0.5}                   3840.75  ±151.73        3.5
+----------------  ---------------------------------  ------------------------  -----------  ------
+Averages
+----------------  ---------------------------------  ------------------------  -----------  ------
+                  none                                                                        1.75
+sparse            none                                                                        1.25
+                  with-replacement{sample_size=0.5}                                           3.75
+sparse            with-replacement{sample_size=0.5}                                           3.25
+
+Evaluation results for measure "Median Absolute Error (↓)":
+
+feature_format    instance_sampling                    Median Absolute Error (↓)  Std.-dev.      Rank
+----------------  ---------------------------------  ---------------------------  -----------  ------
+"atp7d"
+----------------  ---------------------------------  ---------------------------  -----------  ------
+                  none                                                     16.38  ±0.11          1
+sparse            none                                                     16.58  ±0.11          2
+                  with-replacement{sample_size=0.5}                        19.41  ±1.42          4
+sparse            with-replacement{sample_size=0.5}                        16.97  ±1.11          3
+----------------  ---------------------------------  ---------------------------  -----------  ------
+"atp7d-binary"
+----------------  ---------------------------------  ---------------------------  -----------  ------
+                  none                                                     18.77  ±0.34          1.5
+sparse            none                                                     18.77  ±0.34          1.5
+                  with-replacement{sample_size=0.5}                        20.06  ±1.41          3.5
+sparse            with-replacement{sample_size=0.5}                        20.06  ±1.41          3.5
+----------------  ---------------------------------  ---------------------------  -----------  ------
+Averages
+----------------  ---------------------------------  ---------------------------  -----------  ------
+                  none                                                                           1.25
+sparse            none                                                                           1.75
+                  with-replacement{sample_size=0.5}                                              3.75
+sparse            with-replacement{sample_size=0.5}                                              3.25
+
+Evaluation results for measure "Prediction Time (seconds)":
+
+feature_format    instance_sampling                    Prediction Time (seconds)  Std.-dev.      Rank
+----------------  ---------------------------------  ---------------------------  -----------  ------
+"atp7d"
+----------------  ---------------------------------  ---------------------------  -----------  ------
+                  none
+sparse            none
+                  with-replacement{sample_size=0.5}
+sparse            with-replacement{sample_size=0.5}
+----------------  ---------------------------------  ---------------------------  -----------  ------
+"atp7d-binary"
+----------------  ---------------------------------  ---------------------------  -----------  ------
+                  none
+sparse            none
+                  with-replacement{sample_size=0.5}
+sparse            with-replacement{sample_size=0.5}
+----------------  ---------------------------------  ---------------------------  -----------  ------
+Averages
+----------------  ---------------------------------  ---------------------------  -----------  ------
+                  none
+sparse            none
+                  with-replacement{sample_size=0.5}
+sparse            with-replacement{sample_size=0.5}
+
+Evaluation results for measure "Training Time (seconds)":
+
+feature_format    instance_sampling                    Training Time (seconds)  Std.-dev.      Rank
+----------------  ---------------------------------  -------------------------  -----------  ------
+"atp7d"
+----------------  ---------------------------------  -------------------------  -----------  ------
+                  none
+sparse            none
+                  with-replacement{sample_size=0.5}
+sparse            with-replacement{sample_size=0.5}
+----------------  ---------------------------------  -------------------------  -----------  ------
+"atp7d-binary"
+----------------  ---------------------------------  -------------------------  -----------  ------
+                  none
+sparse            none
+                  with-replacement{sample_size=0.5}
+sparse            with-replacement{sample_size=0.5}
+----------------  ---------------------------------  -------------------------  -----------  ------
+Averages
+----------------  ---------------------------------  -------------------------  -----------  ------
+                  none
+sparse            none
+                  with-replacement{sample_size=0.5}
+sparse            with-replacement{sample_size=0.5}
 
 ○ Writing output data to file "python/tests/res/tmp/rerun/aggregated_evaluation_test.csv"...

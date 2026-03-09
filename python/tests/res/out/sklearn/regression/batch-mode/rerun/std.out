@@ -1,4 +1,4 @@
-mlrl-testbed mlrl.testbed_sklearn --mode read --log-width 120 --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --save-all true --estimator RandomForestRegressor
+mlrl-testbed mlrl.testbed_sklearn --mode read --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --save-all true --estimator RandomForestRegressor
 Reading meta-data...
 ○ Reading input data from file "python/tests/res/tmp/metadata.yml"...
 ✓ Successfully read meta-data
@@ -10,7 +10,7 @@ Reading experimental results of 8 experiments...
 
 Reading experimental results of experiment (1 / 8)...
 The command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data
---dataset emotions --estimator RandomForestRegressor --log-level debug --log-width 120 --max-leaf-nodes 10
+--dataset emotions --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 10
 --model-save-dir n-estimators_1/max-leaf-nodes_10/dataset_emotions/models --n-estimators 1 --parameter-save-dir
 n-estimators_1/max-leaf-nodes_10/dataset_emotions/parameters --problem-type regression --result-dir
 n-estimators_1/max-leaf-nodes_10/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false"
@@ -42,12 +42,12 @@ Using separate training and test sets...
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/n-estimators_1/max-leaf-nodes_10/dataset_emotions/parameters/parameters.csv"...
 
-╭─────── 🗀 Evaluation result for test data ───────╮
-│ Mean Absolute Error (↓)             0.31        │
-│ Mean Absolute Percentage Error (↓)  6.98005e+14 │
-│ Mean Squared Error (↓)              0.18        │
-│ Median Absolute Error (↓)           0.21        │
-╰─────────────────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Mean Absolute Error (↓)             0.31
+Mean Absolute Percentage Error (↓)  6.98005e+14
+Mean Squared Error (↓)              0.18
+Median Absolute Error (↓)           0.21
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/n-estimators_1/max-leaf-nodes_10/dataset_emotions/results/evaluation_test.csv"...
@@ -65,8 +65,8 @@ v"...
 
 Reading experimental results of experiment (2 / 8)...
 The command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data
---dataset emotions --estimator RandomForestRegressor --log-level debug --log-width 120 --max-leaf-nodes 20 --max_depth 5
---model-save-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/models --n-estimators 1
+--dataset emotions --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 20
+--max_depth 5 --model-save-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/models --n-estimators 1
 --parameter-save-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/parameters --problem-type regression
 --result-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/results --save-all true --save-evaluation
 true --save-meta-data false" has been used originally for running this experiment
@@ -99,12 +99,12 @@ sv"...
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/parameters/parameters.csv"...
 
-╭─────── 🗀 Evaluation result for test data ───────╮
-│ Mean Absolute Error (↓)             0.29        │
-│ Mean Absolute Percentage Error (↓)  6.50939e+14 │
-│ Mean Squared Error (↓)              0.19        │
-│ Median Absolute Error (↓)           0.18        │
-╰─────────────────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Mean Absolute Error (↓)             0.29
+Mean Absolute Percentage Error (↓)  6.50939e+14
+Mean Squared Error (↓)              0.19
+Median Absolute Error (↓)           0.18
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/results/evaluation_test.csv"..
@@ -125,7 +125,7 @@ tics_test.csv"...
 
 Reading experimental results of experiment (3 / 8)...
 The command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data
---dataset emotions --estimator RandomForestRegressor --log-level debug --log-width 120 --max-leaf-nodes 10
+--dataset emotions --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 10
 --model-save-dir n-estimators_2/max-leaf-nodes_10/dataset_emotions/models --n-estimators 2 --parameter-save-dir
 n-estimators_2/max-leaf-nodes_10/dataset_emotions/parameters --problem-type regression --result-dir
 n-estimators_2/max-leaf-nodes_10/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false"
@@ -157,12 +157,12 @@ Using separate training and test sets...
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/n-estimators_2/max-leaf-nodes_10/dataset_emotions/parameters/parameters.csv"...
 
-╭─────── 🗀 Evaluation result for test data ───────╮
-│ Mean Absolute Error (↓)             0.31        │
-│ Mean Absolute Percentage Error (↓)  7.04629e+14 │
-│ Mean Squared Error (↓)              0.17        │
-│ Median Absolute Error (↓)           0.24        │
-╰─────────────────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Mean Absolute Error (↓)             0.31
+Mean Absolute Percentage Error (↓)  7.04629e+14
+Mean Squared Error (↓)              0.17
+Median Absolute Error (↓)           0.24
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/n-estimators_2/max-leaf-nodes_10/dataset_emotions/results/evaluation_test.csv"...
@@ -180,8 +180,8 @@ v"...
 
 Reading experimental results of experiment (4 / 8)...
 The command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data
---dataset emotions --estimator RandomForestRegressor --log-level debug --log-width 120 --max-leaf-nodes 20 --max_depth 5
---model-save-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/models --n-estimators 2
+--dataset emotions --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 20
+--max_depth 5 --model-save-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/models --n-estimators 2
 --parameter-save-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/parameters --problem-type regression
 --result-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/results --save-all true --save-evaluation
 true --save-meta-data false" has been used originally for running this experiment
@@ -214,12 +214,12 @@ sv"...
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/parameters/parameters.csv"...
 
-╭─────── 🗀 Evaluation result for test data ───────╮
-│ Mean Absolute Error (↓)             0.29        │
-│ Mean Absolute Percentage Error (↓)  6.60024e+14 │
-│ Mean Squared Error (↓)              0.17        │
-│ Median Absolute Error (↓)           0.21        │
-╰─────────────────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Mean Absolute Error (↓)             0.29
+Mean Absolute Percentage Error (↓)  6.60024e+14
+Mean Squared Error (↓)              0.17
+Median Absolute Error (↓)           0.21
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/results/evaluation_test.csv"..
@@ -240,8 +240,8 @@ tics_test.csv"...
 
 Reading experimental results of experiment (5 / 8)...
 The command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data
---dataset enron --estimator RandomForestRegressor --log-level debug --log-width 120 --max-leaf-nodes 10 --model-save-dir
-n-estimators_1/max-leaf-nodes_10/dataset_enron/models --n-estimators 1 --parameter-save-dir
+--dataset enron --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 10
+--model-save-dir n-estimators_1/max-leaf-nodes_10/dataset_enron/models --n-estimators 1 --parameter-save-dir
 n-estimators_1/max-leaf-nodes_10/dataset_enron/parameters --problem-type regression --result-dir
 n-estimators_1/max-leaf-nodes_10/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false"
 has been used originally for running this experiment
@@ -272,12 +272,12 @@ Using separate training and test sets...
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/n-estimators_1/max-leaf-nodes_10/dataset_enron/parameters/parameters.csv"...
 
-╭─────── 🗀 Evaluation result for test data ───────╮
-│ Mean Absolute Error (↓)             0.08        │
-│ Mean Absolute Percentage Error (↓)  1.82193e+14 │
-│ Mean Squared Error (↓)              0.04        │
-│ Median Absolute Error (↓)           0.05        │
-╰─────────────────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Mean Absolute Error (↓)             0.08
+Mean Absolute Percentage Error (↓)  1.82193e+14
+Mean Squared Error (↓)              0.04
+Median Absolute Error (↓)           0.05
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/n-estimators_1/max-leaf-nodes_10/dataset_enron/results/evaluation_test.csv"...
@@ -295,10 +295,10 @@ Using separate training and test sets...
 
 Reading experimental results of experiment (6 / 8)...
 The command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data
---dataset enron --estimator RandomForestRegressor --log-level debug --log-width 120 --max-leaf-nodes 20 --max_depth 5
---model-save-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/models --n-estimators 1 --parameter-save-dir
-n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/parameters --problem-type regression --result-dir
-n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/results --save-all true --save-evaluation true
+--dataset enron --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 20
+--max_depth 5 --model-save-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/models --n-estimators 1
+--parameter-save-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/parameters --problem-type regression
+--result-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/results --save-all true --save-evaluation true
 --save-meta-data false" has been used originally for running this experiment
 Using separate training and test sets...
 ○ Reading input data from file
@@ -329,12 +329,12 @@ Using separate training and test sets...
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/parameters/parameters.csv"...
 
-╭─────── 🗀 Evaluation result for test data ───────╮
-│ Mean Absolute Error (↓)             0.08        │
-│ Mean Absolute Percentage Error (↓)  1.75928e+14 │
-│ Mean Squared Error (↓)              0.04        │
-│ Median Absolute Error (↓)           0.05        │
-╰─────────────────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Mean Absolute Error (↓)             0.08
+Mean Absolute Percentage Error (↓)  1.75928e+14
+Mean Squared Error (↓)              0.04
+Median Absolute Error (↓)           0.05
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/results/evaluation_test.csv"...
@@ -353,8 +353,8 @@ s_test.csv"...
 
 Reading experimental results of experiment (7 / 8)...
 The command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data
---dataset enron --estimator RandomForestRegressor --log-level debug --log-width 120 --max-leaf-nodes 10 --model-save-dir
-n-estimators_2/max-leaf-nodes_10/dataset_enron/models --n-estimators 2 --parameter-save-dir
+--dataset enron --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 10
+--model-save-dir n-estimators_2/max-leaf-nodes_10/dataset_enron/models --n-estimators 2 --parameter-save-dir
 n-estimators_2/max-leaf-nodes_10/dataset_enron/parameters --problem-type regression --result-dir
 n-estimators_2/max-leaf-nodes_10/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false"
 has been used originally for running this experiment
@@ -385,12 +385,12 @@ Using separate training and test sets...
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/n-estimators_2/max-leaf-nodes_10/dataset_enron/parameters/parameters.csv"...
 
-╭─────── 🗀 Evaluation result for test data ───────╮
-│ Mean Absolute Error (↓)             0.08        │
-│ Mean Absolute Percentage Error (↓)  1.82475e+14 │
-│ Mean Squared Error (↓)              0.04        │
-│ Median Absolute Error (↓)           0.05        │
-╰─────────────────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Mean Absolute Error (↓)             0.08
+Mean Absolute Percentage Error (↓)  1.82475e+14
+Mean Squared Error (↓)              0.04
+Median Absolute Error (↓)           0.05
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/n-estimators_2/max-leaf-nodes_10/dataset_enron/results/evaluation_test.csv"...
@@ -408,10 +408,10 @@ Using separate training and test sets...
 
 Reading experimental results of experiment (8 / 8)...
 The command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data
---dataset enron --estimator RandomForestRegressor --log-level debug --log-width 120 --max-leaf-nodes 20 --max_depth 5
---model-save-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/models --n-estimators 2 --parameter-save-dir
-n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/parameters --problem-type regression --result-dir
-n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/results --save-all true --save-evaluation true
+--dataset enron --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 20
+--max_depth 5 --model-save-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/models --n-estimators 2
+--parameter-save-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/parameters --problem-type regression
+--result-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/results --save-all true --save-evaluation true
 --save-meta-data false" has been used originally for running this experiment
 Using separate training and test sets...
 ○ Reading input data from file
@@ -442,12 +442,12 @@ Using separate training and test sets...
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/parameters/parameters.csv"...
 
-╭─────── 🗀 Evaluation result for test data ───────╮
-│ Mean Absolute Error (↓)             0.08        │
-│ Mean Absolute Percentage Error (↓)  1.76096e+14 │
-│ Mean Squared Error (↓)              0.04        │
-│ Median Absolute Error (↓)           0.05        │
-╰─────────────────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Mean Absolute Error (↓)             0.08
+Mean Absolute Percentage Error (↓)  1.76096e+14
+Mean Squared Error (↓)              0.04
+Median Absolute Error (↓)           0.05
 
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/results/evaluation_test.csv"...
@@ -464,156 +464,156 @@ s_test.csv"...
 ○ Writing output data to file
 "python/tests/res/tmp/rerun/n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/models/model.pickle"...
 
-╭────────── 🗀 Evaluation results of several experiments for test data ───────────╮
-│ Evaluation results for measure "Mean Absolute Error (↓)":                      │
-│                                                                                │
-│ max_leaf_nodes      n_estimators    Mean Absolute Error (↓)    Rank            │
-│ ----------------  --------------  -------------------------  ------            │
-│ "emotions"                                                                     │
-│ ----------------  --------------  -------------------------  ------            │
-│ 10.00                          1                       0.31     3              │
-│ 20.00                          1                       0.29     1              │
-│ 10.00                          2                       0.31     4              │
-│ 20.00                          2                       0.29     2              │
-│ ----------------  --------------  -------------------------  ------            │
-│ "enron"                                                                        │
-│ ----------------  --------------  -------------------------  ------            │
-│ 10.00                          1                       0.08     3              │
-│ 20.00                          1                       0.08     2              │
-│ 10.00                          2                       0.08     4              │
-│ 20.00                          2                       0.08     1              │
-│ ----------------  --------------  -------------------------  ------            │
-│ Averages                                                                       │
-│ ----------------  --------------  -------------------------  ------            │
-│ 10.00                          1                                3              │
-│ 20.00                          1                                1.5            │
-│ 10.00                          2                                4              │
-│ 20.00                          2                                1.5            │
-│                                                                                │
-│ Evaluation results for measure "Mean Absolute Percentage Error (↓)":           │
-│                                                                                │
-│ max_leaf_nodes      n_estimators    Mean Absolute Percentage Error (↓)    Rank │
-│ ----------------  --------------  ------------------------------------  ------ │
-│ "emotions"                                                                     │
-│ ----------------  --------------  ------------------------------------  ------ │
-│ 10.00                          1                           6.98005e+14       3 │
-│ 20.00                          1                           6.50939e+14       1 │
-│ 10.00                          2                           7.04629e+14       4 │
-│ 20.00                          2                           6.60024e+14       2 │
-│ ----------------  --------------  ------------------------------------  ------ │
-│ "enron"                                                                        │
-│ ----------------  --------------  ------------------------------------  ------ │
-│ 10.00                          1                           1.82193e+14       3 │
-│ 20.00                          1                           1.75928e+14       1 │
-│ 10.00                          2                           1.82475e+14       4 │
-│ 20.00                          2                           1.76096e+14       2 │
-│ ----------------  --------------  ------------------------------------  ------ │
-│ Averages                                                                       │
-│ ----------------  --------------  ------------------------------------  ------ │
-│ 10.00                          1                                             3 │
-│ 20.00                          1                                             1 │
-│ 10.00                          2                                             4 │
-│ 20.00                          2                                             2 │
-│                                                                                │
-│ Evaluation results for measure "Mean Squared Error (↓)":                       │
-│                                                                                │
-│ max_leaf_nodes      n_estimators    Mean Squared Error (↓)    Rank             │
-│ ----------------  --------------  ------------------------  ------             │
-│ "emotions"                                                                     │
-│ ----------------  --------------  ------------------------  ------             │
-│ 10.00                          1                      0.18       3             │
-│ 20.00                          1                      0.19       4             │
-│ 10.00                          2                      0.17       2             │
-│ 20.00                          2                      0.17       1             │
-│ ----------------  --------------  ------------------------  ------             │
-│ "enron"                                                                        │
-│ ----------------  --------------  ------------------------  ------             │
-│ 10.00                          1                      0.04       3             │
-│ 20.00                          1                      0.04       4             │
-│ 10.00                          2                      0.04       2             │
-│ 20.00                          2                      0.04       1             │
-│ ----------------  --------------  ------------------------  ------             │
-│ Averages                                                                       │
-│ ----------------  --------------  ------------------------  ------             │
-│ 10.00                          1                                 3             │
-│ 20.00                          1                                 4             │
-│ 10.00                          2                                 2             │
-│ 20.00                          2                                 1             │
-│                                                                                │
-│ Evaluation results for measure "Median Absolute Error (↓)":                    │
-│                                                                                │
-│ max_leaf_nodes      n_estimators    Median Absolute Error (↓)    Rank          │
-│ ----------------  --------------  ---------------------------  ------          │
-│ "emotions"                                                                     │
-│ ----------------  --------------  ---------------------------  ------          │
-│ 10.00                          1                         0.21       2          │
-│ 20.00                          1                         0.18       1          │
-│ 10.00                          2                         0.24       4          │
-│ 20.00                          2                         0.21       3          │
-│ ----------------  --------------  ---------------------------  ------          │
-│ "enron"                                                                        │
-│ ----------------  --------------  ---------------------------  ------          │
-│ 10.00                          1                         0.05       2          │
-│ 20.00                          1                         0.05       1          │
-│ 10.00                          2                         0.05       4          │
-│ 20.00                          2                         0.05       3          │
-│ ----------------  --------------  ---------------------------  ------          │
-│ Averages                                                                       │
-│ ----------------  --------------  ---------------------------  ------          │
-│ 10.00                          1                                    2          │
-│ 20.00                          1                                    1          │
-│ 10.00                          2                                    4          │
-│ 20.00                          2                                    3          │
-│                                                                                │
-│ Evaluation results for measure "Prediction Time (seconds)":                    │
-│
-│ max_leaf_nodes      n_estimators
-│ ----------------  --------------
-│ "emotions"
-│ ----------------  --------------
-│ 10.00                          1
-│ 20.00                          1
-│ 10.00                          2
-│ 20.00                          2
-│ ----------------  --------------
-│ "enron"
-│ ----------------  --------------
-│ 10.00                          1
-│ 20.00                          1
-│ 10.00                          2
-│ 20.00                          2
-│ ----------------  --------------
-│ Averages
-│ ----------------  --------------
-│ 10.00                          1
-│ 20.00                          1
-│ 10.00                          2
-│ 20.00                          2
-│
-│ Evaluation results for measure "
-│
-│ max_leaf_nodes      n_estimators
-│ ----------------  --------------
-│ "emotions"
-│ ----------------  --------------
-│ 10.00                          1
-│ 20.00                          1
-│ 10.00                          2
-│ 20.00                          2
-│ ----------------  --------------
-│ "enron"
-│ ----------------  --------------
-│ 10.00                          1
-│ 20.00                          1
-│ 10.00                          2
-│ 20.00                          2
-│ ----------------  --------------
-│ Averages
-│ ----------------  --------------
-│ 10.00                          1
-│ 20.00                          1
-│ 10.00                          2
-│ 20.00                          2
-╰─────────────────────────────────
+🗀 Evaluation results of several experiments for test data:
+
+Evaluation results for measure "Mean Absolute Error (↓)":
+
+max_leaf_nodes      n_estimators    Mean Absolute Error (↓)    Rank
+----------------  --------------  -------------------------  ------
+"emotions"
+----------------  --------------  -------------------------  ------
+10.00                          1                       0.31     3
+20.00                          1                       0.29     1
+10.00                          2                       0.31     4
+20.00                          2                       0.29     2
+----------------  --------------  -------------------------  ------
+"enron"
+----------------  --------------  -------------------------  ------
+10.00                          1                       0.08     3
+20.00                          1                       0.08     2
+10.00                          2                       0.08     4
+20.00                          2                       0.08     1
+----------------  --------------  -------------------------  ------
+Averages
+----------------  --------------  -------------------------  ------
+10.00                          1                                3
+20.00                          1                                1.5
+10.00                          2                                4
+20.00                          2                                1.5
+
+Evaluation results for measure "Mean Absolute Percentage Error (↓)":
+
+max_leaf_nodes      n_estimators    Mean Absolute Percentage Error (↓)    Rank
+----------------  --------------  ------------------------------------  ------
+"emotions"
+----------------  --------------  ------------------------------------  ------
+10.00                          1                           6.98005e+14       3
+20.00                          1                           6.50939e+14       1
+10.00                          2                           7.04629e+14       4
+20.00                          2                           6.60024e+14       2
+----------------  --------------  ------------------------------------  ------
+"enron"
+----------------  --------------  ------------------------------------  ------
+10.00                          1                           1.82193e+14       3
+20.00                          1                           1.75928e+14       1
+10.00                          2                           1.82475e+14       4
+20.00                          2                           1.76096e+14       2
+----------------  --------------  ------------------------------------  ------
+Averages
+----------------  --------------  ------------------------------------  ------
+10.00                          1                                             3
+20.00                          1                                             1
+10.00                          2                                             4
+20.00                          2                                             2
+
+Evaluation results for measure "Mean Squared Error (↓)":
+
+max_leaf_nodes      n_estimators    Mean Squared Error (↓)    Rank
+----------------  --------------  ------------------------  ------
+"emotions"
+----------------  --------------  ------------------------  ------
+10.00                          1                      0.18       3
+20.00                          1                      0.19       4
+10.00                          2                      0.17       2
+20.00                          2                      0.17       1
+----------------  --------------  ------------------------  ------
+"enron"
+----------------  --------------  ------------------------  ------
+10.00                          1                      0.04       3
+20.00                          1                      0.04       4
+10.00                          2                      0.04       2
+20.00                          2                      0.04       1
+----------------  --------------  ------------------------  ------
+Averages
+----------------  --------------  ------------------------  ------
+10.00                          1                                 3
+20.00                          1                                 4
+10.00                          2                                 2
+20.00                          2                                 1
+
+Evaluation results for measure "Median Absolute Error (↓)":
+
+max_leaf_nodes      n_estimators    Median Absolute Error (↓)    Rank
+----------------  --------------  ---------------------------  ------
+"emotions"
+----------------  --------------  ---------------------------  ------
+10.00                          1                         0.21       2
+20.00                          1                         0.18       1
+10.00                          2                         0.24       4
+20.00                          2                         0.21       3
+----------------  --------------  ---------------------------  ------
+"enron"
+----------------  --------------  ---------------------------  ------
+10.00                          1                         0.05       2
+20.00                          1                         0.05       1
+10.00                          2                         0.05       4
+20.00                          2                         0.05       3
+----------------  --------------  ---------------------------  ------
+Averages
+----------------  --------------  ---------------------------  ------
+10.00                          1                                    2
+20.00                          1                                    1
+10.00                          2                                    4
+20.00                          2                                    3
+
+Evaluation results for measure "Prediction Time (seconds)":
+
+max_leaf_nodes      n_estimators    Prediction Time (seconds)    Rank
+----------------  --------------  ---------------------------  ------
+"emotions"
+----------------  --------------  ---------------------------  ------
+10.00                          1
+20.00                          1
+10.00                          2
+20.00                          2
+----------------  --------------  ---------------------------  ------
+"enron"
+----------------  --------------  ---------------------------  ------
+10.00                          1
+20.00                          1
+10.00                          2
+20.00                          2
+----------------  --------------  ---------------------------  ------
+Averages
+----------------  --------------  ---------------------------  ------
+10.00                          1
+20.00                          1
+10.00                          2
+20.00                          2
+
+Evaluation results for measure "Training Time (seconds)":
+
+max_leaf_nodes      n_estimators    Training Time (seconds)    Rank
+----------------  --------------  -------------------------  ------
+"emotions"
+----------------  --------------  -------------------------  ------
+10.00                          1
+20.00                          1
+10.00                          2
+20.00                          2
+----------------  --------------  -------------------------  ------
+"enron"
+----------------  --------------  -------------------------  ------
+10.00                          1
+20.00                          1
+10.00                          2
+20.00                          2
+----------------  --------------  -------------------------  ------
+Averages
+----------------  --------------  -------------------------  ------
+10.00                          1
+20.00                          1
+10.00                          2
+20.00                          2
 
 ○ Writing output data to file "python/tests/res/tmp/rerun/aggregated_evaluation_test.csv"...

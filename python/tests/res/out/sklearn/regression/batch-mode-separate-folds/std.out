@@ -1,10 +1,10 @@
-mlrl-testbed mlrl.testbed_sklearn --mode batch --log-width 120 --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/sklearn/regression/batch_config.yml --problem-type regression --save-evaluation true --save-all true --data-split cross-validation{num_folds=2} --n-estimators 1 --estimator RandomForestRegressor
+mlrl-testbed mlrl.testbed_sklearn --mode batch --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/sklearn/regression/batch_config.yml --problem-type regression --save-evaluation true --save-all true --data-split cross-validation{num_folds=2} --n-estimators 1 --estimator RandomForestRegressor
 ○ Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Running 16 experiments...
 
 Running experiment (1 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset emotions --estimator
-RandomForestRegressor --log-level debug --log-width 120 --max-leaf-nodes 10 --model-save-dir
+RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 10 --model-save-dir
 n-estimators_1/max-leaf-nodes_10/dataset_emotions/models --n-estimators 1 --parameter-save-dir
 n-estimators_1/max-leaf-nodes_10/dataset_emotions/parameters --problem-type regression --result-dir
 n-estimators_1/max-leaf-nodes_10/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false"
@@ -22,12 +22,12 @@ Fitting model to 296 training examples...
 Predicting for 297 test examples...
 ✓ Successfully predicted in <duration>
 
-╭── 🗀 Evaluation result for test data (Fold 1) ───╮
-│ Mean Absolute Error (↓)             0.3         │
-│ Mean Absolute Percentage Error (↓)  6.59233e+14 │
-│ Mean Squared Error (↓)              0.2         │
-│ Median Absolute Error (↓)           0.22        │
-╰─────────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 1):
+
+Mean Absolute Error (↓)             0.3
+Mean Absolute Percentage Error (↓)  6.59233e+14
+Mean Squared Error (↓)              0.2
+Median Absolute Error (↓)           0.22
 
 ○ Writing output data to file
 "python/tests/res/tmp/n-estimators_1/max-leaf-nodes_10/dataset_emotions/results/evaluation_test_fold-1.csv"...
@@ -46,7 +46,7 @@ sv"...
 
 Running experiment (2 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset emotions --estimator
-RandomForestRegressor --log-level debug --log-width 120 --max-leaf-nodes 10 --model-save-dir
+RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 10 --model-save-dir
 n-estimators_1/max-leaf-nodes_10/dataset_emotions/models --n-estimators 1 --parameter-save-dir
 n-estimators_1/max-leaf-nodes_10/dataset_emotions/parameters --problem-type regression --result-dir
 n-estimators_1/max-leaf-nodes_10/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false"
@@ -64,12 +64,12 @@ Fitting model to 297 training examples...
 Predicting for 296 test examples...
 ✓ Successfully predicted in <duration>
 
-╭── 🗀 Evaluation result for test data (Fold 2) ───╮
-│ Mean Absolute Error (↓)             0.28        │
-│ Mean Absolute Percentage Error (↓)  6.44066e+14 │
-│ Mean Squared Error (↓)              0.17        │
-│ Median Absolute Error (↓)           0.18        │
-╰─────────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 2):
+
+Mean Absolute Error (↓)             0.28
+Mean Absolute Percentage Error (↓)  6.44066e+14
+Mean Squared Error (↓)              0.17
+Median Absolute Error (↓)           0.18
 
 ○ Writing output data to file
 "python/tests/res/tmp/n-estimators_1/max-leaf-nodes_10/dataset_emotions/results/evaluation_test_fold-2.csv"...
@@ -88,7 +88,7 @@ sv"...
 
 Running experiment (3 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset emotions --estimator
-RandomForestRegressor --log-level debug --log-width 120 --max-leaf-nodes 20 --max_depth 5 --model-save-dir
+RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 20 --max_depth 5 --model-save-dir
 n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/models --n-estimators 1 --parameter-save-dir
 n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/parameters --problem-type regression --result-dir
 n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/results --save-all true --save-evaluation true
@@ -108,12 +108,12 @@ Fitting model to 296 training examples...
 Predicting for 297 test examples...
 ✓ Successfully predicted in <duration>
 
-╭── 🗀 Evaluation result for test data (Fold 1) ──╮
-│ Mean Absolute Error (↓)             0.3        │
-│ Mean Absolute Percentage Error (↓)  6.3793e+14 │
-│ Mean Squared Error (↓)              0.22       │
-│ Median Absolute Error (↓)           0.09       │
-╰────────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 1):
+
+Mean Absolute Error (↓)             0.3
+Mean Absolute Percentage Error (↓)  6.3793e+14
+Mean Squared Error (↓)              0.22
+Median Absolute Error (↓)           0.09
 
 ○ Writing output data to file
 "python/tests/res/tmp/n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/results/evaluation_test_fold-1.csv".
@@ -135,7 +135,7 @@ est_fold-1.csv"...
 
 Running experiment (4 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset emotions --estimator
-RandomForestRegressor --log-level debug --log-width 120 --max-leaf-nodes 20 --max_depth 5 --model-save-dir
+RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 20 --max_depth 5 --model-save-dir
 n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/models --n-estimators 1 --parameter-save-dir
 n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/parameters --problem-type regression --result-dir
 n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/results --save-all true --save-evaluation true
@@ -155,12 +155,12 @@ Fitting model to 297 training examples...
 Predicting for 296 test examples...
 ✓ Successfully predicted in <duration>
 
-╭── 🗀 Evaluation result for test data (Fold 2) ───╮
-│ Mean Absolute Error (↓)             0.27        │
-│ Mean Absolute Percentage Error (↓)  6.15209e+14 │
-│ Mean Squared Error (↓)              0.18        │
-│ Median Absolute Error (↓)           0.12        │
-╰─────────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 2):
+
+Mean Absolute Error (↓)             0.27
+Mean Absolute Percentage Error (↓)  6.15209e+14
+Mean Squared Error (↓)              0.18
+Median Absolute Error (↓)           0.12
 
 ○ Writing output data to file
 "python/tests/res/tmp/n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/results/evaluation_test_fold-2.csv".
@@ -182,7 +182,7 @@ est_fold-2.csv"...
 
 Running experiment (5 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset emotions --estimator
-RandomForestRegressor --log-level debug --log-width 120 --max-leaf-nodes 10 --model-save-dir
+RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 10 --model-save-dir
 n-estimators_2/max-leaf-nodes_10/dataset_emotions/models --n-estimators 2 --parameter-save-dir
 n-estimators_2/max-leaf-nodes_10/dataset_emotions/parameters --problem-type regression --result-dir
 n-estimators_2/max-leaf-nodes_10/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false"
@@ -200,12 +200,12 @@ Fitting model to 296 training examples...
 Predicting for 297 test examples...
 ✓ Successfully predicted in <duration>
 
-╭── 🗀 Evaluation result for test data (Fold 1) ───╮
-│ Mean Absolute Error (↓)             0.31        │
-│ Mean Absolute Percentage Error (↓)  6.54886e+14 │
-│ Mean Squared Error (↓)              0.17        │
-│ Median Absolute Error (↓)           0.24        │
-╰─────────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 1):
+
+Mean Absolute Error (↓)             0.31
+Mean Absolute Percentage Error (↓)  6.54886e+14
+Mean Squared Error (↓)              0.17
+Median Absolute Error (↓)           0.24
 
 ○ Writing output data to file
 "python/tests/res/tmp/n-estimators_2/max-leaf-nodes_10/dataset_emotions/results/evaluation_test_fold-1.csv"...
@@ -224,7 +224,7 @@ sv"...
 
 Running experiment (6 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset emotions --estimator
-RandomForestRegressor --log-level debug --log-width 120 --max-leaf-nodes 10 --model-save-dir
+RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 10 --model-save-dir
 n-estimators_2/max-leaf-nodes_10/dataset_emotions/models --n-estimators 2 --parameter-save-dir
 n-estimators_2/max-leaf-nodes_10/dataset_emotions/parameters --problem-type regression --result-dir
 n-estimators_2/max-leaf-nodes_10/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false"
@@ -242,12 +242,12 @@ Fitting model to 297 training examples...
 Predicting for 296 test examples...
 ✓ Successfully predicted in <duration>
 
-╭── 🗀 Evaluation result for test data (Fold 2) ───╮
-│ Mean Absolute Error (↓)             0.29        │
-│ Mean Absolute Percentage Error (↓)  6.63094e+14 │
-│ Mean Squared Error (↓)              0.16        │
-│ Median Absolute Error (↓)           0.22        │
-╰─────────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 2):
+
+Mean Absolute Error (↓)             0.29
+Mean Absolute Percentage Error (↓)  6.63094e+14
+Mean Squared Error (↓)              0.16
+Median Absolute Error (↓)           0.22
 
 ○ Writing output data to file
 "python/tests/res/tmp/n-estimators_2/max-leaf-nodes_10/dataset_emotions/results/evaluation_test_fold-2.csv"...
@@ -266,7 +266,7 @@ sv"...
 
 Running experiment (7 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset emotions --estimator
-RandomForestRegressor --log-level debug --log-width 120 --max-leaf-nodes 20 --max_depth 5 --model-save-dir
+RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 20 --max_depth 5 --model-save-dir
 n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/models --n-estimators 2 --parameter-save-dir
 n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/parameters --problem-type regression --result-dir
 n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/results --save-all true --save-evaluation true
@@ -286,12 +286,12 @@ Fitting model to 296 training examples...
 Predicting for 297 test examples...
 ✓ Successfully predicted in <duration>
 
-╭── 🗀 Evaluation result for test data (Fold 1) ───╮
-│ Mean Absolute Error (↓)             0.3         │
-│ Mean Absolute Percentage Error (↓)  6.33589e+14 │
-│ Mean Squared Error (↓)              0.18        │
-│ Median Absolute Error (↓)           0.19        │
-╰─────────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 1):
+
+Mean Absolute Error (↓)             0.3
+Mean Absolute Percentage Error (↓)  6.33589e+14
+Mean Squared Error (↓)              0.18
+Median Absolute Error (↓)           0.19
 
 ○ Writing output data to file
 "python/tests/res/tmp/n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/results/evaluation_test_fold-1.csv".
@@ -313,7 +313,7 @@ est_fold-1.csv"...
 
 Running experiment (8 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset emotions --estimator
-RandomForestRegressor --log-level debug --log-width 120 --max-leaf-nodes 20 --max_depth 5 --model-save-dir
+RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 20 --max_depth 5 --model-save-dir
 n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/models --n-estimators 2 --parameter-save-dir
 n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/parameters --problem-type regression --result-dir
 n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/results --save-all true --save-evaluation true
@@ -333,12 +333,12 @@ Fitting model to 297 training examples...
 Predicting for 296 test examples...
 ✓ Successfully predicted in <duration>
 
-╭── 🗀 Evaluation result for test data (Fold 2) ───╮
-│ Mean Absolute Error (↓)             0.28        │
-│ Mean Absolute Percentage Error (↓)  6.32382e+14 │
-│ Mean Squared Error (↓)              0.16        │
-│ Median Absolute Error (↓)           0.17        │
-╰─────────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 2):
+
+Mean Absolute Error (↓)             0.28
+Mean Absolute Percentage Error (↓)  6.32382e+14
+Mean Squared Error (↓)              0.16
+Median Absolute Error (↓)           0.17
 
 ○ Writing output data to file
 "python/tests/res/tmp/n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/results/evaluation_test_fold-2.csv".
@@ -360,7 +360,7 @@ est_fold-2.csv"...
 
 Running experiment (9 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset enron --estimator
-RandomForestRegressor --log-level debug --log-width 120 --max-leaf-nodes 10 --model-save-dir
+RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 10 --model-save-dir
 n-estimators_1/max-leaf-nodes_10/dataset_enron/models --n-estimators 1 --parameter-save-dir
 n-estimators_1/max-leaf-nodes_10/dataset_enron/parameters --problem-type regression --result-dir
 n-estimators_1/max-leaf-nodes_10/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false"
@@ -378,12 +378,12 @@ Fitting model to 851 training examples...
 Predicting for 851 test examples...
 ✓ Successfully predicted in <duration>
 
-╭── 🗀 Evaluation result for test data (Fold 1) ───╮
-│ Mean Absolute Error (↓)             0.08        │
-│ Mean Absolute Percentage Error (↓)  1.81525e+14 │
-│ Mean Squared Error (↓)              0.04        │
-│ Median Absolute Error (↓)           0.05        │
-╰─────────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 1):
+
+Mean Absolute Error (↓)             0.08
+Mean Absolute Percentage Error (↓)  1.81525e+14
+Mean Squared Error (↓)              0.04
+Median Absolute Error (↓)           0.05
 
 ○ Writing output data to file
 "python/tests/res/tmp/n-estimators_1/max-leaf-nodes_10/dataset_enron/results/evaluation_test_fold-1.csv"...
@@ -402,7 +402,7 @@ Predicting for 851 test examples...
 
 Running experiment (10 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset enron --estimator
-RandomForestRegressor --log-level debug --log-width 120 --max-leaf-nodes 10 --model-save-dir
+RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 10 --model-save-dir
 n-estimators_1/max-leaf-nodes_10/dataset_enron/models --n-estimators 1 --parameter-save-dir
 n-estimators_1/max-leaf-nodes_10/dataset_enron/parameters --problem-type regression --result-dir
 n-estimators_1/max-leaf-nodes_10/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false"
@@ -420,12 +420,12 @@ Fitting model to 851 training examples...
 Predicting for 851 test examples...
 ✓ Successfully predicted in <duration>
 
-╭── 🗀 Evaluation result for test data (Fold 2) ───╮
-│ Mean Absolute Error (↓)             0.08        │
-│ Mean Absolute Percentage Error (↓)  1.79409e+14 │
-│ Mean Squared Error (↓)              0.04        │
-│ Median Absolute Error (↓)           0.05        │
-╰─────────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 2):
+
+Mean Absolute Error (↓)             0.08
+Mean Absolute Percentage Error (↓)  1.79409e+14
+Mean Squared Error (↓)              0.04
+Median Absolute Error (↓)           0.05
 
 ○ Writing output data to file
 "python/tests/res/tmp/n-estimators_1/max-leaf-nodes_10/dataset_enron/results/evaluation_test_fold-2.csv"...
@@ -444,7 +444,7 @@ Predicting for 851 test examples...
 
 Running experiment (11 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset enron --estimator
-RandomForestRegressor --log-level debug --log-width 120 --max-leaf-nodes 20 --max_depth 5 --model-save-dir
+RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 20 --max_depth 5 --model-save-dir
 n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/models --n-estimators 1 --parameter-save-dir
 n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/parameters --problem-type regression --result-dir
 n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/results --save-all true --save-evaluation true
@@ -464,12 +464,12 @@ Fitting model to 851 training examples...
 Predicting for 851 test examples...
 ✓ Successfully predicted in <duration>
 
-╭── 🗀 Evaluation result for test data (Fold 1) ───╮
-│ Mean Absolute Error (↓)             0.08        │
-│ Mean Absolute Percentage Error (↓)  1.78945e+14 │
-│ Mean Squared Error (↓)              0.04        │
-│ Median Absolute Error (↓)           0.05        │
-╰─────────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 1):
+
+Mean Absolute Error (↓)             0.08
+Mean Absolute Percentage Error (↓)  1.78945e+14
+Mean Squared Error (↓)              0.04
+Median Absolute Error (↓)           0.05
 
 ○ Writing output data to file
 "python/tests/res/tmp/n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/results/evaluation_test_fold-1.csv"...
@@ -490,7 +490,7 @@ _fold-1.csv"...
 
 Running experiment (12 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset enron --estimator
-RandomForestRegressor --log-level debug --log-width 120 --max-leaf-nodes 20 --max_depth 5 --model-save-dir
+RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 20 --max_depth 5 --model-save-dir
 n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/models --n-estimators 1 --parameter-save-dir
 n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/parameters --problem-type regression --result-dir
 n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/results --save-all true --save-evaluation true
@@ -510,12 +510,12 @@ Fitting model to 851 training examples...
 Predicting for 851 test examples...
 ✓ Successfully predicted in <duration>
 
-╭── 🗀 Evaluation result for test data (Fold 2) ──╮
-│ Mean Absolute Error (↓)             0.08       │
-│ Mean Absolute Percentage Error (↓)  1.7532e+14 │
-│ Mean Squared Error (↓)              0.04       │
-│ Median Absolute Error (↓)           0.05       │
-╰────────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 2):
+
+Mean Absolute Error (↓)             0.08
+Mean Absolute Percentage Error (↓)  1.7532e+14
+Mean Squared Error (↓)              0.04
+Median Absolute Error (↓)           0.05
 
 ○ Writing output data to file
 "python/tests/res/tmp/n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/results/evaluation_test_fold-2.csv"...
@@ -536,7 +536,7 @@ _fold-2.csv"...
 
 Running experiment (13 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset enron --estimator
-RandomForestRegressor --log-level debug --log-width 120 --max-leaf-nodes 10 --model-save-dir
+RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 10 --model-save-dir
 n-estimators_2/max-leaf-nodes_10/dataset_enron/models --n-estimators 2 --parameter-save-dir
 n-estimators_2/max-leaf-nodes_10/dataset_enron/parameters --problem-type regression --result-dir
 n-estimators_2/max-leaf-nodes_10/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false"
@@ -554,12 +554,12 @@ Fitting model to 851 training examples...
 Predicting for 851 test examples...
 ✓ Successfully predicted in <duration>
 
-╭── 🗀 Evaluation result for test data (Fold 1) ───╮
-│ Mean Absolute Error (↓)             0.08        │
-│ Mean Absolute Percentage Error (↓)  1.82469e+14 │
-│ Mean Squared Error (↓)              0.04        │
-│ Median Absolute Error (↓)           0.06        │
-╰─────────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 1):
+
+Mean Absolute Error (↓)             0.08
+Mean Absolute Percentage Error (↓)  1.82469e+14
+Mean Squared Error (↓)              0.04
+Median Absolute Error (↓)           0.06
 
 ○ Writing output data to file
 "python/tests/res/tmp/n-estimators_2/max-leaf-nodes_10/dataset_enron/results/evaluation_test_fold-1.csv"...
@@ -578,7 +578,7 @@ Predicting for 851 test examples...
 
 Running experiment (14 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset enron --estimator
-RandomForestRegressor --log-level debug --log-width 120 --max-leaf-nodes 10 --model-save-dir
+RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 10 --model-save-dir
 n-estimators_2/max-leaf-nodes_10/dataset_enron/models --n-estimators 2 --parameter-save-dir
 n-estimators_2/max-leaf-nodes_10/dataset_enron/parameters --problem-type regression --result-dir
 n-estimators_2/max-leaf-nodes_10/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false"
@@ -596,12 +596,12 @@ Fitting model to 851 training examples...
 Predicting for 851 test examples...
 ✓ Successfully predicted in <duration>
 
-╭── 🗀 Evaluation result for test data (Fold 2) ───╮
-│ Mean Absolute Error (↓)             0.08        │
-│ Mean Absolute Percentage Error (↓)  1.77239e+14 │
-│ Mean Squared Error (↓)              0.04        │
-│ Median Absolute Error (↓)           0.05        │
-╰─────────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 2):
+
+Mean Absolute Error (↓)             0.08
+Mean Absolute Percentage Error (↓)  1.77239e+14
+Mean Squared Error (↓)              0.04
+Median Absolute Error (↓)           0.05
 
 ○ Writing output data to file
 "python/tests/res/tmp/n-estimators_2/max-leaf-nodes_10/dataset_enron/results/evaluation_test_fold-2.csv"...
@@ -620,7 +620,7 @@ Predicting for 851 test examples...
 
 Running experiment (15 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset enron --estimator
-RandomForestRegressor --log-level debug --log-width 120 --max-leaf-nodes 20 --max_depth 5 --model-save-dir
+RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 20 --max_depth 5 --model-save-dir
 n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/models --n-estimators 2 --parameter-save-dir
 n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/parameters --problem-type regression --result-dir
 n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/results --save-all true --save-evaluation true
@@ -640,12 +640,12 @@ Fitting model to 851 training examples...
 Predicting for 851 test examples...
 ✓ Successfully predicted in <duration>
 
-╭── 🗀 Evaluation result for test data (Fold 1) ───╮
-│ Mean Absolute Error (↓)             0.08        │
-│ Mean Absolute Percentage Error (↓)  1.78061e+14 │
-│ Mean Squared Error (↓)              0.04        │
-│ Median Absolute Error (↓)           0.05        │
-╰─────────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 1):
+
+Mean Absolute Error (↓)             0.08
+Mean Absolute Percentage Error (↓)  1.78061e+14
+Mean Squared Error (↓)              0.04
+Median Absolute Error (↓)           0.05
 
 ○ Writing output data to file
 "python/tests/res/tmp/n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/results/evaluation_test_fold-1.csv"...
@@ -666,7 +666,7 @@ _fold-1.csv"...
 
 Running experiment (16 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset enron --estimator
-RandomForestRegressor --log-level debug --log-width 120 --max-leaf-nodes 20 --max_depth 5 --model-save-dir
+RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 20 --max_depth 5 --model-save-dir
 n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/models --n-estimators 2 --parameter-save-dir
 n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/parameters --problem-type regression --result-dir
 n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/results --save-all true --save-evaluation true
@@ -686,12 +686,12 @@ Fitting model to 851 training examples...
 Predicting for 851 test examples...
 ✓ Successfully predicted in <duration>
 
-╭── 🗀 Evaluation result for test data (Fold 2) ───╮
-│ Mean Absolute Error (↓)             0.08        │
-│ Mean Absolute Percentage Error (↓)  1.74664e+14 │
-│ Mean Squared Error (↓)              0.04        │
-│ Median Absolute Error (↓)           0.05        │
-╰─────────────────────────────────────────────────╯
+🗀 Evaluation result for test data (Fold 2):
+
+Mean Absolute Error (↓)             0.08
+Mean Absolute Percentage Error (↓)  1.74664e+14
+Mean Squared Error (↓)              0.04
+Median Absolute Error (↓)           0.05
 
 ○ Writing output data to file
 "python/tests/res/tmp/n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/results/evaluation_test_fold-2.csv"...

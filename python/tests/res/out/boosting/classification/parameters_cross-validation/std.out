@@ -1,4 +1,4 @@
-mlrl-testbed mlrl.boosting --log-width 120 --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --parameter-save-dir results --save-evaluation true --data-split cross-validation --print-evaluation false --save-evaluation false --print-parameters true --save-parameters true --load-parameters true --parameter-load-dir python/tests/res/in/boosting
+mlrl-testbed mlrl.boosting --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --parameter-save-dir results --save-evaluation true --data-split cross-validation --print-evaluation false --save-evaluation false --print-parameters true --save-parameters true --load-parameters true --parameter-load-dir python/tests/res/in/boosting
 Checking if output files do already exist...
 Starting experiment using the classification algorithm "BoomerClassifier"...
 ○ Writing output data to file "python/tests/res/tmp/metadata.yml"...
@@ -8,10 +8,10 @@ Fold 1 / 10:
 ○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 ○ Reading input data from file "python/tests/res/in/boosting/parameters_fold-1.csv"...
 
-╭────────── 🗀 Custom parameters (Fold 1) ───────────╮
-│ max_rules       10                                │
-│ rule_induction  top-down-greedy{max_conditions=1} │
-╰───────────────────────────────────────────────────╯
+🗀 Custom parameters (Fold 1):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
 
 ○ Writing output data to file "python/tests/res/tmp/results/parameters_fold-1.csv"...
 ✓ Successfully applied parameter setting: {'max_rules': 10, 'rule_induction': 'top-down-greedy{max_conditions=1}'}
@@ -22,10 +22,10 @@ Fitting model to 533 training examples...
 Fold 2 / 10:
 ○ Reading input data from file "python/tests/res/in/boosting/parameters_fold-2.csv"...
 
-╭────────── 🗀 Custom parameters (Fold 2) ───────────╮
-│ max_rules       10                                │
-│ rule_induction  top-down-greedy{max_conditions=1} │
-╰───────────────────────────────────────────────────╯
+🗀 Custom parameters (Fold 2):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
 
 ○ Writing output data to file "python/tests/res/tmp/results/parameters_fold-2.csv"...
 ✓ Successfully applied parameter setting: {'max_rules': 10, 'rule_induction': 'top-down-greedy{max_conditions=1}'}
@@ -36,10 +36,10 @@ Fitting model to 533 training examples...
 Fold 3 / 10:
 ○ Reading input data from file "python/tests/res/in/boosting/parameters_fold-3.csv"...
 
-╭────────── 🗀 Custom parameters (Fold 3) ───────────╮
-│ max_rules       10                                │
-│ rule_induction  top-down-greedy{max_conditions=1} │
-╰───────────────────────────────────────────────────╯
+🗀 Custom parameters (Fold 3):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
 
 ○ Writing output data to file "python/tests/res/tmp/results/parameters_fold-3.csv"...
 ✓ Successfully applied parameter setting: {'max_rules': 10, 'rule_induction': 'top-down-greedy{max_conditions=1}'}
@@ -50,10 +50,10 @@ Fitting model to 533 training examples...
 Fold 4 / 10:
 ○ Reading input data from file "python/tests/res/in/boosting/parameters_fold-4.csv"...
 
-╭────────── 🗀 Custom parameters (Fold 4) ───────────╮
-│ max_rules       10                                │
-│ rule_induction  top-down-greedy{max_conditions=1} │
-╰───────────────────────────────────────────────────╯
+🗀 Custom parameters (Fold 4):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
 
 ○ Writing output data to file "python/tests/res/tmp/results/parameters_fold-4.csv"...
 ✓ Successfully applied parameter setting: {'max_rules': 10, 'rule_induction': 'top-down-greedy{max_conditions=1}'}
@@ -64,10 +64,10 @@ Fitting model to 534 training examples...
 Fold 5 / 10:
 ○ Reading input data from file "python/tests/res/in/boosting/parameters_fold-5.csv"...
 
-╭────────── 🗀 Custom parameters (Fold 5) ───────────╮
-│ max_rules       10                                │
-│ rule_induction  top-down-greedy{max_conditions=1} │
-╰───────────────────────────────────────────────────╯
+🗀 Custom parameters (Fold 5):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
 
 ○ Writing output data to file "python/tests/res/tmp/results/parameters_fold-5.csv"...
 ✓ Successfully applied parameter setting: {'max_rules': 10, 'rule_induction': 'top-down-greedy{max_conditions=1}'}
@@ -78,10 +78,10 @@ Fitting model to 534 training examples...
 Fold 6 / 10:
 ○ Reading input data from file "python/tests/res/in/boosting/parameters_fold-6.csv"...
 
-╭────────── 🗀 Custom parameters (Fold 6) ───────────╮
-│ max_rules       10                                │
-│ rule_induction  top-down-greedy{max_conditions=1} │
-╰───────────────────────────────────────────────────╯
+🗀 Custom parameters (Fold 6):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
 
 ○ Writing output data to file "python/tests/res/tmp/results/parameters_fold-6.csv"...
 ✓ Successfully applied parameter setting: {'max_rules': 10, 'rule_induction': 'top-down-greedy{max_conditions=1}'}
@@ -92,10 +92,10 @@ Fitting model to 534 training examples...
 Fold 7 / 10:
 ○ Reading input data from file "python/tests/res/in/boosting/parameters_fold-7.csv"...
 
-╭────────── 🗀 Custom parameters (Fold 7) ───────────╮
-│ max_rules       10                                │
-│ rule_induction  top-down-greedy{max_conditions=1} │
-╰───────────────────────────────────────────────────╯
+🗀 Custom parameters (Fold 7):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
 
 ○ Writing output data to file "python/tests/res/tmp/results/parameters_fold-7.csv"...
 ✓ Successfully applied parameter setting: {'max_rules': 10, 'rule_induction': 'top-down-greedy{max_conditions=1}'}
@@ -106,10 +106,10 @@ Fitting model to 534 training examples...
 Fold 8 / 10:
 ○ Reading input data from file "python/tests/res/in/boosting/parameters_fold-8.csv"...
 
-╭────────── 🗀 Custom parameters (Fold 8) ───────────╮
-│ max_rules       10                                │
-│ rule_induction  top-down-greedy{max_conditions=1} │
-╰───────────────────────────────────────────────────╯
+🗀 Custom parameters (Fold 8):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
 
 ○ Writing output data to file "python/tests/res/tmp/results/parameters_fold-8.csv"...
 ✓ Successfully applied parameter setting: {'max_rules': 10, 'rule_induction': 'top-down-greedy{max_conditions=1}'}
@@ -120,10 +120,10 @@ Fitting model to 534 training examples...
 Fold 9 / 10:
 ○ Reading input data from file "python/tests/res/in/boosting/parameters_fold-9.csv"...
 
-╭────────── 🗀 Custom parameters (Fold 9) ───────────╮
-│ max_rules       10                                │
-│ rule_induction  top-down-greedy{max_conditions=1} │
-╰───────────────────────────────────────────────────╯
+🗀 Custom parameters (Fold 9):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
 
 ○ Writing output data to file "python/tests/res/tmp/results/parameters_fold-9.csv"...
 ✓ Successfully applied parameter setting: {'max_rules': 10, 'rule_induction': 'top-down-greedy{max_conditions=1}'}
@@ -134,10 +134,10 @@ Fitting model to 534 training examples...
 Fold 10 / 10:
 ○ Reading input data from file "python/tests/res/in/boosting/parameters_fold-10.csv"...
 
-╭────────── 🗀 Custom parameters (Fold 10) ──────────╮
-│ max_rules       10                                │
-│ rule_induction  top-down-greedy{max_conditions=1} │
-╰───────────────────────────────────────────────────╯
+🗀 Custom parameters (Fold 10):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
 
 ○ Writing output data to file "python/tests/res/tmp/results/parameters_fold-10.csv"...
 ✓ Successfully applied parameter setting: {'max_rules': 10, 'rule_induction': 'top-down-greedy{max_conditions=1}'}

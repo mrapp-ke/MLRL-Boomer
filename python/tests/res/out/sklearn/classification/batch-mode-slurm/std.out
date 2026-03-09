@@ -1,11 +1,11 @@
-mlrl-testbed mlrl.testbed_sklearn --mode batch --log-width 120 --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/sklearn/classification/batch_config.yml --runner slurm --slurm-config python/tests/res/config/slurm_config.yml --print-slurm-scripts true --save-slurm-scripts true --slurm-save-dir python/tests/res/tmp --save-evaluation true --n-estimators 1 --estimator RandomForestClassifier
+mlrl-testbed mlrl.testbed_sklearn --mode batch --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/sklearn/classification/batch_config.yml --runner slurm --slurm-config python/tests/res/config/slurm_config.yml --print-slurm-scripts true --save-slurm-scripts true --slurm-save-dir python/tests/res/tmp --save-evaluation true --n-estimators 1 --estimator RandomForestClassifier
 ○ Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Submitting 8 experiments to Slurm...
 
 Submitting Slurm job (1 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion gini
---data-dir python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --log-width 120
---model-save-dir n-estimators_1/criterion_gini/dataset_emotions/models --n-estimators 1 --parameter-save-dir
-n-estimators_1/criterion_gini/dataset_emotions/parameters --result-dir
+--data-dir python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain
+--log-width 120 --model-save-dir n-estimators_1/criterion_gini/dataset_emotions/models --n-estimators 1
+--parameter-save-dir n-estimators_1/criterion_gini/dataset_emotions/parameters --result-dir
 n-estimators_1/criterion_gini/dataset_emotions/results --save-evaluation true --save-meta-data false"
 Slurm script saved to file "python/tests/res/tmp/emotions_1.sh"
 Content of Slurm script is:
@@ -22,7 +22,7 @@ python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
 mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion gini --data-dir python/tests/res/data
---dataset emotions --estimator RandomForestClassifier --log-level debug --log-width 120 --model-save-dir
+--dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --model-save-dir
 n-estimators_1/criterion_gini/dataset_emotions/models --n-estimators 1 --parameter-save-dir
 n-estimators_1/criterion_gini/dataset_emotions/parameters --result-dir
 n-estimators_1/criterion_gini/dataset_emotions/results --save-evaluation true --save-meta-data false
@@ -30,10 +30,11 @@ deactivate
 
 
 Submitting Slurm job (2 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion entropy
---data-dir python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --log-width 120
---max-depth 5 --model-save-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/models --n-estimators 1
---parameter-save-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/parameters --result-dir
-n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results --save-evaluation true --save-meta-data false"
+--data-dir python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain
+--log-width 120 --max-depth 5 --model-save-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/models
+--n-estimators 1 --parameter-save-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/parameters
+--result-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results --save-evaluation true
+--save-meta-data false"
 Slurm script saved to file "python/tests/res/tmp/emotions_2.sh"
 Content of Slurm script is:
 
@@ -49,17 +50,17 @@ python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
 mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion entropy --data-dir python/tests/res/data
---dataset emotions --estimator RandomForestClassifier --log-level debug --log-width 120 --max-depth 5 --model-save-dir
-n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/models --n-estimators 1 --parameter-save-dir
-n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/parameters --result-dir
+--dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 5
+--model-save-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/models --n-estimators 1
+--parameter-save-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/parameters --result-dir
 n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results --save-evaluation true --save-meta-data false
 deactivate
 
 
 Submitting Slurm job (3 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion gini
---data-dir python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --log-width 120
---model-save-dir n-estimators_2/criterion_gini/dataset_emotions/models --n-estimators 2 --parameter-save-dir
-n-estimators_2/criterion_gini/dataset_emotions/parameters --result-dir
+--data-dir python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain
+--log-width 120 --model-save-dir n-estimators_2/criterion_gini/dataset_emotions/models --n-estimators 2
+--parameter-save-dir n-estimators_2/criterion_gini/dataset_emotions/parameters --result-dir
 n-estimators_2/criterion_gini/dataset_emotions/results --save-evaluation true --save-meta-data false"
 Slurm script saved to file "python/tests/res/tmp/emotions_3.sh"
 Content of Slurm script is:
@@ -76,7 +77,7 @@ python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
 mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion gini --data-dir python/tests/res/data
---dataset emotions --estimator RandomForestClassifier --log-level debug --log-width 120 --model-save-dir
+--dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --model-save-dir
 n-estimators_2/criterion_gini/dataset_emotions/models --n-estimators 2 --parameter-save-dir
 n-estimators_2/criterion_gini/dataset_emotions/parameters --result-dir
 n-estimators_2/criterion_gini/dataset_emotions/results --save-evaluation true --save-meta-data false
@@ -84,10 +85,11 @@ deactivate
 
 
 Submitting Slurm job (4 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion entropy
---data-dir python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --log-width 120
---max-depth 5 --model-save-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/models --n-estimators 2
---parameter-save-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/parameters --result-dir
-n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results --save-evaluation true --save-meta-data false"
+--data-dir python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain
+--log-width 120 --max-depth 5 --model-save-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/models
+--n-estimators 2 --parameter-save-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/parameters
+--result-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results --save-evaluation true
+--save-meta-data false"
 Slurm script saved to file "python/tests/res/tmp/emotions_4.sh"
 Content of Slurm script is:
 
@@ -103,18 +105,18 @@ python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
 mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion entropy --data-dir python/tests/res/data
---dataset emotions --estimator RandomForestClassifier --log-level debug --log-width 120 --max-depth 5 --model-save-dir
-n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/models --n-estimators 2 --parameter-save-dir
-n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/parameters --result-dir
+--dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 5
+--model-save-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/models --n-estimators 2
+--parameter-save-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/parameters --result-dir
 n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results --save-evaluation true --save-meta-data false
 deactivate
 
 
 Submitting Slurm job (5 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion gini
---data-dir python/tests/res/data --dataset enron --estimator RandomForestClassifier --log-level debug --log-width 120
---model-save-dir n-estimators_1/criterion_gini/dataset_enron/models --n-estimators 1 --parameter-save-dir
-n-estimators_1/criterion_gini/dataset_enron/parameters --result-dir n-estimators_1/criterion_gini/dataset_enron/results
---save-evaluation true --save-meta-data false"
+--data-dir python/tests/res/data --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain
+--log-width 120 --model-save-dir n-estimators_1/criterion_gini/dataset_enron/models --n-estimators 1
+--parameter-save-dir n-estimators_1/criterion_gini/dataset_enron/parameters --result-dir
+n-estimators_1/criterion_gini/dataset_enron/results --save-evaluation true --save-meta-data false"
 Slurm script saved to file "python/tests/res/tmp/enron_5.sh"
 Content of Slurm script is:
 
@@ -130,7 +132,7 @@ python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
 mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion gini --data-dir python/tests/res/data
---dataset enron --estimator RandomForestClassifier --log-level debug --log-width 120 --model-save-dir
+--dataset enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --model-save-dir
 n-estimators_1/criterion_gini/dataset_enron/models --n-estimators 1 --parameter-save-dir
 n-estimators_1/criterion_gini/dataset_enron/parameters --result-dir n-estimators_1/criterion_gini/dataset_enron/results
 --save-evaluation true --save-meta-data false
@@ -138,9 +140,9 @@ deactivate
 
 
 Submitting Slurm job (6 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion entropy
---data-dir python/tests/res/data --dataset enron --estimator RandomForestClassifier --log-level debug --log-width 120
---max-depth 5 --model-save-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/models --n-estimators 1
---parameter-save-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/parameters --result-dir
+--data-dir python/tests/res/data --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain
+--log-width 120 --max-depth 5 --model-save-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/models
+--n-estimators 1 --parameter-save-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/parameters --result-dir
 n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results --save-evaluation true --save-meta-data false"
 Slurm script saved to file "python/tests/res/tmp/enron_6.sh"
 Content of Slurm script is:
@@ -157,18 +159,18 @@ python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
 mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion entropy --data-dir python/tests/res/data
---dataset enron --estimator RandomForestClassifier --log-level debug --log-width 120 --max-depth 5 --model-save-dir
-n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/models --n-estimators 1 --parameter-save-dir
+--dataset enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 5
+--model-save-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/models --n-estimators 1 --parameter-save-dir
 n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/parameters --result-dir
 n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results --save-evaluation true --save-meta-data false
 deactivate
 
 
 Submitting Slurm job (7 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion gini
---data-dir python/tests/res/data --dataset enron --estimator RandomForestClassifier --log-level debug --log-width 120
---model-save-dir n-estimators_2/criterion_gini/dataset_enron/models --n-estimators 2 --parameter-save-dir
-n-estimators_2/criterion_gini/dataset_enron/parameters --result-dir n-estimators_2/criterion_gini/dataset_enron/results
---save-evaluation true --save-meta-data false"
+--data-dir python/tests/res/data --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain
+--log-width 120 --model-save-dir n-estimators_2/criterion_gini/dataset_enron/models --n-estimators 2
+--parameter-save-dir n-estimators_2/criterion_gini/dataset_enron/parameters --result-dir
+n-estimators_2/criterion_gini/dataset_enron/results --save-evaluation true --save-meta-data false"
 Slurm script saved to file "python/tests/res/tmp/enron_7.sh"
 Content of Slurm script is:
 
@@ -184,7 +186,7 @@ python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
 mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion gini --data-dir python/tests/res/data
---dataset enron --estimator RandomForestClassifier --log-level debug --log-width 120 --model-save-dir
+--dataset enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --model-save-dir
 n-estimators_2/criterion_gini/dataset_enron/models --n-estimators 2 --parameter-save-dir
 n-estimators_2/criterion_gini/dataset_enron/parameters --result-dir n-estimators_2/criterion_gini/dataset_enron/results
 --save-evaluation true --save-meta-data false
@@ -192,9 +194,9 @@ deactivate
 
 
 Submitting Slurm job (8 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion entropy
---data-dir python/tests/res/data --dataset enron --estimator RandomForestClassifier --log-level debug --log-width 120
---max-depth 5 --model-save-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/models --n-estimators 2
---parameter-save-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/parameters --result-dir
+--data-dir python/tests/res/data --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain
+--log-width 120 --max-depth 5 --model-save-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/models
+--n-estimators 2 --parameter-save-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/parameters --result-dir
 n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results --save-evaluation true --save-meta-data false"
 Slurm script saved to file "python/tests/res/tmp/enron_8.sh"
 Content of Slurm script is:
@@ -211,8 +213,8 @@ python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
 mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion entropy --data-dir python/tests/res/data
---dataset enron --estimator RandomForestClassifier --log-level debug --log-width 120 --max-depth 5 --model-save-dir
-n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/models --n-estimators 2 --parameter-save-dir
+--dataset enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 5
+--model-save-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/models --n-estimators 2 --parameter-save-dir
 n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/parameters --result-dir
 n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results --save-evaluation true --save-meta-data false
 deactivate

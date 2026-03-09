@@ -1,4 +1,4 @@
-mlrl-testbed mlrl.testbed_sklearn --log-width 120 --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset housing --result-dir results --problem-type regression --save-evaluation true --print-evaluation true --n-estimators 1 --estimator RandomForestRegressor
+mlrl-testbed mlrl.testbed_sklearn --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset housing --result-dir results --problem-type regression --save-evaluation true --print-evaluation true --n-estimators 1 --estimator RandomForestRegressor
 Checking if output files do already exist...
 Starting experiment using the regression algorithm "RandomForestRegressor"...
 ○ Writing output data to file "python/tests/res/tmp/metadata.yml"...
@@ -10,12 +10,12 @@ Fitting model to 339 training examples...
 Predicting for 167 test examples...
 ✓ Successfully predicted in <duration>
 
-╭──── 🗀 Evaluation result for test data ────╮
-│ Mean Absolute Error (↓)              2.98 │
-│ Mean Absolute Percentage Error (↓)   0.15 │
-│ Mean Squared Error (↓)              20.58 │
-│ Median Absolute Error (↓)            2.2  │
-╰───────────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Mean Absolute Error (↓)              2.98
+Mean Absolute Percentage Error (↓)   0.15
+Mean Squared Error (↓)              20.58
+Median Absolute Error (↓)            2.2
 
 ○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 ✓ Successfully finished experiment after <duration>

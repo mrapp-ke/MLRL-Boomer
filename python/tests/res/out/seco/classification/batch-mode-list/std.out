@@ -1,4 +1,4 @@
-mlrl-testbed mlrl.seco --mode batch --log-width 120 --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/seco/classification/batch_config.yml --save-evaluation true --list
+mlrl-testbed mlrl.seco --mode batch --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/seco/classification/batch_config.yml --save-evaluation true --list
 ○ Writing output data to file "python/tests/res/tmp/metadata.yml"...
 mlrl-testbed mlrl.seco \
     --base-dir python/tests/res/tmp \
@@ -7,6 +7,7 @@ mlrl-testbed mlrl.seco \
     --heuristic f-measure \
     --instance-sampling none \
     --log-level debug \
+    --log-plain \
     --log-width 120 \
     --model-save-dir instance-sampling_none/heuristic_f-measure/dataset_emotions/models \
     --parameter-save-dir instance-sampling_none/heuristic_f-measure/dataset_emotions/parameters \
@@ -22,6 +23,7 @@ mlrl-testbed mlrl.seco \
     --heuristic m-estimate \
     --instance-sampling none \
     --log-level debug \
+    --log-plain \
     --log-width 120 \
     --model-save-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/models \
     --parameter-save-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/parameters \
@@ -36,6 +38,7 @@ mlrl-testbed mlrl.seco \
     --heuristic f-measure \
     --instance-sampling with-replacement'{sample_size=0.5}' \
     --log-level debug \
+    --log-plain \
     --log-width 120 \
     --model-save-dir instance-sampling_with-replacement'{sample_size=0.5}'/heuristic_f-measure/dataset_emotions/models \
     --parameter-save-dir
@@ -52,6 +55,7 @@ mlrl-testbed mlrl.seco \
     --heuristic m-estimate \
     --instance-sampling with-replacement'{sample_size=0.5}' \
     --log-level debug \
+    --log-plain \
     --log-width 120 \
     --model-save-dir
 instance-sampling_with-replacement'{sample_size=0.5}'/heuristic_m-estimate/feature-format_sparse/dataset_emotions/models
@@ -72,6 +76,7 @@ mlrl-testbed mlrl.seco \
     --heuristic f-measure \
     --instance-sampling none \
     --log-level debug \
+    --log-plain \
     --log-width 120 \
     --model-save-dir instance-sampling_none/heuristic_f-measure/dataset_enron/models \
     --parameter-save-dir instance-sampling_none/heuristic_f-measure/dataset_enron/parameters \
@@ -87,6 +92,7 @@ mlrl-testbed mlrl.seco \
     --heuristic m-estimate \
     --instance-sampling none \
     --log-level debug \
+    --log-plain \
     --log-width 120 \
     --model-save-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/models \
     --parameter-save-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/parameters \
@@ -101,6 +107,7 @@ mlrl-testbed mlrl.seco \
     --heuristic f-measure \
     --instance-sampling with-replacement'{sample_size=0.5}' \
     --log-level debug \
+    --log-plain \
     --log-width 120 \
     --model-save-dir instance-sampling_with-replacement'{sample_size=0.5}'/heuristic_f-measure/dataset_enron/models \
     --parameter-save-dir
@@ -117,6 +124,7 @@ mlrl-testbed mlrl.seco \
     --heuristic m-estimate \
     --instance-sampling with-replacement'{sample_size=0.5}' \
     --log-level debug \
+    --log-plain \
     --log-width 120 \
     --model-save-dir
 instance-sampling_with-replacement'{sample_size=0.5}'/heuristic_m-estimate/feature-format_sparse/dataset_enron/models \

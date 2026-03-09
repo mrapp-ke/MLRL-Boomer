@@ -1,6 +1,6 @@
-command: mlrl-testbed mlrl.boosting --log-width 120 --log-level debug --base-dir python/tests/res/tmp
-  --data-dir python/tests/res/data --dataset atp7d-nominal --result-dir results --problem-type
-  regression --save-evaluation true --feature-binning equal-width --feature-format
-  dense
+command: mlrl-testbed mlrl.boosting --log-width 120 --log-plain --log-level debug
+  --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d-nominal
+  --result-dir results --problem-type regression --save-evaluation true --feature-binning
+  equal-width --feature-format dense
 timestamp: <timestamp>
 version: <version>
