@@ -102,6 +102,9 @@ class Log:
     @staticmethod
     def __decorate_with_box(renderable: ConsoleRenderable, box_title: Optional[str] = None) -> ConsoleRenderable:
         if PLAIN:
+            if box_title:
+                get_console().print(f'{box_title}:\n')
+
             return renderable
 
         return Panel.fit(renderable, title=Text(box_title, style=Style(bold=True)) if box_title else None)
