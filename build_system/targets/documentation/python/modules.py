@@ -5,7 +5,7 @@ Implements modules that provide access to Python code for which an API documenta
 """
 from os import environ
 from pathlib import Path
-from typing import List, override
+from typing import override
 
 from core.modules import Module, ModuleRegistry
 from util.files import FileSearch, FileType
@@ -54,7 +54,7 @@ class PythonApidocModule(ApidocModule):
         """
         return self.root_directory / self.source_directory_name
 
-    def find_source_files(self) -> List[Path]:
+    def find_source_files(self) -> list[Path]:
         """
         Finds and returns the Python source files to be included in the API documentation.
 

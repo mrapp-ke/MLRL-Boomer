@@ -6,7 +6,7 @@ Provides utility functions for reading and writing files.
 from functools import cached_property
 from pathlib import Path
 from shutil import rmtree
-from typing import Any, List, override
+from typing import Any, override
 
 from util.log import Log
 
@@ -74,7 +74,7 @@ class TextFile:
         self.accept_missing = accept_missing
 
     @cached_property
-    def lines(self) -> List[str]:
+    def lines(self) -> list[str]:
         """
         The lines in the text file.
         """

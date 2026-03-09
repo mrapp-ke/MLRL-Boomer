@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for creating tables.
 """
-from typing import List, override
+from typing import override
 
 from core.build_unit import BuildUnit
 from util.package_manager import PackageManager
@@ -22,7 +22,7 @@ class Table:
         """
         self.build_unit = build_unit
         self.headers = list(headers) if headers else None
-        self.rows: List[List[str]] = []
+        self.rows: list[list[str]] = []
 
     def add_row(self, *entries: str):
         """

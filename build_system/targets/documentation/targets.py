@@ -4,9 +4,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements targets for generating documentations.
 """
 from abc import ABC
+from collections.abc import Iterable
 from os import environ
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, cast, override
+from typing import cast, override
 
 from core.build_unit import BuildUnit
 from core.modules import Module
@@ -26,14 +27,14 @@ class ApidocIndex(BuildTarget.Runnable, ABC):
     """
 
     @staticmethod
-    def __get_template(module: ApidocModule) -> Optional[Path]:
+    def __get_template(module: ApidocModule) -> Path | None:
         parent_directory = module.output_directory.parent
         template = parent_directory / 'index.template.md'
         return template if template.is_file() else None
 
     @staticmethod
-    def __get_templates_and_modules(modules: Iterable[ApidocModule]) -> Dict[Path, List[ApidocModule]]:
-        modules_by_template: Dict[Path, List[ApidocModule]] = {}
+    def __get_templates_and_modules(modules: Iterable[ApidocModule]) -> dict[Path, list[ApidocModule]]:
+        modules_by_template: dict[Path, list[ApidocModule]] = {}
 
         for module in modules:
             template = ApidocIndex.__get_template(module)
@@ -49,7 +50,7 @@ class ApidocIndex(BuildTarget.Runnable, ABC):
         return template.parent / 'index.md'
 
     @override
-    def run_all(self, _: BuildUnit, modules: List[Module]):
+    def run_all(self, _: BuildUnit, modules: list[Module]):
         apidoc_modules = (cast(ApidocModule, module) for module in modules)
 
         for template, modules_in_directory in self.__get_templates_and_modules(apidoc_modules).items():
@@ -66,19 +67,19 @@ class ApidocIndex(BuildTarget.Runnable, ABC):
             TextFile(self.__index_file(template), accept_missing=True).write_lines(*new_lines)
 
     @override
-    def get_input_files(self, _: BuildUnit, module: Module) -> List[Path]:
+    def get_input_files(self, _: BuildUnit, module: Module) -> list[Path]:
         apidoc_module = cast(ApidocModule, module)
         template = self.__get_template(apidoc_module)
         return [template] if template else []
 
     @override
-    def get_output_files(self, _: BuildUnit, module: Module) -> List[Path]:
+    def get_output_files(self, _: BuildUnit, module: Module) -> list[Path]:
         apidoc_module = cast(ApidocModule, module)
         template = self.__get_template(apidoc_module)
         return [self.__index_file(template)] if template else []
 
     @override
-    def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[Path]:
+    def get_clean_files(self, build_unit: BuildUnit, module: Module) -> list[Path]:
         apidoc_module = cast(ApidocModule, module)
         Log.info('Removing index file referencing API documentation in directory "%s"', apidoc_module.output_directory)
         return super().get_clean_files(build_unit, module)
@@ -110,17 +111,17 @@ class BuildDocumentation(BuildTarget.Runnable):
         SphinxBuild(build_unit, sphinx_module, builder=self.sphinx_builder).run()
 
     @override
-    def get_input_files(self, _: BuildUnit, module: Module) -> List[Path]:
+    def get_input_files(self, _: BuildUnit, module: Module) -> list[Path]:
         sphinx_module = cast(SphinxModule, module)
         return sphinx_module.find_source_files() if self.sphinx_builder == SphinxBuild.BUILDER_HTML else []
 
     @override
-    def get_output_files(self, _: BuildUnit, module: Module) -> List[Path]:
+    def get_output_files(self, _: BuildUnit, module: Module) -> list[Path]:
         sphinx_module = cast(SphinxModule, module)
         return [sphinx_module.output_directory] if self.sphinx_builder == SphinxBuild.BUILDER_HTML else []
 
     @override
-    def get_clean_files(self, _: BuildUnit, module: Module) -> List[Path]:
+    def get_clean_files(self, _: BuildUnit, module: Module) -> list[Path]:
         sphinx_module = cast(SphinxModule, module)
         Log.info('Removing documentation for directory "%s"...', sphinx_module.root_directory)
         return [sphinx_module.output_directory]

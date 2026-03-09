@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from enum import Enum, auto
 from functools import reduce
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple, override
+from typing import Any, Callable, override
 
 from core.build_unit import BuildUnit
 from core.changes import ChangeDetection
@@ -79,7 +79,7 @@ class Target(ABC):
             :return:            The target that has been created
             """
 
-    def __init__(self, name: str, dependencies: List['Target.Dependency']):
+    def __init__(self, name: str, dependencies: list['Target.Dependency']):
         """
         :param name:            The name of the target
         :param dependencies:    A list that contains all dependencies of the target
@@ -128,7 +128,7 @@ class BuildTarget(Target):
             """
             self.module_filter = module_filter
 
-        def run_all(self, build_unit: BuildUnit, modules: List[Module]):
+        def run_all(self, build_unit: BuildUnit, modules: list[Module]):
             """
             May be overridden by subclasses in order to apply the target to all modules that match the filter.
 
@@ -148,7 +148,7 @@ class BuildTarget(Target):
             raise NotImplementedError('Class ' + type(self).__name__ + ' does not implement the "run" method')
 
         # pylint: disable=unused-argument
-        def get_input_files(self, build_unit: BuildUnit, module: Module) -> List[Path]:
+        def get_input_files(self, build_unit: BuildUnit, module: Module) -> list[Path]:
             """
             May be overridden by subclasses in order to return the input files required by the target.
 
@@ -159,7 +159,7 @@ class BuildTarget(Target):
             return []
 
         # pylint: disable=unused-argument
-        def get_output_files(self, build_unit: BuildUnit, module: Module) -> List[Path]:
+        def get_output_files(self, build_unit: BuildUnit, module: Module) -> list[Path]:
             """
             May be overridden by subclasses in order to return the output files produced by the target.
 
@@ -169,7 +169,7 @@ class BuildTarget(Target):
             """
             return []
 
-        def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[Path]:
+        def get_clean_files(self, build_unit: BuildUnit, module: Module) -> list[Path]:
             """
             May be overridden by subclasses in order to return the output files produced by the target that must be
             cleaned.
@@ -193,7 +193,7 @@ class BuildTarget(Target):
             super().__init__()
             self.parent_builder = parent_builder
             self.target_name = target_name
-            self.runnables: List[BuildTarget.Runnable] = []
+            self.runnables: list[BuildTarget.Runnable] = []
 
         def set_runnables(self, *runnables: 'BuildTarget.Runnable') -> Any:
             """
@@ -209,7 +209,7 @@ class BuildTarget(Target):
         def build(self, build_unit: BuildUnit) -> Target:
             return BuildTarget(self.target_name, self.dependencies, self.runnables, build_unit)
 
-    def __get_missing_output_files(self, runnable: Runnable, module: Module) -> Tuple[List[Path], List[Path]]:
+    def __get_missing_output_files(self, runnable: Runnable, module: Module) -> tuple[list[Path], list[Path]]:
         output_files = runnable.get_output_files(self.build_unit, module)
         missing_output_files = [output_file for output_file in output_files if not output_file.exists()]
 
@@ -234,7 +234,7 @@ class BuildTarget(Target):
 
         return output_files, missing_output_files
 
-    def __get_changed_input_files(self, runnable: Runnable, module: Module) -> Tuple[List[Path], List[Path]]:
+    def __get_changed_input_files(self, runnable: Runnable, module: Module) -> tuple[list[Path], list[Path]]:
         input_files = runnable.get_input_files(self.build_unit, module)
         changed_input_files = [
             input_file for input_file in input_files if self.change_detection.get_changed_files(module, *input_files)
@@ -261,7 +261,7 @@ class BuildTarget(Target):
 
         return input_files, changed_input_files
 
-    def __init__(self, name: str, dependencies: List[Target.Dependency], runnables: List[Runnable],
+    def __init__(self, name: str, dependencies: list[Target.Dependency], runnables: list[Runnable],
                  build_unit: BuildUnit):
         """
         :param name:            The name of the target or None, if the target does not have a name
@@ -330,7 +330,7 @@ class PhonyTarget(Target):
             """
             self.module_filter = module_filter
 
-        def run_all(self, build_unit: BuildUnit, modules: List[Module]):
+        def run_all(self, build_unit: BuildUnit, modules: list[Module]):
             """
             May be overridden by subclasses in order to apply the target to all modules that match the filter.
 
@@ -362,8 +362,8 @@ class PhonyTarget(Target):
             super().__init__()
             self.parent_builder = parent_builder
             self.target_name = target_name
-            self.functions: List[PhonyTarget.Function] = []
-            self.runnables: List[PhonyTarget.Runnable] = []
+            self.functions: list[PhonyTarget.Function] = []
+            self.runnables: list[PhonyTarget.Runnable] = []
 
         def nop(self) -> Any:
             """
@@ -415,7 +415,7 @@ class PhonyTarget(Target):
 
             return PhonyTarget(self.target_name, self.dependencies, action)
 
-    def __init__(self, name: str, dependencies: List[Target.Dependency], action: Callable[[ModuleRegistry], None]):
+    def __init__(self, name: str, dependencies: list[Target.Dependency], action: Callable[[ModuleRegistry], None]):
         """
         :param name:            The name of the target
         :param dependencies:    A list that contains all dependencies of the target
@@ -439,7 +439,7 @@ class TargetBuilder:
         :param build_unit: The build unit, the targets belong to
         """
         self.build_unit = build_unit
-        self.target_builders: List[Target.Builder] = []
+        self.target_builders: list[Target.Builder] = []
 
     def add_build_target(self, name: str) -> BuildTarget.Builder:
         """
@@ -463,7 +463,7 @@ class TargetBuilder:
         self.target_builders.append(target_builder)
         return target_builder
 
-    def build(self) -> List[Target]:
+    def build(self) -> list[Target]:
         """
         Creates and returns the targets that have been configured via the builder.
 
@@ -496,11 +496,11 @@ class DependencyGraph:
             child:  The child of this node, if any
         """
         target: Target
-        parent: Optional['DependencyGraph.Node'] = None
-        child: Optional['DependencyGraph.Node'] = None
+        parent: 'DependencyGraph.Node | None' = None
+        child: 'DependencyGraph.Node | None' = None
 
         @staticmethod
-        def from_name(targets_by_name: Dict[str, Target], target_name: str,
+        def from_name(targets_by_name: dict[str, Target], target_name: str,
                       graph_type: 'DependencyGraph.Type') -> 'DependencyGraph.Node':
             """
             Creates and returns a new node of a dependency graph corresponding to the target with a specific name.
@@ -515,8 +515,8 @@ class DependencyGraph:
                 target) if graph_type == DependencyGraph.Type.RUN else DependencyGraph.CleanNode(target)
 
         @staticmethod
-        def from_dependency(targets_by_name: Dict[str, Target], dependency: Target.Dependency,
-                            graph_type: 'DependencyGraph.Type') -> Optional['DependencyGraph.Node']:
+        def from_dependency(targets_by_name: dict[str, Target], dependency: Target.Dependency,
+                            graph_type: 'DependencyGraph.Type') -> 'DependencyGraph.Node | None':
             """
             Creates and returns a new node of a dependency graph corresponding to the target referred to by a
             `Target.Dependency`.
@@ -646,7 +646,7 @@ class DependencyGraph:
 
             :param module_registry: A `ModuleRegistry` that may be used for looking up modules
             """
-            current_node: Optional[DependencyGraph.Node] = self.first
+            current_node: DependencyGraph.Node | None = self.first
 
             while current_node:
                 current_node.execute(module_registry)
@@ -667,8 +667,8 @@ class DependencyGraph:
             return result
 
     @staticmethod
-    def __expand_sequence(targets_by_name: Dict[str, Target], sequence: Sequence, graph_type: 'DependencyGraph.Type',
-                          follow_dependencies: bool) -> List[Sequence]:
+    def __expand_sequence(targets_by_name: dict[str, Target], sequence: Sequence, graph_type: 'DependencyGraph.Type',
+                          follow_dependencies: bool) -> list[Sequence]:
         sequences = []
         dependencies = sequence.first.target.dependencies if follow_dependencies else None
 
@@ -690,14 +690,14 @@ class DependencyGraph:
         return sequences
 
     @staticmethod
-    def __create_sequence(targets_by_name: Dict[str, Target], target_name: str, graph_type: 'DependencyGraph.Type',
-                          follow_dependencies: bool) -> List[Sequence]:
+    def __create_sequence(targets_by_name: dict[str, Target], target_name: str, graph_type: 'DependencyGraph.Type',
+                          follow_dependencies: bool) -> list[Sequence]:
         node = DependencyGraph.Node.from_name(targets_by_name, target_name, graph_type)
         sequence = DependencyGraph.Sequence.from_node(node)
         return DependencyGraph.__expand_sequence(targets_by_name, sequence, graph_type, follow_dependencies)
 
     @staticmethod
-    def __find_in_parents(node: Node, parent: Optional[Node]) -> Optional[Node]:
+    def __find_in_parents(node: Node, parent: Node | None) -> Node | None:
         while parent:
             if parent == node:
                 return parent
@@ -708,8 +708,8 @@ class DependencyGraph:
 
     @staticmethod
     def __merge_two_sequences(first_sequence: Sequence, second_sequence: Sequence) -> Sequence:
-        first_node: Optional[DependencyGraph.Node] = first_sequence.last
-        second_node: Optional[DependencyGraph.Node] = second_sequence.last
+        first_node: DependencyGraph.Node | None = first_sequence.last
+        second_node: DependencyGraph.Node | None = second_sequence.last
 
         while second_node:
             overlapping_node = DependencyGraph.__find_in_parents(second_node, first_node)
@@ -738,7 +738,7 @@ class DependencyGraph:
         return first_sequence
 
     @staticmethod
-    def __merge_multiple_sequences(sequences: List[Sequence]) -> Sequence:
+    def __merge_multiple_sequences(sequences: list[Sequence]) -> Sequence:
         while len(sequences) > 1:
             second_sequence = sequences.pop()
             first_sequence = sequences.pop()
@@ -748,7 +748,7 @@ class DependencyGraph:
         return sequences[0]
 
     def __init__(self,
-                 targets_by_name: Dict[str, Target],
+                 targets_by_name: dict[str, Target],
                  *target_names: str,
                  graph_type: 'DependencyGraph.Type',
                  follow_dependencies: bool = True):

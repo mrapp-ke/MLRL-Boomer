@@ -4,7 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides actions for managing GitHub milestones.
 """
 from os import environ
-from typing import Optional
 
 from core.build_unit import BuildUnit
 from util.env import get_env
@@ -13,7 +12,7 @@ from util.pygithub import GithubApi
 from util.version import Version
 
 
-def __get_repository_name_from_env() -> Optional[str]:
+def __get_repository_name_from_env() -> str | None:
     env_repository = 'GITHUB_REPOSITORY'
     repository_name = get_env(environ, env_repository)
 
@@ -23,7 +22,7 @@ def __get_repository_name_from_env() -> Optional[str]:
     return repository_name
 
 
-def __get_milestone_from_env() -> Optional[str]:
+def __get_milestone_from_env() -> str | None:
     env_milestone = 'MILESTONE'
     milestone = get_env(environ, env_milestone)
 

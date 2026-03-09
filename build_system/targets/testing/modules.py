@@ -5,7 +5,6 @@ Implements modules that provide access to automated tests.
 """
 from abc import ABC
 from os import environ
-from typing import Optional, Set
 
 from core.modules import Module
 from util.env import get_env, get_env_array, get_env_bool
@@ -31,7 +30,7 @@ class TestModule(Module, ABC):
         return get_env_bool(environ, 'ONLY_FAILED')
 
     @property
-    def markers(self) -> Set[str]:
+    def markers(self) -> set[str]:
         """
         A set that contains the markers of the test cases to be run or an empty list, if all test cases should be run.
         """
@@ -39,7 +38,7 @@ class TestModule(Module, ABC):
         return set(markers) if markers else set()
 
     @property
-    def num_blocks(self) -> Optional[int]:
+    def num_blocks(self) -> int | None:
         """
         The total number of blocks to assign tests to or None, if no blocks should be used
         """
@@ -47,7 +46,7 @@ class TestModule(Module, ABC):
         return int(value) if value else None
 
     @property
-    def block_index(self) -> Optional[int]:
+    def block_index(self) -> int | None:
         """
         The index of the block of tests to be run or None, if all tests should be run.
         """
@@ -55,7 +54,7 @@ class TestModule(Module, ABC):
         return int(value) if value else None
 
     @property
-    def test_name(self) -> Optional[str]:
+    def test_name(self) -> str | None:
         """
         A substring to be contained in the name of all tests to be run or None, if all tests should be run.
         """

@@ -4,7 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utilities for reading and writing pyproject.toml files.
 """
 from functools import reduce
-from typing import List
 
 from util.toml_file import TomlFile
 
@@ -29,14 +28,14 @@ class PyprojectTomlFile(TomlFile):
         return self.toml_dict['project']['version']
 
     @property
-    def mandatory_dependencies(self) -> List[str]:
+    def mandatory_dependencies(self) -> list[str]:
         """
         A list that contains the mandatory dependencies declared in the pyproject.toml file.
         """
         return self.toml_dict['project'].get('dependencies', [])
 
     @property
-    def optional_dependencies(self) -> List[str]:
+    def optional_dependencies(self) -> list[str]:
         """
         A list that contains the optional dependencies declared in the pyproject.toml file.
         """
@@ -44,7 +43,7 @@ class PyprojectTomlFile(TomlFile):
         return reduce(lambda aggr, dependency_list: aggr + dependency_list, dependency_dict.values(), [])
 
     @property
-    def dependencies(self) -> List[str]:
+    def dependencies(self) -> list[str]:
         """
         A list that contains all dependencies, including mandatory and optional ones, declared in the pyproject.toml
         file.

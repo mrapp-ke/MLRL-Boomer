@@ -5,7 +5,7 @@ Implements targets for building and installing wheel packages.
 """
 from os import environ
 from pathlib import Path
-from typing import Dict, List, cast, override
+from typing import cast, override
 
 from core.build_unit import BuildUnit
 from core.modules import Module
@@ -31,8 +31,8 @@ class GeneratePyprojectTomlFiles(BuildTarget.Runnable):
     """
 
     @staticmethod
-    def __get_requirements(template_file: PyprojectTomlFile) -> Dict[str, Requirement]:
-        requirements: Dict[str, Requirement] = {}
+    def __get_requirements(template_file: PyprojectTomlFile) -> dict[str, Requirement]:
+        requirements: dict[str, Requirement] = {}
         all_dependencies = template_file.dependencies
 
         if all_dependencies:
@@ -52,7 +52,7 @@ class GeneratePyprojectTomlFiles(BuildTarget.Runnable):
         return requirements
 
     @staticmethod
-    def __generate_pyproject_toml(template_file: PyprojectTomlFile) -> List[str]:
+    def __generate_pyproject_toml(template_file: PyprojectTomlFile) -> list[str]:
         requirements = GeneratePyprojectTomlFiles.__get_requirements(template_file)
         lines = template_file.lines
         num_lines = len(lines)
@@ -104,17 +104,17 @@ class GeneratePyprojectTomlFiles(BuildTarget.Runnable):
         pyproject_toml_file.write_lines(*self.__generate_pyproject_toml(template_file))
 
     @override
-    def get_input_files(self, _: BuildUnit, module: Module) -> List[Path]:
+    def get_input_files(self, _: BuildUnit, module: Module) -> list[Path]:
         package_module = cast(PythonPackageModule, module)
         return [package_module.pyproject_toml_template_file]
 
     @override
-    def get_output_files(self, _: BuildUnit, module: Module) -> List[Path]:
+    def get_output_files(self, _: BuildUnit, module: Module) -> list[Path]:
         package_module = cast(PythonPackageModule, module)
         return [package_module.pyproject_toml_file]
 
     @override
-    def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[Path]:
+    def get_clean_files(self, build_unit: BuildUnit, module: Module) -> list[Path]:
         package_module = cast(PythonPackageModule, module)
         Log.info('Removing pyproject.toml file from directory "%s"', package_module.root_directory)
         return super().get_clean_files(build_unit, package_module)
@@ -148,7 +148,7 @@ class BuildPythonWheels(BuildTarget.Runnable):
                     Auditwheel(build_unit, wheel).run()
 
     @override
-    def get_input_files(self, _: BuildUnit, module: Module) -> List[Path]:
+    def get_input_files(self, _: BuildUnit, module: Module) -> list[Path]:
         package_module = cast(PythonPackageModule, module)
         file_search = Project.Python.file_search() \
             .set_symlinks(False) \
@@ -162,12 +162,12 @@ class BuildPythonWheels(BuildTarget.Runnable):
         return file_search.list(package_module.root_directory)
 
     @override
-    def get_output_files(self, _: BuildUnit, module: Module) -> List[Path]:
+    def get_output_files(self, _: BuildUnit, module: Module) -> list[Path]:
         package_module = cast(PythonPackageModule, module)
         return [package_module.wheel_directory]
 
     @override
-    def get_clean_files(self, _: BuildUnit, module: Module) -> List[Path]:
+    def get_clean_files(self, _: BuildUnit, module: Module) -> list[Path]:
         package_module = cast(PythonPackageModule, module)
         clean_files = []
         Log.info('Removing Python wheels from directory "%s"...', package_module.root_directory)
@@ -232,7 +232,7 @@ class InstallPythonWheels(BuildTarget.Runnable):
             InstallPythonWheels.InstallWheelCommand(wheel).run()
 
     @override
-    def get_input_files(self, build_unit: BuildUnit, module: Module) -> List[Path]:
+    def get_input_files(self, build_unit: BuildUnit, module: Module) -> list[Path]:
         package_module = cast(PythonPackageModule, module)
         installed_packages = InstallPythonWheels.ListCommand().capture_output().split('\n')
         pyproject_toml_file = PyprojectTomlFile(build_unit, package_module.pyproject_toml_file)
@@ -247,7 +247,7 @@ class InstallPythonWheels(BuildTarget.Runnable):
         return []
 
     @override
-    def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[Path]:
+    def get_clean_files(self, build_unit: BuildUnit, module: Module) -> list[Path]:
         package_module = cast(PythonPackageModule, module)
         Log.info('Uninstalling Python packages for directory "%s"...', package_module.root_directory)
         pyproject_toml_file = PyprojectTomlFile(build_unit, package_module.pyproject_toml_template_file)
