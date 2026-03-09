@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing characteristics of an output matrix that are part of output data.
 """
 from numbers import Number
-from typing import Any, Callable, List, Tuple, override
+from typing import Any, Callable, List, override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties
@@ -48,7 +48,7 @@ class OutputCharacteristics(TabularOutputData):
 
     OPTION_DISTINCT_LABEL_VECTORS = 'distinct_label_vectors'
 
-    def __init__(self, values: List[Tuple[Characteristic, Any]], properties: Properties, context: Context = Context()):
+    def __init__(self, values: List[tuple[Characteristic, Any]], properties: Properties, context: Context = Context()):
         """
         :param values:          A list that stores different data characteristics and their corresponding values
         :param properties:      The properties of the output data

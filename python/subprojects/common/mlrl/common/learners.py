@@ -8,7 +8,7 @@ import re as regex
 
 from abc import ABC, abstractmethod
 from enum import StrEnum
-from typing import Any, Set, Tuple, override
+from typing import Any, Set, override
 
 import numpy as np
 
@@ -672,7 +672,7 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
         self.num_outputs_ = num_labels
         return None
 
-    def _encode_labels(self, y) -> Tuple[Any, LabelEncoder | None]:
+    def _encode_labels(self, y) -> tuple[Any, LabelEncoder | None]:
         """
         Encodes the given label matrix, if necessary, depending on it type, using a `LabelEncoder`.
 

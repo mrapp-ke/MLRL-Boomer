@@ -7,7 +7,7 @@ import re as regex
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Set, Tuple, override
+from typing import Any, Dict, Iterable, List, Set, override
 
 import yaml
 
@@ -125,7 +125,7 @@ class TextFileComparison(FileComparison):
     Allows to compare or overwrite text files produced by tests.
     """
 
-    block_of_durations: Tuple[int, int] = (-1, -1)
+    block_of_durations: tuple[int, int] = (-1, -1)
 
     def __replace_durations_with_placeholders(self, line_index: int, line: str) -> str:
         if self.block_of_durations[0] >= 0:

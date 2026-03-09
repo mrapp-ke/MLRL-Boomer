@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing unique label vectors contained in a dataset that are part of output data.
 """
-from typing import List, Tuple, override
+from typing import List, override
 
 from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vector_histogram import LabelVectorHistogram
 
@@ -30,7 +30,7 @@ class LabelVectors(TabularOutputData):
 
     COLUMN_FREQUENCY = 'Frequency'
 
-    def __init__(self, values: List[Tuple[str, int]]):
+    def __init__(self, values: List[tuple[str, int]]):
         """
         :param values: A list that stores textual representations of unique label vectors and their respective frequency
         """

@@ -6,7 +6,7 @@ Provides classes for representing evaluation results that are part of output dat
 from abc import ABC
 from functools import partial
 from itertools import chain
-from typing import Dict, Iterable, List, Set, Tuple, override
+from typing import Dict, Iterable, List, Set, override
 
 import numpy as np
 
@@ -83,7 +83,7 @@ class AggregatedEvaluationResult(TabularOutputData):
             column_wise_table = table.to_column_wise_table()
             dataset_column_index = 0
             parameter_column_indices: List[int] = []
-            measures: List[Tuple[int, str]] = []
+            measures: List[tuple[int, str]] = []
             std_dev_column_indices: Dict[str, int] = {}
             aggregation_measure_column_indices: Dict[str, Dict[AggregationMeasure, int]] = {}
 
@@ -183,9 +183,9 @@ class AggregatedEvaluationResult(TabularOutputData):
         return result
 
     @staticmethod
-    def __get_unique_parameter_settings(parameter_columns: List[Column]) -> Dict[Tuple[Cell, ...], List[int]]:
+    def __get_unique_parameter_settings(parameter_columns: List[Column]) -> Dict[tuple[Cell, ...], List[int]]:
         num_rows = parameter_columns[0].num_rows if parameter_columns else 0
-        unique_parameters: Dict[Tuple[Cell, ...], List[int]] = {}
+        unique_parameters: Dict[tuple[Cell, ...], List[int]] = {}
 
         for row_index in range(num_rows):
             parameters = tuple((parameter_column[row_index] for parameter_column in parameter_columns))

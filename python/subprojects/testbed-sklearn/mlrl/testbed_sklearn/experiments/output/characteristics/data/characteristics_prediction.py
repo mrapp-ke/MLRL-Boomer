@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing characteristics of binary predictions that are part of output data.
 """
-from typing import Any, List, Tuple
+from typing import Any, List
 
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import Characteristic, \
     OutputCharacteristics, get_output_characteristics
@@ -23,7 +23,7 @@ class PredictionCharacteristics(OutputCharacteristics):
 
     CONTEXT = Context()
 
-    def __init__(self, values: List[Tuple[Characteristic, Any]]):
+    def __init__(self, values: List[tuple[Characteristic, Any]]):
         """
         :param values: A list that stores different data characteristics and their corresponding values
         """

@@ -5,7 +5,7 @@ Provides a data structure that allows to store and parse options that are provid
 """
 from enum import Enum, StrEnum
 from functools import reduce
-from typing import Any, Dict, Set, Tuple, Type, override
+from typing import Any, Dict, Set, Type, override
 
 from mlrl.util.format import format_enum_values, format_set
 from mlrl.util.validation import ValidationError
@@ -223,7 +223,7 @@ def parse_param(name: str, value: str, allowed_values: Set[str]) -> str:
 
 
 def parse_param_and_options(name: str, value: str, allowed_values_and_options: Dict[str,
-                                                                                    Set[str]]) -> Tuple[str, Options]:
+                                                                                    Set[str]]) -> tuple[str, Options]:
     """
     Parses and returns an argument or parameter value, as well as additional `Options` that may be associated with it.
     If the given value is invalid, a `ValueError` is raised.

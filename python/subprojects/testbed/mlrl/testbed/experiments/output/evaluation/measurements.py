@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for keeping track of several measurements according to different measures.
 """
 
-from typing import Dict, Tuple
+from typing import Dict
 
 import numpy as np
 
@@ -34,7 +34,7 @@ class Measurements:
         return self._values_per_measure.setdefault(
             measure, np.full(shape=self.num_values_per_measure, dtype=float, fill_value=np.nan))
 
-    def average_by_measure(self, measure: OutputValue) -> Tuple[float, float]:
+    def average_by_measure(self, measure: OutputValue) -> tuple[float, float]:
         """
         Returns an average and a corresponding standard deviation for a given measure. The average is calculated as the
         arithmetic mean of all values that have been tracked for the measure.

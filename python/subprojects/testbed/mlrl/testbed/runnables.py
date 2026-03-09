@@ -7,7 +7,7 @@ Provides base classes for programs that can be configured via command line argum
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from functools import reduce
-from typing import List, Set, Tuple, override
+from typing import List, Set, override
 
 from mlrl.testbed.arguments import PredictionDatasetArguments
 from mlrl.testbed.command import Command
@@ -205,7 +205,7 @@ class Runnable(Recipe, ABC):
 
         return run_mode
 
-    def configure_arguments(self, cli: CommandLineInterface, mode: Mode) -> Tuple[Set[Argument], Set[Argument]]:
+    def configure_arguments(self, cli: CommandLineInterface, mode: Mode) -> tuple[Set[Argument], Set[Argument]]:
         """
         Configures the command line interface according to the extensions applied to the runnable.
 

@@ -6,7 +6,7 @@ Provides classes that allow writing textual representations of probability calib
 import logging as log
 
 from abc import ABC, abstractmethod
-from typing import Dict, List, Tuple, override
+from typing import Dict, List, override
 
 from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibrationModel, \
     NoProbabilityCalibrationModel
@@ -62,11 +62,11 @@ class ProbabilityCalibrationModelWriter(ResultWriter, ABC):
             return self._create_isotonic_calibration_model(bin_lists) if bin_lists else None
 
         @override
-        def extract_data(self, state: ExperimentState, sinks: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
+        def extract_data(self, state: ExperimentState, sinks: List[Sink]) -> List[tuple[ExperimentState, OutputData]]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
-            result: List[Tuple[ExperimentState, OutputData]] = []
+            result: List[tuple[ExperimentState, OutputData]] = []
 
             for extracted_state, tabular_output_data in super().extract_data(state, sinks):
                 table = tabular_output_data.to_table(Options()).to_column_wise_table()
@@ -92,7 +92,7 @@ class ProbabilityCalibrationModelWriter(ResultWriter, ABC):
         """
 
         @override
-        def extract_data(self, state: ExperimentState, _: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
+        def extract_data(self, state: ExperimentState, _: List[Sink]) -> List[tuple[ExperimentState, OutputData]]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """

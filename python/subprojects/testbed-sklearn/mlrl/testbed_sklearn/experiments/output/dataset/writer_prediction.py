@@ -6,7 +6,7 @@ Provides classes that allow writing predictions to one or several sinks.
 from dataclasses import replace
 from functools import reduce
 from itertools import chain
-from typing import Any, List, Tuple, override
+from typing import Any, List, override
 
 import numpy as np
 
@@ -55,7 +55,7 @@ class PredictionWriter(ResultWriter):
             return np.unique(array)
 
         @override
-        def extract_data(self, state: ExperimentState, _: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
+        def extract_data(self, state: ExperimentState, _: List[Sink]) -> List[tuple[ExperimentState, OutputData]]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """

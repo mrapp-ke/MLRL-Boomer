@@ -8,7 +8,7 @@ import logging as log
 from argparse import Namespace
 from dataclasses import replace
 from pathlib import Path
-from typing import Dict, List, Set, Tuple, override
+from typing import Dict, List, Set, override
 
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments.dataset_type import DatasetType
@@ -120,8 +120,8 @@ class ReadMode(InputMode):
 
     @staticmethod
     def __group_batch_by_dataset(arguments: Set[Argument], args: Namespace,
-                                 batch: List[Command]) -> Dict[str, List[Tuple[Command, Namespace]]]:
-        commands_by_dataset: Dict[str, List[Tuple[Command, Namespace]]] = {}
+                                 batch: List[Command]) -> Dict[str, List[tuple[Command, Namespace]]]:
+        commands_by_dataset: Dict[str, List[tuple[Command, Namespace]]] = {}
 
         for command in batch:
             command_args = ReadMode.__create_command_args(arguments, args, command)
@@ -139,7 +139,7 @@ class ReadMode(InputMode):
                           input_directory=input_directory).read_output_files()
 
     @staticmethod
-    def __aggregate_evaluation(commands_and_their_states: List[Tuple[Command, ExperimentState]],
+    def __aggregate_evaluation(commands_and_their_states: List[tuple[Command, ExperimentState]],
                                algorithmic_arguments: Set[Argument], dataset_name: str,
                                dataset_type: DatasetType) -> Table | None:
         num_commands = len(commands_and_their_states)
@@ -175,7 +175,7 @@ class ReadMode(InputMode):
         return None
 
     @staticmethod
-    def __aggregate_tables(commands_and_their_states: List[Tuple[Command, ExperimentState]], headers: Set[str],
+    def __aggregate_tables(commands_and_their_states: List[tuple[Command, ExperimentState]], headers: Set[str],
                            tables: List[Table]) -> Table:
         aggregated_table = RowWiseTable.aggregate(*tables).to_column_wise_table()
 
@@ -216,7 +216,7 @@ class ReadMode(InputMode):
         evaluation_by_dataset_type: Dict[DatasetType, Dict[str, Table]] = {}
 
         for dataset_name, commands in self.__group_batch_by_dataset(control_arguments, args, batch).items():
-            commands_and_their_states: List[Tuple[Command, ExperimentState]] = []
+            commands_and_their_states: List[tuple[Command, ExperimentState]] = []
 
             for command, command_args in commands:
                 log.info('\nReading experimental results of experiment (%s / %s)...', i, num_experiments)

@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for writing characteristics of datasets to one or several sinks.
 """
 from itertools import chain
-from typing import List, Tuple, override
+from typing import List, override
 
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import get_output_characteristics
@@ -32,11 +32,11 @@ class DataCharacteristicsWriter(ResultWriter):
         """
 
         @override
-        def extract_data(self, state: ExperimentState, sinks: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
+        def extract_data(self, state: ExperimentState, sinks: List[Sink]) -> List[tuple[ExperimentState, OutputData]]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
-            result: List[Tuple[ExperimentState, OutputData]] = []
+            result: List[tuple[ExperimentState, OutputData]] = []
 
             for extracted_state, tabular_output_data in super().extract_data(state, sinks):
                 table = tabular_output_data.to_table(Options()).to_column_wise_table()
@@ -57,7 +57,7 @@ class DataCharacteristicsWriter(ResultWriter):
         """
 
         @override
-        def extract_data(self, state: ExperimentState, _: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
+        def extract_data(self, state: ExperimentState, _: List[Sink]) -> List[tuple[ExperimentState, OutputData]]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """

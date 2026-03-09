@@ -11,7 +11,7 @@ from argparse import Namespace
 from dataclasses import dataclass, field
 from functools import partial
 from pathlib import Path
-from typing import Callable, Dict, List, Set, Tuple, cast, override
+from typing import Callable, Dict, List, Set, cast, override
 
 from tabulate import tabulate
 
@@ -86,7 +86,7 @@ class JobArray:
         return None
 
     @staticmethod
-    def __format_range(start_and_end: Tuple[int, int]) -> str:
+    def __format_range(start_and_end: tuple[int, int]) -> str:
         start = start_and_end[0]
         end = start_and_end[1]
         return str(start) + '-' + str(end) if start < end else str(start)
@@ -277,7 +277,7 @@ class SlurmRunner(BatchMode.Runner):
 
     @staticmethod
     def __assign_to_job_arrays(batch: Batch) -> List[JobArray | Command]:
-        job_arrays: Dict[Tuple[str, ...], JobArray] = {}
+        job_arrays: Dict[tuple[str, ...], JobArray] = {}
         result: List[JobArray | Command] = []
 
         for command in batch:

@@ -9,7 +9,7 @@ from argparse import Action, ArgumentError, ArgumentParser, Namespace, _Argument
 from enum import Enum
 from functools import cached_property
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Set, Tuple, Type, override
+from typing import Any, Callable, Dict, List, Set, Type, override
 
 from mlrl.util.format import format_enum_values, format_set, format_value
 from mlrl.util.options import BooleanOption, Options, parse_enum, parse_param, parse_param_and_options
@@ -101,7 +101,7 @@ class Argument:
         value = self.default if value is None else value
         return default if value is None else value
 
-    def get_value_and_options(self, args: Namespace, default: Any | None = None) -> Tuple[Any | None, Options]:
+    def get_value_and_options(self, args: Namespace, default: Any | None = None) -> tuple[Any | None, Options]:
         """
         Returns the value provided by the user for this argument.
 
