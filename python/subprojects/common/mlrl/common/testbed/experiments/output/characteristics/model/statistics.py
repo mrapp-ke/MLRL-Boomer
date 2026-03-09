@@ -6,7 +6,6 @@ Provides classes that store statistics of rule models.
 
 from dataclasses import dataclass, field
 from functools import cached_property
-from typing import List
 
 from mlrl.testbed.util.math import divide_or_zero
 
@@ -175,7 +174,7 @@ class RuleModelStatistics:
         rule_statistics:            A list that stores the statistics all other rules
     """
     default_rule_statistics: RuleStatistics | None = None
-    rule_statistics: List[RuleStatistics] = field(default_factory=list)
+    rule_statistics: list[RuleStatistics] = field(default_factory=list)
 
     @property
     def has_default_rule(self) -> bool:

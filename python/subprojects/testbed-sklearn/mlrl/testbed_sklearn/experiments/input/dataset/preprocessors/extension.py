@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to preprocess tabular datasets.
 """
 from argparse import Namespace
-from typing import List, override
+from typing import override
 
 from mlrl.testbed_sklearn.experiments.input.dataset.preprocessors.one_hot_encoder import OneHotEncoder
 
@@ -41,7 +41,7 @@ class PreprocessorExtension(Extension):
         return {ExperimentMode.SINGLE, ExperimentMode.BATCH}
 
     @staticmethod
-    def get_preprocessors(args: Namespace) -> List[Preprocessor]:
+    def get_preprocessors(args: Namespace) -> list[Preprocessor]:
         """
         Returns the preprocessors to be used for preprocessing datasets according to the configuration.
 

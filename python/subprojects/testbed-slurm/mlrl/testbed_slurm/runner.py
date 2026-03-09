@@ -11,7 +11,7 @@ from argparse import Namespace
 from dataclasses import dataclass, field
 from functools import partial
 from pathlib import Path
-from typing import Callable, List, cast, override
+from typing import Callable, cast, override
 
 from tabulate import tabulate
 
@@ -65,7 +65,7 @@ class JobArray:
 
         if len(task_ids) > 1:
             task_ids.sort()
-            task_id_strings: List[str] = []
+            task_id_strings: list[str] = []
             current_range = (0, 0)
 
             for task_id in task_ids:
@@ -111,7 +111,7 @@ class SlurmRunner(BatchMode.Runner):
             self.yaml_dict = read_and_validate_yaml(yaml_file_path=file_path, schema_file_path=schema_file_path)
 
         @property
-        def sbatch_arguments(self) -> List[str]:
+        def sbatch_arguments(self) -> list[str]:
             """
             The sbatch arguments (starting with #SBATCH) to be passed to a Slurm job.
             """
@@ -121,7 +121,7 @@ class SlurmRunner(BatchMode.Runner):
             ]
 
         @property
-        def before_script(self) -> List[str]:
+        def before_script(self) -> list[str]:
             """
             The shell commands to be executed before the experiment is started.
             """
@@ -131,7 +131,7 @@ class SlurmRunner(BatchMode.Runner):
             ]
 
         @property
-        def after_script(self) -> List[str]:
+        def after_script(self) -> list[str]:
             """
             The shell commands to be executed after the experiment has finished.
             """
@@ -276,9 +276,9 @@ class SlurmRunner(BatchMode.Runner):
         return result.exit_code
 
     @staticmethod
-    def __assign_to_job_arrays(batch: Batch) -> List[JobArray | Command]:
+    def __assign_to_job_arrays(batch: Batch) -> list[JobArray | Command]:
         job_arrays: dict[tuple[str, ...], JobArray] = {}
-        result: List[JobArray | Command] = []
+        result: list[JobArray | Command] = []
 
         for command in batch:
             value, options = DatasetSplitterArguments.DATASET_SPLITTER.get_value_and_options(command.to_namespace())

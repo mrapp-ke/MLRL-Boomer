@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing characteristics of a datasets that are part of output data.
 """
-from typing import Any, List, override
+from typing import Any, override
 
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import Characteristic, \
@@ -45,7 +45,7 @@ class DataCharacteristics(TabularOutputData):
 
     OPTION_FEATURE_SPARSITY = 'feature_sparsity'
 
-    def __init__(self, values: List[tuple[Characteristic, Any]]):
+    def __init__(self, values: list[tuple[Characteristic, Any]]):
         """
         :param problem_domain:  The problem domain, the dataset is concerned with
         :param dataset:         The dataset

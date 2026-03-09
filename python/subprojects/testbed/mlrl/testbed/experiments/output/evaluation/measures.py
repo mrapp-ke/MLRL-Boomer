@@ -3,7 +3,7 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for implementing evaluation measures.
 """
-from typing import Any, Callable, Iterable, List
+from typing import Any, Callable, Iterable
 
 from mlrl.testbed.experiments.output.data import OutputValue
 
@@ -68,7 +68,7 @@ class AggregationMeasure(OutputValue):
     An aggregation measure that aggregates evaluation results for several experiments.
     """
 
-    AggregationFunction = Callable[[List[float], bool], Iterable[float]]
+    AggregationFunction = Callable[[list[float], bool], Iterable[float]]
 
     def __init__(self,
                  option_key: str,
@@ -89,7 +89,7 @@ class AggregationMeasure(OutputValue):
         self.can_be_averaged = can_be_averaged
         self.kwargs = kwargs
 
-    def aggregate(self, values: List[float], smaller_is_better: bool) -> Iterable[float]:
+    def aggregate(self, values: list[float], smaller_is_better: bool) -> Iterable[float]:
         """
         Applies the aggregation function to given evaluation results.
 

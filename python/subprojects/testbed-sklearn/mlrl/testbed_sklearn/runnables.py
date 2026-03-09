@@ -12,7 +12,7 @@ from argparse import Namespace
 from functools import cached_property
 from itertools import chain
 from pathlib import Path
-from typing import Any, Iterable, List, Type, override
+from typing import Any, Iterable, Type, override
 
 import docstring_parser
 import numpy as np
@@ -77,7 +77,7 @@ class SkLearnRunnable(Runnable, ABC):
             super().__init__(file_path, schema_file_path=Path(__file__).parent / 'batch_config.schema.yml')
 
         @property
-        def dataset_args(self) -> List[ArgumentList]:
+        def dataset_args(self) -> list[ArgumentList]:
             """
             See :func:`from mlrl.testbed.modes.BatchMode.ConfigFile.dataset_args`
             """
@@ -181,7 +181,7 @@ class SkLearnRunnable(Runnable, ABC):
                                             predict_kwargs=predict_kwargs)
 
     @override
-    def get_extensions(self) -> List[Extension]:
+    def get_extensions(self) -> list[Extension]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_extensions`
         """
@@ -291,7 +291,7 @@ class SklearnEstimator:
         def __init__(self,
                      name: str,
                      parameter_name: str,
-                     arguments: List[Argument],
+                     arguments: list[Argument],
                      description: str | None = None,
                      type_hint: str | None = None):
             """
@@ -319,8 +319,8 @@ class SklearnEstimator:
             :param type_name:       The type name to be parsed
             :param description:     An optional description of the argument
             """
-            arguments: List[Argument] = []
-            type_hints: List[str] = []
+            arguments: list[Argument] = []
+            type_hints: list[str] = []
             default_value: str | None = None
 
             for part in [part.strip() for part in regex.split(r'[{}]', type_name) if part]:
@@ -393,7 +393,7 @@ class SklearnEstimator:
     def __format_argument_description(description: str) -> str:
         indent_delimiter = '.. '
         indent = 0
-        lines: List[str] = []
+        lines: list[str] = []
 
         for line in description.split('\n'):
             if line:
@@ -404,7 +404,7 @@ class SklearnEstimator:
                     indent = 0
 
         description = ' '.join(lines)
-        sentences: List[str] = []
+        sentences: list[str] = []
 
         for sentence in description.split('. '):
             if not regex.search(r':[a-z]+:`.*`', sentence):
@@ -761,7 +761,7 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
         return estimator
 
     @override
-    def get_extensions(self) -> List[Extension]:
+    def get_extensions(self) -> list[Extension]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_extensions`
         """

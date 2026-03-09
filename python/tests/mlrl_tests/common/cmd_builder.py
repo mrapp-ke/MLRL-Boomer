@@ -2,7 +2,7 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from pathlib import Path
-from typing import Any, List
+from typing import Any
 
 from .datasets import Dataset
 
@@ -57,8 +57,8 @@ class CmdBuilder:
         self.model_load_dir: Path | None = None
         self.num_folds = 0
         self.current_fold = None
-        self.control_args: List[str] = []
-        self.algorithmic_args: List[str] = []
+        self.control_args: list[str] = []
+        self.algorithmic_args: list[str] = []
         self.save_evaluation(True)
         self.problem_type: str | None = None
 
@@ -107,7 +107,7 @@ class CmdBuilder:
         return self.base_dir / parameter_save_dir if parameter_save_dir else None
 
     # pylint: disable=too-many-branches
-    def build(self) -> List[str]:
+    def build(self) -> list[str]:
         """
         Returns the command that has been configured via the builder.
 

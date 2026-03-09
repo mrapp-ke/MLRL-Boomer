@@ -7,7 +7,7 @@ import re as regex
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable, List, override
+from typing import Any, Iterable, override
 
 import yaml
 
@@ -276,7 +276,7 @@ class CsvFileComparison(FileComparison):
                                         self.header) + '": Value should be "' + str(
                                             self.expected_value) + '", but is "' + str(self.actual_value) + '"'
 
-        def __init__(self, file: Path, different_cells: List[CellDifference]):
+        def __init__(self, file: Path, different_cells: list[CellDifference]):
             """
             :param file:            The path to the file that has been compared
             :param different_cells: A list that contains all cells with unexpected values
@@ -301,7 +301,7 @@ class CsvFileComparison(FileComparison):
         """
         self.file = file
 
-    def __get_duration_column_indices(self, headers: List[Any]) -> set[int]:
+    def __get_duration_column_indices(self, headers: list[Any]) -> set[int]:
         return {column_index for column_index, header in enumerate(headers) if 'time' in header.lower().split()}
 
     @override

@@ -6,7 +6,7 @@ Provides classes for splitting datasets into multiple, equally sized, folds cons
 import logging as log
 
 from dataclasses import dataclass, field, replace
-from typing import Any, Generator, List, cast, override
+from typing import Any, Generator, cast, override
 
 from scipy.sparse import vstack
 from sklearn.model_selection import KFold
@@ -132,8 +132,8 @@ class CrossValidationSplitter(DatasetSplitter):
                  training_datasets: A list that stores the training datasets
                  test_datasets:     A list that stores the test datasets
             """
-            training_datasets: List[TabularDataset] = field(default_factory=list)
-            test_datasets: List[TabularDataset] = field(default_factory=list)
+            training_datasets: list[TabularDataset] = field(default_factory=list)
+            test_datasets: list[TabularDataset] = field(default_factory=list)
 
         def __init__(self, splitter: 'CrossValidationSplitter', state: ExperimentState):
             """

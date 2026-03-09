@@ -7,7 +7,7 @@ Provides base classes for programs that can be configured via command line argum
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from functools import reduce
-from typing import List, override
+from typing import override
 
 from mlrl.testbed.arguments import PredictionDatasetArguments
 from mlrl.testbed.command import Command
@@ -69,7 +69,7 @@ class Runnable(Recipe, ABC):
             """
             return {ExperimentMode.SINGLE, ExperimentMode.BATCH, ExperimentMode.RUN}
 
-    def get_extensions(self) -> List[Extension]:
+    def get_extensions(self) -> list[Extension]:
         """
         May be overridden by subclasses in order to return the extensions that should be applied to the runnable.
 
@@ -82,7 +82,7 @@ class Runnable(Recipe, ABC):
             SlurmExtension(),
         ]
 
-    def get_supported_extensions(self, mode: ExperimentMode) -> List[Extension]:
+    def get_supported_extensions(self, mode: ExperimentMode) -> list[Extension]:
         """
         Returns the extensions that should be applied to the runnable and support a given mode of operation.
 

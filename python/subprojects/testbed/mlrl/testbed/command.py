@@ -9,13 +9,13 @@ from argparse import Namespace
 from copy import copy
 from dataclasses import dataclass
 from itertools import chain
-from typing import Any, Iterable, Iterator, List, override
+from typing import Any, Iterable, Iterator, override
 
 from mlrl.util.cli import Argument
 from mlrl.util.format import format_iterable
 
 
-class ArgumentList(List[str]):
+class ArgumentList(list[str]):
     """
     A list that stores command line arguments.
     """

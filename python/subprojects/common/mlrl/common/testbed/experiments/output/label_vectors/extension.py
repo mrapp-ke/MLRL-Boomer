@@ -6,7 +6,7 @@ Provides classes that allow configuring the functionality to write label vectors
 import logging as log
 
 from argparse import Namespace
-from typing import List, override
+from typing import override
 
 import numpy as np
 
@@ -57,7 +57,7 @@ class LabelVectorSetExtension(Extension):
                 self.label_vector_histogram.unique_label_vectors.append(label_vector)
 
         @override
-        def extract_data(self, state: ExperimentState, _: List[Sink]) -> List[tuple[ExperimentState, OutputData]]:
+        def extract_data(self, state: ExperimentState, _: list[Sink]) -> list[tuple[ExperimentState, OutputData]]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """

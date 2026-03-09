@@ -8,7 +8,7 @@ import logging as log
 from dataclasses import replace
 from functools import cached_property
 from pathlib import Path
-from typing import Any, List, override
+from typing import Any, override
 from xml.dom import minidom
 
 import arff
@@ -57,7 +57,7 @@ class ArffFileSource(DatasetFileSource):
         Provides access to the content of an ARFF file.
         """
 
-        def __init__(self, matrix: sparray, arff_attributes: List[Any], relation: str):
+        def __init__(self, matrix: sparray, arff_attributes: list[Any], relation: str):
             """
             :param matrix:           The data matrix that is stored in the file
             :param arff_attributes:  The attributes defined in the file
@@ -98,7 +98,7 @@ class ArffFileSource(DatasetFileSource):
             return ArffFileSource.ArffFile(matrix, arff_attributes=attributes, relation=relation)
 
         @cached_property
-        def attributes(self) -> List[Attribute]:
+        def attributes(self) -> list[Attribute]:
             """
             A list that contains all attributes defined in the ARFF file.
             """
@@ -191,14 +191,14 @@ class ArffFileSource(DatasetFileSource):
             return ArffFileSource.ArffDataset(arff_file=arff_file, output_names=output_names)
 
         @cached_property
-        def features(self) -> List[Attribute]:
+        def features(self) -> list[Attribute]:
             """
             A list that stores all features contained in the dataset.
             """
             return [attribute for attribute in self.arff_file.attributes if attribute.name not in self.output_names]
 
         @cached_property
-        def outputs(self) -> List[Attribute]:
+        def outputs(self) -> list[Attribute]:
             """
             A list that stores all outputs contained in the dataset.
             """

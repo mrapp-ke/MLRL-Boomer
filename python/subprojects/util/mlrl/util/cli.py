@@ -9,7 +9,7 @@ from argparse import Action, ArgumentError, ArgumentParser, Namespace, _Argument
 from enum import Enum
 from functools import cached_property
 from pathlib import Path
-from typing import Any, Callable, List, Type, override
+from typing import Any, Callable, Type, override
 
 from mlrl.util.format import format_enum_values, format_set, format_value
 from mlrl.util.options import BooleanOption, Options, parse_enum, parse_param, parse_param_and_options
@@ -465,7 +465,7 @@ class CommandLineInterface:
         :param version_text:    A text to be shown when the "--version" flag is passed to the command line interface or
                                 None, if the "--version" flag should not be added to the command line interface
         """
-        self.arguments: List[Argument] = []
+        self.arguments: list[Argument] = []
         self._argument_parser = argument_parser
         self._argument_groups: dict[str, _ArgumentGroup] = {}
 

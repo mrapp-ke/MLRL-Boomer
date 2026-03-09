@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that provide access to unique label vectors.
 """
 from dataclasses import dataclass
-from typing import List, override
+from typing import override
 
 import numpy as np
 
@@ -35,7 +35,7 @@ class LabelVectorHistogram:
     Stores unique label vectors and their respective frequency.
     """
 
-    def __init__(self, unique_label_vectors: List[LabelVector] | None = None):
+    def __init__(self, unique_label_vectors: list[LabelVector] | None = None):
         """
         :param unique_label_vectors: A list that contains the unique label vectors, as well as their frequency, or None
                                      if not label vectors should be stored

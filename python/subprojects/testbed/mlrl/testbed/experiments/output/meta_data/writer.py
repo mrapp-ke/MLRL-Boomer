@@ -5,7 +5,7 @@ Provides classes that allow writing meta-data to one or several sinks.
 """
 from argparse import Namespace
 from pathlib import Path
-from typing import List, override
+from typing import override
 
 from mlrl.testbed.experiments.input.meta_data.reader import MetaDataReader
 from mlrl.testbed.experiments.input.reader import InputReader
@@ -27,7 +27,7 @@ class MetaDataWriter(OutputWriter):
         """
 
         @override
-        def extract_data(self, state: ExperimentState, _: List[Sink]) -> List[tuple[ExperimentState, OutputData]]:
+        def extract_data(self, state: ExperimentState, _: list[Sink]) -> list[tuple[ExperimentState, OutputData]]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """

@@ -8,7 +8,7 @@ import logging as log
 from argparse import Namespace
 from dataclasses import replace
 from pathlib import Path
-from typing import List, override
+from typing import override
 
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments.dataset_type import DatasetType
@@ -72,7 +72,7 @@ class ReadMode(InputMode):
             return state
 
     @staticmethod
-    def __get_batch(arguments: set[Argument], args: Namespace, meta_data: MetaData) -> List[Command]:
+    def __get_batch(arguments: set[Argument], args: Namespace, meta_data: MetaData) -> list[Command]:
         main_command = meta_data.command
         child_commands = meta_data.child_commands
 
@@ -120,8 +120,8 @@ class ReadMode(InputMode):
 
     @staticmethod
     def __group_batch_by_dataset(arguments: set[Argument], args: Namespace,
-                                 batch: List[Command]) -> dict[str, List[tuple[Command, Namespace]]]:
-        commands_by_dataset: dict[str, List[tuple[Command, Namespace]]] = {}
+                                 batch: list[Command]) -> dict[str, list[tuple[Command, Namespace]]]:
+        commands_by_dataset: dict[str, list[tuple[Command, Namespace]]] = {}
 
         for command in batch:
             command_args = ReadMode.__create_command_args(arguments, args, command)
@@ -139,7 +139,7 @@ class ReadMode(InputMode):
                           input_directory=input_directory).read_output_files()
 
     @staticmethod
-    def __aggregate_evaluation(commands_and_their_states: List[tuple[Command, ExperimentState]],
+    def __aggregate_evaluation(commands_and_their_states: list[tuple[Command, ExperimentState]],
                                algorithmic_arguments: set[Argument], dataset_name: str,
                                dataset_type: DatasetType) -> Table | None:
         num_commands = len(commands_and_their_states)
@@ -147,7 +147,7 @@ class ReadMode(InputMode):
         if num_commands > 1:
             input_data = TabularInputData(properties=EvaluationResult.PROPERTIES, context=EvaluationResult.CONTEXT)
             algorithmic_argument_names = set(map(lambda arg: arg.name, algorithmic_arguments))
-            tables: List[Table] = []
+            tables: list[Table] = []
             headers: set[str] = set()
 
             for command, result_state in commands_and_their_states:
@@ -175,12 +175,12 @@ class ReadMode(InputMode):
         return None
 
     @staticmethod
-    def __aggregate_tables(commands_and_their_states: List[tuple[Command, ExperimentState]], headers: set[str],
-                           tables: List[Table]) -> Table:
+    def __aggregate_tables(commands_and_their_states: list[tuple[Command, ExperimentState]], headers: set[str],
+                           tables: list[Table]) -> Table:
         aggregated_table = RowWiseTable.aggregate(*tables).to_column_wise_table()
 
         for position, header in enumerate(sorted(headers)):
-            column: List[Cell] = []
+            column: list[Cell] = []
             unique_values: set[Cell] = set()
 
             for command, _ in commands_and_their_states:
@@ -216,7 +216,7 @@ class ReadMode(InputMode):
         evaluation_by_dataset_type: dict[DatasetType, dict[str, Table]] = {}
 
         for dataset_name, commands in self.__group_batch_by_dataset(control_arguments, args, batch).items():
-            commands_and_their_states: List[tuple[Command, ExperimentState]] = []
+            commands_and_their_states: list[tuple[Command, ExperimentState]] = []
 
             for command, command_args in commands:
                 log.info('\nReading experimental results of experiment (%s / %s)...', i, num_experiments)

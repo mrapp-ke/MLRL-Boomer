@@ -8,7 +8,7 @@ import logging as log
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from pathlib import Path
-from typing import List, override
+from typing import override
 
 from mlrl.testbed.experiments.input.meta_data.meta_data import InputMetaData
 from mlrl.testbed.experiments.input.meta_data.reader import MetaDataReader
@@ -33,7 +33,7 @@ class Mode(ABC):
     )
 
     @abstractmethod
-    def configure_control_arguments(self, cli: CommandLineInterface, control_arguments: List[Argument]):
+    def configure_control_arguments(self, cli: CommandLineInterface, control_arguments: list[Argument]):
         """
         Must be implemented by subclasses in order to configure the command line interface according to the mode of
         operation.
@@ -44,7 +44,7 @@ class Mode(ABC):
         """
 
     @abstractmethod
-    def configure_algorithmic_arguments(self, cli: CommandLineInterface, algorithmic_arguments: List[Argument]):
+    def configure_algorithmic_arguments(self, cli: CommandLineInterface, algorithmic_arguments: list[Argument]):
         """
         Must be implemented by subclasses in order to configure the command line interface according to the mode of
         operation.
@@ -118,12 +118,12 @@ class InputMode(Mode, ABC):
             log.debug('No version conflicts detected')
 
     @override
-    def configure_control_arguments(self, cli: CommandLineInterface, control_arguments: List[Argument]):
+    def configure_control_arguments(self, cli: CommandLineInterface, control_arguments: list[Argument]):
         cli.add_arguments(self.INPUT_DIR, group='read-mode arguments')
         cli.add_arguments(*control_arguments, group='control arguments')
 
     @override
-    def configure_algorithmic_arguments(self, cli: CommandLineInterface, algorithmic_arguments: List[Argument]):
+    def configure_algorithmic_arguments(self, cli: CommandLineInterface, algorithmic_arguments: list[Argument]):
         pass
 
     @override

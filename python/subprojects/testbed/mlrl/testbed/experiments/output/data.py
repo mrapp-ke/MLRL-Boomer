@@ -7,7 +7,7 @@ import json
 
 from abc import ABC, abstractmethod
 from dataclasses import replace
-from typing import Any, Iterable, List, Type, override
+from typing import Any, Iterable, Type, override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties, TabularProperties
@@ -270,7 +270,7 @@ class OutputValue:
                            percentage=self.percentage)
 
     @staticmethod
-    def filter_values(values: Iterable['OutputValue'], options: Options) -> List['OutputValue']:
+    def filter_values(values: Iterable['OutputValue'], options: Options) -> list['OutputValue']:
         """
         Allows to filter given output values based on given options.
 

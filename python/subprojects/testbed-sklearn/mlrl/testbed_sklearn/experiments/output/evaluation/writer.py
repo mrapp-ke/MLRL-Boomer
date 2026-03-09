@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 from dataclasses import replace
 from functools import reduce
 from itertools import chain
-from typing import Any, List, override
+from typing import Any, override
 
 from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import EVALUATION_MEASURE_PREDICTION_TIME, \
     EVALUATION_MEASURE_TRAINING_TIME, TabularEvaluationResult
@@ -40,7 +40,7 @@ class EvaluationDataExtractor(DataExtractor, ABC):
     measurements: dict[DatasetType, Measurements] = {}
 
     @override
-    def extract_data(self, state: ExperimentState, sinks: List[Sink]) -> List[tuple[ExperimentState, OutputData]]:
+    def extract_data(self, state: ExperimentState, sinks: list[Sink]) -> list[tuple[ExperimentState, OutputData]]:
         """
         See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
         """
@@ -105,7 +105,7 @@ class EvaluationWriter(ResultWriter):
         measurements: dict[DatasetType, dict[int, Measurements]] = {}
 
         @override
-        def extract_data(self, state: ExperimentState, sinks: List[Sink]) -> List[tuple[ExperimentState, OutputData]]:
+        def extract_data(self, state: ExperimentState, sinks: list[Sink]) -> list[tuple[ExperimentState, OutputData]]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
@@ -152,7 +152,7 @@ class EvaluationWriter(ResultWriter):
                                                      context=TabularEvaluationResult.CONTEXT))
 
     @override
-    def _create_states(self, state: ExperimentState) -> List[ExperimentState]:
+    def _create_states(self, state: ExperimentState) -> list[ExperimentState]:
         states = super()._create_states(state)
         folding_strategy = state.folding_strategy
 

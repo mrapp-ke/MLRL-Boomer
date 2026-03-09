@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for providing the text to be shown when the "--version" flag is passed to the command line API.
 """
 from dataclasses import dataclass, field
-from typing import Iterable, List, override
+from typing import Iterable, override
 
 from tabulate import tabulate
 
@@ -25,7 +25,7 @@ class RuleLearnerProgramInfo:
         python_packages:    A list that contains a `PackageInfo` for each Python package used by the program
     """
     program_info: ProgramInfo
-    python_packages: List[PackageInfo] = field(default_factory=list)
+    python_packages: list[PackageInfo] = field(default_factory=list)
 
     def __collect_python_packages(self, python_packages: Iterable[PackageInfo]) -> set[str]:
         unique_packages = set()

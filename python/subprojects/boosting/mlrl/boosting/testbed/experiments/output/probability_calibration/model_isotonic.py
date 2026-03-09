@@ -5,7 +5,7 @@ Provides classes for representing models for the calibration of probabilities vi
 """
 
 from dataclasses import dataclass, field
-from typing import List, override
+from typing import override
 
 from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibrationModel, \
     IsotonicProbabilityCalibrationModelVisitor
@@ -37,8 +37,8 @@ class IsotonicRegressionModel(TabularOutputData):
             thresholds:     A list the contains the thresholds of individual bins
             probabilities:  A list that contains the probabilities of individual bins
         """
-        thresholds: List[float] = field(default_factory=list)
-        probabilities: List[float] = field(default_factory=list)
+        thresholds: list[float] = field(default_factory=list)
+        probabilities: list[float] = field(default_factory=list)
 
     class Visitor(IsotonicProbabilityCalibrationModelVisitor):
         """

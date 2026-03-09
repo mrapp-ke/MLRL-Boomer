@@ -5,7 +5,7 @@ Provides classes that allow configuring the functionality to write characteristi
 sinks.
 """
 from argparse import Namespace
-from typing import List, override
+from typing import override
 
 from mlrl.common.testbed.experiments.output.characteristics.model.writer import RuleModelCharacteristicsWriter
 
@@ -48,12 +48,12 @@ class RuleModelCharacteristicsExtension(Extension):
         """
         return {self.PRINT_MODEL_CHARACTERISTICS, self.SAVE_MODEL_CHARACTERISTICS}
 
-    def __create_log_sinks(self, args: Namespace) -> List[Sink]:
+    def __create_log_sinks(self, args: Namespace) -> list[Sink]:
         if self.PRINT_MODEL_CHARACTERISTICS.get_value(args, default=OutputArguments.PRINT_ALL.get_value(args)):
             return [LogSink(source_factory=CsvFileSource)]
         return []
 
-    def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
+    def __create_csv_file_sinks(self, args: Namespace) -> list[Sink]:
         value = self.SAVE_MODEL_CHARACTERISTICS.get_value(args, default=OutputArguments.SAVE_ALL.get_value(args))
         base_dir = OutputArguments.BASE_DIR.get_value(args)
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)

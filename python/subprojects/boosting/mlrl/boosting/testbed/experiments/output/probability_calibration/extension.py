@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write calibration models to one or several sinks.
 """
 from argparse import Namespace
-from typing import List, override
+from typing import override
 
 from mlrl.boosting.testbed.experiments.output.probability_calibration.writer import \
     JointProbabilityCalibrationModelWriter, MarginalProbabilityCalibrationModelWriter
@@ -54,7 +54,7 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
         """
         return {self.PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL, self.SAVE_MARGINAL_PROBABILITY_CALIBRATION_MODEL}
 
-    def __create_log_sinks(self, args: Namespace) -> List[Sink]:
+    def __create_log_sinks(self, args: Namespace) -> list[Sink]:
         value, options = self.PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL.get_value_and_options(
             args, default=OutputArguments.PRINT_ALL.get_value(args))
 
@@ -62,7 +62,7 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
             return [LogSink(options=options, source_factory=CsvFileSource)]
         return []
 
-    def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
+    def __create_csv_file_sinks(self, args: Namespace) -> list[Sink]:
         value, options = self.SAVE_MARGINAL_PROBABILITY_CALIBRATION_MODEL.get_value_and_options(
             args, default=OutputArguments.SAVE_ALL.get_value(args))
         base_dir = OutputArguments.BASE_DIR.get_value(args)

@@ -6,7 +6,7 @@ Provides classes that allow configuring the functionality to load datasets.
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from pathlib import Path
-from typing import List, Sequence, override
+from typing import Sequence, override
 
 from mlrl.testbed.command import ArgumentList
 from mlrl.testbed.experiments.input.dataset.arguments import DatasetArguments
@@ -98,7 +98,7 @@ class DatasetFileExtension(DatasetExtension, ABC):
         """
 
     @staticmethod
-    def parse_dataset_args_from_config(config: BatchMode.ConfigFile) -> List[ArgumentList]:
+    def parse_dataset_args_from_config(config: BatchMode.ConfigFile) -> list[ArgumentList]:
         """
         Parses and returns the command line arguments for using the datasets specified in a configuration file.
 

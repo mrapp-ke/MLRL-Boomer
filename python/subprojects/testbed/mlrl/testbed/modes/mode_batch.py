@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from functools import cached_property, reduce
 from itertools import chain
 from pathlib import Path
-from typing import Any, Callable, Generator, Iterable, List, override
+from typing import Any, Callable, Generator, Iterable, override
 
 from mlrl.testbed.command import ArgumentDict, ArgumentList, Command
 from mlrl.testbed.experiments.fold import FoldingStrategy
@@ -36,7 +36,7 @@ from mlrl.testbed.util.yml import read_and_validate_yaml
 from mlrl.util.cli import AUTO, Argument, BoolArgument, CommandLineInterface, FlagArgument, PathArgument, SetArgument
 from mlrl.util.options import BooleanOption, Options
 
-Batch = List[Command]
+Batch = list[Command]
 
 
 class BatchMode(Mode):
@@ -153,7 +153,7 @@ class BatchMode(Mode):
                 values: One or several values that should be set for the parameter
             """
             name: str
-            values: List['BatchMode.ConfigFile.ParameterValue']
+            values: list['BatchMode.ConfigFile.ParameterValue']
 
         @dataclass
         class ParameterValue:
@@ -165,10 +165,10 @@ class BatchMode(Mode):
                 additional_arguments:   Additional arguments associated with the parameter
             """
             value: str
-            additional_arguments: List[str] = field(default_factory=list)
+            additional_arguments: list[str] = field(default_factory=list)
 
         @staticmethod
-        def __parse_parameter_values(values: List[Any]) -> List[ParameterValue]:
+        def __parse_parameter_values(values: list[Any]) -> list[ParameterValue]:
             if isinstance(values, str):
                 return [BatchMode.ConfigFile.ParameterValue(value=values)]
 
@@ -195,7 +195,7 @@ class BatchMode(Mode):
             self.yaml_dict = read_and_validate_yaml(yaml_file_path=file_path, schema_file_path=schema_file_path)
 
         @cached_property
-        def default_arguments(self) -> List[DefaultArgument]:
+        def default_arguments(self) -> list[DefaultArgument]:
             """
             A list that contains all default arguments defined in the configuration file.
             """
@@ -211,7 +211,7 @@ class BatchMode(Mode):
             return default_arguments
 
         @cached_property
-        def parameters(self) -> List[Parameter]:
+        def parameters(self) -> list[Parameter]:
             """
             A list that contains all parameters defined in the configuration file.
             """
@@ -224,19 +224,19 @@ class BatchMode(Mode):
             return parameters
 
         @cached_property
-        def parameter_args(self) -> List[ArgumentList]:
+        def parameter_args(self) -> list[ArgumentList]:
             """
             A list that contains the command line arguments corresponding to the algorithmic parameters to be used in
             the different experiments defined in the configuration file.
             """
-            parameter_args: List[ArgumentList] = [ArgumentList()]
+            parameter_args: list[ArgumentList] = [ArgumentList()]
 
             for parameter in self.parameters:
                 updated_parameter_args = []
 
                 for argument_list in parameter_args:
                     for parameter_value in parameter.values:
-                        additional_arguments: List[str] = []
+                        additional_arguments: list[str] = []
                         additional_arguments = reduce(lambda aggr, arguments: aggr + arguments.split(),
                                                       parameter_value.additional_arguments, additional_arguments)
                         arguments = argument_list + [parameter.name, parameter_value.value] + additional_arguments
@@ -248,7 +248,7 @@ class BatchMode(Mode):
 
         @property
         @abstractmethod
-        def dataset_args(self) -> List[ArgumentList]:
+        def dataset_args(self) -> list[ArgumentList]:
             """
             A list that contains the command line arguments corresponding to the datasets to be used in the different
             experiments defined in the configuration file.
@@ -278,7 +278,7 @@ class BatchMode(Mode):
     ARGUMENT_RUNNER = '--runner'
 
     @property
-    def runners(self) -> List[Runner]:
+    def runners(self) -> list[Runner]:
         """
         The runners that may be used for running individual experiments in a batch.
         """
@@ -449,7 +449,7 @@ class BatchMode(Mode):
                                     experiments to be run or None, if no such factory is available
         """
         self.config_file_factory_ = config_file_factory
-        self.runners_: List[BatchMode.Runner] = []
+        self.runners_: list[BatchMode.Runner] = []
 
     def add_runner(self, runner: 'BatchMode.Runner') -> 'BatchMode':
         """
@@ -462,7 +462,7 @@ class BatchMode(Mode):
         return self
 
     @override
-    def configure_control_arguments(self, cli: CommandLineInterface, control_arguments: List[Argument]):
+    def configure_control_arguments(self, cli: CommandLineInterface, control_arguments: list[Argument]):
         cli.add_arguments(self.CONFIG_FILE,
                           self.SEPARATE_FOLDS,
                           self.LIST_COMMANDS,
@@ -471,7 +471,7 @@ class BatchMode(Mode):
         cli.add_arguments(*control_arguments, group='control arguments')
 
     @override
-    def configure_algorithmic_arguments(self, cli: CommandLineInterface, algorithmic_arguments: List[Argument]):
+    def configure_algorithmic_arguments(self, cli: CommandLineInterface, algorithmic_arguments: list[Argument]):
         cli.add_arguments(*algorithmic_arguments, group='algorithmic arguments')
 
     @override

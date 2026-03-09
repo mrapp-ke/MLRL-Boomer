@@ -9,7 +9,7 @@ from abc import ABC, abstractmethod
 from argparse import Namespace
 from dataclasses import replace
 from itertools import chain
-from typing import Any, Callable, Generator, Iterable, List, override
+from typing import Any, Callable, Generator, Iterable, override
 
 from mlrl.testbed.arguments import PredictionDatasetArguments
 from mlrl.testbed.experiments.dataset import Dataset
@@ -102,8 +102,8 @@ class Experiment(ABC):
             super().__init__()
             self.initial_state = initial_state
             self.dataset_splitter = dataset_splitter
-            self.listeners: List[ExperimentListener] = []
-            self.input_readers: List[InputReader] = []
+            self.listeners: list[ExperimentListener] = []
+            self.input_readers: list[InputReader] = []
             self.before_start_output_writers: set[OutputWriter] = set()
             self.pre_training_output_writers: set[OutputWriter] = set()
             self.post_training_output_writers: set[OutputWriter] = set()
@@ -261,7 +261,7 @@ class Experiment(ABC):
             experiment = self._create_experiment(args, self.initial_state, self.dataset_splitter)
             experiment.listeners.extend(self.listeners)
 
-            def sort(objects: Iterable[Any]) -> List[Any]:
+            def sort(objects: Iterable[Any]) -> list[Any]:
                 return sorted(objects, key=lambda obj: type(obj).__name__)
 
             experiment.input_readers.extend(sort(self.input_readers))
@@ -316,7 +316,7 @@ class Experiment(ABC):
             for input_reader in self.experiment.input_readers:
                 input_data = input_reader.input_data
                 context = input_data.context
-                dataset_types: List[DatasetType] = []
+                dataset_types: list[DatasetType] = []
 
                 if context.include_dataset_type:
                     args = self.args
@@ -428,12 +428,12 @@ class Experiment(ABC):
         self.dataset_splitter = dataset_splitter
         self.training_procedure = training_procedure
         self.prediction_procedure = prediction_procedure
-        self.input_readers: List[InputReader] = []
-        self.before_start_output_writers: List[OutputWriter] = []
-        self.pre_training_output_writers: List[OutputWriter] = []
-        self.post_training_output_writers: List[OutputWriter] = []
-        self.prediction_output_writers: List[OutputWriter] = []
-        self.listeners: List[ExperimentListener] = [
+        self.input_readers: list[InputReader] = []
+        self.before_start_output_writers: list[OutputWriter] = []
+        self.pre_training_output_writers: list[OutputWriter] = []
+        self.post_training_output_writers: list[OutputWriter] = []
+        self.prediction_output_writers: list[OutputWriter] = []
+        self.listeners: list[ExperimentListener] = [
             Experiment.InputReaderListener(self, args),
             Experiment.OutputWriterListener(self),
         ]

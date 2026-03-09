@@ -7,7 +7,6 @@ import subprocess
 from functools import reduce
 from os import environ
 from pathlib import Path
-from typing import List
 
 import pytest
 
@@ -22,7 +21,7 @@ class CmdRunner:
     Allows to run commands that have been configured via a `CmdBuilder`.
     """
 
-    def __format_cmd(self, args: List[str] | None = None) -> str:
+    def __format_cmd(self, args: list[str] | None = None) -> str:
         args = self.args if args is None else args
         return reduce(lambda aggr, arg: aggr + (' ' + arg if len(aggr) > 0 else arg), args, '')
 

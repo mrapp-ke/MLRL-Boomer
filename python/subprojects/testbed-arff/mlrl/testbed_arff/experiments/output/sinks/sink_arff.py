@@ -6,7 +6,7 @@ Provides classes that allow writing datasets to ARFF files.
 import xml.etree.ElementTree as XmlTree
 
 from pathlib import Path
-from typing import Any, List, override
+from typing import Any, override
 from xml.dom import minidom
 
 import arff
@@ -33,7 +33,7 @@ class ArffFileSink(DatasetFileSink):
     """
 
     @staticmethod
-    def __create_arff_data(dataset: TabularDataset) -> List[Any]:
+    def __create_arff_data(dataset: TabularDataset) -> list[Any]:
         num_examples = dataset.num_examples
 
         if dataset.has_sparse_features and dataset.has_sparse_outputs:
@@ -51,7 +51,7 @@ class ArffFileSink(DatasetFileSink):
         return nominal_values[int(value)] if nominal_values else to_int_or_float(value)
 
     @staticmethod
-    def __fill_arff_data(dataset: TabularDataset, data: List[Any]):
+    def __fill_arff_data(dataset: TabularDataset, data: list[Any]):
         features = dataset.features
 
         for (example_index, feature_index), value in dok_array(dataset.x).items():

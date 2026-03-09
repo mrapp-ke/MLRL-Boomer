@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from typing import List, Type, override
+from typing import Type, override
 
 from sklearn.base import BaseEstimator as SkLearnBaseEstimator, RegressorMixin as SkLearnRegressorMixin
 
@@ -46,7 +46,7 @@ class SkLearnRegressorCmdBuilder(RegressionCmdBuilder):
         return self
 
     @override
-    def build(self) -> List[str]:
+    def build(self) -> list[str]:
         args = super().build()
         meta_estimator_type = self._meta_estimator_type
 

@@ -6,7 +6,7 @@ Provides utility functions for creating textual representations.
 from enum import Enum
 from functools import reduce
 from pathlib import Path
-from typing import Any, Iterable, List, Type
+from typing import Any, Iterable, Type
 
 
 def format_iterable(objects: Iterable[Any], separator: str = ', ', delimiter: str = '') -> str:
@@ -21,7 +21,7 @@ def format_iterable(objects: Iterable[Any], separator: str = ', ', delimiter: st
     return reduce(lambda aggr, obj: aggr + (separator if aggr else '') + delimiter + str(obj) + delimiter, objects, '')
 
 
-def format_list(objects: List[Any],
+def format_list(objects: list[Any],
                 separator: str = ',  ',
                 delimiter: str = '',
                 last_separator: str | None = None) -> str:
