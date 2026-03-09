@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write calibration models to one or several sinks.
 """
 from argparse import Namespace
-from typing import List, Set, override
+from typing import List, override
 
 from mlrl.boosting.testbed.experiments.output.probability_calibration.writer import \
     JointProbabilityCalibrationModelWriter, MarginalProbabilityCalibrationModelWriter
@@ -48,7 +48,7 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
         super().__init__(OutputExtension(), ResultDirectoryExtension(), *dependencies)
 
     @override
-    def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
+    def _get_arguments(self, _: ExperimentMode) -> set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
@@ -88,7 +88,7 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
             experiment_builder.add_post_training_output_writers(writer)
 
     @override
-    def get_supported_modes(self) -> Set[ExperimentMode]:
+    def get_supported_modes(self) -> set[ExperimentMode]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
@@ -122,7 +122,7 @@ class JointProbabilityCalibrationModelExtension(Extension):
         super().__init__(OutputExtension(), ResultDirectoryExtension(), *dependencies)
 
     @override
-    def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
+    def _get_arguments(self, _: ExperimentMode) -> set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
@@ -156,7 +156,7 @@ class JointProbabilityCalibrationModelExtension(Extension):
             experiment_builder.add_post_training_output_writers(writer)
 
     @override
-    def get_supported_modes(self) -> Set[ExperimentMode]:
+    def get_supported_modes(self) -> set[ExperimentMode]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """

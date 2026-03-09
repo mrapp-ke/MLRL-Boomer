@@ -9,7 +9,7 @@ from argparse import Namespace
 from copy import copy
 from dataclasses import dataclass
 from itertools import chain
-from typing import Any, Dict, Iterable, Iterator, List, Set, override
+from typing import Any, Dict, Iterable, Iterator, List, override
 
 from mlrl.util.cli import Argument
 from mlrl.util.format import format_iterable
@@ -138,7 +138,7 @@ class Command(Iterable[str]):
         """
         return Command.from_list(module_name=sys.argv[1], argument_list=ArgumentList(sys.argv[2:]))
 
-    def apply_to_namespace(self, namespace: Namespace, ignore: Set[str] | None = None) -> Namespace:
+    def apply_to_namespace(self, namespace: Namespace, ignore: set[str] | None = None) -> Namespace:
         """
         Adds the command's arguments to a given namespace.
 
@@ -168,7 +168,7 @@ class Command(Iterable[str]):
 
         return modified_namespace
 
-    def to_namespace(self, ignore: Set[str] | None = None) -> Namespace:
+    def to_namespace(self, ignore: set[str] | None = None) -> Namespace:
         """
         Creates and returns a namespace from the command's arguments.
 

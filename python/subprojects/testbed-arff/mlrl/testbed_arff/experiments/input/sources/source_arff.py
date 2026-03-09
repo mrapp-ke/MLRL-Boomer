@@ -8,7 +8,7 @@ import logging as log
 from dataclasses import replace
 from functools import cached_property
 from pathlib import Path
-from typing import Any, List, Set, override
+from typing import Any, List, override
 from xml.dom import minidom
 
 import arff
@@ -132,7 +132,7 @@ class ArffFileSource(DatasetFileSource):
         Provides access to the content of an ARFF file and the corresponding Mulan XML file, if available.
         """
 
-        def __parse_output_names_from_relation(self) -> Set[str]:
+        def __parse_output_names_from_relation(self) -> set[str]:
             parameter_name = '-C '
             arff_file = self.arff_file
             relation = arff_file.relation
@@ -158,7 +158,7 @@ class ArffFileSource(DatasetFileSource):
 
             return set()
 
-        def __init__(self, arff_file: 'ArffFileSource.ArffFile', output_names: Set[str] | None):
+        def __init__(self, arff_file: 'ArffFileSource.ArffFile', output_names: set[str] | None):
             """
             :param arff_file:       The content of the ARFF file
             :param output_names:    The names of all outputs contained in the dataset

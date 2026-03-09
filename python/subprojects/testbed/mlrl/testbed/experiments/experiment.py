@@ -9,7 +9,7 @@ from abc import ABC, abstractmethod
 from argparse import Namespace
 from dataclasses import replace
 from itertools import chain
-from typing import Any, Callable, Generator, Iterable, List, Set, override
+from typing import Any, Callable, Generator, Iterable, List, override
 
 from mlrl.testbed.arguments import PredictionDatasetArguments
 from mlrl.testbed.experiments.dataset import Dataset
@@ -104,10 +104,10 @@ class Experiment(ABC):
             self.dataset_splitter = dataset_splitter
             self.listeners: List[ExperimentListener] = []
             self.input_readers: List[InputReader] = []
-            self.before_start_output_writers: Set[OutputWriter] = set()
-            self.pre_training_output_writers: Set[OutputWriter] = set()
-            self.post_training_output_writers: Set[OutputWriter] = set()
-            self.prediction_output_writers: Set[OutputWriter] = set()
+            self.before_start_output_writers: set[OutputWriter] = set()
+            self.pre_training_output_writers: set[OutputWriter] = set()
+            self.post_training_output_writers: set[OutputWriter] = set()
+            self.prediction_output_writers: set[OutputWriter] = set()
             self.model_writer = ModelWriter()
             self.meta_data_writer = MetaDataWriter()
             self.parameter_writer = ParameterWriter()

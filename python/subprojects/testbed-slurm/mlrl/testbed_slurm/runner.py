@@ -11,7 +11,7 @@ from argparse import Namespace
 from dataclasses import dataclass, field
 from functools import partial
 from pathlib import Path
-from typing import Callable, Dict, List, Set, cast, override
+from typing import Callable, Dict, List, cast, override
 
 from tabulate import tabulate
 
@@ -45,7 +45,7 @@ class JobArray:
     command: Command
     command_modifier: Callable[[Command], Command]
     file_name_modifier: Callable[[str], str]
-    task_ids: Set[int] = field(default_factory=set)
+    task_ids: set[int] = field(default_factory=set)
 
     @property
     def modified_command(self) -> Command:

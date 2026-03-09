@@ -7,7 +7,7 @@ import re as regex
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Set, override
+from typing import Any, Dict, Iterable, List, override
 
 import yaml
 
@@ -301,7 +301,7 @@ class CsvFileComparison(FileComparison):
         """
         self.file = file
 
-    def __get_duration_column_indices(self, headers: List[Any]) -> Set[int]:
+    def __get_duration_column_indices(self, headers: List[Any]) -> set[int]:
         return {column_index for column_index, header in enumerate(headers) if 'time' in header.lower().split()}
 
     @override

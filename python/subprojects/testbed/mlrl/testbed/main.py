@@ -11,7 +11,7 @@ from enum import Enum
 from importlib import import_module
 from importlib.metadata import version
 from importlib.util import module_from_spec, spec_from_file_location
-from typing import Set, override
+from typing import override
 
 from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
@@ -198,8 +198,8 @@ def main():
     runnable = __get_runnable(argument_parser)
     cli = __get_cli(runnable, argument_parser)
     mode = __get_mode(cli, runnable)
-    control_arguments: Set[Argument] = set()
-    algorithmic_arguments: Set[Argument] = set()
+    control_arguments: set[Argument] = set()
+    algorithmic_arguments: set[Argument] = set()
 
     if runnable:
         control_arguments, algorithmic_arguments = runnable.configure_arguments(cli, mode)

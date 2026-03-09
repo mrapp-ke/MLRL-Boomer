@@ -8,7 +8,7 @@ import logging as log
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from pathlib import Path
-from typing import List, Set, override
+from typing import List, override
 
 from mlrl.testbed.experiments.input.meta_data.meta_data import InputMetaData
 from mlrl.testbed.experiments.input.meta_data.reader import MetaDataReader
@@ -55,7 +55,7 @@ class Mode(ABC):
         """
 
     @abstractmethod
-    def run_experiment(self, control_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
+    def run_experiment(self, control_arguments: set[Argument], algorithmic_arguments: set[Argument], args: Namespace,
                        recipe: Recipe):
         """
         Must be implemented by subclasses in order to run an experiment according to the command line arguments
@@ -127,7 +127,7 @@ class InputMode(Mode, ABC):
         pass
 
     @override
-    def run_experiment(self, control_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
+    def run_experiment(self, control_arguments: set[Argument], algorithmic_arguments: set[Argument], args: Namespace,
                        recipe: Recipe):
         input_directory = self.INPUT_DIR.get_value(args)
 
@@ -137,7 +137,7 @@ class InputMode(Mode, ABC):
             self._run_experiment(control_arguments, algorithmic_arguments, args, recipe, meta_data, input_directory)
 
     @abstractmethod
-    def _run_experiment(self, control_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
+    def _run_experiment(self, control_arguments: set[Argument], algorithmic_arguments: set[Argument], args: Namespace,
                         recipe: Recipe, meta_data: MetaData, input_directory: Path):
         """
         Must be implemented by subclasses in order to run an experiment that accesses the meta-data of an earlie

@@ -6,7 +6,7 @@ Provides classes that allow configuring the functionality to load datasets.
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from pathlib import Path
-from typing import List, Sequence, Set, override
+from typing import List, Sequence, override
 
 from mlrl.testbed.command import ArgumentList
 from mlrl.testbed.experiments.input.dataset.arguments import DatasetArguments
@@ -35,7 +35,7 @@ class DatasetExtension(Extension, ABC):
         self.file_type = file_type
 
     @override
-    def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
+    def _get_arguments(self, _: ExperimentMode) -> set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
@@ -52,7 +52,7 @@ class DatasetExtension(Extension, ABC):
         """
 
     @override
-    def get_supported_modes(self) -> Set[ExperimentMode]:
+    def get_supported_modes(self) -> set[ExperimentMode]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
@@ -71,7 +71,7 @@ class DatasetFileExtension(DatasetExtension, ABC):
     )
 
     @override
-    def _get_arguments(self, mode: ExperimentMode) -> Set[Argument]:
+    def _get_arguments(self, mode: ExperimentMode) -> set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """

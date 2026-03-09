@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for providing the text to be shown when the "--version" flag is passed to the command line API.
 """
 from dataclasses import dataclass, field
-from typing import Dict, Iterable, List, Set, override
+from typing import Dict, Iterable, List, override
 
 from tabulate import tabulate
 
@@ -27,7 +27,7 @@ class RuleLearnerProgramInfo:
     program_info: ProgramInfo
     python_packages: List[PackageInfo] = field(default_factory=list)
 
-    def __collect_python_packages(self, python_packages: Iterable[PackageInfo]) -> Set[str]:
+    def __collect_python_packages(self, python_packages: Iterable[PackageInfo]) -> set[str]:
         unique_packages = set()
 
         for python_package in python_packages:
@@ -36,8 +36,8 @@ class RuleLearnerProgramInfo:
 
         return unique_packages
 
-    def __collect_dependencies(self, python_packages: Iterable[PackageInfo]) -> Dict[str, Set[str]]:
-        unique_dependencies: Dict[str, Set[str]] = {}
+    def __collect_dependencies(self, python_packages: Iterable[PackageInfo]) -> Dict[str, set[str]]:
+        unique_dependencies: Dict[str, set[str]] = {}
 
         for python_package in python_packages:
 
@@ -51,8 +51,8 @@ class RuleLearnerProgramInfo:
 
         return unique_dependencies
 
-    def __collect_cpp_libraries(self, python_packages: Iterable[PackageInfo]) -> Dict[str, Set[str]]:
-        unique_libraries: Dict[str, Set[str]] = {}
+    def __collect_cpp_libraries(self, python_packages: Iterable[PackageInfo]) -> Dict[str, set[str]]:
+        unique_libraries: Dict[str, set[str]] = {}
 
         for python_package in python_packages:
             for cpp_library in python_package.cpp_libraries:
@@ -65,8 +65,8 @@ class RuleLearnerProgramInfo:
 
         return unique_libraries
 
-    def __collect_build_options(self, python_packages: Iterable[PackageInfo]) -> Dict[str, Set[str]]:
-        unique_build_options: Dict[str, Set[str]] = {}
+    def __collect_build_options(self, python_packages: Iterable[PackageInfo]) -> Dict[str, set[str]]:
+        unique_build_options: Dict[str, set[str]] = {}
 
         for python_package in python_packages:
             for cpp_library in python_package.cpp_libraries:
@@ -80,8 +80,8 @@ class RuleLearnerProgramInfo:
 
         return unique_build_options
 
-    def __collect_hardware_resources(self, python_packages: Iterable[PackageInfo]) -> Dict[str, Set[str]]:
-        unique_hardware_resources: Dict[str, Set[str]] = {}
+    def __collect_hardware_resources(self, python_packages: Iterable[PackageInfo]) -> Dict[str, set[str]]:
+        unique_hardware_resources: Dict[str, set[str]] = {}
 
         for python_package in python_packages:
             for cpp_library in python_package.cpp_libraries:
@@ -96,7 +96,7 @@ class RuleLearnerProgramInfo:
         return unique_hardware_resources
 
     @staticmethod
-    def __format_parent_packages(parent_packages: Set[str]) -> str:
+    def __format_parent_packages(parent_packages: set[str]) -> str:
         return 'used by ' + format_iterable(parent_packages) if parent_packages else ''
 
     def __get_package_info(self) -> str:

@@ -9,7 +9,7 @@ from argparse import Action, ArgumentError, ArgumentParser, Namespace, _Argument
 from enum import Enum
 from functools import cached_property
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Set, Type, override
+from typing import Any, Callable, Dict, List, Type, override
 
 from mlrl.util.format import format_enum_values, format_set, format_value
 from mlrl.util.options import BooleanOption, Options, parse_enum, parse_param, parse_param_and_options
@@ -302,8 +302,8 @@ class BoolArgument(Argument):
                  add_default_value_to_description: bool = True,
                  default: bool | None = None,
                  required: bool = False,
-                 true_options: Set[str] | None = None,
-                 false_options: Set[str] | None = None):
+                 true_options: set[str] | None = None,
+                 false_options: set[str] | None = None):
         """
         :param names:                               One or several names of the argument
         :param description:                         An optional description of the argument
@@ -356,7 +356,7 @@ class SetArgument(Argument):
     An argument of a command line interface for which the user can provide one out of a predefined set of string values.
     """
 
-    Values = Set[str] | Dict[str, Set[str]]
+    Values = set[str] | Dict[str, set[str]]
 
     @staticmethod
     def __format_description(description: str | None, values: Values) -> str:

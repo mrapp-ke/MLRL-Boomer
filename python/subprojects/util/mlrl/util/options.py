@@ -5,7 +5,7 @@ Provides a data structure that allows to store and parse options that are provid
 """
 from enum import Enum, StrEnum
 from functools import reduce
-from typing import Any, Dict, Set, Type, override
+from typing import Any, Dict, Type, override
 
 from mlrl.util.format import format_enum_values, format_set
 from mlrl.util.validation import ValidationError
@@ -48,7 +48,7 @@ class Options:
         self.dictionary = dictionary if dictionary is not None else {}
 
     @staticmethod
-    def create(string: str, allowed_keys: Set[str]) -> 'Options':
+    def create(string: str, allowed_keys: set[str]) -> 'Options':
         """
         Parses the options that are provided via a given string that is formatted according to the following syntax:
         "[key1=value1,key2=value2]". If the given string is malformed, a `ValueError` will be raised.
@@ -206,7 +206,7 @@ def parse_enum(name: str, value: str | None, enum: Type[Enum], default: Enum | N
     return default
 
 
-def parse_param(name: str, value: str, allowed_values: Set[str]) -> str:
+def parse_param(name: str, value: str, allowed_values: set[str]) -> str:
     """
     Parses and returns an argument or parameter value. If the given value is invalid, a `ValueError` is raised.
 
@@ -223,7 +223,7 @@ def parse_param(name: str, value: str, allowed_values: Set[str]) -> str:
 
 
 def parse_param_and_options(name: str, value: str, allowed_values_and_options: Dict[str,
-                                                                                    Set[str]]) -> tuple[str, Options]:
+                                                                                    set[str]]) -> tuple[str, Options]:
     """
     Parses and returns an argument or parameter value, as well as additional `Options` that may be associated with it.
     If the given value is invalid, a `ValueError` is raised.

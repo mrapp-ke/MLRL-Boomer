@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from functools import cached_property, reduce
 from itertools import chain
 from pathlib import Path
-from typing import Any, Callable, Generator, Iterable, List, Set, override
+from typing import Any, Callable, Generator, Iterable, List, override
 
 from mlrl.testbed.command import ArgumentDict, ArgumentList, Command
 from mlrl.testbed.experiments.fold import FoldingStrategy
@@ -475,7 +475,7 @@ class BatchMode(Mode):
         cli.add_arguments(*algorithmic_arguments, group='algorithmic arguments')
 
     @override
-    def run_experiment(self, control_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
+    def run_experiment(self, control_arguments: set[Argument], algorithmic_arguments: set[Argument], args: Namespace,
                        recipe: Recipe):
         config_file_path = self.CONFIG_FILE.get_value(args)
 

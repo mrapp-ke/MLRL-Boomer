@@ -6,7 +6,7 @@ Provides classes that allow configuring the functionality to write label vectors
 import logging as log
 
 from argparse import Namespace
-from typing import List, Set, override
+from typing import List, override
 
 import numpy as np
 
@@ -85,7 +85,7 @@ class LabelVectorSetExtension(Extension):
         super().__init__(OutputExtension(), ResultDirectoryExtension(), *dependencies)
 
     @override
-    def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
+    def _get_arguments(self, _: ExperimentMode) -> set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
@@ -100,7 +100,7 @@ class LabelVectorSetExtension(Extension):
         experiment_builder.label_vector_writer.extractors.insert(1, LabelVectorSetExtension.LabelVectorSetExtractor())
 
     @override
-    def get_supported_modes(self) -> Set[ExperimentMode]:
+    def get_supported_modes(self) -> set[ExperimentMode]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """

@@ -8,7 +8,7 @@ import logging as log
 from argparse import Namespace
 from dataclasses import replace
 from pathlib import Path
-from typing import Dict, List, Set, override
+from typing import Dict, List, override
 
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments.dataset_type import DatasetType
@@ -72,12 +72,12 @@ class ReadMode(InputMode):
             return state
 
     @staticmethod
-    def __get_batch(arguments: Set[Argument], args: Namespace, meta_data: MetaData) -> List[Command]:
+    def __get_batch(arguments: set[Argument], args: Namespace, meta_data: MetaData) -> List[Command]:
         main_command = meta_data.command
         child_commands = meta_data.child_commands
 
         if child_commands:
-            unique_commands: Set[Command] = set()
+            unique_commands: set[Command] = set()
             batch = []
 
             for command in child_commands:
@@ -93,7 +93,7 @@ class ReadMode(InputMode):
         return [main_command]
 
     @staticmethod
-    def __remove_fold_option(arguments: Set[Argument], args: Namespace, command: Command) -> Command:
+    def __remove_fold_option(arguments: set[Argument], args: Namespace, command: Command) -> Command:
         command_args = ReadMode.__create_command_args(arguments, args, command)
         value, options = DatasetSplitterArguments.DATASET_SPLITTER.get_value_and_options(command_args)
 
@@ -113,13 +113,13 @@ class ReadMode(InputMode):
         return command
 
     @staticmethod
-    def __create_command_args(arguments: Set[Argument], args: Namespace, command: Command) -> Namespace:
+    def __create_command_args(arguments: set[Argument], args: Namespace, command: Command) -> Namespace:
         ignored_arguments = set(argument_name for argument_names in map(lambda arg: arg.names, arguments)
                                 for argument_name in argument_names)
         return command.apply_to_namespace(args, ignore=ignored_arguments)
 
     @staticmethod
-    def __group_batch_by_dataset(arguments: Set[Argument], args: Namespace,
+    def __group_batch_by_dataset(arguments: set[Argument], args: Namespace,
                                  batch: List[Command]) -> Dict[str, List[tuple[Command, Namespace]]]:
         commands_by_dataset: Dict[str, List[tuple[Command, Namespace]]] = {}
 
@@ -140,7 +140,7 @@ class ReadMode(InputMode):
 
     @staticmethod
     def __aggregate_evaluation(commands_and_their_states: List[tuple[Command, ExperimentState]],
-                               algorithmic_arguments: Set[Argument], dataset_name: str,
+                               algorithmic_arguments: set[Argument], dataset_name: str,
                                dataset_type: DatasetType) -> Table | None:
         num_commands = len(commands_and_their_states)
 
@@ -148,7 +148,7 @@ class ReadMode(InputMode):
             input_data = TabularInputData(properties=EvaluationResult.PROPERTIES, context=EvaluationResult.CONTEXT)
             algorithmic_argument_names = set(map(lambda arg: arg.name, algorithmic_arguments))
             tables: List[Table] = []
-            headers: Set[str] = set()
+            headers: set[str] = set()
 
             for command, result_state in commands_and_their_states:
                 input_data_key = input_data.get_key(replace(result_state, dataset_type=dataset_type))
@@ -175,13 +175,13 @@ class ReadMode(InputMode):
         return None
 
     @staticmethod
-    def __aggregate_tables(commands_and_their_states: List[tuple[Command, ExperimentState]], headers: Set[str],
+    def __aggregate_tables(commands_and_their_states: List[tuple[Command, ExperimentState]], headers: set[str],
                            tables: List[Table]) -> Table:
         aggregated_table = RowWiseTable.aggregate(*tables).to_column_wise_table()
 
         for position, header in enumerate(sorted(headers)):
             column: List[Cell] = []
-            unique_values: Set[Cell] = set()
+            unique_values: set[Cell] = set()
 
             for command, _ in commands_and_their_states:
                 argument_name = header[len(AggregatedEvaluationResult.COLUMN_PREFIX_PARAMETER):].lstrip()
@@ -205,7 +205,7 @@ class ReadMode(InputMode):
         return ReadMode.AggregateEvaluationProcedure(evaluation_by_dataset_type).conduct_experiment(experiment)
 
     @override
-    def _run_experiment(self, control_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
+    def _run_experiment(self, control_arguments: set[Argument], algorithmic_arguments: set[Argument], args: Namespace,
                         recipe: Recipe, meta_data: MetaData, input_directory: Path):
         batch = self.__get_batch(control_arguments, args, meta_data)
         num_experiments = len(batch)

@@ -5,7 +5,7 @@ Provides utility functions for handling arrays.
 """
 from enum import StrEnum
 from itertools import chain
-from typing import Any, Set, Union
+from typing import Any, Union
 
 import numpy as np
 
@@ -98,7 +98,7 @@ def is_bsr(array) -> bool:
     return isspmatrix_bsr(array) or (isinstance(array, sparray) and array.format == 'bsr')
 
 
-def is_sparse(array, supported_formats: Set[SparseFormat] | None = None) -> bool:
+def is_sparse(array, supported_formats: set[SparseFormat] | None = None) -> bool:
     """
     Returns whether a given array is a `scipy.sparse.spmatrix` or `scipy.sparse.sparray` or not.
 

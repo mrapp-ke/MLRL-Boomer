@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write evaluation results to one or several sinks.
 """
 from argparse import Namespace
-from typing import Set, override
+from typing import override
 
 from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import TabularEvaluationResult
 from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_classification import \
@@ -65,7 +65,7 @@ class EvaluationExtension(Extension):
         super().__init__(OutputExtension(), ResultDirectoryExtension(), *dependencies)
 
     @override
-    def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
+    def _get_arguments(self, _: ExperimentMode) -> set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
@@ -118,7 +118,7 @@ class EvaluationExtension(Extension):
             evaluation_writer.extractors.append(extractor)
 
     @override
-    def get_supported_modes(self) -> Set[ExperimentMode]:
+    def get_supported_modes(self) -> set[ExperimentMode]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """

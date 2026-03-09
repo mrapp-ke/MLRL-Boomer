@@ -6,7 +6,7 @@ Provides classes for representing evaluation results that are part of output dat
 from abc import ABC
 from functools import partial
 from itertools import chain
-from typing import Dict, Iterable, List, Set, override
+from typing import Dict, Iterable, List, override
 
 import numpy as np
 
@@ -201,9 +201,9 @@ class AggregatedEvaluationResult(TabularOutputData):
             std_dev_column[row_index] = '±' + str(std_dev_column[row_index])
 
     @staticmethod
-    def __add_separator_rows(dataset_column: Column, table: RowWiseTable, averages: bool = False) -> Set[str]:
+    def __add_separator_rows(dataset_column: Column, table: RowWiseTable, averages: bool = False) -> set[str]:
         previous_dataset: str | None = None
-        separators: Set[str] = set()
+        separators: set[str] = set()
 
         for row_index in range(dataset_column.num_rows - 1, -1, -1):
             dataset = '"' + str(dataset_column[row_index]) + '"'

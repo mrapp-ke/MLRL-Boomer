@@ -6,7 +6,7 @@ Provides utilities that ease the configuration of rule learning algorithms.
 import logging as log
 
 from abc import ABC, abstractmethod
-from typing import Dict, Set, override
+from typing import Dict, override
 
 from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, EqualFrequencyFeatureBinningMixin, \
     EqualWidthFeatureBinningMixin, FeatureSamplingWithoutReplacementMixin, GreedyTopDownRuleInductionMixin, \
@@ -116,7 +116,7 @@ class NominalParameter(Parameter, ABC):
         A value that can be set for a nominal parameter.
         """
 
-        def __init__(self, name: str, mixin: type, options: Set[str] | None, description: str | None):
+        def __init__(self, name: str, mixin: type, options: set[str] | None, description: str | None):
             """
             :param name:        The name of the value
             :param mixin:       The type of the mixin that must be implemented by a rule learner to support this value
@@ -141,7 +141,7 @@ class NominalParameter(Parameter, ABC):
         super().__init__(name, description)
         self.values: Dict[str, NominalParameter.Value] = {}
 
-    def add_value(self, name: str, mixin: type, options: Set[str] | None = None, description: str | None = None):
+    def add_value(self, name: str, mixin: type, options: set[str] | None = None, description: str | None = None):
         """
         Adds a new value to the parameter.
 
@@ -165,7 +165,7 @@ class NominalParameter(Parameter, ABC):
         :param options: Additional options that have eventually been specified
         """
 
-    def __get_supported_values(self, config_type: type) -> Set[str] | Dict[str, Options]:
+    def __get_supported_values(self, config_type: type) -> set[str] | Dict[str, Options]:
         num_options = 0
         supported_values = {}
 

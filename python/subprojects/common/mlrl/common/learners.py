@@ -8,7 +8,7 @@ import re as regex
 
 from abc import ABC, abstractmethod
 from enum import StrEnum
-from typing import Any, Set, override
+from typing import Any, override
 
 import numpy as np
 
@@ -845,7 +845,7 @@ class RegressionRuleLearner(IncrementalRegressorMixin, RuleLearner, ABC):
         return super()._predict_scores_incrementally(x, **(dict(kwargs) | {self.KWARG_DTYPE: dtype}))
 
 
-def configure_rule_learner(learner: RuleLearner, config: RuleLearnerConfig, parameters: Set[Parameter]):
+def configure_rule_learner(learner: RuleLearner, config: RuleLearnerConfig, parameters: set[Parameter]):
     """
     Configures a rule learner by taking into account a given set of parameters.
 

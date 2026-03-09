@@ -12,7 +12,7 @@ from argparse import Namespace
 from functools import cached_property
 from itertools import chain
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Set, Type, override
+from typing import Any, Dict, Iterable, List, Type, override
 
 import docstring_parser
 import numpy as np
@@ -118,14 +118,14 @@ class SkLearnRunnable(Runnable, ABC):
             super().__init__(PredictionTypeExtension())
 
         @override
-        def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
+        def _get_arguments(self, _: ExperimentMode) -> set[Argument]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
             """
             return {self.PROBLEM_TYPE}
 
         @override
-        def get_supported_modes(self) -> Set[ExperimentMode]:
+        def get_supported_modes(self) -> set[ExperimentMode]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
             """
@@ -461,7 +461,7 @@ class SklearnEstimator:
         self.estimator_type = estimator_type
 
     @staticmethod
-    def get_supported_regressors() -> Set['SklearnEstimator']:
+    def get_supported_regressors() -> set['SklearnEstimator']:
         """
         Returns a set that contains all supported scikit-learn regressors.
 
@@ -476,7 +476,7 @@ class SklearnEstimator:
                 }))
 
     @staticmethod
-    def get_supported_classifiers() -> Set['SklearnEstimator']:
+    def get_supported_classifiers() -> set['SklearnEstimator']:
         """
         Returns a set that contains all supported scikit-learn classifiers.
 
@@ -491,7 +491,7 @@ class SklearnEstimator:
                 }))
 
     @staticmethod
-    def get_supported_meta_regressors() -> Set['SklearnEstimator']:
+    def get_supported_meta_regressors() -> set['SklearnEstimator']:
         """
         Returns a set that contains all supported scikit-learn meta-regressors.
 
@@ -506,7 +506,7 @@ class SklearnEstimator:
                 }))
 
     @staticmethod
-    def get_supported_meta_classifiers() -> Set['SklearnEstimator']:
+    def get_supported_meta_classifiers() -> set['SklearnEstimator']:
         """
         Returns a set that contains all supported scikit-learn meta-classifiers.
 
@@ -542,11 +542,11 @@ class SklearnEstimator:
         return self.can_be_instantiated_with_estimator
 
     @cached_property
-    def algorithmic_arguments(self) -> Set['SklearnEstimator.SklearnArgument']:
+    def algorithmic_arguments(self) -> set['SklearnEstimator.SklearnArgument']:
         """
         A set that contains the command line arguments that allow to control the hyperparameters of the estimator.
         """
-        arguments: Set[SklearnEstimator.SklearnArgument] = set()
+        arguments: set[SklearnEstimator.SklearnArgument] = set()
         apidoc = self.estimator_type.__doc__
 
         if apidoc:
@@ -621,9 +621,9 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
         An extension that configures the scikit-learn estimator to be used in an experiment.
         """
 
-        def __init__(self, supported_classifiers: Set[SklearnEstimator], supported_regressors: Set[SklearnEstimator],
-                     supported_meta_classifiers: Set[SklearnEstimator],
-                     supported_meta_regressors: Set[SklearnEstimator], *dependencies: 'Extension'):
+        def __init__(self, supported_classifiers: set[SklearnEstimator], supported_regressors: set[SklearnEstimator],
+                     supported_meta_classifiers: set[SklearnEstimator],
+                     supported_meta_regressors: set[SklearnEstimator], *dependencies: 'Extension'):
             """
             :param supported_classifiers:       A set that contains all supported scikit-learn classifiers
             :param supported_regressors:        A set that contains all supported scikit-learn regressors
@@ -638,8 +638,8 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
             self._supported_meta_regressors = supported_meta_regressors
 
         @staticmethod
-        def create_meta_estimator_argument(supported_meta_classifiers: Set[SklearnEstimator],
-                                           supported_meta_regressors: Set[SklearnEstimator]) -> SetArgument:
+        def create_meta_estimator_argument(supported_meta_classifiers: set[SklearnEstimator],
+                                           supported_meta_regressors: set[SklearnEstimator]) -> SetArgument:
             """
             Creates and returns a `SetArgument` that allows to specify the name of a scikit-learn meta-estimator to be
             used in an experiment.
@@ -660,8 +660,8 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
             )
 
         @staticmethod
-        def create_estimator_argument(supported_classifiers: Set[SklearnEstimator],
-                                      supported_regressors: Set[SklearnEstimator], mode: ExperimentMode) -> SetArgument:
+        def create_estimator_argument(supported_classifiers: set[SklearnEstimator],
+                                      supported_regressors: set[SklearnEstimator], mode: ExperimentMode) -> SetArgument:
             """
             Creates and returns a `SetArgument` that allows to specify the name of the scikit-learn estimator to be
             used in an experiment.
@@ -683,7 +683,7 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
             )
 
         @override
-        def _get_arguments(self, mode: ExperimentMode) -> Set[Argument]:
+        def _get_arguments(self, mode: ExperimentMode) -> set[Argument]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
             """
@@ -696,7 +696,7 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
             }
 
         @override
-        def get_supported_modes(self) -> Set[ExperimentMode]:
+        def get_supported_modes(self) -> set[ExperimentMode]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
             """
@@ -773,7 +773,7 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
         ] + super().get_extensions()
 
     @override
-    def get_algorithmic_arguments(self, mode: ExperimentMode, known_args: Namespace) -> Set[Argument]:
+    def get_algorithmic_arguments(self, mode: ExperimentMode, known_args: Namespace) -> set[Argument]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_algorithmic_arguments`
         """

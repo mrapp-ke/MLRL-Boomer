@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write output data to one or several sinks.
 """
 from argparse import Namespace
-from typing import Set, override
+from typing import override
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
@@ -20,7 +20,7 @@ class OutputExtension(Extension):
     """
 
     @override
-    def _get_arguments(self, mode: ExperimentMode) -> Set[Argument]:
+    def _get_arguments(self, mode: ExperimentMode) -> set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
@@ -45,7 +45,7 @@ class OutputExtension(Extension):
         experiment_builder.set_output_error_policy(OutputArguments.IF_OUTPUT_ERROR.get_value(args))
 
     @override
-    def get_supported_modes(self) -> Set[ExperimentMode]:
+    def get_supported_modes(self) -> set[ExperimentMode]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
@@ -58,14 +58,14 @@ class ResultDirectoryExtension(Extension):
     """
 
     @override
-    def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
+    def _get_arguments(self, _: ExperimentMode) -> set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
         return {ResultDirectoryArguments.RESULT_DIR}
 
     @override
-    def get_supported_modes(self) -> Set[ExperimentMode]:
+    def get_supported_modes(self) -> set[ExperimentMode]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """
