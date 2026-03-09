@@ -2,7 +2,7 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 # pylint: disable=missing-function-docstring
-from typing import Any, Optional, override
+from typing import Any, override
 
 import pytest
 
@@ -73,7 +73,7 @@ class TestSeCoClassifier(ClassificationIntegrationTests, RuleLearnerIntegrationT
         (HeadTypeParameter.HEAD_TYPE_PARTIAL, LiftFunctionParameter.LIFT_FUNCTION_PEAK),
         (HeadTypeParameter.HEAD_TYPE_PARTIAL, LiftFunctionParameter.LIFT_FUNCTION_KLN),
     ])
-    def test_head_type(self, head_type: str, lift_function: Optional[str]):
+    def test_head_type(self, head_type: str, lift_function: str | None):
         builder = self._create_cmd_builder() \
             .head_type(head_type) \
             .lift_function(lift_function) \

@@ -5,7 +5,7 @@ Provides classes for representing models for the calibration of probabilities vi
 """
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, override
+from typing import Dict, List, override
 
 from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibrationModel, \
     IsotonicProbabilityCalibrationModelVisitor
@@ -62,7 +62,7 @@ class IsotonicRegressionModel(TabularOutputData):
                  bin_lists: Dict[int, 'IsotonicRegressionModel.BinList'],
                  properties: TabularProperties,
                  context: Context = Context(),
-                 column_title_prefix: Optional[str] = None):
+                 column_title_prefix: str | None = None):
         """
         :param bin_lists:           A dictionary that stores lists of bins contained in an isotonic regression model,
                                     mapped to indices
@@ -80,7 +80,7 @@ class IsotonicRegressionModel(TabularOutputData):
     def from_calibration_model(calibration_model: IsotonicProbabilityCalibrationModel,
                                properties: TabularProperties,
                                context: Context = Context(),
-                               column_title_prefix: Optional[str] = None) -> 'IsotonicRegressionModel':
+                               column_title_prefix: str | None = None) -> 'IsotonicRegressionModel':
         """
         Creates and returns an `IsotonicRegressionModel` from a given `IsotonicProbabilityCalibrationModel`.
 
@@ -109,7 +109,7 @@ class IsotonicRegressionModel(TabularOutputData):
         return (prefix + ' ' if prefix else '') + str(list_index + 1) + ' ' + self.COLUMN_PROBABILITIES
 
     @override
-    def to_text(self, options: Options, **kwargs) -> Optional[str]:
+    def to_text(self, options: Options, **kwargs) -> str | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
@@ -137,7 +137,7 @@ class IsotonicRegressionModel(TabularOutputData):
         return None
 
     @override
-    def to_table(self, options: Options, **kwargs) -> Optional[Table]:
+    def to_table(self, options: Options, **kwargs) -> Table | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """

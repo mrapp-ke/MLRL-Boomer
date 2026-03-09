@@ -6,7 +6,7 @@ Provides classes for obtaining predictions from machine learning models.
 import logging as log
 
 from abc import ABC, abstractmethod
-from typing import Any, Callable, Generator, Optional
+from typing import Any, Callable, Generator
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
@@ -19,8 +19,8 @@ class PredictionFunction:
     A function that obtains and returns predictions from a learner.
     """
 
-    def __init__(self, learner: Any, predict_function: Optional[Callable[..., Any]],
-                 decision_function: Optional[Callable[..., Any]], predict_proba_function: Optional[Callable[..., Any]]):
+    def __init__(self, learner: Any, predict_function: Callable[..., Any] | None,
+                 decision_function: Callable[..., Any] | None, predict_proba_function: Callable[..., Any] | None):
         """
         :param learner:                 The learner, the predictions should be obtained from
         :param predict_function:        The function to be invoked for obtaining binary predictions

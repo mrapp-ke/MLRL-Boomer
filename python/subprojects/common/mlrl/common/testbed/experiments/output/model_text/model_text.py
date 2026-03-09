@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing rule models as text that is part of output data.
 """
 from io import StringIO
-from typing import Optional, override
+from typing import override
 
 from mlrl.common.cython.rule_model import Body, CompleteHead, ConjunctiveBody, EmptyBody, Head, PartialHead, RuleModel
 
@@ -175,7 +175,7 @@ class RuleModelAsText(TextualOutputData):
         self.dataset = dataset
 
     @override
-    def to_text(self, options: Options, **_) -> Optional[str]:
+    def to_text(self, options: Options, **_) -> str | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """

@@ -7,7 +7,7 @@ Provides base classes for programs that can be configured via command line argum
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from functools import reduce
-from typing import List, Optional, Set, Tuple, override
+from typing import List, Set, Tuple, override
 
 from mlrl.testbed.arguments import PredictionDatasetArguments
 from mlrl.testbed.command import Command
@@ -92,7 +92,7 @@ class Runnable(Recipe, ABC):
         """
         return [extension for extension in self.get_extensions() if extension.is_mode_supported(mode)]
 
-    def get_program_info(self) -> Optional[ProgramInfo]:
+    def get_program_info(self) -> ProgramInfo | None:
         """
         May be overridden by subclasses in order to provide information about the program to be printed via the command
         line argument '-v' or '--version'. 

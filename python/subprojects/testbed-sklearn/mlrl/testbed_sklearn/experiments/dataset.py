@@ -6,7 +6,7 @@ Provides classes for representing tabular datasets.
 from dataclasses import dataclass, replace
 from enum import Enum, auto
 from functools import reduce
-from typing import List, Optional
+from typing import List
 
 from scipy.sparse import lil_array
 
@@ -36,7 +36,7 @@ class Attribute:
     """
     name: str
     attribute_type: AttributeType
-    nominal_values: Optional[List[str]] = None
+    nominal_values: List[str] | None = None
 
 
 @dataclass

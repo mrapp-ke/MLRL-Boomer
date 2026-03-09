@@ -6,7 +6,7 @@ Provides utilities that ease the configuration of rule learning algorithms.
 import logging as log
 
 from abc import ABC, abstractmethod
-from typing import Dict, Optional, Set, override
+from typing import Dict, Set, override
 
 from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, EqualFrequencyFeatureBinningMixin, \
     EqualWidthFeatureBinningMixin, FeatureSamplingWithoutReplacementMixin, GreedyTopDownRuleInductionMixin, \
@@ -80,7 +80,7 @@ class Parameter(ABC):
         """
 
     @abstractmethod
-    def as_argument(self, config_type: type) -> Optional[Argument]:
+    def as_argument(self, config_type: type) -> Argument | None:
         """
         Creates and returns an `Argument` from this parameter, if it is supported by a configuration of a specific type.
 
@@ -116,7 +116,7 @@ class NominalParameter(Parameter, ABC):
         A value that can be set for a nominal parameter.
         """
 
-        def __init__(self, name: str, mixin: type, options: Optional[Set[str]], description: Optional[str]):
+        def __init__(self, name: str, mixin: type, options: Set[str] | None, description: str | None):
             """
             :param name:        The name of the value
             :param mixin:       The type of the mixin that must be implemented by a rule learner to support this value
@@ -141,7 +141,7 @@ class NominalParameter(Parameter, ABC):
         super().__init__(name, description)
         self.values: Dict[str, NominalParameter.Value] = {}
 
-    def add_value(self, name: str, mixin: type, options: Optional[Set[str]] = None, description: Optional[str] = None):
+    def add_value(self, name: str, mixin: type, options: Set[str] | None = None, description: str | None = None):
         """
         Adds a new value to the parameter.
 
@@ -193,7 +193,7 @@ class NominalParameter(Parameter, ABC):
             self._configure(config, value, options if options else Options())
 
     @override
-    def as_argument(self, config_type: type) -> Optional[Argument]:
+    def as_argument(self, config_type: type) -> Argument | None:
         supported_values = self.__get_supported_values(config_type)
 
         if supported_values:
@@ -244,7 +244,7 @@ class NumericalParameter(Parameter, ABC):
             self._configure(config, self.numeric_type(value))
 
     @override
-    def as_argument(self, config_type: type) -> Optional[Argument]:
+    def as_argument(self, config_type: type) -> Argument | None:
         if self.__is_supported(config_type):
             return Argument(self.argument_name, type=self.numeric_type, description=self.description)
         return None

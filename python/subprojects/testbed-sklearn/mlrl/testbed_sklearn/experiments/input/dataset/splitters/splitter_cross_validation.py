@@ -6,7 +6,7 @@ Provides classes for splitting datasets into multiple, equally sized, folds cons
 import logging as log
 
 from dataclasses import dataclass, field, replace
-from typing import Any, Generator, List, Optional, cast, override
+from typing import Any, Generator, List, cast, override
 
 from scipy.sparse import vstack
 from sklearn.model_selection import KFold
@@ -185,7 +185,7 @@ class CrossValidationSplitter(DatasetSplitter):
 
             return state
 
-    def __init__(self, dataset_reader: Optional[DatasetReader], num_folds: int, first_fold: int, last_fold: int,
+    def __init__(self, dataset_reader: DatasetReader | None, num_folds: int, first_fold: int, last_fold: int,
                  random_state: int):
         """
         :param dataset_reader:  The reader that should be used for loading datasets
@@ -198,7 +198,7 @@ class CrossValidationSplitter(DatasetSplitter):
         super().__init__(FoldingStrategy(num_folds=num_folds, first=first_fold, last=last_fold))
         self.dataset_reader = dataset_reader
         self.random_state = random_state
-        self.cache: Optional[Any] = None
+        self.cache: Any | None = None
 
         if dataset_reader:
             context = dataset_reader.input_data.context

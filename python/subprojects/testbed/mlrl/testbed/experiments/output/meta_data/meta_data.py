@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing meta-data that is part of output data.
 """
-from typing import Any, Dict, Optional, override
+from typing import Any, Dict, override
 
 from mlrl.testbed.experiments.input.meta_data.meta_data import InputMetaData
 from mlrl.testbed.experiments.meta_data import MetaData
@@ -25,7 +25,7 @@ class OutputMetaData(StructuralOutputData):
         self.meta_data = meta_data
 
     @override
-    def to_dict(self, options: Options, **kwargs) -> Optional[Dict[Any, Any]]:
+    def to_dict(self, options: Options, **kwargs) -> Dict[Any, Any] | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.StructuralOutputData.to_dict`
         """

@@ -7,7 +7,7 @@ import re as regex
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, override
+from typing import Any, Dict, Iterable, List, Set, Tuple, override
 
 import yaml
 
@@ -87,7 +87,7 @@ class FileComparison(ABC):
         with open(file, mode='r', encoding=ENCODING_UTF8) as text_file:
             return TextFileComparison(text_file.readlines())
 
-    def compare_or_overwrite(self, another_file: Path, overwrite: bool = False) -> Optional[Difference]:
+    def compare_or_overwrite(self, another_file: Path, overwrite: bool = False) -> Difference | None:
         """
         Compares the file to another file or overwrites the latter with the former.
 
@@ -103,7 +103,7 @@ class FileComparison(ABC):
         return self._compare(another_file)
 
     @abstractmethod
-    def _compare(self, another_file: Path) -> Optional[Difference]:
+    def _compare(self, another_file: Path) -> Difference | None:
         """
         Must be implemented by subclasses in order to compare to files.
 
@@ -170,7 +170,7 @@ class TextFileComparison(FileComparison):
         self.lines = lines
 
     @override
-    def _compare(self, another_file: Path) -> Optional[Difference]:
+    def _compare(self, another_file: Path) -> Difference | None:
         with open(another_file, 'r', encoding=ENCODING_UTF8) as file:
             expected_lines = file.readlines()
 
@@ -205,7 +205,7 @@ class PickleFileComparison(FileComparison):
         self.path = path
 
     @override
-    def _compare(self, another_file: Path) -> Optional[Difference]:
+    def _compare(self, another_file: Path) -> Difference | None:
         if not another_file.is_file():
             raise IOError('File "' + str(another_file) + '" does not exist')
         return None
@@ -305,7 +305,7 @@ class CsvFileComparison(FileComparison):
         return {column_index for column_index, header in enumerate(headers) if 'time' in header.lower().split()}
 
     @override
-    def _compare(self, another_file: Path) -> Optional[Difference]:
+    def _compare(self, another_file: Path) -> Difference | None:
         with open(self.file, mode='r', encoding=ENCODING_UTF8) as actual_file:
             actual_csv_file = csv.reader(actual_file,
                                          delimiter=CsvFileSource.DELIMITER,
@@ -446,7 +446,7 @@ class MetaDataFileComparison(FileComparison):
         self.path = path
 
     @override
-    def _compare(self, another_file: Path) -> Optional[Difference]:
+    def _compare(self, another_file: Path) -> Difference | None:
         yaml_dict = self.__load_yaml(self.path)
         another_yaml_dict = self.__load_yaml(another_file)
 

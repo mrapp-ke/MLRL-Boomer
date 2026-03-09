@@ -4,7 +4,7 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow writing output data to text files.
 """
 from pathlib import Path
-from typing import Optional, override
+from typing import override
 
 from mlrl.testbed.experiments.input.sources import Source, TextFileSource
 from mlrl.testbed.experiments.output.data import OutputData, TextualOutputData
@@ -42,5 +42,5 @@ class TextFileSink(FileSink):
                     text_file.write(text)
 
     @override
-    def create_source(self, input_directory: Path) -> Optional[Source]:
+    def create_source(self, input_directory: Path) -> Source | None:
         return TextFileSource(input_directory)

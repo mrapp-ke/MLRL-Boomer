@@ -8,7 +8,7 @@ import logging as log
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from pathlib import Path
-from typing import Any, List, Optional, Tuple, override
+from typing import Any, List, Tuple, override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties, TabularProperties
@@ -132,7 +132,7 @@ class DatasetExtractor(DataExtractor, ABC):
         return []
 
     @abstractmethod
-    def _create_output_data(self, data: Any) -> Optional[DatasetOutputData]:
+    def _create_output_data(self, data: Any) -> DatasetOutputData | None:
         """
         Must be implemented by subclasses in order to create output data from given data that has been read via in input
         reader.
@@ -249,7 +249,7 @@ class OutputWriter:
         return list(filter(None, map(lambda sink: sink.create_source(input_directory), self.sinks)))
 
     # pylint: disable=unused-argument
-    def create_input_reader(self, args: Namespace, input_directory: Path) -> Optional[InputReader]:
+    def create_input_reader(self, args: Namespace, input_directory: Path) -> InputReader | None:
         """
         May be overridden by subclasses in order to create an `InputReader` that can read the data produced by this
         output writer.
@@ -278,7 +278,7 @@ class ResultWriter(OutputWriter):
     Allows to write experimental results to one or several sinks.
     """
 
-    def __init__(self, *extractors: DataExtractor, input_data: Optional[InputData] = None):
+    def __init__(self, *extractors: DataExtractor, input_data: InputData | None = None):
         """
         :param extractors:  Extractors that should be used for extracting the output data to be written to the sinks
         :param input_data:  The `InputData` that corresponds to the output data written by this writer or None, if no
@@ -288,7 +288,7 @@ class ResultWriter(OutputWriter):
         self.input_data = input_data
 
     @override
-    def create_input_reader(self, args: Namespace, input_directory: Path) -> Optional[InputReader]:
+    def create_input_reader(self, args: Namespace, input_directory: Path) -> InputReader | None:
         input_data = self.input_data
 
         if input_data:

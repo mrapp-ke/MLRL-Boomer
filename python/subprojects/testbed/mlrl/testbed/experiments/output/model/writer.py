@@ -5,7 +5,7 @@ Provides classes that allow writing models to one or several sinks.
 """
 from argparse import Namespace
 from pathlib import Path
-from typing import List, Optional, Tuple, override
+from typing import List, Tuple, override
 
 from mlrl.testbed.experiments.input.model import ModelReader
 from mlrl.testbed.experiments.input.reader import InputReader
@@ -46,7 +46,7 @@ class ModelWriter(OutputWriter):
         super().__init__(*extractors, ModelWriter.DefaultExtractor())
 
     @override
-    def create_input_reader(self, args: Namespace, input_directory: Path) -> Optional[InputReader]:
+    def create_input_reader(self, args: Namespace, input_directory: Path) -> InputReader | None:
         model_load_dir = ModelOutputDirectoryArguments.MODEL_SAVE_DIR.get_value(args)
 
         if model_load_dir:

@@ -5,7 +5,7 @@ Provides classes that allow writing meta-data to one or several sinks.
 """
 from argparse import Namespace
 from pathlib import Path
-from typing import List, Optional, Tuple, override
+from typing import List, Tuple, override
 
 from mlrl.testbed.experiments.input.meta_data.reader import MetaDataReader
 from mlrl.testbed.experiments.input.reader import InputReader
@@ -40,5 +40,5 @@ class MetaDataWriter(OutputWriter):
         super().__init__(*extractors, MetaDataWriter.DefaultExtractor())
 
     @override
-    def create_input_reader(self, _: Namespace, input_directory: Path) -> Optional[InputReader]:
+    def create_input_reader(self, _: Namespace, input_directory: Path) -> InputReader | None:
         return MetaDataReader(*self.create_sources(input_directory))

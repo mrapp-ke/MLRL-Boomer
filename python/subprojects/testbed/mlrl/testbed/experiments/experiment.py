@@ -9,7 +9,7 @@ from abc import ABC, abstractmethod
 from argparse import Namespace
 from dataclasses import replace
 from itertools import chain
-from typing import Any, Callable, Generator, Iterable, List, Optional, Set, override
+from typing import Any, Callable, Generator, Iterable, List, Set, override
 
 from mlrl.testbed.arguments import PredictionDatasetArguments
 from mlrl.testbed.experiments.dataset import Dataset
@@ -390,7 +390,7 @@ class Experiment(ABC):
         """
 
         @abstractmethod
-        def train(self, learner: Optional[Any], parameters: ParameterDict, dataset: Dataset) -> TrainingState:
+        def train(self, learner: Any | None, parameters: ParameterDict, dataset: Dataset) -> TrainingState:
             """
             Fits a learner to a training dataset.
 

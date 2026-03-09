@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from typing import List, Optional, Type, override
+from typing import List, Type, override
 
 from sklearn.base import BaseEstimator as SkLearnBaseEstimator, ClassifierMixin as SkLearnClassifierMixin
 
@@ -22,9 +22,9 @@ class SkLearnClassifierCmdBuilder(ClassificationCmdBuilder):
                          runnable_module_name='mlrl.testbed_sklearn',
                          dataset=dataset)
         self._estimator_type = estimator_type
-        self._meta_estimator_type: Optional[Type[SkLearnBaseEstimator]] = None
+        self._meta_estimator_type: Type[SkLearnBaseEstimator] | None = None
 
-    def meta_estimator(self, meta_estimator_type: Optional[Type[SkLearnBaseEstimator]]):
+    def meta_estimator(self, meta_estimator_type: Type[SkLearnBaseEstimator] | None):
         """
         Sets a meta-classifier to be used.
 

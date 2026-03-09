@@ -7,7 +7,7 @@ import json
 
 from abc import ABC, abstractmethod
 from dataclasses import replace
-from typing import Any, Dict, Iterable, List, Optional, Type, override
+from typing import Any, Dict, Iterable, List, Type, override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties, TabularProperties
@@ -125,13 +125,13 @@ class TextualOutputData(OutputData, ABC):
             """
 
             @override
-            def to_text(self, options: Options, **kwargs) -> Optional[str]:
+            def to_text(self, options: Options, **kwargs) -> str | None:
                 return text
 
         return TextOutputData(properties=properties, context=context)
 
     @abstractmethod
-    def to_text(self, options: Options, **kwargs) -> Optional[str]:
+    def to_text(self, options: Options, **kwargs) -> str | None:
         """
         Creates and returns a textual representation of the object.
 
@@ -171,17 +171,17 @@ class TabularOutputData(TextualOutputData, ABC):
             """
 
             @override
-            def to_text(self, options: Options, **kwargs) -> Optional[str]:
+            def to_text(self, options: Options, **kwargs) -> str | None:
                 return table.format()
 
             @override
-            def to_table(self, options: Options, **kwargs) -> Optional[Table]:
+            def to_table(self, options: Options, **kwargs) -> Table | None:
                 return table
 
         return TableOutputData(properties=properties, context=context)
 
     @abstractmethod
-    def to_table(self, options: Options, **kwargs) -> Optional[Table]:
+    def to_table(self, options: Options, **kwargs) -> Table | None:
         """
         Creates and returns a tabular representation of the object.
 
@@ -197,7 +197,7 @@ class StructuralOutputData(TextualOutputData, ABC):
     """
 
     @abstractmethod
-    def to_dict(self, options: Options, **kwargs) -> Optional[Dict[Any, Any]]:
+    def to_dict(self, options: Options, **kwargs) -> Dict[Any, Any] | None:
         """
         Creates and returns a dictionary from the object.
 
@@ -206,7 +206,7 @@ class StructuralOutputData(TextualOutputData, ABC):
         """
 
     @override
-    def to_text(self, options: Options, **kwargs) -> Optional[str]:
+    def to_text(self, options: Options, **kwargs) -> str | None:
         dictionary = self.to_dict(options, **kwargs)
         return None if dictionary is None else json.dumps(dictionary, indent=4)
 
@@ -218,7 +218,7 @@ class DatasetOutputData(TextualOutputData, ABC):
     """
 
     @abstractmethod
-    def to_dataset(self, options: Options, **kwargs) -> Optional[Dataset]:
+    def to_dataset(self, options: Options, **kwargs) -> Dataset | None:
         """
         Creates and returns a dataset from the object.
 
@@ -233,7 +233,7 @@ class ObjectOutputData(OutputData, ABC):
     """
 
     @abstractmethod
-    def to_object(self, options: Options, **kwargs) -> Optional[Any]:
+    def to_object(self, options: Options, **kwargs) -> Any | None:
         """
         Returns an object.
 

@@ -8,7 +8,7 @@ import logging as log
 from dataclasses import replace
 from functools import cached_property
 from pathlib import Path
-from typing import Any, List, Optional, Set, override
+from typing import Any, List, Set, override
 from xml.dom import minidom
 
 import arff
@@ -158,7 +158,7 @@ class ArffFileSource(DatasetFileSource):
 
             return set()
 
-        def __init__(self, arff_file: 'ArffFileSource.ArffFile', output_names: Optional[Set[str]]):
+        def __init__(self, arff_file: 'ArffFileSource.ArffFile', output_names: Set[str] | None):
             """
             :param arff_file:       The content of the ARFF file
             :param output_names:    The names of all outputs contained in the dataset
@@ -263,7 +263,7 @@ class ArffFileSource(DatasetFileSource):
 
     @override
     def _read_dataset_from_file(self, state: ExperimentState, file_path: Path,
-                                input_data: DatasetInputData) -> Optional[Dataset]:
+                                input_data: DatasetInputData) -> Dataset | None:
         problem_domain = state.problem_domain
         arff_file = self.__read_arff_file(file_path=file_path, dtype=problem_domain.feature_dtype)
         xml_file_path = self.__find_xml_file(state=state,

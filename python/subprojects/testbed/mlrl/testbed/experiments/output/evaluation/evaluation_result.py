@@ -6,7 +6,7 @@ Provides classes for representing evaluation results that are part of output dat
 from abc import ABC
 from functools import partial
 from itertools import chain
-from typing import Dict, Iterable, List, Optional, Set, Tuple, override
+from typing import Dict, Iterable, List, Set, Tuple, override
 
 import numpy as np
 
@@ -71,7 +71,7 @@ class AggregatedEvaluationResult(TabularOutputData):
         self.evaluation_by_dataset = evaluation_by_dataset
 
     @override
-    def to_text(self, options: Options, **kwargs) -> Optional[str]:
+    def to_text(self, options: Options, **kwargs) -> str | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
@@ -202,7 +202,7 @@ class AggregatedEvaluationResult(TabularOutputData):
 
     @staticmethod
     def __add_separator_rows(dataset_column: Column, table: RowWiseTable, averages: bool = False) -> Set[str]:
-        previous_dataset: Optional[str] = None
+        previous_dataset: str | None = None
         separators: Set[str] = set()
 
         for row_index in range(dataset_column.num_rows - 1, -1, -1):
@@ -225,7 +225,7 @@ class AggregatedEvaluationResult(TabularOutputData):
         return separators
 
     @override
-    def to_table(self, options: Options, **kwargs) -> Optional[Table]:
+    def to_table(self, options: Options, **kwargs) -> Table | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """
@@ -249,7 +249,7 @@ class AggregatedEvaluationResult(TabularOutputData):
             for column_index in range(aggregated_table.num_columns - 1, -1, -1):
                 column = aggregated_table[column_index]
                 header = str(column.header)
-                current_dataset: Optional[str] = None
+                current_dataset: str | None = None
                 values_by_dataset: List[List[float]] = []
 
                 for row_index in range(column.num_rows):

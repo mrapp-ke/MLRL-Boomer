@@ -5,7 +5,7 @@ Provides classes for representing models for the calibration of probabilities th
 probabilities.
 """
 
-from typing import Optional, override
+from typing import override
 
 from mlrl.testbed.experiments.output.data import TabularOutputData
 from mlrl.testbed.experiments.table import Table
@@ -20,7 +20,7 @@ class NoCalibrationModel(TabularOutputData):
 
     # pylint: disable=unused-argument
     @override
-    def to_text(self, _: Options, **kwargs) -> Optional[str]:
+    def to_text(self, _: Options, **kwargs) -> str | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
@@ -28,7 +28,7 @@ class NoCalibrationModel(TabularOutputData):
 
     # pylint: disable=unused-argument
     @override
-    def to_table(self, _: Options, **kwargs) -> Optional[Table]:
+    def to_table(self, _: Options, **kwargs) -> Table | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """

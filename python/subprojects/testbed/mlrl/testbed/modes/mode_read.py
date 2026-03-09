@@ -8,7 +8,7 @@ import logging as log
 from argparse import Namespace
 from dataclasses import replace
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Tuple, override
+from typing import Dict, List, Set, Tuple, override
 
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments.dataset_type import DatasetType
@@ -141,7 +141,7 @@ class ReadMode(InputMode):
     @staticmethod
     def __aggregate_evaluation(commands_and_their_states: List[Tuple[Command, ExperimentState]],
                                algorithmic_arguments: Set[Argument], dataset_name: str,
-                               dataset_type: DatasetType) -> Optional[Table]:
+                               dataset_type: DatasetType) -> Table | None:
         num_commands = len(commands_and_their_states)
 
         if num_commands > 1:

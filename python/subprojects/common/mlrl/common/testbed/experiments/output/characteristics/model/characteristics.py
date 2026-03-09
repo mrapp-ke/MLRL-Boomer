@@ -6,7 +6,7 @@ Provides classes for representing characteristics of rule models that are part o
 
 from functools import reduce
 from itertools import chain
-from typing import List, Optional, override
+from typing import List, override
 
 from mlrl.common.testbed.experiments.output.characteristics.model.statistics import BodyStatistics, HeadStatistics, \
     RuleModelStatistics, RuleStatistics
@@ -67,7 +67,7 @@ class RuleModelCharacteristics(TabularOutputData):
 
     # pylint: disable=unused-argument
     @override
-    def to_text(self, options: Options, **_) -> Optional[str]:
+    def to_text(self, options: Options, **_) -> str | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
@@ -152,7 +152,7 @@ class RuleModelCharacteristics(TabularOutputData):
 
     # pylint: disable=unused-argument
     @override
-    def to_table(self, options: Options, **_) -> Optional[Table]:
+    def to_table(self, options: Options, **_) -> Table | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """

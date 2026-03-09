@@ -7,7 +7,7 @@ Provides classes for representing the state of experiments.
 from argparse import Namespace
 from dataclasses import dataclass, field
 from enum import StrEnum
-from typing import Any, Dict, Optional, Type
+from typing import Any, Dict, Type
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
@@ -69,7 +69,7 @@ class PredictionState:
         prediction_result:  The result of the prediction process, if available
     """
     prediction_scope: PredictionScope
-    prediction_result: Optional[PredictionResult] = None
+    prediction_result: PredictionResult | None = None
 
 
 @dataclass
@@ -95,16 +95,16 @@ class ExperimentState:
     args: Namespace
     meta_data: MetaData
     problem_domain: ProblemDomain
-    folding_strategy: Optional[FoldingStrategy] = None
+    folding_strategy: FoldingStrategy | None = None
     dataset_type: DatasetType = DatasetType.TRAINING
-    dataset: Optional[Dataset] = None
-    fold: Optional[Fold] = None
+    dataset: Dataset | None = None
+    fold: Fold | None = None
     parameters: ParameterDict = field(default_factory=dict)
-    training_result: Optional[TrainingState] = None
-    prediction_result: Optional[PredictionState] = None
+    training_result: TrainingState | None = None
+    prediction_result: PredictionState | None = None
     extras: Dict[str, Any] = field(default_factory=dict)
 
-    def dataset_as(self, *types: Type[Dataset]) -> Optional[Dataset]:
+    def dataset_as(self, *types: Type[Dataset]) -> Dataset | None:
         """
         Returns the dataset used in the experiment, if it has one of given types. Otherwise, a log message is omitted
         and `None` is returned.
@@ -120,7 +120,7 @@ class ExperimentState:
 
         return None
 
-    def learner_as(self, *types: Type[Any]) -> Optional[Any]:
+    def learner_as(self, *types: Type[Any]) -> Any | None:
         """
         Returns the learner that has been trained in the experiment, if it has one of given types. Otherwise, a log
         message is omitted and `None` is returned.

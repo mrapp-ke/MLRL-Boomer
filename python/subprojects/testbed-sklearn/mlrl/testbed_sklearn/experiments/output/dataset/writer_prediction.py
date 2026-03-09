@@ -6,7 +6,7 @@ Provides classes that allow writing predictions to one or several sinks.
 from dataclasses import replace
 from functools import reduce
 from itertools import chain
-from typing import Any, List, Optional, Tuple, override
+from typing import Any, List, Tuple, override
 
 import numpy as np
 
@@ -34,7 +34,7 @@ class PredictionWriter(ResultWriter):
         """
 
         @override
-        def _create_output_data(self, data: Any) -> Optional[DatasetOutputData]:
+        def _create_output_data(self, data: Any) -> DatasetOutputData | None:
             return PredictionDataset(data)
 
     class DefaultExtractor(DataExtractor):

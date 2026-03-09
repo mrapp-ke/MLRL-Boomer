@@ -2,7 +2,7 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 # pylint: disable=missing-function-docstring
-from typing import Any, Optional, override
+from typing import Any, override
 
 import pytest
 
@@ -100,9 +100,8 @@ class TestBoomerClassifier(ClassificationIntegrationTests, ClassificationRuleLea
              PROBABILITY_CALIBRATION_ISOTONIC, True, SparsePolicy.FORCE_SPARSE),
         ])
     def test_predictor_binary(self, binary_predictor: str, binary_predictor_options: Options,
-                              marginal_probability_calibration: Optional[str],
-                              joint_probability_calibration: Optional[str], label_vectors: Optional[bool],
-                              prediction_format: Optional[str]):
+                              marginal_probability_calibration: str | None, joint_probability_calibration: str | None,
+                              label_vectors: bool | None, prediction_format: str | None):
         test_name = f'predictor-binary-{binary_predictor}' + (f'_{prediction_format}' if prediction_format else '') + (
             f'_{binary_predictor_options}' if binary_predictor_options else '')
         builder = self._create_cmd_builder() \
@@ -157,9 +156,8 @@ class TestBoomerClassifier(ClassificationIntegrationTests, ClassificationRuleLea
              PROBABILITY_CALIBRATION_ISOTONIC, SparsePolicy.FORCE_SPARSE),
         ])
     def test_predictor_binary_incremental(self, binary_predictor: str, binary_predictor_options: Options,
-                                          marginal_probability_calibration: Optional[str],
-                                          joint_probability_calibration: Optional[str],
-                                          prediction_format: Optional[str]):
+                                          marginal_probability_calibration: str | None,
+                                          joint_probability_calibration: str | None, prediction_format: str | None):
         builder = self._create_cmd_builder() \
             .marginal_probability_calibration(marginal_probability_calibration) \
             .print_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
@@ -203,8 +201,8 @@ class TestBoomerClassifier(ClassificationIntegrationTests, ClassificationRuleLea
             (ProbabilityPredictorParameter.PROBABILITY_PREDICTOR_MARGINALIZED, PROBABILITY_CALIBRATION_ISOTONIC,
              PROBABILITY_CALIBRATION_ISOTONIC, True),
         ])
-    def test_predictor_probability(self, probability_predictor: str, marginal_probability_calibration: Optional[str],
-                                   joint_probability_calibration: Optional[str], print_label_vectors: Optional[bool]):
+    def test_predictor_probability(self, probability_predictor: str, marginal_probability_calibration: str | None,
+                                   joint_probability_calibration: str | None, print_label_vectors: bool | None):
         builder = self._create_cmd_builder() \
             .marginal_probability_calibration(marginal_probability_calibration) \
             .print_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
@@ -228,8 +226,8 @@ class TestBoomerClassifier(ClassificationIntegrationTests, ClassificationRuleLea
          PROBABILITY_CALIBRATION_ISOTONIC),
     ])
     def test_predictor_probability_incremental(self, probability_predictor: str,
-                                               marginal_probability_calibration: Optional[str],
-                                               joint_probability_calibration: Optional[str]):
+                                               marginal_probability_calibration: str | None,
+                                               joint_probability_calibration: str | None):
         builder = self._create_cmd_builder() \
             .marginal_probability_calibration(marginal_probability_calibration) \
             .print_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
@@ -272,7 +270,7 @@ class TestBoomerClassifier(ClassificationIntegrationTests, ClassificationRuleLea
         StatisticTypeParameter.STATISTIC_TYPE_FLOAT32,
         StatisticTypeParameter.STATISTIC_TYPE_FLOAT64,
     ])
-    def test_decomposable_head_type(self, head_type: str, label_binning: Optional[str], statistic_type: str):
+    def test_decomposable_head_type(self, head_type: str, label_binning: str | None, statistic_type: str):
         builder = self._create_cmd_builder() \
             .loss(ClassificationLossParameter.LOSS_LOGISTIC_DECOMPOSABLE) \
             .statistic_type(statistic_type) \
@@ -296,7 +294,7 @@ class TestBoomerClassifier(ClassificationIntegrationTests, ClassificationRuleLea
         StatisticTypeParameter.STATISTIC_TYPE_FLOAT32,
         StatisticTypeParameter.STATISTIC_TYPE_FLOAT64,
     ])
-    def test_non_decomposable_head_type(self, head_type: str, label_binning: Optional[str], statistic_type: str):
+    def test_non_decomposable_head_type(self, head_type: str, label_binning: str | None, statistic_type: str):
         builder = self._create_cmd_builder() \
             .loss(ClassificationLossParameter.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
             .statistic_type(statistic_type) \

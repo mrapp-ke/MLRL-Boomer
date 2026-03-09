@@ -6,7 +6,7 @@ Provides classes that allow writing textual representations of probability calib
 import logging as log
 
 from abc import ABC, abstractmethod
-from typing import Dict, List, Optional, Tuple, override
+from typing import Dict, List, Tuple, override
 
 from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibrationModel, \
     NoProbabilityCalibrationModel
@@ -38,7 +38,7 @@ class ProbabilityCalibrationModelWriter(ResultWriter, ABC):
         reader.
         """
 
-        def __create_isotonic_calibration_model(self, table: ColumnWiseTable) -> Optional[IsotonicRegressionModel]:
+        def __create_isotonic_calibration_model(self, table: ColumnWiseTable) -> IsotonicRegressionModel | None:
             bin_lists: Dict[int, IsotonicRegressionModel.BinList] = {}
 
             for column in table.columns:
@@ -104,7 +104,7 @@ class ProbabilityCalibrationModelWriter(ResultWriter, ABC):
             return []
 
         @abstractmethod
-        def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Optional[OutputData]:
+        def _get_calibration_model(self, learner: ClassificationRuleLearner) -> OutputData | None:
             """
             Must be implemented by subclasses in order to retrieve the calibration model from a rule learner.
 
@@ -144,7 +144,7 @@ class MarginalProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWrite
         """
 
         @override
-        def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Optional[OutputData]:
+        def _get_calibration_model(self, learner: ClassificationRuleLearner) -> OutputData | None:
             calibration_model = learner.marginal_probability_calibration_model_
 
             if isinstance(calibration_model, IsotonicProbabilityCalibrationModel):
@@ -204,7 +204,7 @@ class JointProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWriter):
         """
 
         @override
-        def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Optional[OutputData]:
+        def _get_calibration_model(self, learner: ClassificationRuleLearner) -> OutputData | None:
             calibration_model = learner.joint_probability_calibration_model_
 
             if isinstance(calibration_model, IsotonicProbabilityCalibrationModel):

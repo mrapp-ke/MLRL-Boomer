@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides base classes for programs that can be configured via command line arguments.
 """
 from argparse import Namespace
-from typing import Any, Dict, List, Optional, Set, Type, override
+from typing import Any, Dict, List, Set, Type, override
 
 from sklearn.base import BaseEstimator, ClassifierMixin as SkLearnClassifierMixin, \
     RegressorMixin as SkLearnRegressorMixin
@@ -171,7 +171,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
 
         @staticmethod
         def get_estimator(args: Namespace, estimator_type: Type[BaseEstimator],
-                          parameters: Optional[Set[Parameter]]) -> Any:
+                          parameters: Set[Parameter] | None) -> Any:
             """
             Returns the scikit-learn estimator to be used in an experiment.
 
@@ -220,11 +220,10 @@ class RuleLearnerRunnable(SkLearnRunnable):
             """
             return RuleLearnerRunnable.RuleLearnerExtension.get_fit_kwargs(args)
 
-    def __init__(self, classifier_type: Optional[Type[SkLearnClassifierMixin]],
-                 classifier_config_type: Optional[Type[RuleLearnerConfig]],
-                 classifier_parameters: Optional[Set[Parameter]], regressor_type: Optional[Type[SkLearnRegressorMixin]],
-                 regressor_config_type: Optional[Type[RuleLearnerConfig]],
-                 regressor_parameters: Optional[Set[Parameter]]):
+    def __init__(self, classifier_type: Type[SkLearnClassifierMixin] | None,
+                 classifier_config_type: Type[RuleLearnerConfig] | None, classifier_parameters: Set[Parameter] | None,
+                 regressor_type: Type[SkLearnRegressorMixin] | None,
+                 regressor_config_type: Type[RuleLearnerConfig] | None, regressor_parameters: Set[Parameter] | None):
         """
         :param classifier_type:         The type of the rule learner to be used in classification problems or None, if
                                         classification problems are not supported
@@ -315,7 +314,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
                                              dataset_splitter=self.create_dataset_splitter(args, load_dataset))
 
     @override
-    def create_classifier(self, _: ExperimentMode, args: Namespace) -> Optional[SkLearnClassifierMixin]:
+    def create_classifier(self, _: ExperimentMode, args: Namespace) -> SkLearnClassifierMixin | None:
         """
         See :func:`mlrl.testbed.runnables.Runnable.create_classifier`
         """
@@ -328,7 +327,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
         return None
 
     @override
-    def create_regressor(self, _: ExperimentMode, args: Namespace) -> Optional[SkLearnRegressorMixin]:
+    def create_regressor(self, _: ExperimentMode, args: Namespace) -> SkLearnRegressorMixin | None:
         """
         See :func:`mlrl.testbed_sklearn.runnables.SkLearnRunnable.create_regressor`
         """

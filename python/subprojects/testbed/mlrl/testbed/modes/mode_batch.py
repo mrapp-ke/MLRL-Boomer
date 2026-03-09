@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from functools import cached_property, reduce
 from itertools import chain
 from pathlib import Path
-from typing import Any, Callable, Generator, Iterable, List, Optional, Set, override
+from typing import Any, Callable, Generator, Iterable, List, Set, override
 
 from mlrl.testbed.command import ArgumentDict, ArgumentList, Command
 from mlrl.testbed.experiments.fold import FoldingStrategy
@@ -443,7 +443,7 @@ class BatchMode(Mode):
         return argument_list.filter(*BatchMode.CONFIG_FILE.names, *Mode.MODE.names, BatchMode.LIST_COMMANDS.name,
                                     BatchMode.ARGUMENT_RUNNER, *slurm_arguments).to_dict()
 
-    def __init__(self, config_file_factory: Optional[ConfigFile.Factory] = None):
+    def __init__(self, config_file_factory: ConfigFile.Factory | None = None):
         """
         :param config_file_factory: A factory that allows to create the configuration file that configures the batch of
                                     experiments to be run or None, if no such factory is available

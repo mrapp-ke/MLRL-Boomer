@@ -12,7 +12,7 @@ from argparse import Namespace
 from functools import cached_property
 from itertools import chain
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Set, Type, override
+from typing import Any, Dict, Iterable, List, Set, Type, override
 
 import docstring_parser
 import numpy as np
@@ -135,8 +135,8 @@ class SkLearnRunnable(Runnable, ABC):
         def get_problem_domain(mode: ExperimentMode,
                                args: Namespace,
                                runnable: 'SkLearnRunnable',
-                               fit_kwargs: Optional[Dict[str, Any]] = None,
-                               predict_kwargs: Optional[Dict[str, Any]] = None) -> ProblemDomain:
+                               fit_kwargs: Dict[str, Any] | None = None,
+                               predict_kwargs: Dict[str, Any] | None = None) -> ProblemDomain:
             """
             Returns the problem domain that should be tackled by an experiment.
 
@@ -256,7 +256,7 @@ class SkLearnRunnable(Runnable, ABC):
         return SkLearnRunnable.GlobalPredictorFactory(prediction_type)
 
     @abstractmethod
-    def create_classifier(self, mode: ExperimentMode, args: Namespace) -> Optional[SkLearnClassifierMixin]:
+    def create_classifier(self, mode: ExperimentMode, args: Namespace) -> SkLearnClassifierMixin | None:
         """
         Must be implemented by subclasses in order to create a machine learning algorithm that can be applied to
         classification problems.
@@ -267,7 +267,7 @@ class SkLearnRunnable(Runnable, ABC):
         """
 
     @abstractmethod
-    def create_regressor(self, mode: ExperimentMode, args: Namespace) -> Optional[SkLearnRegressorMixin]:
+    def create_regressor(self, mode: ExperimentMode, args: Namespace) -> SkLearnRegressorMixin | None:
         """
         Must be implemented by subclasses in order to create a machine learning algorithm that can be applied to
         regression problems.
@@ -292,8 +292,8 @@ class SklearnEstimator:
                      name: str,
                      parameter_name: str,
                      arguments: List[Argument],
-                     description: Optional[str] = None,
-                     type_hint: Optional[str] = None):
+                     description: str | None = None,
+                     type_hint: str | None = None):
             """
             :param name:            The name of the argument
             :param parameter_name:  The name of the hyperparameter
@@ -310,7 +310,7 @@ class SklearnEstimator:
         def from_type_name(argument_name: str,
                            parameter_name: str,
                            type_name: str,
-                           description: Optional[str] = None) -> 'SklearnEstimator.SklearnArgument':
+                           description: str | None = None) -> 'SklearnEstimator.SklearnArgument':
             """
             Creates and returns an `SklearnArgument` from a given type name.
 
@@ -321,7 +321,7 @@ class SklearnEstimator:
             """
             arguments: List[Argument] = []
             type_hints: List[str] = []
-            default_value: Optional[str] = None
+            default_value: str | None = None
 
             for part in [part.strip() for part in regex.split(r'[{}]', type_name) if part]:
                 parts2 = [part2.strip() for part2 in regex.split(r',|or', part) if part2]
@@ -349,7 +349,7 @@ class SklearnEstimator:
                         else:
                             raise ValueError('Failed to parse type name: ' + part2)
 
-            type_hint: Optional[str] = None
+            type_hint: str | None = None
 
             if description and type_hints:
                 description = description.rstrip() + ('' if description.endswith('.') else '.')
@@ -366,7 +366,7 @@ class SklearnEstimator:
                                                     arguments=arguments)
 
         @override
-        def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
+        def get_value(self, args: Namespace, default: Any | None = None) -> Any | None:
             """
             See :func:`mlrl.util.cli.Argument.get_value`
             """
@@ -586,7 +586,7 @@ class SklearnEstimator:
         """
         return self.__can_be_instantiated(estimator=DummyRegressor() if self.is_regressor else DummyClassifier())
 
-    def instantiate(self, args: Optional[Namespace] = None, **kwargs) -> SkLearnBaseEstimator:
+    def instantiate(self, args: Namespace | None = None, **kwargs) -> SkLearnBaseEstimator:
         """
         Creates and returns a new instance of the estimator.
 
@@ -711,7 +711,7 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
     @staticmethod
     def __get_estimator_by_name(estimators: Iterable[SklearnEstimator],
                                 estimator_name: str,
-                                problem_type: Optional[str] = None) -> Optional[SklearnEstimator]:
+                                problem_type: str | None = None) -> SklearnEstimator | None:
         estimators_by_name = {estimator.estimator_name: estimator for estimator in estimators}
         estimator = estimators_by_name.get(estimator_name)
 
@@ -723,14 +723,14 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
     def __get_estimator(self,
                         mode: ExperimentMode,
                         args: Namespace,
-                        problem_type: Optional[str] = None) -> Optional[SklearnEstimator]:
+                        problem_type: str | None = None) -> SklearnEstimator | None:
         regressors = self._regressors
         classifiers = self._classifiers
         estimator_name = SkLearnEstimatorRunnable.EstimatorExtension.create_estimator_argument(
             supported_classifiers=self._classifiers, supported_regressors=self._regressors, mode=mode).get_value(args)
         return self.__get_estimator_by_name(chain(regressors, classifiers), estimator_name, problem_type=problem_type)
 
-    def __get_meta_estimator(self, args: Namespace, problem_type: Optional[str] = None) -> Optional[SklearnEstimator]:
+    def __get_meta_estimator(self, args: Namespace, problem_type: str | None = None) -> SklearnEstimator | None:
         meta_regressors = self._meta_regressors
         meta_classifiers = self._meta_classifiers
         meta_estimator_name = SkLearnEstimatorRunnable.EstimatorExtension.create_meta_estimator_argument(
@@ -748,7 +748,7 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
             self,
             mode: ExperimentMode,
             args: Namespace,
-            problem_type: Optional[str] = None) -> Optional[SkLearnClassifierMixin] | Optional[SkLearnRegressorMixin]:
+            problem_type: str | None = None) -> SkLearnClassifierMixin | SkLearnRegressorMixin | None:
         estimator = self.__get_estimator(mode, args, problem_type=problem_type)
         estimator = estimator.instantiate(args) if estimator else None
 
@@ -784,14 +784,14 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
         return meta_estimator_arguments | estimator_arguments
 
     @override
-    def create_classifier(self, mode: ExperimentMode, args: Namespace) -> Optional[SkLearnClassifierMixin]:
+    def create_classifier(self, mode: ExperimentMode, args: Namespace) -> SkLearnClassifierMixin | None:
         """
         See :func:`mlrl.testbed.runnables.Runnable.create_classifier`
         """
         return self.__instantiate_estimator(mode, args, problem_type=ClassificationProblem.NAME)
 
     @override
-    def create_regressor(self, mode: ExperimentMode, args: Namespace) -> Optional[SkLearnRegressorMixin]:
+    def create_regressor(self, mode: ExperimentMode, args: Namespace) -> SkLearnRegressorMixin | None:
         """
         See :func:`mlrl.testbed_sklearn.runnables.SkLearnRunnable.create_regressor`
         """

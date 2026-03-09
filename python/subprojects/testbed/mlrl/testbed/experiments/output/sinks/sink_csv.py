@@ -6,7 +6,7 @@ Provides classes that allow writing output data to CSV files.
 import csv
 
 from pathlib import Path
-from typing import Optional, override
+from typing import override
 
 from mlrl.testbed.experiments.input.sources import CsvFileSource, Source
 from mlrl.testbed.experiments.output.data import OutputValue
@@ -69,5 +69,5 @@ class CsvFileSink(TabularFileSink):
                 csv_writer.writerow(row)
 
     @override
-    def create_source(self, input_directory: Path) -> Optional[Source]:
+    def create_source(self, input_directory: Path) -> Source | None:
         return CsvFileSource(input_directory)

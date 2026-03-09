@@ -7,7 +7,7 @@ import logging as log
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Optional, override
+from typing import override
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.file_path import FilePath
@@ -40,7 +40,7 @@ class Sink(ABC):
         """
 
     @abstractmethod
-    def create_source(self, input_directory: Path) -> Optional[Source]:
+    def create_source(self, input_directory: Path) -> Source | None:
         """
         Must be implemented by subclasses in order to create a `Source` that can read the data written to this sink.
 

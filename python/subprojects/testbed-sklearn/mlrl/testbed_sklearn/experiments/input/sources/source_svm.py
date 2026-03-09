@@ -5,7 +5,7 @@ Provides classes that allow reading datasets from SVM (light) files.
 """
 from functools import cached_property
 from pathlib import Path
-from typing import List, Optional, override
+from typing import List, override
 
 import numpy as np
 
@@ -157,8 +157,7 @@ class SvmFileSource(DatasetFileSource):
         super().__init__(directory=directory, suffix=self.SUFFIX_SVM)
 
     @override
-    def _read_dataset_from_file(self, state: ExperimentState, file_path: Path,
-                                _: DatasetInputData) -> Optional[Dataset]:
+    def _read_dataset_from_file(self, state: ExperimentState, file_path: Path, _: DatasetInputData) -> Dataset | None:
         problem_domain = state.problem_domain
         svm_file = SvmFileSource.SvmFile.from_file(file_path, problem_domain=problem_domain)
         svm_dataset = SvmFileSource.SvmDataset.from_file(svm_file)

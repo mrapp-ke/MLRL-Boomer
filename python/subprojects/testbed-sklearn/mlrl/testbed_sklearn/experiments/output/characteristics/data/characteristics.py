@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing characteristics of an output matrix that are part of output data.
 """
 from numbers import Number
-from typing import Any, Callable, List, Optional, Tuple, override
+from typing import Any, Callable, List, Tuple, override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties
@@ -60,7 +60,7 @@ class OutputCharacteristics(TabularOutputData):
         self.characteristics = [characteristic for characteristic, _ in values]
 
     @override
-    def to_text(self, options: Options, **kwargs) -> Optional[str]:
+    def to_text(self, options: Options, **kwargs) -> str | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
@@ -69,7 +69,7 @@ class OutputCharacteristics(TabularOutputData):
         return table.format() if table else None
 
     @override
-    def to_table(self, options: Options, **kwargs) -> Optional[Table]:
+    def to_table(self, options: Options, **kwargs) -> Table | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """

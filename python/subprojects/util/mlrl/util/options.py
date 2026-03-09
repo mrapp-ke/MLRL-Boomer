@@ -5,7 +5,7 @@ Provides a data structure that allows to store and parse options that are provid
 """
 from enum import Enum, StrEnum
 from functools import reduce
-from typing import Any, Dict, Optional, Set, Tuple, Type, override
+from typing import Any, Dict, Set, Tuple, Type, override
 
 from mlrl.util.format import format_enum_values, format_set
 from mlrl.util.validation import ValidationError
@@ -44,7 +44,7 @@ class Options:
 
     ERROR_MESSAGE_INVALID_OPTION = 'Expected comma-separated list of key-value pairs'
 
-    def __init__(self, dictionary: Optional[Dict[str, Any]] = None):
+    def __init__(self, dictionary: Dict[str, Any] | None = None):
         self.dictionary = dictionary if dictionary is not None else {}
 
     @staticmethod
@@ -104,7 +104,7 @@ class Options:
 
         return Options(dictionary)
 
-    def get_string(self, key: str, default_value: Optional[str] = None) -> Optional[str]:
+    def get_string(self, key: str, default_value: str | None = None) -> str | None:
         """
         Returns a string that corresponds to a specific key.
 
@@ -182,7 +182,7 @@ class Options:
         return bool(self.dictionary)
 
 
-def parse_enum(name: str, value: Optional[str], enum: Type[Enum], default: Optional[Enum] = None) -> Optional[Enum]:
+def parse_enum(name: str, value: str | None, enum: Type[Enum], default: Enum | None = None) -> Enum | None:
     """
     Parses and returns an enum value. If the given value is invalid, a `ValueError` is raised.
 
