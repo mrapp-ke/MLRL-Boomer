@@ -47,7 +47,9 @@ The following arguments can be used to control the detail and appearance of log 
   - `warning`
   - `error`
 
-- `--log-width` The width of the log output.
+- `--log-width` The width of the log output in characters.
+
+- `--log-plain` If this flag is present, the console output is restricted to plain text, without any colors or structural elements.
 
 (argument-mode)=
 
