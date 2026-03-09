@@ -13,7 +13,7 @@ from collections.abc import Iterable
 from functools import cached_property
 from itertools import chain
 from pathlib import Path
-from typing import Any, Type, override
+from typing import Any, override
 
 import docstring_parser
 import numpy as np
@@ -453,7 +453,7 @@ class SklearnEstimator:
         except Exception:
             return False
 
-    def __init__(self, estimator_name: str, estimator_type: Type[SkLearnBaseEstimator]):
+    def __init__(self, estimator_name: str, estimator_type: type[SkLearnBaseEstimator]):
         """
         :param estimator_name:  The name of the estimator
         :param estimator_type:  The type of the estimator

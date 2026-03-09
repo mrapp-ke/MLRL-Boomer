@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from typing import Type, override
+from typing import override
 
 from sklearn.base import BaseEstimator as SkLearnBaseEstimator, RegressorMixin as SkLearnRegressorMixin
 
@@ -15,16 +15,16 @@ class SkLearnRegressorCmdBuilder(RegressionCmdBuilder):
     A builder that allows to configure a command for running a scikit-learn regressor.
     """
 
-    def __init__(self, estimator_type: Type[SkLearnRegressorMixin], dataset: str = Dataset.ATP7D):
+    def __init__(self, estimator_type: type[SkLearnRegressorMixin], dataset: str = Dataset.ATP7D):
         super().__init__(expected_output_dir=CmdBuilder.EXPECTED_OUTPUT_DIR / 'sklearn' / 'regression',
                          input_dir=CmdBuilder.INPUT_DIR / 'sklearn',
                          batch_config=CmdBuilder.CONFIG_DIR / 'sklearn' / 'regression' / 'batch_config.yml',
                          runnable_module_name='mlrl.testbed_sklearn',
                          dataset=dataset)
         self._estimator_type = estimator_type
-        self._meta_estimator_type: Type[SkLearnBaseEstimator] | None = None
+        self._meta_estimator_type: type[SkLearnBaseEstimator] | None = None
 
-    def meta_estimator(self, meta_estimator_type: Type[SkLearnBaseEstimator] | None):
+    def meta_estimator(self, meta_estimator_type: type[SkLearnBaseEstimator] | None):
         """
         Sets a meta-regressor to be used.
 
@@ -35,7 +35,7 @@ class SkLearnRegressorCmdBuilder(RegressionCmdBuilder):
         self._meta_estimator_type = meta_estimator_type
         return self
 
-    def estimator(self, estimator_type: Type[SkLearnRegressorMixin]):
+    def estimator(self, estimator_type: type[SkLearnRegressorMixin]):
         """
         Sets a regressor to be used.
 

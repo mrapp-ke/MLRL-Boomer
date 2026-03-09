@@ -9,7 +9,7 @@ from argparse import Action, ArgumentError, ArgumentParser, Namespace, _Argument
 from enum import Enum
 from functools import cached_property
 from pathlib import Path
-from typing import Any, Callable, Type, override
+from typing import Any, Callable, override
 
 from mlrl.util.format import format_enum_values, format_set, format_value
 from mlrl.util.options import BooleanOption, Options, parse_enum, parse_param, parse_param_and_options
@@ -427,7 +427,7 @@ class EnumArgument(SetArgument):
 
     def __init__(self,
                  *names: str,
-                 enum: Type[Enum],
+                 enum: type[Enum],
                  description: str | None = None,
                  default: Enum | None = None,
                  required: bool = False):

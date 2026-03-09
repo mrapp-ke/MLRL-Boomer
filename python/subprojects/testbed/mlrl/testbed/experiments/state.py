@@ -7,7 +7,7 @@ Provides classes for representing the state of experiments.
 from argparse import Namespace
 from dataclasses import dataclass, field
 from enum import StrEnum
-from typing import Any, Type
+from typing import Any
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
@@ -104,7 +104,7 @@ class ExperimentState:
     prediction_result: PredictionState | None = None
     extras: dict[str, Any] = field(default_factory=dict)
 
-    def dataset_as(self, *types: Type[Dataset]) -> Dataset | None:
+    def dataset_as(self, *types: type[Dataset]) -> Dataset | None:
         """
         Returns the dataset used in the experiment, if it has one of given types. Otherwise, a log message is omitted
         and `None` is returned.
@@ -120,7 +120,7 @@ class ExperimentState:
 
         return None
 
-    def learner_as(self, *types: Type[Any]) -> Any | None:
+    def learner_as(self, *types: type[Any]) -> Any | None:
         """
         Returns the learner that has been trained in the experiment, if it has one of given types. Otherwise, a log
         message is omitted and `None` is returned.

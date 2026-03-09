@@ -7,7 +7,7 @@ from collections.abc import Iterable
 from enum import Enum
 from functools import reduce
 from pathlib import Path
-from typing import Any, Type
+from typing import Any
 
 
 def format_iterable(objects: Iterable[Any], separator: str = ', ', delimiter: str = '') -> str:
@@ -41,7 +41,7 @@ def format_list(objects: list[Any],
                                     if aggr else '') + delimiter + str(entry[1]) + delimiter, enumerate(objects), '')
 
 
-def format_enum_values(enum: Type[Enum]) -> str:
+def format_enum_values(enum: type[Enum]) -> str:
     """
     Creates and returns a textual representation of an enum's values.
 

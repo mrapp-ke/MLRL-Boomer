@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides base classes for programs that can be configured via command line arguments.
 """
 from argparse import Namespace
-from typing import Any, Type, override
+from typing import Any, override
 
 from sklearn.base import BaseEstimator, ClassifierMixin as SkLearnClassifierMixin, \
     RegressorMixin as SkLearnRegressorMixin
@@ -170,7 +170,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
             return {ExperimentMode.SINGLE, ExperimentMode.BATCH}
 
         @staticmethod
-        def get_estimator(args: Namespace, estimator_type: Type[BaseEstimator],
+        def get_estimator(args: Namespace, estimator_type: type[BaseEstimator],
                           parameters: set[Parameter] | None) -> Any:
             """
             Returns the scikit-learn estimator to be used in an experiment.
@@ -220,10 +220,10 @@ class RuleLearnerRunnable(SkLearnRunnable):
             """
             return RuleLearnerRunnable.RuleLearnerExtension.get_fit_kwargs(args)
 
-    def __init__(self, classifier_type: Type[SkLearnClassifierMixin] | None,
-                 classifier_config_type: Type[RuleLearnerConfig] | None, classifier_parameters: set[Parameter] | None,
-                 regressor_type: Type[SkLearnRegressorMixin] | None,
-                 regressor_config_type: Type[RuleLearnerConfig] | None, regressor_parameters: set[Parameter] | None):
+    def __init__(self, classifier_type: type[SkLearnClassifierMixin] | None,
+                 classifier_config_type: type[RuleLearnerConfig] | None, classifier_parameters: set[Parameter] | None,
+                 regressor_type: type[SkLearnRegressorMixin] | None,
+                 regressor_config_type: type[RuleLearnerConfig] | None, regressor_parameters: set[Parameter] | None):
         """
         :param classifier_type:         The type of the rule learner to be used in classification problems or None, if
                                         classification problems are not supported

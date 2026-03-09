@@ -5,7 +5,7 @@ Provides a data structure that allows to store and parse options that are provid
 """
 from enum import Enum, StrEnum
 from functools import reduce
-from typing import Any, Type, override
+from typing import Any, override
 
 from mlrl.util.format import format_enum_values, format_set
 from mlrl.util.validation import ValidationError
@@ -182,7 +182,7 @@ class Options:
         return bool(self.dictionary)
 
 
-def parse_enum(name: str, value: str | None, enum: Type[Enum], default: Enum | None = None) -> Enum | None:
+def parse_enum(name: str, value: str | None, enum: type[Enum], default: Enum | None = None) -> Enum | None:
     """
     Parses and returns an enum value. If the given value is invalid, a `ValueError` is raised.
 

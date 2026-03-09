@@ -8,7 +8,7 @@ import json
 from abc import ABC, abstractmethod
 from collections.abc import Iterable
 from dataclasses import replace
-from typing import Any, Type, override
+from typing import Any, override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties, TabularProperties
@@ -33,9 +33,9 @@ class OutputData(ABC):
         """
         self.properties = properties
         self.context = context
-        self.custom_context: dict[Type[Any], Context] = {}
+        self.custom_context: dict[type[Any], Context] = {}
 
-    def get_context(self, lookup_type: Type[Any]) -> Context:
+    def get_context(self, lookup_type: type[Any]) -> Context:
         """
         Returns a `Context` that can be used for finding a suitable sink for handling this data.
 
