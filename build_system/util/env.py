@@ -3,14 +3,15 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for accessing environment variables.
 """
-from typing import Any, List, MutableMapping, Optional
+from collections.abc import MutableMapping
+from typing import Any
 
 from util.log import Log
 
 Env = MutableMapping[Any, Any]
 
 
-def get_env(env: Env, name: str, default: Optional[str] = None) -> Optional[str]:
+def get_env(env: Env, name: str, default: str | None = None) -> str | None:
     """
     Returns the value of the environment variable with a given name.
 
@@ -46,7 +47,7 @@ def get_env_bool(env: Env, name: str, default: bool = False) -> bool:
     return default
 
 
-def get_env_array(env: Env, name: str, default: Optional[List[str]] = None) -> List[str]:
+def get_env_array(env: Env, name: str, default: list[str] | None = None) -> list[str]:
     """
     Returns the value of the environment variable with a given name as a comma-separated list.
 

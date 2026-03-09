@@ -7,7 +7,7 @@ import tomllib
 
 from functools import cached_property
 from pathlib import Path
-from typing import Any, Dict, override
+from typing import Any, override
 
 from core.build_unit import BuildUnit
 from util.io import TextFile, read_file
@@ -27,7 +27,7 @@ class TomlFile(TextFile):
         self.build_unit = build_unit
 
     @cached_property
-    def toml_dict(self) -> Dict[Any, Any]:
+    def toml_dict(self) -> dict[Any, Any]:
         """
         A dictionary that stores the content of the TOML file.
         """

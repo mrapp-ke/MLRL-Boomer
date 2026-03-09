@@ -5,7 +5,7 @@ Implements modules that provide access to Python requirements files.
 """
 from enum import StrEnum
 from pathlib import Path
-from typing import List, Optional, override
+from typing import override
 
 from core.build_unit import BuildUnit
 from core.modules import Module, ModuleRegistry
@@ -53,7 +53,7 @@ class PythonDependencyModule(SubprojectModule):
 
     def find_requirements_files(self,
                                 build_unit: BuildUnit,
-                                dependency_type: Optional[DependencyType] = None) -> List[RequirementsFile]:
+                                dependency_type: DependencyType | None = None) -> list[RequirementsFile]:
         """
         Finds and returns all requirements files that belong to the module and optionally match a given
         `DependencyType`.
@@ -62,7 +62,7 @@ class PythonDependencyModule(SubprojectModule):
         :param dependency_type: An optional `DependencyType` to be matched
         :return:                A list that contains the requirements files that have been found
         """
-        requirements_files: List[RequirementsFile] = []
+        requirements_files: list[RequirementsFile] = []
 
         if not dependency_type or self.dependency_type == dependency_type:
             requirements_files.extend([

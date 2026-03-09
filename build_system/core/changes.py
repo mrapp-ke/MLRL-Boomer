@@ -7,7 +7,7 @@ import json
 
 from functools import cached_property
 from pathlib import Path
-from typing import Any, Dict, List, Set, override
+from typing import Any, override
 
 from core.modules import Module
 from util.io import TextFile, create_directories
@@ -19,7 +19,7 @@ class JsonFile(TextFile):
     """
 
     @cached_property
-    def json(self) -> Dict[Any, Any]:
+    def json(self) -> dict[Any, Any]:
         """
         The content of the JSON file as a dictionary.
         """
@@ -30,7 +30,7 @@ class JsonFile(TextFile):
 
         return {}
 
-    def write_json(self, dictionary: Dict[Any, Any]):
+    def write_json(self, dictionary: dict[Any, Any]):
         """
         Writes a given dictionary to the JSON file.
 
@@ -69,7 +69,7 @@ class ChangeDetection:
             super().__init__(file, accept_missing=True)
             create_directories(file.parent)
 
-        def update(self, module_name: str, files: Set[Path]):
+        def update(self, module_name: str, files: set[Path]):
             """
             Updates the checksums of given files.
 
@@ -127,7 +127,7 @@ class ChangeDetection:
         """
         self.cache_file.update(str(module), set(files))
 
-    def get_changed_files(self, module: Module, *files: Path) -> List[Path]:
+    def get_changed_files(self, module: Module, *files: Path) -> list[Path]:
         """
         Filters given files and returns only those that have changed.
 

@@ -7,7 +7,7 @@ import platform
 import shutil
 
 from pathlib import Path
-from typing import Any, Optional, Tuple
+from typing import Any
 
 from core.build_unit import BuildUnit
 from util.io import create_directories
@@ -23,7 +23,7 @@ SUFFIX_SRC = '.src'
 SUFFIX_SRC_TAR_XZ = SUFFIX_SRC + '.tar.xz'
 
 
-def __get_download_url_and_file_name_from_release(release: Any, package_name: str) -> Optional[Any]:
+def __get_download_url_and_file_name_from_release(release: Any, package_name: str) -> Any:
     # Ignore release candidates
     if not '-rc' in release.title:
         assets = release.get_assets()
@@ -38,7 +38,7 @@ def __get_download_url_and_file_name_from_release(release: Any, package_name: st
     return None
 
 
-def __get_download_url_and_file_name(github_api: GithubApi, package_name: str) -> Tuple[Optional[str], Optional[str]]:
+def __get_download_url_and_file_name(github_api: GithubApi, package_name: str) -> tuple[str | None, str | None]:
     repository = github_api.open_repository('llvm/llvm-project')
     asset = __get_download_url_and_file_name_from_release(repository.get_latest_release(), package_name)
 
@@ -56,7 +56,7 @@ def __get_download_url_and_file_name(github_api: GithubApi, package_name: str) -
     return asset.browser_download_url, asset.name
 
 
-def __download_package(github_api: GithubApi, package_name: str) -> Optional[str]:
+def __download_package(github_api: GithubApi, package_name: str) -> str | None:
     Log.info('Determining download URL of the latest release of package "%s"...', package_name)
     download_url, file_name = __get_download_url_and_file_name(github_api, package_name=package_name)
 
@@ -69,7 +69,7 @@ def __download_package(github_api: GithubApi, package_name: str) -> Optional[str
     return None
 
 
-def __download_and_extract_package(github_api: GithubApi, package_name: str, extract_to: Path) -> Optional[Path]:
+def __download_and_extract_package(github_api: GithubApi, package_name: str, extract_to: Path) -> Path | None:
     file_name = __download_package(github_api, package_name=package_name)
 
     if file_name:

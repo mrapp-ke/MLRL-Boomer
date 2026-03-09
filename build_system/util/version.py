@@ -5,7 +5,7 @@ Provides utilities for dealing with version numbers.
 """
 from dataclasses import dataclass
 from functools import reduce
-from typing import Any, Tuple, override
+from typing import Any, override
 
 
 @dataclass
@@ -16,7 +16,7 @@ class Version:
     Attributes:
         numbers: The version numbers
     """
-    numbers: Tuple[int, ...]
+    numbers: tuple[int, ...]
 
     @staticmethod
     def parse_version_number(version_number: str) -> int:

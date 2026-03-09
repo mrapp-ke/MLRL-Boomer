@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility classes for accessing the project's GitHub workflows.
 """
 from functools import cached_property
-from typing import Any, Dict, List, Set
+from typing import Any
 
 from core.build_unit import BuildUnit
 
@@ -18,7 +18,7 @@ class Workflow(YamlFile):
     """
 
     @staticmethod
-    def find_tags(yaml_dict: Dict[Any, Any], *tags: str) -> List[Any]:
+    def find_tags(yaml_dict: dict[Any, Any], *tags: str) -> list[Any]:
         """
         Returns a list that contains the values of all tags with a specific name in a given dictionary that stores parts
         of a YAML file.
@@ -39,7 +39,7 @@ class Workflow(YamlFile):
         return values
 
     @staticmethod
-    def find_tag(yaml_dict: Dict[Any, Any], tag: str, default: Any = None) -> Any:
+    def find_tag(yaml_dict: dict[Any, Any], tag: str, default: Any = None) -> Any:
         """
         Returns the value of the first tag with a specific name in a given dictionary that stores parts of a YAML file.
 
@@ -66,7 +66,7 @@ class Workflows:
         self.module = module
 
     @cached_property
-    def workflows(self) -> Set[Workflow]:
+    def workflows(self) -> set[Workflow]:
         """
         All GitHub workflows that are defined in the directory where workflow definition files are located.
         """

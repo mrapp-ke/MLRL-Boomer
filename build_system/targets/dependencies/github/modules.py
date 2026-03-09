@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements modules that provide access to GitHub workflows.
 """
 from pathlib import Path
-from typing import List, override
+from typing import override
 
 from core.modules import Module, ModuleRegistry
 from util.files import FileSearch, FileType
@@ -32,7 +32,7 @@ class GithubWorkflowModule(Module):
         self.root_directory = root_directory
         self.workflow_file_search = workflow_file_search
 
-    def find_workflow_files(self) -> List[Path]:
+    def find_workflow_files(self) -> list[Path]:
         """
         Finds and returns all workflow definition files that belong to the module.
 

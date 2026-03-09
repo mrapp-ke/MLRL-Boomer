@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow to run the external program "curl".
 """
-from typing import Optional, override
+from typing import override
 
 from util.cmd import Command
 from util.run import Program
@@ -16,8 +16,8 @@ class CurlDownload(Program):
 
     def __init__(self,
                  url: str,
-                 authorization_header: Optional[str] = None,
-                 file_name: Optional[str] = None,
+                 authorization_header: str | None = None,
+                 file_name: str | None = None,
                  follow_redirects: bool = True):
         """
         :param url:                     The URL of the file to be downloaded

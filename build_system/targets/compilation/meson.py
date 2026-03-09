@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow to run the external program "meson".
 """
 from abc import ABC
-from typing import List, override
+from typing import override
 
 from core.build_unit import BuildUnit
 from util.log import Log
@@ -14,7 +14,7 @@ from targets.compilation.build_options import BuildOptions
 from targets.compilation.modules import CompilationModule
 
 
-def get_meson_arguments(build_options: BuildOptions) -> List[str]:
+def get_meson_arguments(build_options: BuildOptions) -> list[str]:
     """
     Returns a list of arguments that can be passed to meson for setting build options.
 

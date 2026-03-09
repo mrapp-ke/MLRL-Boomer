@@ -4,7 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow to run automated tests via the external program "pytest".
 """
 from functools import reduce
-from typing import List
 
 from core.build_unit import BuildUnit
 from util.run import PythonModule
@@ -18,7 +17,7 @@ class Pytest(PythonModule):
     """
 
     @staticmethod
-    def __get_marker_arguments(module: PythonTestModule) -> List[str]:
+    def __get_marker_arguments(module: PythonTestModule) -> list[str]:
         test_name = module.test_name
         arguments = ['-k', str(test_name)] if test_name else []
 

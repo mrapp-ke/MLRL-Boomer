@@ -5,7 +5,7 @@ Provides classes that provide access to a Sphinx documentation.
 """
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import List, override
+from typing import override
 
 from core.modules import Module, ModuleRegistry
 from util.files import FileSearch
@@ -62,7 +62,7 @@ class SphinxModule(Module):
         self.output_directory = output_directory
         self.source_file_search = source_file_search
 
-    def find_source_files(self) -> List[Path]:
+    def find_source_files(self) -> list[Path]:
         """
         Finds and returns all source files of the documentation.
 
@@ -70,7 +70,7 @@ class SphinxModule(Module):
         """
         return self.source_file_search.list(self.root_directory)
 
-    def find_spelling_files(self) -> List[Path]:
+    def find_spelling_files(self) -> list[Path]:
         """
         Finds and returns all files that contain information about spelling mistakes found in the documentation.
 

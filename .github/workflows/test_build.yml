@@ -81,6 +81,7 @@ jobs:
               - *cpp_seco
               - 'cpp/subprojects/seco/test/**'
             python_tests_testbed: &python_tests_testbed
+              - '.github/workflows/template_test_python.yml'
               - 'python/subprojects/testbed/pyproject.template.toml'
               - 'python/subprojects/testbed/requirements.txt'
               - 'python/subprojects/testbed/setup.py'
@@ -102,6 +103,7 @@ jobs:
               - 'python/subprojects/util/setup.py'
               - 'python/subprojects/util/mlrl/**'
             python_tests_common: &python_tests_common
+              - '.github/workflows/template_test_python.yml'
               - *cpp_tests_common
               - *python_tests_testbed
               - 'build_system/targets/compilation/cython/*'

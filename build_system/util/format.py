@@ -3,8 +3,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for creating textual representations.
 """
+from collections.abc import Iterable
 from functools import reduce
-from typing import Any, Callable, Iterable
+from typing import Any, Callable
 
 
 def format_iterable(objects: Iterable[Any],
