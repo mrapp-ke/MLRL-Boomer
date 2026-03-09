@@ -9,6 +9,7 @@ on:
       overwrite_output_files:
         required: false
         type: boolean
+        default: true
       subproject:
         required: true
         type: string
@@ -75,6 +76,7 @@ jobs:
           OVERWRITE_OUTPUT_FILES: ${{ inputs.overwrite_output_files }}
           NUM_BLOCKS: 12
           BLOCK_INDEX: ${{ matrix.block }}
+          TEST_NAME: test_help
         run: ./build tests_python --no-dependencies
       - name: Push changes in output files
         if: ${{ inputs.overwrite_output_files == true }}
