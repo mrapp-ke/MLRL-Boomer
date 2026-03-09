@@ -8,7 +8,7 @@ import json
 from abc import ABC, abstractmethod
 from collections.abc import Iterable
 from dataclasses import replace
-from typing import Any, Tuple, override
+from typing import Any, override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties, TabularProperties
@@ -219,7 +219,7 @@ class StructuralOutputData(TextualOutputData, ABC):
         :return:        The dictionary that has been created
         """
 
-    def to_source_code(self, options: Options, **kwargs) -> Tuple[str | None, str | None]:
+    def to_source_code(self, options: Options, **kwargs) -> tuple[str | None, str | None]:
         """
         Creates and returns a tuple containing the source code of the output data, together with the language it uses.
 
