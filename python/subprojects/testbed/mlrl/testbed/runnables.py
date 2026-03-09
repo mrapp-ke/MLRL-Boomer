@@ -7,7 +7,7 @@ Provides base classes for programs that can be configured via command line argum
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from functools import reduce
-from typing import List, Optional, Set, Tuple, override
+from typing import override
 
 from mlrl.testbed.arguments import PredictionDatasetArguments
 from mlrl.testbed.command import Command
@@ -43,7 +43,7 @@ class Runnable(Recipe, ABC):
         """
 
         @override
-        def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
+        def _get_arguments(self, _: ExperimentMode) -> set[Argument]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
             """
@@ -63,13 +63,13 @@ class Runnable(Recipe, ABC):
                 PredictionDatasetArguments.PREDICT_FOR_TEST_DATA.get_value(args))
 
         @override
-        def get_supported_modes(self) -> Set[ExperimentMode]:
+        def get_supported_modes(self) -> set[ExperimentMode]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
             """
             return {ExperimentMode.SINGLE, ExperimentMode.BATCH, ExperimentMode.RUN}
 
-    def get_extensions(self) -> List[Extension]:
+    def get_extensions(self) -> list[Extension]:
         """
         May be overridden by subclasses in order to return the extensions that should be applied to the runnable.
 
@@ -82,7 +82,7 @@ class Runnable(Recipe, ABC):
             SlurmExtension(),
         ]
 
-    def get_supported_extensions(self, mode: ExperimentMode) -> List[Extension]:
+    def get_supported_extensions(self, mode: ExperimentMode) -> list[Extension]:
         """
         Returns the extensions that should be applied to the runnable and support a given mode of operation.
 
@@ -92,7 +92,7 @@ class Runnable(Recipe, ABC):
         """
         return [extension for extension in self.get_extensions() if extension.is_mode_supported(mode)]
 
-    def get_program_info(self) -> Optional[ProgramInfo]:
+    def get_program_info(self) -> ProgramInfo | None:
         """
         May be overridden by subclasses in order to provide information about the program to be printed via the command
         line argument '-v' or '--version'. 
@@ -101,7 +101,7 @@ class Runnable(Recipe, ABC):
         """
         return None
 
-    def run(self, mode: Mode, control_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace):
+    def run(self, mode: Mode, control_arguments: set[Argument], algorithmic_arguments: set[Argument], args: Namespace):
         """
         Executes the runnable.
 
@@ -205,7 +205,7 @@ class Runnable(Recipe, ABC):
 
         return run_mode
 
-    def configure_arguments(self, cli: CommandLineInterface, mode: Mode) -> Tuple[Set[Argument], Set[Argument]]:
+    def configure_arguments(self, cli: CommandLineInterface, mode: Mode) -> tuple[set[Argument], set[Argument]]:
         """
         Configures the command line interface according to the extensions applied to the runnable.
 
@@ -214,7 +214,7 @@ class Runnable(Recipe, ABC):
         :return:        A set that contains the arguments that should be added to the command line interface according
                         to the registered extensions, as well as a set that contains algorithmic arguments
         """
-        control_arguments: Set[Argument] = reduce(
+        control_arguments: set[Argument] = reduce(
             lambda aggr, extension: aggr | extension.get_arguments(mode.to_enum()), self.get_extensions(), set())
         mode.configure_control_arguments(cli, sorted(control_arguments, key=lambda arg: arg.name))
 
@@ -224,7 +224,7 @@ class Runnable(Recipe, ABC):
         return control_arguments, set(algorithmic_arguments)
 
     # pylint: disable=unused-argument
-    def get_algorithmic_arguments(self, mode: ExperimentMode, known_args: Namespace) -> Set[Argument]:
+    def get_algorithmic_arguments(self, mode: ExperimentMode, known_args: Namespace) -> set[Argument]:
         """
         May be overridden by subclasses in order to return the arguments for configuring algorithmic parameters that
         should be added to the command line API.

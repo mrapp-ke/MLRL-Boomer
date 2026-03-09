@@ -6,7 +6,7 @@ Provides classes that allow writing textual representations of probability calib
 import logging as log
 
 from abc import ABC, abstractmethod
-from typing import Dict, List, Optional, Tuple, override
+from typing import override
 
 from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibrationModel, \
     NoProbabilityCalibrationModel
@@ -38,8 +38,8 @@ class ProbabilityCalibrationModelWriter(ResultWriter, ABC):
         reader.
         """
 
-        def __create_isotonic_calibration_model(self, table: ColumnWiseTable) -> Optional[IsotonicRegressionModel]:
-            bin_lists: Dict[int, IsotonicRegressionModel.BinList] = {}
+        def __create_isotonic_calibration_model(self, table: ColumnWiseTable) -> IsotonicRegressionModel | None:
+            bin_lists: dict[int, IsotonicRegressionModel.BinList] = {}
 
             for column in table.columns:
                 header = column.header
@@ -62,11 +62,11 @@ class ProbabilityCalibrationModelWriter(ResultWriter, ABC):
             return self._create_isotonic_calibration_model(bin_lists) if bin_lists else None
 
         @override
-        def extract_data(self, state: ExperimentState, sinks: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
+        def extract_data(self, state: ExperimentState, sinks: list[Sink]) -> list[tuple[ExperimentState, OutputData]]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
-            result: List[Tuple[ExperimentState, OutputData]] = []
+            result: list[tuple[ExperimentState, OutputData]] = []
 
             for extracted_state, tabular_output_data in super().extract_data(state, sinks):
                 table = tabular_output_data.to_table(Options()).to_column_wise_table()
@@ -76,7 +76,7 @@ class ProbabilityCalibrationModelWriter(ResultWriter, ABC):
 
         @abstractmethod
         def _create_isotonic_calibration_model(
-                self, bin_lists: Dict[int, IsotonicRegressionModel.BinList]) -> IsotonicRegressionModel:
+                self, bin_lists: dict[int, IsotonicRegressionModel.BinList]) -> IsotonicRegressionModel:
             """
             Must be implemented by subclasses in order to create objects of type `IsotonicRegressionModel`.
 
@@ -92,7 +92,7 @@ class ProbabilityCalibrationModelWriter(ResultWriter, ABC):
         """
 
         @override
-        def extract_data(self, state: ExperimentState, _: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
+        def extract_data(self, state: ExperimentState, _: list[Sink]) -> list[tuple[ExperimentState, OutputData]]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
@@ -104,7 +104,7 @@ class ProbabilityCalibrationModelWriter(ResultWriter, ABC):
             return []
 
         @abstractmethod
-        def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Optional[OutputData]:
+        def _get_calibration_model(self, learner: ClassificationRuleLearner) -> OutputData | None:
             """
             Must be implemented by subclasses in order to retrieve the calibration model from a rule learner.
 
@@ -131,7 +131,7 @@ class MarginalProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWrite
 
         @override
         def _create_isotonic_calibration_model(
-                self, bin_lists: Dict[int, IsotonicRegressionModel.BinList]) -> IsotonicRegressionModel:
+                self, bin_lists: dict[int, IsotonicRegressionModel.BinList]) -> IsotonicRegressionModel:
             return IsotonicRegressionModel(bin_lists=bin_lists,
                                            properties=MarginalProbabilityCalibrationModelWriter.PROPERTIES,
                                            context=MarginalProbabilityCalibrationModelWriter.CONTEXT,
@@ -144,7 +144,7 @@ class MarginalProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWrite
         """
 
         @override
-        def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Optional[OutputData]:
+        def _get_calibration_model(self, learner: ClassificationRuleLearner) -> OutputData | None:
             calibration_model = learner.marginal_probability_calibration_model_
 
             if isinstance(calibration_model, IsotonicProbabilityCalibrationModel):
@@ -191,7 +191,7 @@ class JointProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWriter):
 
         @override
         def _create_isotonic_calibration_model(
-                self, bin_lists: Dict[int, IsotonicRegressionModel.BinList]) -> IsotonicRegressionModel:
+                self, bin_lists: dict[int, IsotonicRegressionModel.BinList]) -> IsotonicRegressionModel:
             return IsotonicRegressionModel(bin_lists=bin_lists,
                                            properties=JointProbabilityCalibrationModelWriter.PROPERTIES,
                                            context=JointProbabilityCalibrationModelWriter.CONTEXT,
@@ -204,7 +204,7 @@ class JointProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWriter):
         """
 
         @override
-        def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Optional[OutputData]:
+        def _get_calibration_model(self, learner: ClassificationRuleLearner) -> OutputData | None:
             calibration_model = learner.joint_probability_calibration_model_
 
             if isinstance(calibration_model, IsotonicProbabilityCalibrationModel):

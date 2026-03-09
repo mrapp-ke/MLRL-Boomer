@@ -6,9 +6,10 @@ Provides classes for performing experiments using the scikit-learn framework.
 import logging as log
 
 from argparse import Namespace
+from collections.abc import Generator
 from dataclasses import replace
 from functools import reduce
-from typing import Any, Dict, Generator, Optional, override
+from typing import Any, override
 
 from sklearn.base import BaseEstimator, clone
 
@@ -80,7 +81,7 @@ class SkLearnExperiment(Experiment):
             return learner
 
         @staticmethod
-        def __check_for_parameter_changes(expected_parameters: Dict[str, Any], actual_parameters: Dict[str, Any]):
+        def __check_for_parameter_changes(expected_parameters: dict[str, Any], actual_parameters: dict[str, Any]):
             changes = []
 
             for key, expected_value in expected_parameters.items():
@@ -100,7 +101,7 @@ class SkLearnExperiment(Experiment):
                     'The loaded model\'s values for the following parameters differ from the expected configuration: '
                     + '%s', formatted_changes)
 
-        def __init__(self, base_learner: BaseEstimator, fit_kwargs: Optional[Dict[str, Any]] = None):
+        def __init__(self, base_learner: BaseEstimator, fit_kwargs: dict[str, Any] | None = None):
             """
             :param base_learner:    A sklearn estimator to be used in the experiment
             :param fit_kwargs:      Optional keyword arguments to be passed to the learner when fitting a model
@@ -109,7 +110,7 @@ class SkLearnExperiment(Experiment):
             self.fit_kwargs = fit_kwargs
 
         @override
-        def train(self, learner: Optional[Any], parameters: ParameterDict, dataset: Dataset) -> TrainingState:
+        def train(self, learner: Any | None, parameters: ParameterDict, dataset: Dataset) -> TrainingState:
             """
             See :func:`mlrl.testbed.experiments.experiment.Experiment.TrainingProcedure.train`
             """
@@ -127,7 +128,7 @@ class SkLearnExperiment(Experiment):
             return TrainingState(learner=new_learner, training_duration=training_duration)
 
         def _fit(self, estimator: BaseEstimator, dataset: TabularDataset,
-                 fit_kwargs: Optional[Dict[str, Any]]) -> Timer.Duration:
+                 fit_kwargs: dict[str, Any] | None) -> Timer.Duration:
             """
             May be overridden by subclasses in order to fit a scikit-learn estimator to a dataset.
 
@@ -185,8 +186,8 @@ class SkLearnExperiment(Experiment):
                  args: Namespace,
                  initial_state: ExperimentState,
                  dataset_splitter: DatasetSplitter,
-                 training_procedure: Optional[TrainingProcedure] = None,
-                 prediction_procedure: Optional[PredictionProcedure] = None):
+                 training_procedure: TrainingProcedure | None = None,
+                 prediction_procedure: PredictionProcedure | None = None):
         """
         :param args:                    The command line arguments specified by the user
         :param initial_state:           The initial state of the experiment

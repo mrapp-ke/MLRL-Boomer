@@ -4,9 +4,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing evaluation results that are part of output data.
 """
 from abc import ABC
+from collections.abc import Iterable
 from functools import partial
 from itertools import chain
-from typing import Dict, Iterable, List, Optional, Set, Tuple, override
+from typing import override
 
 import numpy as np
 
@@ -62,7 +63,7 @@ class AggregatedEvaluationResult(TabularOutputData):
         ),
     ]
 
-    def __init__(self, evaluation_by_dataset: Dict[str, Table]):
+    def __init__(self, evaluation_by_dataset: dict[str, Table]):
         """
         :param evaluation_by_dataset: A dictionary that stores a table with evaluation results, mapped to the names of
                                       different datasets
@@ -71,7 +72,7 @@ class AggregatedEvaluationResult(TabularOutputData):
         self.evaluation_by_dataset = evaluation_by_dataset
 
     @override
-    def to_text(self, options: Options, **kwargs) -> Optional[str]:
+    def to_text(self, options: Options, **kwargs) -> str | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
@@ -82,10 +83,10 @@ class AggregatedEvaluationResult(TabularOutputData):
         if table:
             column_wise_table = table.to_column_wise_table()
             dataset_column_index = 0
-            parameter_column_indices: List[int] = []
-            measures: List[Tuple[int, str]] = []
-            std_dev_column_indices: Dict[str, int] = {}
-            aggregation_measure_column_indices: Dict[str, Dict[AggregationMeasure, int]] = {}
+            parameter_column_indices: list[int] = []
+            measures: list[tuple[int, str]] = []
+            std_dev_column_indices: dict[str, int] = {}
+            aggregation_measure_column_indices: dict[str, dict[AggregationMeasure, int]] = {}
 
             for column_index, column in enumerate(column_wise_table.columns):
                 header = str(column.header)
@@ -130,7 +131,7 @@ class AggregatedEvaluationResult(TabularOutputData):
 
                 row_wise_table = sliced_table.to_row_wise_table()
                 dataset_column = column_wise_table[dataset_column_index]
-                parameter_columns: List[Column] = [
+                parameter_columns: list[Column] = [
                     column_wise_table[column_index] for column_index in parameter_column_indices
                 ]
                 average_rows = self.__get_average_rows(table=column_wise_table,
@@ -154,8 +155,8 @@ class AggregatedEvaluationResult(TabularOutputData):
 
     # pylint: disable=too-many-nested-blocks
     @staticmethod
-    def __get_average_rows(table: ColumnWiseTable, aggregation_measure_indices: Dict[AggregationMeasure, int],
-                           parameter_columns: List[Column], num_columns: int, decimals: int) -> List[List[Cell]]:
+    def __get_average_rows(table: ColumnWiseTable, aggregation_measure_indices: dict[AggregationMeasure, int],
+                           parameter_columns: list[Column], num_columns: int, decimals: int) -> list[list[Cell]]:
         result = []
 
         for parameter_setting, row_indices in AggregatedEvaluationResult.__get_unique_parameter_settings(
@@ -164,7 +165,7 @@ class AggregatedEvaluationResult(TabularOutputData):
                                              (num_columns - len(parameter_setting) - len(aggregation_measure_indices)))
 
             for aggregation_measure, column_index, in aggregation_measure_indices.items():
-                values: List[float] = []
+                values: list[float] = []
 
                 if aggregation_measure.can_be_averaged:
                     for row_index in row_indices:
@@ -183,9 +184,9 @@ class AggregatedEvaluationResult(TabularOutputData):
         return result
 
     @staticmethod
-    def __get_unique_parameter_settings(parameter_columns: List[Column]) -> Dict[Tuple[Cell, ...], List[int]]:
+    def __get_unique_parameter_settings(parameter_columns: list[Column]) -> dict[tuple[Cell, ...], list[int]]:
         num_rows = parameter_columns[0].num_rows if parameter_columns else 0
-        unique_parameters: Dict[Tuple[Cell, ...], List[int]] = {}
+        unique_parameters: dict[tuple[Cell, ...], list[int]] = {}
 
         for row_index in range(num_rows):
             parameters = tuple((parameter_column[row_index] for parameter_column in parameter_columns))
@@ -201,9 +202,9 @@ class AggregatedEvaluationResult(TabularOutputData):
             std_dev_column[row_index] = '±' + str(std_dev_column[row_index])
 
     @staticmethod
-    def __add_separator_rows(dataset_column: Column, table: RowWiseTable, averages: bool = False) -> Set[str]:
-        previous_dataset: Optional[str] = None
-        separators: Set[str] = set()
+    def __add_separator_rows(dataset_column: Column, table: RowWiseTable, averages: bool = False) -> set[str]:
+        previous_dataset: str | None = None
+        separators: set[str] = set()
 
         for row_index in range(dataset_column.num_rows - 1, -1, -1):
             dataset = '"' + str(dataset_column[row_index]) + '"'
@@ -225,7 +226,7 @@ class AggregatedEvaluationResult(TabularOutputData):
         return separators
 
     @override
-    def to_table(self, options: Options, **kwargs) -> Optional[Table]:
+    def to_table(self, options: Options, **kwargs) -> Table | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """
@@ -233,8 +234,8 @@ class AggregatedEvaluationResult(TabularOutputData):
 
         if evaluation_by_dataset:
             dataset_names = sorted(evaluation_by_dataset.keys())
-            tables: List[Table] = []
-            dataset_column: List[str] = []
+            tables: list[Table] = []
+            dataset_column: list[str] = []
 
             for dataset_name in dataset_names:
                 table = evaluation_by_dataset[dataset_name]
@@ -249,8 +250,8 @@ class AggregatedEvaluationResult(TabularOutputData):
             for column_index in range(aggregated_table.num_columns - 1, -1, -1):
                 column = aggregated_table[column_index]
                 header = str(column.header)
-                current_dataset: Optional[str] = None
-                values_by_dataset: List[List[float]] = []
+                current_dataset: str | None = None
+                values_by_dataset: list[list[float]] = []
 
                 for row_index in range(column.num_rows):
                     dataset = dataset_column[row_index] if row_index < len(dataset_column) else None
@@ -279,7 +280,7 @@ class AggregatedEvaluationResult(TabularOutputData):
                         if isinstance(aggregation_measure, AggregationMeasure):
 
                             def aggregation_function(aggregation_measure: AggregationMeasure, smaller_is_better: bool,
-                                                     values_list: List[float]) -> Iterable[float]:
+                                                     values_list: list[float]) -> Iterable[float]:
                                 return aggregation_measure.aggregate(values_list, smaller_is_better=smaller_is_better)
 
                             aggregated_column = chain.from_iterable(

@@ -6,7 +6,7 @@ Provides classes that allow writing output data to the log.
 import logging as log
 
 from pathlib import Path
-from typing import Callable, Optional, override
+from typing import Callable, override
 
 from mlrl.testbed.experiments.input.sources import Source
 from mlrl.testbed.experiments.output.data import OutputData, TextualOutputData
@@ -23,7 +23,7 @@ class LogSink(Sink):
 
     SourceFactory = Callable[[Path], Source]
 
-    def __init__(self, options: Options = Options(), source_factory: Optional[SourceFactory] = None):
+    def __init__(self, options: Options = Options(), source_factory: SourceFactory | None = None):
         """
         :param options:         Options to be taken into account
         :param source_factory:  A factory that allows to create a `Source` that can read the data written to this sink
@@ -46,6 +46,6 @@ class LogSink(Sink):
                 log.info('%s:\n\n%s\n', title.format(state), text)
 
     @override
-    def create_source(self, input_directory: Path) -> Optional[Source]:
+    def create_source(self, input_directory: Path) -> Source | None:
         source_factory = self._source_factory
         return source_factory(input_directory) if source_factory else None

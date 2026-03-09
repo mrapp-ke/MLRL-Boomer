@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Integrates the Separate-and-Conquer (SeCo) algorithm with the command line utility 'mlrl-testbed', which may be
 installed as an optional dependency.
 """
-from typing import Optional, override
+from typing import override
 
 from mlrl.common.testbed.program_info import RuleLearnerProgramInfo
 from mlrl.common.testbed.runnables import RuleLearnerRunnable
@@ -31,7 +31,7 @@ class SeCoRunnable(RuleLearnerRunnable):
                          regressor_parameters=None)
 
     @override
-    def get_program_info(self) -> Optional[ProgramInfo]:
+    def get_program_info(self) -> ProgramInfo | None:
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_program_info`
         """

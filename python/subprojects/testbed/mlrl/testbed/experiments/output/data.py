@@ -6,8 +6,9 @@ Provides classes for representing output data.
 import json
 
 from abc import ABC, abstractmethod
+from collections.abc import Iterable
 from dataclasses import replace
-from typing import Any, Dict, Iterable, List, Optional, Type, override
+from typing import Any, override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties, TabularProperties
@@ -32,9 +33,9 @@ class OutputData(ABC):
         """
         self.properties = properties
         self.context = context
-        self.custom_context: Dict[Type[Any], Context] = {}
+        self.custom_context: dict[type[Any], Context] = {}
 
-    def get_context(self, lookup_type: Type[Any]) -> Context:
+    def get_context(self, lookup_type: type[Any]) -> Context:
         """
         Returns a `Context` that can be used for finding a suitable sink for handling this data.
 
@@ -125,13 +126,13 @@ class TextualOutputData(OutputData, ABC):
             """
 
             @override
-            def to_text(self, options: Options, **kwargs) -> Optional[str]:
+            def to_text(self, options: Options, **kwargs) -> str | None:
                 return text
 
         return TextOutputData(properties=properties, context=context)
 
     @abstractmethod
-    def to_text(self, options: Options, **kwargs) -> Optional[str]:
+    def to_text(self, options: Options, **kwargs) -> str | None:
         """
         Creates and returns a textual representation of the object.
 
@@ -171,17 +172,17 @@ class TabularOutputData(TextualOutputData, ABC):
             """
 
             @override
-            def to_text(self, options: Options, **kwargs) -> Optional[str]:
+            def to_text(self, options: Options, **kwargs) -> str | None:
                 return table.format()
 
             @override
-            def to_table(self, options: Options, **kwargs) -> Optional[Table]:
+            def to_table(self, options: Options, **kwargs) -> Table | None:
                 return table
 
         return TableOutputData(properties=properties, context=context)
 
     @abstractmethod
-    def to_table(self, options: Options, **kwargs) -> Optional[Table]:
+    def to_table(self, options: Options, **kwargs) -> Table | None:
         """
         Creates and returns a tabular representation of the object.
 
@@ -197,7 +198,7 @@ class StructuralOutputData(TextualOutputData, ABC):
     """
 
     @abstractmethod
-    def to_dict(self, options: Options, **kwargs) -> Optional[Dict[Any, Any]]:
+    def to_dict(self, options: Options, **kwargs) -> dict[Any, Any] | None:
         """
         Creates and returns a dictionary from the object.
 
@@ -206,7 +207,7 @@ class StructuralOutputData(TextualOutputData, ABC):
         """
 
     @override
-    def to_text(self, options: Options, **kwargs) -> Optional[str]:
+    def to_text(self, options: Options, **kwargs) -> str | None:
         dictionary = self.to_dict(options, **kwargs)
         return None if dictionary is None else json.dumps(dictionary, indent=4)
 
@@ -218,7 +219,7 @@ class DatasetOutputData(TextualOutputData, ABC):
     """
 
     @abstractmethod
-    def to_dataset(self, options: Options, **kwargs) -> Optional[Dataset]:
+    def to_dataset(self, options: Options, **kwargs) -> Dataset | None:
         """
         Creates and returns a dataset from the object.
 
@@ -233,7 +234,7 @@ class ObjectOutputData(OutputData, ABC):
     """
 
     @abstractmethod
-    def to_object(self, options: Options, **kwargs) -> Optional[Any]:
+    def to_object(self, options: Options, **kwargs) -> Any | None:
         """
         Returns an object.
 
@@ -270,7 +271,7 @@ class OutputValue:
                            percentage=self.percentage)
 
     @staticmethod
-    def filter_values(values: Iterable['OutputValue'], options: Options) -> List['OutputValue']:
+    def filter_values(values: Iterable['OutputValue'], options: Options) -> list['OutputValue']:
         """
         Allows to filter given output values based on given options.
 

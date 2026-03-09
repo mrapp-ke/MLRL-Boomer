@@ -5,7 +5,7 @@ Provides utility functions for handling arrays.
 """
 from enum import StrEnum
 from itertools import chain
-from typing import Any, Optional, Set, Union
+from typing import Any, Union
 
 import numpy as np
 
@@ -98,7 +98,7 @@ def is_bsr(array) -> bool:
     return isspmatrix_bsr(array) or (isinstance(array, sparray) and array.format == 'bsr')
 
 
-def is_sparse(array, supported_formats: Optional[Set[SparseFormat]] = None) -> bool:
+def is_sparse(array, supported_formats: set[SparseFormat] | None = None) -> bool:
     """
     Returns whether a given array is a `scipy.sparse.spmatrix` or `scipy.sparse.sparray` or not.
 
@@ -127,7 +127,7 @@ def is_sparse(array, supported_formats: Optional[Set[SparseFormat]] = None) -> b
 
 def is_sparse_and_memory_efficient(array,
                                    sparse_format: SparseFormat,
-                                   dtype: Optional[np.dtype] = None,
+                                   dtype: np.dtype | None = None,
                                    sparse_values: bool = True) -> bool:
     """
     Returns whether a given matrix uses sparse format and is expected to occupy less memory than a dense matrix.
@@ -188,10 +188,7 @@ def ensure_no_complex_data(array) -> Any:
     return array
 
 
-def enforce_dense(array,
-                  order: str,
-                  dtype: Optional[np.dtype] = None,
-                  sparse_value: Union[int, float] = 0) -> np.ndarray:
+def enforce_dense(array, order: str, dtype: np.dtype | None = None, sparse_value: Union[int, float] = 0) -> np.ndarray:
     """
     Converts a given array into a `np.ndarray`, if necessary, and enforces a specific memory layout and data type to be
     used.

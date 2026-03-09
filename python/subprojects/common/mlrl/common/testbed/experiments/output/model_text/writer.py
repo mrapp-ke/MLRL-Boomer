@@ -5,7 +5,7 @@ Provides classes that allow writing textual representations of models to one or 
 """
 import logging as log
 
-from typing import List, Tuple, override
+from typing import override
 
 from mlrl.common.cython.rule_model import RuleModel
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
@@ -31,7 +31,7 @@ class RuleModelAsTextWriter(ResultWriter):
         """
 
         @override
-        def extract_data(self, state: ExperimentState, _: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
+        def extract_data(self, state: ExperimentState, _: list[Sink]) -> list[tuple[ExperimentState, OutputData]]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """

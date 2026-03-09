@@ -3,8 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 # pylint: disable=missing-function-docstring
 
-from typing import Optional
-
 import pytest
 
 from .cmd_runner import CmdRunner
@@ -159,7 +157,7 @@ class RuleLearnerIntegrationTestsMixin(IntegrationTests):
         (NONE, None),
         (RulePruningParameter.RULE_PRUNING_IREP, SAMPLING_WITHOUT_REPLACEMENT),
     ])
-    def test_rule_pruning(self, rule_pruning: str, instance_sampling: Optional[str], dataset: Dataset):
+    def test_rule_pruning(self, rule_pruning: str, instance_sampling: str | None, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .instance_sampling(instance_sampling) \
             .rule_pruning(rule_pruning)

@@ -5,7 +5,6 @@ Provides classes for representing paths to files.
 """
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.state import ExperimentState
@@ -24,7 +23,7 @@ class FilePath:
     """
     directory: Path
     file_name: str
-    suffix: Optional[str]
+    suffix: str | None
     context: Context
 
     def resolve(self, state: ExperimentState) -> Path:

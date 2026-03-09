@@ -9,7 +9,7 @@ from argparse import Action, ArgumentError, ArgumentParser, Namespace, _Argument
 from enum import Enum
 from functools import cached_property
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Type, override
+from typing import Any, Callable, override
 
 from mlrl.util.format import format_enum_values, format_set, format_value
 from mlrl.util.options import BooleanOption, Options, parse_enum, parse_param, parse_param_and_options
@@ -28,8 +28,8 @@ class Argument:
     def __init__(self,
                  *names: str,
                  required: bool = False,
-                 default: Optional[Any] = None,
-                 description: Optional[str] = None,
+                 default: Any | None = None,
+                 description: str | None = None,
                  add_default_value_to_description: bool = True,
                  **kwargs):
         """
@@ -89,7 +89,7 @@ class Argument:
         """
         return self.argument_name_to_key(self.name)
 
-    def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
+    def get_value(self, args: Namespace, default: Any | None = None) -> Any | None:
         """
         Returns the value provided by the user for this argument.
 
@@ -101,7 +101,7 @@ class Argument:
         value = self.default if value is None else value
         return default if value is None else value
 
-    def get_value_and_options(self, args: Namespace, default: Optional[Any] = None) -> Tuple[Optional[Any], Options]:
+    def get_value_and_options(self, args: Namespace, default: Any | None = None) -> tuple[Any | None, Options]:
         """
         Returns the value provided by the user for this argument.
 
@@ -138,7 +138,7 @@ class FlagArgument(Argument):
     An argument of a command line interface, which can be set by the user as a flag.
     """
 
-    def __init__(self, name: str, description: Optional[str] = None):
+    def __init__(self, name: str, description: str | None = None):
         """
         :param name:        The name of the argument
         :param description: An optional description of the argument
@@ -157,9 +157,9 @@ class StringArgument(Argument):
 
     def __init__(self,
                  *names: str,
-                 description: Optional[str] = None,
+                 description: str | None = None,
                  add_default_value_to_description: bool = True,
-                 default: Optional[str] = None,
+                 default: str | None = None,
                  required: bool = False):
         """
         :param names:                               One or several names of the argument
@@ -177,7 +177,7 @@ class StringArgument(Argument):
                          required=required)
 
     @override
-    def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
+    def get_value(self, args: Namespace, default: Any | None = None) -> Any | None:
         value = super().get_value(args, default=default)
         return None if value is None else str(value)
 
@@ -188,7 +188,7 @@ class PathArgument(StringArgument):
     """
 
     @override
-    def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
+    def get_value(self, args: Namespace, default: Any | None = None) -> Any | None:
         value = super().get_value(args, default=default)
         return None if value is None else Path(value)
 
@@ -200,9 +200,9 @@ class IntArgument(Argument):
 
     def __init__(self,
                  *names: str,
-                 description: Optional[str] = None,
+                 description: str | None = None,
                  add_default_value_to_description: bool = True,
-                 default: Optional[int] = None,
+                 default: int | None = None,
                  required: bool = False):
         """
         :param names:                               One or several names of the argument
@@ -220,7 +220,7 @@ class IntArgument(Argument):
                          required=required)
 
     @override
-    def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
+    def get_value(self, args: Namespace, default: Any | None = None) -> Any | None:
         value = super().get_value(args, default=default)
 
         try:
@@ -237,9 +237,9 @@ class FloatArgument(Argument):
 
     def __init__(self,
                  *names: str,
-                 description: Optional[str] = None,
+                 description: str | None = None,
                  add_default_value_to_description: bool = True,
-                 default: Optional[float] = None,
+                 default: float | None = None,
                  required: bool = False):
         """
         :param names:                               One or several names of the argument
@@ -257,7 +257,7 @@ class FloatArgument(Argument):
                          required=required)
 
     @override
-    def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
+    def get_value(self, args: Namespace, default: Any | None = None) -> Any | None:
         value = super().get_value(args, default=default)
 
         try:
@@ -273,9 +273,9 @@ class BoolArgument(Argument):
     """
 
     @staticmethod
-    def __format_description(description: Optional[str],
+    def __format_description(description: str | None,
                              has_options: bool,
-                             default: Optional[bool] = None,
+                             default: bool | None = None,
                              add_default_value_to_description: bool = True) -> str:
         if description:
             if not description.endswith('.'):
@@ -298,12 +298,12 @@ class BoolArgument(Argument):
 
     def __init__(self,
                  *names: str,
-                 description: Optional[str] = None,
+                 description: str | None = None,
                  add_default_value_to_description: bool = True,
-                 default: Optional[bool] = None,
+                 default: bool | None = None,
                  required: bool = False,
-                 true_options: Optional[Set[str]] = None,
-                 false_options: Optional[Set[str]] = None):
+                 true_options: set[str] | None = None,
+                 false_options: set[str] | None = None):
         """
         :param names:                               One or several names of the argument
         :param description:                         An optional description of the argument
@@ -330,7 +330,7 @@ class BoolArgument(Argument):
         self.false_options = false_options if false_options else set()
 
     @override
-    def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
+    def get_value(self, args: Namespace, default: Any | None = None) -> Any | None:
         value = super().get_value(args, default=default)
         true_options = self.true_options
         false_options = self.false_options
@@ -356,10 +356,10 @@ class SetArgument(Argument):
     An argument of a command line interface for which the user can provide one out of a predefined set of string values.
     """
 
-    Values = Set[str] | Dict[str, Set[str]]
+    Values = set[str] | dict[str, set[str]]
 
     @staticmethod
-    def __format_description(description: Optional[str], values: Values) -> str:
+    def __format_description(description: str | None, values: Values) -> str:
         result = description if description else ''
 
         if description:
@@ -378,11 +378,11 @@ class SetArgument(Argument):
     def __init__(self,
                  *names: str,
                  values: Values,
-                 description: Optional[str] = None,
+                 description: str | None = None,
                  add_default_value_to_description: bool = True,
-                 default: Optional[str] = None,
+                 default: str | None = None,
                  required: bool = False,
-                 description_formatter: Callable[[str, Values], Optional[str]] = __format_description):
+                 description_formatter: Callable[[str, Values], str | None] = __format_description):
         """
         :param names:                               One or several names of the argument
         :param values:                              A set that contains the predefined values or a dictionary that
@@ -406,7 +406,7 @@ class SetArgument(Argument):
         self.supported_values = values
 
     @override
-    def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
+    def get_value(self, args: Namespace, default: Any | None = None) -> Any | None:
         value = super().get_value(args, default=default)
 
         if value:
@@ -427,9 +427,9 @@ class EnumArgument(SetArgument):
 
     def __init__(self,
                  *names: str,
-                 enum: Type[Enum],
-                 description: Optional[str] = None,
-                 default: Optional[Enum] = None,
+                 enum: type[Enum],
+                 description: str | None = None,
+                 default: Enum | None = None,
                  required: bool = False):
         """
         :param names:       One or several names of the argument
@@ -448,7 +448,7 @@ class EnumArgument(SetArgument):
         self.enum = enum
 
     @override
-    def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
+    def get_value(self, args: Namespace, default: Any | None = None) -> Any | None:
         value = super().get_value(args, default=default)
         return parse_enum(self.name, value, self.enum) if value else None
 
@@ -458,16 +458,16 @@ class CommandLineInterface:
     Allows to configure a command line interface for running a program.
     """
 
-    def __init__(self, argument_parser: ArgumentParser, version_text: Optional[str] = None):
+    def __init__(self, argument_parser: ArgumentParser, version_text: str | None = None):
         """
         :param argument_parser: The parser that should be used for parsing arguments provided to the command line
                                 interface by the user
         :param version_text:    A text to be shown when the "--version" flag is passed to the command line interface or
                                 None, if the "--version" flag should not be added to the command line interface
         """
-        self.arguments: List[Argument] = []
+        self.arguments: list[Argument] = []
         self._argument_parser = argument_parser
-        self._argument_groups: Dict[str, _ArgumentGroup] = {}
+        self._argument_groups: dict[str, _ArgumentGroup] = {}
 
         if version_text:
 
@@ -487,7 +487,7 @@ class CommandLineInterface:
                                          action=VersionAction,
                                          help='Display information about the program.')
 
-    def add_arguments(self, *arguments: Argument, group: Optional[str] = None):
+    def add_arguments(self, *arguments: Argument, group: str | None = None):
         """
         Adds a new argument that enables the user to provide a value to the command line interface.
 

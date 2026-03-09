@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 import shutil
 
 from pathlib import Path
-from typing import List, override
+from typing import override
 
 from setuptools import Extension, find_packages, setup
 from setuptools.command.build_ext import build_ext
@@ -44,7 +44,7 @@ class PrecompiledExtensionBuilder(build_ext):
             super().build_extension(ext)
 
 
-def find_extensions(directory: Path) -> List[PrecompiledExtension]:
+def find_extensions(directory: Path) -> list[PrecompiledExtension]:
     """
     Finds and returns all pre-compiled extension modules.
 

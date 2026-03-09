@@ -8,7 +8,7 @@ import logging as log
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from pathlib import Path
-from typing import Any, List, Optional, Tuple, override
+from typing import Any, override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties, TabularProperties
@@ -28,7 +28,7 @@ class DataExtractor(ABC):
     """
 
     @abstractmethod
-    def extract_data(self, state: ExperimentState, sinks: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
+    def extract_data(self, state: ExperimentState, sinks: list[Sink]) -> list[tuple[ExperimentState, OutputData]]:
         """
         Must be implemented by subclasses in order to extract output data from the state of an experiment.
 
@@ -52,7 +52,7 @@ class TextualDataExtractor(DataExtractor):
         self.context = context
 
     @override
-    def extract_data(self, state: ExperimentState, _: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
+    def extract_data(self, state: ExperimentState, _: list[Sink]) -> list[tuple[ExperimentState, OutputData]]:
         """
         See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
         """
@@ -82,7 +82,7 @@ class TabularDataExtractor(DataExtractor):
         self.context = context
 
     @override
-    def extract_data(self, state: ExperimentState, _: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
+    def extract_data(self, state: ExperimentState, _: list[Sink]) -> list[tuple[ExperimentState, OutputData]]:
         """
         See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
         """
@@ -113,7 +113,7 @@ class DatasetExtractor(DataExtractor, ABC):
         self.context = context
 
     @override
-    def extract_data(self, state: ExperimentState, _: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
+    def extract_data(self, state: ExperimentState, _: list[Sink]) -> list[tuple[ExperimentState, OutputData]]:
         """
         See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
         """
@@ -132,7 +132,7 @@ class DatasetExtractor(DataExtractor, ABC):
         return []
 
     @abstractmethod
-    def _create_output_data(self, data: Any) -> Optional[DatasetOutputData]:
+    def _create_output_data(self, data: Any) -> DatasetOutputData | None:
         """
         Must be implemented by subclasses in order to create output data from given data that has been read via in input
         reader.
@@ -148,7 +148,7 @@ class OutputWriter:
     """
 
     def __extract_data_from_extractor(self, extractor: DataExtractor,
-                                      state: ExperimentState) -> List[Tuple[ExperimentState, OutputData]]:
+                                      state: ExperimentState) -> list[tuple[ExperimentState, OutputData]]:
         try:
             return extractor.extract_data(state, self.sinks)
         # pylint: disable=broad-exception-caught
@@ -161,7 +161,7 @@ class OutputWriter:
                       exc_info=error)
             return []
 
-    def __extract_data(self, state: ExperimentState) -> List[Tuple[ExperimentState, OutputData]]:
+    def __extract_data(self, state: ExperimentState) -> list[tuple[ExperimentState, OutputData]]:
         extractors = self.extractors
 
         if extractors:
@@ -193,7 +193,7 @@ class OutputWriter:
         :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
         """
         self.extractors = list(extractors)
-        self.sinks: List[Sink] = []
+        self.sinks: list[Sink] = []
         self.output_error_policy = OutputErrorPolicy.EXIT
 
     def add_sinks(self, *sinks: Sink) -> 'OutputWriter':
@@ -220,7 +220,7 @@ class OutputWriter:
                     for sink in sinks:
                         self.__write_to_sink(sink, extracted_state, output_data)
 
-    def _create_states(self, state: ExperimentState) -> List[ExperimentState]:
+    def _create_states(self, state: ExperimentState) -> list[ExperimentState]:
         """
         May be overridden by subclasses in order create a list of states from which output data should be extracted.
 
@@ -239,7 +239,7 @@ class OutputWriter:
         """
         sink.write_to_sink(state, output_data)
 
-    def create_sources(self, input_directory: Path) -> List[Source]:
+    def create_sources(self, input_directory: Path) -> list[Source]:
         """
         Creates and returns a list that contains all sources that can read the data produced by this output writer.
 
@@ -249,7 +249,7 @@ class OutputWriter:
         return list(filter(None, map(lambda sink: sink.create_source(input_directory), self.sinks)))
 
     # pylint: disable=unused-argument
-    def create_input_reader(self, args: Namespace, input_directory: Path) -> Optional[InputReader]:
+    def create_input_reader(self, args: Namespace, input_directory: Path) -> InputReader | None:
         """
         May be overridden by subclasses in order to create an `InputReader` that can read the data produced by this
         output writer.
@@ -278,7 +278,7 @@ class ResultWriter(OutputWriter):
     Allows to write experimental results to one or several sinks.
     """
 
-    def __init__(self, *extractors: DataExtractor, input_data: Optional[InputData] = None):
+    def __init__(self, *extractors: DataExtractor, input_data: InputData | None = None):
         """
         :param extractors:  Extractors that should be used for extracting the output data to be written to the sinks
         :param input_data:  The `InputData` that corresponds to the output data written by this writer or None, if no
@@ -288,7 +288,7 @@ class ResultWriter(OutputWriter):
         self.input_data = input_data
 
     @override
-    def create_input_reader(self, args: Namespace, input_directory: Path) -> Optional[InputReader]:
+    def create_input_reader(self, args: Namespace, input_directory: Path) -> InputReader | None:
         input_data = self.input_data
 
         if input_data:

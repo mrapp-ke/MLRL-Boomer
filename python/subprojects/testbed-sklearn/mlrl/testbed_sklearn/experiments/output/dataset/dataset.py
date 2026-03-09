@@ -5,7 +5,7 @@ Provides classes for representing tabular datasets that are part of output data.
 """
 import sys
 
-from typing import Optional, override
+from typing import override
 
 import numpy as np
 
@@ -34,7 +34,7 @@ class TabularOutputDataset(OutputDataset):
         super().__init__(dataset=dataset.enforce_dense_outputs(), properties=properties, context=context)
 
     @override
-    def to_text(self, options: Options, **_) -> Optional[str]:
+    def to_text(self, options: Options, **_) -> str | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """

@@ -2,7 +2,7 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from pathlib import Path
-from typing import Any, List, Optional
+from typing import Any
 
 from .datasets import Dataset
 
@@ -32,7 +32,7 @@ class CmdBuilder:
                  input_dir: Path,
                  batch_config: Path,
                  runnable_module_name: str,
-                 runnable_class_name: Optional[str] = None,
+                 runnable_class_name: str | None = None,
                  dataset: str = Dataset.EMOTIONS):
         """
         :param expected_output_dir:     The path to the directory that contains the file with the expected output
@@ -48,19 +48,19 @@ class CmdBuilder:
         self.batch_config = batch_config
         self.runnable_module_name = runnable_module_name
         self.runnable_class_name = runnable_class_name
-        self.mode: Optional[str] = None
-        self.runner: Optional[str] = None
+        self.mode: str | None = None
+        self.runner: str | None = None
         self.show_help = False
         self.dataset = dataset
-        self.parameter_save_dir: Optional[Path] = None
-        self.model_save_dir: Optional[Path] = None
-        self.model_load_dir: Optional[Path] = None
+        self.parameter_save_dir: Path | None = None
+        self.model_save_dir: Path | None = None
+        self.model_load_dir: Path | None = None
         self.num_folds = 0
         self.current_fold = None
-        self.control_args: List[str] = []
-        self.algorithmic_args: List[str] = []
+        self.control_args: list[str] = []
+        self.algorithmic_args: list[str] = []
         self.save_evaluation(True)
-        self.problem_type: Optional[str] = None
+        self.problem_type: str | None = None
 
     @property
     def base_dir(self) -> Path:
@@ -91,7 +91,7 @@ class CmdBuilder:
         return Path('models')
 
     @property
-    def resolved_model_dir(self) -> Optional[Path]:
+    def resolved_model_dir(self) -> Path | None:
         """
         The  path to the directory where models should be saved, resolved against the base directory.
         """
@@ -99,7 +99,7 @@ class CmdBuilder:
         return self.base_dir / model_save_dir if model_save_dir else None
 
     @property
-    def resolved_parameter_dir(self) -> Optional[Path]:
+    def resolved_parameter_dir(self) -> Path | None:
         """
         The path to the directory where models should be saved, resolved against the base directory.
         """
@@ -107,7 +107,7 @@ class CmdBuilder:
         return self.base_dir / parameter_save_dir if parameter_save_dir else None
 
     # pylint: disable=too-many-branches
-    def build(self) -> List[str]:
+    def build(self) -> list[str]:
         """
         Returns the command that has been configured via the builder.
 
@@ -172,7 +172,7 @@ class CmdBuilder:
 
         return args
 
-    def add_control_argument(self, name: str, value: Optional[Any] = None):
+    def add_control_argument(self, name: str, value: Any | None = None):
         """
         Adds a control argument to the command.
 
@@ -186,7 +186,7 @@ class CmdBuilder:
             self.control_args.append(str(value))
         return self
 
-    def add_algorithmic_argument(self, name: str, value: Optional[Any] = None):
+    def add_algorithmic_argument(self, name: str, value: Any | None = None):
         """
         Adds an algorithmic argument to the command.
 
@@ -201,7 +201,7 @@ class CmdBuilder:
 
         return self
 
-    def set_mode(self, mode: Optional[str], *extra_args: str):
+    def set_mode(self, mode: str | None, *extra_args: str):
         """
         Configures the mode of operation to be used.
 
@@ -213,7 +213,7 @@ class CmdBuilder:
         self.control_args.extend(extra_args)
         return self
 
-    def set_runner(self, runner: Optional[str] = 'sequential'):
+    def set_runner(self, runner: str | None = 'sequential'):
         """
         Configures the runner to be used in batch mode.
 
@@ -273,7 +273,7 @@ class CmdBuilder:
         return self
 
     def data_split(self,
-                   data_split: Optional[str] = DatasetSplitterArguments.VALUE_TRAIN_TEST,
+                   data_split: str | None = DatasetSplitterArguments.VALUE_TRAIN_TEST,
                    options: Options = Options()):
         """
         Configures the rule learner to use a specific strategy for splitting datasets into training and test datasets.

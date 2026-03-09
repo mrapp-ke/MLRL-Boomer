@@ -3,8 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing folds of a dataset.
 """
+from collections.abc import Generator
 from dataclasses import dataclass
-from typing import Generator
 
 
 @dataclass

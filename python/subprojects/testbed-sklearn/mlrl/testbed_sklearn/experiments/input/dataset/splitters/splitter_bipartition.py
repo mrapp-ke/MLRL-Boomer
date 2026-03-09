@@ -5,8 +5,9 @@ Provides classes for splitting dataset into distinct training and test datasets.
 """
 import logging as log
 
+from collections.abc import Generator
 from dataclasses import dataclass, replace
-from typing import Any, Generator, Optional, override
+from typing import Any, override
 
 from sklearn.model_selection import train_test_split
 
@@ -29,7 +30,7 @@ class BipartitionSplitter(DatasetSplitter):
         A predefined split into a training and a test dataset.
         """
 
-        def __init__(self, dataset_reader: Optional[DatasetReader], state: ExperimentState):
+        def __init__(self, dataset_reader: DatasetReader | None, state: ExperimentState):
             """
             :param dataset_reader:  The reader that should be used for loading datasets or None, if datasets should not
                                     be loaded
@@ -116,7 +117,7 @@ class BipartitionSplitter(DatasetSplitter):
 
             return state
 
-    def __init__(self, dataset_reader: Optional[DatasetReader], test_size: float, random_state: int):
+    def __init__(self, dataset_reader: DatasetReader | None, test_size: float, random_state: int):
         """
         :param dataset_reader:  The reader that should be used for loading datasets or None, if datasets should not be
                                 loaded
@@ -127,7 +128,7 @@ class BipartitionSplitter(DatasetSplitter):
         self.dataset_reader = dataset_reader
         self.test_size = test_size
         self.random_state = random_state
-        self.cache: Optional[Any] = None
+        self.cache: Any | None = None
 
         if dataset_reader:
             context = dataset_reader.input_data.context

@@ -3,10 +3,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for creating textual representations.
 """
+from collections.abc import Iterable
 from enum import Enum
 from functools import reduce
 from pathlib import Path
-from typing import Any, Iterable, List, Optional, Type
+from typing import Any
 
 
 def format_iterable(objects: Iterable[Any], separator: str = ', ', delimiter: str = '') -> str:
@@ -21,10 +22,10 @@ def format_iterable(objects: Iterable[Any], separator: str = ', ', delimiter: st
     return reduce(lambda aggr, obj: aggr + (separator if aggr else '') + delimiter + str(obj) + delimiter, objects, '')
 
 
-def format_list(objects: List[Any],
+def format_list(objects: list[Any],
                 separator: str = ',  ',
                 delimiter: str = '',
-                last_separator: Optional[str] = None) -> str:
+                last_separator: str | None = None) -> str:
     """
     Creates and returns a textual representation of objects in a list.
 
@@ -40,7 +41,7 @@ def format_list(objects: List[Any],
                                     if aggr else '') + delimiter + str(entry[1]) + delimiter, enumerate(objects), '')
 
 
-def format_enum_values(enum: Type[Enum]) -> str:
+def format_enum_values(enum: type[Enum]) -> str:
     """
     Creates and returns a textual representation of an enum's values.
 

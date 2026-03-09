@@ -5,7 +5,7 @@ Provides classes for representing meta-data that is part of input data.
 """
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, override
+from typing import Any, override
 
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments.context import Context
@@ -42,7 +42,7 @@ class InputMetaData(StructuralInputData):
         super().__init__(properties=self.PROPERTIES, context=self.CONTEXT)
 
     @override
-    def _update_state(self, state: ExperimentState, dictionary: Dict[Any, Any]):
+    def _update_state(self, state: ExperimentState, dictionary: dict[Any, Any]):
         version = Version.parse(dictionary[self.ATTRIBUTE_VERSION], skip_on_error=True)
         timestamp = datetime.strptime(dictionary[self.ATTRIBUTE_TIMESTAMP], MetaData.TIMESTAMP_FORMAT)
         command = Command.from_string(dictionary[self.ATTRIBUTE_COMMAND])

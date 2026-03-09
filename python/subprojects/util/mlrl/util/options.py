@@ -5,7 +5,7 @@ Provides a data structure that allows to store and parse options that are provid
 """
 from enum import Enum, StrEnum
 from functools import reduce
-from typing import Any, Dict, Optional, Set, Tuple, Type, override
+from typing import Any, override
 
 from mlrl.util.format import format_enum_values, format_set
 from mlrl.util.validation import ValidationError
@@ -44,11 +44,11 @@ class Options:
 
     ERROR_MESSAGE_INVALID_OPTION = 'Expected comma-separated list of key-value pairs'
 
-    def __init__(self, dictionary: Optional[Dict[str, Any]] = None):
+    def __init__(self, dictionary: dict[str, Any] | None = None):
         self.dictionary = dictionary if dictionary is not None else {}
 
     @staticmethod
-    def create(string: str, allowed_keys: Set[str]) -> 'Options':
+    def create(string: str, allowed_keys: set[str]) -> 'Options':
         """
         Parses the options that are provided via a given string that is formatted according to the following syntax:
         "[key1=value1,key2=value2]". If the given string is malformed, a `ValueError` will be raised.
@@ -104,7 +104,7 @@ class Options:
 
         return Options(dictionary)
 
-    def get_string(self, key: str, default_value: Optional[str] = None) -> Optional[str]:
+    def get_string(self, key: str, default_value: str | None = None) -> str | None:
         """
         Returns a string that corresponds to a specific key.
 
@@ -182,7 +182,7 @@ class Options:
         return bool(self.dictionary)
 
 
-def parse_enum(name: str, value: Optional[str], enum: Type[Enum], default: Optional[Enum] = None) -> Optional[Enum]:
+def parse_enum(name: str, value: str | None, enum: type[Enum], default: Enum | None = None) -> Enum | None:
     """
     Parses and returns an enum value. If the given value is invalid, a `ValueError` is raised.
 
@@ -206,7 +206,7 @@ def parse_enum(name: str, value: Optional[str], enum: Type[Enum], default: Optio
     return default
 
 
-def parse_param(name: str, value: str, allowed_values: Set[str]) -> str:
+def parse_param(name: str, value: str, allowed_values: set[str]) -> str:
     """
     Parses and returns an argument or parameter value. If the given value is invalid, a `ValueError` is raised.
 
@@ -222,8 +222,8 @@ def parse_param(name: str, value: str, allowed_values: Set[str]) -> str:
                           + name + '": Must be one of ' + format_set(allowed_values) + ', but is "' + str(value) + '"')
 
 
-def parse_param_and_options(name: str, value: str, allowed_values_and_options: Dict[str,
-                                                                                    Set[str]]) -> Tuple[str, Options]:
+def parse_param_and_options(name: str, value: str, allowed_values_and_options: dict[str,
+                                                                                    set[str]]) -> tuple[str, Options]:
     """
     Parses and returns an argument or parameter value, as well as additional `Options` that may be associated with it.
     If the given value is invalid, a `ValueError` is raised.
