@@ -1,4 +1,4 @@
-mlrl-testbed mlrl.boosting --log-width 120 --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --feature-binning equal-width --feature-format sparse
+mlrl-testbed mlrl.boosting --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --feature-binning equal-width --feature-format sparse
 Checking if output files do already exist...
 Starting experiment using the classification algorithm "BoomerClassifier"...
 ○ Writing output data to file "python/tests/res/tmp/metadata.yml"...
@@ -14,24 +14,24 @@ Predicting for 196 test examples...
 ○ A dense matrix is used to store the predicted labels
 ✓ Successfully predicted in <duration>
 
-╭─ 🗀 Evaluation result for test data ─╮
-│ Example-wise F1 (↑)         56.33   │
-│ Example-wise Jaccard (↑)    49.72   │
-│ Example-wise Precision (↑)  77.72   │
-│ Example-wise Recall (↑)     55.95   │
-│ Hamming Accuracy (↑)        79.42   │
-│ Hamming Loss (↓)            20.58   │
-│ Macro F1 (↑)                58.84   │
-│ Macro Jaccard (↑)           44.28   │
-│ Macro Precision (↑)         71.88   │
-│ Macro Recall (↑)            54.98   │
-│ Micro F1 (↑)                63.11   │
-│ Micro Jaccard (↑)           46.1    │
-│ Micro Precision (↑)         73.67   │
-│ Micro Recall (↑)            55.2    │
-│ Subset 0/1 Loss (↓)         70.92   │
-│ Subset Accuracy (↑)         29.08   │
-╰─────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Example-wise F1 (↑)         56.33
+Example-wise Jaccard (↑)    49.72
+Example-wise Precision (↑)  77.72
+Example-wise Recall (↑)     55.95
+Hamming Accuracy (↑)        79.42
+Hamming Loss (↓)            20.58
+Macro F1 (↑)                58.84
+Macro Jaccard (↑)           44.28
+Macro Precision (↑)         71.88
+Macro Recall (↑)            54.98
+Micro F1 (↑)                63.11
+Micro Jaccard (↑)           46.1
+Micro Precision (↑)         73.67
+Micro Recall (↑)            55.2
+Subset 0/1 Loss (↓)         70.92
+Subset Accuracy (↑)         29.08
 
 ○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 ✓ Successfully finished experiment after <duration>

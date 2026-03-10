@@ -1,4 +1,4 @@
-mlrl-testbed mlrl.testbed_sklearn --log-width 120 --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --predict-for-training-data true --print-evaluation true --save-evaluation true --n-estimators 1 --estimator RandomForestRegressor
+mlrl-testbed mlrl.testbed_sklearn --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --predict-for-training-data true --print-evaluation true --save-evaluation true --n-estimators 1 --estimator RandomForestRegressor
 Checking if output files do already exist...
 Starting experiment using the regression algorithm "RandomForestRegressor"...
 ○ Writing output data to file "python/tests/res/tmp/metadata.yml"...
@@ -10,23 +10,23 @@ Fitting model to 198 training examples...
 Predicting for 198 training examples...
 ✓ Successfully predicted in <duration>
 
-╭─── 🗀 Evaluation result for training data ───╮
-│ Mean Absolute Error (↓)               12.11 │
-│ Mean Absolute Percentage Error (↓)     0.04 │
-│ Mean Squared Error (↓)              1372.75 │
-│ Median Absolute Error (↓)              0    │
-╰─────────────────────────────────────────────╯
+🗀 Evaluation result for training data:
+
+Mean Absolute Error (↓)               12.11
+Mean Absolute Percentage Error (↓)     0.04
+Mean Squared Error (↓)              1372.75
+Median Absolute Error (↓)              0
 
 ○ Writing output data to file "python/tests/res/tmp/results/evaluation_training.csv"...
 Predicting for 98 test examples...
 ✓ Successfully predicted in <duration>
 
-╭───── 🗀 Evaluation result for test data ─────╮
-│ Mean Absolute Error (↓)               42.43 │
-│ Mean Absolute Percentage Error (↓)     0.11 │
-│ Mean Squared Error (↓)              8434.79 │
-│ Median Absolute Error (↓)              7.42 │
-╰─────────────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Mean Absolute Error (↓)               42.43
+Mean Absolute Percentage Error (↓)     0.11
+Mean Squared Error (↓)              8434.79
+Median Absolute Error (↓)              7.42
 
 ○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 ✓ Successfully finished experiment after <duration>

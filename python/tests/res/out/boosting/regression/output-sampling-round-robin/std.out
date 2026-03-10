@@ -1,4 +1,4 @@
-mlrl-testbed mlrl.boosting --log-width 120 --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --output-sampling round-robin
+mlrl-testbed mlrl.boosting --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --output-sampling round-robin
 Checking if output files do already exist...
 Starting experiment using the regression algorithm "BoomerRegressor"...
 ○ Writing output data to file "python/tests/res/tmp/metadata.yml"...
@@ -14,12 +14,12 @@ Predicting for 98 test examples...
 ○ A dense matrix is used to store the predicted scores
 ✓ Successfully predicted in <duration>
 
-╭──────── 🗀 Evaluation result for test data ────────╮
-│ Mean Absolute Error (↓)             938.46        │
-│ Mean Absolute Percentage Error (↓)    1.67        │
-│ Mean Squared Error (↓)                9.38045e+06 │
-│ Median Absolute Error (↓)            49.28        │
-╰───────────────────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Mean Absolute Error (↓)             938.46
+Mean Absolute Percentage Error (↓)    1.67
+Mean Squared Error (↓)                9.38045e+06
+Median Absolute Error (↓)            49.28
 
 ○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 ✓ Successfully finished experiment after <duration>

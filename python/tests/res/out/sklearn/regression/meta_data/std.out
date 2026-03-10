@@ -1,17 +1,17 @@
-mlrl-testbed mlrl.testbed_sklearn --log-width 120 --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --print-evaluation false --save-evaluation false --print-meta-data true --save-meta-data true --n-estimators 1 --estimator RandomForestRegressor
+mlrl-testbed mlrl.testbed_sklearn --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --print-evaluation false --save-evaluation false --print-meta-data true --save-meta-data true --n-estimators 1 --estimator RandomForestRegressor
 Checking if output files do already exist...
 Starting experiment using the regression algorithm "RandomForestRegressor"...
 
-╭─────────────────────────────────────────── 🗀 Meta-data of the experiment ────────────────────────────────────────────╮
-│ {                                                                                                                    │
-│     "version": "<version>",                                                                                             │
-│     "timestamp": "<timestamp>",                                                                                 │
-│     "command": "mlrl-testbed mlrl.testbed_sklearn --log-width 120 --log-level debug --base-dir python/tests/res/tmp  │
-│ --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation    │
-│ true --print-evaluation false --save-evaluation false --print-meta-data true --save-meta-data true --n-estimators 1  │
-│ --estimator RandomForestRegressor"                                                                                   │
-│ }                                                                                                                    │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+🗀 Meta-data of the experiment:
+
+{
+    "version": "<version>",
+    "timestamp": "<timestamp>",
+    "command": "mlrl-testbed mlrl.testbed_sklearn --log-width 120 --log-plain --log-level debug --base-dir
+python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression
+--save-evaluation true --print-evaluation false --save-evaluation false --print-meta-data true --save-meta-data true
+--n-estimators 1 --estimator RandomForestRegressor"
+}
 
 ○ Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Using separate training and test sets...

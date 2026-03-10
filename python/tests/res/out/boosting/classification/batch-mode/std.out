@@ -1,9 +1,9 @@
-mlrl-testbed mlrl.boosting --mode batch --log-width 120 --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/boosting/classification/batch_config.yml --save-evaluation true --save-all true
+mlrl-testbed mlrl.boosting --mode batch --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/boosting/classification/batch_config.yml --save-evaluation true --save-all true
 ○ Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Running 8 experiments...
 
 Running experiment (1 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
---dataset emotions --instance-sampling none --log-level debug --log-width 120 --loss logistic-decomposable
+--dataset emotions --instance-sampling none --log-level debug --log-plain --log-width 120 --loss logistic-decomposable
 --model-save-dir instance-sampling_none/loss_logistic-decomposable/dataset_emotions/models --parameter-save-dir
 instance-sampling_none/loss_logistic-decomposable/dataset_emotions/parameters --result-dir
 instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results --save-all true --save-evaluation true
@@ -26,24 +26,24 @@ Predicting for 196 test examples...
 ○ A dense matrix is used to store the predicted labels
 ✓ Successfully predicted in <duration>
 
-╭─ 🗀 Evaluation result for test data ─╮
-│ Example-wise F1 (↑)         62.77   │
-│ Example-wise Jaccard (↑)    55.06   │
-│ Example-wise Precision (↑)  78.06   │
-│ Example-wise Recall (↑)     62.41   │
-│ Hamming Accuracy (↑)        81.21   │
-│ Hamming Loss (↓)            18.79   │
-│ Macro F1 (↑)                64.89   │
-│ Macro Jaccard (↑)           49.26   │
-│ Macro Precision (↑)         75.68   │
-│ Macro Recall (↑)            60.15   │
-│ Micro F1 (↑)                67.64   │
-│ Micro Jaccard (↑)           51.11   │
-│ Micro Precision (↑)         75      │
-│ Micro Recall (↑)            61.6    │
-│ Subset 0/1 Loss (↓)         69.39   │
-│ Subset Accuracy (↑)         30.61   │
-╰─────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Example-wise F1 (↑)         62.77
+Example-wise Jaccard (↑)    55.06
+Example-wise Precision (↑)  78.06
+Example-wise Recall (↑)     62.41
+Hamming Accuracy (↑)        81.21
+Hamming Loss (↓)            18.79
+Macro F1 (↑)                64.89
+Macro Jaccard (↑)           49.26
+Macro Precision (↑)         75.68
+Macro Recall (↑)            60.15
+Micro F1 (↑)                67.64
+Micro Jaccard (↑)           51.11
+Micro Precision (↑)         75
+Micro Recall (↑)            61.6
+Subset 0/1 Loss (↓)         69.39
+Subset Accuracy (↑)         30.61
 
 ○ Writing output data to file
 "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_emotions/results/evaluation_test.csv"...
@@ -74,7 +74,7 @@ sv"...
 ✓ Successfully finished experiment after <duration>
 
 Running experiment (2 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
---dataset emotions --feature-format sparse --instance-sampling none --log-level debug --log-width 120 --loss
+--dataset emotions --feature-format sparse --instance-sampling none --log-level debug --log-plain --log-width 120 --loss
 logistic-decomposable --model-save-dir
 instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/models --parameter-save-dir
 instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/parameters --result-dir
@@ -99,24 +99,24 @@ Predicting for 196 test examples...
 ○ A dense matrix is used to store the predicted labels
 ✓ Successfully predicted in <duration>
 
-╭─ 🗀 Evaluation result for test data ─╮
-│ Example-wise F1 (↑)         62.13   │
-│ Example-wise Jaccard (↑)    54.17   │
-│ Example-wise Precision (↑)  79      │
-│ Example-wise Recall (↑)     62.41   │
-│ Hamming Accuracy (↑)        80.95   │
-│ Hamming Loss (↓)            19.05   │
-│ Macro F1 (↑)                64.86   │
-│ Macro Jaccard (↑)           49.06   │
-│ Macro Precision (↑)         74.09   │
-│ Macro Recall (↑)            59.17   │
-│ Micro F1 (↑)                67.06   │
-│ Micro Jaccard (↑)           50.44   │
-│ Micro Precision (↑)         74.75   │
-│ Micro Recall (↑)            60.8    │
-│ Subset 0/1 Loss (↓)         70.41   │
-│ Subset Accuracy (↑)         29.59   │
-╰─────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Example-wise F1 (↑)         62.13
+Example-wise Jaccard (↑)    54.17
+Example-wise Precision (↑)  79
+Example-wise Recall (↑)     62.41
+Hamming Accuracy (↑)        80.95
+Hamming Loss (↓)            19.05
+Macro F1 (↑)                64.86
+Macro Jaccard (↑)           49.06
+Macro Precision (↑)         74.09
+Macro Recall (↑)            59.17
+Micro F1 (↑)                67.06
+Micro Jaccard (↑)           50.44
+Micro Precision (↑)         74.75
+Micro Recall (↑)            60.8
+Subset 0/1 Loss (↓)         70.41
+Subset Accuracy (↑)         29.59
 
 ○ Writing output data to file
 "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/results/e
@@ -151,8 +151,8 @@ odel_characteristics.csv"...
 ✓ Successfully finished experiment after <duration>
 
 Running experiment (3 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
---dataset emotions --instance-sampling with-replacement{sample_size=0.5} --log-level debug --log-width 120 --loss
-logistic-decomposable --model-save-dir
+--dataset emotions --instance-sampling with-replacement{sample_size=0.5} --log-level debug --log-plain --log-width 120
+--loss logistic-decomposable --model-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/models
 --parameter-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/parameters --result-dir
@@ -177,24 +177,24 @@ Predicting for 196 test examples...
 ○ A dense matrix is used to store the predicted labels
 ✓ Successfully predicted in <duration>
 
-╭─ 🗀 Evaluation result for test data ─╮
-│ Example-wise F1 (↑)         61.16   │
-│ Example-wise Jaccard (↑)    53.1    │
-│ Example-wise Precision (↑)  77.89   │
-│ Example-wise Recall (↑)     61.31   │
-│ Hamming Accuracy (↑)        80.87   │
-│ Hamming Loss (↓)            19.13   │
-│ Macro F1 (↑)                65.21   │
-│ Macro Jaccard (↑)           49.39   │
-│ Macro Precision (↑)         74.65   │
-│ Macro Recall (↑)            59.31   │
-│ Micro F1 (↑)                66.77   │
-│ Micro Jaccard (↑)           50.11   │
-│ Micro Precision (↑)         74.83   │
-│ Micro Recall (↑)            60.27   │
-│ Subset 0/1 Loss (↓)         72.96   │
-│ Subset Accuracy (↑)         27.04   │
-╰─────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Example-wise F1 (↑)         61.16
+Example-wise Jaccard (↑)    53.1
+Example-wise Precision (↑)  77.89
+Example-wise Recall (↑)     61.31
+Hamming Accuracy (↑)        80.87
+Hamming Loss (↓)            19.13
+Macro F1 (↑)                65.21
+Macro Jaccard (↑)           49.39
+Macro Precision (↑)         74.65
+Macro Recall (↑)            59.31
+Micro F1 (↑)                66.77
+Micro Jaccard (↑)           50.11
+Micro Precision (↑)         74.83
+Micro Recall (↑)            60.27
+Subset 0/1 Loss (↓)         72.96
+Subset Accuracy (↑)         27.04
 
 ○ Writing output data to file
 "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_emotions/re
@@ -230,7 +230,7 @@ sults/model_characteristics.csv"...
 
 Running experiment (4 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
 --dataset emotions --feature-format sparse --instance-sampling with-replacement{sample_size=0.5} --log-level debug
---log-width 120 --loss logistic-decomposable --model-save-dir
+--log-plain --log-width 120 --loss logistic-decomposable --model-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/mo
 dels --parameter-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_emotions/pa
@@ -256,24 +256,24 @@ Predicting for 196 test examples...
 ○ A dense matrix is used to store the predicted labels
 ✓ Successfully predicted in <duration>
 
-╭─ 🗀 Evaluation result for test data ─╮
-│ Example-wise F1 (↑)         59.76   │
-│ Example-wise Jaccard (↑)    51.62   │
-│ Example-wise Precision (↑)  75.34   │
-│ Example-wise Recall (↑)     60.88   │
-│ Hamming Accuracy (↑)        80.02   │
-│ Hamming Loss (↓)            19.98   │
-│ Macro F1 (↑)                63.73   │
-│ Macro Jaccard (↑)           47.81   │
-│ Macro Precision (↑)         71.91   │
-│ Macro Recall (↑)            59.21   │
-│ Micro F1 (↑)                65.79   │
-│ Micro Jaccard (↑)           49.02   │
-│ Micro Precision (↑)         72.44   │
-│ Micro Recall (↑)            60.27   │
-│ Subset 0/1 Loss (↓)         74.49   │
-│ Subset Accuracy (↑)         25.51   │
-╰─────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Example-wise F1 (↑)         59.76
+Example-wise Jaccard (↑)    51.62
+Example-wise Precision (↑)  75.34
+Example-wise Recall (↑)     60.88
+Hamming Accuracy (↑)        80.02
+Hamming Loss (↓)            19.98
+Macro F1 (↑)                63.73
+Macro Jaccard (↑)           47.81
+Macro Precision (↑)         71.91
+Macro Recall (↑)            59.21
+Micro F1 (↑)                65.79
+Micro Jaccard (↑)           49.02
+Micro Precision (↑)         72.44
+Micro Recall (↑)            60.27
+Subset 0/1 Loss (↓)         74.49
+Subset Accuracy (↑)         25.51
 
 ○ Writing output data to file
 "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_spar
@@ -308,8 +308,8 @@ se/dataset_emotions/results/model_characteristics.csv"...
 ✓ Successfully finished experiment after <duration>
 
 Running experiment (5 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
---dataset enron --instance-sampling none --log-level debug --log-width 120 --loss logistic-decomposable --model-save-dir
-instance-sampling_none/loss_logistic-decomposable/dataset_enron/models --parameter-save-dir
+--dataset enron --instance-sampling none --log-level debug --log-plain --log-width 120 --loss logistic-decomposable
+--model-save-dir instance-sampling_none/loss_logistic-decomposable/dataset_enron/models --parameter-save-dir
 instance-sampling_none/loss_logistic-decomposable/dataset_enron/parameters --result-dir
 instance-sampling_none/loss_logistic-decomposable/dataset_enron/results --save-all true --save-evaluation true
 --save-meta-data false"
@@ -331,24 +331,24 @@ Predicting for 562 test examples...
 ○ A sparse matrix is used to store the predicted labels
 ✓ Successfully predicted in <duration>
 
-╭─ 🗀 Evaluation result for test data ─╮
-│ Example-wise F1 (↑)         57.44   │
-│ Example-wise Jaccard (↑)    46.65   │
-│ Example-wise Precision (↑)  75.41   │
-│ Example-wise Recall (↑)     53.46   │
-│ Hamming Accuracy (↑)        95.54   │
-│ Hamming Loss (↓)             4.46   │
-│ Macro F1 (↑)                22.37   │
-│ Macro Jaccard (↑)           16.81   │
-│ Macro Precision (↑)         61.04   │
-│ Macro Recall (↑)            18.92   │
-│ Micro F1 (↑)                58.78   │
-│ Micro Jaccard (↑)           41.63   │
-│ Micro Precision (↑)         71.2    │
-│ Micro Recall (↑)            50.05   │
-│ Subset 0/1 Loss (↓)         84.88   │
-│ Subset Accuracy (↑)         15.12   │
-╰─────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Example-wise F1 (↑)         57.44
+Example-wise Jaccard (↑)    46.65
+Example-wise Precision (↑)  75.41
+Example-wise Recall (↑)     53.46
+Hamming Accuracy (↑)        95.54
+Hamming Loss (↓)             4.46
+Macro F1 (↑)                22.37
+Macro Jaccard (↑)           16.81
+Macro Precision (↑)         61.04
+Macro Recall (↑)            18.92
+Micro F1 (↑)                58.78
+Micro Jaccard (↑)           41.63
+Micro Precision (↑)         71.2
+Micro Recall (↑)            50.05
+Subset 0/1 Loss (↓)         84.88
+Subset Accuracy (↑)         15.12
 
 ○ Writing output data to file
 "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/dataset_enron/results/evaluation_test.csv"...
@@ -377,7 +377,7 @@ ration_model.csv"...
 ✓ Successfully finished experiment after <duration>
 
 Running experiment (6 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
---dataset enron --feature-format sparse --instance-sampling none --log-level debug --log-width 120 --loss
+--dataset enron --feature-format sparse --instance-sampling none --log-level debug --log-plain --log-width 120 --loss
 logistic-decomposable --model-save-dir
 instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/models --parameter-save-dir
 instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/parameters --result-dir
@@ -402,24 +402,24 @@ Predicting for 562 test examples...
 ○ A sparse matrix is used to store the predicted labels
 ✓ Successfully predicted in <duration>
 
-╭─ 🗀 Evaluation result for test data ─╮
-│ Example-wise F1 (↑)         57.44   │
-│ Example-wise Jaccard (↑)    46.65   │
-│ Example-wise Precision (↑)  75.41   │
-│ Example-wise Recall (↑)     53.46   │
-│ Hamming Accuracy (↑)        95.54   │
-│ Hamming Loss (↓)             4.46   │
-│ Macro F1 (↑)                22.37   │
-│ Macro Jaccard (↑)           16.81   │
-│ Macro Precision (↑)         61.04   │
-│ Macro Recall (↑)            18.92   │
-│ Micro F1 (↑)                58.78   │
-│ Micro Jaccard (↑)           41.63   │
-│ Micro Precision (↑)         71.2    │
-│ Micro Recall (↑)            50.05   │
-│ Subset 0/1 Loss (↓)         84.88   │
-│ Subset Accuracy (↑)         15.12   │
-╰─────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Example-wise F1 (↑)         57.44
+Example-wise Jaccard (↑)    46.65
+Example-wise Precision (↑)  75.41
+Example-wise Recall (↑)     53.46
+Hamming Accuracy (↑)        95.54
+Hamming Loss (↓)             4.46
+Macro F1 (↑)                22.37
+Macro Jaccard (↑)           16.81
+Macro Precision (↑)         61.04
+Macro Recall (↑)            18.92
+Micro F1 (↑)                58.78
+Micro Jaccard (↑)           41.63
+Micro Precision (↑)         71.2
+Micro Recall (↑)            50.05
+Subset 0/1 Loss (↓)         84.88
+Subset Accuracy (↑)         15.12
 
 ○ Writing output data to file
 "python/tests/res/tmp/instance-sampling_none/loss_logistic-decomposable/feature-format_sparse/dataset_enron/results/eval
@@ -454,8 +454,8 @@ l_characteristics.csv"...
 ✓ Successfully finished experiment after <duration>
 
 Running experiment (7 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
---dataset enron --instance-sampling with-replacement{sample_size=0.5} --log-level debug --log-width 120 --loss
-logistic-decomposable --model-save-dir
+--dataset enron --instance-sampling with-replacement{sample_size=0.5} --log-level debug --log-plain --log-width 120
+--loss logistic-decomposable --model-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/models --parameter-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/parameters --result-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/results --save-all true
@@ -479,24 +479,24 @@ Predicting for 562 test examples...
 ○ A sparse matrix is used to store the predicted labels
 ✓ Successfully predicted in <duration>
 
-╭─ 🗀 Evaluation result for test data ─╮
-│ Example-wise F1 (↑)         57.25   │
-│ Example-wise Jaccard (↑)    46.42   │
-│ Example-wise Precision (↑)  75.97   │
-│ Example-wise Recall (↑)     52.86   │
-│ Hamming Accuracy (↑)        95.62   │
-│ Hamming Loss (↓)             4.38   │
-│ Macro F1 (↑)                21.28   │
-│ Macro Jaccard (↑)           16.17   │
-│ Macro Precision (↑)         62.29   │
-│ Macro Recall (↑)            18.08   │
-│ Micro F1 (↑)                59.02   │
-│ Micro Jaccard (↑)           41.86   │
-│ Micro Precision (↑)         72.79   │
-│ Micro Recall (↑)            49.63   │
-│ Subset 0/1 Loss (↓)         85.59   │
-│ Subset Accuracy (↑)         14.41   │
-╰─────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Example-wise F1 (↑)         57.25
+Example-wise Jaccard (↑)    46.42
+Example-wise Precision (↑)  75.97
+Example-wise Recall (↑)     52.86
+Hamming Accuracy (↑)        95.62
+Hamming Loss (↓)             4.38
+Macro F1 (↑)                21.28
+Macro Jaccard (↑)           16.17
+Macro Precision (↑)         62.29
+Macro Recall (↑)            18.08
+Micro F1 (↑)                59.02
+Micro Jaccard (↑)           41.86
+Micro Precision (↑)         72.79
+Micro Recall (↑)            49.63
+Subset 0/1 Loss (↓)         85.59
+Subset Accuracy (↑)         14.41
 
 ○ Writing output data to file
 "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/dataset_enron/resul
@@ -532,7 +532,7 @@ ts/model_characteristics.csv"...
 
 Running experiment (8 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
 --dataset enron --feature-format sparse --instance-sampling with-replacement{sample_size=0.5} --log-level debug
---log-width 120 --loss logistic-decomposable --model-save-dir
+--log-plain --log-width 120 --loss logistic-decomposable --model-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/model
 s --parameter-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_sparse/dataset_enron/param
@@ -558,24 +558,24 @@ Predicting for 562 test examples...
 ○ A sparse matrix is used to store the predicted labels
 ✓ Successfully predicted in <duration>
 
-╭─ 🗀 Evaluation result for test data ─╮
-│ Example-wise F1 (↑)         57.25   │
-│ Example-wise Jaccard (↑)    46.42   │
-│ Example-wise Precision (↑)  75.97   │
-│ Example-wise Recall (↑)     52.86   │
-│ Hamming Accuracy (↑)        95.62   │
-│ Hamming Loss (↓)             4.38   │
-│ Macro F1 (↑)                21.28   │
-│ Macro Jaccard (↑)           16.17   │
-│ Macro Precision (↑)         62.29   │
-│ Macro Recall (↑)            18.08   │
-│ Micro F1 (↑)                59.02   │
-│ Micro Jaccard (↑)           41.86   │
-│ Micro Precision (↑)         72.79   │
-│ Micro Recall (↑)            49.63   │
-│ Subset 0/1 Loss (↓)         85.59   │
-│ Subset Accuracy (↑)         14.41   │
-╰─────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Example-wise F1 (↑)         57.25
+Example-wise Jaccard (↑)    46.42
+Example-wise Precision (↑)  75.97
+Example-wise Recall (↑)     52.86
+Hamming Accuracy (↑)        95.62
+Hamming Loss (↓)             4.38
+Macro F1 (↑)                21.28
+Macro Jaccard (↑)           16.17
+Macro Precision (↑)         62.29
+Macro Recall (↑)            18.08
+Micro F1 (↑)                59.02
+Micro Jaccard (↑)           41.86
+Micro Precision (↑)         72.79
+Micro Recall (↑)            49.63
+Subset 0/1 Loss (↓)         85.59
+Subset Accuracy (↑)         14.41
 
 ○ Writing output data to file
 "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_logistic-decomposable/feature-format_spar

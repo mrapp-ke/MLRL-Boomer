@@ -1,4 +1,4 @@
-mlrl-testbed mlrl.boosting --log-width 120 --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --print-model-characteristics true --global-pruning pre-pruning --holdout random
+mlrl-testbed mlrl.boosting --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --print-model-characteristics true --global-pruning pre-pruning --holdout random
 Checking if output files do already exist...
 Starting experiment using the classification algorithm "BoomerClassifier"...
 ○ Writing output data to file "python/tests/res/tmp/metadata.yml"...
@@ -14,42 +14,42 @@ Predicting for 196 test examples...
 ○ A dense matrix is used to store the predicted labels
 ✓ Successfully predicted in <duration>
 
-╭─ 🗀 Evaluation result for test data ─╮
-│ Example-wise F1 (↑)         55.75   │
-│ Example-wise Jaccard (↑)    48.21   │
-│ Example-wise Precision (↑)  75.51   │
-│ Example-wise Recall (↑)     56.04   │
-│ Hamming Accuracy (↑)        79      │
-│ Hamming Loss (↓)            21      │
-│ Macro F1 (↑)                60.51   │
-│ Macro Jaccard (↑)           44.58   │
-│ Macro Precision (↑)         70.02   │
-│ Macro Recall (↑)            54.52   │
-│ Micro F1 (↑)                63.19   │
-│ Micro Jaccard (↑)           46.19   │
-│ Micro Precision (↑)         71.62   │
-│ Micro Recall (↑)            56.53   │
-│ Subset 0/1 Loss (↓)         75.51   │
-│ Subset Accuracy (↑)         24.49   │
-╰─────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Example-wise F1 (↑)         55.75
+Example-wise Jaccard (↑)    48.21
+Example-wise Precision (↑)  75.51
+Example-wise Recall (↑)     56.04
+Hamming Accuracy (↑)        79
+Hamming Loss (↓)            21
+Macro F1 (↑)                60.51
+Macro Jaccard (↑)           44.58
+Macro Precision (↑)         70.02
+Macro Recall (↑)            54.52
+Micro F1 (↑)                63.19
+Micro Jaccard (↑)           46.19
+Micro Precision (↑)         71.62
+Micro Recall (↑)            56.53
+Subset 0/1 Loss (↓)         75.51
+Subset Accuracy (↑)         24.49
 
 ○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 
-╭────────────────────────────────────────────── 🗀 Model characteristics ───────────────────────────────────────────────╮
-│ Statistics about conditions      Total    Numerical <= operator    Numerical > operator    Ordinal <= operator       │
-│ Ordinal > operator    Nominal == operator    Nominal != operator                                                     │
-│ Default rule                         0                    0.00%                   0.00%                  0.00%       │
-│ 0.00%                  0.00%                  0.00%                                                                  │
-│ 118 local rules                    971                   52.32%                  47.68%                  0.00%       │
-│ 0.00%                  0.00%                  0.00%                                                                  │
-│                                                                                                                      │
-│ Statistics about predictions      Total    Positive    Negative                                                      │
-│ Default rule                          6       0.00%     100.00%                                                      │
-│ 118 local rules                     708      37.29%      62.71%                                                      │
-│                                                                                                                      │
-│ Statistics per local rule      Minimum    Average    Maximum                                                         │
-│ Conditions                           1       8.23         22                                                         │
-│ Predictions                          6       6             6                                                         │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+🗀 Model characteristics:
+
+Statistics about conditions      Total    Numerical <= operator    Numerical > operator    Ordinal <= operator
+Ordinal > operator    Nominal == operator    Nominal != operator
+Default rule                         0                    0.00%                   0.00%                  0.00%
+0.00%                  0.00%                  0.00%
+118 local rules                    971                   52.32%                  47.68%                  0.00%
+0.00%                  0.00%                  0.00%
+
+Statistics about predictions      Total    Positive    Negative
+Default rule                          6       0.00%     100.00%
+118 local rules                     708      37.29%      62.71%
+
+Statistics per local rule      Minimum    Average    Maximum
+Conditions                           1       8.23         22
+Predictions                          6       6             6
 
 ✓ Successfully finished experiment after <duration>

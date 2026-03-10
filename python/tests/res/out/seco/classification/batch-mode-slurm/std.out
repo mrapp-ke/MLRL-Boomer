@@ -1,10 +1,10 @@
-mlrl-testbed mlrl.seco --mode batch --log-width 120 --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/seco/classification/batch_config.yml --runner slurm --slurm-config python/tests/res/config/slurm_config.yml --print-slurm-scripts true --save-slurm-scripts true --slurm-save-dir python/tests/res/tmp --save-evaluation true
+mlrl-testbed mlrl.seco --mode batch --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/seco/classification/batch_config.yml --runner slurm --slurm-config python/tests/res/config/slurm_config.yml --print-slurm-scripts true --save-slurm-scripts true --slurm-save-dir python/tests/res/tmp --save-evaluation true
 ○ Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Submitting 8 experiments to Slurm...
 
 Submitting Slurm job (1 / 8): "mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data
---dataset emotions --heuristic f-measure --instance-sampling none --log-level debug --log-width 120 --model-save-dir
-instance-sampling_none/heuristic_f-measure/dataset_emotions/models --parameter-save-dir
+--dataset emotions --heuristic f-measure --instance-sampling none --log-level debug --log-plain --log-width 120
+--model-save-dir instance-sampling_none/heuristic_f-measure/dataset_emotions/models --parameter-save-dir
 instance-sampling_none/heuristic_f-measure/dataset_emotions/parameters --result-dir
 instance-sampling_none/heuristic_f-measure/dataset_emotions/results --save-evaluation true --save-meta-data false"
 Slurm script saved to file "python/tests/res/tmp/emotions_1.sh"
@@ -22,7 +22,7 @@ python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
 mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --heuristic
-f-measure --instance-sampling none --log-level debug --log-width 120 --model-save-dir
+f-measure --instance-sampling none --log-level debug --log-plain --log-width 120 --model-save-dir
 instance-sampling_none/heuristic_f-measure/dataset_emotions/models --parameter-save-dir
 instance-sampling_none/heuristic_f-measure/dataset_emotions/parameters --result-dir
 instance-sampling_none/heuristic_f-measure/dataset_emotions/results --save-evaluation true --save-meta-data false
@@ -30,11 +30,12 @@ deactivate
 
 
 Submitting Slurm job (2 / 8): "mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data
---dataset emotions --feature-format sparse --heuristic m-estimate --instance-sampling none --log-level debug --log-width
-120 --model-save-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/models
---parameter-save-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/parameters
---result-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results
---save-evaluation true --save-meta-data false"
+--dataset emotions --feature-format sparse --heuristic m-estimate --instance-sampling none --log-level debug --log-plain
+--log-width 120 --model-save-dir
+instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/models --parameter-save-dir
+instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/parameters --result-dir
+instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results --save-evaluation true
+--save-meta-data false"
 Slurm script saved to file "python/tests/res/tmp/emotions_2.sh"
 Content of Slurm script is:
 
@@ -54,7 +55,7 @@ python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
 mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions
---feature-format sparse --heuristic m-estimate --instance-sampling none --log-level debug --log-width 120
+--feature-format sparse --heuristic m-estimate --instance-sampling none --log-level debug --log-plain --log-width 120
 --model-save-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/models
 --parameter-save-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/parameters
 --result-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_emotions/results
@@ -64,7 +65,7 @@ deactivate
 
 Submitting Slurm job (3 / 8): "mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data
 --dataset emotions --heuristic f-measure --instance-sampling with-replacement{sample_size=0.5} --log-level debug
---log-width 120 --model-save-dir
+--log-plain --log-width 120 --model-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/models --parameter-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/parameters --result-dir
 instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_emotions/results --save-evaluation true
@@ -88,8 +89,9 @@ python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
 mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --heuristic
-f-measure --instance-sampling with-replacement\{sample_size=0.5\} --log-level debug --log-width 120 --model-save-dir
-instance-sampling_with-replacement\{sample_size=0.5\}/heuristic_f-measure/dataset_emotions/models --parameter-save-dir
+f-measure --instance-sampling with-replacement\{sample_size=0.5\} --log-level debug --log-plain --log-width 120
+--model-save-dir instance-sampling_with-replacement\{sample_size=0.5\}/heuristic_f-measure/dataset_emotions/models
+--parameter-save-dir
 instance-sampling_with-replacement\{sample_size=0.5\}/heuristic_f-measure/dataset_emotions/parameters --result-dir
 instance-sampling_with-replacement\{sample_size=0.5\}/heuristic_f-measure/dataset_emotions/results --save-evaluation
 true --save-meta-data false
@@ -98,7 +100,7 @@ deactivate
 
 Submitting Slurm job (4 / 8): "mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data
 --dataset emotions --feature-format sparse --heuristic m-estimate --instance-sampling with-replacement{sample_size=0.5}
---log-level debug --log-width 120 --model-save-dir
+--log-level debug --log-plain --log-width 120 --model-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/models
 --parameter-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/paramete
@@ -125,7 +127,7 @@ python -m venv .venv
 python -m pip install mlrl-testbed-sklearn
 mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions
 --feature-format sparse --heuristic m-estimate --instance-sampling with-replacement\{sample_size=0.5\} --log-level debug
---log-width 120 --model-save-dir
+--log-plain --log-width 120 --model-save-dir
 instance-sampling_with-replacement\{sample_size=0.5\}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/models
 --parameter-save-dir
 instance-sampling_with-replacement\{sample_size=0.5\}/heuristic_m-estimate/feature-format_sparse/dataset_emotions/parame
@@ -136,8 +138,8 @@ deactivate
 
 
 Submitting Slurm job (5 / 8): "mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data
---dataset enron --heuristic f-measure --instance-sampling none --log-level debug --log-width 120 --model-save-dir
-instance-sampling_none/heuristic_f-measure/dataset_enron/models --parameter-save-dir
+--dataset enron --heuristic f-measure --instance-sampling none --log-level debug --log-plain --log-width 120
+--model-save-dir instance-sampling_none/heuristic_f-measure/dataset_enron/models --parameter-save-dir
 instance-sampling_none/heuristic_f-measure/dataset_enron/parameters --result-dir
 instance-sampling_none/heuristic_f-measure/dataset_enron/results --save-evaluation true --save-meta-data false"
 Slurm script saved to file "python/tests/res/tmp/enron_5.sh"
@@ -155,7 +157,7 @@ python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
 mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset enron --heuristic
-f-measure --instance-sampling none --log-level debug --log-width 120 --model-save-dir
+f-measure --instance-sampling none --log-level debug --log-plain --log-width 120 --model-save-dir
 instance-sampling_none/heuristic_f-measure/dataset_enron/models --parameter-save-dir
 instance-sampling_none/heuristic_f-measure/dataset_enron/parameters --result-dir
 instance-sampling_none/heuristic_f-measure/dataset_enron/results --save-evaluation true --save-meta-data false
@@ -163,8 +165,8 @@ deactivate
 
 
 Submitting Slurm job (6 / 8): "mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data
---dataset enron --feature-format sparse --heuristic m-estimate --instance-sampling none --log-level debug --log-width
-120 --model-save-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/models
+--dataset enron --feature-format sparse --heuristic m-estimate --instance-sampling none --log-level debug --log-plain
+--log-width 120 --model-save-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/models
 --parameter-save-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/parameters
 --result-dir instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results --save-evaluation
 true --save-meta-data false"
@@ -187,7 +189,7 @@ python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
 mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset enron --feature-format
-sparse --heuristic m-estimate --instance-sampling none --log-level debug --log-width 120 --model-save-dir
+sparse --heuristic m-estimate --instance-sampling none --log-level debug --log-plain --log-width 120 --model-save-dir
 instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/models --parameter-save-dir
 instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/parameters --result-dir
 instance-sampling_none/heuristic_m-estimate/feature-format_sparse/dataset_enron/results --save-evaluation true
@@ -197,7 +199,7 @@ deactivate
 
 Submitting Slurm job (7 / 8): "mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data
 --dataset enron --heuristic f-measure --instance-sampling with-replacement{sample_size=0.5} --log-level debug
---log-width 120 --model-save-dir
+--log-plain --log-width 120 --model-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/models --parameter-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/parameters --result-dir
 instance-sampling_with-replacement{sample_size=0.5}/heuristic_f-measure/dataset_enron/results --save-evaluation true
@@ -221,17 +223,17 @@ python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
 mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset enron --heuristic
-f-measure --instance-sampling with-replacement\{sample_size=0.5\} --log-level debug --log-width 120 --model-save-dir
-instance-sampling_with-replacement\{sample_size=0.5\}/heuristic_f-measure/dataset_enron/models --parameter-save-dir
-instance-sampling_with-replacement\{sample_size=0.5\}/heuristic_f-measure/dataset_enron/parameters --result-dir
-instance-sampling_with-replacement\{sample_size=0.5\}/heuristic_f-measure/dataset_enron/results --save-evaluation true
---save-meta-data false
+f-measure --instance-sampling with-replacement\{sample_size=0.5\} --log-level debug --log-plain --log-width 120
+--model-save-dir instance-sampling_with-replacement\{sample_size=0.5\}/heuristic_f-measure/dataset_enron/models
+--parameter-save-dir instance-sampling_with-replacement\{sample_size=0.5\}/heuristic_f-measure/dataset_enron/parameters
+--result-dir instance-sampling_with-replacement\{sample_size=0.5\}/heuristic_f-measure/dataset_enron/results
+--save-evaluation true --save-meta-data false
 deactivate
 
 
 Submitting Slurm job (8 / 8): "mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data
 --dataset enron --feature-format sparse --heuristic m-estimate --instance-sampling with-replacement{sample_size=0.5}
---log-level debug --log-width 120 --model-save-dir
+--log-level debug --log-plain --log-width 120 --model-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/models
 --parameter-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/heuristic_m-estimate/feature-format_sparse/dataset_enron/parameters
@@ -257,8 +259,8 @@ python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
 mlrl-testbed mlrl.seco --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset enron --feature-format
-sparse --heuristic m-estimate --instance-sampling with-replacement\{sample_size=0.5\} --log-level debug --log-width 120
---model-save-dir
+sparse --heuristic m-estimate --instance-sampling with-replacement\{sample_size=0.5\} --log-level debug --log-plain
+--log-width 120 --model-save-dir
 instance-sampling_with-replacement\{sample_size=0.5\}/heuristic_m-estimate/feature-format_sparse/dataset_enron/models
 --parameter-save-dir
 instance-sampling_with-replacement\{sample_size=0.5\}/heuristic_m-estimate/feature-format_sparse/dataset_enron/parameter

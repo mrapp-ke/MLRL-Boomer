@@ -1,9 +1,9 @@
-mlrl-testbed mlrl.boosting --mode batch --log-width 120 --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/boosting/regression/batch_config.yml --problem-type regression --save-evaluation true --save-all true
+mlrl-testbed mlrl.boosting --mode batch --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/boosting/regression/batch_config.yml --problem-type regression --save-evaluation true --save-all true
 ○ Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Running 8 experiments...
 
 Running experiment (1 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
---dataset atp7d --instance-sampling none --log-level debug --log-width 120 --loss squared-error-decomposable
+--dataset atp7d --instance-sampling none --log-level debug --log-plain --log-width 120 --loss squared-error-decomposable
 --model-save-dir instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/models --parameter-save-dir
 instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/parameters --problem-type regression --result-dir
 instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/results --save-all true --save-evaluation true
@@ -26,12 +26,12 @@ Predicting for 98 test examples...
 ○ A dense matrix is used to store the predicted scores
 ✓ Successfully predicted in <duration>
 
-╭───── 🗀 Evaluation result for test data ─────╮
-│ Mean Absolute Error (↓)               29.74 │
-│ Mean Absolute Percentage Error (↓)     0.08 │
-│ Mean Squared Error (↓)              2840.67 │
-│ Median Absolute Error (↓)             16.41 │
-╰─────────────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Mean Absolute Error (↓)               29.74
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2840.67
+Median Absolute Error (↓)             16.41
 
 ○ Writing output data to file
 "python/tests/res/tmp/instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/results/evaluation_test.csv".
@@ -57,7 +57,7 @@ stics_test.csv"...
 ✓ Successfully finished experiment after <duration>
 
 Running experiment (2 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
---dataset atp7d --feature-format sparse --instance-sampling none --log-level debug --log-width 120 --loss
+--dataset atp7d --feature-format sparse --instance-sampling none --log-level debug --log-plain --log-width 120 --loss
 squared-error-decomposable --model-save-dir
 instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/models --parameter-save-dir
 instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/parameters --problem-type
@@ -83,12 +83,12 @@ Predicting for 98 test examples...
 ○ A dense matrix is used to store the predicted scores
 ✓ Successfully predicted in <duration>
 
-╭───── 🗀 Evaluation result for test data ─────╮
-│ Mean Absolute Error (↓)               30.74 │
-│ Mean Absolute Percentage Error (↓)     0.08 │
-│ Mean Squared Error (↓)              2924.83 │
-│ Median Absolute Error (↓)             17.17 │
-╰─────────────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Mean Absolute Error (↓)               30.74
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2924.83
+Median Absolute Error (↓)             17.17
 
 ○ Writing output data to file
 "python/tests/res/tmp/instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/results
@@ -117,8 +117,8 @@ model.pickle"...
 ✓ Successfully finished experiment after <duration>
 
 Running experiment (3 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
---dataset atp7d --instance-sampling with-replacement{sample_size=0.5} --log-level debug --log-width 120 --loss
-squared-error-decomposable --model-save-dir
+--dataset atp7d --instance-sampling with-replacement{sample_size=0.5} --log-level debug --log-plain --log-width 120
+--loss squared-error-decomposable --model-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_atp7d/models
 --parameter-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_atp7d/parameters
@@ -144,12 +144,12 @@ Predicting for 98 test examples...
 ○ A dense matrix is used to store the predicted scores
 ✓ Successfully predicted in <duration>
 
-╭───── 🗀 Evaluation result for test data ─────╮
-│ Mean Absolute Error (↓)               34.88 │
-│ Mean Absolute Percentage Error (↓)     0.09 │
-│ Mean Squared Error (↓)              4169.34 │
-│ Median Absolute Error (↓)             18.73 │
-╰─────────────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Mean Absolute Error (↓)               34.88
+Mean Absolute Percentage Error (↓)     0.09
+Mean Squared Error (↓)              4169.34
+Median Absolute Error (↓)             18.73
 
 ○ Writing output data to file
 "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_atp7d/
@@ -179,7 +179,7 @@ results/model_characteristics.csv"...
 
 Running experiment (4 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
 --dataset atp7d --feature-format sparse --instance-sampling with-replacement{sample_size=0.5} --log-level debug
---log-width 120 --loss squared-error-decomposable --model-save-dir
+--log-plain --log-width 120 --loss squared-error-decomposable --model-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/
 models --parameter-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/
@@ -205,12 +205,12 @@ Predicting for 98 test examples...
 ○ A dense matrix is used to store the predicted scores
 ✓ Successfully predicted in <duration>
 
-╭───── 🗀 Evaluation result for test data ─────╮
-│ Mean Absolute Error (↓)               33.88 │
-│ Mean Absolute Percentage Error (↓)     0.09 │
-│ Mean Squared Error (↓)              4343.14 │
-│ Median Absolute Error (↓)             16.14 │
-╰─────────────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Mean Absolute Error (↓)               33.88
+Mean Absolute Percentage Error (↓)     0.09
+Mean Squared Error (↓)              4343.14
+Median Absolute Error (↓)             16.14
 
 ○ Writing output data to file
 "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format
@@ -239,8 +239,9 @@ _sparse/dataset_atp7d/results/model_characteristics.csv"...
 ✓ Successfully finished experiment after <duration>
 
 Running experiment (5 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
---dataset atp7d-binary --instance-sampling none --log-level debug --log-width 120 --loss squared-error-decomposable
---model-save-dir instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/models --parameter-save-dir
+--dataset atp7d-binary --instance-sampling none --log-level debug --log-plain --log-width 120 --loss
+squared-error-decomposable --model-save-dir
+instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/models --parameter-save-dir
 instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/parameters --problem-type regression
 --result-dir instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/results --save-all true
 --save-evaluation true --save-meta-data false"
@@ -263,12 +264,12 @@ Predicting for 98 test examples...
 ○ A dense matrix is used to store the predicted scores
 ✓ Successfully predicted in <duration>
 
-╭───── 🗀 Evaluation result for test data ─────╮
-│ Mean Absolute Error (↓)               32.63 │
-│ Mean Absolute Percentage Error (↓)     0.08 │
-│ Mean Squared Error (↓)              3658.87 │
-│ Median Absolute Error (↓)             16.76 │
-╰─────────────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Mean Absolute Error (↓)               32.63
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              3658.87
+Median Absolute Error (↓)             16.76
 
 ○ Writing output data to file
 "python/tests/res/tmp/instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/results/evaluation_tes
@@ -296,8 +297,8 @@ ristics.csv"...
 ✓ Successfully finished experiment after <duration>
 
 Running experiment (6 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
---dataset atp7d-binary --feature-format sparse --instance-sampling none --log-level debug --log-width 120 --loss
-squared-error-decomposable --model-save-dir
+--dataset atp7d-binary --feature-format sparse --instance-sampling none --log-level debug --log-plain --log-width 120
+--loss squared-error-decomposable --model-save-dir
 instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/models
 --parameter-save-dir
 instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/parameters
@@ -323,12 +324,12 @@ Predicting for 98 test examples...
 ○ A dense matrix is used to store the predicted scores
 ✓ Successfully predicted in <duration>
 
-╭───── 🗀 Evaluation result for test data ─────╮
-│ Mean Absolute Error (↓)               32.63 │
-│ Mean Absolute Percentage Error (↓)     0.08 │
-│ Mean Squared Error (↓)              3658.87 │
-│ Median Absolute Error (↓)             16.76 │
-╰─────────────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Mean Absolute Error (↓)               32.63
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              3658.87
+Median Absolute Error (↓)             16.76
 
 ○ Writing output data to file
 "python/tests/res/tmp/instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/
@@ -357,8 +358,8 @@ results/model_characteristics.csv"...
 ✓ Successfully finished experiment after <duration>
 
 Running experiment (7 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
---dataset atp7d-binary --instance-sampling with-replacement{sample_size=0.5} --log-level debug --log-width 120 --loss
-squared-error-decomposable --model-save-dir
+--dataset atp7d-binary --instance-sampling with-replacement{sample_size=0.5} --log-level debug --log-plain --log-width
+120 --loss squared-error-decomposable --model-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_atp7d-binary/models
 --parameter-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_atp7d-binary/parameters
@@ -384,12 +385,12 @@ Predicting for 98 test examples...
 ○ A dense matrix is used to store the predicted scores
 ✓ Successfully predicted in <duration>
 
-╭───── 🗀 Evaluation result for test data ─────╮
-│ Mean Absolute Error (↓)               35.33 │
-│ Mean Absolute Percentage Error (↓)     0.09 │
-│ Mean Squared Error (↓)              3760.22 │
-│ Median Absolute Error (↓)             21.37 │
-╰─────────────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Mean Absolute Error (↓)               35.33
+Mean Absolute Percentage Error (↓)     0.09
+Mean Squared Error (↓)              3760.22
+Median Absolute Error (↓)             21.37
 
 ○ Writing output data to file
 "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_atp7d-
@@ -419,7 +420,7 @@ binary/results/model_characteristics.csv"...
 
 Running experiment (8 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data
 --dataset atp7d-binary --feature-format sparse --instance-sampling with-replacement{sample_size=0.5} --log-level debug
---log-width 120 --loss squared-error-decomposable --model-save-dir
+--log-plain --log-width 120 --loss squared-error-decomposable --model-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-
 binary/models --parameter-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-
@@ -445,12 +446,12 @@ Predicting for 98 test examples...
 ○ A dense matrix is used to store the predicted scores
 ✓ Successfully predicted in <duration>
 
-╭───── 🗀 Evaluation result for test data ─────╮
-│ Mean Absolute Error (↓)               35.33 │
-│ Mean Absolute Percentage Error (↓)     0.09 │
-│ Mean Squared Error (↓)              3760.22 │
-│ Median Absolute Error (↓)             21.37 │
-╰─────────────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Mean Absolute Error (↓)               35.33
+Mean Absolute Percentage Error (↓)     0.09
+Mean Squared Error (↓)              3760.22
+Median Absolute Error (↓)             21.37
 
 ○ Writing output data to file
 "python/tests/res/tmp/instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format

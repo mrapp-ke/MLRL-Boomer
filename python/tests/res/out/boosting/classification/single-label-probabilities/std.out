@@ -1,4 +1,4 @@
-mlrl-testbed mlrl.boosting --log-width 120 --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset breast-cancer --result-dir results --save-evaluation true --prediction-type probabilities --print-evaluation true
+mlrl-testbed mlrl.boosting --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset breast-cancer --result-dir results --save-evaluation true --prediction-type probabilities --print-evaluation true
 Checking if output files do already exist...
 Starting experiment using the classification algorithm "BoomerClassifier"...
 ○ Writing output data to file "python/tests/res/tmp/metadata.yml"...
@@ -14,12 +14,12 @@ Predicting for 95 test examples...
 ○ A dense matrix is used to store the predicted probability estimates
 ✓ Successfully predicted in <duration>
 
-╭─────── 🗀 Evaluation result for test data ───────╮
-│ Mean Absolute Error (↓)             0.39        │
-│ Mean Absolute Percentage Error (↓)  7.62304e+14 │
-│ Mean Squared Error (↓)              0.31        │
-│ Median Absolute Error (↓)           0.16        │
-╰─────────────────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Mean Absolute Error (↓)             0.39
+Mean Absolute Percentage Error (↓)  7.62304e+14
+Mean Squared Error (↓)              0.31
+Median Absolute Error (↓)           0.16
 
 ○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 ✓ Successfully finished experiment after <duration>

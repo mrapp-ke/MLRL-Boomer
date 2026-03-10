@@ -1,5 +1,5 @@
 mlrl-testbed mlrl.seco --mode read --help
-usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--log-width LOG_WIDTH] [--mode MODE]
+usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--log-width LOG_WIDTH] [--log-plain] [--mode MODE]
                     [--input-dir INPUT_DIR] [--base-dir BASE_DIR] [--create-dirs CREATE_DIRS]
                     [--if-input-missing IF_INPUT_MISSING] [--if-output-error IF_OUTPUT_ERROR] [--print-all PRINT_ALL]
                     [--print-data-characteristics PRINT_DATA_CHARACTERISTICS] [--print-evaluation PRINT_EVALUATION]
@@ -31,6 +31,7 @@ options:
                         value is "info".
   --log-width LOG_WIDTH
                         The width of the console output.
+  --log-plain           Restrict the console output to plain text without any colors or structural elements.
   --mode MODE           The mode of operation to be used. Must be one of {"batch", "read", "run", "single"}. The default
                         value is "single".
   -h, --help            Show this help message and exit

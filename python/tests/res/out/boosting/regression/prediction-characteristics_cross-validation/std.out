@@ -1,4 +1,4 @@
-mlrl-testbed mlrl.boosting --log-width 120 --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --data-split cross-validation --print-evaluation false --save-evaluation false --print-prediction-characteristics true --save-prediction-characteristics true
+mlrl-testbed mlrl.boosting --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --data-split cross-validation --print-evaluation false --save-evaluation false --print-prediction-characteristics true --save-prediction-characteristics true
 Checking if output files do already exist...
 Starting experiment using the regression algorithm "BoomerRegressor"...
 ○ Writing output data to file "python/tests/res/tmp/metadata.yml"...
@@ -15,11 +15,11 @@ Predicting for 30 test examples...
 ○ A dense matrix is used to store the predicted scores
 ✓ Successfully predicted in <duration>
 
-╭─ 🗀 Prediction characteristics for test data (Fold 1) ─╮
-│ Outputs            6                                  │
-│ Output Density   100                                  │
-│ Output Sparsity    0                                  │
-╰───────────────────────────────────────────────────────╯
+🗀 Prediction characteristics for test data (Fold 1):
+
+Outputs            6
+Output Density   100
+Output Sparsity    0
 
 ○ Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-1.csv"...
 Fold 2 / 10:
@@ -32,11 +32,11 @@ Predicting for 30 test examples...
 ○ A dense matrix is used to store the predicted scores
 ✓ Successfully predicted in <duration>
 
-╭─ 🗀 Prediction characteristics for test data (Fold 2) ─╮
-│ Outputs            6                                  │
-│ Output Density   100                                  │
-│ Output Sparsity    0                                  │
-╰───────────────────────────────────────────────────────╯
+🗀 Prediction characteristics for test data (Fold 2):
+
+Outputs            6
+Output Density   100
+Output Sparsity    0
 
 ○ Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-2.csv"...
 Fold 3 / 10:
@@ -49,11 +49,11 @@ Predicting for 30 test examples...
 ○ A dense matrix is used to store the predicted scores
 ✓ Successfully predicted in <duration>
 
-╭─ 🗀 Prediction characteristics for test data (Fold 3) ─╮
-│ Outputs            6                                  │
-│ Output Density   100                                  │
-│ Output Sparsity    0                                  │
-╰───────────────────────────────────────────────────────╯
+🗀 Prediction characteristics for test data (Fold 3):
+
+Outputs            6
+Output Density   100
+Output Sparsity    0
 
 ○ Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-3.csv"...
 Fold 4 / 10:
@@ -66,11 +66,11 @@ Predicting for 30 test examples...
 ○ A dense matrix is used to store the predicted scores
 ✓ Successfully predicted in <duration>
 
-╭─ 🗀 Prediction characteristics for test data (Fold 4) ─╮
-│ Outputs            6                                  │
-│ Output Density   100                                  │
-│ Output Sparsity    0                                  │
-╰───────────────────────────────────────────────────────╯
+🗀 Prediction characteristics for test data (Fold 4):
+
+Outputs            6
+Output Density   100
+Output Sparsity    0
 
 ○ Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-4.csv"...
 Fold 5 / 10:
@@ -83,11 +83,11 @@ Predicting for 30 test examples...
 ○ A dense matrix is used to store the predicted scores
 ✓ Successfully predicted in <duration>
 
-╭─ 🗀 Prediction characteristics for test data (Fold 5) ─╮
-│ Outputs            6                                  │
-│ Output Density   100                                  │
-│ Output Sparsity    0                                  │
-╰───────────────────────────────────────────────────────╯
+🗀 Prediction characteristics for test data (Fold 5):
+
+Outputs            6
+Output Density   100
+Output Sparsity    0
 
 ○ Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-5.csv"...
 Fold 6 / 10:
@@ -100,11 +100,11 @@ Predicting for 30 test examples...
 ○ A dense matrix is used to store the predicted scores
 ✓ Successfully predicted in <duration>
 
-╭─ 🗀 Prediction characteristics for test data (Fold 6) ─╮
-│ Outputs            6                                  │
-│ Output Density   100                                  │
-│ Output Sparsity    0                                  │
-╰───────────────────────────────────────────────────────╯
+🗀 Prediction characteristics for test data (Fold 6):
+
+Outputs            6
+Output Density   100
+Output Sparsity    0
 
 ○ Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-6.csv"...
 Fold 7 / 10:
@@ -117,11 +117,11 @@ Predicting for 29 test examples...
 ○ A dense matrix is used to store the predicted scores
 ✓ Successfully predicted in <duration>
 
-╭─ 🗀 Prediction characteristics for test data (Fold 7) ─╮
-│ Outputs            6                                  │
-│ Output Density   100                                  │
-│ Output Sparsity    0                                  │
-╰───────────────────────────────────────────────────────╯
+🗀 Prediction characteristics for test data (Fold 7):
+
+Outputs            6
+Output Density   100
+Output Sparsity    0
 
 ○ Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-7.csv"...
 Fold 8 / 10:
@@ -134,11 +134,11 @@ Predicting for 29 test examples...
 ○ A dense matrix is used to store the predicted scores
 ✓ Successfully predicted in <duration>
 
-╭─ 🗀 Prediction characteristics for test data (Fold 8) ─╮
-│ Outputs            6                                  │
-│ Output Density   100                                  │
-│ Output Sparsity    0                                  │
-╰───────────────────────────────────────────────────────╯
+🗀 Prediction characteristics for test data (Fold 8):
+
+Outputs            6
+Output Density   100
+Output Sparsity    0
 
 ○ Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-8.csv"...
 Fold 9 / 10:
@@ -151,11 +151,11 @@ Predicting for 29 test examples...
 ○ A dense matrix is used to store the predicted scores
 ✓ Successfully predicted in <duration>
 
-╭─ 🗀 Prediction characteristics for test data (Fold 9) ─╮
-│ Outputs            6                                  │
-│ Output Density   100                                  │
-│ Output Sparsity    0                                  │
-╰───────────────────────────────────────────────────────╯
+🗀 Prediction characteristics for test data (Fold 9):
+
+Outputs            6
+Output Density   100
+Output Sparsity    0
 
 ○ Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-9.csv"...
 Fold 10 / 10:
@@ -168,11 +168,11 @@ Predicting for 29 test examples...
 ○ A dense matrix is used to store the predicted scores
 ✓ Successfully predicted in <duration>
 
-╭─ 🗀 Prediction characteristics for test data (Fold 10) ─╮
-│ Outputs            6                                   │
-│ Output Density   100                                   │
-│ Output Sparsity    0                                   │
-╰────────────────────────────────────────────────────────╯
+🗀 Prediction characteristics for test data (Fold 10):
+
+Outputs            6
+Output Density   100
+Output Sparsity    0
 
 ○ Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-10.csv"...
 ✓ Successfully finished experiment after <duration>

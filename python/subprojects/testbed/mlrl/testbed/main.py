@@ -112,7 +112,7 @@ def __instantiate_via_default_constructor(module_or_source_file: str, class_name
 def __get_cli(runnable: Runnable | None, argument_parser: ArgumentParser) -> CommandLineInterface:
     program_info = runnable.get_program_info() if runnable else __get_default_program_info()
     cli = CommandLineInterface(argument_parser, version_text=str(program_info) if program_info else None)
-    cli.add_arguments(LogArguments.LOG_LEVEL, LogArguments.LOG_WIDTH)
+    cli.add_arguments(LogArguments.LOG_LEVEL, LogArguments.LOG_WIDTH, LogArguments.LOG_PLAIN)
     return cli
 
 

@@ -1,4 +1,4 @@
-mlrl-testbed mlrl.boosting --log-width 120 --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --print-model-characteristics true --loss squared-error-non-decomposable --statistic-type 64-bit --head-type complete
+mlrl-testbed mlrl.boosting --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --print-model-characteristics true --loss squared-error-non-decomposable --statistic-type 64-bit --head-type complete
 Checking if output files do already exist...
 Starting experiment using the regression algorithm "BoomerRegressor"...
 ○ Writing output data to file "python/tests/res/tmp/metadata.yml"...
@@ -14,30 +14,30 @@ Predicting for 98 test examples...
 ○ A dense matrix is used to store the predicted scores
 ✓ Successfully predicted in <duration>
 
-╭────── 🗀 Evaluation result for test data ──────╮
-│ Mean Absolute Error (↓)                359.31 │
-│ Mean Absolute Percentage Error (↓)       1    │
-│ Mean Squared Error (↓)              145899    │
-│ Median Absolute Error (↓)              324    │
-╰───────────────────────────────────────────────╯
+🗀 Evaluation result for test data:
+
+Mean Absolute Error (↓)                359.31
+Mean Absolute Percentage Error (↓)       1
+Mean Squared Error (↓)              145899
+Median Absolute Error (↓)              324
 
 ○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 
-╭────────────────────────────────────────────── 🗀 Model characteristics ───────────────────────────────────────────────╮
-│ Statistics about conditions      Total    Numerical <= operator    Numerical > operator    Ordinal <= operator       │
-│ Ordinal > operator    Nominal == operator    Nominal != operator                                                     │
-│ Default rule                         0                    0.00%                   0.00%                  0.00%       │
-│ 0.00%                  0.00%                  0.00%                                                                  │
-│ 0 local rules                        0                    0.00%                   0.00%                  0.00%       │
-│ 0.00%                  0.00%                  0.00%                                                                  │
-│                                                                                                                      │
-│ Statistics about predictions      Total    Positive    Negative                                                      │
-│ Default rule                          6       0.00%     100.00%                                                      │
-│ 0 local rules                         0       0.00%     100.00%                                                      │
-│                                                                                                                      │
-│ Statistics per local rule      Minimum    Average    Maximum                                                         │
-│ Conditions                           0          0          0                                                         │
-│ Predictions                          0          0          0                                                         │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+🗀 Model characteristics:
+
+Statistics about conditions      Total    Numerical <= operator    Numerical > operator    Ordinal <= operator
+Ordinal > operator    Nominal == operator    Nominal != operator
+Default rule                         0                    0.00%                   0.00%                  0.00%
+0.00%                  0.00%                  0.00%
+0 local rules                        0                    0.00%                   0.00%                  0.00%
+0.00%                  0.00%                  0.00%
+
+Statistics about predictions      Total    Positive    Negative
+Default rule                          6       0.00%     100.00%
+0 local rules                         0       0.00%     100.00%
+
+Statistics per local rule      Minimum    Average    Maximum
+Conditions                           0          0          0
+Predictions                          0          0          0
 
 ✓ Successfully finished experiment after <duration>

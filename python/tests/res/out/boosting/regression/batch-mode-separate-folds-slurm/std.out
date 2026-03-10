@@ -1,12 +1,12 @@
-mlrl-testbed mlrl.boosting --mode batch --log-width 120 --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/boosting/regression/batch_config.yml --runner slurm --slurm-config python/tests/res/config/slurm_config.yml --print-slurm-scripts true --save-slurm-scripts true --slurm-save-dir python/tests/res/tmp --problem-type regression --save-evaluation true --data-split cross-validation{num_folds=2}
+mlrl-testbed mlrl.boosting --mode batch --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/boosting/regression/batch_config.yml --runner slurm --slurm-config python/tests/res/config/slurm_config.yml --print-slurm-scripts true --save-slurm-scripts true --slurm-save-dir python/tests/res/tmp --problem-type regression --save-evaluation true --data-split cross-validation{num_folds=2}
 ○ Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Submitting 16 experiments to Slurm...
 
 Submitting Slurm job (1 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir
 python/tests/res/data --data-split
 cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset atp7d
---instance-sampling none --log-level debug --log-width 120 --loss squared-error-decomposable --model-save-dir
-instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/models --parameter-save-dir
+--instance-sampling none --log-level debug --log-plain --log-width 120 --loss squared-error-decomposable
+--model-save-dir instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/models --parameter-save-dir
 instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/parameters --problem-type regression --result-dir
 instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/results --save-evaluation true --save-meta-data
 false"
@@ -31,8 +31,8 @@ python -m venv .venv
 python -m pip install mlrl-testbed-sklearn
 mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split
 cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset atp7d
---instance-sampling none --log-level debug --log-width 120 --loss squared-error-decomposable --model-save-dir
-instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/models --parameter-save-dir
+--instance-sampling none --log-level debug --log-plain --log-width 120 --loss squared-error-decomposable
+--model-save-dir instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/models --parameter-save-dir
 instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/parameters --problem-type regression --result-dir
 instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d/results --save-evaluation true --save-meta-data
 false
@@ -42,9 +42,9 @@ deactivate
 Submitting Slurm job (2 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir
 python/tests/res/data --data-split
 cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset atp7d
---feature-format sparse --instance-sampling none --log-level debug --log-width 120 --loss squared-error-decomposable
---model-save-dir instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/models
---parameter-save-dir
+--feature-format sparse --instance-sampling none --log-level debug --log-plain --log-width 120 --loss
+squared-error-decomposable --model-save-dir
+instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/models --parameter-save-dir
 instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/parameters --problem-type
 regression --result-dir
 instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/results --save-evaluation
@@ -70,9 +70,9 @@ python -m venv .venv
 python -m pip install mlrl-testbed-sklearn
 mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split
 cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset atp7d
---feature-format sparse --instance-sampling none --log-level debug --log-width 120 --loss squared-error-decomposable
---model-save-dir instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/models
---parameter-save-dir
+--feature-format sparse --instance-sampling none --log-level debug --log-plain --log-width 120 --loss
+squared-error-decomposable --model-save-dir
+instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/models --parameter-save-dir
 instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/parameters --problem-type
 regression --result-dir
 instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/results --save-evaluation
@@ -83,7 +83,7 @@ deactivate
 Submitting Slurm job (3 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir
 python/tests/res/data --data-split
 cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset atp7d
---instance-sampling with-replacement{sample_size=0.5} --log-level debug --log-width 120 --loss
+--instance-sampling with-replacement{sample_size=0.5} --log-level debug --log-plain --log-width 120 --loss
 squared-error-decomposable --model-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_atp7d/models
 --parameter-save-dir
@@ -112,7 +112,7 @@ python -m venv .venv
 python -m pip install mlrl-testbed-sklearn
 mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split
 cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset atp7d
---instance-sampling with-replacement\{sample_size=0.5\} --log-level debug --log-width 120 --loss
+--instance-sampling with-replacement\{sample_size=0.5\} --log-level debug --log-plain --log-width 120 --loss
 squared-error-decomposable --model-save-dir
 instance-sampling_with-replacement\{sample_size=0.5\}/loss_squared-error-decomposable/dataset_atp7d/models
 --parameter-save-dir
@@ -126,8 +126,8 @@ deactivate
 Submitting Slurm job (4 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir
 python/tests/res/data --data-split
 cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset atp7d
---feature-format sparse --instance-sampling with-replacement{sample_size=0.5} --log-level debug --log-width 120 --loss
-squared-error-decomposable --model-save-dir
+--feature-format sparse --instance-sampling with-replacement{sample_size=0.5} --log-level debug --log-plain --log-width
+120 --loss squared-error-decomposable --model-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/
 models --parameter-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d/
@@ -155,8 +155,8 @@ python -m venv .venv
 python -m pip install mlrl-testbed-sklearn
 mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split
 cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset atp7d
---feature-format sparse --instance-sampling with-replacement\{sample_size=0.5\} --log-level debug --log-width 120 --loss
-squared-error-decomposable --model-save-dir
+--feature-format sparse --instance-sampling with-replacement\{sample_size=0.5\} --log-level debug --log-plain
+--log-width 120 --loss squared-error-decomposable --model-save-dir
 instance-sampling_with-replacement\{sample_size=0.5\}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7
 d/models --parameter-save-dir
 instance-sampling_with-replacement\{sample_size=0.5\}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7
@@ -169,8 +169,8 @@ deactivate
 Submitting Slurm job (5 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir
 python/tests/res/data --data-split
 cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset atp7d-binary
---instance-sampling none --log-level debug --log-width 120 --loss squared-error-decomposable --model-save-dir
-instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/models --parameter-save-dir
+--instance-sampling none --log-level debug --log-plain --log-width 120 --loss squared-error-decomposable
+--model-save-dir instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/models --parameter-save-dir
 instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/parameters --problem-type regression
 --result-dir instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/results --save-evaluation true
 --save-meta-data false"
@@ -195,7 +195,7 @@ python -m venv .venv
 python -m pip install mlrl-testbed-sklearn
 mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split
 cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset
-atp7d-binary --instance-sampling none --log-level debug --log-width 120 --loss squared-error-decomposable
+atp7d-binary --instance-sampling none --log-level debug --log-plain --log-width 120 --loss squared-error-decomposable
 --model-save-dir instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/models --parameter-save-dir
 instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/parameters --problem-type regression
 --result-dir instance-sampling_none/loss_squared-error-decomposable/dataset_atp7d-binary/results --save-evaluation true
@@ -206,8 +206,8 @@ deactivate
 Submitting Slurm job (6 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir
 python/tests/res/data --data-split
 cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset atp7d-binary
---feature-format sparse --instance-sampling none --log-level debug --log-width 120 --loss squared-error-decomposable
---model-save-dir
+--feature-format sparse --instance-sampling none --log-level debug --log-plain --log-width 120 --loss
+squared-error-decomposable --model-save-dir
 instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/models
 --parameter-save-dir
 instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/parameters
@@ -235,7 +235,7 @@ python -m venv .venv
 python -m pip install mlrl-testbed-sklearn
 mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split
 cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset
-atp7d-binary --feature-format sparse --instance-sampling none --log-level debug --log-width 120 --loss
+atp7d-binary --feature-format sparse --instance-sampling none --log-level debug --log-plain --log-width 120 --loss
 squared-error-decomposable --model-save-dir
 instance-sampling_none/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-binary/models
 --parameter-save-dir
@@ -249,7 +249,7 @@ deactivate
 Submitting Slurm job (7 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir
 python/tests/res/data --data-split
 cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset atp7d-binary
---instance-sampling with-replacement{sample_size=0.5} --log-level debug --log-width 120 --loss
+--instance-sampling with-replacement{sample_size=0.5} --log-level debug --log-plain --log-width 120 --loss
 squared-error-decomposable --model-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/dataset_atp7d-binary/models
 --parameter-save-dir
@@ -278,8 +278,8 @@ python -m venv .venv
 python -m pip install mlrl-testbed-sklearn
 mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split
 cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset
-atp7d-binary --instance-sampling with-replacement\{sample_size=0.5\} --log-level debug --log-width 120 --loss
-squared-error-decomposable --model-save-dir
+atp7d-binary --instance-sampling with-replacement\{sample_size=0.5\} --log-level debug --log-plain --log-width 120
+--loss squared-error-decomposable --model-save-dir
 instance-sampling_with-replacement\{sample_size=0.5\}/loss_squared-error-decomposable/dataset_atp7d-binary/models
 --parameter-save-dir
 instance-sampling_with-replacement\{sample_size=0.5\}/loss_squared-error-decomposable/dataset_atp7d-binary/parameters
@@ -292,8 +292,8 @@ deactivate
 Submitting Slurm job (8 / 8): "mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir
 python/tests/res/data --data-split
 cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset atp7d-binary
---feature-format sparse --instance-sampling with-replacement{sample_size=0.5} --log-level debug --log-width 120 --loss
-squared-error-decomposable --model-save-dir
+--feature-format sparse --instance-sampling with-replacement{sample_size=0.5} --log-level debug --log-plain --log-width
+120 --loss squared-error-decomposable --model-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-
 binary/models --parameter-save-dir
 instance-sampling_with-replacement{sample_size=0.5}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7d-
@@ -322,7 +322,7 @@ python -m pip install mlrl-testbed-sklearn
 mlrl-testbed mlrl.boosting --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split
 cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset
 atp7d-binary --feature-format sparse --instance-sampling with-replacement\{sample_size=0.5\} --log-level debug
---log-width 120 --loss squared-error-decomposable --model-save-dir
+--log-plain --log-width 120 --loss squared-error-decomposable --model-save-dir
 instance-sampling_with-replacement\{sample_size=0.5\}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7
 d-binary/models --parameter-save-dir
 instance-sampling_with-replacement\{sample_size=0.5\}/loss_squared-error-decomposable/feature-format_sparse/dataset_atp7
