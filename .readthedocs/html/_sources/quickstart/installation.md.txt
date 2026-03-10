@@ -2,7 +2,7 @@
 
 # Installation
 
-All algorithms provided by this project are published on [PyPi](https://pypi.org/). As shown below, they can easily be installed via the Python package manager [pip](<https://en.wikipedia.org/wiki/Pip_(package_manager)>). Unless you intend to modify the algorithms' source code, in which case you should have a look at the section {ref}`compilation`, this is the recommended way for installing the software.
+All algorithms provided by this project are published on [PyPi](https://pypi.org/). As shown below, they can easily be installed via a Python package manager, such as [pip](<https://en.wikipedia.org/wiki/Pip_(package_manager)>). Unless you intend to modify the algorithms' source code, in which case you should have a look at the section {ref}`compilation`, this is the recommended way for installing the software.
 
 The following compatibility matrix provides an overview of the operating systems and architectures for which the packages mentioned below are currently available:
 
