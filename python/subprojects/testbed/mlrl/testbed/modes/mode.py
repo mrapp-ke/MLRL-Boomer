@@ -3,12 +3,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides base classes for implementing different modes of operation.
 """
-import logging as log
 
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from pathlib import Path
-from typing import List, Set, override
+from typing import override
 
 from mlrl.testbed.experiments.input.meta_data.meta_data import InputMetaData
 from mlrl.testbed.experiments.input.meta_data.reader import MetaDataReader
@@ -16,6 +15,7 @@ from mlrl.testbed.experiments.input.sources import YamlFileSource
 from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
+from mlrl.testbed.log import Log
 
 from mlrl.util.cli import Argument, CommandLineInterface, PathArgument, SetArgument
 
@@ -33,7 +33,7 @@ class Mode(ABC):
     )
 
     @abstractmethod
-    def configure_control_arguments(self, cli: CommandLineInterface, control_arguments: List[Argument]):
+    def configure_control_arguments(self, cli: CommandLineInterface, control_arguments: list[Argument]):
         """
         Must be implemented by subclasses in order to configure the command line interface according to the mode of
         operation.
@@ -44,7 +44,7 @@ class Mode(ABC):
         """
 
     @abstractmethod
-    def configure_algorithmic_arguments(self, cli: CommandLineInterface, algorithmic_arguments: List[Argument]):
+    def configure_algorithmic_arguments(self, cli: CommandLineInterface, algorithmic_arguments: list[Argument]):
         """
         Must be implemented by subclasses in order to configure the command line interface according to the mode of
         operation.
@@ -55,7 +55,7 @@ class Mode(ABC):
         """
 
     @abstractmethod
-    def run_experiment(self, control_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
+    def run_experiment(self, control_arguments: set[Argument], algorithmic_arguments: set[Argument], args: Namespace,
                        recipe: Recipe):
         """
         Must be implemented by subclasses in order to run an experiment according to the command line arguments
@@ -92,42 +92,42 @@ class InputMode(Mode, ABC):
     )
 
     def __read_meta_data(self, args: Namespace, recipe: Recipe, input_directory: Path) -> MetaData:
-        log.info('Reading meta-data...')
+        Log.info('Reading meta-data...')
         problem_domain = recipe.create_problem_domain(self.to_enum(), args)
         state = ExperimentState(mode=self.to_enum(), args=args, meta_data=MetaData(), problem_domain=problem_domain)
         reader = MetaDataReader(
             YamlFileSource(directory=input_directory, schema_file_path=InputMetaData.SCHEMA_FILE_PATH))
         meta_data = reader.read(state).meta_data
-        log.info('Successfully read meta-data')
+        Log.success('Successfully read meta-data')
         return meta_data
 
     @staticmethod
     def __check_version(meta_data: MetaData):
-        log.debug('Checking for version conflicts...')
+        Log.verbose('Checking for version conflicts...')
         meta_data_version = meta_data.version
         current_version = MetaData().version
-        log.debug(
-            'Experimental results have been created with version "%s" of the package "mlrl-testbed", version "%s" is '
+        Log.verbose(
+            'Experimental results have been created with version "{}" of the package "mlrl-testbed", version "{}" is '
             + 'currently used', meta_data_version, current_version)
 
         if meta_data_version > current_version:
-            log.warning(
-                'Experimental results have been created with a version (%s) of the package "mlrl-testbed" that is '
-                + 'greater than currently used (%s).', meta_data_version, current_version)
+            Log.warning(
+                'Experimental results have been created with a version ({}) of the package "mlrl-testbed" that is '
+                + 'greater than currently used ({}).', meta_data_version, current_version)
         else:
-            log.debug('No version conflicts detected')
+            Log.verbose('No version conflicts detected')
 
     @override
-    def configure_control_arguments(self, cli: CommandLineInterface, control_arguments: List[Argument]):
+    def configure_control_arguments(self, cli: CommandLineInterface, control_arguments: list[Argument]):
         cli.add_arguments(self.INPUT_DIR, group='read-mode arguments')
         cli.add_arguments(*control_arguments, group='control arguments')
 
     @override
-    def configure_algorithmic_arguments(self, cli: CommandLineInterface, algorithmic_arguments: List[Argument]):
+    def configure_algorithmic_arguments(self, cli: CommandLineInterface, algorithmic_arguments: list[Argument]):
         pass
 
     @override
-    def run_experiment(self, control_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
+    def run_experiment(self, control_arguments: set[Argument], algorithmic_arguments: set[Argument], args: Namespace,
                        recipe: Recipe):
         input_directory = self.INPUT_DIR.get_value(args)
 
@@ -137,7 +137,7 @@ class InputMode(Mode, ABC):
             self._run_experiment(control_arguments, algorithmic_arguments, args, recipe, meta_data, input_directory)
 
     @abstractmethod
-    def _run_experiment(self, control_arguments: Set[Argument], algorithmic_arguments: Set[Argument], args: Namespace,
+    def _run_experiment(self, control_arguments: set[Argument], algorithmic_arguments: set[Argument], args: Namespace,
                         recipe: Recipe, meta_data: MetaData, input_directory: Path):
         """
         Must be implemented by subclasses in order to run an experiment that accesses the meta-data of an earlie

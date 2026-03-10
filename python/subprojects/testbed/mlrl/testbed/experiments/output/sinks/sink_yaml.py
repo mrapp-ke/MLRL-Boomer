@@ -4,7 +4,7 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow writing output data to YAML files.
 """
 from pathlib import Path
-from typing import Optional, override
+from typing import override
 
 import yaml
 
@@ -44,5 +44,5 @@ class YamlFileSink(FileSink):
                     yaml.dump(dictionary, yaml_file)
 
     @override
-    def create_source(self, input_directory: Path) -> Optional[Source]:
+    def create_source(self, input_directory: Path) -> Source | None:
         return YamlFileSource(input_directory)

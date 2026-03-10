@@ -1,20 +1,29 @@
-mlrl-testbed mlrl.testbed_sklearn --mode run --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --save-all true --print-all true --estimator RandomForestRegressor
+mlrl-testbed mlrl.testbed_sklearn --mode run --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --save-all true --print-all true --estimator RandomForestRegressor
 Reading meta-data...
-DEBUG: Reading input data from file "python/tests/res/tmp/metadata.yml"...
-Successfully read meta-data
-DEBUG: Checking for version conflicts...
-DEBUG: Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is currently used
-DEBUG: No version conflicts detected
-Re-running experiment "mlrl-testbed mlrl.testbed_sklearn --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --save-meta-data true --n-estimators 1 --estimator RandomForestRegressor"...
-Arguments "--log-level debug --base-dir python/tests/res/tmp/rerun --save-evaluation true --save-all true --print-all true --estimator RandomForestRegressor" modifying the original experiments have been provided. The resulting command is "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/rerun --data-dir python/tests/res/data --dataset atp7d --estimator RandomForestRegressor --log-level debug --n-estimators 1 --print-all true --problem-type regression --result-dir results --save-all true --save-evaluation true --save-meta-data true"...
+○ Reading input data from file "python/tests/res/tmp/metadata.yml"...
+✓ Successfully read meta-data
+○ Checking for version conflicts...
+○ Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is
+currently used
+○ No version conflicts detected
+Re-running experiment "mlrl-testbed mlrl.testbed_sklearn --log-width 120 --log-plain --log-level debug --base-dir
+python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression
+--save-evaluation true --save-meta-data true --n-estimators 1 --estimator RandomForestRegressor"...
+Arguments "--log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/rerun --save-evaluation true
+--save-all true --print-all true --estimator RandomForestRegressor" modifying the original experiments have been
+provided. The resulting command is "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/rerun --data-dir
+python/tests/res/data --dataset atp7d --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120
+--n-estimators 1 --print-all true --problem-type regression --result-dir results --save-all true --save-evaluation true
+--save-meta-data true"...
 
 Checking if output files do already exist...
 Starting experiment using the regression algorithm "RandomForestRegressor"...
-DEBUG: Writing output data to file "python/tests/res/tmp/rerun/metadata.yml"...
+○ Writing output data to file "python/tests/res/tmp/rerun/metadata.yml"...
 Using separate training and test sets...
-DEBUG: Reading input data from file "python/tests/res/data/atp7d.arff"...
-DEBUG: Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
-Data characteristics:
+○ Reading input data from file "python/tests/res/data/atp7d.arff"...
+○ Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
+
+🗀 Data characteristics:
 
 Examples            198
 Features            411
@@ -27,25 +36,28 @@ Outputs               6
 Output Density      100
 Output Sparsity       0
 
-DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/data_characteristics.csv"...
-Custom parameters:
+○ Writing output data to file "python/tests/res/tmp/rerun/results/data_characteristics.csv"...
+
+🗀 Custom parameters:
 
 <no data available>
 
-DEBUG: Writing output data to file "python/tests/res/tmp/rerun/parameters/parameters.csv"...
+○ Writing output data to file "python/tests/res/tmp/rerun/parameters/parameters.csv"...
 Fitting model to 198 training examples...
-Successfully fit model in <duration>
+✓ Successfully fit model in <duration>
 Predicting for 98 test examples...
-Successfully predicted in <duration>
-Evaluation result for test data:
+✓ Successfully predicted in <duration>
+
+🗀 Evaluation result for test data:
 
 Mean Absolute Error (↓)               42.43
 Mean Absolute Percentage Error (↓)     0.11
 Mean Squared Error (↓)              8434.79
 Median Absolute Error (↓)              7.42
 
-DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...
-Ground truth for test data:
+○ Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...
+
+🗀 Ground truth for test data:
 
 [[ 334.  440.  460.  463.  334.  463.]
  [ 279.  279.  395.  369.  313.  401.]
@@ -146,15 +158,17 @@ Ground truth for test data:
  [ 279.  279.  301.  366.  283.  366.]
  [ 199.  199.  447.  488.  298.  488.]]
 
-DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/ground_truth_test.arff"...
-Prediction characteristics for test data:
+○ Writing output data to file "python/tests/res/tmp/rerun/results/ground_truth_test.arff"...
+
+🗀 Prediction characteristics for test data:
 
 Outputs            6
 Output Density   100
 Output Sparsity    0
 
-DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/prediction_characteristics_test.csv"...
-Predictions for test data:
+○ Writing output data to file "python/tests/res/tmp/rerun/results/prediction_characteristics_test.csv"...
+
+🗀 Predictions for test data:
 
 [[268. 420. 460. 433. 273. 433.]
  [253. 319. 319. 319. 253. 319.]
@@ -255,13 +269,14 @@ Predictions for test data:
  [277. 279. 290. 299. 277. 299.]
  [298. 397. 456. 513. 344. 513.]]
 
-DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/predictions_test.arff"...
-Label vectors:
+○ Writing output data to file "python/tests/res/tmp/rerun/results/predictions_test.arff"...
+
+🗀 Label vectors:
 
 Index         1
 Label vector  [0 1 2 3 4 5]
 Frequency     198
 
-DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/label_vectors.csv"...
-DEBUG: Writing output data to file "python/tests/res/tmp/rerun/models/model.pickle"...
-Successfully finished experiment after <duration>
+○ Writing output data to file "python/tests/res/tmp/rerun/results/label_vectors.csv"...
+○ Writing output data to file "python/tests/res/tmp/rerun/models/model.pickle"...
+✓ Successfully finished experiment after <duration>

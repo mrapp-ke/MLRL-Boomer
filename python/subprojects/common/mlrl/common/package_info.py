@@ -5,7 +5,7 @@ Provides utility functions for retrieving information about this Python packages
 """
 from dataclasses import dataclass, field
 from importlib.metadata import requires, version
-from typing import Any, Set, override
+from typing import Any, override
 
 from packaging.requirements import Requirement
 
@@ -23,8 +23,8 @@ class PackageInfo:
         cpp_libraries:      A set that contains a `CppLibraryInfo` for each C++ library used by this package
     """
     package_name: str
-    python_packages: Set['PackageInfo'] = field(default_factory=set)
-    cpp_libraries: Set[CppLibraryInfo] = field(default_factory=set)
+    python_packages: set['PackageInfo'] = field(default_factory=set)
+    cpp_libraries: set[CppLibraryInfo] = field(default_factory=set)
 
     @property
     def package_version(self) -> str:
@@ -34,11 +34,11 @@ class PackageInfo:
         return version(self.package_name)
 
     @property
-    def dependencies(self) -> Set['PackageInfo']:
+    def dependencies(self) -> set['PackageInfo']:
         """
         A set that contains a `PackageInfo` for each dependency of this package.
         """
-        package_infos: Set[PackageInfo] = set()
+        package_infos: set[PackageInfo] = set()
         dependencies = requires(self.package_name)
 
         if dependencies:

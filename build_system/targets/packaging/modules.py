@@ -3,9 +3,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements modules that provide access to Python code that can be built as wheel packages.
 """
+from collections.abc import Generator
 from os import environ
 from pathlib import Path
-from typing import Generator, List, Optional, Set, cast, override
+from typing import cast, override
 
 from core.build_unit import BuildUnit
 from core.modules import Module, ModuleRegistry
@@ -67,7 +68,7 @@ class PythonPackageModule(SubprojectModule):
                                       module: 'PythonPackageModule',
                                       other_module: 'PythonPackageModule',
                                       module_registry: ModuleRegistry,
-                                      dependencies_to_be_skipped: Optional[Set[str]] = None) -> bool:
+                                      dependencies_to_be_skipped: set[str] | None = None) -> bool:
             package_name = module.get_package_name(self.build_unit)
             dependency_names = other_module.get_dependency_names(self.build_unit)
 
@@ -103,8 +104,8 @@ class PythonPackageModule(SubprojectModule):
         """
         self.root_directory = root_directory
         self.wheel_directory_name = wheel_directory_name
-        self._pyproject_toml_file: Optional[PyprojectTomlFile] = None
-        self._dependencies: Optional[List[PythonPackageModule]] = None
+        self._pyproject_toml_file: PyprojectTomlFile | None = None
+        self._dependencies: list[PythonPackageModule] | None = None
 
     @property
     def pyproject_toml_template_file(self) -> Path:
@@ -135,7 +136,7 @@ class PythonPackageModule(SubprojectModule):
 
         return pyproject_toml_file.package_name
 
-    def get_dependency_names(self, build_unit: BuildUnit) -> List[str]:
+    def get_dependency_names(self, build_unit: BuildUnit) -> list[str]:
         """
         Retrieves and returns the names of the dependencies of the package from the pyproject.toml file.
 
@@ -182,7 +183,7 @@ class PythonPackageModule(SubprojectModule):
         """
         return self.root_directory / self.wheel_directory_name
 
-    def find_wheel(self) -> Optional[Path]:
+    def find_wheel(self) -> Path | None:
         """
         Finds and returns the wheel package that has been built for the module.
 

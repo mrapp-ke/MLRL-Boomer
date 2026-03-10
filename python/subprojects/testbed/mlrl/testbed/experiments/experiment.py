@@ -3,13 +3,13 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for implementing experiments.
 """
-import logging as log
 
 from abc import ABC, abstractmethod
 from argparse import Namespace
+from collections.abc import Generator, Iterable
 from dataclasses import replace
 from itertools import chain
-from typing import Any, Callable, Generator, Iterable, List, Optional, Set, override
+from typing import Any, Callable, override
 
 from mlrl.testbed.arguments import PredictionDatasetArguments
 from mlrl.testbed.experiments.dataset import Dataset
@@ -26,6 +26,7 @@ from mlrl.testbed.experiments.output.sinks import FileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState, ParameterDict, PredictionState, TrainingState
 from mlrl.testbed.experiments.timer import Timer
+from mlrl.testbed.log import Log
 
 
 class ExperimentListener(ABC):
@@ -102,12 +103,12 @@ class Experiment(ABC):
             super().__init__()
             self.initial_state = initial_state
             self.dataset_splitter = dataset_splitter
-            self.listeners: List[ExperimentListener] = []
-            self.input_readers: List[InputReader] = []
-            self.before_start_output_writers: Set[OutputWriter] = set()
-            self.pre_training_output_writers: Set[OutputWriter] = set()
-            self.post_training_output_writers: Set[OutputWriter] = set()
-            self.prediction_output_writers: Set[OutputWriter] = set()
+            self.listeners: list[ExperimentListener] = []
+            self.input_readers: list[InputReader] = []
+            self.before_start_output_writers: set[OutputWriter] = set()
+            self.pre_training_output_writers: set[OutputWriter] = set()
+            self.post_training_output_writers: set[OutputWriter] = set()
+            self.prediction_output_writers: set[OutputWriter] = set()
             self.model_writer = ModelWriter()
             self.meta_data_writer = MetaDataWriter()
             self.parameter_writer = ParameterWriter()
@@ -261,7 +262,7 @@ class Experiment(ABC):
             experiment = self._create_experiment(args, self.initial_state, self.dataset_splitter)
             experiment.listeners.extend(self.listeners)
 
-            def sort(objects: Iterable[Any]) -> List[Any]:
+            def sort(objects: Iterable[Any]) -> list[Any]:
                 return sorted(objects, key=lambda obj: type(obj).__name__)
 
             experiment.input_readers.extend(sort(self.input_readers))
@@ -316,7 +317,7 @@ class Experiment(ABC):
             for input_reader in self.experiment.input_readers:
                 input_data = input_reader.input_data
                 context = input_data.context
-                dataset_types: List[DatasetType] = []
+                dataset_types: list[DatasetType] = []
 
                 if context.include_dataset_type:
                     args = self.args
@@ -390,7 +391,7 @@ class Experiment(ABC):
         """
 
         @abstractmethod
-        def train(self, learner: Optional[Any], parameters: ParameterDict, dataset: Dataset) -> TrainingState:
+        def train(self, learner: Any | None, parameters: ParameterDict, dataset: Dataset) -> TrainingState:
             """
             Fits a learner to a training dataset.
 
@@ -428,12 +429,12 @@ class Experiment(ABC):
         self.dataset_splitter = dataset_splitter
         self.training_procedure = training_procedure
         self.prediction_procedure = prediction_procedure
-        self.input_readers: List[InputReader] = []
-        self.before_start_output_writers: List[OutputWriter] = []
-        self.pre_training_output_writers: List[OutputWriter] = []
-        self.post_training_output_writers: List[OutputWriter] = []
-        self.prediction_output_writers: List[OutputWriter] = []
-        self.listeners: List[ExperimentListener] = [
+        self.input_readers: list[InputReader] = []
+        self.before_start_output_writers: list[OutputWriter] = []
+        self.pre_training_output_writers: list[OutputWriter] = []
+        self.post_training_output_writers: list[OutputWriter] = []
+        self.prediction_output_writers: list[OutputWriter] = []
+        self.listeners: list[ExperimentListener] = [
             Experiment.InputReaderListener(self, args),
             Experiment.OutputWriterListener(self),
         ]
@@ -518,7 +519,7 @@ class DefaultProcedure(ExperimentalProcedure):
     @override
     def _before_experiment(self, experiment: Experiment, state: ExperimentState) -> ExperimentState:
         problem_domain = state.problem_domain
-        log.info('Starting experiment using the %s algorithm "%s"...', problem_domain.problem_name,
+        Log.info('Starting experiment using the {} algorithm "{}"...', problem_domain.problem_name,
                  problem_domain.learner_name)
 
         for listener in experiment.listeners:
@@ -568,8 +569,8 @@ class DefaultProcedure(ExperimentalProcedure):
 
         if start_time:
             run_time = Timer.stop(start_time)
-            log.info('Successfully finished experiment after %s', run_time)
+            Log.success('Successfully finished experiment after {}', run_time)
         else:
-            log.info('Successfully finished experiment')
+            Log.success('Successfully finished experiment')
 
         return state

@@ -7,7 +7,6 @@ import logging
 import sys
 
 from enum import Enum
-from typing import Optional
 
 
 class Log:
@@ -40,7 +39,7 @@ class Log:
         root.addHandler(out_handler)
 
     @staticmethod
-    def error(message: str, *args, error: Optional[Exception] = None, exit_code: int = 1):
+    def error(message: str, *args, error: Exception | None = None, exit_code: int = 1):
         """
         Writes a log message at level `Log.Level.ERROR` and terminates the build system.
 

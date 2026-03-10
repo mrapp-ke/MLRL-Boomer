@@ -1,11 +1,13 @@
-mlrl-testbed mlrl.testbed_sklearn --mode batch --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/sklearn/regression/batch_config.yml --problem-type regression --save-evaluation true --list --n-estimators 1 --estimator RandomForestRegressor
-DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
+mlrl-testbed mlrl.testbed_sklearn --mode batch --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/sklearn/regression/batch_config.yml --problem-type regression --save-evaluation true --list --n-estimators 1 --estimator RandomForestRegressor
+○ Writing output data to file "python/tests/res/tmp/metadata.yml"...
 mlrl-testbed mlrl.testbed_sklearn \
     --base-dir python/tests/res/tmp \
     --data-dir python/tests/res/data \
     --dataset emotions \
     --estimator RandomForestRegressor \
     --log-level debug \
+    --log-plain \
+    --log-width 120 \
     --max-leaf-nodes 10 \
     --model-save-dir n-estimators_1/max-leaf-nodes_10/dataset_emotions/models \
     --n-estimators 1 \
@@ -21,6 +23,8 @@ mlrl-testbed mlrl.testbed_sklearn \
     --dataset emotions \
     --estimator RandomForestRegressor \
     --log-level debug \
+    --log-plain \
+    --log-width 120 \
     --max-leaf-nodes 20 \
     --max_depth 5 \
     --model-save-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/models \
@@ -37,6 +41,8 @@ mlrl-testbed mlrl.testbed_sklearn \
     --dataset emotions \
     --estimator RandomForestRegressor \
     --log-level debug \
+    --log-plain \
+    --log-width 120 \
     --max-leaf-nodes 10 \
     --model-save-dir n-estimators_2/max-leaf-nodes_10/dataset_emotions/models \
     --n-estimators 2 \
@@ -52,6 +58,8 @@ mlrl-testbed mlrl.testbed_sklearn \
     --dataset emotions \
     --estimator RandomForestRegressor \
     --log-level debug \
+    --log-plain \
+    --log-width 120 \
     --max-leaf-nodes 20 \
     --max_depth 5 \
     --model-save-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/models \
@@ -68,6 +76,8 @@ mlrl-testbed mlrl.testbed_sklearn \
     --dataset enron \
     --estimator RandomForestRegressor \
     --log-level debug \
+    --log-plain \
+    --log-width 120 \
     --max-leaf-nodes 10 \
     --model-save-dir n-estimators_1/max-leaf-nodes_10/dataset_enron/models \
     --n-estimators 1 \
@@ -83,6 +93,8 @@ mlrl-testbed mlrl.testbed_sklearn \
     --dataset enron \
     --estimator RandomForestRegressor \
     --log-level debug \
+    --log-plain \
+    --log-width 120 \
     --max-leaf-nodes 20 \
     --max_depth 5 \
     --model-save-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/models \
@@ -99,6 +111,8 @@ mlrl-testbed mlrl.testbed_sklearn \
     --dataset enron \
     --estimator RandomForestRegressor \
     --log-level debug \
+    --log-plain \
+    --log-width 120 \
     --max-leaf-nodes 10 \
     --model-save-dir n-estimators_2/max-leaf-nodes_10/dataset_enron/models \
     --n-estimators 2 \
@@ -114,6 +128,8 @@ mlrl-testbed mlrl.testbed_sklearn \
     --dataset enron \
     --estimator RandomForestRegressor \
     --log-level debug \
+    --log-plain \
+    --log-width 120 \
     --max-leaf-nodes 20 \
     --max_depth 5 \
     --model-save-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/models \

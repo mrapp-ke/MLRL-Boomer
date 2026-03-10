@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements modules that provide access to source code that must be compiled.
 """
 from pathlib import Path
-from typing import List, Optional, override
+from typing import override
 
 from core.modules import Module, ModuleRegistry
 from util.files import FileSearch, FileType
@@ -36,8 +36,8 @@ class CompilationModule(Module):
                  file_type: FileType,
                  root_directory: Path,
                  build_directory_name: str,
-                 install_directory: Optional[Path] = None,
-                 installed_file_search: Optional[FileSearch] = None):
+                 install_directory: Path | None = None,
+                 installed_file_search: FileSearch | None = None):
         """
         :param file_type:               The file types of the source files that belongs to the module
         :param root_directory:          The path to the module's root directory
@@ -60,7 +60,7 @@ class CompilationModule(Module):
         """
         return self.root_directory / self.build_directory_name
 
-    def find_installed_files(self) -> List[Path]:
+    def find_installed_files(self) -> list[Path]:
         """
         Finds and returns all installed files that belong to the module.
 

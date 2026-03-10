@@ -8,7 +8,7 @@ from datetime import date
 from enum import Enum, StrEnum, auto
 from functools import cached_property
 from pathlib import Path
-from typing import Dict, List, Optional, override
+from typing import override
 
 from core.build_unit import BuildUnit
 from util.format import format_iterable
@@ -28,7 +28,7 @@ class LineType(Enum):
     ENUMERATION = auto()
 
     @staticmethod
-    def parse(line: str) -> Optional['LineType']:
+    def parse(line: str) -> 'LineType | None':
         """
         Parses a given line and returns its type.
 
@@ -105,7 +105,7 @@ class Changeset:
         changes:    A list that stores the textual descriptions of the changes
     """
     header: str
-    changes: List[str] = field(default_factory=list)
+    changes: list[str] = field(default_factory=list)
 
     @override
     def __str__(self) -> str:
@@ -151,7 +151,7 @@ class ChangesetFile(TextFile):
         """
         return ChangesetFile(ChangesetFile.CHANGELOG_DIRECTORY / 'changelog-bugfix.md')
 
-    def __validate_line(self, current_line: Optional[Line], previous_line: Optional[Line]):
+    def __validate_line(self, current_line: Line | None, previous_line: Line | None):
         current_line_is_enumeration = current_line and current_line.line_type == LineType.ENUMERATION
 
         if current_line_is_enumeration and not previous_line:
@@ -164,7 +164,7 @@ class ChangesetFile(TextFile):
                                  + ' of file "' + str(self.file) + '" is not followed by any content')
 
     @cached_property
-    def parsed_lines(self) -> List[Line]:
+    def parsed_lines(self) -> list[Line]:
         """
         The lines in the changelog as `Line` objects.
         """
@@ -179,7 +179,7 @@ class ChangesetFile(TextFile):
         return parsed_lines
 
     @cached_property
-    def changesets(self) -> List[Changeset]:
+    def changesets(self) -> list[Changeset]:
         """
         A list that contains all changesets in the changelog.
         """
@@ -245,7 +245,7 @@ class Release:
     version: SemanticVersion
     release_date: date
     release_type: ReleaseType
-    changesets: List[Changeset] = field(default_factory=list)
+    changesets: list[Changeset] = field(default_factory=list)
 
     URL_DOCUMENTATION = 'https://mlrl-boomer.readthedocs.io/en/'
 
@@ -363,8 +363,8 @@ def __validate_changeset(changeset_file: ChangesetFile):
         Log.error('Changeset file "%s" is malformed!\n\n%s', changeset_file, str(error))
 
 
-def __merge_changesets(*changeset_files: ChangesetFile) -> List[Changeset]:
-    changesets_by_header: Dict[str, Changeset] = {}
+def __merge_changesets(*changeset_files: ChangesetFile) -> list[Changeset]:
+    changesets_by_header: dict[str, Changeset] = {}
 
     for changeset_file in changeset_files:
         for changeset in changeset_file.changesets:

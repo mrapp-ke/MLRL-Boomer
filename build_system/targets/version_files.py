@@ -6,7 +6,7 @@ Provides utilities for reading and writing version files.
 
 from dataclasses import dataclass
 from functools import cached_property
-from typing import Optional, override
+from typing import override
 
 from util.io import TextFile
 from util.log import Log
@@ -28,7 +28,7 @@ class SemanticVersion:
     major: int
     minor: int
     patch: int
-    dev: Optional[int] = None
+    dev: int | None = None
 
     @staticmethod
     def parse(value: str) -> 'SemanticVersion':

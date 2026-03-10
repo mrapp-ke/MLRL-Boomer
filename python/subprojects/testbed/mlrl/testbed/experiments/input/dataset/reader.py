@@ -3,17 +3,17 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow reading datasets from one or several sources.
 """
-import logging as log
 import sys
 
 from dataclasses import replace
-from typing import List, Optional, override
+from typing import override
 
 from mlrl.testbed.experiments.input.dataset.dataset import InputDataset
 from mlrl.testbed.experiments.input.dataset.preprocessors import Preprocessor
 from mlrl.testbed.experiments.input.reader import InputReader
 from mlrl.testbed.experiments.input.sources import Source
 from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.log import Log
 
 
 class DatasetReader(InputReader):
@@ -27,8 +27,8 @@ class DatasetReader(InputReader):
         :param sources:     The sources, the input dataset should be read from
         """
         super().__init__(input_data, *sources)
-        self.preprocessors: List[Preprocessor] = []
-        self.encoders: Optional[List[Preprocessor.Encoder]] = None
+        self.preprocessors: list[Preprocessor] = []
+        self.encoders: list[Preprocessor.Encoder] | None = None
 
     def add_preprocessors(self, *preprocessors: Preprocessor):
         """
@@ -50,9 +50,9 @@ class DatasetReader(InputReader):
                     return new_state
             # pylint: disable=broad-exception-caught
             except Exception as error:
-                log.error(str(error))
+                Log.error(str(error))
 
-        log.error('Failed to load dataset!')
+        Log.error('Failed to load dataset!')
         sys.exit(1)
 
     @override

@@ -5,7 +5,7 @@ Provides classes that allow writing algorithmic parameters to one or several sin
 """
 from argparse import Namespace
 from pathlib import Path
-from typing import List, Optional, Tuple, override
+from typing import override
 
 from mlrl.testbed.experiments.input.parameters import ParameterReader
 from mlrl.testbed.experiments.input.reader import InputReader
@@ -28,7 +28,7 @@ class ParameterWriter(OutputWriter):
         """
 
         @override
-        def extract_data(self, state: ExperimentState, _: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
+        def extract_data(self, state: ExperimentState, _: list[Sink]) -> list[tuple[ExperimentState, OutputData]]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
@@ -41,7 +41,7 @@ class ParameterWriter(OutputWriter):
         super().__init__(*extractors, ParameterWriter.DefaultExtractor())
 
     @override
-    def create_input_reader(self, args: Namespace, input_directory: Path) -> Optional[InputReader]:
+    def create_input_reader(self, args: Namespace, input_directory: Path) -> InputReader | None:
         parameter_load_dir = ParameterOutputDirectoryArguments.PARAMETER_SAVE_DIR.get_value(args)
 
         if parameter_load_dir:

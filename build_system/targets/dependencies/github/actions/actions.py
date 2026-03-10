@@ -5,7 +5,7 @@ Provides utility functions for checking the project's GitHub workflows for outda
 """
 from dataclasses import dataclass, replace
 from functools import cached_property, reduce
-from typing import Any, Dict, List, Set, override
+from typing import Any, override
 
 from core.build_unit import BuildUnit
 from util.files import FileType
@@ -39,7 +39,7 @@ class ActionVersion:
         return ActionVersion(ActionVersion.SEPARATOR.join([str(version_number) for version_number in version_numbers]))
 
     @property
-    def version_numbers(self) -> List[int]:
+    def version_numbers(self) -> list[int]:
         """
         A list that stores the individual version numbers, the full version consists of.
         """
@@ -126,7 +126,7 @@ class Actions(Workflow):
     TAG_USES = 'uses'
 
     @cached_property
-    def actions(self) -> Set[Action]:
+    def actions(self) -> set[Action]:
         """
         A set that contains all GitHub Actions used in the workflow.
         """
@@ -151,7 +151,7 @@ class Actions(Workflow):
 
         :param updated_actions: The actions to be updated
         """
-        updated_actions_by_name: Dict[str, Action] = {}
+        updated_actions_by_name: dict[str, Action] = {}
         updated_actions_by_name = reduce(lambda aggr, action: aggr | {action.name: action}, updated_actions,
                                          updated_actions_by_name)
         uses_prefix = self.TAG_USES + ':'
@@ -265,16 +265,16 @@ class ActionUpdater(Workflows):
         :param module:      The module, that contains the workflow definition files
         """
         super().__init__(build_unit, module)
-        self.version_cache: Dict[str, ActionVersion] = {}
+        self.version_cache: dict[str, ActionVersion] = {}
         self.github_api = GithubApi(build_unit).set_token_from_env()
 
-    def find_outdated_workflows(self) -> Dict[Actions, Set[OutdatedAction]]:
+    def find_outdated_workflows(self) -> dict[Actions, set[OutdatedAction]]:
         """
         Finds and returns all workflows with outdated GitHub actions.
 
         :return: A dictionary that contains for each workflow a set of outdated Actions
         """
-        outdated_workflows: Dict[Actions, Set[ActionUpdater.OutdatedAction]] = {}
+        outdated_workflows: dict[Actions, set[ActionUpdater.OutdatedAction]] = {}
 
         for workflow in self.workflows:
             Log.info('Searching for GitHub Actions in workflow "%s"...', workflow.file)
@@ -289,16 +289,16 @@ class ActionUpdater(Workflows):
 
         return outdated_workflows
 
-    def update_outdated_workflows(self) -> Dict[Actions, Set[UpdatedAction]]:
+    def update_outdated_workflows(self) -> dict[Actions, set[UpdatedAction]]:
         """
         Updates all workflows with outdated GitHub Actions.
 
         :return: A dictionary that contains for each workflow a set of updated Actions
         """
-        updated_workflows: Dict[Actions, Set[ActionUpdater.UpdatedAction]] = {}
+        updated_workflows: dict[Actions, set[ActionUpdater.UpdatedAction]] = {}
 
         for workflow, outdated_actions in self.find_outdated_workflows().items():
-            updated_actions: Set[ActionUpdater.UpdatedAction] = set()
+            updated_actions: set[ActionUpdater.UpdatedAction] = set()
 
             for outdated_action in outdated_actions:
                 previous_version = outdated_action.action.version

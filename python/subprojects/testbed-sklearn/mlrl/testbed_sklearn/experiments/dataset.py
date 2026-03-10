@@ -6,7 +6,6 @@ Provides classes for representing tabular datasets.
 from dataclasses import dataclass, replace
 from enum import Enum, auto
 from functools import reduce
-from typing import List, Optional
 
 from scipy.sparse import lil_array
 
@@ -36,7 +35,7 @@ class Attribute:
     """
     name: str
     attribute_type: AttributeType
-    nominal_values: Optional[List[str]] = None
+    nominal_values: list[str] | None = None
 
 
 @dataclass
@@ -53,8 +52,8 @@ class TabularDataset(Dataset):
     """
     x: lil_array
     y: lil_array
-    features: List[Attribute]
-    outputs: List[Attribute]
+    features: list[Attribute]
+    outputs: list[Attribute]
 
     @property
     def num_examples(self) -> int:
@@ -127,7 +126,7 @@ class TabularDataset(Dataset):
 
         return len(self.features)
 
-    def get_feature_indices(self, *feature_types: AttributeType) -> List[int]:
+    def get_feature_indices(self, *feature_types: AttributeType) -> list[int]:
         """
         Returns a list that contains the indices of all features with one out of a given set of types (in ascending
         order). If no types are given, all indices are returned.

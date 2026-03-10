@@ -6,7 +6,7 @@ package.
 """
 from abc import ABC, abstractmethod
 from argparse import Namespace
-from typing import Set, override
+from typing import override
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.state import ExperimentMode
@@ -26,7 +26,7 @@ class Extension(ABC):
         """
         self._dependencies = set(dependencies)
 
-    def get_dependencies(self, mode: ExperimentMode) -> Set['Extension']:
+    def get_dependencies(self, mode: ExperimentMode) -> set['Extension']:
         """
         Returns a set that contains all extensions, this extension depends on recursively, including only those that
         support a given mode of operation.
@@ -43,7 +43,7 @@ class Extension(ABC):
 
         return dependencies
 
-    def get_arguments(self, mode: ExperimentMode) -> Set[Argument]:
+    def get_arguments(self, mode: ExperimentMode) -> set[Argument]:
         """
         Returns a set that contains the arguments that should be added to the command line API according to this
         extension, if it supported a given mode of operation. Dependencies that support the given mode are taken into
@@ -61,7 +61,7 @@ class Extension(ABC):
         return arguments
 
     @abstractmethod
-    def get_supported_modes(self) -> Set[ExperimentMode]:
+    def get_supported_modes(self) -> set[ExperimentMode]:
         """
         Must be implemented by subclasses in order to return the modes of operation supported by this extension.
 
@@ -116,7 +116,7 @@ class Extension(ABC):
         """
 
     @abstractmethod
-    def _get_arguments(self, mode: ExperimentMode) -> Set[Argument]:
+    def _get_arguments(self, mode: ExperimentMode) -> set[Argument]:
         """
         Must be implemented by subclasses in order to return the arguments that should be added to the command line API
         according to this extension.
@@ -132,11 +132,11 @@ class NopExtension(Extension):
     """
 
     @override
-    def _get_arguments(self, _: ExperimentMode) -> Set[Argument]:
+    def _get_arguments(self, _: ExperimentMode) -> set[Argument]:
         return set()
 
     @override
-    def get_supported_modes(self) -> Set[ExperimentMode]:
+    def get_supported_modes(self) -> set[ExperimentMode]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
         """

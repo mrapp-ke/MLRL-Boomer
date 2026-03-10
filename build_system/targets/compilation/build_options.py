@@ -4,8 +4,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow to configure build options.
 """
 from abc import ABC, abstractmethod
+from collections.abc import Iterable, Iterator
 from os import environ
-from typing import Any, Iterable, Iterator, List, Optional, override
+from typing import Any, override
 
 from util.env import get_env, get_env_array
 
@@ -27,7 +28,7 @@ class BuildOption(ABC):
         self.subprojects = list(subprojects)
 
     @property
-    def keys(self) -> List[str]:
+    def keys(self) -> list[str]:
         """
         A list of keys to be used for setting the build option.
         """
@@ -50,7 +51,7 @@ class BuildOption(ABC):
 
     @property
     @abstractmethod
-    def value(self) -> Optional[str]:
+    def value(self) -> str | None:
         """
         Returns the value of the build option.
 
@@ -85,7 +86,7 @@ class ConstantBuildOption(BuildOption):
 
     @override
     @property
-    def value(self) -> Optional[str]:
+    def value(self) -> str | None:
         return self._value
 
 
@@ -94,7 +95,7 @@ class EnvBuildOption(BuildOption):
     A build option, whose value is obtained from an environment variable.
     """
 
-    def __init__(self, name: str, *subprojects: str, default_value: Optional[str] = None):
+    def __init__(self, name: str, *subprojects: str, default_value: str | None = None):
         """
         :param name:            The name of the build option
         :param subprojects:     The subprojects, the build option applies to, or no subproject, if it is a global option
@@ -105,7 +106,7 @@ class EnvBuildOption(BuildOption):
 
     @override
     @property
-    def value(self) -> Optional[str]:
+    def value(self) -> str | None:
         value = get_env(environ, self.name.upper(), self.default_value)
 
         if value:

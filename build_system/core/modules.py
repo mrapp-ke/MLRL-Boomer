@@ -5,7 +5,6 @@ Provides classes that provide information about files and directories that belon
 to be dealt with by the targets of the build system.
 """
 from abc import ABC, abstractmethod
-from typing import List
 
 
 class Module(ABC):
@@ -28,7 +27,7 @@ class Module(ABC):
             :return:                True, if the filter matches the given module, False otherwise
             """
 
-    def match(self, module_filter: Filter, module_registry: 'ModuleRegistry') -> List['Module']:
+    def match(self, module_filter: Filter, module_registry: 'ModuleRegistry') -> list['Module']:
         """
         Returns a list that contains all submodules in this module that match a given filter.
 
@@ -55,7 +54,7 @@ class ModuleRegistry:
         """
         self.modules.append(module)
 
-    def lookup(self, module_filter: Module.Filter, *additional_filters: Module.Filter) -> List[Module]:
+    def lookup(self, module_filter: Module.Filter, *additional_filters: Module.Filter) -> list[Module]:
         """
         Looks up and returns all modules that match one or several filters.
 

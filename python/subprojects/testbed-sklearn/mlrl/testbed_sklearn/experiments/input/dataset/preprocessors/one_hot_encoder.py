@@ -3,7 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for preprocessing datasets.
 """
-import logging as log
 
 from dataclasses import replace
 from typing import override
@@ -15,6 +14,7 @@ from mlrl.testbed_sklearn.experiments.dataset import AttributeType
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.input.dataset.preprocessors.preprocessor import Preprocessor
+from mlrl.testbed.log import Log
 
 
 class OneHotEncoder(Preprocessor):
@@ -37,7 +37,7 @@ class OneHotEncoder(Preprocessor):
             """
             nominal_indices = dataset.get_feature_indices(AttributeType.NOMINAL)
             num_nominal_features = len(nominal_indices)
-            log.info('Dataset contains %s nominal and %s numerical features.', num_nominal_features,
+            Log.info('Dataset contains {} nominal and {} numerical features.', num_nominal_features,
                      (len(dataset.features) - num_nominal_features))
 
             if num_nominal_features > 0:
@@ -46,7 +46,7 @@ class OneHotEncoder(Preprocessor):
                 encoder = self.encoder
 
                 if not encoder:
-                    log.info('Applying one-hot encoding...')
+                    Log.info('Applying one-hot encoding...')
                     one_hot_encoder = SkLearnOneHotEncoder(handle_unknown='ignore', sparse_output=False)
                     transformers = [('one_hot_encoder', one_hot_encoder, nominal_indices)]
                     encoder = ColumnTransformer(transformers, remainder='passthrough')
@@ -55,7 +55,7 @@ class OneHotEncoder(Preprocessor):
 
                 return replace(dataset, x=encoder.transform(dataset.x), features=[])
 
-            log.debug('No need to apply one-hot encoding, as the dataset does not contain any nominal features.')
+            Log.verbose('No need to apply one-hot encoding, as the dataset does not contain any nominal features.')
             return dataset
 
     @override

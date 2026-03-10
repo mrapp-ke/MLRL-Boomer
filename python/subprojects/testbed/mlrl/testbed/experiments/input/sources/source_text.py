@@ -5,7 +5,7 @@ Provides classes that allow reading textual input data from a text file.
 """
 
 from pathlib import Path
-from typing import Optional, override
+from typing import override
 
 from mlrl.testbed.experiments.input.data import TextualInputData
 from mlrl.testbed.experiments.input.sources.source import TextualFileSource
@@ -27,6 +27,6 @@ class TextFileSource(TextualFileSource):
         super().__init__(directory=directory, suffix=self.SUFFIX_TEXT)
 
     @override
-    def _read_text_from_file(self, _: ExperimentState, file_path: Path, input_data: TextualInputData) -> Optional[str]:
+    def _read_text_from_file(self, _: ExperimentState, file_path: Path, input_data: TextualInputData) -> str | None:
         with open_readable_file(file_path) as text_file:
             return text_file.read()

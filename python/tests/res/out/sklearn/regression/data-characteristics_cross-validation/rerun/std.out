@@ -1,18 +1,24 @@
-mlrl-testbed mlrl.testbed_sklearn --mode read --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --print-evaluation false --save-evaluation false --print-data-characteristics true --save-data-characteristics true --estimator RandomForestRegressor
+mlrl-testbed mlrl.testbed_sklearn --mode read --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --print-evaluation false --save-evaluation false --print-data-characteristics true --save-data-characteristics true --estimator RandomForestRegressor
 Reading meta-data...
-DEBUG: Reading input data from file "python/tests/res/tmp/metadata.yml"...
-Successfully read meta-data
-DEBUG: Checking for version conflicts...
-DEBUG: Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is currently used
-DEBUG: No version conflicts detected
+○ Reading input data from file "python/tests/res/tmp/metadata.yml"...
+✓ Successfully read meta-data
+○ Checking for version conflicts...
+○ Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is
+currently used
+○ No version conflicts detected
 Reading experimental results of 1 experiment...
 
 Reading experimental results of experiment (1 / 1)...
-The command "mlrl-testbed mlrl.testbed_sklearn --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --data-split cross-validation --print-evaluation false --save-evaluation false --print-data-characteristics true --save-data-characteristics true --n-estimators 1 --estimator RandomForestRegressor" has been used originally for running this experiment
+The command "mlrl-testbed mlrl.testbed_sklearn --log-width 120 --log-plain --log-level debug --base-dir
+python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression
+--save-evaluation true --data-split cross-validation --print-evaluation false --save-evaluation false
+--print-data-characteristics true --save-data-characteristics true --n-estimators 1 --estimator RandomForestRegressor"
+has been used originally for running this experiment
 Performing full 10-fold cross validation...
 Fold 1 / 10:
-DEBUG: Reading input data from file "python/tests/res/tmp/results/data_characteristics_fold-1.csv"...
-Data characteristics (Fold 1):
+○ Reading input data from file "python/tests/res/tmp/results/data_characteristics_fold-1.csv"...
+
+🗀 Data characteristics (Fold 1):
 
 Examples            266
 Features            411
@@ -25,10 +31,11 @@ Outputs               6
 Output Density      100
 Output Sparsity       0
 
-DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/data_characteristics_fold-1.csv"...
+○ Writing output data to file "python/tests/res/tmp/rerun/results/data_characteristics_fold-1.csv"...
 Fold 2 / 10:
-DEBUG: Reading input data from file "python/tests/res/tmp/results/data_characteristics_fold-2.csv"...
-Data characteristics (Fold 2):
+○ Reading input data from file "python/tests/res/tmp/results/data_characteristics_fold-2.csv"...
+
+🗀 Data characteristics (Fold 2):
 
 Examples            266
 Features            411
@@ -41,10 +48,11 @@ Outputs               6
 Output Density      100
 Output Sparsity       0
 
-DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/data_characteristics_fold-2.csv"...
+○ Writing output data to file "python/tests/res/tmp/rerun/results/data_characteristics_fold-2.csv"...
 Fold 3 / 10:
-DEBUG: Reading input data from file "python/tests/res/tmp/results/data_characteristics_fold-3.csv"...
-Data characteristics (Fold 3):
+○ Reading input data from file "python/tests/res/tmp/results/data_characteristics_fold-3.csv"...
+
+🗀 Data characteristics (Fold 3):
 
 Examples            266
 Features            411
@@ -57,10 +65,11 @@ Outputs               6
 Output Density      100
 Output Sparsity       0
 
-DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/data_characteristics_fold-3.csv"...
+○ Writing output data to file "python/tests/res/tmp/rerun/results/data_characteristics_fold-3.csv"...
 Fold 4 / 10:
-DEBUG: Reading input data from file "python/tests/res/tmp/results/data_characteristics_fold-4.csv"...
-Data characteristics (Fold 4):
+○ Reading input data from file "python/tests/res/tmp/results/data_characteristics_fold-4.csv"...
+
+🗀 Data characteristics (Fold 4):
 
 Examples            266
 Features            411
@@ -73,10 +82,11 @@ Outputs               6
 Output Density      100
 Output Sparsity       0
 
-DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/data_characteristics_fold-4.csv"...
+○ Writing output data to file "python/tests/res/tmp/rerun/results/data_characteristics_fold-4.csv"...
 Fold 5 / 10:
-DEBUG: Reading input data from file "python/tests/res/tmp/results/data_characteristics_fold-5.csv"...
-Data characteristics (Fold 5):
+○ Reading input data from file "python/tests/res/tmp/results/data_characteristics_fold-5.csv"...
+
+🗀 Data characteristics (Fold 5):
 
 Examples            266
 Features            411
@@ -89,10 +99,11 @@ Outputs               6
 Output Density      100
 Output Sparsity       0
 
-DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/data_characteristics_fold-5.csv"...
+○ Writing output data to file "python/tests/res/tmp/rerun/results/data_characteristics_fold-5.csv"...
 Fold 6 / 10:
-DEBUG: Reading input data from file "python/tests/res/tmp/results/data_characteristics_fold-6.csv"...
-Data characteristics (Fold 6):
+○ Reading input data from file "python/tests/res/tmp/results/data_characteristics_fold-6.csv"...
+
+🗀 Data characteristics (Fold 6):
 
 Examples            266
 Features            411
@@ -105,10 +116,11 @@ Outputs               6
 Output Density      100
 Output Sparsity       0
 
-DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/data_characteristics_fold-6.csv"...
+○ Writing output data to file "python/tests/res/tmp/rerun/results/data_characteristics_fold-6.csv"...
 Fold 7 / 10:
-DEBUG: Reading input data from file "python/tests/res/tmp/results/data_characteristics_fold-7.csv"...
-Data characteristics (Fold 7):
+○ Reading input data from file "python/tests/res/tmp/results/data_characteristics_fold-7.csv"...
+
+🗀 Data characteristics (Fold 7):
 
 Examples            267
 Features            411
@@ -121,10 +133,11 @@ Outputs               6
 Output Density      100
 Output Sparsity       0
 
-DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/data_characteristics_fold-7.csv"...
+○ Writing output data to file "python/tests/res/tmp/rerun/results/data_characteristics_fold-7.csv"...
 Fold 8 / 10:
-DEBUG: Reading input data from file "python/tests/res/tmp/results/data_characteristics_fold-8.csv"...
-Data characteristics (Fold 8):
+○ Reading input data from file "python/tests/res/tmp/results/data_characteristics_fold-8.csv"...
+
+🗀 Data characteristics (Fold 8):
 
 Examples            267
 Features            411
@@ -137,10 +150,11 @@ Outputs               6
 Output Density      100
 Output Sparsity       0
 
-DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/data_characteristics_fold-8.csv"...
+○ Writing output data to file "python/tests/res/tmp/rerun/results/data_characteristics_fold-8.csv"...
 Fold 9 / 10:
-DEBUG: Reading input data from file "python/tests/res/tmp/results/data_characteristics_fold-9.csv"...
-Data characteristics (Fold 9):
+○ Reading input data from file "python/tests/res/tmp/results/data_characteristics_fold-9.csv"...
+
+🗀 Data characteristics (Fold 9):
 
 Examples            267
 Features            411
@@ -153,10 +167,11 @@ Outputs               6
 Output Density      100
 Output Sparsity       0
 
-DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/data_characteristics_fold-9.csv"...
+○ Writing output data to file "python/tests/res/tmp/rerun/results/data_characteristics_fold-9.csv"...
 Fold 10 / 10:
-DEBUG: Reading input data from file "python/tests/res/tmp/results/data_characteristics_fold-10.csv"...
-Data characteristics (Fold 10):
+○ Reading input data from file "python/tests/res/tmp/results/data_characteristics_fold-10.csv"...
+
+🗀 Data characteristics (Fold 10):
 
 Examples            267
 Features            411
@@ -169,4 +184,4 @@ Outputs               6
 Output Density      100
 Output Sparsity       0
 
-DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/data_characteristics_fold-10.csv"...
+○ Writing output data to file "python/tests/res/tmp/rerun/results/data_characteristics_fold-10.csv"...

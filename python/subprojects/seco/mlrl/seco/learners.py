@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides a scikit-learn implementation of a Separate-and-Conquer (SeCo) algorithm for learning multi-label
 classification rules.
 """
-from typing import Any, Optional, override
+from typing import Any, override
 
 from mlrl.common.learners import ClassificationRuleLearner, configure_rule_learner
 
@@ -19,28 +19,28 @@ class SeCoClassifier(ClassificationRuleLearner):
     """
 
     def __init__(self,
-                 random_state: Optional[int] = None,
-                 feature_format: Optional[str] = None,
-                 output_format: Optional[str] = None,
-                 prediction_format: Optional[str] = None,
-                 rule_induction: Optional[str] = None,
-                 max_rules: Optional[int] = None,
-                 time_limit: Optional[int] = None,
-                 post_optimization: Optional[str] = None,
-                 head_type: Optional[str] = None,
-                 lift_function: Optional[str] = None,
-                 heuristic: Optional[str] = None,
-                 pruning_heuristic: Optional[str] = None,
-                 output_sampling: Optional[str] = None,
-                 instance_sampling: Optional[str] = None,
-                 feature_sampling: Optional[str] = None,
-                 holdout: Optional[str] = None,
-                 feature_binning: Optional[str] = None,
-                 rule_pruning: Optional[str] = None,
-                 parallel_rule_refinement: Optional[str] = None,
-                 parallel_statistic_update: Optional[str] = None,
-                 parallel_prediction: Optional[str] = None,
-                 simd: Optional[str] = None):
+                 random_state: int | None = None,
+                 feature_format: str | None = None,
+                 output_format: str | None = None,
+                 prediction_format: str | None = None,
+                 rule_induction: str | None = None,
+                 max_rules: int | None = None,
+                 time_limit: int | None = None,
+                 post_optimization: str | None = None,
+                 head_type: str | None = None,
+                 lift_function: str | None = None,
+                 heuristic: str | None = None,
+                 pruning_heuristic: str | None = None,
+                 output_sampling: str | None = None,
+                 instance_sampling: str | None = None,
+                 feature_sampling: str | None = None,
+                 holdout: str | None = None,
+                 feature_binning: str | None = None,
+                 rule_pruning: str | None = None,
+                 parallel_rule_refinement: str | None = None,
+                 parallel_statistic_update: str | None = None,
+                 parallel_prediction: str | None = None,
+                 simd: str | None = None):
         """
         :param random_state:                The seed to be used by RNGs. Must be at least 0
         :param rule_induction:              An algorithm to be used for the induction of individual rules. Must be

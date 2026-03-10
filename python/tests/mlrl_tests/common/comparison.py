@@ -5,9 +5,10 @@ import csv
 import re as regex
 
 from abc import ABC, abstractmethod
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, override
+from typing import Any, override
 
 import yaml
 
@@ -87,7 +88,7 @@ class FileComparison(ABC):
         with open(file, mode='r', encoding=ENCODING_UTF8) as text_file:
             return TextFileComparison(text_file.readlines())
 
-    def compare_or_overwrite(self, another_file: Path, overwrite: bool = False) -> Optional[Difference]:
+    def compare_or_overwrite(self, another_file: Path, overwrite: bool = False) -> Difference | None:
         """
         Compares the file to another file or overwrites the latter with the former.
 
@@ -103,7 +104,7 @@ class FileComparison(ABC):
         return self._compare(another_file)
 
     @abstractmethod
-    def _compare(self, another_file: Path) -> Optional[Difference]:
+    def _compare(self, another_file: Path) -> Difference | None:
         """
         Must be implemented by subclasses in order to compare to files.
 
@@ -125,7 +126,7 @@ class TextFileComparison(FileComparison):
     Allows to compare or overwrite text files produced by tests.
     """
 
-    block_of_durations: Tuple[int, int] = (-1, -1)
+    block_of_durations: tuple[int, int] = (-1, -1)
 
     def __replace_durations_with_placeholders(self, line_index: int, line: str) -> str:
         if self.block_of_durations[0] >= 0:
@@ -158,7 +159,7 @@ class TextFileComparison(FileComparison):
         return regex.sub(regex_version, '"' + PLACEHOLDER_VERSION + '"', line)
 
     def __mask_line(self, line_index: int, line: str) -> str:
-        masked_line = self.__replace_durations_with_placeholders(line_index, line.strip('\n'))
+        masked_line = self.__replace_durations_with_placeholders(line_index, line.rstrip())
         masked_line = self.__replace_timestamps_with_placeholders(masked_line)
         masked_line = self.__replace_versions_with_placeholders(masked_line)
         return masked_line
@@ -170,13 +171,13 @@ class TextFileComparison(FileComparison):
         self.lines = lines
 
     @override
-    def _compare(self, another_file: Path) -> Optional[Difference]:
+    def _compare(self, another_file: Path) -> Difference | None:
         with open(another_file, 'r', encoding=ENCODING_UTF8) as file:
             expected_lines = file.readlines()
 
             for line_index, (actual_line, expected_line) in enumerate(zip(self.lines, expected_lines)):
                 actual_line = self.__mask_line(line_index, actual_line)
-                expected_line = expected_line.strip('\n')
+                expected_line = expected_line.rstrip()
 
                 if actual_line != expected_line:
                     return FileComparison.LineDifference(line_index=line_index,
@@ -205,7 +206,7 @@ class PickleFileComparison(FileComparison):
         self.path = path
 
     @override
-    def _compare(self, another_file: Path) -> Optional[Difference]:
+    def _compare(self, another_file: Path) -> Difference | None:
         if not another_file.is_file():
             raise IOError('File "' + str(another_file) + '" does not exist')
         return None
@@ -276,7 +277,7 @@ class CsvFileComparison(FileComparison):
                                         self.header) + '": Value should be "' + str(
                                             self.expected_value) + '", but is "' + str(self.actual_value) + '"'
 
-        def __init__(self, file: Path, different_cells: List[CellDifference]):
+        def __init__(self, file: Path, different_cells: list[CellDifference]):
             """
             :param file:            The path to the file that has been compared
             :param different_cells: A list that contains all cells with unexpected values
@@ -301,11 +302,11 @@ class CsvFileComparison(FileComparison):
         """
         self.file = file
 
-    def __get_duration_column_indices(self, headers: List[Any]) -> Set[int]:
+    def __get_duration_column_indices(self, headers: list[Any]) -> set[int]:
         return {column_index for column_index, header in enumerate(headers) if 'time' in header.lower().split()}
 
     @override
-    def _compare(self, another_file: Path) -> Optional[Difference]:
+    def _compare(self, another_file: Path) -> Difference | None:
         with open(self.file, mode='r', encoding=ENCODING_UTF8) as actual_file:
             actual_csv_file = csv.reader(actual_file,
                                          delimiter=CsvFileSource.DELIMITER,
@@ -431,11 +432,11 @@ class MetaDataFileComparison(FileComparison):
 
     FIELD_TIMESTAMP = 'timestamp'
 
-    def __load_yaml(self, path: Path) -> Dict[Any, Any]:
+    def __load_yaml(self, path: Path) -> dict[Any, Any]:
         with open_readable_file(path) as yaml_file:
             return yaml.safe_load(yaml_file)
 
-    def __write_yaml(self, yaml_dict: Dict[Any, Any], path: Path):
+    def __write_yaml(self, yaml_dict: dict[Any, Any], path: Path):
         with open_writable_file(path) as yaml_file:
             yaml.dump(yaml_dict, yaml_file)
 
@@ -446,7 +447,7 @@ class MetaDataFileComparison(FileComparison):
         self.path = path
 
     @override
-    def _compare(self, another_file: Path) -> Optional[Difference]:
+    def _compare(self, another_file: Path) -> Difference | None:
         yaml_dict = self.__load_yaml(self.path)
         another_yaml_dict = self.__load_yaml(another_file)
 

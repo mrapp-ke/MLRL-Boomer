@@ -3,10 +3,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for splitting datasets into multiple, equally sized, folds consisting of a training and a test dataset.
 """
-import logging as log
 
+from collections.abc import Generator
 from dataclasses import dataclass, field, replace
-from typing import Any, Generator, List, Optional, cast, override
+from typing import Any, cast, override
 
 from scipy.sparse import vstack
 from sklearn.model_selection import KFold
@@ -18,6 +18,7 @@ from mlrl.testbed.experiments.fold import Fold, FoldingStrategy
 from mlrl.testbed.experiments.input.dataset import DatasetReader
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.log import Log
 
 
 class CrossValidationSplitter(DatasetSplitter):
@@ -132,8 +133,8 @@ class CrossValidationSplitter(DatasetSplitter):
                  training_datasets: A list that stores the training datasets
                  test_datasets:     A list that stores the test datasets
             """
-            training_datasets: List[TabularDataset] = field(default_factory=list)
-            test_datasets: List[TabularDataset] = field(default_factory=list)
+            training_datasets: list[TabularDataset] = field(default_factory=list)
+            test_datasets: list[TabularDataset] = field(default_factory=list)
 
         def __init__(self, splitter: 'CrossValidationSplitter', state: ExperimentState):
             """
@@ -185,7 +186,7 @@ class CrossValidationSplitter(DatasetSplitter):
 
             return state
 
-    def __init__(self, dataset_reader: Optional[DatasetReader], num_folds: int, first_fold: int, last_fold: int,
+    def __init__(self, dataset_reader: DatasetReader | None, num_folds: int, first_fold: int, last_fold: int,
                  random_state: int):
         """
         :param dataset_reader:  The reader that should be used for loading datasets
@@ -198,7 +199,7 @@ class CrossValidationSplitter(DatasetSplitter):
         super().__init__(FoldingStrategy(num_folds=num_folds, first=first_fold, last=last_fold))
         self.dataset_reader = dataset_reader
         self.random_state = random_state
-        self.cache: Optional[Any] = None
+        self.cache: Any | None = None
 
         if dataset_reader:
             context = dataset_reader.input_data.context
@@ -213,8 +214,8 @@ class CrossValidationSplitter(DatasetSplitter):
         folding_strategy = self.folding_strategy
         num_folds = folding_strategy.num_folds
 
-        log.info(
-            'Performing %s %s-fold cross validation...', 'fold ' + str(folding_strategy.first + 1) +
+        Log.info(
+            'Performing {} {}-fold cross validation...', 'fold ' + str(folding_strategy.first + 1) +
             (' to ' + str(folding_strategy.last) if folding_strategy.num_folds_in_subset > 1 else '')
             + ' of' if folding_strategy.is_subset else 'full', num_folds)
 
@@ -225,7 +226,7 @@ class CrossValidationSplitter(DatasetSplitter):
             dataset_reader.is_available(replace(state, fold=Fold(fold_index))) for fold_index in range(num_folds))
 
         for fold in folding_strategy.folds:
-            log.info('Fold %s / %s:', (fold.index + 1), num_folds)
+            Log.info('Fold {} / {}:', (fold.index + 1), num_folds)
             state = replace(state, fold=fold)
 
             if predefined_splits_available:

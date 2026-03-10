@@ -5,7 +5,7 @@ Provides utility functions for running external programs during the build proces
 """
 from pathlib import Path
 from subprocess import CompletedProcess
-from typing import Any, Set, override
+from typing import Any, override
 
 from core.build_unit import BuildUnit
 from util.cmd import Command
@@ -31,7 +31,7 @@ class Program(Command):
             self.build_unit = build_unit
             self.install_program = True
             self.install_silent = False
-            self.dependencies: Set[str] = set()
+            self.dependencies: set[str] = set()
 
         @override
         def run(self, command: Command, capture_output: bool) -> CompletedProcess[Any]:

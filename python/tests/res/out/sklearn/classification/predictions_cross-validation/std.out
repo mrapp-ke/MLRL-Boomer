@@ -1,16 +1,17 @@
-mlrl-testbed mlrl.testbed_sklearn --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --data-split cross-validation --print-evaluation false --save-evaluation false --print-predictions true --print-ground-truth true --save-predictions true --save-ground-truth true --n-estimators 1 --estimator RandomForestClassifier
+mlrl-testbed mlrl.testbed_sklearn --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --data-split cross-validation --print-evaluation false --save-evaluation false --print-predictions true --print-ground-truth true --save-predictions true --save-ground-truth true --n-estimators 1 --estimator RandomForestClassifier
 Checking if output files do already exist...
 Starting experiment using the classification algorithm "RandomForestClassifier"...
-DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
+○ Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Performing full 10-fold cross validation...
 Fold 1 / 10:
-DEBUG: Reading input data from file "python/tests/res/data/emotions.arff"...
-DEBUG: Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+○ Reading input data from file "python/tests/res/data/emotions.arff"...
+○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 Fitting model to 533 training examples...
-Successfully fit model in <duration>
+✓ Successfully fit model in <duration>
 Predicting for 60 test examples...
-Successfully predicted in <duration>
-Ground truth for test data (Fold 1):
+✓ Successfully predicted in <duration>
+
+🗀 Ground truth for test data (Fold 1):
 
 [[0 1 1 0 0 0]
  [0 0 1 0 1 0]
@@ -73,8 +74,9 @@ Ground truth for test data (Fold 1):
  [0 0 1 1 1 0]
  [0 0 1 1 1 0]]
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-1.arff"...
-Predictions for test data (Fold 1):
+○ Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-1.arff"...
+
+🗀 Predictions for test data (Fold 1):
 
 [[0 0 0 1 1 0]
  [0 0 1 0 1 0]
@@ -137,13 +139,14 @@ Predictions for test data (Fold 1):
  [0 0 0 1 1 0]
  [0 0 1 1 1 0]]
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-1.arff"...
+○ Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-1.arff"...
 Fold 2 / 10:
 Fitting model to 533 training examples...
-Successfully fit model in <duration>
+✓ Successfully fit model in <duration>
 Predicting for 60 test examples...
-Successfully predicted in <duration>
-Ground truth for test data (Fold 2):
+✓ Successfully predicted in <duration>
+
+🗀 Ground truth for test data (Fold 2):
 
 [[0 0 1 0 0 0]
  [0 1 1 0 0 0]
@@ -206,8 +209,9 @@ Ground truth for test data (Fold 2):
  [0 0 1 1 0 0]
  [1 0 0 0 0 1]]
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-2.arff"...
-Predictions for test data (Fold 2):
+○ Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-2.arff"...
+
+🗀 Predictions for test data (Fold 2):
 
 [[0 0 1 0 1 0]
  [0 0 1 0 1 0]
@@ -270,13 +274,14 @@ Predictions for test data (Fold 2):
  [0 1 1 0 0 0]
  [0 0 0 0 0 1]]
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-2.arff"...
+○ Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-2.arff"...
 Fold 3 / 10:
 Fitting model to 533 training examples...
-Successfully fit model in <duration>
+✓ Successfully fit model in <duration>
 Predicting for 60 test examples...
-Successfully predicted in <duration>
-Ground truth for test data (Fold 3):
+✓ Successfully predicted in <duration>
+
+🗀 Ground truth for test data (Fold 3):
 
 [[0 0 0 1 0 0]
  [0 0 1 1 1 0]
@@ -339,8 +344,9 @@ Ground truth for test data (Fold 3):
  [0 0 1 1 1 0]
  [0 0 1 1 1 0]]
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-3.arff"...
-Predictions for test data (Fold 3):
+○ Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-3.arff"...
+
+🗀 Predictions for test data (Fold 3):
 
 [[0 1 1 0 0 0]
  [0 1 0 0 0 0]
@@ -403,13 +409,14 @@ Predictions for test data (Fold 3):
  [0 0 0 1 1 0]
  [0 0 0 1 1 0]]
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-3.arff"...
+○ Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-3.arff"...
 Fold 4 / 10:
 Fitting model to 534 training examples...
-Successfully fit model in <duration>
+✓ Successfully fit model in <duration>
 Predicting for 59 test examples...
-Successfully predicted in <duration>
-Ground truth for test data (Fold 4):
+✓ Successfully predicted in <duration>
+
+🗀 Ground truth for test data (Fold 4):
 
 [[1 1 0 0 0 0]
  [0 0 1 0 0 0]
@@ -471,8 +478,9 @@ Ground truth for test data (Fold 4):
  [1 1 0 0 0 0]
  [0 1 1 0 0 0]]
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-4.arff"...
-Predictions for test data (Fold 4):
+○ Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-4.arff"...
+
+🗀 Predictions for test data (Fold 4):
 
 [[1 1 0 0 0 0]
  [0 1 1 0 0 0]
@@ -534,13 +542,14 @@ Predictions for test data (Fold 4):
  [1 1 0 0 0 0]
  [0 0 1 1 1 0]]
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-4.arff"...
+○ Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-4.arff"...
 Fold 5 / 10:
 Fitting model to 534 training examples...
-Successfully fit model in <duration>
+✓ Successfully fit model in <duration>
 Predicting for 59 test examples...
-Successfully predicted in <duration>
-Ground truth for test data (Fold 5):
+✓ Successfully predicted in <duration>
+
+🗀 Ground truth for test data (Fold 5):
 
 [[1 0 0 0 0 1]
  [0 1 0 0 0 1]
@@ -602,8 +611,9 @@ Ground truth for test data (Fold 5):
  [0 1 1 0 0 0]
  [0 0 1 1 1 0]]
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-5.arff"...
-Predictions for test data (Fold 5):
+○ Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-5.arff"...
+
+🗀 Predictions for test data (Fold 5):
 
 [[1 0 0 0 0 1]
  [1 0 0 0 1 1]
@@ -665,13 +675,14 @@ Predictions for test data (Fold 5):
  [0 1 1 0 0 0]
  [0 0 0 0 1 0]]
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-5.arff"...
+○ Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-5.arff"...
 Fold 6 / 10:
 Fitting model to 534 training examples...
-Successfully fit model in <duration>
+✓ Successfully fit model in <duration>
 Predicting for 59 test examples...
-Successfully predicted in <duration>
-Ground truth for test data (Fold 6):
+✓ Successfully predicted in <duration>
+
+🗀 Ground truth for test data (Fold 6):
 
 [[0 0 0 0 1 0]
  [0 0 1 0 1 1]
@@ -733,8 +744,9 @@ Ground truth for test data (Fold 6):
  [1 0 0 0 0 1]
  [0 1 0 0 0 0]]
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-6.arff"...
-Predictions for test data (Fold 6):
+○ Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-6.arff"...
+
+🗀 Predictions for test data (Fold 6):
 
 [[0 0 1 0 0 0]
  [0 0 0 0 0 1]
@@ -796,13 +808,14 @@ Predictions for test data (Fold 6):
  [0 0 1 1 1 0]
  [0 1 1 0 0 0]]
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-6.arff"...
+○ Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-6.arff"...
 Fold 7 / 10:
 Fitting model to 534 training examples...
-Successfully fit model in <duration>
+✓ Successfully fit model in <duration>
 Predicting for 59 test examples...
-Successfully predicted in <duration>
-Ground truth for test data (Fold 7):
+✓ Successfully predicted in <duration>
+
+🗀 Ground truth for test data (Fold 7):
 
 [[1 1 0 0 0 0]
  [0 1 0 0 0 0]
@@ -864,8 +877,9 @@ Ground truth for test data (Fold 7):
  [1 0 0 0 1 1]
  [0 1 1 0 0 0]]
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-7.arff"...
-Predictions for test data (Fold 7):
+○ Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-7.arff"...
+
+🗀 Predictions for test data (Fold 7):
 
 [[0 0 0 0 0 1]
  [1 0 0 0 0 1]
@@ -927,13 +941,14 @@ Predictions for test data (Fold 7):
  [0 0 0 0 0 1]
  [1 0 0 0 0 0]]
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-7.arff"...
+○ Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-7.arff"...
 Fold 8 / 10:
 Fitting model to 534 training examples...
-Successfully fit model in <duration>
+✓ Successfully fit model in <duration>
 Predicting for 59 test examples...
-Successfully predicted in <duration>
-Ground truth for test data (Fold 8):
+✓ Successfully predicted in <duration>
+
+🗀 Ground truth for test data (Fold 8):
 
 [[0 1 0 0 0 0]
  [0 0 0 0 0 1]
@@ -995,8 +1010,9 @@ Ground truth for test data (Fold 8):
  [0 0 0 0 1 1]
  [0 0 1 0 0 0]]
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-8.arff"...
-Predictions for test data (Fold 8):
+○ Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-8.arff"...
+
+🗀 Predictions for test data (Fold 8):
 
 [[0 0 0 0 0 1]
  [0 0 0 0 0 1]
@@ -1058,13 +1074,14 @@ Predictions for test data (Fold 8):
  [1 0 0 0 1 0]
  [1 1 0 0 0 0]]
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-8.arff"...
+○ Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-8.arff"...
 Fold 9 / 10:
 Fitting model to 534 training examples...
-Successfully fit model in <duration>
+✓ Successfully fit model in <duration>
 Predicting for 59 test examples...
-Successfully predicted in <duration>
-Ground truth for test data (Fold 9):
+✓ Successfully predicted in <duration>
+
+🗀 Ground truth for test data (Fold 9):
 
 [[0 1 1 0 0 0]
  [1 0 0 0 0 1]
@@ -1126,8 +1143,9 @@ Ground truth for test data (Fold 9):
  [0 0 1 1 1 0]
  [0 0 0 0 1 1]]
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-9.arff"...
-Predictions for test data (Fold 9):
+○ Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-9.arff"...
+
+🗀 Predictions for test data (Fold 9):
 
 [[1 0 0 0 0 1]
  [0 0 0 0 0 1]
@@ -1189,13 +1207,14 @@ Predictions for test data (Fold 9):
  [0 0 1 1 1 0]
  [1 1 0 0 0 0]]
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-9.arff"...
+○ Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-9.arff"...
 Fold 10 / 10:
 Fitting model to 534 training examples...
-Successfully fit model in <duration>
+✓ Successfully fit model in <duration>
 Predicting for 59 test examples...
-Successfully predicted in <duration>
-Ground truth for test data (Fold 10):
+✓ Successfully predicted in <duration>
+
+🗀 Ground truth for test data (Fold 10):
 
 [[0 0 0 0 0 1]
  [1 0 0 0 0 1]
@@ -1257,8 +1276,9 @@ Ground truth for test data (Fold 10):
  [0 0 1 0 1 1]
  [1 1 0 0 0 0]]
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-10.arff"...
-Predictions for test data (Fold 10):
+○ Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-10.arff"...
+
+🗀 Predictions for test data (Fold 10):
 
 [[0 0 0 0 0 1]
  [1 0 0 0 0 1]
@@ -1320,5 +1340,5 @@ Predictions for test data (Fold 10):
  [1 1 1 0 0 0]
  [0 1 1 0 0 0]]
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-10.arff"...
-Successfully finished experiment after <duration>
+○ Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-10.arff"...
+✓ Successfully finished experiment after <duration>

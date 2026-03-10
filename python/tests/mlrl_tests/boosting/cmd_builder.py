@@ -1,8 +1,6 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from typing import Optional
-
 from ..common.cmd_builder_rule_learners import RuleLearnerCmdBuilderMixin
 
 from mlrl.common.config.parameters import GlobalPruningParameter
@@ -15,7 +13,7 @@ class BoomerCmdBuilderMixin(RuleLearnerCmdBuilderMixin):
     A mixin for builders that allow to configure a command for running the BOOMER algorithm.
     """
 
-    def loss(self, loss: Optional[str]):
+    def loss(self, loss: str | None):
         """
         Configures the algorithm to use a specific loss function.
 
@@ -37,7 +35,7 @@ class BoomerCmdBuilderMixin(RuleLearnerCmdBuilderMixin):
         self.add_algorithmic_argument('--default-rule', str(default_rule).lower())
         return self
 
-    def head_type(self, head_type: Optional[str] = HeadTypeParameter.HEAD_TYPE_SINGLE):
+    def head_type(self, head_type: str | None = HeadTypeParameter.HEAD_TYPE_SINGLE):
         """
         Configures the algorithm to use a specific type of rule heads.
 
@@ -59,7 +57,7 @@ class BoomerCmdBuilderMixin(RuleLearnerCmdBuilderMixin):
         self.add_algorithmic_argument('--statistic-format', 'sparse' if sparse else 'dense')
         return self
 
-    def statistic_type(self, statistic_type: Optional[str] = StatisticTypeParameter.STATISTIC_TYPE_FLOAT64):
+    def statistic_type(self, statistic_type: str | None = StatisticTypeParameter.STATISTIC_TYPE_FLOAT64):
         """
         Configures the data type that should be used for representing gradients and Hessians.
 
@@ -71,7 +69,7 @@ class BoomerCmdBuilderMixin(RuleLearnerCmdBuilderMixin):
 
         return self
 
-    def global_pruning(self, global_pruning: Optional[str] = GlobalPruningParameter.GLOBAL_PRUNING_POST):
+    def global_pruning(self, global_pruning: str | None = GlobalPruningParameter.GLOBAL_PRUNING_POST):
         """
         Configures the algorithm to use a specific method for pruning entire rules.
 

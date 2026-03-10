@@ -1,18 +1,23 @@
-mlrl-testbed mlrl.seco --mode read --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --print-evaluation false --save-evaluation false --print-rules true --save-rules true
+mlrl-testbed mlrl.seco --mode read --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --print-evaluation false --save-evaluation false --print-rules true --save-rules true
 Reading meta-data...
-DEBUG: Reading input data from file "python/tests/res/tmp/metadata.yml"...
-Successfully read meta-data
-DEBUG: Checking for version conflicts...
-DEBUG: Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is currently used
-DEBUG: No version conflicts detected
+○ Reading input data from file "python/tests/res/tmp/metadata.yml"...
+✓ Successfully read meta-data
+○ Checking for version conflicts...
+○ Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is
+currently used
+○ No version conflicts detected
 Reading experimental results of 1 experiment...
 
 Reading experimental results of experiment (1 / 1)...
-The command "mlrl-testbed mlrl.seco --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --data-split cross-validation{first_fold=1,last_fold=1} --print-evaluation false --save-evaluation false --print-rules true --save-rules true" has been used originally for running this experiment
+The command "mlrl-testbed mlrl.seco --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp
+--data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --data-split
+cross-validation{first_fold=1,last_fold=1} --print-evaluation false --save-evaluation false --print-rules true
+--save-rules true" has been used originally for running this experiment
 Performing fold 1 of 10-fold cross validation...
 Fold 1 / 10:
-DEBUG: Reading input data from file "python/tests/res/tmp/results/rules_fold-1.txt"...
-Model (Fold 1):
+○ Reading input data from file "python/tests/res/tmp/results/rules_fold-1.txt"...
+
+🗀 Model (Fold 1):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.06} => (quiet-still = 1)
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.06} => (sad-lonely = 1)
@@ -25,21 +30,25 @@ Model (Fold 1):
 {Mean_Acc1298_Std_Mem40_MFCC_7 <= 0.41} => (angry-aggresive = 1)
 {Mean_Acc1298_Mean_Mem40_MFCC_0 > -60.14} => (angry-aggresive = 1)
 {Std_Acc1298_Mean_Mem40_MFCC_4 <= 0.24} => (amazed-suprised = 1)
-{Std_Acc1298_Mean_Mem40_MFCC_3 > 0.64 & BH_LowPeakAmp > 0.07 & Mean_Acc1298_Mean_Mem40_MFCC_10 > 0.33} => (relaxing-calm = 1)
+{Std_Acc1298_Mean_Mem40_MFCC_3 > 0.64 & BH_LowPeakAmp > 0.07 & Mean_Acc1298_Mean_Mem40_MFCC_10 > 0.33} => (relaxing-calm
+= 1)
 {Mean_Acc1298_Mean_Mem40_MFCC_0 > -60.67} => (amazed-suprised = 1)
-{Mean_Acc1298_Mean_Mem40_MFCC_2 <= 1.89 & Std_Acc1298_Mean_Mem40_MFCC_1 <= 1.41 & Std_Acc1298_Std_Mem40_MFCC_5 > 0.17} => (relaxing-calm = 1)
+{Mean_Acc1298_Mean_Mem40_MFCC_2 <= 1.89 & Std_Acc1298_Mean_Mem40_MFCC_1 <= 1.41 & Std_Acc1298_Std_Mem40_MFCC_5 > 0.17}
+=> (relaxing-calm = 1)
 {BH_LowPeakAmp <= 0.03 & BHSUM2 > 0.07} => (relaxing-calm = 1)
 {Std_Acc1298_Mean_Mem40_MFCC_3 <= 0.20} => (angry-aggresive = 1)
 {Std_Acc1298_Mean_Mem40_MFCC_10 > 0.64} => (relaxing-calm = 1)
 {Std_Acc1298_Std_Mem40_MFCC_1 > 0.61 & Mean_Acc1298_Mean_Mem40_MFCC_1 > 6.03} => (sad-lonely = 1)
 {Std_Acc1298_Mean_Mem40_MFCC_0 <= 1.51} => (angry-aggresive = 1)
 {Mean_Acc1298_Mean_Mem40_Centroid <= 0.07 & Std_Acc1298_Std_Mem40_MFCC_1 > 0.66} => (quiet-still = 1)
-{Mean_Acc1298_Mean_Mem40_Flux <= 0.09 & Mean_Acc1298_Mean_Mem40_MFCC_1 > 7.36 & Std_Acc1298_Mean_Mem40_MFCC_3 > 0.39} => (quiet-still = 1)
+{Mean_Acc1298_Mean_Mem40_Flux <= 0.09 & Mean_Acc1298_Mean_Mem40_MFCC_1 > 7.36 & Std_Acc1298_Mean_Mem40_MFCC_3 > 0.39} =>
+(quiet-still = 1)
 {Mean_Acc1298_Mean_Mem40_Centroid <= 0.06 & Std_Acc1298_Mean_Mem40_MFCC_4 > 0.65} => (quiet-still = 1)
 {Std_Acc1298_Mean_Mem40_Flux > 0.01} => (amazed-suprised = 1)
 {Mean_Acc1298_Mean_Mem40_MFCC_5 > 1.52} => (relaxing-calm = 1)
 {Mean_Acc1298_Mean_Mem40_Centroid > 0.13} => (amazed-suprised = 1)
-{Mean_Acc1298_Mean_Mem40_MFCC_3 <= 2.33 & Mean_Acc1298_Mean_Mem40_MFCC_0 > -64.30 & Std_Acc1298_Std_Mem40_MFCC_2 > 0.19} => (amazed-suprised = 1)
+{Mean_Acc1298_Mean_Mem40_MFCC_3 <= 2.33 & Mean_Acc1298_Mean_Mem40_MFCC_0 > -64.30 & Std_Acc1298_Std_Mem40_MFCC_2 > 0.19}
+=> (amazed-suprised = 1)
 {Std_Acc1298_Std_Mem40_MFCC_3 <= 0.10} => (amazed-suprised = 1)
 {Mean_Acc1298_Mean_Mem40_MFCC_1 <= 2.56 & Mean_Acc1298_Mean_Mem40_Centroid <= 0.11} => (angry-aggresive = 1)
 {Std_Acc1298_Std_Mem40_MFCC_11 > 0.21} => (relaxing-calm = 1)
@@ -104,4 +113,4 @@ Model (Fold 1):
 {} => (amazed-suprised = 0, happy-pleased = 0, relaxing-calm = 0, quiet-still = 0, sad-lonely = 0, angry-aggresive = 0)
 
 
-DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/rules_fold-1.txt"...
+○ Writing output data to file "python/tests/res/tmp/rerun/results/rules_fold-1.txt"...

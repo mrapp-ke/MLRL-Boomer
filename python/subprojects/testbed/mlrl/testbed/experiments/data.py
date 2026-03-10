@@ -14,9 +14,11 @@ class Properties:
     Attributes:
         name:       A name to be included in log messages
         file_name:  A file name to be used when reading from or writing to files
+        symbol:     An optional symbol that represents the input or output data
     """
     name: str
     file_name: str
+    symbol: str | None = '🗀'
 
 
 @dataclass

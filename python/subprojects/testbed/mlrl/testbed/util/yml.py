@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for reading YAML files.
 """
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 import yamale
 import yaml
@@ -14,7 +14,7 @@ from mlrl.testbed.util.io import open_readable_file
 from mlrl.util.validation import ValidationError
 
 
-def read_yaml(yaml_file_path: Path) -> Dict[Any, Any]:
+def read_yaml(yaml_file_path: Path) -> dict[Any, Any]:
     """
     Reads and returns the content of a YAML file as a dictionary.
 
@@ -25,7 +25,7 @@ def read_yaml(yaml_file_path: Path) -> Dict[Any, Any]:
         return yaml.safe_load(yaml_file)
 
 
-def read_and_validate_yaml(yaml_file_path: Path, schema_file_path: Path) -> Dict[Any, Any]:
+def read_and_validate_yaml(yaml_file_path: Path, schema_file_path: Path) -> dict[Any, Any]:
     """
     Reads and returns the content of a YAML file as a dictionary. The content is validated against a given schema file.
     If it is malformed, a `ValidationError` is raised.

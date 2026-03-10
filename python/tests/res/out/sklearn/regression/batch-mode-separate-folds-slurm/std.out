@@ -1,8 +1,14 @@
-mlrl-testbed mlrl.testbed_sklearn --mode batch --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/sklearn/regression/batch_config.yml --runner slurm --slurm-config python/tests/res/config/slurm_config.yml --print-slurm-scripts true --save-slurm-scripts true --slurm-save-dir python/tests/res/tmp --problem-type regression --save-evaluation true --data-split cross-validation{num_folds=2} --n-estimators 1 --estimator RandomForestRegressor
-DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
+mlrl-testbed mlrl.testbed_sklearn --mode batch --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/sklearn/regression/batch_config.yml --runner slurm --slurm-config python/tests/res/config/slurm_config.yml --print-slurm-scripts true --save-slurm-scripts true --slurm-save-dir python/tests/res/tmp --problem-type regression --save-evaluation true --data-split cross-validation{num_folds=2} --n-estimators 1 --estimator RandomForestRegressor
+○ Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Submitting 16 experiments to Slurm...
 
-Submitting Slurm job (1 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset emotions --estimator RandomForestRegressor --log-level debug --max-leaf-nodes 10 --model-save-dir n-estimators_1/max-leaf-nodes_10/dataset_emotions/models --n-estimators 1 --parameter-save-dir n-estimators_1/max-leaf-nodes_10/dataset_emotions/parameters --problem-type regression --result-dir n-estimators_1/max-leaf-nodes_10/dataset_emotions/results --save-evaluation true --save-meta-data false"
+Submitting Slurm job (1 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
+python/tests/res/data --data-split
+cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset emotions
+--estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 10 --model-save-dir
+n-estimators_1/max-leaf-nodes_10/dataset_emotions/models --n-estimators 1 --parameter-save-dir
+n-estimators_1/max-leaf-nodes_10/dataset_emotions/parameters --problem-type regression --result-dir
+n-estimators_1/max-leaf-nodes_10/dataset_emotions/results --save-evaluation true --save-meta-data false"
 Slurm script saved to file "python/tests/res/tmp/emotions_1.sh"
 Content of Slurm script is:
 
@@ -18,19 +24,33 @@ Content of Slurm script is:
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
-mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset emotions --estimator RandomForestRegressor --log-level debug --max-leaf-nodes 10 --model-save-dir n-estimators_1/max-leaf-nodes_10/dataset_emotions/models --n-estimators 1 --parameter-save-dir n-estimators_1/max-leaf-nodes_10/dataset_emotions/parameters --problem-type regression --result-dir n-estimators_1/max-leaf-nodes_10/dataset_emotions/results --save-evaluation true --save-meta-data false
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split
+cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset emotions
+--estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 10 --model-save-dir
+n-estimators_1/max-leaf-nodes_10/dataset_emotions/models --n-estimators 1 --parameter-save-dir
+n-estimators_1/max-leaf-nodes_10/dataset_emotions/parameters --problem-type regression --result-dir
+n-estimators_1/max-leaf-nodes_10/dataset_emotions/results --save-evaluation true --save-meta-data false
 deactivate
 
 
-Submitting Slurm job (2 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset emotions --estimator RandomForestRegressor --log-level debug --max-leaf-nodes 20 --max_depth 5 --model-save-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/models --n-estimators 1 --parameter-save-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/parameters --problem-type regression --result-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/results --save-evaluation true --save-meta-data false"
+Submitting Slurm job (2 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
+python/tests/res/data --data-split
+cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset emotions
+--estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 20 --max_depth 5
+--model-save-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/models --n-estimators 1
+--parameter-save-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/parameters --problem-type regression
+--result-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/results --save-evaluation true
+--save-meta-data false"
 Slurm script saved to file "python/tests/res/tmp/emotions_2.sh"
 Content of Slurm script is:
 
 #!/bin/sh
 
 #SBATCH --job-name=emotions_2
-#SBATCH --output=python/tests/res/tmp/n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/results/std_fold-%a.out
-#SBATCH --error=python/tests/res/tmp/n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/results/std_fold-%a.err
+#SBATCH
+--output=python/tests/res/tmp/n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/results/std_fold-%a.out
+#SBATCH
+--error=python/tests/res/tmp/n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/results/std_fold-%a.err
 #SBATCH --array=1-2
 #SBATCH --time=2:30:00
 #SBATCH --cpus-per-tasks=1
@@ -38,11 +58,23 @@ Content of Slurm script is:
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
-mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset emotions --estimator RandomForestRegressor --log-level debug --max-leaf-nodes 20 --max_depth 5 --model-save-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/models --n-estimators 1 --parameter-save-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/parameters --problem-type regression --result-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/results --save-evaluation true --save-meta-data false
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split
+cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset emotions
+--estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 20 --max_depth 5
+--model-save-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/models --n-estimators 1
+--parameter-save-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/parameters --problem-type regression
+--result-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/results --save-evaluation true
+--save-meta-data false
 deactivate
 
 
-Submitting Slurm job (3 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset emotions --estimator RandomForestRegressor --log-level debug --max-leaf-nodes 10 --model-save-dir n-estimators_2/max-leaf-nodes_10/dataset_emotions/models --n-estimators 2 --parameter-save-dir n-estimators_2/max-leaf-nodes_10/dataset_emotions/parameters --problem-type regression --result-dir n-estimators_2/max-leaf-nodes_10/dataset_emotions/results --save-evaluation true --save-meta-data false"
+Submitting Slurm job (3 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
+python/tests/res/data --data-split
+cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset emotions
+--estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 10 --model-save-dir
+n-estimators_2/max-leaf-nodes_10/dataset_emotions/models --n-estimators 2 --parameter-save-dir
+n-estimators_2/max-leaf-nodes_10/dataset_emotions/parameters --problem-type regression --result-dir
+n-estimators_2/max-leaf-nodes_10/dataset_emotions/results --save-evaluation true --save-meta-data false"
 Slurm script saved to file "python/tests/res/tmp/emotions_3.sh"
 Content of Slurm script is:
 
@@ -58,19 +90,33 @@ Content of Slurm script is:
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
-mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset emotions --estimator RandomForestRegressor --log-level debug --max-leaf-nodes 10 --model-save-dir n-estimators_2/max-leaf-nodes_10/dataset_emotions/models --n-estimators 2 --parameter-save-dir n-estimators_2/max-leaf-nodes_10/dataset_emotions/parameters --problem-type regression --result-dir n-estimators_2/max-leaf-nodes_10/dataset_emotions/results --save-evaluation true --save-meta-data false
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split
+cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset emotions
+--estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 10 --model-save-dir
+n-estimators_2/max-leaf-nodes_10/dataset_emotions/models --n-estimators 2 --parameter-save-dir
+n-estimators_2/max-leaf-nodes_10/dataset_emotions/parameters --problem-type regression --result-dir
+n-estimators_2/max-leaf-nodes_10/dataset_emotions/results --save-evaluation true --save-meta-data false
 deactivate
 
 
-Submitting Slurm job (4 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset emotions --estimator RandomForestRegressor --log-level debug --max-leaf-nodes 20 --max_depth 5 --model-save-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/models --n-estimators 2 --parameter-save-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/parameters --problem-type regression --result-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/results --save-evaluation true --save-meta-data false"
+Submitting Slurm job (4 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
+python/tests/res/data --data-split
+cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset emotions
+--estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 20 --max_depth 5
+--model-save-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/models --n-estimators 2
+--parameter-save-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/parameters --problem-type regression
+--result-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/results --save-evaluation true
+--save-meta-data false"
 Slurm script saved to file "python/tests/res/tmp/emotions_4.sh"
 Content of Slurm script is:
 
 #!/bin/sh
 
 #SBATCH --job-name=emotions_4
-#SBATCH --output=python/tests/res/tmp/n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/results/std_fold-%a.out
-#SBATCH --error=python/tests/res/tmp/n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/results/std_fold-%a.err
+#SBATCH
+--output=python/tests/res/tmp/n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/results/std_fold-%a.out
+#SBATCH
+--error=python/tests/res/tmp/n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/results/std_fold-%a.err
 #SBATCH --array=1-2
 #SBATCH --time=2:30:00
 #SBATCH --cpus-per-tasks=1
@@ -78,11 +124,23 @@ Content of Slurm script is:
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
-mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset emotions --estimator RandomForestRegressor --log-level debug --max-leaf-nodes 20 --max_depth 5 --model-save-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/models --n-estimators 2 --parameter-save-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/parameters --problem-type regression --result-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/results --save-evaluation true --save-meta-data false
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split
+cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset emotions
+--estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 20 --max_depth 5
+--model-save-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/models --n-estimators 2
+--parameter-save-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/parameters --problem-type regression
+--result-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/results --save-evaluation true
+--save-meta-data false
 deactivate
 
 
-Submitting Slurm job (5 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset enron --estimator RandomForestRegressor --log-level debug --max-leaf-nodes 10 --model-save-dir n-estimators_1/max-leaf-nodes_10/dataset_enron/models --n-estimators 1 --parameter-save-dir n-estimators_1/max-leaf-nodes_10/dataset_enron/parameters --problem-type regression --result-dir n-estimators_1/max-leaf-nodes_10/dataset_enron/results --save-evaluation true --save-meta-data false"
+Submitting Slurm job (5 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
+python/tests/res/data --data-split
+cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset enron
+--estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 10 --model-save-dir
+n-estimators_1/max-leaf-nodes_10/dataset_enron/models --n-estimators 1 --parameter-save-dir
+n-estimators_1/max-leaf-nodes_10/dataset_enron/parameters --problem-type regression --result-dir
+n-estimators_1/max-leaf-nodes_10/dataset_enron/results --save-evaluation true --save-meta-data false"
 Slurm script saved to file "python/tests/res/tmp/enron_5.sh"
 Content of Slurm script is:
 
@@ -98,11 +156,22 @@ Content of Slurm script is:
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
-mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset enron --estimator RandomForestRegressor --log-level debug --max-leaf-nodes 10 --model-save-dir n-estimators_1/max-leaf-nodes_10/dataset_enron/models --n-estimators 1 --parameter-save-dir n-estimators_1/max-leaf-nodes_10/dataset_enron/parameters --problem-type regression --result-dir n-estimators_1/max-leaf-nodes_10/dataset_enron/results --save-evaluation true --save-meta-data false
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split
+cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset enron
+--estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 10 --model-save-dir
+n-estimators_1/max-leaf-nodes_10/dataset_enron/models --n-estimators 1 --parameter-save-dir
+n-estimators_1/max-leaf-nodes_10/dataset_enron/parameters --problem-type regression --result-dir
+n-estimators_1/max-leaf-nodes_10/dataset_enron/results --save-evaluation true --save-meta-data false
 deactivate
 
 
-Submitting Slurm job (6 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset enron --estimator RandomForestRegressor --log-level debug --max-leaf-nodes 20 --max_depth 5 --model-save-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/models --n-estimators 1 --parameter-save-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/parameters --problem-type regression --result-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/results --save-evaluation true --save-meta-data false"
+Submitting Slurm job (6 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
+python/tests/res/data --data-split
+cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset enron
+--estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 20 --max_depth 5
+--model-save-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/models --n-estimators 1 --parameter-save-dir
+n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/parameters --problem-type regression --result-dir
+n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/results --save-evaluation true --save-meta-data false"
 Slurm script saved to file "python/tests/res/tmp/enron_6.sh"
 Content of Slurm script is:
 
@@ -118,11 +187,22 @@ Content of Slurm script is:
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
-mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset enron --estimator RandomForestRegressor --log-level debug --max-leaf-nodes 20 --max_depth 5 --model-save-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/models --n-estimators 1 --parameter-save-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/parameters --problem-type regression --result-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/results --save-evaluation true --save-meta-data false
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split
+cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset enron
+--estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 20 --max_depth 5
+--model-save-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/models --n-estimators 1 --parameter-save-dir
+n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/parameters --problem-type regression --result-dir
+n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/results --save-evaluation true --save-meta-data false
 deactivate
 
 
-Submitting Slurm job (7 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset enron --estimator RandomForestRegressor --log-level debug --max-leaf-nodes 10 --model-save-dir n-estimators_2/max-leaf-nodes_10/dataset_enron/models --n-estimators 2 --parameter-save-dir n-estimators_2/max-leaf-nodes_10/dataset_enron/parameters --problem-type regression --result-dir n-estimators_2/max-leaf-nodes_10/dataset_enron/results --save-evaluation true --save-meta-data false"
+Submitting Slurm job (7 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
+python/tests/res/data --data-split
+cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset enron
+--estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 10 --model-save-dir
+n-estimators_2/max-leaf-nodes_10/dataset_enron/models --n-estimators 2 --parameter-save-dir
+n-estimators_2/max-leaf-nodes_10/dataset_enron/parameters --problem-type regression --result-dir
+n-estimators_2/max-leaf-nodes_10/dataset_enron/results --save-evaluation true --save-meta-data false"
 Slurm script saved to file "python/tests/res/tmp/enron_7.sh"
 Content of Slurm script is:
 
@@ -138,11 +218,22 @@ Content of Slurm script is:
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
-mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset enron --estimator RandomForestRegressor --log-level debug --max-leaf-nodes 10 --model-save-dir n-estimators_2/max-leaf-nodes_10/dataset_enron/models --n-estimators 2 --parameter-save-dir n-estimators_2/max-leaf-nodes_10/dataset_enron/parameters --problem-type regression --result-dir n-estimators_2/max-leaf-nodes_10/dataset_enron/results --save-evaluation true --save-meta-data false
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split
+cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset enron
+--estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 10 --model-save-dir
+n-estimators_2/max-leaf-nodes_10/dataset_enron/models --n-estimators 2 --parameter-save-dir
+n-estimators_2/max-leaf-nodes_10/dataset_enron/parameters --problem-type regression --result-dir
+n-estimators_2/max-leaf-nodes_10/dataset_enron/results --save-evaluation true --save-meta-data false
 deactivate
 
 
-Submitting Slurm job (8 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset enron --estimator RandomForestRegressor --log-level debug --max-leaf-nodes 20 --max_depth 5 --model-save-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/models --n-estimators 2 --parameter-save-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/parameters --problem-type regression --result-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/results --save-evaluation true --save-meta-data false"
+Submitting Slurm job (8 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
+python/tests/res/data --data-split
+cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset enron
+--estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 20 --max_depth 5
+--model-save-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/models --n-estimators 2 --parameter-save-dir
+n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/parameters --problem-type regression --result-dir
+n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/results --save-evaluation true --save-meta-data false"
 Slurm script saved to file "python/tests/res/tmp/enron_8.sh"
 Content of Slurm script is:
 
@@ -158,6 +249,11 @@ Content of Slurm script is:
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
-mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset enron --estimator RandomForestRegressor --log-level debug --max-leaf-nodes 20 --max_depth 5 --model-save-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/models --n-estimators 2 --parameter-save-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/parameters --problem-type regression --result-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/results --save-evaluation true --save-meta-data false
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split
+cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset enron
+--estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-leaf-nodes 20 --max_depth 5
+--model-save-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/models --n-estimators 2 --parameter-save-dir
+n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/parameters --problem-type regression --result-dir
+n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/results --save-evaluation true --save-meta-data false
 deactivate
 

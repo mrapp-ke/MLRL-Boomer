@@ -3,11 +3,10 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for implementing sinks, output data may be written to.
 """
-import logging as log
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Optional, override
+from typing import override
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.file_path import FilePath
@@ -15,6 +14,7 @@ from mlrl.testbed.experiments.input.sources import Source
 from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData, TabularOutputData
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
+from mlrl.testbed.log import Log
 
 from mlrl.util.options import Options
 
@@ -40,7 +40,7 @@ class Sink(ABC):
         """
 
     @abstractmethod
-    def create_source(self, input_directory: Path) -> Optional[Source]:
+    def create_source(self, input_directory: Path) -> Source | None:
         """
         Must be implemented by subclasses in order to create a `Source` that can read the data written to this sink.
 
@@ -81,7 +81,7 @@ class FileSink(Sink, ABC):
                              file_name=output_data.properties.file_name,
                              suffix=self.suffix,
                              context=context).resolve(state)
-        log.debug('Writing output data to file "%s"...', file_path)
+        Log.verbose('Writing output data to file "{}"...', file_path)
         self._write_to_file(file_path, state, output_data, **kwargs)
 
     @abstractmethod

@@ -3,8 +3,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for accessing the GitHub API via "pygithub".
 """
+from collections.abc import Iterable
 from os import environ
-from typing import Any, Iterable, Optional
+from typing import Any
 
 from core.build_unit import BuildUnit
 from util.env import get_env
@@ -30,7 +31,7 @@ class GithubApi:
             from github import Auth, Github
             return Github(auth=Auth.Token(self.token) if self.token else None)
 
-        def __init__(self, repository_name: str, token: Optional[str] = None):
+        def __init__(self, repository_name: str, token: str | None = None):
             """
             :param repository_name: The name of the repository
             :param token:           The API token to be used for accessing the repository or None, if no token should be
@@ -39,7 +40,7 @@ class GithubApi:
             self.repository_name = repository_name
             self.token = token
 
-        def get_latest_release(self) -> Optional[Any]:
+        def get_latest_release(self) -> Any | None:
             """
             Returns repository's latest release, if any.
 
@@ -88,9 +89,9 @@ class GithubApi:
         :param build_unit: The build unit to access the GitHub API from
         """
         PackageManager.install_packages(RequirementsFiles.for_build_unit(build_unit), 'pygithub')
-        self.token: Optional[str] = None
+        self.token: str | None = None
 
-    def set_token(self, token: Optional[str]) -> 'GithubApi':
+    def set_token(self, token: str | None) -> 'GithubApi':
         """
         Sets a token to be used for authentication.
 

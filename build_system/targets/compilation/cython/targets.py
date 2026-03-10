@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements targets for compiling Cython code.
 """
 from pathlib import Path
-from typing import List, cast, override
+from typing import cast, override
 
 from core.build_unit import BuildUnit
 from core.modules import Module
@@ -43,12 +43,12 @@ class SetupCython(BuildTarget.Runnable):
             .run()
 
     @override
-    def get_output_files(self, _: BuildUnit, module: Module) -> List[Path]:
+    def get_output_files(self, _: BuildUnit, module: Module) -> list[Path]:
         compilation_module = cast(CompilationModule, module)
         return [compilation_module.build_directory]
 
     @override
-    def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[Path]:
+    def get_clean_files(self, build_unit: BuildUnit, module: Module) -> list[Path]:
         compilation_module = cast(CompilationModule, module)
         Log.info('Removing Cython build files from directory "%s"...', compilation_module.root_directory)
         return super().get_clean_files(build_unit, compilation_module)
@@ -87,7 +87,7 @@ class InstallCython(BuildTarget.Runnable):
         MesonInstall(build_unit, compilation_module).run()
 
     @override
-    def get_clean_files(self, _: BuildUnit, module: Module) -> List[Path]:
+    def get_clean_files(self, _: BuildUnit, module: Module) -> list[Path]:
         compilation_module = cast(CompilationModule, module)
         Log.info('Removing extension modules installed from directory "%s" from source tree...',
                  compilation_module.root_directory)

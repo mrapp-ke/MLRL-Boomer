@@ -1,16 +1,17 @@
-mlrl-testbed mlrl.seco --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --data-split cross-validation{first_fold=1,last_fold=1} --print-evaluation false --save-evaluation false --print-rules true --save-rules true
+mlrl-testbed mlrl.seco --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --data-split cross-validation{first_fold=1,last_fold=1} --print-evaluation false --save-evaluation false --print-rules true --save-rules true
 Checking if output files do already exist...
 Starting experiment using the classification algorithm "SeCoClassifier"...
-DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
+○ Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Performing fold 1 of 10-fold cross validation...
 Fold 1 / 10:
-DEBUG: Reading input data from file "python/tests/res/data/emotions.arff"...
-DEBUG: Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+○ Reading input data from file "python/tests/res/data/emotions.arff"...
+○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 Fitting model to 533 training examples...
-DEBUG: A dense matrix is used to store the feature values of the training examples
-DEBUG: A dense matrix is used to store the labels of the training examples
-Successfully fit model in <duration>
-Model (Fold 1):
+○ A dense matrix is used to store the feature values of the training examples
+○ A dense matrix is used to store the labels of the training examples
+✓ Successfully fit model in <duration>
+
+🗀 Model (Fold 1):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.06} => (quiet-still = 1)
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.06} => (sad-lonely = 1)
@@ -23,21 +24,25 @@ Model (Fold 1):
 {Mean_Acc1298_Std_Mem40_MFCC_7 <= 0.41} => (angry-aggresive = 1)
 {Mean_Acc1298_Mean_Mem40_MFCC_0 > -60.14} => (angry-aggresive = 1)
 {Std_Acc1298_Mean_Mem40_MFCC_4 <= 0.24} => (amazed-suprised = 1)
-{Std_Acc1298_Mean_Mem40_MFCC_3 > 0.64 & BH_LowPeakAmp > 0.07 & Mean_Acc1298_Mean_Mem40_MFCC_10 > 0.33} => (relaxing-calm = 1)
+{Std_Acc1298_Mean_Mem40_MFCC_3 > 0.64 & BH_LowPeakAmp > 0.07 & Mean_Acc1298_Mean_Mem40_MFCC_10 > 0.33} => (relaxing-calm
+= 1)
 {Mean_Acc1298_Mean_Mem40_MFCC_0 > -60.67} => (amazed-suprised = 1)
-{Mean_Acc1298_Mean_Mem40_MFCC_2 <= 1.89 & Std_Acc1298_Mean_Mem40_MFCC_1 <= 1.41 & Std_Acc1298_Std_Mem40_MFCC_5 > 0.17} => (relaxing-calm = 1)
+{Mean_Acc1298_Mean_Mem40_MFCC_2 <= 1.89 & Std_Acc1298_Mean_Mem40_MFCC_1 <= 1.41 & Std_Acc1298_Std_Mem40_MFCC_5 > 0.17}
+=> (relaxing-calm = 1)
 {BH_LowPeakAmp <= 0.03 & BHSUM2 > 0.07} => (relaxing-calm = 1)
 {Std_Acc1298_Mean_Mem40_MFCC_3 <= 0.20} => (angry-aggresive = 1)
 {Std_Acc1298_Mean_Mem40_MFCC_10 > 0.64} => (relaxing-calm = 1)
 {Std_Acc1298_Std_Mem40_MFCC_1 > 0.61 & Mean_Acc1298_Mean_Mem40_MFCC_1 > 6.03} => (sad-lonely = 1)
 {Std_Acc1298_Mean_Mem40_MFCC_0 <= 1.51} => (angry-aggresive = 1)
 {Mean_Acc1298_Mean_Mem40_Centroid <= 0.07 & Std_Acc1298_Std_Mem40_MFCC_1 > 0.66} => (quiet-still = 1)
-{Mean_Acc1298_Mean_Mem40_Flux <= 0.09 & Mean_Acc1298_Mean_Mem40_MFCC_1 > 7.36 & Std_Acc1298_Mean_Mem40_MFCC_3 > 0.39} => (quiet-still = 1)
+{Mean_Acc1298_Mean_Mem40_Flux <= 0.09 & Mean_Acc1298_Mean_Mem40_MFCC_1 > 7.36 & Std_Acc1298_Mean_Mem40_MFCC_3 > 0.39} =>
+(quiet-still = 1)
 {Mean_Acc1298_Mean_Mem40_Centroid <= 0.06 & Std_Acc1298_Mean_Mem40_MFCC_4 > 0.65} => (quiet-still = 1)
 {Std_Acc1298_Mean_Mem40_Flux > 0.01} => (amazed-suprised = 1)
 {Mean_Acc1298_Mean_Mem40_MFCC_5 > 1.52} => (relaxing-calm = 1)
 {Mean_Acc1298_Mean_Mem40_Centroid > 0.13} => (amazed-suprised = 1)
-{Mean_Acc1298_Mean_Mem40_MFCC_3 <= 2.33 & Mean_Acc1298_Mean_Mem40_MFCC_0 > -64.30 & Std_Acc1298_Std_Mem40_MFCC_2 > 0.19} => (amazed-suprised = 1)
+{Mean_Acc1298_Mean_Mem40_MFCC_3 <= 2.33 & Mean_Acc1298_Mean_Mem40_MFCC_0 > -64.30 & Std_Acc1298_Std_Mem40_MFCC_2 > 0.19}
+=> (amazed-suprised = 1)
 {Std_Acc1298_Std_Mem40_MFCC_3 <= 0.10} => (amazed-suprised = 1)
 {Mean_Acc1298_Mean_Mem40_MFCC_1 <= 2.56 & Mean_Acc1298_Mean_Mem40_Centroid <= 0.11} => (angry-aggresive = 1)
 {Std_Acc1298_Std_Mem40_MFCC_11 > 0.21} => (relaxing-calm = 1)
@@ -102,5 +107,5 @@ Model (Fold 1):
 {} => (amazed-suprised = 0, happy-pleased = 0, relaxing-calm = 0, quiet-still = 0, sad-lonely = 0, angry-aggresive = 0)
 
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/rules_fold-1.txt"...
-Successfully finished experiment after <duration>
+○ Writing output data to file "python/tests/res/tmp/results/rules_fold-1.txt"...
+✓ Successfully finished experiment after <duration>

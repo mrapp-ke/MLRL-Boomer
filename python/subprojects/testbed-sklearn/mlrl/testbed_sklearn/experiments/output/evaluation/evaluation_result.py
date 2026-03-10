@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing evaluation results that are part of output data.
 """
 from itertools import tee
-from typing import Any, Dict, List, Optional, Tuple, override
+from typing import Any, override
 
 from mlrl.testbed.experiments.output.data import OutputValue
 from mlrl.testbed.experiments.output.evaluation.evaluation_result import AggregatedEvaluationResult, EvaluationResult
@@ -102,7 +102,7 @@ class TabularEvaluationResult(EvaluationResult):
         return str(header).rstrip('(↑)').rstrip('(↓)').rstrip()
 
     @override
-    def to_text(self, options: Options, **kwargs) -> Optional[str]:
+    def to_text(self, options: Options, **kwargs) -> str | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
@@ -112,7 +112,7 @@ class TabularEvaluationResult(EvaluationResult):
         if table:
             header_row = table.header_row
             fold = kwargs.get(self.KWARG_FOLD)
-            variants_by_measure: Dict[str, List[Tuple[str, int]]] = {}
+            variants_by_measure: dict[str, list[tuple[str, int]]] = {}
 
             for column_index in range(0, table.num_columns, 2 if fold is None else 1):
                 header = header_row[column_index] if header_row else None
@@ -130,7 +130,7 @@ class TabularEvaluationResult(EvaluationResult):
             rotated_table = RowWiseTable()
 
             for measure_name, variants in variants_by_measure.items():
-                new_row: List[Any] = []
+                new_row: list[Any] = []
 
                 for _, column_index in sorted(variants, key=lambda x: x[0]):
                     header = header_row[column_index] if header_row else None
@@ -147,7 +147,7 @@ class TabularEvaluationResult(EvaluationResult):
         return None
 
     @override
-    def to_table(self, options: Options, **kwargs) -> Optional[Table]:
+    def to_table(self, options: Options, **kwargs) -> Table | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """

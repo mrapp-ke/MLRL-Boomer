@@ -6,8 +6,9 @@ Provides classes for representing output data.
 import json
 
 from abc import ABC, abstractmethod
+from collections.abc import Iterable
 from dataclasses import replace
-from typing import Any, Dict, Iterable, List, Optional, Type, override
+from typing import Any, override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties, TabularProperties
@@ -32,9 +33,9 @@ class OutputData(ABC):
         """
         self.properties = properties
         self.context = context
-        self.custom_context: Dict[Type[Any], Context] = {}
+        self.custom_context: dict[type[Any], Context] = {}
 
-    def get_context(self, lookup_type: Type[Any]) -> Context:
+    def get_context(self, lookup_type: type[Any]) -> Context:
         """
         Returns a `Context` that can be used for finding a suitable sink for handling this data.
 
@@ -54,13 +55,15 @@ class TextualOutputData(OutputData, ABC):
         A title that is printed before textual output data.
         """
 
-        def __init__(self, title: str, context: Context):
+        def __init__(self, title: str, context: Context, symbol: str | None = None):
             """
             :param title:   A title
             :param context: A `Context` to be used for formatting the title
+            :param symbol:  An optional symbol that represents the output data
             """
             self.title = title
             self.context = context
+            self.symbol = symbol
 
         def __format_dataset_type(self, state: ExperimentState) -> str:
             if self.context.include_dataset_type:
@@ -105,8 +108,9 @@ class TextualOutputData(OutputData, ABC):
 
             :param state: The state from which the output data has been generated
             """
-            return self.title + self.__format_dataset_type(state) + self.__format_prediction_scope(
-                state) + self.__format_fold(state)
+            symbol = self.symbol
+            return (symbol + ' ' if symbol else '') + self.title + self.__format_dataset_type(
+                state) + self.__format_prediction_scope(state) + self.__format_fold(state)
 
     @staticmethod
     def from_text(properties: Properties, context: Context, text: str) -> 'TextualOutputData':
@@ -125,13 +129,13 @@ class TextualOutputData(OutputData, ABC):
             """
 
             @override
-            def to_text(self, options: Options, **kwargs) -> Optional[str]:
+            def to_text(self, options: Options, **kwargs) -> str | None:
                 return text
 
         return TextOutputData(properties=properties, context=context)
 
     @abstractmethod
-    def to_text(self, options: Options, **kwargs) -> Optional[str]:
+    def to_text(self, options: Options, **kwargs) -> str | None:
         """
         Creates and returns a textual representation of the object.
 
@@ -171,17 +175,17 @@ class TabularOutputData(TextualOutputData, ABC):
             """
 
             @override
-            def to_text(self, options: Options, **kwargs) -> Optional[str]:
+            def to_text(self, options: Options, **kwargs) -> str | None:
                 return table.format()
 
             @override
-            def to_table(self, options: Options, **kwargs) -> Optional[Table]:
+            def to_table(self, options: Options, **kwargs) -> Table | None:
                 return table
 
         return TableOutputData(properties=properties, context=context)
 
     @abstractmethod
-    def to_table(self, options: Options, **kwargs) -> Optional[Table]:
+    def to_table(self, options: Options, **kwargs) -> Table | None:
         """
         Creates and returns a tabular representation of the object.
 
@@ -196,8 +200,18 @@ class StructuralOutputData(TextualOutputData, ABC):
     representation, e.g., YAML or JSON.
     """
 
+    def __init__(self, properties: Properties, context: Context = Context(), language: str | None = None):
+        """
+        :param properties:  The properties of the output data
+        :param context:     A `Context` to be used by default for finding a suitable sink this output data can be
+                            written to
+        :param language:    The language of the source code that represents the output data, if any
+        """
+        super().__init__(properties=properties, context=context)
+        self.language = language
+
     @abstractmethod
-    def to_dict(self, options: Options, **kwargs) -> Optional[Dict[Any, Any]]:
+    def to_dict(self, options: Options, **kwargs) -> dict[Any, Any] | None:
         """
         Creates and returns a dictionary from the object.
 
@@ -205,8 +219,18 @@ class StructuralOutputData(TextualOutputData, ABC):
         :return:        The dictionary that has been created
         """
 
+    def to_source_code(self, options: Options, **kwargs) -> tuple[str | None, str | None]:
+        """
+        Creates and returns a tuple containing the source code of the output data, together with the language it uses.
+
+        :param options: Options to be taken into account
+        :return:        A tuple that contains the source code and the language it uses
+        """
+        language = self.language
+        return self.to_text(options, **kwargs), language if language else None
+
     @override
-    def to_text(self, options: Options, **kwargs) -> Optional[str]:
+    def to_text(self, options: Options, **kwargs) -> str | None:
         dictionary = self.to_dict(options, **kwargs)
         return None if dictionary is None else json.dumps(dictionary, indent=4)
 
@@ -218,7 +242,7 @@ class DatasetOutputData(TextualOutputData, ABC):
     """
 
     @abstractmethod
-    def to_dataset(self, options: Options, **kwargs) -> Optional[Dataset]:
+    def to_dataset(self, options: Options, **kwargs) -> Dataset | None:
         """
         Creates and returns a dataset from the object.
 
@@ -233,7 +257,7 @@ class ObjectOutputData(OutputData, ABC):
     """
 
     @abstractmethod
-    def to_object(self, options: Options, **kwargs) -> Optional[Any]:
+    def to_object(self, options: Options, **kwargs) -> Any | None:
         """
         Returns an object.
 
@@ -270,7 +294,7 @@ class OutputValue:
                            percentage=self.percentage)
 
     @staticmethod
-    def filter_values(values: Iterable['OutputValue'], options: Options) -> List['OutputValue']:
+    def filter_values(values: Iterable['OutputValue'], options: Options) -> list['OutputValue']:
         """
         Allows to filter given output values based on given options.
 

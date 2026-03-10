@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing the ground truth to one or several sinks.
 """
-from typing import Any, List, Optional, Tuple, override
+from typing import Any, override
 
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
 from mlrl.testbed_sklearn.experiments.output.dataset.dataset_ground_truth import GroundTruthDataset
@@ -26,7 +26,7 @@ class GroundTruthWriter(ResultWriter):
         """
 
         @override
-        def _create_output_data(self, data: Any) -> Optional[DatasetOutputData]:
+        def _create_output_data(self, data: Any) -> DatasetOutputData | None:
             return GroundTruthDataset(data)
 
     class DefaultExtractor(DataExtractor):
@@ -35,7 +35,7 @@ class GroundTruthWriter(ResultWriter):
         """
 
         @override
-        def extract_data(self, state: ExperimentState, _: List[Sink]) -> List[Tuple[ExperimentState, OutputData]]:
+        def extract_data(self, state: ExperimentState, _: list[Sink]) -> list[tuple[ExperimentState, OutputData]]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """

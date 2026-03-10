@@ -8,7 +8,7 @@ import subprocess
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, override
+from typing import override
 
 
 class SlurmCommand(ABC):
@@ -54,7 +54,7 @@ class SlurmCommand(ABC):
         return SlurmCommand.Result(exit_code=exit_code, output=output_str)
 
     @abstractmethod
-    def _get_arguments(self) -> List[str]:
+    def _get_arguments(self) -> list[str]:
         """
         Must be implemented by subclasses in order to return the arguments of the command to be run.
 
@@ -89,5 +89,5 @@ class Sbatch(SlurmCommand):
         return self
 
     @override
-    def _get_arguments(self) -> List[str]:
+    def _get_arguments(self) -> list[str]:
         return ['--version'] if self.flag_version else self.arguments
