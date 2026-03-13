@@ -36,7 +36,7 @@ def parse_value(value: Any) -> Any:
     :return:        The given value or a number
     """
     try:
-        return to_int_or_float(str(value))
+        return to_int_or_float(value)
     except ValueError:
         return value
 
@@ -50,7 +50,7 @@ def parse_number(value: Any, percentage: bool = False) -> Number:
                         values in [0, 1]
     :return:            A number
     """
-    value = to_int_or_float(str(value))
+    value = to_int_or_float(value)
     return value / 100 if percentage else value
 
 
