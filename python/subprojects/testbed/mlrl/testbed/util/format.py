@@ -6,26 +6,11 @@ Provides utility functions for creating textual representations.
 from numbers import Number
 from typing import Any
 
-import numpy as np
+from mlrl.util.format import format_value
 
 OPTION_DECIMALS = 'decimals'
 
 OPTION_PERCENTAGE = 'percentage'
-
-
-def format_number(value: Any, decimals: int = 2) -> str:
-    """
-    Creates and returns a textual representation of a value using a specific number of decimals, if the value is a
-    floating point value.
-
-    :param value:       The value
-    :param decimals:    The number of decimals to be used or 0, if the number of decimals should not be restricted
-    :return:            The textual representation that has been created
-    """
-    if decimals > 0 and isinstance(value, (float, np.floating)):
-        rounded_value = round(value, decimals)
-        return ('{:.' + str(decimals) + 'f}').format(rounded_value)
-    return str(value)
 
 
 def parse_value(value: Any) -> Any:
@@ -74,4 +59,4 @@ def format_percentage(fraction: float, decimals: int = 2) -> str:
     :return:            The textual representation that has been created
     """
     percentage = float(fraction) * 100
-    return format_number(percentage, decimals) + '%'  # type: ignore[arg-type]
+    return format_value(percentage, decimals) + '%'
