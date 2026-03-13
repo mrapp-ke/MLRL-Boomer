@@ -54,7 +54,7 @@ def parse_number(value: Any, percentage: bool = False) -> Number:
     return value / 100 if percentage else value
 
 
-def to_int_or_float(value) -> int | float:
+def to_int_or_float(value: Any) -> int | float:
     """
     Converts a given value into an integer or a floating point value, depending on whether it has decimals or not.
 

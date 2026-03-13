@@ -312,7 +312,7 @@ class OutputValue:
 
         return filtered
 
-    def format(self, value, **kwargs) -> str:
+    def format(self, value: int | float, **kwargs) -> str:
         """
         Creates and returns a textual representation of a given value.
 
