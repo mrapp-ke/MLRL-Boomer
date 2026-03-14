@@ -6,15 +6,6 @@ tocdepth: 2
 
 # Release Notes
 
-## Version 0.15.1 (Jan. 4th, 2026)
-
-A bugfix release that comes with the following changes.
-
-### Quality-of-Life Improvements
-
-- Pre-built packages are now provided for Windows ARM64 systems.
-- In addition to pre-built packages for Linux distributions following the [manylinux](https://packaging.python.org/en/latest/specifications/platform-compatibility-tags/#manylinux) standard, packages are now also provided for [musllinux](https://packaging.python.org/en/latest/specifications/platform-compatibility-tags/#musllinux) systems.
-
 ## Version 0.15.0 (Dec. 14th, 2025)
 
 A feature release that comes with the following changes.
