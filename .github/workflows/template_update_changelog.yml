@@ -23,6 +23,8 @@ jobs:
           fetch-depth: 0
           token: ${{ steps.app-token.outputs.token }}
           ref: ${{ inputs.release_branch }}
+          sparse-checkout: |
+            build_system
       - name: Setup git
         uses: fregante/setup-git-user@v2
       - name: Update changelog

@@ -15,6 +15,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          sparse-checkout: |
+            build_system
       - name: Trigger readthedocs build
         env:
           RDT_TOKEN: ${{ secrets.RTD_TOKEN }}
