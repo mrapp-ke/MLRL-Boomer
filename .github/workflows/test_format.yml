@@ -190,5 +190,7 @@ jobs:
         with:
           python-version: ${{ steps.python_version.outputs.python_version }}
           check-latest: true
+          cache: pip
+          cache-dependency-path: '**/requirements.txt'
       - name: Check TOML files
         run: ./build test_format_toml
