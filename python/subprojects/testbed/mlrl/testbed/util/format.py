@@ -46,6 +46,9 @@ def to_int_or_float(value: Any) -> int | float:
     :param value:   The value to be converted
     :return:        An integer or a floating point value
     """
+    if isinstance(value, int):
+        return value
+
     value = float(value)
     return int(value) if value % 1 == 0 else value
 
