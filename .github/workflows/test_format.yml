@@ -78,119 +78,41 @@ jobs:
     needs: changes
     if: ${{ needs.changes.outputs.cpp == 'true' }}
     name: Check C++ source files
-    runs-on: ubuntu-slim
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-      - name: Determine supported Python versions
-        id: python_version
-        run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
-      - name: Setup Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ steps.python_version.outputs.python_version }}
-          check-latest: true
-          cache: pip
-          cache-dependency-path: '**/requirements.txt'
-      - name: Check C++ source files
-        run: ./build test_format_cpp
+    uses: ./.github/workflows/template_format.yml
+    with:
+      language: cpp
   test_format_python:
     needs: changes
     if: ${{ needs.changes.outputs.python == 'true' }}
     name: Check Python source files
-    runs-on: ubuntu-slim
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-      - name: Determine supported Python versions
-        id: python_version
-        run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
-      - name: Setup Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ steps.python_version.outputs.python_version }}
-          check-latest: true
-          cache: pip
-          cache-dependency-path: '**/requirements.txt'
-      - name: Check Python source files
-        run: ./build test_format_python
+    uses: ./.github/workflows/template_format.yml
+    with:
+      language: python
   test_format_cfg:
     needs: changes
     if: ${{ needs.changes.outputs.cfg == 'true' }}
     name: Check .cfg files
-    runs-on: ubuntu-slim
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-      - name: Determine supported Python versions
-        id: python_version
-        run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
-      - name: Setup Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ steps.python_version.outputs.python_version }}
-          check-latest: true
-          cache: pip
-          cache-dependency-path: '**/requirements.txt'
-      - name: Check .cfg files
-        run: ./build test_format_cfg
+    uses: ./.github/workflows/template_format.yml
+    with:
+      language: cfg
   test_format_md:
     needs: changes
     if: ${{ needs.changes.outputs.md == 'true' }}
     name: Check Markdown files
-    runs-on: ubuntu-slim
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-      - name: Determine supported Python versions
-        id: python_version
-        run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
-      - name: Setup Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ steps.python_version.outputs.python_version }}
-          check-latest: true
-          cache: pip
-          cache-dependency-path: '**/requirements.txt'
-      - name: Check Markdown files
-        run: ./build test_format_md
+    uses: ./.github/workflows/template_format.yml
+    with:
+      language: md
   test_format_yaml:
     needs: changes
     if: ${{ needs.changes.outputs.yaml == 'true' }}
     name: Check YAML files
-    runs-on: ubuntu-slim
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-      - name: Determine supported Python versions
-        id: python_version
-        run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
-      - name: Setup Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ steps.python_version.outputs.python_version }}
-          check-latest: true
-          cache: pip
-          cache-dependency-path: '**/requirements.txt'
-      - name: Check YAML files
-        run: ./build test_format_yaml
+    uses: ./.github/workflows/template_format.yml
+    with:
+      language: yaml
   test_format_toml:
     needs: changes
     if: ${{ needs.changes.outputs.toml == 'true' }}
     name: Check TOML files
-    runs-on: ubuntu-slim
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-      - name: Determine supported Python versions
-        id: python_version
-        run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
-      - name: Setup Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ steps.python_version.outputs.python_version }}
-          check-latest: true
-          cache: pip
-          cache-dependency-path: '**/requirements.txt'
-      - name: Check TOML files
-        run: ./build test_format_toml
+    uses: ./.github/workflows/template_format.yml
+    with:
+      language: toml
