@@ -15,8 +15,9 @@ from mlrl.testbed.experiments.data import Properties, TabularProperties
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
-from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_number
+from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
+from mlrl.util.format import format_value
 from mlrl.util.options import Options
 
 
@@ -312,7 +313,7 @@ class OutputValue:
 
         return filtered
 
-    def format(self, value, **kwargs) -> str:
+    def format(self, value: int | float, **kwargs) -> str:
         """
         Creates and returns a textual representation of a given value.
 
@@ -322,7 +323,7 @@ class OutputValue:
         if self.percentage and kwargs.get(OPTION_PERCENTAGE, False):
             value = value * 100
 
-        return format_number(value, decimals=kwargs.get(OPTION_DECIMALS, 0))
+        return format_value(value, decimals=kwargs.get(OPTION_DECIMALS, 0))
 
     @override
     def __str__(self) -> str:

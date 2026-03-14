@@ -50,7 +50,7 @@ class Argument:
                 description += '.'
 
             if add_default_value_to_description and not required and default is not None:
-                description += ' The default value is ' + format_value(default) + '.'
+                description += ' The default value is ' + format_value(default, decimals=0) + '.'
 
         self.description = description
         self.kwargs = dict(kwargs)
@@ -292,7 +292,7 @@ class BoolArgument(Argument):
 
         if add_default_value_to_description:
             description += ' The default value is ' + format_value(
-                BooleanOption.TRUE if default else BooleanOption.FALSE) + '.'
+                BooleanOption.TRUE if default else BooleanOption.FALSE, decimals=0) + '.'
 
         return description
 
