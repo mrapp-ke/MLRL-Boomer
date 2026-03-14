@@ -9,7 +9,6 @@ on:
     paths:
       - .github/workflows/update_dependencies_build.yml
       - build
-      - build.bat
       - build_system/main.py
       - build_system/requirements.txt
       - build_system/core/**

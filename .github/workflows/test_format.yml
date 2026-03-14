@@ -41,7 +41,6 @@ jobs:
             build_files: &build_files
               - '.github/workflows/test_format.yml'
               - 'build'
-              - 'build.bat'
               - 'build_system/main.py'
               - 'build_system/requirements.txt'
               - 'build_system/core/**'
