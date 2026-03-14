@@ -22,6 +22,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          sparse-checkout: |
+            .github
+            build_system
+            cpp
+            python
+            doc
       - name: Detect changes
         uses: dorny/paths-filter@v4
         id: filter

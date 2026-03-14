@@ -29,6 +29,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          sparse-checkout: |
+            build_system
+            python
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
@@ -61,6 +65,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          sparse-checkout: |
+            build_system
+            cpp
+            python
       - name: Build package
         uses: pypa/cibuildwheel@v3.4
         env:
