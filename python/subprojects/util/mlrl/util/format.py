@@ -9,6 +9,8 @@ from functools import reduce
 from pathlib import Path
 from typing import Any
 
+import numpy as np
+
 
 def format_iterable(objects: Iterable[Any], separator: str = ', ', delimiter: str = '') -> str:
     """
@@ -62,15 +64,20 @@ def format_set(objects: Iterable[Any]) -> str:
     return '{' + format_iterable(sorted(objects, key=str), delimiter='"') + '}'
 
 
-def format_value(value: Any) -> str:
+def format_value(value: Any, decimals: int = 2) -> str:
     """
     Creates and returns a textual representation of a given value.
 
-    :param value:   The value to be formatted
-    :return:        The textual representation that has been created
+    :param value:       The value to be formatted
+    :param decimals:    The number of decimals floating point values should be rounded to or 0, if the number of
+                        decimals should not be restricted
+    :return:            The textual representation that has been created
     """
     if isinstance(value, str):
         return '"' + value + '"'
     if isinstance(value, Path):
         return '"' + str(value) + '"'
+    if isinstance(value, (float, np.floating)) and decimals > 0:
+        rounded_value = round(value, decimals)
+        return f'{rounded_value:.{decimals}f}'
     return str(value)
