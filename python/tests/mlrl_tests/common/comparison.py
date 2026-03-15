@@ -273,10 +273,10 @@ class CsvFileComparison(FileComparison):
 
             @override
             def __str__(self) -> str:
-                return 'row ' + str(self.row_index
-                                    + 1) + ', column ' + str(self.column_index + 1) + ' with header "' + str(
-                                        self.header) + '": Value should be "' + str(
-                                            self.expected_value) + '", but is "' + str(self.actual_value) + '"'
+                return f'''
+                row {self.row_index + 1}, column {self.column_index + 1} with header "{self.header}": Value should be
+                "{self.expected_value}", but is "{self.actual_value}"
+                '''
 
         def __init__(self, file: Path, different_cells: list[CellDifference]):
             """
@@ -289,8 +289,11 @@ class CsvFileComparison(FileComparison):
         @override
         def __str__(self) -> str:
             different_cells = self.different_cells
-            text = 'Found ' + str(len(different_cells)) + ' unexpected ' + (
-                'value' if len(different_cells) == 1 else 'values') + ' according to file "' + str(self.file) + '":\n\n'
+            text = f'''
+            Found {len(different_cells)} unexpected {'value' if len(different_cells) == 1 else 'values'} according to
+            file "{self.file}":
+            
+            '''
 
             for cell in different_cells:
                 text += str(cell) + '\n'
