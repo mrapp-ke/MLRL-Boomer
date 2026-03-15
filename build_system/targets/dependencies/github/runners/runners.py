@@ -95,8 +95,7 @@ class Runner:
         parts = text.split(Runner.SEPARATOR)
 
         if len(parts) < 2 or len(parts) > 3:
-            raise ValueError('Runner must contain the symbol + "' + Runner.SEPARATOR + '" once or twice, but got "'
-                             + text + '"')
+            raise ValueError(f'Runner must contain the symbol + "{Runner.SEPARATOR}" once or twice, but got "{text}"')
 
         return Runner(image=parts[0],
                       version=RunnerVersion(parts[1]),
@@ -139,8 +138,8 @@ class Runners(Workflow):
             try:
                 return {Runner.parse(runs_on_clause)}
             except ValueError as error:
-                raise RuntimeError('Failed to parse runs-on-clause "' + runs_on_clause + '" in workflow "'
-                                   + str(self.file) + '"') from error
+                raise RuntimeError(
+                    f'Failed to parse runs-on-clause "{runs_on_clause}" in workflow "{self.file}"') from error
 
         return set()
 

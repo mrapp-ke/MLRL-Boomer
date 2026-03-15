@@ -29,7 +29,7 @@ BUILD_OPTIONS = BuildOptions() \
         .add(EnvBuildOption('multi_threading_support', 'common')) \
         .add(EnvBuildOption('gpu_support', 'common'))
 
-MESON_OPTIONS = ['-D', 'library_version=' + str(Project.version(release=True))]
+MESON_OPTIONS = ['-D', f'library_version={Project.version(release=True)}']
 
 
 class SetupCpp(BuildTarget.Runnable):

@@ -70,8 +70,8 @@ if builder == 'linkcheck':
     github_file_url = 'https://api.github.com/repos/mrapp-ke/MLRL-Boomer/contents/%s?ref=' + git_branch
     github_dir_url = github_file_url
 else:
-    github_file_url = 'https://github.com/mrapp-ke/MLRL-Boomer/blob/' + git_branch + '/%s'
-    github_dir_url = 'https://github.com/mrapp-ke/MLRL-Boomer/tree/' + git_branch + '/%s'
+    github_file_url = f'https://github.com/mrapp-ke/MLRL-Boomer/blob/{git_branch}/%s'
+    github_dir_url = f'https://github.com/mrapp-ke/MLRL-Boomer/tree/{git_branch}/%s'
 
 extlinks = {
     'repo-file': (github_file_url, '%s'),
@@ -118,7 +118,7 @@ autodoc_mock_imports = [
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 html_theme = 'furo'
-html_title = project + ' ' + release
+html_title = f'{project} {release}'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

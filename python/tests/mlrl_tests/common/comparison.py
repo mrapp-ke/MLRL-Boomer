@@ -38,7 +38,7 @@ class Difference(ABC):
 
     @override
     def __str__(self) -> str:
-        return 'Found unexpected content in file "' + str(self.file) + '"'
+        return f'Found unexpected content in file "{self.file}"'
 
 
 class FileComparison(ABC):
@@ -151,12 +151,12 @@ class TextFileComparison(FileComparison):
     @staticmethod
     def __replace_timestamps_with_placeholders(line: str) -> str:
         regex_timestamp = r'"\d\d\d\d-\d\d-\d\d_\d\d-\d\d"'
-        return regex.sub(regex_timestamp, '"' + PLACEHOLDER_TIMESTAMP + '"', line)
+        return regex.sub(regex_timestamp, f'"{PLACEHOLDER_TIMESTAMP}"', line)
 
     @staticmethod
     def __replace_versions_with_placeholders(line: str) -> str:
         regex_version = r'"\d+.\d+.\d+"'
-        return regex.sub(regex_version, '"' + PLACEHOLDER_VERSION + '"', line)
+        return regex.sub(regex_version, f'"{PLACEHOLDER_VERSION}"', line)
 
     def __mask_line(self, line_index: int, line: str) -> str:
         masked_line = self.__replace_durations_with_placeholders(line_index, line.strip('\n'))
@@ -243,9 +243,10 @@ class CsvFileComparison(FileComparison):
 
         @override
         def __str__(self) -> str:
-            return 'CSV file should have ' + str(self.num_expected_rows) + ' rows and ' + str(
-                self.num_expected_columns) + ' columns according to file "' + str(self.file) + '", but has ' + str(
-                    self.num_actual_rows) + ' rows and ' + str(self.num_actual_columns) + ' columns'
+            return f'''
+            CSV file should have {self.num_expected_rows} rows and {self.num_expected_columns} columns according to file
+            "{self.file}", but has {self.num_actual_rows} rows and {self.num_actual_columns} columns
+            '''
 
     class CellDifferences(Difference):
         """

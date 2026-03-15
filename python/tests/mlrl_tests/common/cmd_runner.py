@@ -31,15 +31,17 @@ class CmdRunner:
         exit_code = out.returncode
 
         if exit_code != 0:
-            pytest.fail('Command "' + self.__format_cmd(args) + '" terminated with non-zero exit code ' + str(exit_code)
-                        + '\n\n' + str(out.stderr))
+            pytest.fail(f'''
+            Command "{self.__format_cmd(args)}" terminated with non-zero exit code {exit_code}
+
+            {out.stderr}
+            ''')
 
         return out
 
     def __assert_file_exists(self, file: Path):
         if not file.is_file():
-            pytest.fail('Command "' + self.__format_cmd() + '" is expected to create file "' + str(file)
-                        + '", but it does not exist')
+            pytest.fail(f'Command "{self.__format_cmd()}" is expected to create file "{file}", but it does not exist')
 
     def __compare_or_overwrite_output_files(self, output_dir: Path, expected_output_dir: Path):
         expected_files_to_be_deleted = []
@@ -81,8 +83,7 @@ class CmdRunner:
             return True
         if value == 'false':
             return False
-        raise ValueError('Value of environment variable "' + variable_name + '" must be "true" or "false", but is "'
-                         + value + '"')
+        raise ValueError(f'Value of environment variable "{variable_name}" must be "true" or "false", but is "{value}"')
 
     def __init__(self, builder: CmdBuilder):
         """

@@ -90,8 +90,7 @@ class Action:
         parts = uses_clause.split(Action.SEPARATOR)
 
         if len(parts) != 2:
-            raise ValueError('Uses-clause must contain the symbol + "' + Action.SEPARATOR + '", but got "' + uses_clause
-                             + '"')
+            raise ValueError(f'Uses-clause must contain the symbol "{Action.SEPARATOR}", but got "{uses_clause}"')
 
         return Action(name=parts[0], version=ActionVersion(parts[1]))
 
@@ -140,8 +139,7 @@ class Actions(Workflow):
                     try:
                         actions.add(Action.from_uses_clause(uses_clause))
                     except ValueError as error:
-                        raise RuntimeError('Failed to parse uses-clause in workflow "' + str(self.file)
-                                           + '"') from error
+                        raise RuntimeError(f'Failed to parse uses-clause in workflow "{self.file}"') from error
 
         return actions
 
@@ -246,8 +244,9 @@ class ActionUpdater(Workflows):
 
             return ActionVersion(latest_tag)
         except RuntimeError as error:
-            raise RuntimeError('Unable to determine latest version of action "' + str(action)
-                               + '" hosted in repository "' + repository_name + '"') from error
+            raise RuntimeError(
+                f'Unable to determine latest version of action "{action}" hosted in repository "{repository_name}"'
+            ) from error
 
     def __get_latest_action_version(self, action: Action) -> ActionVersion:
         latest_version = self.version_cache.get(action.name)
