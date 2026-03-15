@@ -16,7 +16,7 @@ jobs:
         with:
           ref: ${{ inputs.release_branch }}
       - name: Generate token
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@v3
         id: app-token
         with:
           app-id: ${{ secrets.token_app_id }}

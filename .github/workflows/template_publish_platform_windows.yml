@@ -65,7 +65,7 @@ jobs:
         build_identifier: ${{ fromJson(needs.build_identifiers.outputs.build_identifiers) }}
     steps:
       - name: Determine architecture
-        uses: ASzc/change-string-case-action@v6
+        uses: ASzc/change-string-case-action@v8
         id: arch
         with:
           string: ${{ runner.arch }}
