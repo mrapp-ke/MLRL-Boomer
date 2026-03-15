@@ -9,7 +9,6 @@ on:
     paths:
       - .github/workflows/update_doxyfile.yml
       - build
-      - build.bat
       - build_system/main.py
       - build_system/requirements.txt
       - build_system/core/**
@@ -31,7 +30,7 @@ jobs:
           ref: bugfix
       - name: Determine supported Python versions
         id: python_version
-        run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
+        run: echo "python_version=$(sed s/,//g build_system/res/versioning/version-python)" >> $GITHUB_OUTPUT
       - name: Setup Python
         uses: actions/setup-python@v6
         with:

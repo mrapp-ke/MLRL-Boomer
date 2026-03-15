@@ -9,7 +9,6 @@ on:
     paths:
       - .github/workflows/update_dependencies_runtime.yml
       - build
-      - build.bat
       - build_system/main.py
       - build_system/requirements.txt
       - build_system/core/**
@@ -31,7 +30,7 @@ jobs:
           ref: feature
       - name: Determine supported Python versions
         id: python_version
-        run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
+        run: echo "python_version=$(sed s/,//g build_system/res/versioning/version-python)" >> $GITHUB_OUTPUT
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
@@ -50,7 +49,7 @@ jobs:
       - name: Update supported Python versions
         run: |
           ./build update_python_version
-          git add python/.version-python
+          git add build_system/res/versioning/version-python
       - name: Update runtime dependencies
         run: |
           ./build update_runtime_dependencies
