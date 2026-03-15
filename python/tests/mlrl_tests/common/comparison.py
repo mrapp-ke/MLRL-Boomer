@@ -65,9 +65,9 @@ class FileComparison(ABC):
 
         @override
         def __str__(self) -> str:
-            text = 'Line ' + str(self.line_index + 1) + ' is unexpected according to file "' + str(self.file) + '".\n\n'
-            text += 'Expected:\n' + self.expected_line + '\n\n'
-            text += 'Actual:\n' + self.actual_line
+            text = f'Line {self.line_index + 1} is unexpected according to file "{self.file}".\n\n'
+            text += f'Expected:\n{self.expected_line}\n\n'
+            text += f'Actual:\n{self.actual_line}'
             return text
 
     @staticmethod
@@ -208,7 +208,7 @@ class PickleFileComparison(FileComparison):
     @override
     def _compare(self, another_file: Path) -> Difference | None:
         if not another_file.is_file():
-            raise IOError('File "' + str(another_file) + '" does not exist')
+            raise IOError(f'File "{another_file}" does not exist')
         return None
 
     @override
@@ -290,7 +290,7 @@ class CsvFileComparison(FileComparison):
         def __str__(self) -> str:
             different_cells = self.different_cells
             text = f'''
-            Found {len(different_cells)} unexpected {'value' if len(different_cells) == 1 else 'values'} according to
+            Found {len(different_cells)} unexpected 'value' if len(different_cells) == 1 else 'values'} according to
             file "{self.file}":
             
             '''

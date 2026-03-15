@@ -62,7 +62,7 @@ def __download_package(github_api: GithubApi, package_name: str) -> str | None:
 
     if download_url and file_name:
         Log.info('Downloading from "%s"...', download_url)
-        authorization_header = 'token ' + github_api.token if github_api.token else None
+        authorization_header = f'token {github_api.token}' if github_api.token else None
         CurlDownload(download_url, authorization_header=authorization_header, file_name=file_name).run()
         return file_name
 
@@ -99,7 +99,7 @@ def compile_libomp(build_unit: BuildUnit):
         shutil.copytree(cmake_directory / 'Modules', openmp_directory / 'cmake', dirs_exist_ok=True)
         Log.info('Compiling from source directory "%s"...', openmp_directory)
         args = [
-            '-DCMAKE_INSTALL_PREFIX=' + str(build_directory),
+            f'-DCMAKE_INSTALL_PREFIX={build_directory}',
             '-DCMAKE_INSTALL_LIBDIR=lib',
             '-DCMAKE_BUILD_TYPE=Release',
             '-DCMAKE_FIND_FRAMEWORK=LAST',
