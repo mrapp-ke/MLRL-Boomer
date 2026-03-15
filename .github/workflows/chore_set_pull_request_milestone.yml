@@ -17,6 +17,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          sparse-checkout: build_system/res/versioning/version
+          sparse-checkout-cone-mode: false
       - name: Determine milestone
         uses: juliangruber/read-file-action@v1
         id: milestone

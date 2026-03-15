@@ -27,6 +27,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          sparse-checkout: build_system/res/versioning/version-python
+          sparse-checkout-cone-mode: false
       - name: Determine supported Python versions
         id: python_version
         run: echo "python_version=$(sed s/,//g build_system/res/versioning/version-python)" >> $GITHUB_OUTPUT
