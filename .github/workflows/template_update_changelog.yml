@@ -20,7 +20,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0
           token: ${{ steps.app-token.outputs.token }}
           ref: ${{ inputs.release_branch }}
           sparse-checkout: |
