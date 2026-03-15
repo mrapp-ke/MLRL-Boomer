@@ -135,7 +135,7 @@ class BuildTarget(Target):
             :param build_unit:  The build unit, the target belongs to
             :param modules:      A list that contains the modules, the target should be applied to
             """
-            raise NotImplementedError('Class ' + type(self).__name__ + ' does not implement the "run_all" method')
+            raise NotImplementedError(f'Class {type(self).__name__} does not implement the "run_all" method')
 
         def run(self, build_unit: BuildUnit, module: Module):
             """
@@ -145,7 +145,7 @@ class BuildTarget(Target):
             :param build_unit:  The build unit, the target belongs to
             :param module:      The module, the target should be applied to
             """
-            raise NotImplementedError('Class ' + type(self).__name__ + ' does not implement the "run" method')
+            raise NotImplementedError(f'Class {type(self).__name__} does not implement the "run" method')
 
         # pylint: disable=unused-argument
         def get_input_files(self, build_unit: BuildUnit, module: Module) -> list[Path]:
@@ -296,8 +296,9 @@ class BuildTarget(Target):
                     for module in modules_to_be_run:
                         runnable.run(self.build_unit, module)
                 except NotImplementedError as error:
-                    raise RuntimeError('Class ' + type(runnable).__name__
-                                       + ' must implement either the "run_all" or "run" method') from error
+                    raise RuntimeError(
+                        f'Class {type(runnable).__name__} must implement either the "run_all" or "run" method'
+                    ) from error
 
             for i, module in enumerate(modules_to_be_run):
                 self.change_detection.track_files(module, *input_files_per_module[i])
@@ -337,7 +338,7 @@ class PhonyTarget(Target):
             :param build_unit:  The build unit, the target belongs to
             :param modules:     A list that contains the modules, the target should be applied to
             """
-            raise NotImplementedError('Class ' + type(self).__name__ + ' does not implement the "run_all" method')
+            raise NotImplementedError(f'Class {type(self).__name__} does not implement the "run_all" method')
 
         def run(self, build_unit: BuildUnit, module: Module):
             """
@@ -347,7 +348,7 @@ class PhonyTarget(Target):
             :param build_unit:  The build unit, the target belongs to
             :param module:      The module, the target should be applied to
             """
-            raise NotImplementedError('Class ' + type(self).__name__ + ' does not implement the "run" method')
+            raise NotImplementedError(f'Class {type(self).__name__} does not implement the "run" method')
 
     class Builder(Target.Builder):
         """
@@ -410,8 +411,9 @@ class PhonyTarget(Target):
                             for module in modules:
                                 runnable.run(build_unit, module)
                         except NotImplementedError as error:
-                            raise RuntimeError('Class ' + type(runnable).__name__
-                                               + ' must implement either the "run_all" or "run" method') from error
+                            raise RuntimeError(
+                                f'Class {type(runnable).__name__} must implement either the "run_all" or "run" method'
+                            ) from error
 
             return PhonyTarget(self.target_name, self.dependencies, action)
 
@@ -554,7 +556,7 @@ class DependencyGraph:
 
         @override
         def __str__(self) -> str:
-            return '[' + self.target.name + ']'
+            return f'[{self.target.name}]'
 
         @override
         def __eq__(self, other) -> bool:
@@ -655,12 +657,12 @@ class DependencyGraph:
         @override
         def __str__(self) -> str:
             first_node = self.first
-            result = ' → ' + str(first_node)
+            result = f' → {first_node}'
             current_node = first_node.child
             indent = 1
 
             while current_node:
-                result += '\n' + reduce(lambda aggr, _: aggr + '   ', range(indent), '') + ' ↳ ' + str(current_node)
+                result += f'\n{reduce(lambda aggr, _: aggr + ' ', range(indent), ' ')} ↳ {current_node}'
                 current_node = current_node.child
                 indent += 1
 
@@ -795,8 +797,10 @@ class TargetRegistry:
         existing = self.targets_by_name.get(target.name)
 
         if existing:
-            raise ValueError('Failed to register target ' + str(target)
-                             + ', because a target with the same name has already been registered: ' + str(existing))
+            raise ValueError(f'''
+            Failed to register target {target}, because a target with the same name has already been registered:
+            {existing}
+            ''')
 
         self.targets_by_name[target.name] = target
 

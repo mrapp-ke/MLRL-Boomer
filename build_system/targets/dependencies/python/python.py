@@ -19,7 +19,7 @@ def __query_latest_python_version(build_unit: BuildUnit) -> Version:
     # pylint: disable=import-outside-toplevel
     import requests
     url = 'https://raw.githubusercontent.com/actions/python-versions/refs/heads/main/versions-manifest.json'
-    Log.verbose('Querying Python versions from ' + url)
+    Log.verbose(f'Querying Python versions from {url}')
     response = requests.get(url, timeout=5)
     available_versions = set()
 

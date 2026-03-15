@@ -33,4 +33,4 @@ class PyLint(CodeFormatterProgram):
                          cache_file_name='pylint')
 
         for extension in self.ENABLED_EXTENSIONS:
-            self.add_arguments('--enable=' + extension, '--fail-on=' + extension)
+            self.add_arguments(f'--enable={extension}', f'--fail-on={extension}')

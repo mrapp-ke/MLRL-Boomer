@@ -30,7 +30,7 @@ def get_meson_arguments(build_options: BuildOptions) -> list[str]:
 
                 if value:
                     arguments.append('-D')
-                    arguments.append(key + '=' + value)
+                    arguments.append(f'{key}={value}')
 
     return arguments
 

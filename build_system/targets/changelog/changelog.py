@@ -78,10 +78,10 @@ class Line:
         line_type = LineType.parse(line)
 
         if not line_type:
-            raise ValueError('Line ' + str(line_number)
-                             + ' is invalid: Must be blank, a top-level header (starting with "' + Line.PREFIX_HEADER
-                             + '"), or an enumeration (starting with "' + Line.PREFIX_DASH + '" or "'
-                             + Line.PREFIX_ASTERISK + '"), but is "' + line + '"')
+            raise ValueError(f'''
+            Line {line_number} is invalid: Must be blank, a top-level header (starting with "{Line.PREFIX_HEADER}"), or
+            an enumeration (starting with "{Line.PREFIX_DASH}" or "{Line.PREFIX_ASTERISK}"), but is "{line}"
+            ''')
 
         content = line
 
@@ -89,8 +89,7 @@ class Line:
             content = line.lstrip(Line.PREFIX_HEADER).lstrip(Line.PREFIX_DASH).lstrip(Line.PREFIX_ASTERISK)
 
             if not content or content.isspace():
-                raise ValueError('Line ' + str(line_number) + ' is is invalid: Content must not be blank, but is "'
-                                 + line + '"')
+                raise ValueError(f'Line {line_number} is is invalid: Content must not be blank, but is "{line}"')
 
         return Line(line_number=line_number, line_type=line_type, line=line, content=content)
 
@@ -109,7 +108,7 @@ class Changeset:
 
     @override
     def __str__(self) -> str:
-        changeset = '### ' + self.header + '\n\n'
+        changeset = f'### {self.header}\n\n'
 
         for content in self.changes:
             changeset += Line.PREFIX_DASH + content + '\n'
@@ -155,13 +154,15 @@ class ChangesetFile(TextFile):
         current_line_is_enumeration = current_line and current_line.line_type == LineType.ENUMERATION
 
         if current_line_is_enumeration and not previous_line:
-            raise ValueError('File "' + str(self.file) + '" must start with a top-level header (starting with "'
-                             + Line.PREFIX_HEADER + '")')
+            raise ValueError(
+                f'File "{self.file}" must start with a top-level header (starting with "{Line.PREFIX_HEADER} ")')
 
         if previous_line and previous_line.line_type == LineType.HEADER:
             if not current_line or current_line.line_type == LineType.HEADER:
-                raise ValueError('Header "' + previous_line.line + '" at line ' + str(previous_line.line_number)
-                                 + ' of file "' + str(self.file) + '" is not followed by any content')
+                raise ValueError(f'''
+                Header "{previous_line.line}" at line {previous_line.line_number} of file "{self.file}" is not followed
+                by any content
+                ''')
 
     @cached_property
     def parsed_lines(self) -> list[Line]:
@@ -265,14 +266,20 @@ class Release:
         return str(day) + suffix
 
     def __format_release_date(self) -> str:
-        return self.__format_release_month(self.release_date.month) + '. ' + self.__format_release_day(
-            self.release_date.day) + ', ' + str(self.release_date.year)
+        month = self.__format_release_month(self.release_date.month)
+        day = self.__format_release_day(self.release_date.day)
+        year = self.release_date.year
+        return f'{month}.{day},{year}'
 
     def __format_disclaimer(self) -> str:
         if [changeset for changeset in self.changesets if changeset.header.lower() == 'api changes']:
-            return ('```{warning}\nThis release comes with API changes. For an updated overview of the available '
-                    + 'parameters and command line arguments, please refer to the ' + '[documentation]('
-                    + self.URL_DOCUMENTATION + str(self.version) + ').\n```\n\n')
+            return f'''
+            ```{{warning}}
+            This release comes with API changes. For an updated overview of the available parameters and command
+            line arguments, please refer to the [documentation]({self.URL_DOCUMENTATION}{self.version}).
+            ```
+            
+            '''
         return ''
 
     @override

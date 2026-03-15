@@ -85,5 +85,6 @@ class PythonDependencyModule(SubprojectModule):
 
     @override
     def __str__(self) -> str:
-        return ('PythonDependencyModule {dependency_type="' + self.dependency_type + '", root_directory="'
-                + str(self.root_directory) + '"}')
+        return f'''
+        PythonDependencyModule {{dependency_type="{self.dependency_type}", root_directory="{self.root_directory}"}}
+        '''

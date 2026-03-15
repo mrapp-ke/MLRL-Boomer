@@ -85,8 +85,10 @@ class ExtendedParallelRuleRefinementParameter(ParallelRuleRefinementParameter):
         super().__init__()
         self.add_value(name=AUTO,
                        mixin=AutomaticParallelRuleRefinementMixin,
-                       description='If set to "' + AUTO + '", the most suitable strategy is chosen automatically based '
-                       + 'on ' + 'the parameter ' + RegressionLossParameter().argument_name)
+                       description=f'''
+                       If set to "{AUTO}", the most suitable strategy is chosen automatically based on the parameter
+                       {RegressionLossParameter().argument_name}
+                       ''')
 
     @override
     def _configure(self, config, value: str, options: Options):
@@ -105,8 +107,10 @@ class ExtendedParallelStatisticUpdateParameter(ParallelStatisticUpdateParameter)
         super().__init__()
         self.add_value(name=AUTO,
                        mixin=AutomaticParallelStatisticUpdateMixin,
-                       description='If set to "' + AUTO + '", the most suitable strategy is chosen automatically based '
-                       + 'on ' + 'the parameter ' + RegressionLossParameter().argument_name)
+                       description=f'''
+                       If set to "{AUTO}", the most suitable strategy is chosen automatically based on the parameter
+                       {RegressionLossParameter().argument_name}
+                       ''')
 
     @override
     def _configure(self, config, value: str, options: Options):

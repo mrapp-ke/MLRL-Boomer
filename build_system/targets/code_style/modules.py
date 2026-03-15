@@ -54,4 +54,4 @@ class CodeModule(Module):
 
     @override
     def __str__(self) -> str:
-        return 'CodeModule {file_type="' + str(self.file_type) + '", root_directory="' + str(self.root_directory) + '"}'
+        return f'CodeModule {{file_type="{self.file_type}", root_directory="{self.root_directory}"}}'

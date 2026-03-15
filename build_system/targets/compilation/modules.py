@@ -76,5 +76,4 @@ class CompilationModule(Module):
 
     @override
     def __str__(self) -> str:
-        return 'CompilationModule {file_type="' + str(self.file_type) + '", root_directory=' + str(
-            self.root_directory) + '"}'
+        return f'CompilationModule {{file_type="{self.file_type}", root_directory={self.root_directory}"}}'

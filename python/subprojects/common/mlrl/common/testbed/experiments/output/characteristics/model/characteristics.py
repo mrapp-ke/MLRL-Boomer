@@ -105,7 +105,7 @@ class RuleModelCharacteristics(TabularOutputData):
             table.add_row('Default rule', *self.__format_body_statistics(body_statistics))
 
         body_statistics = aggregated_rule_statistics.body_statistics
-        table.add_row(str(statistics.num_rules) + ' local rules', *self.__format_body_statistics(body_statistics))
+        table.add_row(f'{statistics.num_rules} local rules', *self.__format_body_statistics(body_statistics))
         return table.format(auto_rotate=False)
 
     @staticmethod

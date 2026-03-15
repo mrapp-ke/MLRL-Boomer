@@ -38,7 +38,7 @@ class Difference(ABC):
 
     @override
     def __str__(self) -> str:
-        return 'Found unexpected content in file "' + str(self.file) + '"'
+        return f'Found unexpected content in file "{self.file}"'
 
 
 class FileComparison(ABC):
@@ -65,9 +65,9 @@ class FileComparison(ABC):
 
         @override
         def __str__(self) -> str:
-            text = 'Line ' + str(self.line_index + 1) + ' is unexpected according to file "' + str(self.file) + '".\n\n'
-            text += 'Expected:\n' + self.expected_line + '\n\n'
-            text += 'Actual:\n' + self.actual_line
+            text = f'Line {self.line_index + 1} is unexpected according to file "{self.file}".\n\n'
+            text += f'Expected:\n{self.expected_line}\n\n'
+            text += f'Actual:\n{self.actual_line}'
             return text
 
     @staticmethod
@@ -151,12 +151,12 @@ class TextFileComparison(FileComparison):
     @staticmethod
     def __replace_timestamps_with_placeholders(line: str) -> str:
         regex_timestamp = r'"\d\d\d\d-\d\d-\d\d_\d\d-\d\d"'
-        return regex.sub(regex_timestamp, '"' + PLACEHOLDER_TIMESTAMP + '"', line)
+        return regex.sub(regex_timestamp, f'"{PLACEHOLDER_TIMESTAMP}"', line)
 
     @staticmethod
     def __replace_versions_with_placeholders(line: str) -> str:
         regex_version = r'"\d+.\d+.\d+"'
-        return regex.sub(regex_version, '"' + PLACEHOLDER_VERSION + '"', line)
+        return regex.sub(regex_version, f'"{PLACEHOLDER_VERSION}"', line)
 
     def __mask_line(self, line_index: int, line: str) -> str:
         masked_line = self.__replace_durations_with_placeholders(line_index, line.strip('\n'))
@@ -208,7 +208,7 @@ class PickleFileComparison(FileComparison):
     @override
     def _compare(self, another_file: Path) -> Difference | None:
         if not another_file.is_file():
-            raise IOError('File "' + str(another_file) + '" does not exist')
+            raise IOError(f'File "{another_file}" does not exist')
         return None
 
     @override
@@ -243,9 +243,10 @@ class CsvFileComparison(FileComparison):
 
         @override
         def __str__(self) -> str:
-            return 'CSV file should have ' + str(self.num_expected_rows) + ' rows and ' + str(
-                self.num_expected_columns) + ' columns according to file "' + str(self.file) + '", but has ' + str(
-                    self.num_actual_rows) + ' rows and ' + str(self.num_actual_columns) + ' columns'
+            return f'''
+            CSV file should have {self.num_expected_rows} rows and {self.num_expected_columns} columns according to file
+            "{self.file}", but has {self.num_actual_rows} rows and {self.num_actual_columns} columns
+            '''
 
     class CellDifferences(Difference):
         """
@@ -272,10 +273,10 @@ class CsvFileComparison(FileComparison):
 
             @override
             def __str__(self) -> str:
-                return 'row ' + str(self.row_index
-                                    + 1) + ', column ' + str(self.column_index + 1) + ' with header "' + str(
-                                        self.header) + '": Value should be "' + str(
-                                            self.expected_value) + '", but is "' + str(self.actual_value) + '"'
+                return f'''
+                row {self.row_index + 1}, column {self.column_index + 1} with header "{self.header}": Value should be
+                "{self.expected_value}", but is "{self.actual_value}"
+                '''
 
         def __init__(self, file: Path, different_cells: list[CellDifference]):
             """
@@ -288,8 +289,11 @@ class CsvFileComparison(FileComparison):
         @override
         def __str__(self) -> str:
             different_cells = self.different_cells
-            text = 'Found ' + str(len(different_cells)) + ' unexpected ' + (
-                'value' if len(different_cells) == 1 else 'values') + ' according to file "' + str(self.file) + '":\n\n'
+            text = f'''
+            Found {len(different_cells)} unexpected 'value' if len(different_cells) == 1 else 'values'} according to
+            file "{self.file}":
+            
+            '''
 
             for cell in different_cells:
                 text += str(cell) + '\n'
@@ -404,7 +408,7 @@ class MetaDataFileComparison(FileComparison):
 
         @override
         def __str__(self) -> str:
-            return 'Field "' + self.missing_field + '" is missing from YAML file'
+            return f'Field "{self.missing_field}" is missing from YAML file'
 
     class FieldDifference(Difference):
         """
@@ -425,8 +429,10 @@ class MetaDataFileComparison(FileComparison):
 
         @override
         def __str__(self) -> str:
-            return ('Field "' + self.field + '" has unexpected value. Value should be "' + self.expected_value
-                    + '", but is "' + self.actual_value + '"')
+            return f'''
+            Field "{self.field}" has unexpected value. Value should be "{self.expected_value}", but is 
+            "{self.actual_value}"
+            '''
 
     FIELD_VERSION = 'version'
 
@@ -467,7 +473,7 @@ class MetaDataFileComparison(FileComparison):
             return None
 
         if not another_file.is_file():
-            raise IOError('File "' + str(another_file) + '" does not exist')
+            raise IOError(f'File "{another_file}" does not exist')
         return None
 
     @override
