@@ -405,7 +405,7 @@ class MetaDataFileComparison(FileComparison):
 
         @override
         def __str__(self) -> str:
-            return 'Field "' + self.missing_field + '" is missing from YAML file'
+            return f'Field "{self.missing_field}" is missing from YAML file'
 
     class FieldDifference(Difference):
         """
