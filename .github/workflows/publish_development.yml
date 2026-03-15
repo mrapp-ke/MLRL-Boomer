@@ -29,11 +29,11 @@ jobs:
               - ./.github/workflows/template_publish_platform_linux.yml
               - ./.github/workflows/template_publish_platform_macos.yml
               - ./.github/workflows/template_publish_platform_windows.yml
+              - build_system/res/versioning/version-cpp
+              - build_system/res/versioning/version-python
               - cpp/subprojects/**/include/**
               - cpp/subprojects/**/src/**
-              - cpp/.version-cpp
               - python/subprojects/**/mlrl/**
-              - python/.version-python
             doc:
               - *code
               - ./.github/workflows/template_publish_doc.yml
