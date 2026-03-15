@@ -31,6 +31,10 @@ jobs:
         run: git config --system core.longpaths true
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          sparse-checkout: |
+            build_system
+            python
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
@@ -42,7 +46,7 @@ jobs:
         uses: juliangruber/read-file-action@v1
         id: python_version
         with:
-          path: python/.version-python
+          path: build_system/res/versioning/version-python
       - name: Create virtual environment
         run: .\build.bat venv
       - name: Determine build identifiers
@@ -72,6 +76,11 @@ jobs:
         run: git config --system core.longpaths true
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          sparse-checkout: |
+            build_system
+            cpp
+            python
       - name: Prepare MSVC
         uses: ilammy/msvc-dev-cmd@v1
         with:

@@ -1,0 +1,33 @@
+---
+name: Check code style
+on:
+  workflow_call:
+    inputs:
+      language:
+        required: true
+        type: string
+jobs:
+  test_format:
+    name: Check code style
+    runs-on: ubuntu-slim
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: |
+            build_system
+            cpp
+            python
+            doc
+      - name: Determine supported Python versions
+        id: python_version
+        run: echo "python_version=$(sed s/,//g build_system/res/versioning/version-python)" >> $GITHUB_OUTPUT
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ steps.python_version.outputs.python_version }}
+          check-latest: true
+          cache: pip
+          cache-dependency-path: '**/requirements.txt'
+      - name: Check code style
+        run: ./build test_format_${{ inputs.language }}
