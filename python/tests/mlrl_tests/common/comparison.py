@@ -426,8 +426,10 @@ class MetaDataFileComparison(FileComparison):
 
         @override
         def __str__(self) -> str:
-            return ('Field "' + self.field + '" has unexpected value. Value should be "' + self.expected_value
-                    + '", but is "' + self.actual_value + '"')
+            return f'''
+            Field "{self.field}" has unexpected value. Value should be "{self.expected_value}", but is 
+            "{self.actual_value}"
+            '''
 
     FIELD_VERSION = 'version'
 
@@ -468,7 +470,7 @@ class MetaDataFileComparison(FileComparison):
             return None
 
         if not another_file.is_file():
-            raise IOError('File "' + str(another_file) + '" does not exist')
+            raise IOError(f'File "{another_file}" does not exist')
         return None
 
     @override
