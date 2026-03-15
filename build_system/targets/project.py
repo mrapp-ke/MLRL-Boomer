@@ -122,7 +122,7 @@ class Project:
 
             :return: The file that stores the Python versions
             """
-            return PythonVersionFile(Project.Python.root_directory / '.version-python')
+            return PythonVersionFile(Project.BuildSystem.resource_directory / 'versioning' / 'version-python')
 
         @staticmethod
         def supported_python_versions() -> RequirementVersion:
@@ -205,7 +205,7 @@ class Project:
 
             :return: The C++ version that should be used for compilation
             """
-            return VersionTextFile(Project.Cpp.root_directory / '.version-cpp').version_string
+            return VersionTextFile(Project.BuildSystem.resource_directory / 'versioning' / 'version-cpp').version_string
 
         @staticmethod
         def file_search() -> FileSearch:

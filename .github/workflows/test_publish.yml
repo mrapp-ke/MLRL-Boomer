@@ -40,7 +40,7 @@ jobs:
               - 'build_system/targets/*.py'
               - 'build_system/targets/packaging/*'
               - 'build_system/targets/publishing/*'
-              - 'python/.version-python'
+              - 'build_system/res/versioning/version-python'
               - 'python/subprojects/**/requirements.txt'
             linux:
               - *build_files

@@ -42,7 +42,7 @@ jobs:
         uses: juliangruber/read-file-action@v1
         id: python_version
         with:
-          path: python/.version-python
+          path: build_system/res/versioning/version-python
       - name: Create virtual environment
         run: .\build.bat venv
       - name: Determine build identifiers
