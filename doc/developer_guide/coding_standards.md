@@ -313,7 +313,7 @@ That being said, we still rely on several dependencies for Continuous Integratio
 
 ### Supported Python Versions
 
-The packages provided by this project are built from source code that must be compiled for specific Python versions. As a consequence, they do not work with arbitrary Python releases, but can only be used with the versions they have been built for. The supported Python versions are stored in the file {repo-file}`.version-python <python/.version-python>` and are regularly updated as new releases of Python are published. The following command provided by the project's build system checks if the latest Python release is currently supported by the project:
+The packages provided by this project are built from source code that must be compiled for specific Python versions. As a consequence, they do not work with arbitrary Python releases, but can only be used with the versions they have been built for. The supported Python versions are stored in the file {repo-file}`version-python <build_system/res/versioning/version-python>` and are regularly updated as new releases of Python are published. The following command provided by the project's build system checks if the latest Python release is currently supported by the project:
 
 ````{tab} Linux
    ```text
@@ -333,7 +333,7 @@ The packages provided by this project are built from source code that must be co
    ```
 ````
 
-The following command updates the supported versions in the file {repo-file}`.version-python <python/.version-python>` to include the latest Python release:
+The following command updates the supported versions in the file {repo-file}`version-python <build_system/res/versioning/version-python>` to include the latest Python release:
 
 ````{tab} Linux
    ```text

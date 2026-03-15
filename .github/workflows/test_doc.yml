@@ -31,7 +31,6 @@ jobs:
               - '.github/workflows/test_doc.yml'
               - '.github/workflows/template_doc.yml'
               - 'build'
-              - 'build.bat'
               - 'build_system/main.py'
               - 'build_system/requirements.txt'
               - 'build_system/core/**'
