@@ -1,0 +1,5 @@
+File scalar_math.hpp
+====================
+
+.. doxygenfile:: scalar_math.hpp
+   :project: common
