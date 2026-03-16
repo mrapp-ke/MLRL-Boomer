@@ -25,6 +25,7 @@ jobs:
         with:
           ref: ${{ inputs.target_branch }}
           token: ${{ steps.app-token.outputs.token }}
+          fetch-depth: 100
       - name: Setup git
         uses: fregante/setup-git-user@v2
       - name: Determine changes
