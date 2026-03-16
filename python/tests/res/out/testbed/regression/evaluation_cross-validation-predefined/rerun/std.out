@@ -1,0 +1,120 @@
+mlrl-testbed mlrl.boosting --mode read --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --print-evaluation true --save-evaluation true
+Reading meta-data...
+DEBUG: Reading input data from file "python/tests/res/tmp/metadata.yml"...
+Successfully read meta-data
+DEBUG: Checking for version conflicts...
+DEBUG: Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is currently used
+DEBUG: No version conflicts detected
+Reading experimental results of 1 experiment...
+
+Reading experimental results of experiment (1 / 1)...
+The command "mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d-predefined --result-dir results --problem-type regression --save-evaluation true --data-split cross-validation --print-evaluation true --save-evaluation true" has been used originally for running this experiment
+Performing full 10-fold cross validation...
+Fold 1 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/evaluation_test_fold-1.csv"...
+Evaluation result for test data (Fold 1):
+
+Mean Absolute Error (↓)                84.48
+Mean Absolute Percentage Error (↓)      0.17
+Mean Squared Error (↓)              21184.9
+Median Absolute Error (↓)              59.33
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test_fold-1.csv"...
+Fold 2 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/evaluation_test_fold-2.csv"...
+Evaluation result for test data (Fold 2):
+
+Mean Absolute Error (↓)               29.82
+Mean Absolute Percentage Error (↓)     0.08
+Mean Squared Error (↓)              2439.75
+Median Absolute Error (↓)             16.86
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test_fold-2.csv"...
+Fold 3 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/evaluation_test_fold-3.csv"...
+Evaluation result for test data (Fold 3):
+
+Mean Absolute Error (↓)               36.6
+Mean Absolute Percentage Error (↓)     0.09
+Mean Squared Error (↓)              3661.1
+Median Absolute Error (↓)             21.46
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test_fold-3.csv"...
+Fold 4 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/evaluation_test_fold-4.csv"...
+Evaluation result for test data (Fold 4):
+
+Mean Absolute Error (↓)               26.91
+Mean Absolute Percentage Error (↓)     0.09
+Mean Squared Error (↓)              1294.63
+Median Absolute Error (↓)             21.24
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test_fold-4.csv"...
+Fold 5 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/evaluation_test_fold-5.csv"...
+Evaluation result for test data (Fold 5):
+
+Mean Absolute Error (↓)              17.22
+Mean Absolute Percentage Error (↓)    0.06
+Mean Squared Error (↓)              530.87
+Median Absolute Error (↓)            14.04
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test_fold-5.csv"...
+Fold 6 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/evaluation_test_fold-6.csv"...
+Evaluation result for test data (Fold 6):
+
+Mean Absolute Error (↓)               31
+Mean Absolute Percentage Error (↓)     0.11
+Mean Squared Error (↓)              1728.46
+Median Absolute Error (↓)             24.84
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test_fold-6.csv"...
+Fold 7 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/evaluation_test_fold-7.csv"...
+Evaluation result for test data (Fold 7):
+
+Mean Absolute Error (↓)               48.65
+Mean Absolute Percentage Error (↓)     0.14
+Mean Squared Error (↓)              9136.09
+Median Absolute Error (↓)             24.2
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test_fold-7.csv"...
+Fold 8 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/evaluation_test_fold-8.csv"...
+Evaluation result for test data (Fold 8):
+
+Mean Absolute Error (↓)               57.13
+Mean Absolute Percentage Error (↓)     0.14
+Mean Squared Error (↓)              5545.78
+Median Absolute Error (↓)             51.35
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test_fold-8.csv"...
+Fold 9 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/evaluation_test_fold-9.csv"...
+Evaluation result for test data (Fold 9):
+
+Mean Absolute Error (↓)               40.6
+Mean Absolute Percentage Error (↓)     0.12
+Mean Squared Error (↓)              2805.54
+Median Absolute Error (↓)             37.41
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test_fold-9.csv"...
+Fold 10 / 10:
+DEBUG: Reading input data from file "python/tests/res/tmp/results/evaluation_test_fold-10.csv"...
+Evaluation result for test data (Fold 10):
+
+Mean Absolute Error (↓)               58.32
+Mean Absolute Percentage Error (↓)     0.18
+Mean Squared Error (↓)              4792.35
+Median Absolute Error (↓)             51.29
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test_fold-10.csv"...
+Evaluation result for test data (Average across 10 folds):
+
+Mean Absolute Error (↓)               43.07  ±18.64
+Mean Absolute Percentage Error (↓)     0.12  ±0.04
+Mean Squared Error (↓)              5311.94  ±5796.50
+Median Absolute Error (↓)             32.2   ±15.53
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/results/evaluation_test.csv"...
