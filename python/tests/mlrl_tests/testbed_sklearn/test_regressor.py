@@ -13,11 +13,12 @@ from ..common.cmd_runner import CmdRunner
 from ..common.datasets import Dataset
 from ..common.integration_tests_regression import RegressionIntegrationTests
 from .cmd_builder_regression import SkLearnRegressorCmdBuilder
+from .integration_tests import SklearnTestbedIntegrationTestsMixin
 
 
 @pytest.mark.sklearn
 @pytest.mark.regression
-class TestSkLearnRegressor(RegressionIntegrationTests):
+class TestSkLearnRegressor(RegressionIntegrationTests, SklearnTestbedIntegrationTestsMixin):
     """
     Defines a series of integration tests for a scikit-learn classifier.
     """

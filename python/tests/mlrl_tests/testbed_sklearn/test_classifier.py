@@ -13,11 +13,12 @@ from ..common.cmd_runner import CmdRunner
 from ..common.datasets import Dataset
 from ..common.integration_tests_classification import ClassificationIntegrationTests
 from .cmd_builder_classification import SkLearnClassifierCmdBuilder
+from .integration_tests import SklearnTestbedIntegrationTestsMixin
 
 
 @pytest.mark.sklearn
 @pytest.mark.classification
-class TestSkLearnClassifier(ClassificationIntegrationTests):
+class TestSkLearnClassifier(ClassificationIntegrationTests, SklearnTestbedIntegrationTestsMixin):
     """
     Defines a series of integration tests for a scikit-learn classifier.
     """
