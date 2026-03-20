@@ -9,9 +9,9 @@ import pytest
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.multioutput import ClassifierChain
 
-from ..common.cmd_runner import CmdRunner
-from ..common.datasets import Dataset
-from ..common.integration_tests_classification import ClassificationIntegrationTests
+from ..cmd_runner import CmdRunner
+from ..datasets import Dataset
+from ..integration_tests_classification import ClassificationIntegrationTests
 from .cmd_builder_classification import SkLearnClassifierCmdBuilder
 from .integration_tests import SklearnTestbedIntegrationTestsMixin
 

@@ -5,9 +5,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 import pytest
 
-from .cmd_runner import CmdRunner
-from .datasets import Dataset
-from .integration_tests import IntegrationTests
+from ..cmd_runner import CmdRunner
+from ..datasets import Dataset
+from ..integration_tests import IntegrationTests
 
 from mlrl.common.config.parameters import BINNING_EQUAL_FREQUENCY, BINNING_EQUAL_WIDTH, \
     SAMPLING_STRATIFIED_EXAMPLE_WISE, SAMPLING_STRATIFIED_OUTPUT_WISE, SAMPLING_WITH_REPLACEMENT, \

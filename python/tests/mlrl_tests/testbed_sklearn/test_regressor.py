@@ -9,9 +9,9 @@ import pytest
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.multioutput import RegressorChain
 
-from ..common.cmd_runner import CmdRunner
-from ..common.datasets import Dataset
-from ..common.integration_tests_regression import RegressionIntegrationTests
+from ..cmd_runner import CmdRunner
+from ..datasets import Dataset
+from ..integration_tests_regression import RegressionIntegrationTests
 from .cmd_builder_regression import SkLearnRegressorCmdBuilder
 from .integration_tests import SklearnTestbedIntegrationTestsMixin
 

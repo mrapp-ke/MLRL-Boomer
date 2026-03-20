@@ -4,8 +4,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 # pylint: disable=missing-function-docstring
 import pytest
 
-from ..common.cmd_runner import CmdRunner
-from ..common.integration_tests import IntegrationTests
+from ..cmd_runner import CmdRunner
+from ..integration_tests import IntegrationTests
 
 from mlrl.common.config.parameters import GlobalPruningParameter, PartitionSamplingParameter
 

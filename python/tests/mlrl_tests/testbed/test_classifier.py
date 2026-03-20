@@ -5,8 +5,8 @@ from typing import Any, override
 
 import pytest
 
-from ..common.datasets import Dataset
-from ..common.integration_tests_classification import ClassificationIntegrationTests
+from ..datasets import Dataset
+from ..integration_tests_classification import ClassificationIntegrationTests
 from .cmd_builder_classification import TestbedClassifierCmdBuilder
 from .integration_tests import TestbedIntegrationTestsMixin
 

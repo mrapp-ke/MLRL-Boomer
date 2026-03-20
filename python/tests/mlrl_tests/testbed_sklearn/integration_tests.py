@@ -5,9 +5,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 # pylint: disable=missing-function-docstring
 import pytest
 
-from ..common.cmd_runner import CmdRunner
-from ..common.datasets import Dataset
-from ..common.integration_tests import IntegrationTests
+from ..cmd_runner import CmdRunner
+from ..integration_tests import IntegrationTests
 
 from mlrl.testbed.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 

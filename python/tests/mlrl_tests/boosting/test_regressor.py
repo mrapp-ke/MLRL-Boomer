@@ -8,10 +8,10 @@ import pytest
 
 from sklearn.utils.estimator_checks import check_estimator
 
-from ..common.cmd_runner import CmdRunner
-from ..common.datasets import Dataset
-from ..common.integration_tests_regression import RegressionIntegrationTests
+from ..cmd_runner import CmdRunner
 from ..common.integration_tests_rule_learners import RuleLearnerIntegrationTestsMixin
+from ..datasets import Dataset
+from ..integration_tests_regression import RegressionIntegrationTests
 from .cmd_builder_regression import BoomerRegressorCmdBuilder
 from .integration_tests import BoomerIntegrationTestsMixin
 

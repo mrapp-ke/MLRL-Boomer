@@ -1,10 +1,10 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from ..common.cmd_builder import CmdBuilder
-from ..common.cmd_builder_classification import ClassificationCmdBuilder
+from ..cmd_builder import CmdBuilder
+from ..cmd_builder_classification import ClassificationCmdBuilder
 from ..common.cmd_builder_rule_learners import RuleLearnerCmdBuilderMixin
-from ..common.datasets import Dataset
+from ..datasets import Dataset
 
 from mlrl.seco.config.parameters import HEURISTIC_ACCURACY, HEURISTIC_F_MEASURE, HeadTypeParameter, \
     LiftFunctionParameter

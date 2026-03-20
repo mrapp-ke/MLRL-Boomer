@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from .cmd_builder import CmdBuilder
+from ..cmd_builder import CmdBuilder
 
 from mlrl.common.config.parameters import BINNING_EQUAL_WIDTH, SAMPLING_WITHOUT_REPLACEMENT, \
     PartitionSamplingParameter, PostOptimizationParameter, RuleInductionParameter, RulePruningParameter
