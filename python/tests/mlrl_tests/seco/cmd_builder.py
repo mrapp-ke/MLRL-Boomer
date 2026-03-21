@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from ..cmd_builder import CmdBuilder
 from ..cmd_builder_classification import ClassificationCmdBuilder
-from ..common.cmd_builder_rule_learners import RuleLearnerCmdBuilderMixin
+from ..common.cmd_builder import RuleLearnerCmdBuilderMixin
 from ..datasets import Dataset
 
 from mlrl.seco.config.parameters import HEURISTIC_ACCURACY, HEURISTIC_F_MEASURE, HeadTypeParameter, \

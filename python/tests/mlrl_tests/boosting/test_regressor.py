@@ -9,7 +9,7 @@ import pytest
 from sklearn.utils.estimator_checks import check_estimator
 
 from ..cmd_runner import CmdRunner
-from ..common.integration_tests_rule_learners import RuleLearnerIntegrationTestsMixin
+from ..common.integration_tests import RuleLearnerIntegrationTestsMixin
 from ..datasets import Dataset
 from ..integration_tests_regression import RegressionIntegrationTests
 from .cmd_builder_regression import BoomerRegressorCmdBuilder
