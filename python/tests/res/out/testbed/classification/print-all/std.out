@@ -4,7 +4,7 @@ Starting experiment using the classification algorithm "BoomerClassifier"...
 DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Using separate training and test sets...
 DEBUG: Reading input data from file "python/tests/res/data/emotions.arff"...
-○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+DEBUG: Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 Data characteristics:
 
 Examples                397
@@ -28,11 +28,11 @@ Custom parameters:
 Fitting model to 397 training examples...
 DEBUG: A dense matrix is used to store the feature values of the training examples
 DEBUG: A dense matrix is used to store the labels of the training examples
-✓ Successfully fit model in <duration>
+Successfully fit model in <duration>
 Predicting for 196 test examples...
 DEBUG: A dense matrix is used to store the feature values of the query examples
 DEBUG: A dense matrix is used to store the predicted labels
-✓ Successfully predicted in <duration>
+Successfully predicted in <duration>
 Evaluation result for test data:
 
 Example-wise F1 (↑)         62.77
@@ -462,7 +462,7 @@ Predictions for test data:
 
 Joint probability calibration model:
 
-<No calibration model used>
+No calibration model used
 
 Label vectors:
 
@@ -496,7 +496,7 @@ Label vectors:
 
 Marginal probability calibration model:
 
-<No calibration model used>
+No calibration model used
 
 Model:
 

@@ -45,19 +45,9 @@ class RuleLearnerIntegrationTestsMixin(IntegrationTests):
             .save_evaluation()
         CmdRunner(builder).run(test_name, wipe_before=False)
 
-    @pytest.mark.parametrize('data_split, data_split_options', [
-        (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options()),
-        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION, Options()),
-        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION,
-         Options({
-             DatasetSplitterArguments.OPTION_FIRST_FOLD: 1,
-             DatasetSplitterArguments.OPTION_LAST_FOLD: 1,
-         })),
-    ])
-    def test_model_characteristics(self, data_split: str, data_split_options: Options, dataset: Dataset):
-        test_name = f'model-characteristics_{data_split}' + (f'_{data_split_options}' if data_split_options else '')
+    def test_model_characteristics(self, dataset: Dataset):
+        test_name = 'model-characteristics'
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
             .save_evaluation(False) \
             .print_model_characteristics() \
@@ -71,19 +61,9 @@ class RuleLearnerIntegrationTestsMixin(IntegrationTests):
             .save_model_characteristics()
         CmdRunner(builder).run(test_name, wipe_before=False)
 
-    @pytest.mark.parametrize('data_split, data_split_options', [
-        (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options()),
-        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION, Options()),
-        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION,
-         Options({
-             DatasetSplitterArguments.OPTION_FIRST_FOLD: 1,
-             DatasetSplitterArguments.OPTION_LAST_FOLD: 1,
-         })),
-    ])
-    def test_rules(self, data_split: str, data_split_options: Options, dataset: Dataset):
-        test_name = f'rules_{data_split}' + (f'_{data_split_options}' if data_split_options else '')
+    def test_rules(self, dataset: Dataset):
+        test_name = 'rules'
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
             .save_evaluation(False) \
             .print_rules() \

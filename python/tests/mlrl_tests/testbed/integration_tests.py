@@ -12,7 +12,6 @@ from ..integration_tests import IntegrationTests
 from mlrl.testbed.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 from mlrl.testbed.experiments.state import ExperimentMode
 
-from mlrl.util.cli import NONE
 from mlrl.util.options import Options
 
 
@@ -134,23 +133,10 @@ class TestbedIntegrationTestsMixin(IntegrationTests):
             .save_meta_data()
         CmdRunner(builder).run(test_name, wipe_before=False)
 
-    @pytest.mark.parametrize('data_split, data_split_options, predefined', [
-        (NONE, Options(), False),
-        (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options(), False),
-        (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options(), True),
-        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION, Options(), False),
-        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION, Options(), True),
-        (DatasetSplitterArguments.VALUE_CROSS_VALIDATION,
-         Options({
-             DatasetSplitterArguments.OPTION_FIRST_FOLD: 1,
-             DatasetSplitterArguments.OPTION_LAST_FOLD: 1,
-         }), False),
-    ])
-    def test_evaluation(self, data_split: str, data_split_options: Options, predefined: bool, dataset: Dataset):
-        test_name = f'evaluation_{data_split}' + ('-predefined' if predefined else '') + (f'_{data_split_options}'
-                                                                                          if data_split_options else '')
+    @pytest.mark.parametrize('predefined', [False, True])
+    def test_evaluation(self, predefined: bool, dataset: Dataset):
+        test_name = 'evaluation' + ('-predefined' if predefined else '')
         builder = self._create_cmd_builder(dataset=dataset.default + ('-predefined' if predefined else '')) \
-            .data_split(data_split, options=data_split_options) \
             .print_evaluation() \
             .save_evaluation()
         CmdRunner(builder).run(test_name, wipe_after=False)
@@ -174,19 +160,9 @@ class TestbedIntegrationTestsMixin(IntegrationTests):
         CmdRunner(builder).run(test_name, wipe_before=False)
 
 
-@pytest.mark.parametrize('data_split, data_split_options', [
-    (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options()),
-    (DatasetSplitterArguments.VALUE_CROSS_VALIDATION, Options()),
-    (DatasetSplitterArguments.VALUE_CROSS_VALIDATION,
-     Options({
-         DatasetSplitterArguments.OPTION_FIRST_FOLD: 1,
-         DatasetSplitterArguments.OPTION_LAST_FOLD: 1,
-     })),
-])
-def test_predictions(self, data_split: str, data_split_options: Options, dataset: Dataset):
-    test_name = f'predictions_{data_split}' + (f'_{data_split_options}' if data_split_options else '')
+def test_predictions(self, dataset: Dataset):
+    test_name = 'predictions'
     builder = self._create_cmd_builder(dataset=dataset.default) \
-        .data_split(data_split, options=data_split_options) \
         .print_evaluation(False) \
         .save_evaluation(False) \
         .print_predictions() \
@@ -225,19 +201,9 @@ def test_predictions_training_data(self, dataset: Dataset):
     CmdRunner(builder).run(test_name, wipe_before=False)
 
 
-@pytest.mark.parametrize('data_split, data_split_options', [
-    (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options()),
-    (DatasetSplitterArguments.VALUE_CROSS_VALIDATION, Options()),
-    (DatasetSplitterArguments.VALUE_CROSS_VALIDATION,
-     Options({
-         DatasetSplitterArguments.OPTION_FIRST_FOLD: 1,
-         DatasetSplitterArguments.OPTION_LAST_FOLD: 1,
-     })),
-])
-def test_prediction_characteristics(self, data_split: str, data_split_options: Options, dataset: Dataset):
-    test_name = f'prediction-characteristics_{data_split}' + (f'_{data_split_options}' if data_split_options else '')
+def test_prediction_characteristics(self, dataset: Dataset):
+    test_name = 'prediction-characteristics'
     builder = self._create_cmd_builder(dataset=dataset.default) \
-        .data_split(data_split, options=data_split_options) \
         .print_evaluation(False) \
         .save_evaluation(False) \
         .print_prediction_characteristics() \
@@ -270,19 +236,9 @@ def test_prediction_characteristics_training_data(self, dataset: Dataset):
     CmdRunner(builder).run(test_name, wipe_before=False)
 
 
-@pytest.mark.parametrize('data_split, data_split_options', [
-    (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options()),
-    (DatasetSplitterArguments.VALUE_CROSS_VALIDATION, Options()),
-    (DatasetSplitterArguments.VALUE_CROSS_VALIDATION,
-     Options({
-         DatasetSplitterArguments.OPTION_FIRST_FOLD: 1,
-         DatasetSplitterArguments.OPTION_LAST_FOLD: 1,
-     })),
-])
-def test_data_characteristics(self, data_split: str, data_split_options: Options, dataset: Dataset):
-    test_name = f'data-characteristics_{data_split}' + (f'_{data_split_options}' if data_split_options else '')
+def test_data_characteristics(self, dataset: Dataset):
+    test_name = 'data-characteristics'
     builder = self._create_cmd_builder(dataset=dataset.default) \
-        .data_split(data_split, options=data_split_options) \
         .print_evaluation(False) \
         .save_evaluation(False) \
         .print_data_characteristics() \
@@ -297,19 +253,9 @@ def test_data_characteristics(self, data_split: str, data_split_options: Options
     CmdRunner(builder).run(test_name, wipe_before=False)
 
 
-@pytest.mark.parametrize('data_split, data_split_options', [
-    (DatasetSplitterArguments.VALUE_TRAIN_TEST, Options()),
-    (DatasetSplitterArguments.VALUE_CROSS_VALIDATION, Options()),
-    (DatasetSplitterArguments.VALUE_CROSS_VALIDATION,
-     Options({
-         DatasetSplitterArguments.OPTION_FIRST_FOLD: 1,
-         DatasetSplitterArguments.OPTION_LAST_FOLD: 1
-     })),
-])
-def test_parameters(self, data_split: str, data_split_options: Options, dataset: Dataset):
-    test_name = f'parameters_{data_split}' + (f'_{data_split_options}' if data_split_options else '')
+def test_parameters(self, dataset: Dataset):
+    test_name = 'parameters'
     builder = self._create_cmd_builder(dataset=dataset.default) \
-        .data_split(data_split, options=data_split_options) \
         .print_evaluation(False) \
         .save_evaluation(False) \
         .print_parameters() \
