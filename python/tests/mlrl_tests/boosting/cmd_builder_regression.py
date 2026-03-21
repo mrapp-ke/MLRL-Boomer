@@ -1,9 +1,9 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from ..common.cmd_builder import CmdBuilder
-from ..common.cmd_builder_regression import RegressionCmdBuilder
-from ..common.datasets import Dataset
+from ..cmd_builder import CmdBuilder
+from ..cmd_builder_regression import RegressionCmdBuilder
+from ..datasets import Dataset
 from .cmd_builder import BoomerCmdBuilderMixin
 
 

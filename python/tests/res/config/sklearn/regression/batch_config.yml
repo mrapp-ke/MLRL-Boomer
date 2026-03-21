@@ -1,19 +1,21 @@
 ---
 datasets:
   - directory: python/tests/res/data
-    names: emotions
+    names: atp7d
   - directory: python/tests/res/data
     names:
-      - enron
+      - atp7d-binary
 default_arguments:
+  - name: --estimator
+    value: RandomForestRegressor
 parameters:
   - name: --n-estimators
     values:
-      - 1
-      - 2
-  - name: --max-leaf-nodes
+      - 50
+      - 100
+  - name: --max-depth
     values:
-      - 10
-      - value: 20
+      - 2
+      - value: 4
         additional_arguments:
-          - --max_depth 5
+          - --max-leaf-nodes 4

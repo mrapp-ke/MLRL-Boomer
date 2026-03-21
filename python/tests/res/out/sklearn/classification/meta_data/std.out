@@ -1,4 +1,4 @@
-mlrl-testbed mlrl.testbed_sklearn --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --print-evaluation false --save-evaluation false --print-meta-data true --save-meta-data true --n-estimators 1 --estimator RandomForestClassifier
+mlrl-testbed mlrl.testbed_sklearn --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --save-meta-data false --save-meta-data true --print-evaluation false --save-evaluation false --print-meta-data true --save-meta-data true --n-estimators 1 --estimator RandomForestClassifier
 Checking if output files do already exist...
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Meta-data of the experiment:
@@ -6,7 +6,7 @@ Meta-data of the experiment:
 {
     "version": "<version>",
     "timestamp": "<timestamp>",
-    "command": "mlrl-testbed mlrl.testbed_sklearn --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --print-evaluation false --save-evaluation false --print-meta-data true --save-meta-data true --n-estimators 1 --estimator RandomForestClassifier"
+    "command": "mlrl-testbed mlrl.testbed_sklearn --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --save-meta-data false --save-meta-data true --print-evaluation false --save-evaluation false --print-meta-data true --save-meta-data true --n-estimators 1 --estimator RandomForestClassifier"
 }
 
 DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...

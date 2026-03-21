@@ -1,55 +1,55 @@
 child-commands:
 - mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data
-  --dataset emotions --estimator RandomForestRegressor --log-level debug --max-leaf-nodes
-  10 --model-save-dir n-estimators_1/max-leaf-nodes_10/dataset_emotions/models --n-estimators
-  1 --parameter-save-dir n-estimators_1/max-leaf-nodes_10/dataset_emotions/parameters
-  --problem-type regression --result-dir n-estimators_1/max-leaf-nodes_10/dataset_emotions/results
+  --dataset atp7d --estimator RandomForestRegressor --log-level debug --max-depth
+  2 --model-save-dir n-estimators_50/max-depth_2/dataset_atp7d/models --n-estimators
+  50 --parameter-save-dir n-estimators_50/max-depth_2/dataset_atp7d/parameters --problem-type
+  regression --result-dir n-estimators_50/max-depth_2/dataset_atp7d/results --save-all
+  true --save-evaluation true --save-meta-data false
+- mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data
+  --dataset atp7d --estimator RandomForestRegressor --log-level debug --max-depth
+  4 --max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models
+  --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters
+  --problem-type regression --result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results
   --save-all true --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data
-  --dataset emotions --estimator RandomForestRegressor --log-level debug --max-leaf-nodes
-  20 --max_depth 5 --model-save-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/models
-  --n-estimators 1 --parameter-save-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/parameters
-  --problem-type regression --result-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_emotions/results
+  --dataset atp7d --estimator RandomForestRegressor --log-level debug --max-depth
+  2 --model-save-dir n-estimators_100/max-depth_2/dataset_atp7d/models --n-estimators
+  100 --parameter-save-dir n-estimators_100/max-depth_2/dataset_atp7d/parameters --problem-type
+  regression --result-dir n-estimators_100/max-depth_2/dataset_atp7d/results --save-all
+  true --save-evaluation true --save-meta-data false
+- mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data
+  --dataset atp7d --estimator RandomForestRegressor --log-level debug --max-depth
+  4 --max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models
+  --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters
+  --problem-type regression --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results
   --save-all true --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data
-  --dataset emotions --estimator RandomForestRegressor --log-level debug --max-leaf-nodes
-  10 --model-save-dir n-estimators_2/max-leaf-nodes_10/dataset_emotions/models --n-estimators
-  2 --parameter-save-dir n-estimators_2/max-leaf-nodes_10/dataset_emotions/parameters
-  --problem-type regression --result-dir n-estimators_2/max-leaf-nodes_10/dataset_emotions/results
+  --dataset atp7d-binary --estimator RandomForestRegressor --log-level debug --max-depth
+  2 --model-save-dir n-estimators_50/max-depth_2/dataset_atp7d-binary/models --n-estimators
+  50 --parameter-save-dir n-estimators_50/max-depth_2/dataset_atp7d-binary/parameters
+  --problem-type regression --result-dir n-estimators_50/max-depth_2/dataset_atp7d-binary/results
   --save-all true --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data
-  --dataset emotions --estimator RandomForestRegressor --log-level debug --max-leaf-nodes
-  20 --max_depth 5 --model-save-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/models
-  --n-estimators 2 --parameter-save-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/parameters
-  --problem-type regression --result-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_emotions/results
+  --dataset atp7d-binary --estimator RandomForestRegressor --log-level debug --max-depth
+  4 --max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models
+  --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters
+  --problem-type regression --result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results
   --save-all true --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data
-  --dataset enron --estimator RandomForestRegressor --log-level debug --max-leaf-nodes
-  10 --model-save-dir n-estimators_1/max-leaf-nodes_10/dataset_enron/models --n-estimators
-  1 --parameter-save-dir n-estimators_1/max-leaf-nodes_10/dataset_enron/parameters
-  --problem-type regression --result-dir n-estimators_1/max-leaf-nodes_10/dataset_enron/results
+  --dataset atp7d-binary --estimator RandomForestRegressor --log-level debug --max-depth
+  2 --model-save-dir n-estimators_100/max-depth_2/dataset_atp7d-binary/models --n-estimators
+  100 --parameter-save-dir n-estimators_100/max-depth_2/dataset_atp7d-binary/parameters
+  --problem-type regression --result-dir n-estimators_100/max-depth_2/dataset_atp7d-binary/results
   --save-all true --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data
-  --dataset enron --estimator RandomForestRegressor --log-level debug --max-leaf-nodes
-  20 --max_depth 5 --model-save-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/models
-  --n-estimators 1 --parameter-save-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/parameters
-  --problem-type regression --result-dir n-estimators_1/max-leaf-nodes_20/max_depth_5/dataset_enron/results
-  --save-all true --save-evaluation true --save-meta-data false
-- mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data
-  --dataset enron --estimator RandomForestRegressor --log-level debug --max-leaf-nodes
-  10 --model-save-dir n-estimators_2/max-leaf-nodes_10/dataset_enron/models --n-estimators
-  2 --parameter-save-dir n-estimators_2/max-leaf-nodes_10/dataset_enron/parameters
-  --problem-type regression --result-dir n-estimators_2/max-leaf-nodes_10/dataset_enron/results
-  --save-all true --save-evaluation true --save-meta-data false
-- mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data
-  --dataset enron --estimator RandomForestRegressor --log-level debug --max-leaf-nodes
-  20 --max_depth 5 --model-save-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/models
-  --n-estimators 2 --parameter-save-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/parameters
-  --problem-type regression --result-dir n-estimators_2/max-leaf-nodes_20/max_depth_5/dataset_enron/results
+  --dataset atp7d-binary --estimator RandomForestRegressor --log-level debug --max-depth
+  4 --max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models
+  --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters
+  --problem-type regression --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results
   --save-all true --save-evaluation true --save-meta-data false
 command: mlrl-testbed mlrl.testbed_sklearn --mode batch --log-level debug --base-dir
   python/tests/res/tmp --config python/tests/res/config/sklearn/regression/batch_config.yml
-  --problem-type regression --save-evaluation true --save-all true --n-estimators
-  1 --estimator RandomForestRegressor
+  --problem-type regression --save-evaluation true --save-meta-data false --save-meta-data
+  true --save-all true --n-estimators 1 --estimator RandomForestRegressor
 timestamp: <timestamp>
 version: <version>

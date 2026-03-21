@@ -9,26 +9,29 @@ import pytest
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.multioutput import RegressorChain
 
-from ..common.cmd_runner import CmdRunner
-from ..common.datasets import Dataset
-from ..common.integration_tests_regression import RegressionIntegrationTests
+from ..cmd_runner import CmdRunner
+from ..datasets import Dataset
+from ..integration_tests_regression import RegressionIntegrationTests
+from ..testbed.integration_tests import MlrlTestbedIntegrationTestsMixin
 from .cmd_builder_regression import SkLearnRegressorCmdBuilder
+from .integration_tests import MlrlTestbedSklearnIntegrationTestsMixin
 
 
 @pytest.mark.sklearn
 @pytest.mark.regression
-class TestSkLearnRegressor(RegressionIntegrationTests):
+class TestSkLearnRegressor(RegressionIntegrationTests, MlrlTestbedIntegrationTestsMixin,
+                           MlrlTestbedSklearnIntegrationTestsMixin):
     """
     Defines a series of integration tests for a scikit-learn classifier.
     """
 
     @override
-    def _create_cmd_builder(self, dataset: str = Dataset.ATP7D) -> Any:
+    def create_cmd_builder(self, dataset: str = Dataset.ATP7D) -> Any:
         return SkLearnRegressorCmdBuilder(RandomForestRegressor,
                                           dataset=dataset).add_algorithmic_argument('--n-estimators', 1)
 
     def test_meta_estimator(self):
-        builder = self._create_cmd_builder() \
+        builder = self.create_cmd_builder() \
             .meta_estimator(RegressorChain) \
             .add_algorithmic_argument('--meta-verbose', 'True') \
             .print_evaluation() \

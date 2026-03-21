@@ -8,10 +8,10 @@ import pytest
 
 from sklearn.utils.estimator_checks import check_estimator
 
-from ..common.cmd_runner import CmdRunner
-from ..common.datasets import Dataset
-from ..common.integration_tests_regression import RegressionIntegrationTests
-from ..common.integration_tests_rule_learners import RuleLearnerIntegrationTestsMixin
+from ..cmd_runner import CmdRunner
+from ..common.integration_tests import RuleLearnerIntegrationTestsMixin
+from ..datasets import Dataset
+from ..integration_tests_regression import RegressionIntegrationTests
 from .cmd_builder_regression import BoomerRegressorCmdBuilder
 from .integration_tests import BoomerIntegrationTestsMixin
 
@@ -27,7 +27,7 @@ class TestBoomerRegressor(RegressionIntegrationTests, RuleLearnerIntegrationTest
     """
 
     @override
-    def _create_cmd_builder(self, dataset: str = Dataset.ATP7D) -> Any:
+    def create_cmd_builder(self, dataset: str = Dataset.ATP7D) -> Any:
         return BoomerRegressorCmdBuilder(dataset=dataset)
 
     def test_scikit_learn_compatibility(self):
@@ -49,7 +49,7 @@ class TestBoomerRegressor(RegressionIntegrationTests, RuleLearnerIntegrationTest
         StatisticTypeParameter.STATISTIC_TYPE_FLOAT64,
     ])
     def test_decomposable_head_type(self, head_type: str, statistic_type: str):
-        builder = self._create_cmd_builder() \
+        builder = self.create_cmd_builder() \
             .loss(RegressionLossParameter.LOSS_SQUARED_ERROR_DECOMPOSABLE) \
             .statistic_type(statistic_type) \
             .head_type(head_type) \
@@ -67,7 +67,7 @@ class TestBoomerRegressor(RegressionIntegrationTests, RuleLearnerIntegrationTest
         StatisticTypeParameter.STATISTIC_TYPE_FLOAT64,
     ])
     def test_non_decomposable_head_type(self, head_type: str, statistic_type: str):
-        builder = self._create_cmd_builder() \
+        builder = self.create_cmd_builder() \
             .loss(RegressionLossParameter.LOSS_SQUARED_ERROR_NON_DECOMPOSABLE, ) \
             .statistic_type(statistic_type) \
             .head_type(head_type) \
