@@ -5,9 +5,9 @@ from typing import override
 
 from sklearn.base import BaseEstimator as SkLearnBaseEstimator, RegressorMixin as SkLearnRegressorMixin
 
-from ..common.cmd_builder import CmdBuilder
-from ..common.cmd_builder_regression import RegressionCmdBuilder
-from ..common.datasets import Dataset
+from ..cmd_builder import CmdBuilder
+from ..cmd_builder_regression import RegressionCmdBuilder
+from ..datasets import Dataset
 
 
 class SkLearnRegressorCmdBuilder(RegressionCmdBuilder):

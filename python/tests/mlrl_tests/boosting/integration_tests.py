@@ -4,8 +4,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 # pylint: disable=missing-function-docstring
 import pytest
 
-from ..common.cmd_runner import CmdRunner
-from ..common.integration_tests import IntegrationTests
+from ..cmd_runner import CmdRunner
+from ..integration_tests import IntegrationTests
 
 from mlrl.common.config.parameters import GlobalPruningParameter, PartitionSamplingParameter
 
@@ -28,13 +28,13 @@ class BoomerIntegrationTestsMixin(IntegrationTests):
         StatisticTypeParameter.STATISTIC_TYPE_FLOAT64,
     ])
     def test_loss_squared_error(self, loss: str, statistic_type: str):
-        builder = self._create_cmd_builder() \
+        builder = self.create_cmd_builder() \
             .loss(loss) \
             .statistic_type(statistic_type)
         CmdRunner(builder).run(f'loss-{loss}_{statistic_type}-statistics')
 
     def test_no_default_rule(self):
-        builder = self._create_cmd_builder() \
+        builder = self.create_cmd_builder() \
             .default_rule(False) \
             .print_model_characteristics()
         CmdRunner(builder).run('no-default-rule')
@@ -45,7 +45,7 @@ class BoomerIntegrationTestsMixin(IntegrationTests):
     ])
     @pytest.mark.parametrize('holdout', [NONE, PartitionSamplingParameter.PARTITION_SAMPLING_RANDOM])
     def test_global_pruning(self, global_pruning: str, holdout: str):
-        builder = self._create_cmd_builder() \
+        builder = self.create_cmd_builder() \
             .global_pruning(global_pruning) \
             .holdout(holdout) \
             .print_model_characteristics()

@@ -1,9 +1,9 @@
-Dataset,Mean Absolute Error (↓),Mean Absolute Percentage Error (↓),Mean Squared Error (↓),Median Absolute Error (↓),Parameter --max-leaf-nodes,Parameter --n-estimators,Prediction Time (seconds),Rank Mean Absolute Error (↓),Rank Mean Absolute Percentage Error (↓),Rank Mean Squared Error (↓),Rank Median Absolute Error (↓),Rank Prediction Time (seconds),Rank Training Time (seconds),Training Time (seconds)
-emotions,0.31007380611011925,698005006252610.8,0.18266066139782222,0.20771342394595801,10.0,1.0,<duration>,3.0,3.0,3.0,2.0,<duration>,<duration>,<duration>
-emotions,0.2891295905009383,650938894683913.9,0.19077018601660664,0.18020156588372482,20.0,1.0,<duration>,1.0,1.0,4.0,1.0,<duration>,<duration>,<duration>
-emotions,0.3136049077652176,704629024519014.2,0.17197697934060477,0.241397499071341,10.0,2.0,<duration>,4.0,4.0,2.0,4.0,<duration>,<duration>,<duration>
-emotions,0.2949600622698137,660024452608050.6,0.17045333002787208,0.21360795224270554,20.0,2.0,<duration>,2.0,2.0,1.0,3.0,<duration>,<duration>,<duration>
-enron,0.0809048231172238,182193088079916.94,0.04183150365013983,0.05008060320429679,10.0,1.0,<duration>,3.0,3.0,3.0,2.0,<duration>,<duration>,<duration>
-enron,0.07847610134295151,175927574237416.16,0.0422103430886871,0.04788679377082378,20.0,1.0,<duration>,2.0,1.0,4.0,1.0,<duration>,<duration>,<duration>
-enron,0.08091471439424752,182475146003312.97,0.040012441989621325,0.05270457113316255,10.0,2.0,<duration>,4.0,4.0,2.0,4.0,<duration>,<duration>,<duration>
-enron,0.07846986190010642,176095682085543.75,0.03962200741690127,0.0511970071140917,20.0,2.0,<duration>,1.0,2.0,1.0,3.0,<duration>,<duration>,<duration>
+Dataset,Mean Absolute Error (↓),Mean Absolute Percentage Error (↓),Mean Squared Error (↓),Median Absolute Error (↓),Parameter --max-depth,Parameter --max-leaf-nodes,Parameter --n-estimators,Prediction Time (seconds),Rank Mean Absolute Error (↓),Rank Mean Absolute Percentage Error (↓),Rank Mean Squared Error (↓),Rank Median Absolute Error (↓),Rank Prediction Time (seconds),Rank Training Time (seconds),Training Time (seconds)
+atp7d,46.6376136922905,0.12686988235875374,5696.306657420989,29.01898185347244,2.0,,50.0,<duration>,2.0,2.0,1.0,4.0,<duration>,<duration>,<duration>
+atp7d,46.53392491115843,0.12664240749956507,5736.252535876386,28.261906626318776,4.0,4.0,50.0,<duration>,1.0,1.0,2.0,2.0,<duration>,<duration>,<duration>
+atp7d,47.336670324426045,0.12834786095473052,5965.101270090541,28.912802535102305,2.0,,100.0,<duration>,4.0,4.0,3.0,3.0,<duration>,<duration>,<duration>
+atp7d,47.145969490045275,0.12788421452132123,6009.809411288224,28.14682826795259,4.0,4.0,100.0,<duration>,3.0,3.0,4.0,1.0,<duration>,<duration>,<duration>
+atp7d-binary,50.013365931033356,0.1355178321302713,6350.17514963765,29.605146986878193,2.0,,50.0,<duration>,1.0,1.0,1.0,1.0,<duration>,<duration>,<duration>
+atp7d-binary,50.20190320573076,0.13579142579596107,6412.239810696315,30.21452404356781,4.0,4.0,50.0,<duration>,2.0,2.0,2.0,4.0,<duration>,<duration>,<duration>
+atp7d-binary,50.720413335317595,0.1373297207347905,6561.556815781999,29.744150643408833,2.0,,100.0,<duration>,3.0,3.0,3.0,2.0,<duration>,<duration>,<duration>
+atp7d-binary,50.91571540725545,0.1377285355690684,6643.243045629427,30.080639920964206,4.0,4.0,100.0,<duration>,4.0,4.0,4.0,3.0,<duration>,<duration>,<duration>
