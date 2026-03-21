@@ -3,8 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for running experiments using the scikit-learn framework.
 """
-import contextlib
-import os
 import re as regex
 
 from abc import ABC, abstractmethod
@@ -53,9 +51,9 @@ from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
 from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
 from mlrl.testbed.extensions.extension import Extension
+from mlrl.testbed.log import disable_log
 from mlrl.testbed.modes import BatchMode
 from mlrl.testbed.runnables import Runnable
-from mlrl.testbed.util.io import ENCODING_UTF8
 
 from mlrl.util.cli import Argument, BoolArgument, FloatArgument, IntArgument, SetArgument
 from mlrl.util.format import format_list, format_set
@@ -414,15 +412,8 @@ class SklearnEstimator:
         return '. '.join(sentences)
 
     def __can_be_instantiated(self, *args, **kwargs) -> bool:
-
-        @contextlib.contextmanager
-        def suppress_output():
-            with open(os.devnull, mode='w', encoding=ENCODING_UTF8) as devnull:
-                with contextlib.redirect_stdout(devnull), contextlib.redirect_stderr(devnull):
-                    yield
-
         try:
-            with suppress_output():
+            with disable_log():
                 instance = self.instantiate(*args, **kwargs)
                 rng = np.random.default_rng(seed=1)
                 tags = instance.__sklearn_tags__() if hasattr(instance, '__sklearn_tags__') else None

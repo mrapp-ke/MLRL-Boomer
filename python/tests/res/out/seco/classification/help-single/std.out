@@ -1,7 +1,7 @@
 mlrl-testbed mlrl.seco --mode single --help
-usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE] [--base-dir BASE_DIR]
-                    [--create-dirs CREATE_DIRS] [--data-dir DATA_DIR] [--data-split DATA_SPLIT] [--dataset DATASET]
-                    [--dataset-format DATASET_FORMAT] [--if-input-missing IF_INPUT_MISSING]
+usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--log-width LOG_WIDTH] [--log-plain] [--mode MODE]
+                    [--base-dir BASE_DIR] [--create-dirs CREATE_DIRS] [--data-dir DATA_DIR] [--data-split DATA_SPLIT]
+                    [--dataset DATASET] [--dataset-format DATASET_FORMAT] [--if-input-missing IF_INPUT_MISSING]
                     [--if-output-error IF_OUTPUT_ERROR] [--if-outputs-exist IF_OUTPUTS_EXIST]
                     [--incremental-evaluation INCREMENTAL_EVALUATION] [--load-models LOAD_MODELS]
                     [--load-parameters LOAD_PARAMETERS] [--model-load-dir MODEL_LOAD_DIR]
@@ -31,7 +31,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE] [--
                     [--parallel-rule-refinement PARALLEL_RULE_REFINEMENT]
                     [--parallel-statistic-update PARALLEL_STATISTIC_UPDATE] [--post-optimization POST_OPTIMIZATION]
                     [--pruning-heuristic PRUNING_HEURISTIC] [--rule-induction RULE_INDUCTION]
-                    [--rule-pruning RULE_PRUNING] [--time-limit TIME_LIMIT] [-h]
+                    [--rule-pruning RULE_PRUNING] [--simd SIMD] [--time-limit TIME_LIMIT] [-h]
                     runnable_module_or_source_file
 
 A command line utility for training and evaluating machine learning algorithms
@@ -45,8 +45,11 @@ options:
                         The Python class name of the program that should be run
   -v, --version         Display information about the program.
   --log-level LOG_LEVEL
-                        The log level to be used. Must be one of {"critical", "debug", "error", "info", "notset",
-                        "warn"}. The default value is "info".
+                        The log level to be used. Must be one of {"debug", "error", "info", "warning"}. The default
+                        value is "info".
+  --log-width LOG_WIDTH
+                        The width of the console output.
+  --log-plain           Restrict the console output to plain text without any colors or structural elements.
   --mode MODE           The mode of operation to be used. Must be one of {"batch", "read", "run", "single"}. The default
                         value is "single".
   -h, --help            Show this help message and exit
@@ -255,6 +258,8 @@ algorithmic arguments:
   --rule-pruning RULE_PRUNING
                         The name of the strategy to be used for pruning individual rules. Must be one of {"irep",
                         "none"}.
+  --simd SIMD           Whether single instruction, multiple data (SIMD) operations should be used or not. Must be one
+                        of {"false", "true"}.
   --time-limit TIME_LIMIT
                         The duration in seconds after which the induction of rules should be canceled. Must be at least
                         1 or 0, if no time limit should be set.

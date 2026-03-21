@@ -6,7 +6,7 @@
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_non_decomposable_complete_binned.hpp"
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_non_decomposable_partial_dynamic_binned.hpp"
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_non_decomposable_partial_fixed_binned.hpp"
-#include "mlrl/common/util/math.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 #include "mlrl/common/util/validation.hpp"
 
 namespace boosting {
@@ -39,7 +39,7 @@ namespace boosting {
                 : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {}
 
             uint32 getMaxBins(uint32 numLabels) const override {
-                return util::calculateBoundedFraction(numLabels, binRatio_, minBins_, maxBins_) + 1;
+                return math::calculateBoundedFraction(numLabels, binRatio_, minBins_, maxBins_) + 1;
             }
 
             LabelInfo<CriteriaType> getLabelInfo(typename View<CriteriaType>::const_iterator criteria,
@@ -82,12 +82,12 @@ namespace boosting {
 
                     if (labelInfo.numNegativeBins > 0) {
                         labelInfo.numNegativeBins =
-                          util::calculateBoundedFraction(labelInfo.numNegativeBins, binRatio_, minBins_, maxBins_);
+                          math::calculateBoundedFraction(labelInfo.numNegativeBins, binRatio_, minBins_, maxBins_);
                     }
 
                     if (labelInfo.numPositiveBins > 0) {
                         labelInfo.numPositiveBins =
-                          util::calculateBoundedFraction(labelInfo.numPositiveBins, binRatio_, minBins_, maxBins_);
+                          math::calculateBoundedFraction(labelInfo.numPositiveBins, binRatio_, minBins_, maxBins_);
                     }
                 }
 

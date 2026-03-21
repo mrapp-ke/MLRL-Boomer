@@ -2,8 +2,8 @@
 
 #include "mlrl/common/data/array.hpp"
 #include "mlrl/common/data/indexed_value.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 #include "mlrl/common/sampling/partition_single.hpp"
-#include "mlrl/common/util/math.hpp"
 #include "stratified_sampling_common.hpp"
 
 #include <set>
@@ -40,7 +40,7 @@ static inline uint32* copyLabelMatrix(uint32* indices, uint32* indptr, const Bin
     uint32 numLabels = labelMatrix.numCols;
 
     // Set column indices of the CSC matrix to zero...
-    util::setViewToZeros(indptr, numLabels);
+    std::fill(indptr, indptr + numLabels, 0);
 
     // Determine the number of dense elements per column...
     for (uint32 i = 0; i < numExamples; i++) {
@@ -372,7 +372,7 @@ static inline void sampleWeightsInternally(WeightVector& weightVector, WeightIte
                                            uint32 minSamples, uint32 maxSamples, RNG& rng) {
     uint32 numRows = stratificationMatrix.getNumRows();
     uint32 numCols = stratificationMatrix.getNumCols();
-    uint32 numTotalSamples = util::calculateBoundedFraction(numRows, sampleSize, minSamples, maxSamples);
+    uint32 numTotalSamples = math::calculateBoundedFraction(numRows, sampleSize, minSamples, maxSamples);
     uint32 numTotalOutOfSamples = numRows - numTotalSamples;
     uint32 numNonZeroWeights = 0;
     uint32 numZeroWeights = 0;

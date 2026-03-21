@@ -4,8 +4,8 @@
 #pragma once
 
 #include "mlrl/common/data/view.hpp"
-#include "mlrl/common/util/view_functions.hpp"
 
+#include <algorithm>
 #include <utility>
 
 /**
@@ -30,7 +30,15 @@ class MLRLCOMMON_API Vector : public View<T> {
                  * @return  The hash value
                  */
                 inline std::size_t operator()(const Vector<T>& v) const {
-                    return util::hashView(v.cbegin(), v.numElements);
+                    typename Vector<T>::const_iterator iterator = v.cbegin();
+                    uint32 numElements = v.numElements;
+                    std::size_t hashValue = (std::size_t) numElements;
+
+                    for (uint32 i = 0; i < numElements; i++) {
+                        hashValue ^= iterator[i] + 0x9e3779b9 + (hashValue << 6) + (hashValue >> 2);
+                    }
+
+                    return hashValue;
                 }
         };
 
@@ -48,7 +56,23 @@ class MLRLCOMMON_API Vector : public View<T> {
                  * @return      True, if the given objects are equal, false otherwise
                  */
                 inline bool operator()(const Vector<T>& lhs, const Vector<T>& rhs) const {
-                    return util::compareViews(lhs.cbegin(), lhs.numElements, rhs.cbegin(), rhs.numElements);
+                    uint32 numFirst = lhs.numElements;
+                    uint32 numSecond = rhs.numElements;
+
+                    if (numFirst != numSecond) {
+                        return false;
+                    }
+
+                    typename Vector<T>::const_iterator firstIterator = lhs.cbegin();
+                    typename Vector<T>::const_iterator secondIterator = rhs.cbegin();
+
+                    for (uint32 i = 0; i < numFirst; i++) {
+                        if (!isEqual(firstIterator[i], secondIterator[i])) {
+                            return false;
+                        }
+                    }
+
+                    return true;
                 }
         };
 
@@ -106,7 +130,7 @@ class MLRLCOMMON_API Vector : public View<T> {
          * Sets all values stored in the view to zero.
          */
         void clear() {
-            util::setViewToZeros(BaseView<T>::array, numElements);
+            std::fill(this->begin(), this->end(), (T) 0);
         }
 };
 

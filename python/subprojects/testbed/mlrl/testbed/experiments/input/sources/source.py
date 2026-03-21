@@ -3,7 +3,6 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for implementing sources, input data may be read from.
 """
-import logging as log
 
 from abc import ABC, abstractmethod
 from pathlib import Path
@@ -16,6 +15,7 @@ from mlrl.testbed.experiments.input.data import DatasetInputData, InputData, Str
 from mlrl.testbed.experiments.input.policies import MissingInputPolicy
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
+from mlrl.testbed.log import Log
 
 
 class Source(ABC):
@@ -81,7 +81,7 @@ class FileSource(Source, ABC):
     @override
     def read_from_source(self, state: ExperimentState, input_data: InputData) -> bool:
         file_path = self._get_file_path(state, input_data)
-        log.debug('Reading input data from file "%s"...', file_path)
+        Log.verbose('Reading input data from file "{}"...', file_path)
 
         if file_path.is_file():
             data = self._read_from_file(state, file_path, input_data)
@@ -92,7 +92,7 @@ class FileSource(Source, ABC):
         elif self.missing_input_policy == MissingInputPolicy.EXIT:
             raise IOError(f'The file "{file_path}" does not exist')
         else:
-            log.error('The file "%s" does not exist', file_path)
+            Log.error('The file "{}" does not exist', file_path)
 
         return False
 

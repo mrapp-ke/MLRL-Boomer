@@ -1,11 +1,12 @@
-mlrl-testbed mlrl.testbed_sklearn --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --save-meta-data false --save-meta-data true --print-all true --n-estimators 1 --estimator RandomForestRegressor
+mlrl-testbed mlrl.testbed_sklearn --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --print-all true --n-estimators 1 --estimator RandomForestRegressor
 Checking if output files do already exist...
 Starting experiment using the regression algorithm "RandomForestRegressor"...
-DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
+○ Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Using separate training and test sets...
-DEBUG: Reading input data from file "python/tests/res/data/atp7d.arff"...
-DEBUG: Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
-Data characteristics:
+○ Reading input data from file "python/tests/res/data/atp7d.arff"...
+○ Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
+
+🗀 Data characteristics:
 
 Examples            198
 Features            411
@@ -18,23 +19,26 @@ Outputs               6
 Output Density      100
 Output Sparsity       0
 
-Custom parameters:
+
+🗀 Custom parameters:
 
 <no data available>
 
 Fitting model to 198 training examples...
-Successfully fit model in <duration>
+✓ Successfully fit model in <duration>
 Predicting for 98 test examples...
-Successfully predicted in <duration>
-Evaluation result for test data:
+✓ Successfully predicted in <duration>
+
+🗀 Evaluation result for test data:
 
 Mean Absolute Error (↓)               42.43
 Mean Absolute Percentage Error (↓)     0.11
 Mean Squared Error (↓)              8434.79
 Median Absolute Error (↓)              7.42
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-Ground truth for test data:
+○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+
+🗀 Ground truth for test data:
 
 [[ 334.  440.  460.  463.  334.  463.]
  [ 279.  279.  395.  369.  313.  401.]
@@ -135,13 +139,15 @@ Ground truth for test data:
  [ 279.  279.  301.  366.  283.  366.]
  [ 199.  199.  447.  488.  298.  488.]]
 
-Prediction characteristics for test data:
+
+🗀 Prediction characteristics for test data:
 
 Outputs            6
 Output Density   100
 Output Sparsity    0
 
-Predictions for test data:
+
+🗀 Predictions for test data:
 
 [[268. 420. 460. 433. 273. 433.]
  [253. 319. 319. 319. 253. 319.]
@@ -242,10 +248,11 @@ Predictions for test data:
  [277. 279. 290. 299. 277. 299.]
  [298. 397. 456. 513. 344. 513.]]
 
-Label vectors:
+
+🗀 Label vectors:
 
 Index         1
 Label vector  [0 1 2 3 4 5]
 Frequency     198
 
-Successfully finished experiment after <duration>
+✓ Successfully finished experiment after <duration>

@@ -85,7 +85,7 @@ namespace boosting {
                     uint32 numSparse = numSparsePerLabel[j] + 1;
 
                     if (numSparse > 1) {
-                        firstBin.second = util::iterativeArithmeticMean(numSparse, trueProbability, firstBin.second);
+                        firstBin.second = math::iterativeArithmeticMean(numSparse, trueProbability, firstBin.second);
                     } else {
                         firstBin.second = trueProbability;
                     }
@@ -106,7 +106,7 @@ namespace boosting {
         }
 
         Array<uint32> numSparsePerLabel(numLabels);
-        util::setViewToValue(numSparsePerLabel.begin(), numLabels, numExamples);
+        std::fill(numSparsePerLabel.begin(), numSparsePerLabel.begin() + numLabels, numExamples);
         Array<uint32> numSparseRelevantPerLabel(numLabels, true);
 
         for (uint32 i = 0; i < numExamples; i++) {
