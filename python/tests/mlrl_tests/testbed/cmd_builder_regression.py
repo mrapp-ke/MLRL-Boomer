@@ -6,7 +6,7 @@ from ..cmd_builder_regression import RegressionCmdBuilder
 from ..datasets import Dataset
 
 
-class TestbedRegressorCmdBuilder(RegressionCmdBuilder):
+class RegressionTestbedCmdBuilder(RegressionCmdBuilder):
     """
     A builder that allows to configure a command for applying the package mlrl-testbed to regression problems.
     """

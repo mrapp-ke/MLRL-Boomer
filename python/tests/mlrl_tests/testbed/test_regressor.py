@@ -7,7 +7,7 @@ import pytest
 
 from ..datasets import Dataset
 from ..integration_tests_regression import RegressionIntegrationTests
-from .cmd_builder_regression import TestbedRegressorCmdBuilder
+from .cmd_builder_regression import RegressionTestbedCmdBuilder
 from .integration_tests import TestbedIntegrationTestsMixin
 
 
@@ -20,4 +20,4 @@ class TestTestbedRegressor(RegressionIntegrationTests, TestbedIntegrationTestsMi
 
     @override
     def _create_cmd_builder(self, dataset: str = Dataset.ATP7D) -> Any:
-        return TestbedRegressorCmdBuilder(dataset=dataset)
+        return RegressionTestbedCmdBuilder(dataset=dataset)

@@ -6,7 +6,7 @@ from ..cmd_builder_classification import ClassificationCmdBuilder
 from ..datasets import Dataset
 
 
-class TestbedClassifierCmdBuilder(ClassificationCmdBuilder):
+class ClassificationTestbedCmdBuilder(ClassificationCmdBuilder):
     """
     A builder that allows to configure a command for applying the package mlrl-testbed to classification problems.
     """
