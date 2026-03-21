@@ -23,6 +23,7 @@ class TestbedIntegrationTestsMixin(IntegrationTests):
     def test_print_all(self):
         test_name = 'print-all'
         builder = self._create_cmd_builder() \
+            .save_meta_data() \
             .print_all()
         CmdRunner(builder).run(test_name, wipe_after=False)
         builder = self._create_cmd_builder() \
@@ -33,6 +34,7 @@ class TestbedIntegrationTestsMixin(IntegrationTests):
     def test_save_all(self):
         test_name = 'save-all'
         builder = self._create_cmd_builder() \
+            .save_meta_data() \
             .save_all()
         CmdRunner(builder).run(test_name, wipe_after=False)
         builder = self._create_cmd_builder() \
@@ -49,6 +51,7 @@ class TestbedIntegrationTestsMixin(IntegrationTests):
     def test_batch_mode(self):
         test_name = 'batch-mode'
         builder = self._create_cmd_builder() \
+            .save_meta_data() \
             .set_mode(ExperimentMode.BATCH) \
             .save_all()
         CmdRunner(builder).run(test_name, wipe_after=False)
@@ -67,6 +70,7 @@ class TestbedIntegrationTestsMixin(IntegrationTests):
     def test_batch_mode_separate_folds(self):
         test_name = 'batch-mode-separate-folds'
         builder = self._create_cmd_builder() \
+            .save_meta_data() \
             .set_mode(ExperimentMode.BATCH) \
             .save_all() \
             .data_split(DatasetSplitterArguments.VALUE_CROSS_VALIDATION,
@@ -84,12 +88,14 @@ class TestbedIntegrationTestsMixin(IntegrationTests):
 
     def test_batch_mode_slurm(self):
         builder = self._create_cmd_builder() \
+            .save_meta_data() \
             .set_mode(ExperimentMode.BATCH) \
             .set_runner('slurm')
         CmdRunner(builder).run('batch-mode-slurm')
 
     def test_batch_mode_separate_folds_slurm(self):
         builder = self._create_cmd_builder() \
+            .save_meta_data() \
             .set_mode(ExperimentMode.BATCH) \
             .set_runner('slurm') \
             .data_split(DatasetSplitterArguments.VALUE_CROSS_VALIDATION,
@@ -120,6 +126,7 @@ class TestbedIntegrationTestsMixin(IntegrationTests):
     def test_meta_data(self):
         test_name = 'meta_data'
         builder = self._create_cmd_builder() \
+            .save_meta_data() \
             .print_evaluation(False) \
             .save_evaluation(False) \
             .print_meta_data() \
@@ -137,6 +144,7 @@ class TestbedIntegrationTestsMixin(IntegrationTests):
     def test_evaluation(self, predefined: bool, dataset: Dataset):
         test_name = 'evaluation' + ('-predefined' if predefined else '')
         builder = self._create_cmd_builder(dataset=dataset.default + ('-predefined' if predefined else '')) \
+            .save_meta_data() \
             .print_evaluation() \
             .save_evaluation()
         CmdRunner(builder).run(test_name, wipe_after=False)
@@ -149,6 +157,7 @@ class TestbedIntegrationTestsMixin(IntegrationTests):
     def test_evaluation_training_data(self, dataset: Dataset):
         test_name = 'evaluation_training-data'
         builder = self._create_cmd_builder(dataset=dataset.default) \
+            .save_meta_data() \
             .predict_for_training_data() \
             .print_evaluation() \
             .save_evaluation()
@@ -163,6 +172,7 @@ class TestbedIntegrationTestsMixin(IntegrationTests):
 def test_predictions(self, dataset: Dataset):
     test_name = 'predictions'
     builder = self._create_cmd_builder(dataset=dataset.default) \
+        .save_meta_data() \
         .print_evaluation(False) \
         .save_evaluation(False) \
         .print_predictions() \
@@ -184,6 +194,7 @@ def test_predictions(self, dataset: Dataset):
 def test_predictions_training_data(self, dataset: Dataset):
     test_name = 'predictions_training-data'
     builder = self._create_cmd_builder(dataset=dataset.default) \
+        .save_meta_data() \
         .predict_for_training_data() \
         .print_evaluation(False) \
         .save_evaluation(False) \
@@ -204,6 +215,7 @@ def test_predictions_training_data(self, dataset: Dataset):
 def test_prediction_characteristics(self, dataset: Dataset):
     test_name = 'prediction-characteristics'
     builder = self._create_cmd_builder(dataset=dataset.default) \
+        .save_meta_data() \
         .print_evaluation(False) \
         .save_evaluation(False) \
         .print_prediction_characteristics() \
@@ -221,6 +233,7 @@ def test_prediction_characteristics(self, dataset: Dataset):
 def test_prediction_characteristics_training_data(self, dataset: Dataset):
     test_name = 'prediction-characteristics_training-data'
     builder = self._create_cmd_builder(dataset=dataset.default) \
+        .save_meta_data() \
         .predict_for_training_data() \
         .print_evaluation(False) \
         .save_evaluation(False) \
@@ -239,6 +252,7 @@ def test_prediction_characteristics_training_data(self, dataset: Dataset):
 def test_data_characteristics(self, dataset: Dataset):
     test_name = 'data-characteristics'
     builder = self._create_cmd_builder(dataset=dataset.default) \
+        .save_meta_data() \
         .print_evaluation(False) \
         .save_evaluation(False) \
         .print_data_characteristics() \
@@ -256,6 +270,7 @@ def test_data_characteristics(self, dataset: Dataset):
 def test_parameters(self, dataset: Dataset):
     test_name = 'parameters'
     builder = self._create_cmd_builder(dataset=dataset.default) \
+        .save_meta_data() \
         .print_evaluation(False) \
         .save_evaluation(False) \
         .print_parameters() \

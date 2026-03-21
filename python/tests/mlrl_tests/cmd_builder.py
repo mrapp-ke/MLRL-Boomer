@@ -59,8 +59,9 @@ class CmdBuilder:
         self.current_fold = None
         self.control_args: list[str] = []
         self.algorithmic_args: list[str] = []
-        self.save_evaluation(True)
         self.problem_type: str | None = None
+        self.save_evaluation(True)
+        self.save_meta_data(False)
 
     @property
     def base_dir(self) -> Path:

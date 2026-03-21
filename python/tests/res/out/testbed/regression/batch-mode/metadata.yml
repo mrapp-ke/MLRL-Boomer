@@ -49,6 +49,7 @@ child-commands:
   --save-all true --save-evaluation true --save-meta-data false
 command: mlrl-testbed mlrl.boosting --mode batch --log-level debug --base-dir python/tests/res/tmp
   --config python/tests/res/config/testbed/regression/batch_config.yml --problem-type
-  regression --save-evaluation true --save-all true
+  regression --save-evaluation true --save-meta-data false --save-meta-data true --save-all
+  true
 timestamp: <timestamp>
 version: <version>

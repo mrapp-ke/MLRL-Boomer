@@ -33,6 +33,7 @@ class RuleLearnerIntegrationTestsMixin(IntegrationTests):
     def test_evaluation_incremental(self, dataset: Dataset):
         test_name = 'evaluation_incremental'
         builder = self._create_cmd_builder(dataset=dataset.default) \
+            .save_meta_data() \
             .incremental_evaluation() \
             .print_evaluation() \
             .save_evaluation()
@@ -46,6 +47,7 @@ class RuleLearnerIntegrationTestsMixin(IntegrationTests):
     def test_model_characteristics(self, dataset: Dataset):
         test_name = 'model-characteristics'
         builder = self._create_cmd_builder(dataset=dataset.default) \
+            .save_meta_data() \
             .print_evaluation(False) \
             .save_evaluation(False) \
             .print_model_characteristics() \
@@ -62,6 +64,7 @@ class RuleLearnerIntegrationTestsMixin(IntegrationTests):
     def test_rules(self, dataset: Dataset):
         test_name = 'rules'
         builder = self._create_cmd_builder(dataset=dataset.default) \
+            .save_meta_data() \
             .print_evaluation(False) \
             .save_evaluation(False) \
             .print_rules() \

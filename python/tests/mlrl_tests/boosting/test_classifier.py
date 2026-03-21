@@ -105,6 +105,7 @@ class TestBoomerClassifier(ClassificationIntegrationTests, ClassificationRuleLea
         test_name = f'predictor-binary-{binary_predictor}' + (f'_{prediction_format}' if prediction_format else '') + (
             f'_{binary_predictor_options}' if binary_predictor_options else '')
         builder = self._create_cmd_builder() \
+            .save_meta_data() \
             .marginal_probability_calibration(marginal_probability_calibration) \
             .print_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
             .save_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \

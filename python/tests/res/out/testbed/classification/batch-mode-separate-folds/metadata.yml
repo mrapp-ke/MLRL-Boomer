@@ -113,6 +113,6 @@ child-commands:
   --save-all true --save-evaluation true --save-meta-data false
 command: mlrl-testbed mlrl.boosting --mode batch --log-level debug --base-dir python/tests/res/tmp
   --config python/tests/res/config/testbed/classification/batch_config.yml --save-evaluation
-  true --save-all true --data-split cross-validation{num_folds=2}
+  true --save-meta-data false --save-meta-data true --save-all true --data-split cross-validation{num_folds=2}
 timestamp: <timestamp>
 version: <version>

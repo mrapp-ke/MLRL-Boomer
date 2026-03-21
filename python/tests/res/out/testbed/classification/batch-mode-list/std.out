@@ -1,5 +1,4 @@
-mlrl-testbed mlrl.boosting --mode batch --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/testbed/classification/batch_config.yml --save-evaluation true --list
-DEBUG: Writing output data to file "python/tests/res/tmp/metadata.yml"...
+mlrl-testbed mlrl.boosting --mode batch --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/testbed/classification/batch_config.yml --save-evaluation true --save-meta-data false --list
 mlrl-testbed mlrl.boosting \
     --base-dir python/tests/res/tmp \
     --data-dir python/tests/res/data \

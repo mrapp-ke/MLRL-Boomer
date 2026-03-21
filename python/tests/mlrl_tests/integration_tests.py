@@ -53,6 +53,7 @@ class IntegrationTests(ABC):
     def test_model_persistence(self, dataset: Dataset):
         test_name = 'model-persistence'
         builder = self._create_cmd_builder(dataset=dataset.default) \
+            .save_meta_data() \
             .save_models() \
             .load_models()
         CmdRunner(builder).run(test_name, wipe_after=False)

@@ -19,6 +19,7 @@ class SklearnTestbedClassificationIntegrationTests(ClassificationIntegrationTest
     def test_label_vectors(self, dataset: Dataset):
         test_name = 'label-vectors'
         builder = self._create_cmd_builder(dataset=dataset.default) \
+            .save_meta_data() \
             .print_evaluation(False) \
             .save_evaluation(False) \
             .print_label_vectors() \
