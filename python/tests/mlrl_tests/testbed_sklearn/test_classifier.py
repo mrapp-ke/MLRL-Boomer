@@ -11,14 +11,16 @@ from sklearn.multioutput import ClassifierChain
 
 from ..cmd_runner import CmdRunner
 from ..datasets import Dataset
-from ..integration_tests_classification import ClassificationIntegrationTests
+from ..testbed.integration_tests import TestbedIntegrationTestsMixin
 from .cmd_builder_classification import SkLearnClassifierCmdBuilder
 from .integration_tests import SklearnTestbedIntegrationTestsMixin
+from .integration_tests_classification import SklearnTestbedClassificationIntegrationTests
 
 
 @pytest.mark.sklearn
 @pytest.mark.classification
-class TestSkLearnClassifier(ClassificationIntegrationTests, SklearnTestbedIntegrationTestsMixin):
+class TestSkLearnClassifier(SklearnTestbedClassificationIntegrationTests, TestbedIntegrationTestsMixin,
+                            SklearnTestbedIntegrationTestsMixin):
     """
     Defines a series of integration tests for a scikit-learn classifier.
     """

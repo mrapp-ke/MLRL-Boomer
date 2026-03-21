@@ -1,0 +1,21 @@
+---
+datasets:
+  - directory: python/tests/res/data
+    names: atp7d
+  - directory: python/tests/res/data
+    names:
+      - atp7d-binary
+default_arguments:
+  - name: --estimator
+    value: RandomForestRegressor
+parameters:
+  - name: --n-estimators
+    values:
+      - 50
+      - 100
+  - name: --max-depth
+    values:
+      - 2
+      - value: 4
+        additional_arguments:
+          - --max-leaf-nodes 4

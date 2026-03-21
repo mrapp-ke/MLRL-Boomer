@@ -1,0 +1,1277 @@
+mlrl-testbed mlrl.testbed_sklearn --mode read --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --save-meta-data false --save-all true --estimator RandomForestClassifier
+Reading meta-data...
+DEBUG: Reading input data from file "python/tests/res/tmp/metadata.yml"...
+Successfully read meta-data
+DEBUG: Checking for version conflicts...
+DEBUG: Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is currently used
+DEBUG: No version conflicts detected
+Reading experimental results of 8 experiments...
+
+Reading experimental results of experiment (1 / 8)...
+The command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation{num_folds=2} --dataset emotions --estimator RandomForestClassifier --log-level debug --max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_emotions/models --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_2/dataset_emotions/parameters --result-dir n-estimators_50/max-depth_2/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Performing full 2-fold cross validation...
+Fold 1 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_emotions/results/data_characteristics_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_emotions/results/evaluation_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_emotions/results/ground_truth_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_emotions/results/ground_truth_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_emotions/results/label_vectors_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_emotions/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_emotions/results/predictions_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_emotions/results/predictions_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_emotions/models/model_fold-1.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_emotions/parameters/parameters_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_emotions/results/data_characteristics_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_emotions/parameters/parameters_fold-1.csv"...
+Evaluation result for test data (Fold 1):
+
+Example-wise F1 (↑)         43.48
+Example-wise Jaccard (↑)    37.43
+Example-wise Precision (↑)  82.55
+Example-wise Recall (↑)     41.19
+Hamming Accuracy (↑)        77.61
+Hamming Loss (↓)            22.39
+Macro F1 (↑)                47.86
+Macro Jaccard (↑)           34.11
+Macro Precision (↑)         84.29
+Macro Recall (↑)            39.3
+Micro F1 (↑)                54.5
+Micro Jaccard (↑)           37.46
+Micro Precision (↑)         76.85
+Micro Recall (↑)            42.23
+Subset 0/1 Loss (↓)         80.81
+Subset Accuracy (↑)         19.19
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_emotions/results/evaluation_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_emotions/results/ground_truth_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_emotions/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_emotions/results/predictions_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_emotions/results/label_vectors_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_emotions/models/model_fold-1.pickle"...
+Fold 2 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_emotions/results/data_characteristics_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_emotions/results/evaluation_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_emotions/results/ground_truth_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_emotions/results/ground_truth_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_emotions/results/label_vectors_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_emotions/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_emotions/results/predictions_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_emotions/results/predictions_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_emotions/models/model_fold-2.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_emotions/parameters/parameters_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_emotions/results/data_characteristics_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_emotions/parameters/parameters_fold-2.csv"...
+Evaluation result for test data (Fold 2):
+
+Example-wise F1 (↑)         44.31
+Example-wise Jaccard (↑)    38.37
+Example-wise Precision (↑)  81.14
+Example-wise Recall (↑)     42.45
+Hamming Accuracy (↑)        78.1
+Hamming Loss (↓)            21.9
+Macro F1 (↑)                46.91
+Macro Jaccard (↑)           33.55
+Macro Precision (↑)         81.6
+Macro Recall (↑)            39.34
+Micro F1 (↑)                54.5
+Micro Jaccard (↑)           37.46
+Micro Precision (↑)         74.44
+Micro Recall (↑)            42.99
+Subset 0/1 Loss (↓)         79.39
+Subset Accuracy (↑)         20.61
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_emotions/results/evaluation_test_fold-2.csv"...
+Evaluation result for test data (Average across 2 folds):
+
+Example-wise F1 (↑)         43.9   ±0.42
+Example-wise Jaccard (↑)    37.9   ±0.47
+Example-wise Precision (↑)  81.84  ±0.71
+Example-wise Recall (↑)     41.82  ±0.63
+Hamming Accuracy (↑)        77.85  ±0.24
+Hamming Loss (↓)            22.15  ±0.24
+Macro F1 (↑)                47.38  ±0.47
+Macro Jaccard (↑)           33.83  ±0.28
+Macro Precision (↑)         82.94  ±1.34
+Macro Recall (↑)            39.32  ±0.02
+Micro F1 (↑)                54.5   ±0.00
+Micro Jaccard (↑)           37.46  ±0.00
+Micro Precision (↑)         75.64  ±1.20
+Micro Recall (↑)            42.61  ±0.38
+Subset 0/1 Loss (↓)         80.1   ±0.71
+Subset Accuracy (↑)         19.9   ±0.71
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_emotions/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_emotions/results/ground_truth_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_emotions/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_emotions/results/predictions_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_emotions/results/label_vectors_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_emotions/models/model_fold-2.pickle"...
+
+Reading experimental results of experiment (2 / 8)...
+The command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation{num_folds=2} --dataset emotions --estimator RandomForestClassifier --log-level debug --max-depth 4 --max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/models --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters --result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Performing full 2-fold cross validation...
+Fold 1 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/data_characteristics_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/evaluation_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/ground_truth_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/ground_truth_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/label_vectors_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/predictions_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/predictions_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/models/model_fold-1.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters/parameters_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/data_characteristics_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters/parameters_fold-1.csv"...
+Evaluation result for test data (Fold 1):
+
+Example-wise F1 (↑)         45.08
+Example-wise Jaccard (↑)    39.17
+Example-wise Precision (↑)  82.83
+Example-wise Recall (↑)     43.15
+Hamming Accuracy (↑)        78.11
+Hamming Loss (↓)            21.89
+Macro F1 (↑)                49.67
+Macro Jaccard (↑)           35.91
+Macro Precision (↑)         83.42
+Macro Recall (↑)            41.48
+Micro F1 (↑)                56.18
+Micro Jaccard (↑)           39.06
+Micro Precision (↑)         77.16
+Micro Recall (↑)            44.17
+Subset 0/1 Loss (↓)         78.79
+Subset Accuracy (↑)         21.21
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/evaluation_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/ground_truth_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/predictions_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/label_vectors_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/models/model_fold-1.pickle"...
+Fold 2 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/data_characteristics_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/evaluation_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/ground_truth_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/ground_truth_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/label_vectors_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/predictions_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/predictions_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/models/model_fold-2.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters/parameters_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/data_characteristics_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters/parameters_fold-2.csv"...
+Evaluation result for test data (Fold 2):
+
+Example-wise F1 (↑)         45.38
+Example-wise Jaccard (↑)    39.41
+Example-wise Precision (↑)  81.31
+Example-wise Recall (↑)     44.09
+Hamming Accuracy (↑)        78.43
+Hamming Loss (↓)            21.57
+Macro F1 (↑)                48.45
+Macro Jaccard (↑)           35.06
+Macro Precision (↑)         80.24
+Macro Recall (↑)            41.44
+Micro F1 (↑)                55.93
+Micro Jaccard (↑)           38.82
+Micro Precision (↑)         74.31
+Micro Recall (↑)            44.83
+Subset 0/1 Loss (↓)         78.72
+Subset Accuracy (↑)         21.28
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/evaluation_test_fold-2.csv"...
+Evaluation result for test data (Average across 2 folds):
+
+Example-wise F1 (↑)         45.23  ±0.15
+Example-wise Jaccard (↑)    39.29  ±0.12
+Example-wise Precision (↑)  82.07  ±0.76
+Example-wise Recall (↑)     43.62  ±0.47
+Hamming Accuracy (↑)        78.27  ±0.16
+Hamming Loss (↓)            21.73  ±0.16
+Macro F1 (↑)                49.06  ±0.61
+Macro Jaccard (↑)           35.48  ±0.43
+Macro Precision (↑)         81.83  ±1.59
+Macro Recall (↑)            41.46  ±0.02
+Micro F1 (↑)                56.05  ±0.13
+Micro Jaccard (↑)           38.94  ±0.12
+Micro Precision (↑)         75.74  ±1.42
+Micro Recall (↑)            44.5   ±0.33
+Subset 0/1 Loss (↓)         78.75  ±0.04
+Subset Accuracy (↑)         21.25  ±0.04
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/ground_truth_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/predictions_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/label_vectors_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/models/model_fold-2.pickle"...
+
+Reading experimental results of experiment (3 / 8)...
+The command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation{num_folds=2} --dataset emotions --estimator RandomForestClassifier --log-level debug --max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_emotions/models --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_2/dataset_emotions/parameters --result-dir n-estimators_100/max-depth_2/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Performing full 2-fold cross validation...
+Fold 1 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_emotions/results/data_characteristics_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_emotions/results/evaluation_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_emotions/results/ground_truth_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_emotions/results/ground_truth_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_emotions/results/label_vectors_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_emotions/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_emotions/results/predictions_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_emotions/results/predictions_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_emotions/models/model_fold-1.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_emotions/parameters/parameters_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_emotions/results/data_characteristics_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_emotions/parameters/parameters_fold-1.csv"...
+Evaluation result for test data (Fold 1):
+
+Example-wise F1 (↑)         42.23
+Example-wise Jaccard (↑)    36.25
+Example-wise Precision (↑)  83.56
+Example-wise Recall (↑)     39.9
+Hamming Accuracy (↑)        77.22
+Hamming Loss (↓)            22.78
+Macro F1 (↑)                45.81
+Macro Jaccard (↑)           32.39
+Macro Precision (↑)         85.83
+Macro Recall (↑)            37.24
+Micro F1 (↑)                52.9
+Micro Jaccard (↑)           35.96
+Micro Precision (↑)         77.03
+Micro Recall (↑)            40.28
+Subset 0/1 Loss (↓)         81.14
+Subset Accuracy (↑)         18.86
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_emotions/results/evaluation_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_emotions/results/ground_truth_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_emotions/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_emotions/results/predictions_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_emotions/results/label_vectors_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_emotions/models/model_fold-1.pickle"...
+Fold 2 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_emotions/results/data_characteristics_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_emotions/results/evaluation_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_emotions/results/ground_truth_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_emotions/results/ground_truth_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_emotions/results/label_vectors_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_emotions/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_emotions/results/predictions_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_emotions/results/predictions_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_emotions/models/model_fold-2.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_emotions/parameters/parameters_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_emotions/results/data_characteristics_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_emotions/parameters/parameters_fold-2.csv"...
+Evaluation result for test data (Fold 2):
+
+Example-wise F1 (↑)         43.91
+Example-wise Jaccard (↑)    37.84
+Example-wise Precision (↑)  81.64
+Example-wise Recall (↑)     41.72
+Hamming Accuracy (↑)        77.93
+Hamming Loss (↓)            22.07
+Macro F1 (↑)                46.09
+Macro Jaccard (↑)           32.84
+Macro Precision (↑)         80.49
+Macro Recall (↑)            38.66
+Micro F1 (↑)                53.99
+Micro Jaccard (↑)           36.98
+Micro Precision (↑)         74.19
+Micro Recall (↑)            42.44
+Subset 0/1 Loss (↓)         80.74
+Subset Accuracy (↑)         19.26
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_emotions/results/evaluation_test_fold-2.csv"...
+Evaluation result for test data (Average across 2 folds):
+
+Example-wise F1 (↑)         43.07  ±0.84
+Example-wise Jaccard (↑)    37.04  ±0.79
+Example-wise Precision (↑)  82.6   ±0.96
+Example-wise Recall (↑)     40.81  ±0.91
+Hamming Accuracy (↑)        77.57  ±0.36
+Hamming Loss (↓)            22.43  ±0.36
+Macro F1 (↑)                45.95  ±0.14
+Macro Jaccard (↑)           32.61  ±0.22
+Macro Precision (↑)         83.16  ±2.67
+Macro Recall (↑)            37.95  ±0.71
+Micro F1 (↑)                53.45  ±0.55
+Micro Jaccard (↑)           36.47  ±0.51
+Micro Precision (↑)         75.61  ±1.42
+Micro Recall (↑)            41.36  ±1.08
+Subset 0/1 Loss (↓)         80.94  ±0.20
+Subset Accuracy (↑)         19.06  ±0.20
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_emotions/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_emotions/results/ground_truth_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_emotions/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_emotions/results/predictions_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_emotions/results/label_vectors_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_emotions/models/model_fold-2.pickle"...
+
+Reading experimental results of experiment (4 / 8)...
+The command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation{num_folds=2} --dataset emotions --estimator RandomForestClassifier --log-level debug --max-depth 4 --max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/models --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Performing full 2-fold cross validation...
+Fold 1 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/data_characteristics_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/evaluation_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/ground_truth_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/ground_truth_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/label_vectors_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/predictions_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/predictions_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/models/model_fold-1.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters/parameters_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/data_characteristics_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters/parameters_fold-1.csv"...
+Evaluation result for test data (Fold 1):
+
+Example-wise F1 (↑)         42.55
+Example-wise Jaccard (↑)    36.5
+Example-wise Precision (↑)  83.22
+Example-wise Recall (↑)     40.68
+Hamming Accuracy (↑)        77.61
+Hamming Loss (↓)            22.39
+Macro F1 (↑)                48.13
+Macro Jaccard (↑)           34.42
+Macro Precision (↑)         83.57
+Macro Recall (↑)            39.5
+Micro F1 (↑)                54.5
+Micro Jaccard (↑)           37.46
+Micro Precision (↑)         76.85
+Micro Recall (↑)            42.23
+Subset 0/1 Loss (↓)         81.82
+Subset Accuracy (↑)         18.18
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/evaluation_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/ground_truth_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/predictions_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/label_vectors_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/models/model_fold-1.pickle"...
+Fold 2 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/data_characteristics_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/evaluation_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/ground_truth_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/ground_truth_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/label_vectors_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/predictions_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/predictions_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/models/model_fold-2.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters/parameters_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/data_characteristics_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters/parameters_fold-2.csv"...
+Evaluation result for test data (Fold 2):
+
+Example-wise F1 (↑)         46.15
+Example-wise Jaccard (↑)    40.26
+Example-wise Precision (↑)  82.09
+Example-wise Recall (↑)     44.93
+Hamming Accuracy (↑)        79
+Hamming Loss (↓)            21
+Macro F1 (↑)                50.16
+Macro Jaccard (↑)           36.85
+Macro Precision (↑)         80.98
+Macro Recall (↑)            43.22
+Micro F1 (↑)                57.37
+Micro Jaccard (↑)           40.22
+Micro Precision (↑)         75.38
+Micro Recall (↑)            46.31
+Subset 0/1 Loss (↓)         78.04
+Subset Accuracy (↑)         21.96
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/evaluation_test_fold-2.csv"...
+Evaluation result for test data (Average across 2 folds):
+
+Example-wise F1 (↑)         44.35  ±1.80
+Example-wise Jaccard (↑)    38.38  ±1.88
+Example-wise Precision (↑)  82.66  ±0.56
+Example-wise Recall (↑)     42.81  ±2.12
+Hamming Accuracy (↑)        78.3   ±0.69
+Hamming Loss (↓)            21.7   ±0.69
+Macro F1 (↑)                49.14  ±1.02
+Macro Jaccard (↑)           35.63  ±1.22
+Macro Precision (↑)         82.27  ±1.30
+Macro Recall (↑)            41.36  ±1.86
+Micro F1 (↑)                55.94  ±1.43
+Micro Jaccard (↑)           38.84  ±1.38
+Micro Precision (↑)         76.11  ±0.74
+Micro Recall (↑)            44.27  ±2.04
+Subset 0/1 Loss (↓)         79.93  ±1.89
+Subset Accuracy (↑)         20.07  ±1.89
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/ground_truth_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/predictions_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/label_vectors_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/models/model_fold-2.pickle"...
+
+Reading experimental results of experiment (5 / 8)...
+The command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation{num_folds=2} --dataset enron --estimator RandomForestClassifier --log-level debug --max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_enron/models --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_2/dataset_enron/parameters --result-dir n-estimators_50/max-depth_2/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Performing full 2-fold cross validation...
+Fold 1 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_enron/results/data_characteristics_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_enron/results/evaluation_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_enron/results/ground_truth_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_enron/results/ground_truth_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_enron/results/label_vectors_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_enron/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_enron/results/predictions_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_enron/results/predictions_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_enron/models/model_fold-1.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_enron/parameters/parameters_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_enron/results/data_characteristics_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_enron/parameters/parameters_fold-1.csv"...
+Evaluation result for test data (Fold 1):
+
+Example-wise F1 (↑)         30.95
+Example-wise Jaccard (↑)    21.33
+Example-wise Precision (↑)  60.18
+Example-wise Recall (↑)     22.21
+Hamming Accuracy (↑)        94.28
+Hamming Loss (↓)             5.72
+Macro F1 (↑)                 5.93
+Macro Jaccard (↑)            4.75
+Macro Precision (↑)         98.21
+Macro Recall (↑)             5.66
+Micro F1 (↑)                34.7
+Micro Jaccard (↑)           20.99
+Micro Precision (↑)         63.28
+Micro Recall (↑)            23.9
+Subset 0/1 Loss (↓)         98.71
+Subset Accuracy (↑)          1.29
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_enron/results/evaluation_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_enron/results/ground_truth_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_enron/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_enron/results/predictions_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_enron/results/label_vectors_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_enron/models/model_fold-1.pickle"...
+Fold 2 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_enron/results/data_characteristics_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_enron/results/evaluation_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_enron/results/ground_truth_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_enron/results/ground_truth_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_enron/results/label_vectors_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_enron/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_enron/results/predictions_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_enron/results/predictions_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_enron/models/model_fold-2.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_enron/parameters/parameters_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_enron/results/data_characteristics_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_enron/parameters/parameters_fold-2.csv"...
+Evaluation result for test data (Fold 2):
+
+Example-wise F1 (↑)         29.8
+Example-wise Jaccard (↑)    20.33
+Example-wise Precision (↑)  73.97
+Example-wise Recall (↑)     21.15
+Hamming Accuracy (↑)        94.46
+Hamming Loss (↓)             5.54
+Macro F1 (↑)                 4.34
+Macro Jaccard (↑)            3.19
+Macro Precision (↑)         97.93
+Macro Recall (↑)             4.05
+Micro F1 (↑)                34.46
+Micro Jaccard (↑)           20.82
+Micro Precision (↑)         70.42
+Micro Recall (↑)            22.81
+Subset 0/1 Loss (↓)         99.06
+Subset Accuracy (↑)          0.94
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_enron/results/evaluation_test_fold-2.csv"...
+Evaluation result for test data (Average across 2 folds):
+
+Example-wise F1 (↑)         30.38  ±0.58
+Example-wise Jaccard (↑)    20.83  ±0.50
+Example-wise Precision (↑)  67.08  ±6.89
+Example-wise Recall (↑)     21.68  ±0.53
+Hamming Accuracy (↑)        94.37  ±0.09
+Hamming Loss (↓)             5.63  ±0.09
+Macro F1 (↑)                 5.14  ±0.80
+Macro Jaccard (↑)            3.97  ±0.78
+Macro Precision (↑)         98.07  ±0.14
+Macro Recall (↑)             4.86  ±0.80
+Micro F1 (↑)                34.58  ±0.12
+Micro Jaccard (↑)           20.9   ±0.09
+Micro Precision (↑)         66.85  ±3.57
+Micro Recall (↑)            23.36  ±0.54
+Subset 0/1 Loss (↓)         98.88  ±0.18
+Subset Accuracy (↑)          1.12  ±0.18
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_enron/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_enron/results/ground_truth_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_enron/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_enron/results/predictions_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_enron/results/label_vectors_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_2/dataset_enron/models/model_fold-2.pickle"...
+
+Reading experimental results of experiment (6 / 8)...
+The command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation{num_folds=2} --dataset enron --estimator RandomForestClassifier --log-level debug --max-depth 4 --max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters --result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Performing full 2-fold cross validation...
+Fold 1 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/data_characteristics_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/evaluation_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/ground_truth_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/ground_truth_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/label_vectors_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/predictions_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/predictions_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models/model_fold-1.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters/parameters_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/data_characteristics_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters/parameters_fold-1.csv"...
+Evaluation result for test data (Fold 1):
+
+Example-wise F1 (↑)         30.61
+Example-wise Jaccard (↑)    21.21
+Example-wise Precision (↑)  78.81
+Example-wise Recall (↑)     21.92
+Hamming Accuracy (↑)        94.62
+Hamming Loss (↓)             5.38
+Macro F1 (↑)                 6.1
+Macro Jaccard (↑)            4.98
+Macro Precision (↑)         98.44
+Macro Recall (↑)             5.61
+Micro F1 (↑)                35.79
+Micro Jaccard (↑)           21.79
+Micro Precision (↑)         74.45
+Micro Recall (↑)            23.55
+Subset 0/1 Loss (↓)         98.82
+Subset Accuracy (↑)          1.18
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/evaluation_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/ground_truth_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/predictions_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/label_vectors_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models/model_fold-1.pickle"...
+Fold 2 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/data_characteristics_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/evaluation_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/ground_truth_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/ground_truth_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/label_vectors_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/predictions_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/predictions_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models/model_fold-2.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters/parameters_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/data_characteristics_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters/parameters_fold-2.csv"...
+Evaluation result for test data (Fold 2):
+
+Example-wise F1 (↑)         29.58
+Example-wise Jaccard (↑)    20.25
+Example-wise Precision (↑)  79.61
+Example-wise Recall (↑)     21.06
+Hamming Accuracy (↑)        94.57
+Hamming Loss (↓)             5.43
+Macro F1 (↑)                 4.47
+Macro Jaccard (↑)            3.32
+Macro Precision (↑)         98.03
+Macro Recall (↑)             4.07
+Micro F1 (↑)                34.88
+Micro Jaccard (↑)           21.12
+Micro Precision (↑)         74.38
+Micro Recall (↑)            22.78
+Subset 0/1 Loss (↓)         99.06
+Subset Accuracy (↑)          0.94
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/evaluation_test_fold-2.csv"...
+Evaluation result for test data (Average across 2 folds):
+
+Example-wise F1 (↑)         30.1   ±0.51
+Example-wise Jaccard (↑)    20.73  ±0.48
+Example-wise Precision (↑)  79.21  ±0.40
+Example-wise Recall (↑)     21.49  ±0.43
+Hamming Accuracy (↑)        94.59  ±0.03
+Hamming Loss (↓)             5.41  ±0.03
+Macro F1 (↑)                 5.29  ±0.82
+Macro Jaccard (↑)            4.15  ±0.83
+Macro Precision (↑)         98.23  ±0.21
+Macro Recall (↑)             4.84  ±0.77
+Micro F1 (↑)                35.33  ±0.46
+Micro Jaccard (↑)           21.46  ±0.34
+Micro Precision (↑)         74.41  ±0.04
+Micro Recall (↑)            23.17  ±0.39
+Subset 0/1 Loss (↓)         98.94  ±0.12
+Subset Accuracy (↑)          1.06  ±0.12
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/ground_truth_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/predictions_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/label_vectors_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models/model_fold-2.pickle"...
+
+Reading experimental results of experiment (7 / 8)...
+The command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation{num_folds=2} --dataset enron --estimator RandomForestClassifier --log-level debug --max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_enron/models --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_2/dataset_enron/parameters --result-dir n-estimators_100/max-depth_2/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Performing full 2-fold cross validation...
+Fold 1 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_enron/results/data_characteristics_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_enron/results/evaluation_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_enron/results/ground_truth_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_enron/results/ground_truth_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_enron/results/label_vectors_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_enron/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_enron/results/predictions_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_enron/results/predictions_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_enron/models/model_fold-1.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_enron/parameters/parameters_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_enron/results/data_characteristics_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_enron/parameters/parameters_fold-1.csv"...
+Evaluation result for test data (Fold 1):
+
+Example-wise F1 (↑)         31.21
+Example-wise Jaccard (↑)    21.51
+Example-wise Precision (↑)  73.23
+Example-wise Recall (↑)     22.37
+Hamming Accuracy (↑)        94.53
+Hamming Loss (↓)             5.47
+Macro F1 (↑)                 6.04
+Macro Jaccard (↑)            4.9
+Macro Precision (↑)         98.36
+Macro Recall (↑)             5.65
+Micro F1 (↑)                35.87
+Micro Jaccard (↑)           21.86
+Micro Precision (↑)         70.62
+Micro Recall (↑)            24.04
+Subset 0/1 Loss (↓)         98.71
+Subset Accuracy (↑)          1.29
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_enron/results/evaluation_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_enron/results/ground_truth_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_enron/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_enron/results/predictions_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_enron/results/label_vectors_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_enron/models/model_fold-1.pickle"...
+Fold 2 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_enron/results/data_characteristics_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_enron/results/evaluation_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_enron/results/ground_truth_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_enron/results/ground_truth_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_enron/results/label_vectors_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_enron/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_enron/results/predictions_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_enron/results/predictions_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_enron/models/model_fold-2.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_enron/parameters/parameters_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_enron/results/data_characteristics_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_enron/parameters/parameters_fold-2.csv"...
+Evaluation result for test data (Fold 2):
+
+Example-wise F1 (↑)         29.78
+Example-wise Jaccard (↑)    20.27
+Example-wise Precision (↑)  74.44
+Example-wise Recall (↑)     21.05
+Hamming Accuracy (↑)        94.47
+Hamming Loss (↓)             5.53
+Macro F1 (↑)                 4.34
+Macro Jaccard (↑)            3.2
+Macro Precision (↑)         97.98
+Macro Recall (↑)             4.05
+Micro F1 (↑)                34.49
+Micro Jaccard (↑)           20.84
+Micro Precision (↑)         71
+Micro Recall (↑)            22.78
+Subset 0/1 Loss (↓)         99.06
+Subset Accuracy (↑)          0.94
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_enron/results/evaluation_test_fold-2.csv"...
+Evaluation result for test data (Average across 2 folds):
+
+Example-wise F1 (↑)         30.5   ±0.72
+Example-wise Jaccard (↑)    20.89  ±0.62
+Example-wise Precision (↑)  73.83  ±0.61
+Example-wise Recall (↑)     21.71  ±0.66
+Hamming Accuracy (↑)        94.5   ±0.03
+Hamming Loss (↓)             5.5   ±0.03
+Macro F1 (↑)                 5.19  ±0.85
+Macro Jaccard (↑)            4.05  ±0.85
+Macro Precision (↑)         98.17  ±0.19
+Macro Recall (↑)             4.85  ±0.80
+Micro F1 (↑)                35.18  ±0.69
+Micro Jaccard (↑)           21.35  ±0.51
+Micro Precision (↑)         70.81  ±0.19
+Micro Recall (↑)            23.41  ±0.63
+Subset 0/1 Loss (↓)         98.88  ±0.18
+Subset Accuracy (↑)          1.12  ±0.18
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_enron/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_enron/results/ground_truth_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_enron/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_enron/results/predictions_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_enron/results/label_vectors_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_2/dataset_enron/models/model_fold-2.pickle"...
+
+Reading experimental results of experiment (8 / 8)...
+The command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation{num_folds=2} --dataset enron --estimator RandomForestClassifier --log-level debug --max-depth 4 --max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false" has been used originally for running this experiment
+Performing full 2-fold cross validation...
+Fold 1 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/data_characteristics_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/evaluation_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/ground_truth_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/ground_truth_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/label_vectors_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/predictions_test_fold-1.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/predictions_test_fold-1.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models/model_fold-1.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters/parameters_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/data_characteristics_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters/parameters_fold-1.csv"...
+Evaluation result for test data (Fold 1):
+
+Example-wise F1 (↑)         31.7
+Example-wise Jaccard (↑)    21.97
+Example-wise Precision (↑)  80.57
+Example-wise Recall (↑)     22.66
+Hamming Accuracy (↑)        94.71
+Hamming Loss (↓)             5.29
+Macro F1 (↑)                 6.19
+Macro Jaccard (↑)            5.09
+Macro Precision (↑)         98.51
+Macro Recall (↑)             5.69
+Micro F1 (↑)                36.99
+Micro Jaccard (↑)           22.69
+Micro Precision (↑)         76.5
+Micro Recall (↑)            24.39
+Subset 0/1 Loss (↓)         98.71
+Subset Accuracy (↑)          1.29
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/evaluation_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/ground_truth_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/prediction_characteristics_test_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/predictions_test_fold-1.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/label_vectors_fold-1.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models/model_fold-1.pickle"...
+Fold 2 / 2:
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/data_characteristics_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/evaluation_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/ground_truth_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/ground_truth_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/label_vectors_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/predictions_test_fold-2.arff"...
+DEBUG: Parsing meta-data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/predictions_test_fold-2.xml"...
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models/model_fold-2.pickle"...
+Successfully loaded model
+DEBUG: Reading input data from file "python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters/parameters_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/data_characteristics_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters/parameters_fold-2.csv"...
+Evaluation result for test data (Fold 2):
+
+Example-wise F1 (↑)         30.34
+Example-wise Jaccard (↑)    20.75
+Example-wise Precision (↑)  81.67
+Example-wise Recall (↑)     21.46
+Hamming Accuracy (↑)        94.65
+Hamming Loss (↓)             5.35
+Macro F1 (↑)                 4.54
+Macro Jaccard (↑)            3.43
+Macro Precision (↑)         98.12
+Macro Recall (↑)             4.14
+Micro F1 (↑)                35.63
+Micro Jaccard (↑)           21.67
+Micro Precision (↑)         76.78
+Micro Recall (↑)            23.19
+Subset 0/1 Loss (↓)         99.06
+Subset Accuracy (↑)          0.94
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/evaluation_test_fold-2.csv"...
+Evaluation result for test data (Average across 2 folds):
+
+Example-wise F1 (↑)         31.02  ±0.68
+Example-wise Jaccard (↑)    21.36  ±0.61
+Example-wise Precision (↑)  81.12  ±0.55
+Example-wise Recall (↑)     22.06  ±0.60
+Hamming Accuracy (↑)        94.68  ±0.03
+Hamming Loss (↓)             5.32  ±0.03
+Macro F1 (↑)                 5.36  ±0.82
+Macro Jaccard (↑)            4.26  ±0.83
+Macro Precision (↑)         98.32  ±0.19
+Macro Recall (↑)             4.92  ±0.78
+Micro F1 (↑)                36.31  ±0.68
+Micro Jaccard (↑)           22.18  ±0.51
+Micro Precision (↑)         76.64  ±0.14
+Micro Recall (↑)            23.79  ±0.60
+Subset 0/1 Loss (↓)         98.88  ±0.18
+Subset Accuracy (↑)          1.12  ±0.18
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/evaluation_test.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/ground_truth_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/prediction_characteristics_test_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/predictions_test_fold-2.arff"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/label_vectors_fold-2.csv"...
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models/model_fold-2.pickle"...
+Evaluation results of several experiments for test data:
+
+Evaluation results for measure "Example-wise F1 (↑)":
+
+max_depth      max_leaf_nodes    n_estimators    Example-wise F1 (↑)  Std.-dev.      Rank
+-----------  ----------------  --------------  ---------------------  -----------  ------
+"emotions"
+-----------  ----------------  --------------  ---------------------  -----------  ------
+2.00                                       50                  43.9   ±0.42           3
+4.00                        4              50                  45.23  ±0.15           1
+2.00                                      100                  43.07  ±0.84           4
+4.00                        4             100                  44.35  ±1.80           2
+-----------  ----------------  --------------  ---------------------  -----------  ------
+"enron"
+-----------  ----------------  --------------  ---------------------  -----------  ------
+2.00                                       50                  30.38  ±0.58           3
+4.00                        4              50                  30.1   ±0.51           4
+2.00                                      100                  30.5   ±0.72           2
+4.00                        4             100                  31.02  ±0.68           1
+-----------  ----------------  --------------  ---------------------  -----------  ------
+Averages
+-----------  ----------------  --------------  ---------------------  -----------  ------
+2.00                                       50                                         3
+4.00                        4              50                                         2.5
+2.00                                      100                                         3
+4.00                        4             100                                         1.5
+
+Evaluation results for measure "Example-wise Jaccard (↑)":
+
+max_depth      max_leaf_nodes    n_estimators    Example-wise Jaccard (↑)  Std.-dev.      Rank
+-----------  ----------------  --------------  --------------------------  -----------  ------
+"emotions"
+-----------  ----------------  --------------  --------------------------  -----------  ------
+2.00                                       50                       37.9   ±0.47           3
+4.00                        4              50                       39.29  ±0.12           1
+2.00                                      100                       37.04  ±0.79           4
+4.00                        4             100                       38.38  ±1.88           2
+-----------  ----------------  --------------  --------------------------  -----------  ------
+"enron"
+-----------  ----------------  --------------  --------------------------  -----------  ------
+2.00                                       50                       20.83  ±0.50           3
+4.00                        4              50                       20.73  ±0.48           4
+2.00                                      100                       20.89  ±0.62           2
+4.00                        4             100                       21.36  ±0.61           1
+-----------  ----------------  --------------  --------------------------  -----------  ------
+Averages
+-----------  ----------------  --------------  --------------------------  -----------  ------
+2.00                                       50                                              3
+4.00                        4              50                                              2.5
+2.00                                      100                                              3
+4.00                        4             100                                              1.5
+
+Evaluation results for measure "Example-wise Precision (↑)":
+
+max_depth      max_leaf_nodes    n_estimators    Example-wise Precision (↑)  Std.-dev.      Rank
+-----------  ----------------  --------------  ----------------------------  -----------  ------
+"emotions"
+-----------  ----------------  --------------  ----------------------------  -----------  ------
+2.00                                       50                         81.84  ±0.71           4
+4.00                        4              50                         82.07  ±0.76           3
+2.00                                      100                         82.6   ±0.96           2
+4.00                        4             100                         82.66  ±0.56           1
+-----------  ----------------  --------------  ----------------------------  -----------  ------
+"enron"
+-----------  ----------------  --------------  ----------------------------  -----------  ------
+2.00                                       50                         67.08  ±6.89           4
+4.00                        4              50                         79.21  ±0.40           2
+2.00                                      100                         73.83  ±0.61           3
+4.00                        4             100                         81.12  ±0.55           1
+-----------  ----------------  --------------  ----------------------------  -----------  ------
+Averages
+-----------  ----------------  --------------  ----------------------------  -----------  ------
+2.00                                       50                                                4
+4.00                        4              50                                                2.5
+2.00                                      100                                                2.5
+4.00                        4             100                                                1
+
+Evaluation results for measure "Example-wise Recall (↑)":
+
+max_depth      max_leaf_nodes    n_estimators    Example-wise Recall (↑)  Std.-dev.      Rank
+-----------  ----------------  --------------  -------------------------  -----------  ------
+"emotions"
+-----------  ----------------  --------------  -------------------------  -----------  ------
+2.00                                       50                      41.82  ±0.63           3
+4.00                        4              50                      43.62  ±0.47           1
+2.00                                      100                      40.81  ±0.91           4
+4.00                        4             100                      42.81  ±2.12           2
+-----------  ----------------  --------------  -------------------------  -----------  ------
+"enron"
+-----------  ----------------  --------------  -------------------------  -----------  ------
+2.00                                       50                      21.68  ±0.53           3
+4.00                        4              50                      21.49  ±0.43           4
+2.00                                      100                      21.71  ±0.66           2
+4.00                        4             100                      22.06  ±0.60           1
+-----------  ----------------  --------------  -------------------------  -----------  ------
+Averages
+-----------  ----------------  --------------  -------------------------  -----------  ------
+2.00                                       50                                             3
+4.00                        4              50                                             2.5
+2.00                                      100                                             3
+4.00                        4             100                                             1.5
+
+Evaluation results for measure "Hamming Accuracy (↑)":
+
+max_depth      max_leaf_nodes    n_estimators    Hamming Accuracy (↑)  Std.-dev.      Rank
+-----------  ----------------  --------------  ----------------------  -----------  ------
+"emotions"
+-----------  ----------------  --------------  ----------------------  -----------  ------
+2.00                                       50                   77.85  ±0.24           3
+4.00                        4              50                   78.27  ±0.16           2
+2.00                                      100                   77.57  ±0.36           4
+4.00                        4             100                   78.3   ±0.69           1
+-----------  ----------------  --------------  ----------------------  -----------  ------
+"enron"
+-----------  ----------------  --------------  ----------------------  -----------  ------
+2.00                                       50                   94.37  ±0.09           4
+4.00                        4              50                   94.59  ±0.03           2
+2.00                                      100                   94.5   ±0.03           3
+4.00                        4             100                   94.68  ±0.03           1
+-----------  ----------------  --------------  ----------------------  -----------  ------
+Averages
+-----------  ----------------  --------------  ----------------------  -----------  ------
+2.00                                       50                                          3.5
+4.00                        4              50                                          2
+2.00                                      100                                          3.5
+4.00                        4             100                                          1
+
+Evaluation results for measure "Hamming Loss (↓)":
+
+max_depth      max_leaf_nodes    n_estimators    Hamming Loss (↓)  Std.-dev.      Rank
+-----------  ----------------  --------------  ------------------  -----------  ------
+"emotions"
+-----------  ----------------  --------------  ------------------  -----------  ------
+2.00                                       50               22.15  ±0.24           3
+4.00                        4              50               21.73  ±0.16           2
+2.00                                      100               22.43  ±0.36           4
+4.00                        4             100               21.7   ±0.69           1
+-----------  ----------------  --------------  ------------------  -----------  ------
+"enron"
+-----------  ----------------  --------------  ------------------  -----------  ------
+2.00                                       50                5.63  ±0.09           4
+4.00                        4              50                5.41  ±0.03           2
+2.00                                      100                5.5   ±0.03           3
+4.00                        4             100                5.32  ±0.03           1
+-----------  ----------------  --------------  ------------------  -----------  ------
+Averages
+-----------  ----------------  --------------  ------------------  -----------  ------
+2.00                                       50                                      3.5
+4.00                        4              50                                      2
+2.00                                      100                                      3.5
+4.00                        4             100                                      1
+
+Evaluation results for measure "Macro F1 (↑)":
+
+max_depth      max_leaf_nodes    n_estimators    Macro F1 (↑)  Std.-dev.      Rank
+-----------  ----------------  --------------  --------------  -----------  ------
+"emotions"
+-----------  ----------------  --------------  --------------  -----------  ------
+2.00                                       50           47.38  ±0.47           3
+4.00                        4              50           49.06  ±0.61           2
+2.00                                      100           45.95  ±0.14           4
+4.00                        4             100           49.14  ±1.02           1
+-----------  ----------------  --------------  --------------  -----------  ------
+"enron"
+-----------  ----------------  --------------  --------------  -----------  ------
+2.00                                       50            5.14  ±0.80           4
+4.00                        4              50            5.29  ±0.82           2
+2.00                                      100            5.19  ±0.85           3
+4.00                        4             100            5.36  ±0.82           1
+-----------  ----------------  --------------  --------------  -----------  ------
+Averages
+-----------  ----------------  --------------  --------------  -----------  ------
+2.00                                       50                                  3.5
+4.00                        4              50                                  2
+2.00                                      100                                  3.5
+4.00                        4             100                                  1
+
+Evaluation results for measure "Macro Jaccard (↑)":
+
+max_depth      max_leaf_nodes    n_estimators    Macro Jaccard (↑)  Std.-dev.      Rank
+-----------  ----------------  --------------  -------------------  -----------  ------
+"emotions"
+-----------  ----------------  --------------  -------------------  -----------  ------
+2.00                                       50                33.83  ±0.28           3
+4.00                        4              50                35.48  ±0.43           2
+2.00                                      100                32.61  ±0.22           4
+4.00                        4             100                35.63  ±1.22           1
+-----------  ----------------  --------------  -------------------  -----------  ------
+"enron"
+-----------  ----------------  --------------  -------------------  -----------  ------
+2.00                                       50                 3.97  ±0.78           4
+4.00                        4              50                 4.15  ±0.83           2
+2.00                                      100                 4.05  ±0.85           3
+4.00                        4             100                 4.26  ±0.83           1
+-----------  ----------------  --------------  -------------------  -----------  ------
+Averages
+-----------  ----------------  --------------  -------------------  -----------  ------
+2.00                                       50                                       3.5
+4.00                        4              50                                       2
+2.00                                      100                                       3.5
+4.00                        4             100                                       1
+
+Evaluation results for measure "Macro Precision (↑)":
+
+max_depth      max_leaf_nodes    n_estimators    Macro Precision (↑)  Std.-dev.      Rank
+-----------  ----------------  --------------  ---------------------  -----------  ------
+"emotions"
+-----------  ----------------  --------------  ---------------------  -----------  ------
+2.00                                       50                  82.94  ±1.34             2
+4.00                        4              50                  81.83  ±1.59             4
+2.00                                      100                  83.16  ±2.67             1
+4.00                        4             100                  82.27  ±1.30             3
+-----------  ----------------  --------------  ---------------------  -----------  ------
+"enron"
+-----------  ----------------  --------------  ---------------------  -----------  ------
+2.00                                       50                  98.07  ±0.14             4
+4.00                        4              50                  98.23  ±0.21             2
+2.00                                      100                  98.17  ±0.19             3
+4.00                        4             100                  98.32  ±0.19             1
+-----------  ----------------  --------------  ---------------------  -----------  ------
+Averages
+-----------  ----------------  --------------  ---------------------  -----------  ------
+2.00                                       50                                           3
+4.00                        4              50                                           3
+2.00                                      100                                           2
+4.00                        4             100                                           2
+
+Evaluation results for measure "Macro Recall (↑)":
+
+max_depth      max_leaf_nodes    n_estimators    Macro Recall (↑)  Std.-dev.      Rank
+-----------  ----------------  --------------  ------------------  -----------  ------
+"emotions"
+-----------  ----------------  --------------  ------------------  -----------  ------
+2.00                                       50               39.32  ±0.02           3
+4.00                        4              50               41.46  ±0.02           1
+2.00                                      100               37.95  ±0.71           4
+4.00                        4             100               41.36  ±1.86           2
+-----------  ----------------  --------------  ------------------  -----------  ------
+"enron"
+-----------  ----------------  --------------  ------------------  -----------  ------
+2.00                                       50                4.86  ±0.80           2
+4.00                        4              50                4.84  ±0.77           4
+2.00                                      100                4.85  ±0.80           3
+4.00                        4             100                4.92  ±0.78           1
+-----------  ----------------  --------------  ------------------  -----------  ------
+Averages
+-----------  ----------------  --------------  ------------------  -----------  ------
+2.00                                       50                                      2.5
+4.00                        4              50                                      2.5
+2.00                                      100                                      3.5
+4.00                        4             100                                      1.5
+
+Evaluation results for measure "Micro F1 (↑)":
+
+max_depth      max_leaf_nodes    n_estimators    Micro F1 (↑)  Std.-dev.      Rank
+-----------  ----------------  --------------  --------------  -----------  ------
+"emotions"
+-----------  ----------------  --------------  --------------  -----------  ------
+2.00                                       50           54.5   ±0.00           3
+4.00                        4              50           56.05  ±0.13           1
+2.00                                      100           53.45  ±0.55           4
+4.00                        4             100           55.94  ±1.43           2
+-----------  ----------------  --------------  --------------  -----------  ------
+"enron"
+-----------  ----------------  --------------  --------------  -----------  ------
+2.00                                       50           34.58  ±0.12           4
+4.00                        4              50           35.33  ±0.46           2
+2.00                                      100           35.18  ±0.69           3
+4.00                        4             100           36.31  ±0.68           1
+-----------  ----------------  --------------  --------------  -----------  ------
+Averages
+-----------  ----------------  --------------  --------------  -----------  ------
+2.00                                       50                                  3.5
+4.00                        4              50                                  1.5
+2.00                                      100                                  3.5
+4.00                        4             100                                  1.5
+
+Evaluation results for measure "Micro Jaccard (↑)":
+
+max_depth      max_leaf_nodes    n_estimators    Micro Jaccard (↑)  Std.-dev.      Rank
+-----------  ----------------  --------------  -------------------  -----------  ------
+"emotions"
+-----------  ----------------  --------------  -------------------  -----------  ------
+2.00                                       50                37.46  ±0.00           3
+4.00                        4              50                38.94  ±0.12           1
+2.00                                      100                36.47  ±0.51           4
+4.00                        4             100                38.84  ±1.38           2
+-----------  ----------------  --------------  -------------------  -----------  ------
+"enron"
+-----------  ----------------  --------------  -------------------  -----------  ------
+2.00                                       50                20.9   ±0.09           4
+4.00                        4              50                21.46  ±0.34           2
+2.00                                      100                21.35  ±0.51           3
+4.00                        4             100                22.18  ±0.51           1
+-----------  ----------------  --------------  -------------------  -----------  ------
+Averages
+-----------  ----------------  --------------  -------------------  -----------  ------
+2.00                                       50                                       3.5
+4.00                        4              50                                       1.5
+2.00                                      100                                       3.5
+4.00                        4             100                                       1.5
+
+Evaluation results for measure "Micro Precision (↑)":
+
+max_depth      max_leaf_nodes    n_estimators    Micro Precision (↑)  Std.-dev.      Rank
+-----------  ----------------  --------------  ---------------------  -----------  ------
+"emotions"
+-----------  ----------------  --------------  ---------------------  -----------  ------
+2.00                                       50                  75.64  ±1.20           3
+4.00                        4              50                  75.74  ±1.42           2
+2.00                                      100                  75.61  ±1.42           4
+4.00                        4             100                  76.11  ±0.74           1
+-----------  ----------------  --------------  ---------------------  -----------  ------
+"enron"
+-----------  ----------------  --------------  ---------------------  -----------  ------
+2.00                                       50                  66.85  ±3.57           4
+4.00                        4              50                  74.41  ±0.04           2
+2.00                                      100                  70.81  ±0.19           3
+4.00                        4             100                  76.64  ±0.14           1
+-----------  ----------------  --------------  ---------------------  -----------  ------
+Averages
+-----------  ----------------  --------------  ---------------------  -----------  ------
+2.00                                       50                                         3.5
+4.00                        4              50                                         2
+2.00                                      100                                         3.5
+4.00                        4             100                                         1
+
+Evaluation results for measure "Micro Recall (↑)":
+
+max_depth      max_leaf_nodes    n_estimators    Micro Recall (↑)  Std.-dev.      Rank
+-----------  ----------------  --------------  ------------------  -----------  ------
+"emotions"
+-----------  ----------------  --------------  ------------------  -----------  ------
+2.00                                       50               42.61  ±0.38           3
+4.00                        4              50               44.5   ±0.33           1
+2.00                                      100               41.36  ±1.08           4
+4.00                        4             100               44.27  ±2.04           2
+-----------  ----------------  --------------  ------------------  -----------  ------
+"enron"
+-----------  ----------------  --------------  ------------------  -----------  ------
+2.00                                       50               23.36  ±0.54           3
+4.00                        4              50               23.17  ±0.39           4
+2.00                                      100               23.41  ±0.63           2
+4.00                        4             100               23.79  ±0.60           1
+-----------  ----------------  --------------  ------------------  -----------  ------
+Averages
+-----------  ----------------  --------------  ------------------  -----------  ------
+2.00                                       50                                      3
+4.00                        4              50                                      2.5
+2.00                                      100                                      3
+4.00                        4             100                                      1.5
+
+Evaluation results for measure "Prediction Time (seconds)":
+
+max_depth      max_leaf_nodes    n_estimators    Prediction Time (seconds)  Std.-dev.      Rank
+-----------  ----------------  --------------  ---------------------------  -----------  ------
+"emotions"
+-----------  ----------------  --------------  ---------------------------  -----------  ------
+2.00                                       50
+4.00                        4              50
+2.00                                      100
+4.00                        4             100
+-----------  ----------------  --------------  ---------------------------  -----------  ------
+"enron"
+-----------  ----------------  --------------  ---------------------------  -----------  ------
+2.00                                       50
+4.00                        4              50
+2.00                                      100
+4.00                        4             100
+-----------  ----------------  --------------  ---------------------------  -----------  ------
+Averages
+-----------  ----------------  --------------  ---------------------------  -----------  ------
+2.00                                       50
+4.00                        4              50
+2.00                                      100
+4.00                        4             100
+
+Evaluation results for measure "Subset 0/1 Loss (↓)":
+
+max_depth      max_leaf_nodes    n_estimators    Subset 0/1 Loss (↓)  Std.-dev.      Rank
+-----------  ----------------  --------------  ---------------------  -----------  ------
+"emotions"
+-----------  ----------------  --------------  ---------------------  -----------  ------
+2.00                                       50                  80.1   ±0.71           3
+4.00                        4              50                  78.75  ±0.04           1
+2.00                                      100                  80.94  ±0.20           4
+4.00                        4             100                  79.93  ±1.89           2
+-----------  ----------------  --------------  ---------------------  -----------  ------
+"enron"
+-----------  ----------------  --------------  ---------------------  -----------  ------
+2.00                                       50                  98.88  ±0.18           2
+4.00                        4              50                  98.94  ±0.12           4
+2.00                                      100                  98.88  ±0.18           2
+4.00                        4             100                  98.88  ±0.18           2
+-----------  ----------------  --------------  ---------------------  -----------  ------
+Averages
+-----------  ----------------  --------------  ---------------------  -----------  ------
+2.00                                       50                                         2.5
+4.00                        4              50                                         2.5
+2.00                                      100                                         3
+4.00                        4             100                                         2
+
+Evaluation results for measure "Subset Accuracy (↑)":
+
+max_depth      max_leaf_nodes    n_estimators    Subset Accuracy (↑)  Std.-dev.      Rank
+-----------  ----------------  --------------  ---------------------  -----------  ------
+"emotions"
+-----------  ----------------  --------------  ---------------------  -----------  ------
+2.00                                       50                  19.9   ±0.71           3
+4.00                        4              50                  21.25  ±0.04           1
+2.00                                      100                  19.06  ±0.20           4
+4.00                        4             100                  20.07  ±1.89           2
+-----------  ----------------  --------------  ---------------------  -----------  ------
+"enron"
+-----------  ----------------  --------------  ---------------------  -----------  ------
+2.00                                       50                   1.12  ±0.18           2
+4.00                        4              50                   1.06  ±0.12           4
+2.00                                      100                   1.12  ±0.18           2
+4.00                        4             100                   1.12  ±0.18           2
+-----------  ----------------  --------------  ---------------------  -----------  ------
+Averages
+-----------  ----------------  --------------  ---------------------  -----------  ------
+2.00                                       50                                         2.5
+4.00                        4              50                                         2.5
+2.00                                      100                                         3
+4.00                        4             100                                         2
+
+Evaluation results for measure "Training Time (seconds)":
+
+max_depth      max_leaf_nodes    n_estimators    Training Time (seconds)  Std.-dev.      Rank
+-----------  ----------------  --------------  -------------------------  -----------  ------
+"emotions"
+-----------  ----------------  --------------  -------------------------  -----------  ------
+2.00                                       50
+4.00                        4              50
+2.00                                      100
+4.00                        4             100
+-----------  ----------------  --------------  -------------------------  -----------  ------
+"enron"
+-----------  ----------------  --------------  -------------------------  -----------  ------
+2.00                                       50
+4.00                        4              50
+2.00                                      100
+4.00                        4             100
+-----------  ----------------  --------------  -------------------------  -----------  ------
+Averages
+-----------  ----------------  --------------  -------------------------  -----------  ------
+2.00                                       50
+4.00                        4              50
+2.00                                      100
+4.00                        4             100
+
+DEBUG: Writing output data to file "python/tests/res/tmp/rerun/aggregated_evaluation_test.csv"...
