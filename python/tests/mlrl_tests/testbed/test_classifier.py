@@ -19,5 +19,5 @@ class TestTestbedClassifier(SklearnTestbedClassificationIntegrationTests, Testbe
     """
 
     @override
-    def _create_cmd_builder(self, dataset: str = Dataset.EMOTIONS) -> Any:
+    def create_cmd_builder(self, dataset: str = Dataset.EMOTIONS) -> Any:
         return ClassificationTestbedCmdBuilder(dataset=dataset)

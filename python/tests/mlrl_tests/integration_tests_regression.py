@@ -30,6 +30,6 @@ class RegressionIntegrationTests(IntegrationTests, ABC):
                        svm=Dataset.BODYFAT)
 
     def test_single_output_regression(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.single_output) \
+        builder = self.create_cmd_builder(dataset=dataset.single_output) \
             .print_evaluation()
         CmdRunner(builder).run('single-output-regression')

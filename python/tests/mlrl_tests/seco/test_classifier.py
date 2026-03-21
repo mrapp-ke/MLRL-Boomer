@@ -32,7 +32,7 @@ class TestSeCoClassifier(ClassificationIntegrationTests, RuleLearnerIntegrationT
     """
 
     @override
-    def _create_cmd_builder(self, dataset: str = Dataset.EMOTIONS) -> Any:
+    def create_cmd_builder(self, dataset: str = Dataset.EMOTIONS) -> Any:
         return SeCoClassifierCmdBuilder(dataset=dataset)
 
     def test_scikit_learn_compatibility(self):
@@ -48,7 +48,7 @@ class TestSeCoClassifier(ClassificationIntegrationTests, RuleLearnerIntegrationT
         HEURISTIC_M_ESTIMATE,
     ])
     def test_heuristic(self, heuristic: str):
-        builder = self._create_cmd_builder() \
+        builder = self.create_cmd_builder() \
             .heuristic(heuristic)
         CmdRunner(builder).run(f'heuristic_{heuristic}')
 
@@ -62,7 +62,7 @@ class TestSeCoClassifier(ClassificationIntegrationTests, RuleLearnerIntegrationT
         HEURISTIC_M_ESTIMATE,
     ])
     def test_pruning_heuristic(self, pruning_heuristic: str):
-        builder = self._create_cmd_builder() \
+        builder = self.create_cmd_builder() \
             .rule_pruning(RulePruningParameter.RULE_PRUNING_IREP) \
             .pruning_heuristic(pruning_heuristic)
         CmdRunner(builder).run(f'pruning-heuristic_{pruning_heuristic}')
@@ -74,7 +74,7 @@ class TestSeCoClassifier(ClassificationIntegrationTests, RuleLearnerIntegrationT
         (HeadTypeParameter.HEAD_TYPE_PARTIAL, LiftFunctionParameter.LIFT_FUNCTION_KLN),
     ])
     def test_head_type(self, head_type: str, lift_function: str | None):
-        builder = self._create_cmd_builder() \
+        builder = self.create_cmd_builder() \
             .head_type(head_type) \
             .lift_function(lift_function) \
             .print_model_characteristics()

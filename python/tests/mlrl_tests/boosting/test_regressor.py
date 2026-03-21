@@ -27,7 +27,7 @@ class TestBoomerRegressor(RegressionIntegrationTests, RuleLearnerIntegrationTest
     """
 
     @override
-    def _create_cmd_builder(self, dataset: str = Dataset.ATP7D) -> Any:
+    def create_cmd_builder(self, dataset: str = Dataset.ATP7D) -> Any:
         return BoomerRegressorCmdBuilder(dataset=dataset)
 
     def test_scikit_learn_compatibility(self):
@@ -49,7 +49,7 @@ class TestBoomerRegressor(RegressionIntegrationTests, RuleLearnerIntegrationTest
         StatisticTypeParameter.STATISTIC_TYPE_FLOAT64,
     ])
     def test_decomposable_head_type(self, head_type: str, statistic_type: str):
-        builder = self._create_cmd_builder() \
+        builder = self.create_cmd_builder() \
             .loss(RegressionLossParameter.LOSS_SQUARED_ERROR_DECOMPOSABLE) \
             .statistic_type(statistic_type) \
             .head_type(head_type) \
@@ -67,7 +67,7 @@ class TestBoomerRegressor(RegressionIntegrationTests, RuleLearnerIntegrationTest
         StatisticTypeParameter.STATISTIC_TYPE_FLOAT64,
     ])
     def test_non_decomposable_head_type(self, head_type: str, statistic_type: str):
-        builder = self._create_cmd_builder() \
+        builder = self.create_cmd_builder() \
             .loss(RegressionLossParameter.LOSS_SQUARED_ERROR_NON_DECOMPOSABLE, ) \
             .statistic_type(statistic_type) \
             .head_type(head_type) \

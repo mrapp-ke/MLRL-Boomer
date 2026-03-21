@@ -19,5 +19,5 @@ class TestTestbedRegressor(RegressionIntegrationTests, TestbedIntegrationTestsMi
     """
 
     @override
-    def _create_cmd_builder(self, dataset: str = Dataset.ATP7D) -> Any:
+    def create_cmd_builder(self, dataset: str = Dataset.ATP7D) -> Any:
         return RegressionTestbedCmdBuilder(dataset=dataset)

@@ -24,12 +24,12 @@ class TestSkLearnClassifier(ClassificationIntegrationTests, SklearnTestbedIntegr
     """
 
     @override
-    def _create_cmd_builder(self, dataset: str = Dataset.EMOTIONS) -> Any:
+    def create_cmd_builder(self, dataset: str = Dataset.EMOTIONS) -> Any:
         return SkLearnClassifierCmdBuilder(RandomForestClassifier,
                                            dataset=dataset).add_algorithmic_argument('--n-estimators', 1)
 
     def test_meta_estimator(self):
-        builder = self._create_cmd_builder() \
+        builder = self.create_cmd_builder() \
             .meta_estimator(ClassifierChain) \
             .add_algorithmic_argument('--meta-verbose', 'True') \
             .print_evaluation() \

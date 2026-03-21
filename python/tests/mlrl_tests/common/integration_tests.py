@@ -26,19 +26,19 @@ class RuleLearnerIntegrationTestsMixin(IntegrationTests):
     """
 
     def test_sparse_feature_value(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.numerical_sparse) \
+        builder = self.create_cmd_builder(dataset=dataset.numerical_sparse) \
             .sparse_feature_value(1.0)
         CmdRunner(builder).run('sparse-feature-value')
 
     def test_evaluation_incremental(self, dataset: Dataset):
         test_name = 'evaluation_incremental'
-        builder = self._create_cmd_builder(dataset=dataset.default) \
+        builder = self.create_cmd_builder(dataset=dataset.default) \
             .save_meta_data() \
             .incremental_evaluation() \
             .print_evaluation() \
             .save_evaluation()
         CmdRunner(builder).run(test_name, wipe_after=False)
-        builder = self._create_cmd_builder() \
+        builder = self.create_cmd_builder() \
             .set_mode(ExperimentMode.READ) \
             .print_evaluation() \
             .save_evaluation()
@@ -46,14 +46,14 @@ class RuleLearnerIntegrationTestsMixin(IntegrationTests):
 
     def test_model_characteristics(self, dataset: Dataset):
         test_name = 'model-characteristics'
-        builder = self._create_cmd_builder(dataset=dataset.default) \
+        builder = self.create_cmd_builder(dataset=dataset.default) \
             .save_meta_data() \
             .print_evaluation(False) \
             .save_evaluation(False) \
             .print_model_characteristics() \
             .save_model_characteristics()
         CmdRunner(builder).run(test_name, wipe_after=False)
-        builder = self._create_cmd_builder() \
+        builder = self.create_cmd_builder() \
             .set_mode(ExperimentMode.READ) \
             .print_evaluation(False) \
             .save_evaluation(False) \
@@ -63,14 +63,14 @@ class RuleLearnerIntegrationTestsMixin(IntegrationTests):
 
     def test_rules(self, dataset: Dataset):
         test_name = 'rules'
-        builder = self._create_cmd_builder(dataset=dataset.default) \
+        builder = self.create_cmd_builder(dataset=dataset.default) \
             .save_meta_data() \
             .print_evaluation(False) \
             .save_evaluation(False) \
             .print_rules() \
             .save_rules()
         CmdRunner(builder).run(test_name, wipe_after=False)
-        builder = self._create_cmd_builder() \
+        builder = self.create_cmd_builder() \
             .set_mode(ExperimentMode.READ) \
             .print_evaluation(False) \
             .save_evaluation(False) \
@@ -81,7 +81,7 @@ class RuleLearnerIntegrationTestsMixin(IntegrationTests):
     @pytest.mark.parametrize('dataset_name', ['numerical_sparse', 'binary', 'nominal', 'ordinal'])
     @pytest.mark.parametrize('feature_format', [SparsePolicy.FORCE_DENSE, SparsePolicy.FORCE_SPARSE])
     def test_feature_format(self, dataset_name: str, feature_format: str, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=getattr(dataset, dataset_name)) \
+        builder = self.create_cmd_builder(dataset=getattr(dataset, dataset_name)) \
             .feature_format(feature_format)
         CmdRunner(builder).run(f'feature-format-{dataset_name}-{feature_format}')
 
@@ -90,7 +90,7 @@ class RuleLearnerIntegrationTestsMixin(IntegrationTests):
         SparsePolicy.FORCE_SPARSE,
     ])
     def test_output_format(self, output_format: str, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
+        builder = self.create_cmd_builder(dataset=dataset.default) \
             .output_format(output_format)
         CmdRunner(builder).run(f'output-format-{output_format}')
 
@@ -99,7 +99,7 @@ class RuleLearnerIntegrationTestsMixin(IntegrationTests):
         SparsePolicy.FORCE_SPARSE,
     ])
     def test_prediction_format(self, prediction_format: str, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
+        builder = self.create_cmd_builder(dataset=dataset.default) \
             .prediction_format(prediction_format) \
             .print_predictions() \
             .print_ground_truth()
@@ -111,7 +111,7 @@ class RuleLearnerIntegrationTestsMixin(IntegrationTests):
         SAMPLING_WITHOUT_REPLACEMENT,
     ])
     def test_instance_sampling(self, instance_sampling: str, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
+        builder = self.create_cmd_builder(dataset=dataset.default) \
             .instance_sampling(instance_sampling)
         CmdRunner(builder).run(f'instance-sampling-{instance_sampling}')
 
@@ -120,7 +120,7 @@ class RuleLearnerIntegrationTestsMixin(IntegrationTests):
         SAMPLING_WITHOUT_REPLACEMENT,
     ])
     def test_feature_sampling(self, feature_sampling: str, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
+        builder = self.create_cmd_builder(dataset=dataset.default) \
             .feature_sampling(feature_sampling)
         CmdRunner(builder).run(f'feature-sampling-{feature_sampling}')
 
@@ -130,7 +130,7 @@ class RuleLearnerIntegrationTestsMixin(IntegrationTests):
         SAMPLING_WITHOUT_REPLACEMENT,
     ])
     def test_output_sampling(self, output_sampling: str, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
+        builder = self.create_cmd_builder(dataset=dataset.default) \
             .output_sampling(output_sampling)
         CmdRunner(builder).run(f'output-sampling-{output_sampling}')
 
@@ -139,20 +139,20 @@ class RuleLearnerIntegrationTestsMixin(IntegrationTests):
         (RulePruningParameter.RULE_PRUNING_IREP, SAMPLING_WITHOUT_REPLACEMENT),
     ])
     def test_rule_pruning(self, rule_pruning: str, instance_sampling: str | None, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
+        builder = self.create_cmd_builder(dataset=dataset.default) \
             .instance_sampling(instance_sampling) \
             .rule_pruning(rule_pruning)
         CmdRunner(builder).run(f'rule-pruning-{rule_pruning}')
 
     @pytest.mark.parametrize('rule_induction', [RuleInductionParameter.RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH])
     def test_rule_induction(self, rule_induction: str, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
+        builder = self.create_cmd_builder(dataset=dataset.default) \
             .rule_induction(rule_induction)
         CmdRunner(builder).run(f'rule-induction-{rule_induction}')
 
     @pytest.mark.parametrize('post_optimization', [PostOptimizationParameter.POST_OPTIMIZATION_SEQUENTIAL])
     def test_post_optimization(self, post_optimization: str, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
+        builder = self.create_cmd_builder(dataset=dataset.default) \
             .post_optimization(post_optimization)
         CmdRunner(builder).run(f'post-optimization-{post_optimization}')
 
@@ -163,7 +163,7 @@ class RuleLearnerIntegrationTestsMixin(IntegrationTests):
     @pytest.mark.parametrize('dataset_name', ['numerical', 'nominal', 'binary'])
     @pytest.mark.parametrize('feature_format', [SparsePolicy.FORCE_DENSE, SparsePolicy.FORCE_SPARSE])
     def test_feature_binning(self, feature_binning: str, dataset_name: str, feature_format: str, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=getattr(dataset, dataset_name)) \
+        builder = self.create_cmd_builder(dataset=getattr(dataset, dataset_name)) \
             .feature_binning(feature_binning) \
             .feature_format(feature_format)
         CmdRunner(builder).run(f'feature-binning-{feature_binning}_{dataset_name}-features-{feature_format}')
@@ -179,6 +179,6 @@ class ClassificationRuleLearnerIntegrationTestsMixin(RuleLearnerIntegrationTests
         SAMPLING_STRATIFIED_EXAMPLE_WISE,
     ])
     def test_instance_sampling_stratified(self, instance_sampling: str, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
+        builder = self.create_cmd_builder(dataset=dataset.default) \
             .instance_sampling(instance_sampling)
         CmdRunner(builder).run(f'instance-sampling-{instance_sampling}')

@@ -24,12 +24,12 @@ class TestSkLearnRegressor(RegressionIntegrationTests, SklearnTestbedIntegration
     """
 
     @override
-    def _create_cmd_builder(self, dataset: str = Dataset.ATP7D) -> Any:
+    def create_cmd_builder(self, dataset: str = Dataset.ATP7D) -> Any:
         return SkLearnRegressorCmdBuilder(RandomForestRegressor,
                                           dataset=dataset).add_algorithmic_argument('--n-estimators', 1)
 
     def test_meta_estimator(self):
-        builder = self._create_cmd_builder() \
+        builder = self.create_cmd_builder() \
             .meta_estimator(RegressorChain) \
             .add_algorithmic_argument('--meta-verbose', 'True') \
             .print_evaluation() \

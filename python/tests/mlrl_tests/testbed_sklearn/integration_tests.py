@@ -29,6 +29,6 @@ class SklearnTestbedIntegrationTestsMixin(IntegrationTests):
     ])
     def test_data_splitter(self, data_split: str, data_split_options: Options):
         test_name = f'data-splitter_{data_split}' + (f'_{data_split_options}' if data_split_options else '')
-        builder = self._create_cmd_builder() \
+        builder = self.create_cmd_builder() \
             .data_split(data_split, options=data_split_options)
         CmdRunner(builder).run(test_name)
