@@ -9,5 +9,5 @@
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
-mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d-binary --estimator RandomForestRegressor --log-level debug --max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_atp7d-binary/models --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_2/dataset_atp7d-binary/parameters --problem-type regression --result-dir n-estimators_50/max-depth_2/dataset_atp7d-binary/results --save-evaluation true --save-meta-data false
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d-binary --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_atp7d-binary/models --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_2/dataset_atp7d-binary/parameters --problem-type regression --result-dir n-estimators_50/max-depth_2/dataset_atp7d-binary/results --save-evaluation true --save-meta-data false
 deactivate

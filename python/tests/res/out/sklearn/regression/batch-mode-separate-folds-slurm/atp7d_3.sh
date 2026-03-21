@@ -10,5 +10,5 @@
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
-mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset atp7d --estimator RandomForestRegressor --log-level debug --max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_atp7d/models --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_2/dataset_atp7d/parameters --problem-type regression --result-dir n-estimators_100/max-depth_2/dataset_atp7d/results --save-evaluation true --save-meta-data false
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir python/tests/res/data --data-split cross-validation\{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2\} --dataset atp7d --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_atp7d/models --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_2/dataset_atp7d/parameters --problem-type regression --result-dir n-estimators_100/max-depth_2/dataset_atp7d/results --save-evaluation true --save-meta-data false
 deactivate
