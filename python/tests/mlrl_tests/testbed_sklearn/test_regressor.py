@@ -12,15 +12,15 @@ from sklearn.multioutput import RegressorChain
 from ..cmd_runner import CmdRunner
 from ..datasets import Dataset
 from ..integration_tests_regression import RegressionIntegrationTests
-from ..testbed.integration_tests import TestbedIntegrationTestsMixin
+from ..testbed.integration_tests import MlrlTestbedIntegrationTestsMixin
 from .cmd_builder_regression import SkLearnRegressorCmdBuilder
-from .integration_tests import SklearnTestbedIntegrationTestsMixin
+from .integration_tests import MlrlTestbedSklearnIntegrationTestsMixin
 
 
 @pytest.mark.sklearn
 @pytest.mark.regression
-class TestSkLearnRegressor(RegressionIntegrationTests, TestbedIntegrationTestsMixin,
-                           SklearnTestbedIntegrationTestsMixin):
+class TestSkLearnRegressor(RegressionIntegrationTests, MlrlTestbedIntegrationTestsMixin,
+                           MlrlTestbedSklearnIntegrationTestsMixin):
     """
     Defines a series of integration tests for a scikit-learn classifier.
     """

@@ -15,7 +15,7 @@ from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.util.options import Options
 
 
-class TestbedIntegrationTestsMixin(IntegrationTests):
+class MlrlTestbedIntegrationTestsMixin(IntegrationTests):
     """
     A mixin for integration tests for the mlrl-testbed package.
     """

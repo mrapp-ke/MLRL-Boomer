@@ -13,7 +13,7 @@ from mlrl.testbed.experiments.input.dataset.splitters.arguments import DatasetSp
 from mlrl.util.options import Options
 
 
-class SklearnTestbedIntegrationTestsMixin(IntegrationTests):
+class MlrlTestbedSklearnIntegrationTestsMixin(IntegrationTests):
     """
     A mixin for integration tests for the mlrl-testbed-sklearn package.
     """

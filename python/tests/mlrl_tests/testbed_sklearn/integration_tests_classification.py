@@ -11,7 +11,7 @@ from mlrl_tests.integration_tests_classification import ClassificationIntegratio
 from mlrl.testbed.experiments.state import ExperimentMode
 
 
-class SklearnTestbedClassificationIntegrationTests(ClassificationIntegrationTests):
+class MlrlTestbedSklearnClassificationIntegrationTests(ClassificationIntegrationTests):
     """
     Defines a series of integration tests for the mlrl-testbed-sklearn package when using classification algorithms.
     """
