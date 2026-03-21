@@ -6,14 +6,16 @@ datasets:
     names:
       - enron
 default_arguments:
+  - name: --estimator
+    value: RandomForestClassifier
 parameters:
   - name: --n-estimators
     values:
-      - 1
-      - 2
-  - name: --criterion
+      - 50
+      - 100
+  - name: --max-depth
     values:
-      - gini
-      - value: entropy
+      - 2
+      - value: 4
         additional_arguments:
-          - --max-depth 5
+          - --max-leaf-nodes 4

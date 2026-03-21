@@ -1,20 +1,20 @@
-mlrl-testbed mlrl.testbed_sklearn --mode batch --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/sklearn/classification/batch_config.yml --save-evaluation true --save-all true --n-estimators 1 --estimator RandomForestClassifier
+mlrl-testbed mlrl.testbed_sklearn --mode batch --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/sklearn/classification/batch_config.yml --save-evaluation true --save-meta-data false --save-meta-data true --save-all true --n-estimators 1 --estimator RandomForestClassifier
 ○ Writing output data to file "python/tests/res/tmp/metadata.yml"...
 Running 8 experiments...
 
-Running experiment (1 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion gini
---data-dir python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain
---log-width 120 --model-save-dir n-estimators_1/criterion_gini/dataset_emotions/models --n-estimators 1
---parameter-save-dir n-estimators_1/criterion_gini/dataset_emotions/parameters --result-dir
-n-estimators_1/criterion_gini/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false"
+Running experiment (1 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
+python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width
+120 --max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_emotions/models --n-estimators 50
+--parameter-save-dir n-estimators_50/max-depth_2/dataset_emotions/parameters --result-dir
+n-estimators_50/max-depth_2/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false"
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Using separate training and test sets...
 ○ Reading input data from file "python/tests/res/data/emotions.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_emotions/results/data_characteristics.csv"...
+"python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_emotions/results/data_characteristics.csv"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_emotions/parameters/parameters.csv"...
+"python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_emotions/parameters/parameters.csv"...
 Fitting model to 397 training examples...
 ✓ Successfully fit model in <duration>
 Predicting for 196 test examples...
@@ -22,51 +22,51 @@ Predicting for 196 test examples...
 
 🗀 Evaluation result for test data:
 
-Example-wise F1 (↑)         50.49
-Example-wise Jaccard (↑)    42.39
-Example-wise Precision (↑)  53.32
-Example-wise Recall (↑)     53.15
-Hamming Accuracy (↑)        70.32
-Hamming Loss (↓)            29.68
-Macro F1 (↑)                52.15
-Macro Jaccard (↑)           35.93
-Macro Precision (↑)         52.55
-Macro Recall (↑)            52.16
-Micro F1 (↑)                53.28
-Micro Jaccard (↑)           36.31
-Micro Precision (↑)         53.49
-Micro Recall (↑)            53.07
-Subset 0/1 Loss (↓)         81.12
-Subset Accuracy (↑)         18.88
+Example-wise F1 (↑)         43.91
+Example-wise Jaccard (↑)    37.67
+Example-wise Precision (↑)  83.76
+Example-wise Recall (↑)     42.18
+Hamming Accuracy (↑)        77.64
+Hamming Loss (↓)            22.36
+Macro F1 (↑)                47.72
+Macro Jaccard (↑)           33.99
+Macro Precision (↑)         83.51
+Macro Recall (↑)            39.16
+Micro F1 (↑)                54.89
+Micro Jaccard (↑)           37.83
+Micro Precision (↑)         76.92
+Micro Recall (↑)            42.67
+Subset 0/1 Loss (↓)         80.61
+Subset Accuracy (↑)         19.39
 
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_emotions/results/evaluation_test.csv"...
+"python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_emotions/results/evaluation_test.csv"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_emotions/results/ground_truth_test.arff"...
+"python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_emotions/results/ground_truth_test.arff"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_emotions/results/prediction_characteristics_test.csv"...
+"python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_emotions/results/prediction_characteristics_test.csv"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_emotions/results/predictions_test.arff"...
+"python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_emotions/results/predictions_test.arff"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_emotions/results/label_vectors.csv"...
-○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_emotions/models/model.pickle"...
+"python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_emotions/results/label_vectors.csv"...
+○ Writing output data to file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_emotions/models/model.pickle"...
 ✓ Successfully finished experiment after <duration>
 
-Running experiment (2 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion entropy
---data-dir python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain
---log-width 120 --max-depth 5 --model-save-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/models
---n-estimators 1 --parameter-save-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/parameters
---result-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results --save-all true --save-evaluation
-true --save-meta-data false"
+Running experiment (2 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
+python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width
+120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
+n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/models --n-estimators 50 --parameter-save-dir
+n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters --result-dir
+n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-all true --save-evaluation true
+--save-meta-data false"
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Using separate training and test sets...
 ○ Reading input data from file "python/tests/res/data/emotions.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/data_characteristics.csv"...
+"python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/data_characteristics.csv"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/parameters/parameters.csv"...
+"python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters/parameters.csv"...
 Fitting model to 397 training examples...
 ✓ Successfully fit model in <duration>
 Predicting for 196 test examples...
@@ -74,51 +74,51 @@ Predicting for 196 test examples...
 
 🗀 Evaluation result for test data:
 
-Example-wise F1 (↑)         53.57
-Example-wise Jaccard (↑)    45.49
-Example-wise Precision (↑)  56.72
-Example-wise Recall (↑)     55.1
-Hamming Accuracy (↑)        73.04
-Hamming Loss (↓)            26.96
-Macro F1 (↑)                52.48
-Macro Jaccard (↑)           36.96
-Macro Precision (↑)         56.09
-Macro Recall (↑)            51.15
-Micro F1 (↑)                56.15
-Micro Jaccard (↑)           39.04
-Micro Precision (↑)         58.33
-Micro Recall (↑)            54.13
+Example-wise F1 (↑)         45
+Example-wise Jaccard (↑)    39.12
+Example-wise Precision (↑)  84.27
+Example-wise Recall (↑)     43.45
+Hamming Accuracy (↑)        78.23
+Hamming Loss (↓)            21.77
+Macro F1 (↑)                49.68
+Macro Jaccard (↑)           35.97
+Macro Precision (↑)         83.48
+Macro Recall (↑)            41.19
+Micro F1 (↑)                56.46
+Micro Jaccard (↑)           39.34
+Micro Precision (↑)         77.93
+Micro Recall (↑)            44.27
 Subset 0/1 Loss (↓)         78.57
 Subset Accuracy (↑)         21.43
 
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/evaluation_test.csv"...
+"python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/evaluation_test.csv"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/ground_truth_test.arff"...
+"python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/ground_truth_test.arff"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/prediction_characteristics_t
+"python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/prediction_characteristics_t
 est.csv"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/predictions_test.arff"...
+"python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/predictions_test.arff"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/results/label_vectors.csv"...
+"python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/label_vectors.csv"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_emotions/models/model.pickle"...
+"python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/models/model.pickle"...
 ✓ Successfully finished experiment after <duration>
 
-Running experiment (3 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion gini
---data-dir python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain
---log-width 120 --model-save-dir n-estimators_2/criterion_gini/dataset_emotions/models --n-estimators 2
---parameter-save-dir n-estimators_2/criterion_gini/dataset_emotions/parameters --result-dir
-n-estimators_2/criterion_gini/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false"
+Running experiment (3 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
+python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width
+120 --max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_emotions/models --n-estimators 100
+--parameter-save-dir n-estimators_100/max-depth_2/dataset_emotions/parameters --result-dir
+n-estimators_100/max-depth_2/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false"
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Using separate training and test sets...
 ○ Reading input data from file "python/tests/res/data/emotions.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_emotions/results/data_characteristics.csv"...
+"python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_emotions/results/data_characteristics.csv"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_emotions/parameters/parameters.csv"...
+"python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_emotions/parameters/parameters.csv"...
 Fitting model to 397 training examples...
 ✓ Successfully fit model in <duration>
 Predicting for 196 test examples...
@@ -126,51 +126,53 @@ Predicting for 196 test examples...
 
 🗀 Evaluation result for test data:
 
-Example-wise F1 (↑)         37.38
-Example-wise Jaccard (↑)    32.31
-Example-wise Precision (↑)  81.97
-Example-wise Recall (↑)     34.69
-Hamming Accuracy (↑)        74.91
-Hamming Loss (↓)            25.09
-Macro F1 (↑)                46
-Macro Jaccard (↑)           30.3
-Macro Precision (↑)         70.83
-Macro Recall (↑)            34.43
-Micro F1 (↑)                46.85
-Micro Jaccard (↑)           30.59
-Micro Precision (↑)         72.22
-Micro Recall (↑)            34.67
-Subset 0/1 Loss (↓)         84.18
-Subset Accuracy (↑)         15.82
+Example-wise F1 (↑)         42.01
+Example-wise Jaccard (↑)    36.22
+Example-wise Precision (↑)  84.35
+Example-wise Recall (↑)     39.46
+Hamming Accuracy (↑)        77.3
+Hamming Loss (↓)            22.7
+Macro F1 (↑)                45.53
+Macro Jaccard (↑)           31.92
+Macro Precision (↑)         86.21
+Macro Recall (↑)            36.31
+Micro F1 (↑)                52.91
+Micro Jaccard (↑)           35.97
+Micro Precision (↑)         78.12
+Micro Recall (↑)            40
+Subset 0/1 Loss (↓)         80.61
+Subset Accuracy (↑)         19.39
 
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_emotions/results/evaluation_test.csv"...
+"python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_emotions/results/evaluation_test.csv"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_emotions/results/ground_truth_test.arff"...
+"python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_emotions/results/ground_truth_test.arff"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_emotions/results/prediction_characteristics_test.csv"...
+"python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_emotions/results/prediction_characteristics_test.csv"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_emotions/results/predictions_test.arff"...
+"python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_emotions/results/predictions_test.arff"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_emotions/results/label_vectors.csv"...
+"python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_emotions/results/label_vectors.csv"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_emotions/models/model.pickle"...
+"python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_emotions/models/model.pickle"...
 ✓ Successfully finished experiment after <duration>
 
-Running experiment (4 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion entropy
---data-dir python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain
---log-width 120 --max-depth 5 --model-save-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/models
---n-estimators 2 --parameter-save-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/parameters
---result-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results --save-all true --save-evaluation
-true --save-meta-data false"
+Running experiment (4 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
+python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width
+120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
+n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/models --n-estimators 100 --parameter-save-dir
+n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters --result-dir
+n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-all true --save-evaluation true
+--save-meta-data false"
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Using separate training and test sets...
 ○ Reading input data from file "python/tests/res/data/emotions.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/data_characteristics.csv"...
+"python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/data_characteristics.csv"..
+.
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/parameters/parameters.csv"...
+"python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters/parameters.csv"...
 Fitting model to 397 training examples...
 ✓ Successfully fit model in <duration>
 Predicting for 196 test examples...
@@ -178,51 +180,51 @@ Predicting for 196 test examples...
 
 🗀 Evaluation result for test data:
 
-Example-wise F1 (↑)         51.39
-Example-wise Jaccard (↑)    44.57
-Example-wise Precision (↑)  64.54
-Example-wise Recall (↑)     53.83
-Hamming Accuracy (↑)        75
-Hamming Loss (↓)            25
-Macro F1 (↑)                56.27
-Macro Jaccard (↑)           39.94
-Macro Precision (↑)         62.87
-Macro Recall (↑)            51.38
-Micro F1 (↑)                57.27
-Micro Jaccard (↑)           40.12
-Micro Precision (↑)         62.94
-Micro Recall (↑)            52.53
-Subset 0/1 Loss (↓)         76.02
-Subset Accuracy (↑)         23.98
+Example-wise F1 (↑)         43.76
+Example-wise Jaccard (↑)    37.93
+Example-wise Precision (↑)  84.01
+Example-wise Recall (↑)     41.5
+Hamming Accuracy (↑)        77.89
+Hamming Loss (↓)            22.11
+Macro F1 (↑)                48.11
+Macro Jaccard (↑)           34.27
+Macro Precision (↑)         85.23
+Macro Recall (↑)            38.98
+Micro F1 (↑)                55.02
+Micro Jaccard (↑)           37.95
+Micro Precision (↑)         78.33
+Micro Recall (↑)            42.4
+Subset 0/1 Loss (↓)         79.59
+Subset Accuracy (↑)         20.41
 
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/evaluation_test.csv"...
+"python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/evaluation_test.csv"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/ground_truth_test.arff"...
+"python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/ground_truth_test.arff"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/prediction_characteristics_t
-est.csv"...
+"python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/prediction_characteristics_
+test.csv"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/predictions_test.arff"...
+"python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/predictions_test.arff"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/results/label_vectors.csv"...
+"python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/label_vectors.csv"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_emotions/models/model.pickle"...
+"python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/models/model.pickle"...
 ✓ Successfully finished experiment after <duration>
 
-Running experiment (5 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion gini
---data-dir python/tests/res/data --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain
---log-width 120 --model-save-dir n-estimators_1/criterion_gini/dataset_enron/models --n-estimators 1
---parameter-save-dir n-estimators_1/criterion_gini/dataset_enron/parameters --result-dir
-n-estimators_1/criterion_gini/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false"
+Running experiment (5 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
+python/tests/res/data --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120
+--max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_enron/models --n-estimators 50 --parameter-save-dir
+n-estimators_50/max-depth_2/dataset_enron/parameters --result-dir n-estimators_50/max-depth_2/dataset_enron/results
+--save-all true --save-evaluation true --save-meta-data false"
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Using separate training and test sets...
 ○ Reading input data from file "python/tests/res/data/enron.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/enron.xml"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_enron/results/data_characteristics.csv"...
+"python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_enron/results/data_characteristics.csv"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_enron/parameters/parameters.csv"...
+"python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_enron/parameters/parameters.csv"...
 Fitting model to 1140 training examples...
 ✓ Successfully fit model in <duration>
 Predicting for 562 test examples...
@@ -230,50 +232,50 @@ Predicting for 562 test examples...
 
 🗀 Evaluation result for test data:
 
-Example-wise F1 (↑)         43.44
-Example-wise Jaccard (↑)    33.35
-Example-wise Precision (↑)  47.96
-Example-wise Recall (↑)     45.27
-Hamming Accuracy (↑)        92.89
-Hamming Loss (↓)             7.11
-Macro F1 (↑)                17.16
-Macro Jaccard (↑)           12.46
-Macro Precision (↑)         27.41
-Macro Recall (↑)            17
-Micro F1 (↑)                43.37
-Micro Jaccard (↑)           27.69
-Micro Precision (↑)         43.89
-Micro Recall (↑)            42.86
-Subset 0/1 Loss (↓)         90.04
-Subset Accuracy (↑)          9.96
+Example-wise F1 (↑)         30.64
+Example-wise Jaccard (↑)    21.22
+Example-wise Precision (↑)  73.52
+Example-wise Recall (↑)     21.83
+Hamming Accuracy (↑)        94.54
+Hamming Loss (↓)             5.46
+Macro F1 (↑)                 6.02
+Macro Jaccard (↑)            4.88
+Macro Precision (↑)         98.65
+Macro Recall (↑)             5.59
+Micro F1 (↑)                35.15
+Micro Jaccard (↑)           21.32
+Micro Precision (↑)         71.47
+Micro Recall (↑)            23.31
+Subset 0/1 Loss (↓)         98.4
+Subset Accuracy (↑)          1.6
 
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_enron/results/evaluation_test.csv"...
+"python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_enron/results/evaluation_test.csv"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_enron/results/ground_truth_test.arff"...
+"python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_enron/results/ground_truth_test.arff"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_enron/results/prediction_characteristics_test.csv"...
+"python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_enron/results/prediction_characteristics_test.csv"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_enron/results/predictions_test.arff"...
+"python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_enron/results/predictions_test.arff"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_enron/results/label_vectors.csv"...
-○ Writing output data to file "python/tests/res/tmp/n-estimators_1/criterion_gini/dataset_enron/models/model.pickle"...
+"python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_enron/results/label_vectors.csv"...
+○ Writing output data to file "python/tests/res/tmp/n-estimators_50/max-depth_2/dataset_enron/models/model.pickle"...
 ✓ Successfully finished experiment after <duration>
 
-Running experiment (6 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion entropy
---data-dir python/tests/res/data --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain
---log-width 120 --max-depth 5 --model-save-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/models
---n-estimators 1 --parameter-save-dir n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/parameters --result-dir
-n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results --save-all true --save-evaluation true
+Running experiment (6 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
+python/tests/res/data --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120
+--max-depth 4 --max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models
+--n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters
+--result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-all true --save-evaluation true
 --save-meta-data false"
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Using separate training and test sets...
 ○ Reading input data from file "python/tests/res/data/enron.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/enron.xml"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/data_characteristics.csv"...
+"python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/data_characteristics.csv"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/parameters/parameters.csv"...
+"python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters/parameters.csv"...
 Fitting model to 1140 training examples...
 ✓ Successfully fit model in <duration>
 Predicting for 562 test examples...
@@ -281,51 +283,51 @@ Predicting for 562 test examples...
 
 🗀 Evaluation result for test data:
 
-Example-wise F1 (↑)         31.99
-Example-wise Jaccard (↑)    22.67
-Example-wise Precision (↑)  76.07
-Example-wise Recall (↑)     26.03
-Hamming Accuracy (↑)        94.38
-Hamming Loss (↓)             5.62
-Macro F1 (↑)                 9.46
-Macro Jaccard (↑)            7.09
-Macro Precision (↑)         74.58
-Macro Recall (↑)             8.41
-Micro F1 (↑)                39.16
-Micro Jaccard (↑)           24.35
-Micro Precision (↑)         62.6
-Micro Recall (↑)            28.49
-Subset 0/1 Loss (↓)         98.93
-Subset Accuracy (↑)          1.07
+Example-wise F1 (↑)         30.56
+Example-wise Jaccard (↑)    21.21
+Example-wise Precision (↑)  80.72
+Example-wise Recall (↑)     21.67
+Hamming Accuracy (↑)        94.68
+Hamming Loss (↓)             5.32
+Macro F1 (↑)                 6.12
+Macro Jaccard (↑)            5.02
+Macro Precision (↑)         98.77
+Macro Recall (↑)             5.59
+Micro F1 (↑)                35.71
+Micro Jaccard (↑)           21.74
+Micro Precision (↑)         76.92
+Micro Recall (↑)            23.26
+Subset 0/1 Loss (↓)         98.4
+Subset Accuracy (↑)          1.6
 
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/evaluation_test.csv"...
+"python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/evaluation_test.csv"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/ground_truth_test.arff"...
+"python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/ground_truth_test.arff"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/prediction_characteristics_test
+"python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/prediction_characteristics_test
 .csv"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/predictions_test.arff"...
+"python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/predictions_test.arff"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/results/label_vectors.csv"...
+"python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/label_vectors.csv"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_1/criterion_entropy/max-depth_5/dataset_enron/models/model.pickle"...
+"python/tests/res/tmp/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models/model.pickle"...
 ✓ Successfully finished experiment after <duration>
 
-Running experiment (7 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion gini
---data-dir python/tests/res/data --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain
---log-width 120 --model-save-dir n-estimators_2/criterion_gini/dataset_enron/models --n-estimators 2
---parameter-save-dir n-estimators_2/criterion_gini/dataset_enron/parameters --result-dir
-n-estimators_2/criterion_gini/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false"
+Running experiment (7 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
+python/tests/res/data --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120
+--max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_enron/models --n-estimators 100 --parameter-save-dir
+n-estimators_100/max-depth_2/dataset_enron/parameters --result-dir n-estimators_100/max-depth_2/dataset_enron/results
+--save-all true --save-evaluation true --save-meta-data false"
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Using separate training and test sets...
 ○ Reading input data from file "python/tests/res/data/enron.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/enron.xml"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_enron/results/data_characteristics.csv"...
+"python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_enron/results/data_characteristics.csv"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_enron/parameters/parameters.csv"...
+"python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_enron/parameters/parameters.csv"...
 Fitting model to 1140 training examples...
 ✓ Successfully fit model in <duration>
 Predicting for 562 test examples...
@@ -333,50 +335,50 @@ Predicting for 562 test examples...
 
 🗀 Evaluation result for test data:
 
-Example-wise F1 (↑)         33.36
-Example-wise Jaccard (↑)    25.77
-Example-wise Precision (↑)  76.41
-Example-wise Recall (↑)     28.82
-Hamming Accuracy (↑)        94.33
-Hamming Loss (↓)             5.67
-Macro F1 (↑)                10.77
-Macro Jaccard (↑)            7.52
-Macro Precision (↑)         60.04
-Macro Recall (↑)             8.31
-Micro F1 (↑)                36.87
-Micro Jaccard (↑)           22.6
-Micro Precision (↑)         63.04
-Micro Recall (↑)            26.06
-Subset 0/1 Loss (↓)         92.88
-Subset Accuracy (↑)          7.12
+Example-wise F1 (↑)         30.52
+Example-wise Jaccard (↑)    21.1
+Example-wise Precision (↑)  69.42
+Example-wise Recall (↑)     21.77
+Hamming Accuracy (↑)        94.45
+Hamming Loss (↓)             5.55
+Macro F1 (↑)                 5.97
+Macro Jaccard (↑)            4.82
+Macro Precision (↑)         98.58
+Macro Recall (↑)             5.59
+Micro F1 (↑)                34.79
+Micro Jaccard (↑)           21.06
+Micro Precision (↑)         68.58
+Micro Recall (↑)            23.31
+Subset 0/1 Loss (↓)         98.4
+Subset Accuracy (↑)          1.6
 
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_enron/results/evaluation_test.csv"...
+"python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_enron/results/evaluation_test.csv"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_enron/results/ground_truth_test.arff"...
+"python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_enron/results/ground_truth_test.arff"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_enron/results/prediction_characteristics_test.csv"...
+"python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_enron/results/prediction_characteristics_test.csv"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_enron/results/predictions_test.arff"...
+"python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_enron/results/predictions_test.arff"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_enron/results/label_vectors.csv"...
-○ Writing output data to file "python/tests/res/tmp/n-estimators_2/criterion_gini/dataset_enron/models/model.pickle"...
+"python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_enron/results/label_vectors.csv"...
+○ Writing output data to file "python/tests/res/tmp/n-estimators_100/max-depth_2/dataset_enron/models/model.pickle"...
 ✓ Successfully finished experiment after <duration>
 
-Running experiment (8 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --criterion entropy
---data-dir python/tests/res/data --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain
---log-width 120 --max-depth 5 --model-save-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/models
---n-estimators 2 --parameter-save-dir n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/parameters --result-dir
-n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results --save-all true --save-evaluation true
+Running experiment (8 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp --data-dir
+python/tests/res/data --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120
+--max-depth 4 --max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models
+--n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters
+--result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-all true --save-evaluation true
 --save-meta-data false"
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Using separate training and test sets...
 ○ Reading input data from file "python/tests/res/data/enron.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/enron.xml"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/data_characteristics.csv"...
+"python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/data_characteristics.csv"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/parameters/parameters.csv"...
+"python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters/parameters.csv"...
 Fitting model to 1140 training examples...
 ✓ Successfully fit model in <duration>
 Predicting for 562 test examples...
@@ -384,35 +386,35 @@ Predicting for 562 test examples...
 
 🗀 Evaluation result for test data:
 
-Example-wise F1 (↑)         31.94
-Example-wise Jaccard (↑)    22.79
-Example-wise Precision (↑)  78.36
-Example-wise Recall (↑)     25.83
-Hamming Accuracy (↑)        94.56
-Hamming Loss (↓)             5.44
-Macro F1 (↑)                 7.93
-Macro Jaccard (↑)            6
-Macro Precision (↑)         86.09
-Macro Recall (↑)             6.72
-Micro F1 (↑)                39.34
-Micro Jaccard (↑)           24.49
-Micro Precision (↑)         67.57
-Micro Recall (↑)            27.75
-Subset 0/1 Loss (↓)         98.75
-Subset Accuracy (↑)          1.25
+Example-wise F1 (↑)         31.01
+Example-wise Jaccard (↑)    21.53
+Example-wise Precision (↑)  82.06
+Example-wise Recall (↑)     22.03
+Hamming Accuracy (↑)        94.73
+Hamming Loss (↓)             5.27
+Macro F1 (↑)                 6.17
+Macro Jaccard (↑)            5.08
+Macro Precision (↑)         98.79
+Macro Recall (↑)             5.63
+Micro F1 (↑)                36.28
+Micro Jaccard (↑)           22.16
+Micro Precision (↑)         78.15
+Micro Recall (↑)            23.63
+Subset 0/1 Loss (↓)         98.4
+Subset Accuracy (↑)          1.6
 
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/evaluation_test.csv"...
+"python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/evaluation_test.csv"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/ground_truth_test.arff"...
+"python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/ground_truth_test.arff"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/prediction_characteristics_test
-.csv"...
+"python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/prediction_characteristics_tes
+t.csv"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/predictions_test.arff"...
+"python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/predictions_test.arff"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/results/label_vectors.csv"...
+"python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/label_vectors.csv"...
 ○ Writing output data to file
-"python/tests/res/tmp/n-estimators_2/criterion_entropy/max-depth_5/dataset_enron/models/model.pickle"...
+"python/tests/res/tmp/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models/model.pickle"...
 ✓ Successfully finished experiment after <duration>
 ✓ Successfully finished 8 experiments after <duration>

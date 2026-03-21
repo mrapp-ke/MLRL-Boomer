@@ -5,9 +5,9 @@ from typing import override
 
 from sklearn.base import BaseEstimator as SkLearnBaseEstimator, ClassifierMixin as SkLearnClassifierMixin
 
-from ..common.cmd_builder import CmdBuilder
-from ..common.cmd_builder_classification import ClassificationCmdBuilder
-from ..common.datasets import Dataset
+from ..cmd_builder import CmdBuilder
+from ..cmd_builder_classification import ClassificationCmdBuilder
+from ..datasets import Dataset
 
 
 class SkLearnClassifierCmdBuilder(ClassificationCmdBuilder):

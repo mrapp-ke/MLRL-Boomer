@@ -8,10 +8,10 @@ import pytest
 
 from sklearn.utils.estimator_checks import check_estimator
 
-from ..common.cmd_runner import CmdRunner
-from ..common.datasets import Dataset
-from ..common.integration_tests_classification import ClassificationIntegrationTests
-from ..common.integration_tests_rule_learners import ClassificationRuleLearnerIntegrationTestsMixin
+from ..cmd_runner import CmdRunner
+from ..common.integration_tests import ClassificationRuleLearnerIntegrationTestsMixin
+from ..datasets import Dataset
+from ..integration_tests_classification import ClassificationIntegrationTests
 from .cmd_builder_classification import BoomerClassifierCmdBuilder
 from .integration_tests import BoomerIntegrationTestsMixin
 
@@ -40,7 +40,7 @@ class TestBoomerClassifier(ClassificationIntegrationTests, ClassificationRuleLea
     """
 
     @override
-    def _create_cmd_builder(self, dataset: str = Dataset.EMOTIONS) -> Any:
+    def create_cmd_builder(self, dataset: str = Dataset.EMOTIONS) -> Any:
         return BoomerClassifierCmdBuilder(dataset=dataset)
 
     def test_scikit_learn_compatibility(self):
@@ -56,7 +56,7 @@ class TestBoomerClassifier(ClassificationIntegrationTests, ClassificationRuleLea
         PredictionType.PROBABILITIES,
     ])
     def test_single_label(self, prediction_type: PredictionType, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.single_output) \
+        builder = self.create_cmd_builder(dataset=dataset.single_output) \
             .prediction_type(prediction_type) \
             .print_evaluation()
         CmdRunner(builder).run(f'single-label-{prediction_type}')
@@ -72,7 +72,7 @@ class TestBoomerClassifier(ClassificationIntegrationTests, ClassificationRuleLea
         StatisticTypeParameter.STATISTIC_TYPE_FLOAT64,
     ])
     def test_loss(self, loss: str, statistic_type: str):
-        builder = self._create_cmd_builder() \
+        builder = self.create_cmd_builder() \
             .loss(loss) \
             .statistic_type(statistic_type)
         CmdRunner(builder).run(f'loss-{loss}_{statistic_type}-statistics')
@@ -104,7 +104,8 @@ class TestBoomerClassifier(ClassificationIntegrationTests, ClassificationRuleLea
                               label_vectors: bool | None, prediction_format: str | None):
         test_name = f'predictor-binary-{binary_predictor}' + (f'_{prediction_format}' if prediction_format else '') + (
             f'_{binary_predictor_options}' if binary_predictor_options else '')
-        builder = self._create_cmd_builder() \
+        builder = self.create_cmd_builder() \
+            .save_meta_data() \
             .marginal_probability_calibration(marginal_probability_calibration) \
             .print_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
             .save_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
@@ -125,7 +126,7 @@ class TestBoomerClassifier(ClassificationIntegrationTests, ClassificationRuleLea
                                wipe_after=not marginal_probability_calibration and not joint_probability_calibration)
 
         if marginal_probability_calibration or joint_probability_calibration:
-            builder = self._create_cmd_builder() \
+            builder = self.create_cmd_builder() \
                 .set_mode(ExperimentMode.READ) \
                 .print_evaluation(False) \
                 .save_evaluation(False) \
@@ -158,7 +159,7 @@ class TestBoomerClassifier(ClassificationIntegrationTests, ClassificationRuleLea
     def test_predictor_binary_incremental(self, binary_predictor: str, binary_predictor_options: Options,
                                           marginal_probability_calibration: str | None,
                                           joint_probability_calibration: str | None, prediction_format: str | None):
-        builder = self._create_cmd_builder() \
+        builder = self.create_cmd_builder() \
             .marginal_probability_calibration(marginal_probability_calibration) \
             .print_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
             .save_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
@@ -180,14 +181,14 @@ class TestBoomerClassifier(ClassificationIntegrationTests, ClassificationRuleLea
                                + (f'_{binary_predictor_options}' if binary_predictor_options else '') + '_incremental')
 
     def test_predictor_score_output_wise(self):
-        builder = self._create_cmd_builder() \
+        builder = self.create_cmd_builder() \
             .prediction_type(PredictionType.SCORES) \
             .print_predictions() \
             .print_ground_truth()
         CmdRunner(builder).run('predictor-score-output-wise')
 
     def test_predictor_score_output_wise_incremental(self):
-        builder = self._create_cmd_builder() \
+        builder = self.create_cmd_builder() \
             .prediction_type(PredictionType.SCORES) \
             .incremental_evaluation() \
             .print_evaluation() \
@@ -203,7 +204,7 @@ class TestBoomerClassifier(ClassificationIntegrationTests, ClassificationRuleLea
         ])
     def test_predictor_probability(self, probability_predictor: str, marginal_probability_calibration: str | None,
                                    joint_probability_calibration: str | None, print_label_vectors: bool | None):
-        builder = self._create_cmd_builder() \
+        builder = self.create_cmd_builder() \
             .marginal_probability_calibration(marginal_probability_calibration) \
             .print_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
             .save_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
@@ -228,7 +229,7 @@ class TestBoomerClassifier(ClassificationIntegrationTests, ClassificationRuleLea
     def test_predictor_probability_incremental(self, probability_predictor: str,
                                                marginal_probability_calibration: str | None,
                                                joint_probability_calibration: str | None):
-        builder = self._create_cmd_builder() \
+        builder = self.create_cmd_builder() \
             .marginal_probability_calibration(marginal_probability_calibration) \
             .print_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
             .save_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
@@ -249,7 +250,7 @@ class TestBoomerClassifier(ClassificationIntegrationTests, ClassificationRuleLea
         SparsePolicy.FORCE_SPARSE,
     ])
     def test_statistics_sparse(self, output_format: str, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.numerical_sparse) \
+        builder = self.create_cmd_builder(dataset=dataset.numerical_sparse) \
             .sparse_statistic_format() \
             .output_format(output_format) \
             .default_rule(False) \
@@ -271,7 +272,7 @@ class TestBoomerClassifier(ClassificationIntegrationTests, ClassificationRuleLea
         StatisticTypeParameter.STATISTIC_TYPE_FLOAT64,
     ])
     def test_decomposable_head_type(self, head_type: str, label_binning: str | None, statistic_type: str):
-        builder = self._create_cmd_builder() \
+        builder = self.create_cmd_builder() \
             .loss(ClassificationLossParameter.LOSS_LOGISTIC_DECOMPOSABLE) \
             .statistic_type(statistic_type) \
             .head_type(head_type) \
@@ -295,7 +296,7 @@ class TestBoomerClassifier(ClassificationIntegrationTests, ClassificationRuleLea
         StatisticTypeParameter.STATISTIC_TYPE_FLOAT64,
     ])
     def test_non_decomposable_head_type(self, head_type: str, label_binning: str | None, statistic_type: str):
-        builder = self._create_cmd_builder() \
+        builder = self.create_cmd_builder() \
             .loss(ClassificationLossParameter.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
             .statistic_type(statistic_type) \
             .head_type(head_type) \
@@ -314,7 +315,7 @@ class TestBoomerClassifier(ClassificationIntegrationTests, ClassificationRuleLea
         SAMPLING_STRATIFIED_EXAMPLE_WISE,
     ])
     def test_global_pruning_stratified_holdout(self, global_pruning: str, holdout: str):
-        builder = self._create_cmd_builder() \
+        builder = self.create_cmd_builder() \
             .global_pruning(global_pruning) \
             .holdout(holdout) \
             .print_model_characteristics()
