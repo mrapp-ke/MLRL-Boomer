@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing textual representations of models to one or several sinks.
 """
+
 import logging as log
 
 from typing import override
@@ -44,9 +45,10 @@ class RuleModelAsTextWriter(ResultWriter):
                 if isinstance(model, RuleModel):
                     return [(state, RuleModelAsText(model, dataset))]
 
-                log.error('%s expected type of model to be %s, but model has type %s',
-                          type(self).__name__, RuleModel.__name__,
-                          type(model).__name__)
+                log.error(
+                    f'{type(self).__name__} expected type of model to be {RuleModel.__name__}, but model has type '
+                    f'{type(model).__name__}'
+                )
 
             return []
 
@@ -54,8 +56,9 @@ class RuleModelAsTextWriter(ResultWriter):
         """
         :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
         """
-        super().__init__(TextualDataExtractor(properties=RuleModelAsText.PROPERTIES, context=RuleModelAsText.CONTEXT),
-                         *extractors,
-                         RuleModelAsTextWriter.DefaultExtractor(),
-                         input_data=TextualInputData(properties=RuleModelAsText.PROPERTIES,
-                                                     context=RuleModelAsText.CONTEXT))
+        super().__init__(
+            TextualDataExtractor(properties=RuleModelAsText.PROPERTIES, context=RuleModelAsText.CONTEXT),
+            *extractors,
+            RuleModelAsTextWriter.DefaultExtractor(),
+            input_data=TextualInputData(properties=RuleModelAsText.PROPERTIES, context=RuleModelAsText.CONTEXT),
+        )

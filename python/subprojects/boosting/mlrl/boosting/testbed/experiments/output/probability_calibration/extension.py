@@ -3,11 +3,14 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow configuring the functionality to write calibration models to one or several sinks.
 """
+
 from argparse import Namespace
 from typing import override
 
-from mlrl.boosting.testbed.experiments.output.probability_calibration.writer import \
-    JointProbabilityCalibrationModelWriter, MarginalProbabilityCalibrationModelWriter
+from mlrl.boosting.testbed.experiments.output.probability_calibration.writer import (
+    JointProbabilityCalibrationModelWriter,
+    MarginalProbabilityCalibrationModelWriter,
+)
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.sources.source_csv import CsvFileSource
@@ -30,14 +33,14 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
     PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL = BoolArgument(
         '--print-marginal-probability-calibration-model',
         description='Whether the model for the calibration of marginal probabilities should be printed on the console '
-        + 'or not.',
+        'or not.',
         true_options={OPTION_DECIMALS},
     )
 
     SAVE_MARGINAL_PROBABILITY_CALIBRATION_MODEL = BoolArgument(
         '--save-marginal-probability-calibration-model',
         description='Whether the model for the calibration of marginal probabilities should be written to an output '
-        + 'file or not.',
+        'file or not.',
         true_options={OPTION_DECIMALS},
     )
 
@@ -56,7 +59,8 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
 
     def __create_log_sinks(self, args: Namespace) -> list[Sink]:
         value, options = self.PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL.get_value_and_options(
-            args, default=OutputArguments.PRINT_ALL.get_value(args))
+            args, default=OutputArguments.PRINT_ALL.get_value(args)
+        )
 
         if value:
             return [LogSink(options=options, source_factory=CsvFileSource)]
@@ -64,15 +68,18 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
 
     def __create_csv_file_sinks(self, args: Namespace) -> list[Sink]:
         value, options = self.SAVE_MARGINAL_PROBABILITY_CALIBRATION_MODEL.get_value_and_options(
-            args, default=OutputArguments.SAVE_ALL.get_value(args))
+            args, default=OutputArguments.SAVE_ALL.get_value(args)
+        )
         base_dir = OutputArguments.BASE_DIR.get_value(args)
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
         if value and base_dir and result_directory:
             return [
-                CsvFileSink(directory=base_dir / result_directory,
-                            create_directory=OutputArguments.CREATE_DIRS.get_value(args),
-                            options=options)
+                CsvFileSink(
+                    directory=base_dir / result_directory,
+                    create_directory=OutputArguments.CREATE_DIRS.get_value(args),
+                    options=options,
+                )
             ]
         return []
 
@@ -104,14 +111,14 @@ class JointProbabilityCalibrationModelExtension(Extension):
     PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL = BoolArgument(
         '--print-joint-probability-calibration-model',
         description='Whether the model for the calibration of joint probabilities should be printed on the console or '
-        + 'not.',
+        'not.',
         true_options={OPTION_DECIMALS},
     )
 
     SAVE_JOINT_PROBABILITY_CALIBRATION_MODEL = BoolArgument(
         '--save-joint-probability-calibration-model',
         description='Whether the model for the calibration of joint probabilities should be written to an output file '
-        + 'or not.',
+        'or not.',
         true_options={OPTION_DECIMALS},
     )
 
@@ -135,21 +142,26 @@ class JointProbabilityCalibrationModelExtension(Extension):
         """
         sinks = []
         value, options = self.PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL.get_value_and_options(
-            args, default=OutputArguments.PRINT_ALL.get_value(args))
+            args, default=OutputArguments.PRINT_ALL.get_value(args)
+        )
 
         if value:
             sinks.append(LogSink(options=options, source_factory=CsvFileSource))
 
         value, options = self.SAVE_JOINT_PROBABILITY_CALIBRATION_MODEL.get_value_and_options(
-            args, default=OutputArguments.SAVE_ALL.get_value(args))
+            args, default=OutputArguments.SAVE_ALL.get_value(args)
+        )
         base_dir = OutputArguments.BASE_DIR.get_value(args)
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
         if value and base_dir and result_directory:
             sinks.append(
-                CsvFileSink(directory=base_dir / result_directory,
-                            create_directory=OutputArguments.CREATE_DIRS.get_value(args),
-                            options=options))
+                CsvFileSink(
+                    directory=base_dir / result_directory,
+                    create_directory=OutputArguments.CREATE_DIRS.get_value(args),
+                    options=options,
+                )
+            )
 
         if sinks:
             writer = JointProbabilityCalibrationModelWriter().add_sinks(*sinks)

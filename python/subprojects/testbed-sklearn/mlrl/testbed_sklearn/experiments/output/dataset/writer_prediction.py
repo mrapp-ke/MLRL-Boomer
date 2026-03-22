@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing predictions to one or several sinks.
 """
+
 from dataclasses import replace
 from functools import reduce
 from itertools import chain
@@ -87,9 +88,11 @@ class PredictionWriter(ResultWriter):
         """
         :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
         """
-        super().__init__(PredictionWriter.PredictionExtractor(properties=PredictionDataset.PROPERTIES,
-                                                              context=PredictionDataset.CONTEXT),
-                         *extractors,
-                         PredictionWriter.DefaultExtractor(),
-                         input_data=DatasetInputData(properties=PredictionDataset.PROPERTIES,
-                                                     context=PredictionDataset.CONTEXT))
+        super().__init__(
+            PredictionWriter.PredictionExtractor(
+                properties=PredictionDataset.PROPERTIES, context=PredictionDataset.CONTEXT
+            ),
+            *extractors,
+            PredictionWriter.DefaultExtractor(),
+            input_data=DatasetInputData(properties=PredictionDataset.PROPERTIES, context=PredictionDataset.CONTEXT),
+        )

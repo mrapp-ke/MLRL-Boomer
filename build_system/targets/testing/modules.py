@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements modules that provide access to automated tests.
 """
+
 from abc import ABC
 from os import environ
 

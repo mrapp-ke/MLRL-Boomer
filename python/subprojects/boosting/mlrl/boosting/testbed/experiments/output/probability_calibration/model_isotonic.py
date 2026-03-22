@@ -7,8 +7,10 @@ Provides classes for representing models for the calibration of probabilities vi
 from dataclasses import dataclass, field
 from typing import override
 
-from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibrationModel, \
-    IsotonicProbabilityCalibrationModelVisitor
+from mlrl.common.cython.probability_calibration import (
+    IsotonicProbabilityCalibrationModel,
+    IsotonicProbabilityCalibrationModelVisitor,
+)
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
@@ -37,6 +39,7 @@ class IsotonicRegressionModel(TabularOutputData):
             thresholds:     A list the contains the thresholds of individual bins
             probabilities:  A list that contains the probabilities of individual bins
         """
+
         thresholds: list[float] = field(default_factory=list)
         probabilities: list[float] = field(default_factory=list)
 
@@ -58,11 +61,13 @@ class IsotonicRegressionModel(TabularOutputData):
             bin_list.thresholds.append(threshold)
             bin_list.probabilities.append(probability)
 
-    def __init__(self,
-                 bin_lists: dict[int, 'IsotonicRegressionModel.BinList'],
-                 properties: TabularProperties,
-                 context: Context = Context(),
-                 column_title_prefix: str | None = None):
+    def __init__(
+        self,
+        bin_lists: dict[int, 'IsotonicRegressionModel.BinList'],
+        properties: TabularProperties,
+        context: Context = Context(),
+        column_title_prefix: str | None = None,
+    ):
         """
         :param bin_lists:           A dictionary that stores lists of bins contained in an isotonic regression model,
                                     mapped to indices
@@ -77,10 +82,12 @@ class IsotonicRegressionModel(TabularOutputData):
         self.column_title_prefix = column_title_prefix
 
     @staticmethod
-    def from_calibration_model(calibration_model: IsotonicProbabilityCalibrationModel,
-                               properties: TabularProperties,
-                               context: Context = Context(),
-                               column_title_prefix: str | None = None) -> 'IsotonicRegressionModel':
+    def from_calibration_model(
+        calibration_model: IsotonicProbabilityCalibrationModel,
+        properties: TabularProperties,
+        context: Context = Context(),
+        column_title_prefix: str | None = None,
+    ) -> 'IsotonicRegressionModel':
         """
         Creates and returns an `IsotonicRegressionModel` from a given `IsotonicProbabilityCalibrationModel`.
 
@@ -95,18 +102,17 @@ class IsotonicRegressionModel(TabularOutputData):
         visitor = IsotonicRegressionModel.Visitor()
         calibration_model.visit(visitor)
         bin_lists = visitor.bin_lists
-        return IsotonicRegressionModel(bin_lists=bin_lists,
-                                       properties=properties,
-                                       context=context,
-                                       column_title_prefix=column_title_prefix)
+        return IsotonicRegressionModel(
+            bin_lists=bin_lists, properties=properties, context=context, column_title_prefix=column_title_prefix
+        )
 
     def _format_threshold_header(self, list_index: int) -> str:
         prefix = self.column_title_prefix
-        return (prefix + ' ' if prefix else '') + str(list_index + 1) + ' ' + self.COLUMN_THRESHOLDS
+        return f'{(f"{prefix} " if prefix else "")}{list_index + 1} {self.COLUMN_THRESHOLDS}'
 
     def _format_probability_header(self, list_index: int) -> str:
         prefix = self.column_title_prefix
-        return (prefix + ' ' if prefix else '') + str(list_index + 1) + ' ' + self.COLUMN_PROBABILITIES
+        return f'{(f"{prefix} " if prefix else "")}{list_index + 1} {self.COLUMN_PROBABILITIES}'
 
     @override
     def to_text(self, options: Options, **kwargs) -> str | None:
@@ -122,10 +128,14 @@ class IsotonicRegressionModel(TabularOutputData):
 
             for list_index, _ in enumerate(range(0, table.num_columns, 2)):
                 bin_list_table = ColumnWiseTable()
-                bin_list_table.add_column(*filter(lambda value: value is not None, next(columns)),
-                                          header=self._format_threshold_header(list_index))
-                bin_list_table.add_column(*filter(lambda value: value is not None, next(columns)),
-                                          header=self._format_probability_header(list_index))
+                bin_list_table.add_column(
+                    *filter(lambda value: value is not None, next(columns)),
+                    header=self._format_threshold_header(list_index),
+                )
+                bin_list_table.add_column(
+                    *filter(lambda value: value is not None, next(columns)),
+                    header=self._format_probability_header(list_index),
+                )
 
                 if result:
                     result += '\n'

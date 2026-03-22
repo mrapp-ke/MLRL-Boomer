@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utilities for dealing with version numbers.
 """
+
 from dataclasses import dataclass
 from functools import reduce
 from typing import Any, override
@@ -16,6 +17,7 @@ class Version:
     Attributes:
         numbers: The version numbers
     """
+
     numbers: tuple[int, ...]
 
     @staticmethod

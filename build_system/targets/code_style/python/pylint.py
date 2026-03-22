@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow to run the external program "isort".
 """
+
 from core.build_unit import BuildUnit
 
 from targets.code_style.formatter import CodeFormatterProgram
@@ -15,7 +16,7 @@ class PyLint(CodeFormatterProgram):
     """
 
     ENABLED_EXTENSIONS = [
-        "useless-suppression",
+        'useless-suppression',
     ]
 
     def __init__(self, build_unit: BuildUnit, module: CodeModule):
@@ -23,14 +24,16 @@ class PyLint(CodeFormatterProgram):
         :param build_unit:  The build unit from which the program should be run
         :param module:      The module, the program should be applied to
         """
-        super().__init__(build_unit,
-                         module,
-                         'pylint',
-                         '--jobs=0',
-                         '--ignore=build',
-                         '--rcfile=' + str(build_unit.root_directory / '.pylintrc.toml'),
-                         '--score=n',
-                         cache_file_name='pylint')
+        super().__init__(
+            build_unit,
+            module,
+            'pylint',
+            '--jobs=0',
+            '--ignore=build',
+            f'--rcfile={build_unit.root_directory / ".pylintrc.toml"}',
+            '--score=n',
+            cache_file_name='pylint',
+        )
 
         for extension in self.ENABLED_EXTENSIONS:
-            self.add_arguments('--enable=' + extension, '--fail-on=' + extension)
+            self.add_arguments(f'--enable={extension}', f'--fail-on={extension}')

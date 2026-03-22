@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for generating API documentations for Python code.
 """
+
 from pathlib import Path
 from typing import cast, override
 
@@ -29,7 +30,7 @@ class ApidocPython(BuildTarget.Runnable):
     @override
     def run(self, build_unit: BuildUnit, module: Module):
         apidoc_module = cast(PythonApidocModule, module)
-        Log.info('Generating Python API documentation for directory "%s"...', apidoc_module.root_directory)
+        Log.info(f'Generating Python API documentation for directory "{apidoc_module.root_directory}"...')
         SphinxApidoc(build_unit, apidoc_module).run()
 
     @override
@@ -45,7 +46,7 @@ class ApidocPython(BuildTarget.Runnable):
     @override
     def get_clean_files(self, build_unit: BuildUnit, module: Module) -> list[Path]:
         apidoc_module = cast(PythonApidocModule, module)
-        Log.info('Removing Python API documentation for directory "%s"...', apidoc_module.root_directory)
+        Log.info(f'Removing Python API documentation for directory "{apidoc_module.root_directory}"...')
         return super().get_clean_files(build_unit, apidoc_module)
 
 

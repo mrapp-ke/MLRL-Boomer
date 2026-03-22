@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that provide access to characteristics of binary values, associated with one or several labels.
 """
+
 from functools import cached_property
 
 import numpy as np

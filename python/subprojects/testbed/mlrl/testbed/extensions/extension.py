@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for implementing extensions that add functionality to the command line API provided by this software
 package.
 """
+
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from typing import override

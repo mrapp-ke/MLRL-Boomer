@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utilities for reading and writing TOML files via "toml".
 """
+
 import tomllib
 
 from functools import cached_property

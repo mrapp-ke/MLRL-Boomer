@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow configuring the functionality to preprocess tabular datasets.
 """
+
 from argparse import Namespace
 from typing import override
 

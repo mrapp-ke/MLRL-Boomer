@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Defines command line arguments for configuring the functionality to write output data to one or several sinks.
 """
+
 from datetime import datetime
 from pathlib import Path
 
@@ -19,9 +20,9 @@ class OutputArguments:
     BASE_DIR = PathArgument(
         '--base-dir',
         default=Path('experiments') / datetime.now().strftime('%Y-%m-%d_%H-%M'),
-        description='If relative paths to directories, where files should be saved, are given, they are considered '
-        + 'relative to the directory specified via this argument. The default value is "'
-        + str(Path('experiments') / 'YYY-MM-DD_hh-mm') + '".',
+        description=f'If relative paths to directories, where files should be saved, are given, they are considered '
+        f'relative to the directory specified via this argument. The default value is '
+        f'"{Path("experiments") / "YYY-MM-DD_hh-mm"}".',
         add_default_value_to_description=False,
     )
 
@@ -29,7 +30,8 @@ class OutputArguments:
         '--create-dirs',
         default=True,
         description='Whether the directories, where files should be saved, should be created automatically, if they do '
-        + 'not exist, or not.')
+        'not exist, or not.',
+    )
 
     IF_OUTPUT_ERROR = EnumArgument(
         '--if-output-error',

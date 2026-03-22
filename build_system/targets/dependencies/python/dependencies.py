@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utilities for checking and updating the versions of Python dependencies.
 """
+
 from dataclasses import dataclass, replace
 from typing import Any, override
 
@@ -24,6 +25,7 @@ class Dependency:
         outdated:           The outdated version of the dependency
         latest:             The latest version of the dependency
     """
+
     requirements_file: RequirementsFile
     package: Package
     outdated: RequirementVersion
@@ -31,9 +33,11 @@ class Dependency:
 
     @override
     def __eq__(self, other: Any) -> bool:
-        return isinstance(other, type(self)) \
-            and self.requirements_file == other.requirements_file \
+        return (
+            isinstance(other, type(self))
+            and self.requirements_file == other.requirements_file
             and self.package == other.package
+        )
 
     @override
     def __hash__(self) -> int:
@@ -57,11 +61,12 @@ class DependencyUpdater:
         PackageManager.install_packages(RequirementsFiles.for_build_unit(build_unit), 'requests')
         # pylint: disable=import-outside-toplevel
         import requests
-        url = 'https://pypi.org/pypi/' + package.name + '/json'
-        Log.info('Querying latest version of package "' + str(package) + '" from ' + url)
+
+        url = f'https://pypi.org/pypi/{package.name}/json'
+        Log.info(f'Querying latest version of package "{package}" from {url}')
         response = requests.get(url, timeout=5)
         latest_version = Version.parse(response.json()['info']['version'], skip_on_error=True)
-        Log.info('Latest version of package "' + str(package) + '" is ' + str(latest_version))
+        Log.info(f'Latest version of package "{package}" is {latest_version}')
         return latest_version
 
     def list_outdated_dependencies(self, build_unit: BuildUnit) -> set[Dependency]:
@@ -87,11 +92,13 @@ class DependencyUpdater:
 
                 if current_version and Version.parse(current_version.min_version, skip_on_error=True) < latest_version:
                     outdated_dependencies.add(
-                        Dependency(requirements_file=requirements_file,
-                                   package=package,
-                                   outdated=current_version,
-                                   latest=RequirementVersion(min_version=str(latest_version),
-                                                             max_version=str(latest_version))))
+                        Dependency(
+                            requirements_file=requirements_file,
+                            package=package,
+                            outdated=current_version,
+                            latest=RequirementVersion(min_version=str(latest_version), max_version=str(latest_version)),
+                        )
+                    )
 
         return outdated_dependencies
 
@@ -113,8 +120,9 @@ class DependencyUpdater:
             if outdated_version.is_range():
                 min_version_numbers = list(Version.parse(outdated_version.min_version, skip_on_error=True).numbers)
                 max_version_numbers = list(Version.parse(outdated_version.max_version, skip_on_error=True).numbers)
-                num_version_numbers = min(len(min_version_numbers), len(max_version_numbers),
-                                          len(latest_version_numbers))
+                num_version_numbers = min(
+                    len(min_version_numbers), len(max_version_numbers), len(latest_version_numbers)
+                )
 
                 for i in range(num_version_numbers):
                     min_version_numbers[i] = latest_version_numbers[i]
@@ -123,17 +131,22 @@ class DependencyUpdater:
                 max_version_numbers[num_version_numbers - 1] += 1
                 updated_version = RequirementVersion(
                     min_version=str(Version(tuple(min_version_numbers[:num_version_numbers]))),
-                    max_version=str(Version(tuple(max_version_numbers[:num_version_numbers]))))
+                    max_version=str(Version(tuple(max_version_numbers[:num_version_numbers]))),
+                )
 
             looked_up_requirements = RequirementsFiles(*self.requirements_files).lookup_requirement(
-                outdated_dependency.package.name)
+                outdated_dependency.package.name
+            )
 
             for requirements_file, outdated_requirement in looked_up_requirements.items():
                 requirements_file.update(outdated_requirement, replace(outdated_requirement, version=updated_version))
                 updated_dependencies.add(
-                    Dependency(requirements_file=requirements_file,
-                               package=outdated_dependency.package,
-                               outdated=outdated_version,
-                               latest=updated_version))
+                    Dependency(
+                        requirements_file=requirements_file,
+                        package=outdated_dependency.package,
+                        outdated=outdated_version,
+                        latest=updated_version,
+                    )
+                )
 
         return updated_dependencies

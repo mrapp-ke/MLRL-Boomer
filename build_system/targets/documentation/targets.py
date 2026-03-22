@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for generating documentations.
 """
+
 from abc import ABC
 from collections.abc import Iterable
 from os import environ
@@ -54,8 +55,8 @@ class ApidocIndex(BuildTarget.Runnable, ABC):
         apidoc_modules = (cast(ApidocModule, module) for module in modules)
 
         for template, modules_in_directory in self.__get_templates_and_modules(apidoc_modules).items():
-            Log.info('Generating index file referencing API documentations from template "%s"...', template)
-            references = [module.create_reference() + '\n' for module in modules_in_directory]
+            Log.info(f'Generating index file referencing API documentations from template "{template}"...')
+            references = [f'{module.create_reference()}\n' for module in modules_in_directory]
             new_lines = []
 
             for line in TextFile(template).lines:
@@ -81,7 +82,7 @@ class ApidocIndex(BuildTarget.Runnable, ABC):
     @override
     def get_clean_files(self, build_unit: BuildUnit, module: Module) -> list[Path]:
         apidoc_module = cast(ApidocModule, module)
-        Log.info('Removing index file referencing API documentation in directory "%s"', apidoc_module.output_directory)
+        Log.info(f'Removing index file referencing API documentation in directory "{apidoc_module.output_directory}"')
         return super().get_clean_files(build_unit, module)
 
 
@@ -98,16 +99,20 @@ class BuildDocumentation(BuildTarget.Runnable):
         valid_builders = {SphinxBuild.BUILDER_HTML, SphinxBuild.BUILDER_LINKCHECK, SphinxBuild.BUILDER_SPELLING}
 
         if sphinx_builder and sphinx_builder not in valid_builders:
-            Log.error('Command line argument %s must be one of {%s}, but got: "%s"', self.ENV_SPHINX_BUILDER,
-                      format_iterable(valid_builders, delimiter='"'), sphinx_builder)
+            Log.error(
+                f'Command line argument {self.ENV_SPHINX_BUILDER} must be one of '
+                f'{{{format_iterable(valid_builders, delimiter='"')}}}, but got: "{sphinx_builder}"'
+            )
 
         self.sphinx_builder = sphinx_builder if sphinx_builder else SphinxBuild.BUILDER_HTML
 
     @override
     def run(self, build_unit: BuildUnit, module: Module):
         sphinx_module = cast(SphinxModule, module)
-        Log.info('Building documentation for directory "%s" (using builder "%s")"...', sphinx_module.root_directory,
-                 self.sphinx_builder)
+        Log.info(
+            f'Building documentation for directory "{sphinx_module.root_directory}" (using builder '
+            f'"{self.sphinx_builder}")...'
+        )
         SphinxBuild(build_unit, sphinx_module, builder=self.sphinx_builder).run()
 
     @override
@@ -123,5 +128,5 @@ class BuildDocumentation(BuildTarget.Runnable):
     @override
     def get_clean_files(self, _: BuildUnit, module: Module) -> list[Path]:
         sphinx_module = cast(SphinxModule, module)
-        Log.info('Removing documentation for directory "%s"...', sphinx_module.root_directory)
+        Log.info(f'Removing documentation for directory "{sphinx_module.root_directory}"...')
         return [sphinx_module.output_directory]

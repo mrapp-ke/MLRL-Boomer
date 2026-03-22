@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for setting up experiments.
 """
+
 from abc import ABC, abstractmethod
 from argparse import Namespace
 
@@ -40,11 +41,9 @@ class Recipe(ABC):
         """
 
     @abstractmethod
-    def create_experiment_builder(self,
-                                  experiment_mode: ExperimentMode,
-                                  args: Namespace,
-                                  command: Command,
-                                  load_dataset: bool = True) -> Experiment.Builder:
+    def create_experiment_builder(
+        self, experiment_mode: ExperimentMode, args: Namespace, command: Command, load_dataset: bool = True
+    ) -> Experiment.Builder:
         """
         Creates and returns the `Experiment.Builder` to be used for configuring experiments.
 

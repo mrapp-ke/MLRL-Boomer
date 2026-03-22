@@ -1,10 +1,17 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+
 from ..cmd_builder import CmdBuilder
 
-from mlrl.common.config.parameters import BINNING_EQUAL_WIDTH, SAMPLING_WITHOUT_REPLACEMENT, \
-    PartitionSamplingParameter, PostOptimizationParameter, RuleInductionParameter, RulePruningParameter
+from mlrl.common.config.parameters import (
+    BINNING_EQUAL_WIDTH,
+    SAMPLING_WITHOUT_REPLACEMENT,
+    PartitionSamplingParameter,
+    PostOptimizationParameter,
+    RuleInductionParameter,
+    RulePruningParameter,
+)
 from mlrl.common.learners import SparsePolicy
 
 
@@ -35,7 +42,7 @@ class RuleLearnerCmdBuilderMixin(CmdBuilder):
         value = str(incremental_evaluation).lower()
 
         if incremental_evaluation:
-            value += '{step_size=' + str(step_size) + '}'
+            value += f'{{step_size={step_size}}}'
 
         self.add_control_argument('--incremental-evaluation', value)
         return self

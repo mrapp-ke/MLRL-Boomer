@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utilities for dealing with Python dependencies via requirements.
 """
+
 from abc import ABC, abstractmethod
 from collections.abc import Iterable, Iterator
 from dataclasses import dataclass
@@ -22,6 +23,7 @@ class Package:
     Attributes:
         name: The name of the package
     """
+
     name: str
 
     @property
@@ -53,6 +55,7 @@ class RequirementVersion:
         min_version:    The maximum version number
         max_version:    The minimum version number
     """
+
     min_version: str
     max_version: str
 
@@ -74,29 +77,36 @@ class RequirementVersion:
 
         if len(parts) > 2:
             raise ValueError(
-                'Version of requirement must consist of one or two version numbers, separated by comma, but got: '
-                + version)
+                f'Version of requirement must consist of one or two version numbers, separated by comma, but got: '
+                f'{version}'
+            )
 
         first_part = parts[0].strip()
 
         if len(parts) > 1:
             if not first_part.startswith(RequirementVersion.PREFIX_GEQ):
-                raise ValueError('First version number of requirement must start with "' + RequirementVersion.PREFIX_GEQ
-                                 + '", but got: ' + version)
+                raise ValueError(
+                    f'First version number of requirement must start with "{RequirementVersion.PREFIX_GEQ}", but got: '
+                    f'{version}'
+                )
 
             second_part = parts[1].strip()
 
             if not second_part.startswith(RequirementVersion.PREFIX_LE):
-                raise ValueError('Second version number of requirement must start with "' + RequirementVersion.PREFIX_LE
-                                 + '", but got: ' + version)
+                raise ValueError(
+                    f'Second version number of requirement must start with "{RequirementVersion.PREFIX_LE}", but got: '
+                    f'{version}'
+                )
 
-            return RequirementVersion(min_version=first_part[len(RequirementVersion.PREFIX_GEQ):].strip(),
-                                      max_version=second_part[len(RequirementVersion.PREFIX_LE):].strip())
+            return RequirementVersion(
+                min_version=first_part[len(RequirementVersion.PREFIX_GEQ) :].strip(),
+                max_version=second_part[len(RequirementVersion.PREFIX_LE) :].strip(),
+            )
 
         version_number = first_part
 
         if version_number.startswith(RequirementVersion.PREFIX_EQ):
-            version_number = version_number[len(RequirementVersion.PREFIX_EQ):].strip()
+            version_number = version_number[len(RequirementVersion.PREFIX_EQ) :].strip()
 
         return RequirementVersion(min_version=version_number, max_version=version_number)
 
@@ -111,8 +121,8 @@ class RequirementVersion:
     @override
     def __str__(self) -> str:
         if self.is_range():
-            return self.PREFIX_GEQ + ' ' + self.min_version + ', ' + self.PREFIX_LE + ' ' + self.max_version
-        return self.PREFIX_EQ + ' ' + self.min_version
+            return f'{self.PREFIX_GEQ} {self.min_version}, {self.PREFIX_LE} {self.max_version}'
+        return f'{self.PREFIX_EQ} {self.min_version}'
 
 
 @dataclass
@@ -124,6 +134,7 @@ class Requirement:
         package:    The package
         version:    The version of the package or None, if no version is specified
     """
+
     package: Package
     version: RequirementVersion | None = None
 
@@ -142,7 +153,7 @@ class Requirement:
 
     @override
     def __str__(self) -> str:
-        return str(self.package) + (' ' + str(self.version) if self.version else '')
+        return f'{self.package} {(f" {self.version}" if self.version else "")}'
 
     @override
     def __eq__(self, other: Any) -> bool:
@@ -205,7 +216,7 @@ class RequirementsFile(ABC):
             if requirement:
                 requirements.add(requirement)
             elif not accept_missing:
-                raise RuntimeError('Requirement for package "' + str(package) + '" not found')
+                raise RuntimeError(f'Requirement for package "{package}" not found')
 
         return requirements
 
@@ -249,8 +260,9 @@ class RequirementsTextFile(TextFile, RequirementsFile):
     def requirements_by_package(self) -> dict[Package, Requirement]:
         return {
             requirement.package: requirement
-            for requirement in
-            [Requirement.parse(line.strip('\n').strip()) for line in self.lines if line.strip('\n').strip()]
+            for requirement in [
+                Requirement.parse(line.strip('\n').strip()) for line in self.lines if line.strip('\n').strip()
+            ]
         }
 
     @override
@@ -265,7 +277,7 @@ class RequirementsTextFile(TextFile, RequirementsFile):
                 requirement = Requirement.parse(line_stripped)
 
                 if requirement.package == updated_requirement.package:
-                    new_lines[-1] = str(updated_requirement) + '\n'
+                    new_lines[-1] = f'{updated_requirement}\n'
 
         self.write_lines(*new_lines)
 
@@ -291,9 +303,9 @@ class RequirementsFiles(Iterable[RequirementsFile]):
         """
         return RequirementsFiles(*[RequirementsTextFile(file) for file in build_unit.find_requirements_files()])
 
-    def lookup_requirements(self,
-                            *package_names: str,
-                            accept_missing: bool = False) -> dict[RequirementsFile, set[Requirement]]:
+    def lookup_requirements(
+        self, *package_names: str, accept_missing: bool = False
+    ) -> dict[RequirementsFile, set[Requirement]]:
         """
         Looks up the requirements for given packages.
 
@@ -315,14 +327,15 @@ class RequirementsFiles(Iterable[RequirementsFile]):
                 result.setdefault(requirements_file, set()).add(requirement)
 
         if missing_package_names and not accept_missing:
-            raise RuntimeError('Requirements for packages ' + format_iterable(missing_package_names, delimiter='"')
-                               + ' not found')
+            raise RuntimeError(
+                f'Requirements for packages {format_iterable(missing_package_names, delimiter='"')} not found'
+            )
 
         return result
 
-    def lookup_requirement(self,
-                           package_name: str,
-                           accept_missing: bool = False) -> dict[RequirementsFile, Requirement]:
+    def lookup_requirement(
+        self, package_name: str, accept_missing: bool = False
+    ) -> dict[RequirementsFile, Requirement]:
         """
         Looks up the requirement for a given package.
 
@@ -335,7 +348,8 @@ class RequirementsFiles(Iterable[RequirementsFile]):
         looked_up_requirements = self.lookup_requirements(package_name, accept_missing=accept_missing)
         return {
             requirements_file: requirements.pop()
-            for requirements_file, requirements in looked_up_requirements.items() if requirements
+            for requirements_file, requirements in looked_up_requirements.items()
+            if requirements
         }
 
     @override

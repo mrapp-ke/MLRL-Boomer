@@ -35,10 +35,7 @@ class CheckPythonCodeStyle(PhonyTarget.Runnable):
     @override
     def run(self, build_unit: BuildUnit, module: Module):
         code_module = cast(CodeModule, module)
-        Log.info(
-            'Checking Python code style in directory "%s"...',
-            code_module.root_directory,
-        )
+        Log.info(f'Checking Python code style in directory "{code_module.root_directory}"...')
         RuffFormat(build_unit, code_module).run()
         RuffCheck(build_unit, code_module).run()
         Mypy(build_unit, code_module).run()
@@ -55,7 +52,7 @@ class EnforcePythonCodeStyle(PhonyTarget.Runnable):
     @override
     def run(self, build_unit: BuildUnit, module: Module):
         code_module = cast(CodeModule, module)
-        Log.info('Formatting Python code in directory "%s"...', code_module.root_directory)
+        Log.info(f'Formatting Python code in directory "{code_module.root_directory}"...')
         RuffFormat(build_unit, code_module, enforce_changes=True).run()
         RuffCheck(build_unit, code_module, enforce_changes=True).run()
 
@@ -71,10 +68,7 @@ class CheckCythonCodeStyle(PhonyTarget.Runnable):
     @override
     def run(self, build_unit: BuildUnit, module: Module):
         code_module = cast(CodeModule, module)
-        Log.info(
-            'Checking Cython code style in directory "%s"...',
-            code_module.root_directory,
-        )
+        Log.info(f'Checking Cython code style in directory "{code_module.root_directory}"...')
         ISort(build_unit, code_module).run()
         CythonLint(build_unit, code_module).run()
 
@@ -90,6 +84,6 @@ class EnforceCythonCodeStyle(PhonyTarget.Runnable):
     @override
     def run(self, build_unit: BuildUnit, module: Module):
         code_module = cast(CodeModule, module)
-        Log.info('Formatting Cython code in directory "%s"...', code_module.root_directory)
+        Log.info(f'Formatting Cython code in directory "{code_module.root_directory}"...')
         Autoflake(build_unit, code_module, enforce_changes=True).run()
         ISort(build_unit, code_module, enforce_changes=True).run()

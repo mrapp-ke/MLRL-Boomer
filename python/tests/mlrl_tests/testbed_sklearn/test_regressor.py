@@ -1,6 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+
 # pylint: disable=missing-function-docstring
 from typing import Any, override
 
@@ -19,21 +20,25 @@ from .integration_tests import MlrlTestbedSklearnIntegrationTestsMixin
 
 @pytest.mark.sklearn
 @pytest.mark.regression
-class TestSkLearnRegressor(RegressionIntegrationTests, MlrlTestbedIntegrationTestsMixin,
-                           MlrlTestbedSklearnIntegrationTestsMixin):
+class TestSkLearnRegressor(
+    RegressionIntegrationTests, MlrlTestbedIntegrationTestsMixin, MlrlTestbedSklearnIntegrationTestsMixin
+):
     """
     Defines a series of integration tests for a scikit-learn classifier.
     """
 
     @override
     def create_cmd_builder(self, dataset: str = Dataset.ATP7D) -> Any:
-        return SkLearnRegressorCmdBuilder(RandomForestRegressor,
-                                          dataset=dataset).add_algorithmic_argument('--n-estimators', 1)
+        return SkLearnRegressorCmdBuilder(RandomForestRegressor, dataset=dataset).add_algorithmic_argument(
+            '--n-estimators', 1
+        )
 
     def test_meta_estimator(self):
-        builder = self.create_cmd_builder() \
-            .meta_estimator(RegressorChain) \
-            .add_algorithmic_argument('--meta-verbose', 'True') \
-            .print_evaluation() \
+        builder = (
+            self.create_cmd_builder()
+            .meta_estimator(RegressorChain)
+            .add_algorithmic_argument('--meta-verbose', 'True')
+            .print_evaluation()
             .save_evaluation(False)
+        )
         CmdRunner(builder).run('meta-estimator')

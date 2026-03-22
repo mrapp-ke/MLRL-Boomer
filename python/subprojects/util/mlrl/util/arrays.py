@@ -3,14 +3,24 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for handling arrays.
 """
+
 from enum import StrEnum
 from itertools import chain
 from typing import Any, Union
 
 import numpy as np
 
-from scipy.sparse import issparse, isspmatrix_bsr, isspmatrix_coo, isspmatrix_csc, isspmatrix_csr, isspmatrix_dia, \
-    isspmatrix_dok, isspmatrix_lil, sparray
+from scipy.sparse import (
+    issparse,
+    isspmatrix_bsr,
+    isspmatrix_coo,
+    isspmatrix_csc,
+    isspmatrix_csr,
+    isspmatrix_dia,
+    isspmatrix_dok,
+    isspmatrix_lil,
+    sparray,
+)
 
 from mlrl.util.format import format_iterable
 
@@ -19,6 +29,7 @@ class SparseFormat(StrEnum):
     """
     Specifies all valid textual representations of sparse matrix formats.
     """
+
     LIL = 'lil'
     COO = 'coo'
     DOK = 'dok'
@@ -125,10 +136,9 @@ def is_sparse(array, supported_formats: set[SparseFormat] | None = None) -> bool
     return issparse(array)
 
 
-def is_sparse_and_memory_efficient(array,
-                                   sparse_format: SparseFormat,
-                                   dtype: np.dtype | None = None,
-                                   sparse_values: bool = True) -> bool:
+def is_sparse_and_memory_efficient(
+    array, sparse_format: SparseFormat, dtype: np.dtype | None = None, sparse_values: bool = True
+) -> bool:
     """
     Returns whether a given matrix uses sparse format and is expected to occupy less memory than a dense matrix.
 
@@ -143,8 +153,10 @@ def is_sparse_and_memory_efficient(array,
     supported_formats = {SparseFormat.CSC, SparseFormat.CSR}
 
     if sparse_format not in supported_formats:
-        raise ValueError('Unable to estimate memory requirements of given sparse format: Must be one of '
-                         + format_iterable(supported_formats) + ', but is "' + str(sparse_format) + '"')
+        raise ValueError(
+            f'Unable to estimate memory requirements of given sparse format: Must be one of '
+            f'{format_iterable(supported_formats)}, but is "{sparse_format}"'
+        )
 
     if is_sparse(array):
         num_pointers = array.shape[1 if sparse_format == SparseFormat.CSC else 0]
@@ -153,8 +165,9 @@ def is_sparse_and_memory_efficient(array,
         size_data = np.dtype(dtype).itemsize
         size_sparse_data = size_data if sparse_values else 0
         num_dense_elements = array.nnz
-        size_sparse = (num_dense_elements * size_sparse_data) + (num_dense_elements * size_int) + (num_pointers
-                                                                                                   * size_int)
+        size_sparse = (
+            (num_dense_elements * size_sparse_data) + (num_dense_elements * size_int) + (num_pointers * size_int)
+        )
         size_dense = np.prod(array.shape) * size_data
         return size_sparse < size_dense
     return False
@@ -207,7 +220,8 @@ def enforce_dense(array, order: str, dtype: np.dtype | None = None, sparse_value
                 shape=array.shape,  # type: ignore[call-overload]
                 fill_value=sparse_value,
                 dtype=dtype,
-                order=order)
+                order=order,
+            )
             dense_array[array.nonzero()] = 0
             dense_array += array
             return np.asarray(dense_array, dtype=dtype, order=order)  # type: ignore[call-overload]

@@ -58,9 +58,11 @@ class Runnable(Recipe, ABC):
             See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
             """
             experiment_builder.set_predict_for_training_dataset(
-                PredictionDatasetArguments.PREDICT_FOR_TRAINING_DATA.get_value(args))
+                PredictionDatasetArguments.PREDICT_FOR_TRAINING_DATA.get_value(args)
+            )
             experiment_builder.set_predict_for_test_dataset(
-                PredictionDatasetArguments.PREDICT_FOR_TEST_DATA.get_value(args))
+                PredictionDatasetArguments.PREDICT_FOR_TEST_DATA.get_value(args)
+            )
 
         @override
         def get_supported_modes(self) -> set[ExperimentMode]:
@@ -95,7 +97,7 @@ class Runnable(Recipe, ABC):
     def get_program_info(self) -> ProgramInfo | None:
         """
         May be overridden by subclasses in order to provide information about the program to be printed via the command
-        line argument '-v' or '--version'. 
+        line argument '-v' or '--version'.
 
         :return: A `ProgramInfo` or None, if no information is provided
         """
@@ -133,16 +135,13 @@ class Runnable(Recipe, ABC):
                 return self.runnable.create_dataset_splitter(args, load_dataset)
 
             @override
-            def create_experiment_builder(self,
-                                          experiment_mode: ExperimentMode,
-                                          args: Namespace,
-                                          command: Command,
-                                          load_dataset: bool = True) -> Experiment.Builder:
+            def create_experiment_builder(
+                self, experiment_mode: ExperimentMode, args: Namespace, command: Command, load_dataset: bool = True
+            ) -> Experiment.Builder:
                 runnable = self.runnable
-                experiment_builder = runnable.create_experiment_builder(experiment_mode=experiment_mode,
-                                                                        args=args,
-                                                                        command=command,
-                                                                        load_dataset=load_dataset)
+                experiment_builder = runnable.create_experiment_builder(
+                    experiment_mode=experiment_mode, args=args, command=command, load_dataset=load_dataset
+                )
 
                 for extension in runnable.get_supported_extensions(experiment_mode):
                     extension.configure_experiment(args, experiment_builder, experiment_mode)
@@ -215,7 +214,8 @@ class Runnable(Recipe, ABC):
                         to the registered extensions, as well as a set that contains algorithmic arguments
         """
         control_arguments: set[Argument] = reduce(
-            lambda aggr, extension: aggr | extension.get_arguments(mode.to_enum()), self.get_extensions(), set())
+            lambda aggr, extension: aggr | extension.get_arguments(mode.to_enum()), self.get_extensions(), set()
+        )
         mode.configure_control_arguments(cli, sorted(control_arguments, key=lambda arg: arg.name))
 
         algorithmic_arguments = self.get_algorithmic_arguments(mode.to_enum(), cli.parse_known_args())

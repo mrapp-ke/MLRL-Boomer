@@ -1,6 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+
 from pathlib import Path
 from typing import Any
 
@@ -27,13 +28,15 @@ class CmdBuilder:
 
     RERUN_DIR = Path('rerun')
 
-    def __init__(self,
-                 expected_output_dir: Path,
-                 input_dir: Path,
-                 batch_config: Path,
-                 runnable_module_name: str,
-                 runnable_class_name: str | None = None,
-                 dataset: str = Dataset.EMOTIONS):
+    def __init__(
+        self,
+        expected_output_dir: Path,
+        input_dir: Path,
+        batch_config: Path,
+        runnable_module_name: str,
+        runnable_class_name: str | None = None,
+        dataset: str = Dataset.EMOTIONS,
+    ):
         """
         :param expected_output_dir:     The path to the directory that contains the file with the expected output
         :param input_dir:               The path to the directory from which input data should be read
@@ -139,8 +142,18 @@ class CmdBuilder:
                 args.extend(('--runner', self.runner))
 
                 if self.runner == 'slurm':
-                    args.extend(('--slurm-config', str(self.CONFIG_DIR / 'slurm_config.yml'), '--print-slurm-scripts',
-                                 'true', '--save-slurm-scripts', 'true', '--slurm-save-dir', str(base_dir)))
+                    args.extend(
+                        (
+                            '--slurm-config',
+                            str(self.CONFIG_DIR / 'slurm_config.yml'),
+                            '--print-slurm-scripts',
+                            'true',
+                            '--save-slurm-scripts',
+                            'true',
+                            '--slurm-save-dir',
+                            str(base_dir),
+                        )
+                    )
         else:
             if rerun:
                 args.extend(('--input-dir', str(self.base_dir)))
@@ -273,9 +286,9 @@ class CmdBuilder:
         self.add_control_argument('--save-parameters', str(True).lower())
         return self
 
-    def data_split(self,
-                   data_split: str | None = DatasetSplitterArguments.VALUE_TRAIN_TEST,
-                   options: Options = Options()):
+    def data_split(
+        self, data_split: str | None = DatasetSplitterArguments.VALUE_TRAIN_TEST, options: Options = Options()
+    ):
         """
         Configures the rule learner to use a specific strategy for splitting datasets into training and test datasets.
 

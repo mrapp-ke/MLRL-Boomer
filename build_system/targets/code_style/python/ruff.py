@@ -50,7 +50,7 @@ class RuffFormat(RuffProgram):
             build_unit,
             module,
             'format',
-            cache_file_name='ruff_format' + ('_enforce_changes' if enforce_changes else ''),
+            cache_file_name=f'ruff_format{("_enforce_changes" if enforce_changes else "")}',
         )
         self.add_conditional_arguments(not enforce_changes, '--check')
 
@@ -66,6 +66,6 @@ class RuffCheck(RuffProgram):
             build_unit,
             module,
             'check',
-            cache_file_name='ruff_check' + ('_enforce_changes' if enforce_changes else ''),
+            cache_file_name=f'ruff_check{("_enforce_changes" if enforce_changes else "")}',
         )
         self.add_conditional_arguments(enforce_changes, '--fix')

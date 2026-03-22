@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing models that are part of output data.
 """
+
 from typing import Any, override
 
 from mlrl.testbed.experiments.input.model.model import InputModel

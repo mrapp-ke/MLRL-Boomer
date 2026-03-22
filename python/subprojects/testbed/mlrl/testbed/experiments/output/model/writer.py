@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing models to one or several sinks.
 """
+
 from argparse import Namespace
 from pathlib import Path
 from typing import override

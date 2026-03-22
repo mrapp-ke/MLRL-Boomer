@@ -3,11 +3,14 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing characteristics of a datasets that are part of output data.
 """
+
 from typing import Any, override
 
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
-from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import Characteristic, \
-    get_output_characteristics
+from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import (
+    Characteristic,
+    get_output_characteristics,
+)
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.matrix_feature import FeatureMatrix
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.matrix_label import LabelMatrix
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.matrix_output import OutputMatrix
@@ -71,10 +74,10 @@ class DataCharacteristics(TabularOutputData):
         else:
             output_matrix = OutputMatrix(values=dataset.y)
 
-        return DataCharacteristics([(characteristic, characteristic.function(feature_matrix))
-                                    for characteristic in FEATURE_CHARACTERISTICS]
-                                   + [(characteristic, characteristic.function(output_matrix))
-                                      for characteristic in output_characteristics])
+        return DataCharacteristics(
+            [(characteristic, characteristic.function(feature_matrix)) for characteristic in FEATURE_CHARACTERISTICS]
+            + [(characteristic, characteristic.function(output_matrix)) for characteristic in output_characteristics]
+        )
 
     @override
     def to_text(self, options: Options, **kwargs) -> str | None:

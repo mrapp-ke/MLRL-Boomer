@@ -3,6 +3,7 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for implementing sources, input data may be read from.
 """
+
 import logging as log
 
 from abc import ABC, abstractmethod
@@ -11,8 +12,13 @@ from typing import Any, override
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.file_path import FilePath
-from mlrl.testbed.experiments.input.data import DatasetInputData, InputData, StructuralInputData, TabularInputData, \
-    TextualInputData
+from mlrl.testbed.experiments.input.data import (
+    DatasetInputData,
+    InputData,
+    StructuralInputData,
+    TabularInputData,
+    TextualInputData,
+)
 from mlrl.testbed.experiments.input.policies import MissingInputPolicy
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
@@ -69,10 +75,12 @@ class FileSource(Source, ABC):
         :param input_data:  The input data that should be read
         :return:            The path to the file, the input data should be read from
         """
-        return FilePath(directory=self.directory,
-                        file_name=input_data.properties.file_name,
-                        suffix=self.suffix,
-                        context=input_data.context).resolve(state)
+        return FilePath(
+            directory=self.directory,
+            file_name=input_data.properties.file_name,
+            suffix=self.suffix,
+            context=input_data.context,
+        ).resolve(state)
 
     @override
     def is_available(self, state: ExperimentState, input_data: InputData) -> bool:
@@ -81,7 +89,7 @@ class FileSource(Source, ABC):
     @override
     def read_from_source(self, state: ExperimentState, input_data: InputData) -> bool:
         file_path = self._get_file_path(state, input_data)
-        log.debug('Reading input data from file "%s"...', file_path)
+        log.debug(f'Reading input data from file "{file_path}"...')
 
         if file_path.is_file():
             data = self._read_from_file(state, file_path, input_data)
@@ -92,7 +100,7 @@ class FileSource(Source, ABC):
         elif self.missing_input_policy == MissingInputPolicy.EXIT:
             raise IOError(f'The file "{file_path}" does not exist')
         else:
-            log.error('The file "%s" does not exist', file_path)
+            log.error(f'The file "{file_path}" does not exist')
 
         return False
 
@@ -142,8 +150,9 @@ class DatasetFileSource(FileSource, ABC):
         return None
 
     @abstractmethod
-    def _read_dataset_from_file(self, state: ExperimentState, file_path: Path,
-                                input_data: DatasetInputData) -> Dataset | None:
+    def _read_dataset_from_file(
+        self, state: ExperimentState, file_path: Path, input_data: DatasetInputData
+    ) -> Dataset | None:
         """
         Must be implemented by subclasses in order to read a dataset from a specific file.
 

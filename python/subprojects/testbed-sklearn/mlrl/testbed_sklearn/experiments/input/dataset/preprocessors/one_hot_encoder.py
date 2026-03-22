@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for preprocessing datasets.
 """
+
 import logging as log
 
 from dataclasses import replace
@@ -37,8 +38,10 @@ class OneHotEncoder(Preprocessor):
             """
             nominal_indices = dataset.get_feature_indices(AttributeType.NOMINAL)
             num_nominal_features = len(nominal_indices)
-            log.info('Dataset contains %s nominal and %s numerical features.', num_nominal_features,
-                     (len(dataset.features) - num_nominal_features))
+            log.info(
+                f'Dataset contains {num_nominal_features} nominal and {len(dataset.features) - num_nominal_features} '
+                f'numerical features.'
+            )
 
             if num_nominal_features > 0:
                 dataset = dataset.enforce_dense_features()

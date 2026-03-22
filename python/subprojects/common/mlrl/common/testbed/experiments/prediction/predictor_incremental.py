@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for repeatedly obtaining predictions from an ensemble model, using only a subset of the ensemble
 members.
 """
+
 import logging as log
 
 from collections.abc import Generator
@@ -29,12 +30,16 @@ class IncrementalPredictionFunction(PredictionFunction):
     """
 
     def __init__(self, learner: BaseEstimator):
-        super().__init__(learner=learner,
-                         predict_function=learner.predict_incrementally,
-                         decision_function=learner.decision_function_incrementally if callable(
-                             getattr(learner, 'decision_function_incrementally', None)) else None,
-                         predict_proba_function=learner.predict_proba_incrementally if callable(
-                             getattr(learner, 'predict_proba_incrementally', None)) else None)
+        super().__init__(
+            learner=learner,
+            predict_function=learner.predict_incrementally,
+            decision_function=learner.decision_function_incrementally
+            if callable(getattr(learner, 'decision_function_incrementally', None))
+            else None,
+            predict_proba_function=learner.predict_proba_incrementally
+            if callable(getattr(learner, 'predict_proba_incrementally', None))
+            else None,
+        )
 
 
 class IncrementalPredictor(Predictor):
@@ -57,8 +62,9 @@ class IncrementalPredictor(Predictor):
         self.step_size = step_size
 
     @override
-    def obtain_predictions(self, learner: Any, dataset: Dataset, dataset_type: DatasetType,
-                           **kwargs) -> Generator[PredictionState, None, None]:
+    def obtain_predictions(
+        self, learner: Any, dataset: Dataset, dataset_type: DatasetType, **kwargs
+    ) -> Generator[PredictionState, None, None]:
         """
         See :func:`mlrl.testbed_sklearn.experiments.prediction.predictor.Predictor.obtain_predictions`
         """
@@ -81,18 +87,24 @@ class IncrementalPredictor(Predictor):
             current_size = min(next_step_size, total_size)
 
             while incremental_predictor.has_next():
-                log.info('Predicting for %s %s examples using a model of size %s...', dataset.num_examples,
-                         dataset_type, current_size)
+                log.info(
+                    f'Predicting for {dataset.num_examples} {dataset_type} examples using a model of size '
+                    f'{current_size}...'
+                )
                 start_time = Timer.start()
                 predictions = incremental_predictor.apply_next(next_step_size)
                 prediction_duration = Timer.stop(start_time)
 
                 if predictions is not None:
-                    log.info('Successfully predicted in %s', prediction_duration)
-                    yield PredictionState(prediction_scope=IncrementalPredictionScope(current_size),
-                                          prediction_result=PredictionResult(predictions=predictions,
-                                                                             prediction_type=self.prediction_type,
-                                                                             prediction_duration=prediction_duration))
+                    log.info(f'Successfully predicted in {prediction_duration}')
+                    yield PredictionState(
+                        prediction_scope=IncrementalPredictionScope(current_size),
+                        prediction_result=PredictionResult(
+                            predictions=predictions,
+                            prediction_type=self.prediction_type,
+                            prediction_duration=prediction_duration,
+                        ),
+                    )
 
                 next_step_size = step_size
                 current_size = min(current_size + next_step_size, total_size)

@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write characteristics of binary predictions to one or
 several sinks.
 """
+
 from argparse import Namespace
 from typing import override
 
@@ -31,28 +32,34 @@ class PredictionCharacteristicsExtension(Extension):
 
     PRINT_PREDICTION_CHARACTERISTICS = BoolArgument(
         '--print-prediction-characteristics',
-        description='Whether the characteristics of binary predictions should be printed on the console or not. Does '
-        + 'only have an effect if the argument ' + PredictionTypeExtension.PREDICTION_TYPE.name + ' is set to '
-        + PredictionType.BINARY.value + '.',
+        description=f'Whether the characteristics of binary predictions should be printed on the console or not. Does '
+        f'only have an effect if the argument {PredictionTypeExtension.PREDICTION_TYPE.name} is set to '
+        f'{PredictionType.BINARY.value}.',
         true_options={
-            OutputCharacteristics.OPTION_OUTPUTS, OutputCharacteristics.OPTION_OUTPUT_DENSITY,
-            OutputCharacteristics.OPTION_OUTPUT_SPARSITY, OutputCharacteristics.OPTION_LABEL_IMBALANCE_RATIO,
-            OutputCharacteristics.OPTION_LABEL_CARDINALITY, OutputCharacteristics.OPTION_DISTINCT_LABEL_VECTORS,
-            OPTION_DECIMALS, OPTION_PERCENTAGE
+            OutputCharacteristics.OPTION_OUTPUTS,
+            OutputCharacteristics.OPTION_OUTPUT_DENSITY,
+            OutputCharacteristics.OPTION_OUTPUT_SPARSITY,
+            OutputCharacteristics.OPTION_LABEL_IMBALANCE_RATIO,
+            OutputCharacteristics.OPTION_LABEL_CARDINALITY,
+            OutputCharacteristics.OPTION_DISTINCT_LABEL_VECTORS,
+            OPTION_DECIMALS,
+            OPTION_PERCENTAGE,
         },
     )
 
     SAVE_PREDICTION_CHARACTERISTICS = BoolArgument(
         '--save-prediction-characteristics',
-        description='Whether the characteristics of binary predictions should be written to output files or not. Does '
-        + 'only have an effect if the argument ' + PredictionTypeExtension.PREDICTION_TYPE.name + ' is set to '
-        + PredictionType.BINARY.value + ' and if the argument ' + ResultDirectoryArguments.RESULT_DIR.name + ' is '
-        + 'specified.',
+        description=f'Whether the characteristics of binary predictions should be written to output files or not. Does '
+        f'only have an effect if the argument {PredictionTypeExtension.PREDICTION_TYPE.name} is set to '
+        f'{PredictionType.BINARY.value} and if the argument {ResultDirectoryArguments.RESULT_DIR.name} is specified.',
         true_options={
-            OutputCharacteristics.OPTION_OUTPUTS, OutputCharacteristics.OPTION_OUTPUT_DENSITY,
-            OutputCharacteristics.OPTION_OUTPUT_SPARSITY, OutputCharacteristics.OPTION_LABEL_IMBALANCE_RATIO,
-            OutputCharacteristics.OPTION_LABEL_CARDINALITY, OutputCharacteristics.OPTION_DISTINCT_LABEL_VECTORS,
-            OPTION_DECIMALS
+            OutputCharacteristics.OPTION_OUTPUTS,
+            OutputCharacteristics.OPTION_OUTPUT_DENSITY,
+            OutputCharacteristics.OPTION_OUTPUT_SPARSITY,
+            OutputCharacteristics.OPTION_LABEL_IMBALANCE_RATIO,
+            OutputCharacteristics.OPTION_LABEL_CARDINALITY,
+            OutputCharacteristics.OPTION_DISTINCT_LABEL_VECTORS,
+            OPTION_DECIMALS,
         },
     )
 
@@ -72,23 +79,27 @@ class PredictionCharacteristicsExtension(Extension):
     def __configure_log_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         print_all = OutputArguments.PRINT_ALL.get_value(args)
         print_prediction_characteristics, options = self.PRINT_PREDICTION_CHARACTERISTICS.get_value_and_options(
-            args, default=print_all)
+            args, default=print_all
+        )
 
         if print_prediction_characteristics:
             experiment_builder.prediction_characteristics_writer.add_sinks(
-                LogSink(options=options, source_factory=CsvFileSource))
+                LogSink(options=options, source_factory=CsvFileSource)
+            )
 
     def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         save_all = OutputArguments.SAVE_ALL.get_value(args)
         save_prediction_characteristics, options = self.SAVE_PREDICTION_CHARACTERISTICS.get_value_and_options(
-            args, default=save_all)
+            args, default=save_all
+        )
         base_dir = OutputArguments.BASE_DIR.get_value(args)
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
         if save_prediction_characteristics and base_dir and result_directory:
             create_directory = OutputArguments.CREATE_DIRS.get_value(args)
             experiment_builder.prediction_characteristics_writer.add_sinks(
-                CsvFileSink(directory=base_dir / result_directory, create_directory=create_directory, options=options))
+                CsvFileSink(directory=base_dir / result_directory, create_directory=create_directory, options=options)
+            )
 
     @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: ExperimentMode):

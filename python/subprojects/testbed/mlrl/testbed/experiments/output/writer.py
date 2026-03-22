@@ -3,6 +3,7 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for writing output data to sinks.
 """
+
 import logging as log
 
 from abc import ABC, abstractmethod
@@ -147,8 +148,9 @@ class OutputWriter:
     Allows to write output data to one or several sinks.
     """
 
-    def __extract_data_from_extractor(self, extractor: DataExtractor,
-                                      state: ExperimentState) -> list[tuple[ExperimentState, OutputData]]:
+    def __extract_data_from_extractor(
+        self, extractor: DataExtractor, state: ExperimentState
+    ) -> list[tuple[ExperimentState, OutputData]]:
         try:
             return extractor.extract_data(state, self.sinks)
         # pylint: disable=broad-exception-caught
@@ -156,9 +158,11 @@ class OutputWriter:
             if self.output_error_policy == OutputErrorPolicy.EXIT:
                 raise error
 
-            log.error('Failed to extract output data from experimental state via extractor of type %s',
-                      type(extractor).__name__,
-                      exc_info=error)
+            log.error(
+                f'Failed to extract output data from experimental state via extractor of type '
+                f'{type(extractor).__name__}',
+                exc_info=error,
+            )
             return []
 
     def __extract_data(self, state: ExperimentState) -> list[tuple[ExperimentState, OutputData]]:
@@ -171,7 +175,7 @@ class OutputWriter:
                 if result:
                     return result
         else:
-            log.warning('No extractors have been added to output writer of type %s', type(self).__name__)
+            log.warning(f'No extractors have been added to output writer of type {type(self).__name__}')
 
         return []
 
@@ -183,10 +187,10 @@ class OutputWriter:
             if self.output_error_policy == OutputErrorPolicy.EXIT:
                 raise error
 
-            log.error('Failed to write output data of type "%s" to sink %s',
-                      type(output_data).__name__,
-                      type(sink).__name__,
-                      exc_info=error)
+            log.error(
+                f'Failed to write output data of type "{type(output_data).__name__}" to sink {type(sink).__name__}',
+                exc_info=error,
+            )
 
     def __init__(self, *extractors: DataExtractor):
         """

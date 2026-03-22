@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for accessing environment variables.
 """
+
 from collections.abc import MutableMapping
 from typing import Any
 
@@ -41,8 +42,7 @@ def get_env_bool(env: Env, name: str, default: bool = False) -> bool:
             return True
         if value_lower == 'false':
             return False
-        raise ValueError('Value of environment variable "' + name + '" must be "true" or "false", but is "' + value
-                         + '"')
+        raise ValueError(f'Value of environment variable "{name}" must be "true" or "false", but is "{value}"')
 
     return default
 
@@ -73,4 +73,4 @@ def set_env(env: Env, name: str, value: str):
     :param value:   The value to be set
     """
     env[name] = value
-    Log.info('Set environment variable "%s" to value "%s"', name, value)
+    Log.info(f'Set environment variable "{name}" to value "{value}"')

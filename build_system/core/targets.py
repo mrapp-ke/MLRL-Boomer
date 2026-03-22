@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides base classes for defining individual targets of the build process.
 """
+
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum, auto
@@ -33,6 +34,7 @@ class Target(ABC):
             clean_dependency:   True, if the output files of the dependency should also be cleaned when cleaning the
                                 output files of the parent target, False otherwise
         """
+
         target_name: str
         clean_dependency: bool = True
 
@@ -63,10 +65,11 @@ class Target(ABC):
             :return:                    The builder itself
             """
             for target_name in target_names:
-                if not target_name in self.dependency_names:
+                if target_name not in self.dependency_names:
                     self.dependency_names.add(target_name)
                     self.dependencies.append(
-                        Target.Dependency(target_name=target_name, clean_dependency=clean_dependencies))
+                        Target.Dependency(target_name=target_name, clean_dependency=clean_dependencies)
+                    )
 
             return self
 
@@ -104,10 +107,10 @@ class Target(ABC):
 
     @override
     def __str__(self) -> str:
-        result = type(self).__name__ + '{name="' + self.name + '"'
+        result = f'{type(self).__name__}{{name="{self.name}"'
 
         if self.dependencies:
-            result += ', dependencies={' + format_iterable(self.dependencies, delimiter='"') + '}'
+            result += f', dependencies={{{format_iterable(self.dependencies, delimiter='"')}}}'
 
         return result + '}'
 
@@ -135,7 +138,7 @@ class BuildTarget(Target):
             :param build_unit:  The build unit, the target belongs to
             :param modules:      A list that contains the modules, the target should be applied to
             """
-            raise NotImplementedError('Class ' + type(self).__name__ + ' does not implement the "run_all" method')
+            raise NotImplementedError(f'Class {type(self).__name__} does not implement the "run_all" method')
 
         def run(self, build_unit: BuildUnit, module: Module):
             """
@@ -145,7 +148,7 @@ class BuildTarget(Target):
             :param build_unit:  The build unit, the target belongs to
             :param module:      The module, the target should be applied to
             """
-            raise NotImplementedError('Class ' + type(self).__name__ + ' does not implement the "run" method')
+            raise NotImplementedError(f'Class {type(self).__name__} does not implement the "run" method')
 
         # pylint: disable=unused-argument
         def get_input_files(self, build_unit: BuildUnit, module: Module) -> list[Path]:
@@ -216,19 +219,22 @@ class BuildTarget(Target):
         if output_files:
             if missing_output_files:
                 Log.verbose(
-                    'Target "%s" must be applied to module "%s", because the following output files do not exist:\n',
-                    self.name, str(module))
+                    f'Target "{self.name}" must be applied to module "{module}", because the following output files do '
+                    f'not exist:\n'
+                )
 
                 for missing_output_file in missing_output_files:
-                    Log.verbose(' - %s', missing_output_file)
+                    Log.verbose(f' - {missing_output_file}')
 
                 Log.verbose('')
             else:
-                Log.verbose('Target "%s" must not be applied to module "%s", because all output files already exist:\n',
-                            self.name, str(module))
+                Log.verbose(
+                    f'Target "{self.name}" must not be applied to module "{module}", because all output files already '
+                    f'exist:\n'
+                )
 
                 for output_file in output_files:
-                    Log.verbose(' - %s', output_file)
+                    Log.verbose(f' - {output_file}')
 
                 Log.verbose('')
 
@@ -243,26 +249,30 @@ class BuildTarget(Target):
         if input_files:
             if changed_input_files:
                 Log.verbose(
-                    'Target "%s" must be applied to module "%s", because the following input files have changed:\n',
-                    self.name, str(module))
+                    f'Target "{self.name}" must be applied to module "{module}", because the following input files have '
+                    f'changed:\n'
+                )
 
                 for changed_input_file in changed_input_files:
-                    Log.verbose(' - %s', changed_input_file)
+                    Log.verbose(f' - {changed_input_file}')
 
                 Log.verbose('')
             else:
-                Log.verbose('Target "%s" must not be applied to module "%s", because no input files have changed:\n',
-                            self.name, str(module))
+                Log.verbose(
+                    f'Target "{self.name}" must not be applied to module "{module}", because no input files have '
+                    f'changed:\n'
+                )
 
                 for input_file in input_files:
-                    Log.verbose(' - %s', input_file)
+                    Log.verbose(f' - {input_file}')
 
                 Log.verbose('')
 
         return input_files, changed_input_files
 
-    def __init__(self, name: str, dependencies: list[Target.Dependency], runnables: list[Runnable],
-                 build_unit: BuildUnit):
+    def __init__(
+        self, name: str, dependencies: list[Target.Dependency], runnables: list[Runnable], build_unit: BuildUnit
+    ):
         """
         :param name:            The name of the target or None, if the target does not have a name
         :param dependencies:    A list that contains all dependencies of the target
@@ -272,7 +282,7 @@ class BuildTarget(Target):
         super().__init__(name, dependencies)
         self.runnables = runnables
         self.build_unit = build_unit
-        self.change_detection = ChangeDetection(BuildUnit().build_directory / (self.name + '.json'))
+        self.change_detection = ChangeDetection(BuildUnit().build_directory / f'{self.name}.json')
 
     @override
     def run(self, module_registry: ModuleRegistry):
@@ -296,8 +306,9 @@ class BuildTarget(Target):
                     for module in modules_to_be_run:
                         runnable.run(self.build_unit, module)
                 except NotImplementedError as error:
-                    raise RuntimeError('Class ' + type(runnable).__name__
-                                       + ' must implement either the "run_all" or "run" method') from error
+                    raise RuntimeError(
+                        f'Class {type(runnable).__name__} must implement either the "run_all" or "run" method'
+                    ) from error
 
             for i, module in enumerate(modules_to_be_run):
                 self.change_detection.track_files(module, *input_files_per_module[i])
@@ -337,7 +348,7 @@ class PhonyTarget(Target):
             :param build_unit:  The build unit, the target belongs to
             :param modules:     A list that contains the modules, the target should be applied to
             """
-            raise NotImplementedError('Class ' + type(self).__name__ + ' does not implement the "run_all" method')
+            raise NotImplementedError(f'Class {type(self).__name__} does not implement the "run_all" method')
 
         def run(self, build_unit: BuildUnit, module: Module):
             """
@@ -347,7 +358,7 @@ class PhonyTarget(Target):
             :param build_unit:  The build unit, the target belongs to
             :param module:      The module, the target should be applied to
             """
-            raise NotImplementedError('Class ' + type(self).__name__ + ' does not implement the "run" method')
+            raise NotImplementedError(f'Class {type(self).__name__} does not implement the "run" method')
 
     class Builder(Target.Builder):
         """
@@ -410,8 +421,9 @@ class PhonyTarget(Target):
                             for module in modules:
                                 runnable.run(build_unit, module)
                         except NotImplementedError as error:
-                            raise RuntimeError('Class ' + type(runnable).__name__
-                                               + ' must implement either the "run_all" or "run" method') from error
+                            raise RuntimeError(
+                                f'Class {type(runnable).__name__} must implement either the "run_all" or "run" method'
+                            ) from error
 
             return PhonyTarget(self.target_name, self.dependencies, action)
 
@@ -481,6 +493,7 @@ class DependencyGraph:
         """
         All available types of dependency graphs.
         """
+
         RUN = auto()
         CLEAN = auto()
         CLEAN_ALL = auto()
@@ -495,13 +508,15 @@ class DependencyGraph:
             parent: The parent of this node, if any
             child:  The child of this node, if any
         """
+
         target: Target
         parent: 'DependencyGraph.Node | None' = None
         child: 'DependencyGraph.Node | None' = None
 
         @staticmethod
-        def from_name(targets_by_name: dict[str, Target], target_name: str,
-                      graph_type: 'DependencyGraph.Type') -> 'DependencyGraph.Node':
+        def from_name(
+            targets_by_name: dict[str, Target], target_name: str, graph_type: 'DependencyGraph.Type'
+        ) -> 'DependencyGraph.Node':
             """
             Creates and returns a new node of a dependency graph corresponding to the target with a specific name.
 
@@ -511,12 +526,16 @@ class DependencyGraph:
             :return:                The node that has been created
             """
             target = targets_by_name[target_name]
-            return DependencyGraph.RunNode(
-                target) if graph_type == DependencyGraph.Type.RUN else DependencyGraph.CleanNode(target)
+            return (
+                DependencyGraph.RunNode(target)
+                if graph_type == DependencyGraph.Type.RUN
+                else DependencyGraph.CleanNode(target)
+            )
 
         @staticmethod
-        def from_dependency(targets_by_name: dict[str, Target], dependency: Target.Dependency,
-                            graph_type: 'DependencyGraph.Type') -> 'DependencyGraph.Node | None':
+        def from_dependency(
+            targets_by_name: dict[str, Target], dependency: Target.Dependency, graph_type: 'DependencyGraph.Type'
+        ) -> 'DependencyGraph.Node | None':
             """
             Creates and returns a new node of a dependency graph corresponding to the target referred to by a
             `Target.Dependency`.
@@ -527,12 +546,17 @@ class DependencyGraph:
             :return:                The node that has been created or None, if the dependency does not require a node to
                                     be created
             """
-            if graph_type == DependencyGraph.Type.RUN \
-                    or graph_type == DependencyGraph.Type.CLEAN_ALL \
-                    or dependency.clean_dependency:
+            if (
+                graph_type == DependencyGraph.Type.RUN
+                or graph_type == DependencyGraph.Type.CLEAN_ALL
+                or dependency.clean_dependency
+            ):
                 target = targets_by_name[dependency.target_name]
-                return DependencyGraph.RunNode(
-                    target) if graph_type == DependencyGraph.Type.RUN else DependencyGraph.CleanNode(target)
+                return (
+                    DependencyGraph.RunNode(target)
+                    if graph_type == DependencyGraph.Type.RUN
+                    else DependencyGraph.CleanNode(target)
+                )
 
             return None
 
@@ -554,7 +578,7 @@ class DependencyGraph:
 
         @override
         def __str__(self) -> str:
-            return '[' + self.target.name + ']'
+            return f'[{self.target.name}]'
 
         @override
         def __eq__(self, other) -> bool:
@@ -567,7 +591,7 @@ class DependencyGraph:
 
         @override
         def execute(self, module_registry: ModuleRegistry):
-            Log.verbose('Running target "%s"...', self.target.name)
+            Log.verbose(f'Running target "{self.target.name}"...')
             self.target.run(module_registry)
 
         @override
@@ -581,7 +605,7 @@ class DependencyGraph:
 
         @override
         def execute(self, module_registry: ModuleRegistry):
-            Log.verbose('Cleaning target "%s"...', self.target.name)
+            Log.verbose(f'Cleaning target "{self.target.name}"...')
             self.target.clean(module_registry)
 
         @override
@@ -597,6 +621,7 @@ class DependencyGraph:
             first:  The first node in the sequence
             last:   The last node in the sequence
         """
+
         first: 'DependencyGraph.Node'
         last: 'DependencyGraph.Node'
 
@@ -655,20 +680,24 @@ class DependencyGraph:
         @override
         def __str__(self) -> str:
             first_node = self.first
-            result = ' → ' + str(first_node)
+            result = f' → {first_node}'
             current_node = first_node.child
             indent = 1
 
             while current_node:
-                result += '\n' + reduce(lambda aggr, _: aggr + '   ', range(indent), '') + ' ↳ ' + str(current_node)
+                result += f'\n{reduce(lambda aggr, _: f"{aggr}   ", range(indent), "")} ↳ {current_node}'
                 current_node = current_node.child
                 indent += 1
 
             return result
 
     @staticmethod
-    def __expand_sequence(targets_by_name: dict[str, Target], sequence: Sequence, graph_type: 'DependencyGraph.Type',
-                          follow_dependencies: bool) -> list[Sequence]:
+    def __expand_sequence(
+        targets_by_name: dict[str, Target],
+        sequence: Sequence,
+        graph_type: 'DependencyGraph.Type',
+        follow_dependencies: bool,
+    ) -> list[Sequence]:
         sequences = []
         dependencies = sequence.first.target.dependencies if follow_dependencies else None
 
@@ -680,8 +709,10 @@ class DependencyGraph:
                     new_sequence = sequence.copy()
                     new_sequence.prepend(new_node)
                     sequences.extend(
-                        DependencyGraph.__expand_sequence(targets_by_name, new_sequence, graph_type,
-                                                          follow_dependencies))
+                        DependencyGraph.__expand_sequence(
+                            targets_by_name, new_sequence, graph_type, follow_dependencies
+                        )
+                    )
                 else:
                     sequences.append(sequence)
         else:
@@ -690,8 +721,12 @@ class DependencyGraph:
         return sequences
 
     @staticmethod
-    def __create_sequence(targets_by_name: dict[str, Target], target_name: str, graph_type: 'DependencyGraph.Type',
-                          follow_dependencies: bool) -> list[Sequence]:
+    def __create_sequence(
+        targets_by_name: dict[str, Target],
+        target_name: str,
+        graph_type: 'DependencyGraph.Type',
+        follow_dependencies: bool,
+    ) -> list[Sequence]:
         node = DependencyGraph.Node.from_name(targets_by_name, target_name, graph_type)
         sequence = DependencyGraph.Sequence.from_node(node)
         return DependencyGraph.__expand_sequence(targets_by_name, sequence, graph_type, follow_dependencies)
@@ -747,11 +782,13 @@ class DependencyGraph:
 
         return sequences[0]
 
-    def __init__(self,
-                 targets_by_name: dict[str, Target],
-                 *target_names: str,
-                 graph_type: 'DependencyGraph.Type',
-                 follow_dependencies: bool = True):
+    def __init__(
+        self,
+        targets_by_name: dict[str, Target],
+        *target_names: str,
+        graph_type: 'DependencyGraph.Type',
+        follow_dependencies: bool = True,
+    ):
         """
         :param targets_by_name:     A dictionary that stores all available targets by their names
         :param target_names:        The names of the targets to be included in the graph
@@ -761,9 +798,16 @@ class DependencyGraph:
         """
         self.sequence = self.__merge_multiple_sequences(
             reduce(
-                lambda aggr, target_name: aggr + self.__create_sequence(
-                    targets_by_name, target_name, graph_type, follow_dependencies=follow_dependencies), target_names,
-                []))
+                lambda aggr, target_name: (
+                    aggr
+                    + self.__create_sequence(
+                        targets_by_name, target_name, graph_type, follow_dependencies=follow_dependencies
+                    )
+                ),
+                target_names,
+                [],
+            )
+        )
 
     def execute(self, module_registry: ModuleRegistry):
         """
@@ -795,15 +839,19 @@ class TargetRegistry:
         existing = self.targets_by_name.get(target.name)
 
         if existing:
-            raise ValueError('Failed to register target ' + str(target)
-                             + ', because a target with the same name has already been registered: ' + str(existing))
+            raise ValueError(
+                f'Failed to register target {target}, because a target with the same name has already been registered: '
+                f'{existing}'
+            )
 
         self.targets_by_name[target.name] = target
 
-    def create_dependency_graph(self,
-                                *target_names: str,
-                                graph_type: 'DependencyGraph.Type' = DependencyGraph.Type.RUN,
-                                follow_dependencies: bool = True) -> DependencyGraph:
+    def create_dependency_graph(
+        self,
+        *target_names: str,
+        graph_type: 'DependencyGraph.Type' = DependencyGraph.Type.RUN,
+        follow_dependencies: bool = True,
+    ) -> DependencyGraph:
         """
         Creates and returns a `DependencyGraph` for each of the given targets.
 
@@ -819,9 +867,8 @@ class TargetRegistry:
         invalid_targets = [target_name for target_name in target_names if target_name not in self.targets_by_name]
 
         if invalid_targets:
-            Log.error('The following targets are invalid: %s', format_iterable(invalid_targets))
+            Log.error(f'The following targets are invalid: {format_iterable(invalid_targets)}')
 
-        return DependencyGraph(self.targets_by_name,
-                               *target_names,
-                               graph_type=graph_type,
-                               follow_dependencies=follow_dependencies)
+        return DependencyGraph(
+            self.targets_by_name, *target_names, graph_type=graph_type, follow_dependencies=follow_dependencies
+        )

@@ -3,10 +3,14 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing characteristics of binary predictions that are part of output data.
 """
+
 from typing import Any
 
-from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import Characteristic, \
-    OutputCharacteristics, get_output_characteristics
+from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import (
+    Characteristic,
+    OutputCharacteristics,
+    get_output_characteristics,
+)
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.matrix_output import OutputMatrix
 
 from mlrl.testbed.experiments.context import Context
@@ -30,8 +34,9 @@ class PredictionCharacteristics(OutputCharacteristics):
         super().__init__(values=values, properties=self.PROPERTIES, context=self.CONTEXT)
 
     @staticmethod
-    def from_prediction_matrix(problem_domain: ProblemDomain,
-                               prediction_matrix: OutputMatrix) -> 'PredictionCharacteristics':
+    def from_prediction_matrix(
+        problem_domain: ProblemDomain, prediction_matrix: OutputMatrix
+    ) -> 'PredictionCharacteristics':
         """
         Creates and returns `OutputCharacteristics` from a given output matrix.
 
@@ -40,5 +45,6 @@ class PredictionCharacteristics(OutputCharacteristics):
         :return:                    The `OutputCharacteristics` that have been created
         """
         characteristics = get_output_characteristics(problem_domain)
-        return PredictionCharacteristics([(characteristic, characteristic.function(prediction_matrix))
-                                          for characteristic in characteristics])
+        return PredictionCharacteristics(
+            [(characteristic, characteristic.function(prediction_matrix)) for characteristic in characteristics]
+        )

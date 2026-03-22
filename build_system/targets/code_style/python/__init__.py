@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Defines targets and modules for checking and enforcing code style definitions for Python and Cython files.
 """
+
 from pathlib import Path
 
 from core.build_unit import BuildUnit
@@ -10,18 +11,26 @@ from core.targets import TargetBuilder
 from util.files import FileType
 
 from targets.code_style.modules import CodeModule
-from targets.code_style.python.targets import CheckCythonCodeStyle, CheckPythonCodeStyle, EnforceCythonCodeStyle, \
-    EnforcePythonCodeStyle
+from targets.code_style.python.targets import (
+    CheckCythonCodeStyle,
+    CheckPythonCodeStyle,
+    EnforceCythonCodeStyle,
+    EnforcePythonCodeStyle,
+)
 from targets.project import Project
 
 FORMAT_PYTHON = 'format_python'
 
 TEST_FORMAT_PYTHON = 'test_format_python'
 
-TARGETS = TargetBuilder(BuildUnit.for_file(Path(__file__))) \
-    .add_phony_target(FORMAT_PYTHON).set_runnables(EnforcePythonCodeStyle(), EnforceCythonCodeStyle()) \
-    .add_phony_target(TEST_FORMAT_PYTHON).set_runnables(CheckPythonCodeStyle(), CheckCythonCodeStyle()) \
+TARGETS = (
+    TargetBuilder(BuildUnit.for_file(Path(__file__)))
+    .add_phony_target(FORMAT_PYTHON)
+    .set_runnables(EnforcePythonCodeStyle(), EnforceCythonCodeStyle())
+    .add_phony_target(TEST_FORMAT_PYTHON)
+    .set_runnables(CheckPythonCodeStyle(), CheckCythonCodeStyle())
     .build()
+)
 
 MODULES = [
     CodeModule(
@@ -49,5 +58,6 @@ MODULES = [
         file_type=FileType.python(),
         root_directory=subproject,
         source_file_search=Project.Python.file_search(),
-    ) for subproject in Project.Python.find_subprojects()
+    )
+    for subproject in Project.Python.find_subprojects()
 ]

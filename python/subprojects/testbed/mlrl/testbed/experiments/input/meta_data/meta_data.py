@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing meta-data that is part of input data.
 """
+
 from datetime import datetime
 from pathlib import Path
 from typing import Any, override

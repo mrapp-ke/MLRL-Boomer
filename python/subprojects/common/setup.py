@@ -1,6 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+
 import shutil
 
 from pathlib import Path
@@ -56,12 +57,14 @@ def find_extensions(directory: Path) -> list[PrecompiledExtension]:
     for path in directory.rglob('*'):
         if path.is_file() and any(suffix in path.name for suffix in ('.so', '.pyd', '.dylib', '.lib', '.dll')):
             file_name = path.name
-            extension_name = file_name[:file_name.find('.')]
+            extension_name = file_name[: file_name.find('.')]
             extensions.append(PrecompiledExtension(name=extension_name, path=path))
 
     return extensions
 
 
-setup(packages=find_packages(),
-      ext_modules=find_extensions(Path('mlrl')),
-      cmdclass={'build_ext': PrecompiledExtensionBuilder})
+setup(
+    packages=find_packages(),
+    ext_modules=find_extensions(Path('mlrl')),
+    cmdclass={'build_ext': PrecompiledExtensionBuilder},
+)

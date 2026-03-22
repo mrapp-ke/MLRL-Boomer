@@ -3,23 +3,51 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utilities that ease the configuration of rule learning algorithms.
 """
+
 import logging as log
 
 from abc import ABC, abstractmethod
 from typing import override
 
-from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, EqualFrequencyFeatureBinningMixin, \
-    EqualWidthFeatureBinningMixin, FeatureSamplingWithoutReplacementMixin, GreedyTopDownRuleInductionMixin, \
-    InstanceSamplingWithoutReplacementMixin, InstanceSamplingWithReplacementMixin, IrepRulePruningMixin, \
-    NoFeatureBinningMixin, NoFeatureSamplingMixin, NoGlobalPruningMixin, NoInstanceSamplingMixin, \
-    NoParallelPredictionMixin, NoParallelRuleRefinementMixin, NoParallelStatisticUpdateMixin, \
-    NoPartitionSamplingMixin, NoRulePruningMixin, NoSequentialPostOptimizationMixin, NoSizeStoppingCriterionMixin, \
-    NoTimeStoppingCriterionMixin, ParallelPredictionMixin, ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, \
-    PostPruningMixin, PrePruningMixin, RandomBiPartitionSamplingMixin, RNGMixin, RoundRobinOutputSamplingMixin, \
-    SequentialPostOptimizationMixin, SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
-from mlrl.common.cython.learner_classification import ExampleWiseStratifiedBiPartitionSamplingMixin, \
-    ExampleWiseStratifiedInstanceSamplingMixin, OutputWiseStratifiedBiPartitionSamplingMixin, \
-    OutputWiseStratifiedInstanceSamplingMixin
+from mlrl.common.cython.learner import (
+    BeamSearchTopDownRuleInductionMixin,
+    EqualFrequencyFeatureBinningMixin,
+    EqualWidthFeatureBinningMixin,
+    FeatureSamplingWithoutReplacementMixin,
+    GreedyTopDownRuleInductionMixin,
+    InstanceSamplingWithoutReplacementMixin,
+    InstanceSamplingWithReplacementMixin,
+    IrepRulePruningMixin,
+    NoFeatureBinningMixin,
+    NoFeatureSamplingMixin,
+    NoGlobalPruningMixin,
+    NoInstanceSamplingMixin,
+    NoParallelPredictionMixin,
+    NoParallelRuleRefinementMixin,
+    NoParallelStatisticUpdateMixin,
+    NoPartitionSamplingMixin,
+    NoRulePruningMixin,
+    NoSequentialPostOptimizationMixin,
+    NoSizeStoppingCriterionMixin,
+    NoTimeStoppingCriterionMixin,
+    ParallelPredictionMixin,
+    ParallelRuleRefinementMixin,
+    ParallelStatisticUpdateMixin,
+    PostPruningMixin,
+    PrePruningMixin,
+    RandomBiPartitionSamplingMixin,
+    RNGMixin,
+    RoundRobinOutputSamplingMixin,
+    SequentialPostOptimizationMixin,
+    SizeStoppingCriterionMixin,
+    TimeStoppingCriterionMixin,
+)
+from mlrl.common.cython.learner_classification import (
+    ExampleWiseStratifiedBiPartitionSamplingMixin,
+    ExampleWiseStratifiedInstanceSamplingMixin,
+    OutputWiseStratifiedBiPartitionSamplingMixin,
+    OutputWiseStratifiedInstanceSamplingMixin,
+)
 from mlrl.common.cython.package_info import get_num_cpu_cores, is_multi_threading_support_enabled
 from mlrl.common.cython.stopping_criterion import AggregationFunction
 
@@ -159,7 +187,7 @@ class NominalParameter(Parameter, ABC):
     def _configure(self, config, value: str, options: Options):
         """
         Must be implemented by subclasses in order to configure a rule learner depending on the specified nominal value.
-        
+
         :param config:  The configuration to be modified
         :param value:   The nominal value to be set
         :param options: Additional options that have eventually been specified
@@ -203,7 +231,7 @@ class NominalParameter(Parameter, ABC):
                 value_description = self.values[supported_value].description
 
                 if value_description:
-                    description += ' ' + value_description + '.'
+                    description += f' {value_description}.'
 
             return SetArgument(self.argument_name, values=supported_values, description=description)
 
@@ -230,7 +258,7 @@ class NumericalParameter(Parameter, ABC):
         """
         Must be implemented by subclasses in order to configure a rule learner depending on the specified numerical
         value.
-        
+
         :param config:  The configuration to be modified
         :param value:   The numerical value to be set
         """
@@ -277,9 +305,11 @@ class RandomStateParameter(IntParameter):
     """
 
     def __init__(self):
-        super().__init__(name='random_state',
-                         description='The seed to be used by random number generators. Must be at least 0.',
-                         mixin=RNGMixin)
+        super().__init__(
+            name='random_state',
+            description='The seed to be used by random number generators. Must be at least 0.',
+            mixin=RNGMixin,
+        )
 
     @override
     def _configure(self, config, value):
@@ -308,21 +338,34 @@ class RuleInductionParameter(NominalParameter):
     OPTION_BEAM_WIDTH = 'beam_width'
 
     def __init__(self):
-        super().__init__(name='rule_induction',
-                         description='The name of the algorithm to be used for the induction of individual rules')
-        self.add_value(name=self.RULE_INDUCTION_TOP_DOWN_GREEDY,
-                       mixin=GreedyTopDownRuleInductionMixin,
-                       options={
-                           self.OPTION_MIN_COVERAGE, self.OPTION_MIN_SUPPORT, self.OPTION_MAX_CONDITIONS,
-                           self.OPTION_MAX_HEAD_REFINEMENTS, self.OPTION_RECALCULATE_PREDICTIONS
-                       })
-        self.add_value(name=self.RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH,
-                       mixin=BeamSearchTopDownRuleInductionMixin,
-                       options={
-                           self.OPTION_MIN_COVERAGE, self.OPTION_MIN_SUPPORT, self.OPTION_MAX_CONDITIONS,
-                           self.OPTION_MAX_HEAD_REFINEMENTS, self.OPTION_RECALCULATE_PREDICTIONS,
-                           self.OPTION_BEAM_WIDTH, OPTION_RESAMPLE_FEATURES
-                       })
+        super().__init__(
+            name='rule_induction',
+            description='The name of the algorithm to be used for the induction of individual rules',
+        )
+        self.add_value(
+            name=self.RULE_INDUCTION_TOP_DOWN_GREEDY,
+            mixin=GreedyTopDownRuleInductionMixin,
+            options={
+                self.OPTION_MIN_COVERAGE,
+                self.OPTION_MIN_SUPPORT,
+                self.OPTION_MAX_CONDITIONS,
+                self.OPTION_MAX_HEAD_REFINEMENTS,
+                self.OPTION_RECALCULATE_PREDICTIONS,
+            },
+        )
+        self.add_value(
+            name=self.RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH,
+            mixin=BeamSearchTopDownRuleInductionMixin,
+            options={
+                self.OPTION_MIN_COVERAGE,
+                self.OPTION_MIN_SUPPORT,
+                self.OPTION_MAX_CONDITIONS,
+                self.OPTION_MAX_HEAD_REFINEMENTS,
+                self.OPTION_RECALCULATE_PREDICTIONS,
+                self.OPTION_BEAM_WIDTH,
+                OPTION_RESAMPLE_FEATURES,
+            },
+        )
 
     @override
     def _configure(self, config, value: str, options: Options):
@@ -332,18 +375,22 @@ class RuleInductionParameter(NominalParameter):
             conf.set_min_support(options.get_float(self.OPTION_MIN_SUPPORT, conf.get_min_support()))
             conf.set_max_conditions(options.get_int(self.OPTION_MAX_CONDITIONS, conf.get_max_conditions()))
             conf.set_max_head_refinements(
-                options.get_int(self.OPTION_MAX_HEAD_REFINEMENTS, conf.get_max_head_refinements()))
+                options.get_int(self.OPTION_MAX_HEAD_REFINEMENTS, conf.get_max_head_refinements())
+            )
             conf.set_recalculate_predictions(
-                options.get_bool(self.OPTION_RECALCULATE_PREDICTIONS, conf.are_predictions_recalculated()))
+                options.get_bool(self.OPTION_RECALCULATE_PREDICTIONS, conf.are_predictions_recalculated())
+            )
         elif value == self.RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH:
             conf = config.use_beam_search_top_down_rule_induction()
             conf.set_min_coverage(options.get_int(self.OPTION_MIN_COVERAGE, conf.get_min_coverage()))
             conf.set_min_support(options.get_float(self.OPTION_MIN_SUPPORT, conf.get_min_support()))
             conf.set_max_conditions(options.get_int(self.OPTION_MAX_CONDITIONS, conf.get_max_conditions()))
             conf.set_max_head_refinements(
-                options.get_int(self.OPTION_MAX_HEAD_REFINEMENTS, conf.get_max_head_refinements()))
+                options.get_int(self.OPTION_MAX_HEAD_REFINEMENTS, conf.get_max_head_refinements())
+            )
             conf.set_recalculate_predictions(
-                options.get_bool(self.OPTION_RECALCULATE_PREDICTIONS, conf.are_predictions_recalculated()))
+                options.get_bool(self.OPTION_RECALCULATE_PREDICTIONS, conf.are_predictions_recalculated())
+            )
             conf.set_beam_width(options.get_int(self.OPTION_BEAM_WIDTH, conf.get_beam_width()))
             conf.set_resample_features(options.get_bool(OPTION_RESAMPLE_FEATURES, conf.are_features_resampled()))
 
@@ -356,12 +403,16 @@ class FeatureBinningParameter(NominalParameter):
     def __init__(self):
         super().__init__(name='feature_binning', description='The name of the strategy to be used for feature binning')
         self.add_value(name=NONE, mixin=NoFeatureBinningMixin)
-        self.add_value(name=BINNING_EQUAL_FREQUENCY,
-                       mixin=EqualFrequencyFeatureBinningMixin,
-                       options={OPTION_BIN_RATIO, OPTION_MIN_BINS, OPTION_MAX_BINS})
-        self.add_value(name=BINNING_EQUAL_WIDTH,
-                       mixin=EqualWidthFeatureBinningMixin,
-                       options={OPTION_BIN_RATIO, OPTION_MIN_BINS, OPTION_MAX_BINS})
+        self.add_value(
+            name=BINNING_EQUAL_FREQUENCY,
+            mixin=EqualFrequencyFeatureBinningMixin,
+            options={OPTION_BIN_RATIO, OPTION_MIN_BINS, OPTION_MAX_BINS},
+        )
+        self.add_value(
+            name=BINNING_EQUAL_WIDTH,
+            mixin=EqualWidthFeatureBinningMixin,
+            options={OPTION_BIN_RATIO, OPTION_MIN_BINS, OPTION_MAX_BINS},
+        )
 
     @override
     def _configure(self, config, value: str, options: Options):
@@ -389,9 +440,11 @@ class OutputSamplingParameter(NominalParameter):
     def __init__(self):
         super().__init__(name='output_sampling', description='The name of the strategy to be used for output sampling')
         self.add_value(name=NONE, mixin=NoFeatureSamplingMixin)
-        self.add_value(name=SAMPLING_WITHOUT_REPLACEMENT,
-                       mixin=FeatureSamplingWithoutReplacementMixin,
-                       options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES})
+        self.add_value(
+            name=SAMPLING_WITHOUT_REPLACEMENT,
+            mixin=FeatureSamplingWithoutReplacementMixin,
+            options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES},
+        )
         self.add_value(name=self.OUTPUT_SAMPLING_ROUND_ROBIN, mixin=RoundRobinOutputSamplingMixin)
 
     @override
@@ -413,21 +466,30 @@ class InstanceSamplingParameter(NominalParameter):
     """
 
     def __init__(self):
-        super().__init__(name='instance_sampling',
-                         description='The name of the strategy to be used for instance sampling')
+        super().__init__(
+            name='instance_sampling', description='The name of the strategy to be used for instance sampling'
+        )
         self.add_value(name=NONE, mixin=NoInstanceSamplingMixin)
-        self.add_value(name=SAMPLING_WITH_REPLACEMENT,
-                       mixin=InstanceSamplingWithReplacementMixin,
-                       options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES})
-        self.add_value(name=SAMPLING_WITHOUT_REPLACEMENT,
-                       mixin=InstanceSamplingWithoutReplacementMixin,
-                       options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES})
-        self.add_value(name=SAMPLING_STRATIFIED_OUTPUT_WISE,
-                       mixin=OutputWiseStratifiedInstanceSamplingMixin,
-                       options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES})
-        self.add_value(name=SAMPLING_STRATIFIED_EXAMPLE_WISE,
-                       mixin=ExampleWiseStratifiedInstanceSamplingMixin,
-                       options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES})
+        self.add_value(
+            name=SAMPLING_WITH_REPLACEMENT,
+            mixin=InstanceSamplingWithReplacementMixin,
+            options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES},
+        )
+        self.add_value(
+            name=SAMPLING_WITHOUT_REPLACEMENT,
+            mixin=InstanceSamplingWithoutReplacementMixin,
+            options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES},
+        )
+        self.add_value(
+            name=SAMPLING_STRATIFIED_OUTPUT_WISE,
+            mixin=OutputWiseStratifiedInstanceSamplingMixin,
+            options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES},
+        )
+        self.add_value(
+            name=SAMPLING_STRATIFIED_EXAMPLE_WISE,
+            mixin=ExampleWiseStratifiedInstanceSamplingMixin,
+            options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES},
+        )
 
     @override
     def _configure(self, config, value: str, options: Options):
@@ -463,12 +525,15 @@ class FeatureSamplingParameter(NominalParameter):
     OPTION_NUM_RETAINED = 'num_retained'
 
     def __init__(self):
-        super().__init__(name='feature_sampling',
-                         description='The name of the strategy to be used for feature sampling')
+        super().__init__(
+            name='feature_sampling', description='The name of the strategy to be used for feature sampling'
+        )
         self.add_value(name=NONE, mixin=NoFeatureSamplingMixin)
-        self.add_value(name=SAMPLING_WITHOUT_REPLACEMENT,
-                       mixin=FeatureSamplingWithoutReplacementMixin,
-                       options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES, self.OPTION_NUM_RETAINED})
+        self.add_value(
+            name=SAMPLING_WITHOUT_REPLACEMENT,
+            mixin=FeatureSamplingWithoutReplacementMixin,
+            options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES, self.OPTION_NUM_RETAINED},
+        )
 
     @override
     def _configure(self, config, value: str, options: Options):
@@ -494,15 +559,21 @@ class PartitionSamplingParameter(NominalParameter):
     def __init__(self):
         super().__init__(name='holdout', description='The name of the strategy to be used for creating a holdout set')
         self.add_value(name=NONE, mixin=NoPartitionSamplingMixin)
-        self.add_value(name=self.PARTITION_SAMPLING_RANDOM,
-                       mixin=RandomBiPartitionSamplingMixin,
-                       options={self.OPTION_HOLDOUT_SET_SIZE})
-        self.add_value(name=SAMPLING_STRATIFIED_OUTPUT_WISE,
-                       mixin=OutputWiseStratifiedBiPartitionSamplingMixin,
-                       options={self.OPTION_HOLDOUT_SET_SIZE})
-        self.add_value(name=SAMPLING_STRATIFIED_EXAMPLE_WISE,
-                       mixin=ExampleWiseStratifiedBiPartitionSamplingMixin,
-                       options={self.OPTION_HOLDOUT_SET_SIZE})
+        self.add_value(
+            name=self.PARTITION_SAMPLING_RANDOM,
+            mixin=RandomBiPartitionSamplingMixin,
+            options={self.OPTION_HOLDOUT_SET_SIZE},
+        )
+        self.add_value(
+            name=SAMPLING_STRATIFIED_OUTPUT_WISE,
+            mixin=OutputWiseStratifiedBiPartitionSamplingMixin,
+            options={self.OPTION_HOLDOUT_SET_SIZE},
+        )
+        self.add_value(
+            name=SAMPLING_STRATIFIED_EXAMPLE_WISE,
+            mixin=ExampleWiseStratifiedBiPartitionSamplingMixin,
+            options={self.OPTION_HOLDOUT_SET_SIZE},
+        )
 
     @override
     def _configure(self, config, value: str, options: Options):
@@ -553,27 +624,42 @@ class GlobalPruningParameter(NominalParameter):
     AGGREGATION_FUNCTION_ARITHMETIC_MEAN = 'avg'
 
     def __init__(self):
-        super().__init__(name='global_pruning',
-                         description='The name of the strategy to be used for pruning entire rules')
+        super().__init__(
+            name='global_pruning', description='The name of the strategy to be used for pruning entire rules'
+        )
         self.add_value(name=NONE, mixin=NoGlobalPruningMixin)
-        self.add_value(name=self.GLOBAL_PRUNING_POST,
-                       mixin=PostPruningMixin,
-                       options={
-                           OPTION_USE_HOLDOUT_SET, self.OPTION_REMOVE_UNUSED_RULES, self.OPTION_MIN_RULES,
-                           self.OPTION_INTERVAL
-                       })
-        self.add_value(name=self.GLOBAL_PRUNING_PRE,
-                       mixin=PrePruningMixin,
-                       options={
-                           OPTION_USE_HOLDOUT_SET, self.OPTION_REMOVE_UNUSED_RULES, self.OPTION_MIN_RULES,
-                           self.OPTION_AGGREGATION_FUNCTION, self.OPTION_UPDATE_INTERVAL, self.OPTION_STOP_INTERVAL,
-                           self.OPTION_NUM_PAST, self.OPTION_NUM_RECENT, self.OPTION_MIN_IMPROVEMENT
-                       })
+        self.add_value(
+            name=self.GLOBAL_PRUNING_POST,
+            mixin=PostPruningMixin,
+            options={
+                OPTION_USE_HOLDOUT_SET,
+                self.OPTION_REMOVE_UNUSED_RULES,
+                self.OPTION_MIN_RULES,
+                self.OPTION_INTERVAL,
+            },
+        )
+        self.add_value(
+            name=self.GLOBAL_PRUNING_PRE,
+            mixin=PrePruningMixin,
+            options={
+                OPTION_USE_HOLDOUT_SET,
+                self.OPTION_REMOVE_UNUSED_RULES,
+                self.OPTION_MIN_RULES,
+                self.OPTION_AGGREGATION_FUNCTION,
+                self.OPTION_UPDATE_INTERVAL,
+                self.OPTION_STOP_INTERVAL,
+                self.OPTION_NUM_PAST,
+                self.OPTION_NUM_RECENT,
+                self.OPTION_MIN_IMPROVEMENT,
+            },
+        )
 
     def __create_aggregation_function(self, aggregation_function: str) -> AggregationFunction:
         value = parse_param(
-            self.OPTION_AGGREGATION_FUNCTION, aggregation_function,
-            {self.AGGREGATION_FUNCTION_MIN, self.AGGREGATION_FUNCTION_MAX, self.AGGREGATION_FUNCTION_ARITHMETIC_MEAN})
+            self.OPTION_AGGREGATION_FUNCTION,
+            aggregation_function,
+            {self.AGGREGATION_FUNCTION_MIN, self.AGGREGATION_FUNCTION_MAX, self.AGGREGATION_FUNCTION_ARITHMETIC_MEAN},
+        )
 
         if value == self.AGGREGATION_FUNCTION_MIN:
             return AggregationFunction.MIN
@@ -589,19 +675,23 @@ class GlobalPruningParameter(NominalParameter):
             conf = config.use_global_post_pruning()
             conf.set_use_holdout_set(options.get_bool(OPTION_USE_HOLDOUT_SET, conf.is_holdout_set_used()))
             conf.set_remove_unused_rules(
-                options.get_bool(self.OPTION_REMOVE_UNUSED_RULES, conf.is_remove_unused_rules()))
+                options.get_bool(self.OPTION_REMOVE_UNUSED_RULES, conf.is_remove_unused_rules())
+            )
             conf.set_min_rules(options.get_int(self.OPTION_MIN_RULES, conf.get_min_rules()))
             conf.set_interval(options.get_int(self.OPTION_INTERVAL, conf.get_interval()))
         elif value == self.GLOBAL_PRUNING_PRE:
             conf = config.use_global_pre_pruning()
             conf.set_use_holdout_set(options.get_bool(OPTION_USE_HOLDOUT_SET, conf.is_holdout_set_used()))
             conf.set_remove_unused_rules(
-                options.get_bool(self.OPTION_REMOVE_UNUSED_RULES, conf.is_remove_unused_rules()))
+                options.get_bool(self.OPTION_REMOVE_UNUSED_RULES, conf.is_remove_unused_rules())
+            )
             conf.set_min_rules(options.get_int(self.OPTION_MIN_RULES, conf.get_min_rules()))
             aggregation_function = options.get_string(self.OPTION_AGGREGATION_FUNCTION, None)
             conf.set_aggregation_function(
-                self.__create_aggregation_function(aggregation_function) if aggregation_function else conf
-                .get_aggregation_function())
+                self.__create_aggregation_function(aggregation_function)
+                if aggregation_function
+                else conf.get_aggregation_function()
+            )
             conf.set_update_interval(options.get_int(self.OPTION_UPDATE_INTERVAL, conf.get_update_interval()))
             conf.set_stop_interval(options.get_int(self.OPTION_STOP_INTERVAL, conf.get_stop_interval()))
             conf.set_num_past(options.get_int(self.OPTION_NUM_PAST, conf.get_num_past()))
@@ -617,8 +707,9 @@ class RulePruningParameter(NominalParameter):
     RULE_PRUNING_IREP = 'irep'
 
     def __init__(self):
-        super().__init__(name='rule_pruning',
-                         description='The name of the strategy to be used for pruning individual rules')
+        super().__init__(
+            name='rule_pruning', description='The name of the strategy to be used for pruning individual rules'
+        )
         self.add_value(name=NONE, mixin=NoRulePruningMixin)
         self.add_value(name=self.RULE_PRUNING_IREP, mixin=IrepRulePruningMixin)
 
@@ -637,12 +728,14 @@ class ParallelRuleRefinementParameter(NominalParameter):
     """
 
     def __init__(self):
-        super().__init__(name='parallel_rule_refinement',
-                         description='Whether potential refinements of rules should be searched for in parallel or not')
+        super().__init__(
+            name='parallel_rule_refinement',
+            description='Whether potential refinements of rules should be searched for in parallel or not',
+        )
         self.add_value(name=BooleanOption.FALSE, mixin=NoParallelRuleRefinementMixin)
-        self.add_value(name=BooleanOption.TRUE,
-                       mixin=ParallelRuleRefinementMixin,
-                       options={OPTION_NUM_PREFERRED_THREADS})
+        self.add_value(
+            name=BooleanOption.TRUE, mixin=ParallelRuleRefinementMixin, options={OPTION_NUM_PREFERRED_THREADS}
+        )
 
     @override
     def _configure(self, config, value: str, options: Options):
@@ -653,11 +746,15 @@ class ParallelRuleRefinementParameter(NominalParameter):
             num_preferred_threads = options.get_int(OPTION_NUM_PREFERRED_THREADS, conf.get_num_preferred_threads())
             conf.set_num_preferred_threads(num_preferred_threads)
             if num_preferred_threads > 1 and not is_multi_threading_support_enabled():
-                log.warning('%s threads should be used for rule refinement, but multi-threading support is disabled',
-                            num_preferred_threads)
+                log.warning(
+                    f'{num_preferred_threads} threads should be used for rule refinement, but multi-threading support '
+                    f'is disabled'
+                )
             elif num_preferred_threads > get_num_cpu_cores():
-                log.warning('%s threads should be used for rule refinement, but only %s CPU cores are available',
-                            num_preferred_threads, get_num_cpu_cores())
+                log.warning(
+                    f'{num_preferred_threads} threads should be used for rule refinement, but only '
+                    f'{get_num_cpu_cores()} CPU cores are available'
+                )
 
 
 class ParallelStatisticUpdateParameter(NominalParameter):
@@ -669,11 +766,12 @@ class ParallelStatisticUpdateParameter(NominalParameter):
     def __init__(self):
         super().__init__(
             name='parallel_statistic_update',
-            description='Whether the statistics for different examples should be updated in parallel or not')
+            description='Whether the statistics for different examples should be updated in parallel or not',
+        )
         self.add_value(name=BooleanOption.FALSE, mixin=NoParallelStatisticUpdateMixin)
-        self.add_value(name=BooleanOption.TRUE,
-                       mixin=ParallelStatisticUpdateMixin,
-                       options={OPTION_NUM_PREFERRED_THREADS})
+        self.add_value(
+            name=BooleanOption.TRUE, mixin=ParallelStatisticUpdateMixin, options={OPTION_NUM_PREFERRED_THREADS}
+        )
 
     @override
     def _configure(self, config, value: str, options: Options):
@@ -684,11 +782,15 @@ class ParallelStatisticUpdateParameter(NominalParameter):
             num_preferred_threads = options.get_int(OPTION_NUM_PREFERRED_THREADS, conf.get_num_preferred_threads())
             conf.set_num_preferred_threads(num_preferred_threads)
             if num_preferred_threads > 1 and not is_multi_threading_support_enabled():
-                log.warning('%s threads should be used for statistic updates, but multi-threading support is disabled',
-                            num_preferred_threads)
+                log.warning(
+                    f'{num_preferred_threads} threads should be used for statistic updates, but multi-threading '
+                    f'support is disabled'
+                )
             elif num_preferred_threads > get_num_cpu_cores():
-                log.warning('%s threads should be used for statistic updates, but only %s CPU cores are available',
-                            num_preferred_threads, get_num_cpu_cores())
+                log.warning(
+                    f'{num_preferred_threads} threads should be used for statistic updates, but only '
+                    f'{get_num_cpu_cores()} CPU cores are available'
+                )
 
 
 class ParallelPredictionParameter(NominalParameter):
@@ -698,8 +800,10 @@ class ParallelPredictionParameter(NominalParameter):
     """
 
     def __init__(self):
-        super().__init__(name='parallel_prediction',
-                         description='Whether predictions for different examples should be obtained in parallel or not')
+        super().__init__(
+            name='parallel_prediction',
+            description='Whether predictions for different examples should be obtained in parallel or not',
+        )
         self.add_value(name=BooleanOption.FALSE, mixin=NoParallelPredictionMixin)
         self.add_value(name=BooleanOption.TRUE, mixin=ParallelPredictionMixin, options={OPTION_NUM_PREFERRED_THREADS})
 
@@ -712,11 +816,15 @@ class ParallelPredictionParameter(NominalParameter):
             num_preferred_threads = options.get_int(OPTION_NUM_PREFERRED_THREADS, conf.get_num_preferred_threads())
             conf.set_num_preferred_threads(num_preferred_threads)
             if num_preferred_threads > 1 and not is_multi_threading_support_enabled():
-                log.warning('%s threads should be used for prediction, but multi-threading support is disabled',
-                            num_preferred_threads)
+                log.warning(
+                    f'{num_preferred_threads} threads should be used for prediction, but multi-threading support is '
+                    f'disabled'
+                )
             elif num_preferred_threads > get_num_cpu_cores():
-                log.warning('%s threads should be used for prediction, but only %s CPU cores are available',
-                            num_preferred_threads, get_num_cpu_cores())
+                log.warning(
+                    f'{num_preferred_threads} threads should be used for prediction, but only {get_num_cpu_cores()} '
+                    f'CPU cores are available'
+                )
 
 
 class SizeStoppingCriterionParameter(IntParameter):
@@ -728,8 +836,9 @@ class SizeStoppingCriterionParameter(IntParameter):
         super().__init__(
             name='max_rules',
             description='The maximum number of rules to be induced. Must be at least 1 or 0, if the number of rules '
-            + 'should not be restricted',
-            mixin=SizeStoppingCriterionMixin)
+            'should not be restricted',
+            mixin=SizeStoppingCriterionMixin,
+        )
 
     @override
     def _configure(self, config, value):
@@ -748,8 +857,9 @@ class TimeStoppingCriterionParameter(IntParameter):
         super().__init__(
             name='time_limit',
             description='The duration in seconds after which the induction of rules should be canceled. Must be at '
-            + 'least 1 or 0, if no time limit should be set',
-            mixin=TimeStoppingCriterionMixin)
+            'least 1 or 0, if no time limit should be set',
+            mixin=TimeStoppingCriterionMixin,
+        )
 
     @override
     def _configure(self, config, value):
@@ -772,12 +882,16 @@ class PostOptimizationParameter(NominalParameter):
     OPTION_REFINE_HEADS = 'refine_heads'
 
     def __init__(self):
-        super().__init__(name='post_optimization',
-                         description='The method that should be used for post-optimization of a previous learned model')
+        super().__init__(
+            name='post_optimization',
+            description='The method that should be used for post-optimization of a previous learned model',
+        )
         self.add_value(name=NONE, mixin=NoSequentialPostOptimizationMixin)
-        self.add_value(name=self.POST_OPTIMIZATION_SEQUENTIAL,
-                       mixin=SequentialPostOptimizationMixin,
-                       options={self.OPTION_NUM_ITERATIONS, self.OPTION_REFINE_HEADS, OPTION_RESAMPLE_FEATURES})
+        self.add_value(
+            name=self.POST_OPTIMIZATION_SEQUENTIAL,
+            mixin=SequentialPostOptimizationMixin,
+            options={self.OPTION_NUM_ITERATIONS, self.OPTION_REFINE_HEADS, OPTION_RESAMPLE_FEATURES},
+        )
 
     @override
     def _configure(self, config, value: str, options: Options):
@@ -805,5 +919,5 @@ RULE_LEARNER_PARAMETERS = {
     ParallelPredictionParameter(),
     SizeStoppingCriterionParameter(),
     TimeStoppingCriterionParameter(),
-    PostOptimizationParameter()
+    PostOptimizationParameter(),
 }

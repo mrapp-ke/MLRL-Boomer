@@ -18,17 +18,21 @@ class MlrlTestbedSklearnClassificationIntegrationTests(ClassificationIntegration
 
     def test_label_vectors(self, dataset: Dataset):
         test_name = 'label-vectors'
-        builder = self.create_cmd_builder(dataset=dataset.default) \
-            .save_meta_data() \
-            .print_evaluation(False) \
-            .save_evaluation(False) \
-            .print_label_vectors() \
+        builder = (
+            self.create_cmd_builder(dataset=dataset.default)
+            .save_meta_data()
+            .print_evaluation(False)
+            .save_evaluation(False)
+            .print_label_vectors()
             .save_label_vectors()
+        )
         CmdRunner(builder).run(test_name, wipe_after=False)
-        builder = self.create_cmd_builder() \
-            .set_mode(ExperimentMode.READ) \
-            .print_evaluation(False) \
-            .save_evaluation(False) \
-            .print_label_vectors() \
+        builder = (
+            self.create_cmd_builder()
+            .set_mode(ExperimentMode.READ)
+            .print_evaluation(False)
+            .save_evaluation(False)
+            .print_label_vectors()
             .save_label_vectors()
+        )
         CmdRunner(builder).run(test_name, wipe_before=False)

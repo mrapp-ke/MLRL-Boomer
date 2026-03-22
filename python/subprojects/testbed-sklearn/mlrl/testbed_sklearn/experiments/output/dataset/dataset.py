@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing tabular datasets that are part of output data.
 """
+
 import sys
 
 from typing import override

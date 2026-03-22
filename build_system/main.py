@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Initializes the build system and runs targets specified via command line arguments.
 """
+
 import sys
 
 from argparse import ArgumentParser
@@ -22,9 +23,9 @@ def __parse_command_line_arguments():
     parser = ArgumentParser(description='The build system of the project "MLRL-Boomer"')
     parser.add_argument('--verbose', action='store_true', help='Enables verbose logging.')
     parser.add_argument('--clean', action='store_true', help='Cleans the specified targets.')
-    parser.add_argument('--no-dependencies',
-                        action='store_true',
-                        help='If the dependencies of the given targets should not be built.')
+    parser.add_argument(
+        '--no-dependencies', action='store_true', help='If the dependencies of the given targets should not be built.'
+    )
     parser.add_argument('targets', nargs='*')
     return parser.parse_args()
 
@@ -35,10 +36,7 @@ def __configure_log(args):
 
 
 def __find_init_files() -> list[Path]:
-    return FileSearch() \
-        .set_recursive(True) \
-        .filter_by_name('__init__.py') \
-        .list(BuildUnit().root_directory)
+    return FileSearch().set_recursive(True).filter_by_name('__init__.py').list(BuildUnit().root_directory)
 
 
 def __import_source_file(source_file: Path) -> ModuleType:
@@ -56,7 +54,7 @@ def __import_source_file(source_file: Path) -> ModuleType:
 
         raise FileNotFoundError()
     except FileNotFoundError as error:
-        raise ImportError('Source file "' + str(source_file) + '" not found') from error
+        raise ImportError('Source file "{source_file}" not found') from error
 
 
 def __register_modules(init_files: list[Path]) -> ModuleRegistry:
@@ -70,16 +68,16 @@ def __register_modules(init_files: list[Path]) -> ModuleRegistry:
         ]
 
         if modules:
-            Log.verbose('Registering %s modules defined in file "%s":\n', str(len(modules)), init_file)
+            Log.verbose(f'Registering {len(modules)} modules defined in file "{init_file}":\n')
 
             for module in modules:
-                Log.verbose(' - %s', str(module))
+                Log.verbose(f' - {module}')
                 module_registry.register(module)
 
             Log.verbose('')
             num_modules += len(modules)
 
-    Log.verbose('Successfully registered %s modules.\n', str(num_modules))
+    Log.verbose(f'Successfully registered {num_modules} modules.\n')
     return module_registry
 
 
@@ -94,16 +92,16 @@ def __register_targets(init_files: list[Path]) -> TargetRegistry:
         ]
 
         if targets:
-            Log.verbose('Registering %s targets defined in file "%s":\n', str(len(targets)), init_file)
+            Log.verbose(f'Registering {len(targets)} targets defined in file "{init_file}":\n')
 
             for target in targets:
-                Log.verbose(' - %s', str(target))
+                Log.verbose(f' - {target}')
                 target_registry.register(target)
 
             Log.verbose('')
             num_targets += len(targets)
 
-    Log.verbose('Successfully registered %s targets.\n', str(num_targets))
+    Log.verbose(f'Successfully registered {num_targets} targets.\n')
     return target_registry
 
 
@@ -115,11 +113,11 @@ def __find_default_target(init_files: list[Path]) -> str | None:
         default_target = getattr(__import_source_file(init_file), 'DEFAULT_TARGET', None)
 
         if default_target and isinstance(default_target, str):
-            Log.verbose('Found default target "%s" defined in file "%s"', default_target, init_file)
+            Log.verbose(f'Found default target "{default_target}" defined in file "{init_file}"')
             default_targets.append(default_target)
 
     if len(default_targets) > 1:
-        raise RuntimeError('Only one default target may be specified, but found: ' + format_iterable(default_targets))
+        raise RuntimeError(f'Only one default target may be specified, but found: {format_iterable(default_targets)}')
 
     if default_targets:
         return default_targets[0]
@@ -139,15 +137,15 @@ def __create_dependency_graph(target_registry: TargetRegistry, args, default_tar
         if clean:
             graph_type = DependencyGraph.Type.CLEAN_ALL
 
-    Log.verbose('Creating dependency graph for %s targets [%s]...', 'cleaning' if clean else 'running',
-                format_iterable(targets))
+    Log.verbose(
+        f'Creating dependency graph for {("cleaning" if clean else "running")} targets [{format_iterable(targets)}]...'
+    )
     no_dependencies = args.no_dependencies
-    Log.verbose('Dependencies of the given targets will ' + ('not ' if no_dependencies else '')
-                + 'be taken into account')
-    dependency_graph = target_registry.create_dependency_graph(*targets,
-                                                               graph_type=graph_type,
-                                                               follow_dependencies=not no_dependencies)
-    Log.verbose('Successfully created dependency graph:\n\n%s\n', str(dependency_graph))
+    Log.verbose(f'Dependencies of the given targets will {("not " if no_dependencies else "")} be taken into account')
+    dependency_graph = target_registry.create_dependency_graph(
+        *targets, graph_type=graph_type, follow_dependencies=not no_dependencies
+    )
+    Log.verbose(f'Successfully created dependency graph:\n\n{dependency_graph}\n')
     return dependency_graph
 
 

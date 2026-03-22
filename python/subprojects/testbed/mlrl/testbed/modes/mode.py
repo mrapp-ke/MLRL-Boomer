@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides base classes for implementing different modes of operation.
 """
+
 import logging as log
 
 from abc import ABC, abstractmethod
@@ -55,8 +56,9 @@ class Mode(ABC):
         """
 
     @abstractmethod
-    def run_experiment(self, control_arguments: set[Argument], algorithmic_arguments: set[Argument], args: Namespace,
-                       recipe: Recipe):
+    def run_experiment(
+        self, control_arguments: set[Argument], algorithmic_arguments: set[Argument], args: Namespace, recipe: Recipe
+    ):
         """
         Must be implemented by subclasses in order to run an experiment according to the command line arguments
         specified by the user.
@@ -88,7 +90,7 @@ class InputMode(Mode, ABC):
         '--input-dir',
         required=True,
         description='An absolute or relative path to a directory that contains a metadata.yml file that has been '
-        + 'created when running one or several experiments in the past.',
+        'created when running one or several experiments in the past.',
     )
 
     def __read_meta_data(self, args: Namespace, recipe: Recipe, input_directory: Path) -> MetaData:
@@ -96,7 +98,8 @@ class InputMode(Mode, ABC):
         problem_domain = recipe.create_problem_domain(self.to_enum(), args)
         state = ExperimentState(mode=self.to_enum(), args=args, meta_data=MetaData(), problem_domain=problem_domain)
         reader = MetaDataReader(
-            YamlFileSource(directory=input_directory, schema_file_path=InputMetaData.SCHEMA_FILE_PATH))
+            YamlFileSource(directory=input_directory, schema_file_path=InputMetaData.SCHEMA_FILE_PATH)
+        )
         meta_data = reader.read(state).meta_data
         log.info('Successfully read meta-data')
         return meta_data
@@ -107,13 +110,15 @@ class InputMode(Mode, ABC):
         meta_data_version = meta_data.version
         current_version = MetaData().version
         log.debug(
-            'Experimental results have been created with version "%s" of the package "mlrl-testbed", version "%s" is '
-            + 'currently used', meta_data_version, current_version)
+            f'Experimental results have been created with version "{meta_data_version}" of the package "mlrl-testbed", '
+            f'version "{current_version}" is currently used'
+        )
 
         if meta_data_version > current_version:
             log.warning(
-                'Experimental results have been created with a version (%s) of the package "mlrl-testbed" that is '
-                + 'greater than currently used (%s).', meta_data_version, current_version)
+                f'Experimental results have been created with a version ({meta_data_version}) of the package '
+                f'"mlrl-testbed" that is greater than currently used ({current_version}).'
+            )
         else:
             log.debug('No version conflicts detected')
 
@@ -127,8 +132,9 @@ class InputMode(Mode, ABC):
         pass
 
     @override
-    def run_experiment(self, control_arguments: set[Argument], algorithmic_arguments: set[Argument], args: Namespace,
-                       recipe: Recipe):
+    def run_experiment(
+        self, control_arguments: set[Argument], algorithmic_arguments: set[Argument], args: Namespace, recipe: Recipe
+    ):
         input_directory = self.INPUT_DIR.get_value(args)
 
         if input_directory:
@@ -137,8 +143,15 @@ class InputMode(Mode, ABC):
             self._run_experiment(control_arguments, algorithmic_arguments, args, recipe, meta_data, input_directory)
 
     @abstractmethod
-    def _run_experiment(self, control_arguments: set[Argument], algorithmic_arguments: set[Argument], args: Namespace,
-                        recipe: Recipe, meta_data: MetaData, input_directory: Path):
+    def _run_experiment(
+        self,
+        control_arguments: set[Argument],
+        algorithmic_arguments: set[Argument],
+        args: Namespace,
+        recipe: Recipe,
+        meta_data: MetaData,
+        input_directory: Path,
+    ):
         """
         Must be implemented by subclasses in order to run an experiment that accesses the meta-data of an earlie
         experiment according to the command line arguments specified by the user.

@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for formatting code.
 """
+
 from abc import ABC
 from pathlib import Path
 from typing import override
@@ -24,7 +25,7 @@ class CodeChangeDetection:
         :param module:          A module that provides access to source code
         :param cache_file_name: The name of the file that should be used for tracking modified source files
         """
-        self.change_detection = ChangeDetection(BuildUnit().build_directory / (cache_file_name + '.json'))
+        self.change_detection = ChangeDetection(BuildUnit().build_directory / f'{cache_file_name}.json')
         self.module = module
 
     def find_modified_source_files(self) -> list[Path]:
@@ -49,12 +50,14 @@ class CodeFormatterProgram(Program, ABC):
     An abstract base class for all programs that format code or check the formatting of code.
     """
 
-    def __init__(self,
-                 build_unit: BuildUnit,
-                 module: CodeModule,
-                 program: str,
-                 *arguments: str,
-                 cache_file_name: str | None = None):
+    def __init__(
+        self,
+        build_unit: BuildUnit,
+        module: CodeModule,
+        program: str,
+        *arguments: str,
+        cache_file_name: str | None = None,
+    ):
         """
         :param build_unit:      The build unit from which the program should be run
         :param module:          The module, the program should be applied to

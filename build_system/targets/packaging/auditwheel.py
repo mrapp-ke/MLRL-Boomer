@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow to run the external program "auditwheel".
 """
+
 import shutil
 
 from pathlib import Path
@@ -39,7 +40,7 @@ class Auditwheel(Program):
         wheel_directory = self.wheel_directory
 
         for wheel in FileSearch().list(wheel_directory):
-            Log.info('Copying file "%s" into directory "%s"...', wheel, original_directory)
+            Log.info(f'Copying file "{wheel}" into directory "{original_directory}"...')
             shutil.copy(wheel, original_directory)
 
         delete_files(wheel_directory)

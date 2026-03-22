@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Defines command line arguments for configuring the functionality to write meta-data to one or several sinks.
 """
+
 from mlrl.util.cli import AUTO, BoolArgument, SetArgument
 from mlrl.util.options import BooleanOption
 
@@ -22,6 +23,6 @@ class MetaDataArguments:
         '--save-meta-data',
         default=AUTO,
         values={AUTO, BooleanOption.TRUE, BooleanOption.FALSE},
-        description='Whether meta-data should be saved to output files or not. If set to "' + AUTO + '", meta-data is '
-        + 'saved whenever other output files are written as well.',
+        description=f'Whether meta-data should be saved to output files or not. If set to "{AUTO}", meta-data is saved '
+        f'whenever other output files are written as well.',
     )

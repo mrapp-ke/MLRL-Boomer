@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow writing evaluation results according to regression evaluation measures to one or several
 sinks.
 """
+
 from typing import Any, override
 
 from mlrl.testbed_sklearn.experiments.output.evaluation.measures_regression import REGRESSION_EVALUATION_MEASURES
@@ -23,8 +24,9 @@ class RegressionEvaluationDataExtractor(EvaluationDataExtractor):
     """
 
     @override
-    def _update_measurements(self, measurements: Measurements, index: int, ground_truth: Any, predictions: Any,
-                             options: Options):
+    def _update_measurements(
+        self, measurements: Measurements, index: int, ground_truth: Any, predictions: Any, options: Options
+    ):
         ground_truth = enforce_dense(ground_truth, order='C')
         evaluation_measures = OutputValue.filter_values(REGRESSION_EVALUATION_MEASURES, options)
 

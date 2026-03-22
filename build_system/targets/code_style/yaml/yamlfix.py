@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow to run the external program "yamlfix".
 """
+
 from core.build_unit import BuildUnit
 
 from targets.code_style.formatter import CodeFormatterProgram
@@ -20,7 +21,8 @@ class YamlFix(CodeFormatterProgram):
         :param module:          The module, the program should be applied to
         :param enforce_changes: True, if changes should be applied to files, False otherwise
         """
-        super().__init__(build_unit, module, 'yamlfix', '--config-file',
-                         str(build_unit.root_directory / '.yamlfix.toml'))
+        super().__init__(
+            build_unit, module, 'yamlfix', '--config-file', str(build_unit.root_directory / '.yamlfix.toml')
+        )
         self.add_conditional_arguments(not enforce_changes, '--check')
         self.print_arguments(True)

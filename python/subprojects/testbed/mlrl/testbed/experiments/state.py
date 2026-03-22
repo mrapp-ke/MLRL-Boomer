@@ -25,6 +25,7 @@ class ExperimentMode(StrEnum):
     """
     Represents the mode of operation.
     """
+
     SINGLE = 'single'
     BATCH = 'batch'
     RUN = 'run'
@@ -40,6 +41,7 @@ class TrainingState:
         learner:            The learner that has been trained
         training_duration:  The time needed for training
     """
+
     learner: Any
     training_duration: Timer.Duration = field(default_factory=Timer.Duration)
 
@@ -54,6 +56,7 @@ class PredictionResult:
         prediction_type:        The type of the predictions
         prediction_duration:    The time needed for prediction
     """
+
     predictions: Any
     prediction_type: PredictionType
     prediction_duration: Timer.Duration
@@ -68,6 +71,7 @@ class PredictionState:
         prediction_scope:   Whether the predictions have been obtained from a global model or incrementally
         prediction_result:  The result of the prediction process, if available
     """
+
     prediction_scope: PredictionScope
     prediction_result: PredictionResult | None = None
 
@@ -91,6 +95,7 @@ class ExperimentState:
         prediction_result:  The result of the prediction process or None, if no predictions have been obtained yet
         extras:             A dictionary that can be used to store arbitrary data referenced via a unique key
     """
+
     mode: ExperimentMode
     args: Namespace
     meta_data: MetaData

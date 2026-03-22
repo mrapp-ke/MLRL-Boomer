@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow configuring the functionality to write algorithmic parameters to one or several sinks.
 """
+
 from argparse import Namespace
 from typing import override
 
@@ -99,7 +100,8 @@ class ParameterOutputDirectoryExtension(Extension):
             if base_dir and parameter_save_dir:
                 create_directory = OutputArguments.CREATE_DIRS.get_value(args)
                 experiment_builder.parameter_writer.add_sinks(
-                    CsvFileSink(directory=base_dir / parameter_save_dir, create_directory=create_directory))
+                    CsvFileSink(directory=base_dir / parameter_save_dir, create_directory=create_directory)
+                )
 
     @override
     def get_supported_modes(self) -> set[ExperimentMode]:

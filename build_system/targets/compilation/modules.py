@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements modules that provide access to source code that must be compiled.
 """
+
 from pathlib import Path
 from typing import override
 
@@ -29,15 +30,18 @@ class CompilationModule(Module):
 
         @override
         def matches(self, module: Module, _: ModuleRegistry) -> bool:
-            return isinstance(module, CompilationModule) and (not self.file_types
-                                                              or module.file_type in self.file_types)
+            return isinstance(module, CompilationModule) and (
+                not self.file_types or module.file_type in self.file_types
+            )
 
-    def __init__(self,
-                 file_type: FileType,
-                 root_directory: Path,
-                 build_directory_name: str,
-                 install_directory: Path | None = None,
-                 installed_file_search: FileSearch | None = None):
+    def __init__(
+        self,
+        file_type: FileType,
+        root_directory: Path,
+        build_directory_name: str,
+        install_directory: Path | None = None,
+        installed_file_search: FileSearch | None = None,
+    ):
         """
         :param file_type:               The file types of the source files that belongs to the module
         :param root_directory:          The path to the module's root directory
@@ -67,14 +71,14 @@ class CompilationModule(Module):
         :return: A list that contains the paths of the requirements files that have been found
         """
         if self.installed_file_search:
-            return self.installed_file_search \
-                .set_recursive(True) \
-                .exclude_subdirectories_by_name(self.build_directory.name) \
+            return (
+                self.installed_file_search.set_recursive(True)
+                .exclude_subdirectories_by_name(self.build_directory.name)
                 .list(self.install_directory)
+            )
 
         return []
 
     @override
     def __str__(self) -> str:
-        return 'CompilationModule {file_type="' + str(self.file_type) + '", root_directory=' + str(
-            self.root_directory) + '"}'
+        return f'CompilationModule {{file_type="{self.file_type}", root_directory={self.root_directory}"}}'

@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for writing log messages.
 """
+
 import logging
 import sys
 
@@ -18,6 +19,7 @@ class Log:
         """
         The log levels supported by the build system.
         """
+
         NONE = logging.NOTSET
         ERROR = logging.ERROR
         WARNING = logging.WARNING
@@ -49,7 +51,7 @@ class Log:
         :param exit_code:   The exit code to be returned when terminating the build system
         """
         if error:
-            logging.error(message + ': %s', *args, error)
+            logging.error(f'{message}: %s', *args, error)
         else:
             logging.error(message, *args)
 

@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for reading YAML files.
 """
+
 from pathlib import Path
 from typing import Any
 

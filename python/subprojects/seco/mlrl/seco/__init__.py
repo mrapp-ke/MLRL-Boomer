@@ -1,10 +1,15 @@
 """
 This module provides rule learners that make use of the Separate-and-Conquer (SeCo) paradigm.
 """
+
 from mlrl.seco.learners import SeCoClassifier
 
 try:
     from mlrl.seco.testbed.runnables import SeCoRunnable as Runnable
+
+    __all__ = [
+        'Runnable',
+    ]
 except ImportError:
     # Dependency 'mlrl-testbed' is not available, but that's okay since it's optional.
     pass
