@@ -111,7 +111,6 @@ jobs:
             python_tests_common: &python_tests_common
               - '.github/workflows/template_test_python.yml'
               - *cpp_tests_common
-              - *python_tests_testbed
               - 'build_system/targets/compilation/cython/*'
               - 'build_system/targets/testing/python/*'
               - 'python/subprojects/common/pyproject.template.toml'
