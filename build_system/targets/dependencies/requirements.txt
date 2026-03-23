@@ -1,2 +1,2 @@
-pygithub >= 2.8, < 2.9
+pygithub >= 2.9, < 2.10
 tabulate >= 0.10, < 0.11
