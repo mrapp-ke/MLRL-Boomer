@@ -1,8 +1,9 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from cython.operator cimport dereference
 from libcpp.utility cimport move
+
+from cython.operator cimport dereference
 
 from mlrl.common.cython.example_weights cimport ExampleWeights
 from mlrl.common.cython.feature_info cimport FeatureInfo
