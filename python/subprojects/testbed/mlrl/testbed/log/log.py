@@ -141,24 +141,23 @@ class Log:
                 get_console().print_exception(extra_lines=2)
 
     @staticmethod
-    def warning(message: str, *args, box: bool = False, box_title: str | None = None):
+    def warning(message: str, box: bool = False, box_title: str | None = None):
         """
         Writes a log message at level `Log.Level.WARNING`.
 
         :param message:     The log message to be written
-        :param args:        Optional arguments to be included in the log message
         :param box:         True, if a box should be surrounded by a box, False otherwise
         :param box_title:   An optional title to be printed at the top of the box surrounding the log message
         """
         log_level = logging.WARNING
 
         if logging.getLogger().isEnabledFor(log_level):
-            formatted_message = LogHandler.format_message(message.format(*args), log_level)
+            formatted_message = LogHandler.format_message(message, log_level)
             style = LogHandler.get_style(log_level)
             Log.__print(message=formatted_message, style=style, box=box, box_title=box_title)
 
     @staticmethod
-    def success(message: str, *args, box: bool = False, box_title: str | None = None):
+    def success(message: str, box: bool = False, box_title: str | None = None):
         """
         Writes a log message at level `Log.Level.INFO` indicating successful operation of an operation.
 
@@ -170,29 +169,28 @@ class Log:
         log_level = logging.INFO
 
         if logging.getLogger().isEnabledFor(log_level):
-            formatted_message = f'✓ {message.format(*args)}'
+            formatted_message = f'✓ {message}'
             style = Style(color='green', bold=True)
             Log.__print(message=formatted_message, style=style, box=box, box_title=box_title)
 
     @staticmethod
-    def info(message: str, *args, box: bool = False, box_title: str | None = None):
+    def info(message: str, box: bool = False, box_title: str | None = None):
         """
         Writes a log message at level `Log.Level.INFO`.
 
         :param message:     The log message to be written
-        :param args:        Optional arguments to be included in the log message
         :param box:         True, if a box should be surrounded by a box, False otherwise
         :param box_title:   An optional title to be printed at the top of the box surrounding the log message
         """
         log_level = logging.INFO
 
         if logging.getLogger().isEnabledFor(log_level):
-            formatted_message = LogHandler.format_message(message.format(*args), log_level)
+            formatted_message = LogHandler.format_message(message, log_level)
             style = LogHandler.get_style(log_level)
             Log.__print(message=formatted_message, style=style, box=box, box_title=box_title)
 
     @staticmethod
-    def source_code(source_code: str, *args, language: str, box: bool = False, box_title: str | None = None):
+    def source_code(source_code: str, language: str, box: bool = False, box_title: str | None = None):
         """
         Writes a log message containing source code in a specific language at level `Log.Level.INFO`.
 
@@ -205,8 +203,7 @@ class Log:
         log_level = logging.INFO
 
         if logging.getLogger().isEnabledFor(log_level):
-            formatted_message = source_code.format(*args)
-            renderable: ConsoleRenderable = Syntax(formatted_message, language, word_wrap=True)
+            renderable: ConsoleRenderable = Syntax(source_code, language, word_wrap=True)
 
             if box:
                 renderable = Log.__decorate_with_box(renderable, box_title=box_title)
@@ -214,18 +211,17 @@ class Log:
             get_console().print(renderable)
 
     @staticmethod
-    def verbose(message: str, *args, box: bool = False, box_title: str | None = None):
+    def verbose(message: str, box: bool = False, box_title: str | None = None):
         """
         Writes a log message at level `Log.Level.VERBOSE`.
 
         :param message:     The log message to be written
-        :param args:        Optional arguments to be included in the log message
         :param box:         True, if a box should be surrounded by a box, False otherwise
         :param box_title:   An optional title to be printed at the top of the box surrounding the log message
         """
         log_level = logging.DEBUG
 
         if logging.getLogger().isEnabledFor(log_level):
-            formatted_message = LogHandler.format_message(message.format(*args), log_level)
+            formatted_message = LogHandler.format_message(message, log_level)
             style = LogHandler.get_style(log_level)
             Log.__print(message=formatted_message, style=style, box=box, box_title=box_title)
