@@ -13,6 +13,7 @@ from targets.code_style.cfg import FORMAT_CFG, TEST_FORMAT_CFG
 from targets.code_style.cpp import FORMAT_CPP, TEST_FORMAT_CPP
 from targets.code_style.markdown import FORMAT_MARKDOWN, TEST_FORMAT_MARKDOWN
 from targets.code_style.python import FORMAT_PYTHON, TEST_FORMAT_PYTHON
+from targets.code_style.cython import FORMAT_CYTHON, TEST_FORMAT_CYTHON
 from targets.code_style.toml import FORMAT_TOML, TEST_FORMAT_TOML
 from targets.code_style.yaml import FORMAT_YAML, TEST_FORMAT_YAML
 
@@ -21,6 +22,7 @@ TARGETS = (
     .add_phony_target('format')
     .depends_on(
         FORMAT_PYTHON,
+        FORMAT_CYTHON,
         FORMAT_CPP,
         FORMAT_CFG,
         FORMAT_MARKDOWN,
@@ -31,6 +33,7 @@ TARGETS = (
     .add_phony_target('test_format')
     .depends_on(
         TEST_FORMAT_PYTHON,
+        TEST_FORMAT_CYTHON,
         TEST_FORMAT_CPP,
         TEST_FORMAT_CFG,
         TEST_FORMAT_MARKDOWN,

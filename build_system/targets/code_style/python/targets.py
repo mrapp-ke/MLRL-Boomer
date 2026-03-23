@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Implements targets for checking and enforcing code style definitions for Python and Cython files.
+Implements targets for checking and enforcing code style definitions for Python files.
 """
 
 from typing import cast, override
@@ -14,14 +14,9 @@ from util.files import FileType
 from util.log import Log
 
 from targets.code_style.modules import CodeModule
-from targets.code_style.python.autoflake import Autoflake
-from targets.code_style.python.cython_lint import CythonLint
-from targets.code_style.python.isort import ISort
 from targets.code_style.python.mypy import Mypy
 
 PYTHON_MODULE_FILTER = CodeModule.Filter(FileType.python())
-
-CYTHON_MODULE_FILTER = CodeModule.Filter(FileType.cython())
 
 
 class CheckPythonCodeStyle(PhonyTarget.Runnable):
@@ -55,35 +50,3 @@ class EnforcePythonCodeStyle(PhonyTarget.Runnable):
         Log.info(f'Formatting Python code in directory "{code_module.root_directory}"...')
         RuffFormat(build_unit, code_module, enforce_changes=True).run()
         RuffCheck(build_unit, code_module, enforce_changes=True).run()
-
-
-class CheckCythonCodeStyle(PhonyTarget.Runnable):
-    """
-    Checks if Cython source files adhere to the code style definitions. If this is not the case, an error is raised.
-    """
-
-    def __init__(self):
-        super().__init__(CYTHON_MODULE_FILTER)
-
-    @override
-    def run(self, build_unit: BuildUnit, module: Module):
-        code_module = cast(CodeModule, module)
-        Log.info(f'Checking Cython code style in directory "{code_module.root_directory}"...')
-        ISort(build_unit, code_module).run()
-        CythonLint(build_unit, code_module).run()
-
-
-class EnforceCythonCodeStyle(PhonyTarget.Runnable):
-    """
-    Enforces Cython source files to adhere to the code style definitions.
-    """
-
-    def __init__(self):
-        super().__init__(CYTHON_MODULE_FILTER)
-
-    @override
-    def run(self, build_unit: BuildUnit, module: Module):
-        code_module = cast(CodeModule, module)
-        Log.info(f'Formatting Cython code in directory "{code_module.root_directory}"...')
-        Autoflake(build_unit, code_module, enforce_changes=True).run()
-        ISort(build_unit, code_module, enforce_changes=True).run()
