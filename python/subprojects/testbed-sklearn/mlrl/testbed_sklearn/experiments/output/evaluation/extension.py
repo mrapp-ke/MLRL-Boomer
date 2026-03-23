@@ -3,16 +3,20 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow configuring the functionality to write evaluation results to one or several sinks.
 """
+
 from argparse import Namespace
 from typing import override
 
 from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import TabularEvaluationResult
-from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_classification import \
-    ClassificationEvaluationDataExtractor
+from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_classification import (
+    ClassificationEvaluationDataExtractor,
+)
 from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_ranking import RankingEvaluationDataExtractor
 from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_regression import RegressionEvaluationDataExtractor
-from mlrl.testbed_sklearn.experiments.output.evaluation.measures_classification import \
-    MULTI_LABEL_EVALUATION_MEASURES, SINGLE_LABEL_EVALUATION_MEASURES
+from mlrl.testbed_sklearn.experiments.output.evaluation.measures_classification import (
+    MULTI_LABEL_EVALUATION_MEASURES,
+    SINGLE_LABEL_EVALUATION_MEASURES,
+)
 from mlrl.testbed_sklearn.experiments.output.evaluation.measures_ranking import RANKING_EVALUATION_MEASURES
 from mlrl.testbed_sklearn.experiments.output.evaluation.measures_regression import REGRESSION_EVALUATION_MEASURES
 from mlrl.testbed_sklearn.experiments.output.evaluation.writer import EvaluationWriter
@@ -41,9 +45,11 @@ class EvaluationExtension(Extension):
         required=AggregatedEvaluationExtension.PRINT_EVALUATION.required,
         default=AggregatedEvaluationExtension.PRINT_EVALUATION.default,
         description='Whether the evaluation results should be printed on the console or not.',
-        true_options=set(RANKING_EVALUATION_MEASURES) | set(REGRESSION_EVALUATION_MEASURES)
-        | set(MULTI_LABEL_EVALUATION_MEASURES) | set(SINGLE_LABEL_EVALUATION_MEASURES) |
-        (AggregatedEvaluationExtension.PRINT_EVALUATION.true_options or set()),
+        true_options=set(RANKING_EVALUATION_MEASURES)
+        | set(REGRESSION_EVALUATION_MEASURES)
+        | set(MULTI_LABEL_EVALUATION_MEASURES)
+        | set(SINGLE_LABEL_EVALUATION_MEASURES)
+        | (AggregatedEvaluationExtension.PRINT_EVALUATION.true_options or set()),
         false_options=AggregatedEvaluationExtension.PRINT_EVALUATION.false_options,
     )
 
@@ -52,9 +58,11 @@ class EvaluationExtension(Extension):
         required=AggregatedEvaluationExtension.SAVE_EVALUATION.required,
         default=AggregatedEvaluationExtension.SAVE_EVALUATION.default,
         description='Whether evaluation results should be written to output files or not.',
-        true_options=set(RANKING_EVALUATION_MEASURES) | set(REGRESSION_EVALUATION_MEASURES)
-        | set(MULTI_LABEL_EVALUATION_MEASURES) | set(SINGLE_LABEL_EVALUATION_MEASURES) |
-        (AggregatedEvaluationExtension.SAVE_EVALUATION.true_options or set()),
+        true_options=set(RANKING_EVALUATION_MEASURES)
+        | set(REGRESSION_EVALUATION_MEASURES)
+        | set(MULTI_LABEL_EVALUATION_MEASURES)
+        | set(SINGLE_LABEL_EVALUATION_MEASURES)
+        | (AggregatedEvaluationExtension.SAVE_EVALUATION.true_options or set()),
         false_options=AggregatedEvaluationExtension.SAVE_EVALUATION.false_options,
     )
 
@@ -87,7 +95,8 @@ class EvaluationExtension(Extension):
         if base_dir and save_evaluation and result_directory:
             create_directory = OutputArguments.CREATE_DIRS.get_value(args)
             experiment_builder.evaluation_writer.add_sinks(
-                CsvFileSink(directory=base_dir / result_directory, create_directory=create_directory, options=options))
+                CsvFileSink(directory=base_dir / result_directory, create_directory=create_directory, options=options)
+            )
 
     @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, mode: ExperimentMode):
@@ -100,8 +109,9 @@ class EvaluationExtension(Extension):
 
         if evaluation_writer.sinks:
             if mode == ExperimentMode.READ:
-                extractor = EvaluationWriter.InputExtractor(properties=TabularEvaluationResult.PROPERTIES,
-                                                            context=TabularEvaluationResult.CONTEXT)
+                extractor = EvaluationWriter.InputExtractor(
+                    properties=TabularEvaluationResult.PROPERTIES, context=TabularEvaluationResult.CONTEXT
+                )
                 evaluation_writer.extractors.append(extractor)
 
             problem_domain = experiment_builder.initial_state.problem_domain
@@ -109,7 +119,8 @@ class EvaluationExtension(Extension):
             if isinstance(problem_domain, RegressionProblem):
                 extractor = RegressionEvaluationDataExtractor()
             elif isinstance(problem_domain, ClassificationProblem) and problem_domain.prediction_type in {
-                    PredictionType.SCORES, PredictionType.PROBABILITIES
+                PredictionType.SCORES,
+                PredictionType.PROBABILITIES,
             }:
                 extractor = RankingEvaluationDataExtractor()
             else:

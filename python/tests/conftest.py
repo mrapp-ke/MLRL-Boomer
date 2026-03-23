@@ -1,6 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+
 from sys import platform
 
 import numpy as np

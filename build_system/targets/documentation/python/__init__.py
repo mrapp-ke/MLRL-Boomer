@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Defines targets and modules for generating API documentations for C++ code.
 """
+
 from pathlib import Path
 
 from core.build_unit import BuildUnit
@@ -17,19 +18,23 @@ APIDOC_PYTHON = 'apidoc_python'
 
 APIDOC_PYTHON_INDEX = 'apidoc_python_index'
 
-TARGETS = TargetBuilder(BuildUnit.for_file(Path(__file__))) \
-    .add_build_target(APIDOC_PYTHON) \
-        .depends_on(INSTALL_WHEELS) \
-        .set_runnables(ApidocPython()) \
-    .add_build_target(APIDOC_PYTHON_INDEX) \
-        .depends_on(APIDOC_PYTHON, clean_dependencies=True) \
-        .set_runnables(ApidocIndexPython()) \
+TARGETS = (
+    TargetBuilder(BuildUnit.for_file(Path(__file__)))
+    .add_build_target(APIDOC_PYTHON)
+    .depends_on(INSTALL_WHEELS)
+    .set_runnables(ApidocPython())
+    .add_build_target(APIDOC_PYTHON_INDEX)
+    .depends_on(APIDOC_PYTHON, clean_dependencies=True)
+    .set_runnables(ApidocIndexPython())
     .build()
+)
 
 MODULES = [
-    PythonApidocModule(root_directory=subproject,
-                       output_directory=Project.Documentation.apidoc_directory / 'python' / subproject.name,
-                       source_directory_name='mlrl',
-                       source_file_search=Project.Python.file_search())
+    PythonApidocModule(
+        root_directory=subproject,
+        output_directory=Project.Documentation.apidoc_directory / 'python' / subproject.name,
+        source_directory_name='mlrl',
+        source_file_search=Project.Python.file_search(),
+    )
     for subproject in Project.Python.find_subprojects()
 ]

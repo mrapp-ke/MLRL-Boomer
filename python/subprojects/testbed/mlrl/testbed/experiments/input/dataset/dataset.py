@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing datasets that are part of input data.
 """
+
 from typing import Any, override
 
 from mlrl.testbed.experiments.context import Context
@@ -22,8 +23,9 @@ class InputDataset(DatasetInputData):
         """
         :param name: The name of the dataset
         """
-        super().__init__(properties=Properties(name=self.NAME, file_name=name),
-                         context=Context(include_prediction_scope=False))
+        super().__init__(
+            properties=Properties(name=self.NAME, file_name=name), context=Context(include_prediction_scope=False)
+        )
 
     @override
     def update_state(self, state: ExperimentState, input_data: Any):

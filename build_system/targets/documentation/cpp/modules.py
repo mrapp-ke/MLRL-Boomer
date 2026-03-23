@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements modules that provide access to C++ code for which an API documentation can be generated.
 """
+
 from os import environ
 from pathlib import Path
 from typing import override
@@ -27,13 +28,16 @@ class CppApidocModule(ApidocModule):
         @override
         def matches(self, module: Module, module_registry: ModuleRegistry) -> bool:
             return isinstance(module, CppApidocModule) and SubprojectModule.Filter.from_env(environ).matches(
-                module, module_registry)
+                module, module_registry
+            )
 
-    def __init__(self,
-                 root_directory: Path,
-                 output_directory: Path,
-                 include_directory_name: str,
-                 header_file_search: FileSearch = FileSearch().set_recursive(True)):
+    def __init__(
+        self,
+        root_directory: Path,
+        output_directory: Path,
+        include_directory_name: str,
+        header_file_search: FileSearch = FileSearch().set_recursive(True),
+    ):
         """
         :param root_directory:          The path to the module's root directory
         :param output_directory:        The path to the directory where the API documentation should be stored
@@ -69,9 +73,8 @@ class CppApidocModule(ApidocModule):
 
     @override
     def create_reference(self) -> str:
-        return 'Library libmlrl' + self.subproject_name + ' <' + str(Path(self.output_directory.name,
-                                                                          'filelist.rst')) + '>'
+        return f'Library libmlrl{self.subproject_name} <{Path(self.output_directory.name, "filelist.rst")}>'
 
     @override
     def __str__(self) -> str:
-        return 'CppApidocModule {root_directory="' + str(self.root_directory) + '"}'
+        return f'CppApidocModule {{root_directory="{self.root_directory}"}}'

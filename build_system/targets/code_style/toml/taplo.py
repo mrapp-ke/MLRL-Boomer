@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow to run the external program "taplo".
 """
+
 from abc import ABC
 from os import environ
 
@@ -24,12 +25,14 @@ class Taplo(CodeFormatterProgram, ABC):
         env['RUST_LOG'] = 'warn'
         return env
 
-    def __init__(self,
-                 build_unit: BuildUnit,
-                 module: CodeModule,
-                 taplo_command: str,
-                 *arguments: str,
-                 cache_file_name: str | None = None):
+    def __init__(
+        self,
+        build_unit: BuildUnit,
+        module: CodeModule,
+        taplo_command: str,
+        *arguments: str,
+        cache_file_name: str | None = None,
+    ):
         """
         :param build_unit:      The build unit from which the program should be run
         :param module:          The module, the program should be applied to
@@ -54,12 +57,14 @@ class TaploFormat(Taplo):
         :param module:          The module, the program should be applied to
         :param enforce_changes: True, if changes should be applied to files, False otherwise
         """
-        super().__init__(build_unit,
-                         module,
-                         'format',
-                         '--config',
-                         str(build_unit.root_directory / '.taplo.toml'),
-                         cache_file_name='taplo_format' + ('_enforce_changes' if enforce_changes else ''))
+        super().__init__(
+            build_unit,
+            module,
+            'format',
+            '--config',
+            str(build_unit.root_directory / '.taplo.toml'),
+            cache_file_name=f'taplo_format{("_enforce_changes" if enforce_changes else "")}',
+        )
         self.add_conditional_arguments(not enforce_changes, '--check')
 
 

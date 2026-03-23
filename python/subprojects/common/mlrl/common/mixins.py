@@ -3,11 +3,16 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides mixins that additional functionality to machine learning algorithms.
 """
+
 from abc import ABC, abstractmethod
 from typing import override
 
-from sklearn.base import BaseEstimator as SkLearnBaseEstimator, ClassifierMixin as SkLearnClassifierMixin, \
-    MultiOutputMixin as SkLearnMultiOutputMixin, RegressorMixin as SkLearnRegressorMixin
+from sklearn.base import (
+    BaseEstimator as SkLearnBaseEstimator,
+    ClassifierMixin as SkLearnClassifierMixin,
+    MultiOutputMixin as SkLearnMultiOutputMixin,
+    RegressorMixin as SkLearnRegressorMixin,
+)
 from sklearn.utils import ClassifierTags
 from sklearn.utils.validation import check_is_fitted
 

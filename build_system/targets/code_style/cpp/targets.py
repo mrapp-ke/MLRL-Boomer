@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for checking and enforcing code style definitions for C++ files.
 """
+
 from typing import cast, override
 
 from core.build_unit import BuildUnit
@@ -29,7 +30,7 @@ class CheckCppCodeStyle(PhonyTarget.Runnable):
     @override
     def run(self, build_unit: BuildUnit, module: Module):
         code_module = cast(CodeModule, module)
-        Log.info('Checking C++ code style in directory "%s"...', code_module.root_directory)
+        Log.info(f'Checking C++ code style in directory "{code_module.root_directory}"...')
         ClangFormat(build_unit, code_module).run()
         CppLint(build_unit, code_module).run()
 
@@ -45,5 +46,5 @@ class EnforceCppCodeStyle(PhonyTarget.Runnable):
     @override
     def run(self, build_unit: BuildUnit, module: Module):
         code_module = cast(CodeModule, module)
-        Log.info('Formatting C++ code in directory "%s"...', code_module.root_directory)
+        Log.info(f'Formatting C++ code in directory "{code_module.root_directory}"...')
         ClangFormat(build_unit, code_module, enforce_changes=True).run()

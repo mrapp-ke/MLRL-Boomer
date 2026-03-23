@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides actions for validating and updating the project's changelog.
 """
+
 from dataclasses import dataclass, field
 from datetime import date
 from enum import Enum, StrEnum, auto
@@ -23,6 +24,7 @@ class LineType(Enum):
     """
     Represents different types of lines that may occur in a changeset.
     """
+
     BLANK = auto()
     HEADER = auto()
     ENUMERATION = auto()
@@ -54,6 +56,7 @@ class Line:
         line:           The original content of the line
         content:        The content of the line with Markdown keywords being stripped away
     """
+
     line_number: int
     line_type: LineType
     line: str
@@ -78,10 +81,11 @@ class Line:
         line_type = LineType.parse(line)
 
         if not line_type:
-            raise ValueError('Line ' + str(line_number)
-                             + ' is invalid: Must be blank, a top-level header (starting with "' + Line.PREFIX_HEADER
-                             + '"), or an enumeration (starting with "' + Line.PREFIX_DASH + '" or "'
-                             + Line.PREFIX_ASTERISK + '"), but is "' + line + '"')
+            raise ValueError(
+                f'Line {line_number} is invalid: Must be blank, a top-level header (starting with '
+                f'"{Line.PREFIX_HEADER}"), or an enumeration (starting with "{Line.PREFIX_DASH}" or '
+                f'"{Line.PREFIX_ASTERISK}"), but is "{line}"'
+            )
 
         content = line
 
@@ -89,8 +93,7 @@ class Line:
             content = line.lstrip(Line.PREFIX_HEADER).lstrip(Line.PREFIX_DASH).lstrip(Line.PREFIX_ASTERISK)
 
             if not content or content.isspace():
-                raise ValueError('Line ' + str(line_number) + ' is is invalid: Content must not be blank, but is "'
-                                 + line + '"')
+                raise ValueError(f'Line {line_number} is is invalid: Content must not be blank, but is "{line}"')
 
         return Line(line_number=line_number, line_type=line_type, line=line, content=content)
 
@@ -104,15 +107,16 @@ class Changeset:
         header:     The header of the changeset
         changes:    A list that stores the textual descriptions of the changes
     """
+
     header: str
     changes: list[str] = field(default_factory=list)
 
     @override
     def __str__(self) -> str:
-        changeset = '### ' + self.header + '\n\n'
+        changeset = f'### {self.header}\n\n'
 
         for content in self.changes:
-            changeset += Line.PREFIX_DASH + content + '\n'
+            changeset += f'{Line.PREFIX_DASH}{content}\n'
 
         return changeset
 
@@ -155,13 +159,16 @@ class ChangesetFile(TextFile):
         current_line_is_enumeration = current_line and current_line.line_type == LineType.ENUMERATION
 
         if current_line_is_enumeration and not previous_line:
-            raise ValueError('File "' + str(self.file) + '" must start with a top-level header (starting with "'
-                             + Line.PREFIX_HEADER + '")')
+            raise ValueError(
+                f'File "{self.file}" must start with a top-level header (starting with "{Line.PREFIX_HEADER}")'
+            )
 
         if previous_line and previous_line.line_type == LineType.HEADER:
             if not current_line or current_line.line_type == LineType.HEADER:
-                raise ValueError('Header "' + previous_line.line + '" at line ' + str(previous_line.line_number)
-                                 + ' of file "' + str(self.file) + '" is not followed by any content')
+                raise ValueError(
+                    f'Header "{previous_line.line}" at line {previous_line.line_number} of file "{self.file}" is not '
+                    f'followed by any content'
+                )
 
     @cached_property
     def parsed_lines(self) -> list[Line]:
@@ -226,6 +233,7 @@ class ReleaseType(StrEnum):
     """
     Represents the type of a release.
     """
+
     MAJOR = 'major'
     MINOR = 'feature'
     PATCH = 'bugfix'
@@ -242,6 +250,7 @@ class Release:
         release_type:   The type of the release
         changesets:     A list that stores the changesets
     """
+
     version: SemanticVersion
     release_date: date
     release_type: ReleaseType
@@ -265,14 +274,18 @@ class Release:
         return str(day) + suffix
 
     def __format_release_date(self) -> str:
-        return self.__format_release_month(self.release_date.month) + '. ' + self.__format_release_day(
-            self.release_date.day) + ', ' + str(self.release_date.year)
+        return (
+            f'{self.__format_release_month(self.release_date.month)}. '
+            f'{self.__format_release_day(self.release_date.day)},{self.release_date.year}'
+        )
 
     def __format_disclaimer(self) -> str:
         if [changeset for changeset in self.changesets if changeset.header.lower() == 'api changes']:
-            return ('```{warning}\nThis release comes with API changes. For an updated overview of the available '
-                    + 'parameters and command line arguments, please refer to the ' + '[documentation]('
-                    + self.URL_DOCUMENTATION + str(self.version) + ').\n```\n\n')
+            return (
+                f'```{{warning}}\nThis release comes with API changes. For an updated overview of the available '
+                f'parameters and command line arguments, please refer to the '
+                f'[documentation]({self.URL_DOCUMENTATION}{self.version}).\n```'
+            )
         return ''
 
     @override
@@ -280,9 +293,8 @@ class Release:
         changesets = self.changesets
 
         if changesets:
-            release = self.PREFIX_SUB_HEADER + 'Version ' + str(
-                self.version) + ' (' + self.__format_release_date() + ')\n\n'
-            release += 'A ' + self.release_type + ' release that comes with the following changes.\n\n'
+            release = f'{self.PREFIX_SUB_HEADER} Version {self.version} ({self.__format_release_date()})\n\n'
+            release += f'A {self.release_type} release that comes with the following changes.\n\n'
             release += self.__format_disclaimer()
 
             for i, changeset in enumerate(changesets):
@@ -310,7 +322,7 @@ class ChangelogFile(TextFile):
         formatted_release = str(release)
 
         if formatted_release:
-            Log.info('Adding new release to changelog file "%s":\n\n%s', self.file, formatted_release)
+            Log.info(f'Adding new release to changelog file "{self.file}":\n\n{formatted_release}')
             original_lines = self.lines
             modified_lines = []
             offset = 0
@@ -325,7 +337,7 @@ class ChangelogFile(TextFile):
             modified_lines.extend(original_lines[offset:])
             self.write_lines(*modified_lines)
         else:
-            Log.warning('No changesets found for ' + str(release.release_type) + ' release ' + str(release.version))
+            Log.warning(f'No changesets found for {release.release_type} release {release.version}')
 
     @property
     def latest(self) -> str:
@@ -340,7 +352,7 @@ class ChangelogFile(TextFile):
             if line.startswith(Release.PREFIX_SUB_HEADER):
                 break
 
-        for line in lines[offset + 2:]:
+        for line in lines[offset + 2 :]:
             if line.startswith(Release.PREFIX_SUB_HEADER):
                 break
 
@@ -357,10 +369,10 @@ class ChangelogFile(TextFile):
 
 def __validate_changeset(changeset_file: ChangesetFile):
     try:
-        Log.info('Validating changeset file "%s"...', changeset_file)
+        Log.info(f'Validating changeset file "{changeset_file}"...')
         changeset_file.validate()
     except ValueError as error:
-        Log.error('Changeset file "%s" is malformed!\n\n%s', changeset_file, str(error))
+        Log.error(f'Changeset file "{changeset_file}" is malformed!\n\n{error}')
 
 
 def __merge_changesets(*changeset_files: ChangesetFile) -> list[Changeset]:
@@ -380,12 +392,14 @@ def __update_changelog(release_type: ReleaseType, *changeset_files: ChangesetFil
     merged_changesets = __merge_changesets(*changeset_files)
 
     if not merged_changesets:
-        Log.error('No changesets found in the files %s', format_iterable(changeset_files, delimiter='"'))
+        Log.error(f'No changesets found in the files {format_iterable(changeset_files, delimiter='"')}')
 
-    new_release = Release(version=Project.version(release=True),
-                          release_date=date.today(),
-                          release_type=release_type,
-                          changesets=merged_changesets)
+    new_release = Release(
+        version=Project.version(release=True),
+        release_date=date.today(),
+        release_type=release_type,
+        changesets=merged_changesets,
+    )
     ChangelogFile().add_release(new_release)
 
     for changeset_file in changeset_files:

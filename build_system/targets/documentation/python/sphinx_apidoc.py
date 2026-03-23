@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow to run the external program "sphinx-apidoc".
 """
+
 from typing import override
 
 from core.build_unit import BuildUnit
@@ -23,10 +24,17 @@ class SphinxApidoc(Program):
         :param build_unit:  The build unit from which the program should be run
         :param module:      The module, the program should be applied to
         """
-        super().__init__('sphinx-apidoc', '--separate', '--module-first', '--no-toc', '-o',
-                         str(module.output_directory), str(module.source_directory),
-                         *['*.' + suffix + '*' for suffix in FileType.extension_module().suffixes],
-                         *['*.' + suffix + '*' for suffix in FileType.shared_library().suffixes])
+        super().__init__(
+            'sphinx-apidoc',
+            '--separate',
+            '--module-first',
+            '--no-toc',
+            '-o',
+            str(module.output_directory),
+            str(module.source_directory),
+            *[f'*.{suffix}*' for suffix in FileType.extension_module().suffixes],
+            *[f'*.{suffix}*' for suffix in FileType.shared_library().suffixes],
+        )
         self.module = module
         self.print_arguments(True)
         self.install_program(False)
@@ -39,5 +47,5 @@ class SphinxApidoc(Program):
 
     @override
     def _after(self):
-        root_rst_file = self.module.output_directory / (self.module.source_directory.name + '.rst')
+        root_rst_file = self.module.output_directory / f'{self.module.source_directory.name}.rst'
         delete_files(root_rst_file, accept_missing=False)

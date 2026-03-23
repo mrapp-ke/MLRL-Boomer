@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for writing log messages.
 """
+
 import logging
 import sys
 
@@ -18,6 +19,7 @@ class Log:
         """
         The log levels supported by the build system.
         """
+
         NONE = logging.NOTSET
         ERROR = logging.ERROR
         WARNING = logging.WARNING
@@ -39,7 +41,7 @@ class Log:
         root.addHandler(out_handler)
 
     @staticmethod
-    def error(message: str, *args, error: Exception | None = None, exit_code: int = 1):
+    def error(message: str, error: Exception | None = None, exit_code: int = 1):
         """
         Writes a log message at level `Log.Level.ERROR` and terminates the build system.
 
@@ -48,39 +50,32 @@ class Log:
         :param error:       An optional error to be included in the log message
         :param exit_code:   The exit code to be returned when terminating the build system
         """
-        if error:
-            logging.error(message + ': %s', *args, error)
-        else:
-            logging.error(message, *args)
-
+        logging.error(f'{message}: {error}' if error else message)
         sys.exit(exit_code)
 
     @staticmethod
-    def warning(message: str, *args):
+    def warning(message: str):
         """
         Writes a log message at level `Log.Level.WARNING`.
 
         :param message: The log message to be written
-        :param args:    Optional arguments to be included in the log message
         """
-        logging.warning(message, *args)
+        logging.warning(message)
 
     @staticmethod
-    def info(message: str, *args):
+    def info(message: str):
         """
         Writes a log message at level `Log.Level.INFO`.
 
         :param message: The log message to be written
-        :param args:    Optional arguments to be included in the log message
         """
-        logging.info(message, *args)
+        logging.info(message)
 
     @staticmethod
-    def verbose(message: str, *args):
+    def verbose(message: str):
         """
         Writes a log message at level `Log.Level.VERBOSE`.
 
         :param message: The log message to be written
-        :param args:    Optional arguments to be included in the log message
         """
-        logging.debug(message, *args)
+        logging.debug(message)

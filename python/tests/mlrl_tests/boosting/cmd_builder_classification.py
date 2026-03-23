@@ -1,6 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+
 from ..cmd_builder import CmdBuilder
 from ..cmd_builder_classification import ClassificationCmdBuilder
 from ..datasets import Dataset
@@ -20,11 +21,13 @@ class BoomerClassifierCmdBuilder(ClassificationCmdBuilder, BoomerCmdBuilderMixin
     """
 
     def __init__(self, dataset: str = Dataset.EMOTIONS):
-        super().__init__(expected_output_dir=CmdBuilder.EXPECTED_OUTPUT_DIR / 'boosting' / 'classification',
-                         input_dir=CmdBuilder.INPUT_DIR / 'boosting',
-                         batch_config=CmdBuilder.CONFIG_DIR / 'boosting' / 'classification' / 'batch_config.yml',
-                         runnable_module_name='mlrl.boosting',
-                         dataset=dataset)
+        super().__init__(
+            expected_output_dir=CmdBuilder.EXPECTED_OUTPUT_DIR / 'boosting' / 'classification',
+            input_dir=CmdBuilder.INPUT_DIR / 'boosting',
+            batch_config=CmdBuilder.CONFIG_DIR / 'boosting' / 'classification' / 'batch_config.yml',
+            runnable_module_name='mlrl.boosting',
+            dataset=dataset,
+        )
 
     def marginal_probability_calibration(self, probability_calibrator: str | None = PROBABILITY_CALIBRATION_ISOTONIC):
         """

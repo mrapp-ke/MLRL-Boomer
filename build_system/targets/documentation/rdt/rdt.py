@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for accessing the readthedocs API (see https://docs.readthedocs.com/platform/stable/api/v3.html).
 """
+
 from os import environ
 
 from core.build_unit import BuildUnit
@@ -36,27 +37,30 @@ class ReadTheDocsApi:
             """
             Triggers a build.
             """
-            # pylint: disable=import-outside-toplevel
             import requests
-            url = 'https://readthedocs.org/api/v3/projects/' + self.project_name + '/versions/' + version + '/builds/'
-            Log.verbose('Sending request POST %s', url)
+
+            url = f'https://readthedocs.org/api/v3/projects/{self.project_name}/versions/{version}/builds/'
+            Log.verbose(f'Sending request POST {url}')
             token = self.token
-            headers = {'Authorization': 'Token ' + token} if token else None
+            headers = {'Authorization': f'Token {token}'} if token else None
             response = requests.post(url, headers=headers, timeout=5)
 
             if response.ok:
-                Log.verbose('Request succeeded with status code %s and response: %s', response.status_code,
-                            response.content)
+                Log.verbose(
+                    f'Request succeeded with status code {response.status_code} and response: {response.content}'
+                )
             else:
-                Log.error('Request POST %s failed with status code %s', url, response.status_code)
+                Log.error(f'Request POST {url} failed with status code {response.status_code}')
 
     @staticmethod
     def __get_token_from_env() -> str | None:
         token = get_env(environ, ReadTheDocsApi.ENV_TOKEN)
 
         if not token:
-            Log.error('No readthedocs API token is set. You can specify it via the environment variable %s.',
-                      ReadTheDocsApi.ENV_TOKEN)
+            Log.error(
+                f'No readthedocs API token is set. You can specify it via the environment variable '
+                f'{ReadTheDocsApi.ENV_TOKEN}.'
+            )
 
         return token
 

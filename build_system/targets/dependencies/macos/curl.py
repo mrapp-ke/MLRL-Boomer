@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow to run the external program "curl".
 """
+
 from typing import override
 
 from util.cmd import Command
@@ -14,11 +15,13 @@ class CurlDownload(Program):
     Allows to run the external program "curl" for downloading a file from a specific URL.
     """
 
-    def __init__(self,
-                 url: str,
-                 authorization_header: str | None = None,
-                 file_name: str | None = None,
-                 follow_redirects: bool = True):
+    def __init__(
+        self,
+        url: str,
+        authorization_header: str | None = None,
+        file_name: str | None = None,
+        follow_redirects: bool = True,
+    ):
         """
         :param url:                     The URL of the file to be downloaded
         :param authorization_header:    The authorization header to be set or None, if no such header should be set
@@ -35,7 +38,7 @@ class CurlDownload(Program):
 
         self.add_arguments(url)
         self.use_authorization = authorization_header is not None
-        self.add_conditional_arguments(self.use_authorization, '-H', 'Authorization: ' + str(authorization_header))
+        self.add_conditional_arguments(self.use_authorization, '-H', f'Authorization: {authorization_header}')
         self.install_program(False)
         self.print_arguments(not self.use_authorization)
 

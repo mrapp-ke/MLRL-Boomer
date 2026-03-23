@@ -3,6 +3,7 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing paths to files.
 """
+
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -21,6 +22,7 @@ class FilePath:
         suffix:     The suffix of the file (without leading dot) or None, if the suffix is unspecified
         context:    A `Context` to be used to determine the path
     """
+
     directory: Path
     file_name: str
     suffix: str | None

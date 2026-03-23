@@ -1,6 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+
 from typing import override
 
 from sklearn.base import BaseEstimator as SkLearnBaseEstimator, ClassifierMixin as SkLearnClassifierMixin
@@ -16,11 +17,13 @@ class SkLearnClassifierCmdBuilder(ClassificationCmdBuilder):
     """
 
     def __init__(self, estimator_type: type[SkLearnClassifierMixin], dataset: str = Dataset.EMOTIONS):
-        super().__init__(expected_output_dir=CmdBuilder.EXPECTED_OUTPUT_DIR / 'sklearn' / 'classification',
-                         input_dir=CmdBuilder.INPUT_DIR / 'sklearn',
-                         batch_config=CmdBuilder.CONFIG_DIR / 'sklearn' / 'classification' / 'batch_config.yml',
-                         runnable_module_name='mlrl.testbed_sklearn',
-                         dataset=dataset)
+        super().__init__(
+            expected_output_dir=CmdBuilder.EXPECTED_OUTPUT_DIR / 'sklearn' / 'classification',
+            input_dir=CmdBuilder.INPUT_DIR / 'sklearn',
+            batch_config=CmdBuilder.CONFIG_DIR / 'sklearn' / 'classification' / 'batch_config.yml',
+            runnable_module_name='mlrl.testbed_sklearn',
+            dataset=dataset,
+        )
         self._estimator_type = estimator_type
         self._meta_estimator_type: type[SkLearnBaseEstimator] | None = None
 

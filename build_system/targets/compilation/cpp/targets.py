@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for compiling C++ code.
 """
+
 from pathlib import Path
 from typing import cast, override
 
@@ -20,16 +21,21 @@ from targets.project import Project
 
 MODULE_FILTER = CompilationModule.Filter(FileType.cpp())
 
-BUILD_OPTIONS = BuildOptions() \
-        .add(ConstantBuildOption('cpp_std', Project.Cpp.cpp_version(),
-                                 *[subproject.name for subproject in Project.Cpp.find_subprojects()])) \
-        .add(EnvBuildOption(SubprojectModule.ENV_SUBPROJECTS.lower())) \
-        .add(EnvBuildOption('buildtype', default_value='release')) \
-        .add(EnvBuildOption('test_support', 'common')) \
-        .add(EnvBuildOption('multi_threading_support', 'common')) \
-        .add(EnvBuildOption('gpu_support', 'common'))
+BUILD_OPTIONS = (
+    BuildOptions()
+    .add(
+        ConstantBuildOption(
+            'cpp_std', Project.Cpp.cpp_version(), *[subproject.name for subproject in Project.Cpp.find_subprojects()]
+        )
+    )
+    .add(EnvBuildOption(SubprojectModule.ENV_SUBPROJECTS.lower()))
+    .add(EnvBuildOption('buildtype', default_value='release'))
+    .add(EnvBuildOption('test_support', 'common'))
+    .add(EnvBuildOption('multi_threading_support', 'common'))
+    .add(EnvBuildOption('gpu_support', 'common'))
+)
 
-MESON_OPTIONS = ['-D', 'library_version=' + str(Project.version(release=True))]
+MESON_OPTIONS = ['-D', f'library_version={Project.version(release=True)}']
 
 
 class SetupCpp(BuildTarget.Runnable):
@@ -53,7 +59,7 @@ class SetupCpp(BuildTarget.Runnable):
     @override
     def get_clean_files(self, build_unit: BuildUnit, module: Module) -> list[Path]:
         compilation_module = cast(CompilationModule, module)
-        Log.info('Removing C++ build files from directory "%s"...', compilation_module.root_directory)
+        Log.info(f'Removing C++ build files from directory "{compilation_module.root_directory}"...')
         return super().get_clean_files(build_unit, compilation_module)
 
 
@@ -68,7 +74,7 @@ class CompileCpp(PhonyTarget.Runnable):
     @override
     def run(self, build_unit: BuildUnit, module: Module):
         compilation_module = cast(CompilationModule, module)
-        Log.info('Compiling C++ code in directory "%s"...', compilation_module.root_directory)
+        Log.info(f'Compiling C++ code in directory "{compilation_module.root_directory}"...')
         MesonSetup(build_unit, compilation_module, '--reconfigure', *MESON_OPTIONS, build_options=BUILD_OPTIONS).run()
         MesonConfigure(build_unit, compilation_module, *MESON_OPTIONS, build_options=BUILD_OPTIONS).run()
         MesonCompile(build_unit, compilation_module).run()
@@ -85,13 +91,16 @@ class InstallCpp(BuildTarget.Runnable):
     @override
     def run(self, build_unit: BuildUnit, module: Module):
         compilation_module = cast(CompilationModule, module)
-        Log.info('Installing shared libraries from directory "%s" into source tree...',
-                 compilation_module.root_directory)
+        Log.info(
+            f'Installing shared libraries from directory "{compilation_module.root_directory}" into source tree...'
+        )
         MesonInstall(build_unit, compilation_module).run()
 
     @override
     def get_clean_files(self, _: BuildUnit, module: Module) -> list[Path]:
         compilation_module = cast(CompilationModule, module)
-        Log.info('Removing shared libraries installed from directory "%s" from source tree...',
-                 compilation_module.root_directory)
+        Log.info(
+            f'Removing shared libraries installed from directory "{compilation_module.root_directory}" from source '
+            f'tree...'
+        )
         return compilation_module.find_installed_files()

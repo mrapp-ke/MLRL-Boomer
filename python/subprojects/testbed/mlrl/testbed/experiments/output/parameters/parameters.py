@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing algorithmic parameters that are part of output data.
 """
+
 from typing import override
 
 from mlrl.testbed.experiments.input.parameters.parameters import InputParameters

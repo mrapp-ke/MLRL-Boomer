@@ -3,6 +3,7 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing output data to the log.
 """
+
 import logging as log
 
 from pathlib import Path
@@ -43,7 +44,7 @@ class LogSink(Sink):
             if text:
                 context = output_data.get_context(type(self))
                 title = TextualOutputData.Title(title=output_data.properties.name, context=context)
-                log.info('%s:\n\n%s\n', title.format(state), text)
+                log.info(f'{title.format(state)}:\n\n{text}\n')
 
     @override
     def create_source(self, input_directory: Path) -> Source | None:

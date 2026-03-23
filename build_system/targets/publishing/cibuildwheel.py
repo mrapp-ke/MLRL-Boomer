@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow to run the external program "cibuildwheel".
 """
+
 from pathlib import Path
 
 from core.build_unit import BuildUnit

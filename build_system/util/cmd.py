@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for running command line programs during the build process.
 """
+
 import subprocess
 import sys
 
@@ -38,7 +39,7 @@ class Command:
             result = command.command
 
             if self.print_arguments:
-                result += ' ' + format_iterable(command.arguments, separator=' ')
+                result += f' {format_iterable(command.arguments, separator=" ")}'
 
             return result
 
@@ -57,7 +58,7 @@ class Command:
                 # such an executable exists. This circumvents situations where the PATH environment variable has not
                 # been updated after activating the virtual environment. This can prevent the executables from being
                 # found or can lead to the wrong executable, from outside the virtual environment, being executed.
-                executable = Path(sys.prefix, 'Scripts', command.command + '.exe')
+                executable = Path(sys.prefix, 'Scripts', f'{command.command}.exe')
 
                 if executable.is_file():
                     return str(executable)
@@ -79,20 +80,22 @@ class Command:
             :return:                The output of the program
             """
             if self.print_command:
-                Log.info('Running command "%s"...', command.print_options.format(command))
+                Log.info(f'Running command "{command.print_options.format(command)}"...')
 
-            output = subprocess.run([self.__get_executable(command)] + command.arguments,
-                                    check=False,
-                                    text=capture_output,
-                                    capture_output=capture_output,
-                                    env=self.environment)
+            output = subprocess.run(
+                [self.__get_executable(command)] + command.arguments,
+                check=False,
+                text=capture_output,
+                capture_output=capture_output,
+                env=self.environment,
+            )
             exit_code = output.returncode
 
             if exit_code not in self.accepted_exit_codes:
                 if capture_output:
-                    Log.info('%s', str(output.stderr).strip())
+                    Log.info(str(output.stderr).strip())
 
-                message = ('Command "' + str(command) + '" terminated with non-zero exit code ' + str(exit_code))
+                message = f'Command "{command}" terminated with non-zero exit code {exit_code}'
 
                 if self.exit_on_error:
                     Log.error(message, exit_code=exit_code)
@@ -101,11 +104,13 @@ class Command:
 
             return output
 
-    def __init__(self,
-                 command: str,
-                 *arguments: str,
-                 print_options: PrintOptions = PrintOptions(),
-                 run_options: RunOptions = RunOptions()):
+    def __init__(
+        self,
+        command: str,
+        *arguments: str,
+        print_options: PrintOptions = PrintOptions(),
+        run_options: RunOptions = RunOptions(),
+    ):
         """
         :param command:         The name of the command line program
         :param arguments:       Optional arguments to be passed to the command line program

@@ -16,6 +16,7 @@ jobs:
     outputs:
       cpp: ${{ steps.filter.outputs.cpp }}
       python: ${{ steps.filter.outputs.python }}
+      cython: ${{ steps.filter.outputs.cython }}
       cfg: ${{ steps.filter.outputs.cfg }}
       md: ${{ steps.filter.outputs.md }}
       yaml: ${{ steps.filter.outputs.yaml }}
@@ -63,8 +64,13 @@ jobs:
             python:
               - *build_files
               - 'build_system/targets/code_style/python/*'
-              - '.cython-lint.toml'
               - '**/*.py'
+            cython:
+              - *build_files
+              - 'build_system/targets/code_style/cython/*'
+              - '.cython-lint.toml'
+              - '**/*.pyx'
+              - '**/*.pxd'
             cfg:
               - *build_files
               - 'build_system/targets/code_style/cfg/*'
@@ -95,6 +101,13 @@ jobs:
     uses: ./.github/workflows/template_format.yml
     with:
       language: python
+  test_format_cython:
+    needs: changes
+    if: ${{ needs.changes.outputs.cython == 'true' }}
+    name: Check Cython source files
+    uses: ./.github/workflows/template_format.yml
+    with:
+      language: cython
   test_format_cfg:
     needs: changes
     if: ${{ needs.changes.outputs.cfg == 'true' }}
@@ -127,6 +140,7 @@ jobs:
     needs:
       - test_format_cpp
       - test_format_python
+      - test_format_cython
       - test_format_cfg
       - test_format_md
       - test_format_yaml
@@ -141,6 +155,9 @@ jobs:
             exit 1
           fi
           if [[ "${{ needs.test_format_python.result }}" == "failure" ]]; then
+            exit 1
+          fi
+          if [[ "${{ needs.test_format_cython.result }}" == "failure" ]]; then
             exit 1
           fi
           if [[ "${{ needs.test_format_cfg.result }}" == "failure" ]]; then

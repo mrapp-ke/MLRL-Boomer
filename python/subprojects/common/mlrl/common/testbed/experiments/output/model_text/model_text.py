@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing rule models as text that is part of output data.
 """
+
 from io import StringIO
 from typing import override
 
@@ -100,7 +101,7 @@ class RuleModelAsText(TextualOutputData):
                 nominal_value = int(threshold)
 
                 if print_nominal_values and len(feature.nominal_values) > nominal_value:
-                    text.write('"' + feature.nominal_values[nominal_value] + '"')
+                    text.write(f'"{feature.nominal_values[nominal_value]}"')
                 else:
                     text.write(str(nominal_value))
             else:

@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Defines command line arguments for configuring the functionality to predict for different datasets.
 """
+
 from mlrl.util.cli import BoolArgument
 
 

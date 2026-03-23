@@ -3,6 +3,7 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow reading input data from CSV files.
 """
+
 import csv
 
 from pathlib import Path

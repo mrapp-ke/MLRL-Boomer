@@ -3,6 +3,7 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing tables.
 """
+
 from abc import ABC, abstractmethod
 from collections.abc import Generator, Iterable, Iterator
 from enum import Enum, StrEnum
@@ -15,6 +16,7 @@ class Alignment(Enum):
     """
     All possible alignments of a table column.
     """
+
     AUTO = None
     LEFT = 'left'
     CENTER = 'center'
@@ -123,6 +125,7 @@ class Table(ABC):
         """
         All formats that can be used for formatting tables.
         """
+
         SIMPLE = 'simple'
         PLAIN = 'plain'
         OUTLINE = 'simple_outline'
@@ -199,10 +202,12 @@ class Table(ABC):
         :return: The `ColumnWiseTable` that has been created
         """
 
-    def format(self,
-               auto_rotate: bool = True,
-               table_format: 'Table.Format | None' = None,
-               separator_indices: list[int] | None = None) -> str:
+    def format(
+        self,
+        auto_rotate: bool = True,
+        table_format: 'Table.Format | None' = None,
+        separator_indices: list[int] | None = None,
+    ) -> str:
         """
         Creates and returns a textual representation of the table.
 
@@ -226,19 +231,25 @@ class Table(ABC):
 
             if auto_rotate and headers and self.num_rows == 1:
                 first_row = next(self.rows)
-                rotated_rows = [[headers[column_index], first_row[column_index]]
-                                for column_index in range(self.num_columns)]
+                rotated_rows = [
+                    [headers[column_index], first_row[column_index]] for column_index in range(self.num_columns)
+                ]
                 return tabulate(rotated_rows, tablefmt=table_format if table_format else Table.Format.PLAIN)
 
             if not headers:
                 return tabulate(rows, tablefmt=table_format if table_format else Table.Format.PLAIN)
 
-            alignments = map(lambda alignment: alignment.value
-                             if alignment else None, self.alignments) if self.alignments else None
-            return tabulate(rows,
-                            headers=headers,
-                            tablefmt=table_format if table_format else Table.Format.OUTLINE,
-                            colalign=alignments)
+            alignments = (
+                map(lambda alignment: alignment.value if alignment else None, self.alignments)
+                if self.alignments
+                else None
+            )
+            return tabulate(
+                rows,
+                headers=headers,
+                tablefmt=table_format if table_format else Table.Format.OUTLINE,
+                colalign=alignments,
+            )
 
         return '<no data available>'
 
@@ -276,8 +287,11 @@ class RowWiseTable(Table):
 
         @override
         def __eq__(self, other: Any) -> bool:
-            return isinstance(other, type(self)) and other.num_columns == self.num_columns and all(
-                str(first_header) == str(second_header) for first_header, second_header in zip(self, other))
+            return (
+                isinstance(other, type(self))
+                and other.num_columns == self.num_columns
+                and all(str(first_header) == str(second_header) for first_header, second_header in zip(self, other))
+            )
 
     class Row(Row):
         """
@@ -305,16 +319,18 @@ class RowWiseTable(Table):
         @override
         def __getitem__(self, column_index: int) -> Cell:
             if column_index >= self.num_columns:
-                raise IndexError('Invalid column index: Got ' + str(column_index) + ', but table has only '
-                                 + str(self.num_columns) + ' columns')
+                raise IndexError(
+                    f'Invalid column index: Got {column_index}, but table has only {self.num_columns} columns'
+                )
 
             row = self.table._rows[self.row_index]
             return row[column_index] if column_index < len(row) else None
 
         def __setitem__(self, column_index: int, value: Cell):
             if column_index >= self.num_columns:
-                raise IndexError('Invalid column index: Got ' + str(column_index) + ', but table has only '
-                                 + str(self.num_columns) + ' columns')
+                raise IndexError(
+                    f'Invalid column index: Got {column_index}, but table has only {self.num_columns} columns'
+                )
 
             row = self.table._rows[self.row_index]
 
@@ -338,7 +354,6 @@ class RowWiseTable(Table):
 
         @override
         def set_header(self, value: Header):
-            # pylint: disable=protected-access
             headers = self.table._headers
 
             if headers:
@@ -368,8 +383,7 @@ class RowWiseTable(Table):
         @override
         def __getitem__(self, row_index: int) -> Cell:
             if row_index >= self.num_rows:
-                raise IndexError('Invalid row index: Got ' + str(row_index) + ', but table has only '
-                                 + str(self.num_rows) + ' rows')
+                raise IndexError(f'Invalid row index: Got {row_index}, but table has only {self.num_rows} rows')
 
             row = self.table._rows[row_index]
             column_index = self.column_index
@@ -386,8 +400,10 @@ class RowWiseTable(Table):
         :param alignments:  The alignments of the individual columns or None
         """
         if headers and alignments and len(headers) != len(alignments):
-            raise ValueError('The number of alignments does not match the number headers: Expected ' + str(len(headers))
-                             + ', but got ' + str(len(alignments)))
+            raise ValueError(
+                f'The number of alignments does not match the number headers: Expected {len(headers)}, but got '
+                f'{len(alignments)}'
+            )
 
         self._headers = list(headers) if headers else None
         self._alignments = alignments
@@ -451,10 +467,9 @@ class RowWiseTable(Table):
         self._num_columns = max(len(row), self._num_columns)
         return self
 
-    def sort_by_columns(self,
-                        column_index: int,
-                        *additional_column_indices: int,
-                        descending: bool = False) -> 'RowWiseTable':
+    def sort_by_columns(
+        self, column_index: int, *additional_column_indices: int, descending: bool = False
+    ) -> 'RowWiseTable':
         """
         Sorts the rows in the table by the values in one or several columns.
 
@@ -464,8 +479,9 @@ class RowWiseTable(Table):
                                             should be sorted in ascending order
         :return:                            The sorted table
         """
-        self._rows.sort(key=lambda row: ([row[i] for i in [column_index] + list(additional_column_indices)]),
-                        reverse=descending)
+        self._rows.sort(
+            key=lambda row: ([row[i] for i in [column_index] + list(additional_column_indices)]), reverse=descending
+        )
         return self
 
     @override
@@ -511,15 +527,17 @@ class RowWiseTable(Table):
         alignments = self.alignments
 
         for column_index, column in enumerate(self.columns):
-            table.add_column(*column,
-                             header=header_row[column_index] if header_row else None,
-                             alignment=alignments[column_index] if alignments else None)
+            table.add_column(
+                *column,
+                header=header_row[column_index] if header_row else None,
+                alignment=alignments[column_index] if alignments else None,
+            )
 
         return table
 
     def __getitem__(self, row_index: int) -> Row:
         if row_index < 0 or row_index >= self.num_rows:
-            raise ValueError('Row index must be between 0 and ' + str(self.num_rows) + ', but got: ' + str(row_index))
+            raise ValueError(f'Row index must be between 0 and {self.num_rows}, but got: {row_index}')
         return RowWiseTable.Row(self, row_index)
 
 
@@ -575,8 +593,9 @@ class ColumnWiseTable(Table):
         @override
         def __getitem__(self, column_index: int) -> Cell:
             if column_index >= self.num_columns:
-                raise IndexError('Invalid column index: Got ' + str(column_index) + ', but table has only '
-                                 + str(self.num_columns) + ' columns')
+                raise IndexError(
+                    f'Invalid column index: Got {column_index}, but table has only {self.num_columns} columns'
+                )
 
             column = self.table._columns[column_index]
             row_index = self.row_index
@@ -607,7 +626,6 @@ class ColumnWiseTable(Table):
 
             :param value: The value to be set
             """
-            # pylint: disable=protected-access
             headers = self.table._headers
 
             if headers:
@@ -642,16 +660,14 @@ class ColumnWiseTable(Table):
         @override
         def __getitem__(self, row_index: int) -> Cell:
             if row_index >= self.num_rows:
-                raise IndexError('Invalid row index: Got ' + str(row_index) + ', but table has only '
-                                 + str(self.num_rows) + ' rows')
+                raise IndexError(f'Invalid row index: Got {row_index}, but table has only {self.num_rows} rows')
 
             column = self.table._columns[self.column_index]
             return column[row_index] if row_index < len(column) else None
 
         def __setitem__(self, row_index: int, value: Cell):
             if row_index >= self.num_rows:
-                raise IndexError('Invalid row index: Got ' + str(row_index) + ', but table has only '
-                                 + str(self.num_rows) + ' rows')
+                raise IndexError(f'Invalid row index: Got {row_index}, but table has only {self.num_rows} rows')
 
             column = self.table._columns[self.column_index]
 
@@ -681,11 +697,9 @@ class ColumnWiseTable(Table):
 
         return sliced_table
 
-    def add_column(self,
-                   *values: Cell,
-                   header: Header | None = None,
-                   alignment: Alignment | None = None,
-                   position: int = -1) -> 'ColumnWiseTable':
+    def add_column(
+        self, *values: Cell, header: Header | None = None, alignment: Alignment | None = None, position: int = -1
+    ) -> 'ColumnWiseTable':
         """
         Adds a new column to a table at a specific position.
 
@@ -793,6 +807,5 @@ class ColumnWiseTable(Table):
 
     def __getitem__(self, column_index: int) -> Column:
         if column_index < 0 or column_index >= self.num_columns:
-            raise ValueError('Column index must be between 0 and ' + str(self.num_columns) + ', but got: '
-                             + str(column_index))
+            raise ValueError(f'Column index must be between 0 and {self.num_columns}, but got: {column_index}')
         return ColumnWiseTable.Column(self, column_index)

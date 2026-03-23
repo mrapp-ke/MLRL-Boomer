@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow configuring the functionality to write label vectors to one or several sinks.
 """
+
 from argparse import Namespace
 from typing import override
 
@@ -25,13 +26,13 @@ class LabelVectorExtension(Extension):
     PRINT_LABEL_VECTORS = BoolArgument(
         '--print-label-vectors',
         description='Whether the unique label vectors contained in the training data should be printed on the console '
-        + 'or not.',
+        'or not.',
     )
 
     SAVE_LABEL_VECTORS = BoolArgument(
         '--save-label-vectors',
         description='Whether the unique label vectors contained in the training data should be written to output files '
-        + 'or not.',
+        'or not.',
     )
 
     def __init__(self, *dependencies: Extension):
@@ -63,7 +64,8 @@ class LabelVectorExtension(Extension):
         if save_label_vectors and base_dir and result_directory:
             create_directory = OutputArguments.CREATE_DIRS.get_value(args)
             experiment_builder.label_vector_writer.add_sinks(
-                CsvFileSink(directory=base_dir / result_directory, create_directory=create_directory))
+                CsvFileSink(directory=base_dir / result_directory, create_directory=create_directory)
+            )
 
     @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: ExperimentMode):

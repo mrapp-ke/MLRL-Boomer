@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing model that are part of input data.
 """
+
 import logging as log
 
 from typing import Any, override

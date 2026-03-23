@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for obtaining predictions from global machine learning models.
 """
+
 import logging as log
 
 from collections.abc import Generator
@@ -30,8 +31,10 @@ class GlobalPredictionFunction(PredictionFunction):
             learner=learner,
             predict_function=learner.predict,
             decision_function=learner.decision_function
-            if callable(getattr(learner, 'decision_function', None)) else None,
-            predict_proba_function=learner.predict_proba if callable(getattr(learner, 'predict_proba', None)) else None)
+            if callable(getattr(learner, 'decision_function', None))
+            else None,
+            predict_proba_function=learner.predict_proba if callable(getattr(learner, 'predict_proba', None)) else None,
+        )
 
 
 class GlobalPredictor(Predictor):
@@ -40,20 +43,25 @@ class GlobalPredictor(Predictor):
     """
 
     @override
-    def obtain_predictions(self, learner: Any, dataset: Dataset, dataset_type: DatasetType,
-                           **kwargs) -> Generator[PredictionState, None, None]:
+    def obtain_predictions(
+        self, learner: Any, dataset: Dataset, dataset_type: DatasetType, **kwargs
+    ) -> Generator[PredictionState, None, None]:
         """
         See :func:`mlrl.testbed_sklearn.experiments.prediction.predictor.Predictor.obtain_predictions`
         """
-        log.info('Predicting for %s %s examples...', dataset.num_examples, dataset_type)
+        log.info(f'Predicting for {dataset.num_examples} {dataset_type} examples...')
         start_time = Timer.start()
         prediction_function = GlobalPredictionFunction(learner)
         predictions = prediction_function.invoke(dataset, self.prediction_type, **kwargs)
         prediction_duration = Timer.stop(start_time)
 
         if predictions is not None:
-            log.info('Successfully predicted in %s', prediction_duration)
-            yield PredictionState(prediction_scope=GlobalPredictionScope(),
-                                  prediction_result=PredictionResult(predictions=predictions,
-                                                                     prediction_type=self.prediction_type,
-                                                                     prediction_duration=prediction_duration))
+            log.info(f'Successfully predicted in {prediction_duration}')
+            yield PredictionState(
+                prediction_scope=GlobalPredictionScope(),
+                prediction_result=PredictionResult(
+                    predictions=predictions,
+                    prediction_type=self.prediction_type,
+                    prediction_duration=prediction_duration,
+                ),
+            )

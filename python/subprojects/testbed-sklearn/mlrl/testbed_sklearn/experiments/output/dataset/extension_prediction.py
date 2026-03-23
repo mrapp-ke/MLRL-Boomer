@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow configuring the functionality to write predictions to one or several sinks.
 """
+
 from argparse import Namespace
 from typing import override
 
@@ -65,7 +66,8 @@ class PredictionExtension(Extension):
         if save_predictions and base_dir and result_directory:
             create_directory = OutputArguments.CREATE_DIRS.get_value(args)
             experiment_builder.prediction_writer.add_sinks(
-                ArffFileSink(directory=base_dir / result_directory, create_directory=create_directory, options=options))
+                ArffFileSink(directory=base_dir / result_directory, create_directory=create_directory, options=options)
+            )
 
     @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, _: ExperimentMode):

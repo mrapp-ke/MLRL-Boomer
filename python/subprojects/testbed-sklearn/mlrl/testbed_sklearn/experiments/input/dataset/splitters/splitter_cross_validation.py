@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for splitting datasets into multiple, equally sized, folds consisting of a training and a test dataset.
 """
+
 import logging as log
 
 from collections.abc import Generator
@@ -43,8 +44,9 @@ class CrossValidationSplitter(DatasetSplitter):
                 """
                 self.datasets = [None for _ in range(num_folds)]
 
-        def __get_training_dataset(self, dataset_reader: DatasetReader, folding_strategy: FoldingStrategy,
-                                   state: ExperimentState) -> TabularDataset:
+        def __get_training_dataset(
+            self, dataset_reader: DatasetReader, folding_strategy: FoldingStrategy, state: ExperimentState
+        ) -> TabularDataset:
             cache = self.splitter.cache
             training_dataset = None
 
@@ -133,6 +135,7 @@ class CrossValidationSplitter(DatasetSplitter):
                  training_datasets: A list that stores the training datasets
                  test_datasets:     A list that stores the test datasets
             """
+
             training_datasets: list[TabularDataset] = field(default_factory=list)
             test_datasets: list[TabularDataset] = field(default_factory=list)
 
@@ -167,14 +170,14 @@ class CrossValidationSplitter(DatasetSplitter):
                     state = dataset_reader.read(state)
                     dataset = state.dataset
                     cache = CrossValidationSplitter.DynamicSplit.Cache()
-                    splits = KFold(n_splits=folding_strategy.num_folds,
-                                   random_state=splitter.random_state,
-                                   shuffle=True).split(dataset.x, dataset.y)
+                    splits = KFold(
+                        n_splits=folding_strategy.num_folds, random_state=splitter.random_state, shuffle=True
+                    ).split(dataset.x, dataset.y)
 
                     for training_examples, test_examples in splits:
-                        training_dataset = replace(dataset,
-                                                   x=dataset.x[training_examples],
-                                                   y=dataset.y[training_examples])
+                        training_dataset = replace(
+                            dataset, x=dataset.x[training_examples], y=dataset.y[training_examples]
+                        )
                         cache.training_datasets.append(training_dataset)
                         test_dataset = replace(dataset, x=dataset.x[test_examples], y=dataset.y[test_examples])
                         cache.test_datasets.append(test_dataset)
@@ -186,8 +189,9 @@ class CrossValidationSplitter(DatasetSplitter):
 
             return state
 
-    def __init__(self, dataset_reader: DatasetReader | None, num_folds: int, first_fold: int, last_fold: int,
-                 random_state: int):
+    def __init__(
+        self, dataset_reader: DatasetReader | None, num_folds: int, first_fold: int, last_fold: int, random_state: int
+    ):
         """
         :param dataset_reader:  The reader that should be used for loading datasets
         :param num_folds:       The total number of folds to be used by cross validation or 1, if separate training and
@@ -214,19 +218,27 @@ class CrossValidationSplitter(DatasetSplitter):
         folding_strategy = self.folding_strategy
         num_folds = folding_strategy.num_folds
 
-        log.info(
-            'Performing %s %s-fold cross validation...', 'fold ' + str(folding_strategy.first + 1) +
-            (' to ' + str(folding_strategy.last) if folding_strategy.num_folds_in_subset > 1 else '')
-            + ' of' if folding_strategy.is_subset else 'full', num_folds)
+        fold = f'fold {folding_strategy.first + 1}'
+
+        if folding_strategy.is_subset:
+            if folding_strategy.num_folds_in_subset > 1:
+                fold += f' to {folding_strategy.last}'
+
+            fold += ' of'
+        else:
+            fold = 'full'
+
+        log.info(f'Performing {fold} {num_folds}-fold cross validation...')
 
         # Check if predefined folds are available...
         state = replace(state, folding_strategy=folding_strategy)
         dataset_reader = self.dataset_reader
         predefined_splits_available = dataset_reader is None or all(
-            dataset_reader.is_available(replace(state, fold=Fold(fold_index))) for fold_index in range(num_folds))
+            dataset_reader.is_available(replace(state, fold=Fold(fold_index))) for fold_index in range(num_folds)
+        )
 
         for fold in folding_strategy.folds:
-            log.info('Fold %s / %s:', (fold.index + 1), num_folds)
+            log.info(f'Fold {fold.index + 1} / {num_folds}:')
             state = replace(state, fold=fold)
 
             if predefined_splits_available:

@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for running experiments using the scikit-learn framework.
 """
+
 import contextlib
 import os
 import re as regex
@@ -18,16 +19,20 @@ from typing import Any, override
 import docstring_parser
 import numpy as np
 
-from sklearn.base import BaseEstimator as SkLearnBaseEstimator, ClassifierMixin as SkLearnClassifierMixin, \
-    RegressorMixin as SkLearnRegressorMixin
+from sklearn.base import (
+    BaseEstimator as SkLearnBaseEstimator,
+    ClassifierMixin as SkLearnClassifierMixin,
+    RegressorMixin as SkLearnRegressorMixin,
+)
 from sklearn.dummy import DummyClassifier, DummyRegressor
 from sklearn.utils import all_estimators
 
 from mlrl.testbed_sklearn.experiments import SkLearnExperiment
 from mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension import DatasetSplitterExtension
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.extension import TabularDataCharacteristicExtension
-from mlrl.testbed_sklearn.experiments.output.characteristics.data.extension_prediction import \
-    PredictionCharacteristicsExtension
+from mlrl.testbed_sklearn.experiments.output.characteristics.data.extension_prediction import (
+    PredictionCharacteristicsExtension,
+)
 from mlrl.testbed_sklearn.experiments.output.dataset.extension_ground_truth import GroundTruthExtension
 from mlrl.testbed_sklearn.experiments.output.dataset.extension_prediction import PredictionExtension
 from mlrl.testbed_sklearn.experiments.output.evaluation.extension import EvaluationExtension
@@ -35,8 +40,11 @@ from mlrl.testbed_sklearn.experiments.output.label_vectors.extension import Labe
 from mlrl.testbed_sklearn.experiments.prediction import GlobalPredictor
 from mlrl.testbed_sklearn.experiments.prediction.extension import PredictionTypeExtension
 from mlrl.testbed_sklearn.experiments.prediction.predictor import Predictor
-from mlrl.testbed_sklearn.experiments.problem_domain import SkLearnClassificationProblem, SkLearnProblem, \
-    SkLearnRegressionProblem
+from mlrl.testbed_sklearn.experiments.problem_domain import (
+    SkLearnClassificationProblem,
+    SkLearnProblem,
+    SkLearnRegressionProblem,
+)
 
 from mlrl.testbed.command import ArgumentList, Command
 from mlrl.testbed.experiments import Experiment
@@ -47,8 +55,10 @@ from mlrl.testbed.experiments.input.model.extension import ModelInputExtension
 from mlrl.testbed.experiments.input.parameters.extension import ParameterInputExtension
 from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.output.model.extension import ModelOutputDirectoryExtension, ModelOutputExtension
-from mlrl.testbed.experiments.output.parameters.extension import ParameterOutputDirectoryExtension, \
-    ParameterOutputExtension
+from mlrl.testbed.experiments.output.parameters.extension import (
+    ParameterOutputDirectoryExtension,
+    ParameterOutputExtension,
+)
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
 from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
@@ -133,11 +143,13 @@ class SkLearnRunnable(Runnable, ABC):
             return {ExperimentMode.SINGLE, ExperimentMode.BATCH}
 
         @staticmethod
-        def get_problem_domain(mode: ExperimentMode,
-                               args: Namespace,
-                               runnable: 'SkLearnRunnable',
-                               fit_kwargs: dict[str, Any] | None = None,
-                               predict_kwargs: dict[str, Any] | None = None) -> ProblemDomain:
+        def get_problem_domain(
+            mode: ExperimentMode,
+            args: Namespace,
+            runnable: 'SkLearnRunnable',
+            fit_kwargs: dict[str, Any] | None = None,
+            predict_kwargs: dict[str, Any] | None = None,
+        ) -> ProblemDomain:
             """
             Returns the problem domain that should be tackled by an experiment.
 
@@ -156,30 +168,34 @@ class SkLearnRunnable(Runnable, ABC):
                 base_learner = runnable.create_classifier(mode, args)
 
                 if base_learner is None:
-                    raise AttributeError('Classification problems are not supported by the runnable "'
-                                         + type(runnable).__name__ + '"')
+                    raise AttributeError(
+                        f'Classification problems are not supported by the runnable "{type(runnable).__name__}"'
+                    )
 
-                # pylint: disable=protected-access
                 base_learner._validate_params()  # type: ignore[union-attr]
-                return SkLearnClassificationProblem(base_learner=base_learner,
-                                                    predictor_factory=predictor_factory,
-                                                    prediction_type=prediction_type,
-                                                    fit_kwargs=fit_kwargs,
-                                                    predict_kwargs=predict_kwargs)
+                return SkLearnClassificationProblem(
+                    base_learner=base_learner,
+                    predictor_factory=predictor_factory,
+                    prediction_type=prediction_type,
+                    fit_kwargs=fit_kwargs,
+                    predict_kwargs=predict_kwargs,
+                )
 
             base_learner = runnable.create_regressor(mode, args)
 
             if base_learner is None:
-                raise AttributeError('Regression problems are not supported by the runnable "' + type(runnable).__name__
-                                     + '"')
+                raise AttributeError(
+                    f'Regression problems are not supported by the runnable "{type(runnable).__name__}"'
+                )
 
-            # pylint: disable=protected-access
             base_learner._validate_params()  # type: ignore[union-attr]
-            return SkLearnRegressionProblem(base_learner=base_learner,
-                                            predictor_factory=predictor_factory,
-                                            prediction_type=prediction_type,
-                                            fit_kwargs=fit_kwargs,
-                                            predict_kwargs=predict_kwargs)
+            return SkLearnRegressionProblem(
+                base_learner=base_learner,
+                predictor_factory=predictor_factory,
+                prediction_type=prediction_type,
+                fit_kwargs=fit_kwargs,
+                predict_kwargs=predict_kwargs,
+            )
 
     @override
     def get_extensions(self) -> list[Extension]:
@@ -219,33 +235,33 @@ class SkLearnRunnable(Runnable, ABC):
         return DatasetSplitterExtension.get_dataset_splitter(args, load_dataset)
 
     @override
-    def create_experiment_builder(self,
-                                  experiment_mode: ExperimentMode,
-                                  args: Namespace,
-                                  command: Command,
-                                  load_dataset: bool = True) -> Experiment.Builder:
+    def create_experiment_builder(
+        self, experiment_mode: ExperimentMode, args: Namespace, command: Command, load_dataset: bool = True
+    ) -> Experiment.Builder:
         """
         See :func:`mlrl.testbed.experiments.recipe.Recipe.create_experiment_builder`
         """
         meta_data = MetaData(command=command)
-        initial_state = ExperimentState(mode=experiment_mode,
-                                        args=args,
-                                        meta_data=meta_data,
-                                        problem_domain=self.create_problem_domain(experiment_mode, args))
-        return SkLearnExperiment.Builder(initial_state=initial_state,
-                                         dataset_splitter=self.create_dataset_splitter(args, load_dataset))
+        initial_state = ExperimentState(
+            mode=experiment_mode,
+            args=args,
+            meta_data=meta_data,
+            problem_domain=self.create_problem_domain(experiment_mode, args),
+        )
+        return SkLearnExperiment.Builder(
+            initial_state=initial_state, dataset_splitter=self.create_dataset_splitter(args, load_dataset)
+        )
 
     @override
     def create_batch_config_file_factory(self) -> BatchMode.ConfigFile.Factory:
         """
         See :func:`mlrl.testbed.runnables.Runnable.create_batch_config_file_factory`
         """
-        # pylint: disable=unnecessary-lambda
         return lambda config_file_path: SkLearnRunnable.BatchConfigFile(config_file_path)
 
-    # pylint: disable=unused-argument
-    def create_predictor_factory(self, args: Namespace,
-                                 prediction_type: PredictionType) -> SkLearnProblem.PredictorFactory:
+    def create_predictor_factory(
+        self, args: Namespace, prediction_type: PredictionType
+    ) -> SkLearnProblem.PredictorFactory:
         """
         May be overridden by subclasses in order to create the `SkLearnProblem.PredictorFactory` that should be used for
         obtaining predictions from a previously trained model.
@@ -289,12 +305,14 @@ class SklearnEstimator:
         A command line argument that allows to configure a hyperparameter of a scikit-learn estimator.
         """
 
-        def __init__(self,
-                     name: str,
-                     parameter_name: str,
-                     arguments: list[Argument],
-                     description: str | None = None,
-                     type_hint: str | None = None):
+        def __init__(
+            self,
+            name: str,
+            parameter_name: str,
+            arguments: list[Argument],
+            description: str | None = None,
+            type_hint: str | None = None,
+        ):
             """
             :param name:            The name of the argument
             :param parameter_name:  The name of the hyperparameter
@@ -308,10 +326,9 @@ class SklearnEstimator:
             self.type_hint = type_hint
 
         @staticmethod
-        def from_type_name(argument_name: str,
-                           parameter_name: str,
-                           type_name: str,
-                           description: str | None = None) -> 'SklearnEstimator.SklearnArgument':
+        def from_type_name(
+            argument_name: str, parameter_name: str, type_name: str, description: str | None = None
+        ) -> 'SklearnEstimator.SklearnArgument':
             """
             Creates and returns an `SklearnArgument` from a given type name.
 
@@ -334,7 +351,7 @@ class SklearnEstimator:
                 else:
                     for part2 in parts2:
                         if part2.startswith('non-negative'):
-                            part2 = part2[len('non-negative'):].strip()
+                            part2 = part2[len('non-negative') :].strip()
 
                         if part2 == 'int':
                             arguments.insert(0, IntArgument(argument_name))  # Must have priority over 'float'
@@ -355,16 +372,18 @@ class SklearnEstimator:
             if description and type_hints:
                 description = description.rstrip() + ('' if description.endswith('.') else '.')
                 type_hint = format_list(type_hints, last_separator=' or ')
-                description += ' Must be ' + type_hint + '.'
+                description += f' Must be {type_hint}.'
 
                 if default_value:
-                    description += ' The default value is ' + default_value + '.'
+                    description += f' The default value is {default_value}.'
 
-            return SklearnEstimator.SklearnArgument(name=argument_name,
-                                                    parameter_name=parameter_name,
-                                                    description=description,
-                                                    type_hint=type_hint,
-                                                    arguments=arguments)
+            return SklearnEstimator.SklearnArgument(
+                name=argument_name,
+                parameter_name=parameter_name,
+                description=description,
+                type_hint=type_hint,
+                arguments=arguments,
+            )
 
         @override
         def get_value(self, args: Namespace, default: Any | None = None) -> Any | None:
@@ -383,9 +402,9 @@ class SklearnEstimator:
             value = super().get_value(args, default=default)
 
             if value is not None:
-                message = 'Invalid value given for argument ' + self.name + '.'
+                message = f'Invalid value given for argument {self.name}.'
                 type_hint = self.type_hint
-                message += ' ' + ('Must be' + type_hint + ', but got' if type_hint else 'Got') + ': ' + str(value)
+                message += f' {(f"Must be {type_hint}, but got" if type_hint else "Got")}: {value}'
                 raise ValueError(message)
 
             return default
@@ -409,7 +428,7 @@ class SklearnEstimator:
 
         for sentence in description.split('. '):
             if not regex.search(r':[a-z]+:`.*`', sentence):
-                sentences.append(sentence.strip().replace('``', '\'').replace('`', '\''))
+                sentences.append(sentence.strip().replace('``', "'").replace('`', "'"))
 
         return '. '.join(sentences)
 
@@ -437,11 +456,12 @@ class SklearnEstimator:
                     x = rng.random(size=x_shape, dtype=np.float32)
 
                 if self.is_regressor:
-                    y = rng.random(size=(num_examples, 2 if tags and tags.target_tags.multi_output else 1),
-                                   dtype=np.float32)
+                    y = rng.random(
+                        size=(num_examples, 2 if tags and tags.target_tags.multi_output else 1), dtype=np.float32
+                    )
                 else:
                     y = np.zeros(shape=num_examples, dtype=np.uint8)
-                    y[(num_examples // 2):] = 1
+                    y[(num_examples // 2) :] = 1
 
                     if tags and tags.target_tags.multi_output:
                         y = np.column_stack((y, y))
@@ -449,7 +469,6 @@ class SklearnEstimator:
                 instance.fit(x, y)
 
             return True
-        # pylint: disable=broad-exception-caught
         except Exception:
             return False
 
@@ -470,11 +489,14 @@ class SklearnEstimator:
         """
         return set(
             filter(
-                lambda estimator: estimator.can_be_default_instantiated, {
+                lambda estimator: estimator.can_be_default_instantiated,
+                {
                     SklearnEstimator(estimator_name=estimator_name, estimator_type=estimator_type)
                     for estimator_name, estimator_type in all_estimators(type_filter='regressor')
                     if issubclass(estimator_type, (SkLearnBaseEstimator, SkLearnRegressorMixin))
-                }))
+                },
+            )
+        )
 
     @staticmethod
     def get_supported_classifiers() -> set['SklearnEstimator']:
@@ -485,11 +507,14 @@ class SklearnEstimator:
         """
         return set(
             filter(
-                lambda estimator: estimator.can_be_default_instantiated, {
+                lambda estimator: estimator.can_be_default_instantiated,
+                {
                     SklearnEstimator(estimator_name=estimator_name, estimator_type=estimator_type)
                     for estimator_name, estimator_type in all_estimators(type_filter='classifier')
                     if issubclass(estimator_type, (SkLearnBaseEstimator, SkLearnClassifierMixin))
-                }))
+                },
+            )
+        )
 
     @staticmethod
     def get_supported_meta_regressors() -> set['SklearnEstimator']:
@@ -500,11 +525,14 @@ class SklearnEstimator:
         """
         return set(
             filter(
-                lambda estimator: estimator.can_be_instantiated_with_estimator, {
+                lambda estimator: estimator.can_be_instantiated_with_estimator,
+                {
                     SklearnEstimator(estimator_name=estimator_name, estimator_type=estimator_type)
                     for estimator_name, estimator_type in all_estimators(type_filter='regressor')
                     if issubclass(estimator_type, (SkLearnBaseEstimator, SkLearnRegressorMixin))
-                }))
+                },
+            )
+        )
 
     @staticmethod
     def get_supported_meta_classifiers() -> set['SklearnEstimator']:
@@ -515,11 +543,14 @@ class SklearnEstimator:
         """
         return set(
             filter(
-                lambda estimator: estimator.can_be_instantiated_with_estimator, {
+                lambda estimator: estimator.can_be_instantiated_with_estimator,
+                {
                     SklearnEstimator(estimator_name=estimator_name, estimator_type=estimator_type)
                     for estimator_name, estimator_type in all_estimators(type_filter='classifier')
                     if issubclass(estimator_type, (SkLearnBaseEstimator, SkLearnClassifierMixin))
-                }))
+                },
+            )
+        )
 
     @property
     def is_classifier(self) -> bool:
@@ -563,10 +594,13 @@ class SklearnEstimator:
 
                     try:
                         arguments.add(
-                            SklearnEstimator.SklearnArgument.from_type_name(argument_name=argument_name,
-                                                                            parameter_name=parameter_name,
-                                                                            type_name=type_name,
-                                                                            description=description))
+                            SklearnEstimator.SklearnArgument.from_type_name(
+                                argument_name=argument_name,
+                                parameter_name=parameter_name,
+                                type_name=type_name,
+                                description=description,
+                            )
+                        )
                     except ValueError:
                         pass
 
@@ -622,9 +656,14 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
         An extension that configures the scikit-learn estimator to be used in an experiment.
         """
 
-        def __init__(self, supported_classifiers: set[SklearnEstimator], supported_regressors: set[SklearnEstimator],
-                     supported_meta_classifiers: set[SklearnEstimator],
-                     supported_meta_regressors: set[SklearnEstimator], *dependencies: 'Extension'):
+        def __init__(
+            self,
+            supported_classifiers: set[SklearnEstimator],
+            supported_regressors: set[SklearnEstimator],
+            supported_meta_classifiers: set[SklearnEstimator],
+            supported_meta_regressors: set[SklearnEstimator],
+            *dependencies: 'Extension',
+        ):
             """
             :param supported_classifiers:       A set that contains all supported scikit-learn classifiers
             :param supported_regressors:        A set that contains all supported scikit-learn regressors
@@ -639,8 +678,9 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
             self._supported_meta_regressors = supported_meta_regressors
 
         @staticmethod
-        def create_meta_estimator_argument(supported_meta_classifiers: set[SklearnEstimator],
-                                           supported_meta_regressors: set[SklearnEstimator]) -> SetArgument:
+        def create_meta_estimator_argument(
+            supported_meta_classifiers: set[SklearnEstimator], supported_meta_regressors: set[SklearnEstimator]
+        ) -> SetArgument:
             """
             Creates and returns a `SetArgument` that allows to specify the name of a scikit-learn meta-estimator to be
             used in an experiment.
@@ -652,17 +692,19 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
             return SetArgument(
                 '--meta-estimator',
                 values=set(map(str, chain(supported_meta_classifiers, supported_meta_regressors))),
-                description='The name of a scikit-learn meta estimator to be used. Must be one of '
-                + format_set(supported_meta_classifiers) + ', if the argument '
-                + SkLearnRunnable.ProblemDomainExtension.PROBLEM_TYPE.name + ' is set to "' + ClassificationProblem.NAME
-                + '", or ' + format_set(supported_meta_regressors) + ', if it is set to "' + RegressionProblem.NAME
-                + '".',
+                description=f'The name of a scikit-learn meta estimator to be used. Must be one of '
+                f'{format_set(supported_meta_classifiers)}, if the argument '
+                f'{SkLearnRunnable.ProblemDomainExtension.PROBLEM_TYPE.name} is set to "{ClassificationProblem.NAME}", '
+                f'or {format_set(supported_meta_regressors)}, if it is set to "{RegressionProblem.NAME}".',
                 description_formatter=lambda description, _: description,
             )
 
         @staticmethod
-        def create_estimator_argument(supported_classifiers: set[SklearnEstimator],
-                                      supported_regressors: set[SklearnEstimator], mode: ExperimentMode) -> SetArgument:
+        def create_estimator_argument(
+            supported_classifiers: set[SklearnEstimator],
+            supported_regressors: set[SklearnEstimator],
+            mode: ExperimentMode,
+        ) -> SetArgument:
             """
             Creates and returns a `SetArgument` that allows to specify the name of the scikit-learn estimator to be
             used in an experiment.
@@ -675,10 +717,10 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
             return SetArgument(
                 '--estimator',
                 values=set(map(str, chain(supported_classifiers, supported_regressors))),
-                description='The name of the scikit-learn estimator to be used. Must be one of '
-                + format_set(supported_classifiers) + ', if the argument '
-                + SkLearnRunnable.ProblemDomainExtension.PROBLEM_TYPE.name + ' is set to "' + ClassificationProblem.NAME
-                + '", or ' + format_set(supported_regressors) + ', if it is set to "' + RegressionProblem.NAME + '".',
+                description=f'The name of the scikit-learn estimator to be used. Must be one of '
+                f'{format_set(supported_classifiers)}, if the argument '
+                f'{SkLearnRunnable.ProblemDomainExtension.PROBLEM_TYPE.name} is set to "{ClassificationProblem.NAME}", '
+                f'or {format_set(supported_regressors)}, if it is set to "{RegressionProblem.NAME}".',
                 description_formatter=lambda description, _: description,
                 required=mode in {ExperimentMode.SINGLE, ExperimentMode.BATCH},
             )
@@ -689,11 +731,15 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
             """
             return {
-                self.create_meta_estimator_argument(supported_meta_classifiers=self._supported_meta_classifiers,
-                                                    supported_meta_regressors=self._supported_meta_regressors),
-                self.create_estimator_argument(supported_classifiers=self._supported_classifiers,
-                                               supported_regressors=self._supported_regressors,
-                                               mode=mode)
+                self.create_meta_estimator_argument(
+                    supported_meta_classifiers=self._supported_meta_classifiers,
+                    supported_meta_regressors=self._supported_meta_regressors,
+                ),
+                self.create_estimator_argument(
+                    supported_classifiers=self._supported_classifiers,
+                    supported_regressors=self._supported_regressors,
+                    mode=mode,
+                ),
             }
 
         @override
@@ -710,46 +756,44 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
         self._meta_regressors = SklearnEstimator.get_supported_meta_regressors()
 
     @staticmethod
-    def __get_estimator_by_name(estimators: Iterable[SklearnEstimator],
-                                estimator_name: str,
-                                problem_type: str | None = None) -> SklearnEstimator | None:
+    def __get_estimator_by_name(
+        estimators: Iterable[SklearnEstimator], estimator_name: str, problem_type: str | None = None
+    ) -> SklearnEstimator | None:
         estimators_by_name = {estimator.estimator_name: estimator for estimator in estimators}
         estimator = estimators_by_name.get(estimator_name)
 
         if not estimator and problem_type:
-            raise ValueError('Estimator "' + estimator_name + '" does not support problem type "' + problem_type + '"')
+            raise ValueError(f'Estimator "{estimator_name}" does not support problem type "{problem_type}"')
 
         return estimator
 
-    def __get_estimator(self,
-                        mode: ExperimentMode,
-                        args: Namespace,
-                        problem_type: str | None = None) -> SklearnEstimator | None:
+    def __get_estimator(
+        self, mode: ExperimentMode, args: Namespace, problem_type: str | None = None
+    ) -> SklearnEstimator | None:
         regressors = self._regressors
         classifiers = self._classifiers
         estimator_name = SkLearnEstimatorRunnable.EstimatorExtension.create_estimator_argument(
-            supported_classifiers=self._classifiers, supported_regressors=self._regressors, mode=mode).get_value(args)
+            supported_classifiers=self._classifiers, supported_regressors=self._regressors, mode=mode
+        ).get_value(args)
         return self.__get_estimator_by_name(chain(regressors, classifiers), estimator_name, problem_type=problem_type)
 
     def __get_meta_estimator(self, args: Namespace, problem_type: str | None = None) -> SklearnEstimator | None:
         meta_regressors = self._meta_regressors
         meta_classifiers = self._meta_classifiers
         meta_estimator_name = SkLearnEstimatorRunnable.EstimatorExtension.create_meta_estimator_argument(
-            supported_meta_classifiers=self._meta_classifiers,
-            supported_meta_regressors=self._meta_regressors).get_value(args)
+            supported_meta_classifiers=self._meta_classifiers, supported_meta_regressors=self._meta_regressors
+        ).get_value(args)
 
         if meta_estimator_name:
-            return self.__get_estimator_by_name(chain(meta_regressors, meta_classifiers),
-                                                meta_estimator_name,
-                                                problem_type=problem_type)
+            return self.__get_estimator_by_name(
+                chain(meta_regressors, meta_classifiers), meta_estimator_name, problem_type=problem_type
+            )
 
         return None
 
     def __instantiate_estimator(
-            self,
-            mode: ExperimentMode,
-            args: Namespace,
-            problem_type: str | None = None) -> SkLearnClassifierMixin | SkLearnRegressorMixin | None:
+        self, mode: ExperimentMode, args: Namespace, problem_type: str | None = None
+    ) -> SkLearnClassifierMixin | SkLearnRegressorMixin | None:
         estimator = self.__get_estimator(mode, args, problem_type=problem_type)
         estimator = estimator.instantiate(args) if estimator else None
 
@@ -767,10 +811,12 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
         See :func:`mlrl.testbed.runnables.Runnable.get_extensions`
         """
         return [
-            SkLearnEstimatorRunnable.EstimatorExtension(supported_classifiers=self._classifiers,
-                                                        supported_regressors=self._regressors,
-                                                        supported_meta_classifiers=self._meta_classifiers,
-                                                        supported_meta_regressors=self._meta_regressors),
+            SkLearnEstimatorRunnable.EstimatorExtension(
+                supported_classifiers=self._classifiers,
+                supported_regressors=self._regressors,
+                supported_meta_classifiers=self._meta_classifiers,
+                supported_meta_regressors=self._meta_regressors,
+            ),
         ] + super().get_extensions()
 
     @override

@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for building and installing wheel packages.
 """
+
 from os import environ
 from pathlib import Path
 from typing import cast, override
@@ -66,10 +67,11 @@ class GeneratePyprojectTomlFiles(BuildTarget.Runnable):
             if line_stripped == '[project]':
                 line_index += 1
                 new_lines.append(line)
-                new_lines.append('version = "' + str(Project.version()) + '"\n')
-                new_lines.append('requires-python = "' + Project.Python.minimum_python_version() + '"\n')
-            elif line_stripped == '[project.optional-dependencies]' \
-                    or line_stripped.replace(' ', '').startswith('dependencies=['):
+                new_lines.append(f'version = "{Project.version()}"\n')
+                new_lines.append(f'requires-python = "{Project.Python.minimum_python_version()}"\n')
+            elif line_stripped == '[project.optional-dependencies]' or line_stripped.replace(' ', '').startswith(
+                'dependencies=['
+            ):
                 while line_index < num_lines:
                     line = lines[line_index]
                     line_stripped = line.strip('\n').strip()
@@ -77,13 +79,16 @@ class GeneratePyprojectTomlFiles(BuildTarget.Runnable):
 
                     if line_stripped == '[project.optional-dependencies]':
                         new_lines.append(line)
-                    elif line_stripped.replace(' ', '').startswith('dependencies=[') and line_stripped.endswith(']') \
-                            or line_stripped ==']':
+                    elif (
+                        line_stripped.replace(' ', '').startswith('dependencies=[')
+                        and line_stripped.endswith(']')
+                        or line_stripped == ']'
+                    ):
                         new_lines.append(line)
                         break
                     else:
                         for dependency, requirement in requirements.items():
-                            line = line.replace('"' + dependency + '"', '"' + str(requirement) + '"')
+                            line = line.replace(f'"{dependency}"', f'"{requirement}"')
 
                         new_lines.append(line)
             else:
@@ -98,7 +103,7 @@ class GeneratePyprojectTomlFiles(BuildTarget.Runnable):
     @override
     def run(self, build_unit: BuildUnit, module: Module):
         package_module = cast(PythonPackageModule, module)
-        Log.info('Generating pyproject.toml file in directory "%s"...', package_module.root_directory)
+        Log.info(f'Generating pyproject.toml file in directory "{package_module.root_directory}"...')
         template_file = PyprojectTomlFile(build_unit, package_module.pyproject_toml_template_file)
         pyproject_toml_file = PyprojectTomlFile(build_unit, package_module.pyproject_toml_file)
         pyproject_toml_file.write_lines(*self.__generate_pyproject_toml(template_file))
@@ -116,7 +121,7 @@ class GeneratePyprojectTomlFiles(BuildTarget.Runnable):
     @override
     def get_clean_files(self, build_unit: BuildUnit, module: Module) -> list[Path]:
         package_module = cast(PythonPackageModule, module)
-        Log.info('Removing pyproject.toml file from directory "%s"', package_module.root_directory)
+        Log.info(f'Removing pyproject.toml file from directory "{package_module.root_directory}"')
         return super().get_clean_files(build_unit, package_module)
 
 
@@ -133,15 +138,16 @@ class BuildPythonWheels(BuildTarget.Runnable):
     @override
     def run(self, build_unit: BuildUnit, module: Module):
         package_module = cast(PythonPackageModule, module)
-        Log.info('Building Python wheels for directory "%s"...', package_module.root_directory)
+        Log.info(f'Building Python wheels for directory "{package_module.root_directory}"...')
         Build(build_unit, package_module).run()
 
         if get_env_bool(environ, self.ENV_REPAIR_WHEELS):
             if package_module.pure:
-                Log.info('Python wheels in directory "%s" are pure and must not be repaired',
-                         package_module.root_directory)
+                Log.info(
+                    f'Python wheels in directory "{package_module.root_directory}" are pure and must not be repaired'
+                )
             else:
-                Log.info('Repairing Python wheels in directory "%s"...', package_module.root_directory)
+                Log.info(f'Repairing Python wheels in directory "{package_module.root_directory}"...')
                 wheel = package_module.find_wheel()
 
                 if wheel:
@@ -150,8 +156,9 @@ class BuildPythonWheels(BuildTarget.Runnable):
     @override
     def get_input_files(self, _: BuildUnit, module: Module) -> list[Path]:
         package_module = cast(PythonPackageModule, module)
-        file_search = Project.Python.file_search() \
-            .set_symlinks(False) \
+        file_search = (
+            Project.Python.file_search()
+            .set_symlinks(False)
             .filter_by_file_type(
                 FileType.python(),
                 FileType.markdown(),
@@ -159,6 +166,7 @@ class BuildPythonWheels(BuildTarget.Runnable):
                 FileType.extension_module(),
                 FileType.shared_library(),
             )
+        )
         return file_search.list(package_module.root_directory)
 
     @override
@@ -170,13 +178,13 @@ class BuildPythonWheels(BuildTarget.Runnable):
     def get_clean_files(self, _: BuildUnit, module: Module) -> list[Path]:
         package_module = cast(PythonPackageModule, module)
         clean_files = []
-        Log.info('Removing Python wheels from directory "%s"...', package_module.root_directory)
+        Log.info(f'Removing Python wheels from directory "{package_module.root_directory}"...')
         clean_files.append(package_module.wheel_directory)
         clean_files.extend(
-            DirectorySearch() \
-                .filter_by_name(Project.Python.build_directory_name) \
-                .filter_by_substrings(ends_with=Project.Python.wheel_metadata_directory_suffix) \
-                .list(package_module.root_directory)
+            DirectorySearch()
+            .filter_by_name(Project.Python.build_directory_name)
+            .filter_by_substrings(ends_with=Project.Python.wheel_metadata_directory_suffix)
+            .list(package_module.root_directory)
         )
         return clean_files
 
@@ -225,7 +233,7 @@ class InstallPythonWheels(BuildTarget.Runnable):
     @override
     def run(self, _: BuildUnit, module: Module):
         package_module = cast(PythonPackageModule, module)
-        Log.info('Installing Python wheels for directory "%s"...', package_module.root_directory)
+        Log.info(f'Installing Python wheels for directory "{package_module.root_directory}"...')
         wheel = package_module.find_wheel()
 
         if wheel:
@@ -249,7 +257,7 @@ class InstallPythonWheels(BuildTarget.Runnable):
     @override
     def get_clean_files(self, build_unit: BuildUnit, module: Module) -> list[Path]:
         package_module = cast(PythonPackageModule, module)
-        Log.info('Uninstalling Python packages for directory "%s"...', package_module.root_directory)
+        Log.info(f'Uninstalling Python packages for directory "{package_module.root_directory}"...')
         pyproject_toml_file = PyprojectTomlFile(build_unit, package_module.pyproject_toml_template_file)
         InstallPythonWheels.UninstallCommand(pyproject_toml_file.package_name).run()
         return super().get_clean_files(build_unit, package_module)

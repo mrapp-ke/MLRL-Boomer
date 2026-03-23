@@ -3,6 +3,7 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow reading datasets from ARFF files.
 """
+
 import logging as log
 
 from dataclasses import replace
@@ -36,11 +37,11 @@ def normalize_attribute_name(name: str) -> str:
     :return:        The normalized name
     """
     name = name.strip()
-    if name.startswith('\'') or name.startswith('"'):
+    if name.startswith("'") or name.startswith('"'):
         name = name[1:]
-    if name.endswith('\'') or name.endswith('"'):
-        name = name[:(len(name) - 1)]
-    return name.replace('\\\'', '\'').replace('\\"', '"')
+    if name.endswith("'") or name.endswith('"'):
+        name = name[: (len(name) - 1)]
+    return name.replace("\\'", "'").replace('\\"', '"')
 
 
 class ArffFileSource(DatasetFileSource):
@@ -139,7 +140,7 @@ class ArffFileSource(DatasetFileSource):
             index = relation.find(parameter_name)
 
             if index >= 0:
-                parameter_value = relation[index + len(parameter_name):]
+                parameter_value = relation[index + len(parameter_name) :]
                 index = parameter_value.find(' ')
 
                 if index >= 0:
@@ -150,7 +151,7 @@ class ArffFileSource(DatasetFileSource):
                 attributes = arff_file.attributes
 
                 if integer_value < 0:
-                    outputs = attributes[(len(attributes) - num_outputs):]
+                    outputs = attributes[(len(attributes) - num_outputs) :]
                 else:
                     outputs = attributes[:num_outputs]
 
@@ -177,16 +178,17 @@ class ArffFileSource(DatasetFileSource):
             :return:                The ARFF dataset that has been created
             """
             if file_path.is_file():
-                log.debug('Parsing meta-data from file \"%s\"...', file_path)
+                log.debug(f'Parsing meta-data from file "{file_path}"...')
                 xml_doc = minidom.parse(str(file_path))
                 tags = xml_doc.getElementsByTagName('label')
                 output_names = {normalize_attribute_name(tag.getAttribute('name')) for tag in tags}
             else:
                 output_names = None
                 log.debug(
-                    'Mulan XML file \"%s\" does not exist. If possible, information about the dataset\'s outputs is '
-                    + 'parsed from the ARFF file\'s @relation declaration as intended by the MEKA dataset format...',
-                    file_path)
+                    f'Mulan XML file "{file_path}" does not exist. If possible, information about the dataset\'s '
+                    f"outputs is parsed from the ARFF file's @relation declaration as intended by the MEKA dataset "
+                    f'format...'
+                )
 
             return ArffFileSource.ArffDataset(arff_file=arff_file, output_names=output_names)
 
@@ -237,12 +239,12 @@ class ArffFileSource(DatasetFileSource):
         except arff.BadLayout:
             return ArffFileSource.ArffFile.from_file(file_path, sparse=False, dtype=dtype)
 
-    def __find_xml_file(self, state: ExperimentState, directory: Path, properties: Properties,
-                        context: Context) -> Path:
-        file_path = FilePath(directory=directory,
-                             file_name=properties.file_name,
-                             suffix=self.SUFFIX_XML,
-                             context=context)
+    def __find_xml_file(
+        self, state: ExperimentState, directory: Path, properties: Properties, context: Context
+    ) -> Path:
+        file_path = FilePath(
+            directory=directory, file_name=properties.file_name, suffix=self.SUFFIX_XML, context=context
+        )
         resolved_file_path = file_path.resolve(state)
 
         if resolved_file_path.is_file():
@@ -262,16 +264,18 @@ class ArffFileSource(DatasetFileSource):
         super().__init__(directory=directory, suffix=self.SUFFIX_ARFF)
 
     @override
-    def _read_dataset_from_file(self, state: ExperimentState, file_path: Path,
-                                input_data: DatasetInputData) -> Dataset | None:
+    def _read_dataset_from_file(
+        self, state: ExperimentState, file_path: Path, input_data: DatasetInputData
+    ) -> Dataset | None:
         problem_domain = state.problem_domain
         arff_file = self.__read_arff_file(file_path=file_path, dtype=problem_domain.feature_dtype)
-        xml_file_path = self.__find_xml_file(state=state,
-                                             directory=file_path.parent,
-                                             properties=input_data.properties,
-                                             context=input_data.context)
+        xml_file_path = self.__find_xml_file(
+            state=state, directory=file_path.parent, properties=input_data.properties, context=input_data.context
+        )
         arff_dataset = ArffFileSource.ArffDataset.from_file(arff_file=arff_file, file_path=xml_file_path)
-        return TabularDataset(x=arff_dataset.feature_matrix.tolil(),
-                              y=arff_dataset.output_matrix.astype(problem_domain.output_dtype).tolil(),
-                              features=arff_dataset.features,
-                              outputs=arff_dataset.outputs)
+        return TabularDataset(
+            x=arff_dataset.feature_matrix.tolil(),
+            y=arff_dataset.output_matrix.astype(problem_domain.output_dtype).tolil(),
+            features=arff_dataset.features,
+            outputs=arff_dataset.outputs,
+        )

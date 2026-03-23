@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for compiling Cython code.
 """
+
 from pathlib import Path
 from typing import cast, override
 
@@ -20,11 +21,16 @@ from targets.project import Project
 
 MODULE_FILTER = CompilationModule.Filter(FileType.cython())
 
-BUILD_OPTIONS = BuildOptions() \
-        .add(ConstantBuildOption('cpp_std', Project.Cpp.cpp_version(),
-                                 *[subproject.name for subproject in Project.Cpp.find_subprojects()])) \
-        .add(EnvBuildOption(SubprojectModule.ENV_SUBPROJECTS.lower())) \
-        .add(EnvBuildOption('buildtype', default_value='release'))
+BUILD_OPTIONS = (
+    BuildOptions()
+    .add(
+        ConstantBuildOption(
+            'cpp_std', Project.Cpp.cpp_version(), *[subproject.name for subproject in Project.Cpp.find_subprojects()]
+        )
+    )
+    .add(EnvBuildOption(SubprojectModule.ENV_SUBPROJECTS.lower()))
+    .add(EnvBuildOption('buildtype', default_value='release'))
+)
 
 
 class SetupCython(BuildTarget.Runnable):
@@ -38,9 +44,7 @@ class SetupCython(BuildTarget.Runnable):
     @override
     def run(self, build_unit: BuildUnit, module: Module):
         compilation_module = cast(CompilationModule, module)
-        MesonSetup(build_unit, compilation_module, build_options=BUILD_OPTIONS) \
-            .add_dependencies('cython') \
-            .run()
+        MesonSetup(build_unit, compilation_module, build_options=BUILD_OPTIONS).add_dependencies('cython').run()
 
     @override
     def get_output_files(self, _: BuildUnit, module: Module) -> list[Path]:
@@ -50,7 +54,7 @@ class SetupCython(BuildTarget.Runnable):
     @override
     def get_clean_files(self, build_unit: BuildUnit, module: Module) -> list[Path]:
         compilation_module = cast(CompilationModule, module)
-        Log.info('Removing Cython build files from directory "%s"...', compilation_module.root_directory)
+        Log.info(f'Removing Cython build files from directory "{compilation_module.root_directory}"...')
         return super().get_clean_files(build_unit, compilation_module)
 
 
@@ -65,7 +69,7 @@ class CompileCython(PhonyTarget.Runnable):
     @override
     def run(self, build_unit: BuildUnit, module: Module):
         compilation_module = cast(CompilationModule, module)
-        Log.info('Compiling Cython code in directory "%s"...', compilation_module.root_directory)
+        Log.info(f'Compiling Cython code in directory "{compilation_module.root_directory}"...')
         MesonSetup(build_unit, compilation_module, '--reconfigure', build_options=BUILD_OPTIONS).run()
         MesonConfigure(build_unit, compilation_module, build_options=BUILD_OPTIONS).run()
         MesonCompile(build_unit, compilation_module).run()
@@ -82,13 +86,16 @@ class InstallCython(BuildTarget.Runnable):
     @override
     def run(self, build_unit: BuildUnit, module: Module):
         compilation_module = cast(CompilationModule, module)
-        Log.info('Installing extension modules from directory "%s" into source tree...',
-                 compilation_module.root_directory)
+        Log.info(
+            f'Installing extension modules from directory "{compilation_module.root_directory}" into source tree...'
+        )
         MesonInstall(build_unit, compilation_module).run()
 
     @override
     def get_clean_files(self, _: BuildUnit, module: Module) -> list[Path]:
         compilation_module = cast(CompilationModule, module)
-        Log.info('Removing extension modules installed from directory "%s" from source tree...',
-                 compilation_module.root_directory)
+        Log.info(
+            f'Removing extension modules installed from directory "{compilation_module.root_directory}" from source '
+            f'tree...'
+        )
         return compilation_module.find_installed_files()

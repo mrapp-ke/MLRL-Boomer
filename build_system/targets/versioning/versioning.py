@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides actions for updating the project's version.
 """
+
 from dataclasses import replace
 
 from core.build_unit import BuildUnit
@@ -14,13 +15,13 @@ from targets.version_files import DevelopmentVersionFile, VersionFile
 
 def __get_version_file() -> VersionFile:
     version_file = Project.version_file()
-    Log.info('Current version is "%s"', str(version_file.version))
+    Log.info(f'Current version is "{version_file.version}"')
     return version_file
 
 
 def __get_development_version_file() -> DevelopmentVersionFile:
     version_file = Project.development_version_file()
-    Log.info('Current development version is "%s"', str(version_file.development_version))
+    Log.info(f'Current development version is "{version_file.development_version}"')
     return version_file
 
 

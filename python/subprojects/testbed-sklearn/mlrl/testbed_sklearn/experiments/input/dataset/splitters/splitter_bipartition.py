@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for splitting dataset into distinct training and test datasets.
 """
+
 import logging as log
 
 from collections.abc import Generator
@@ -70,6 +71,7 @@ class BipartitionSplitter(DatasetSplitter):
                 training_dataset:   The training dataset
                 test_dataset:       The test dataset
             """
+
             training_dataset: TabularDataset
             test_dataset: TabularDataset
 
@@ -101,15 +103,18 @@ class BipartitionSplitter(DatasetSplitter):
                 if not cache:
                     state = dataset_reader.read(state)
                     dataset = state.dataset
-                    x_training, x_test, y_training, y_test = train_test_split(dataset.x,
-                                                                              dataset.y,
-                                                                              test_size=splitter.test_size,
-                                                                              random_state=splitter.random_state,
-                                                                              shuffle=True)
+                    x_training, x_test, y_training, y_test = train_test_split(
+                        dataset.x,
+                        dataset.y,
+                        test_size=splitter.test_size,
+                        random_state=splitter.random_state,
+                        shuffle=True,
+                    )
                     training_dataset = replace(dataset, x=x_training, y=y_training)
                     test_dataset = replace(dataset, x=x_test, y=y_test)
-                    cache = BipartitionSplitter.DynamicSplit.Cache(training_dataset=training_dataset,
-                                                                   test_dataset=test_dataset)
+                    cache = BipartitionSplitter.DynamicSplit.Cache(
+                        training_dataset=training_dataset, test_dataset=test_dataset
+                    )
                     splitter.cache = cache
 
                 dataset = cache.test_dataset if dataset_type == DatasetType.TEST else cache.training_dataset
@@ -148,7 +153,8 @@ class BipartitionSplitter(DatasetSplitter):
         # Check if predefined training and test datasets are available...
         predefined_datasets_available = dataset_reader is None or all(
             dataset_reader.is_available(replace(state, dataset_type=dataset_type))
-            for dataset_type in [DatasetType.TRAINING, DatasetType.TEST])
+            for dataset_type in [DatasetType.TRAINING, DatasetType.TEST]
+        )
 
         for fold in folding_strategy.folds:
             state = replace(state, fold=fold)

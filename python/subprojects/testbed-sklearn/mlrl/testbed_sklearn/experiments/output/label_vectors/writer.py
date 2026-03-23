@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing unique label vectors that are contained in a dataset to one or several sinks.
 """
+
 from typing import override
 
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
@@ -40,8 +41,10 @@ class LabelVectorWriter(ResultWriter):
                 columns_by_name = {column.header: column for column in table.columns}
                 column_label_vector = columns_by_name[LabelVectors.COLUMN_LABEL_VECTOR]
                 column_frequency = columns_by_name[LabelVectors.COLUMN_FREQUENCY]
-                values = [(label_vector, int(frequency))
-                          for label_vector, frequency in zip(column_label_vector, column_frequency)]
+                values = [
+                    (label_vector, int(frequency))
+                    for label_vector, frequency in zip(column_label_vector, column_frequency)
+                ]
                 result.append((extracted_state, LabelVectors(values)))
 
             return result
@@ -67,8 +70,9 @@ class LabelVectorWriter(ResultWriter):
         """
         :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
         """
-        super().__init__(LabelVectorWriter.InputExtractor(properties=LabelVectors.PROPERTIES,
-                                                          context=LabelVectors.CONTEXT),
-                         *extractors,
-                         LabelVectorWriter.DefaultExtractor(),
-                         input_data=TabularInputData(properties=LabelVectors.PROPERTIES, context=LabelVectors.CONTEXT))
+        super().__init__(
+            LabelVectorWriter.InputExtractor(properties=LabelVectors.PROPERTIES, context=LabelVectors.CONTEXT),
+            *extractors,
+            LabelVectorWriter.DefaultExtractor(),
+            input_data=TabularInputData(properties=LabelVectors.PROPERTIES, context=LabelVectors.CONTEXT),
+        )

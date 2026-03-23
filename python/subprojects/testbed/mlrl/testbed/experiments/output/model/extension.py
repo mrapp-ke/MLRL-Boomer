@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow configuring the functionality to write models to one or several sinks.
 """
+
 from argparse import Namespace
 from typing import override
 
@@ -83,7 +84,8 @@ class ModelOutputDirectoryExtension(Extension):
             if base_dir and model_save_dir:
                 create_directory = OutputArguments.CREATE_DIRS.get_value(args)
                 experiment_builder.model_writer.add_sinks(
-                    PickleFileSink(directory=base_dir / model_save_dir, create_directory=create_directory))
+                    PickleFileSink(directory=base_dir / model_save_dir, create_directory=create_directory)
+                )
 
     @override
     def get_supported_modes(self) -> set[ExperimentMode]:

@@ -30,7 +30,8 @@ class Measurements:
         :return:        A `np.ndarray`, shape `(num_values_per_measure)`, that stores the values for the given measure
         """
         return self._values_per_measure.setdefault(
-            measure, np.full(shape=self.num_values_per_measure, dtype=float, fill_value=np.nan))
+            measure, np.full(shape=self.num_values_per_measure, dtype=float, fill_value=np.nan)
+        )
 
     def average_by_measure(self, measure: OutputValue) -> tuple[float, float]:
         """

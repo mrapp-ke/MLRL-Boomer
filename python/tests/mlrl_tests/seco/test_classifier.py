@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-# pylint: disable=missing-function-docstring
+
 from typing import Any, override
 
 import pytest
@@ -16,9 +16,17 @@ from .cmd_builder import SeCoClassifierCmdBuilder
 
 from mlrl.common.config.parameters import RulePruningParameter
 
-from mlrl.seco.config.parameters import HEURISTIC_ACCURACY, HEURISTIC_F_MEASURE, HEURISTIC_LAPLACE, \
-    HEURISTIC_M_ESTIMATE, HEURISTIC_PRECISION, HEURISTIC_RECALL, HEURISTIC_WRA, HeadTypeParameter, \
-    LiftFunctionParameter
+from mlrl.seco.config.parameters import (
+    HEURISTIC_ACCURACY,
+    HEURISTIC_F_MEASURE,
+    HEURISTIC_LAPLACE,
+    HEURISTIC_M_ESTIMATE,
+    HEURISTIC_PRECISION,
+    HEURISTIC_RECALL,
+    HEURISTIC_WRA,
+    HeadTypeParameter,
+    LiftFunctionParameter,
+)
 from mlrl.seco.learners import SeCoClassifier
 
 from mlrl.util.cli import NONE
@@ -38,44 +46,53 @@ class TestSeCoClassifier(ClassificationIntegrationTests, RuleLearnerIntegrationT
     def test_scikit_learn_compatibility(self):
         check_estimator(SeCoClassifier())
 
-    @pytest.mark.parametrize('heuristic', [
-        HEURISTIC_ACCURACY,
-        HEURISTIC_PRECISION,
-        HEURISTIC_RECALL,
-        HEURISTIC_LAPLACE,
-        HEURISTIC_WRA,
-        HEURISTIC_F_MEASURE,
-        HEURISTIC_M_ESTIMATE,
-    ])
+    @pytest.mark.parametrize(
+        'heuristic',
+        [
+            HEURISTIC_ACCURACY,
+            HEURISTIC_PRECISION,
+            HEURISTIC_RECALL,
+            HEURISTIC_LAPLACE,
+            HEURISTIC_WRA,
+            HEURISTIC_F_MEASURE,
+            HEURISTIC_M_ESTIMATE,
+        ],
+    )
     def test_heuristic(self, heuristic: str):
-        builder = self.create_cmd_builder() \
-            .heuristic(heuristic)
+        builder = self.create_cmd_builder().heuristic(heuristic)
         CmdRunner(builder).run(f'heuristic_{heuristic}')
 
-    @pytest.mark.parametrize('pruning_heuristic', [
-        HEURISTIC_ACCURACY,
-        HEURISTIC_PRECISION,
-        HEURISTIC_RECALL,
-        HEURISTIC_LAPLACE,
-        HEURISTIC_WRA,
-        HEURISTIC_F_MEASURE,
-        HEURISTIC_M_ESTIMATE,
-    ])
+    @pytest.mark.parametrize(
+        'pruning_heuristic',
+        [
+            HEURISTIC_ACCURACY,
+            HEURISTIC_PRECISION,
+            HEURISTIC_RECALL,
+            HEURISTIC_LAPLACE,
+            HEURISTIC_WRA,
+            HEURISTIC_F_MEASURE,
+            HEURISTIC_M_ESTIMATE,
+        ],
+    )
     def test_pruning_heuristic(self, pruning_heuristic: str):
-        builder = self.create_cmd_builder() \
-            .rule_pruning(RulePruningParameter.RULE_PRUNING_IREP) \
+        builder = (
+            self.create_cmd_builder()
+            .rule_pruning(RulePruningParameter.RULE_PRUNING_IREP)
             .pruning_heuristic(pruning_heuristic)
+        )
         CmdRunner(builder).run(f'pruning-heuristic_{pruning_heuristic}')
 
-    @pytest.mark.parametrize('head_type, lift_function', [
-        (HeadTypeParameter.HEAD_TYPE_SINGLE, None),
-        (HeadTypeParameter.HEAD_TYPE_PARTIAL, NONE),
-        (HeadTypeParameter.HEAD_TYPE_PARTIAL, LiftFunctionParameter.LIFT_FUNCTION_PEAK),
-        (HeadTypeParameter.HEAD_TYPE_PARTIAL, LiftFunctionParameter.LIFT_FUNCTION_KLN),
-    ])
+    @pytest.mark.parametrize(
+        'head_type, lift_function',
+        [
+            (HeadTypeParameter.HEAD_TYPE_SINGLE, None),
+            (HeadTypeParameter.HEAD_TYPE_PARTIAL, NONE),
+            (HeadTypeParameter.HEAD_TYPE_PARTIAL, LiftFunctionParameter.LIFT_FUNCTION_PEAK),
+            (HeadTypeParameter.HEAD_TYPE_PARTIAL, LiftFunctionParameter.LIFT_FUNCTION_KLN),
+        ],
+    )
     def test_head_type(self, head_type: str, lift_function: str | None):
-        builder = self.create_cmd_builder() \
-            .head_type(head_type) \
-            .lift_function(lift_function) \
-            .print_model_characteristics()
+        builder = (
+            self.create_cmd_builder().head_type(head_type).lift_function(lift_function).print_model_characteristics()
+        )
         CmdRunner(builder).run(f'head-type-{head_type}' + (f'_{lift_function}-lift-function' if lift_function else ''))

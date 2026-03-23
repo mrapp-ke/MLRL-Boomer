@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for checking and enforcing code style definitions for .cfg files.
 """
+
 from typing import cast, override
 
 from core.build_unit import BuildUnit
@@ -28,7 +29,7 @@ class CheckCfgCodeStyle(PhonyTarget.Runnable):
     @override
     def run(self, build_unit: BuildUnit, module: Module):
         code_module = cast(CodeModule, module)
-        Log.info('Checking .cfg code style in the directory "%s"...', code_module.root_directory)
+        Log.info(f'Checking .cfg code style in the directory "{code_module.root_directory}"...')
         CfgFormatter(build_unit, code_module).run()
 
 
@@ -43,5 +44,5 @@ class EnforceCfgCodeStyle(PhonyTarget.Runnable):
     @override
     def run(self, build_unit: BuildUnit, module: Module):
         code_module = cast(CodeModule, module)
-        Log.info('Formatting .cfg files in the directory "%s"...', code_module.root_directory)
+        Log.info(f'Formatting .cfg files in the directory "{code_module.root_directory}"...')
         CfgFormatter(build_unit, code_module, enforce_changes=True).run()

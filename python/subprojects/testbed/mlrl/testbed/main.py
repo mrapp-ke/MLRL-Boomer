@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Imports and invokes the program to be run by the command line utility.
 """
+
 import logging as log
 import sys
 
@@ -26,6 +27,7 @@ class LogLevel(Enum):
     """
     Specifies all valid textual representations of log levels.
     """
+
     DEBUG = log.DEBUG
     INFO = log.INFO
     WARN = log.WARN
@@ -48,18 +50,19 @@ def __create_argument_parser() -> ArgumentParser:
     argument_parser = ArgumentParser(
         formatter_class=lambda prog: HelpFormatter(prog, width=120),
         description='A command line utility for training and evaluating machine learning algorithms',
-        add_help=False)
+        add_help=False,
+    )
 
-    argument_parser.add_argument('runnable_module_or_source_file',
-                                 nargs='?' if '--version' in sys.argv or '-v' in sys.argv else None,
-                                 default=None,
-                                 type=str,
-                                 help='The Python module or source file of the program that should be run')
-    argument_parser.add_argument('-r',
-                                 '--runnable',
-                                 default='Runnable',
-                                 type=str,
-                                 help='The Python class name of the program that should be run')
+    argument_parser.add_argument(
+        'runnable_module_or_source_file',
+        nargs='?' if '--version' in sys.argv or '-v' in sys.argv else None,
+        default=None,
+        type=str,
+        help='The Python module or source file of the program that should be run',
+    )
+    argument_parser.add_argument(
+        '-r', '--runnable', default='Runnable', type=str, help='The Python class name of the program that should be run'
+    )
     return argument_parser
 
 
@@ -70,11 +73,12 @@ def __get_runnable(argument_parser: ArgumentParser) -> Runnable | None:
     runnable = None
 
     if runnable_module_or_source_file and runnable_class_name:
-        runnable = __instantiate_via_default_constructor(module_or_source_file=str(runnable_module_or_source_file),
-                                                         class_name=str(runnable_class_name))
+        runnable = __instantiate_via_default_constructor(
+            module_or_source_file=str(runnable_module_or_source_file), class_name=str(runnable_class_name)
+        )
 
         if not isinstance(runnable, Runnable):
-            raise TypeError('Class "' + str(runnable_class_name) + '" must extend from "' + Runnable.__qualname__ + '"')
+            raise TypeError(f'Class "{runnable_class_name}" must extend from "{Runnable.__qualname__}"')
 
     return runnable
 
@@ -83,7 +87,7 @@ def __import_module(module_name: str):
     try:
         return import_module(module_name)
     except ImportError as error:
-        raise ImportError('Module "' + module_name + '" not found') from error
+        raise ImportError(f'Module "{module_name}" not found') from error
 
 
 def __import_source_file(source_file: str):
@@ -102,7 +106,7 @@ def __import_source_file(source_file: str):
 
         raise FileNotFoundError()
     except FileNotFoundError as error:
-        raise ImportError('Source file "' + source_file + '" not found') from error
+        raise ImportError(f'Source file "{source_file}" not found') from error
 
 
 def __import_module_or_source_file(module_name: str):
@@ -112,7 +116,6 @@ def __import_module_or_source_file(module_name: str):
         try:
             return __import_source_file(module_name)
         except ImportError:
-            # pylint: disable=raise-missing-from
             raise ImportError('Failed to import module or source file')
 
 
@@ -121,7 +124,7 @@ def __import_class(module_or_source_file: str, class_name: str):
         module = __import_module_or_source_file(module_or_source_file)
         return getattr(module, class_name)
     except AttributeError as error:
-        raise ImportError('Class "' + class_name + '" not found') from error
+        raise ImportError(f'Class "{class_name}" not found') from error
 
 
 def __instantiate_via_default_constructor(module_or_source_file: str, class_name: str):
@@ -129,7 +132,7 @@ def __instantiate_via_default_constructor(module_or_source_file: str, class_name
         class_type = __import_class(module_or_source_file, class_name)
         return class_type()
     except TypeError as error:
-        raise TypeError('Class "' + class_name + '" must provide a default constructor') from error
+        raise TypeError(f'Class "{class_name}" must provide a default constructor') from error
 
 
 def __get_cli(runnable: Runnable | None, argument_parser: ArgumentParser) -> CommandLineInterface:
@@ -207,11 +210,9 @@ def main():
         mode.configure_control_arguments(cli, control_arguments=[])
         mode.configure_algorithmic_arguments(cli, algorithmic_arguments=[])
 
-    argument_parser.add_argument('-h',
-                                 '--help',
-                                 action='help',
-                                 default='==SUPPRESS==',
-                                 help='Show this help message and exit')
+    argument_parser.add_argument(
+        '-h', '--help', action='help', default='==SUPPRESS==', help='Show this help message and exit'
+    )
 
     args = argument_parser.parse_args()
     __configure_logger(args)
@@ -220,7 +221,7 @@ def main():
         try:
             runnable.run(mode, control_arguments, algorithmic_arguments, args)
         except ValidationError as error:
-            log.error('%s', error)
+            log.error(str(error))
             sys.exit(1)
 
 

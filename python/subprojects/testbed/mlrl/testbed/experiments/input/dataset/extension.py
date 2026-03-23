@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow configuring the functionality to load datasets.
 """
+
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from collections.abc import Sequence
@@ -87,8 +88,9 @@ class DatasetFileExtension(DatasetExtension, ABC):
         return self._create_file_sources(dataset_directory, dataset, args)
 
     @abstractmethod
-    def _create_file_sources(self, dataset_directory: Path, dataset: InputDataset,
-                             args: Namespace) -> Sequence[FileSource]:
+    def _create_file_sources(
+        self, dataset_directory: Path, dataset: InputDataset, args: Namespace
+    ) -> Sequence[FileSource]:
         """
         Must be implemented by subclasses in order to create one or several sources, the dataset should be loaded from.
 
@@ -109,7 +111,7 @@ class DatasetFileExtension(DatasetExtension, ABC):
         datasets = config.yaml_dict.get('datasets', [])
 
         if not datasets:
-            raise ValidationError('No datasets are specified in the configuration file "' + str(config) + '"')
+            raise ValidationError(f'No datasets are specified in the configuration file "{config}"')
 
         dataset_args = []
 
@@ -123,9 +125,14 @@ class DatasetFileExtension(DatasetExtension, ABC):
 
             for dataset_name in dataset_names:
                 dataset_args.append(
-                    ArgumentList([
-                        DatasetFileExtension.DATASET_DIRECTORY.name, dataset_dict['directory'],
-                        DatasetArguments.DATASET_NAME.name, dataset_name
-                    ]))
+                    ArgumentList(
+                        [
+                            DatasetFileExtension.DATASET_DIRECTORY.name,
+                            dataset_dict['directory'],
+                            DatasetArguments.DATASET_NAME.name,
+                            dataset_name,
+                        ]
+                    )
+                )
 
         return dataset_args

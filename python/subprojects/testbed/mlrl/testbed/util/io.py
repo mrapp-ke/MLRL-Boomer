@@ -3,6 +3,7 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for reading and writing files.
 """
+
 from pathlib import Path
 
 ENCODING_UTF8 = 'utf-8'

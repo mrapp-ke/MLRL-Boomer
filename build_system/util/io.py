@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for reading and writing files.
 """
+
 from functools import cached_property
 from pathlib import Path
 from shutil import rmtree
@@ -40,11 +41,11 @@ def delete_files(*files: Path, accept_missing: bool = True):
     """
     for file in files:
         if file.is_dir():
-            Log.verbose('Deleting directory "%s"...', file)
+            Log.verbose(f'Deleting directory "{file}"...')
             rmtree(file)
         else:
             if not accept_missing or file.is_file() or file.is_symlink():
-                Log.verbose('Deleting file "%s"...', file)
+                Log.verbose(f'Deleting file "{file}"...')
                 file.unlink()
 
 
@@ -56,7 +57,7 @@ def create_directories(*directories: Path):
     """
     for directory in directories:
         if not directory.is_dir():
-            Log.verbose('Creating directory "%s"...', directory)
+            Log.verbose(f'Creating directory "{directory}"...')
             directory.mkdir(parents=True)
 
 
@@ -102,7 +103,7 @@ class TextFile:
         """
         Clears the text file.
         """
-        Log.info('Clearing file "%s"...', self.file)
+        Log.info(f'Clearing file "{self.file}"...')
         self.write_lines('')
 
     def delete(self):

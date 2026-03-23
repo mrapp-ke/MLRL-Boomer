@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Integrates the Separate-and-Conquer (SeCo) algorithm with the command line utility 'mlrl-testbed', which may be
 installed as an optional dependency.
 """
+
 from typing import override
 
 from mlrl.common.testbed.program_info import RuleLearnerProgramInfo
@@ -23,12 +24,14 @@ class SeCoRunnable(RuleLearnerRunnable):
     """
 
     def __init__(self):
-        super().__init__(classifier_type=SeCoClassifier,
-                         classifier_config_type=SeCoClassifierConfig,
-                         classifier_parameters=SECO_CLASSIFIER_PARAMETERS,
-                         regressor_type=None,
-                         regressor_config_type=None,
-                         regressor_parameters=None)
+        super().__init__(
+            classifier_type=SeCoClassifier,
+            classifier_config_type=SeCoClassifierConfig,
+            classifier_parameters=SECO_CLASSIFIER_PARAMETERS,
+            regressor_type=None,
+            regressor_config_type=None,
+            regressor_parameters=None,
+        )
 
     @override
     def get_program_info(self) -> ProgramInfo | None:

@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing the ground truth to one or several sinks.
 """
+
 from typing import Any, override
 
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
@@ -50,9 +51,11 @@ class GroundTruthWriter(ResultWriter):
         """
         :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
         """
-        super().__init__(GroundTruthWriter.GroundTruthExtractor(properties=GroundTruthDataset.PROPERTIES,
-                                                                context=GroundTruthDataset.CONTEXT),
-                         *extractors,
-                         GroundTruthWriter.DefaultExtractor(),
-                         input_data=DatasetInputData(properties=GroundTruthDataset.PROPERTIES,
-                                                     context=GroundTruthDataset.CONTEXT))
+        super().__init__(
+            GroundTruthWriter.GroundTruthExtractor(
+                properties=GroundTruthDataset.PROPERTIES, context=GroundTruthDataset.CONTEXT
+            ),
+            *extractors,
+            GroundTruthWriter.DefaultExtractor(),
+            input_data=DatasetInputData(properties=GroundTruthDataset.PROPERTIES, context=GroundTruthDataset.CONTEXT),
+        )

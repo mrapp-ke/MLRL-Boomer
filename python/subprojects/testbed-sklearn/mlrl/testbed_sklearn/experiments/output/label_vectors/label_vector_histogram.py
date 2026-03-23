@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that provide access to unique label vectors.
 """
+
 from dataclasses import dataclass
 from typing import override
 
@@ -22,6 +23,7 @@ class LabelVector:
         label_indices:  The indices of all relevant labels in the label vector
         frequency:      The frequency of the label vector
     """
+
     label_indices: np.ndarray
     frequency: int
 

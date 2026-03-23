@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for implementing experiments.
 """
+
 import logging as log
 
 from abc import ABC, abstractmethod
@@ -127,8 +128,12 @@ class Experiment(ABC):
             """
             A generator that provides access to all output writers that have been added to the builder.
             """
-            return chain(self.before_start_output_writers, self.pre_training_output_writers,
-                         self.post_training_output_writers, self.prediction_output_writers)
+            return chain(
+                self.before_start_output_writers,
+                self.pre_training_output_writers,
+                self.post_training_output_writers,
+                self.prediction_output_writers,
+            )
 
         @property
         def has_output_file_writers(self) -> bool:
@@ -249,8 +254,9 @@ class Experiment(ABC):
             """
             output_error_policy = self.output_error_policy
 
-            for output_writer in chain(self.pre_training_output_writers, self.post_training_output_writers,
-                                       self.prediction_output_writers):
+            for output_writer in chain(
+                self.pre_training_output_writers, self.post_training_output_writers, self.prediction_output_writers
+            ):
                 output_writer.output_error_policy = output_error_policy
 
             missing_input_policy = self.missing_input_policy
@@ -286,8 +292,9 @@ class Experiment(ABC):
             procedure.conduct_experiment(self.build(args))
 
         @abstractmethod
-        def _create_experiment(self, args: Namespace, initial_state: ExperimentState,
-                               dataset_splitter: DatasetSplitter) -> 'Experiment':
+        def _create_experiment(
+            self, args: Namespace, initial_state: ExperimentState, dataset_splitter: DatasetSplitter
+        ) -> 'Experiment':
             """
             Must be implemented by subclasses in order to create a new experiment.
 
@@ -336,9 +343,12 @@ class Experiment(ABC):
                 for dataset_type in dataset_types:
                     state.dataset_type = dataset_type
 
-                    if context.include_dataset_type \
-                            and not any(source.is_available(state, input_data) for source in input_reader.sources) \
-                            and len(dataset_types) == 1 and dataset_types[0] == DatasetType.TEST:
+                    if (
+                        context.include_dataset_type
+                        and not any(source.is_available(state, input_data) for source in input_reader.sources)
+                        and len(dataset_types) == 1
+                        and dataset_types[0] == DatasetType.TEST
+                    ):
                         state.dataset_type = DatasetType.TRAINING
 
                     state = input_reader.read(state)
@@ -416,8 +426,14 @@ class Experiment(ABC):
             :return:        The `PredictionState` that stores the result of the prediction process
             """
 
-    def __init__(self, args: Namespace, initial_state: ExperimentState, dataset_splitter: DatasetSplitter,
-                 training_procedure: TrainingProcedure, prediction_procedure: PredictionProcedure):
+    def __init__(
+        self,
+        args: Namespace,
+        initial_state: ExperimentState,
+        dataset_splitter: DatasetSplitter,
+        training_procedure: TrainingProcedure,
+        prediction_procedure: PredictionProcedure,
+    ):
         """
         :param args:                    The command line arguments specified by the user
         :param initial_state:           The initial state of the experiment
@@ -456,7 +472,6 @@ class ExperimentalProcedure(ABC):
         state = self._conduct_experiment(experiment, state)
         return self._after_experiment(experiment, state)
 
-    # pylint: disable=unused-argument
     def _before_experiment(self, experiment: Experiment, state: ExperimentState) -> ExperimentState:
         """
         May be overridden by subclasses in order to perform an operation before an experiment starts.
@@ -477,7 +492,6 @@ class ExperimentalProcedure(ABC):
         :return:            An updated state
         """
 
-    # pylint: disable=unused-argument
     def _after_experiment(self, experiment: Experiment, state: ExperimentState) -> ExperimentState:
         """
         May be overridden by subclasses in order to perform an operation after an experiment has been completed.
@@ -519,8 +533,9 @@ class DefaultProcedure(ExperimentalProcedure):
     @override
     def _before_experiment(self, experiment: Experiment, state: ExperimentState) -> ExperimentState:
         problem_domain = state.problem_domain
-        log.info('Starting experiment using the %s algorithm "%s"...', problem_domain.problem_name,
-                 problem_domain.learner_name)
+        log.info(
+            f'Starting experiment using the {problem_domain.problem_name} algorithm "{problem_domain.learner_name}"...'
+        )
 
         for listener in experiment.listeners:
             state = listener.before_start(state)
@@ -546,7 +561,8 @@ class DefaultProcedure(ExperimentalProcedure):
                 training_result = experiment.training_procedure.train(
                     learner=training_state.training_result.learner if training_state.training_result else None,
                     parameters=training_state.parameters,
-                    dataset=training_state.dataset)
+                    dataset=training_state.dataset,
+                )
                 training_state = replace(training_state, training_result=training_result)
                 test_state = split.get_state(DatasetType.TEST)
 
@@ -569,7 +585,7 @@ class DefaultProcedure(ExperimentalProcedure):
 
         if start_time:
             run_time = Timer.stop(start_time)
-            log.info('Successfully finished experiment after %s', run_time)
+            log.info(f'Successfully finished experiment after {run_time}')
         else:
             log.info('Successfully finished experiment')
 

@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow configuring the functionality to split datasets into training and test datasets.
 """
+
 from argparse import Namespace
 from itertools import chain
 from typing import override
@@ -33,11 +34,12 @@ class DatasetSplitterExtension(Extension):
 
     DATASET_READER_EXTENSIONS: list[DatasetFileExtension] = [ArffFileExtension(), SvmFileExtension()]
 
-    DATASET_FORMAT = SetArgument('--dataset-format',
-                                 default=AUTO,
-                                 values={AUTO}
-                                 | set(map(lambda extension: extension.file_type, DATASET_READER_EXTENSIONS)),
-                                 description='The dataset format to be used.')
+    DATASET_FORMAT = SetArgument(
+        '--dataset-format',
+        default=AUTO,
+        values={AUTO} | set(map(lambda extension: extension.file_type, DATASET_READER_EXTENSIONS)),
+        description='The dataset format to be used.',
+    )
 
     def __init__(self, *dependencies: Extension):
         """
@@ -87,7 +89,8 @@ class DatasetSplitterExtension(Extension):
             sources = chain.from_iterable(
                 extension.create_sources(dataset, args)
                 for extension in DatasetSplitterExtension.DATASET_READER_EXTENSIONS
-                if dataset_format in {AUTO, extension.file_type})
+                if dataset_format in {AUTO, extension.file_type}
+            )
             dataset_reader = DatasetReader(dataset, *sources)
             dataset_reader.add_preprocessors(*PreprocessorExtension.get_preprocessors(args))
         else:
@@ -104,17 +107,19 @@ class DatasetSplitterExtension(Extension):
             last_fold = options.get_int(DatasetSplitterArguments.OPTION_LAST_FOLD, num_folds)
             assert_greater_or_equal(DatasetSplitterArguments.OPTION_LAST_FOLD, last_fold, first_fold)
             assert_less_or_equal(DatasetSplitterArguments.OPTION_LAST_FOLD, last_fold, num_folds)
-            return CrossValidationSplitter(dataset_reader,
-                                           num_folds=num_folds,
-                                           first_fold=first_fold - 1,
-                                           last_fold=last_fold,
-                                           random_state=DatasetSplitterExtension.get_random_state(args))
+            return CrossValidationSplitter(
+                dataset_reader,
+                num_folds=num_folds,
+                first_fold=first_fold - 1,
+                last_fold=last_fold,
+                random_state=DatasetSplitterExtension.get_random_state(args),
+            )
         if dataset_splitter == DatasetSplitterArguments.VALUE_TRAIN_TEST:
             test_size = options.get_float(DatasetSplitterArguments.OPTION_TEST_SIZE, 0.33)
             assert_greater(DatasetSplitterArguments.OPTION_TEST_SIZE, test_size, 0)
             assert_less(DatasetSplitterArguments.OPTION_TEST_SIZE, test_size, 1)
-            return BipartitionSplitter(dataset_reader,
-                                       test_size=test_size,
-                                       random_state=DatasetSplitterExtension.get_random_state(args))
+            return BipartitionSplitter(
+                dataset_reader, test_size=test_size, random_state=DatasetSplitterExtension.get_random_state(args)
+            )
 
         return NoSplitter(dataset_reader)

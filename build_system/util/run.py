@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for running external programs during the build process.
 """
+
 from pathlib import Path
 from subprocess import CompletedProcess
 from typing import Any, override
@@ -41,9 +42,9 @@ class Program(Command):
                 dependencies.append(command.command)
 
             dependencies.extend(self.dependencies)
-            PackageManager.install_packages(RequirementsFiles.for_build_unit(self.build_unit),
-                                            *dependencies,
-                                            silent=self.install_silent)
+            PackageManager.install_packages(
+                RequirementsFiles.for_build_unit(self.build_unit), *dependencies, silent=self.install_silent
+            )
             return super().run(command, capture_output)
 
     def __init__(self, program: str, *arguments: str):
