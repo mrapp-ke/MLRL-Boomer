@@ -42,7 +42,6 @@ class CfgFormatter:
             malformed_files = []
 
             PackageManager.install_packages(RequirementsFiles.for_build_unit(self.build_unit), 'config-formatter')
-            # pylint: disable=import-outside-toplevel
             from config_formatter import ConfigFormatter
 
             for source_file in source_files:

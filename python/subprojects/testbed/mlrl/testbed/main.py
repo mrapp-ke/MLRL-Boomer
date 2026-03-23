@@ -116,7 +116,6 @@ def __import_module_or_source_file(module_name: str):
         try:
             return __import_source_file(module_name)
         except ImportError:
-            # pylint: disable=raise-missing-from
             raise ImportError('Failed to import module or source file')
 
 

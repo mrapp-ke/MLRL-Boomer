@@ -130,7 +130,6 @@ class ArffFileSink(DatasetFileSink):
             directory=directory, suffix=ArffFileSource.SUFFIX_ARFF, options=options, create_directory=create_directory
         )
 
-    # pylint: disable=unused-argument
     def _write_dataset_to_file(self, file_path: Path, state: ExperimentState, dataset: Dataset, **_):
         self.__write_arff_file(file_path=file_path, dataset=dataset)
         self.__write_xml_file(file_path=file_path.with_suffix('.' + ArffFileSource.SUFFIX_XML), dataset=dataset)

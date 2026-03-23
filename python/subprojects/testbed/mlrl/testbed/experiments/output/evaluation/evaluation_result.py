@@ -162,7 +162,6 @@ class AggregatedEvaluationResult(TabularOutputData):
 
         return text if text else None
 
-    # pylint: disable=too-many-nested-blocks
     @staticmethod
     def __get_average_rows(
         table: ColumnWiseTable,

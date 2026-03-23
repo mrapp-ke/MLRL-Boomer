@@ -33,7 +33,6 @@ class YamlFile(TextFile):
         A dictionary that stores the content of the YAML file.
         """
         PackageManager.install_packages(RequirementsFiles.for_build_unit(self.build_unit), 'pyyaml')
-        # pylint: disable=import-outside-toplevel
         import yaml
 
         with read_file(self.file) as file:

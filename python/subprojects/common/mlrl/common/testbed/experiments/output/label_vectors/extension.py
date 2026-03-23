@@ -95,7 +95,6 @@ class LabelVectorSetExtension(Extension):
         """
         return set()
 
-    # pylint: disable=unused-argument
     @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, mode: ExperimentMode):
         """

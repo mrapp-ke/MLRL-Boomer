@@ -17,7 +17,6 @@ from targets.project import Project
 
 def __query_latest_python_version(build_unit: BuildUnit) -> Version:
     PackageManager.install_packages(RequirementsFiles.for_build_unit(build_unit), 'requests')
-    # pylint: disable=import-outside-toplevel
     import requests
 
     url = 'https://raw.githubusercontent.com/actions/python-versions/refs/heads/main/versions-manifest.json'

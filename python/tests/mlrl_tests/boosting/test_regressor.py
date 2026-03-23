@@ -2,7 +2,6 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 
-# pylint: disable=missing-function-docstring
 from typing import Any, override
 
 import pytest

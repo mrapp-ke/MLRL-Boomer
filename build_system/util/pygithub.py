@@ -28,7 +28,6 @@ class GithubApi:
         """
 
         def __create_client(self) -> Any:
-            # pylint: disable=import-outside-toplevel
             from github import Auth, Github
 
             return Github(auth=Auth.Token(self.token) if self.token else None)

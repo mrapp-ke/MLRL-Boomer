@@ -172,7 +172,6 @@ class SkLearnRunnable(Runnable, ABC):
                         f'Classification problems are not supported by the runnable "{type(runnable).__name__}"'
                     )
 
-                # pylint: disable=protected-access
                 base_learner._validate_params()  # type: ignore[union-attr]
                 return SkLearnClassificationProblem(
                     base_learner=base_learner,
@@ -189,7 +188,6 @@ class SkLearnRunnable(Runnable, ABC):
                     f'Regression problems are not supported by the runnable "{type(runnable).__name__}"'
                 )
 
-            # pylint: disable=protected-access
             base_learner._validate_params()  # type: ignore[union-attr]
             return SkLearnRegressionProblem(
                 base_learner=base_learner,
@@ -259,10 +257,8 @@ class SkLearnRunnable(Runnable, ABC):
         """
         See :func:`mlrl.testbed.runnables.Runnable.create_batch_config_file_factory`
         """
-        # pylint: disable=unnecessary-lambda
         return lambda config_file_path: SkLearnRunnable.BatchConfigFile(config_file_path)
 
-    # pylint: disable=unused-argument
     def create_predictor_factory(
         self, args: Namespace, prediction_type: PredictionType
     ) -> SkLearnProblem.PredictorFactory:
@@ -473,7 +469,6 @@ class SklearnEstimator:
                 instance.fit(x, y)
 
             return True
-        # pylint: disable=broad-exception-caught
         except Exception:
             return False
 

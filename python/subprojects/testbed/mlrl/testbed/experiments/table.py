@@ -354,7 +354,6 @@ class RowWiseTable(Table):
 
         @override
         def set_header(self, value: Header):
-            # pylint: disable=protected-access
             headers = self.table._headers
 
             if headers:
@@ -627,7 +626,6 @@ class ColumnWiseTable(Table):
 
             :param value: The value to be set
             """
-            # pylint: disable=protected-access
             headers = self.table._headers
 
             if headers:

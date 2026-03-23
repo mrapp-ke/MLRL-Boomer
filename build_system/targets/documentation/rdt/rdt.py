@@ -37,7 +37,6 @@ class ReadTheDocsApi:
             """
             Triggers a build.
             """
-            # pylint: disable=import-outside-toplevel
             import requests
 
             url = f'https://readthedocs.org/api/v3/projects/{self.project_name}/versions/{version}/builds/'

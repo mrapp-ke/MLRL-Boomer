@@ -2,8 +2,6 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 
-# pylint: disable=missing-function-docstring
-
 from mlrl_tests.cmd_runner import CmdRunner
 from mlrl_tests.datasets import Dataset
 from mlrl_tests.integration_tests_classification import ClassificationIntegrationTests

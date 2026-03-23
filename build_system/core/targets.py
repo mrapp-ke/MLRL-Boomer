@@ -150,7 +150,6 @@ class BuildTarget(Target):
             """
             raise NotImplementedError(f'Class {type(self).__name__} does not implement the "run" method')
 
-        # pylint: disable=unused-argument
         def get_input_files(self, build_unit: BuildUnit, module: Module) -> list[Path]:
             """
             May be overridden by subclasses in order to return the input files required by the target.
@@ -161,7 +160,6 @@ class BuildTarget(Target):
             """
             return []
 
-        # pylint: disable=unused-argument
         def get_output_files(self, build_unit: BuildUnit, module: Module) -> list[Path]:
             """
             May be overridden by subclasses in order to return the output files produced by the target.

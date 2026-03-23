@@ -69,7 +69,6 @@ class RuleModelCharacteristics(TabularOutputData):
         super().__init__(properties=self.PROPERTIES, context=self.CONTEXT)
         self.statistics = statistics
 
-    # pylint: disable=unused-argument
     @override
     def to_text(self, options: Options, **_) -> str | None:
         """
@@ -161,7 +160,6 @@ class RuleModelCharacteristics(TabularOutputData):
         )
         return table.format(auto_rotate=False)
 
-    # pylint: disable=unused-argument
     @override
     def to_table(self, options: Options, **_) -> Table | None:
         """

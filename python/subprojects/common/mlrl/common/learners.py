@@ -325,7 +325,6 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
         self.output_format = output_format
         self.prediction_format = prediction_format
 
-    # pylint: disable=attribute-defined-outside-init
     @override
     def _fit(self, x, y, **kwargs):
         """
@@ -406,7 +405,6 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
 
             log.debug('A dense matrix is used to store the predicted scores')
             max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
-            # pylint: disable=no-member,useless-suppression
             predictions = self._create_score_predictor(
                 learner, self.model_, self.output_space_info_, num_outputs, feature_matrix
             ).predict(max_rules)
@@ -438,7 +436,6 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
                 )
 
             log.debug('A dense matrix is used to store the predicted scores')
-            # pylint: disable=no-member,useless-suppression
             model = self.model_
             predictor = self._create_score_predictor(
                 learner, model, self.output_space_info_, num_outputs, feature_matrix
@@ -676,7 +673,6 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
     A scikit-learn implementation of a rule learning algorithm that can be applied to classification problems.
     """
 
-    # pylint: disable=attribute-defined-outside-init
     @override
     def _create_row_wise_output_matrix(
         self, y, sparse_format: SparseFormat, sparse: bool, example_weights: np.ndarray | None, **_

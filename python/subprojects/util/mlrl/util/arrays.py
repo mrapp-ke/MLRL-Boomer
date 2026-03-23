@@ -128,7 +128,6 @@ def is_sparse(array, supported_formats: set[SparseFormat] | None = None) -> bool
         dia = SparseFormat.DIA in supported_formats and is_dia(array)
         bsr = SparseFormat.BSR in supported_formats and is_bsr(array)
 
-        # pylint: disable=too-many-boolean-expressions
         if lil or coo or dok or csc or csr or dia or bsr:
             return True
         return False

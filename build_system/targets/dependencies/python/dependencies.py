@@ -59,7 +59,6 @@ class DependencyUpdater:
     @staticmethod
     def __query_latest_package_version(build_unit: BuildUnit, package: Package) -> Version:
         PackageManager.install_packages(RequirementsFiles.for_build_unit(build_unit), 'requests')
-        # pylint: disable=import-outside-toplevel
         import requests
 
         url = f'https://pypi.org/pypi/{package.name}/json'

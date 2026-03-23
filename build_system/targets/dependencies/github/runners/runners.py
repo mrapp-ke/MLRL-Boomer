@@ -260,7 +260,6 @@ class RunnerUpdater(Workflows):
 
     def __download_runner_documentation(self) -> str:
         PackageManager.install_packages(RequirementsFiles.for_build_unit(self.build_unit), 'requests')
-        # pylint: disable=import-outside-toplevel
         import requests
 
         repository = 'github/docs'

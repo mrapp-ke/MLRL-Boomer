@@ -51,7 +51,6 @@ class SvmFileSource(DatasetFileSource):
             :param problem_domain:  The problem domain, the SVM file is concerned with
             :return:                A `SvmFileSource.SvmFile` that has been loaded
             """
-            # pylint: disable=unbalanced-tuple-unpacking,useless-suppression
             feature_matrix, output_matrix_rows = load_svmlight_file(
                 file_path, dtype=problem_domain.feature_dtype, multilabel=True
             )

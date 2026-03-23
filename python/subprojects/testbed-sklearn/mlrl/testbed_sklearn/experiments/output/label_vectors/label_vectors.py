@@ -57,7 +57,6 @@ class LabelVectors(TabularOutputData):
         table = self.to_table(options, **kwargs)
         return table.format() if table else None
 
-    # pylint: disable=unused-argument
     @override
     def to_table(self, options: Options, **kwargs) -> Table | None:
         """

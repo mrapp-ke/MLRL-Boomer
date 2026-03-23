@@ -45,5 +45,4 @@ class TabularOutputDataset(OutputDataset):
             decimals = options.get_int(OPTION_DECIMALS, 2)
             precision = decimals if decimals > 0 else None
             return np.array2string(y, threshold=sys.maxsize, precision=precision, suppress_small=True)
-        # pylint: disable=unnecessary-lambda
         return np.array2string(y, threshold=sys.maxsize, formatter={'all': lambda x: str(x)})

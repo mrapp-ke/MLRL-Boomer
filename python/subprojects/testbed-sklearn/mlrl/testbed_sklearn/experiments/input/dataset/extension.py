@@ -26,7 +26,6 @@ class ArffFileExtension(DatasetFileExtension):
     def __init__(self):
         super().__init__(file_type=ArffFileSource.SUFFIX_ARFF)
 
-    # pylint: disable=unused-argument
     @override
     def _create_file_sources(
         self, dataset_directory: Path, dataset: InputDataset, args: Namespace
@@ -42,7 +41,6 @@ class SvmFileExtension(DatasetFileExtension):
     def __init__(self):
         super().__init__(file_type=SvmFileSource.SUFFIX_SVM)
 
-    # pylint: disable=unused-argument
     @override
     def _create_file_sources(
         self, dataset_directory: Path, dataset: InputDataset, args: Namespace

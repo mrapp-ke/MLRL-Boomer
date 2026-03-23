@@ -2,7 +2,6 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 
-# pylint: disable=missing-function-docstring
 from abc import ABC
 
 import pytest

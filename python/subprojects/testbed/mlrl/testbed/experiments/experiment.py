@@ -472,7 +472,6 @@ class ExperimentalProcedure(ABC):
         state = self._conduct_experiment(experiment, state)
         return self._after_experiment(experiment, state)
 
-    # pylint: disable=unused-argument
     def _before_experiment(self, experiment: Experiment, state: ExperimentState) -> ExperimentState:
         """
         May be overridden by subclasses in order to perform an operation before an experiment starts.
@@ -493,7 +492,6 @@ class ExperimentalProcedure(ABC):
         :return:            An updated state
         """
 
-    # pylint: disable=unused-argument
     def _after_experiment(self, experiment: Experiment, state: ExperimentState) -> ExperimentState:
         """
         May be overridden by subclasses in order to perform an operation after an experiment has been completed.

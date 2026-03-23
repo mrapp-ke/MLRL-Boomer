@@ -110,7 +110,6 @@ class CmdBuilder:
         parameter_save_dir = self.parameter_save_dir
         return self.base_dir / parameter_save_dir if parameter_save_dir else None
 
-    # pylint: disable=too-many-branches
     def build(self) -> list[str]:
         """
         Returns the command that has been configured via the builder.

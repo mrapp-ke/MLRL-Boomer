@@ -223,7 +223,6 @@ class Runnable(Recipe, ABC):
 
         return control_arguments, set(algorithmic_arguments)
 
-    # pylint: disable=unused-argument
     def get_algorithmic_arguments(self, mode: ExperimentMode, known_args: Namespace) -> set[Argument]:
         """
         May be overridden by subclasses in order to return the arguments for configuring algorithmic parameters that

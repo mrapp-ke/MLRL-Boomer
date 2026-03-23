@@ -455,7 +455,6 @@ class BatchMode(Mode):
     @staticmethod
     def __filter_arguments(argument_list: ArgumentList) -> ArgumentDict:
         try:
-            # pylint: disable=import-outside-toplevel
             from mlrl.testbed_slurm.arguments import SlurmArguments
 
             slurm_arguments = list(
