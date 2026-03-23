@@ -76,7 +76,7 @@ class Argument:
         :param key: The key of the argument
         :return:    The name of the argument
         """
-        return '--' + key.replace('_', '-')
+        return f'--{key.replace("_", "-")}'
 
     @cached_property
     def name(self) -> str:
@@ -307,7 +307,8 @@ class BoolArgument(Argument):
 
         if add_default_value_to_description:
             description += (
-                f' The default value is {format_value(BooleanOption.TRUE if default else BooleanOption.FALSE, decimals=0)}.'
+                f' The default value is '
+                f'{format_value(BooleanOption.TRUE if default else BooleanOption.FALSE, decimals=0)}.'
             )
 
         return description

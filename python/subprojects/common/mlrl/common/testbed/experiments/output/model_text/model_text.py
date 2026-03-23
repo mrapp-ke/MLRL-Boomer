@@ -62,7 +62,7 @@ class RuleModelAsText(TextualOutputData):
                 RuleModelAsText.__format_conditions(text, body, dataset, options)
                 text.write('}')
             else:
-                raise ValueError('Unsupported type of body: ' + str(type(body)))
+                raise ValueError(f'Unsupported type of body: {type(body)}')
 
     @staticmethod
     def __format_head(text: StringIO, head: Head, dataset: TabularDataset, options: Options):
@@ -71,7 +71,7 @@ class RuleModelAsText(TextualOutputData):
         elif isinstance(head, PartialHead):
             RuleModelAsText.__format_partial_head(text, head, dataset, options)
         else:
-            raise ValueError('Unsupported type of head: ' + str(type(head)))
+            raise ValueError(f'Unsupported type of head: {type(head)}')
 
     @staticmethod
     def __format_conditions(text: StringIO, body: Body, dataset: TabularDataset, options: Options):

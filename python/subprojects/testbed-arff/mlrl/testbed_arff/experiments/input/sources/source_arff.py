@@ -120,7 +120,7 @@ class ArffFileSource(DatasetFileSource):
                     elif type_definition in ('real', 'numeric'):
                         attribute_type = AttributeType.NUMERICAL
                     else:
-                        raise ValueError('Encountered unsupported attribute type: ' + type_definition)
+                        raise ValueError(f'Encountered unsupported attribute type: {type_definition}')
 
                 attribute = Attribute(name=attribute_name, attribute_type=attribute_type, nominal_values=nominal_values)
                 attributes.append(attribute)
@@ -177,13 +177,13 @@ class ArffFileSource(DatasetFileSource):
             :return:                The ARFF dataset that has been created
             """
             if file_path.is_file():
-                Log.debug(f'Parsing meta-data from file "{file_path}"...')
+                Log.verbose(f'Parsing meta-data from file "{file_path}"...')
                 xml_doc = minidom.parse(str(file_path))
                 tags = xml_doc.getElementsByTagName('label')
                 output_names = {normalize_attribute_name(tag.getAttribute('name')) for tag in tags}
             else:
                 output_names = None
-                Log.debug(
+                Log.verbose(
                     f'Mulan XML file "{file_path}" does not exist. If possible, information about the dataset\'s '
                     f"outputs is parsed from the ARFF file's @relation declaration as intended by the MEKA dataset "
                     f'format...'

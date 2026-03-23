@@ -31,14 +31,14 @@ class ProgramInfo:
         year = self.year
 
         if year:
-            text += ' ' + year
+            text += f' {year}'
 
         authors = self.authors
 
         if authors:
-            text += ' ' + format_iterable(authors)
+            text += f' {format_iterable(authors)}'
 
-        return 'Copyright (c)' + text if text else ''
+        return f'Copyright (c){text}' if text else ''
 
     @override
     def __str__(self) -> str:

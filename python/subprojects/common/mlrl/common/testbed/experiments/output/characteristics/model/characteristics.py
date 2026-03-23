@@ -186,7 +186,7 @@ class RuleModelCharacteristics(TabularOutputData):
         )
 
         for i, rule_statistics in enumerate(chain(default_rule_statistics, statistics.rule_statistics)):
-            rule_name = 'Rule ' + str(i + 1)
+            rule_name = f'Rule {i + 1}'
 
             if i == 0 and statistics.has_default_rule:
                 rule_name += ' (Default rule)'

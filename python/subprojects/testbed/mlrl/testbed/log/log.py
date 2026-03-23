@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for writing log messages.
 """
+
 import contextlib
 import logging
 import os
@@ -169,7 +170,7 @@ class Log:
         log_level = logging.INFO
 
         if logging.getLogger().isEnabledFor(log_level):
-            formatted_message = '✓ ' + message.format(*args)
+            formatted_message = f'✓ {message.format(*args)}'
             style = Style(color='green', bold=True)
             Log.__print(message=formatted_message, style=style, box=box, box_title=box_title)
 

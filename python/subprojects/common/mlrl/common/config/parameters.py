@@ -9,19 +9,47 @@ import logging as log
 from abc import ABC, abstractmethod
 from typing import override
 
-from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, EqualFrequencyFeatureBinningMixin, \
-    EqualWidthFeatureBinningMixin, FeatureSamplingWithoutReplacementMixin, GreedyTopDownRuleInductionMixin, \
-    InstanceSamplingWithoutReplacementMixin, InstanceSamplingWithReplacementMixin, IrepRulePruningMixin, \
-    NoFeatureBinningMixin, NoFeatureSamplingMixin, NoGlobalPruningMixin, NoInstanceSamplingMixin, \
-    NoParallelPredictionMixin, NoParallelRuleRefinementMixin, NoParallelStatisticUpdateMixin, \
-    NoPartitionSamplingMixin, NoRulePruningMixin, NoSequentialPostOptimizationMixin, NoSimdMixin, \
-    NoSizeStoppingCriterionMixin, NoTimeStoppingCriterionMixin, ParallelPredictionMixin, ParallelRuleRefinementMixin, \
-    ParallelStatisticUpdateMixin, PostPruningMixin, PrePruningMixin, RandomBiPartitionSamplingMixin, RNGMixin, \
-    RoundRobinOutputSamplingMixin, SequentialPostOptimizationMixin, SimdMixin, SizeStoppingCriterionMixin, \
-    TimeStoppingCriterionMixin
-from mlrl.common.cython.learner_classification import ExampleWiseStratifiedBiPartitionSamplingMixin, \
-    ExampleWiseStratifiedInstanceSamplingMixin, OutputWiseStratifiedBiPartitionSamplingMixin, \
-    OutputWiseStratifiedInstanceSamplingMixin
+from mlrl.common.cython.learner import (
+    BeamSearchTopDownRuleInductionMixin,
+    EqualFrequencyFeatureBinningMixin,
+    EqualWidthFeatureBinningMixin,
+    FeatureSamplingWithoutReplacementMixin,
+    GreedyTopDownRuleInductionMixin,
+    InstanceSamplingWithoutReplacementMixin,
+    InstanceSamplingWithReplacementMixin,
+    IrepRulePruningMixin,
+    NoFeatureBinningMixin,
+    NoFeatureSamplingMixin,
+    NoGlobalPruningMixin,
+    NoInstanceSamplingMixin,
+    NoParallelPredictionMixin,
+    NoParallelRuleRefinementMixin,
+    NoParallelStatisticUpdateMixin,
+    NoPartitionSamplingMixin,
+    NoRulePruningMixin,
+    NoSequentialPostOptimizationMixin,
+    NoSimdMixin,
+    NoSizeStoppingCriterionMixin,
+    NoTimeStoppingCriterionMixin,
+    ParallelPredictionMixin,
+    ParallelRuleRefinementMixin,
+    ParallelStatisticUpdateMixin,
+    PostPruningMixin,
+    PrePruningMixin,
+    RandomBiPartitionSamplingMixin,
+    RNGMixin,
+    RoundRobinOutputSamplingMixin,
+    SequentialPostOptimizationMixin,
+    SimdMixin,
+    SizeStoppingCriterionMixin,
+    TimeStoppingCriterionMixin,
+)
+from mlrl.common.cython.learner_classification import (
+    ExampleWiseStratifiedBiPartitionSamplingMixin,
+    ExampleWiseStratifiedInstanceSamplingMixin,
+    OutputWiseStratifiedBiPartitionSamplingMixin,
+    OutputWiseStratifiedInstanceSamplingMixin,
+)
 from mlrl.common.cython.package_info import get_num_cpu_cores, is_multi_threading_support_enabled
 from mlrl.common.cython.stopping_criterion import AggregationFunction
 
@@ -96,7 +124,7 @@ class Parameter(ABC):
         """
         The name of a command line argument that corresponds to the parameter.
         """
-        return '--' + self.name.replace('_', '-')
+        return f'--{self.name.replace("_", "-")}'
 
     @override
     def __eq__(self, other):
@@ -809,8 +837,8 @@ class SimdParameter(NominalParameter):
 
     def __init__(self):
         super().__init__(
-            name='simd',
-            description='Whether single instruction, multiple data (SIMD) operations should be used or not')
+            name='simd', description='Whether single instruction, multiple data (SIMD) operations should be used or not'
+        )
         self.add_value(name=BooleanOption.FALSE, mixin=NoSimdMixin)
         self.add_value(name=BooleanOption.TRUE, mixin=SimdMixin)
 

@@ -81,9 +81,9 @@ class FileComparison(ABC):
         """
         if file.name == f'{InputMetaData.FILENAME}.{YamlFileSource.SUFFIX_YAML}':
             return MetaDataFileComparison(file)
-        if file.suffix == '.' + PickleFileSource.SUFFIX_PICKLE:
+        if file.suffix == f'.{PickleFileSource.SUFFIX_PICKLE}':
             return PickleFileComparison(file)
-        if file.suffix == '.' + CsvFileSource.SUFFIX_CSV:
+        if file.suffix == f'.{CsvFileSource.SUFFIX_CSV}':
             return CsvFileComparison(file)
 
         with open(file, mode='r', encoding=ENCODING_UTF8) as text_file:

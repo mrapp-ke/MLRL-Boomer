@@ -118,7 +118,7 @@ class SlurmRunner(BatchMode.Runner):
             The sbatch arguments (starting with #SBATCH) to be passed to a Slurm job.
             """
             return [
-                '#SBATCH ' + str(argument)
+                f'#SBATCH {argument}'
                 for argument in self.yaml_dict.get('sbatch-arguments', [])
                 if len(argument) > 0 and not argument.isspace()
             ]
@@ -239,10 +239,10 @@ class SlurmRunner(BatchMode.Runner):
                 file_name += '_fold'
 
                 if first_fold > 0:
-                    file_name += '-' + str(first_fold)
+                    file_name += f'-{first_fold}'
 
                 if last_fold > first_fold:
-                    file_name += '-' + str(last_fold)
+                    file_name += f'-{last_fold}'
         except ValidationError:
             pass
 

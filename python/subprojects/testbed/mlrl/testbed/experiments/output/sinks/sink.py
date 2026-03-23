@@ -77,10 +77,9 @@ class FileSink(Sink, ABC):
         if self.create_directory:
             directory.mkdir(parents=True, exist_ok=True)
 
-        file_path = FilePath(directory=directory,
-                             file_name=output_data.properties.file_name,
-                             suffix=self.suffix,
-                             context=context).resolve(state)
+        file_path = FilePath(
+            directory=directory, file_name=output_data.properties.file_name, suffix=self.suffix, context=context
+        ).resolve(state)
         Log.verbose(f'Writing output data to file "{file_path}"...')
         self._write_to_file(file_path, state, output_data, **kwargs)
 

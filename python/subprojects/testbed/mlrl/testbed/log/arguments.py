@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Defines command line arguments for configuring the functionality to write log messages.
 """
+
 import logging
 
 from argparse import Namespace
@@ -18,6 +19,7 @@ class LogLevel(Enum):
     """
     Specifies all valid textual representations of log levels.
     """
+
     DEBUG = logging.DEBUG
     INFO = logging.INFO
     WARNING = logging.WARNING

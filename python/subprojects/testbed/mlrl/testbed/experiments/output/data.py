@@ -5,7 +5,6 @@ Provides classes for representing output data.
 """
 
 import json
-
 from abc import ABC, abstractmethod
 from collections.abc import Iterable
 from dataclasses import replace
@@ -17,7 +16,6 @@ from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
-
 from mlrl.util.format import format_value
 from mlrl.util.options import Options
 
@@ -100,7 +98,7 @@ class TextualOutputData(OutputData, ABC):
                     prediction_scope = prediction_result.prediction_scope
 
                     if not prediction_scope.is_global:
-                        return ' using a model of size ' + str(prediction_scope.model_size)
+                        return f' using a model of size {prediction_scope.model_size}'
 
             return ''
 
@@ -110,9 +108,16 @@ class TextualOutputData(OutputData, ABC):
 
             :param state: The state from which the output data has been generated
             """
-            symbol = self.symbol
-            return (symbol + ' ' if symbol else '') + self.title + self.__format_dataset_type(
-                state) + self.__format_prediction_scope(state) + self.__format_fold(state)
+            result = self.symbol
+
+            if result:
+                result += ' '
+
+            result += self.title
+            result += self.__format_dataset_type(state)
+            result += self.__format_prediction_scope(state)
+            result += self.__format_fold(state)
+            return result
 
     @staticmethod
     def from_text(properties: Properties, context: Context, text: str) -> 'TextualOutputData':

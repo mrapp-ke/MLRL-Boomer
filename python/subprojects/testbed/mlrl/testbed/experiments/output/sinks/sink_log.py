@@ -47,9 +47,9 @@ class LogSink(Sink):
 
         if text:
             context = output_data.get_context(type(self))
-            title = TextualOutputData.Title(title=output_data.properties.name,
-                                            context=context,
-                                            symbol=output_data.properties.symbol)
+            title = TextualOutputData.Title(
+                title=output_data.properties.name, context=context, symbol=output_data.properties.symbol
+            )
             box_title = title.format(state)
             Log.info('')
 

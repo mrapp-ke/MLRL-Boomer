@@ -218,7 +218,7 @@ class AggregatedEvaluationResult(TabularOutputData):
         std_dev_column = sliced_table[sliced_table.num_columns - 1]
 
         for row_index in range(std_dev_column.num_rows):
-            std_dev_column[row_index] = '±' + str(std_dev_column[row_index])
+            std_dev_column[row_index] = f'±{std_dev_column[row_index]}'
 
     @staticmethod
     def __add_separator_rows(dataset_column: Column, table: RowWiseTable, averages: bool = False) -> set[str]:
@@ -308,12 +308,16 @@ class AggregatedEvaluationResult(TabularOutputData):
                                 return aggregation_measure.aggregate(values_list, smaller_is_better=smaller_is_better)
 
                             aggregated_column = chain.from_iterable(
-                                map(partial(aggregation_function, aggregation_measure, smaller_is_better),
-                                    values_by_dataset))
-                            aggregated_table.add_column(*map(lambda x: format_value(x, decimals=decimals),
-                                                             aggregated_column),
-                                                        header=f'{aggregation_measure.name} {header}',
-                                                        position=column_index + 1)
+                                map(
+                                    partial(aggregation_function, aggregation_measure, smaller_is_better),
+                                    values_by_dataset,
+                                )
+                            )
+                            aggregated_table.add_column(
+                                *map(lambda x: format_value(x, decimals=decimals), aggregated_column),
+                                header=f'{aggregation_measure.name} {header}',
+                                position=column_index + 1,
+                            )
 
             return aggregated_table
 

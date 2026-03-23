@@ -395,7 +395,7 @@ class BatchMode(Mode):
             dataset_name = dataset_args[DatasetArguments.DATASET_NAME.name]
 
             if not dataset_name:
-                raise ValueError('Unable to determine dataset name based on the arguments ' + str(dataset_args))
+                raise ValueError(f'Unable to determine dataset name based on the arguments {dataset_args}')
 
             for parameter_args in map(BatchMode.__filter_arguments, config_file.parameter_args):
                 output_dir = BatchMode.__get_output_dir(parameter_args, dataset_name)
@@ -446,10 +446,10 @@ class BatchMode(Mode):
     def __get_output_dir(argument_dict: ArgumentDict, dataset_name: str) -> Path:
         return Path(
             *map(
-                lambda argument: argument[0].lstrip('-') + ('_' + argument[1]) if argument[1] else '',
+                lambda argument: f'{argument[0].lstrip("-")}{(f"_{argument[1]}" if argument[1] else "")}',
                 argument_dict.items(),
             ),
-            'dataset_' + dataset_name,
+            f'dataset_{dataset_name}',
         )
 
     @staticmethod
