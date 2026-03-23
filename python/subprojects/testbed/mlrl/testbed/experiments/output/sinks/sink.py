@@ -4,8 +4,6 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for implementing sinks, output data may be written to.
 """
 
-import logging as log
-
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import override
@@ -16,6 +14,7 @@ from mlrl.testbed.experiments.input.sources import Source
 from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData, TabularOutputData
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
+from mlrl.testbed.log import Log
 
 from mlrl.util.options import Options
 
@@ -78,10 +77,11 @@ class FileSink(Sink, ABC):
         if self.create_directory:
             directory.mkdir(parents=True, exist_ok=True)
 
-        file_path = FilePath(
-            directory=directory, file_name=output_data.properties.file_name, suffix=self.suffix, context=context
-        ).resolve(state)
-        log.debug(f'Writing output data to file "{file_path}"...')
+        file_path = FilePath(directory=directory,
+                             file_name=output_data.properties.file_name,
+                             suffix=self.suffix,
+                             context=context).resolve(state)
+        Log.verbose(f'Writing output data to file "{file_path}"...')
         self._write_to_file(file_path, state, output_data, **kwargs)
 
     @abstractmethod

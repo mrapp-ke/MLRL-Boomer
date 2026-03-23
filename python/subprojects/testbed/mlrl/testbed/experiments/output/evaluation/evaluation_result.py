@@ -19,8 +19,9 @@ from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
 from mlrl.testbed.experiments.output.evaluation.measures import AggregationMeasure, Measure
 from mlrl.testbed.experiments.table import Cell, Column, ColumnWiseTable, RowWiseTable, Table
-from mlrl.testbed.util.format import OPTION_DECIMALS, format_number
+from mlrl.testbed.util.format import OPTION_DECIMALS
 
+from mlrl.util.format import format_value
 from mlrl.util.options import Options
 
 
@@ -195,7 +196,7 @@ class AggregatedEvaluationResult(TabularOutputData):
                             except ValueError:
                                 pass
 
-                row.append(format_number(np.asarray(values, dtype=float).mean(), decimals=decimals) if values else None)
+                row.append(format_value(np.asarray(values, dtype=float).mean(), decimals=decimals) if values else None)
 
             result.append(row)
 
@@ -284,7 +285,7 @@ class AggregatedEvaluationResult(TabularOutputData):
                         if value is not None:
                             float_value = float(value)
                             values_by_dataset[-1].append(float_value)
-                            column[row_index] = format_number(float_value, decimals=decimals)
+                            column[row_index] = format_value(float_value, decimals=decimals)
                     except ValueError:
                         pass
 
@@ -307,16 +308,12 @@ class AggregatedEvaluationResult(TabularOutputData):
                                 return aggregation_measure.aggregate(values_list, smaller_is_better=smaller_is_better)
 
                             aggregated_column = chain.from_iterable(
-                                map(
-                                    partial(aggregation_function, aggregation_measure, smaller_is_better),
-                                    values_by_dataset,
-                                )
-                            )
-                            aggregated_table.add_column(
-                                *map(lambda x: format_number(x, decimals=decimals), aggregated_column),
-                                header=f'{aggregation_measure.name} {header}',
-                                position=column_index + 1,
-                            )
+                                map(partial(aggregation_function, aggregation_measure, smaller_is_better),
+                                    values_by_dataset))
+                            aggregated_table.add_column(*map(lambda x: format_value(x, decimals=decimals),
+                                                             aggregated_column),
+                                                        header=f'{aggregation_measure.name} {header}',
+                                                        position=column_index + 1)
 
             return aggregated_table
 

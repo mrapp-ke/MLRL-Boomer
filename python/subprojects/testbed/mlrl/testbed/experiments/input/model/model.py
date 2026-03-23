@@ -4,14 +4,13 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing model that are part of input data.
 """
 
-import logging as log
-
 from typing import Any, override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties
 from mlrl.testbed.experiments.input.data import InputData
 from mlrl.testbed.experiments.state import ExperimentState, TrainingState
+from mlrl.testbed.log import Log
 
 
 class InputModel(InputData):
@@ -31,5 +30,5 @@ class InputModel(InputData):
         """
         See :func:`mlrl.testbed.experiments.input.data.InputData.update_state`
         """
-        log.info('Successfully loaded model')
+        Log.success('Successfully loaded model')
         state.training_result = TrainingState(learner=input_data)

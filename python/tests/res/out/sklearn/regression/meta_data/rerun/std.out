@@ -1,22 +1,31 @@
-mlrl-testbed mlrl.testbed_sklearn --mode read --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --save-meta-data false --print-evaluation false --save-evaluation false --print-meta-data true --save-meta-data true --estimator RandomForestRegressor
+mlrl-testbed mlrl.testbed_sklearn --mode read --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/rerun --input-dir python/tests/res/tmp --save-evaluation true --save-meta-data false --print-evaluation false --save-evaluation false --print-meta-data true --save-meta-data true --estimator RandomForestRegressor
 Reading meta-data...
-DEBUG: Reading input data from file "python/tests/res/tmp/metadata.yml"...
-Successfully read meta-data
-DEBUG: Checking for version conflicts...
-DEBUG: Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is currently used
-DEBUG: No version conflicts detected
+○ Reading input data from file "python/tests/res/tmp/metadata.yml"...
+✓ Successfully read meta-data
+○ Checking for version conflicts...
+○ Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is
+currently used
+○ No version conflicts detected
 Reading experimental results of 1 experiment...
 
 Reading experimental results of experiment (1 / 1)...
-The command "mlrl-testbed mlrl.testbed_sklearn --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --save-meta-data false --save-meta-data true --print-evaluation false --save-evaluation false --print-meta-data true --save-meta-data true --n-estimators 1 --estimator RandomForestRegressor" has been used originally for running this experiment
-Meta-data of the experiment:
+The command "mlrl-testbed mlrl.testbed_sklearn --log-width 120 --log-plain --log-level debug --base-dir
+python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression
+--save-evaluation true --save-meta-data false --save-meta-data true --print-evaluation false --save-evaluation false
+--print-meta-data true --save-meta-data true --n-estimators 1 --estimator RandomForestRegressor" has been used
+originally for running this experiment
+
+🗀 Meta-data of the experiment:
 
 {
     "version": "<version>",
     "timestamp": "<timestamp>",
-    "command": "mlrl-testbed mlrl.testbed_sklearn --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --save-meta-data false --save-meta-data true --print-evaluation false --save-evaluation false --print-meta-data true --save-meta-data true --n-estimators 1 --estimator RandomForestRegressor"
+    "command": "mlrl-testbed mlrl.testbed_sklearn --log-width 120 --log-plain --log-level debug --base-dir
+python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression
+--save-evaluation true --save-meta-data false --save-meta-data true --print-evaluation false --save-evaluation false
+--print-meta-data true --save-meta-data true --n-estimators 1 --estimator RandomForestRegressor"
 }
 
-DEBUG: Writing output data to file "python/tests/res/tmp/rerun/metadata.yml"...
+○ Writing output data to file "python/tests/res/tmp/rerun/metadata.yml"...
 Using separate training and test sets...
-DEBUG: Reading input data from file "python/tests/res/tmp/metadata.yml"...
+○ Reading input data from file "python/tests/res/tmp/metadata.yml"...

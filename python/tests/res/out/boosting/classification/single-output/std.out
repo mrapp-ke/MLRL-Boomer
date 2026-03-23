@@ -1,18 +1,19 @@
-mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset breast-cancer --result-dir results --save-evaluation true --save-meta-data false --print-evaluation true
+mlrl-testbed mlrl.boosting --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset breast-cancer --result-dir results --save-evaluation true --save-meta-data false --print-evaluation true
 Checking if output files do already exist...
 Starting experiment using the classification algorithm "BoomerClassifier"...
 Using separate training and test sets...
-DEBUG: Reading input data from file "python/tests/res/data/breast-cancer.arff"...
-DEBUG: Parsing meta-data from file "python/tests/res/data/breast-cancer.xml"...
+○ Reading input data from file "python/tests/res/data/breast-cancer.arff"...
+○ Parsing meta-data from file "python/tests/res/data/breast-cancer.xml"...
 Fitting model to 191 training examples...
-DEBUG: A dense matrix is used to store the feature values of the training examples
-DEBUG: A dense matrix is used to store the labels of the training examples
-Successfully fit model in <duration>
+○ A dense matrix is used to store the feature values of the training examples
+○ A dense matrix is used to store the labels of the training examples
+✓ Successfully fit model in <duration>
 Predicting for 95 test examples...
-DEBUG: A dense matrix is used to store the feature values of the query examples
-DEBUG: A dense matrix is used to store the predicted labels
-Successfully predicted in <duration>
-Evaluation result for test data:
+○ A dense matrix is used to store the feature values of the query examples
+○ A dense matrix is used to store the predicted labels
+✓ Successfully predicted in <duration>
+
+🗀 Evaluation result for test data:
 
 0/1 Loss (↓)   38.95
 Accuracy (↑)   61.05
@@ -21,5 +22,5 @@ Jaccard (↑)    22.92
 Precision (↑)  42.31
 Recall (↑)     33.33
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-Successfully finished experiment after <duration>
+○ Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+✓ Successfully finished experiment after <duration>

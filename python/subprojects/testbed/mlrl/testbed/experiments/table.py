@@ -239,17 +239,12 @@ class Table(ABC):
             if not headers:
                 return tabulate(rows, tablefmt=table_format if table_format else Table.Format.PLAIN)
 
-            alignments = (
-                map(lambda alignment: alignment.value if alignment else None, self.alignments)
-                if self.alignments
-                else None
-            )
-            return tabulate(
-                rows,
-                headers=headers,
-                tablefmt=table_format if table_format else Table.Format.OUTLINE,
-                colalign=alignments,
-            )
+            alignments = map(lambda alignment: alignment.value
+                             if alignment else None, self.alignments) if self.alignments else None
+            return tabulate(rows,
+                            headers=headers,
+                            tablefmt=table_format if table_format else Table.Format.PLAIN,
+                            colalign=alignments)
 
         return '<no data available>'
 

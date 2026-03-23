@@ -19,30 +19,29 @@ class SeCoClassifier(ClassificationRuleLearner):
     rules.
     """
 
-    def __init__(
-        self,
-        random_state: int | None = None,
-        feature_format: str | None = None,
-        output_format: str | None = None,
-        prediction_format: str | None = None,
-        rule_induction: str | None = None,
-        max_rules: int | None = None,
-        time_limit: int | None = None,
-        post_optimization: str | None = None,
-        head_type: str | None = None,
-        lift_function: str | None = None,
-        heuristic: str | None = None,
-        pruning_heuristic: str | None = None,
-        output_sampling: str | None = None,
-        instance_sampling: str | None = None,
-        feature_sampling: str | None = None,
-        holdout: str | None = None,
-        feature_binning: str | None = None,
-        rule_pruning: str | None = None,
-        parallel_rule_refinement: str | None = None,
-        parallel_statistic_update: str | None = None,
-        parallel_prediction: str | None = None,
-    ):
+    def __init__(self,
+                 random_state: int | None = None,
+                 feature_format: str | None = None,
+                 output_format: str | None = None,
+                 prediction_format: str | None = None,
+                 rule_induction: str | None = None,
+                 max_rules: int | None = None,
+                 time_limit: int | None = None,
+                 post_optimization: str | None = None,
+                 head_type: str | None = None,
+                 lift_function: str | None = None,
+                 heuristic: str | None = None,
+                 pruning_heuristic: str | None = None,
+                 output_sampling: str | None = None,
+                 instance_sampling: str | None = None,
+                 feature_sampling: str | None = None,
+                 holdout: str | None = None,
+                 feature_binning: str | None = None,
+                 rule_pruning: str | None = None,
+                 parallel_rule_refinement: str | None = None,
+                 parallel_statistic_update: str | None = None,
+                 parallel_prediction: str | None = None,
+                 simd: str | None = None):
         """
         :param random_state:                The seed to be used by RNGs. Must be at least 0
         :param rule_induction:              An algorithm to be used for the induction of individual rules. Must be
@@ -99,6 +98,8 @@ class SeCoClassifier(ClassificationRuleLearner):
         :param parallel_prediction:         Whether predictions for different examples should be obtained in parallel or
                                             not. Must be 'true' or 'false'. For additional options refer to the
                                             documentation
+        :param simd:                        Whether single instruction, multiple data (SIMD) operations should be used
+                                            or not. Must be 'true' or 'false'
         """
         super().__init__(feature_format, output_format, prediction_format)
         self.random_state = random_state
@@ -119,6 +120,7 @@ class SeCoClassifier(ClassificationRuleLearner):
         self.parallel_rule_refinement = parallel_rule_refinement
         self.parallel_statistic_update = parallel_statistic_update
         self.parallel_prediction = parallel_prediction
+        self.simd = simd
 
     @override
     def _create_learner(self) -> Any:

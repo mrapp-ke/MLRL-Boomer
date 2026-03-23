@@ -23,40 +23,39 @@ class BoomerClassifier(ProbabilisticClassificationRuleLearner):
     be used in classification problems.
     """
 
-    def __init__(
-        self,
-        random_state: int | None = None,
-        feature_format: str | None = None,
-        output_format: str | None = None,
-        prediction_format: str | None = None,
-        statistic_format: str | None = None,
-        statistic_type: str | None = None,
-        default_rule: str | None = None,
-        rule_induction: str | None = None,
-        max_rules: int | None = None,
-        time_limit: int | None = None,
-        global_pruning: str | None = None,
-        post_optimization: str | None = None,
-        head_type: str | None = None,
-        loss: str | None = None,
-        marginal_probability_calibration: str | None = None,
-        joint_probability_calibration: str | None = None,
-        binary_predictor: str | None = None,
-        probability_predictor: str | None = None,
-        output_sampling: str | None = None,
-        instance_sampling: str | None = None,
-        feature_sampling: str | None = None,
-        holdout: str | None = None,
-        feature_binning: str | None = None,
-        label_binning: str | None = None,
-        rule_pruning: str | None = None,
-        shrinkage: float | None = 0.3,
-        l1_regularization_weight: float | None = None,
-        l2_regularization_weight: float | None = None,
-        parallel_rule_refinement: str | None = None,
-        parallel_statistic_update: str | None = None,
-        parallel_prediction: str | None = None,
-    ):
+    def __init__(self,
+                 random_state: int | None = None,
+                 feature_format: str | None = None,
+                 output_format: str | None = None,
+                 prediction_format: str | None = None,
+                 statistic_format: str | None = None,
+                 statistic_type: str | None = None,
+                 default_rule: str | None = None,
+                 rule_induction: str | None = None,
+                 max_rules: int | None = None,
+                 time_limit: int | None = None,
+                 global_pruning: str | None = None,
+                 post_optimization: str | None = None,
+                 head_type: str | None = None,
+                 loss: str | None = None,
+                 marginal_probability_calibration: str | None = None,
+                 joint_probability_calibration: str | None = None,
+                 binary_predictor: str | None = None,
+                 probability_predictor: str | None = None,
+                 output_sampling: str | None = None,
+                 instance_sampling: str | None = None,
+                 feature_sampling: str | None = None,
+                 holdout: str | None = None,
+                 feature_binning: str | None = None,
+                 label_binning: str | None = None,
+                 rule_pruning: str | None = None,
+                 shrinkage: float | None = 0.3,
+                 l1_regularization_weight: float | None = None,
+                 l2_regularization_weight: float | None = None,
+                 parallel_rule_refinement: str | None = None,
+                 parallel_statistic_update: str | None = None,
+                 parallel_prediction: str | None = None,
+                 simd: str | None = None):
         """
         :param random_state:                        The seed to be used by RNGs. Must be at least 0
         :param statistic_format:                    The format to be used for representing gradients and Hessians. Must
@@ -152,6 +151,8 @@ class BoomerClassifier(ProbabilisticClassificationRuleLearner):
         :param parallel_prediction:                 Whether predictions for different examples should be obtained in
                                                     parallel or not. Must be 'true' or 'false'. For additional options
                                                     refer to the documentation
+        :param simd:                                Whether single instruction, multiple data (SIMD) operations should
+                                                    be used or not. Must be 'true' or 'false'
         """
         super().__init__(feature_format, output_format, prediction_format)
         self.random_state = random_state
@@ -182,6 +183,7 @@ class BoomerClassifier(ProbabilisticClassificationRuleLearner):
         self.parallel_rule_refinement = parallel_rule_refinement
         self.parallel_statistic_update = parallel_statistic_update
         self.parallel_prediction = parallel_prediction
+        self.simd = simd
 
     @override
     def _create_learner(self) -> Any:
@@ -196,35 +198,34 @@ class BoomerRegressor(RegressionRuleLearner):
     be used in regression problems.
     """
 
-    def __init__(
-        self,
-        random_state: int | None = None,
-        feature_format: str | None = None,
-        output_format: str | None = None,
-        prediction_format: str | None = None,
-        statistic_format: str | None = None,
-        statistic_type: str | None = None,
-        default_rule: str | None = None,
-        rule_induction: str | None = None,
-        max_rules: int | None = None,
-        time_limit: int | None = None,
-        global_pruning: str | None = None,
-        post_optimization: str | None = None,
-        head_type: str | None = None,
-        loss: str | None = None,
-        output_sampling: str | None = None,
-        instance_sampling: str | None = None,
-        feature_sampling: str | None = None,
-        holdout: str | None = None,
-        feature_binning: str | None = None,
-        rule_pruning: str | None = None,
-        shrinkage: float | None = 0.3,
-        l1_regularization_weight: float | None = None,
-        l2_regularization_weight: float | None = None,
-        parallel_rule_refinement: str | None = None,
-        parallel_statistic_update: str | None = None,
-        parallel_prediction: str | None = None,
-    ):
+    def __init__(self,
+                 random_state: int | None = None,
+                 feature_format: str | None = None,
+                 output_format: str | None = None,
+                 prediction_format: str | None = None,
+                 statistic_format: str | None = None,
+                 statistic_type: str | None = None,
+                 default_rule: str | None = None,
+                 rule_induction: str | None = None,
+                 max_rules: int | None = None,
+                 time_limit: int | None = None,
+                 global_pruning: str | None = None,
+                 post_optimization: str | None = None,
+                 head_type: str | None = None,
+                 loss: str | None = None,
+                 output_sampling: str | None = None,
+                 instance_sampling: str | None = None,
+                 feature_sampling: str | None = None,
+                 holdout: str | None = None,
+                 feature_binning: str | None = None,
+                 rule_pruning: str | None = None,
+                 shrinkage: float | None = 0.3,
+                 l1_regularization_weight: float | None = None,
+                 l2_regularization_weight: float | None = None,
+                 parallel_rule_refinement: str | None = None,
+                 parallel_statistic_update: str | None = None,
+                 parallel_prediction: str | None = None,
+                 simd: str | None = None):
         """
         :param random_state:                The seed to be used by RNGs. Must be at least 0
         :param statistic_format:            The format to be used for representing gradients and Hessians. Must be
@@ -292,6 +293,8 @@ class BoomerRegressor(RegressionRuleLearner):
         :param parallel_prediction:         Whether predictions for different examples should be obtained in parallel or
                                             not. Must be 'true' or 'false'. For additional options refer to the
                                             documentation
+        :param simd:                        Whether single instruction, multiple data (SIMD) operations should be used
+                                            or not. Must be 'true' or 'false'
         """
         super().__init__(feature_format, output_format, prediction_format)
         self.random_state = random_state
@@ -317,6 +320,7 @@ class BoomerRegressor(RegressionRuleLearner):
         self.parallel_rule_refinement = parallel_rule_refinement
         self.parallel_statistic_update = parallel_statistic_update
         self.parallel_prediction = parallel_prediction
+        self.simd = simd
 
     @override
     def _create_learner(self) -> Any:

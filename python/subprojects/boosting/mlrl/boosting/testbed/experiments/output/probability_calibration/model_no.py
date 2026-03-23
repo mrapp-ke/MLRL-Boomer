@@ -23,7 +23,7 @@ class NoCalibrationModel(TabularOutputData):
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
-        return 'No calibration model used'
+        return '<No calibration model used>'
 
     @override
     def to_table(self, _: Options, **kwargs) -> Table | None:

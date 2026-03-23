@@ -7,6 +7,7 @@
 #include "mlrl/boosting/rule_evaluation/head_type.hpp"
 #include "mlrl/boosting/rule_evaluation/regularization.hpp"
 #include "mlrl/common/multi_threading/multi_threading.hpp"
+#include "mlrl/common/simd/simd.hpp"
 #include "mlrl/common/util/properties.hpp"
 
 #include <memory>
@@ -25,6 +26,8 @@ namespace boosting {
 
             const ReadableProperty<IMultiThreadingConfig> multiThreadingConfig_;
 
+            const ReadableProperty<ISimdConfig> simdConfig_;
+
             const ReadableProperty<IRegularizationConfig> l1RegularizationConfig_;
 
             const ReadableProperty<IRegularizationConfig> l2RegularizationConfig_;
@@ -39,6 +42,8 @@ namespace boosting {
              * @param multiThreadingConfig    A `ReadableProperty` that allows to access the `IMultiThreadingConfig`
              *                                that stores the configuration of the multi-threading behavior that should
              *                                be used for the parallel update of statistics
+             * @param simdConfig              A `ReadableProperty` that allows to access the `IMultiThreadingConfig`
+             *                                that stores the configuration of SIMD operations
              * @param l1RegularizationConfig  A `ReadableProperty` that allows to access the `IRegularizationConfig`
              *                                that stores the configuration of the L1 regularization
              * @param l2RegularizationConfig  A `ReadableProperty` that allows to access the `IRegularizationConfig`
@@ -47,6 +52,7 @@ namespace boosting {
             AutomaticHeadConfig(ReadableProperty<ILossConfig> lossConfig,
                                 ReadableProperty<ILabelBinningConfig> labelBinningConfig,
                                 ReadableProperty<IMultiThreadingConfig> multiThreadingConfig,
+                                ReadableProperty<ISimdConfig> simdConfig,
                                 ReadableProperty<IRegularizationConfig> l1RegularizationConfig,
                                 ReadableProperty<IRegularizationConfig> l2RegularizationConfig);
 

@@ -22,7 +22,7 @@ class OutputMetaData(StructuralOutputData):
         """
         :param meta_data: The meta-data
         """
-        super().__init__(properties=InputMetaData.PROPERTIES, context=InputMetaData.CONTEXT)
+        super().__init__(properties=InputMetaData.PROPERTIES, context=InputMetaData.CONTEXT, language='json')
         self.meta_data = meta_data
 
     @override

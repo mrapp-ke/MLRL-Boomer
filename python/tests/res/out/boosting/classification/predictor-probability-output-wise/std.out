@@ -1,32 +1,36 @@
-mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --load-models true --model-load-dir models --model-save-dir models --save-evaluation true --save-meta-data false --print-marginal-probability-calibration-model true --save-marginal-probability-calibration-model true --save-evaluation false --prediction-type probabilities --print-predictions true --print-ground-truth true --save-models true --marginal-probability-calibration isotonic --probability-predictor output-wise
+mlrl-testbed mlrl.boosting --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir results --load-models true --model-load-dir models --model-save-dir models --save-evaluation true --save-meta-data false --print-marginal-probability-calibration-model true --save-marginal-probability-calibration-model true --save-evaluation false --prediction-type probabilities --print-predictions true --print-ground-truth true --save-models true --marginal-probability-calibration isotonic --probability-predictor output-wise
 Checking if output files do already exist...
 Starting experiment using the classification algorithm "BoomerClassifier"...
 Using separate training and test sets...
-DEBUG: Reading input data from file "python/tests/res/data/emotions.arff"...
-DEBUG: Parsing meta-data from file "python/tests/res/data/emotions.xml"...
-DEBUG: Reading input data from file "models/model.pickle"...
-ERROR: The file "models/model.pickle" does not exist
+○ Reading input data from file "python/tests/res/data/emotions.arff"...
+○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+○ Reading input data from file "models/model.pickle"...
+✗ The file "models/model.pickle" does not exist
 Fitting model to 397 training examples...
-DEBUG: A dense matrix is used to store the feature values of the training examples
-DEBUG: A dense matrix is used to store the labels of the training examples
-Successfully fit model in <duration>
+○ A dense matrix is used to store the feature values of the training examples
+○ A dense matrix is used to store the labels of the training examples
+✓ Successfully fit model in <duration>
 Predicting for 196 test examples...
-DEBUG: A dense matrix is used to store the feature values of the query examples
-DEBUG: A dense matrix is used to store the predicted probability estimates
-Successfully predicted in <duration>
-Evaluation result for test data:
+○ A dense matrix is used to store the feature values of the query examples
+○ A dense matrix is used to store the predicted probability estimates
+✓ Successfully predicted in <duration>
+
+🗀 Evaluation result for test data:
 
 Coverage Error (↓)                    2.83
-DCG (↑)                               1.36         DCG@1:    0.7  DCG@2:    1.08  DCG@3:    1.26  DCG@5:    1.34  DCG@8:    1.36
+DCG (↑)                               1.36         DCG@1:    0.7  DCG@2:    1.08  DCG@3:    1.26  DCG@5:    1.34  DCG@8:
+1.36
 Label Ranking Average Precision (↑)   0.8
 Mean Absolute Error (↓)               0.28
 Mean Absolute Percentage Error (↓)    6.96985e+14
 Mean Squared Error (↓)                0.14
 Median Absolute Error (↓)             0.22
-NDCG (↑)                             86.27         NDCG@1:  69.9  NDCG@2:  73.15  NDCG@3:  80.17  NDCG@5:  85.21  NDCG@8:  86.27
+NDCG (↑)                             86.27         NDCG@1:  69.9  NDCG@2:  73.15  NDCG@3:  80.17  NDCG@5:  85.21
+NDCG@8:  86.27
 Ranking Loss (↓)                      0.16
 
-Ground truth for test data:
+
+🗀 Ground truth for test data:
 
 [[1 0 0 0 0 1]
  [1 0 0 0 0 0]
@@ -225,7 +229,8 @@ Ground truth for test data:
  [0 0 1 1 0 0]
  [1 0 0 0 0 1]]
 
-Predictions for test data:
+
+🗀 Predictions for test data:
 
 [[0.98 0.3  0.   0.01 0.18 1.  ]
  [0.67 0.34 0.   0.   0.01 1.  ]
@@ -424,84 +429,67 @@ Predictions for test data:
  [0.16 0.65 0.67 0.37 0.28 0.13]
  [0.45 0.45 0.   0.   0.19 0.67]]
 
-Marginal probability calibration model:
 
-┌──────────────────────┬─────────────────────────┐
-│   Label 1 thresholds │   Label 1 probabilities │
-├──────────────────────┼─────────────────────────┤
-│               0      │                  0      │
-│               0.0006 │                  0.0769 │
-│               0.0023 │                  0.0952 │
-│               0.0212 │                  0.3042 │
-│               0.1312 │                  0.4    │
-│               0.2105 │                  0.4417 │
-│               0.5997 │                  0.5    │
-│               0.6951 │                  0.6333 │
-│               0.8326 │                  0.6667 │
-│               0.8922 │                  0.875  │
-│               0.9603 │                  1      │
-└──────────────────────┴─────────────────────────┘
-┌──────────────────────┬─────────────────────────┐
-│   Label 2 thresholds │   Label 2 probabilities │
-├──────────────────────┼─────────────────────────┤
-│               0      │                  0      │
-│               0.0022 │                  0.2525 │
-│               0.0162 │                  0.2694 │
-│               0.086  │                  0.3333 │
-│               0.1316 │                  0.3479 │
-│               0.2913 │                  0.5    │
-│               0.3338 │                  0.5238 │
-│               0.6828 │                  0.8036 │
-│               0.9646 │                  1      │
-└──────────────────────┴─────────────────────────┘
-┌──────────────────────┬─────────────────────────┐
-│   Label 3 thresholds │   Label 3 probabilities │
-├──────────────────────┼─────────────────────────┤
-│               0      │                  0      │
-│               0.0408 │                  0.3333 │
-│               0.0923 │                  0.5    │
-│               0.5461 │                  0.5042 │
-│               0.9957 │                  0.6667 │
-│               0.997  │                  1      │
-└──────────────────────┴─────────────────────────┘
-┌──────────────────────┬─────────────────────────┐
-│   Label 4 thresholds │   Label 4 probabilities │
-├──────────────────────┼─────────────────────────┤
-│               0      │                  0      │
-│               0.0003 │                  0.0159 │
-│               0.0483 │                  0.2    │
-│               0.3111 │                  0.3333 │
-│               0.518  │                  0.4167 │
-│               0.9344 │                  0.7333 │
-│               0.9868 │                  1      │
-└──────────────────────┴─────────────────────────┘
-┌──────────────────────┬─────────────────────────┐
-│   Label 5 thresholds │   Label 5 probabilities │
-├──────────────────────┼─────────────────────────┤
-│               0.0001 │                  0      │
-│               0.0031 │                  0.1849 │
-│               0.0202 │                  0.2    │
-│               0.0267 │                  0.2306 │
-│               0.0679 │                  0.25   │
-│               0.1198 │                  0.2946 │
-│               0.7024 │                  0.5    │
-│               0.953  │                  0.8    │
-│               0.9754 │                  1      │
-└──────────────────────┴─────────────────────────┘
-┌──────────────────────┬─────────────────────────┐
-│   Label 6 thresholds │   Label 6 probabilities │
-├──────────────────────┼─────────────────────────┤
-│               0      │                  0      │
-│               0.0011 │                  0.0286 │
-│               0.0138 │                  0.1429 │
-│               0.0186 │                  0.25   │
-│               0.1785 │                  0.5    │
-│               0.2218 │                  0.5208 │
-│               0.665  │                  0.5312 │
-│               0.9485 │                  0.6786 │
-│               0.9875 │                  1      │
-└──────────────────────┴─────────────────────────┘
+🗀 Marginal probability calibration model:
 
-DEBUG: Writing output data to file "python/tests/res/tmp/results/marginal_probability_calibration_model.csv"...
-DEBUG: Writing output data to file "python/tests/res/tmp/models/model.pickle"...
-Successfully finished experiment after <duration>
+  Label 1 thresholds    Label 1 probabilities
+              0                        0
+              0.0006                   0.0769
+              0.0023                   0.0952
+              0.0212                   0.3042
+              0.1312                   0.4
+              0.2105                   0.4417
+              0.5997                   0.5
+              0.6951                   0.6333
+              0.8326                   0.6667
+              0.8922                   0.875
+              0.9603                   1
+  Label 2 thresholds    Label 2 probabilities
+              0                        0
+              0.0022                   0.2525
+              0.0162                   0.2694
+              0.086                    0.3333
+              0.1316                   0.3479
+              0.2913                   0.5
+              0.3338                   0.5238
+              0.6828                   0.8036
+              0.9646                   1
+  Label 3 thresholds    Label 3 probabilities
+              0                        0
+              0.0408                   0.3333
+              0.0923                   0.5
+              0.5461                   0.5042
+              0.9957                   0.6667
+              0.997                    1
+  Label 4 thresholds    Label 4 probabilities
+              0                        0
+              0.0003                   0.0159
+              0.0483                   0.2
+              0.3111                   0.3333
+              0.518                    0.4167
+              0.9344                   0.7333
+              0.9868                   1
+  Label 5 thresholds    Label 5 probabilities
+              0.0001                   0
+              0.0031                   0.1849
+              0.0202                   0.2
+              0.0267                   0.2306
+              0.0679                   0.25
+              0.1198                   0.2946
+              0.7024                   0.5
+              0.953                    0.8
+              0.9754                   1
+  Label 6 thresholds    Label 6 probabilities
+              0                        0
+              0.0011                   0.0286
+              0.0138                   0.1429
+              0.0186                   0.25
+              0.1785                   0.5
+              0.2218                   0.5208
+              0.665                    0.5312
+              0.9485                   0.6786
+              0.9875                   1
+
+○ Writing output data to file "python/tests/res/tmp/results/marginal_probability_calibration_model.csv"...
+○ Writing output data to file "python/tests/res/tmp/models/model.pickle"...
+✓ Successfully finished experiment after <duration>
