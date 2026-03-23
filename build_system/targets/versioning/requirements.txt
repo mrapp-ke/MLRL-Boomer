@@ -1,1 +1,1 @@
-pygithub >= 2.8, < 2.9
+pygithub >= 2.9, < 2.10
