@@ -1,0 +1,18 @@
+line-length = 120
+indent-width = 4
+
+[format]
+quote-style = "single"
+indent-style = "space"
+
+[lint.isort]
+forced-separate = [
+    "mlrl.boosting",
+    "mlrl.common",
+    "mlrl.seco",
+    "mlrl.testbed",
+    "mlrl.testbed_arff",
+    "mlrl.testbed_sklearn",
+    "mlrl.testbed_slurm",
+    "mlrl.util",
+]

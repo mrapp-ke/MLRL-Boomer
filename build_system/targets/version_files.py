@@ -25,6 +25,7 @@ class SemanticVersion:
         patch:  The patch version number
         dev:    The development version number
     """
+
     major: int
     minor: int
     patch: int
@@ -41,17 +42,17 @@ class SemanticVersion:
         version = Version.parse(value)
 
         if len(version.numbers) != 3:
-            raise ValueError('Version must be given in format MAJOR.MINOR.PATCH, but got: ' + value)
+            raise ValueError(f'Version must be given in format MAJOR.MINOR.PATCH, but got: {value}')
 
         return SemanticVersion(major=version.numbers[0], minor=version.numbers[1], patch=version.numbers[2])
 
     @override
     def __str__(self) -> str:
-        version = str(self.major) + '.' + str(self.minor) + '.' + str(self.patch)
+        version = f'{self.major}.{self.minor}.{self.patch}'
         dev = self.dev
 
         if dev is not None:
-            version += '.dev' + str(dev)
+            version += f'.dev{dev}'
 
         return version
 
@@ -69,7 +70,7 @@ class VersionTextFile(TextFile):
         lines = self.lines
 
         if len(lines) != 1:
-            raise ValueError('File "' + str(self.file) + '" must contain exactly one line')
+            raise ValueError(f'File "{self.file}" must contain exactly one line')
 
         return lines[0]
 
@@ -93,7 +94,7 @@ class VersionFile(VersionTextFile):
         :param version: The version to be stored
         """
         self.write_lines(str(version))
-        Log.info('Updated version to "%s"', str(version))
+        Log.info(f'Updated version to "{version}"')
 
     @override
     def write_lines(self, *lines: str):
@@ -124,7 +125,7 @@ class DevelopmentVersionFile(VersionTextFile):
         :param development_version: The development version to be stored
         """
         self.write_lines(str(development_version))
-        Log.info('Updated development version to "%s"', str(development_version))
+        Log.info(f'Updated development version to "{development_version}"')
 
     @override
     def write_lines(self, *lines: str):
@@ -155,7 +156,7 @@ class PythonVersionFile(VersionTextFile):
         :param supported_versions: The supported version to be stored
         """
         self.write_lines(str(supported_versions))
-        Log.info('Updated supported Python versions to "%s"', str(supported_versions))
+        Log.info(f'Updated supported Python versions to "{supported_versions}"')
 
     @override
     def write_lines(self, *lines: str):

@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow to run the external program "doxygen".
 """
+
 from os import environ
 from pathlib import Path
 from typing import override
@@ -33,10 +34,10 @@ class Doxygen(Program):
     @staticmethod
     def __create_environment(module: CppApidocModule) -> Env:
         env = environ.copy()
-        set_env(env, 'DOXYGEN_PROJECT_NAME', 'libmlrl' + module.subproject_name)
+        set_env(env, 'DOXYGEN_PROJECT_NAME', f'libmlrl{module.subproject_name}')
         set_env(env, 'DOXYGEN_INPUT_DIR', str(module.include_directory))
         set_env(env, 'DOXYGEN_OUTPUT_DIR', str(module.output_directory))
-        set_env(env, 'DOXYGEN_PREDEFINED', 'MLRL' + module.subproject_name.upper() + '_API=')
+        set_env(env, 'DOXYGEN_PREDEFINED', f'MLRL{module.subproject_name.upper()}_API=')
         return env
 
     def __init__(self, build_unit: BuildUnit, module: CppApidocModule):

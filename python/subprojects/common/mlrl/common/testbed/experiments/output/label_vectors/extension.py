@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow configuring the functionality to write label vectors to one or several sinks.
 """
+
 import logging as log
 
 from argparse import Namespace
@@ -13,8 +14,10 @@ import numpy as np
 from mlrl.common.cython.output_space_info import LabelVectorSet, LabelVectorSetVisitor, NoOutputSpaceInfo
 from mlrl.common.learners import ClassificationRuleLearner
 
-from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vector_histogram import LabelVector, \
-    LabelVectorHistogram
+from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vector_histogram import (
+    LabelVector,
+    LabelVectorHistogram,
+)
 from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vectors import LabelVectors
 
 from mlrl.testbed.experiments.experiment import Experiment
@@ -72,9 +75,10 @@ class LabelVectorSetExtension(Extension):
                     return [(state, LabelVectors.from_histogram(visitor.label_vector_histogram))]
 
                 if not isinstance(output_space_info, NoOutputSpaceInfo):
-                    log.error('%s expected type of output space info to be %s, but output space info has type %s',
-                              type(self).__name__, LabelVectorSet.__name__,
-                              type(output_space_info).__name__)
+                    log.error(
+                        f'{type(self).__name__} expected type of output space info to be {LabelVectorSet.__name__}, '
+                        f'but output space info has type {type(output_space_info).__name__}'
+                    )
 
             return []
 
@@ -91,7 +95,6 @@ class LabelVectorSetExtension(Extension):
         """
         return set()
 
-    # pylint: disable=unused-argument
     @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, mode: ExperimentMode):
         """

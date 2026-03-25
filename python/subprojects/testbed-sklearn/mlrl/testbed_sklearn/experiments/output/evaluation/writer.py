@@ -3,16 +3,22 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing evaluation results to one or several sinks.
 """
+
 from abc import ABC, abstractmethod
 from dataclasses import replace
 from functools import reduce
 from itertools import chain
 from typing import Any, override
 
-from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import EVALUATION_MEASURE_PREDICTION_TIME, \
-    EVALUATION_MEASURE_TRAINING_TIME, TabularEvaluationResult
-from mlrl.testbed_sklearn.experiments.output.evaluation.measures_classification import \
-    MULTI_LABEL_EVALUATION_MEASURES, SINGLE_LABEL_EVALUATION_MEASURES
+from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import (
+    EVALUATION_MEASURE_PREDICTION_TIME,
+    EVALUATION_MEASURE_TRAINING_TIME,
+    TabularEvaluationResult,
+)
+from mlrl.testbed_sklearn.experiments.output.evaluation.measures_classification import (
+    MULTI_LABEL_EVALUATION_MEASURES,
+    SINGLE_LABEL_EVALUATION_MEASURES,
+)
 from mlrl.testbed_sklearn.experiments.output.evaluation.measures_ranking import RANKING_EVALUATION_MEASURES
 from mlrl.testbed_sklearn.experiments.output.evaluation.measures_regression import REGRESSION_EVALUATION_MEASURES
 
@@ -61,19 +67,22 @@ class EvaluationDataExtractor(DataExtractor, ABC):
                 prediction_duration = prediction_result.prediction_duration.value
                 measurements.values_by_measure(EVALUATION_MEASURE_TRAINING_TIME)[fold_index] = training_duration
                 measurements.values_by_measure(EVALUATION_MEASURE_PREDICTION_TIME)[fold_index] = prediction_duration
-                self._update_measurements(measurements,
-                                          fold_index,
-                                          ground_truth=dataset.y,
-                                          predictions=prediction_result.predictions,
-                                          options=options)
+                self._update_measurements(
+                    measurements,
+                    fold_index,
+                    ground_truth=dataset.y,
+                    predictions=prediction_result.predictions,
+                    options=options,
+                )
 
             return [(state, TabularEvaluationResult(measurements))]
 
         return []
 
     @abstractmethod
-    def _update_measurements(self, measurements: Measurements, index: int, ground_truth: Any, predictions: Any,
-                             options: Options):
+    def _update_measurements(
+        self, measurements: Measurements, index: int, ground_truth: Any, predictions: Any, options: Options
+    ):
         """
         Must be implemented by subclasses in order to evaluate predictions and update a specific data point of given
         `Measurements` accordingly.
@@ -99,8 +108,13 @@ class EvaluationWriter(ResultWriter):
         """
 
         ALL_MEASURES = set(
-            chain(MULTI_LABEL_EVALUATION_MEASURES, SINGLE_LABEL_EVALUATION_MEASURES, RANKING_EVALUATION_MEASURES,
-                  REGRESSION_EVALUATION_MEASURES))
+            chain(
+                MULTI_LABEL_EVALUATION_MEASURES,
+                SINGLE_LABEL_EVALUATION_MEASURES,
+                RANKING_EVALUATION_MEASURES,
+                REGRESSION_EVALUATION_MEASURES,
+            )
+        )
 
         measurements: dict[DatasetType, dict[int, Measurements]] = {}
 
@@ -129,14 +143,19 @@ class EvaluationWriter(ResultWriter):
                             for row in range(column.num_rows):
                                 row_model_size = int(column_model_size[row]) if column_model_size else 0
                                 measurements = measurements_by_model_size.setdefault(
-                                    row_model_size, Measurements(num_folds))
+                                    row_model_size, Measurements(num_folds)
+                                )
                                 values = measurements.values_by_measure(measure)
                                 values[fold.index] = parse_number(column[row], percentage=measure.percentage)
 
                 if len(measurements_by_model_size) > 1:
-                    return [(replace(state, prediction_result=PredictionState(IncrementalPredictionScope(model_size))),
-                             TabularEvaluationResult(measurements))
-                            for model_size, measurements in measurements_by_model_size.items()]
+                    return [
+                        (
+                            replace(state, prediction_result=PredictionState(IncrementalPredictionScope(model_size))),
+                            TabularEvaluationResult(measurements),
+                        )
+                        for model_size, measurements in measurements_by_model_size.items()
+                    ]
 
                 measurements = measurements_by_model_size.setdefault(0, Measurements(num_folds))
                 return [(state, TabularEvaluationResult(measurements))] if measurements else []
@@ -147,19 +166,24 @@ class EvaluationWriter(ResultWriter):
         """
         :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
         """
-        super().__init__(*extractors,
-                         input_data=TabularInputData(properties=TabularEvaluationResult.PROPERTIES,
-                                                     context=TabularEvaluationResult.CONTEXT))
+        super().__init__(
+            *extractors,
+            input_data=TabularInputData(
+                properties=TabularEvaluationResult.PROPERTIES, context=TabularEvaluationResult.CONTEXT
+            ),
+        )
 
     @override
     def _create_states(self, state: ExperimentState) -> list[ExperimentState]:
         states = super()._create_states(state)
         folding_strategy = state.folding_strategy
 
-        if folding_strategy and \
-                folding_strategy.is_cross_validation_used and \
-                not folding_strategy.is_subset and \
-                folding_strategy.is_last_fold(state.fold):
+        if (
+            folding_strategy
+            and folding_strategy.is_cross_validation_used
+            and not folding_strategy.is_subset
+            and folding_strategy.is_last_fold(state.fold)
+        ):
             states.append(replace(state, fold=None))
 
         return states
@@ -169,8 +193,9 @@ class EvaluationWriter(ResultWriter):
         fold = state.fold
 
         if not fold and isinstance(output_data, TabularOutputData):
-            input_data = TabularInputData(properties=TabularEvaluationResult.PROPERTIES,
-                                          context=TabularEvaluationResult.CONTEXT)
+            input_data = TabularInputData(
+                properties=TabularEvaluationResult.PROPERTIES, context=TabularEvaluationResult.CONTEXT
+            )
             input_data_key = input_data.get_key(state)
             state.extras.setdefault(input_data_key, output_data.to_table(Options()))
 

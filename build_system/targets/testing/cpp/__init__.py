@@ -3,10 +3,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Defines targets and modules for testing C++ code.
 """
+
 from pathlib import Path
 
 from core.build_unit import BuildUnit
-from core.targets import PhonyTarget, TargetBuilder
+from core.targets import TargetBuilder
 
 from targets.compilation.cpp import COMPILE_CPP
 from targets.project import Project
@@ -15,11 +16,13 @@ from targets.testing.cpp.targets import TestCpp
 
 TESTS_CPP = 'tests_cpp'
 
-TARGETS = TargetBuilder(BuildUnit.for_file(Path(__file__))) \
-    .add_phony_target(TESTS_CPP) \
-        .depends_on(COMPILE_CPP) \
-        .set_runnables(TestCpp()) \
+TARGETS = (
+    TargetBuilder(BuildUnit.for_file(Path(__file__)))
+    .add_phony_target(TESTS_CPP)
+    .depends_on(COMPILE_CPP)
+    .set_runnables(TestCpp())
     .build()
+)
 
 MODULES = [
     CppTestModule(

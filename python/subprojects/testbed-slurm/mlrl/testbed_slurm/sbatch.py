@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow to run "sbatch" commands.
 """
+
 import subprocess
 
 from abc import ABC, abstractmethod
@@ -25,6 +26,7 @@ class SlurmCommand(ABC):
             exit_code:  The exit code of the command
             output:     The stdout or stderr output of the command
         """
+
         exit_code: int
         output: str
 

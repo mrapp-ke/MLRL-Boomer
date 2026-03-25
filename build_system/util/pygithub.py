@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for accessing the GitHub API via "pygithub".
 """
+
 from collections.abc import Iterable
 from os import environ
 from typing import Any
@@ -27,8 +28,8 @@ class GithubApi:
         """
 
         def __create_client(self) -> Any:
-            # pylint: disable=import-outside-toplevel
             from github import Auth, Github
+
             return Github(auth=Auth.Token(self.token) if self.token else None)
 
         def __init__(self, repository_name: str, token: str | None = None):
@@ -52,8 +53,9 @@ class GithubApi:
                     repository = client.get_repo(self.repository_name)
                     return repository.get_latest_release()
                 except Exception as error:
-                    raise RuntimeError('Failed to query latest release of GitHub repository "' + self.repository_name
-                                       + '"') from error
+                    raise RuntimeError(
+                        f'Failed to query latest release of GitHub repository "{self.repository_name}"'
+                    ) from error
 
         def get_all_releases(self) -> Iterable[Any]:
             """
@@ -66,8 +68,9 @@ class GithubApi:
                     repository = client.get_repo(self.repository_name)
                     return repository.get_releases()
                 except Exception as error:
-                    raise RuntimeError('Failed to query releases of GitHub repository "' + self.repository_name
-                                       + '"') from error
+                    raise RuntimeError(
+                        f'Failed to query releases of GitHub repository "{self.repository_name}"'
+                    ) from error
 
         def get_all_milestones(self, state='open') -> Iterable[Any]:
             """
@@ -81,8 +84,9 @@ class GithubApi:
                     repository = client.get_repo(self.repository_name)
                     return repository.get_milestones(state=state)
                 except Exception as error:
-                    raise RuntimeError('Failed to query milestones of GitHub repository "'
-                                       + self.repository_name) from error
+                    raise RuntimeError(
+                        f'Failed to query milestones of GitHub repository "{self.repository_name}"'
+                    ) from error
 
     def __init__(self, build_unit: BuildUnit):
         """
@@ -110,8 +114,9 @@ class GithubApi:
         github_token = get_env(environ, self.ENV_GITHUB_TOKEN)
 
         if not github_token:
-            Log.warning('No GitHub API token is set. You can specify it via the environment variable %s.',
-                        self.ENV_GITHUB_TOKEN)
+            Log.warning(
+                f'No GitHub API token is set. You can specify it via the environment variable {self.ENV_GITHUB_TOKEN}.'
+            )
 
         return self.set_token(github_token)
 

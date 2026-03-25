@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write characteristics of rule models to one or several
 sinks.
 """
+
 from argparse import Namespace
 from typing import override
 
@@ -60,8 +61,9 @@ class RuleModelCharacteristicsExtension(Extension):
 
         if value and base_dir and result_directory:
             return [
-                CsvFileSink(directory=base_dir / result_directory,
-                            create_directory=OutputArguments.CREATE_DIRS.get_value(args))
+                CsvFileSink(
+                    directory=base_dir / result_directory, create_directory=OutputArguments.CREATE_DIRS.get_value(args)
+                )
             ]
         return []
 

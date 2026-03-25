@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow to format .cfg files.
 """
+
 from configparser import Error as ConfigParserError
 
 from core.build_unit import BuildUnit
@@ -41,7 +42,6 @@ class CfgFormatter:
             malformed_files = []
 
             PackageManager.install_packages(RequirementsFiles.for_build_unit(self.build_unit), 'config-formatter')
-            # pylint: disable=import-outside-toplevel
             from config_formatter import ConfigFormatter
 
             for source_file in source_files:
@@ -52,18 +52,20 @@ class CfgFormatter:
 
                         if content != formatted_content:
                             if self.enforce_changes:
-                                Log.info('Formatting file "%s"...', source_file)
+                                Log.info(f'Formatting file "{source_file}"...')
                                 file.seek(0)
                                 file.write(formatted_content)
                                 file.truncate()
                             else:
-                                Log.info('File "%s" is not properly formatted!', source_file)
+                                Log.info(f'File "{source_file}" is not properly formatted!')
                                 malformed_files.append(source_file)
                     except ConfigParserError as error:
-                        Log.error('Failed to format file "%s"', source_file, error=error)
+                        Log.error(f'Failed to format file "{source_file}"', error=error)
 
             if malformed_files:
-                Log.error('%s %s not properly formatted!', len(malformed_files),
-                          'files are' if len(malformed_files) > 1 else 'file is')
+                Log.error(
+                    f'{len(malformed_files)} {("files are" if len(malformed_files) > 1 else "file is")} not properly '
+                    f'formatted!'
+                )
 
             change_detection.update_cache()

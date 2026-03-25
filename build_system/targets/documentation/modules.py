@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that provide access to a Sphinx documentation.
 """
+
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import override
@@ -48,10 +49,12 @@ class SphinxModule(Module):
         def matches(self, module: Module, _: ModuleRegistry) -> bool:
             return isinstance(module, SphinxModule)
 
-    def __init__(self,
-                 root_directory: Path,
-                 output_directory: Path,
-                 source_file_search: FileSearch = FileSearch().set_recursive(True)):
+    def __init__(
+        self,
+        root_directory: Path,
+        output_directory: Path,
+        source_file_search: FileSearch = FileSearch().set_recursive(True),
+    ):
         """
         :param root_directory:      The path to the module's root directory
         :param output_directory:    The path to the directory where the documentation should be stored
@@ -76,11 +79,8 @@ class SphinxModule(Module):
 
         :return: A lis that contains the files that have been found
         """
-        return FileSearch() \
-            .set_recursive(True) \
-            .filter_by_suffix('spelling') \
-            .list(self.output_directory)
+        return FileSearch().set_recursive(True).filter_by_suffix('spelling').list(self.output_directory)
 
     @override
     def __str__(self) -> str:
-        return 'SphinxModule {root_directory="' + str(self.root_directory) + '"}'
+        return f'SphinxModule {{root_directory="{self.root_directory}"}}'

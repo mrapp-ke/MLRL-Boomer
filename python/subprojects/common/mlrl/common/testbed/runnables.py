@@ -3,11 +3,15 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides base classes for programs that can be configured via command line arguments.
 """
+
 from argparse import Namespace
 from typing import Any, override
 
-from sklearn.base import BaseEstimator, ClassifierMixin as SkLearnClassifierMixin, \
-    RegressorMixin as SkLearnRegressorMixin
+from sklearn.base import (
+    BaseEstimator,
+    ClassifierMixin as SkLearnClassifierMixin,
+    RegressorMixin as SkLearnRegressorMixin,
+)
 
 from mlrl.common.config.parameters import Parameter
 from mlrl.common.cython.learner import RuleLearnerConfig
@@ -64,10 +68,9 @@ class RuleLearnerRunnable(SkLearnRunnable):
             """
             See :func:`from mlrl.testbed_sklearn.experiments.problem_domain.SkLearnProblem.PredictorFactory.create`
             """
-            return IncrementalPredictor(self.prediction_type,
-                                        min_size=self.min_size,
-                                        max_size=self.max_size,
-                                        step_size=self.step_size)
+            return IncrementalPredictor(
+                self.prediction_type, min_size=self.min_size, max_size=self.max_size, step_size=self.step_size
+            )
 
     class IncrementalPredictionExtension(Extension):
         """
@@ -78,7 +81,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
             '--incremental-evaluation',
             default=False,
             description='Whether models should be evaluated repeatedly, using only a subset of the induced rules with '
-            + 'increasing size, or not.',
+            'increasing size, or not.',
             true_options={OPTION_MIN_SIZE, OPTION_MAX_SIZE, OPTION_STEP_SIZE},
         )
 
@@ -117,10 +120,9 @@ class RuleLearnerRunnable(SkLearnRunnable):
                     assert_greater(OPTION_MAX_SIZE, max_size, min_size)
                 step_size = options.get_int(OPTION_STEP_SIZE, 1)
                 assert_greater_or_equal(OPTION_STEP_SIZE, step_size, 1)
-                return RuleLearnerRunnable.IncrementalPredictorFactory(prediction_type,
-                                                                       min_size=min_size,
-                                                                       max_size=max_size,
-                                                                       step_size=step_size)
+                return RuleLearnerRunnable.IncrementalPredictorFactory(
+                    prediction_type, min_size=min_size, max_size=max_size, step_size=step_size
+                )
 
             return SkLearnRunnable.GlobalPredictorFactory(prediction_type)
 
@@ -150,9 +152,9 @@ class RuleLearnerRunnable(SkLearnRunnable):
         SPARSE_FEATURE_VALUE = FloatArgument(
             '--sparse-feature-value',
             default=0.0,
-            description='The value that should be used for sparse elements in the feature matrix. Does only have an '
-            + 'effect if a sparse format is used for the representation of the feature matrix, depending '
-            + 'on the argument ' + FEATURE_FORMAT.name + '.',
+            description=f'The value that should be used for sparse elements in the feature matrix. Does only have an '
+            f'effect if a sparse format is used for the representation of the feature matrix, depending on the '
+            f'argument {FEATURE_FORMAT.name}.',
         )
 
         @override
@@ -170,8 +172,9 @@ class RuleLearnerRunnable(SkLearnRunnable):
             return {ExperimentMode.SINGLE, ExperimentMode.BATCH}
 
         @staticmethod
-        def get_estimator(args: Namespace, estimator_type: type[BaseEstimator],
-                          parameters: set[Parameter] | None) -> Any:
+        def get_estimator(
+            args: Namespace, estimator_type: type[BaseEstimator], parameters: set[Parameter] | None
+        ) -> Any:
             """
             Returns the scikit-learn estimator to be used in an experiment.
 
@@ -206,8 +209,9 @@ class RuleLearnerRunnable(SkLearnRunnable):
             :return:        A dictionary that stores the keyword arguments
             """
             return {
-                RuleLearner.KWARG_SPARSE_FEATURE_VALUE:
-                    RuleLearnerRunnable.RuleLearnerExtension.SPARSE_FEATURE_VALUE.get_value(args)
+                RuleLearner.KWARG_SPARSE_FEATURE_VALUE: RuleLearnerRunnable.RuleLearnerExtension.SPARSE_FEATURE_VALUE.get_value(
+                    args
+                )
             }
 
         @staticmethod
@@ -220,10 +224,15 @@ class RuleLearnerRunnable(SkLearnRunnable):
             """
             return RuleLearnerRunnable.RuleLearnerExtension.get_fit_kwargs(args)
 
-    def __init__(self, classifier_type: type[SkLearnClassifierMixin] | None,
-                 classifier_config_type: type[RuleLearnerConfig] | None, classifier_parameters: set[Parameter] | None,
-                 regressor_type: type[SkLearnRegressorMixin] | None,
-                 regressor_config_type: type[RuleLearnerConfig] | None, regressor_parameters: set[Parameter] | None):
+    def __init__(
+        self,
+        classifier_type: type[SkLearnClassifierMixin] | None,
+        classifier_config_type: type[RuleLearnerConfig] | None,
+        classifier_parameters: set[Parameter] | None,
+        regressor_type: type[SkLearnRegressorMixin] | None,
+        regressor_config_type: type[RuleLearnerConfig] | None,
+        regressor_parameters: set[Parameter] | None,
+    ):
         """
         :param classifier_type:         The type of the rule learner to be used in classification problems or None, if
                                         classification problems are not supported
@@ -275,8 +284,9 @@ class RuleLearnerRunnable(SkLearnRunnable):
             parameters = self.regressor_parameters
 
         if not config_type or not parameters:
-            raise RuntimeError('The machine learning algorithm does not support ' + problem_domain.problem_name
-                               + ' problems')
+            raise RuntimeError(
+                f'The machine learning algorithm does not support {problem_domain.problem_name} problems'
+            )
 
         return set(filter(None, map(lambda param: param.as_argument(config_type), parameters))) | {
             RuleLearnerRunnable.RuleLearnerExtension.FEATURE_FORMAT,
@@ -290,28 +300,27 @@ class RuleLearnerRunnable(SkLearnRunnable):
         """
         fit_kwargs = RuleLearnerRunnable.RuleLearnerExtension.get_fit_kwargs(args)
         predict_kwargs = RuleLearnerRunnable.RuleLearnerExtension.get_predict_kwargs(args)
-        return SkLearnRunnable.ProblemDomainExtension.get_problem_domain(mode,
-                                                                         args,
-                                                                         runnable=self,
-                                                                         fit_kwargs=fit_kwargs,
-                                                                         predict_kwargs=predict_kwargs)
+        return SkLearnRunnable.ProblemDomainExtension.get_problem_domain(
+            mode, args, runnable=self, fit_kwargs=fit_kwargs, predict_kwargs=predict_kwargs
+        )
 
     @override
-    def create_experiment_builder(self,
-                                  experiment_mode: ExperimentMode,
-                                  args: Namespace,
-                                  command: Command,
-                                  load_dataset: bool = True) -> Experiment.Builder:
+    def create_experiment_builder(
+        self, experiment_mode: ExperimentMode, args: Namespace, command: Command, load_dataset: bool = True
+    ) -> Experiment.Builder:
         """
         See :func:`mlrl.testbed.experiments.recipe.Recipe.create_experiment_builder`
         """
         meta_data = MetaData(command=command)
-        initial_state = ExperimentState(mode=experiment_mode,
-                                        args=args,
-                                        meta_data=meta_data,
-                                        problem_domain=self.create_problem_domain(experiment_mode, args))
-        return RuleLearnerExperiment.Builder(initial_state=initial_state,
-                                             dataset_splitter=self.create_dataset_splitter(args, load_dataset))
+        initial_state = ExperimentState(
+            mode=experiment_mode,
+            args=args,
+            meta_data=meta_data,
+            problem_domain=self.create_problem_domain(experiment_mode, args),
+        )
+        return RuleLearnerExperiment.Builder(
+            initial_state=initial_state, dataset_splitter=self.create_dataset_splitter(args, load_dataset)
+        )
 
     @override
     def create_classifier(self, _: ExperimentMode, args: Namespace) -> SkLearnClassifierMixin | None:
@@ -321,9 +330,9 @@ class RuleLearnerRunnable(SkLearnRunnable):
         classifier_type = self.classifier_type
 
         if classifier_type:
-            return RuleLearnerRunnable.RuleLearnerExtension.get_estimator(args,
-                                                                          estimator_type=classifier_type,
-                                                                          parameters=self.classifier_parameters)
+            return RuleLearnerRunnable.RuleLearnerExtension.get_estimator(
+                args, estimator_type=classifier_type, parameters=self.classifier_parameters
+            )
         return None
 
     @override
@@ -334,9 +343,9 @@ class RuleLearnerRunnable(SkLearnRunnable):
         regressor_type = self.regressor_type
 
         if regressor_type:
-            return RuleLearnerRunnable.RuleLearnerExtension.get_estimator(args,
-                                                                          estimator_type=regressor_type,
-                                                                          parameters=self.regressor_parameters)
+            return RuleLearnerRunnable.RuleLearnerExtension.get_estimator(
+                args, estimator_type=regressor_type, parameters=self.regressor_parameters
+            )
         return None
 
     @override

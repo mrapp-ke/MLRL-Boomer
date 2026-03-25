@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing meta-data that is part of output data.
 """
+
 from typing import Any, override
 
 from mlrl.testbed.experiments.input.meta_data.meta_data import InputMetaData

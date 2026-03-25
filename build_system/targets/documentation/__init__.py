@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Defines targets and modules for generating documentations.
 """
+
 from pathlib import Path
 
 from core.build_unit import BuildUnit
@@ -16,17 +17,19 @@ from targets.project import Project
 
 APIDOC_INDEX = 'apidoc_index'
 
-TARGETS = TargetBuilder(BuildUnit.for_file(Path(__file__))) \
-    .add_phony_target('apidoc') \
-        .depends_on(APIDOC_CPP, APIDOC_PYTHON, clean_dependencies=True) \
-        .nop() \
-    .add_phony_target(APIDOC_INDEX) \
-        .depends_on(APIDOC_CPP_INDEX, APIDOC_PYTHON_INDEX, clean_dependencies=True) \
-        .nop() \
-    .add_build_target('doc') \
-        .depends_on(APIDOC_INDEX, clean_dependencies=True) \
-        .set_runnables(BuildDocumentation()) \
+TARGETS = (
+    TargetBuilder(BuildUnit.for_file(Path(__file__)))
+    .add_phony_target('apidoc')
+    .depends_on(APIDOC_CPP, APIDOC_PYTHON, clean_dependencies=True)
+    .nop()
+    .add_phony_target(APIDOC_INDEX)
+    .depends_on(APIDOC_CPP_INDEX, APIDOC_PYTHON_INDEX, clean_dependencies=True)
+    .nop()
+    .add_build_target('doc')
+    .depends_on(APIDOC_INDEX, clean_dependencies=True)
+    .set_runnables(BuildDocumentation())
     .build()
+)
 
 MODULES = [
     SphinxModule(

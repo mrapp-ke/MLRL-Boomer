@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing folds of a dataset.
 """
+
 from collections.abc import Generator
 from dataclasses import dataclass
 
@@ -16,6 +17,7 @@ class Fold:
     Attributes:
         index: The index of the fold
     """
+
     index: int
 
 
@@ -30,6 +32,7 @@ class FoldingStrategy:
         first:      The index of the first fold to be created (inclusive)
         last:       The index of the last fold to be created (exclusive)
     """
+
     num_folds: int
     first: int
     last: int

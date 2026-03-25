@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides a data structure that allows to store and parse options that are provided as key-value pairs.
 """
+
 from enum import Enum, StrEnum
 from functools import reduce
 from typing import Any, override
@@ -15,6 +16,7 @@ class BooleanOption(StrEnum):
     """
     Specifies all valid textual representations of boolean values.
     """
+
     TRUE = 'true'
     FALSE = 'false'
 
@@ -31,8 +33,9 @@ class BooleanOption(StrEnum):
             return True
         if text == BooleanOption.FALSE:
             return False
-        raise ValidationError('Invalid boolean value given. Must be one of ' + format_enum_values(BooleanOption)
-                              + ', but is "' + str(text) + '".')
+        raise ValidationError(
+            f'Invalid boolean value given. Must be one of {format_enum_values(BooleanOption)}, but is "{text}".'
+        )
 
 
 class Options:
@@ -62,11 +65,11 @@ class Options:
 
         if string:
             if not string.startswith('{'):
-                raise ValidationError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. Must start with "{", but is "' + string
-                                      + '"')
+                raise ValidationError(
+                    f'{Options.ERROR_MESSAGE_INVALID_SYNTAX}. Must start with "{{", but is "{string}"'
+                )
             if not string.endswith('}'):
-                raise ValidationError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. Must end with "}", but is "' + string
-                                      + '"')
+                raise ValidationError(f'{Options.ERROR_MESSAGE_INVALID_SYNTAX}. Must end with "}}", but is "{string}"')
 
             string = string[1:-1]
 
@@ -76,29 +79,32 @@ class Options:
                         parts = option.split('=')
 
                         if len(parts) != 2:
-                            raise ValidationError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. '
-                                                  + Options.ERROR_MESSAGE_INVALID_OPTION + ', but got element "'
-                                                  + option + '" at index ' + str(option_index))
+                            raise ValidationError(
+                                f'{Options.ERROR_MESSAGE_INVALID_SYNTAX}. {Options.ERROR_MESSAGE_INVALID_OPTION}, but '
+                                f'got element "{option}" at index {option_index}'
+                            )
 
                         key = parts[0]
 
                         if len(key) == 0:
-                            raise ValidationError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. '
-                                                  + Options.ERROR_MESSAGE_INVALID_OPTION
-                                                  + ', but key is missing from element "' + option + '" at index '
-                                                  + str(option_index))
+                            raise ValidationError(
+                                f'{Options.ERROR_MESSAGE_INVALID_SYNTAX}. {Options.ERROR_MESSAGE_INVALID_OPTION}, but '
+                                f'key is missing from element "{option}" at index {option_index}'
+                            )
 
                         if key not in allowed_keys:
-                            raise ValidationError('Key must be one of ' + format_set(allowed_keys) + ', but got key "'
-                                                  + key + '" at index ' + str(option_index))
+                            raise ValidationError(
+                                f'Key must be one of {format_set(allowed_keys)}, but got key "{key}" at index '
+                                f'{option_index}'
+                            )
 
                         value = parts[1]
 
                         if len(value) == 0:
-                            raise ValidationError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. '
-                                                  + Options.ERROR_MESSAGE_INVALID_OPTION
-                                                  + ', but value is missing from element "' + option + '" at index '
-                                                  + str(option_index))
+                            raise ValidationError(
+                                f'{Options.ERROR_MESSAGE_INVALID_SYNTAX}. {Options.ERROR_MESSAGE_INVALID_OPTION}, but '
+                                f'value is missing from element "{option}" at index {option_index}'
+                            )
 
                         dictionary[key] = value
 
@@ -145,8 +151,9 @@ class Options:
             try:
                 value = int(value)
             except ValueError as error:
-                raise ValidationError('Value for key "' + key + '" is expected to be an integer, but is "' + str(value)
-                                      + '"') from error
+                raise ValidationError(
+                    f'Value for key "{key}" is expected to be an integer, but is "{value}"'
+                ) from error
 
             return value
 
@@ -166,8 +173,7 @@ class Options:
             try:
                 value = float(value)
             except ValueError as error:
-                raise ValidationError('Value for key "' + key + '" is expected to be a float, but is "' + str(value)
-                                      + '"') from error
+                raise ValidationError(f'Value for key "{key}" is expected to be a float, but is "{value}"') from error
 
             return value
 
@@ -175,8 +181,15 @@ class Options:
 
     @override
     def __str__(self) -> str:
-        return '{' + reduce(lambda aggr, item: aggr + (',' if aggr else '') + item[0] + '=' + str(item[1]),
-                            sorted(self.dictionary.items()), '') + '}'
+        return (
+            '{'
+            + reduce(
+                lambda aggr, item: f'{aggr}{("," if aggr else "")}{item[0]}={item[1]}',
+                sorted(self.dictionary.items()),
+                '',
+            )
+            + '}'
+        )
 
     def __bool__(self) -> bool:
         return bool(self.dictionary)
@@ -199,9 +212,10 @@ def parse_enum(name: str, value: str | None, enum: type[Enum], default: Enum | N
             if expected_value == value:
                 return enum_value
 
-        raise ValidationError('Invalid value given for ' + ('argument' if name.startswith('-') else 'parameter') + ' "'
-                              + name + '": Must be one of ' + format_enum_values(enum) + ', but is "' + str(value)
-                              + '"')
+        raise ValidationError(
+            f'Invalid value given for {("argument" if name.startswith("-") else "parameter")} "{name}": Must be one of '
+            f'{format_enum_values(enum)}, but is "{value}"'
+        )
 
     return default
 
@@ -218,16 +232,19 @@ def parse_param(name: str, value: str, allowed_values: set[str]) -> str:
     if value in allowed_values:
         return value
 
-    raise ValidationError('Invalid value given for ' + ('argument' if name.startswith('-') else 'parameter') + ' "'
-                          + name + '": Must be one of ' + format_set(allowed_values) + ', but is "' + str(value) + '"')
+    raise ValidationError(
+        f'Invalid value given for {("argument" if name.startswith("-") else "parameter")} "{name}": Must be one of '
+        f'{format_set(allowed_values)}, but is "{value}"'
+    )
 
 
-def parse_param_and_options(name: str, value: str, allowed_values_and_options: dict[str,
-                                                                                    set[str]]) -> tuple[str, Options]:
+def parse_param_and_options(
+    name: str, value: str, allowed_values_and_options: dict[str, set[str]]
+) -> tuple[str, Options]:
     """
     Parses and returns an argument or parameter value, as well as additional `Options` that may be associated with it.
     If the given value is invalid, a `ValueError` is raised.
-    
+
     :param name:                        The name of the argument or parameter, the value corresponds to
     :param value:                       The value to be parsed
     :param allowed_values_and_options:  A dictionary that contains all valid values, as well as their options
@@ -236,18 +253,20 @@ def parse_param_and_options(name: str, value: str, allowed_values_and_options: d
     """
     for allowed_value, allowed_options in allowed_values_and_options.items():
         if value.startswith(allowed_value):
-            suffix = value[len(allowed_value):].strip()
+            suffix = value[len(allowed_value) :].strip()
 
             if suffix:
                 try:
                     return allowed_value, Options.create(suffix, allowed_options)
                 except ValueError as error:
-                    raise ValidationError('Invalid options given for '
-                                          + ('argument' if name.startswith('-') else 'parameter') + ' "' + name
-                                          + '" with value "' + allowed_value + '": ' + str(error)) from error
+                    raise ValidationError(
+                        f'Invalid options given for {("argument" if name.startswith("-") else "parameter")} "{name}" '
+                        f'with value "{allowed_value}": {error}'
+                    ) from error
 
             return allowed_value, Options()
 
-    raise ValidationError('Invalid value given for ' + ('argument' if name.startswith('-') else 'parameter') + ' "'
-                          + name + '": Must be one of ' + format_set(allowed_values_and_options.keys()) + ', but is "'
-                          + value + '"')
+    raise ValidationError(
+        f'Invalid value given for {("argument" if name.startswith("-") else "parameter")} "{name}": Must be one of '
+        f'{format_set(allowed_values_and_options.keys())}, but is "{value}"'
+    )

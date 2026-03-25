@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for retrieving information about this Python packages that implement rule learners.
 """
+
 from dataclasses import dataclass, field
 from importlib.metadata import requires, version
 from typing import Any, override
@@ -22,6 +23,7 @@ class PackageInfo:
         python_packages:    A set that contains a `PackageInfo` for each Python package used by this package
         cpp_libraries:      A set that contains a `CppLibraryInfo` for each C++ library used by this package
     """
+
     package_name: str
     python_packages: set['PackageInfo'] = field(default_factory=set)
     cpp_libraries: set[CppLibraryInfo] = field(default_factory=set)
@@ -52,13 +54,15 @@ class PackageInfo:
 
     @override
     def __str__(self) -> str:
-        return self.package_name + ' ' + self.package_version
+        return f'{self.package_name} {self.package_version}'
 
     @override
     def __eq__(self, other: Any) -> bool:
-        return isinstance(other, type(self)) \
-            and self.package_name == other.package_name \
+        return (
+            isinstance(other, type(self))
+            and self.package_name == other.package_name
             and self.package_version == other.package_version
+        )
 
     @override
     def __hash__(self) -> int:

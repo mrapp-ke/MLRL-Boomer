@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for installing Python packages via uv.
 """
+
 from abc import ABC
 from functools import reduce
 
@@ -53,10 +54,12 @@ class PackageManager:
         :param silent:          True, if any log output should be suppressed, False otherwise
         """
         if requirements:
-            stdout = PackageManager.InstallCommand(*requirements, dry_run=True) \
-                .print_command(False) \
-                .exit_on_error(False) \
+            stdout = (
+                PackageManager.InstallCommand(*requirements, dry_run=True)
+                .print_command(False)
+                .exit_on_error(False)
                 .capture_output()
+            )
 
             if PackageManager.__would_install_requirements(stdout):
                 install_command = PackageManager.InstallCommand(*requirements)
@@ -67,10 +70,9 @@ class PackageManager:
                     install_command.print_arguments(True).run()
 
     @staticmethod
-    def install_packages(requirements_files: RequirementsFiles,
-                         *package_names: str,
-                         accept_missing: bool = False,
-                         silent: bool = False):
+    def install_packages(
+        requirements_files: RequirementsFiles, *package_names: str, accept_missing: bool = False, silent: bool = False
+    ):
         """
         Installs one or several dependencies.
 
@@ -82,8 +84,11 @@ class PackageManager:
         """
         looked_up_requirements = requirements_files.lookup_requirements(*package_names, accept_missing=accept_missing)
         requirements_to_be_installed: set[Requirement] = set()
-        requirements_to_be_installed = reduce(lambda aggr, requirements: aggr | requirements,
-                                              looked_up_requirements.values(), requirements_to_be_installed)
+        requirements_to_be_installed = reduce(
+            lambda aggr, requirements: aggr | requirements,
+            looked_up_requirements.values(),
+            requirements_to_be_installed,
+        )
         PackageManager.install_requirements(*requirements_to_be_installed, silent=silent)
 
     @staticmethod
@@ -92,6 +97,7 @@ class PackageManager:
         Installs all dependencies in the requirements file.
         """
         requirements: set[Requirement] = set()
-        requirements = reduce(lambda aggr, requirements_file: aggr | requirements_file.requirements, requirements_files,
-                              requirements)
+        requirements = reduce(
+            lambda aggr, requirements_file: aggr | requirements_file.requirements, requirements_files, requirements
+        )
         PackageManager.install_requirements(*requirements)

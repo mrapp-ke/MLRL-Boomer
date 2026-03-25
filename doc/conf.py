@@ -4,7 +4,7 @@ Configuration file for the Sphinx documentation builder.
 This file only contains a selection of the most common options. For a full list see the documentation:
 https://www.sphinx-doc.org/en/master/usage/configuration.html
 """
-# pylint: disable=redefined-builtin,invalid-name
+
 # mypy: ignore-errors
 from os import environ, listdir
 from pathlib import Path
@@ -67,11 +67,11 @@ builder = environ.get('SPHINX_BUILDER', 'html')
 
 if builder == 'linkcheck':
     # Use GitHub's REST API when using the builder "linkcheck", because it comes with a less restrictive rate limit
-    github_file_url = 'https://api.github.com/repos/mrapp-ke/MLRL-Boomer/contents/%s?ref=' + git_branch
+    github_file_url = f'https://api.github.com/repos/mrapp-ke/MLRL-Boomer/contents/%s?ref={git_branch}'
     github_dir_url = github_file_url
 else:
-    github_file_url = 'https://github.com/mrapp-ke/MLRL-Boomer/blob/' + git_branch + '/%s'
-    github_dir_url = 'https://github.com/mrapp-ke/MLRL-Boomer/tree/' + git_branch + '/%s'
+    github_file_url = f'https://github.com/mrapp-ke/MLRL-Boomer/blob/{git_branch}/%s'
+    github_dir_url = f'https://github.com/mrapp-ke/MLRL-Boomer/tree/{git_branch}/%s'
 
 extlinks = {
     'repo-file': (github_file_url, '%s'),
@@ -85,7 +85,7 @@ linkcheck_request_headers = {}
 github_token = environ.get('GITHUB_TOKEN')
 
 if github_token:
-    linkcheck_request_headers[r'^https://api.github.com/'] = {'Authorization': 'Token ' + github_token}
+    linkcheck_request_headers[r'^https://api.github.com/'] = {'Authorization': f'Token {github_token}'}
 
 # Breathe configuration
 breathe_projects = {
@@ -118,7 +118,7 @@ autodoc_mock_imports = [
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 html_theme = 'furo'
-html_title = project + ' ' + release
+html_title = f'{project} {release}'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

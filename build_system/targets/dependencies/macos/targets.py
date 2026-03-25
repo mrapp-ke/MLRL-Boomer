@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for compiling native library dependencies on macOS.
 """
+
 import platform
 import shutil
 
@@ -20,14 +21,14 @@ from targets.dependencies.macos.tar import TarExtract
 
 SUFFIX_SRC = '.src'
 
-SUFFIX_SRC_TAR_XZ = SUFFIX_SRC + '.tar.xz'
+SUFFIX_SRC_TAR_XZ = f'{SUFFIX_SRC}.tar.xz'
 
 
 def __get_download_url_and_file_name_from_release(release: Any, package_name: str) -> Any:
     # Ignore release candidates
-    if not '-rc' in release.title:
+    if '-rc' not in release.title:
         assets = release.get_assets()
-        prefix = package_name + '-'
+        prefix = f'{package_name}-'
 
         for asset in assets:
             asset_name = asset.name
@@ -57,12 +58,12 @@ def __get_download_url_and_file_name(github_api: GithubApi, package_name: str) -
 
 
 def __download_package(github_api: GithubApi, package_name: str) -> str | None:
-    Log.info('Determining download URL of the latest release of package "%s"...', package_name)
+    Log.info(f'Determining download URL of the latest release of package "{package_name}"...')
     download_url, file_name = __get_download_url_and_file_name(github_api, package_name=package_name)
 
     if download_url and file_name:
-        Log.info('Downloading from "%s"...', download_url)
-        authorization_header = 'token ' + github_api.token if github_api.token else None
+        Log.info(f'Downloading from "{download_url}"...')
+        authorization_header = f'token {github_api.token}' if github_api.token else None
         CurlDownload(download_url, authorization_header=authorization_header, file_name=file_name).run()
         return file_name
 
@@ -73,9 +74,9 @@ def __download_and_extract_package(github_api: GithubApi, package_name: str, ext
     file_name = __download_package(github_api, package_name=package_name)
 
     if file_name:
-        file_name_without_suffix = file_name[:-len(SUFFIX_SRC_TAR_XZ)]
+        file_name_without_suffix = file_name[: -len(SUFFIX_SRC_TAR_XZ)]
         extract_directory = extract_to / file_name_without_suffix
-        Log.info('Extracting file "%s" into directory "%s"...', file_name, extract_directory)
+        Log.info(f'Extracting file "{file_name}" into directory "{extract_directory}"...')
         create_directories(extract_directory)
         TarExtract(file_to_extract=Path(file_name), into_directory=extract_directory).run()
         return extract_directory / (file_name_without_suffix + SUFFIX_SRC)
@@ -97,9 +98,9 @@ def compile_libomp(build_unit: BuildUnit):
 
     if cmake_directory and openmp_directory:
         shutil.copytree(cmake_directory / 'Modules', openmp_directory / 'cmake', dirs_exist_ok=True)
-        Log.info('Compiling from source directory "%s"...', openmp_directory)
+        Log.info(f'Compiling from source directory "{openmp_directory}"...')
         args = [
-            '-DCMAKE_INSTALL_PREFIX=' + str(build_directory),
+            f'-DCMAKE_INSTALL_PREFIX={build_directory}',
             '-DCMAKE_INSTALL_LIBDIR=lib',
             '-DCMAKE_BUILD_TYPE=Release',
             '-DCMAKE_FIND_FRAMEWORK=LAST',

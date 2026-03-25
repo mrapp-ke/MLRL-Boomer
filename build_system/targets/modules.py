@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that provide information about files and directories that belong to individual modules of the project
 to be dealt with by the targets of the build system.
 """
+
 from abc import ABC, abstractmethod
 from typing import override
 
@@ -51,8 +52,9 @@ class SubprojectModule(Module, ABC):
             :param module_registry: A `ModuleRegistry` that allows to look up any registered modules
             :return:                True, if the filter matches the given module, False otherwise
             """
-            return isinstance(module, SubprojectModule) and (not self.subproject_names
-                                                             or module.subproject_name in self.subproject_names)
+            return isinstance(module, SubprojectModule) and (
+                not self.subproject_names or module.subproject_name in self.subproject_names
+            )
 
     @property
     @abstractmethod

@@ -8,8 +8,12 @@ from functools import reduce
 from itertools import chain
 from typing import override
 
-from mlrl.common.testbed.experiments.output.characteristics.model.statistics import BodyStatistics, HeadStatistics, \
-    RuleModelStatistics, RuleStatistics
+from mlrl.common.testbed.experiments.output.characteristics.model.statistics import (
+    BodyStatistics,
+    HeadStatistics,
+    RuleModelStatistics,
+    RuleStatistics,
+)
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
@@ -66,16 +70,16 @@ class RuleModelCharacteristics(TabularOutputData):
         super().__init__(properties=self.PROPERTIES, context=self.CONTEXT)
         self.statistics = statistics
 
-    # pylint: disable=unused-argument
     @override
     def to_text(self, options: Options, **_) -> str | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
-        aggregated_rule_statistics = reduce(lambda aggr, rule_statistics: aggr + rule_statistics,
-                                            self.statistics.rule_statistics, RuleStatistics())
-        text = self.__format_aggregated_body_statistics(aggregated_rule_statistics) + '\n\n'
-        text += self.__format_aggregated_head_statistics(aggregated_rule_statistics) + '\n\n'
+        aggregated_rule_statistics = reduce(
+            lambda aggr, rule_statistics: aggr + rule_statistics, self.statistics.rule_statistics, RuleStatistics()
+        )
+        text = f'{self.__format_aggregated_body_statistics(aggregated_rule_statistics)}\n\n'
+        text += f'{self.__format_aggregated_head_statistics(aggregated_rule_statistics)}\n\n'
         text += self.__format_aggregated_rule_statistics(aggregated_rule_statistics)
         return text
 
@@ -94,8 +98,14 @@ class RuleModelCharacteristics(TabularOutputData):
     def __format_aggregated_body_statistics(self, aggregated_rule_statistics: RuleStatistics) -> str:
         statistics = self.statistics
         headers = [
-            'Statistics about conditions', 'Total', 'Numerical <= operator', 'Numerical > operator',
-            'Ordinal <= operator', 'Ordinal > operator', 'Nominal == operator', 'Nominal != operator'
+            'Statistics about conditions',
+            'Total',
+            'Numerical <= operator',
+            'Numerical > operator',
+            'Ordinal <= operator',
+            'Ordinal > operator',
+            'Nominal == operator',
+            'Nominal != operator',
         ]
         alignments = [Alignment.LEFT] + [Alignment.RIGHT for _ in range(len(headers) - 1)]
         table = RowWiseTable(*headers, alignments=alignments)
@@ -106,7 +116,7 @@ class RuleModelCharacteristics(TabularOutputData):
             table.add_row('Default rule', *self.__format_body_statistics(body_statistics))
 
         body_statistics = aggregated_rule_statistics.body_statistics
-        table.add_row(str(statistics.num_rules) + ' local rules', *self.__format_body_statistics(body_statistics))
+        table.add_row(f'{statistics.num_rules} local rules', *self.__format_body_statistics(body_statistics))
         return table.format(auto_rotate=False)
 
     @staticmethod
@@ -129,7 +139,7 @@ class RuleModelCharacteristics(TabularOutputData):
             table.add_row('Default rule', *self.__format_head_statistics(head_statistics))
 
         head_statistics = aggregated_rule_statistics.head_statistics
-        table.add_row(str(statistics.num_rules) + ' local rules', *self.__format_head_statistics(head_statistics))
+        table.add_row(f'{statistics.num_rules} local rules', *self.__format_head_statistics(head_statistics))
 
         return table.format(auto_rotate=False)
 
@@ -151,7 +161,6 @@ class RuleModelCharacteristics(TabularOutputData):
         )
         return table.format(auto_rotate=False)
 
-    # pylint: disable=unused-argument
     @override
     def to_table(self, options: Options, **_) -> Table | None:
         """
@@ -159,27 +168,46 @@ class RuleModelCharacteristics(TabularOutputData):
         """
         statistics = self.statistics
         default_rule_statistics = [statistics.default_rule_statistics] if statistics.default_rule_statistics else []
-        table = RowWiseTable(self.COLUMN_INDEX, self.COLUMN_NUM_CONDITIONS, self.COLUMN_NUM_CONDITIONS_NUMERICAL,
-                             self.COLUMN_NUM_CONDITIONS_NUMERICAL_LEQ, self.COLUMN_NUM_CONDITIONS_NUMERICAL_GR,
-                             self.COLUMN_NUM_CONDITIONS_ORDINAL, self.COLUMN_NUM_CONDITIONS_ORDINAL_LEQ,
-                             self.COLUMN_NUM_CONDITIONS_ORDINAL_GR, self.COLUMN_NUM_CONDITION_NOMINAL,
-                             self.COLUMN_NUM_CONDITIONS_NOMINAL_EQ, self.COLUMN_NUM_CONDITIONS_NOMINAL_NEQ,
-                             self.COLUMN_NUM_PREDICTIONS, self.COLUMN_NUM_PREDICTIONS_POSITIVE,
-                             self.COLUMN_NUM_PREDICTIONS_NEGATIVE)
+        table = RowWiseTable(
+            self.COLUMN_INDEX,
+            self.COLUMN_NUM_CONDITIONS,
+            self.COLUMN_NUM_CONDITIONS_NUMERICAL,
+            self.COLUMN_NUM_CONDITIONS_NUMERICAL_LEQ,
+            self.COLUMN_NUM_CONDITIONS_NUMERICAL_GR,
+            self.COLUMN_NUM_CONDITIONS_ORDINAL,
+            self.COLUMN_NUM_CONDITIONS_ORDINAL_LEQ,
+            self.COLUMN_NUM_CONDITIONS_ORDINAL_GR,
+            self.COLUMN_NUM_CONDITION_NOMINAL,
+            self.COLUMN_NUM_CONDITIONS_NOMINAL_EQ,
+            self.COLUMN_NUM_CONDITIONS_NOMINAL_NEQ,
+            self.COLUMN_NUM_PREDICTIONS,
+            self.COLUMN_NUM_PREDICTIONS_POSITIVE,
+            self.COLUMN_NUM_PREDICTIONS_NEGATIVE,
+        )
 
         for i, rule_statistics in enumerate(chain(default_rule_statistics, statistics.rule_statistics)):
-            rule_name = 'Rule ' + str(i + 1)
+            rule_name = f'Rule {i + 1}'
 
             if i == 0 and statistics.has_default_rule:
                 rule_name += ' (Default rule)'
 
             body_statistics = rule_statistics.body_statistics
             head_statistics = rule_statistics.head_statistics
-            table.add_row(rule_name, body_statistics.num_conditions, body_statistics.num_numerical,
-                          body_statistics.num_numerical_leq, body_statistics.num_numerical_gr,
-                          body_statistics.num_ordinal, body_statistics.num_ordinal_leq, body_statistics.num_ordinal_gr,
-                          body_statistics.num_nominal, body_statistics.num_nominal_eq, body_statistics.num_nominal_neq,
-                          head_statistics.num_predictions, head_statistics.num_positive_predictions,
-                          head_statistics.num_negative_predictions)
+            table.add_row(
+                rule_name,
+                body_statistics.num_conditions,
+                body_statistics.num_numerical,
+                body_statistics.num_numerical_leq,
+                body_statistics.num_numerical_gr,
+                body_statistics.num_ordinal,
+                body_statistics.num_ordinal_leq,
+                body_statistics.num_ordinal_gr,
+                body_statistics.num_nominal,
+                body_statistics.num_nominal_eq,
+                body_statistics.num_nominal_neq,
+                head_statistics.num_predictions,
+                head_statistics.num_positive_predictions,
+                head_statistics.num_negative_predictions,
+            )
 
         return table

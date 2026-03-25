@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for updating the project's GitHub Actions.
 """
+
 from typing import cast, override
 
 from core.build_unit import BuildUnit
@@ -35,11 +36,15 @@ class CheckGithubActions(PhonyTarget.Runnable):
 
             for workflow, outdated_actions in outdated_workflows.items():
                 for outdated_action in outdated_actions:
-                    table.add_row(str(workflow.file), str(outdated_action.action.name),
-                                  str(outdated_action.action.version), str(outdated_action.latest_version))
+                    table.add_row(
+                        str(workflow.file),
+                        str(outdated_action.action.name),
+                        str(outdated_action.action.version),
+                        str(outdated_action.latest_version),
+                    )
 
             table.sort_rows(0, 1)
-            Log.info('The following GitHub Actions are outdated:\n\n%s', str(table))
+            Log.info(f'The following GitHub Actions are outdated:\n\n{table}')
         else:
             Log.info('All GitHub Actions are up-to-date!')
 
@@ -62,10 +67,14 @@ class UpdateGithubActions(PhonyTarget.Runnable):
 
             for workflow, updated_actions in updated_workflows.items():
                 for updated_action in updated_actions:
-                    table.add_row(str(workflow.file), updated_action.updated.name,
-                                  str(updated_action.previous.action.version), str(updated_action.updated.version))
+                    table.add_row(
+                        str(workflow.file),
+                        updated_action.updated.name,
+                        str(updated_action.previous.action.version),
+                        str(updated_action.updated.version),
+                    )
 
             table.sort_rows(0, 1)
-            Log.info('The following GitHub Actions have been updated:\n\n%s', str(table))
+            Log.info(f'The following GitHub Actions have been updated:\n\n{table}')
         else:
             Log.info('No GitHub Actions have been updated.')

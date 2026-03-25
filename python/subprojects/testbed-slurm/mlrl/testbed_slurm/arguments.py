@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Defines command line arguments for configuring the functionality to run experiments via the Slurm Workload Manager.
 """
+
 from mlrl.util.cli import BoolArgument, PathArgument
 
 
@@ -15,13 +16,14 @@ class SlurmArguments:
         '--save-slurm-scripts',
         default=False,
         description='Whether the Slurm scripts for running individual experiments in a batch should be saved to the '
-        + 'working directory or not.',
+        'working directory or not.',
     )
 
     SLURM_SAVE_DIR = PathArgument(
         '--slurm-save-dir',
         default='.',
-        description='An absolute or relative path to the directory where Slurm scripts should be saved.')
+        description='An absolute or relative path to the directory where Slurm scripts should be saved.',
+    )
 
     PRINT_SLURM_SCRIPTS = BoolArgument(
         '--print-slurm-scripts',

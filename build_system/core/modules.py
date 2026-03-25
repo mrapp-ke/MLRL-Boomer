@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that provide information about files and directories that belong to individual modules of the project
 to be dealt with by the targets of the build system.
 """
+
 from abc import ABC, abstractmethod
 
 
@@ -66,7 +67,8 @@ class ModuleRegistry:
 
         for module in self.modules:
             if module.match(module_filter, self) and all(
-                    module.match(additional_filter, self) for additional_filter in additional_filters):
+                module.match(additional_filter, self) for additional_filter in additional_filters
+            ):
                 matched_modules.append(module)
 
         return matched_modules

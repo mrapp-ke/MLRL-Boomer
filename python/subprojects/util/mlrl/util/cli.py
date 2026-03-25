@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for configuring the arguments of a command line interface.
 """
+
 import sys
 
 from argparse import Action, ArgumentError, ArgumentParser, Namespace, _ArgumentGroup
@@ -25,13 +26,15 @@ class Argument:
     A single argument of a command line interface for which the user can provide a custom value.
     """
 
-    def __init__(self,
-                 *names: str,
-                 required: bool = False,
-                 default: Any | None = None,
-                 description: str | None = None,
-                 add_default_value_to_description: bool = True,
-                 **kwargs):
+    def __init__(
+        self,
+        *names: str,
+        required: bool = False,
+        default: Any | None = None,
+        description: str | None = None,
+        add_default_value_to_description: bool = True,
+        **kwargs,
+    ):
         """
         :param names:                               One or several names of the argument
         :param required:                            True, if the argument is mandatory, False otherwise
@@ -50,7 +53,7 @@ class Argument:
                 description += '.'
 
             if add_default_value_to_description and not required and default is not None:
-                description += ' The default value is ' + format_value(default, decimals=0) + '.'
+                description += f' The default value is {format_value(default, decimals=0)}.'
 
         self.description = description
         self.kwargs = dict(kwargs)
@@ -73,7 +76,7 @@ class Argument:
         :param key: The key of the argument
         :return:    The name of the argument
         """
-        return '--' + key.replace('_', '-')
+        return f'--{key.replace("_", "-")}'
 
     @cached_property
     def name(self) -> str:
@@ -143,11 +146,9 @@ class FlagArgument(Argument):
         :param name:        The name of the argument
         :param description: An optional description of the argument
         """
-        super().__init__(name,
-                         default=None,
-                         description=description,
-                         action='store_true',
-                         add_default_value_to_description=False)
+        super().__init__(
+            name, default=None, description=description, action='store_true', add_default_value_to_description=False
+        )
 
 
 class StringArgument(Argument):
@@ -155,12 +156,14 @@ class StringArgument(Argument):
     An argument of a command line interface for which the user can provide a custom string value.
     """
 
-    def __init__(self,
-                 *names: str,
-                 description: str | None = None,
-                 add_default_value_to_description: bool = True,
-                 default: str | None = None,
-                 required: bool = False):
+    def __init__(
+        self,
+        *names: str,
+        description: str | None = None,
+        add_default_value_to_description: bool = True,
+        default: str | None = None,
+        required: bool = False,
+    ):
         """
         :param names:                               One or several names of the argument
         :param description:                         An optional description of the argument
@@ -169,12 +172,14 @@ class StringArgument(Argument):
         :param default:                             The default value
         :param required:                            True, if the argument is mandatory, False otherwise
         """
-        super().__init__(*names,
-                         default=default,
-                         description=description,
-                         add_default_value_to_description=add_default_value_to_description,
-                         type=str,
-                         required=required)
+        super().__init__(
+            *names,
+            default=default,
+            description=description,
+            add_default_value_to_description=add_default_value_to_description,
+            type=str,
+            required=required,
+        )
 
     @override
     def get_value(self, args: Namespace, default: Any | None = None) -> Any | None:
@@ -198,12 +203,14 @@ class IntArgument(Argument):
     An argument of a command line interface for which the user can provide a custom integer value.
     """
 
-    def __init__(self,
-                 *names: str,
-                 description: str | None = None,
-                 add_default_value_to_description: bool = True,
-                 default: int | None = None,
-                 required: bool = False):
+    def __init__(
+        self,
+        *names: str,
+        description: str | None = None,
+        add_default_value_to_description: bool = True,
+        default: int | None = None,
+        required: bool = False,
+    ):
         """
         :param names:                               One or several names of the argument
         :param description:                         An optional description of the argument
@@ -212,12 +219,14 @@ class IntArgument(Argument):
         :param default:                             The default value
         :param required:                            True, if the argument is mandatory, False otherwise
         """
-        super().__init__(*names,
-                         default=default,
-                         description=description,
-                         add_default_value_to_description=add_default_value_to_description,
-                         type=int,
-                         required=required)
+        super().__init__(
+            *names,
+            default=default,
+            description=description,
+            add_default_value_to_description=add_default_value_to_description,
+            type=int,
+            required=required,
+        )
 
     @override
     def get_value(self, args: Namespace, default: Any | None = None) -> Any | None:
@@ -226,8 +235,9 @@ class IntArgument(Argument):
         try:
             return None if value is None else int(value)
         except ValueError as error:
-            raise ValidationError('Expected value of argument ' + self.name + ' to be an integer, but got: '
-                                  + str(value)) from error
+            raise ValidationError(
+                f'Expected value of argument {self.name} to be an integer, but got: {value}'
+            ) from error
 
 
 class FloatArgument(Argument):
@@ -235,12 +245,14 @@ class FloatArgument(Argument):
     An argument of a command line interface for which the user can provide a custom floating point value.
     """
 
-    def __init__(self,
-                 *names: str,
-                 description: str | None = None,
-                 add_default_value_to_description: bool = True,
-                 default: float | None = None,
-                 required: bool = False):
+    def __init__(
+        self,
+        *names: str,
+        description: str | None = None,
+        add_default_value_to_description: bool = True,
+        default: float | None = None,
+        required: bool = False,
+    ):
         """
         :param names:                               One or several names of the argument
         :param description:                         An optional description of the argument
@@ -249,12 +261,14 @@ class FloatArgument(Argument):
         :param default:                             The default value
         :param required:                            True, if the argument is mandatory, False otherwise
         """
-        super().__init__(*names,
-                         default=default,
-                         description=description,
-                         add_default_value_to_description=add_default_value_to_description,
-                         type=float,
-                         required=required)
+        super().__init__(
+            *names,
+            default=default,
+            description=description,
+            add_default_value_to_description=add_default_value_to_description,
+            type=float,
+            required=required,
+        )
 
     @override
     def get_value(self, args: Namespace, default: Any | None = None) -> Any | None:
@@ -263,8 +277,7 @@ class FloatArgument(Argument):
         try:
             return None if value is None else float(value)
         except ValueError as error:
-            raise ValidationError('Expected value of argument ' + self.name + ' to be a float, but got: '
-                                  + str(value)) from error
+            raise ValidationError(f'Expected value of argument {self.name} to be a float, but got: {value}') from error
 
 
 class BoolArgument(Argument):
@@ -273,10 +286,12 @@ class BoolArgument(Argument):
     """
 
     @staticmethod
-    def __format_description(description: str | None,
-                             has_options: bool,
-                             default: bool | None = None,
-                             add_default_value_to_description: bool = True) -> str:
+    def __format_description(
+        description: str | None,
+        has_options: bool,
+        default: bool | None = None,
+        add_default_value_to_description: bool = True,
+    ) -> str:
         if description:
             if not description.endswith('.'):
                 description += '.'
@@ -285,25 +300,29 @@ class BoolArgument(Argument):
         else:
             description = ''
 
-        description += 'Must be one of ' + format_enum_values(BooleanOption) + '.'
+        description += f'Must be one of {format_enum_values(BooleanOption)}.'
 
         if has_options:
             description += ' For additional options refer to the documentation.'
 
         if add_default_value_to_description:
-            description += ' The default value is ' + format_value(
-                BooleanOption.TRUE if default else BooleanOption.FALSE, decimals=0) + '.'
+            description += (
+                f' The default value is '
+                f'{format_value(BooleanOption.TRUE if default else BooleanOption.FALSE, decimals=0)}.'
+            )
 
         return description
 
-    def __init__(self,
-                 *names: str,
-                 description: str | None = None,
-                 add_default_value_to_description: bool = True,
-                 default: bool | None = None,
-                 required: bool = False,
-                 true_options: set[str] | None = None,
-                 false_options: set[str] | None = None):
+    def __init__(
+        self,
+        *names: str,
+        description: str | None = None,
+        add_default_value_to_description: bool = True,
+        default: bool | None = None,
+        required: bool = False,
+        true_options: set[str] | None = None,
+        false_options: set[str] | None = None,
+    ):
         """
         :param names:                               One or several names of the argument
         :param description:                         An optional description of the argument
@@ -316,16 +335,19 @@ class BoolArgument(Argument):
         :param false_options:                       The names of options that can be provided by the user in addition to
                                                     the value "false"
         """
-        super().__init__(*names,
-                         default=None if default is None else (BooleanOption.TRUE if default else BooleanOption.FALSE),
-                         description=self.__format_description(
-                             description,
-                             has_options=bool(true_options) or bool(false_options),
-                             default=default,
-                             add_default_value_to_description=add_default_value_to_description),
-                         add_default_value_to_description=False,
-                         type=str if true_options or false_options else BooleanOption.parse,
-                         required=required)
+        super().__init__(
+            *names,
+            default=None if default is None else (BooleanOption.TRUE if default else BooleanOption.FALSE),
+            description=self.__format_description(
+                description,
+                has_options=bool(true_options) or bool(false_options),
+                default=default,
+                add_default_value_to_description=add_default_value_to_description,
+            ),
+            add_default_value_to_description=False,
+            type=str if true_options or false_options else BooleanOption.parse,
+            required=required,
+        )
         self.true_options = true_options if true_options else set()
         self.false_options = false_options if false_options else set()
 
@@ -340,10 +362,11 @@ class BoolArgument(Argument):
             str_value = str(value).lower()
 
             if has_options:
-                str_value, options = parse_param_and_options(self.key, str_value, {
-                    str(BooleanOption.TRUE): true_options,
-                    str(BooleanOption.FALSE): false_options
-                })
+                str_value, options = parse_param_and_options(
+                    self.key,
+                    str_value,
+                    {str(BooleanOption.TRUE): true_options, str(BooleanOption.FALSE): false_options},
+                )
                 return BooleanOption.parse(str_value), options
 
             return BooleanOption.parse(str_value)
@@ -368,21 +391,23 @@ class SetArgument(Argument):
 
             result += ' '
 
-        result += 'Must be one of ' + format_set(values.keys() if isinstance(values, dict) else values) + '.'
+        result += f'Must be one of {(format_set(values.keys() if isinstance(values, dict) else values))}.'
 
         if isinstance(values, dict):
             result += ' For additional options refer to the documentation.'
 
         return result
 
-    def __init__(self,
-                 *names: str,
-                 values: Values,
-                 description: str | None = None,
-                 add_default_value_to_description: bool = True,
-                 default: str | None = None,
-                 required: bool = False,
-                 description_formatter: Callable[[str, Values], str | None] = __format_description):
+    def __init__(
+        self,
+        *names: str,
+        values: Values,
+        description: str | None = None,
+        add_default_value_to_description: bool = True,
+        default: str | None = None,
+        required: bool = False,
+        description_formatter: Callable[[str, Values], str | None] = __format_description,
+    ):
         """
         :param names:                               One or several names of the argument
         :param values:                              A set that contains the predefined values or a dictionary that
@@ -402,7 +427,8 @@ class SetArgument(Argument):
             description=description_formatter(description, values),  # type: ignore[arg-type]
             add_default_value_to_description=add_default_value_to_description,
             type=str,
-            required=required)
+            required=required,
+        )
         self.supported_values = values
 
     @override
@@ -425,12 +451,14 @@ class EnumArgument(SetArgument):
     An argument of a command line interface for which the user can provide one out of a predefined set enum values.
     """
 
-    def __init__(self,
-                 *names: str,
-                 enum: type[Enum],
-                 description: str | None = None,
-                 default: Enum | None = None,
-                 required: bool = False):
+    def __init__(
+        self,
+        *names: str,
+        enum: type[Enum],
+        description: str | None = None,
+        default: Enum | None = None,
+        required: bool = False,
+    ):
         """
         :param names:       One or several names of the argument
         :param values:      An enum that contains the predefined values
@@ -440,11 +468,11 @@ class EnumArgument(SetArgument):
         """
         super().__init__(
             *names,
-            values={x.value if isinstance(x.value, str) else x.name.lower()
-                    for x in enum},
+            values={x.value if isinstance(x.value, str) else x.name.lower() for x in enum},
             description=description,
             default=(default.value if isinstance(default.value, str) else default.name.lower()) if default else None,
-            required=required)
+            required=required,
+        )
         self.enum = enum
 
     @override
@@ -481,11 +509,9 @@ class CommandLineInterface:
                     print(version_text)
                     parser.exit()
 
-            argument_parser.add_argument('-v',
-                                         '--version',
-                                         nargs=0,
-                                         action=VersionAction,
-                                         help='Display information about the program.')
+            argument_parser.add_argument(
+                '-v', '--version', nargs=0, action=VersionAction, help='Display information about the program.'
+            )
 
     def add_arguments(self, *arguments: Argument, group: str | None = None):
         """
@@ -496,17 +522,22 @@ class CommandLineInterface:
                             to a particular group
         """
         argument_parser = self._argument_parser
-        argument_group = self._argument_groups.setdefault(
-            group, argument_parser.add_argument_group(group)) if group else argument_parser
+        argument_group = (
+            self._argument_groups.setdefault(group, argument_parser.add_argument_group(group))
+            if group
+            else argument_parser
+        )
 
         for argument in arguments:
             try:
                 required = argument.required and '--help' not in sys.argv and '-h' not in sys.argv
-                argument_group.add_argument(*argument.names,
-                                            required=required,
-                                            default=argument.default,
-                                            help=argument.description,
-                                            **argument.kwargs)
+                argument_group.add_argument(
+                    *argument.names,
+                    required=required,
+                    default=argument.default,
+                    help=argument.description,
+                    **argument.kwargs,
+                )
                 self.arguments.append(argument)
             except ArgumentError:
                 # Argument has already been added

@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for dealing with commands and their arguments.
 """
+
 import sys
 
 from argparse import Namespace
@@ -93,6 +94,7 @@ class Command(Iterable[str]):
         argument_dict:  An `ArgumentDict` that stores the arguments of the command
         argument_list:  An `ArgumentList` that stores the arguments of the command
     """
+
     module_name: str
     argument_dict: ArgumentDict
     argument_list: ArgumentList

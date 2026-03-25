@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow configuring the functionality to write output data to one or several sinks.
 """
+
 from argparse import Namespace
 from typing import override
 

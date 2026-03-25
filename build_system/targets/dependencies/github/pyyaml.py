@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for reading the contents of YAML files via "pyyaml".
 """
+
 from functools import cached_property
 from pathlib import Path
 from typing import Any, override
@@ -32,8 +33,8 @@ class YamlFile(TextFile):
         A dictionary that stores the content of the YAML file.
         """
         PackageManager.install_packages(RequirementsFiles.for_build_unit(self.build_unit), 'pyyaml')
-        # pylint: disable=import-outside-toplevel
         import yaml
+
         with read_file(self.file) as file:
             yaml_dict = yaml.load(file.read(), Loader=yaml.CLoader)
             return yaml_dict if yaml_dict else {}

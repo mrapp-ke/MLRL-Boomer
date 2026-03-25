@@ -185,11 +185,13 @@ We aim to enforce a consistent code style across the entire project. For this pu
 
 ### Python Source Files
 
-- We use [YAPF](https://github.com/google/yapf) to enforce the Python code style defined in the file {repo-file}`.style.yapf <build_system/targets/code_style/python/.style.yapf>`.
-- In addition, [isort](https://github.com/PyCQA/isort) is used to keep the ordering of imports in Python and Cython source files consistent according to the configuration file {repo-file}`.isort.cfg <build_system/targets/code_style/python/.isort.cfg>`
-- We also use [pylint](https://pylint.org/) to check for common issues in the Python code according to the configuration file {repo-file}`.pylintrc.toml <build_system/targets/code_style/python/.pylintrc.toml>`.
+- We use [ruff](https://docs.astral.sh/ruff/) for linting Python code and enforcing the code style defined in the file {repo-file}`.ruff.toml <build_system/targets/code_style/python/.ruff.toml>`.
 - For static type checking of Python code, we use [mypy](https://www.mypy-lang.org/). It uses the configuration file {repo-file}`.mypy.ini <build_system/targets/code_style/python/.mypy.ini>`.
-- To automatically detect and remove unused variables and imports, as well as unnecessary `pass` statements, in Python and Cython code, we employ [autoflake](https://github.com/PyCQA/autoflake). The configuration of this tool can be found in the file {repo-file}`.autoflake.toml <build_system/targets/code_style/python/.autoflake.toml>`.
+
+### Cython Source files
+
+- [isort](https://github.com/PyCQA/isort) is used to keep the ordering of imports Cython source files consistent according to the configuration file {repo-file}`.isort.cfg <build_system/targets/code_style/cython/.isort.cfg>`
+- To automatically detect and remove unused variables and imports, as well as unnecessary `pass` statements, in Cython code, we employ [autoflake](https://github.com/PyCQA/autoflake). The configuration of this tool can be found in the file {repo-file}`.autoflake.toml <build_system/targets/code_style/cython/.autoflake.toml>`.
 - For linting Cython source files, we rely on [cython-lint](https://github.com/MarcoGorelli/cython-lint).
 
 ### Configuration Files
@@ -220,7 +222,7 @@ If you have modified the project's source code, you can check whether it adheres
 ````
 
 ```{note}
-If you want to check for compliance with the C++ or Python code style independently, you can use the build target `test_format_cpp` or `test_format_python` instead of `test_format`. Using the build target `test_format_cfg`, `test_format_md`, `test_format_yaml` or `test_format_toml` results in the style of Markdown, YAML or TOML files to be checked, respectively.
+If you want to check for compliance with the C++, Python or Cython code style independently, you can use the build target `test_format_cpp`, `test_format_python` or `test_format_cython` instead of `test_format`. Using the build target `test_format_cfg`, `test_format_md`, `test_format_yaml` or `test_format_toml` results in the style of Markdown, YAML or TOML files to be checked, respectively.
 ```
 
 In order to automatically format the project's source files according to our style guidelines, the following command can be used:
@@ -244,7 +246,7 @@ In order to automatically format the project's source files according to our sty
 ````
 
 ```{note}
-If you want to format only the C++ source files, you can specify the build target `format_cpp` instead of `format`. Accordingly, the target `format_python` may be used to format only the Python source files. If you want to format `.cfg`, Markdown, YAML or TOML files, you should use the target `format_cfg`, `format_md`, `format_yaml` or `format_toml`, respectively.
+If you want to format only the C++ source files, you can specify the build target `format_cpp` instead of `format`. Accordingly, the targets `format_python` and `format_cython` may be used to format only the Python or Cython source files. If you want to format `.cfg`, Markdown, YAML or TOML files, you should use the target `format_cfg`, `format_md`, `format_yaml` or `format_toml`, respectively.
 ```
 
 Whenever any source files have been modified, a {ref}`Continuous Integration <ci>` job is run automatically to verify if they adhere to our code style guidelines.

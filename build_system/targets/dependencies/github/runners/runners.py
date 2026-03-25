@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for checking the project's GitHub workflows for outdated runner images (see
 https://docs.github.com/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners).
 """
+
 import re
 
 from dataclasses import dataclass, replace
@@ -28,6 +29,7 @@ class RunnerVersion:
     Attributes:
         version: The full version string
     """
+
     version: str
 
     SEPARATOR = '.'
@@ -78,6 +80,7 @@ class Runner:
         version:        The version of the runner
         architecture:   The architecture of the image or None, if the architecture is unknown
     """
+
     image: str
     version: RunnerVersion
     architecture: str | None = None
@@ -95,12 +98,11 @@ class Runner:
         parts = text.split(Runner.SEPARATOR)
 
         if len(parts) < 2 or len(parts) > 3:
-            raise ValueError('Runner must contain the symbol + "' + Runner.SEPARATOR + '" once or twice, but got "'
-                             + text + '"')
+            raise ValueError(f'Runner must contain the symbol + "{Runner.SEPARATOR}" once or twice, but got "{text}"')
 
-        return Runner(image=parts[0],
-                      version=RunnerVersion(parts[1]),
-                      architecture=parts[2] if len(parts) > 2 else None)
+        return Runner(
+            image=parts[0], version=RunnerVersion(parts[1]), architecture=parts[2] if len(parts) > 2 else None
+        )
 
     @property
     def name(self) -> str:
@@ -139,8 +141,9 @@ class Runners(Workflow):
             try:
                 return {Runner.parse(runs_on_clause)}
             except ValueError as error:
-                raise RuntimeError('Failed to parse runs-on-clause "' + runs_on_clause + '" in workflow "'
-                                   + str(self.file) + '"') from error
+                raise RuntimeError(
+                    f'Failed to parse runs-on-clause "{runs_on_clause}" in workflow "{self.file}"'
+                ) from error
 
         return set()
 
@@ -153,8 +156,9 @@ class Runners(Workflow):
                 try:
                     runners.add(Runner.parse(os))
                 except ValueError as error:
-                    raise RuntimeError('Failed to parse strategy.matrix.os-clause "' + os + '" in workflow "'
-                                       + str(self.file) + '"') from error
+                    raise RuntimeError(
+                        f'Failed to parse strategy.matrix.os-clause "{os}" in workflow "{self.file}"'
+                    ) from error
 
         return runners
 
@@ -182,7 +186,7 @@ class Runners(Workflow):
         for line in self.lines:
             for updated_runner in updated_runners:
                 architecture = updated_runner.architecture
-                regex = updated_runner.image + '-[0-9]+(.[0-9]+)*' + ('-' + architecture if architecture else '')
+                regex = f'{updated_runner.image}-[0-9]+(.[0-9]+)*{(f"-{architecture}" if architecture else "")}'
                 line = re.sub(regex, str(updated_runner), line)
 
             updated_lines.append(line)
@@ -213,6 +217,7 @@ class RunnerUpdater(Workflows):
             runner:         The outdated runner
             latest_version: The latest version of the runner
         """
+
         runner: Runner
         latest_version: RunnerVersion
 
@@ -237,6 +242,7 @@ class RunnerUpdater(Workflows):
             previous:   The previous runner
             updated:    The updated runner
         """
+
         previous: 'RunnerUpdater.OutdatedRunner'
         updated: Runner
 
@@ -254,16 +260,17 @@ class RunnerUpdater(Workflows):
 
     def __download_runner_documentation(self) -> str:
         PackageManager.install_packages(RequirementsFiles.for_build_unit(self.build_unit), 'requests')
-        # pylint: disable=import-outside-toplevel
         import requests
+
         repository = 'github/docs'
         file = 'data/reusables/actions/supported-github-runners.md'
-        url = 'https://raw.githubusercontent.com/' + repository + '/refs/heads/main/' + file
+        url = f'https://raw.githubusercontent.com/{repository}/refs/heads/main/{file}'
         response = requests.get(url, timeout=5)
 
         if not response.ok:
-            Log.error('Failed to download list of runners from "%s". Received status code "%s".', url,
-                      response.status_code)
+            Log.error(
+                f'Failed to download list of runners from "{url}". Received status code "{response.status_code}".'
+            )
 
         return response.text
 
@@ -277,7 +284,7 @@ class RunnerUpdater(Workflows):
 
         relevant_lines = []
 
-        for line in lines[(i + 1):]:
+        for line in lines[(i + 1) :]:
             if line.startswith('#'):
                 break
 
@@ -329,7 +336,7 @@ class RunnerUpdater(Workflows):
 
         if relevant_column_index is not None:
             for row in table.findall('./tbody/tr'):
-                relevant_column = row.find('./td[' + str(relevant_column_index + 1) + ']')
+                relevant_column = row.find(f'./td[{relevant_column_index + 1}]')
 
                 if relevant_column:
                     for link in relevant_column.findall('.//a[@href]'):
@@ -338,7 +345,7 @@ class RunnerUpdater(Workflows):
                         if text:
                             runners.add(Runner.parse(text))
         else:
-            Log.error('Could not find table column with text "%s":\n\n%s', relevant_column_text, html)
+            Log.error(f'Could not find table column with text "{relevant_column_text}":\n\n{html}')
 
         return runners
 
@@ -374,7 +381,7 @@ class RunnerUpdater(Workflows):
         latest_version = version_cache.get((runner.image, arch))
 
         if not latest_version:
-            Log.error('Latest version of runner "%s" is unknown!', runner)
+            Log.error(f'Latest version of runner "{runner}" is unknown!')
 
         return latest_version
 
@@ -395,7 +402,7 @@ class RunnerUpdater(Workflows):
         outdated_workflows: dict[Runners, set[RunnerUpdater.OutdatedRunner]] = {}
 
         for workflow in self.workflows:
-            Log.info('Searching for GitHub-hosted runners in workflow "%s"...', workflow.file)
+            Log.info(f'Searching for GitHub-hosted runners in workflow "{workflow.file}"...')
             workflow = Runners(self.build_unit, file=workflow.file)
 
             for runner in workflow.runners:

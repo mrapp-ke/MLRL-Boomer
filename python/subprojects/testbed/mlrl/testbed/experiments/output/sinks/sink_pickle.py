@@ -3,6 +3,7 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing output data to files by using Python's pickle mechanism.
 """
+
 import pickle
 
 from pathlib import Path
@@ -29,10 +30,12 @@ class PickleFileSink(FileSink):
         :param create_directory:    True, if the given directory should be created, if it does not exist, False
                                     otherwise
         """
-        super().__init__(directory=directory,
-                         suffix=PickleFileSource.SUFFIX_PICKLE,
-                         options=options,
-                         create_directory=create_directory)
+        super().__init__(
+            directory=directory,
+            suffix=PickleFileSource.SUFFIX_PICKLE,
+            options=options,
+            create_directory=create_directory,
+        )
 
     @override
     def _write_to_file(self, file_path: Path, state: ExperimentState, output_data: OutputData, **_):

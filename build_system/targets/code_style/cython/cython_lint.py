@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow to run the external program "cython-lint".
 """
+
 from core.build_unit import BuildUnit
 
 from targets.code_style.formatter import CodeFormatterProgram

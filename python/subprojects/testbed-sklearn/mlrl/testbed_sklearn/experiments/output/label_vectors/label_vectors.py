@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing unique label vectors contained in a dataset that are part of output data.
 """
+
 from typing import override
 
 from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vector_histogram import LabelVectorHistogram
@@ -56,7 +57,6 @@ class LabelVectors(TabularOutputData):
         table = self.to_table(options, **kwargs)
         return table.format() if table else None
 
-    # pylint: disable=unused-argument
     @override
     def to_table(self, options: Options, **kwargs) -> Table | None:
         """

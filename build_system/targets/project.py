@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides information about the project that is important to the build system.
 """
+
 from dataclasses import replace
 from functools import reduce
 from os import environ
@@ -13,8 +14,13 @@ from util.env import get_env_bool
 from util.files import FileSearch, FileType
 from util.requirements import RequirementVersion
 
-from targets.version_files import DevelopmentVersionFile, PythonVersionFile, SemanticVersion, VersionFile, \
-    VersionTextFile
+from targets.version_files import (
+    DevelopmentVersionFile,
+    PythonVersionFile,
+    SemanticVersion,
+    VersionFile,
+    VersionTextFile,
+)
 
 
 class Project:
@@ -92,9 +98,11 @@ class Project:
 
             :return: The `FileSearch` that has been created
             """
-            return FileSearch() \
-                .set_recursive(True) \
+            return (
+                FileSearch()
+                .set_recursive(True)
                 .exclude_subdirectories_by_name(Project.BuildSystem.build_directory_name)
+            )
 
     class Python:
         """
@@ -140,7 +148,7 @@ class Project:
 
             :return: The minimum Python version required by the project
             """
-            return RequirementVersion.PREFIX_GEQ + ' ' + Project.Python.supported_python_versions().min_version
+            return f'{RequirementVersion.PREFIX_GEQ} {Project.Python.supported_python_versions().min_version}'
 
         @staticmethod
         def file_search() -> FileSearch:
@@ -149,12 +157,14 @@ class Project:
 
             :return: The `FileSearch` that has been created
             """
-            return FileSearch() \
-                .set_recursive(True) \
-                .exclude_subdirectories_by_name(Project.Python.build_directory_name) \
-                .exclude_subdirectories_by_name(Project.Python.wheel_directory_name) \
-                .exclude_subdirectories_by_name('__pycache__') \
+            return (
+                FileSearch()
+                .set_recursive(True)
+                .exclude_subdirectories_by_name(Project.Python.build_directory_name)
+                .exclude_subdirectories_by_name(Project.Python.wheel_directory_name)
+                .exclude_subdirectories_by_name('__pycache__')
                 .exclude_subdirectories_by_substrings(ends_with=Project.Python.wheel_metadata_directory_suffix)
+            )
 
         @staticmethod
         def find_subprojects() -> set[Path]:
@@ -165,8 +175,9 @@ class Project:
             """
             return {
                 toml_file.parent
-                for toml_file in Project.Python.file_search().filter_by_name('pyproject.template.toml').list(
-                    Project.Python.root_directory)
+                for toml_file in Project.Python.file_search()
+                .filter_by_name('pyproject.template.toml')
+                .list(Project.Python.root_directory)
             }
 
         @staticmethod
@@ -178,11 +189,15 @@ class Project:
             """
             test_files: list[Path] = []
             test_files = reduce(
-                lambda aggr, suffix: aggr + Project.Python.file_search() \
-                    .filter_by_substrings(starts_with='test_', ends_with='.' + suffix) \
-                    .list(Project.Python.root_directory / 'tests'),
+                lambda aggr, suffix: (
+                    aggr
+                    + Project.Python.file_search()
+                    .filter_by_substrings(starts_with='test_', ends_with=f'.{suffix}')
+                    .list(Project.Python.root_directory / 'tests')
+                ),
                 FileType.python().suffixes,
-                test_files)
+                test_files,
+            )
             return {test_file.parent for test_file in test_files}
 
     class Cpp:
@@ -214,10 +229,12 @@ class Project:
 
             :return: The `FileSearch` that has been created
             """
-            return FileSearch() \
-                .set_recursive(True) \
-                .exclude_subdirectories_by_name(Project.Cpp.build_directory_name) \
+            return (
+                FileSearch()
+                .set_recursive(True)
+                .exclude_subdirectories_by_name(Project.Cpp.build_directory_name)
                 .exclude_subdirectories_by_name('xsimd')
+            )
 
         @staticmethod
         def find_subprojects() -> set[Path]:
@@ -228,10 +245,11 @@ class Project:
             """
             return {
                 meson_file.parent
-                for meson_file in Project.Cpp.file_search() \
-                    .exclude_subdirectories_by_name('packagefiles') \
-                    .filter_by_name('meson.build') \
-                    .list(Project.Cpp.root_directory) if not meson_file.parent.samefile(Project.Cpp.root_directory)
+                for meson_file in Project.Cpp.file_search()
+                .exclude_subdirectories_by_name('packagefiles')
+                .filter_by_name('meson.build')
+                .list(Project.Cpp.root_directory)
+                if not meson_file.parent.samefile(Project.Cpp.root_directory)
             }
 
     class Documentation:
@@ -255,9 +273,11 @@ class Project:
 
             :return: The `FileSearch` that has been created
             """
-            return FileSearch() \
-                .set_recursive(True) \
+            return (
+                FileSearch()
+                .set_recursive(True)
                 .exclude_subdirectories_by_name(Project.Documentation.build_directory_name)
+            )
 
     class Github:
         """

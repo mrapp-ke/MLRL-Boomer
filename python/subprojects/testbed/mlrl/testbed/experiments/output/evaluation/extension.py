@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow configuring the functionality to write evaluation results to one or several sinks.
 """
+
 from argparse import Namespace
 from typing import override
 
@@ -29,8 +30,10 @@ class AggregatedEvaluationExtension(Extension):
         default=True,
         description='Whether the evaluation results should be printed on the console or not.',
         true_options={
-            AggregatedEvaluationResult.OPTION_ENABLE_ALL, OPTION_DECIMALS, OPTION_PERCENTAGE,
-            AggregatedEvaluationResult.OPTION_RANK
+            AggregatedEvaluationResult.OPTION_ENABLE_ALL,
+            OPTION_DECIMALS,
+            OPTION_PERCENTAGE,
+            AggregatedEvaluationResult.OPTION_RANK,
         },
     )
 
@@ -38,7 +41,9 @@ class AggregatedEvaluationExtension(Extension):
         '--save-evaluation',
         description='Whether evaluation results should be written to output files or not.',
         true_options={
-            AggregatedEvaluationResult.OPTION_ENABLE_ALL, OPTION_DECIMALS, AggregatedEvaluationResult.OPTION_RANK
+            AggregatedEvaluationResult.OPTION_ENABLE_ALL,
+            OPTION_DECIMALS,
+            AggregatedEvaluationResult.OPTION_RANK,
         },
     )
 
@@ -70,7 +75,8 @@ class AggregatedEvaluationExtension(Extension):
         if base_dir and save_evaluation:
             create_directory = OutputArguments.CREATE_DIRS.get_value(args)
             experiment_builder.aggregated_evaluation_writer.add_sinks(
-                CsvFileSink(directory=base_dir, create_directory=create_directory, options=options))
+                CsvFileSink(directory=base_dir, create_directory=create_directory, options=options)
+            )
 
     @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder, mode: ExperimentMode):

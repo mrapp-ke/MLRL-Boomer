@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing tabular datasets.
 """
+
 from dataclasses import dataclass, replace
 from enum import Enum, auto
 from functools import reduce
@@ -18,6 +19,7 @@ class AttributeType(Enum):
     """
     All supported types of attributes.
     """
+
     NUMERICAL = auto()
     ORDINAL = auto()
     NOMINAL = auto()
@@ -33,6 +35,7 @@ class Attribute:
         attribute_type: The type of the attribute
         nominal_values: A list that contains the possible values in case of a nominal feature
     """
+
     name: str
     attribute_type: AttributeType
     nominal_values: list[str] | None = None
@@ -50,6 +53,7 @@ class TabularDataset(Dataset):
         features:   A list that contains all features in the dataset
         outputs:    A list that contains all outputs in the dataset
     """
+
     x: lil_array
     y: lil_array
     features: list[Attribute]
@@ -121,8 +125,11 @@ class TabularDataset(Dataset):
         unique_feature_types = set(feature_types)
 
         if unique_feature_types:
-            return reduce(lambda aggr, feature: aggr + (1 if feature.attribute_type in unique_feature_types else 0),
-                          self.features, 0)
+            return reduce(
+                lambda aggr, feature: aggr + (1 if feature.attribute_type in unique_feature_types else 0),
+                self.features,
+                0,
+            )
 
         return len(self.features)
 
@@ -136,6 +143,7 @@ class TabularDataset(Dataset):
         """
         unique_feature_types = set(feature_types)
         return [
-            i for i, feature in enumerate(self.features)
+            i
+            for i, feature in enumerate(self.features)
             if not unique_feature_types or feature.attribute_type in unique_feature_types
         ]

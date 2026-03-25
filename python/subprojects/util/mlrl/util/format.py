@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for creating textual representations.
 """
+
 from collections.abc import Iterable
 from enum import Enum
 from functools import reduce
@@ -24,10 +25,9 @@ def format_iterable(objects: Iterable[Any], separator: str = ', ', delimiter: st
     return reduce(lambda aggr, obj: aggr + (separator if aggr else '') + delimiter + str(obj) + delimiter, objects, '')
 
 
-def format_list(objects: list[Any],
-                separator: str = ',  ',
-                delimiter: str = '',
-                last_separator: str | None = None) -> str:
+def format_list(
+    objects: list[Any], separator: str = ',  ', delimiter: str = '', last_separator: str | None = None
+) -> str:
     """
     Creates and returns a textual representation of objects in a list.
 
@@ -39,8 +39,16 @@ def format_list(objects: list[Any],
     """
     last_separator = separator if last_separator is None else last_separator
     return reduce(
-        lambda aggr, entry: aggr + ((last_separator if entry[0] == len(objects) - 1 else separator)
-                                    if aggr else '') + delimiter + str(entry[1]) + delimiter, enumerate(objects), '')
+        lambda aggr, entry: (
+            aggr
+            + ((last_separator if entry[0] == len(objects) - 1 else separator) if aggr else '')
+            + delimiter
+            + str(entry[1])
+            + delimiter
+        ),
+        enumerate(objects),
+        '',
+    )
 
 
 def format_enum_values(enum: type[Enum]) -> str:
@@ -61,7 +69,7 @@ def format_set(objects: Iterable[Any]) -> str:
     :param objects: The iterable of objects to be formatted
     :return:        The textual representation that has been created
     """
-    return '{' + format_iterable(sorted(objects, key=str), delimiter='"') + '}'
+    return f'{{{format_iterable(sorted(objects, key=str), delimiter='"')}}}'
 
 
 def format_value(value: Any, decimals: int = 2) -> str:
@@ -74,9 +82,9 @@ def format_value(value: Any, decimals: int = 2) -> str:
     :return:            The textual representation that has been created
     """
     if isinstance(value, str):
-        return '"' + value + '"'
+        return f'"{value}"'
     if isinstance(value, Path):
-        return '"' + str(value) + '"'
+        return f'"{value}"'
     if isinstance(value, (float, np.floating)) and decimals > 0:
         rounded_value = round(value, decimals)
         return f'{rounded_value:.{decimals}f}'

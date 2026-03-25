@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for implementing different kinds of problem domains to be tacked via the scikit-learn framework.
 """
+
 from abc import ABC, abstractmethod
 from typing import Any, override
 
@@ -35,12 +36,14 @@ class SkLearnProblem(ProblemDomain, ABC):
             :return: The `Predictor` that has been created
             """
 
-    def __init__(self,
-                 base_learner: BaseEstimator,
-                 prediction_type: PredictionType,
-                 predictor_factory: PredictorFactory,
-                 fit_kwargs: dict[str, Any] | None = None,
-                 predict_kwargs: dict[str, Any] | None = None):
+    def __init__(
+        self,
+        base_learner: BaseEstimator,
+        prediction_type: PredictionType,
+        predictor_factory: PredictorFactory,
+        fit_kwargs: dict[str, Any] | None = None,
+        predict_kwargs: dict[str, Any] | None = None,
+    ):
         """
         :param base_learner:        A sklearn estimator to be used in the experiment
         :param prediction_type:     The type of the predictions

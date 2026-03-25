@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements modules that provide access to automated tests for Python code.
 """
+
 from os import environ
 from pathlib import Path
 from typing import override
@@ -26,7 +27,8 @@ class PythonTestModule(TestModule, SubprojectModule):
         @override
         def matches(self, module: Module, module_registry: ModuleRegistry) -> bool:
             return isinstance(module, PythonTestModule) and SubprojectModule.Filter.from_env(environ).matches(
-                module, module_registry)
+                module, module_registry
+            )
 
     def __init__(self, root_directory: Path, result_directory: Path):
         """
@@ -43,4 +45,4 @@ class PythonTestModule(TestModule, SubprojectModule):
 
     @override
     def __str__(self) -> str:
-        return 'PythonTestModule {root_directory="' + str(self.root_directory) + '"}'
+        return f'PythonTestModule {{root_directory="{self.root_directory}"}}'

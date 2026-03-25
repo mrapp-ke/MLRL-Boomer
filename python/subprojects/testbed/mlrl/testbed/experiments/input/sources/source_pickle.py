@@ -3,6 +3,7 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow reading input data from files using Python's pickle mechanism.
 """
+
 import pickle
 
 from pathlib import Path

@@ -29,11 +29,9 @@ class SingleMode(Mode):
         if OutputArguments.IF_OUTPUTS_EXIST.get_value(args) == OutputExistsPolicy.CANCEL:
             Log.info('Checking if output files do already exist...')
             base_dir = OutputArguments.BASE_DIR.get_value(args)
-            output_util = OutputUtil(args=args,
-                                     recipe=recipe,
-                                     command=command,
-                                     input_directory=base_dir,
-                                     file_sinks_only=True)
+            output_util = OutputUtil(
+                args=args, recipe=recipe, command=command, input_directory=base_dir, file_sinks_only=True
+            )
 
             if output_util.check_if_output_files_exist():
                 return True
@@ -49,14 +47,16 @@ class SingleMode(Mode):
         cli.add_arguments(*algorithmic_arguments, group='algorithmic arguments')
 
     @override
-    def run_experiment(self, control_arguments: set[Argument], algorithmic_arguments: set[Argument], args: Namespace,
-                       recipe: Recipe):
+    def run_experiment(
+        self, control_arguments: set[Argument], algorithmic_arguments: set[Argument], args: Namespace, recipe: Recipe
+    ):
         command = Command.from_argv()
 
         if self.__should_experiment_be_cancelled(args=args, recipe=recipe, command=command):
             Log.info(
-                'Cancelling experiment, because all output files do already exist. Use the argument "{} {}" to '
-                + 'force-run the experiment.', OutputArguments.IF_OUTPUTS_EXIST.name, OutputExistsPolicy.OVERWRITE)
+                f'Cancelling experiment, because all output files do already exist. Use the argument '
+                f'"{OutputArguments.IF_OUTPUTS_EXIST.name} {OutputExistsPolicy.OVERWRITE}" to force-run the experiment.'
+            )
         else:
             recipe.create_experiment_builder(experiment_mode=self.to_enum(), args=args, command=command).run(args)
 

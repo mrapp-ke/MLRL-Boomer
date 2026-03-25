@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements modules that provide access to GitHub workflows.
 """
+
 from pathlib import Path
 from typing import override
 
@@ -42,4 +43,4 @@ class GithubWorkflowModule(Module):
 
     @override
     def __str__(self) -> str:
-        return 'GithubWorkflowModule {root_directory="' + str(self.root_directory) + '"}'
+        return f'GithubWorkflowModule {{root_directory="{self.root_directory}"}}'

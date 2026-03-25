@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Integrates the BOOMER algorithm with the command line utility 'mlrl-testbed', which may be installed as an optional
 dependency.
 """
+
 from typing import override
 
 from mlrl.common.testbed.program_info import RuleLearnerProgramInfo
@@ -13,8 +14,10 @@ from mlrl.boosting.config.parameters import BOOMER_CLASSIFIER_PARAMETERS, BOOMER
 from mlrl.boosting.cython.learner_boomer import BoomerClassifierConfig, BoomerRegressorConfig
 from mlrl.boosting.learners import BoomerClassifier, BoomerRegressor
 from mlrl.boosting.package_info import get_package_info
-from mlrl.boosting.testbed.experiments.output.probability_calibration.extension import \
-    JointProbabilityCalibrationModelExtension, MarginalProbabilityCalibrationModelExtension
+from mlrl.boosting.testbed.experiments.output.probability_calibration.extension import (
+    JointProbabilityCalibrationModelExtension,
+    MarginalProbabilityCalibrationModelExtension,
+)
 
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.program_info import ProgramInfo
@@ -26,12 +29,14 @@ class BoomerRunnable(RuleLearnerRunnable):
     """
 
     def __init__(self):
-        super().__init__(classifier_type=BoomerClassifier,
-                         classifier_config_type=BoomerClassifierConfig,
-                         classifier_parameters=BOOMER_CLASSIFIER_PARAMETERS,
-                         regressor_type=BoomerRegressor,
-                         regressor_config_type=BoomerRegressorConfig,
-                         regressor_parameters=BOOMER_REGRESSOR_PARAMETERS)
+        super().__init__(
+            classifier_type=BoomerClassifier,
+            classifier_config_type=BoomerClassifierConfig,
+            classifier_parameters=BOOMER_CLASSIFIER_PARAMETERS,
+            regressor_type=BoomerRegressor,
+            regressor_config_type=BoomerRegressorConfig,
+            regressor_parameters=BOOMER_REGRESSOR_PARAMETERS,
+        )
 
     @override
     def get_extensions(self) -> list[Extension]:

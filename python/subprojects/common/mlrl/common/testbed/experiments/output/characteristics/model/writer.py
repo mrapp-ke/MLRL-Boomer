@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing characteristics of models to one or several sinks.
 """
+
 import logging as log
 
 from typing import override
@@ -11,8 +12,13 @@ import numpy as np
 
 from mlrl.common.cython.rule_model import Body, CompleteHead, ConjunctiveBody, EmptyBody, Head, PartialHead, RuleModel
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
-from mlrl.common.testbed.experiments.output.characteristics.model.characteristics import BodyStatistics, \
-    HeadStatistics, RuleModelCharacteristics, RuleModelStatistics, RuleStatistics
+from mlrl.common.testbed.experiments.output.characteristics.model.characteristics import (
+    BodyStatistics,
+    HeadStatistics,
+    RuleModelCharacteristics,
+    RuleModelStatistics,
+    RuleStatistics,
+)
 
 from mlrl.testbed.experiments.input.data import TabularInputData
 from mlrl.testbed.experiments.output.data import OutputData
@@ -50,7 +56,8 @@ class RuleModelCharacteristicsWriter(ResultWriter):
                 for row in row_wise_table.rows:
                     body_statistics = BodyStatistics(
                         num_numerical_leq=int(
-                            row[indices[RuleModelCharacteristics.COLUMN_NUM_CONDITIONS_NUMERICAL_LEQ]]),
+                            row[indices[RuleModelCharacteristics.COLUMN_NUM_CONDITIONS_NUMERICAL_LEQ]]
+                        ),
                         num_numerical_gr=int(row[indices[RuleModelCharacteristics.COLUMN_NUM_CONDITIONS_NUMERICAL_GR]]),
                         num_ordinal_leq=int(row[indices[RuleModelCharacteristics.COLUMN_NUM_CONDITIONS_ORDINAL_LEQ]]),
                         num_ordinal_gr=int(row[indices[RuleModelCharacteristics.COLUMN_NUM_CONDITIONS_ORDINAL_GR]]),
@@ -59,9 +66,11 @@ class RuleModelCharacteristicsWriter(ResultWriter):
                     )
                     head_statistics = HeadStatistics(
                         num_positive_predictions=int(
-                            row[indices[RuleModelCharacteristics.COLUMN_NUM_PREDICTIONS_POSITIVE]]),
+                            row[indices[RuleModelCharacteristics.COLUMN_NUM_PREDICTIONS_POSITIVE]]
+                        ),
                         num_negative_predictions=int(
-                            row[indices[RuleModelCharacteristics.COLUMN_NUM_PREDICTIONS_NEGATIVE]]),
+                            row[indices[RuleModelCharacteristics.COLUMN_NUM_PREDICTIONS_NEGATIVE]]
+                        ),
                     )
                     rule_statistics = RuleStatistics(body_statistics=body_statistics, head_statistics=head_statistics)
 
@@ -101,11 +110,12 @@ class RuleModelCharacteristicsWriter(ResultWriter):
                     num_ordinal_leq=body.ordinal_leq_indices.size if body.ordinal_leq_indices is not None else 0,
                     num_ordinal_gr=body.ordinal_gr_indices.size if body.ordinal_gr_indices is not None else 0,
                     num_nominal_eq=body.nominal_eq_indices.size if body.nominal_eq_indices is not None else 0,
-                    num_nominal_neq=body.nominal_neq_indices.size if body.nominal_neq_indices is not None else 0)
+                    num_nominal_neq=body.nominal_neq_indices.size if body.nominal_neq_indices is not None else 0,
+                )
                 statistics.rule_statistics.append(RuleStatistics(body_statistics=body_statistics))
                 return False
 
-            raise ValueError('Unsupported type of body: ' + str(type(body)))
+            raise ValueError(f'Unsupported type of body: {type(body)}')
 
         @staticmethod
         def __create_head_characteristics(statistics: RuleModelStatistics, head: Head, default_rule: bool):
@@ -114,13 +124,15 @@ class RuleModelCharacteristicsWriter(ResultWriter):
             if isinstance(head, CompleteHead):
                 num_positive_predictions = int(np.count_nonzero(head.scores > 0))
                 num_negative_predictions = int(head.scores.shape[0] - num_positive_predictions)
-                head_statistics = HeadStatistics(num_positive_predictions=num_positive_predictions,
-                                                 num_negative_predictions=num_negative_predictions)
+                head_statistics = HeadStatistics(
+                    num_positive_predictions=num_positive_predictions, num_negative_predictions=num_negative_predictions
+                )
             elif isinstance(head, PartialHead):
                 num_positive_predictions = int(np.count_nonzero(head.scores > 0))
                 num_negative_predictions = int(head.scores.shape[0] - num_positive_predictions)
-                head_statistics = HeadStatistics(num_positive_predictions=num_positive_predictions,
-                                                 num_negative_predictions=num_negative_predictions)
+                head_statistics = HeadStatistics(
+                    num_positive_predictions=num_positive_predictions, num_negative_predictions=num_negative_predictions
+                )
 
             if head_statistics:
                 if default_rule:
@@ -131,7 +143,7 @@ class RuleModelCharacteristicsWriter(ResultWriter):
                 else:
                     statistics.rule_statistics[-1].head_statistics = head_statistics
             else:
-                raise ValueError('Unsupported type of head: ' + str(type(head)))
+                raise ValueError(f'Unsupported type of head: {type(head)}')
 
         @override
         def extract_data(self, state: ExperimentState, _: list[Sink]) -> list[tuple[ExperimentState, OutputData]]:
@@ -146,9 +158,10 @@ class RuleModelCharacteristicsWriter(ResultWriter):
                 if isinstance(model, RuleModel):
                     return [(state, self.__create_rule_model_characteristics(model))]
 
-                log.error('%s expected type of model to be %s, but model has type %s',
-                          type(self).__name__, RuleModel.__name__,
-                          type(model).__name__)
+                log.error(
+                    f'{type(self).__name__} expected type of model to be {RuleModel.__name__}, but model has type '
+                    f'{type(model).__name__}'
+                )
 
             return []
 
@@ -156,9 +169,13 @@ class RuleModelCharacteristicsWriter(ResultWriter):
         """
         :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
         """
-        super().__init__(RuleModelCharacteristicsWriter.InputExtractor(properties=RuleModelCharacteristics.PROPERTIES,
-                                                                       context=RuleModelCharacteristics.CONTEXT),
-                         *extractors,
-                         RuleModelCharacteristicsWriter.DefaultExtractor(),
-                         input_data=TabularInputData(properties=RuleModelCharacteristics.PROPERTIES,
-                                                     context=RuleModelCharacteristics.CONTEXT))
+        super().__init__(
+            RuleModelCharacteristicsWriter.InputExtractor(
+                properties=RuleModelCharacteristics.PROPERTIES, context=RuleModelCharacteristics.CONTEXT
+            ),
+            *extractors,
+            RuleModelCharacteristicsWriter.DefaultExtractor(),
+            input_data=TabularInputData(
+                properties=RuleModelCharacteristics.PROPERTIES, context=RuleModelCharacteristics.CONTEXT
+            ),
+        )

@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utilities for dealing with version numbers.
 """
+
 from dataclasses import dataclass
 from functools import reduce
 from typing import Any, override
@@ -16,6 +17,7 @@ class Version:
     Attributes:
         numbers: The version numbers
     """
+
     numbers: tuple[int, ...]
 
     @staticmethod
@@ -34,7 +36,7 @@ class Version:
 
             return number
         except ValueError as error:
-            raise ValueError('Version numbers must be non-negative integers, but got: ' + version_number) from error
+            raise ValueError(f'Version numbers must be non-negative integers, but got: {version_number}') from error
 
     @staticmethod
     def parse(version: str, skip_on_error: bool = False) -> 'Version':

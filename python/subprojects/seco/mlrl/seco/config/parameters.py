@@ -3,15 +3,32 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utilities that ease the configuration of separate-and-conquer (SeCo) algorithms.
 """
+
 from typing import override
 
 from mlrl.common.config.parameters import RULE_LEARNER_PARAMETERS, FeatureBinningParameter, NominalParameter
 
-from mlrl.seco.cython.learner import AccuracyHeuristicMixin, AccuracyPruningHeuristicMixin, FMeasureHeuristicMixin, \
-    FMeasurePruningHeuristicMixin, KlnLiftFunctionMixin, LaplaceHeuristicMixin, LaplacePruningHeuristicMixin, \
-    MEstimateHeuristicMixin, MEstimatePruningHeuristicMixin, NoLiftFunctionMixin, PartialHeadMixin, \
-    PeakLiftFunctionMixin, PrecisionHeuristicMixin, PrecisionPruningHeuristicMixin, RecallHeuristicMixin, \
-    RecallPruningHeuristicMixin, SingleOutputHeadMixin, WraHeuristicMixin, WraPruningHeuristicMixin
+from mlrl.seco.cython.learner import (
+    AccuracyHeuristicMixin,
+    AccuracyPruningHeuristicMixin,
+    FMeasureHeuristicMixin,
+    FMeasurePruningHeuristicMixin,
+    KlnLiftFunctionMixin,
+    LaplaceHeuristicMixin,
+    LaplacePruningHeuristicMixin,
+    MEstimateHeuristicMixin,
+    MEstimatePruningHeuristicMixin,
+    NoLiftFunctionMixin,
+    PartialHeadMixin,
+    PeakLiftFunctionMixin,
+    PrecisionHeuristicMixin,
+    PrecisionPruningHeuristicMixin,
+    RecallHeuristicMixin,
+    RecallPruningHeuristicMixin,
+    SingleOutputHeadMixin,
+    WraHeuristicMixin,
+    WraPruningHeuristicMixin,
+)
 
 from mlrl.util.cli import NONE
 from mlrl.util.options import Options
@@ -75,12 +92,15 @@ class LiftFunctionParameter(NominalParameter):
     OPTION_K = 'k'
 
     def __init__(self):
-        super().__init__(name='lift_function',
-                         description='The lift function to be used for the induction of multi-label rules')
+        super().__init__(
+            name='lift_function', description='The lift function to be used for the induction of multi-label rules'
+        )
         self.add_value(name=NONE, mixin=NoLiftFunctionMixin)
-        self.add_value(name=self.LIFT_FUNCTION_PEAK,
-                       mixin=PeakLiftFunctionMixin,
-                       options={self.OPTION_PEAK_LABEL, self.OPTION_MAX_LIFT, self.OPTION_CURVATURE})
+        self.add_value(
+            name=self.LIFT_FUNCTION_PEAK,
+            mixin=PeakLiftFunctionMixin,
+            options={self.OPTION_PEAK_LABEL, self.OPTION_MAX_LIFT, self.OPTION_CURVATURE},
+        )
         self.add_value(name=self.LIFT_FUNCTION_KLN, mixin=KlnLiftFunctionMixin, options={self.OPTION_K})
 
     @override
@@ -138,8 +158,9 @@ class PruningHeuristicParameter(NominalParameter):
     """
 
     def __init__(self):
-        super().__init__(name='pruning_heuristic',
-                         description='The name of the heuristic to be used for pruning individual rules')
+        super().__init__(
+            name='pruning_heuristic', description='The name of the heuristic to be used for pruning individual rules'
+        )
         self.add_value(name=HEURISTIC_ACCURACY, mixin=AccuracyPruningHeuristicMixin)
         self.add_value(name=HEURISTIC_PRECISION, mixin=PrecisionPruningHeuristicMixin)
         self.add_value(name=HEURISTIC_RECALL, mixin=RecallPruningHeuristicMixin)
@@ -173,5 +194,5 @@ SECO_CLASSIFIER_PARAMETERS = RULE_LEARNER_PARAMETERS | {
     HeadTypeParameter(),
     LiftFunctionParameter(),
     HeuristicParameter(),
-    PruningHeuristicParameter()
+    PruningHeuristicParameter(),
 }

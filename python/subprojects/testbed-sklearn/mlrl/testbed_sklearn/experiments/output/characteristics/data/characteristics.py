@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing characteristics of an output matrix that are part of output data.
 """
+
 from numbers import Number
 from typing import Any, Callable, override
 
@@ -100,7 +101,7 @@ OUTPUT_CHARACTERISTICS = [
         name='Output Sparsity',
         function=lambda x: x.output_sparsity,
         percentage=True,
-    )
+    ),
 ]
 
 LABEL_CHARACTERISTICS = OUTPUT_CHARACTERISTICS + [
@@ -118,7 +119,7 @@ LABEL_CHARACTERISTICS = OUTPUT_CHARACTERISTICS + [
         option_key=OutputCharacteristics.OPTION_DISTINCT_LABEL_VECTORS,
         name='Distinct Label Vectors',
         function=lambda x: x.num_distinct_label_vectors,
-    )
+    ),
 ]
 
 

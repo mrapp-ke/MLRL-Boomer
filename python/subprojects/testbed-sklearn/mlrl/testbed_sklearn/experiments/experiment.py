@@ -14,8 +14,9 @@ from sklearn.base import BaseEstimator, clone
 
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.writer_data import DataCharacteristicsWriter
-from mlrl.testbed_sklearn.experiments.output.characteristics.data.writer_prediction import \
-    PredictionCharacteristicsWriter
+from mlrl.testbed_sklearn.experiments.output.characteristics.data.writer_prediction import (
+    PredictionCharacteristicsWriter,
+)
 from mlrl.testbed_sklearn.experiments.output.dataset.writer_ground_truth import GroundTruthWriter
 from mlrl.testbed_sklearn.experiments.output.dataset.writer_prediction import PredictionWriter
 from mlrl.testbed_sklearn.experiments.output.evaluation.writer import EvaluationWriter
@@ -62,8 +63,9 @@ class SkLearnExperiment(Experiment):
             )
 
         @override
-        def _create_experiment(self, args: Namespace, initial_state: ExperimentState,
-                               dataset_splitter: DatasetSplitter) -> Experiment:
+        def _create_experiment(
+            self, args: Namespace, initial_state: ExperimentState, dataset_splitter: DatasetSplitter
+        ) -> Experiment:
             return SkLearnExperiment(args=args, initial_state=initial_state, dataset_splitter=dataset_splitter)
 
     class TrainingProcedure(Experiment.TrainingProcedure):
@@ -76,7 +78,7 @@ class SkLearnExperiment(Experiment):
 
             if parameters:
                 learner.set_params(**parameters)
-                Log.success('Successfully applied parameter setting: {}', parameters)
+                Log.success(f'Successfully applied parameter setting: {parameters}')
 
             return learner
 
@@ -93,13 +95,16 @@ class SkLearnExperiment(Experiment):
 
             if changes:
                 formatted_changes = reduce(
-                    lambda aggr, change: aggr +
-                    (', '
-                     if aggr else '') + '"' + change[0] + '" is "' + change[2] + '" instead of "' + change[1] + '"',
-                    changes, '')
+                    lambda aggr, change: (
+                        f'{aggr}{(", " if aggr else "")}"{change[0]}" is "{change[2]}" instead of "{change[1]}"'
+                    ),
+                    changes,
+                    '',
+                )
                 Log.warning(
-                    'The loaded model\'s values for the following parameters differ from the expected configuration: '
-                    + '{}', formatted_changes)
+                    f"The loaded model's values for the following parameters differ from the expected configuration: "
+                    f'{formatted_changes}'
+                )
 
         def __init__(self, base_learner: BaseEstimator, fit_kwargs: dict[str, Any] | None = None):
             """
@@ -118,17 +123,19 @@ class SkLearnExperiment(Experiment):
 
             # Use existing model, if possible, otherwise train a new model...
             if isinstance(learner, type(new_learner)):
-                self.__check_for_parameter_changes(expected_parameters=parameters,
-                                                   actual_parameters=learner.get_params())
+                self.__check_for_parameter_changes(
+                    expected_parameters=parameters, actual_parameters=learner.get_params()
+                )
                 return TrainingState(learner=learner)
 
-            Log.info('Fitting model to {} training examples...', dataset.num_examples)
+            Log.info(f'Fitting model to {dataset.num_examples} training examples...')
             training_duration = self._fit(new_learner, dataset, fit_kwargs=self.fit_kwargs)
-            Log.success('Successfully fit model in {}', training_duration)
+            Log.success(f'Successfully fit model in {training_duration}')
             return TrainingState(learner=new_learner, training_duration=training_duration)
 
-        def _fit(self, estimator: BaseEstimator, dataset: TabularDataset,
-                 fit_kwargs: dict[str, Any] | None) -> Timer.Duration:
+        def _fit(
+            self, estimator: BaseEstimator, dataset: TabularDataset, fit_kwargs: dict[str, Any] | None
+        ) -> Timer.Duration:
             """
             May be overridden by subclasses in order to fit a scikit-learn estimator to a dataset.
 
@@ -182,12 +189,14 @@ class SkLearnExperiment(Experiment):
 
                     raise error
 
-    def __init__(self,
-                 args: Namespace,
-                 initial_state: ExperimentState,
-                 dataset_splitter: DatasetSplitter,
-                 training_procedure: TrainingProcedure | None = None,
-                 prediction_procedure: PredictionProcedure | None = None):
+    def __init__(
+        self,
+        args: Namespace,
+        initial_state: ExperimentState,
+        dataset_splitter: DatasetSplitter,
+        training_procedure: TrainingProcedure | None = None,
+        prediction_procedure: PredictionProcedure | None = None,
+    ):
         """
         :param args:                    The command line arguments specified by the user
         :param initial_state:           The initial state of the experiment
@@ -201,10 +210,13 @@ class SkLearnExperiment(Experiment):
             args=args,
             initial_state=initial_state,
             dataset_splitter=dataset_splitter,
-            training_procedure=training_procedure if training_procedure else SkLearnExperiment.TrainingProcedure(
+            training_procedure=training_procedure
+            if training_procedure
+            else SkLearnExperiment.TrainingProcedure(
                 base_learner=initial_state.problem_domain.base_learner,
                 fit_kwargs=initial_state.problem_domain.fit_kwargs,
             ),
-            prediction_procedure=prediction_procedure if prediction_procedure else
-            SkLearnExperiment.PredictionProcedure(problem_domain=initial_state.problem_domain),
+            prediction_procedure=prediction_procedure
+            if prediction_procedure
+            else SkLearnExperiment.PredictionProcedure(problem_domain=initial_state.problem_domain),
         )

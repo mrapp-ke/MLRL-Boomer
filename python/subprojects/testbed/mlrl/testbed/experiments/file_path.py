@@ -3,6 +3,7 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing paths to files.
 """
+
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -21,6 +22,7 @@ class FilePath:
         suffix:     The suffix of the file (without leading dot) or None, if the suffix is unspecified
         context:    A `Context` to be used to determine the path
     """
+
     directory: Path
     file_name: str
     suffix: str | None
@@ -39,7 +41,7 @@ class FilePath:
             dataset_type = state.dataset_type
 
             if dataset_type:
-                file_name += '_' + dataset_type
+                file_name += f'_{dataset_type}'
 
         if self.context.include_prediction_scope:
             prediction_result = state.prediction_result
@@ -48,7 +50,7 @@ class FilePath:
                 prediction_scope = prediction_result.prediction_scope
 
                 if not prediction_scope.is_global:
-                    file_name += '_model-size-' + str(prediction_scope.model_size)
+                    file_name += f'_model-size-{prediction_scope.model_size}'
 
         if self.context.include_fold:
             folding_strategy = state.folding_strategy
@@ -57,7 +59,7 @@ class FilePath:
                 fold = state.fold
 
                 if fold:
-                    file_name += '_fold-' + str(fold.index + 1)
+                    file_name += f'_fold-{fold.index + 1}'
 
         path = self.directory / Path(file_name)
-        return path.with_suffix('.' + self.suffix) if self.suffix else path
+        return path.with_suffix(f'.{self.suffix}') if self.suffix else path

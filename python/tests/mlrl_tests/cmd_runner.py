@@ -1,6 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+
 import shutil
 import subprocess
 
@@ -23,7 +24,7 @@ class CmdRunner:
 
     def __format_cmd(self, args: list[str] | None = None) -> str:
         args = self.args if args is None else args
-        return reduce(lambda aggr, arg: aggr + (' ' + arg if len(aggr) > 0 else arg), args, '')
+        return reduce(lambda aggr, arg: aggr + (f' {arg}' if len(aggr) > 0 else arg), args, '')
 
     def __run_cmd(self):
         args = self.args
@@ -31,22 +32,25 @@ class CmdRunner:
         exit_code = out.returncode
 
         if exit_code != 0:
-            pytest.fail('Command "' + self.__format_cmd(args) + '" terminated with non-zero exit code ' + str(exit_code)
-                        + '\n\n' + str(out.stderr))
+            pytest.fail(
+                f'Command "{self.__format_cmd(args)}" terminated with non-zero exit code {exit_code}\n\n{out.stderr}'
+            )
 
         return out
 
     def __assert_file_exists(self, file: Path):
         if not file.is_file():
-            pytest.fail('Command "' + self.__format_cmd() + '" is expected to create file "' + str(file)
-                        + '", but it does not exist')
+            pytest.fail(f'Command "{self.__format_cmd()}" is expected to create file "{file}", but it does not exist')
 
     def __compare_or_overwrite_output_files(self, output_dir: Path, expected_output_dir: Path):
         expected_files_to_be_deleted = []
 
         for expected_file in expected_output_dir.rglob('*'):
-            if expected_file.is_file() and expected_file != expected_output_dir / 'std.out' and \
-                    not any (parent.name == CmdBuilder.RERUN_DIR.name for parent in expected_file.parents):
+            if (
+                expected_file.is_file()
+                and expected_file != expected_output_dir / 'std.out'
+                and not any(parent.name == CmdBuilder.RERUN_DIR.name for parent in expected_file.parents)
+            ):
                 actual_file = output_dir / expected_file.relative_to(expected_output_dir)
 
                 if self.__should_overwrite_files():
@@ -70,7 +74,7 @@ class CmdRunner:
         difference = file_comparison.compare_or_overwrite(expected_file, overwrite=overwrite)
 
         if difference:
-            pytest.fail('Command "' + self.__format_cmd() + '" resulted in unexpected output: ' + str(difference))
+            pytest.fail(f'Command "{self.__format_cmd()}" resulted in unexpected output: {difference}')
 
     @staticmethod
     def __should_overwrite_files() -> bool:
@@ -81,8 +85,7 @@ class CmdRunner:
             return True
         if value == 'false':
             return False
-        raise ValueError('Value of environment variable "' + variable_name + '" must be "true" or "false", but is "'
-                         + value + '"')
+        raise ValueError(f'Value of environment variable "{variable_name}" must be "true" or "false", but is "{value}"')
 
     def __init__(self, builder: CmdBuilder):
         """
@@ -130,8 +133,9 @@ class CmdRunner:
             self.__compare_or_overwrite_files(TextFileComparison(stdout), expected_file=expected_output_dir / 'std.out')
 
             # Check if all expected files have been created...
-            self.__compare_or_overwrite_output_files(output_dir=actual_output_dir,
-                                                     expected_output_dir=expected_output_dir)
+            self.__compare_or_overwrite_output_files(
+                output_dir=actual_output_dir, expected_output_dir=expected_output_dir
+            )
 
         # Delete temporary directories...
         if wipe_after:

@@ -3,6 +3,7 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing output data to CSV files.
 """
+
 import csv
 
 from pathlib import Path
@@ -32,10 +33,9 @@ class CsvFileSink(TabularFileSink):
         :param create_directory:    True, if the given directory should be created, if it does not exist, False
                                     otherwise
         """
-        super().__init__(directory=directory,
-                         suffix=CsvFileSource.SUFFIX_CSV,
-                         options=options,
-                         create_directory=create_directory)
+        super().__init__(
+            directory=directory, suffix=CsvFileSource.SUFFIX_CSV, options=options, create_directory=create_directory
+        )
 
     @override
     def _write_table_to_file(self, file_path: Path, state: ExperimentState, table: Table, **_):
@@ -48,16 +48,20 @@ class CsvFileSink(TabularFileSink):
 
             if incremental_prediction:
                 model_size = prediction_result.prediction_scope.model_size
-                table.add_column(*[model_size for _ in range(table.num_rows)],
-                                 header=OutputValue('model_size', self.COLUMN_MODEL_SIZE))
+                table.add_column(
+                    *[model_size for _ in range(table.num_rows)],
+                    header=OutputValue('model_size', self.COLUMN_MODEL_SIZE),
+                )
 
         table.sort_by_headers()
 
         with open_writable_file(file_path, append=incremental_prediction) as csv_file:
-            csv_writer = csv.writer(csv_file,
-                                    delimiter=CsvFileSource.DELIMITER,
-                                    quotechar=CsvFileSource.QUOTE_CHAR,
-                                    quoting=csv.QUOTE_MINIMAL)
+            csv_writer = csv.writer(
+                csv_file,
+                delimiter=CsvFileSource.DELIMITER,
+                quotechar=CsvFileSource.QUOTE_CHAR,
+                quoting=csv.QUOTE_MINIMAL,
+            )
 
             if csv_file.tell() == 0:
                 header_row = table.header_row
