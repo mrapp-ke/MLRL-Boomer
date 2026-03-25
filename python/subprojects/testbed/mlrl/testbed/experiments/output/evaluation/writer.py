@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow writing evaluation results that have been aggregated across several experiments to one or
 several sinks.
 """
+
 from typing import override
 
 from mlrl.testbed.experiments.context import Context
@@ -55,5 +56,8 @@ class AggregatedEvaluationWriter(ResultWriter):
         :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
         """
         super().__init__(
-            AggregatedEvaluationWriter.InputExtractor(properties=AggregatedEvaluationResult.PROPERTIES,
-                                                      context=AggregatedEvaluationResult.CONTEXT), *extractors)
+            AggregatedEvaluationWriter.InputExtractor(
+                properties=AggregatedEvaluationResult.PROPERTIES, context=AggregatedEvaluationResult.CONTEXT
+            ),
+            *extractors,
+        )

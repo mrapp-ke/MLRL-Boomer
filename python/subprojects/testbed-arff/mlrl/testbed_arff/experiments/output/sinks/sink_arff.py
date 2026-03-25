@@ -3,6 +3,7 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing datasets to ARFF files.
 """
+
 import xml.etree.ElementTree as XmlTree
 
 from pathlib import Path
@@ -41,8 +42,9 @@ class ArffFileSink(DatasetFileSink):
 
         num_attributes = dataset.num_features + dataset.num_outputs
         attributes = dataset.features + dataset.outputs
-        return [[ArffFileSink.__format_value(attributes[i], 0) for i in range(num_attributes)]
-                for _ in range(num_examples)]
+        return [
+            [ArffFileSink.__format_value(attributes[i], 0) for i in range(num_attributes)] for _ in range(num_examples)
+        ]
 
     @staticmethod
     def __format_value(attribute: Attribute, value: Any) -> Any:
@@ -68,26 +70,41 @@ class ArffFileSink(DatasetFileSink):
     @staticmethod
     def __write_arff_file(file_path: Path, dataset: TabularDataset):
         features = dataset.features
-        x_features = [(features[i].name, 'NUMERIC' if features[i].attribute_type == AttributeType.NUMERICAL
-                       or features[i].nominal_values is None else features[i].nominal_values)
-                      for i in range(dataset.num_features)]
+        x_features = [
+            (
+                features[i].name,
+                'NUMERIC'
+                if features[i].attribute_type == AttributeType.NUMERICAL or features[i].nominal_values is None
+                else features[i].nominal_values,
+            )
+            for i in range(dataset.num_features)
+        ]
 
         outputs = dataset.outputs
-        y_features = [(outputs[i].name, 'NUMERIC' if outputs[i].attribute_type == AttributeType.NUMERICAL
-                       or outputs[i].nominal_values is None else outputs[i].nominal_values)
-                      for i in range(dataset.num_outputs)]
+        y_features = [
+            (
+                outputs[i].name,
+                'NUMERIC'
+                if outputs[i].attribute_type == AttributeType.NUMERICAL or outputs[i].nominal_values is None
+                else outputs[i].nominal_values,
+            )
+            for i in range(dataset.num_outputs)
+        ]
 
         data = ArffFileSink.__create_arff_data(dataset)
         ArffFileSink.__fill_arff_data(dataset, data)
 
         with open_writable_file(file_path) as arff_file:
             arff_file.write(
-                arff.dumps({
-                    'description': 'traindata',
-                    'relation': 'traindata: -C ' + str(-dataset.num_outputs),
-                    'attributes': x_features + y_features,
-                    'data': data
-                }))
+                arff.dumps(
+                    {
+                        'description': 'traindata',
+                        'relation': f'traindata: -C -{dataset.num_outputs}',
+                        'attributes': x_features + y_features,
+                        'data': data,
+                    }
+                )
+            )
 
     @staticmethod
     def __write_xml_file(file_path: Path, dataset: TabularDataset):
@@ -109,15 +126,13 @@ class ArffFileSink(DatasetFileSink):
         :param create_directory:    True, if the given directory should be created, if it does not exist, False
                                     otherwise
         """
-        super().__init__(directory=directory,
-                         suffix=ArffFileSource.SUFFIX_ARFF,
-                         options=options,
-                         create_directory=create_directory)
+        super().__init__(
+            directory=directory, suffix=ArffFileSource.SUFFIX_ARFF, options=options, create_directory=create_directory
+        )
 
-    # pylint: disable=unused-argument
     def _write_dataset_to_file(self, file_path: Path, state: ExperimentState, dataset: Dataset, **_):
         self.__write_arff_file(file_path=file_path, dataset=dataset)
-        self.__write_xml_file(file_path=file_path.with_suffix('.' + ArffFileSource.SUFFIX_XML), dataset=dataset)
+        self.__write_xml_file(file_path=file_path.with_suffix(f'.{ArffFileSource.SUFFIX_XML}'), dataset=dataset)
 
     @override
     def create_source(self, input_directory: Path) -> Source | None:

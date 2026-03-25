@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that provide information about predictions.
 """
+
 from abc import ABC, abstractmethod
 from typing import override
 

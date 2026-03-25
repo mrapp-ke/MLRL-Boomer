@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow configuring the functionality to write rule models to one or several sinks.
 """
+
 from argparse import Namespace
 from typing import override
 
@@ -30,11 +31,16 @@ class RuleModelAsTextExtension(Extension):
         return BoolArgument(
             '--print-rules',
             description='Whether the induced rules should be printed on the console or not.',
-            true_options=None if mode == ExperimentMode.READ else {
-                RuleModelAsText.OPTION_PRINT_FEATURE_NAMES, RuleModelAsText.OPTION_PRINT_OUTPUT_NAMES,
-                RuleModelAsText.OPTION_PRINT_NOMINAL_VALUES, RuleModelAsText.OPTION_PRINT_BODIES,
-                RuleModelAsText.OPTION_PRINT_HEADS, RuleModelAsText.OPTION_DECIMALS_BODY,
-                RuleModelAsText.OPTION_DECIMALS_HEAD
+            true_options=None
+            if mode == ExperimentMode.READ
+            else {
+                RuleModelAsText.OPTION_PRINT_FEATURE_NAMES,
+                RuleModelAsText.OPTION_PRINT_OUTPUT_NAMES,
+                RuleModelAsText.OPTION_PRINT_NOMINAL_VALUES,
+                RuleModelAsText.OPTION_PRINT_BODIES,
+                RuleModelAsText.OPTION_PRINT_HEADS,
+                RuleModelAsText.OPTION_DECIMALS_BODY,
+                RuleModelAsText.OPTION_DECIMALS_HEAD,
             },
         )
 
@@ -43,11 +49,16 @@ class RuleModelAsTextExtension(Extension):
         return BoolArgument(
             '--save-rules',
             description='Whether the induced rules should be written to a text file or not.',
-            true_options=None if mode == ExperimentMode.READ else {
-                RuleModelAsText.OPTION_PRINT_FEATURE_NAMES, RuleModelAsText.OPTION_PRINT_OUTPUT_NAMES,
-                RuleModelAsText.OPTION_PRINT_NOMINAL_VALUES, RuleModelAsText.OPTION_PRINT_BODIES,
-                RuleModelAsText.OPTION_PRINT_HEADS, RuleModelAsText.OPTION_DECIMALS_BODY,
-                RuleModelAsText.OPTION_DECIMALS_HEAD
+            true_options=None
+            if mode == ExperimentMode.READ
+            else {
+                RuleModelAsText.OPTION_PRINT_FEATURE_NAMES,
+                RuleModelAsText.OPTION_PRINT_OUTPUT_NAMES,
+                RuleModelAsText.OPTION_PRINT_NOMINAL_VALUES,
+                RuleModelAsText.OPTION_PRINT_BODIES,
+                RuleModelAsText.OPTION_PRINT_HEADS,
+                RuleModelAsText.OPTION_DECIMALS_BODY,
+                RuleModelAsText.OPTION_DECIMALS_HEAD,
             },
         )
 
@@ -66,7 +77,8 @@ class RuleModelAsTextExtension(Extension):
 
     def __create_log_sinks(self, args: Namespace, mode: ExperimentMode) -> list[Sink]:
         value, options = self.__create_argument_print_rules(mode).get_value_and_options(
-            args, default=OutputArguments.PRINT_ALL.get_value(args))
+            args, default=OutputArguments.PRINT_ALL.get_value(args)
+        )
 
         if value:
             return [LogSink(options=options, source_factory=TextFileSource)]
@@ -74,15 +86,18 @@ class RuleModelAsTextExtension(Extension):
 
     def __create_text_file_sinks(self, args: Namespace, mode: ExperimentMode) -> list[Sink]:
         value, options = self.__create_argument_save_rules(mode).get_value_and_options(
-            args, default=OutputArguments.SAVE_ALL.get_value(args))
+            args, default=OutputArguments.SAVE_ALL.get_value(args)
+        )
         base_dir = OutputArguments.BASE_DIR.get_value(args)
         result_directory = ResultDirectoryArguments.RESULT_DIR.get_value(args)
 
         if value and base_dir and result_directory:
             return [
-                TextFileSink(directory=base_dir / result_directory,
-                             create_directory=OutputArguments.CREATE_DIRS.get_value(args),
-                             options=options)
+                TextFileSink(
+                    directory=base_dir / result_directory,
+                    create_directory=OutputArguments.CREATE_DIRS.get_value(args),
+                    options=options,
+                )
             ]
         return []
 

@@ -23,6 +23,7 @@ class BodyStatistics:
         num_nominal_eq:     The number of nominal conditions using the == operator
         num_nominal_neq:    The number of nominal conditions using the != operator
     """
+
     num_numerical_leq: int = 0
     num_numerical_gr: int = 0
     num_ordinal_leq: int = 0
@@ -101,12 +102,14 @@ class BodyStatistics:
         return divide_or_zero(self.num_nominal_neq, self.num_conditions)
 
     def __add__(self, other: 'BodyStatistics') -> 'BodyStatistics':
-        return BodyStatistics(num_numerical_leq=self.num_numerical_leq + other.num_numerical_leq,
-                              num_numerical_gr=self.num_numerical_gr + other.num_numerical_gr,
-                              num_ordinal_leq=self.num_ordinal_leq + other.num_ordinal_leq,
-                              num_ordinal_gr=self.num_ordinal_gr + other.num_ordinal_gr,
-                              num_nominal_eq=self.num_nominal_eq + other.num_nominal_eq,
-                              num_nominal_neq=self.num_nominal_neq + other.num_nominal_neq)
+        return BodyStatistics(
+            num_numerical_leq=self.num_numerical_leq + other.num_numerical_leq,
+            num_numerical_gr=self.num_numerical_gr + other.num_numerical_gr,
+            num_ordinal_leq=self.num_ordinal_leq + other.num_ordinal_leq,
+            num_ordinal_gr=self.num_ordinal_gr + other.num_ordinal_gr,
+            num_nominal_eq=self.num_nominal_eq + other.num_nominal_eq,
+            num_nominal_neq=self.num_nominal_neq + other.num_nominal_neq,
+        )
 
 
 @dataclass
@@ -118,6 +121,7 @@ class HeadStatistics:
         num_positive_predictions:   The number of positive predictions
         num_negative_predictions:   The number of negative predictions
     """
+
     num_positive_predictions: int = 0
     num_negative_predictions: int = 0
 
@@ -143,8 +147,10 @@ class HeadStatistics:
         return 1 - self.fraction_positive_predictions
 
     def __add__(self, other: 'HeadStatistics') -> 'HeadStatistics':
-        return HeadStatistics(num_positive_predictions=self.num_positive_predictions + other.num_positive_predictions,
-                              num_negative_predictions=self.num_negative_predictions + other.num_negative_predictions)
+        return HeadStatistics(
+            num_positive_predictions=self.num_positive_predictions + other.num_positive_predictions,
+            num_negative_predictions=self.num_negative_predictions + other.num_negative_predictions,
+        )
 
 
 @dataclass
@@ -156,12 +162,15 @@ class RuleStatistics:
         body_statistics:    The statistics of the rule's body
         head_statistics:    The statistics of the rule's head
     """
+
     body_statistics: BodyStatistics = field(default_factory=BodyStatistics)
     head_statistics: HeadStatistics = field(default_factory=HeadStatistics)
 
     def __add__(self, other: 'RuleStatistics') -> 'RuleStatistics':
-        return RuleStatistics(body_statistics=self.body_statistics + other.body_statistics,
-                              head_statistics=self.head_statistics + other.head_statistics)
+        return RuleStatistics(
+            body_statistics=self.body_statistics + other.body_statistics,
+            head_statistics=self.head_statistics + other.head_statistics,
+        )
 
 
 @dataclass
@@ -173,6 +182,7 @@ class RuleModelStatistics:
         default_rule_statistics:    The statistics of the default rule, if any
         rule_statistics:            A list that stores the statistics all other rules
     """
+
     default_rule_statistics: RuleStatistics | None = None
     rule_statistics: list[RuleStatistics] = field(default_factory=list)
 

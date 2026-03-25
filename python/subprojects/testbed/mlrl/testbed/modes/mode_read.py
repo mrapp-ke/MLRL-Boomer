@@ -49,8 +49,9 @@ class ReadMode(InputMode):
 
         @override
         def _before_experiment(self, _: Experiment, state: ExperimentState) -> ExperimentState:
-            input_data = InputData(properties=AggregatedEvaluationResult.PROPERTIES,
-                                   context=AggregatedEvaluationResult.CONTEXT)
+            input_data = InputData(
+                properties=AggregatedEvaluationResult.PROPERTIES, context=AggregatedEvaluationResult.CONTEXT
+            )
 
             for dataset_type, evaluation_by_dataset in self.evaluation_by_dataset_type.items():
                 new_state = replace(state, dataset_type=dataset_type)
@@ -102,25 +103,33 @@ class ReadMode(InputMode):
             last_fold = options.get_int(DatasetSplitterArguments.OPTION_LAST_FOLD, default_value=0)
 
             if first_fold > 0 and first_fold == last_fold:
-                options = Options({
-                    key: value
-                    for key, value in options.dictionary.items() if key not in
-                    {DatasetSplitterArguments.OPTION_FIRST_FOLD, DatasetSplitterArguments.OPTION_LAST_FOLD}
-                })
-                return Command.with_argument(command, DatasetSplitterArguments.DATASET_SPLITTER.name,
-                                             value + str(options))
+                options = Options(
+                    {
+                        key: value
+                        for key, value in options.dictionary.items()
+                        if key
+                        not in {DatasetSplitterArguments.OPTION_FIRST_FOLD, DatasetSplitterArguments.OPTION_LAST_FOLD}
+                    }
+                )
+                return Command.with_argument(
+                    command, DatasetSplitterArguments.DATASET_SPLITTER.name, value + str(options)
+                )
 
         return command
 
     @staticmethod
     def __create_command_args(arguments: set[Argument], args: Namespace, command: Command) -> Namespace:
-        ignored_arguments = set(argument_name for argument_names in map(lambda arg: arg.names, arguments)
-                                for argument_name in argument_names)
+        ignored_arguments = set(
+            argument_name
+            for argument_names in map(lambda arg: arg.names, arguments)
+            for argument_name in argument_names
+        )
         return command.apply_to_namespace(args, ignore=ignored_arguments)
 
     @staticmethod
-    def __group_batch_by_dataset(arguments: set[Argument], args: Namespace,
-                                 batch: list[Command]) -> dict[str, list[tuple[Command, Namespace]]]:
+    def __group_batch_by_dataset(
+        arguments: set[Argument], args: Namespace, batch: list[Command]
+    ) -> dict[str, list[tuple[Command, Namespace]]]:
         commands_by_dataset: dict[str, list[tuple[Command, Namespace]]] = {}
 
         for command in batch:
@@ -132,16 +141,21 @@ class ReadMode(InputMode):
         return commands_by_dataset
 
     @staticmethod
-    def __run_single_experiment(args: Namespace, recipe: Recipe, input_directory: Path,
-                                command: Command) -> ExperimentState:
-        Log.info('The command "{}" has been used originally for running this experiment', str(command))
-        return OutputUtil(args=args, recipe=recipe, command=command,
-                          input_directory=input_directory).read_output_files()
+    def __run_single_experiment(
+        args: Namespace, recipe: Recipe, input_directory: Path, command: Command
+    ) -> ExperimentState:
+        Log.info(f'The command "{command}" has been used originally for running this experiment')
+        return OutputUtil(
+            args=args, recipe=recipe, command=command, input_directory=input_directory
+        ).read_output_files()
 
     @staticmethod
-    def __aggregate_evaluation(commands_and_their_states: list[tuple[Command, ExperimentState]],
-                               algorithmic_arguments: set[Argument], dataset_name: str,
-                               dataset_type: DatasetType) -> Table | None:
+    def __aggregate_evaluation(
+        commands_and_their_states: list[tuple[Command, ExperimentState]],
+        algorithmic_arguments: set[Argument],
+        dataset_name: str,
+        dataset_type: DatasetType,
+    ) -> Table | None:
         num_commands = len(commands_and_their_states)
 
         if num_commands > 1:
@@ -166,17 +180,19 @@ class ReadMode(InputMode):
 
             if num_missing > 0:
                 if num_tables > 0:
-                    Log.error('Evaluation results for {} data of the dataset "{}" are incomplete. {} of {} {} missing.',
-                              dataset_type, dataset_name, num_missing, num_commands,
-                              'files are' if num_missing > 1 else 'file is')
+                    Log.error(
+                        f'Evaluation results for {dataset_type} data of the dataset "{dataset_name}" are incomplete. '
+                        f'{num_missing} of {num_commands} {("files are" if num_missing > 1 else "file is")} missing.'
+                    )
             else:
                 return ReadMode.__aggregate_tables(commands_and_their_states, headers, tables)
 
         return None
 
     @staticmethod
-    def __aggregate_tables(commands_and_their_states: list[tuple[Command, ExperimentState]], headers: set[str],
-                           tables: list[Table]) -> Table:
+    def __aggregate_tables(
+        commands_and_their_states: list[tuple[Command, ExperimentState]], headers: set[str], tables: list[Table]
+    ) -> Table:
         aggregated_table = RowWiseTable.aggregate(*tables).to_column_wise_table()
 
         for position, header in enumerate(sorted(headers)):
@@ -184,7 +200,7 @@ class ReadMode(InputMode):
             unique_values: set[Cell] = set()
 
             for command, _ in commands_and_their_states:
-                argument_name = header[len(AggregatedEvaluationResult.COLUMN_PREFIX_PARAMETER):].lstrip()
+                argument_name = header[len(AggregatedEvaluationResult.COLUMN_PREFIX_PARAMETER) :].lstrip()
                 argument_value = command.argument_dict.get(argument_name)
                 column.append(argument_value)
                 unique_values.add(argument_value)
@@ -194,23 +210,36 @@ class ReadMode(InputMode):
 
         return aggregated_table
 
-    def __write_aggregated_evaluation_result(self, args: Namespace, recipe: Recipe, command: Command,
-                                             evaluation_by_dataset_type: dict[DatasetType, dict[str, Table]]):
-        experiment_builder = recipe.create_experiment_builder(experiment_mode=self.to_enum(),
-                                                              args=args,
-                                                              command=command,
-                                                              load_dataset=False)
+    def __write_aggregated_evaluation_result(
+        self,
+        args: Namespace,
+        recipe: Recipe,
+        command: Command,
+        evaluation_by_dataset_type: dict[DatasetType, dict[str, Table]],
+    ):
+        experiment_builder = recipe.create_experiment_builder(
+            experiment_mode=self.to_enum(), args=args, command=command, load_dataset=False
+        )
 
         experiment = experiment_builder.build(args)
         return ReadMode.AggregateEvaluationProcedure(evaluation_by_dataset_type).conduct_experiment(experiment)
 
     @override
-    def _run_experiment(self, control_arguments: set[Argument], algorithmic_arguments: set[Argument], args: Namespace,
-                        recipe: Recipe, meta_data: MetaData, input_directory: Path):
+    def _run_experiment(
+        self,
+        control_arguments: set[Argument],
+        algorithmic_arguments: set[Argument],
+        args: Namespace,
+        recipe: Recipe,
+        meta_data: MetaData,
+        input_directory: Path,
+    ):
         batch = self.__get_batch(control_arguments, args, meta_data)
         num_experiments = len(batch)
-        Log.info('Reading experimental results of {} {}...', num_experiments,
-                 'experiments' if num_experiments > 1 else 'experiment')
+        Log.info(
+            f'Reading experimental results of {num_experiments} '
+            f'{("experiments" if num_experiments > 1 else "experiment")}...'
+        )
         i = 1
 
         evaluation_by_dataset_type: dict[DatasetType, dict[str, Table]] = {}
@@ -219,16 +248,18 @@ class ReadMode(InputMode):
             commands_and_their_states: list[tuple[Command, ExperimentState]] = []
 
             for command, command_args in commands:
-                Log.info('\nReading experimental results of experiment ({} / {})...', i, num_experiments)
+                Log.info(f'\nReading experimental results of experiment ({i} / {num_experiments})...')
                 state = self.__run_single_experiment(command_args, recipe, input_directory, command)
                 commands_and_their_states.append((command, state))
                 i += 1
 
             for dataset_type in [DatasetType.TRAINING, DatasetType.TEST]:
-                table = self.__aggregate_evaluation(commands_and_their_states,
-                                                    algorithmic_arguments,
-                                                    dataset_name=dataset_name,
-                                                    dataset_type=dataset_type)
+                table = self.__aggregate_evaluation(
+                    commands_and_their_states,
+                    algorithmic_arguments,
+                    dataset_name=dataset_name,
+                    dataset_type=dataset_type,
+                )
 
                 if table:
                     evaluation_by_dataset = evaluation_by_dataset_type.setdefault(dataset_type, {})

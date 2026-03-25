@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Defines targets and modules for compiling Cython code.
 """
+
 from pathlib import Path
 
 from core.build_unit import BuildUnit
@@ -20,17 +21,19 @@ COMPILE_CYTHON = 'compile_cython'
 
 INSTALL_CYTHON = 'install_cython'
 
-TARGETS = TargetBuilder(BuildUnit.for_file(Path(__file__))) \
-    .add_build_target(SETUP_CYTHON) \
-        .depends_on(COMPILE_CPP) \
-        .set_runnables(SetupCython()) \
-    .add_phony_target(COMPILE_CYTHON) \
-        .depends_on(SETUP_CYTHON, clean_dependencies=True) \
-        .set_runnables(CompileCython()) \
-    .add_build_target(INSTALL_CYTHON) \
-        .depends_on(COMPILE_CYTHON) \
-        .set_runnables(InstallCython()) \
+TARGETS = (
+    TargetBuilder(BuildUnit.for_file(Path(__file__)))
+    .add_build_target(SETUP_CYTHON)
+    .depends_on(COMPILE_CPP)
+    .set_runnables(SetupCython())
+    .add_phony_target(COMPILE_CYTHON)
+    .depends_on(SETUP_CYTHON, clean_dependencies=True)
+    .set_runnables(CompileCython())
+    .add_build_target(INSTALL_CYTHON)
+    .depends_on(COMPILE_CYTHON)
+    .set_runnables(InstallCython())
     .build()
+)
 
 MODULES = [
     CompilationModule(

@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements modules that provide access to source code.
 """
+
 from pathlib import Path
 from typing import override
 
@@ -31,10 +32,12 @@ class CodeModule(Module):
         def matches(self, module: Module, _: ModuleRegistry) -> bool:
             return isinstance(module, CodeModule) and (not self.file_types or module.file_type in self.file_types)
 
-    def __init__(self,
-                 file_type: FileType,
-                 root_directory: Path,
-                 source_file_search: FileSearch = FileSearch().set_recursive(True)):
+    def __init__(
+        self,
+        file_type: FileType,
+        root_directory: Path,
+        source_file_search: FileSearch = FileSearch().set_recursive(True),
+    ):
         """
         :param file_type:           The `FileType` of the source files that belongs to the module
         :param root_directory:      The path to the module's root directory
@@ -54,4 +57,4 @@ class CodeModule(Module):
 
     @override
     def __str__(self) -> str:
-        return 'CodeModule {file_type="' + str(self.file_type) + '", root_directory="' + str(self.root_directory) + '"}'
+        return f'CodeModule {{file_type="{self.file_type}", root_directory="{self.root_directory}"}}'

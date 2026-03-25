@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utilities for reading and writing pyproject.toml files.
 """
+
 from pathlib import Path
 from typing import override
 

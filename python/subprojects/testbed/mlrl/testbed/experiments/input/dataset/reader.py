@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow reading datasets from one or several sources.
 """
+
 import sys
 
 from dataclasses import replace
@@ -48,7 +49,6 @@ class DatasetReader(InputReader):
 
                 if source.read_from_source(new_state, self.input_data):
                     return new_state
-            # pylint: disable=broad-exception-caught
             except Exception as error:
                 Log.error(str(error))
 

@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-# pylint: disable=missing-function-docstring
+
 import os
 
 from abc import ABC
@@ -33,33 +33,32 @@ class IntegrationTests(ABC):
         raise NotImplementedError('Method create_cmd_builder not implemented by test class')
 
     @ci_only
-    @pytest.mark.parametrize('mode', [
-        'single',
-        'batch',
-        'read',
-        'run',
-    ])
+    @pytest.mark.parametrize(
+        'mode',
+        [
+            'single',
+            'batch',
+            'read',
+            'run',
+        ],
+    )
     def test_help(self, mode: str):
-        builder = self.create_cmd_builder() \
-            .set_mode(mode) \
-            .set_show_help()
+        builder = self.create_cmd_builder().set_mode(mode).set_show_help()
         CmdRunner(builder).run(f'help-{mode}')
 
     def test_single_output(self, dataset: Dataset):
-        builder = self.create_cmd_builder(dataset=dataset.single_output) \
-            .print_evaluation()
+        builder = self.create_cmd_builder(dataset=dataset.single_output).print_evaluation()
         CmdRunner(builder).run('single-output')
 
     def test_model_persistence(self, dataset: Dataset):
         test_name = 'model-persistence'
-        builder = self.create_cmd_builder(dataset=dataset.default) \
-            .save_meta_data() \
-            .save_models() \
-            .load_models()
+        builder = self.create_cmd_builder(dataset=dataset.default).save_meta_data().save_models().load_models()
         CmdRunner(builder).run(test_name, wipe_after=False)
-        builder = self.create_cmd_builder() \
-            .set_mode(ExperimentMode.READ) \
-            .print_evaluation(False) \
-            .save_evaluation(False) \
+        builder = (
+            self.create_cmd_builder()
+            .set_mode(ExperimentMode.READ)
+            .print_evaluation(False)
+            .save_evaluation(False)
             .save_models()
+        )
         CmdRunner(builder).run(test_name, wipe_before=False)

@@ -30,8 +30,10 @@ class GlobalPredictionFunction(PredictionFunction):
             learner=learner,
             predict_function=learner.predict,
             decision_function=learner.decision_function
-            if callable(getattr(learner, 'decision_function', None)) else None,
-            predict_proba_function=learner.predict_proba if callable(getattr(learner, 'predict_proba', None)) else None)
+            if callable(getattr(learner, 'decision_function', None))
+            else None,
+            predict_proba_function=learner.predict_proba if callable(getattr(learner, 'predict_proba', None)) else None,
+        )
 
 
 class GlobalPredictor(Predictor):
@@ -40,20 +42,25 @@ class GlobalPredictor(Predictor):
     """
 
     @override
-    def obtain_predictions(self, learner: Any, dataset: Dataset, dataset_type: DatasetType,
-                           **kwargs) -> Generator[PredictionState, None, None]:
+    def obtain_predictions(
+        self, learner: Any, dataset: Dataset, dataset_type: DatasetType, **kwargs
+    ) -> Generator[PredictionState, None, None]:
         """
         See :func:`mlrl.testbed_sklearn.experiments.prediction.predictor.Predictor.obtain_predictions`
         """
-        Log.info('Predicting for {} {} examples...', dataset.num_examples, dataset_type)
+        Log.info(f'Predicting for {dataset.num_examples} {dataset_type} examples...')
         start_time = Timer.start()
         prediction_function = GlobalPredictionFunction(learner)
         predictions = prediction_function.invoke(dataset, self.prediction_type, **kwargs)
         prediction_duration = Timer.stop(start_time)
 
         if predictions is not None:
-            Log.success('Successfully predicted in {}', prediction_duration)
-            yield PredictionState(prediction_scope=GlobalPredictionScope(),
-                                  prediction_result=PredictionResult(predictions=predictions,
-                                                                     prediction_type=self.prediction_type,
-                                                                     prediction_duration=prediction_duration))
+            Log.success(f'Successfully predicted in {prediction_duration}')
+            yield PredictionState(
+                prediction_scope=GlobalPredictionScope(),
+                prediction_result=PredictionResult(
+                    predictions=predictions,
+                    prediction_type=self.prediction_type,
+                    prediction_duration=prediction_duration,
+                ),
+            )

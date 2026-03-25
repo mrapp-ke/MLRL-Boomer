@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing rule models as text that is part of output data.
 """
+
 from io import StringIO
 from typing import override
 
@@ -61,7 +62,7 @@ class RuleModelAsText(TextualOutputData):
                 RuleModelAsText.__format_conditions(text, body, dataset, options)
                 text.write('}')
             else:
-                raise ValueError('Unsupported type of body: ' + str(type(body)))
+                raise ValueError(f'Unsupported type of body: {type(body)}')
 
     @staticmethod
     def __format_head(text: StringIO, head: Head, dataset: TabularDataset, options: Options):
@@ -70,7 +71,7 @@ class RuleModelAsText(TextualOutputData):
         elif isinstance(head, PartialHead):
             RuleModelAsText.__format_partial_head(text, head, dataset, options)
         else:
-            raise ValueError('Unsupported type of head: ' + str(type(head)))
+            raise ValueError(f'Unsupported type of head: {type(head)}')
 
     @staticmethod
     def __format_conditions(text: StringIO, body: Body, dataset: TabularDataset, options: Options):
@@ -100,7 +101,7 @@ class RuleModelAsText(TextualOutputData):
                 nominal_value = int(threshold)
 
                 if print_nominal_values and len(feature.nominal_values) > nominal_value:
-                    text.write('"' + feature.nominal_values[nominal_value] + '"')
+                    text.write(f'"{feature.nominal_values[nominal_value]}"')
                 else:
                     text.write(str(nominal_value))
             else:

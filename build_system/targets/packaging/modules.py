@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements modules that provide access to Python code that can be built as wheel packages.
 """
+
 from collections.abc import Generator
 from os import environ
 from pathlib import Path
@@ -58,17 +59,21 @@ class PythonPackageModule(SubprojectModule):
             return SubprojectModule.Filter.from_env(environ).matches(module, module_registry)
 
         def __is_dependency_to_be_built(self, module: 'PythonPackageModule', module_registry: ModuleRegistry) -> bool:
-            modules_to_be_built = module_registry.lookup(PythonPackageModule.Filter.TypeFilter(),
-                                                         SubprojectModule.Filter.from_env(environ))
+            modules_to_be_built = module_registry.lookup(
+                PythonPackageModule.Filter.TypeFilter(), SubprojectModule.Filter.from_env(environ)
+            )
             return any(
                 self.__is_dependency_of_module(module, cast(PythonPackageModule, module_to_be_built), module_registry)
-                for module_to_be_built in modules_to_be_built)
+                for module_to_be_built in modules_to_be_built
+            )
 
-        def __is_dependency_of_module(self,
-                                      module: 'PythonPackageModule',
-                                      other_module: 'PythonPackageModule',
-                                      module_registry: ModuleRegistry,
-                                      dependencies_to_be_skipped: set[str] | None = None) -> bool:
+        def __is_dependency_of_module(
+            self,
+            module: 'PythonPackageModule',
+            other_module: 'PythonPackageModule',
+            module_registry: ModuleRegistry,
+            dependencies_to_be_skipped: set[str] | None = None,
+        ) -> bool:
             package_name = module.get_package_name(self.build_unit)
             dependency_names = other_module.get_dependency_names(self.build_unit)
 
@@ -82,8 +87,12 @@ class PythonPackageModule(SubprojectModule):
                 dependency_package_name = dependency_module.get_package_name(self.build_unit)
 
                 if dependency_package_name not in dependencies_to_be_skipped:
-                    if self.__is_dependency_of_module(module, dependency_module, module_registry,
-                                                      dependencies_to_be_skipped | {dependency_package_name}):
+                    if self.__is_dependency_of_module(
+                        module,
+                        dependency_module,
+                        module_registry,
+                        dependencies_to_be_skipped | {dependency_package_name},
+                    ):
                         return True
 
             return False
@@ -95,7 +104,8 @@ class PythonPackageModule(SubprojectModule):
         def matches(self, module: Module, module_registry: ModuleRegistry) -> bool:
             return PythonPackageModule.Filter.TypeFilter().matches(module, module_registry) and (
                 self.__needs_to_be_built(cast(PythonPackageModule, module), module_registry)
-                or self.__is_dependency_to_be_built(cast(PythonPackageModule, module), module_registry))
+                or self.__is_dependency_to_be_built(cast(PythonPackageModule, module), module_registry)
+            )
 
     def __init__(self, root_directory: Path, wheel_directory_name: str):
         """
@@ -151,8 +161,9 @@ class PythonPackageModule(SubprojectModule):
 
         return pyproject_toml_file.dependencies
 
-    def get_dependencies(self, build_unit: BuildUnit,
-                         module_registry: ModuleRegistry) -> Generator['PythonPackageModule', None, None]:
+    def get_dependencies(
+        self, build_unit: BuildUnit, module_registry: ModuleRegistry
+    ) -> Generator['PythonPackageModule', None, None]:
         """
         Retries and returns the modules that are dependencies of the package from the pyproject.toml file.
 
@@ -189,13 +200,16 @@ class PythonPackageModule(SubprojectModule):
 
         :return: The path to the wheel package or None, if no such package has been found
         """
-        wheels = FileSearch() \
-            .filter_by_substrings(contains=str(Project.version(release=True)), ends_with='.whl') \
+        wheels = (
+            FileSearch()
+            .filter_by_substrings(contains=str(Project.version(release=True)), ends_with='.whl')
             .list(self.wheel_directory)
+        )
         if wheels and len(wheels) > 1:
             Log.error(
-                'Found multiple wheel packages in directory "%s": \n\n%s\n\nRun "build_wheel --clean" to delete them.',
-                self.wheel_directory, format_iterable(wheels, separator='\n'))
+                f'Found multiple wheel packages in directory "{self.wheel_directory}":\n\n'
+                f'{format_iterable(wheels, separator="\n")}\n\nRun "build_wheel --clean" to delete them.'
+            )
         return wheels[0] if wheels else None
 
     @property
@@ -212,4 +226,4 @@ class PythonPackageModule(SubprojectModule):
 
     @override
     def __str__(self) -> str:
-        return 'PythonPackageModule {root_directory="' + str(self.root_directory) + '"}'
+        return f'PythonPackageModule {{root_directory="{self.root_directory}"}}'

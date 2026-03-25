@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for creating tables.
 """
+
 from typing import override
 
 from core.build_unit import BuildUnit
@@ -44,6 +45,6 @@ class Table:
     @override
     def __str__(self) -> str:
         PackageManager.install_packages(RequirementsFiles.for_build_unit(self.build_unit), 'tabulate')
-        # pylint: disable=import-outside-toplevel
         from tabulate import tabulate
+
         return tabulate(self.rows, headers=self.headers)

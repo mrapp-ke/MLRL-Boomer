@@ -11,8 +11,10 @@ import numpy as np
 
 from sklearn.utils.multiclass import is_multilabel
 
-from mlrl.testbed_sklearn.experiments.output.evaluation.measures_classification import \
-    MULTI_LABEL_EVALUATION_MEASURES, SINGLE_LABEL_EVALUATION_MEASURES
+from mlrl.testbed_sklearn.experiments.output.evaluation.measures_classification import (
+    MULTI_LABEL_EVALUATION_MEASURES,
+    SINGLE_LABEL_EVALUATION_MEASURES,
+)
 from mlrl.testbed_sklearn.experiments.output.evaluation.writer import EvaluationDataExtractor
 
 from mlrl.testbed.experiments.output.data import OutputValue
@@ -29,8 +31,9 @@ class ClassificationEvaluationDataExtractor(EvaluationDataExtractor):
     """
 
     @override
-    def _update_measurements(self, measurements: Measurements, index: int, ground_truth: Any, predictions: Any,
-                             options: Options):
+    def _update_measurements(
+        self, measurements: Measurements, index: int, ground_truth: Any, predictions: Any, options: Options
+    ):
         if is_multilabel(ground_truth):
             evaluation_measures = OutputValue.filter_values(MULTI_LABEL_EVALUATION_MEASURES, options)
         else:

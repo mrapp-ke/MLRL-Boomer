@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility classes for accessing the project's GitHub workflows.
 """
+
 from functools import cached_property
 from typing import Any
 

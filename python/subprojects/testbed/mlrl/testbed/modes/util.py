@@ -61,12 +61,9 @@ class OutputUtil:
 
             return state
 
-    def __init__(self,
-                 args: Namespace,
-                 recipe: Recipe,
-                 command: Command,
-                 input_directory: Path,
-                 file_sinks_only: bool = False):
+    def __init__(
+        self, args: Namespace, recipe: Recipe, command: Command, input_directory: Path, file_sinks_only: bool = False
+    ):
         """
         :param args:            The command line arguments provided by the user
         :param recipe:          A `Recipe` that provides access to the ingredients that are needed for setting up
@@ -76,10 +73,9 @@ class OutputUtil:
         :param file_sinks_only: True, if sources should only be considered if they result from a `FileSink`, False
                                 otherwise
         """
-        experiment_builder = recipe.create_experiment_builder(experiment_mode=ExperimentMode.READ,
-                                                              args=args,
-                                                              command=command,
-                                                              load_dataset=False)
+        experiment_builder = recipe.create_experiment_builder(
+            experiment_mode=ExperimentMode.READ, args=args, command=command, load_dataset=False
+        )
         command_args = command.to_namespace()
 
         for output_writer in sorted(experiment_builder.output_writers, key=str):

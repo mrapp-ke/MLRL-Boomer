@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for testing C++ code.
 """
+
 from typing import cast, override
 
 from core.build_unit import BuildUnit

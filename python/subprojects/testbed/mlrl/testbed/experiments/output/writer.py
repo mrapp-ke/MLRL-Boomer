@@ -147,18 +147,20 @@ class OutputWriter:
     Allows to write output data to one or several sinks.
     """
 
-    def __extract_data_from_extractor(self, extractor: DataExtractor,
-                                      state: ExperimentState) -> list[tuple[ExperimentState, OutputData]]:
+    def __extract_data_from_extractor(
+        self, extractor: DataExtractor, state: ExperimentState
+    ) -> list[tuple[ExperimentState, OutputData]]:
         try:
             return extractor.extract_data(state, self.sinks)
-        # pylint: disable=broad-exception-caught
         except Exception as error:
             if self.output_error_policy == OutputErrorPolicy.EXIT:
                 raise error
 
-            Log.error('Failed to extract output data from experimental state via extractor of type {}',
-                      type(extractor).__name__,
-                      error=error)
+            Log.error(
+                f'Failed to extract output data from experimental state via extractor of type '
+                f'{type(extractor).__name__}',
+                error=error,
+            )
             return []
 
     def __extract_data(self, state: ExperimentState) -> list[tuple[ExperimentState, OutputData]]:
@@ -171,22 +173,21 @@ class OutputWriter:
                 if result:
                     return result
         else:
-            Log.warning('No extractors have been added to output writer of type {}', type(self).__name__)
+            Log.warning(f'No extractors have been added to output writer of type {type(self).__name__}')
 
         return []
 
     def __write_to_sink(self, sink: Sink, state: ExperimentState, output_data: OutputData):
         try:
             self._write_to_sink(sink, state, output_data)
-        # pylint: disable=broad-exception-caught
         except Exception as error:
             if self.output_error_policy == OutputErrorPolicy.EXIT:
                 raise error
 
-            Log.error('Failed to write output data of type "{}" to sink {}',
-                      type(output_data).__name__,
-                      type(sink).__name__,
-                      error=error)
+            Log.error(
+                f'Failed to write output data of type "{type(output_data).__name__}" to sink {type(sink).__name__}',
+                error=error,
+            )
 
     def __init__(self, *extractors: DataExtractor):
         """
@@ -248,7 +249,6 @@ class OutputWriter:
         """
         return list(filter(None, map(lambda sink: sink.create_source(input_directory), self.sinks)))
 
-    # pylint: disable=unused-argument
     def create_input_reader(self, args: Namespace, input_directory: Path) -> InputReader | None:
         """
         May be overridden by subclasses in order to create an `InputReader` that can read the data produced by this

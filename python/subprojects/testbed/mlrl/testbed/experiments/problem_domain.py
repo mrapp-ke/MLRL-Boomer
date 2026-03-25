@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for implementing different kinds of problem domains.
 """
+
 from abc import ABC, abstractmethod
 from typing import override
 

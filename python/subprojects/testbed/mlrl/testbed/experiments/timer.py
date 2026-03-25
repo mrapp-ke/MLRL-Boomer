@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utilities for measuring time.
 """
+
 from dataclasses import dataclass
 from functools import reduce
 from timeit import default_timer as current_time
@@ -22,6 +23,7 @@ class Timer:
         Attributes:
             value: The value (in fractional seconds) representing the duration
         """
+
         value: float = 0.0
 
         @override
@@ -38,23 +40,25 @@ class Timer:
             substrings = []
 
             if days > 0:
-                substrings.append(str(days) + ' day' + ('' if days == 1 else 's'))
+                substrings.append(f'{days} day{("" if days == 1 else "s")}')
 
             if hours > 0:
-                substrings.append(str(hours) + ' hour' + ('' if hours == 1 else 's'))
+                substrings.append(f'{hours} hour{("" if hours == 1 else "s")}')
 
             if minutes > 0:
-                substrings.append(str(minutes) + ' minute' + ('' if minutes == 1 else 's'))
+                substrings.append(f'{minutes} minute{("" if minutes == 1 else "s")}')
 
             if seconds > 0:
-                substrings.append(str(seconds) + ' second' + ('' if seconds == 1 else 's'))
+                substrings.append(f'{seconds} second{("" if seconds == 1 else "s")}')
 
             if millis > 0 or len(substrings) == 0:
-                substrings.append(str(millis) + ' millisecond' + ('' if millis == 1 else 's'))
+                substrings.append(f'{millis} millisecond{("" if millis == 1 else "s")}')
 
             return reduce(
                 lambda aggr, x: aggr + ((' and ' if x[0] == len(substrings) - 1 else ', ') if aggr else '') + x[1],
-                enumerate(substrings), '')
+                enumerate(substrings),
+                '',
+            )
 
     @dataclass
     class Time:
@@ -64,6 +68,7 @@ class Timer:
         Attributes:
             time: The time in "float seconds"
         """
+
         time: float
 
         def __sub__(self, other: 'Timer.Time') -> 'Timer.Duration':

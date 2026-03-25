@@ -77,11 +77,10 @@ class FileSink(Sink, ABC):
         if self.create_directory:
             directory.mkdir(parents=True, exist_ok=True)
 
-        file_path = FilePath(directory=directory,
-                             file_name=output_data.properties.file_name,
-                             suffix=self.suffix,
-                             context=context).resolve(state)
-        Log.verbose('Writing output data to file "{}"...', file_path)
+        file_path = FilePath(
+            directory=directory, file_name=output_data.properties.file_name, suffix=self.suffix, context=context
+        ).resolve(state)
+        Log.verbose(f'Writing output data to file "{file_path}"...')
         self._write_to_file(file_path, state, output_data, **kwargs)
 
     @abstractmethod
@@ -113,8 +112,9 @@ class TabularFileSink(FileSink, ABC):
     @override
     def _write_to_file(self, file_path: Path, state: ExperimentState, output_data: OutputData, **kwargs):
         if not isinstance(output_data, TabularOutputData):
-            raise ValueError('Output data of type "' + type(output_data).__name__
-                             + '" cannot be converted into a tabular representation')
+            raise ValueError(
+                f'Output data of type "{type(output_data).__name__}" cannot be converted into a tabular representation'
+            )
 
         tabular_data = output_data.to_table(self.options, **kwargs)
 
@@ -150,8 +150,7 @@ class DatasetFileSink(FileSink, ABC):
     @override
     def _write_to_file(self, file_path: Path, state: ExperimentState, output_data: OutputData, **kwargs):
         if not isinstance(output_data, DatasetOutputData):
-            raise ValueError('Output data of type "' + type(output_data).__name__
-                             + '" cannot be converted into a dataset')
+            raise ValueError(f'Output data of type "{type(output_data).__name__}" cannot be converted into a dataset')
 
         dataset = output_data.to_dataset(self.options, **kwargs)
 

@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements modules that provide access to automated tests for C++ code.
 """
+
 from pathlib import Path
 from typing import override
 
@@ -42,4 +43,4 @@ class CppTestModule(TestModule):
 
     @override
     def __str__(self) -> str:
-        return 'CppTestModule {root_directory="' + str(self.root_directory) + '"}'
+        return f'CppTestModule {{root_directory="{self.root_directory}"}}'

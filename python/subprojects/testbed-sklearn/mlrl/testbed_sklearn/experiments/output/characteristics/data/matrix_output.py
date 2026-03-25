@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that provide access to characteristics of values, associated with one or several outputs.
 """
+
 from functools import cached_property
 
 import numpy as np

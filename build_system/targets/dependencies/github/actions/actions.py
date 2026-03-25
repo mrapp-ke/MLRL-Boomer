@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for checking the project's GitHub workflows for outdated Actions.
 """
+
 from dataclasses import dataclass, replace
 from functools import cached_property, reduce
 from typing import Any, override
@@ -24,6 +25,7 @@ class ActionVersion:
     Attributes:
         version: The full version string
     """
+
     version: str
 
     SEPARATOR = '.'
@@ -74,6 +76,7 @@ class Action:
         name:       The name of the Action
         version:    The version of the Action
     """
+
     name: str
     version: ActionVersion
 
@@ -90,8 +93,7 @@ class Action:
         parts = uses_clause.split(Action.SEPARATOR)
 
         if len(parts) != 2:
-            raise ValueError('Uses-clause must contain the symbol + "' + Action.SEPARATOR + '", but got "' + uses_clause
-                             + '"')
+            raise ValueError(f'Uses-clause must contain the symbol + "{Action.SEPARATOR}", but got "{uses_clause}"')
 
         return Action(name=parts[0], version=ActionVersion(parts[1]))
 
@@ -140,8 +142,7 @@ class Actions(Workflow):
                     try:
                         actions.add(Action.from_uses_clause(uses_clause))
                     except ValueError as error:
-                        raise RuntimeError('Failed to parse uses-clause in workflow "' + str(self.file)
-                                           + '"') from error
+                        raise RuntimeError(f'Failed to parse uses-clause in workflow "{self.file}"') from error
 
         return actions
 
@@ -152,9 +153,10 @@ class Actions(Workflow):
         :param updated_actions: The actions to be updated
         """
         updated_actions_by_name: dict[str, Action] = {}
-        updated_actions_by_name = reduce(lambda aggr, action: aggr | {action.name: action}, updated_actions,
-                                         updated_actions_by_name)
-        uses_prefix = self.TAG_USES + ':'
+        updated_actions_by_name = reduce(
+            lambda aggr, action: aggr | {action.name: action}, updated_actions, updated_actions_by_name
+        )
+        uses_prefix = f'{self.TAG_USES}:'
         updated_lines = []
 
         for line in self.lines:
@@ -162,7 +164,7 @@ class Actions(Workflow):
             line_stripped = line.strip()
 
             if line_stripped.startswith(uses_prefix) and not line_stripped.endswith(tuple(FileType.yaml().suffixes)):
-                uses_clause = line_stripped[len(uses_prefix):].strip()
+                uses_clause = line_stripped[len(uses_prefix) :].strip()
                 uses_action = Action.from_uses_clause(uses_clause)
                 updated_action = updated_actions_by_name.get(uses_action.name)
 
@@ -195,6 +197,7 @@ class ActionUpdater(Workflows):
             action:         The outdated Action
             latest_version: The latest version of the Action
         """
+
         action: Action
         latest_version: ActionVersion
 
@@ -219,6 +222,7 @@ class ActionUpdater(Workflows):
             previous:   The previous Action
             updated:    The updated Action
         """
+
         previous: 'ActionUpdater.OutdatedAction'
         updated: Action
 
@@ -246,14 +250,15 @@ class ActionUpdater(Workflows):
 
             return ActionVersion(latest_tag)
         except RuntimeError as error:
-            raise RuntimeError('Unable to determine latest version of action "' + str(action)
-                               + '" hosted in repository "' + repository_name + '"') from error
+            raise RuntimeError(
+                f'Unable to determine latest version of action "{action}" hosted in repository "{repository_name}"'
+            ) from error
 
     def __get_latest_action_version(self, action: Action) -> ActionVersion:
         latest_version = self.version_cache.get(action.name)
 
         if not latest_version:
-            Log.info('Checking version of GitHub Action "%s"...', action.name)
+            Log.info(f'Checking version of GitHub Action "{action.name}"...')
             latest_version = self.__query_latest_action_version(action)
             self.version_cache[action.name] = latest_version
 
@@ -277,7 +282,7 @@ class ActionUpdater(Workflows):
         outdated_workflows: dict[Actions, set[ActionUpdater.OutdatedAction]] = {}
 
         for workflow in self.workflows:
-            Log.info('Searching for GitHub Actions in workflow "%s"...', workflow.file)
+            Log.info(f'Searching for GitHub Actions in workflow "{workflow.file}"...')
             workflow = Actions(self.build_unit, file=workflow.file)
 
             for action in workflow.actions:

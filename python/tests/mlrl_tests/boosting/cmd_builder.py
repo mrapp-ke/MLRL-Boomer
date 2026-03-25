@@ -1,6 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+
 from ..common.cmd_builder import RuleLearnerCmdBuilderMixin
 
 from mlrl.common.config.parameters import GlobalPruningParameter

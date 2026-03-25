@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing meta-data.
 """
+
 from dataclasses import dataclass, field
 from datetime import datetime
 from importlib.metadata import version
@@ -23,6 +24,7 @@ class MetaData:
         version:        The version of MLRL-Testbed used for running the command
         timestamp:      The date and time when the command was run
     """
+
     command: Command = field(default_factory=Command.from_argv)
     child_commands: list[Command] = field(default_factory=list)
     version: Version = field(default_factory=lambda: Version.parse(version('mlrl-testbed'), skip_on_error=True))

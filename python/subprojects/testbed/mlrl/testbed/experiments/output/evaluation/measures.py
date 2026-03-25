@@ -3,6 +3,7 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for implementing evaluation measures.
 """
+
 from collections.abc import Iterable
 from typing import Any, Callable
 
@@ -18,13 +19,15 @@ class Measure(OutputValue):
 
     EvaluationFunction = Callable[[Any, Any], float]
 
-    def __init__(self,
-                 option_key: str,
-                 name: str,
-                 evaluation_function: 'EvaluationFunction',
-                 smaller_is_better: bool = False,
-                 percentage: bool = True,
-                 **kwargs):
+    def __init__(
+        self,
+        option_key: str,
+        name: str,
+        evaluation_function: 'EvaluationFunction',
+        smaller_is_better: bool = False,
+        percentage: bool = True,
+        **kwargs,
+    ):
         """
         :param option_key:          The key of the option that can be used for filtering
         :param name:                The name of the value
@@ -33,9 +36,9 @@ class Measure(OutputValue):
         :param percentage:          True, if the values can be formatted as a percentage, False otherwise
         :param kwargs:              Optional keyword arguments to be passed to the evaluation function
         """
-        super().__init__(option_key=option_key,
-                         name=name + ' (' + ('↓' if smaller_is_better else '↑') + ')',
-                         percentage=percentage)
+        super().__init__(
+            option_key=option_key, name=f'{name} ({("↓" if smaller_is_better else "↑")})', percentage=percentage
+        )
         self.unformatted_name = name
         self.evaluation_function = evaluation_function
         self.smaller_is_better = smaller_is_better
@@ -49,7 +52,7 @@ class Measure(OutputValue):
         :param measure_name:    Name of the measure
         :return:                True, if smaller values are better than larger ones, False otherwise
         """
-        return any(measure_name.find('(' + string + ')') >= 0 for string in ['↓', Measure.UNIT_SECONDS])
+        return any(measure_name.find(f'({string})') >= 0 for string in ['↓', Measure.UNIT_SECONDS])
 
     def evaluate(self, ground_truth: Any, predictions: Any) -> float:
         """
@@ -71,12 +74,14 @@ class AggregationMeasure(OutputValue):
 
     AggregationFunction = Callable[[list[float], bool], Iterable[float]]
 
-    def __init__(self,
-                 option_key: str,
-                 name: str,
-                 aggregation_function: 'AggregationFunction',
-                 can_be_averaged: bool = True,
-                 **kwargs):
+    def __init__(
+        self,
+        option_key: str,
+        name: str,
+        aggregation_function: 'AggregationFunction',
+        can_be_averaged: bool = True,
+        **kwargs,
+    ):
         """
         :param option_key:              The key of the option that can be used for filtering
         :param name:                    The name of the value

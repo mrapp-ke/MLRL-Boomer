@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Defines command line arguments for configuring the functionality to split datasets into training and test datasets.
 """
+
 from mlrl.util.cli import NONE, IntArgument, SetArgument
 
 
@@ -36,6 +37,6 @@ class DatasetSplitterArguments:
         values={
             NONE: {},
             VALUE_TRAIN_TEST: {OPTION_TEST_SIZE},
-            VALUE_CROSS_VALIDATION: {OPTION_NUM_FOLDS, OPTION_FIRST_FOLD, OPTION_LAST_FOLD}
+            VALUE_CROSS_VALIDATION: {OPTION_NUM_FOLDS, OPTION_FIRST_FOLD, OPTION_LAST_FOLD},
         },
     )

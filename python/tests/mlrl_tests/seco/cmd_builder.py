@@ -1,13 +1,18 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+
 from ..cmd_builder import CmdBuilder
 from ..cmd_builder_classification import ClassificationCmdBuilder
 from ..common.cmd_builder import RuleLearnerCmdBuilderMixin
 from ..datasets import Dataset
 
-from mlrl.seco.config.parameters import HEURISTIC_ACCURACY, HEURISTIC_F_MEASURE, HeadTypeParameter, \
-    LiftFunctionParameter
+from mlrl.seco.config.parameters import (
+    HEURISTIC_ACCURACY,
+    HEURISTIC_F_MEASURE,
+    HeadTypeParameter,
+    LiftFunctionParameter,
+)
 
 
 class SeCoClassifierCmdBuilder(ClassificationCmdBuilder, RuleLearnerCmdBuilderMixin):
@@ -16,11 +21,13 @@ class SeCoClassifierCmdBuilder(ClassificationCmdBuilder, RuleLearnerCmdBuilderMi
     """
 
     def __init__(self, dataset: str = Dataset.EMOTIONS):
-        super().__init__(expected_output_dir=CmdBuilder.EXPECTED_OUTPUT_DIR / 'seco' / 'classification',
-                         input_dir=CmdBuilder.INPUT_DIR / 'seco',
-                         batch_config=CmdBuilder.CONFIG_DIR / 'seco' / 'classification' / 'batch_config.yml',
-                         runnable_module_name='mlrl.seco',
-                         dataset=dataset)
+        super().__init__(
+            expected_output_dir=CmdBuilder.EXPECTED_OUTPUT_DIR / 'seco' / 'classification',
+            input_dir=CmdBuilder.INPUT_DIR / 'seco',
+            batch_config=CmdBuilder.CONFIG_DIR / 'seco' / 'classification' / 'batch_config.yml',
+            runnable_module_name='mlrl.seco',
+            dataset=dataset,
+        )
 
     def heuristic(self, heuristic: str | None = HEURISTIC_F_MEASURE):
         """

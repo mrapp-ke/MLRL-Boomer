@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for generating API documentations for C++ code.
 """
+
 from pathlib import Path
 from typing import cast, override
 
@@ -30,7 +31,7 @@ class ApidocCpp(BuildTarget.Runnable):
     @override
     def run(self, build_unit: BuildUnit, module: Module):
         apidoc_module = cast(CppApidocModule, module)
-        Log.info('Generating C++ API documentation for directory "%s"...', apidoc_module.root_directory)
+        Log.info(f'Generating C++ API documentation for directory "{apidoc_module.root_directory}"...')
         Doxygen(build_unit, apidoc_module).run()
         BreatheApidoc(build_unit, apidoc_module).run()
 
@@ -47,7 +48,7 @@ class ApidocCpp(BuildTarget.Runnable):
     @override
     def get_clean_files(self, build_unit: BuildUnit, module: Module) -> list[Path]:
         apidoc_module = cast(CppApidocModule, module)
-        Log.info('Removing C++ API documentation for directory "%s"...', apidoc_module.root_directory)
+        Log.info(f'Removing C++ API documentation for directory "{apidoc_module.root_directory}"...')
         return super().get_clean_files(build_unit, module)
 
 
@@ -70,5 +71,5 @@ class UpdateDoxyfile(PhonyTarget.Runnable):
 
     @override
     def run_all(self, build_unit: BuildUnit, _: list[Module]):
-        Log.info('Updating Doxyfile in directory "%s"...', build_unit.root_directory)
+        Log.info(f'Updating Doxyfile in directory "{build_unit.root_directory}"...')
         DoxygenUpdate(build_unit).run()

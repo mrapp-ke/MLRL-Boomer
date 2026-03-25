@@ -1,6 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+
 import csv
 import re as regex
 
@@ -38,7 +39,7 @@ class Difference(ABC):
 
     @override
     def __str__(self) -> str:
-        return 'Found unexpected content in file "' + str(self.file) + '"'
+        return f'Found unexpected content in file "{self.file}"'
 
 
 class FileComparison(ABC):
@@ -65,9 +66,9 @@ class FileComparison(ABC):
 
         @override
         def __str__(self) -> str:
-            text = 'Line ' + str(self.line_index + 1) + ' is unexpected according to file "' + str(self.file) + '".\n\n'
-            text += 'Expected:\n' + self.expected_line + '\n\n'
-            text += 'Actual:\n' + self.actual_line
+            text = f'Line {self.line_index + 1} is unexpected according to file "{self.file}".\n\n'
+            text += f'Expected:\n{self.expected_line}\n\n'
+            text += f'Actual:\n{self.actual_line}'
             return text
 
     @staticmethod
@@ -78,11 +79,11 @@ class FileComparison(ABC):
         :param file:    The path to the file
         :return:        The `FileComparison` that has been created
         """
-        if file.name == InputMetaData.FILENAME + '.' + YamlFileSource.SUFFIX_YAML:
+        if file.name == f'{InputMetaData.FILENAME}.{YamlFileSource.SUFFIX_YAML}':
             return MetaDataFileComparison(file)
-        if file.suffix == '.' + PickleFileSource.SUFFIX_PICKLE:
+        if file.suffix == f'.{PickleFileSource.SUFFIX_PICKLE}':
             return PickleFileComparison(file)
-        if file.suffix == '.' + CsvFileSource.SUFFIX_CSV:
+        if file.suffix == f'.{CsvFileSource.SUFFIX_CSV}':
             return CsvFileComparison(file)
 
         with open(file, mode='r', encoding=ENCODING_UTF8) as text_file:
@@ -135,7 +136,7 @@ class TextFileComparison(FileComparison):
                 return line
             if line.startswith('--') or line.startswith('"'):
                 return line
-            return line[:self.block_of_durations[1]].rstrip()
+            return line[: self.block_of_durations[1]].rstrip()
 
         column_index = line.find('Prediction Time (seconds)')
         column_index = column_index if column_index >= 0 else line.find('Training Time (seconds)')
@@ -145,18 +146,21 @@ class TextFileComparison(FileComparison):
             return line
 
         regex_duration = '(\\d+ (day(s)*|hour(s)*|minute(s)*|second(s)*|millisecond(s)*))'
-        return regex.sub(regex_duration + '((, )' + regex_duration + ')*' + '(( and )' + regex_duration + ')?',
-                         PLACEHOLDER_DURATION, line)
+        return regex.sub(
+            regex_duration + '((, )' + regex_duration + ')*' + '(( and )' + regex_duration + ')?',
+            PLACEHOLDER_DURATION,
+            line,
+        )
 
     @staticmethod
     def __replace_timestamps_with_placeholders(line: str) -> str:
         regex_timestamp = r'"\d\d\d\d-\d\d-\d\d_\d\d-\d\d"'
-        return regex.sub(regex_timestamp, '"' + PLACEHOLDER_TIMESTAMP + '"', line)
+        return regex.sub(regex_timestamp, f'"{PLACEHOLDER_TIMESTAMP}"', line)
 
     @staticmethod
     def __replace_versions_with_placeholders(line: str) -> str:
         regex_version = r'"\d+.\d+.\d+"'
-        return regex.sub(regex_version, '"' + PLACEHOLDER_VERSION + '"', line)
+        return regex.sub(regex_version, f'"{PLACEHOLDER_VERSION}"', line)
 
     def __mask_line(self, line_index: int, line: str) -> str:
         masked_line = self.__replace_durations_with_placeholders(line_index, line.rstrip())
@@ -180,10 +184,9 @@ class TextFileComparison(FileComparison):
                 expected_line = expected_line.rstrip()
 
                 if actual_line != expected_line:
-                    return FileComparison.LineDifference(line_index=line_index,
-                                                         actual_line=actual_line,
-                                                         expected_line=expected_line,
-                                                         file=another_file)
+                    return FileComparison.LineDifference(
+                        line_index=line_index, actual_line=actual_line, expected_line=expected_line, file=another_file
+                    )
 
         return None
 
@@ -191,7 +194,7 @@ class TextFileComparison(FileComparison):
     def _write(self, file: Path):
         with open(file, 'w+', encoding=ENCODING_UTF8) as output_file:
             for line_index, line in enumerate(self.lines):
-                output_file.write(self.__mask_line(line_index, line) + '\n')
+                output_file.write(f'{self.__mask_line(line_index, line)}\n')
 
 
 class PickleFileComparison(FileComparison):
@@ -208,7 +211,7 @@ class PickleFileComparison(FileComparison):
     @override
     def _compare(self, another_file: Path) -> Difference | None:
         if not another_file.is_file():
-            raise IOError('File "' + str(another_file) + '" does not exist')
+            raise IOError(f'File "{another_file}" does not exist')
         return None
 
     @override
@@ -226,8 +229,14 @@ class CsvFileComparison(FileComparison):
         A difference between two CSV files that have different numbers of rows or columns.
         """
 
-        def __init__(self, file: Path, num_expected_rows: int, num_expected_columns: int, num_actual_rows: int,
-                     num_actual_columns: int):
+        def __init__(
+            self,
+            file: Path,
+            num_expected_rows: int,
+            num_expected_columns: int,
+            num_actual_rows: int,
+            num_actual_columns: int,
+        ):
             """
             :param file:                    The path to the file that has been compared
             :param num_expected_rows:       The expected number of rows
@@ -243,9 +252,10 @@ class CsvFileComparison(FileComparison):
 
         @override
         def __str__(self) -> str:
-            return 'CSV file should have ' + str(self.num_expected_rows) + ' rows and ' + str(
-                self.num_expected_columns) + ' columns according to file "' + str(self.file) + '", but has ' + str(
-                    self.num_actual_rows) + ' rows and ' + str(self.num_actual_columns) + ' columns'
+            return (
+                f'CSV file should have {self.num_expected_rows} rows and {self.num_expected_columns} columns according '
+                f'to file "{self.file}", but has {self.num_actual_rows} rows and {self.num_actual_columns} columns'
+            )
 
     class CellDifferences(Difference):
         """
@@ -264,6 +274,7 @@ class CsvFileComparison(FileComparison):
                  actual_value:      The actual value in the cell
                  header:            The header of the column, the cell belongs to
             """
+
             row_index: int
             column_index: int
             expected_value: Any
@@ -272,10 +283,10 @@ class CsvFileComparison(FileComparison):
 
             @override
             def __str__(self) -> str:
-                return 'row ' + str(self.row_index
-                                    + 1) + ', column ' + str(self.column_index + 1) + ' with header "' + str(
-                                        self.header) + '": Value should be "' + str(
-                                            self.expected_value) + '", but is "' + str(self.actual_value) + '"'
+                return (
+                    f'row {self.row_index + 1}, column {self.column_index + 1} with header "{self.header}": Value '
+                    f'should be "{self.expected_value}", but is "{self.actual_value}"'
+                )
 
         def __init__(self, file: Path, different_cells: list[CellDifference]):
             """
@@ -288,11 +299,13 @@ class CsvFileComparison(FileComparison):
         @override
         def __str__(self) -> str:
             different_cells = self.different_cells
-            text = 'Found ' + str(len(different_cells)) + ' unexpected ' + (
-                'value' if len(different_cells) == 1 else 'values') + ' according to file "' + str(self.file) + '":\n\n'
+            text = (
+                f'Found {len(different_cells)} unexpected {("value" if len(different_cells) == 1 else "values")} '
+                f'according to file "{self.file}":\n\n'
+            )
 
             for cell in different_cells:
-                text += str(cell) + '\n'
+                text += f'{cell}\n'
 
             return text
 
@@ -308,28 +321,30 @@ class CsvFileComparison(FileComparison):
     @override
     def _compare(self, another_file: Path) -> Difference | None:
         with open(self.file, mode='r', encoding=ENCODING_UTF8) as actual_file:
-            actual_csv_file = csv.reader(actual_file,
-                                         delimiter=CsvFileSource.DELIMITER,
-                                         quotechar=CsvFileSource.QUOTE_CHAR)
+            actual_csv_file = csv.reader(
+                actual_file, delimiter=CsvFileSource.DELIMITER, quotechar=CsvFileSource.QUOTE_CHAR
+            )
             num_actual_rows = sum(1 for _ in actual_csv_file)
             actual_file.seek(0)
             num_actual_columns = len(next(actual_csv_file)) if num_actual_rows > 0 else 0
 
             with open(another_file, mode='r', encoding=ENCODING_UTF8) as expected_file:
-                expected_csv_file = csv.reader(expected_file,
-                                               delimiter=CsvFileSource.DELIMITER,
-                                               quotechar=CsvFileSource.QUOTE_CHAR)
+                expected_csv_file = csv.reader(
+                    expected_file, delimiter=CsvFileSource.DELIMITER, quotechar=CsvFileSource.QUOTE_CHAR
+                )
                 num_expected_rows = sum(1 for _ in expected_csv_file)
                 expected_file.seek(0)
                 headers = next(expected_csv_file) if num_expected_rows > 0 else []
                 num_expected_columns = len(headers)
 
                 if num_actual_rows != num_expected_rows or num_actual_columns != num_expected_columns:
-                    return CsvFileComparison.DimensionDifference(file=another_file,
-                                                                 num_expected_rows=num_expected_rows,
-                                                                 num_expected_columns=num_expected_columns,
-                                                                 num_actual_rows=num_actual_rows,
-                                                                 num_actual_columns=num_actual_columns)
+                    return CsvFileComparison.DimensionDifference(
+                        file=another_file,
+                        num_expected_rows=num_expected_rows,
+                        num_expected_columns=num_expected_columns,
+                        num_actual_rows=num_actual_rows,
+                        num_actual_columns=num_actual_columns,
+                    )
 
                 if num_actual_rows > 0 and num_actual_columns > 0:
                     actual_file.seek(0)
@@ -344,11 +359,14 @@ class CsvFileComparison(FileComparison):
 
                             if actual_value != expected_value:
                                 different_cells.append(
-                                    CsvFileComparison.CellDifferences.CellDifference(row_index=row_index,
-                                                                                     column_index=column_index,
-                                                                                     expected_value=expected_value,
-                                                                                     actual_value=actual_value,
-                                                                                     header=headers[column_index]))
+                                    CsvFileComparison.CellDifferences.CellDifference(
+                                        row_index=row_index,
+                                        column_index=column_index,
+                                        expected_value=expected_value,
+                                        actual_value=actual_value,
+                                        header=headers[column_index],
+                                    )
+                                )
 
                     if different_cells:
                         return CsvFileComparison.CellDifferences(file=another_file, different_cells=different_cells)
@@ -358,16 +376,18 @@ class CsvFileComparison(FileComparison):
     @override
     def _write(self, file: Path):
         with open(self.file, 'r', encoding=ENCODING_UTF8) as input_file:
-            input_csv_file = csv.reader(input_file,
-                                        delimiter=CsvFileSource.DELIMITER,
-                                        quotechar=CsvFileSource.QUOTE_CHAR)
+            input_csv_file = csv.reader(
+                input_file, delimiter=CsvFileSource.DELIMITER, quotechar=CsvFileSource.QUOTE_CHAR
+            )
 
             with open(file, 'w+', encoding=ENCODING_UTF8) as output_file:
-                output_csv_file = csv.writer(output_file,
-                                             delimiter=CsvFileSource.DELIMITER,
-                                             quotechar=CsvFileSource.QUOTE_CHAR,
-                                             quoting=csv.QUOTE_MINIMAL,
-                                             lineterminator='\n')
+                output_csv_file = csv.writer(
+                    output_file,
+                    delimiter=CsvFileSource.DELIMITER,
+                    quotechar=CsvFileSource.QUOTE_CHAR,
+                    quoting=csv.QUOTE_MINIMAL,
+                    lineterminator='\n',
+                )
 
                 try:
                     headers = next(input_csv_file)
@@ -404,7 +424,7 @@ class MetaDataFileComparison(FileComparison):
 
         @override
         def __str__(self) -> str:
-            return 'Field "' + self.missing_field + '" is missing from YAML file'
+            return f'Field "{self.missing_field}" is missing from YAML file'
 
     class FieldDifference(Difference):
         """
@@ -425,8 +445,10 @@ class MetaDataFileComparison(FileComparison):
 
         @override
         def __str__(self) -> str:
-            return ('Field "' + self.field + '" has unexpected value. Value should be "' + self.expected_value
-                    + '", but is "' + self.actual_value + '"')
+            return (
+                f'Field "{self.field}" has unexpected value. Value should be "{self.expected_value}", but is '
+                f'"{self.actual_value}"'
+            )
 
     FIELD_VERSION = 'version'
 
@@ -452,22 +474,21 @@ class MetaDataFileComparison(FileComparison):
         another_yaml_dict = self.__load_yaml(another_file)
 
         for key, expected_value in another_yaml_dict.items():
-            if not key in yaml_dict.keys():
+            if key not in yaml_dict.keys():
                 return MetaDataFileComparison.MissingField(file=another_file, missing_field=key)
 
             if key not in {self.FIELD_VERSION, self.FIELD_TIMESTAMP}:
                 actual_value = yaml_dict[key]
 
                 if expected_value != actual_value:
-                    return MetaDataFileComparison.FieldDifference(file=another_file,
-                                                                  field=key,
-                                                                  actual_value=actual_value,
-                                                                  expected_value=expected_value)
+                    return MetaDataFileComparison.FieldDifference(
+                        file=another_file, field=key, actual_value=actual_value, expected_value=expected_value
+                    )
 
             return None
 
         if not another_file.is_file():
-            raise IOError('File "' + str(another_file) + '" does not exist')
+            raise IOError(f'File "{another_file}" does not exist')
         return None
 
     @override

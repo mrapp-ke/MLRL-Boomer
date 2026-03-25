@@ -18,7 +18,6 @@ class NoCalibrationModel(TabularOutputData):
     Represents a model for the calibration of probabilities that does not actually calibrate any probabilities.
     """
 
-    # pylint: disable=unused-argument
     @override
     def to_text(self, _: Options, **kwargs) -> str | None:
         """
@@ -26,7 +25,6 @@ class NoCalibrationModel(TabularOutputData):
         """
         return '<No calibration model used>'
 
-    # pylint: disable=unused-argument
     @override
     def to_table(self, _: Options, **kwargs) -> Table | None:
         """

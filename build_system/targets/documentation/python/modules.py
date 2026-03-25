@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements modules that provide access to Python code for which an API documentation can be generated.
 """
+
 from os import environ
 from pathlib import Path
 from typing import override
@@ -27,13 +28,16 @@ class PythonApidocModule(ApidocModule):
         @override
         def matches(self, module: Module, module_registry: ModuleRegistry) -> bool:
             return isinstance(module, PythonApidocModule) and SubprojectModule.Filter.from_env(environ).matches(
-                module, module_registry)
+                module, module_registry
+            )
 
-    def __init__(self,
-                 root_directory: Path,
-                 output_directory: Path,
-                 source_directory_name: str,
-                 source_file_search: FileSearch = FileSearch().set_recursive(True)):
+    def __init__(
+        self,
+        root_directory: Path,
+        output_directory: Path,
+        source_directory_name: str,
+        source_file_search: FileSearch = FileSearch().set_recursive(True),
+    ):
         """
         :param root_directory:          The path to the module's root directory
         :param output_directory:        The path to the directory where the API documentation should be stored
@@ -69,10 +73,10 @@ class PythonApidocModule(ApidocModule):
 
     @override
     def create_reference(self) -> str:
-        rst_file_name = self.source_directory_name + '.' + self.subproject_name.replace('-', '_') + '.rst'
+        rst_file_name = f'{self.source_directory_name}.{self.subproject_name.replace("-", "_")}.rst'
         rst_file_path = Path(self.subproject_name, rst_file_name)
-        return 'Package mlrl-' + self.output_directory.name + ' <' + str(rst_file_path) + '>'
+        return f'Package mlrl-{self.output_directory.name} <{rst_file_path}>'
 
     @override
     def __str__(self) -> str:
-        return 'PythonApidocModule {root_directory="' + str(self.root_directory) + '"}'
+        return f'PythonApidocModule {{root_directory="{self.root_directory}"}}'

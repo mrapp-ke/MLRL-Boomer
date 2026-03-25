@@ -3,6 +3,7 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing input data.
 """
+
 from pathlib import Path
 from typing import Any, override
 
@@ -49,7 +50,8 @@ class InputData:
                 file_name=self.properties.file_name,
                 suffix=None,
                 context=self.context,
-            ).resolve(state))
+            ).resolve(state)
+        )
 
 
 class TextualInputData(InputData):

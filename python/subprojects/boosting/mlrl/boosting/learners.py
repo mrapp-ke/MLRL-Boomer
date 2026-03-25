@@ -3,13 +3,18 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides scikit-learn implementations of boosting algorithms.
 """
+
 from typing import Any, override
 
 from mlrl.common.learners import ProbabilisticClassificationRuleLearner, RegressionRuleLearner, configure_rule_learner
 
 from mlrl.boosting.config.parameters import BOOMER_CLASSIFIER_PARAMETERS, BOOMER_REGRESSOR_PARAMETERS
-from mlrl.boosting.cython.learner_boomer import BoomerClassifier as BoomerClassifierWrapper, BoomerClassifierConfig, \
-    BoomerRegressor as BoomerRegressorWrapper, BoomerRegressorConfig
+from mlrl.boosting.cython.learner_boomer import (
+    BoomerClassifier as BoomerClassifierWrapper,
+    BoomerClassifierConfig,
+    BoomerRegressor as BoomerRegressorWrapper,
+    BoomerRegressorConfig,
+)
 
 
 class BoomerClassifier(ProbabilisticClassificationRuleLearner):
@@ -18,39 +23,41 @@ class BoomerClassifier(ProbabilisticClassificationRuleLearner):
     be used in classification problems.
     """
 
-    def __init__(self,
-                 random_state: int | None = None,
-                 feature_format: str | None = None,
-                 output_format: str | None = None,
-                 prediction_format: str | None = None,
-                 statistic_format: str | None = None,
-                 statistic_type: str | None = None,
-                 default_rule: str | None = None,
-                 rule_induction: str | None = None,
-                 max_rules: int | None = None,
-                 time_limit: int | None = None,
-                 global_pruning: str | None = None,
-                 post_optimization: str | None = None,
-                 head_type: str | None = None,
-                 loss: str | None = None,
-                 marginal_probability_calibration: str | None = None,
-                 joint_probability_calibration: str | None = None,
-                 binary_predictor: str | None = None,
-                 probability_predictor: str | None = None,
-                 output_sampling: str | None = None,
-                 instance_sampling: str | None = None,
-                 feature_sampling: str | None = None,
-                 holdout: str | None = None,
-                 feature_binning: str | None = None,
-                 label_binning: str | None = None,
-                 rule_pruning: str | None = None,
-                 shrinkage: float | None = 0.3,
-                 l1_regularization_weight: float | None = None,
-                 l2_regularization_weight: float | None = None,
-                 parallel_rule_refinement: str | None = None,
-                 parallel_statistic_update: str | None = None,
-                 parallel_prediction: str | None = None,
-                 simd: str | None = None):
+    def __init__(
+        self,
+        random_state: int | None = None,
+        feature_format: str | None = None,
+        output_format: str | None = None,
+        prediction_format: str | None = None,
+        statistic_format: str | None = None,
+        statistic_type: str | None = None,
+        default_rule: str | None = None,
+        rule_induction: str | None = None,
+        max_rules: int | None = None,
+        time_limit: int | None = None,
+        global_pruning: str | None = None,
+        post_optimization: str | None = None,
+        head_type: str | None = None,
+        loss: str | None = None,
+        marginal_probability_calibration: str | None = None,
+        joint_probability_calibration: str | None = None,
+        binary_predictor: str | None = None,
+        probability_predictor: str | None = None,
+        output_sampling: str | None = None,
+        instance_sampling: str | None = None,
+        feature_sampling: str | None = None,
+        holdout: str | None = None,
+        feature_binning: str | None = None,
+        label_binning: str | None = None,
+        rule_pruning: str | None = None,
+        shrinkage: float | None = 0.3,
+        l1_regularization_weight: float | None = None,
+        l2_regularization_weight: float | None = None,
+        parallel_rule_refinement: str | None = None,
+        parallel_statistic_update: str | None = None,
+        parallel_prediction: str | None = None,
+        simd: str | None = None,
+    ):
         """
         :param random_state:                        The seed to be used by RNGs. Must be at least 0
         :param statistic_format:                    The format to be used for representing gradients and Hessians. Must
@@ -193,34 +200,36 @@ class BoomerRegressor(RegressionRuleLearner):
     be used in regression problems.
     """
 
-    def __init__(self,
-                 random_state: int | None = None,
-                 feature_format: str | None = None,
-                 output_format: str | None = None,
-                 prediction_format: str | None = None,
-                 statistic_format: str | None = None,
-                 statistic_type: str | None = None,
-                 default_rule: str | None = None,
-                 rule_induction: str | None = None,
-                 max_rules: int | None = None,
-                 time_limit: int | None = None,
-                 global_pruning: str | None = None,
-                 post_optimization: str | None = None,
-                 head_type: str | None = None,
-                 loss: str | None = None,
-                 output_sampling: str | None = None,
-                 instance_sampling: str | None = None,
-                 feature_sampling: str | None = None,
-                 holdout: str | None = None,
-                 feature_binning: str | None = None,
-                 rule_pruning: str | None = None,
-                 shrinkage: float | None = 0.3,
-                 l1_regularization_weight: float | None = None,
-                 l2_regularization_weight: float | None = None,
-                 parallel_rule_refinement: str | None = None,
-                 parallel_statistic_update: str | None = None,
-                 parallel_prediction: str | None = None,
-                 simd: str | None = None):
+    def __init__(
+        self,
+        random_state: int | None = None,
+        feature_format: str | None = None,
+        output_format: str | None = None,
+        prediction_format: str | None = None,
+        statistic_format: str | None = None,
+        statistic_type: str | None = None,
+        default_rule: str | None = None,
+        rule_induction: str | None = None,
+        max_rules: int | None = None,
+        time_limit: int | None = None,
+        global_pruning: str | None = None,
+        post_optimization: str | None = None,
+        head_type: str | None = None,
+        loss: str | None = None,
+        output_sampling: str | None = None,
+        instance_sampling: str | None = None,
+        feature_sampling: str | None = None,
+        holdout: str | None = None,
+        feature_binning: str | None = None,
+        rule_pruning: str | None = None,
+        shrinkage: float | None = 0.3,
+        l1_regularization_weight: float | None = None,
+        l2_regularization_weight: float | None = None,
+        parallel_rule_refinement: str | None = None,
+        parallel_statistic_update: str | None = None,
+        parallel_prediction: str | None = None,
+        simd: str | None = None,
+    ):
         """
         :param random_state:                The seed to be used by RNGs. Must be at least 0
         :param statistic_format:            The format to be used for representing gradients and Hessians. Must be

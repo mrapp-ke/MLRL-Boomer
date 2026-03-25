@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides actions for managing GitHub milestones.
 """
+
 from os import environ
 
 from core.build_unit import BuildUnit
@@ -17,7 +18,7 @@ def __get_repository_name_from_env() -> str | None:
     repository_name = get_env(environ, env_repository)
 
     if not repository_name:
-        Log.error('The name of a repository must be specified via the environment variable %s', env_repository)
+        Log.error(f'The name of a repository must be specified via the environment variable {env_repository}')
 
     return repository_name
 
@@ -27,7 +28,7 @@ def __get_milestone_from_env() -> str | None:
     milestone = get_env(environ, env_milestone)
 
     if not milestone:
-        Log.error('The name of a milestone must be specified via the environment variable %s', env_milestone)
+        Log.error(f'The name of a milestone must be specified via the environment variable {env_milestone}')
 
     return milestone
 
@@ -44,8 +45,10 @@ def close_milestone(build_unit: BuildUnit):
 
     if repository_name and milestone:
         milestone_version = Version.parse(milestone)
-        Log.info('Closing milestones of repository "%s" corresponding to version "%s" or smaller...', repository_name,
-                 milestone_version)
+        Log.info(
+            f'Closing milestones of repository "{repository_name}" corresponding to version "{milestone_version}" or '
+            f'smaller...'
+        )
         github_api = GithubApi(build_unit).set_token_from_env()
         repository = github_api.open_repository(repository_name)
 
@@ -54,7 +57,7 @@ def close_milestone(build_unit: BuildUnit):
 
             try:
                 if Version.parse(milestone_title) <= milestone_version:
-                    Log.info('Closing milestone "%s"...', milestone_title)
+                    Log.info(f'Closing milestone "{milestone_title}"...')
                     milestone.edit(title=milestone_title, state='closed')
             except ValueError:
-                Log.verbose('Ignoring milestone "%s", as it does not correspond to a version number.', milestone_title)
+                Log.verbose(f'Ignoring milestone "{milestone_title}", as it does not correspond to a version number.')

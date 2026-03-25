@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Defines targets and modules for compiling C++ code.
 """
+
 from pathlib import Path
 
 from core.build_unit import BuildUnit
@@ -20,17 +21,19 @@ COMPILE_CPP = 'compile_cpp'
 
 INSTALL_CPP = 'install_cpp'
 
-TARGETS = TargetBuilder(BuildUnit.for_file(Path(__file__))) \
-    .add_build_target(SETUP_CPP) \
-        .depends_on(INSTALL_RUNTIME_DEPENDENCIES) \
-        .set_runnables(SetupCpp()) \
-    .add_phony_target(COMPILE_CPP) \
-        .depends_on(SETUP_CPP, clean_dependencies=True) \
-        .set_runnables(CompileCpp()) \
-    .add_build_target(INSTALL_CPP) \
-        .depends_on(COMPILE_CPP) \
-        .set_runnables(InstallCpp()) \
+TARGETS = (
+    TargetBuilder(BuildUnit.for_file(Path(__file__)))
+    .add_build_target(SETUP_CPP)
+    .depends_on(INSTALL_RUNTIME_DEPENDENCIES)
+    .set_runnables(SetupCpp())
+    .add_phony_target(COMPILE_CPP)
+    .depends_on(SETUP_CPP, clean_dependencies=True)
+    .set_runnables(CompileCpp())
+    .add_build_target(INSTALL_CPP)
+    .depends_on(COMPILE_CPP)
+    .set_runnables(InstallCpp())
     .build()
+)
 
 MODULES = [
     CompilationModule(

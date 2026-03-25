@@ -3,6 +3,7 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing data.
 """
+
 from dataclasses import dataclass
 
 
@@ -16,6 +17,7 @@ class Properties:
         file_name:  A file name to be used when reading from or writing to files
         symbol:     An optional symbol that represents the input or output data
     """
+
     name: str
     file_name: str
     symbol: str | None = '🗀'
@@ -29,4 +31,5 @@ class TabularProperties(Properties):
     Attributes:
         has_header: True, if the tabular data has a header, False otherwise
     """
+
     has_header: bool = True

@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing evaluation results that are part of output data.
 """
+
 from itertools import tee
 from typing import Any, override
 
@@ -134,11 +135,11 @@ class TabularEvaluationResult(EvaluationResult):
 
                 for _, column_index in sorted(variants, key=lambda x: x[0]):
                     header = header_row[column_index] if header_row else None
-                    new_row.append(self.__get_unformatted_header(header) + ':' if header and new_row else header)
+                    new_row.append(f'{self.__get_unformatted_header(header)}:' if header and new_row else header)
                     new_row.append(first_row[column_index])
 
                     if fold is None:
-                        new_row.append('±' + first_row[column_index + 1])
+                        new_row.append(f'±{first_row[column_index + 1]}')
 
                 rotated_table.add_row(*new_row)
 
@@ -153,23 +154,26 @@ class TabularEvaluationResult(EvaluationResult):
         """
         percentage = options.get_bool(OPTION_PERCENTAGE, kwargs.get(OPTION_PERCENTAGE, True))
         decimals = options.get_int(OPTION_DECIMALS, kwargs.get(OPTION_DECIMALS, 0))
-        enable_all = options.get_bool(AggregatedEvaluationResult.OPTION_ENABLE_ALL,
-                                      kwargs.get(AggregatedEvaluationResult.OPTION_ENABLE_ALL, True))
+        enable_all = options.get_bool(
+            AggregatedEvaluationResult.OPTION_ENABLE_ALL, kwargs.get(AggregatedEvaluationResult.OPTION_ENABLE_ALL, True)
+        )
         fold = kwargs.get(self.KWARG_FOLD)
         dictionary = self.measurements.averages_as_dict() if fold is None else self.measurements.values_as_dict(fold)
         headers, measures = tee(
-            filter(lambda measure: options.get_bool(measure.option_key, enable_all), dictionary.keys()))
-        values = map(lambda measure: measure.format(dictionary[measure], percentage=percentage, decimals=decimals),
-                     measures)
+            filter(lambda measure: options.get_bool(measure.option_key, enable_all), dictionary.keys())
+        )
+        values = map(
+            lambda measure: measure.format(dictionary[measure], percentage=percentage, decimals=decimals), measures
+        )
         return RowWiseTable(*headers).add_row(*values)
 
 
 EVALUATION_MEASURE_TRAINING_TIME = OutputValue(
     option_key=TabularEvaluationResult.OPTION_TRAINING_TIME,
-    name='Training Time (' + Measure.UNIT_SECONDS + ')',
+    name=f'Training Time ({Measure.UNIT_SECONDS})',
 )
 
 EVALUATION_MEASURE_PREDICTION_TIME = OutputValue(
     option_key=TabularEvaluationResult.OPTION_PREDICTION_TIME,
-    name='Prediction Time (' + Measure.UNIT_SECONDS + ')',
+    name=f'Prediction Time ({Measure.UNIT_SECONDS})',
 )

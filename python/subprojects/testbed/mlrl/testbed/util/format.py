@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for creating textual representations.
 """
+
 from numbers import Number
 from typing import Any
 
@@ -62,4 +63,4 @@ def format_percentage(fraction: float, decimals: int = 2) -> str:
     :return:            The textual representation that has been created
     """
     percentage = float(fraction) * 100
-    return format_value(percentage, decimals) + '%'
+    return f'{format_value(percentage, decimals)}%'

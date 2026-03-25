@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for detecting changes in files.
 """
+
 import json
 
 from functools import cached_property

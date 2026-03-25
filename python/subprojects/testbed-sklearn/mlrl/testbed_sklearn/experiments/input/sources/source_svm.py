@@ -3,6 +3,7 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow reading datasets from SVM (light) files.
 """
+
 from functools import cached_property
 from pathlib import Path
 from typing import override
@@ -50,10 +51,9 @@ class SvmFileSource(DatasetFileSource):
             :param problem_domain:  The problem domain, the SVM file is concerned with
             :return:                A `SvmFileSource.SvmFile` that has been loaded
             """
-            # pylint: disable=unbalanced-tuple-unpacking,useless-suppression
-            feature_matrix, output_matrix_rows = load_svmlight_file(file_path,
-                                                                    dtype=problem_domain.feature_dtype,
-                                                                    multilabel=True)
+            feature_matrix, output_matrix_rows = load_svmlight_file(
+                file_path, dtype=problem_domain.feature_dtype, multilabel=True
+            )
             indptr: list[int] = []
             indices: list[int] = []
 
@@ -161,7 +161,9 @@ class SvmFileSource(DatasetFileSource):
         problem_domain = state.problem_domain
         svm_file = SvmFileSource.SvmFile.from_file(file_path, problem_domain=problem_domain)
         svm_dataset = SvmFileSource.SvmDataset.from_file(svm_file)
-        return TabularDataset(x=svm_dataset.feature_matrix,
-                              y=svm_dataset.output_matrix,
-                              features=svm_dataset.features,
-                              outputs=svm_dataset.outputs)
+        return TabularDataset(
+            x=svm_dataset.feature_matrix,
+            y=svm_dataset.output_matrix,
+            features=svm_dataset.features,
+            outputs=svm_dataset.outputs,
+        )

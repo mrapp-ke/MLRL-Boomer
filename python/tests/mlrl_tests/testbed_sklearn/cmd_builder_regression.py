@@ -1,6 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+
 from typing import override
 
 from sklearn.base import BaseEstimator as SkLearnBaseEstimator, RegressorMixin as SkLearnRegressorMixin
@@ -16,11 +17,13 @@ class SkLearnRegressorCmdBuilder(RegressionCmdBuilder):
     """
 
     def __init__(self, estimator_type: type[SkLearnRegressorMixin], dataset: str = Dataset.ATP7D):
-        super().__init__(expected_output_dir=CmdBuilder.EXPECTED_OUTPUT_DIR / 'sklearn' / 'regression',
-                         input_dir=CmdBuilder.INPUT_DIR / 'sklearn',
-                         batch_config=CmdBuilder.CONFIG_DIR / 'sklearn' / 'regression' / 'batch_config.yml',
-                         runnable_module_name='mlrl.testbed_sklearn',
-                         dataset=dataset)
+        super().__init__(
+            expected_output_dir=CmdBuilder.EXPECTED_OUTPUT_DIR / 'sklearn' / 'regression',
+            input_dir=CmdBuilder.INPUT_DIR / 'sklearn',
+            batch_config=CmdBuilder.CONFIG_DIR / 'sklearn' / 'regression' / 'batch_config.yml',
+            runnable_module_name='mlrl.testbed_sklearn',
+            dataset=dataset,
+        )
         self._estimator_type = estimator_type
         self._meta_estimator_type: type[SkLearnBaseEstimator] | None = None
 

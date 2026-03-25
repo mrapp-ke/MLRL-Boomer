@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow configuring the functionality to load datasets from ARFF files.
 """
+
 from argparse import Namespace
 from collections.abc import Sequence
 from pathlib import Path
@@ -25,10 +26,10 @@ class ArffFileExtension(DatasetFileExtension):
     def __init__(self):
         super().__init__(file_type=ArffFileSource.SUFFIX_ARFF)
 
-    # pylint: disable=unused-argument
     @override
-    def _create_file_sources(self, dataset_directory: Path, dataset: InputDataset,
-                             args: Namespace) -> Sequence[FileSource]:
+    def _create_file_sources(
+        self, dataset_directory: Path, dataset: InputDataset, args: Namespace
+    ) -> Sequence[FileSource]:
         return [ArffFileSource(dataset_directory)]
 
 
@@ -40,8 +41,8 @@ class SvmFileExtension(DatasetFileExtension):
     def __init__(self):
         super().__init__(file_type=SvmFileSource.SUFFIX_SVM)
 
-    # pylint: disable=unused-argument
     @override
-    def _create_file_sources(self, dataset_directory: Path, dataset: InputDataset,
-                             args: Namespace) -> Sequence[FileSource]:
+    def _create_file_sources(
+        self, dataset_directory: Path, dataset: InputDataset, args: Namespace
+    ) -> Sequence[FileSource]:
         return [SvmFileSource(dataset_directory)]

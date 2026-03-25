@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for publishing pre-built packages.
 """
+
 from os import environ
 from pathlib import Path
 
@@ -24,11 +25,13 @@ def print_cibuildwheel_identifiers(build_unit: BuildUnit):
     package_directory = get_env(environ, ENV_PACKAGE_DIRECTORY)
 
     if not package_directory:
-        raise ValueError('A directory must be specified via the environment variable ' + ENV_PACKAGE_DIRECTORY)
+        raise ValueError(f'A directory must be specified via the environment variable {ENV_PACKAGE_DIRECTORY}')
 
-    stdout = Cibuildwheel(build_unit, package_directory=Path(package_directory), print_build_identifiers=True) \
-        .install_program(True, silent=True) \
-        .print_command(False) \
+    stdout = (
+        Cibuildwheel(build_unit, package_directory=Path(package_directory), print_build_identifiers=True)
+        .install_program(True, silent=True)
+        .print_command(False)
         .capture_output()
+    )
     build_identifiers = set(filter(None, map(lambda build_identifier: build_identifier.strip(), stdout.split('\n'))))
-    print('[' + format_iterable(sorted(build_identifiers), delimiter='"') + ']')
+    print(f'[{format_iterable(sorted(build_identifiers), delimiter='"')}]')

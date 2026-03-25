@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that provide access to characteristics of feature values, associated with one or several features.
 """
+
 from functools import cached_property
 
 from mlrl.testbed_sklearn.experiments.dataset import AttributeType, TabularDataset

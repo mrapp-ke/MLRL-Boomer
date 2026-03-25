@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides base classes for implementing rule learning algorithms.
 """
+
 import logging as log
 import re as regex
 
@@ -20,22 +21,46 @@ from sklearn.utils.validation import assert_all_finite, check_array, validate_da
 from mlrl.common.config.parameters import Parameter
 from mlrl.common.cython.example_weights import EqualExampleWeights, RealValuedExampleWeights
 from mlrl.common.cython.feature_info import EqualFeatureInfo, FeatureInfo, MixedFeatureInfo
-from mlrl.common.cython.feature_matrix import CContiguousFeatureMatrix, ColumnWiseFeatureMatrix, CscFeatureMatrix, \
-    CsrFeatureMatrix, FortranContiguousFeatureMatrix, RowWiseFeatureMatrix
+from mlrl.common.cython.feature_matrix import (
+    CContiguousFeatureMatrix,
+    ColumnWiseFeatureMatrix,
+    CscFeatureMatrix,
+    CsrFeatureMatrix,
+    FortranContiguousFeatureMatrix,
+    RowWiseFeatureMatrix,
+)
 from mlrl.common.cython.label_matrix import CContiguousLabelMatrix, CsrLabelMatrix
 from mlrl.common.cython.learner import RuleLearnerConfig
 from mlrl.common.cython.learner_classification import ClassificationRuleLearner as RuleLearnerWrapper
 from mlrl.common.cython.output_space_info import OutputSpaceInfo
-from mlrl.common.cython.probability_calibration import JointProbabilityCalibrationModel, \
-    MarginalProbabilityCalibrationModel
+from mlrl.common.cython.probability_calibration import (
+    JointProbabilityCalibrationModel,
+    MarginalProbabilityCalibrationModel,
+)
 from mlrl.common.cython.regression_matrix import CContiguousRegressionMatrix, CsrRegressionMatrix
 from mlrl.common.cython.rule_model import RuleModel
-from mlrl.common.mixins import IncrementalClassifierMixin, IncrementalMarginClassifierMixin, IncrementalPredictor, \
-    IncrementalProbabilisticClassifierMixin, IncrementalRegressorMixin, LearnerMixin, MarginClassifierMixin, \
-    NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, ProbabilisticClassifierMixin
+from mlrl.common.mixins import (
+    IncrementalClassifierMixin,
+    IncrementalMarginClassifierMixin,
+    IncrementalPredictor,
+    IncrementalProbabilisticClassifierMixin,
+    IncrementalRegressorMixin,
+    LearnerMixin,
+    MarginClassifierMixin,
+    NominalFeatureSupportMixin,
+    OrdinalFeatureSupportMixin,
+    ProbabilisticClassifierMixin,
+)
 
-from mlrl.util.arrays import SparseFormat, enforce_2d, enforce_dense, ensure_no_complex_data, get_unique_values, \
-    is_sparse, is_sparse_and_memory_efficient
+from mlrl.util.arrays import (
+    SparseFormat,
+    enforce_2d,
+    enforce_dense,
+    ensure_no_complex_data,
+    get_unique_values,
+    is_sparse,
+    is_sparse_and_memory_efficient,
+)
 from mlrl.util.options import parse_enum
 from mlrl.util.validation import assert_greater_or_equal
 
@@ -45,6 +70,7 @@ class SparsePolicy(StrEnum):
     Specifies all valid textual representation of policies to be used for converting matrices into sparse or dense
     formats.
     """
+
     AUTO = 'auto'
     FORCE_SPARSE = 'sparse'
     FORCE_DENSE = 'dense'
@@ -79,14 +105,12 @@ class SparsePolicy(StrEnum):
         if is_sparse(matrix, supported_formats=list(SparseFormat)):
             # Given matrix is in a format that might be converted into the specified sparse format
             if self == SparsePolicy.AUTO:
-                return is_sparse_and_memory_efficient(matrix,
-                                                      sparse_format=sparse_format,
-                                                      dtype=dtype,
-                                                      sparse_values=sparse_values)
+                return is_sparse_and_memory_efficient(
+                    matrix, sparse_format=sparse_format, dtype=dtype, sparse_values=sparse_values
+                )
             return self == SparsePolicy.FORCE_SPARSE
 
-        raise ValueError('Matrix of type ' + type(matrix).__name__ + ' cannot be converted to format "'
-                         + str(sparse_format) + '"')
+        raise ValueError(f'Matrix of type {type(matrix).__name__} cannot be converted to format "{sparse_format}"')
 
 
 class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, LearnerMixin, ABC):
@@ -108,11 +132,13 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
         functionality.
         """
 
-        def __init__(self,
-                     feature_matrix: RowWiseFeatureMatrix,
-                     incremental_predictor,
-                     label_encoder: LabelEncoder | None = None,
-                     dtype: np.dtype | None = None):
+        def __init__(
+            self,
+            feature_matrix: RowWiseFeatureMatrix,
+            incremental_predictor,
+            label_encoder: LabelEncoder | None = None,
+            dtype: np.dtype | None = None,
+        ):
             """
             :param feature_matrix:          A `RowWiseFeatureMatrix` that stores the feature values of the query
                                             examples
@@ -158,13 +184,15 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
         Allows to obtain predictions from a `RuleLearner` incrementally.
         """
 
-        def __init__(self,
-                     feature_matrix: RowWiseFeatureMatrix,
-                     model: RuleModel,
-                     max_rules: int,
-                     predictor,
-                     label_encoder: LabelEncoder | None = None,
-                     dtype: np.dtype | None = None):
+        def __init__(
+            self,
+            feature_matrix: RowWiseFeatureMatrix,
+            model: RuleModel,
+            max_rules: int,
+            predictor,
+            label_encoder: LabelEncoder | None = None,
+            dtype: np.dtype | None = None,
+        ):
             """
             :param feature_matrix:  A `RowWiseFeatureMatrix` that stores the feature values of the query examples
             :param model:           The model to be used for obtaining predictions
@@ -177,8 +205,9 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
             if max_rules != 0:
                 assert_greater_or_equal('max_rules', max_rules, 1)
             self.feature_matrix = feature_matrix
-            self.num_total_rules = min(model.get_num_used_rules(),
-                                       max_rules) if max_rules > 0 else model.get_num_used_rules()
+            self.num_total_rules = (
+                min(model.get_num_used_rules(), max_rules) if max_rules > 0 else model.get_num_used_rules()
+            )
             self.predictor = predictor
             self.label_encoder = label_encoder
             self.dtype = dtype
@@ -222,10 +251,9 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
             self._has_next = True
 
         @staticmethod
-        def binary(num_examples: int,
-                   num_outputs: int,
-                   value,
-                   label_encoder: LabelEncoder | None = None) -> 'RuleLearner.ConstantIncrementalPredictor':
+        def binary(
+            num_examples: int, num_outputs: int, value, label_encoder: LabelEncoder | None = None
+        ) -> 'RuleLearner.ConstantIncrementalPredictor':
             """
             Creates a `ConstantIncrementalPredictor` that predicts a binary value.
 
@@ -234,7 +262,7 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
             :param value:           The value to be predicted
             :param label_encoder:   An optional `LabelEncoder` that should be used to decode the predictions
             """
-            shape = (num_examples, num_outputs) if num_outputs > 1 else (num_examples, )
+            shape = (num_examples, num_outputs) if num_outputs > 1 else (num_examples,)
             constant_prediction = np.full(shape=shape, fill_value=value)
             return RuleLearner.ConstantIncrementalPredictor(constant_prediction, label_encoder=label_encoder)
 
@@ -247,7 +275,7 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
             :param num_outputs:     The number of outputs to predict for
             :param value:           The value to be predicted
             """
-            shape = (num_examples, num_outputs) if num_outputs > 1 else (num_examples, )
+            shape = (num_examples, num_outputs) if num_outputs > 1 else (num_examples,)
             constant_prediction = np.full(shape=shape, fill_value=1 if value > 0 else -1, dtype=np.float64)
             return RuleLearner.ConstantIncrementalPredictor(constant_prediction)
 
@@ -260,7 +288,7 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
             :param num_outputs:     The number of outputs to predict for
             :param value:           The value to be predicted
             """
-            shape = (num_examples, num_outputs) if num_outputs > 1 else (num_examples, )
+            shape = (num_examples, num_outputs) if num_outputs > 1 else (num_examples,)
             constant_prediction = np.full(shape=shape, fill_value=1 if value > 0 else 0, dtype=np.float64)
             constant_prediction = convert_into_sklearn_compatible_probabilities(constant_prediction)
             return RuleLearner.ConstantIncrementalPredictor(constant_prediction)
@@ -297,7 +325,6 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
         self.output_format = output_format
         self.prediction_format = prediction_format
 
-    # pylint: disable=attribute-defined-outside-init
     @override
     def _fit(self, x, y, **kwargs):
         """
@@ -322,8 +349,11 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
 
                 feature_info = self._create_feature_info(feature_matrix.get_num_features(), **kwargs)
                 learner = self._create_learner()
-                example_weights_object = EqualExampleWeights(feature_matrix.get_num_examples(
-                )) if example_weights is None else RealValuedExampleWeights(example_weights)
+                example_weights_object = (
+                    EqualExampleWeights(feature_matrix.get_num_examples())
+                    if example_weights is None
+                    else RealValuedExampleWeights(example_weights)
+                )
                 training_result = learner.fit(example_weights_object, feature_info, feature_matrix, output_matrix)
                 self.num_outputs_ = training_result.num_outputs
                 self.output_space_info_ = training_result.output_space_info
@@ -334,8 +364,13 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
         return None
 
     @staticmethod
-    def _create_score_predictor(learner: RuleLearnerWrapper, model: RuleModel, output_space_info: OutputSpaceInfo,
-                                num_outputs: int, feature_matrix: RowWiseFeatureMatrix):
+    def _create_score_predictor(
+        learner: RuleLearnerWrapper,
+        model: RuleModel,
+        output_space_info: OutputSpaceInfo,
+        num_outputs: int,
+        feature_matrix: RowWiseFeatureMatrix,
+    ):
         """
         Creates and returns a predictor for predicting scores.
 
@@ -364,15 +399,15 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
             constant_prediction = getattr(self, 'constant_prediction_', None)
 
             if constant_prediction is not None:
-                return RuleLearner.ConstantIncrementalPredictor.score(num_examples=feature_matrix.get_num_examples(),
-                                                                      num_outputs=num_outputs,
-                                                                      value=constant_prediction).apply_next(1)
+                return RuleLearner.ConstantIncrementalPredictor.score(
+                    num_examples=feature_matrix.get_num_examples(), num_outputs=num_outputs, value=constant_prediction
+                ).apply_next(1)
 
             log.debug('A dense matrix is used to store the predicted scores')
             max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
-            # pylint: disable=no-member,useless-suppression
-            predictions = self._create_score_predictor(learner, self.model_, self.output_space_info_, num_outputs,
-                                                       feature_matrix).predict(max_rules)
+            predictions = self._create_score_predictor(
+                learner, self.model_, self.output_space_info_, num_outputs, feature_matrix
+            ).predict(max_rules)
             dtype = kwargs.get(self.KWARG_DTYPE)
             return predictions.astype(dtype, copy=False) if dtype else predictions
 
@@ -396,15 +431,15 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
             constant_prediction = getattr(self, 'constant_prediction_', None)
 
             if constant_prediction is not None:
-                return RuleLearner.ConstantIncrementalPredictor.score(num_examples=feature_matrix.get_num_examples(),
-                                                                      num_outputs=num_outputs,
-                                                                      value=constant_prediction)
+                return RuleLearner.ConstantIncrementalPredictor.score(
+                    num_examples=feature_matrix.get_num_examples(), num_outputs=num_outputs, value=constant_prediction
+                )
 
             log.debug('A dense matrix is used to store the predicted scores')
-            # pylint: disable=no-member,useless-suppression
             model = self.model_
-            predictor = self._create_score_predictor(learner, model, self.output_space_info_, num_outputs,
-                                                     feature_matrix)
+            predictor = self._create_score_predictor(
+                learner, model, self.output_space_info_, num_outputs, feature_matrix
+            )
             max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
             dtype = kwargs.get(self.KWARG_DTYPE)
 
@@ -412,12 +447,11 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
                 return ClassificationRuleLearner.NativeIncrementalPredictor(
                     feature_matrix=feature_matrix,
                     incremental_predictor=predictor.create_incremental_predictor(max_rules),
-                    dtype=dtype)
-            return ClassificationRuleLearner.NonNativeIncrementalPredictor(feature_matrix=feature_matrix,
-                                                                           model=model,
-                                                                           max_rules=max_rules,
-                                                                           predictor=predictor,
-                                                                           dtype=dtype)
+                    dtype=dtype,
+                )
+            return ClassificationRuleLearner.NonNativeIncrementalPredictor(
+                feature_matrix=feature_matrix, model=model, max_rules=max_rules, predictor=predictor, dtype=dtype
+            )
 
         return super()._predict_scores_incrementally(x, **kwargs)
 
@@ -433,11 +467,9 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
 
         if feature_indices:
             feature_indices = enforce_dense(feature_indices, order='C', dtype=np.uint32)
-            return check_array(feature_indices,
-                               ensure_2d=False,
-                               dtype=np.uint32,
-                               ensure_non_negative=True,
-                               input_name=input_name)
+            return check_array(
+                feature_indices, ensure_2d=False, dtype=np.uint32, ensure_non_negative=True, input_name=input_name
+            )
 
         return np.empty(shape=0, dtype=np.uint32)
 
@@ -476,11 +508,13 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
 
         if example_weights is not None:
             example_weights = enforce_dense(example_weights, order='C', dtype=np.float32)
-            return check_array(example_weights,
-                               ensure_2d=False,
-                               dtype=np.float32,
-                               ensure_non_negative=True,
-                               input_name=self.KWARG_EXAMPLE_WEIGHTS)
+            return check_array(
+                example_weights,
+                ensure_2d=False,
+                dtype=np.float32,
+                ensure_non_negative=True,
+                input_name=self.KWARG_EXAMPLE_WEIGHTS,
+            )
 
         return None
 
@@ -496,8 +530,13 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
         x_sparse_format = SparseFormat.CSC
         x_sparse_policy = parse_enum('feature_format', self.feature_format, SparsePolicy, default=SparsePolicy.AUTO)
         x_enforce_sparse = x_sparse_policy.should_enforce_sparse(x, sparse_format=x_sparse_format, dtype=np.float32)
-        x = x if x_enforce_sparse else enforce_2d(
-            enforce_dense(ensure_no_complex_data(x), order='F', dtype=np.float32, sparse_value=sparse_feature_value))
+        x = (
+            x
+            if x_enforce_sparse
+            else enforce_2d(
+                enforce_dense(ensure_no_complex_data(x), order='F', dtype=np.float32, sparse_value=sparse_feature_value)
+            )
+        )
         x = validate_data(self, X=x, accept_sparse=x_sparse_format, dtype=np.float32, ensure_all_finite='allow-nan')
 
         if x.shape[1] <= 1:
@@ -505,8 +544,9 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
 
         if is_sparse(x):
             log.debug(
-                'A sparse matrix with sparse value %s is used to store the feature values of the training examples',
-                sparse_feature_value)
+                f'A sparse matrix with sparse value {sparse_feature_value} is used to store the feature values of the '
+                f'training examples'
+            )
             x_data = np.ascontiguousarray(x.data, dtype=np.float32)
             x_indices = np.ascontiguousarray(x.indices, dtype=np.uint32)
             x_indptr = np.ascontiguousarray(x.indptr, dtype=np.uint32)
@@ -530,24 +570,28 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
         sparse_format = SparseFormat.CSR
         sparse_policy = parse_enum('feature_format', self.feature_format, SparsePolicy, default=SparsePolicy.AUTO)
         enforce_sparse = sparse_policy.should_enforce_sparse(x, sparse_format=sparse_format, dtype=np.float32)
-        x = x if enforce_sparse else enforce_2d(
-            enforce_dense(ensure_no_complex_data(x), order='C', dtype=np.float32, sparse_value=sparse_feature_value))
+        x = (
+            x
+            if enforce_sparse
+            else enforce_2d(
+                enforce_dense(ensure_no_complex_data(x), order='C', dtype=np.float32, sparse_value=sparse_feature_value)
+            )
+        )
 
         try:
-            x = validate_data(self,
-                              X=x,
-                              reset=False,
-                              accept_sparse=sparse_format,
-                              dtype=np.float32,
-                              ensure_all_finite='allow-nan')
+            x = validate_data(
+                self, X=x, reset=False, accept_sparse=sparse_format, dtype=np.float32, ensure_all_finite='allow-nan'
+            )
         except ValueError as error:
             message = str(error)
             pattern = r'X has \d+ features, but .+ is expecting \d+ features as input.'
-            raise ValueError('Reshape your data. ' + message) if regex.fullmatch(pattern, message) else error
+            raise ValueError(f'Reshape your data. {message}') if regex.fullmatch(pattern, message) else error
 
         if is_sparse(x):
-            log.debug('A sparse matrix with sparse value %s is used to store the feature values of the query examples',
-                      sparse_feature_value)
+            log.debug(
+                f'A sparse matrix with sparse value {sparse_feature_value} is used to store the feature values of the '
+                f'query examples'
+            )
             x_data = np.ascontiguousarray(x.data, dtype=np.float32)
             x_indices = np.ascontiguousarray(x.indices, dtype=np.uint32)
             x_indptr = np.ascontiguousarray(x.indptr, dtype=np.uint32)
@@ -567,30 +611,29 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
         :return:                The matrix that has been created or None, if no matrix has been created
         """
         y_sparse_format = SparseFormat.CSR
-        prediction_sparse_policy = parse_enum('prediction_format',
-                                              self.prediction_format,
-                                              SparsePolicy,
-                                              default=SparsePolicy.AUTO)
+        prediction_sparse_policy = parse_enum(
+            'prediction_format', self.prediction_format, SparsePolicy, default=SparsePolicy.AUTO
+        )
         self.sparse_predictions_ = prediction_sparse_policy != SparsePolicy.FORCE_DENSE and (
             prediction_sparse_policy == SparsePolicy.FORCE_SPARSE
-            or is_sparse_and_memory_efficient(y, sparse_format=y_sparse_format, dtype=np.uint8, sparse_values=False))
+            or is_sparse_and_memory_efficient(y, sparse_format=y_sparse_format, dtype=np.uint8, sparse_values=False)
+        )
 
         y_sparse_policy = parse_enum('output_format', self.output_format, SparsePolicy, default=SparsePolicy.AUTO)
-        y_enforce_sparse = y_sparse_policy.should_enforce_sparse(y,
-                                                                 sparse_format=y_sparse_format,
-                                                                 dtype=np.uint8,
-                                                                 sparse_values=False)
+        y_enforce_sparse = y_sparse_policy.should_enforce_sparse(
+            y, sparse_format=y_sparse_format, dtype=np.uint8, sparse_values=False
+        )
         if hasattr(y, 'dtype'):
             self.y_dtype_ = y.dtype
 
-        return self._create_row_wise_output_matrix(y,
-                                                   sparse_format=y_sparse_format,
-                                                   sparse=y_enforce_sparse,
-                                                   example_weights=example_weights)
+        return self._create_row_wise_output_matrix(
+            y, sparse_format=y_sparse_format, sparse=y_enforce_sparse, example_weights=example_weights
+        )
 
     @abstractmethod
-    def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool,
-                                       example_weights: np.ndarray | None, **kwargs) -> Any | None:
+    def _create_row_wise_output_matrix(
+        self, y, sparse_format: SparseFormat, sparse: bool, example_weights: np.ndarray | None, **kwargs
+    ) -> Any | None:
         """
         Must be implemented by subclasses in order to create a matrix that provides row-wise access to the ground truth
         of training examples.
@@ -630,15 +673,17 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
     A scikit-learn implementation of a rule learning algorithm that can be applied to classification problems.
     """
 
-    # pylint: disable=attribute-defined-outside-init
     @override
-    def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool,
-                                       example_weights: np.ndarray | None, **_) -> Any | None:
+    def _create_row_wise_output_matrix(
+        self, y, sparse_format: SparseFormat, sparse: bool, example_weights: np.ndarray | None, **_
+    ) -> Any | None:
         assert_all_finite(y, estimator_name=type(self).__name__, input_name='y')
         y, label_encoder = self._encode_labels(y)
-        y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C')),
-                        accept_sparse=sparse_format,
-                        ensure_all_finite=False)
+        y = check_array(
+            y if sparse else enforce_2d(enforce_dense(y, order='C')),
+            accept_sparse=sparse_format,
+            ensure_all_finite=False,
+        )
         target_type = type_of_target(y, input_name='y')
 
         if target_type in {'continuous', 'continuous-multioutput', 'multiclass'}:
@@ -690,10 +735,16 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
         return y, None
 
     @staticmethod
-    def _create_binary_predictor(learner: RuleLearnerWrapper, model: RuleModel, output_space_info: OutputSpaceInfo,
-                                 marginal_probability_calibration_model: MarginalProbabilityCalibrationModel,
-                                 joint_probability_calibration_model: JointProbabilityCalibrationModel, num_labels: int,
-                                 feature_matrix: RowWiseFeatureMatrix, sparse: bool):
+    def _create_binary_predictor(
+        learner: RuleLearnerWrapper,
+        model: RuleModel,
+        output_space_info: OutputSpaceInfo,
+        marginal_probability_calibration_model: MarginalProbabilityCalibrationModel,
+        joint_probability_calibration_model: JointProbabilityCalibrationModel,
+        num_labels: int,
+        feature_matrix: RowWiseFeatureMatrix,
+        sparse: bool,
+    ):
         """
         Creates and returns a predictor for predicting binary labels.
 
@@ -711,12 +762,22 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
         :return:                                        The predictor that has been created
         """
         if sparse:
-            return learner.create_sparse_binary_predictor(feature_matrix, model, output_space_info,
-                                                          marginal_probability_calibration_model,
-                                                          joint_probability_calibration_model, num_labels)
-        return learner.create_binary_predictor(feature_matrix, model, output_space_info,
-                                               marginal_probability_calibration_model,
-                                               joint_probability_calibration_model, num_labels)
+            return learner.create_sparse_binary_predictor(
+                feature_matrix,
+                model,
+                output_space_info,
+                marginal_probability_calibration_model,
+                joint_probability_calibration_model,
+                num_labels,
+            )
+        return learner.create_binary_predictor(
+            feature_matrix,
+            model,
+            output_space_info,
+            marginal_probability_calibration_model,
+            joint_probability_calibration_model,
+            num_labels,
+        )
 
     @override
     def _predict_binary(self, x, **kwargs):
@@ -735,18 +796,26 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
             label_encoder = getattr(self, 'label_encoder_', None)
 
             if constant_prediction is not None:
-                return RuleLearner.ConstantIncrementalPredictor.binary(num_examples=feature_matrix.get_num_examples(),
-                                                                       num_outputs=num_outputs,
-                                                                       value=constant_prediction,
-                                                                       label_encoder=label_encoder).apply_next(1)
+                return RuleLearner.ConstantIncrementalPredictor.binary(
+                    num_examples=feature_matrix.get_num_examples(),
+                    num_outputs=num_outputs,
+                    value=constant_prediction,
+                    label_encoder=label_encoder,
+                ).apply_next(1)
 
             sparse_predictions = self.sparse_predictions_
-            log.debug('A %s matrix is used to store the predicted labels', 'sparse' if sparse_predictions else 'dense')
+            log.debug(f'A {("sparse" if sparse_predictions else "dense")} matrix is used to store the predicted labels')
             max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
-            predictions = self._create_binary_predictor(learner, self.model_, self.output_space_info_,
-                                                        self.marginal_probability_calibration_model_,
-                                                        self.joint_probability_calibration_model_, num_outputs,
-                                                        feature_matrix, sparse_predictions).predict(max_rules)
+            predictions = self._create_binary_predictor(
+                learner,
+                self.model_,
+                self.output_space_info_,
+                self.marginal_probability_calibration_model_,
+                self.joint_probability_calibration_model_,
+                num_outputs,
+                feature_matrix,
+                sparse_predictions,
+            ).predict(max_rules)
 
             if label_encoder:
                 predictions = label_encoder.inverse_transform(predictions)
@@ -775,18 +844,26 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
             label_encoder = getattr(self, 'label_encoder_', None)
 
             if constant_prediction is not None:
-                return RuleLearner.ConstantIncrementalPredictor.binary(num_examples=feature_matrix.get_num_examples(),
-                                                                       num_outputs=num_outputs,
-                                                                       value=constant_prediction,
-                                                                       label_encoder=label_encoder)
+                return RuleLearner.ConstantIncrementalPredictor.binary(
+                    num_examples=feature_matrix.get_num_examples(),
+                    num_outputs=num_outputs,
+                    value=constant_prediction,
+                    label_encoder=label_encoder,
+                )
 
             sparse_predictions = self.sparse_predictions_
-            log.debug('A %s matrix is used to store the predicted labels', 'sparse' if sparse_predictions else 'dense')
+            log.debug(f'A {("sparse" if sparse_predictions else "dense")} matrix is used to store the predicted labels')
             model = self.model_
-            predictor = self._create_binary_predictor(learner, model, self.output_space_info_,
-                                                      self.marginal_probability_calibration_model_,
-                                                      self.joint_probability_calibration_model_, num_outputs,
-                                                      feature_matrix, sparse_predictions)
+            predictor = self._create_binary_predictor(
+                learner,
+                model,
+                self.output_space_info_,
+                self.marginal_probability_calibration_model_,
+                self.joint_probability_calibration_model_,
+                num_outputs,
+                feature_matrix,
+                sparse_predictions,
+            )
             max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
             dtype = kwargs.get(self.KWARG_DTYPE, getattr(self, 'y_dtype_', None))
 
@@ -795,13 +872,16 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
                     feature_matrix=feature_matrix,
                     incremental_predictor=predictor.create_incremental_predictor(max_rules),
                     label_encoder=label_encoder,
-                    dtype=dtype)
-            return ClassificationRuleLearner.NonNativeIncrementalPredictor(feature_matrix=feature_matrix,
-                                                                           model=model,
-                                                                           max_rules=max_rules,
-                                                                           predictor=predictor,
-                                                                           label_encoder=label_encoder,
-                                                                           dtype=dtype)
+                    dtype=dtype,
+                )
+            return ClassificationRuleLearner.NonNativeIncrementalPredictor(
+                feature_matrix=feature_matrix,
+                model=model,
+                max_rules=max_rules,
+                predictor=predictor,
+                label_encoder=label_encoder,
+                dtype=dtype,
+            )
 
         return super()._predict_binary_incrementally(x, **kwargs)
 
@@ -812,13 +892,16 @@ class RegressionRuleLearner(IncrementalRegressorMixin, RuleLearner, ABC):
     """
 
     @override
-    def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool,
-                                       example_weights: np.ndarray | None, **_) -> Any | None:
+    def _create_row_wise_output_matrix(
+        self, y, sparse_format: SparseFormat, sparse: bool, example_weights: np.ndarray | None, **_
+    ) -> Any | None:
         assert_all_finite(y, estimator_name=type(self).__name__, input_name='y')
-        y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C', dtype=np.float32)),
-                        accept_sparse=sparse_format,
-                        dtype=np.float32,
-                        ensure_all_finite=False)
+        y = check_array(
+            y if sparse else enforce_2d(enforce_dense(y, order='C', dtype=np.float32)),
+            accept_sparse=sparse_format,
+            dtype=np.float32,
+            ensure_all_finite=False,
+        )
 
         if is_sparse(y):
             log.debug('A sparse matrix is used to store the regression scores of the training examples')
@@ -881,9 +964,14 @@ def convert_into_sklearn_compatible_probabilities(probabilities: np.ndarray) -> 
     return probabilities
 
 
-class ProbabilisticClassificationRuleLearner(MarginClassifierMixin, IncrementalMarginClassifierMixin,
-                                             ProbabilisticClassifierMixin, IncrementalProbabilisticClassifierMixin,
-                                             ClassificationRuleLearner, ABC):
+class ProbabilisticClassificationRuleLearner(
+    MarginClassifierMixin,
+    IncrementalMarginClassifierMixin,
+    ProbabilisticClassifierMixin,
+    IncrementalProbabilisticClassifierMixin,
+    ClassificationRuleLearner,
+    ABC,
+):
     """
     A scikit-learn implementation of a probabilistic rule learning algorithm that can be applied to classification
     problems.
@@ -925,26 +1013,37 @@ class ProbabilisticClassificationRuleLearner(MarginClassifierMixin, IncrementalM
 
             if constant_prediction is not None:
                 return RuleLearner.ConstantIncrementalPredictor.probability(
-                    num_examples=feature_matrix.get_num_examples(), num_outputs=num_outputs,
-                    value=constant_prediction).apply_next(1)
+                    num_examples=feature_matrix.get_num_examples(), num_outputs=num_outputs, value=constant_prediction
+                ).apply_next(1)
 
             log.debug('A dense matrix is used to store the predicted probability estimates')
             max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
             predictions = convert_into_sklearn_compatible_probabilities(
-                self._create_probability_predictor(learner, self.model_, self.output_space_info_,
-                                                   self.marginal_probability_calibration_model_,
-                                                   self.joint_probability_calibration_model_, num_outputs,
-                                                   feature_matrix).predict(max_rules))
+                self._create_probability_predictor(
+                    learner,
+                    self.model_,
+                    self.output_space_info_,
+                    self.marginal_probability_calibration_model_,
+                    self.joint_probability_calibration_model_,
+                    num_outputs,
+                    feature_matrix,
+                ).predict(max_rules)
+            )
             dtype = kwargs.get(self.KWARG_DTYPE)
             return predictions.astype(dtype=dtype, copy=False) if dtype else predictions
 
         return super()._predict_proba(x, **kwargs)
 
     @staticmethod
-    def _create_probability_predictor(learner: RuleLearnerWrapper, model: RuleModel, output_space_info: OutputSpaceInfo,
-                                      marginal_probability_calibration_model: MarginalProbabilityCalibrationModel,
-                                      joint_probability_calibration_model: JointProbabilityCalibrationModel,
-                                      num_labels: int, feature_matrix: RowWiseFeatureMatrix):
+    def _create_probability_predictor(
+        learner: RuleLearnerWrapper,
+        model: RuleModel,
+        output_space_info: OutputSpaceInfo,
+        marginal_probability_calibration_model: MarginalProbabilityCalibrationModel,
+        joint_probability_calibration_model: JointProbabilityCalibrationModel,
+        num_labels: int,
+        feature_matrix: RowWiseFeatureMatrix,
+    ):
         """
         Creates and returns a predictor for predicting probability estimates.
 
@@ -959,9 +1058,14 @@ class ProbabilisticClassificationRuleLearner(MarginClassifierMixin, IncrementalM
                                                         of the query examples
         :return:                                        The predictor that has been created
         """
-        return learner.create_probability_predictor(feature_matrix, model, output_space_info,
-                                                    marginal_probability_calibration_model,
-                                                    joint_probability_calibration_model, num_labels)
+        return learner.create_probability_predictor(
+            feature_matrix,
+            model,
+            output_space_info,
+            marginal_probability_calibration_model,
+            joint_probability_calibration_model,
+            num_labels,
+        )
 
     @override
     def _predict_proba_incrementally(self, x, **kwargs):
@@ -982,14 +1086,20 @@ class ProbabilisticClassificationRuleLearner(MarginClassifierMixin, IncrementalM
 
             if constant_prediction is not None:
                 return RuleLearner.ConstantIncrementalPredictor.probability(
-                    num_examples=feature_matrix.get_num_examples(), num_outputs=num_outputs, value=constant_prediction)
+                    num_examples=feature_matrix.get_num_examples(), num_outputs=num_outputs, value=constant_prediction
+                )
 
             log.debug('A dense matrix is used to store the predicted probability estimates')
             model = self.model_
-            predictor = self._create_probability_predictor(learner, model, self.output_space_info_,
-                                                           self.marginal_probability_calibration_model_,
-                                                           self.joint_probability_calibration_model_, num_outputs,
-                                                           feature_matrix)
+            predictor = self._create_probability_predictor(
+                learner,
+                model,
+                self.output_space_info_,
+                self.marginal_probability_calibration_model_,
+                self.joint_probability_calibration_model_,
+                num_outputs,
+                feature_matrix,
+            )
             max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
             dtype = kwargs.get(self.KWARG_DTYPE)
 
@@ -997,8 +1107,10 @@ class ProbabilisticClassificationRuleLearner(MarginClassifierMixin, IncrementalM
                 return ProbabilisticClassificationRuleLearner.NativeIncrementalProbabilityPredictor(
                     feature_matrix=feature_matrix,
                     incremental_predictor=predictor.create_incremental_predictor(max_rules),
-                    dtype=dtype)
+                    dtype=dtype,
+                )
             return ProbabilisticClassificationRuleLearner.NonNativeIncrementalProbabilityPredictor(
-                feature_matrix=feature_matrix, model=model, max_rules=max_rules, predictor=predictor, dtype=dtype)
+                feature_matrix=feature_matrix, model=model, max_rules=max_rules, predictor=predictor, dtype=dtype
+            )
 
         return super().predict_proba_incrementally(x, **kwargs)

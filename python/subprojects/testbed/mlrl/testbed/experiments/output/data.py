@@ -3,8 +3,8 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing output data.
 """
-import json
 
+import json
 from abc import ABC, abstractmethod
 from collections.abc import Iterable
 from dataclasses import replace
@@ -16,7 +16,6 @@ from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
-
 from mlrl.util.format import format_value
 from mlrl.util.options import Options
 
@@ -71,7 +70,7 @@ class TextualOutputData(OutputData, ABC):
                 dataset_type = state.dataset_type
 
                 if dataset_type:
-                    return ' for ' + dataset_type + ' data'
+                    return f' for {dataset_type} data'
 
             return ''
 
@@ -83,11 +82,11 @@ class TextualOutputData(OutputData, ABC):
                     fold = state.fold
 
                     if fold:
-                        formatted_fold = 'Fold ' + str(fold.index + 1)
+                        formatted_fold = f'Fold {fold.index + 1}'
                     else:
-                        formatted_fold = 'Average across ' + str(folding_strategy.num_folds) + ' folds'
+                        formatted_fold = f'Average across {folding_strategy.num_folds} folds'
 
-                    return ' (' + formatted_fold + ')'
+                    return f' ({formatted_fold})'
 
             return ''
 
@@ -99,7 +98,7 @@ class TextualOutputData(OutputData, ABC):
                     prediction_scope = prediction_result.prediction_scope
 
                     if not prediction_scope.is_global:
-                        return ' using a model of size ' + str(prediction_scope.model_size)
+                        return f' using a model of size {prediction_scope.model_size}'
 
             return ''
 
@@ -109,9 +108,12 @@ class TextualOutputData(OutputData, ABC):
 
             :param state: The state from which the output data has been generated
             """
-            symbol = self.symbol
-            return (symbol + ' ' if symbol else '') + self.title + self.__format_dataset_type(
-                state) + self.__format_prediction_scope(state) + self.__format_fold(state)
+            result = f'{self.symbol} ' if self.symbol else ''
+            result += self.title
+            result += self.__format_dataset_type(state)
+            result += self.__format_prediction_scope(state)
+            result += self.__format_fold(state)
+            return result
 
     @staticmethod
     def from_text(properties: Properties, context: Context, text: str) -> 'TextualOutputData':
@@ -290,9 +292,9 @@ class OutputValue:
 
         :return: An `OutputValue` that corresponds to the standard deviation of this value
         """
-        return OutputValue(option_key=self.option_key,
-                           name=f'{self.COLUMN_PREFIX_STD_DEV} {self.name}',
-                           percentage=self.percentage)
+        return OutputValue(
+            option_key=self.option_key, name=f'{self.COLUMN_PREFIX_STD_DEV} {self.name}', percentage=self.percentage
+        )
 
     @staticmethod
     def filter_values(values: Iterable['OutputValue'], options: Options) -> list['OutputValue']:

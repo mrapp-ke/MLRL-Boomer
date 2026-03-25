@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing evaluation results that are part of output data.
 """
+
 from abc import ABC
 from collections.abc import Iterable
 from functools import partial
@@ -58,9 +59,9 @@ class AggregatedEvaluationResult(TabularOutputData):
         AggregationMeasure(
             option_key=OPTION_RANK,
             name='Rank',
-            aggregation_function=lambda values, smaller_is_better: rankdata(np.asarray(values) *
-                                                                            (1 if smaller_is_better else -1),
-                                                                            method='average'),
+            aggregation_function=lambda values, smaller_is_better: rankdata(
+                np.asarray(values) * (1 if smaller_is_better else -1), method='average'
+            ),
         ),
     ]
 
@@ -92,10 +93,11 @@ class AggregatedEvaluationResult(TabularOutputData):
             for column_index, column in enumerate(column_wise_table.columns):
                 header = str(column.header)
                 aggregation_measure = next(
-                    (measure for measure in self.AGGREGATION_MEASURES if header.startswith(measure.name)), None)
+                    (measure for measure in self.AGGREGATION_MEASURES if header.startswith(measure.name)), None
+                )
 
                 if aggregation_measure:
-                    key = header[len(aggregation_measure.name):].lstrip()
+                    key = header[len(aggregation_measure.name) :].lstrip()
                     dictionary = aggregation_measure_column_indices.setdefault(key, {})
                     dictionary[aggregation_measure] = column_index
                     column.set_header(aggregation_measure.name)
@@ -103,9 +105,11 @@ class AggregatedEvaluationResult(TabularOutputData):
                     dataset_column_index = column_index
                 elif header.startswith(self.COLUMN_PREFIX_PARAMETER):
                     parameter_column_indices.append(column_index)
-                    column.set_header(header[len(self.COLUMN_PREFIX_PARAMETER):].lstrip().lstrip('-').replace('-', '_'))
+                    column.set_header(
+                        header[len(self.COLUMN_PREFIX_PARAMETER) :].lstrip().lstrip('-').replace('-', '_')
+                    )
                 elif header.startswith(OutputValue.COLUMN_PREFIX_STD_DEV):
-                    key = header[len(OutputValue.COLUMN_PREFIX_STD_DEV):].lstrip()
+                    key = header[len(OutputValue.COLUMN_PREFIX_STD_DEV) :].lstrip()
                     std_dev_column_indices[key] = column_index
                     column.set_header(OutputValue.COLUMN_PREFIX_STD_DEV)
                 else:
@@ -117,7 +121,7 @@ class AggregatedEvaluationResult(TabularOutputData):
                 if i > 0:
                     text += '\n\n'
 
-                text += 'Evaluation results for measure "' + measure + '":\n\n'
+                text += f'Evaluation results for measure "{measure}":\n\n'
                 std_dev_index = std_dev_column_indices.get(measure)
                 aggregation_measure_indices = aggregation_measure_column_indices.get(measure, {})
                 measure_indices = [measure_index] + ([std_dev_index] if std_dev_index else [])
@@ -127,7 +131,10 @@ class AggregatedEvaluationResult(TabularOutputData):
                 if std_dev_index:
                     self.__add_std_dev_column(sliced_table)
 
-                for aggregation_measure, column_index, in aggregation_measure_indices.items():
+                for (
+                    aggregation_measure,
+                    column_index,
+                ) in aggregation_measure_indices.items():
                     sliced_table.add_column(*column_wise_table[column_index], header=aggregation_measure.name)
 
                 row_wise_table = sliced_table.to_row_wise_table()
@@ -135,37 +142,48 @@ class AggregatedEvaluationResult(TabularOutputData):
                 parameter_columns: list[Column] = [
                     column_wise_table[column_index] for column_index in parameter_column_indices
                 ]
-                average_rows = self.__get_average_rows(table=column_wise_table,
-                                                       aggregation_measure_indices=aggregation_measure_indices,
-                                                       parameter_columns=parameter_columns,
-                                                       num_columns=row_wise_table.num_columns,
-                                                       decimals=options.get_int(OPTION_DECIMALS,
-                                                                                kwargs.get(OPTION_DECIMALS, 0)))
+                average_rows = self.__get_average_rows(
+                    table=column_wise_table,
+                    aggregation_measure_indices=aggregation_measure_indices,
+                    parameter_columns=parameter_columns,
+                    num_columns=row_wise_table.num_columns,
+                    decimals=options.get_int(OPTION_DECIMALS, kwargs.get(OPTION_DECIMALS, 0)),
+                )
                 separators = self.__add_separator_rows(dataset_column, row_wise_table, averages=bool(average_rows))
 
                 for row in average_rows:
                     row_wise_table.add_row(*row)
 
                 separator_indices = [
-                    row_index for row_index, row in enumerate(row_wise_table.rows)
+                    row_index
+                    for row_index, row in enumerate(row_wise_table.rows)
                     if row_index > 0 and (row[0] in separators or row_wise_table[row_index - 1][0] in separators)
                 ]
                 text += row_wise_table.format(table_format=Table.Format.SIMPLE, separator_indices=separator_indices)
 
         return text if text else None
 
-    # pylint: disable=too-many-nested-blocks
     @staticmethod
-    def __get_average_rows(table: ColumnWiseTable, aggregation_measure_indices: dict[AggregationMeasure, int],
-                           parameter_columns: list[Column], num_columns: int, decimals: int) -> list[list[Cell]]:
+    def __get_average_rows(
+        table: ColumnWiseTable,
+        aggregation_measure_indices: dict[AggregationMeasure, int],
+        parameter_columns: list[Column],
+        num_columns: int,
+        decimals: int,
+    ) -> list[list[Cell]]:
         result = []
 
         for parameter_setting, row_indices in AggregatedEvaluationResult.__get_unique_parameter_settings(
-                parameter_columns).items():
-            row = list(parameter_setting) + ([None] *
-                                             (num_columns - len(parameter_setting) - len(aggregation_measure_indices)))
+            parameter_columns
+        ).items():
+            row = list(parameter_setting) + (
+                [None] * (num_columns - len(parameter_setting) - len(aggregation_measure_indices))
+            )
 
-            for aggregation_measure, column_index, in aggregation_measure_indices.items():
+            for (
+                aggregation_measure,
+                column_index,
+            ) in aggregation_measure_indices.items():
                 values: list[float] = []
 
                 if aggregation_measure.can_be_averaged:
@@ -200,7 +218,7 @@ class AggregatedEvaluationResult(TabularOutputData):
         std_dev_column = sliced_table[sliced_table.num_columns - 1]
 
         for row_index in range(std_dev_column.num_rows):
-            std_dev_column[row_index] = '±' + str(std_dev_column[row_index])
+            std_dev_column[row_index] = f'±{std_dev_column[row_index]}'
 
     @staticmethod
     def __add_separator_rows(dataset_column: Column, table: RowWiseTable, averages: bool = False) -> set[str]:
@@ -208,7 +226,7 @@ class AggregatedEvaluationResult(TabularOutputData):
         separators: set[str] = set()
 
         for row_index in range(dataset_column.num_rows - 1, -1, -1):
-            dataset = '"' + str(dataset_column[row_index]) + '"'
+            dataset = f'"{dataset_column[row_index]}"'
 
             if row_index == 0:
                 table.add_row(dataset, position=0)
@@ -271,26 +289,35 @@ class AggregatedEvaluationResult(TabularOutputData):
                     except ValueError:
                         pass
 
-                if header != self.COLUMN_DATASET \
-                        and not header.startswith(self.COLUMN_PREFIX_PARAMETER) \
-                        and not header.startswith(OutputValue.COLUMN_PREFIX_STD_DEV) \
-                        and values_by_dataset:
+                if (
+                    header != self.COLUMN_DATASET
+                    and not header.startswith(self.COLUMN_PREFIX_PARAMETER)
+                    and not header.startswith(OutputValue.COLUMN_PREFIX_STD_DEV)
+                    and values_by_dataset
+                ):
                     smaller_is_better = Measure.is_smaller_better(header)
 
                     for aggregation_measure in aggregation_measures:
                         if isinstance(aggregation_measure, AggregationMeasure):
 
-                            def aggregation_function(aggregation_measure: AggregationMeasure, smaller_is_better: bool,
-                                                     values_list: list[float]) -> Iterable[float]:
+                            def aggregation_function(
+                                aggregation_measure: AggregationMeasure,
+                                smaller_is_better: bool,
+                                values_list: list[float],
+                            ) -> Iterable[float]:
                                 return aggregation_measure.aggregate(values_list, smaller_is_better=smaller_is_better)
 
                             aggregated_column = chain.from_iterable(
-                                map(partial(aggregation_function, aggregation_measure, smaller_is_better),
-                                    values_by_dataset))
-                            aggregated_table.add_column(*map(lambda x: format_value(x, decimals=decimals),
-                                                             aggregated_column),
-                                                        header=f'{aggregation_measure.name} {header}',
-                                                        position=column_index + 1)
+                                map(
+                                    partial(aggregation_function, aggregation_measure, smaller_is_better),
+                                    values_by_dataset,
+                                )
+                            )
+                            aggregated_table.add_column(
+                                *map(lambda x: format_value(x, decimals=decimals), aggregated_column),
+                                header=f'{aggregation_measure.name} {header}',
+                                position=column_index + 1,
+                            )
 
             return aggregated_table
 

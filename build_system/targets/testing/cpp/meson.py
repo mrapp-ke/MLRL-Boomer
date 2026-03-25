@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow to run automated tests via the external program "meson".
 """
+
 from core.build_unit import BuildUnit
 
 from targets.compilation.meson import Meson

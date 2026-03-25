@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for performing experiments using rule learning algorithms.
 """
+
 from argparse import Namespace
 from typing import Any, override
 
@@ -29,8 +30,9 @@ class RuleLearnerExperiment(SkLearnExperiment):
         Allows to configure and create instances of the class `RuleLearnerExperiment`.
         """
 
-        def _create_experiment(self, args: Namespace, initial_state: ExperimentState,
-                               dataset_splitter: DatasetSplitter) -> Experiment:
+        def _create_experiment(
+            self, args: Namespace, initial_state: ExperimentState, dataset_splitter: DatasetSplitter
+        ) -> Experiment:
             return RuleLearnerExperiment(args=args, initial_state=initial_state, dataset_splitter=dataset_splitter)
 
     class TrainingProcedure(SkLearnExperiment.TrainingProcedure):
@@ -39,28 +41,33 @@ class RuleLearnerExperiment(SkLearnExperiment):
         """
 
         @override
-        def _fit(self, estimator: BaseEstimator, dataset: TabularDataset,
-                 fit_kwargs: dict[str, Any] | None) -> Timer.Duration:
+        def _fit(
+            self, estimator: BaseEstimator, dataset: TabularDataset, fit_kwargs: dict[str, Any] | None
+        ) -> Timer.Duration:
             fit_kwargs = fit_kwargs if fit_kwargs else {}
 
             # Set the indices of ordinal features, if supported...
             if isinstance(estimator, OrdinalFeatureSupportMixin):
                 fit_kwargs[OrdinalFeatureSupportMixin.KWARG_ORDINAL_FEATURE_INDICES] = dataset.get_feature_indices(
-                    AttributeType.ORDINAL)
+                    AttributeType.ORDINAL
+                )
 
             # Set the indices of nominal features, if supported...
             if isinstance(estimator, NominalFeatureSupportMixin):
                 fit_kwargs[NominalFeatureSupportMixin.KWARG_NOMINAL_FEATURE_INDICES] = dataset.get_feature_indices(
-                    AttributeType.NOMINAL)
+                    AttributeType.NOMINAL
+                )
 
             return super()._fit(estimator, dataset, fit_kwargs)
 
-    def __init__(self,
-                 args: Namespace,
-                 initial_state: ExperimentState,
-                 dataset_splitter: DatasetSplitter,
-                 training_procedure: TrainingProcedure | None = None,
-                 prediction_procedure: SkLearnExperiment.PredictionProcedure | None = None):
+    def __init__(
+        self,
+        args: Namespace,
+        initial_state: ExperimentState,
+        dataset_splitter: DatasetSplitter,
+        training_procedure: TrainingProcedure | None = None,
+        prediction_procedure: SkLearnExperiment.PredictionProcedure | None = None,
+    ):
         """
         :param args:                    The command line arguments specified by the user
         :param initial_state:           The initial state of the experiment
@@ -74,7 +81,9 @@ class RuleLearnerExperiment(SkLearnExperiment):
             args=args,
             initial_state=initial_state,
             dataset_splitter=dataset_splitter,
-            training_procedure=training_procedure if training_procedure else RuleLearnerExperiment.TrainingProcedure(
+            training_procedure=training_procedure
+            if training_procedure
+            else RuleLearnerExperiment.TrainingProcedure(
                 base_learner=initial_state.problem_domain.base_learner,
                 fit_kwargs=initial_state.problem_domain.fit_kwargs,
             ),

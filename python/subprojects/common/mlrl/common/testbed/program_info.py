@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for providing the text to be shown when the "--version" flag is passed to the command line API.
 """
+
 from collections.abc import Iterable
 from dataclasses import dataclass, field
 from typing import override
@@ -25,6 +26,7 @@ class RuleLearnerProgramInfo:
         program_info:       Information about the program
         python_packages:    A list that contains a `PackageInfo` for each Python package used by the program
     """
+
     program_info: ProgramInfo
     python_packages: list[PackageInfo] = field(default_factory=list)
 
@@ -41,7 +43,6 @@ class RuleLearnerProgramInfo:
         unique_dependencies: dict[str, set[str]] = {}
 
         for python_package in python_packages:
-
             for dependency in python_package.dependencies:
                 parent_packages = unique_dependencies.setdefault(str(dependency), set())
                 parent_packages.add(python_package.package_name)
@@ -98,7 +99,7 @@ class RuleLearnerProgramInfo:
 
     @staticmethod
     def __format_parent_packages(parent_packages: set[str]) -> str:
-        return 'used by ' + format_iterable(parent_packages) if parent_packages else ''
+        return f'used by {(format_iterable(parent_packages) if parent_packages else "")}'
 
     def __get_package_info(self) -> str:
         rows = []
@@ -149,4 +150,4 @@ class RuleLearnerProgramInfo:
     def __str__(self) -> str:
         program_info = str(self.program_info)
         package_info = self.__get_package_info()
-        return program_info + '\n\n' + package_info if package_info else program_info
+        return f'{program_info}\n\n{package_info}' if package_info else program_info

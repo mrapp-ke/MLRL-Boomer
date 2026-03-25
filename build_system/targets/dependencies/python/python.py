@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for checking and updating the supported Python versions.
 """
+
 from dataclasses import replace
 
 from core.build_unit import BuildUnit
@@ -16,10 +17,10 @@ from targets.project import Project
 
 def __query_latest_python_version(build_unit: BuildUnit) -> Version:
     PackageManager.install_packages(RequirementsFiles.for_build_unit(build_unit), 'requests')
-    # pylint: disable=import-outside-toplevel
     import requests
+
     url = 'https://raw.githubusercontent.com/actions/python-versions/refs/heads/main/versions-manifest.json'
-    Log.verbose('Querying Python versions from ' + url)
+    Log.verbose(f'Querying Python versions from {url}')
     response = requests.get(url, timeout=5)
     available_versions = set()
 
@@ -45,12 +46,14 @@ def check_python_version(build_unit: BuildUnit):
     supported_version = Version.parse(version_file.supported_versions.max_version)
 
     if supported_version > latest_version:
-        Log.info('Latest Python version %s is supported!', latest_version)
+        Log.info(f'Latest Python version {latest_version} is supported!')
     else:
         version_numbers = supported_version.numbers
         supported_version = Version(numbers=(version_numbers[0], version_numbers[1] - 1))
-        Log.info('Latest Python version %s is not supported! The latest supported version is %s.', latest_version,
-                 supported_version)
+        Log.info(
+            f'Latest Python version {latest_version} is not supported! The latest supported version is '
+            f'{supported_version}.'
+        )
 
 
 def update_python_version(build_unit: BuildUnit):
@@ -65,7 +68,7 @@ def update_python_version(build_unit: BuildUnit):
     supported_version = Version.parse(supported_versions.max_version)
 
     if supported_version > latest_version:
-        Log.info('Latest Python version %s is already supported!', latest_version)
+        Log.info(f'Latest Python version {latest_version} is already supported!')
     else:
         version_numbers = latest_version.numbers
         updated_version = Version(numbers=(version_numbers[0], version_numbers[1] + 1))
