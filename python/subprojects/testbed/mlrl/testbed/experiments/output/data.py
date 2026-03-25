@@ -108,11 +108,7 @@ class TextualOutputData(OutputData, ABC):
 
             :param state: The state from which the output data has been generated
             """
-            result = self.symbol
-
-            if result:
-                result += ' '
-
+            result = f'{self.symbol} ' if self.symbol else ''
             result += self.title
             result += self.__format_dataset_type(state)
             result += self.__format_prediction_scope(state)
