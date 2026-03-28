@@ -71,14 +71,34 @@ jobs:
       linux: ${{ needs.changes.outputs.linux == 'true' }}
       macos: ${{ needs.changes.outputs.macos == 'true' }}
       windows: ${{ needs.changes.outputs.windows == 'true' }}
-  check_success:
+  run_wheels:
     needs: test_release
+    name: Run wheels
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-24.04
+          - ubuntu-24.04-arm
+          - macos-26
+          - macos-26-intel
+          - windows-2025
+          - windows-11-arm
+        subproject:
+          - boosting
+          - seco
+    uses: ./.github/workflows/template_run_wheel.yml
+    with:
+      os: ${{ matrix.os }}
+      subproject: ${{ matrix.subproject }}
+  check_success:
+    needs: run_wheels
     if: ${{ always() && !cancelled() && needs.changes.outputs.any == 'true' }}
     name: Test publishing packages succeeded
     runs-on: ubuntu-slim
     steps:
       - name: Check for success
         run: |-
-          if [[ "${{ needs.test_release.result }}" == "failure" ]]; then
+          if [[ "${{ needs.run_wheels.result }}" == "failure" ]]; then
             exit 1
           fi
