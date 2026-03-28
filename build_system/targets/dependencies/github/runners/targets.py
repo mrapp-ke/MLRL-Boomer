@@ -18,37 +18,6 @@ from targets.dependencies.table import Table
 MODULE_FILTER = GithubWorkflowModule.Filter()
 
 
-class CheckGithubRunners(PhonyTarget.Runnable):
-    """
-    Prints all outdated runners used in the project's GitHub workflows.
-    """
-
-    def __init__(self):
-        super().__init__(MODULE_FILTER)
-
-    @override
-    def run(self, build_unit: BuildUnit, module: Module):
-        workflow_module = cast(GithubWorkflowModule, module)
-        outdated_workflows = RunnerUpdater(build_unit, workflow_module).find_outdated_workflows()
-
-        if outdated_workflows:
-            table = Table(build_unit, 'Workflow', 'Runner', 'Current version', 'Latest version')
-
-            for workflow, outdated_runners in outdated_workflows.items():
-                for outdated_runner in outdated_runners:
-                    table.add_row(
-                        str(workflow.file),
-                        str(outdated_runner.runner.name),
-                        str(outdated_runner.runner.version),
-                        str(outdated_runner.latest_version),
-                    )
-
-            table.sort_rows(0, 1)
-            Log.info(f'The following GitHub-hosted runners are outdated:\n\n{table}')
-        else:
-            Log.info('All GitHub-hosted runners are up-to-date!')
-
-
 class UpdateGithubRunners(PhonyTarget.Runnable):
     """
     Updates and prints all outdated runners used in the project's GitHub workflows.

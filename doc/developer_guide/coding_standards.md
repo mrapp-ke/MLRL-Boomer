@@ -435,27 +435,7 @@ The above commands query the [GitHub API](https://docs.github.com/rest) for the 
 
 For running {ref}`Continuous Integration <ci>` (CI) jobs, we use [runners](https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners) hosted by GitHub. Runners are available for different operating systems and architectures, which is particularly relevant when building packages for the various target platforms we support. To avoid breaking the build process when GitHub updates its runners, we specify the exact version required by a particular CI job.
 
-Our build system provides the following command to check for outdated runners used by the project:
-
-````{tab} Linux
-   ```text
-   ./build check_github_runners
-   ```
-````
-
-````{tab} macOS
-   ```text
-   ./build check_github_runners
-   ```
-````
-
-````{tab} Windows
-   ```
-   build.bat check_github_runners
-   ```
-````
-
-In addition, the command below can be used to update the versions of outdated runners automatically:
+Our build system provides the following command to update the versions of outdated runners automatically:
 
 ````{tab} Linux
    ```text
