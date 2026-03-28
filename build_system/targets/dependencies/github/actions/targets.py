@@ -18,37 +18,6 @@ from targets.dependencies.table import Table
 MODULE_FILTER = GithubWorkflowModule.Filter()
 
 
-class CheckGithubActions(PhonyTarget.Runnable):
-    """
-    Prints all outdated Actions used in the project's GitHub workflows.
-    """
-
-    def __init__(self):
-        super().__init__(MODULE_FILTER)
-
-    @override
-    def run(self, build_unit: BuildUnit, module: Module):
-        workflow_module = cast(GithubWorkflowModule, module)
-        outdated_workflows = ActionUpdater(build_unit, workflow_module).find_outdated_workflows()
-
-        if outdated_workflows:
-            table = Table(build_unit, 'Workflow', 'Action', 'Current version', 'Latest version')
-
-            for workflow, outdated_actions in outdated_workflows.items():
-                for outdated_action in outdated_actions:
-                    table.add_row(
-                        str(workflow.file),
-                        str(outdated_action.action.name),
-                        str(outdated_action.action.version),
-                        str(outdated_action.latest_version),
-                    )
-
-            table.sort_rows(0, 1)
-            Log.info(f'The following GitHub Actions are outdated:\n\n{table}')
-        else:
-            Log.info('All GitHub Actions are up-to-date!')
-
-
 class UpdateGithubActions(PhonyTarget.Runnable):
     """
     Updates and prints all outdated Actions used in the project's GitHub workflows.

@@ -34,28 +34,6 @@ def __query_latest_python_version(build_unit: BuildUnit) -> Version:
     return sorted(available_versions)[-1]
 
 
-def check_python_version(build_unit: BuildUnit):
-    """
-    Checks if the latest Python version is supported.
-
-    :param build_unit: The build unit from which this function is run
-    """
-    Log.info('Checking if the latest Python version is supported...')
-    latest_version = __query_latest_python_version(build_unit)
-    version_file = Project.Python.python_version_file()
-    supported_version = Version.parse(version_file.supported_versions.max_version)
-
-    if supported_version > latest_version:
-        Log.info(f'Latest Python version {latest_version} is supported!')
-    else:
-        version_numbers = supported_version.numbers
-        supported_version = Version(numbers=(version_numbers[0], version_numbers[1] - 1))
-        Log.info(
-            f'Latest Python version {latest_version} is not supported! The latest supported version is '
-            f'{supported_version}.'
-        )
-
-
 def update_python_version(build_unit: BuildUnit):
     """
     Updates the maximum supported Python version to the latest Python version.
