@@ -43,7 +43,7 @@ class GithubApi:
 
         def get_latest_release(self) -> Any | None:
             """
-            Returns repository's latest release, if any.
+            Returns the repository's latest release, if any.
 
             :return: The latest release or None, if no release is available
             """
