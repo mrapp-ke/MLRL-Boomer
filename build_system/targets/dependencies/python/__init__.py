@@ -10,7 +10,7 @@ from core.build_unit import BuildUnit
 from core.targets import TargetBuilder
 
 from targets.dependencies.python.modules import DependencyType, PythonDependencyModule
-from targets.dependencies.python.python import check_python_version, update_python_version
+from targets.dependencies.python.python import update_python_version
 from targets.dependencies.python.targets import InstallPythonDependencies, UpdatePythonDependencies
 from targets.project import Project
 
@@ -25,8 +25,6 @@ TARGETS = (
     .add_phony_target(INSTALL_RUNTIME_DEPENDENCIES)
     .depends_on(VENV)
     .set_runnables(InstallPythonDependencies(DependencyType.RUNTIME))
-    .add_phony_target('check_python_version')
-    .set_functions(check_python_version)
     .add_phony_target('update_runtime_dependencies')
     .set_runnables(UpdatePythonDependencies(DependencyType.RUNTIME))
     .add_phony_target('update_build_dependencies')
