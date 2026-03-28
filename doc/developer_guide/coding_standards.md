@@ -359,27 +359,7 @@ The following command updates the supported versions in the file {repo-file}`ver
 
 Python dependencies that are required by different aspects of the project, such as the build system, the documentation, or our own Python code, are defined in separate `requirements.txt` and `pyproject.template.toml` files. For dependencies that use [Semantic Versioning](https://semver.org/), we specify the earliest and latest version we support. For other dependencies, we demand for a specific version number. This strives to achieve a balance between flexibility for users and comfort for developers. On the one hand, supporting a range of versions provides more freedom to users, as our packages can more flexibly be used together with other ones, relying on the same dependencies. On the other hand, the project's maintainers must not manually update dependencies that have a minor release, while still requiring manual intervention for major updates.
 
-To ease the life of developers, the following command provided by the project's build system may be used to check for outdated dependencies:
-
-````{tab} Linux
-   ```text
-   ./build check_dependencies
-   ```
-````
-
-````{tab} macOS
-   ```text
-   ./build check_dependencies
-   ```
-````
-
-````{tab} Windows
-   ```
-   build.bat check_dependencies
-   ```
-````
-
-Alternatively, the following command may be used to update the versions of outdated dependencies automatically:
+To ease the life of developers, the following command provided by the project's build system may be used to update the versions of outdated dependencies:
 
 ````{tab} Linux
    ```text
@@ -400,7 +380,7 @@ Alternatively, the following command may be used to update the versions of outda
 ````
 
 ```{note}
-If you want to restrict the above commands to the build-time dependencies, required by the project's build system, or the runtime dependencies, required for running its algorithms, you can use the targets `check_build_dependencies`, `check_runtime_dependencies`, `update_build_dependencies`, and `update_runtime_dependencies` instead.
+If you want to restrict the above commands to the build-time dependencies, required by the project's build system, or the runtime dependencies, required for running its algorithms, you can use the targets `update_build_dependencies` and `update_runtime_dependencies` instead.
 ```
 
 ### GitHub Actions
