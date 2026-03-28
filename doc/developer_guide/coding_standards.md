@@ -315,27 +315,7 @@ That being said, we still rely on several dependencies for Continuous Integratio
 
 ### Supported Python Versions
 
-The packages provided by this project are built from source code that must be compiled for specific Python versions. As a consequence, they do not work with arbitrary Python releases, but can only be used with the versions they have been built for. The supported Python versions are stored in the file {repo-file}`version-python <build_system/res/versioning/version-python>` and are regularly updated as new releases of Python are published. The following command provided by the project's build system checks if the latest Python release is currently supported by the project:
-
-````{tab} Linux
-   ```text
-   ./build check_python_version
-   ```
-````
-
-````{tab} macOS
-   ```text
-   ./build check_python_version
-   ```
-````
-
-````{tab} Windows
-   ```
-   build.bat check_python_version
-   ```
-````
-
-The following command updates the supported versions in the file {repo-file}`version-python <build_system/res/versioning/version-python>` to include the latest Python release:
+The packages provided by this project are built from source code that must be compiled for specific Python versions. As a consequence, they do not work with arbitrary Python releases, but can only be used with the versions they have been built for. The supported Python versions are stored in the file {repo-file}`version-python <build_system/res/versioning/version-python>` and are regularly updated as new releases of Python are published. The following command provided by the project's build system updates the supported versions in the file {repo-file}`version-python <build_system/res/versioning/version-python>` to include the latest Python release:
 
 ````{tab} Linux
    ```text
@@ -359,27 +339,7 @@ The following command updates the supported versions in the file {repo-file}`ver
 
 Python dependencies that are required by different aspects of the project, such as the build system, the documentation, or our own Python code, are defined in separate `requirements.txt` and `pyproject.template.toml` files. For dependencies that use [Semantic Versioning](https://semver.org/), we specify the earliest and latest version we support. For other dependencies, we demand for a specific version number. This strives to achieve a balance between flexibility for users and comfort for developers. On the one hand, supporting a range of versions provides more freedom to users, as our packages can more flexibly be used together with other ones, relying on the same dependencies. On the other hand, the project's maintainers must not manually update dependencies that have a minor release, while still requiring manual intervention for major updates.
 
-To ease the life of developers, the following command provided by the project's build system may be used to check for outdated dependencies:
-
-````{tab} Linux
-   ```text
-   ./build check_dependencies
-   ```
-````
-
-````{tab} macOS
-   ```text
-   ./build check_dependencies
-   ```
-````
-
-````{tab} Windows
-   ```
-   build.bat check_dependencies
-   ```
-````
-
-Alternatively, the following command may be used to update the versions of outdated dependencies automatically:
+To ease the life of developers, the following command provided by the project's build system may be used to update the versions of outdated dependencies:
 
 ````{tab} Linux
    ```text
@@ -400,34 +360,14 @@ Alternatively, the following command may be used to update the versions of outda
 ````
 
 ```{note}
-If you want to restrict the above commands to the build-time dependencies, required by the project's build system, or the runtime dependencies, required for running its algorithms, you can use the targets `check_build_dependencies`, `check_runtime_dependencies`, `update_build_dependencies`, and `update_runtime_dependencies` instead.
+If you want to restrict the above commands to the build-time dependencies, required by the project's build system, or the runtime dependencies, required for running its algorithms, you can use the targets `update_build_dependencies` and `update_runtime_dependencies` instead.
 ```
 
 ### GitHub Actions
 
 Our {ref}`Continuous Integration <ci>` (CI) jobs heavily rely on so-called [Actions](https://docs.github.com/actions/sharing-automations/reusing-workflows), which are reusable building blocks provided by third-party developers. As with all dependencies, updates to these Actions may introduce breaking changes. To reduce the risk of updates breaking our CI jobs, we pin the Actions to a certain version. Usually, we only restrict the major version required by a job, rather than specifying a specific version. This allows minor updates, which are less likely to cause problems, to take effect without manual intervention.
 
-The project's build system allows to automatically check for outdated Actions used by the project's CI jobs. The following command prints a list of all outdated Actions:
-
-````{tab} Linux
-   ```text
-   ./build check_github_actions
-   ```
-````
-
-````{tab} macOS
-   ```text
-   ./build check_github_actions
-   ```
-````
-
-````{tab} Windows
-   ```
-   build.bat check_github_actions
-   ```
-````
-
-Alternatively, the following command may be used to update the versions of outdated Actions automatically:
+The project's build system allows to automatically check for outdated Actions used by the project's CI jobs. The following command may be used to update the versions of outdated Actions automatically:
 
 ````{tab} Linux
    ```text
@@ -455,27 +395,7 @@ The above commands query the [GitHub API](https://docs.github.com/rest) for the 
 
 For running {ref}`Continuous Integration <ci>` (CI) jobs, we use [runners](https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners) hosted by GitHub. Runners are available for different operating systems and architectures, which is particularly relevant when building packages for the various target platforms we support. To avoid breaking the build process when GitHub updates its runners, we specify the exact version required by a particular CI job.
 
-Our build system provides the following command to check for outdated runners used by the project:
-
-````{tab} Linux
-   ```text
-   ./build check_github_runners
-   ```
-````
-
-````{tab} macOS
-   ```text
-   ./build check_github_runners
-   ```
-````
-
-````{tab} Windows
-   ```
-   build.bat check_github_runners
-   ```
-````
-
-In addition, the command below can be used to update the versions of outdated runners automatically:
+Our build system provides the following command to update the versions of outdated runners automatically:
 
 ````{tab} Linux
    ```text
