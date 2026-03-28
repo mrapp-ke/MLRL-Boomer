@@ -387,27 +387,7 @@ If you want to restrict the above commands to the build-time dependencies, requi
 
 Our {ref}`Continuous Integration <ci>` (CI) jobs heavily rely on so-called [Actions](https://docs.github.com/actions/sharing-automations/reusing-workflows), which are reusable building blocks provided by third-party developers. As with all dependencies, updates to these Actions may introduce breaking changes. To reduce the risk of updates breaking our CI jobs, we pin the Actions to a certain version. Usually, we only restrict the major version required by a job, rather than specifying a specific version. This allows minor updates, which are less likely to cause problems, to take effect without manual intervention.
 
-The project's build system allows to automatically check for outdated Actions used by the project's CI jobs. The following command prints a list of all outdated Actions:
-
-````{tab} Linux
-   ```text
-   ./build check_github_actions
-   ```
-````
-
-````{tab} macOS
-   ```text
-   ./build check_github_actions
-   ```
-````
-
-````{tab} Windows
-   ```
-   build.bat check_github_actions
-   ```
-````
-
-Alternatively, the following command may be used to update the versions of outdated Actions automatically:
+The project's build system allows to automatically check for outdated Actions used by the project's CI jobs. The following command may be used to update the versions of outdated Actions automatically:
 
 ````{tab} Linux
    ```text
