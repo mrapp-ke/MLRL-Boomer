@@ -57,6 +57,19 @@ class GithubApi:
                         f'Failed to query latest release of GitHub repository "{self.repository_name}"'
                     ) from error
 
+        def get_all_tags(self) -> Iterable[Any]:
+            """
+            Returns all tags of the repository.
+
+            :return: The tags
+            """
+            with self.__create_client() as client:
+                try:
+                    repository = client.get_repo(self.repository_name)
+                    return repository.get_tags()
+                except Exception as error:
+                    raise RuntimeError(f'Failed to query tags of GitHub repository "{self.repository_name}"') from error
+
         def get_all_releases(self) -> Iterable[Any]:
             """
             Returns all releases of the repository.
