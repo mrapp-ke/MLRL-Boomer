@@ -57,6 +57,7 @@ jobs:
               - 'build_system/res/versioning/version-cpp'
               - 'build_system/res/versioning/version-python'
               - 'cpp/meson.*'
+              - 'cpp/subprojects/*.wrap'
               - 'cpp/subprojects/common/meson.*'
               - 'cpp/subprojects/common/include/**'
               - 'cpp/subprojects/common/src/**'
