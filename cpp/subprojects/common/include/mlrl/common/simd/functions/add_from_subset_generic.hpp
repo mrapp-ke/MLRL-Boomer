@@ -12,7 +12,7 @@ namespace simd {
 
     template<typename Arch, typename T>
     void addFromSubset(Arch, T* a, const T* b, const uint32* indices, uint32 numElements) {
-        typedef xsimd::batch<T, Arch> batch;
+        using batch = xsimd::batch<T, Arch>;
         constexpr std::size_t batchSize = batch::size;
         uint32 batchEnd = numElements - (numElements % batchSize);
         std::array<T, batchSize> tmp;

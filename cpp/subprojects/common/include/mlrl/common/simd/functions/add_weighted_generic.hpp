@@ -10,7 +10,7 @@ namespace simd {
 
     template<typename Arch, typename T>
     void addWeighted(Arch, T* a, const T* b, uint32 numElements, T weight) {
-        typedef xsimd::batch<T, Arch> batch;
+        using batch = xsimd::batch<T, Arch>;
         constexpr std::size_t batchSize = batch::size;
         uint32 batchEnd = numElements - (numElements % batchSize);
         uint32 i = 0;

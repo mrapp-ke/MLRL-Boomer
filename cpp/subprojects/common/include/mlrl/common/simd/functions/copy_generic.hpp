@@ -10,7 +10,7 @@ namespace simd {
 
     template<typename Arch, typename T>
     void copy(Arch, const T* from, T* to, uint32 numElements) {
-        typedef xsimd::batch<T, Arch> batch;
+        using batch = xsimd::batch<T, Arch>;
         constexpr std::size_t batchSize = batch::size;
         uint32 batchEnd = numElements - (numElements % batchSize);
         uint32 i = 0;
