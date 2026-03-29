@@ -11,26 +11,10 @@ from core.targets import TargetBuilder
 
 from targets.dependencies.python.modules import DependencyType, PythonDependencyModule
 from targets.dependencies.python.python import update_python_version
-from targets.dependencies.python.targets import InstallPythonDependencies, UpdatePythonDependencies
 from targets.project import Project
-
-VENV = 'venv'
-
-INSTALL_RUNTIME_DEPENDENCIES = 'install_runtime_dependencies'
 
 TARGETS = (
     TargetBuilder(BuildUnit.for_file(Path(__file__)))
-    .add_phony_target(VENV)
-    .nop()
-    .add_phony_target(INSTALL_RUNTIME_DEPENDENCIES)
-    .depends_on(VENV)
-    .set_runnables(InstallPythonDependencies(DependencyType.RUNTIME))
-    .add_phony_target('update_runtime_dependencies')
-    .set_runnables(UpdatePythonDependencies(DependencyType.RUNTIME))
-    .add_phony_target('update_build_dependencies')
-    .set_runnables(UpdatePythonDependencies(DependencyType.BUILD_TIME))
-    .add_phony_target('update_dependencies')
-    .set_runnables(UpdatePythonDependencies())
     .add_phony_target('update_python_version')
     .set_functions(update_python_version)
     .build()
