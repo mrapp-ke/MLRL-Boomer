@@ -56,4 +56,4 @@ pip install mlrl-testbed-sklearn
 
 For more information about how to use the command line API, refer to the section {ref}`testbed`.
 
-[^exp]: {ref}`SIMD support <simd-support>` is currently not available on Windows ARM64 systems due to the problem described in [this GitHub issue](https://github.com/xtensor-stack/xsimd/issues/611).
+[^exp]: {ref}`SIMD support <simd-support>` is currently not available on Windows.

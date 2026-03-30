@@ -1,7 +1,7 @@
 #include "mlrl/seco/rule_evaluation/head_type_partial.hpp"
 
 #include "mlrl/common/math/vector_math.hpp"
-#include "mlrl/common/util/xsimd.hpp"
+#include "mlrl/common/simd/vector_math.hpp"
 #include "mlrl/seco/rule_evaluation/rule_evaluation_decomposable_partial.hpp"
 #include "mlrl/seco/statistics/statistics_provider_decomposable_dense.hpp"
 #include "rule_evaluation_decomposable_majority.hpp"
