@@ -79,7 +79,7 @@ extlinks = {
 }
 
 # Configuration of the builder "linkcheck"
-linkcheck_timeout = 30
+linkcheck_timeout = 60
 linkcheck_retries = 3
 linkcheck_request_headers = {}
 github_token = environ.get('GITHUB_TOKEN')
