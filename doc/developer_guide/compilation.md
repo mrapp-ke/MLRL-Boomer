@@ -463,7 +463,7 @@ If you need to access this information programmatically in your own Python or C+
 ### SIMD Support
 
 ```{note}
-SIMD support is currently not available on Windows ARM64 systems due to the problem described in [this GitHub issue](https://github.com/xtensor-stack/xsimd/issues/611).
+SIMD support is currently not available on Windows.
 ```
 
 The algorithms provided by this project may use [single instruction, multiple data (SIMD)](https://en.wikipedia.org/wiki/Single_instruction,_multiple_data) instructions supported by modern CPUs. Support for SIMD instructions is enabled by default when compiled on a system where [xsimd](https://github.com/xtensor-stack/xsimd) is available. At compile time, the usage of SIMD instructions can be controlled explicitly by setting the build option `simd_support` to `enabled` or `disabled`. Alternatively, these values can be provided via the environment variable `SIMD_SUPPORT`.
