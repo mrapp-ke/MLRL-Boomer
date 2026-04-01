@@ -17,7 +17,7 @@ jobs:
       linux: ${{ steps.filter.outputs.linux }}
       macos: ${{ steps.filter.outputs.macos }}
       windows: ${{ steps.filter.outputs.windows }}
-      build_files: ${{ steps.filter.outputs.build_files }}
+      any: ${{ steps.filter.outputs.any }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -47,20 +47,24 @@ jobs:
               - 'build_system/targets/publishing/*'
               - 'build_system/res/versioning/version-python'
               - 'python/subprojects/**/requirements.txt'
-            linux:
+            linux: &linux
               - *build_files
               - '.github/workflows/template_publish_platform_linux.yml'
-            macos:
+            macos: &macos
               - *build_files
               - '.github/workflows/template_publish_platform_macos.yml'
               - 'build_system/targets/dependencies/*'
               - 'build_system/targets/dependencies/macos/*'
-            windows:
+            windows: &windows
               - *build_files
               - '.github/workflows/template_publish_platform_windows.yml'
+            any: &any
+              - *linux
+              - *macos
+              - *windows
   test_release:
     needs: changes
-    if: ${{ needs.changes.outputs.linux == 'true' || needs.changes.outputs.macos == 'true' || needs.changes.outputs.windows == 'true' }}
+    if: ${{ needs.changes.outputs.any == 'true' }}
     name: Test publishing wheel packages
     uses: ./.github/workflows/template_publish.yml
     with:
@@ -69,7 +73,7 @@ jobs:
       windows: ${{ needs.changes.outputs.windows == 'true' }}
   check_success:
     needs: test_release
-    if: ${{ always() && !cancelled() && needs.changes.outputs.build_files == 'true' }}
+    if: ${{ always() && !cancelled() && needs.changes.outputs.any == 'true' }}
     name: Test publishing packages succeeded
     runs-on: ubuntu-slim
     steps:
