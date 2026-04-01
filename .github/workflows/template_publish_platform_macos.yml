@@ -74,7 +74,7 @@ jobs:
         uses: pypa/cibuildwheel@v3.4
         env:
           CIBW_BUILD: ${{ matrix.build_identifier }}
-          CIBW_BEFORE_ALL: GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} ./build dependency_libomp
+          CIBW_BEFORE_ALL: GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} ./build dependency_libomp && ./build --clean
           CIBW_BEFORE_BUILD: CPLUS_INCLUDE_PATH=/Users/runner/work/MLRL-Boomer/MLRL-Boomer/libomp/include/ LIBRARY_PATH=/Users/runner/work/MLRL-Boomer/MLRL-Boomer/libomp/lib/
             ./build pyproject_toml
           CIBW_REPAIR_WHEEL_COMMAND: DYLD_LIBRARY_PATH=/Users/runner/work/MLRL-Boomer/MLRL-Boomer/libomp/lib/ delocate-wheel  --require-archs
