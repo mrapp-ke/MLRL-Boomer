@@ -62,17 +62,38 @@ jobs:
               - *linux
               - *macos
               - *windows
-  test_release:
+  workflow_python_version:
     needs: changes
+    name: Determine Python version for workflow
+    if: ${{ needs.changes.outputs.any == 'true' }}
+    runs-on: ubuntu-slim
+    outputs:
+      workflow_python_version: ${{ steps.workflow_python_version.outputs.workflow_python_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: build_system/res/versioning/version-python
+          sparse-checkout-cone-mode: false
+      - name: Determine Python version for workflow
+        id: workflow_python_version
+        run: echo "workflow_python_version=$(sed s/,//g build_system/res/versioning/version-python)" >> $GITHUB_OUTPUT
+  test_release:
+    needs:
+      - changes
+      - workflow_python_version
     if: ${{ needs.changes.outputs.any == 'true' }}
     name: Test publishing wheel packages
     uses: ./.github/workflows/template_publish.yml
     with:
+      workflow_python_version: ${{ needs.workflow_python_version.outputs.workflow_python_version }}
       linux: ${{ needs.changes.outputs.linux == 'true' }}
       macos: ${{ needs.changes.outputs.macos == 'true' }}
       windows: ${{ needs.changes.outputs.windows == 'true' }}
   run_wheels:
-    needs: test_release
+    needs:
+      - workflow_python_version
+      - test_release
     name: Run wheels
     strategy:
       fail-fast: false
@@ -91,6 +112,7 @@ jobs:
     with:
       os: ${{ matrix.os }}
       subproject: ${{ matrix.subproject }}
+      workflow_python_version: ${{ needs.workflow_python_version.outputs.workflow_python_version }}
   check_success:
     needs: run_wheels
     if: ${{ always() && !cancelled() && needs.changes.outputs.any == 'true' }}
