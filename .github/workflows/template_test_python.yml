@@ -70,7 +70,7 @@ jobs:
           name: python-packages-${{ inputs.subproject }}
           path: python/subprojects/
       - name: Install Python packages
-        run: . .venv/bin/activate && uv pip install python/subprojects/**/dist/*.whl && deactivate
+        run: .venv/bin/uv pip install python/subprojects/**/dist/*.whl
       - name: Test Python packages
         env:
           SUBPROJECTS: ${{ inputs.subproject }}

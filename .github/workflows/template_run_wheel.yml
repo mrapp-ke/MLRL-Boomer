@@ -104,32 +104,26 @@ jobs:
         env:
           PACKAGE_NAME: mlrl-${{ inputs.subproject == 'boosting' && 'boomer' || inputs.subproject }}
         run: |
-          . .venv/bin/activate
-          python -m uv pip install --find-links wheelhouse --no-index --no-deps mlrl-util
-          python -m uv pip install --find-links wheelhouse --no-index --no-deps mlrl-testbed
-          python -m uv pip install --find-links wheelhouse --no-index --no-deps mlrl-testbed-arff
-          python -m uv pip install --find-links wheelhouse --no-index --no-deps mlrl-testbed-sklearn
-          python -m uv pip install --find-links wheelhouse --no-index --no-deps mlrl-common
-          python -m uv pip install --find-links wheelhouse --no-index --no-deps $PACKAGE_NAME
+          .venv/bin/uv pip install --find-links wheelhouse --no-index --no-deps mlrl-util
+          .venv/bin/uv pip install --find-links wheelhouse --no-index --no-deps mlrl-testbed
+          .venv/bin/uv pip install --find-links wheelhouse --no-index --no-deps mlrl-testbed-arff
+          .venv/bin/uv pip install --find-links wheelhouse --no-index --no-deps mlrl-testbed-sklearn
+          .venv/bin/uv pip install --find-links wheelhouse --no-index --no-deps mlrl-common
+          .venv/bin/uv pip install --find-links wheelhouse --no-index --no-deps $PACKAGE_NAME
       - name: Install wheels
         if: ${{ startsWith(inputs.os, 'windows-') }}
         env:
           PACKAGE_NAME: mlrl-${{ inputs.subproject == 'boosting' && 'boomer' || inputs.subproject }}
         run: |
-          . .venv\Scripts\activate.ps1
-          python -m uv pip install --find-links wheelhouse --no-index --no-deps mlrl-util
-          python -m uv pip install --find-links wheelhouse --no-index --no-deps mlrl-testbed
-          python -m uv pip install --find-links wheelhouse --no-index --no-deps mlrl-testbed-arff
-          python -m uv pip install --find-links wheelhouse --no-index --no-deps mlrl-testbed-sklearn
-          python -m uv pip install --find-links wheelhouse --no-index --no-deps mlrl-common
-          python -m uv pip install --find-links wheelhouse --no-index --no-deps $PACKAGE_NAME
+          .\.venv\Scripts\uv pip install --find-links wheelhouse --no-index --no-deps mlrl-util
+          .\.venv\Scripts\uv pip install --find-links wheelhouse --no-index --no-deps mlrl-testbed
+          .\.venv\Scripts\uv pip install --find-links wheelhouse --no-index --no-deps mlrl-testbed-arff
+          .\.venv\Scripts\uv pip install --find-links wheelhouse --no-index --no-deps mlrl-testbed-sklearn
+          .\.venv\Scripts\uv pip install --find-links wheelhouse --no-index --no-deps mlrl-common
+          .\.venv\Scripts\uv pip install --find-links wheelhouse --no-index --no-deps $env:PACKAGE_NAME
       - name: Run wheel
         if: ${{ !startsWith(inputs.os, 'windows-') }}
-        run: |
-          . .venv/bin/activate
-          mlrl-testbed mlrl.${{ inputs.subproject }} --version
+        run: .venv/bin/mlrl-testbed mlrl.${{ inputs.subproject }} --version
       - name: Run wheel
         if: ${{ startsWith(inputs.os, 'windows-') }}
-        run: |-
-          . .venv\Scripts\activate.ps1
-          mlrl-testbed mlrl.${{ inputs.subproject }} --version
+        run: .\.venv\Scripts\mlrl-testbed mlrl.${{ inputs.subproject }} --version
