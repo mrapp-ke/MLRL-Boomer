@@ -375,8 +375,8 @@ namespace boosting {
                   statisticVector.hessians_diagonal_cbegin();
 
                 for (uint32 i = 0; i < numCriteria; i++) {
-                    criteria[i] = calculateOutputWiseScore(gradientIterator[i], hessianIterator[i],
-                                                           l1RegularizationWeight, l2RegularizationWeight);
+                    criteria[i] = SequentialDecomposableVectorMath::calculateOutputWiseScore(
+                      gradientIterator[i], hessianIterator[i], l1RegularizationWeight, l2RegularizationWeight);
                 }
 
                 return numCriteria;

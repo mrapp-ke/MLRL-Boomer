@@ -54,11 +54,11 @@ namespace boosting {
                 for (uint32 i = 0; i < numElements; i++) {
                     statistic_type gradient = gradientIterator[i];
                     statistic_type hessian = hessianIterator[i];
-                    statistic_type predictedScore =
-                      calculateOutputWiseScore(gradient, hessian, l1RegularizationWeight_, l2RegularizationWeight_);
+                    statistic_type predictedScore = SequentialDecomposableVectorMath::calculateOutputWiseScore(
+                      gradient, hessian, l1RegularizationWeight_, l2RegularizationWeight_);
                     valueIterator[i] = predictedScore;
-                    quality += calculateOutputWiseQuality(predictedScore, gradient, hessian, l1RegularizationWeight_,
-                                                          l2RegularizationWeight_);
+                    quality += SequentialDecomposableVectorMath::calculateOutputWiseQuality(
+                      predictedScore, gradient, hessian, l1RegularizationWeight_, l2RegularizationWeight_);
                 }
 
                 scoreVector_.quality = quality;

@@ -47,8 +47,8 @@ namespace boosting {
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numElements; i++) {
-                    statistic_type score = calculateOutputWiseScore(gradientIterator[i], hessianIterator[i],
-                                                                    l1RegularizationWeight, l2RegularizationWeight);
+                    statistic_type score = SequentialDecomposableVectorMath::calculateOutputWiseScore(
+                      gradientIterator[i], hessianIterator[i], l1RegularizationWeight, l2RegularizationWeight);
 
                     if (calculateWeightedScore(score, minAbsScore, exponent_) >= threshold) {
                         indexIterator[n] = labelIndexIterator[i];

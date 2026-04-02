@@ -9,45 +9,54 @@
 namespace boosting {
 
     /**
-     * Calculates and returns the optimal score to be predicted for a single output, based on the corresponding gradient
-     * and Hessian and taking L1 and L2 regularization into account.
-     *
-     * @tparam StatisticType            The type of the gradient and Hessian
-     * @param gradient                  The gradient that corresponds to the output
-     * @param hessian                   The Hessian that corresponds to the output
-     * @param l1RegularizationWeight    The weight of the L1 regularization
-     * @param l2RegularizationWeight    The weight of the L2 regularization
-     * @return                          The predicted score that has been calculated
+     * Implements basic operations for calculating with arrays of gradients and Hessians by applying the respective
+     * operations to each element in the arrays sequentially.
      */
-    template<typename StatisticType>
-    static inline constexpr StatisticType calculateOutputWiseScore(StatisticType gradient, StatisticType hessian,
+    struct SequentialDecomposableVectorMath {
+        public:
+
+            /**
+             * Calculates and returns the optimal score to be predicted for a single output, based on the corresponding
+             * gradient and Hessian and taking L1 and L2 regularization into account.
+             *
+             * @tparam StatisticType            The type of the gradient and Hessian
+             * @param gradient                  The gradient that corresponds to the output
+             * @param hessian                   The Hessian that corresponds to the output
+             * @param l1RegularizationWeight    The weight of the L1 regularization
+             * @param l2RegularizationWeight    The weight of the L2 regularization
+             * @return                          The predicted score that has been calculated
+             */
+            template<typename StatisticType>
+            static inline constexpr StatisticType calculateOutputWiseScore(StatisticType gradient,
+                                                                           StatisticType hessian,
+                                                                           float32 l1RegularizationWeight,
+                                                                           float32 l2RegularizationWeight) {
+                return math::divideOrZero(-gradient + getL1RegularizationWeight(gradient, l1RegularizationWeight),
+                                          hessian + l2RegularizationWeight);
+            }
+
+            /**
+             * Calculates and returns the quality of the prediction for a single output, taking L1 and L2 regularization
+             * into account.
+             *
+             * @tparam StatisticType            The type of the predicted score, gradient and Hessian
+             * @param score                     The predicted score
+             * @param gradient                  The gradient
+             * @param hessian                   The Hessian
+             * @param l1RegularizationWeight    The weight of the L1 regularization
+             * @param l2RegularizationWeight    The weight of the L2 regularization
+             * @return                          The quality that has been calculated
+             */
+            template<typename StatisticType>
+            static inline StatisticType calculateOutputWiseQuality(StatisticType score, StatisticType gradient,
+                                                                   StatisticType hessian,
                                                                    float32 l1RegularizationWeight,
                                                                    float32 l2RegularizationWeight) {
-        return math::divideOrZero(-gradient + getL1RegularizationWeight(gradient, l1RegularizationWeight),
-                                  hessian + l2RegularizationWeight);
-    }
-
-    /**
-     * Calculates and returns the quality of the prediction for a single output, taking L1 and L2 regularization into
-     * account.
-     *
-     * @tparam StatisticType            The type of the predicted score, gradient and Hessian
-     * @param score                     The predicted score
-     * @param gradient                  The gradient
-     * @param hessian                   The Hessian
-     * @param l1RegularizationWeight    The weight of the L1 regularization
-     * @param l2RegularizationWeight    The weight of the L2 regularization
-     * @return                          The quality that has been calculated
-     */
-    template<typename StatisticType>
-    static inline StatisticType calculateOutputWiseQuality(StatisticType score, StatisticType gradient,
-                                                           StatisticType hessian, float32 l1RegularizationWeight,
-                                                           float32 l2RegularizationWeight) {
-        StatisticType scorePow = score * score;
-        StatisticType quality = (gradient * score) + (0.5 * hessian * scorePow);
-        StatisticType l1RegularizationTerm = l1RegularizationWeight * std::abs(score);
-        StatisticType l2RegularizationTerm = 0.5 * l2RegularizationWeight * scorePow;
-        return quality + l1RegularizationTerm + l2RegularizationTerm;
-    }
-
+                StatisticType scorePow = score * score;
+                StatisticType quality = (gradient * score) + (0.5 * hessian * scorePow);
+                StatisticType l1RegularizationTerm = l1RegularizationWeight * std::abs(score);
+                StatisticType l2RegularizationTerm = 0.5 * l2RegularizationWeight * scorePow;
+                return quality + l1RegularizationTerm + l2RegularizationTerm;
+            }
+    };
 }

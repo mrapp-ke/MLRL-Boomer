@@ -38,12 +38,13 @@ namespace boosting {
 
         for (uint32 i = 0; i < numElements; i++) {
             uint32 weight = weights[i];
-            statistic_type predictedScore =
-              calculateOutputWiseScore(gradientIterator[i], hessianIterator[i], weight * l1RegularizationWeight,
-                                       weight * l2RegularizationWeight);
+            statistic_type predictedScore = SequentialDecomposableVectorMath::calculateOutputWiseScore(
+              gradientIterator[i], hessianIterator[i], weight * l1RegularizationWeight,
+              weight * l2RegularizationWeight);
             scoreIterator[i] = predictedScore;
-            quality += calculateOutputWiseQuality(predictedScore, gradientIterator[i], hessianIterator[i],
-                                                  weight * l1RegularizationWeight, weight * l2RegularizationWeight);
+            quality += SequentialDecomposableVectorMath::calculateOutputWiseQuality(
+              predictedScore, gradientIterator[i], hessianIterator[i], weight * l1RegularizationWeight,
+              weight * l2RegularizationWeight);
         }
 
         return quality;
@@ -203,8 +204,8 @@ namespace boosting {
                 typename StatisticVector::hessian_const_iterator hessianIterator = statisticVector.hessians_cbegin();
 
                 for (uint32 i = 0; i < numCriteria; i++) {
-                    criteria[i] = calculateOutputWiseScore(gradientIterator[i], hessianIterator[i],
-                                                           l1RegularizationWeight, l2RegularizationWeight);
+                    criteria[i] = SequentialDecomposableVectorMath::calculateOutputWiseScore(
+                      gradientIterator[i], hessianIterator[i], l1RegularizationWeight, l2RegularizationWeight);
                 }
 
                 return numCriteria;

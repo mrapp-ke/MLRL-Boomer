@@ -48,13 +48,13 @@ namespace boosting {
                 uint32 numElements = statisticVector.getNumElements();
                 typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
                 typename StatisticVector::hessian_const_iterator hessianIterator = statisticVector.hessians_cbegin();
-                statistic_type bestScore = calculateOutputWiseScore(gradientIterator[0], hessianIterator[0],
-                                                                    l1RegularizationWeight_, l2RegularizationWeight_);
+                statistic_type bestScore = SequentialDecomposableVectorMath::calculateOutputWiseScore(
+                  gradientIterator[0], hessianIterator[0], l1RegularizationWeight_, l2RegularizationWeight_);
                 uint32 bestIndex = 0;
 
                 for (uint32 i = 1; i < numElements; i++) {
-                    statistic_type score = calculateOutputWiseScore(gradientIterator[i], hessianIterator[i],
-                                                                    l1RegularizationWeight_, l2RegularizationWeight_);
+                    statistic_type score = SequentialDecomposableVectorMath::calculateOutputWiseScore(
+                      gradientIterator[i], hessianIterator[i], l1RegularizationWeight_, l2RegularizationWeight_);
 
                     if (std::abs(score) > std::abs(bestScore)) {
                         bestIndex = i;
@@ -66,9 +66,9 @@ namespace boosting {
                   scoreVector_.values_begin();
                 valueIterator[0] = bestScore;
                 indexVector_.begin()[0] = outputIndices_.cbegin()[bestIndex];
-                scoreVector_.quality =
-                  calculateOutputWiseQuality(bestScore, gradientIterator[bestIndex], hessianIterator[bestIndex],
-                                             l1RegularizationWeight_, l2RegularizationWeight_);
+                scoreVector_.quality = SequentialDecomposableVectorMath::calculateOutputWiseQuality(
+                  bestScore, gradientIterator[bestIndex], hessianIterator[bestIndex], l1RegularizationWeight_,
+                  l2RegularizationWeight_);
                 return scoreVector_;
             }
     };
