@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/common/rule_evaluation/score_vector_dense.hpp"
-#include "rule_evaluation_decomposable_common.hpp"
+#include "vector_math_decomposable.hpp"
 
 namespace boosting {
 

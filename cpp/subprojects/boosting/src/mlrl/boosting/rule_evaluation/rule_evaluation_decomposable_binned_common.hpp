@@ -7,7 +7,7 @@
 #include "mlrl/common/data/array.hpp"
 #include "mlrl/common/rule_evaluation/score_vector_binned_dense.hpp"
 #include "mlrl/common/util/iterators.hpp"
-#include "rule_evaluation_decomposable_common.hpp"
+#include "vector_math_decomposable.hpp"
 
 #include <memory>
 #include <utility>

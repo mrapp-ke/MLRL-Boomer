@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/boosting/math/vector_math.hpp"
 #include "scalar_math_decomposable.hpp"
 
 namespace boosting {

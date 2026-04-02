@@ -1,7 +1,7 @@
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_decomposable_single.hpp"
 
 #include "mlrl/common/rule_evaluation/score_vector_dense.hpp"
-#include "rule_evaluation_decomposable_common.hpp"
+#include "vector_math_decomposable.hpp"
 
 namespace boosting {
 
