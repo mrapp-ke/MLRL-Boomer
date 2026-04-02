@@ -15,8 +15,9 @@ namespace boosting {
      * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
      * @tparam IndexVector      The type of the vector that provides access to the indices of the outputs for which
      *                          predictions should be calculated
+     * @tparam VectorMath       The type that implements basic operations for calculating with gradients and Hessians
      */
-    template<typename StatisticVector, typename IndexVector>
+    template<typename StatisticVector, typename IndexVector, typename VectorMath>
     class DecomposableCompleteRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
         private:
 
@@ -54,11 +55,11 @@ namespace boosting {
                 for (uint32 i = 0; i < numElements; i++) {
                     statistic_type gradient = gradientIterator[i];
                     statistic_type hessian = hessianIterator[i];
-                    statistic_type predictedScore = SequentialDecomposableVectorMath::calculateOutputWiseScore(
+                    statistic_type predictedScore = VectorMath::calculateOutputWiseScore(
                       gradient, hessian, l1RegularizationWeight_, l2RegularizationWeight_);
                     valueIterator[i] = predictedScore;
-                    quality += SequentialDecomposableVectorMath::calculateOutputWiseQuality(
-                      predictedScore, gradient, hessian, l1RegularizationWeight_, l2RegularizationWeight_);
+                    quality += VectorMath::calculateOutputWiseQuality(predictedScore, gradient, hessian,
+                                                                      l1RegularizationWeight_, l2RegularizationWeight_);
                 }
 
                 scoreVector_.quality = quality;
