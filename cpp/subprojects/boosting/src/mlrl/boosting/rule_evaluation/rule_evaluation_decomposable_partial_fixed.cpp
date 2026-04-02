@@ -69,9 +69,9 @@ namespace boosting {
                     statistic_type predictedScore = entry.value;
                     indexIterator[i] = outputIndexIterator[index];
                     valueIterator[i] = predictedScore;
-                    quality += SequentialDecomposableVectorMath::calculateOutputWiseQuality(
-                      predictedScore, gradientIterator[index], hessianIterator[index], l1RegularizationWeight_,
-                      l2RegularizationWeight_);
+                    quality +=
+                      calculateOutputWiseQuality(predictedScore, gradientIterator[index], hessianIterator[index],
+                                                 l1RegularizationWeight_, l2RegularizationWeight_);
                 }
 
                 scoreVector_.quality = quality;

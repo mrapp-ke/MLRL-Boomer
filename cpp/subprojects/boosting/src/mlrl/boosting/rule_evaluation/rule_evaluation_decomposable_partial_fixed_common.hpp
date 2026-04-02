@@ -60,8 +60,8 @@ namespace boosting {
         for (uint32 i = 0; i < numOutputs; i++) {
             IndexedValue<statistic_type>& entry = scoreIterator[i];
             entry.index = i;
-            entry.value = SequentialDecomposableVectorMath::calculateOutputWiseScore(
-              gradientIterator[i], hessianIterator[i], l1RegularizationWeight, l2RegularizationWeight);
+            entry.value = calculateOutputWiseScore(gradientIterator[i], hessianIterator[i], l1RegularizationWeight,
+                                                   l2RegularizationWeight);
         }
 
         std::partial_sort(scoreIterator, &scoreIterator[numPredictions], &scoreIterator[numOutputs],

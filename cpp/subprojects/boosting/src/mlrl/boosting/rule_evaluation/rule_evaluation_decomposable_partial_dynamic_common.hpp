@@ -29,12 +29,12 @@ namespace boosting {
       getMinAndMaxScore(GradientIterator gradientIterator, HessianIterator hessianIterator, uint32 numOutputs,
                         float32 l1RegularizationWeight, float32 l2RegularizationWeight) {
         using statistic_type = util::iterator_value<GradientIterator>;
-        statistic_type maxAbsScore = std::abs(SequentialDecomposableVectorMath::calculateOutputWiseScore(
-          gradientIterator[0], hessianIterator[0], l1RegularizationWeight, l2RegularizationWeight));
+        statistic_type maxAbsScore = std::abs(calculateOutputWiseScore(gradientIterator[0], hessianIterator[0],
+                                                                       l1RegularizationWeight, l2RegularizationWeight));
         statistic_type minAbsScore = maxAbsScore;
 
         for (uint32 i = 1; i < numOutputs; i++) {
-            statistic_type absScore = std::abs(SequentialDecomposableVectorMath::calculateOutputWiseScore(
+            statistic_type absScore = std::abs(calculateOutputWiseScore(
               gradientIterator[i], hessianIterator[i], l1RegularizationWeight, l2RegularizationWeight));
 
             if (absScore > maxAbsScore) {

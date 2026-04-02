@@ -30,15 +30,15 @@ namespace boosting {
       typename View<StatisticType>::iterator scoreIterator, GradientIterator gradientIterator,
       HessianIterator hessianIterator, uint32 numOutputs, float32 l1RegularizationWeight,
       float32 l2RegularizationWeight) {
-        StatisticType score = SequentialDecomposableVectorMath::calculateOutputWiseScore(
-          gradientIterator[0], hessianIterator[0], l1RegularizationWeight, l2RegularizationWeight);
+        StatisticType score = calculateOutputWiseScore(gradientIterator[0], hessianIterator[0], l1RegularizationWeight,
+                                                       l2RegularizationWeight);
         scoreIterator[0] = score;
         StatisticType maxAbsScore = std::abs(score);
         StatisticType minAbsScore = maxAbsScore;
 
         for (uint32 i = 1; i < numOutputs; i++) {
-            score = SequentialDecomposableVectorMath::calculateOutputWiseScore(
-              gradientIterator[i], hessianIterator[i], l1RegularizationWeight, l2RegularizationWeight);
+            score = calculateOutputWiseScore(gradientIterator[i], hessianIterator[i], l1RegularizationWeight,
+                                             l2RegularizationWeight);
             scoreIterator[i] = score;
             score = std::abs(score);
 
