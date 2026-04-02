@@ -6,6 +6,9 @@ on:
       subproject:
         required: true
         type: string
+      workflow_python_version:
+        required: true
+        type: string
       release:
         required: false
         type: boolean
@@ -19,22 +22,7 @@ on:
         required: false
         type: boolean
 jobs:
-  python_version:
-    name: Determine supported Python versions
-    runs-on: ubuntu-slim
-    outputs:
-      python_version: ${{ steps.python_version.outputs.python_version }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-        with:
-          sparse-checkout: build_system/res/versioning/version-python
-          sparse-checkout-cone-mode: false
-      - name: Determine supported Python versions
-        id: python_version
-        run: echo "python_version=$(sed s/,//g build_system/res/versioning/version-python)" >> $GITHUB_OUTPUT
   publish_linux_wheels:
-    needs: python_version
     if: ${{ inputs.linux == true }}
     name: Publish ${{ inputs.subproject }} (Linux)
     strategy:
@@ -45,12 +33,11 @@ jobs:
           - ubuntu-24.04-arm
     uses: ./.github/workflows/template_publish_platform_linux.yml
     with:
+      workflow_python_version: ${{ inputs.workflow_python_version }}
       subproject: ${{ inputs.subproject }}
       os: ${{ matrix.os }}
-      python_version: ${{ needs.python_version.outputs.python_version }}
       release: ${{ inputs.release }}
   publish_macos_wheels:
-    needs: python_version
     if: ${{ inputs.macos == true }}
     name: Publish ${{ inputs.subproject }} (macOS)
     strategy:
@@ -61,13 +48,12 @@ jobs:
           - macos-26-intel
     uses: ./.github/workflows/template_publish_platform_macos.yml
     with:
+      workflow_python_version: ${{ inputs.workflow_python_version }}
       subproject: ${{ inputs.subproject }}
       os: ${{ matrix.os }}
-      python_version: ${{ needs.python_version.outputs.python_version }}
       release: ${{ inputs.release }}
     secrets: inherit
   publish_windows_wheels:
-    needs: python_version
     if: ${{ inputs.windows == true }}
     name: Publish ${{ inputs.subproject }} (Windows)
     strategy:
@@ -78,7 +64,7 @@ jobs:
           - windows-11-arm
     uses: ./.github/workflows/template_publish_platform_windows.yml
     with:
+      workflow_python_version: ${{ inputs.workflow_python_version }}
       subproject: ${{ inputs.subproject }}
       os: ${{ matrix.os }}
-      python_version: ${{ needs.python_version.outputs.python_version }}
       release: ${{ inputs.release }}
