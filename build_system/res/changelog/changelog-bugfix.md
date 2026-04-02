@@ -1,3 +1,7 @@
+# Fixes
+
+- An issue with our CI pipeline has been fixed that resulted in some Python packages for the macOS platform being broken due to extension modules being compiled for the wrong Python version.
+
 # Documentation
 
 - The chapter "Algorithmic Optimizations" has been added to the documentation. It describes implementation details of our algorithms in great detail.
