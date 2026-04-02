@@ -3,6 +3,8 @@
  */
 #pragma once
 
+#include "mlrl/boosting/data/vector_statistic_decomposable_dense.hpp"
+#include "mlrl/boosting/data/vector_statistic_decomposable_sparse.hpp"
 #include "mlrl/common/rule_evaluation/score_vector_dense.hpp"
 #include "vector_math_decomposable.hpp"
 
@@ -29,6 +31,54 @@ namespace boosting {
 
             const float32 l2RegularizationWeight_;
 
+            template<typename StatisticType, typename WeightType>
+            static inline void calculateScoresInternally(
+              const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& statisticVector,
+              DenseScoreVector<StatisticType, IndexVector>& scoreVector, float32 l1RegularizationWeight,
+              float32 l2RegularizationWeight) {
+                uint32 numElements = statisticVector.getNumElements();
+                auto gradientIterator = statisticVector.gradients_cbegin();
+                auto hessianIterator = statisticVector.hessians_cbegin();
+                auto valueIterator = scoreVector.values_begin();
+                statistic_type quality = 0;
+
+                for (uint32 i = 0; i < numElements; i++) {
+                    statistic_type gradient = gradientIterator[i];
+                    statistic_type hessian = hessianIterator[i];
+                    statistic_type predictedScore = VectorMath::calculateOutputWiseScore(
+                      gradient, hessian, l1RegularizationWeight, l2RegularizationWeight);
+                    valueIterator[i] = predictedScore;
+                    quality += VectorMath::calculateOutputWiseQuality(predictedScore, gradient, hessian,
+                                                                      l1RegularizationWeight, l2RegularizationWeight);
+                }
+
+                scoreVector.quality = quality;
+            }
+
+            template<typename StatisticType>
+            static inline void calculateScoresInternally(
+              const DenseDecomposableStatisticVectorView<StatisticType>& statisticVector,
+              DenseScoreVector<StatisticType, IndexVector>& scoreVector, float32 l1RegularizationWeight,
+              float32 l2RegularizationWeight) {
+                uint32 numElements = statisticVector.getNumElements();
+                auto gradientIterator = statisticVector.gradients_cbegin();
+                auto hessianIterator = statisticVector.hessians_cbegin();
+                auto valueIterator = scoreVector.values_begin();
+                statistic_type quality = 0;
+
+                VectorMath::calculateOutputWiseScores(gradientIterator, hessianIterator, valueIterator, numElements,
+                                                      l1RegularizationWeight, l2RegularizationWeight);
+
+                for (uint32 i = 0; i < numElements; i++) {
+                    statistic_type gradient = gradientIterator[i];
+                    statistic_type hessian = hessianIterator[i];
+                    quality += VectorMath::calculateOutputWiseQuality(valueIterator[i], gradient, hessian,
+                                                                      l1RegularizationWeight, l2RegularizationWeight);
+                }
+
+                scoreVector.quality = quality;
+            }
+
         public:
 
             /**
@@ -45,24 +95,8 @@ namespace boosting {
                   l2RegularizationWeight_(l2RegularizationWeight) {}
 
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
-                uint32 numElements = statisticVector.getNumElements();
-                typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
-                typename StatisticVector::hessian_const_iterator hessianIterator = statisticVector.hessians_cbegin();
-                typename DenseScoreVector<statistic_type, IndexVector>::value_iterator valueIterator =
-                  scoreVector_.values_begin();
-                statistic_type quality = 0;
-
-                for (uint32 i = 0; i < numElements; i++) {
-                    statistic_type gradient = gradientIterator[i];
-                    statistic_type hessian = hessianIterator[i];
-                    statistic_type predictedScore = VectorMath::calculateOutputWiseScore(
-                      gradient, hessian, l1RegularizationWeight_, l2RegularizationWeight_);
-                    valueIterator[i] = predictedScore;
-                    quality += VectorMath::calculateOutputWiseQuality(predictedScore, gradient, hessian,
-                                                                      l1RegularizationWeight_, l2RegularizationWeight_);
-                }
-
-                scoreVector_.quality = quality;
+                calculateScoresInternally(statisticVector, scoreVector_, l1RegularizationWeight_,
+                                          l2RegularizationWeight_);
                 return scoreVector_;
             }
     };

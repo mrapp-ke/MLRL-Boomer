@@ -16,8 +16,37 @@ namespace boosting {
         public:
 
             /**
-             * Calculates and returns the optimal score to be predicted for a single output, based on the corresponding
-             * gradient and Hessian and taking L1 and L2 regularization into account.
+             * Calculates the optimal scores to be predicted for several outputs, based on the corresponding gradients
+             * and Hessians and taking L1 and L2 regularization into account, and writes them to an output array.
+             *
+             * @tparam StatisticType            The type of the gradients and Hessians
+             * @param gradients                 A pointer to an array that store the gradients that correspond to
+             *                                  individual outputs
+             * @param hessians                  A pointer to an array that stores the Hessians that corresponds to
+             *                                  individual outputs
+             * @param outputs                   A pointer to the array into which the optimal scores should be written
+             * @param numElements               The number of elements in the arrays `gradients`, `hessians` and
+             *                                  `output`
+             * @param l1RegularizationWeight    The weight of the L1 regularization
+             * @param l2RegularizationWeight    The weight of the L2 regularization
+             */
+            template<typename StatisticType>
+            static inline constexpr void calculateOutputWiseScores(const StatisticType* gradients,
+                                                                   const StatisticType* hessians,
+                                                                   StatisticType* outputs, uint32 numElements,
+                                                                   float32 l1RegularizationWeight,
+                                                                   float32 l2RegularizationWeight) {
+                for (uint32 i = 0; i < numElements; i++) {
+                    StatisticType gradient = gradients[i];
+                    outputs[i] =
+                      math::divideOrZero(-gradient + getL1RegularizationWeight(gradient, l1RegularizationWeight),
+                                         hessians[i] + l2RegularizationWeight);
+                }
+            }
+
+            /**
+             * Calculates and returns the optimal score to be predicted for a single output, based on the
+             * corresponding gradient and Hessian and taking L1 and L2 regularization into account.
              *
              * @tparam StatisticType            The type of the gradient and Hessian
              * @param gradient                  The gradient that corresponds to the output
@@ -36,8 +65,8 @@ namespace boosting {
             }
 
             /**
-             * Calculates and returns the quality of the prediction for a single output, taking L1 and L2 regularization
-             * into account.
+             * Calculates and returns the quality of the prediction for a single output, taking L1 and L2
+             * regularization into account.
              *
              * @tparam StatisticType            The type of the predicted score, gradient and Hessian
              * @param score                     The predicted score
