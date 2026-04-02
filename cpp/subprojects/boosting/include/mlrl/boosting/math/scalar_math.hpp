@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/types.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 
 namespace math {
 
