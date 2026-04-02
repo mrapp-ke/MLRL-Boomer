@@ -36,6 +36,7 @@ jobs:
               - '.github/workflows/template_publish.yml'
               - '.github/workflows/template_publish_platform.yml'
               - '.github/workflows/template_publish_pure.yml'
+              - '.github/workflows/template_run_wheel.yml'
               - 'build'
               - 'build.bat'
               - 'build_system/main.py'
