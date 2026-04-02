@@ -64,19 +64,11 @@ namespace boosting {
                 auto gradientIterator = statisticVector.gradients_cbegin();
                 auto hessianIterator = statisticVector.hessians_cbegin();
                 auto valueIterator = scoreVector.values_begin();
-                statistic_type quality = 0;
-
                 VectorMath::calculateOutputWiseScores(gradientIterator, hessianIterator, valueIterator, numElements,
                                                       l1RegularizationWeight, l2RegularizationWeight);
-
-                for (uint32 i = 0; i < numElements; i++) {
-                    statistic_type gradient = gradientIterator[i];
-                    statistic_type hessian = hessianIterator[i];
-                    quality += VectorMath::calculateOutputWiseQuality(valueIterator[i], gradient, hessian,
-                                                                      l1RegularizationWeight, l2RegularizationWeight);
-                }
-
-                scoreVector.quality = quality;
+                scoreVector.quality = VectorMath::calculateOutputWiseQualities(
+                  valueIterator, gradientIterator, hessianIterator, valueIterator, numElements, l1RegularizationWeight,
+                  l2RegularizationWeight);
             }
 
         public:

@@ -65,6 +65,45 @@ namespace boosting {
             }
 
             /**
+             * Calculates the qualities of predictions for several outputs, taking L1 and L2 regularization into
+             * account, and writes them to an output array. In addition, the overall quality aggegregated over all
+             * predictions is returned.
+             *
+             * @tparam StatisticType            The type of the gradients and Hessians
+             * @param scores                    A pointer to an array that stores the predictions for individual outputs
+             * @param gradients                 A pointer to an array that stores the gradients that correspond to
+             *                                  individual outputs
+             * @param hessians                  A pointer to an array that stores the Hessians that correspond to
+             *                                  individual outputs
+             * @param outputs                   A pointer to the array into which the qualities should be written
+             * @param l1RegularizationWeight    The weight of the L1 regularization
+             * @param l2RegularizationWeight    The weight of the L2 regularization
+             * @return                          The overal quality
+             */
+            template<typename StatisticType>
+            static inline StatisticType calculateOutputWiseQualities(const StatisticType* scores,
+                                                                     const StatisticType* gradients,
+                                                                     const StatisticType* hessians,
+                                                                     StatisticType* outputs, uint32 numElements,
+                                                                     float32 l1RegularizationWeight,
+                                                                     float32 l2RegularizationWeight) {
+                StatisticType overallQuality = 0;
+
+                for (uint32 i = 0; i < numElements; i++) {
+                    StatisticType score = scores[i];
+                    StatisticType scorePow = score * score;
+                    StatisticType quality = (gradients[i] * score) + (0.5 * hessians[i] * scorePow);
+                    StatisticType l1RegularizationTerm = l1RegularizationWeight * std::abs(score);
+                    StatisticType l2RegularizationTerm = 0.5 * l2RegularizationWeight * scorePow;
+                    quality += l1RegularizationTerm + l2RegularizationTerm;
+                    outputs[i] = quality;
+                    overallQuality += quality;
+                }
+
+                return overallQuality;
+            }
+
+            /**
              * Calculates and returns the quality of the prediction for a single output, taking L1 and L2
              * regularization into account.
              *
