@@ -94,7 +94,7 @@ jobs:
         if: ${{ startsWith(inputs.os, 'windows-') }}
         run: .\build.bat install_runtime_dependencies
       - name: Download wheels
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           pattern: wheels-*
           path: wheelhouse
