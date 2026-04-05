@@ -3,6 +3,9 @@ name: Publish wheel packages
 on:
   workflow_call:
     inputs:
+      workflow_python_version:
+        required: true
+        type: string
       release:
         required: false
         type: boolean
@@ -42,6 +45,7 @@ jobs:
           - seco
     uses: ./.github/workflows/template_publish_platform.yml
     with:
+      workflow_python_version: ${{ inputs.workflow_python_version }}
       subproject: ${{ matrix.subproject }}
       release: ${{ inputs.release }}
       linux: ${{ inputs.linux }}

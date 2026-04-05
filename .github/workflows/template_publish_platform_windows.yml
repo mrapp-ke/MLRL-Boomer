@@ -9,7 +9,7 @@ on:
       os:
         required: true
         type: string
-      python_version:
+      workflow_python_version:
         required: true
         type: string
       release:
@@ -39,7 +39,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
-          python-version: ${{ inputs.python_version }}
+          python-version: ${{ inputs.workflow_python_version }}
           check-latest: true
           cache: pip
           cache-dependency-path: '**/requirements.txt'
