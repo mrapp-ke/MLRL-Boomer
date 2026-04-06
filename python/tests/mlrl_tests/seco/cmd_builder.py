@@ -7,6 +7,7 @@ from ..cmd_builder_classification import ClassificationCmdBuilder
 from ..common.cmd_builder import RuleLearnerCmdBuilderMixin
 from ..datasets import Dataset
 
+
 from mlrl.seco.config.parameters import (
     HEURISTIC_ACCURACY,
     HEURISTIC_F_MEASURE,
@@ -28,6 +29,9 @@ class SeCoClassifierCmdBuilder(ClassificationCmdBuilder, RuleLearnerCmdBuilderMi
             runnable_module_name='mlrl.seco',
             dataset=dataset,
         )
+        self.add_algorithmic_argument('--parallel-prediction', 'false')
+        self.add_algorithmic_argument('--parallel-rule-refinement', 'false')
+        self.add_algorithmic_argument('--parallel-statistic-update', 'false')
 
     def heuristic(self, heuristic: str | None = HEURISTIC_F_MEASURE):
         """
