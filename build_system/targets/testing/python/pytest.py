@@ -46,6 +46,8 @@ class Pytest(PythonModule):
         super().__init__(
             'pytest',
             '--verbose',
+            '--verbose',
+            '--durations=0',
             '--color=yes',
             f'--config-file={build_unit.root_directory / ".pytest.ini"}',
             '--strict-config',
