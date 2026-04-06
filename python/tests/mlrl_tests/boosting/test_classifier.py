@@ -277,7 +277,6 @@ class TestBoomerClassifier(
             .binary_predictor(binary_predictor, options=binary_predictor_options)
             .incremental_evaluation()
             .print_evaluation()
-            .save_evaluation()
             .prediction_format(prediction_format)
         )
 
@@ -300,11 +299,7 @@ class TestBoomerClassifier(
 
     def test_predictor_score_output_wise_incremental(self):
         builder = (
-            self.create_cmd_builder()
-            .prediction_type(PredictionType.SCORES)
-            .incremental_evaluation()
-            .print_evaluation()
-            .save_evaluation()
+            self.create_cmd_builder().prediction_type(PredictionType.SCORES).incremental_evaluation().print_evaluation()
         )
         CmdRunner(builder).run('predictor-score-output-wise_incremental')
 
@@ -380,7 +375,6 @@ class TestBoomerClassifier(
             .probability_predictor(probability_predictor)
             .incremental_evaluation()
             .print_evaluation()
-            .save_evaluation()
             .save_models()
             .load_models()
         )
