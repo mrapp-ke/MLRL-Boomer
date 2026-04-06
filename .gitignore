@@ -3,6 +3,7 @@
 .ccache/
 .mypy_cache/
 .pytest_cache/
+.ruff_cache/
 .git-changes
 
 # Virtual Environment
