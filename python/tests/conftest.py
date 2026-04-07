@@ -52,7 +52,7 @@ def pytest_collection_modifyitems(items):
 
 def __get_test_cost(item) -> int:
     if 'test_scikit_learn_compatibility' in item.name:
-        return 4
+        return 16
 
     try:
         source = inspect.getsource(item.function)
