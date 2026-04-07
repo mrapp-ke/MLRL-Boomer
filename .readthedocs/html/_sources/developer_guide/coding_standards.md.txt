@@ -38,6 +38,33 @@ If you want to execute the tests for the C++ or Python code independently, you c
 Tests for the C++ code are only executed if the project has been compiled with testing support enabled. As described in the section {ref}`build-options`, testing support is enabled by default if the [GoogleTest](https://github.com/google/googletest) framework is available on the system.
 ```
 
+### Using Multiple Workers
+
+If the execution of Python tests should be parallelized across multiple workers, the environment variable `NUM_WORKERS` may be used:
+
+````{tab} Linux
+   ```text
+   NUM_WORKERS=4 ./build tests
+   ```
+````
+
+````{tab} macOS
+   ```text
+   FAIL_FAST=4 ./build tests
+   ```
+````
+
+````{tab} Windows
+   ```text
+   $env:NUM_WORKERS = 4
+   build.bat tests
+   ```
+````
+
+```{note}
+If the environment variable `NUM_WORKERS` is set to the value `auto`, the number of workers is chosen automatically based on the number of available CPU cores.
+```
+
 ### Failing Fast
 
 If the execution should be aborted as soon as a single test fails, the environment variable `FAIL_FAST` can be used as shown below:
