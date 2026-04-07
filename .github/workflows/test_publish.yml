@@ -36,6 +36,7 @@ jobs:
               - '.github/workflows/template_publish.yml'
               - '.github/workflows/template_publish_platform.yml'
               - '.github/workflows/template_publish_pure.yml'
+              - '.github/workflows/template_run_wheel.yml'
               - 'build'
               - 'build.bat'
               - 'build_system/main.py'
@@ -94,24 +95,9 @@ jobs:
     needs:
       - workflow_python_version
       - test_release
-    name: Run wheels
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - ubuntu-24.04
-          - ubuntu-24.04-arm
-          - macos-26
-          - macos-26-intel
-          - windows-2025
-          - windows-11-arm
-        subproject:
-          - boosting
-          - seco
-    uses: ./.github/workflows/template_run_wheel.yml
+    name: Run wheel packages
+    uses: ./.github/workflows/template_run.yml
     with:
-      os: ${{ matrix.os }}
-      subproject: ${{ matrix.subproject }}
       workflow_python_version: ${{ needs.workflow_python_version.outputs.workflow_python_version }}
   check_success:
     needs: run_wheels
