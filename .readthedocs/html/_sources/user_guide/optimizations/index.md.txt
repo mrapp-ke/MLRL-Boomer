@@ -1,0 +1,23 @@
+(user-guide-optimizations)=
+
+# Algorithmic Optimizations
+
+```{seealso}
+Most of the content in this chapter has been taken from the publication {ref}`‘On the efficient implementation of classification rule learning’, Michael Rapp, Johannes Fürnkranz and Eyke Hüllermeier (2023) <references-rapp2023>`.
+```
+
+Rule learning methods have a long history of active research in the machine learning community. They are not only a common choice in applications that demand human-interpretable classification models but have also been shown to achieve state-of-the-art performance when used in ensemble methods. Unfortunately, only little information can be found in the literature about the various implementation details that are crucial for the efficient induction of rule-based models. In this documentation, we provide a detailed discussion of algorithmic concepts and approximations that enable applying our rule learning algorithms to large amounts of data. The techniques discussed in this chapter are used by both, the {ref}`BOOMER algorithm <user-guide-boomer>` and the {ref}`SeCo algorithm <user-guide-seco>`, which is made possible by their common {ref}`framework <user-guide-framework>`.
+
+The following sections shed some light on the internals of some of the most efficient rule learning algorithms available today. First and foremost, this refers to the idea of using a so-called {ref}`pre-sorted search algorithm <user-guide-pre-sorted>` for the construction of individual rules. In addition, we elaborate on extensions of this fundamental principle that allow dealing with {ref}`nominal features <user-guide-nominal-features>` and {ref}`missing feature values <user-guide-missing-features>` natively. In contrast to most [statistical](https://en.wikipedia.org/wiki/Statistical_learning_theory) machine learning approaches, including artificial [neural networks](<https://en.wikipedia.org/wiki/Neural_network_(machine_learning)>), the ability to handle such data naturally, without any pre-processing techniques, is an advantage of [symbolic](https://en.wikipedia.org/wiki/Symbolic_artificial_intelligence) learning methods. We also discuss how {ref}`sparsity in the feature values <user-guide-feature-sparsity>` of training examples, which is a common characteristic of many datasets, can be exploited to further reduce computational costs. In domains with many numerical features, the ability to exploit sparsity in the feature values does not provide any significant advantages in terms of scalability. As an alternative, we also investigate a {ref}`histogram-based search algorithm <user-guide-histograms>` that generalizes existing ideas from decision tree learning to rule-based models. Finally, we elaborate on different possibilities to use {ref}`parallelization <user-guide-multi-threading>` to further speed up the training of predictive models.
+
+```{toctree}
+---
+maxdepth: 1
+---
+pre_sorted
+feature_sparsity
+nominal_features
+missing_features
+histograms
+multi_threading
+```
