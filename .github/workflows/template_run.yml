@@ -1,0 +1,29 @@
+---
+name: Run Python packages
+on:
+  workflow_call:
+    inputs:
+      workflow_python_version:
+        required: true
+        type: string
+jobs:
+  run_wheels:
+    name: Run Python packages
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-24.04
+          - ubuntu-24.04-arm
+          - macos-26
+          - macos-26-intel
+          - windows-2025
+          - windows-11-arm
+        subproject:
+          - boosting
+          - seco
+    uses: ./.github/workflows/template_run_wheel.yml
+    with:
+      os: ${{ matrix.os }}
+      subproject: ${{ matrix.subproject }}
+      workflow_python_version: ${{ inputs.workflow_python_version }}

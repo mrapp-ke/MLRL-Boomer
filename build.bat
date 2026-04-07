@@ -17,16 +17,14 @@ if not exist "%VENV_DIR%" (
     echo Creating virtual Python environment...
     python -m venv "%VENV_DIR%" || exit
     echo Installing build system dependencies...
-    call %VENV_DIR%\Scripts\activate || exit
-    python -m ensurepip --upgrade --default-pip || exit
-    python3 -m pip install --requirement build_system\requirements.txt^
+    .\%VENV_DIR%\Scripts\python -m ensurepip --upgrade --default-pip || exit
+    .\%VENV_DIR%\Scripts\python -m pip install --requirement build_system\requirements.txt^
         --no-input^
         --quiet^
         --disable-pip-version-check^
         --upgrade^
         --upgrade-strategy eager^
         --prefer-binary || exit
-     call deactivate || exit
 )
 
 if exist "%VENV_DIR%" (
