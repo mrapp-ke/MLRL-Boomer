@@ -1,6 +1,6 @@
-mlrl-testbed mlrl.testbed_sklearn --mode batch --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/sklearn/classification/batch_config.yml --save-evaluation true --save-meta-data false --list --n-estimators 1 --estimator RandomForestClassifier
+mlrl-testbed mlrl.testbed_sklearn --mode batch --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id> --config python/tests/res/config/sklearn/classification/batch_config.yml --save-evaluation true --save-meta-data false --list --n-estimators 1 --estimator RandomForestClassifier
 mlrl-testbed mlrl.testbed_sklearn \
-    --base-dir python/tests/res/tmp \
+    --base-dir python/tests/res/tmp/<worker-id> \
     --data-dir python/tests/res/data \
     --dataset emotions \
     --estimator RandomForestClassifier \
@@ -16,7 +16,7 @@ mlrl-testbed mlrl.testbed_sklearn \
     --save-meta-data false
 
 mlrl-testbed mlrl.testbed_sklearn \
-    --base-dir python/tests/res/tmp \
+    --base-dir python/tests/res/tmp/<worker-id> \
     --data-dir python/tests/res/data \
     --dataset emotions \
     --estimator RandomForestClassifier \
@@ -33,7 +33,7 @@ mlrl-testbed mlrl.testbed_sklearn \
     --save-meta-data false
 
 mlrl-testbed mlrl.testbed_sklearn \
-    --base-dir python/tests/res/tmp \
+    --base-dir python/tests/res/tmp/<worker-id> \
     --data-dir python/tests/res/data \
     --dataset emotions \
     --estimator RandomForestClassifier \
@@ -49,7 +49,7 @@ mlrl-testbed mlrl.testbed_sklearn \
     --save-meta-data false
 
 mlrl-testbed mlrl.testbed_sklearn \
-    --base-dir python/tests/res/tmp \
+    --base-dir python/tests/res/tmp/<worker-id> \
     --data-dir python/tests/res/data \
     --dataset emotions \
     --estimator RandomForestClassifier \
@@ -66,7 +66,7 @@ mlrl-testbed mlrl.testbed_sklearn \
     --save-meta-data false
 
 mlrl-testbed mlrl.testbed_sklearn \
-    --base-dir python/tests/res/tmp \
+    --base-dir python/tests/res/tmp/<worker-id> \
     --data-dir python/tests/res/data \
     --dataset enron \
     --estimator RandomForestClassifier \
@@ -82,7 +82,7 @@ mlrl-testbed mlrl.testbed_sklearn \
     --save-meta-data false
 
 mlrl-testbed mlrl.testbed_sklearn \
-    --base-dir python/tests/res/tmp \
+    --base-dir python/tests/res/tmp/<worker-id> \
     --data-dir python/tests/res/data \
     --dataset enron \
     --estimator RandomForestClassifier \
@@ -99,7 +99,7 @@ mlrl-testbed mlrl.testbed_sklearn \
     --save-meta-data false
 
 mlrl-testbed mlrl.testbed_sklearn \
-    --base-dir python/tests/res/tmp \
+    --base-dir python/tests/res/tmp/<worker-id> \
     --data-dir python/tests/res/data \
     --dataset enron \
     --estimator RandomForestClassifier \
@@ -115,7 +115,7 @@ mlrl-testbed mlrl.testbed_sklearn \
     --save-meta-data false
 
 mlrl-testbed mlrl.testbed_sklearn \
-    --base-dir python/tests/res/tmp \
+    --base-dir python/tests/res/tmp/<worker-id> \
     --data-dir python/tests/res/data \
     --dataset enron \
     --estimator RandomForestClassifier \

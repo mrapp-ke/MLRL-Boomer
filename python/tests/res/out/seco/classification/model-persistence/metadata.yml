@@ -1,6 +1,8 @@
 command: mlrl-testbed mlrl.seco --log-width 120 --log-plain --log-level debug --base-dir
-  python/tests/res/tmp --data-dir python/tests/res/data --dataset emotions --result-dir
-  results --load-models true --model-load-dir models --model-save-dir models --save-evaluation
-  true --save-meta-data false --save-meta-data true --save-models true
+  python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset emotions
+  --result-dir results --load-models true --model-load-dir models --model-save-dir
+  models --save-evaluation true --save-meta-data false --save-meta-data true --save-models
+  true --parallel-prediction false --parallel-rule-refinement false --parallel-statistic-update
+  false
 timestamp: <timestamp>
 version: <version>

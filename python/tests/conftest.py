@@ -52,11 +52,11 @@ def pytest_collection_modifyitems(items):
 
 def __get_test_cost(item) -> int:
     if 'test_scikit_learn_compatibility' in item.name:
-        return 4
+        return 16
 
     try:
         source = inspect.getsource(item.function)
-        cost = 2 if source.find('.set_mode(ExperimentMode.BATCH)') else 1
+        cost = 4 if source.find('.set_mode(ExperimentMode.BATCH)') else 1
         multiplier = max(1, source.count('CmdRunner('))
         return multiplier * cost
     except (OSError, TypeError):

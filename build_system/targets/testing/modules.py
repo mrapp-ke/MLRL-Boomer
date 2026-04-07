@@ -55,6 +55,14 @@ class TestModule(Module, ABC):
         return int(value) if value else None
 
     @property
+    def num_workers(self) -> int | str | None:
+        """
+        The number of parallel workers to use for running tests or 'auto' to use one worker per CPU core.
+        """
+        value = get_env(environ, 'NUM_WORKERS')
+        return (int(value) if value != 'auto' else value) if value else None
+
+    @property
     def test_name(self) -> str | None:
         """
         A substring to be contained in the name of all tests to be run or None, if all tests should be run.
