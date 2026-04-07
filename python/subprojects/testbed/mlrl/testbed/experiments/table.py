@@ -247,7 +247,7 @@ class Table(ABC):
             return tabulate(
                 rows,
                 headers=headers,
-                tablefmt=table_format if table_format else Table.Format.OUTLINE,
+                tablefmt=table_format if table_format else Table.Format.PLAIN,
                 colalign=alignments,
             )
 

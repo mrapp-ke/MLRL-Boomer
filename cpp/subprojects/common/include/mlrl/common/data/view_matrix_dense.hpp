@@ -4,8 +4,8 @@
 #pragma once
 
 #include "mlrl/common/data/view_matrix.hpp"
-#include "mlrl/common/util/view_functions.hpp"
 
+#include <algorithm>
 #include <utility>
 
 /**
@@ -52,7 +52,7 @@ class MLRLCOMMON_API DenseMatrix : public BaseView<T>,
          * Sets all values stored in the matrix to zero.
          */
         void clear() {
-            util::setViewToZeros(BaseView<T>::array, Matrix::numRows * Matrix::numCols);
+            std::fill(BaseView<T>::array, BaseView<T>::array + (Matrix::numRows * Matrix::numCols), (T) 0);
         }
 };
 

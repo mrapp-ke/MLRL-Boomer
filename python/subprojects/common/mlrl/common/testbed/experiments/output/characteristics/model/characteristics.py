@@ -19,9 +19,10 @@ from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.output.data import TabularOutputData
 from mlrl.testbed.experiments.table import Alignment, RowWiseTable, Table
-from mlrl.testbed.util.format import format_number, format_percentage
+from mlrl.testbed.util.format import format_percentage
 from mlrl.testbed.util.math import divide_or_zero
 
+from mlrl.util.format import format_value
 from mlrl.util.options import Options
 
 
@@ -148,15 +149,15 @@ class RuleModelCharacteristics(TabularOutputData):
         table = RowWiseTable('Statistics per local rule', 'Minimum', 'Average', 'Maximum')
         table.add_row(
             'Conditions',
-            format_number(statistics.min_conditions),
-            format_number(divide_or_zero(aggregated_rule_statistics.body_statistics.num_conditions, num_rules)),
-            format_number(statistics.max_conditions),
+            format_value(statistics.min_conditions),
+            format_value(divide_or_zero(aggregated_rule_statistics.body_statistics.num_conditions, num_rules)),
+            format_value(statistics.max_conditions),
         )
         table.add_row(
             'Predictions',
-            format_number(statistics.min_predictions),
-            format_number(divide_or_zero(aggregated_rule_statistics.head_statistics.num_predictions, num_rules)),
-            format_number(statistics.max_predictions),
+            format_value(statistics.min_predictions),
+            format_value(divide_or_zero(aggregated_rule_statistics.head_statistics.num_predictions, num_rules)),
+            format_value(statistics.max_predictions),
         )
         return table.format(auto_rotate=False)
 
@@ -185,7 +186,7 @@ class RuleModelCharacteristics(TabularOutputData):
         )
 
         for i, rule_statistics in enumerate(chain(default_rule_statistics, statistics.rule_statistics)):
-            rule_name = 'Rule ' + str(i + 1)
+            rule_name = f'Rule {i + 1}'
 
             if i == 0 and statistics.has_default_rule:
                 rule_name += ' (Default rule)'

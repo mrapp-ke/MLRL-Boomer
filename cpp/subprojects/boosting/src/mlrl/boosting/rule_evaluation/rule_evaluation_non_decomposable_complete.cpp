@@ -10,42 +10,42 @@ namespace boosting {
         : l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
           blasFactory_(blasFactory), lapackFactory_(lapackFactory) {}
 
-    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float32>>>
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVectorView<float32>>>
       NonDecomposableCompleteRuleEvaluationFactory::create(
-        const DenseNonDecomposableStatisticVector<float32>& statisticVector,
+        const DenseNonDecomposableStatisticVectorView<float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
-        return std::make_unique<DenseNonDecomposableCompleteRuleEvaluation<DenseNonDecomposableStatisticVector<float32>,
-                                                                           CompleteIndexVector>>(
+        return std::make_unique<DenseNonDecomposableCompleteRuleEvaluation<
+          DenseNonDecomposableStatisticVectorView<float32>, CompleteIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blasFactory_.create32Bit(),
           lapackFactory_.create32Bit());
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float32>>>
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVectorView<float32>>>
       NonDecomposableCompleteRuleEvaluationFactory::create(
-        const DenseNonDecomposableStatisticVector<float32>& statisticVector,
+        const DenseNonDecomposableStatisticVectorView<float32>& statisticVector,
         const PartialIndexVector& indexVector) const {
-        return std::make_unique<
-          DenseNonDecomposableCompleteRuleEvaluation<DenseNonDecomposableStatisticVector<float32>, PartialIndexVector>>(
+        return std::make_unique<DenseNonDecomposableCompleteRuleEvaluation<
+          DenseNonDecomposableStatisticVectorView<float32>, PartialIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blasFactory_.create32Bit(),
           lapackFactory_.create32Bit());
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>>
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVectorView<float64>>>
       NonDecomposableCompleteRuleEvaluationFactory::create(
-        const DenseNonDecomposableStatisticVector<float64>& statisticVector,
+        const DenseNonDecomposableStatisticVectorView<float64>& statisticVector,
         const CompleteIndexVector& indexVector) const {
-        return std::make_unique<DenseNonDecomposableCompleteRuleEvaluation<DenseNonDecomposableStatisticVector<float64>,
-                                                                           CompleteIndexVector>>(
+        return std::make_unique<DenseNonDecomposableCompleteRuleEvaluation<
+          DenseNonDecomposableStatisticVectorView<float64>, CompleteIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blasFactory_.create64Bit(),
           lapackFactory_.create64Bit());
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>>
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVectorView<float64>>>
       NonDecomposableCompleteRuleEvaluationFactory::create(
-        const DenseNonDecomposableStatisticVector<float64>& statisticVector,
+        const DenseNonDecomposableStatisticVectorView<float64>& statisticVector,
         const PartialIndexVector& indexVector) const {
-        return std::make_unique<
-          DenseNonDecomposableCompleteRuleEvaluation<DenseNonDecomposableStatisticVector<float64>, PartialIndexVector>>(
+        return std::make_unique<DenseNonDecomposableCompleteRuleEvaluation<
+          DenseNonDecomposableStatisticVectorView<float64>, PartialIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blasFactory_.create64Bit(),
           lapackFactory_.create64Bit());
     }

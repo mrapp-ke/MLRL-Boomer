@@ -1,0 +1,5 @@
+[wrap-git]
+url = https://github.com/xtensor-stack/xsimd.git
+revision = 14.1.0
+depth = 1
+patch_directory = xsimd_wrap

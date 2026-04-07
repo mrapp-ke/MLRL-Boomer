@@ -4,8 +4,6 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow reading datasets from ARFF files.
 """
 
-import logging as log
-
 from dataclasses import replace
 from functools import cached_property
 from pathlib import Path
@@ -26,6 +24,7 @@ from mlrl.testbed.experiments.file_path import FilePath
 from mlrl.testbed.experiments.input.data import DatasetInputData
 from mlrl.testbed.experiments.input.sources.source import DatasetFileSource
 from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.log import Log
 from mlrl.testbed.util.io import open_readable_file
 
 
@@ -121,7 +120,7 @@ class ArffFileSource(DatasetFileSource):
                     elif type_definition in ('real', 'numeric'):
                         attribute_type = AttributeType.NUMERICAL
                     else:
-                        raise ValueError('Encountered unsupported attribute type: ' + type_definition)
+                        raise ValueError(f'Encountered unsupported attribute type: {type_definition}')
 
                 attribute = Attribute(name=attribute_name, attribute_type=attribute_type, nominal_values=nominal_values)
                 attributes.append(attribute)
@@ -178,13 +177,13 @@ class ArffFileSource(DatasetFileSource):
             :return:                The ARFF dataset that has been created
             """
             if file_path.is_file():
-                log.debug(f'Parsing meta-data from file "{file_path}"...')
+                Log.verbose(f'Parsing meta-data from file "{file_path}"...')
                 xml_doc = minidom.parse(str(file_path))
                 tags = xml_doc.getElementsByTagName('label')
                 output_names = {normalize_attribute_name(tag.getAttribute('name')) for tag in tags}
             else:
                 output_names = None
-                log.debug(
+                Log.verbose(
                     f'Mulan XML file "{file_path}" does not exist. If possible, information about the dataset\'s '
                     f"outputs is parsed from the ARFF file's @relation declaration as intended by the MEKA dataset "
                     f'format...'

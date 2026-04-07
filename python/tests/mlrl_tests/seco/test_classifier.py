@@ -95,4 +95,4 @@ class TestSeCoClassifier(ClassificationIntegrationTests, RuleLearnerIntegrationT
         builder = (
             self.create_cmd_builder().head_type(head_type).lift_function(lift_function).print_model_characteristics()
         )
-        CmdRunner(builder).run(f'head-type-{head_type}' + (f'_{lift_function}-lift-function' if lift_function else ''))
+        CmdRunner(builder).run(f'head-type-{head_type}{(f"_{lift_function}-lift-function" if lift_function else "")}')

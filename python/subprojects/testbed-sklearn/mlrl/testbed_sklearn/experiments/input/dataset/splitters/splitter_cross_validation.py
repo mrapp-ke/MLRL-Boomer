@@ -4,8 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for splitting datasets into multiple, equally sized, folds consisting of a training and a test dataset.
 """
 
-import logging as log
-
 from collections.abc import Generator
 from dataclasses import dataclass, field, replace
 from typing import Any, cast, override
@@ -20,6 +18,7 @@ from mlrl.testbed.experiments.fold import Fold, FoldingStrategy
 from mlrl.testbed.experiments.input.dataset import DatasetReader
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.log import Log
 
 
 class CrossValidationSplitter(DatasetSplitter):
@@ -228,7 +227,7 @@ class CrossValidationSplitter(DatasetSplitter):
         else:
             fold = 'full'
 
-        log.info(f'Performing {fold} {num_folds}-fold cross validation...')
+        Log.info(f'Performing {fold} {num_folds}-fold cross validation...')
 
         # Check if predefined folds are available...
         state = replace(state, folding_strategy=folding_strategy)
@@ -238,7 +237,7 @@ class CrossValidationSplitter(DatasetSplitter):
         )
 
         for fold in folding_strategy.folds:
-            log.info(f'Fold {fold.index + 1} / {num_folds}:')
+            Log.info(f'Fold {fold.index + 1} / {num_folds}:')
             state = replace(state, fold=fold)
 
             if predefined_splits_available:

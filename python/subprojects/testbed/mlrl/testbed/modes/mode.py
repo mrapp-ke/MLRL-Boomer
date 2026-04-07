@@ -4,8 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides base classes for implementing different modes of operation.
 """
 
-import logging as log
-
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from pathlib import Path
@@ -17,6 +15,7 @@ from mlrl.testbed.experiments.input.sources import YamlFileSource
 from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
+from mlrl.testbed.log import Log
 
 from mlrl.util.cli import Argument, CommandLineInterface, PathArgument, SetArgument
 
@@ -94,33 +93,33 @@ class InputMode(Mode, ABC):
     )
 
     def __read_meta_data(self, args: Namespace, recipe: Recipe, input_directory: Path) -> MetaData:
-        log.info('Reading meta-data...')
+        Log.info('Reading meta-data...')
         problem_domain = recipe.create_problem_domain(self.to_enum(), args)
         state = ExperimentState(mode=self.to_enum(), args=args, meta_data=MetaData(), problem_domain=problem_domain)
         reader = MetaDataReader(
             YamlFileSource(directory=input_directory, schema_file_path=InputMetaData.SCHEMA_FILE_PATH)
         )
         meta_data = reader.read(state).meta_data
-        log.info('Successfully read meta-data')
+        Log.success('Successfully read meta-data')
         return meta_data
 
     @staticmethod
     def __check_version(meta_data: MetaData):
-        log.debug('Checking for version conflicts...')
+        Log.verbose('Checking for version conflicts...')
         meta_data_version = meta_data.version
         current_version = MetaData().version
-        log.debug(
+        Log.verbose(
             f'Experimental results have been created with version "{meta_data_version}" of the package "mlrl-testbed", '
             f'version "{current_version}" is currently used'
         )
 
         if meta_data_version > current_version:
-            log.warning(
+            Log.warning(
                 f'Experimental results have been created with a version ({meta_data_version}) of the package '
                 f'"mlrl-testbed" that is greater than currently used ({current_version}).'
             )
         else:
-            log.debug('No version conflicts detected')
+            Log.verbose('No version conflicts detected')
 
     @override
     def configure_control_arguments(self, cli: CommandLineInterface, control_arguments: list[Argument]):

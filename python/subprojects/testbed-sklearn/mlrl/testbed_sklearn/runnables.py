@@ -4,8 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for running experiments using the scikit-learn framework.
 """
 
-import contextlib
-import os
 import re as regex
 
 from abc import ABC, abstractmethod
@@ -63,9 +61,9 @@ from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
 from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
 from mlrl.testbed.extensions.extension import Extension
+from mlrl.testbed.log import disable_log
 from mlrl.testbed.modes import BatchMode
 from mlrl.testbed.runnables import Runnable
-from mlrl.testbed.util.io import ENCODING_UTF8
 
 from mlrl.util.cli import Argument, BoolArgument, FloatArgument, IntArgument, SetArgument
 from mlrl.util.format import format_list, format_set
@@ -347,7 +345,7 @@ class SklearnEstimator:
                 if all(part2 == 'None' or (part2.startswith('"') and part2.endswith('"')) for part2 in parts2):
                     values = set(filter(lambda part2: part2 != 'None', map(lambda part2: part2.strip('"'), parts2)))
                     arguments.append(SetArgument(argument_name, values=values))
-                    type_hints.append('one of ' + format_set(values))
+                    type_hints.append(f'one of {format_set(values)}')
                 else:
                     for part2 in parts2:
                         if part2.startswith('non-negative'):
@@ -365,7 +363,7 @@ class SklearnEstimator:
                         elif part2.startswith('default='):
                             default_value = part2.lstrip('default=')
                         else:
-                            raise ValueError('Failed to parse type name: ' + part2)
+                            raise ValueError(f'Failed to parse type name: {part2}')
 
             type_hint: str | None = None
 
@@ -433,15 +431,8 @@ class SklearnEstimator:
         return '. '.join(sentences)
 
     def __can_be_instantiated(self, *args, **kwargs) -> bool:
-
-        @contextlib.contextmanager
-        def suppress_output():
-            with open(os.devnull, mode='w', encoding=ENCODING_UTF8) as devnull:
-                with contextlib.redirect_stdout(devnull), contextlib.redirect_stderr(devnull):
-                    yield
-
         try:
-            with suppress_output():
+            with disable_log():
                 instance = self.instantiate(*args, **kwargs)
                 rng = np.random.default_rng(seed=1)
                 tags = instance.__sklearn_tags__() if hasattr(instance, '__sklearn_tags__') else None

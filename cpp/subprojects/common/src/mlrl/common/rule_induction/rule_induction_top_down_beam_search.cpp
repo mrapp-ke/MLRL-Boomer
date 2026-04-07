@@ -1,6 +1,6 @@
 #include "mlrl/common/rule_induction/rule_induction_top_down_beam_search.hpp"
 
-#include "mlrl/common/util/math.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 #include "mlrl/common/util/validation.hpp"
 #include "rule_induction_common.hpp"
 
@@ -519,7 +519,7 @@ std::unique_ptr<IRuleInductionFactory> BeamSearchTopDownRuleInductionConfig::cre
     uint32 minCoverage;
 
     if (minSupport_ > 0) {
-        minCoverage = util::calculateBoundedFraction(numExamples, minSupport_, minCoverage_, numExamples);
+        minCoverage = math::calculateBoundedFraction(numExamples, minSupport_, minCoverage_, numExamples);
     } else {
         minCoverage = std::min(numExamples, minCoverage_);
     }

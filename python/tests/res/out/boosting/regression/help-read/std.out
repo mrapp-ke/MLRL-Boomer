@@ -1,7 +1,7 @@
 mlrl-testbed mlrl.boosting --mode read --help
-usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--mode MODE] [--input-dir INPUT_DIR]
-                    [--base-dir BASE_DIR] [--create-dirs CREATE_DIRS] [--if-input-missing IF_INPUT_MISSING]
-                    [--if-output-error IF_OUTPUT_ERROR] [--print-all PRINT_ALL]
+usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--log-width LOG_WIDTH] [--log-plain] [--mode MODE]
+                    [--input-dir INPUT_DIR] [--base-dir BASE_DIR] [--create-dirs CREATE_DIRS]
+                    [--if-input-missing IF_INPUT_MISSING] [--if-output-error IF_OUTPUT_ERROR] [--print-all PRINT_ALL]
                     [--print-data-characteristics PRINT_DATA_CHARACTERISTICS] [--print-evaluation PRINT_EVALUATION]
                     [--print-ground-truth PRINT_GROUND_TRUTH]
                     [--print-joint-probability-calibration-model PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL]
@@ -33,8 +33,11 @@ options:
                         The Python class name of the program that should be run
   -v, --version         Display information about the program.
   --log-level LOG_LEVEL
-                        The log level to be used. Must be one of {"critical", "debug", "error", "info", "notset",
-                        "warn"}. The default value is "info".
+                        The log level to be used. Must be one of {"debug", "error", "info", "warning"}. The default
+                        value is "info".
+  --log-width LOG_WIDTH
+                        The width of the console output.
+  --log-plain           Restrict the console output to plain text without any colors or structural elements.
   --mode MODE           The mode of operation to be used. Must be one of {"batch", "read", "run", "single"}. The default
                         value is "single".
   -h, --help            Show this help message and exit
