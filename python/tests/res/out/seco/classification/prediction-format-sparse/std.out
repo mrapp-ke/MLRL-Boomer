@@ -1,18 +1,19 @@
-mlrl-testbed mlrl.seco --log-level debug --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --save-meta-data false --print-predictions true --print-ground-truth true --parallel-prediction false --parallel-rule-refinement false --parallel-statistic-update false --prediction-format sparse
+mlrl-testbed mlrl.seco --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --save-meta-data false --print-predictions true --print-ground-truth true --parallel-prediction false --parallel-rule-refinement false --parallel-statistic-update false --prediction-format sparse
 Checking if output files do already exist...
 Starting experiment using the classification algorithm "SeCoClassifier"...
 Using separate training and test sets...
-DEBUG: Reading input data from file "python/tests/res/data/emotions.arff"...
-DEBUG: Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+○ Reading input data from file "python/tests/res/data/emotions.arff"...
+○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 Fitting model to 397 training examples...
-DEBUG: A dense matrix is used to store the feature values of the training examples
-DEBUG: A dense matrix is used to store the labels of the training examples
-Successfully fit model in <duration>
+○ A dense matrix is used to store the feature values of the training examples
+○ A dense matrix is used to store the labels of the training examples
+✓ Successfully fit model in <duration>
 Predicting for 196 test examples...
-DEBUG: A dense matrix is used to store the feature values of the query examples
-DEBUG: A sparse matrix is used to store the predicted labels
-Successfully predicted in <duration>
-Evaluation result for test data:
+○ A dense matrix is used to store the feature values of the query examples
+○ A sparse matrix is used to store the predicted labels
+✓ Successfully predicted in <duration>
+
+🗀 Evaluation result for test data:
 
 Example-wise F1 (↑)         53.72
 Example-wise Jaccard (↑)    44.55
@@ -31,8 +32,9 @@ Micro Recall (↑)            58.93
 Subset 0/1 Loss (↓)         81.63
 Subset Accuracy (↑)         18.37
 
-DEBUG: Writing output data to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
-Ground truth for test data:
+○ Writing output data to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
+
+🗀 Ground truth for test data:
 
 [[1 0 0 0 0 1]
  [1 0 0 0 0 0]
@@ -231,7 +233,8 @@ Ground truth for test data:
  [0 0 1 1 0 0]
  [1 0 0 0 0 1]]
 
-Predictions for test data:
+
+🗀 Predictions for test data:
 
 [[1 0 0 0 0 1]
  [1 0 1 0 0 1]
@@ -430,4 +433,4 @@ Predictions for test data:
  [0 0 1 1 0 1]
  [0 0 0 0 0 1]]
 
-Successfully finished experiment after <duration>
+✓ Successfully finished experiment after <duration>

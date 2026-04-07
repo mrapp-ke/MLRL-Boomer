@@ -1,31 +1,35 @@
-mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --save-meta-data false --prediction-type scores --print-predictions true --print-ground-truth true --parallel-prediction false --parallel-rule-refinement false --parallel-statistic-update false
+mlrl-testbed mlrl.boosting --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --save-meta-data false --prediction-type scores --print-predictions true --print-ground-truth true --parallel-prediction false --parallel-rule-refinement false --parallel-statistic-update false
 Checking if output files do already exist...
 Starting experiment using the classification algorithm "BoomerClassifier"...
 Using separate training and test sets...
-DEBUG: Reading input data from file "python/tests/res/data/emotions.arff"...
-DEBUG: Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+○ Reading input data from file "python/tests/res/data/emotions.arff"...
+○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 Fitting model to 397 training examples...
-DEBUG: A dense matrix is used to store the feature values of the training examples
-DEBUG: A dense matrix is used to store the labels of the training examples
-Successfully fit model in <duration>
+○ A dense matrix is used to store the feature values of the training examples
+○ A dense matrix is used to store the labels of the training examples
+✓ Successfully fit model in <duration>
 Predicting for 196 test examples...
-DEBUG: A dense matrix is used to store the feature values of the query examples
-DEBUG: A dense matrix is used to store the predicted scores
-Successfully predicted in <duration>
-Evaluation result for test data:
+○ A dense matrix is used to store the feature values of the query examples
+○ A dense matrix is used to store the predicted scores
+✓ Successfully predicted in <duration>
+
+🗀 Evaluation result for test data:
 
 Coverage Error (↓)                    2.69
-DCG (↑)                               1.39         DCG@1:    0.76  DCG@2:    1.14  DCG@3:    1.29  DCG@5:    1.38  DCG@8:    1.39
+DCG (↑)                               1.39         DCG@1:    0.76  DCG@2:    1.14  DCG@3:    1.29  DCG@5:    1.38
+DCG@8:    1.39
 Label Ranking Average Precision (↑)   0.83
 Mean Absolute Error (↓)               4.29
 Mean Absolute Percentage Error (↓)    1.53277e+16
 Mean Squared Error (↓)               27.2
 Median Absolute Error (↓)             3.91
-NDCG (↑)                             88.64         NDCG@1:  76.02  NDCG@2:  77.19  NDCG@3:  82.76  NDCG@5:  87.77  NDCG@8:  88.64
+NDCG (↑)                             88.64         NDCG@1:  76.02  NDCG@2:  77.19  NDCG@3:  82.76  NDCG@5:  87.77
+NDCG@8:  88.64
 Ranking Loss (↓)                      0.14
 
-DEBUG: Writing output data to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
-Ground truth for test data:
+○ Writing output data to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
+
+🗀 Ground truth for test data:
 
 [[1 0 0 0 0 1]
  [1 0 0 0 0 0]
@@ -224,7 +228,8 @@ Ground truth for test data:
  [0 0 1 1 0 0]
  [1 0 0 0 0 1]]
 
-Predictions for test data:
+
+🗀 Predictions for test data:
 
 [[  5.03  -1.98  -9.5   -8.82  -6.85   6.5 ]
  [  3.54  -5.45 -12.24 -11.55  -6.99   5.94]
@@ -423,4 +428,4 @@ Predictions for test data:
  [ -3.86  -0.8    2.9   -0.69  -3.66  -3.08]
  [ -5.62  -2.34  -2.46  -9.99  -4.23   1.93]]
 
-Successfully finished experiment after <duration>
+✓ Successfully finished experiment after <duration>

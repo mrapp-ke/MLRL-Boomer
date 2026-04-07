@@ -1,26 +1,28 @@
-mlrl-testbed mlrl.boosting --log-level debug --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --save-meta-data false --print-predictions true --print-ground-truth true --parallel-prediction false --parallel-rule-refinement false --parallel-statistic-update false --prediction-format dense
+mlrl-testbed mlrl.boosting --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --save-meta-data false --print-predictions true --print-ground-truth true --parallel-prediction false --parallel-rule-refinement false --parallel-statistic-update false --prediction-format dense
 Checking if output files do already exist...
 Starting experiment using the regression algorithm "BoomerRegressor"...
 Using separate training and test sets...
-DEBUG: Reading input data from file "python/tests/res/data/atp7d.arff"...
-DEBUG: Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
+○ Reading input data from file "python/tests/res/data/atp7d.arff"...
+○ Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
 Fitting model to 198 training examples...
-DEBUG: A dense matrix is used to store the feature values of the training examples
-DEBUG: A dense matrix is used to store the regression scores of the training examples
-Successfully fit model in <duration>
+○ A dense matrix is used to store the feature values of the training examples
+○ A dense matrix is used to store the regression scores of the training examples
+✓ Successfully fit model in <duration>
 Predicting for 98 test examples...
-DEBUG: A dense matrix is used to store the feature values of the query examples
-DEBUG: A dense matrix is used to store the predicted scores
-Successfully predicted in <duration>
-Evaluation result for test data:
+○ A dense matrix is used to store the feature values of the query examples
+○ A dense matrix is used to store the predicted scores
+✓ Successfully predicted in <duration>
+
+🗀 Evaluation result for test data:
 
 Mean Absolute Error (↓)               29.74
 Mean Absolute Percentage Error (↓)     0.08
 Mean Squared Error (↓)              2840.67
 Median Absolute Error (↓)             16.41
 
-DEBUG: Writing output data to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
-Ground truth for test data:
+○ Writing output data to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
+
+🗀 Ground truth for test data:
 
 [[ 334.  440.  460.  463.  334.  463.]
  [ 279.  279.  395.  369.  313.  401.]
@@ -121,7 +123,8 @@ Ground truth for test data:
  [ 279.  279.  301.  366.  283.  366.]
  [ 199.  199.  447.  488.  298.  488.]]
 
-Predictions for test data:
+
+🗀 Predictions for test data:
 
 [[351.54 505.5  515.99 487.54 368.55 492.31]
  [276.21 288.38 382.55 379.7  307.41 387.83]
@@ -222,4 +225,4 @@ Predictions for test data:
  [267.55 290.84 312.39 345.07 279.52 341.66]
  [216.85 230.69 462.02 490.89 276.56 500.64]]
 
-Successfully finished experiment after <duration>
+✓ Successfully finished experiment after <duration>

@@ -1,8 +1,12 @@
-mlrl-testbed mlrl.testbed_sklearn --mode batch --log-level debug --base-dir python/tests/res/tmp/<worker-id> --config python/tests/res/config/sklearn/regression/batch_config.yml --runner slurm --slurm-config python/tests/res/config/slurm_config.yml --print-slurm-scripts true --save-slurm-scripts true --slurm-save-dir python/tests/res/tmp/<worker-id> --problem-type regression --save-evaluation true --save-meta-data false --save-meta-data true --n-estimators 1 --estimator RandomForestRegressor
-DEBUG: Writing output data to file "python/tests/res/tmp/<worker-id>/metadata.yml"...
+mlrl-testbed mlrl.testbed_sklearn --mode batch --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id> --config python/tests/res/config/sklearn/regression/batch_config.yml --runner slurm --slurm-config python/tests/res/config/slurm_config.yml --print-slurm-scripts true --save-slurm-scripts true --slurm-save-dir python/tests/res/tmp/<worker-id> --problem-type regression --save-evaluation true --save-meta-data false --save-meta-data true --n-estimators 1 --estimator RandomForestRegressor
+○ Writing output data to file "python/tests/res/tmp/<worker-id>/metadata.yml"...
 Submitting 8 experiments to Slurm...
 
-Submitting Slurm job (1 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset atp7d --estimator RandomForestRegressor --log-level debug --max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_atp7d/models --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_2/dataset_atp7d/parameters --problem-type regression --result-dir n-estimators_50/max-depth_2/dataset_atp7d/results --save-evaluation true --save-meta-data false"
+Submitting Slurm job (1 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
+python/tests/res/data --dataset atp7d --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120
+--max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_atp7d/models --n-estimators 50 --parameter-save-dir
+n-estimators_50/max-depth_2/dataset_atp7d/parameters --problem-type regression --result-dir
+n-estimators_50/max-depth_2/dataset_atp7d/results --save-evaluation true --save-meta-data false"
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/atp7d_1.sh"
 Content of Slurm script is:
 
@@ -17,18 +21,28 @@ Content of Slurm script is:
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
-mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset atp7d --estimator RandomForestRegressor --log-level debug --max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_atp7d/models --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_2/dataset_atp7d/parameters --problem-type regression --result-dir n-estimators_50/max-depth_2/dataset_atp7d/results --save-evaluation true --save-meta-data false
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+atp7d --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
+n-estimators_50/max-depth_2/dataset_atp7d/models --n-estimators 50 --parameter-save-dir
+n-estimators_50/max-depth_2/dataset_atp7d/parameters --problem-type regression --result-dir
+n-estimators_50/max-depth_2/dataset_atp7d/results --save-evaluation true --save-meta-data false
 deactivate
 
 
-Submitting Slurm job (2 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset atp7d --estimator RandomForestRegressor --log-level debug --max-depth 4 --max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters --problem-type regression --result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results --save-evaluation true --save-meta-data false"
+Submitting Slurm job (2 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
+python/tests/res/data --dataset atp7d --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120
+--max-depth 4 --max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models
+--n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters
+--problem-type regression --result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results
+--save-evaluation true --save-meta-data false"
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/atp7d_2.sh"
 Content of Slurm script is:
 
 #!/bin/sh
 
 #SBATCH --job-name=atp7d_2
-#SBATCH --output=python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/std.out
+#SBATCH
+--output=python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/std.out
 #SBATCH --error=python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/std.err
 #SBATCH --time=2:30:00
 #SBATCH --cpus-per-tasks=1
@@ -36,11 +50,20 @@ Content of Slurm script is:
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
-mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset atp7d --estimator RandomForestRegressor --log-level debug --max-depth 4 --max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters --problem-type regression --result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results --save-evaluation true --save-meta-data false
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+atp7d --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4
+--model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models --n-estimators 50
+--parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters --problem-type regression
+--result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results --save-evaluation true --save-meta-data
+false
 deactivate
 
 
-Submitting Slurm job (3 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset atp7d --estimator RandomForestRegressor --log-level debug --max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_atp7d/models --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_2/dataset_atp7d/parameters --problem-type regression --result-dir n-estimators_100/max-depth_2/dataset_atp7d/results --save-evaluation true --save-meta-data false"
+Submitting Slurm job (3 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
+python/tests/res/data --dataset atp7d --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120
+--max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_atp7d/models --n-estimators 100 --parameter-save-dir
+n-estimators_100/max-depth_2/dataset_atp7d/parameters --problem-type regression --result-dir
+n-estimators_100/max-depth_2/dataset_atp7d/results --save-evaluation true --save-meta-data false"
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/atp7d_3.sh"
 Content of Slurm script is:
 
@@ -55,30 +78,50 @@ Content of Slurm script is:
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
-mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset atp7d --estimator RandomForestRegressor --log-level debug --max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_atp7d/models --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_2/dataset_atp7d/parameters --problem-type regression --result-dir n-estimators_100/max-depth_2/dataset_atp7d/results --save-evaluation true --save-meta-data false
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+atp7d --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
+n-estimators_100/max-depth_2/dataset_atp7d/models --n-estimators 100 --parameter-save-dir
+n-estimators_100/max-depth_2/dataset_atp7d/parameters --problem-type regression --result-dir
+n-estimators_100/max-depth_2/dataset_atp7d/results --save-evaluation true --save-meta-data false
 deactivate
 
 
-Submitting Slurm job (4 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset atp7d --estimator RandomForestRegressor --log-level debug --max-depth 4 --max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters --problem-type regression --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results --save-evaluation true --save-meta-data false"
+Submitting Slurm job (4 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
+python/tests/res/data --dataset atp7d --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120
+--max-depth 4 --max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models
+--n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters
+--problem-type regression --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results
+--save-evaluation true --save-meta-data false"
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/atp7d_4.sh"
 Content of Slurm script is:
 
 #!/bin/sh
 
 #SBATCH --job-name=atp7d_4
-#SBATCH --output=python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/std.out
-#SBATCH --error=python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/std.err
+#SBATCH
+--output=python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/std.out
+#SBATCH
+--error=python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/std.err
 #SBATCH --time=2:30:00
 #SBATCH --cpus-per-tasks=1
 
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
-mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset atp7d --estimator RandomForestRegressor --log-level debug --max-depth 4 --max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters --problem-type regression --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results --save-evaluation true --save-meta-data false
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+atp7d --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4
+--model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models --n-estimators 100
+--parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters --problem-type regression
+--result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results --save-evaluation true --save-meta-data
+false
 deactivate
 
 
-Submitting Slurm job (5 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset atp7d-binary --estimator RandomForestRegressor --log-level debug --max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_atp7d-binary/models --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_2/dataset_atp7d-binary/parameters --problem-type regression --result-dir n-estimators_50/max-depth_2/dataset_atp7d-binary/results --save-evaluation true --save-meta-data false"
+Submitting Slurm job (5 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
+python/tests/res/data --dataset atp7d-binary --estimator RandomForestRegressor --log-level debug --log-plain --log-width
+120 --max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_atp7d-binary/models --n-estimators 50
+--parameter-save-dir n-estimators_50/max-depth_2/dataset_atp7d-binary/parameters --problem-type regression --result-dir
+n-estimators_50/max-depth_2/dataset_atp7d-binary/results --save-evaluation true --save-meta-data false"
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/atp7d-binary_5.sh"
 Content of Slurm script is:
 
@@ -93,30 +136,50 @@ Content of Slurm script is:
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
-mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset atp7d-binary --estimator RandomForestRegressor --log-level debug --max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_atp7d-binary/models --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_2/dataset_atp7d-binary/parameters --problem-type regression --result-dir n-estimators_50/max-depth_2/dataset_atp7d-binary/results --save-evaluation true --save-meta-data false
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+atp7d-binary --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2
+--model-save-dir n-estimators_50/max-depth_2/dataset_atp7d-binary/models --n-estimators 50 --parameter-save-dir
+n-estimators_50/max-depth_2/dataset_atp7d-binary/parameters --problem-type regression --result-dir
+n-estimators_50/max-depth_2/dataset_atp7d-binary/results --save-evaluation true --save-meta-data false
 deactivate
 
 
-Submitting Slurm job (6 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset atp7d-binary --estimator RandomForestRegressor --log-level debug --max-depth 4 --max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters --problem-type regression --result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results --save-evaluation true --save-meta-data false"
+Submitting Slurm job (6 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
+python/tests/res/data --dataset atp7d-binary --estimator RandomForestRegressor --log-level debug --log-plain --log-width
+120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
+n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models --n-estimators 50 --parameter-save-dir
+n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters --problem-type regression --result-dir
+n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results --save-evaluation true --save-meta-data false"
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/atp7d-binary_6.sh"
 Content of Slurm script is:
 
 #!/bin/sh
 
 #SBATCH --job-name=atp7d-binary_6
-#SBATCH --output=python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/std.out
-#SBATCH --error=python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/std.err
+#SBATCH
+--output=python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/std.out
+#SBATCH
+--error=python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/std.err
 #SBATCH --time=2:30:00
 #SBATCH --cpus-per-tasks=1
 
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
-mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset atp7d-binary --estimator RandomForestRegressor --log-level debug --max-depth 4 --max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters --problem-type regression --result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results --save-evaluation true --save-meta-data false
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+atp7d-binary --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4
+--max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models
+--n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters
+--problem-type regression --result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results
+--save-evaluation true --save-meta-data false
 deactivate
 
 
-Submitting Slurm job (7 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset atp7d-binary --estimator RandomForestRegressor --log-level debug --max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_atp7d-binary/models --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_2/dataset_atp7d-binary/parameters --problem-type regression --result-dir n-estimators_100/max-depth_2/dataset_atp7d-binary/results --save-evaluation true --save-meta-data false"
+Submitting Slurm job (7 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
+python/tests/res/data --dataset atp7d-binary --estimator RandomForestRegressor --log-level debug --log-plain --log-width
+120 --max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_atp7d-binary/models --n-estimators 100
+--parameter-save-dir n-estimators_100/max-depth_2/dataset_atp7d-binary/parameters --problem-type regression --result-dir
+n-estimators_100/max-depth_2/dataset_atp7d-binary/results --save-evaluation true --save-meta-data false"
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/atp7d-binary_7.sh"
 Content of Slurm script is:
 
@@ -131,25 +194,43 @@ Content of Slurm script is:
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
-mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset atp7d-binary --estimator RandomForestRegressor --log-level debug --max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_atp7d-binary/models --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_2/dataset_atp7d-binary/parameters --problem-type regression --result-dir n-estimators_100/max-depth_2/dataset_atp7d-binary/results --save-evaluation true --save-meta-data false
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+atp7d-binary --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2
+--model-save-dir n-estimators_100/max-depth_2/dataset_atp7d-binary/models --n-estimators 100 --parameter-save-dir
+n-estimators_100/max-depth_2/dataset_atp7d-binary/parameters --problem-type regression --result-dir
+n-estimators_100/max-depth_2/dataset_atp7d-binary/results --save-evaluation true --save-meta-data false
 deactivate
 
 
-Submitting Slurm job (8 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset atp7d-binary --estimator RandomForestRegressor --log-level debug --max-depth 4 --max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters --problem-type regression --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results --save-evaluation true --save-meta-data false"
+Submitting Slurm job (8 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
+python/tests/res/data --dataset atp7d-binary --estimator RandomForestRegressor --log-level debug --log-plain --log-width
+120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
+n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models --n-estimators 100 --parameter-save-dir
+n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters --problem-type regression --result-dir
+n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results --save-evaluation true --save-meta-data
+false"
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/atp7d-binary_8.sh"
 Content of Slurm script is:
 
 #!/bin/sh
 
 #SBATCH --job-name=atp7d-binary_8
-#SBATCH --output=python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/std.out
-#SBATCH --error=python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/std.err
+#SBATCH
+--output=python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/std.ou
+t
+#SBATCH
+--error=python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/std.err
 #SBATCH --time=2:30:00
 #SBATCH --cpus-per-tasks=1
 
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install mlrl-testbed-sklearn
-mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset atp7d-binary --estimator RandomForestRegressor --log-level debug --max-depth 4 --max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters --problem-type regression --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results --save-evaluation true --save-meta-data false
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+atp7d-binary --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4
+--max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models
+--n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters
+--problem-type regression --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results
+--save-evaluation true --save-meta-data false
 deactivate
 
