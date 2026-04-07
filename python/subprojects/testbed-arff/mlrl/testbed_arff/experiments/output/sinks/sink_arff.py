@@ -99,7 +99,7 @@ class ArffFileSink(DatasetFileSink):
                 arff.dumps(
                     {
                         'description': 'traindata',
-                        'relation': 'traindata: -C ' + str(-dataset.num_outputs),
+                        'relation': f'traindata: -C -{dataset.num_outputs}',
                         'attributes': x_features + y_features,
                         'data': data,
                     }
@@ -132,7 +132,7 @@ class ArffFileSink(DatasetFileSink):
 
     def _write_dataset_to_file(self, file_path: Path, state: ExperimentState, dataset: Dataset, **_):
         self.__write_arff_file(file_path=file_path, dataset=dataset)
-        self.__write_xml_file(file_path=file_path.with_suffix('.' + ArffFileSource.SUFFIX_XML), dataset=dataset)
+        self.__write_xml_file(file_path=file_path.with_suffix(f'.{ArffFileSource.SUFFIX_XML}'), dataset=dataset)
 
     @override
     def create_source(self, input_directory: Path) -> Source | None:

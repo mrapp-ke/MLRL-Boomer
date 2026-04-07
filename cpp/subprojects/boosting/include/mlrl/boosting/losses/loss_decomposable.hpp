@@ -3,9 +3,8 @@
  */
 #pragma once
 
-#include "mlrl/boosting/data/statistic.hpp"
+#include "mlrl/boosting/data/view_statistic_decomposable_dense.hpp"
 #include "mlrl/boosting/losses/loss.hpp"
-#include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 #include "mlrl/common/data/view_matrix_csr.hpp"
 #include "mlrl/common/data/view_matrix_csr_binary.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
@@ -38,13 +37,13 @@ namespace boosting {
              *                      predicted scores
              * @param indicesBegin  A `CompleteIndexVector::const_iterator` to the beginning of the label indices
              * @param indicesEnd    A `CompleteIndexVector::const_iterator` to the end of the label indices
-             * @param statisticView A reference to an object of type `CContiguousView` to be updated
+             * @param statisticView A reference to an object of type `DenseDecomposableStatisticView` to be updated
              */
             virtual void updateDecomposableStatistics(
               uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
               const CContiguousView<StatisticType>& scoreMatrix, CompleteIndexVector::const_iterator indicesBegin,
               CompleteIndexVector::const_iterator indicesEnd,
-              CContiguousView<Statistic<StatisticType>>& statisticView) const = 0;
+              DenseDecomposableStatisticView<StatisticType>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -57,13 +56,13 @@ namespace boosting {
              *                      predicted scores
              * @param indicesBegin  A `PartialIndexVector::const_iterator` to the beginning of the label indices
              * @param indicesEnd    A `PartialIndexVector::const_iterator` to the end of the label indices
-             * @param statisticView A reference to an object of type `CContiguousView` to be updated
+             * @param statisticView A reference to an object of type `DenseDecomposableStatisticView` to be updated
              */
             virtual void updateDecomposableStatistics(
               uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
               const CContiguousView<StatisticType>& scoreMatrix, PartialIndexVector::const_iterator indicesBegin,
               PartialIndexVector::const_iterator indicesEnd,
-              CContiguousView<Statistic<StatisticType>>& statisticView) const = 0;
+              DenseDecomposableStatisticView<StatisticType>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -76,12 +75,12 @@ namespace boosting {
              *                      predicted scores
              * @param indicesBegin  A `CompleteIndexVector::const_iterator` to the beginning of the label indices
              * @param indicesEnd    A `CompleteIndexVector::const_iterator` to the end of the label indices
-             * @param statisticView A reference to an object of type `CContiguousView` to be updated
+             * @param statisticView A reference to an object of type `DenseDecomposableStatisticView` to be updated
              */
             virtual void updateDecomposableStatistics(
               uint32 exampleIndex, const BinaryCsrView& labelMatrix, const CContiguousView<StatisticType>& scoreMatrix,
               CompleteIndexVector::const_iterator indicesBegin, CompleteIndexVector::const_iterator indicesEnd,
-              CContiguousView<Statistic<StatisticType>>& statisticView) const = 0;
+              DenseDecomposableStatisticView<StatisticType>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -94,12 +93,12 @@ namespace boosting {
              *                      predicted scores
              * @param indicesBegin  A `PartialIndexVector::const_iterator` to the beginning of the label indices
              * @param indicesEnd    A `PartialIndexVector::const_iterator` to the end of the label indices
-             * @param statisticView A reference to an object of type `CContiguousView` to be updated
+             * @param statisticView A reference to an object of type `DenseDecomposableStatisticView` to be updated
              */
             virtual void updateDecomposableStatistics(
               uint32 exampleIndex, const BinaryCsrView& labelMatrix, const CContiguousView<StatisticType>& scoreMatrix,
               PartialIndexVector::const_iterator indicesBegin, PartialIndexVector::const_iterator indicesEnd,
-              CContiguousView<Statistic<StatisticType>>& statisticView) const = 0;
+              DenseDecomposableStatisticView<StatisticType>& statisticView) const = 0;
     };
 
     /**
@@ -125,13 +124,13 @@ namespace boosting {
              *                          predicted scores
              * @param indicesBegin      A `CompleteIndexVector::const_iterator` to the beginning of the output indices
              * @param indicesEnd        A `CompleteIndexVector::const_iterator` to the end of the output indices
-             * @param statisticView     A reference to an object of type `CContiguousView` to be updated
+             * @param statisticView     A reference to an object of type `DenseDecomposableStatisticView` to be updated
              */
             virtual void updateDecomposableStatistics(
               uint32 exampleIndex, const CContiguousView<const float32>& regressionMatrix,
               const CContiguousView<StatisticType>& scoreMatrix, CompleteIndexVector::const_iterator indicesBegin,
               CompleteIndexVector::const_iterator indicesEnd,
-              CContiguousView<Statistic<StatisticType>>& statisticView) const = 0;
+              DenseDecomposableStatisticView<StatisticType>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the outputs, whose indices
@@ -144,13 +143,13 @@ namespace boosting {
              *                          predicted scores
              * @param indicesBegin      A `PartialIndexVector::const_iterator` to the beginning of the output indices
              * @param indicesEnd        A `PartialIndexVector::const_iterator` to the end of the output indices
-             * @param statisticView     A reference to an object of type `CContiguousView` to be updated
+             * @param statisticView     A reference to an object of type `DenseDecomposableStatisticView` to be updated
              */
             virtual void updateDecomposableStatistics(
               uint32 exampleIndex, const CContiguousView<const float32>& regressionMatrix,
               const CContiguousView<StatisticType>& scoreMatrix, PartialIndexVector::const_iterator indicesBegin,
               PartialIndexVector::const_iterator indicesEnd,
-              CContiguousView<Statistic<StatisticType>>& statisticView) const = 0;
+              DenseDecomposableStatisticView<StatisticType>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the outputs, whose indices
@@ -163,13 +162,13 @@ namespace boosting {
              *                          predicted scores
              * @param indicesBegin      A `CompleteIndexVector::const_iterator` to the beginning of the output indices
              * @param indicesEnd        A `CompleteIndexVector::const_iterator` to the end of the output indices
-             * @param statisticView     A reference to an object of type `CContiguousView` to be updated
+             * @param statisticView     A reference to an object of type `DenseDecomposableStatisticView` to be updated
              */
             virtual void updateDecomposableStatistics(
               uint32 exampleIndex, const CsrView<const float32>& regressionMatrix,
               const CContiguousView<StatisticType>& scoreMatrix, CompleteIndexVector::const_iterator indicesBegin,
               CompleteIndexVector::const_iterator indicesEnd,
-              CContiguousView<Statistic<StatisticType>>& statisticView) const = 0;
+              DenseDecomposableStatisticView<StatisticType>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the outputs, whose indices
@@ -182,13 +181,13 @@ namespace boosting {
              *                          predicted scores
              * @param indicesBegin      A `PartialIndexVector::const_iterator` to the beginning of the output indices
              * @param indicesEnd        A `PartialIndexVector::const_iterator` to the end of the output indices
-             * @param statisticView     A reference to an object of type `CContiguousView` to be updated
+             * @param statisticView     A reference to an object of type `DenseDecomposableStatisticView` to be updated
              */
             virtual void updateDecomposableStatistics(
               uint32 exampleIndex, const CsrView<const float32>& regressionMatrix,
               const CContiguousView<StatisticType>& scoreMatrix, PartialIndexVector::const_iterator indicesBegin,
               PartialIndexVector::const_iterator indicesEnd,
-              CContiguousView<Statistic<StatisticType>>& statisticView) const = 0;
+              DenseDecomposableStatisticView<StatisticType>& statisticView) const = 0;
     };
 
     /**

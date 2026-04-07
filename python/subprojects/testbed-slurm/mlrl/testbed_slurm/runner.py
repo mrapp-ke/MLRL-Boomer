@@ -4,7 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow to run experiments via the Slurm Workload Manager.
 """
 
-import logging as log
 import re as regex
 import sys
 
@@ -24,6 +23,7 @@ from mlrl.testbed.experiments.input.dataset.arguments import DatasetArguments
 from mlrl.testbed.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.recipe import Recipe
+from mlrl.testbed.log import Log
 from mlrl.testbed.modes.mode_batch import Batch, BatchMode
 from mlrl.testbed.util.io import open_readable_file, open_writable_file
 from mlrl.testbed.util.yml import read_and_validate_yaml
@@ -118,7 +118,7 @@ class SlurmRunner(BatchMode.Runner):
             The sbatch arguments (starting with #SBATCH) to be passed to a Slurm job.
             """
             return [
-                '#SBATCH ' + str(argument)
+                f'#SBATCH {argument}'
                 for argument in self.yaml_dict.get('sbatch-arguments', [])
                 if len(argument) > 0 and not argument.isspace()
             ]
@@ -155,7 +155,7 @@ class SlurmRunner(BatchMode.Runner):
         version = sbatch.version().run()
 
         if not version.ok:
-            log.error(f'Command "{sbatch.command}" not found: {version.output}')
+            Log.error(f'Command "{sbatch.command}" not found: {version.output}')
             return False
 
         return True
@@ -239,10 +239,10 @@ class SlurmRunner(BatchMode.Runner):
                 file_name += '_fold'
 
                 if first_fold > 0:
-                    file_name += '-' + str(first_fold)
+                    file_name += f'-{first_fold}'
 
                 if last_fold > first_fold:
-                    file_name += '-' + str(last_fold)
+                    file_name += f'-{last_fold}'
         except ValidationError:
             pass
 
@@ -275,12 +275,12 @@ class SlurmRunner(BatchMode.Runner):
         if result.ok:
             job_name = sbatch_file.stem
             job_id = result.output.split(' ')[-1]
-            log.info(
+            Log.success(
                 f'Successfully submitted job:\n\n{tabulate([["JOBID", job_id], ["NAME", job_name]], tablefmt="plain")}'
             )
             return 0
 
-        log.error(f'Submission to Slurm failed:\n{result.output}')
+        Log.error(f'Submission to Slurm failed:\n{result.output}')
         return result.exit_code
 
     @staticmethod
@@ -360,14 +360,14 @@ class SlurmRunner(BatchMode.Runner):
         print_file = SlurmArguments.PRINT_SLURM_SCRIPTS.get_value(args)
         submit_command = not save_file and not print_file and self.__is_command_available()
         num_experiments = len(batch)
-        log.info(f'Submitting {num_experiments} {("experiments" if num_experiments > 1 else "experiment")} to Slurm...')
+        Log.info(f'Submitting {num_experiments} {("experiments" if num_experiments > 1 else "experiment")} to Slurm...')
         command_or_job_arrays = self.__assign_to_job_arrays(batch)
         num_jobs = len(command_or_job_arrays)
 
         for i, command_or_job_array in enumerate(command_or_job_arrays):
             job_array = command_or_job_array if isinstance(command_or_job_array, JobArray) else None
             command = job_array.modified_command if job_array else cast(Command, command_or_job_array)
-            log.info(f'\nSubmitting Slurm job ({i + 1} / {num_jobs}): "{command}"')
+            Log.info(f'\nSubmitting Slurm job ({i + 1} / {num_jobs}): "{command}"')
             dataset_name = DatasetArguments.DATASET_NAME.get_value(command.to_namespace())
             job_name = dataset_name if dataset_name else 'sbatch'
             slurm_config_file = SlurmRunner.__read_config_file(args)
@@ -376,10 +376,10 @@ class SlurmRunner(BatchMode.Runner):
             )
 
             if save_file:
-                log.info(f'Slurm script saved to file "{sbatch_file}"')
+                Log.info(f'Slurm script saved to file "{sbatch_file}"')
 
             if print_file:
-                log.info(f'Content of Slurm script is:\n\n{self.__read_sbatch_file(sbatch_file)}')
+                Log.info(f'Content of Slurm script is:\n\n{self.__read_sbatch_file(sbatch_file)}')
 
             exit_code = self.__submit_command(sbatch_file) if submit_command else 0
 

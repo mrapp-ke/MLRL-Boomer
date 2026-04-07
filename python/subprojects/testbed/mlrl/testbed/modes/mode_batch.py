@@ -4,7 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that implement a mode of operation for performing multiple experiments.
 """
 
-import logging as log
 import re as regex
 
 from abc import ABC, abstractmethod
@@ -31,6 +30,7 @@ from mlrl.testbed.experiments.output.sinks import YamlFileSink
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
 from mlrl.testbed.experiments.timer import Timer
+from mlrl.testbed.log import Log
 from mlrl.testbed.modes.mode import Mode
 from mlrl.testbed.modes.util import OutputUtil
 from mlrl.testbed.util.yml import read_and_validate_yaml
@@ -95,9 +95,9 @@ class BatchMode(Mode):
         def run_batch(self, args: Namespace, batch: Batch, recipe: Recipe):
             for i, command in enumerate(batch):
                 if i > 0:
-                    log.info('')
+                    Log.info('')
 
-                log.info(self.__format_command(command))
+                Log.info(self.__format_command(command))
 
     class SequentialRunner(Runner):
         """
@@ -114,15 +114,15 @@ class BatchMode(Mode):
 
             for i, command in enumerate(batch):
                 if i == 0:
-                    log.info(f'Running {num_experiments} {("experiments" if num_experiments > 1 else "experiment")}...')
+                    Log.info(f'Running {num_experiments} {("experiments" if num_experiments > 1 else "experiment")}...')
 
-                log.info(f'\nRunning experiment ({i + 1} / {num_experiments}): "{command}"')
+                Log.info(f'\nRunning experiment ({i + 1} / {num_experiments}): "{command}"')
                 recipe.create_experiment_builder(
                     experiment_mode=ExperimentMode.BATCH, args=command.apply_to_namespace(args), command=command
                 ).run(args)
 
             run_time = Timer.stop(start_time)
-            log.info(
+            Log.success(
                 f'Successfully finished {num_experiments} {("experiments" if num_experiments > 1 else "experiment")} '
                 f'after {run_time}'
             )
@@ -327,7 +327,7 @@ class BatchMode(Mode):
         num_skipped = len(batch) - len(filtered_batch)
 
         if num_skipped > 0:
-            log.info(
+            Log.info(
                 f'Skipping {num_skipped} of {len(batch)} {("experiments" if num_skipped > 1 else "experiment")}, '
                 f'because all of their output files do already exist. Use the argument '
                 f'"{OutputArguments.IF_OUTPUTS_EXIST.name} {OutputExistsPolicy.OVERWRITE}" to force-run all '
@@ -395,7 +395,7 @@ class BatchMode(Mode):
             dataset_name = dataset_args[DatasetArguments.DATASET_NAME.name]
 
             if not dataset_name:
-                raise ValueError('Unable to determine dataset name based on the arguments ' + str(dataset_args))
+                raise ValueError(f'Unable to determine dataset name based on the arguments {dataset_args}')
 
             for parameter_args in map(BatchMode.__filter_arguments, config_file.parameter_args):
                 output_dir = BatchMode.__get_output_dir(parameter_args, dataset_name)
@@ -446,10 +446,10 @@ class BatchMode(Mode):
     def __get_output_dir(argument_dict: ArgumentDict, dataset_name: str) -> Path:
         return Path(
             *map(
-                lambda argument: argument[0].lstrip('-') + ('_' + argument[1]) if argument[1] else '',
+                lambda argument: f'{argument[0].lstrip("-")}{(f"_{argument[1]}" if argument[1] else "")}',
                 argument_dict.items(),
             ),
-            'dataset_' + dataset_name,
+            f'dataset_{dataset_name}',
         )
 
     @staticmethod

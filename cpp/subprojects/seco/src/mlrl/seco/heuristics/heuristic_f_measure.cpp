@@ -34,7 +34,7 @@ namespace seco {
                     float32 numCoveredIncorrect = cip + crn;
                     float32 numerator = (1 + betaPow) * numCoveredEqual;
                     float32 denominator = numerator + (betaPow * numUncoveredCorrect) + numCoveredIncorrect;
-                    return util::divideOrZero(numerator, denominator);
+                    return math::divideOrZero(numerator, denominator);
                 } else {
                     // Equivalent to precision
                     return precision(cin, cip, crn, crp);

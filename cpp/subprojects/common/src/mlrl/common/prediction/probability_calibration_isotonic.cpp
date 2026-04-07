@@ -1,7 +1,9 @@
 #include "mlrl/common/prediction/probability_calibration_isotonic.hpp"
 
 #include "mlrl/common/data/array.hpp"
-#include "mlrl/common/util/math.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
+
+#include <numeric>
 
 static inline void sortByThresholdsAndEliminateDuplicates(ListOfLists<std::pair<float64, float64>>::row bins) {
     // Sort bins in increasing order by their threshold...
@@ -21,7 +23,7 @@ static inline void sortByThresholdsAndEliminateDuplicates(ListOfLists<std::pair<
 
         if (isEqual(currentBin.first, previousBin.first)) {
             uint32 numAggregated = j - previousIndex + 1;
-            previousBin.second = util::iterativeArithmeticMean(numAggregated, currentBin.second, previousBin.second);
+            previousBin.second = math::iterativeArithmeticMean(numAggregated, currentBin.second, previousBin.second);
         } else {
             bins[n] = previousBin;
             n++;
@@ -42,7 +44,7 @@ static inline void aggregateNonIncreasingBins(ListOfLists<std::pair<float64, flo
     // `pools[j] = i`...
     uint32 numBins = static_cast<uint32>(bins.size());
     Array<uint32> pools(numBins);
-    util::setViewToIncreasingValues(pools.begin(), numBins, 0, 1);
+    std::iota(pools.begin(), pools.begin() + numBins, 0);
     uint32 i = 0;
     uint32 j = 0;
 
@@ -60,7 +62,7 @@ static inline void aggregateNonIncreasingBins(ListOfLists<std::pair<float64, flo
             // average the probabilities of all bins within the non-increasing subsequence...
             uint32 numBinsInSubsequence = 2;
             previousBin.second =
-              util::iterativeArithmeticMean(numBinsInSubsequence, currentBin.second, previousBin.second);
+              math::iterativeArithmeticMean(numBinsInSubsequence, currentBin.second, previousBin.second);
 
             // Search for the end of the non-increasing subsequence...
             while ((j = pools[j] + 1) < numBins) {
@@ -73,7 +75,7 @@ static inline void aggregateNonIncreasingBins(ListOfLists<std::pair<float64, flo
                     // We are still within the non-increasing subsequence...
                     numBinsInSubsequence++;
                     previousBin.second =
-                      util::iterativeArithmeticMean(numBinsInSubsequence, nextBin.second, previousBin.second);
+                      math::iterativeArithmeticMean(numBinsInSubsequence, nextBin.second, previousBin.second);
                     currentBin = nextBin;
                 }
             }

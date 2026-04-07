@@ -28,6 +28,7 @@ from mlrl.common.cython.learner import (
     NoPartitionSamplingMixin,
     NoRulePruningMixin,
     NoSequentialPostOptimizationMixin,
+    NoSimdMixin,
     NoSizeStoppingCriterionMixin,
     NoTimeStoppingCriterionMixin,
     ParallelPredictionMixin,
@@ -39,6 +40,7 @@ from mlrl.common.cython.learner import (
     RNGMixin,
     RoundRobinOutputSamplingMixin,
     SequentialPostOptimizationMixin,
+    SimdMixin,
     SizeStoppingCriterionMixin,
     TimeStoppingCriterionMixin,
 )
@@ -122,7 +124,7 @@ class Parameter(ABC):
         """
         The name of a command line argument that corresponds to the parameter.
         """
-        return '--' + self.name.replace('_', '-')
+        return f'--{self.name.replace("_", "-")}'
 
     @override
     def __eq__(self, other):
@@ -827,6 +829,27 @@ class ParallelPredictionParameter(NominalParameter):
                 )
 
 
+class SimdParameter(NominalParameter):
+    """
+    A parameter that allows to configure whether single instruction, multiple data (SIMD) operations should be used or
+    not.
+    """
+
+    def __init__(self):
+        super().__init__(
+            name='simd', description='Whether single instruction, multiple data (SIMD) operations should be used or not'
+        )
+        self.add_value(name=BooleanOption.FALSE, mixin=NoSimdMixin)
+        self.add_value(name=BooleanOption.TRUE, mixin=SimdMixin)
+
+    @override
+    def _configure(self, config, value: str, options: Options):
+        if value == BooleanOption.FALSE:
+            config.use_no_simd_operations()
+        else:
+            config.use_simd_operations()
+
+
 class SizeStoppingCriterionParameter(IntParameter):
     """
     A parameter that allows to configure the maximum number of rules to be induced.
@@ -917,6 +940,7 @@ RULE_LEARNER_PARAMETERS = {
     ParallelRuleRefinementParameter(),
     ParallelStatisticUpdateParameter(),
     ParallelPredictionParameter(),
+    SimdParameter(),
     SizeStoppingCriterionParameter(),
     TimeStoppingCriterionParameter(),
     PostOptimizationParameter(),

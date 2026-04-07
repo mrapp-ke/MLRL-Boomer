@@ -139,7 +139,7 @@ class TabularEvaluationResult(EvaluationResult):
                     new_row.append(first_row[column_index])
 
                     if fold is None:
-                        new_row.append('±' + first_row[column_index + 1])
+                        new_row.append(f'±{first_row[column_index + 1]}')
 
                 rotated_table.add_row(*new_row)
 

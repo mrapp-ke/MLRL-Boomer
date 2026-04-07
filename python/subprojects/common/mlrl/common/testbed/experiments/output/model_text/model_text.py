@@ -14,8 +14,8 @@ from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties
 from mlrl.testbed.experiments.output.data import TextualOutputData
-from mlrl.testbed.util.format import format_number
 
+from mlrl.util.format import format_value
 from mlrl.util.options import Options
 
 
@@ -62,7 +62,7 @@ class RuleModelAsText(TextualOutputData):
                 RuleModelAsText.__format_conditions(text, body, dataset, options)
                 text.write('}')
             else:
-                raise ValueError('Unsupported type of body: ' + str(type(body)))
+                raise ValueError(f'Unsupported type of body: {type(body)}')
 
     @staticmethod
     def __format_head(text: StringIO, head: Head, dataset: TabularDataset, options: Options):
@@ -71,7 +71,7 @@ class RuleModelAsText(TextualOutputData):
         elif isinstance(head, PartialHead):
             RuleModelAsText.__format_partial_head(text, head, dataset, options)
         else:
-            raise ValueError('Unsupported type of head: ' + str(type(head)))
+            raise ValueError(f'Unsupported type of head: {type(head)}')
 
     @staticmethod
     def __format_conditions(text: StringIO, body: Body, dataset: TabularDataset, options: Options):
@@ -105,7 +105,7 @@ class RuleModelAsText(TextualOutputData):
                 else:
                     text.write(str(nominal_value))
             else:
-                text.write(format_number(threshold, decimals=decimals))
+                text.write(format_value(threshold, decimals=decimals))
 
     @staticmethod
     def __format_complete_head(text: StringIO, head: CompleteHead, dataset: TabularDataset, options: Options):
@@ -128,7 +128,7 @@ class RuleModelAsText(TextualOutputData):
                 output_index = prediction.output_index
                 text.write(outputs[output_index].name if print_output_names and len(outputs) > i else str(output_index))
                 text.write(' = ')
-                text.write(format_number(prediction.value, decimals=decimals))
+                text.write(format_value(prediction.value, decimals=decimals))
 
             text.write(')\n')
         elif print_bodies:
@@ -160,7 +160,7 @@ class RuleModelAsText(TextualOutputData):
                     text.write(str(output_index))
 
                 text.write(' = ')
-                text.write(format_number(prediction.value, decimals=decimals))
+                text.write(format_value(prediction.value, decimals=decimals))
 
             text.write(')\n')
         elif print_bodies:

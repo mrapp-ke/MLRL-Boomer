@@ -4,8 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for splitting dataset into distinct training and test datasets.
 """
 
-import logging as log
-
 from collections.abc import Generator
 from dataclasses import dataclass, replace
 from typing import Any, override
@@ -19,6 +17,7 @@ from mlrl.testbed.experiments.fold import FoldingStrategy
 from mlrl.testbed.experiments.input.dataset import DatasetReader
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.log import Log
 
 
 class BipartitionSplitter(DatasetSplitter):
@@ -145,7 +144,7 @@ class BipartitionSplitter(DatasetSplitter):
         """
         See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.split`
         """
-        log.info('Using separate training and test sets...')
+        Log.info('Using separate training and test sets...')
         dataset_reader = self.dataset_reader
         folding_strategy = self.folding_strategy
         state = replace(state, folding_strategy=folding_strategy)

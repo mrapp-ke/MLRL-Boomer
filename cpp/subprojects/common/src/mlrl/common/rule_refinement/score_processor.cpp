@@ -11,15 +11,15 @@ static inline void processCompleteScores(
   IStatisticsUpdateFactory<typename ScoreVector::value_type>& statisticsUpdateFactory) {
     using score_type = ScoreVector::value_type;
     CompletePrediction<score_type>* existingHead = dynamic_cast<CompletePrediction<score_type>*>(existingHeadPtr.get());
-    uint32 numElements = scoreVector.getNumElements();
 
     if (!existingHead) {
         // Create a new head, if necessary...
-        existingHeadPtr = std::make_unique<CompletePrediction<score_type>>(numElements, statisticsUpdateFactory);
+        existingHeadPtr =
+          std::make_unique<CompletePrediction<score_type>>(scoreVector.getNumElements(), statisticsUpdateFactory);
         existingHead = static_cast<CompletePrediction<score_type>*>(existingHeadPtr.get());
     }
 
-    util::copyView(scoreVector.values_cbegin(), existingHead->values_begin(), numElements);
+    std::copy(scoreVector.values_cbegin(), scoreVector.values_cend(), existingHead->values_begin());
     existingHead->quality = scoreVector.quality;
 }
 
@@ -45,8 +45,8 @@ static inline void processPartialScores(
         existingHead->setSorted(scoreVector.isSorted());
     }
 
-    util::copyView(scoreVector.values_cbegin(), existingHead->values_begin(), numElements);
-    util::copyView(scoreVector.indices_cbegin(), existingHead->indices_begin(), numElements);
+    std::copy(scoreVector.values_cbegin(), scoreVector.values_cend(), existingHead->values_begin());
+    std::copy(scoreVector.indices_cbegin(), scoreVector.indices_cend(), existingHead->indices_begin());
     existingHead->quality = scoreVector.quality;
 }
 

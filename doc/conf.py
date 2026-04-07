@@ -67,7 +67,7 @@ builder = environ.get('SPHINX_BUILDER', 'html')
 
 if builder == 'linkcheck':
     # Use GitHub's REST API when using the builder "linkcheck", because it comes with a less restrictive rate limit
-    github_file_url = 'https://api.github.com/repos/mrapp-ke/MLRL-Boomer/contents/%s?ref=' + git_branch
+    github_file_url = f'https://api.github.com/repos/mrapp-ke/MLRL-Boomer/contents/%s?ref={git_branch}'
     github_dir_url = github_file_url
 else:
     github_file_url = f'https://github.com/mrapp-ke/MLRL-Boomer/blob/{git_branch}/%s'
@@ -85,7 +85,7 @@ linkcheck_request_headers = {}
 github_token = environ.get('GITHUB_TOKEN')
 
 if github_token:
-    linkcheck_request_headers[r'^https://api.github.com/'] = {'Authorization': 'Token ' + github_token}
+    linkcheck_request_headers[r'^https://api.github.com/'] = {'Authorization': f'Token {github_token}'}
 
 # Breathe configuration
 breathe_projects = {
