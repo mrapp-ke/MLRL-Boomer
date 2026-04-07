@@ -5,6 +5,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 from ..cmd_builder import CmdBuilder
 from ..cmd_builder_regression import RegressionCmdBuilder
 from ..datasets import Dataset
+
 from .cmd_builder import BoomerCmdBuilderMixin
 
 
@@ -21,3 +22,6 @@ class BoomerRegressorCmdBuilder(RegressionCmdBuilder, BoomerCmdBuilderMixin):
             runnable_module_name='mlrl.boosting',
             dataset=dataset,
         )
+        self.add_algorithmic_argument('--parallel-prediction', 'false')
+        self.add_algorithmic_argument('--parallel-rule-refinement', 'false')
+        self.add_algorithmic_argument('--parallel-statistic-update', 'false')
