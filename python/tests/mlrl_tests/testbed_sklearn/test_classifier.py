@@ -38,7 +38,7 @@ class TestSkLearnClassifier(
         builder = (
             self.create_cmd_builder()
             .meta_estimator(ClassifierChain)
-            .add_algorithmic_argument('--meta-verbose', 'True')
+            .add_algorithmic_argument('--meta-verbose', 'False')
             .print_evaluation()
             .save_evaluation(False)
         )
