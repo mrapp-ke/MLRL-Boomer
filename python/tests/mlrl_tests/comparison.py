@@ -25,6 +25,13 @@ PLACEHOLDER_VERSION = '<version>'
 
 PLACEHOLDER_FILE_NAME = '<file>'
 
+PLACEHOLDER_WORKER_ID = '<worker-id>'
+
+
+def replace_worker_ids_with_placeholders(line: str) -> str:
+    regex_worker_id = r'worker-\d+'
+    return regex.sub(regex_worker_id, PLACEHOLDER_WORKER_ID, line)
+
 
 class Difference(ABC):
     """
@@ -166,6 +173,7 @@ class TextFileComparison(FileComparison):
         masked_line = self.__replace_durations_with_placeholders(line_index, line.rstrip())
         masked_line = self.__replace_timestamps_with_placeholders(masked_line)
         masked_line = self.__replace_versions_with_placeholders(masked_line)
+        masked_line = replace_worker_ids_with_placeholders(masked_line)
         return masked_line
 
     def __init__(self, lines: Iterable[str]):
@@ -454,6 +462,10 @@ class MetaDataFileComparison(FileComparison):
 
     FIELD_TIMESTAMP = 'timestamp'
 
+    FIELD_COMMAND = 'command'
+
+    FIELD_CHILD_COMMANDS = 'child-commands'
+
     def __load_yaml(self, path: Path) -> dict[Any, Any]:
         with open_readable_file(path) as yaml_file:
             return yaml.safe_load(yaml_file)
@@ -480,6 +492,12 @@ class MetaDataFileComparison(FileComparison):
             if key not in {self.FIELD_VERSION, self.FIELD_TIMESTAMP}:
                 actual_value = yaml_dict[key]
 
+                if key in {self.FIELD_COMMAND}:
+                    actual_value = replace_worker_ids_with_placeholders(actual_value)
+
+                if key in {self.FIELD_CHILD_COMMANDS}:
+                    actual_value = [replace_worker_ids_with_placeholders(value) for value in actual_value]
+
                 if expected_value != actual_value:
                     return MetaDataFileComparison.FieldDifference(
                         file=another_file, field=key, actual_value=actual_value, expected_value=expected_value
@@ -496,4 +514,12 @@ class MetaDataFileComparison(FileComparison):
         yaml_dict = self.__load_yaml(self.path)
         yaml_dict[self.FIELD_VERSION] = PLACEHOLDER_VERSION
         yaml_dict[self.FIELD_TIMESTAMP] = PLACEHOLDER_TIMESTAMP
+        yaml_dict[self.FIELD_COMMAND] = replace_worker_ids_with_placeholders(yaml_dict[self.FIELD_COMMAND])
+
+        if self.FIELD_CHILD_COMMANDS in yaml_dict:
+            yaml_dict[self.FIELD_CHILD_COMMANDS] = [
+                replace_worker_ids_with_placeholders(child_command)
+                for child_command in yaml_dict[self.FIELD_CHILD_COMMANDS]
+            ]
+
         self.__write_yaml(yaml_dict, file)

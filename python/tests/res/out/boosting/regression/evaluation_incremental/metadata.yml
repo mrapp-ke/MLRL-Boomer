@@ -1,7 +1,8 @@
 command: mlrl-testbed mlrl.boosting --log-width 120 --log-plain --log-level debug
-  --base-dir python/tests/res/tmp --data-dir python/tests/res/data --dataset atp7d
-  --result-dir results --problem-type regression --save-evaluation true --save-meta-data
+  --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+  atp7d --result-dir results --problem-type regression --save-evaluation true --save-meta-data
   false --save-meta-data true --incremental-evaluation true{step_size=50} --print-evaluation
-  true --save-evaluation true
+  true --save-evaluation true --parallel-prediction false --parallel-rule-refinement
+  false --parallel-statistic-update false
 timestamp: <timestamp>
 version: <version>

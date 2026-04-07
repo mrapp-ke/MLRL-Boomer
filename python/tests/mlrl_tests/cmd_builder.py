@@ -2,6 +2,7 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 
+from os import environ
 from pathlib import Path
 from typing import Any
 
@@ -71,7 +72,9 @@ class CmdBuilder:
         """
         The base directory.
         """
-        return self.RESOURCE_DIR / 'tmp'
+        base_dir = self.RESOURCE_DIR / 'tmp'
+        worker_id = environ.get('PYTEST_XDIST_WORKER', 'gw1')
+        return base_dir / f'worker-{worker_id.lstrip("gw")}'
 
     @property
     def result_dir(self) -> Path:

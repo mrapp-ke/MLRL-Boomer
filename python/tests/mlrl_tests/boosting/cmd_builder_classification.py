@@ -7,6 +7,7 @@ from ..cmd_builder_classification import ClassificationCmdBuilder
 from ..datasets import Dataset
 from .cmd_builder import BoomerCmdBuilderMixin
 
+
 from mlrl.common.config.parameters import BINNING_EQUAL_WIDTH
 
 from mlrl.boosting.config.parameters import PROBABILITY_CALIBRATION_ISOTONIC
@@ -28,6 +29,9 @@ class BoomerClassifierCmdBuilder(ClassificationCmdBuilder, BoomerCmdBuilderMixin
             runnable_module_name='mlrl.boosting',
             dataset=dataset,
         )
+        self.add_algorithmic_argument('--parallel-prediction', 'false')
+        self.add_algorithmic_argument('--parallel-rule-refinement', 'false')
+        self.add_algorithmic_argument('--parallel-statistic-update', 'false')
 
     def marginal_probability_calibration(self, probability_calibrator: str | None = PROBABILITY_CALIBRATION_ISOTONIC):
         """

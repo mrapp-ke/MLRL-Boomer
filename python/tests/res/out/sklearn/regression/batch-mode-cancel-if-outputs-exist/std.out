@@ -1,4 +1,4 @@
-mlrl-testbed mlrl.testbed_sklearn --mode batch --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp --config python/tests/res/config/sklearn/regression/batch_config.yml --problem-type regression --save-evaluation true --save-meta-data false --n-estimators 1 --estimator RandomForestRegressor
+mlrl-testbed mlrl.testbed_sklearn --mode batch --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id> --config python/tests/res/config/sklearn/regression/batch_config.yml --problem-type regression --save-evaluation true --save-meta-data false --n-estimators 1 --estimator RandomForestRegressor
 Skipping 8 of 8 experiments, because all of their output files do already exist. Use the argument "--if-outputs-exist
 overwrite" to force-run all experiments.
 ✓ Successfully finished 0 experiment after <duration>

@@ -77,6 +77,7 @@ jobs:
           OVERWRITE_OUTPUT_FILES: ${{ inputs.overwrite_output_files }}
           NUM_BLOCKS: 8
           BLOCK_INDEX: ${{ matrix.block }}
+          NUM_WORKERS: auto
         run: ./build tests_python --no-dependencies
       - name: Push changes in output files
         if: ${{ inputs.overwrite_output_files == true }}
