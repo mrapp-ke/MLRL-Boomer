@@ -61,6 +61,7 @@ jobs:
           CIBW_PACKAGE_DIR: python/subprojects/${{ inputs.subproject }}
           CIBW_ARCHS: auto64
           CIBW_PROJECT_REQUIRES_PYTHON: ${{ steps.python_version.outputs.content }}
+          CIBW_SKIP: cp???t-win*
         run: echo "python_versions=$(.\build.bat print_cibuildwheel_python_versions)" >> $env:GITHUB_OUTPUT
   run_wheel:
     needs: python_versions
