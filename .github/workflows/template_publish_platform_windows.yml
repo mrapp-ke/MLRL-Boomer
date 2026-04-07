@@ -90,6 +90,10 @@ jobs:
         uses: JesseTG/rm@v1.0.3
         with:
           path: C:\Program Files\Git\usr\bin\link.EXE
+      - name: Prepare ccache
+        uses: hendrikmuhs/ccache-action@v1
+        with:
+          key: ccache-${{ runner.os }}-${{ runner.arch }}-${{ inputs.subproject }}-${{ matrix.build_identifier }}
       - name: Build package
         uses: pypa/cibuildwheel@v3.4
         env:
