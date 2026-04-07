@@ -1,0 +1,5 @@
+File math/vector_math.hpp
+=========================
+
+.. doxygenfile:: math/vector_math.hpp
+   :project: common
