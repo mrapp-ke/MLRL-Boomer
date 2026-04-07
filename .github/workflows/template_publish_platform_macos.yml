@@ -70,6 +70,10 @@ jobs:
             build_system
             cpp
             python
+      - name: Prepare ccache
+        uses: hendrikmuhs/ccache-action@v1
+        with:
+          key: ccache-${{ runner.os }}-${{ runner.arch }}-${{ inputs.subproject }}-${{ matrix.build_identifier }}
       - name: Build package
         uses: pypa/cibuildwheel@v3.4
         env:

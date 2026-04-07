@@ -11,4 +11,5 @@
 - Our build system now uses [uv](https://docs.astral.sh/uv/) as a faster replacement of the package manager pip.
 - We now use [ruff](https://docs.astral.sh/ruff/) for linting and formatting Python code. This makes the dependencies [YAPF](https://github.com/google/yapf) and [pylint](https://pylint.org/) obsolete.
 - To speed up GitHub workflows, the integration tests have been streamlined and redundant test cases have been removed.
+- GitHub workflows that build Python packages now use [Ccache](https://ccache.dev/) to reduce build times.
 - Python packages built by our CI workflows are now run in a test environment to ensure that they have been packaged correctly.
