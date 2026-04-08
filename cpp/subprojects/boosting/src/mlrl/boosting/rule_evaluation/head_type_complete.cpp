@@ -1,6 +1,7 @@
 #include "mlrl/boosting/rule_evaluation/head_type_complete.hpp"
 
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_decomposable_complete.hpp"
+#include "mlrl/boosting/rule_evaluation/vector_math_decomposable.hpp"
 #include "mlrl/boosting/statistics/statistics_provider_decomposable_dense.hpp"
 #include "mlrl/boosting/statistics/statistics_provider_non_decomposable_dense.hpp"
 #include "mlrl/common/math/vector_math.hpp"
@@ -45,11 +46,11 @@ namespace boosting {
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
                   labelBinningConfig_.get().createDecomposableCompleteRuleEvaluationFactory();
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-                  std::make_unique<DecomposableCompleteRuleEvaluationFactory>(l1RegularizationWeight,
-                                                                              l2RegularizationWeight);
+                  std::make_unique<DecomposableCompleteRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
+                    l1RegularizationWeight, l2RegularizationWeight);
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-                  std::make_unique<DecomposableCompleteRuleEvaluationFactory>(l1RegularizationWeight,
-                                                                              l2RegularizationWeight);
+                  std::make_unique<DecomposableCompleteRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
+                    l1RegularizationWeight, l2RegularizationWeight);
 
 #if SIMD_SUPPORT_ENABLED
                 if (labelMatrix.getNumOutputs() > 1 && simdConfig_.get().isSimdEnabled()) {
@@ -80,11 +81,11 @@ namespace boosting {
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
                   labelBinningConfig_.get().createDecomposableCompleteRuleEvaluationFactory();
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-                  std::make_unique<DecomposableCompleteRuleEvaluationFactory>(l1RegularizationWeight,
-                                                                              l2RegularizationWeight);
+                  std::make_unique<DecomposableCompleteRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
+                    l1RegularizationWeight, l2RegularizationWeight);
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-                  std::make_unique<DecomposableCompleteRuleEvaluationFactory>(l1RegularizationWeight,
-                                                                              l2RegularizationWeight);
+                  std::make_unique<DecomposableCompleteRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
+                    l1RegularizationWeight, l2RegularizationWeight);
 
 #if SIMD_SUPPORT_ENABLED
                 if (labelMatrix.getNumOutputs() > 1 && simdConfig_.get().isSimdEnabled()) {
@@ -149,11 +150,11 @@ namespace boosting {
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
                   labelBinningConfig_.get().createDecomposableCompleteRuleEvaluationFactory();
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-                  std::make_unique<DecomposableCompleteRuleEvaluationFactory>(l1RegularizationWeight,
-                                                                              l2RegularizationWeight);
+                  std::make_unique<DecomposableCompleteRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
+                    l1RegularizationWeight, l2RegularizationWeight);
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-                  std::make_unique<DecomposableCompleteRuleEvaluationFactory>(l1RegularizationWeight,
-                                                                              l2RegularizationWeight);
+                  std::make_unique<DecomposableCompleteRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
+                    l1RegularizationWeight, l2RegularizationWeight);
 
 #if SIMD_SUPPORT_ENABLED
                 if (regressionMatrix.getNumOutputs() > 1 && simdConfig_.get().isSimdEnabled()) {

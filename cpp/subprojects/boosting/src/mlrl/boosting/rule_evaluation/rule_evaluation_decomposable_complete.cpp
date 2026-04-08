@@ -4,12 +4,14 @@
 
 namespace boosting {
 
-    DecomposableCompleteRuleEvaluationFactory::DecomposableCompleteRuleEvaluationFactory(float32 l1RegularizationWeight,
-                                                                                         float32 l2RegularizationWeight)
+    template<typename VectorMath>
+    DecomposableCompleteRuleEvaluationFactory<VectorMath>::DecomposableCompleteRuleEvaluationFactory(
+      float32 l1RegularizationWeight, float32 l2RegularizationWeight)
         : l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {}
 
+    template<typename VectorMath>
     std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float32>>>
-      DecomposableCompleteRuleEvaluationFactory::create(
+      DecomposableCompleteRuleEvaluationFactory<VectorMath>::create(
         const DenseDecomposableStatisticVectorView<float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         return std::make_unique<DecomposableCompleteRuleEvaluation<
@@ -17,8 +19,9 @@ namespace boosting {
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
+    template<typename VectorMath>
     std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float32>>>
-      DecomposableCompleteRuleEvaluationFactory::create(
+      DecomposableCompleteRuleEvaluationFactory<VectorMath>::create(
         const DenseDecomposableStatisticVectorView<float32>& statisticVector,
         const PartialIndexVector& indexVector) const {
         return std::make_unique<DecomposableCompleteRuleEvaluation<
@@ -26,8 +29,9 @@ namespace boosting {
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
+    template<typename VectorMath>
     std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float64>>>
-      DecomposableCompleteRuleEvaluationFactory::create(
+      DecomposableCompleteRuleEvaluationFactory<VectorMath>::create(
         const DenseDecomposableStatisticVectorView<float64>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         return std::make_unique<DecomposableCompleteRuleEvaluation<
@@ -35,8 +39,9 @@ namespace boosting {
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
+    template<typename VectorMath>
     std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float64>>>
-      DecomposableCompleteRuleEvaluationFactory::create(
+      DecomposableCompleteRuleEvaluationFactory<VectorMath>::create(
         const DenseDecomposableStatisticVectorView<float64>& statisticVector,
         const PartialIndexVector& indexVector) const {
         return std::make_unique<DecomposableCompleteRuleEvaluation<
@@ -44,4 +49,5 @@ namespace boosting {
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
+    template class DecomposableCompleteRuleEvaluationFactory<SequentialDecomposableVectorMath>;
 }

@@ -6,6 +6,7 @@
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_non_decomposable_complete.hpp"
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_non_decomposable_partial_dynamic.hpp"
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_non_decomposable_partial_fixed.hpp"
+#include "mlrl/boosting/rule_evaluation/vector_math_decomposable.hpp"
 
 namespace boosting {
 
@@ -17,8 +18,8 @@ namespace boosting {
       NoLabelBinningConfig::createDecomposableCompleteRuleEvaluationFactory() const {
         float32 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
         float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
-        return std::make_unique<DecomposableCompleteRuleEvaluationFactory>(l1RegularizationWeight,
-                                                                           l2RegularizationWeight);
+        return std::make_unique<DecomposableCompleteRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
+          l1RegularizationWeight, l2RegularizationWeight);
     }
 
     std::unique_ptr<ISparseDecomposableRuleEvaluationFactory>
