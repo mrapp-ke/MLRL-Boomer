@@ -6,6 +6,16 @@ tocdepth: 2
 
 # Release Notes
 
+## Version 0.15.2 (Feb. 11th, 2026)
+
+A bugfix release that comes with the following changes.
+
+### Fixes
+
+- Fixed an issue that prevented multi-threading from being used by the BOOMER algorithm for updating statistics.
+- Fixed an ImportError when using the package "mlrl-testbed" without "mlrl-testbed-slurm" being installed.
+- When passing the `--version` or `-v` flag to the command line API, the output is now properly formatted again.
+
 ## Version 0.15.1 (Jan. 4th, 2026)
 
 A bugfix release that comes with the following changes.

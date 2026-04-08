@@ -2,7 +2,7 @@
 
 # Building from Source
 
-As discussed in the previous section {ref}`project-structure`, the algorithms that are provided by this project are implemented in [C++](https://en.wikipedia.org/wiki/C%2B%2B) to ensure maximum efficiency (the minimum C++ version required for compilation is specified in the file {repo-file}`.version-cpp <cpp/.version-cpp>`). In addition, a [Python](<https://en.wikipedia.org/wiki/Python_(programming_language)>) wrapper that integrates with the [scikit-learn](https://scikit-learn.org) framework is provided (the supported Python versions are specified in the file {repo-file}`.version-python <python/.version-python>`). To make the underlying C++ implementation accessible from within the Python code, [Cython](https://en.wikipedia.org/wiki/Cython) is used.
+As discussed in the previous section {ref}`project-structure`, the algorithms that are provided by this project are implemented in [C++](https://en.wikipedia.org/wiki/C%2B%2B) to ensure maximum efficiency (the minimum C++ version required for compilation is specified in the file {repo-file}`version-cpp <build_system/res/versioning/version-cpp>`). In addition, a [Python](<https://en.wikipedia.org/wiki/Python_(programming_language)>) wrapper that integrates with the [scikit-learn](https://scikit-learn.org) framework is provided (the supported Python versions are specified in the file {repo-file}`version-python <build_system/res/versioning/version-python>`). To make the underlying C++ implementation accessible from within the Python code, [Cython](https://en.wikipedia.org/wiki/Cython) is used.
 
 Unlike pure Python programs, the C++ and Cython source files must be compiled for a particular target platform. To ease the process of compiling the source code, the project comes with a build system that automates the necessary steps. In the following, we discuss the individual steps that are necessary for building the project from scratch. This is necessary if you intend to modify the library's source code. If you want to use the algorithm without any custom modifications, the {ref}`installation <installation>` of pre-built packages is usually a better choice.
 
@@ -24,7 +24,7 @@ This project uses [Meson](https://mesonbuild.com/) as a build system for compili
      - Description
    * - **Python**
      - No
-     - Nowadays, most Linux distributions include a pre-installed version of Python 3. If this is not the case, instructions on how to install a recent Python version can be found in Python’s [Beginners Guide](https://wiki.python.org/moin/BeginnersGuide/Download). As noted in this guide, Python should be installed via the distribution’s package manager if possible.
+     - Nowadays, most Linux distributions include a pre-installed version of Python 3. If this is not the case, instructions on how to install a recent Python version can be found in Python’s [documentation](https://www.python.org/doc/). As noted in this guide, Python should be installed via the distribution’s package manager if possible.
    * - **C++ compiler**
      - No
      - Most Linux distributions provide the [GNU Compiler Collection](https://gcc.gnu.org/) (GCC), which includes a C++ compiler, as part of their software repositories. If this is the case, it can be installed via the distribution's package manager.
