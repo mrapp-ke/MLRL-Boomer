@@ -5,7 +5,7 @@
 
 #include "mlrl/boosting/data/vector_statistic_decomposable_dense.hpp"
 #include "mlrl/boosting/data/vector_statistic_decomposable_sparse.hpp"
-#include "mlrl/boosting/rule_evaluation/vector_math_decomposable.hpp"
+#include "mlrl/boosting/rule_evaluation/scalar_math_decomposable.hpp"
 #include "mlrl/common/rule_evaluation/score_vector_dense.hpp"
 
 namespace boosting {
@@ -66,9 +66,9 @@ namespace boosting {
                 auto valueIterator = scoreVector.values_begin();
                 VectorMath::calculateOutputWiseScores(gradientIterator, hessianIterator, valueIterator, numElements,
                                                       l1RegularizationWeight, l2RegularizationWeight);
-                scoreVector.quality = VectorMath::calculateOutputWiseQualities(
-                  valueIterator, gradientIterator, hessianIterator, valueIterator, numElements, l1RegularizationWeight,
-                  l2RegularizationWeight);
+                scoreVector.quality =
+                  VectorMath::calculateOutputWiseQualities(valueIterator, gradientIterator, hessianIterator,
+                                                           numElements, l1RegularizationWeight, l2RegularizationWeight);
             }
 
         public:

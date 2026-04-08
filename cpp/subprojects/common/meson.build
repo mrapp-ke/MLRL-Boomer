@@ -158,22 +158,22 @@ configuration.set10('simd_support_enabled', simd_support_enabled)
 configure_file(input : 'include/mlrl/common/config.hpp.in', output : 'config.hpp', configuration: configuration)
 
 # SIMD extensions
+if target_architecture == 'aarch64'
+    simd_cpp_args = {
+        'neon64': [],
+    }
+else
+    simd_cpp_args = {
+        'sse2': os == 'windows' ? ['/arch:SSE2'] : ['-msse2'],
+        'avx': os == 'windows' ? ['/arch:AVX'] : ['-mavx'],
+        'avx2': os == 'windows' ? ['/arch:AVX2'] : ['-mavx2'],
+        'avx512': os == 'windows' ? ['/arch:AVX512'] : ['-mavx512f']
+    }
+endif
+
 simd_libs = []
 
 if simd_support_enabled
-    if target_architecture == 'aarch64'
-        simd_cpp_args = {
-            'neon64': [],
-        }
-    else
-        simd_cpp_args = {
-            'sse2': os == 'windows' ? ['/arch:SSE2'] : ['-msse2'],
-            'avx': os == 'windows' ? ['/arch:AVX'] : ['-mavx'],
-            'avx2': os == 'windows' ? ['/arch:AVX2'] : ['-mavx2'],
-            'avx512': os == 'windows' ? ['/arch:AVX512'] : ['-mavx512f']
-        }
-    endif
-
     simd_source_file_names = [
         'src/mlrl/common/simd/functions/add',
         'src/mlrl/common/simd/functions/add_from_subset',

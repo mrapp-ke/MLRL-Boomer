@@ -1,6 +1,7 @@
 #include "mlrl/boosting/rule_evaluation/head_type_complete.hpp"
 
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_decomposable_complete.hpp"
+#include "mlrl/boosting/rule_evaluation/simd/vector_math_decomposable.hpp"
 #include "mlrl/boosting/rule_evaluation/vector_math_decomposable.hpp"
 #include "mlrl/boosting/statistics/statistics_provider_decomposable_dense.hpp"
 #include "mlrl/boosting/statistics/statistics_provider_non_decomposable_dense.hpp"
@@ -45,15 +46,15 @@ namespace boosting {
                   multiThreadingConfig_.get().getSettings(featureMatrix, labelMatrix.getNumOutputs());
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
                   labelBinningConfig_.get().createDecomposableCompleteRuleEvaluationFactory();
-                std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-                  std::make_unique<DecomposableCompleteRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
-                    l1RegularizationWeight, l2RegularizationWeight);
-                std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-                  std::make_unique<DecomposableCompleteRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
-                    l1RegularizationWeight, l2RegularizationWeight);
 
 #if SIMD_SUPPORT_ENABLED
                 if (labelMatrix.getNumOutputs() > 1 && simdConfig_.get().isSimdEnabled()) {
+                    std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
+                      std::make_unique<DecomposableCompleteRuleEvaluationFactory<SimdDecomposableVectorMath>>(
+                        l1RegularizationWeight, l2RegularizationWeight);
+                    std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
+                      std::make_unique<DecomposableCompleteRuleEvaluationFactory<SimdDecomposableVectorMath>>(
+                        l1RegularizationWeight, l2RegularizationWeight);
                     return std::make_unique<
                       DenseDecomposableClassificationStatisticsProviderFactory<StatisticType, SimdVectorMath>>(
                       std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
@@ -62,6 +63,12 @@ namespace boosting {
                 }
 #endif
 
+                std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
+                  std::make_unique<DecomposableCompleteRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
+                    l1RegularizationWeight, l2RegularizationWeight);
+                std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
+                  std::make_unique<DecomposableCompleteRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
+                    l1RegularizationWeight, l2RegularizationWeight);
                 return std::make_unique<
                   DenseDecomposableClassificationStatisticsProviderFactory<StatisticType, SequentialVectorMath>>(
                   std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
@@ -80,15 +87,15 @@ namespace boosting {
                   multiThreadingConfig_.get().getSettings(featureMatrix, labelMatrix.getNumOutputs());
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
                   labelBinningConfig_.get().createDecomposableCompleteRuleEvaluationFactory();
-                std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-                  std::make_unique<DecomposableCompleteRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
-                    l1RegularizationWeight, l2RegularizationWeight);
-                std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-                  std::make_unique<DecomposableCompleteRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
-                    l1RegularizationWeight, l2RegularizationWeight);
 
 #if SIMD_SUPPORT_ENABLED
                 if (labelMatrix.getNumOutputs() > 1 && simdConfig_.get().isSimdEnabled()) {
+                    std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
+                      std::make_unique<DecomposableCompleteRuleEvaluationFactory<SimdDecomposableVectorMath>>(
+                        l1RegularizationWeight, l2RegularizationWeight);
+                    std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
+                      std::make_unique<DecomposableCompleteRuleEvaluationFactory<SimdDecomposableVectorMath>>(
+                        l1RegularizationWeight, l2RegularizationWeight);
                     return std::make_unique<
                       DenseDecomposableClassificationStatisticsProviderFactory<StatisticType, SimdVectorMath>>(
                       std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
@@ -97,6 +104,12 @@ namespace boosting {
                 }
 #endif
 
+                std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
+                  std::make_unique<DecomposableCompleteRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
+                    l1RegularizationWeight, l2RegularizationWeight);
+                std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
+                  std::make_unique<DecomposableCompleteRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
+                    l1RegularizationWeight, l2RegularizationWeight);
                 return std::make_unique<
                   DenseDecomposableClassificationStatisticsProviderFactory<StatisticType, SequentialVectorMath>>(
                   std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
@@ -149,15 +162,15 @@ namespace boosting {
                   multiThreadingConfig_.get().getSettings(featureMatrix, regressionMatrix.getNumOutputs());
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
                   labelBinningConfig_.get().createDecomposableCompleteRuleEvaluationFactory();
-                std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-                  std::make_unique<DecomposableCompleteRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
-                    l1RegularizationWeight, l2RegularizationWeight);
-                std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-                  std::make_unique<DecomposableCompleteRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
-                    l1RegularizationWeight, l2RegularizationWeight);
 
 #if SIMD_SUPPORT_ENABLED
                 if (regressionMatrix.getNumOutputs() > 1 && simdConfig_.get().isSimdEnabled()) {
+                    std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
+                      std::make_unique<DecomposableCompleteRuleEvaluationFactory<SimdDecomposableVectorMath>>(
+                        l1RegularizationWeight, l2RegularizationWeight);
+                    std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
+                      std::make_unique<DecomposableCompleteRuleEvaluationFactory<SimdDecomposableVectorMath>>(
+                        l1RegularizationWeight, l2RegularizationWeight);
                     return std::make_unique<
                       DenseDecomposableRegressionStatisticsProviderFactory<StatisticType, SimdVectorMath>>(
                       std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
@@ -166,6 +179,12 @@ namespace boosting {
                 }
 #endif
 
+                std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
+                  std::make_unique<DecomposableCompleteRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
+                    l1RegularizationWeight, l2RegularizationWeight);
+                std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
+                  std::make_unique<DecomposableCompleteRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
+                    l1RegularizationWeight, l2RegularizationWeight);
                 return std::make_unique<
                   DenseDecomposableRegressionStatisticsProviderFactory<StatisticType, SequentialVectorMath>>(
                   std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
