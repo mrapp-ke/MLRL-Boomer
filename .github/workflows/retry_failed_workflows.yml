@@ -7,6 +7,7 @@ on:
     workflows:
       - Test build
       - Test building documentation
+      - Test publishing wheel packages
 jobs:
   retry_failed_workflow:
     name: Retry failed workflows
