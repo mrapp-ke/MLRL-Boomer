@@ -4,9 +4,9 @@
 #pragma once
 
 #include "mlrl/boosting/data/vector_statistic_decomposable_dense.hpp"
+#include "mlrl/boosting/rule_evaluation/vector_math_decomposable.hpp"
 #include "mlrl/common/data/vector_sparse_array.hpp"
 #include "mlrl/common/util/iterators.hpp"
-#include "vector_math_decomposable.hpp"
 
 #include <algorithm>
 

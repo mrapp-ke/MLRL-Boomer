@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/boosting/math/vector_math.hpp"
-#include "scalar_math_decomposable.hpp"
+#include "mlrl/boosting/rule_evaluation/scalar_math_decomposable.hpp"
 
 namespace boosting {
 
@@ -66,7 +66,7 @@ namespace boosting {
 
             /**
              * Calculates the qualities of predictions for several outputs, taking L1 and L2 regularization into
-             * account, and writes them to an output array. In addition, the overall quality aggegregated over all
+             * account, and writes them to an output array. In addition, the overall quality aggregated over all
              * predictions is returned.
              *
              * @tparam StatisticType            The type of the gradients and Hessians
@@ -76,9 +76,10 @@ namespace boosting {
              * @param hessians                  A pointer to an array that stores the Hessians that correspond to
              *                                  individual outputs
              * @param outputs                   A pointer to the array into which the qualities should be written
+             * @param numElements               The number of elements in the array `scores`, `gradients` and `hessians`
              * @param l1RegularizationWeight    The weight of the L1 regularization
              * @param l2RegularizationWeight    The weight of the L2 regularization
-             * @return                          The overal quality
+             * @return                          The overall quality
              */
             template<typename StatisticType>
             static inline StatisticType calculateOutputWiseQualities(const StatisticType* scores,
