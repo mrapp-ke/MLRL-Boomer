@@ -15,10 +15,10 @@ Predicting for 98 test examples...
 
 🗀 Evaluation result for test data:
 
-Mean Absolute Error (↓)               29.91
+Mean Absolute Error (↓)               29.95
 Mean Absolute Percentage Error (↓)     0.08
-Mean Squared Error (↓)              2826.34
-Median Absolute Error (↓)             15.83
+Mean Squared Error (↓)              2830.29
+Median Absolute Error (↓)             15.89
 
 ○ Writing output data to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
 
