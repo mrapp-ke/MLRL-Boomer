@@ -24,6 +24,7 @@ jobs:
       - name: Checkout release branch
         id: checkout-release-branch
         run: |
+          git fetch origin ${{ github.event.release.target_commitish }}
           git switch ${{ github.event.release.target_commitish }}
           export RELEASE_VERSION="$(cat build_system/res/versioning/version)"
           echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_OUTPUT
@@ -37,12 +38,14 @@ jobs:
       - name: Merge into feature branch
         if: ${{ github.event.release.target_commitish == 'main' }}
         run: |
+          git fetch origin feature
           git switch -c feature origin/feature
           git merge origin/main --strategy-option theirs -m "[Bot] Merge branch \"main\" into \"feature\"."
           git push origin feature
       - name: Merge into bugfix branch
         if: ${{ github.event.release.target_commitish == 'main' || github.event.release.target_commitish == 'feature' }}
         run: |
+          git fetch origin bugfix
           git switch -c bugfix origin/bugfix
           git merge origin/feature --strategy-option theirs -m "[Bot] Merge branch \"feature\" into \"bugfix\"."
           git push origin bugfix
