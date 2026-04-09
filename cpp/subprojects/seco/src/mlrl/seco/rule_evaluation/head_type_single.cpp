@@ -25,7 +25,7 @@ namespace seco {
             pruningHeuristicConfig_.get().createHeuristicFactory());
 
 #if SIMD_SUPPORT_ENABLED
-        if (simdConfig_.get().isSimdEnabled(labelMatrix.getNumOutputs())) {
+        if (simdConfig_.get().isSimdRecommended(labelMatrix.getNumOutputs())) {
             return std::make_unique<DenseDecomposableStatisticsProviderFactory<SimdVectorMath>>(
               std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
               std::move(pruningRuleEvaluationFactoryPtr));

@@ -48,7 +48,7 @@ namespace boosting {
                   labelBinningConfig_.get().createDecomposableCompleteRuleEvaluationFactory();
 
 #if SIMD_SUPPORT_ENABLED
-                if (simdConfig_.get().isSimdEnabled(labelMatrix.getNumOutputs())) {
+                if (simdConfig_.get().isSimdRecommended(labelMatrix.getNumOutputs())) {
                     std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
                       std::make_unique<DecomposableCompleteRuleEvaluationFactory<SimdDecomposableVectorMath>>(
                         l1RegularizationWeight, l2RegularizationWeight);
@@ -89,7 +89,7 @@ namespace boosting {
                   labelBinningConfig_.get().createDecomposableCompleteRuleEvaluationFactory();
 
 #if SIMD_SUPPORT_ENABLED
-                if (simdConfig_.get().isSimdEnabled(labelMatrix.getNumOutputs())) {
+                if (simdConfig_.get().isSimdRecommended(labelMatrix.getNumOutputs())) {
                     std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
                       std::make_unique<DecomposableCompleteRuleEvaluationFactory<SimdDecomposableVectorMath>>(
                         l1RegularizationWeight, l2RegularizationWeight);
@@ -135,7 +135,7 @@ namespace boosting {
                                                                                                lapackFactory);
 
 #if SIMD_SUPPORT_ENABLED
-                if (simdConfig_.get().isSimdEnabled(labelMatrix.getNumOutputs())) {
+                if (simdConfig_.get().isSimdRecommended(labelMatrix.getNumOutputs())) {
                     return std::make_unique<
                       DenseNonDecomposableClassificationStatisticsProviderFactory<StatisticType, SimdVectorMath>>(
                       std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
@@ -164,7 +164,7 @@ namespace boosting {
                   labelBinningConfig_.get().createDecomposableCompleteRuleEvaluationFactory();
 
 #if SIMD_SUPPORT_ENABLED
-                if (simdConfig_.get().isSimdEnabled(regressionMatrix.getNumOutputs())) {
+                if (simdConfig_.get().isSimdRecommended(regressionMatrix.getNumOutputs())) {
                     std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
                       std::make_unique<DecomposableCompleteRuleEvaluationFactory<SimdDecomposableVectorMath>>(
                         l1RegularizationWeight, l2RegularizationWeight);
@@ -210,7 +210,7 @@ namespace boosting {
                                                                                                lapackFactory);
 
 #if SIMD_SUPPORT_ENABLED
-                if (simdConfig_.get().isSimdEnabled(regressionMatrix.getNumOutputs())) {
+                if (simdConfig_.get().isSimdRecommended(regressionMatrix.getNumOutputs())) {
                     return std::make_unique<
                       DenseNonDecomposableRegressionStatisticsProviderFactory<StatisticType, SimdVectorMath>>(
                       std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),

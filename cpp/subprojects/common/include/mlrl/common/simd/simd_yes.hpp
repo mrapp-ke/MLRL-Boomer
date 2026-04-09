@@ -11,5 +11,7 @@
 class SimdConfig final : public ISimdConfig {
     public:
 
-        bool isSimdEnabled(uint32 expectedBatchSize) const override;
+        bool isSimdRecommended(uint32 expectedBatchSize) const override;
+
+        bool isSimdEnabled() const override;
 };
