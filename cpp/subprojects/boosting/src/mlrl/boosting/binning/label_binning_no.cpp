@@ -27,7 +27,7 @@ namespace boosting {
                                                                                 uint32 maxOutputs) const {
         float32 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
         float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
-        return std::make_unique<DecomposableFixedPartialRuleEvaluationFactory>(
+        return std::make_unique<DecomposableFixedPartialRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
           outputRatio, minOutputs, maxOutputs, l1RegularizationWeight, l2RegularizationWeight);
     }
 
@@ -36,7 +36,7 @@ namespace boosting {
                                                                                   float32 exponent) const {
         float32 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
         float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
-        return std::make_unique<DecomposableDynamicPartialRuleEvaluationFactory>(
+        return std::make_unique<DecomposableDynamicPartialRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
           threshold, exponent, l1RegularizationWeight, l2RegularizationWeight);
     }
 
