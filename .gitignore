@@ -1,6 +1,7 @@
 # Cache files
 **/__pycache__/
 .ccache/
+.claude/
 .mypy_cache/
 .pytest_cache/
 .ruff_cache/
