@@ -48,7 +48,7 @@ namespace boosting {
                                                                                                   exponent_);
 
 #if SIMD_SUPPORT_ENABLED
-                if (labelMatrix.getNumOutputs() > 1 && simdConfig_.get().isSimdEnabled()) {
+                if (simdConfig_.get().isSimdEnabled(labelMatrix.getNumOutputs())) {
                     return std::make_unique<
                       DenseDecomposableClassificationStatisticsProviderFactory<StatisticType, SimdVectorMath>>(
                       std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
@@ -79,7 +79,7 @@ namespace boosting {
                                                                                                   exponent_);
 
 #if SIMD_SUPPORT_ENABLED
-                if (labelMatrix.getNumOutputs() > 1 && simdConfig_.get().isSimdEnabled()) {
+                if (simdConfig_.get().isSimdEnabled(labelMatrix.getNumOutputs())) {
                     return std::make_unique<
                       SparseDecomposableClassificationStatisticsProviderFactory<StatisticType, SimdVectorMath>>(
                       std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
@@ -113,7 +113,7 @@ namespace boosting {
                     threshold_, exponent_, blasFactory, lapackFactory);
 
 #if SIMD_SUPPORT_ENABLED
-                if (labelMatrix.getNumOutputs() > 1 && simdConfig_.get().isSimdEnabled()) {
+                if (simdConfig_.get().isSimdEnabled(labelMatrix.getNumOutputs())) {
                     return std::make_unique<
                       DenseNonDecomposableClassificationStatisticsProviderFactory<StatisticType, SimdVectorMath>>(
                       std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
@@ -146,7 +146,7 @@ namespace boosting {
                                                                                                   exponent_);
 
 #if SIMD_SUPPORT_ENABLED
-                if (regressionMatrix.getNumOutputs() > 1 && simdConfig_.get().isSimdEnabled()) {
+                if (simdConfig_.get().isSimdEnabled(regressionMatrix.getNumOutputs())) {
                     return std::make_unique<
                       DenseDecomposableRegressionStatisticsProviderFactory<StatisticType, SimdVectorMath>>(
                       std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
@@ -180,7 +180,7 @@ namespace boosting {
                     threshold_, exponent_, blasFactory, lapackFactory);
 
 #if SIMD_SUPPORT_ENABLED
-                if (regressionMatrix.getNumOutputs() > 1 && simdConfig_.get().isSimdEnabled()) {
+                if (simdConfig_.get().isSimdEnabled(regressionMatrix.getNumOutputs())) {
                     return std::make_unique<
                       DenseNonDecomposableRegressionStatisticsProviderFactory<StatisticType, SimdVectorMath>>(
                       std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),

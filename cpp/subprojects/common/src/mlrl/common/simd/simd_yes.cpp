@@ -2,9 +2,9 @@
 
 #include "mlrl/common/util/xsimd.hpp"
 
-bool SimdConfig::isSimdEnabled() const {
+bool SimdConfig::isSimdEnabled(uint32 expectedBatchSize) const {
 #if SIMD_SUPPORT_ENABLED
-    return !util::getSupportedSimdExtensions().empty();
+    return expectedBatchSize > 1 && !util::getSupportedSimdExtensions().empty();
 #else
     return false;
 #endif

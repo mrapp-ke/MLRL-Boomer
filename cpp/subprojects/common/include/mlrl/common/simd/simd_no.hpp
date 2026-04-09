@@ -11,5 +11,5 @@
 class NoSimdConfig final : public ISimdConfig {
     public:
 
-        bool isSimdEnabled() const override;
+        bool isSimdEnabled(uint32 expectedBatchSize) const override;
 };

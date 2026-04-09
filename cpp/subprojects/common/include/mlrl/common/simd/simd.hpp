@@ -3,6 +3,8 @@
  */
 #pragma once
 
+#include "mlrl/common/data/types.hpp"
+
 /**
  * Defines an interface for all classes that allow to configure whether single instruction, multiple data (SIMD)
  * operations should be used by an algorithm.
@@ -15,7 +17,8 @@ class ISimdConfig {
         /**
          * Returns whether SIMD operations should be used or not.
          *
-         * @return True, if SIMD operations should be used, false otherwise
+         * @param expectedBatchSize The typical batch size that is expected
+         * @return                  True, if SIMD operations should be used, false otherwise
          */
-        virtual bool isSimdEnabled() const = 0;
+        virtual bool isSimdEnabled(uint32 expectedBatchSize) const = 0;
 };

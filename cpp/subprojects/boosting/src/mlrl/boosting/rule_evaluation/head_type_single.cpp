@@ -53,7 +53,7 @@ namespace boosting {
                                                                                   l2RegularizationWeight);
 
 #if SIMD_SUPPORT_ENABLED
-                if (labelMatrix.getNumOutputs() > 1 && simdConfig_.get().isSimdEnabled()) {
+                if (simdConfig_.get().isSimdEnabled(labelMatrix.getNumOutputs())) {
                     return std::make_unique<
                       DenseDecomposableClassificationStatisticsProviderFactory<StatisticType, SimdVectorMath>>(
                       std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
@@ -86,7 +86,7 @@ namespace boosting {
                                                                                   l2RegularizationWeight);
 
 #if SIMD_SUPPORT_ENABLED
-                if (labelMatrix.getNumOutputs() > 1 && simdConfig_.get().isSimdEnabled()) {
+                if (simdConfig_.get().isSimdEnabled(labelMatrix.getNumOutputs())) {
                     return std::make_unique<
                       SparseDecomposableClassificationStatisticsProviderFactory<StatisticType, SimdVectorMath>>(
                       std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
@@ -122,7 +122,7 @@ namespace boosting {
                                                                                   l2RegularizationWeight);
 
 #if SIMD_SUPPORT_ENABLED
-                if (labelMatrix.getNumOutputs() > 1 && simdConfig_.get().isSimdEnabled()) {
+                if (simdConfig_.get().isSimdEnabled(labelMatrix.getNumOutputs())) {
                     return std::make_unique<DenseConvertibleNonDecomposableClassificationStatisticsProviderFactory<
                       StatisticType, SimdVectorMath>>(
                       std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
@@ -157,7 +157,7 @@ namespace boosting {
                                                                                   l2RegularizationWeight);
 
 #if SIMD_SUPPORT_ENABLED
-                if (regressionMatrix.getNumOutputs() > 1 && simdConfig_.get().isSimdEnabled()) {
+                if (simdConfig_.get().isSimdEnabled(regressionMatrix.getNumOutputs())) {
                     return std::make_unique<
                       DenseDecomposableRegressionStatisticsProviderFactory<StatisticType, SimdVectorMath>>(
                       std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
@@ -193,7 +193,7 @@ namespace boosting {
                                                                                   l2RegularizationWeight);
 
 #if SIMD_SUPPORT_ENABLED
-                if (regressionMatrix.getNumOutputs() > 1 && simdConfig_.get().isSimdEnabled()) {
+                if (simdConfig_.get().isSimdEnabled(regressionMatrix.getNumOutputs())) {
                     return std::make_unique<DenseConvertibleNonDecomposableRegressionStatisticsProviderFactory<
                       StatisticType, SimdVectorMath>>(
                       std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
