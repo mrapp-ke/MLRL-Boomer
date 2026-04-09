@@ -1,6 +1,6 @@
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_decomposable_complete.hpp"
 
-#include "mlrl/boosting/rule_evaluation/simd/vector_math_decomposable.hpp"
+#include "mlrl/boosting/rule_evaluation/simd/vector_math_decomposable_simd.hpp"
 #include "mlrl/boosting/rule_evaluation/vector_math_decomposable.hpp"
 #include "rule_evaluation_decomposable_complete_common.hpp"
 
