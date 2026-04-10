@@ -10,6 +10,15 @@ namespace boosting {
         template float64 aggregateOutputWiseQualities<xsimd::avx512f, float64>(xsimd::avx512f, const float64*,
                                                                                const float64*, const float64*, uint32,
                                                                                float32, float32);
+
+        template float32 aggregateOutputWiseQualitiesWeighted<xsimd::avx512f, float32>(xsimd::avx512f, const float32*,
+                                                                                       const float32*, const float32*,
+                                                                                       const uint32*, uint32, float32,
+                                                                                       float32);
+        template float64 aggregateOutputWiseQualitiesWeighted<xsimd::avx512f, float64>(xsimd::avx512f, const float64*,
+                                                                                       const float64*, const float64*,
+                                                                                       const uint32*, uint32, float32,
+                                                                                       float32);
     }
 }
 #endif

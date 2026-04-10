@@ -41,6 +41,43 @@ namespace boosting {
 
             return overallQuality;
         }
+
+        template<typename Arch, typename StatisticType>
+        StatisticType aggregateOutputWiseQualitiesWeighted(Arch, const StatisticType* scores,
+                                                           const StatisticType* gradients,
+                                                           const StatisticType* hessians, const uint32* weights,
+                                                           uint32 numElements, float32 l1RegularizationWeight,
+                                                           float32 l2RegularizationWeight) {
+            using batch = xsimd::batch<StatisticType, Arch>;
+            const batch l1Weight = batch(l1RegularizationWeight);
+            const batch l2Weight = batch(l2RegularizationWeight);
+            const batch half = batch(0.5);
+            constexpr std::size_t batchSize = batch::size;
+            uint32 batchEnd = numElements - (numElements % batchSize);
+            uint32 i = 0;
+            StatisticType overallQuality = 0;
+
+            for (; i < batchEnd; i += batchSize) {
+                batch batchScores = batch::load_unaligned(scores + i);
+                batch batchGradients = batch::load_unaligned(gradients + i);
+                batch batchHessians = batch::load_unaligned(hessians + i);
+                batch batchWeights = batch::load_unaligned(weights + i);
+                batch scorePow = batchScores * batchScores;
+                batch l1Term = l1Weight * batchWeights * xsimd::abs(batchScores);
+                batch l2Term = half * batchWeights * l2Weight * scorePow;
+                batch qualities = (batchGradients * batchScores) + (half * batchHessians * scorePow) + l1Term + l2Term;
+                overallQuality += xsimd::reduce_add(qualities);
+            }
+
+            for (; i < numElements; i++) {
+                uint32 weight = weights[i];
+                overallQuality +=
+                  calculateOutputWiseQuality(scores[i], gradients[i], hessians[i], weight * l1RegularizationWeight,
+                                             weight * l2RegularizationWeight);
+            }
+
+            return overallQuality;
+        }
     }
 }
 #endif

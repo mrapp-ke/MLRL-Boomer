@@ -103,6 +103,39 @@ namespace boosting {
                 });
                 return dispatched();
             }
+
+            /**
+             * Calculates the qualities of predictions for several outputs, taking L1 and L2 regularization into
+             * account, and returns the overall quality aggregated over all predictions. The L1 and L2 regularization
+             * weight for individual outputs multiplied by given weights.
+             *
+             * @tparam StatisticType            The type of the gradients and Hessians
+             * @param scores                    A pointer to an array that stores the predictions for individual outputs
+             * @param gradients                 A pointer to an array that stores the gradients that correspond to
+             *                                  individual outputs
+             * @param hessians                  A pointer to an array that stores the Hessians that correspond to
+             *                                  individual outputs
+             * @param weights                   A pointer to an array that stores the weights that correspond to
+             *                                  individual outputs
+             * @param numElements               The number of elements in the array `scores`, `gradients` and `hessians`
+             * @param l1RegularizationWeight    The weight of the L1 regularization
+             * @param l2RegularizationWeight    The weight of the L2 regularization
+             * @return                          The overall quality
+             */
+            template<typename StatisticType>
+            static inline StatisticType aggregateOutputWiseQualitiesWeighted(const StatisticType* scores,
+                                                                             const StatisticType* gradients,
+                                                                             const StatisticType* hessians,
+                                                                             const uint32* weights, uint32 numElements,
+                                                                             float32 l1RegularizationWeight,
+                                                                             float32 l2RegularizationWeight) {
+                auto dispatched = xsimd::dispatch<util::simd_architectures>([&](auto arch) {
+                    return simd::aggregateOutputWiseQualitiesWeighted(arch, scores, gradients, hessians, weights,
+                                                                      numElements, l1RegularizationWeight,
+                                                                      l2RegularizationWeight);
+                });
+                return dispatched();
+            }
     };
 }
 #endif
