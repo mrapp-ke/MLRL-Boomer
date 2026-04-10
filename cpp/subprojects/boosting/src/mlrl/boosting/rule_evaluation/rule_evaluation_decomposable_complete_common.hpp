@@ -67,7 +67,7 @@ namespace boosting {
                 VectorMath::calculateOutputWiseScores(gradientIterator, hessianIterator, valueIterator, numElements,
                                                       l1RegularizationWeight, l2RegularizationWeight);
                 scoreVector.quality =
-                  VectorMath::calculateOutputWiseQualities(valueIterator, gradientIterator, hessianIterator,
+                  VectorMath::aggregateOutputWiseQualities(valueIterator, gradientIterator, hessianIterator,
                                                            numElements, l1RegularizationWeight, l2RegularizationWeight);
             }
 

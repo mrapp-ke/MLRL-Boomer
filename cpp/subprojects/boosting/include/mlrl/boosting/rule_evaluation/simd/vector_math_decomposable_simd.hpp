@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/boosting/rule_evaluation/simd/functions/calculate_output_wise_qualities.hpp"
+#include "mlrl/boosting/rule_evaluation/simd/functions/aggregate_output_wise_qualities.hpp"
 #include "mlrl/boosting/rule_evaluation/simd/functions/calculate_output_wise_scores.hpp"
 
 #if SIMD_SUPPORT_ENABLED
@@ -60,13 +60,13 @@ namespace boosting {
              * @return                          The overall quality
              */
             template<typename StatisticType>
-            static inline StatisticType calculateOutputWiseQualities(const StatisticType* scores,
+            static inline StatisticType aggregateOutputWiseQualities(const StatisticType* scores,
                                                                      const StatisticType* gradients,
                                                                      const StatisticType* hessians, uint32 numElements,
                                                                      float32 l1RegularizationWeight,
                                                                      float32 l2RegularizationWeight) {
                 auto dispatched = xsimd::dispatch<util::simd_architectures>([&](auto arch) {
-                    return simd::calculateOutputWiseQualities(arch, scores, gradients, hessians, numElements,
+                    return simd::aggregateOutputWiseQualities(arch, scores, gradients, hessians, numElements,
                                                               l1RegularizationWeight, l2RegularizationWeight);
                 });
                 return dispatched();

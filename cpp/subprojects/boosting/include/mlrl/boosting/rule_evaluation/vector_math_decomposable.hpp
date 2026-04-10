@@ -58,7 +58,7 @@ namespace boosting {
              * @return                          The overall quality
              */
             template<typename StatisticType>
-            static inline StatisticType calculateOutputWiseQualities(const StatisticType* scores,
+            static inline StatisticType aggregateOutputWiseQualities(const StatisticType* scores,
                                                                      const StatisticType* gradients,
                                                                      const StatisticType* hessians, uint32 numElements,
                                                                      float32 l1RegularizationWeight,

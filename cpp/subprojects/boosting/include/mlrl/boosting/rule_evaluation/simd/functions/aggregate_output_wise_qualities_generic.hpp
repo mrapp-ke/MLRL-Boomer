@@ -4,14 +4,14 @@
 #pragma once
 
 #include "mlrl/boosting/rule_evaluation/scalar_math_decomposable.hpp"
-#include "mlrl/boosting/rule_evaluation/simd/functions/calculate_output_wise_qualities.hpp"
+#include "mlrl/boosting/rule_evaluation/simd/functions/aggregate_output_wise_qualities.hpp"
 
 #if SIMD_SUPPORT_ENABLED
 namespace boosting {
     namespace simd {
 
         template<typename Arch, typename StatisticType>
-        StatisticType calculateOutputWiseQualities(Arch, const StatisticType* scores, const StatisticType* gradients,
+        StatisticType aggregateOutputWiseQualities(Arch, const StatisticType* scores, const StatisticType* gradients,
                                                    const StatisticType* hessians, uint32 numElements,
                                                    float32 l1RegularizationWeight, float32 l2RegularizationWeight) {
             using batch = xsimd::batch<StatisticType, Arch>;

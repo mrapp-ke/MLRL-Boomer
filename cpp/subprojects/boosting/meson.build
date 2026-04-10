@@ -122,7 +122,7 @@ simd_libs = []
 
 if simd_support_enabled
     simd_source_file_names = [
-        'src/mlrl/boosting/rule_evaluation/simd/functions/calculate_output_wise_qualities',
+        'src/mlrl/boosting/rule_evaluation/simd/functions/aggregate_output_wise_qualities',
         'src/mlrl/boosting/rule_evaluation/simd/functions/calculate_output_wise_scores'
     ]
     simd_source_files = []
