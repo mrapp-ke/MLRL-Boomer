@@ -145,7 +145,7 @@ namespace boosting {
              */
             virtual void useAutomaticLabelBinning() {
                 this->getLabelBinningConfig().set(std::make_unique<AutomaticLabelBinningConfig>(
-                  this->getL1RegularizationConfig(), this->getL2RegularizationConfig()));
+                  this->getL1RegularizationConfig(), this->getL2RegularizationConfig(), this->getSimdConfig()));
             }
     };
 

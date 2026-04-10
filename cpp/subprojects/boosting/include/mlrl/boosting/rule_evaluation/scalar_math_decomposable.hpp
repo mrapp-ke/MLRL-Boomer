@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/math/scalar_math.hpp"
+#include "mlrl/boosting/math/scalar_math.hpp"
 
 namespace boosting {
 
@@ -67,5 +67,4 @@ namespace boosting {
         StatisticType l2RegularizationTerm = 0.5 * l2RegularizationWeight * scorePow;
         return quality + l1RegularizationTerm + l2RegularizationTerm;
     }
-
 }

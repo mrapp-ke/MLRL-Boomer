@@ -12,7 +12,10 @@ namespace boosting {
     /**
      * Allows to create instances of the class `ISparseDecomposableRuleEvaluationFactory` that allow to calculate the
      * predictions of partial rules, which predict for a subset of the available outputs that is determined dynamically.
+     *
+     * @tparam VectorMath The type that implements basic operations for calculating with gradients and Hessians
      */
+    template<typename VectorMath>
     class DecomposableDynamicPartialRuleEvaluationFactory final : public ISparseDecomposableRuleEvaluationFactory {
         private:
 

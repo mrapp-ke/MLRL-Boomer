@@ -158,38 +158,38 @@ configuration.set10('simd_support_enabled', simd_support_enabled)
 configure_file(input : 'include/mlrl/common/config.hpp.in', output : 'config.hpp', configuration: configuration)
 
 # SIMD extensions
+if target_architecture == 'aarch64'
+    simd_cpp_args = {
+        'neon64': [],
+    }
+else
+    simd_cpp_args = {
+        'sse2': os == 'windows' ? ['/arch:SSE2'] : ['-msse2'],
+        'avx': os == 'windows' ? ['/arch:AVX'] : ['-mavx'],
+        'avx2': os == 'windows' ? ['/arch:AVX2'] : ['-mavx2'],
+        'avx512': os == 'windows' ? ['/arch:AVX512'] : ['-mavx512f']
+    }
+endif
+
 simd_libs = []
 
 if simd_support_enabled
-    if target_architecture == 'aarch64'
-        simd_cpp_args = {
-            'neon64': [],
-        }
-    else
-        simd_cpp_args = {
-            'sse2': os == 'windows' ? ['/arch:SSE2'] : ['-msse2'],
-            'avx': os == 'windows' ? ['/arch:AVX'] : ['-mavx'],
-            'avx2': os == 'windows' ? ['/arch:AVX2'] : ['-mavx2'],
-            'avx512': os == 'windows' ? ['/arch:AVX512'] : ['-mavx512f']
-        }
-    endif
-
     simd_source_file_names = [
-        'add',
-        'add_from_subset',
-        'add_weighted',
-        'add_weighted_from_subset',
-        'copy',
-        'difference',
-        'difference_with_subset',
-        'subtract',
-        'subtract_weighted'
+        'src/mlrl/common/simd/functions/add',
+        'src/mlrl/common/simd/functions/add_from_subset',
+        'src/mlrl/common/simd/functions/add_weighted',
+        'src/mlrl/common/simd/functions/add_weighted_from_subset',
+        'src/mlrl/common/simd/functions/copy',
+        'src/mlrl/common/simd/functions/difference',
+        'src/mlrl/common/simd/functions/difference_with_subset',
+        'src/mlrl/common/simd/functions/subtract',
+        'src/mlrl/common/simd/functions/subtract_weighted'
     ]
     simd_source_files = []
 
     foreach extension, cpp_args : simd_cpp_args
         foreach file_name : simd_source_file_names
-            simd_source_files += 'src/mlrl/common/simd/functions' / file_name + '_' + extension + '.cpp'
+            simd_source_files += file_name + '_' + extension + '.cpp'
         endforeach
 
         simd_libs += static_library('simd_' + extension, simd_source_files, dependencies : xsimd_dep,

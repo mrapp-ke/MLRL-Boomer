@@ -7,12 +7,13 @@ namespace boosting {
 
     AutomaticLabelBinningConfig::AutomaticLabelBinningConfig(
       ReadableProperty<IRegularizationConfig> l1RegularizationConfig,
-      ReadableProperty<IRegularizationConfig> l2RegularizationConfig)
-        : l1RegularizationConfig_(l1RegularizationConfig), l2RegularizationConfig_(l2RegularizationConfig) {}
+      ReadableProperty<IRegularizationConfig> l2RegularizationConfig, ReadableProperty<ISimdConfig> simdConfig)
+        : l1RegularizationConfig_(l1RegularizationConfig), l2RegularizationConfig_(l2RegularizationConfig),
+          simdConfig_(simdConfig) {}
 
     std::unique_ptr<IDecomposableRuleEvaluationFactory>
       AutomaticLabelBinningConfig::createDecomposableCompleteRuleEvaluationFactory() const {
-        return NoLabelBinningConfig(l1RegularizationConfig_, l2RegularizationConfig_)
+        return NoLabelBinningConfig(l1RegularizationConfig_, l2RegularizationConfig_, simdConfig_)
           .createDecomposableCompleteRuleEvaluationFactory();
     }
 
@@ -20,14 +21,14 @@ namespace boosting {
       AutomaticLabelBinningConfig::createDecomposableFixedPartialRuleEvaluationFactory(float32 outputRatio,
                                                                                        uint32 minOutputs,
                                                                                        uint32 maxOutputs) const {
-        return NoLabelBinningConfig(l1RegularizationConfig_, l2RegularizationConfig_)
+        return NoLabelBinningConfig(l1RegularizationConfig_, l2RegularizationConfig_, simdConfig_)
           .createDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs, maxOutputs);
     }
 
     std::unique_ptr<ISparseDecomposableRuleEvaluationFactory>
       AutomaticLabelBinningConfig::createDecomposableDynamicPartialRuleEvaluationFactory(float32 threshold,
                                                                                          float32 exponent) const {
-        return NoLabelBinningConfig(l1RegularizationConfig_, l2RegularizationConfig_)
+        return NoLabelBinningConfig(l1RegularizationConfig_, l2RegularizationConfig_, simdConfig_)
           .createDecomposableDynamicPartialRuleEvaluationFactory(threshold, exponent);
     }
 

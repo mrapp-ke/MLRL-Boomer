@@ -3,9 +3,8 @@
  */
 #pragma once
 
-#include "mlrl/boosting/math/vector_math.hpp"
+#include "mlrl/boosting/rule_evaluation/vector_math_decomposable.hpp"
 #include "mlrl/common/rule_evaluation/score_vector_dense.hpp"
-#include "rule_evaluation_decomposable_common.hpp"
 #include "rule_evaluation_non_decomposable_common.hpp"
 
 namespace boosting {
