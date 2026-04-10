@@ -43,6 +43,38 @@ namespace boosting {
             }
 
             /**
+             * Calculates the optimal scores to be predicted for several outputs, based on the corresponding gradients
+             * and Hessians and taking L1 and L2 regularization into account, and writes them to an output array. The L1
+             * and L2 regularization weight for individual outputs is multiplied by given weights.
+             *
+             * @tparam StatisticType            The type of the gradients and Hessians
+             * @param gradients                 A pointer to an array that store the gradients that correspond to
+             *                                  individual outputs
+             * @param hessians                  A pointer to an array that stores the Hessians that correspond to
+             *                                  individual outputs
+             * @param weights                   A pointer to an array that stores weights that correspond to individual
+             *                                  outputs
+             * @param outputs                   A pointer to the array into which the optimal scores should be written
+             * @param numElements               The number of elements in the arrays `gradients`, `hessians` and
+             *                                  `output`
+             * @param l1RegularizationWeight    The weight of the L1 regularization
+             * @param l2RegularizationWeight    The weight of the L2 regularization
+             */
+            template<typename StatisticType>
+            static inline constexpr void calculateOutputWiseScoresWeighted(const StatisticType* gradients,
+                                                                           const StatisticType* hessians,
+                                                                           const uint32* weights,
+                                                                           StatisticType* outputs, uint32 numElements,
+                                                                           float32 l1RegularizationWeight,
+                                                                           float32 l2RegularizationWeight) {
+                for (uint32 i = 0; i < numElements; i++) {
+                    uint32 weight = weights[i];
+                    outputs[i] = calculateOutputWiseScore(gradients[i], hessians[i], weight * l1RegularizationWeight,
+                                                          weight * l2RegularizationWeight);
+                }
+            }
+
+            /**
              * Calculates the qualities of predictions for several outputs, taking L1 and L2 regularization into
              * account, and returns the overall quality aggregated over all predictions.
              *
