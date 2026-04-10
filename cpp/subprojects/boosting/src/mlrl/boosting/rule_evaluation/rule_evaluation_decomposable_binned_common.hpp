@@ -22,8 +22,9 @@ namespace boosting {
      * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
      * @tparam IndexVector      The type of the vector that provides access to the indices of the labels for which
      *                          predictions should be calculated
+     * @tparam VectorMath       The type that implements basic operations for calculating with gradients and Hessians
      */
-    template<typename StatisticVector, typename IndexVector>
+    template<typename StatisticVector, typename IndexVector, typename VectorMath>
     class AbstractDecomposableBinnedRuleEvaluation : public IRuleEvaluation<StatisticVector> {
         private:
 
@@ -46,28 +47,6 @@ namespace boosting {
             const float32 l2RegularizationWeight_;
 
             const std::unique_ptr<ILabelBinning<statistic_type>> binningPtr_;
-
-            template<typename StatisticType>
-            static inline StatisticType calculateBinnedScores(
-              typename View<StatisticType>::const_iterator gradientIterator,
-              typename View<StatisticType>::const_iterator hessianIterator,
-              typename View<StatisticType>::iterator scoreIterator, View<uint32>::const_iterator weights,
-              uint32 numElements, float32 l1RegularizationWeight, float32 l2RegularizationWeight) {
-                StatisticType quality = 0;
-
-                for (uint32 i = 0; i < numElements; i++) {
-                    uint32 weight = weights[i];
-                    StatisticType predictedScore =
-                      calculateOutputWiseScore(gradientIterator[i], hessianIterator[i], weight * l1RegularizationWeight,
-                                               weight * l2RegularizationWeight);
-                    scoreIterator[i] = predictedScore;
-                    quality +=
-                      calculateOutputWiseQuality(predictedScore, gradientIterator[i], hessianIterator[i],
-                                                 weight * l1RegularizationWeight, weight * l2RegularizationWeight);
-                }
-
-                return quality;
-            }
 
         protected:
 
@@ -153,9 +132,13 @@ namespace boosting {
 
                 // Compute predictions, as well as their overall quality...
                 auto binValueIterator = scoreVector_.bin_values_begin();
-                scoreVector_.quality = calculateBinnedScores<statistic_type>(
-                  aggregatedGradientIterator, aggregatedHessianIterator, binValueIterator, numElementsPerBin_.cbegin(),
-                  numBins, l1RegularizationWeight_, l2RegularizationWeight_);
+                auto weightIterator = numElementsPerBin_.cbegin();
+                VectorMath::calculateOutputWiseScoresWeighted(aggregatedGradientIterator, aggregatedHessianIterator,
+                                                              weightIterator, binValueIterator, numBins,
+                                                              l1RegularizationWeight_, l2RegularizationWeight_);
+                scoreVector_.quality = VectorMath::aggregateOutputWiseQualitiesWeighted(
+                  binValueIterator, aggregatedGradientIterator, aggregatedHessianIterator, weightIterator, numBins,
+                  l1RegularizationWeight_, l2RegularizationWeight_);
                 return scoreVector_;
             }
     };
@@ -172,7 +155,7 @@ namespace boosting {
      */
     template<typename StatisticVector, typename IndexVector, typename VectorMath>
     class DecomposableCompleteBinnedRuleEvaluation final
-        : public AbstractDecomposableBinnedRuleEvaluation<StatisticVector, IndexVector> {
+        : public AbstractDecomposableBinnedRuleEvaluation<StatisticVector, IndexVector, VectorMath> {
         private:
 
             using statistic_type = StatisticVector::statistic_type;
@@ -228,7 +211,7 @@ namespace boosting {
             DecomposableCompleteBinnedRuleEvaluation(const IndexVector& labelIndices, float32 l1RegularizationWeight,
                                                      float32 l2RegularizationWeight,
                                                      std::unique_ptr<ILabelBinning<statistic_type>> binningPtr)
-                : AbstractDecomposableBinnedRuleEvaluation<StatisticVector, IndexVector>(
+                : AbstractDecomposableBinnedRuleEvaluation<StatisticVector, IndexVector, VectorMath>(
                     labelIndices, true, l1RegularizationWeight, l2RegularizationWeight, std::move(binningPtr)) {}
     };
 

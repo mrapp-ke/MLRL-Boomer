@@ -19,7 +19,7 @@ namespace boosting {
      */
     template<typename StatisticVector, typename IndexVector, typename VectorMath>
     class DecomposableDynamicPartialBinnedRuleEvaluation final
-        : public AbstractDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector> {
+        : public AbstractDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector, VectorMath> {
         private:
 
             using statistic_type = StatisticVector::statistic_type;
@@ -133,7 +133,7 @@ namespace boosting {
                                                            float32 l1RegularizationWeight,
                                                            float32 l2RegularizationWeight,
                                                            std::unique_ptr<ILabelBinning<statistic_type>> binningPtr)
-                : AbstractDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector>(
+                : AbstractDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector, VectorMath>(
                     *indexVectorPtr, true, l1RegularizationWeight, l2RegularizationWeight, std::move(binningPtr)),
                   labelIndices_(labelIndices), indexVectorPtr_(std::move(indexVectorPtr)), threshold_(1.0f - threshold),
                   exponent_(exponent) {}
