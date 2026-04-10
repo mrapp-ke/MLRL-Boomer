@@ -215,7 +215,15 @@ namespace boosting {
         float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
         std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr =
           std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
-        return std::make_unique<DecomposableCompleteBinnedRuleEvaluationFactory>(
+
+#if SIMD_SUPPORT_ENABLED
+        if (simdConfig_.get().isSimdEnabled()) {
+            return std::make_unique<DecomposableCompleteBinnedRuleEvaluationFactory<SimdDecomposableVectorMath>>(
+              l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr));
+        }
+#endif
+
+        return std::make_unique<DecomposableCompleteBinnedRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
           l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr));
     }
 
@@ -227,7 +235,15 @@ namespace boosting {
         float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
         std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr =
           std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
-        return std::make_unique<DecomposableFixedPartialBinnedRuleEvaluationFactory>(
+#if SIMD_SUPPORT_ENABLED
+        if (simdConfig_.get().isSimdEnabled()) {
+            return std::make_unique<DecomposableFixedPartialBinnedRuleEvaluationFactory<SimdDecomposableVectorMath>>(
+              outputRatio, minOutputs, maxOutputs, l1RegularizationWeight, l2RegularizationWeight,
+              std::move(labelBinningFactoryPtr));
+        }
+#endif
+
+        return std::make_unique<DecomposableFixedPartialBinnedRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
           outputRatio, minOutputs, maxOutputs, l1RegularizationWeight, l2RegularizationWeight,
           std::move(labelBinningFactoryPtr));
     }
@@ -288,5 +304,4 @@ namespace boosting {
           threshold, exponent, l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr),
           blasFactory, lapackFactory);
     }
-
 }

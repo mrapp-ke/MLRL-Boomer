@@ -185,13 +185,39 @@ namespace boosting {
      * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
      * @tparam IndexVector      The type of the vector that provides access to the indices of the labels for which
      *                          predictions should be calculated
+     * @tparam VectorMath       The type that implements basic operations for calculating with gradients and Hessians
      */
-    template<typename StatisticVector, typename IndexVector>
+    template<typename StatisticVector, typename IndexVector, typename VectorMath>
     class DecomposableCompleteBinnedRuleEvaluation final
         : public AbstractDecomposableBinnedRuleEvaluation<StatisticVector, IndexVector> {
         private:
 
             using statistic_type = StatisticVector::statistic_type;
+
+            template<typename StatisticType, typename WeightType>
+            static inline void calculateOutputWiseCriteriaInternally(
+              const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& statisticVector,
+              typename View<statistic_type>::iterator criteria, uint32 numCriteria, float32 l1RegularizationWeight,
+              float32 l2RegularizationWeight) {
+                auto gradientIterator = statisticVector.gradients_cbegin();
+                auto hessianIterator = statisticVector.hessians_cbegin();
+
+                for (uint32 i = 0; i < numCriteria; i++) {
+                    criteria[i] = calculateOutputWiseScore(gradientIterator[i], hessianIterator[i],
+                                                           l1RegularizationWeight, l2RegularizationWeight);
+                }
+            }
+
+            template<typename StatisticType>
+            static inline void calculateOutputWiseCriteriaInternally(
+              const DenseDecomposableStatisticVectorView<StatisticType>& statisticVector,
+              typename View<statistic_type>::iterator criteria, uint32 numCriteria, float32 l1RegularizationWeight,
+              float32 l2RegularizationWeight) {
+                auto gradientIterator = statisticVector.gradients_cbegin();
+                auto hessianIterator = statisticVector.hessians_cbegin();
+                VectorMath::calculateOutputWiseScores(gradientIterator, hessianIterator, criteria, numCriteria,
+                                                      l1RegularizationWeight, l2RegularizationWeight);
+            }
 
         protected:
 
@@ -199,14 +225,8 @@ namespace boosting {
                                                typename View<statistic_type>::iterator criteria, uint32 numCriteria,
                                                float32 l1RegularizationWeight,
                                                float32 l2RegularizationWeight) override {
-                typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
-                typename StatisticVector::hessian_const_iterator hessianIterator = statisticVector.hessians_cbegin();
-
-                for (uint32 i = 0; i < numCriteria; i++) {
-                    criteria[i] = calculateOutputWiseScore(gradientIterator[i], hessianIterator[i],
-                                                           l1RegularizationWeight, l2RegularizationWeight);
-                }
-
+                calculateOutputWiseCriteriaInternally(statisticVector, criteria, numCriteria, l1RegularizationWeight,
+                                                      l2RegularizationWeight);
                 return numCriteria;
             }
 
