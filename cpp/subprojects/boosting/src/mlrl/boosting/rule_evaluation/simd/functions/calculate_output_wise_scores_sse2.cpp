@@ -8,6 +8,13 @@ namespace boosting {
                                                                       float32*, uint32, float32, float32);
         template void calculateOutputWiseScores<xsimd::sse2, float64>(xsimd::sse2, const float64*, const float64*,
                                                                       float64*, uint32, float32, float32);
+
+        template void calculateOutputWiseScoresWeighted<xsimd::sse2, float32>(xsimd::sse2, const float32*,
+                                                                              const float32*, const uint32*, float32*,
+                                                                              uint32, float32, float32);
+        template void calculateOutputWiseScoresWeighted<xsimd::sse2, float64>(xsimd::sse2, const float64*,
+                                                                              const float64*, const uint32*, float64*,
+                                                                              uint32, float32, float32);
     }
 }
 #endif
