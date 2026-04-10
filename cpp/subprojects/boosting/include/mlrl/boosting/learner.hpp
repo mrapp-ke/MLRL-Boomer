@@ -612,7 +612,7 @@ namespace boosting {
              */
             virtual void useNoLabelBinning() {
                 this->getLabelBinningConfig().set(std::make_unique<NoLabelBinningConfig>(
-                  this->getL1RegularizationConfig(), this->getL2RegularizationConfig()));
+                  this->getL1RegularizationConfig(), this->getL2RegularizationConfig(), this->getSimdConfig()));
             }
     };
 

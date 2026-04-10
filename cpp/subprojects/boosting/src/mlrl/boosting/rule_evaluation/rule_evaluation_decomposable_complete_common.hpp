@@ -3,8 +3,10 @@
  */
 #pragma once
 
+#include "mlrl/boosting/data/vector_statistic_decomposable_dense.hpp"
+#include "mlrl/boosting/data/vector_statistic_decomposable_sparse.hpp"
+#include "mlrl/boosting/rule_evaluation/scalar_math_decomposable.hpp"
 #include "mlrl/common/rule_evaluation/score_vector_dense.hpp"
-#include "rule_evaluation_decomposable_common.hpp"
 
 namespace boosting {
 
@@ -15,8 +17,9 @@ namespace boosting {
      * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
      * @tparam IndexVector      The type of the vector that provides access to the indices of the outputs for which
      *                          predictions should be calculated
+     * @tparam VectorMath       The type that implements basic operations for calculating with gradients and Hessians
      */
-    template<typename StatisticVector, typename IndexVector>
+    template<typename StatisticVector, typename IndexVector, typename VectorMath>
     class DecomposableCompleteRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
         private:
 
@@ -27,6 +30,46 @@ namespace boosting {
             const float32 l1RegularizationWeight_;
 
             const float32 l2RegularizationWeight_;
+
+            template<typename StatisticType, typename WeightType>
+            static inline void calculateScoresInternally(
+              const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& statisticVector,
+              DenseScoreVector<StatisticType, IndexVector>& scoreVector, float32 l1RegularizationWeight,
+              float32 l2RegularizationWeight) {
+                uint32 numElements = statisticVector.getNumElements();
+                auto gradientIterator = statisticVector.gradients_cbegin();
+                auto hessianIterator = statisticVector.hessians_cbegin();
+                auto valueIterator = scoreVector.values_begin();
+                statistic_type quality = 0;
+
+                for (uint32 i = 0; i < numElements; i++) {
+                    statistic_type gradient = gradientIterator[i];
+                    statistic_type hessian = hessianIterator[i];
+                    statistic_type predictedScore =
+                      calculateOutputWiseScore(gradient, hessian, l1RegularizationWeight, l2RegularizationWeight);
+                    valueIterator[i] = predictedScore;
+                    quality += calculateOutputWiseQuality(predictedScore, gradient, hessian, l1RegularizationWeight,
+                                                          l2RegularizationWeight);
+                }
+
+                scoreVector.quality = quality;
+            }
+
+            template<typename StatisticType>
+            static inline void calculateScoresInternally(
+              const DenseDecomposableStatisticVectorView<StatisticType>& statisticVector,
+              DenseScoreVector<StatisticType, IndexVector>& scoreVector, float32 l1RegularizationWeight,
+              float32 l2RegularizationWeight) {
+                uint32 numElements = statisticVector.getNumElements();
+                auto gradientIterator = statisticVector.gradients_cbegin();
+                auto hessianIterator = statisticVector.hessians_cbegin();
+                auto valueIterator = scoreVector.values_begin();
+                VectorMath::calculateOutputWiseScores(gradientIterator, hessianIterator, valueIterator, numElements,
+                                                      l1RegularizationWeight, l2RegularizationWeight);
+                scoreVector.quality =
+                  VectorMath::calculateOutputWiseQualities(valueIterator, gradientIterator, hessianIterator,
+                                                           numElements, l1RegularizationWeight, l2RegularizationWeight);
+            }
 
         public:
 
@@ -44,24 +87,8 @@ namespace boosting {
                   l2RegularizationWeight_(l2RegularizationWeight) {}
 
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
-                uint32 numElements = statisticVector.getNumElements();
-                typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
-                typename StatisticVector::hessian_const_iterator hessianIterator = statisticVector.hessians_cbegin();
-                typename DenseScoreVector<statistic_type, IndexVector>::value_iterator valueIterator =
-                  scoreVector_.values_begin();
-                statistic_type quality = 0;
-
-                for (uint32 i = 0; i < numElements; i++) {
-                    statistic_type gradient = gradientIterator[i];
-                    statistic_type hessian = hessianIterator[i];
-                    statistic_type predictedScore =
-                      calculateOutputWiseScore(gradient, hessian, l1RegularizationWeight_, l2RegularizationWeight_);
-                    valueIterator[i] = predictedScore;
-                    quality += calculateOutputWiseQuality(predictedScore, gradient, hessian, l1RegularizationWeight_,
-                                                          l2RegularizationWeight_);
-                }
-
-                scoreVector_.quality = quality;
+                calculateScoresInternally(statisticVector, scoreVector_, l1RegularizationWeight_,
+                                          l2RegularizationWeight_);
                 return scoreVector_;
             }
     };

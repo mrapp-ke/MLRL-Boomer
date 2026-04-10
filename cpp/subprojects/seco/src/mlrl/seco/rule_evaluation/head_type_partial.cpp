@@ -29,7 +29,7 @@ namespace seco {
             liftFunctionConfig_.get().createLiftFunctionFactory(labelMatrix));
 
 #if SIMD_SUPPORT_ENABLED
-        if (labelMatrix.getNumOutputs() > 1 && simdConfig_.get().isSimdEnabled()) {
+        if (simdConfig_.get().isSimdRecommended(labelMatrix.getNumOutputs())) {
             return std::make_unique<DenseDecomposableStatisticsProviderFactory<SimdVectorMath>>(
               std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
               std::move(pruningRuleEvaluationFactoryPtr));

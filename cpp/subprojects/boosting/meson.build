@@ -102,14 +102,41 @@ library_version = get_option('library_version')
 target_architecture = common_project.get_variable('target_architecture')
 
 # Set configuration options
+multi_threading_support_enabled = common_project.get_variable('multi_threading_support_enabled')
+gpu_support_enabled = common_project.get_variable('gpu_support_enabled')
+simd_support_enabled = common_project.get_variable('simd_support_enabled')
+
 configuration = configuration_data()
 configuration.set('mlrlboosting_library_name', 'lib' + library_name)
 configuration.set('mlrlboosting_library_version', library_version)
 configuration.set('mlrlboosting_target_architecture', target_architecture)
-configuration.set10('multi_threading_support_enabled', common_project.get_variable('multi_threading_support_enabled'))
-configuration.set10('gpu_support_enabled', common_project.get_variable('gpu_support_enabled'))
-configuration.set10('simd_support_enabled', common_project.get_variable('simd_support_enabled'))
+configuration.set10('multi_threading_support_enabled', multi_threading_support_enabled)
+configuration.set10('gpu_support_enabled', gpu_support_enabled)
+configuration.set10('simd_support_enabled', simd_support_enabled)
 configure_file(input : 'include/mlrl/boosting/config.hpp.in', output : 'config.hpp', configuration: configuration)
+
+# SIMD extensions
+xsimd_dep = common_project.get_variable('xsimd_dep')
+simd_cpp_args = common_project.get_variable('simd_cpp_args')
+simd_libs = []
+
+if simd_support_enabled
+    simd_source_file_names = [
+        'src/mlrl/boosting/rule_evaluation/simd/functions/calculate_output_wise_qualities',
+        'src/mlrl/boosting/rule_evaluation/simd/functions/calculate_output_wise_scores'
+    ]
+    simd_source_files = []
+    common_include_dir = common_project.get_variable('include_dir')
+
+    foreach extension, cpp_args : simd_cpp_args
+        foreach file_name : simd_source_file_names
+            simd_source_files += file_name + '_' + extension + '.cpp'
+        endforeach
+
+        simd_libs += static_library('simd_' + extension, simd_source_files, dependencies : xsimd_dep,
+                                    include_directories : [include_dir, common_include_dir], cpp_args : cpp_args)
+    endforeach
+endif
 
 # Library declaration
 cpp_args = common_project.get_variable('cpp_args')
@@ -120,8 +147,8 @@ if host_machine.system() == 'windows'
 endif
 
 boosting_lib = library(library_name, source_files, include_directories : include_dir, dependencies : dependencies,
-                       cpp_args : cpp_args, link_args : link_args, version : library_version, install : true,
-                       install_dir : install_dir)
+                       cpp_args : cpp_args, link_args : link_args, link_whole : simd_libs, version : library_version,
+                       install : true, install_dir : install_dir)
 
 # Test declaration
 gtest_test_dep = common_project.get_variable('gtest_test_dep')

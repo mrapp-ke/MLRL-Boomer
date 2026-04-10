@@ -42,8 +42,8 @@ namespace boosting {
              * @param multiThreadingConfig    A `ReadableProperty` that allows to access the `IMultiThreadingConfig`
              *                                that stores the configuration of the multi-threading behavior that should
              *                                be used for the parallel update of statistics
-             * @param simdConfig              A `ReadableProperty` that allows to access the `IMultiThreadingConfig`
-             *                                that stores the configuration of SIMD operations
+             * @param simdConfig              A `ReadableProperty` that allows to access the `ISimdConfig` that stores
+             *                                the configuration of SIMD operations
              * @param l1RegularizationConfig  A `ReadableProperty` that allows to access the `IRegularizationConfig`
              *                                that stores the configuration of the L1 regularization
              * @param l2RegularizationConfig  A `ReadableProperty` that allows to access the `IRegularizationConfig`

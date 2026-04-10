@@ -162,8 +162,8 @@ struct SequentialVectorMath {
          * @param b             A pointer to the beginning of the array `b`
          * @param c             A pointer to the beginning of the array `c`
          * @param indices       A pointer to the beginning of the array that provides access to the indices of the
-         * elements in the array `b` that correspond to the elements in the arrays `a` and `c`
-         * @param numElements   The number of elements in the array `a`
+         *                      elements in the array `b` that correspond to the elements in the arrays `a` and `c`
+         * @param numElements   The number of elements in the array `a`, `b` and `c`
          */
         template<typename T>
         static inline void difference(T* a, const T* b, const T* c, const uint32* indices, uint32 numElements) {
