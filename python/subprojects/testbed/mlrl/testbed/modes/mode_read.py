@@ -144,7 +144,7 @@ class ReadMode(InputMode):
     def __run_single_experiment(
         args: Namespace, recipe: Recipe, input_directory: Path, command: Command
     ) -> ExperimentState:
-        Log.info(f'The command "{command}" has been used originally for running this experiment')
+        Log.info(f'Running command "{command}" that has originally been used for performing this experiment...\n')
         return OutputUtil(
             args=args, recipe=recipe, command=command, input_directory=input_directory
         ).read_output_files()
@@ -248,7 +248,8 @@ class ReadMode(InputMode):
             commands_and_their_states: list[tuple[Command, ExperimentState]] = []
 
             for command, command_args in commands:
-                Log.info(f'\nReading experimental results of experiment ({i} / {num_experiments})...')
+                Log.info('')
+                Log.separator(f'Reading experimental results of experiment ({i} / {num_experiments})')
                 state = self.__run_single_experiment(command_args, recipe, input_directory, command)
                 commands_and_their_states.append((command, state))
                 i += 1
