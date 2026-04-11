@@ -2,15 +2,20 @@ mlrl-testbed mlrl.testbed_sklearn --mode batch --log-width 120 --log-plain --log
 ○ Writing output data to file "python/tests/res/tmp/<worker-id>/metadata.yml"...
 Running 16 experiments...
 
-Running experiment (1 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
+Running experiment (1 / 16):
+
+Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset emotions --estimator
 RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
 n-estimators_50/max-depth_2/dataset_emotions/models --n-estimators 50 --parameter-save-dir
 n-estimators_50/max-depth_2/dataset_emotions/parameters --result-dir
-n-estimators_50/max-depth_2/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false"
+n-estimators_50/max-depth_2/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false"...
+
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 1 of 2-fold cross validation...
+
 Fold 1 / 2:
+
 ○ Reading input data from file "python/tests/res/data/emotions.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 ○ Writing output data to file
@@ -56,15 +61,20 @@ Subset Accuracy (↑)         19.19
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/models/model_fold-1.pickle"...
 ✓ Successfully finished experiment after <duration>
 
-Running experiment (2 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
+Running experiment (2 / 16):
+
+Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset emotions --estimator
 RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
 n-estimators_50/max-depth_2/dataset_emotions/models --n-estimators 50 --parameter-save-dir
 n-estimators_50/max-depth_2/dataset_emotions/parameters --result-dir
-n-estimators_50/max-depth_2/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false"
+n-estimators_50/max-depth_2/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false"...
+
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 2 of 2-fold cross validation...
+
 Fold 2 / 2:
+
 ○ Reading input data from file "python/tests/res/data/emotions.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 ○ Writing output data to file
@@ -110,16 +120,21 @@ Subset Accuracy (↑)         20.61
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/models/model_fold-2.pickle"...
 ✓ Successfully finished experiment after <duration>
 
-Running experiment (3 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
+Running experiment (3 / 16):
+
+Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset emotions --estimator
 RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
 n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/models --n-estimators 50 --parameter-save-dir
 n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters --result-dir
 n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-all true --save-evaluation true
---save-meta-data false"
+--save-meta-data false"...
+
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 1 of 2-fold cross validation...
+
 Fold 1 / 2:
+
 ○ Reading input data from file "python/tests/res/data/emotions.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 ○ Writing output data to file
@@ -172,16 +187,21 @@ ld-1.arff"...
 ...
 ✓ Successfully finished experiment after <duration>
 
-Running experiment (4 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
+Running experiment (4 / 16):
+
+Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset emotions --estimator
 RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
 n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/models --n-estimators 50 --parameter-save-dir
 n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters --result-dir
 n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-all true --save-evaluation true
---save-meta-data false"
+--save-meta-data false"...
+
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 2 of 2-fold cross validation...
+
 Fold 2 / 2:
+
 ○ Reading input data from file "python/tests/res/data/emotions.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 ○ Writing output data to file
@@ -234,15 +254,20 @@ ld-2.arff"...
 ...
 ✓ Successfully finished experiment after <duration>
 
-Running experiment (5 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
+Running experiment (5 / 16):
+
+Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset emotions --estimator
 RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
 n-estimators_100/max-depth_2/dataset_emotions/models --n-estimators 100 --parameter-save-dir
 n-estimators_100/max-depth_2/dataset_emotions/parameters --result-dir
-n-estimators_100/max-depth_2/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false"
+n-estimators_100/max-depth_2/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false"...
+
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 1 of 2-fold cross validation...
+
 Fold 1 / 2:
+
 ○ Reading input data from file "python/tests/res/data/emotions.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 ○ Writing output data to file
@@ -288,15 +313,20 @@ d-1.csv"...
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/models/model_fold-1.pickle"...
 ✓ Successfully finished experiment after <duration>
 
-Running experiment (6 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
+Running experiment (6 / 16):
+
+Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset emotions --estimator
 RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
 n-estimators_100/max-depth_2/dataset_emotions/models --n-estimators 100 --parameter-save-dir
 n-estimators_100/max-depth_2/dataset_emotions/parameters --result-dir
-n-estimators_100/max-depth_2/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false"
+n-estimators_100/max-depth_2/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false"...
+
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 2 of 2-fold cross validation...
+
 Fold 2 / 2:
+
 ○ Reading input data from file "python/tests/res/data/emotions.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 ○ Writing output data to file
@@ -342,16 +372,21 @@ d-2.csv"...
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/models/model_fold-2.pickle"...
 ✓ Successfully finished experiment after <duration>
 
-Running experiment (7 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
+Running experiment (7 / 16):
+
+Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset emotions --estimator
 RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
 n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/models --n-estimators 100 --parameter-save-dir
 n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters --result-dir
 n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-all true --save-evaluation true
---save-meta-data false"
+--save-meta-data false"...
+
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 1 of 2-fold cross validation...
+
 Fold 1 / 2:
+
 ○ Reading input data from file "python/tests/res/data/emotions.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 ○ Writing output data to file
@@ -404,16 +439,21 @@ old-1.arff"...
 "...
 ✓ Successfully finished experiment after <duration>
 
-Running experiment (8 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
+Running experiment (8 / 16):
+
+Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset emotions --estimator
 RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
 n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/models --n-estimators 100 --parameter-save-dir
 n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters --result-dir
 n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-all true --save-evaluation true
---save-meta-data false"
+--save-meta-data false"...
+
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 2 of 2-fold cross validation...
+
 Fold 2 / 2:
+
 ○ Reading input data from file "python/tests/res/data/emotions.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 ○ Writing output data to file
@@ -466,15 +506,20 @@ old-2.arff"...
 "...
 ✓ Successfully finished experiment after <duration>
 
-Running experiment (9 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
+Running experiment (9 / 16):
+
+Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset enron --estimator
 RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
 n-estimators_50/max-depth_2/dataset_enron/models --n-estimators 50 --parameter-save-dir
 n-estimators_50/max-depth_2/dataset_enron/parameters --result-dir n-estimators_50/max-depth_2/dataset_enron/results
---save-all true --save-evaluation true --save-meta-data false"
+--save-all true --save-evaluation true --save-meta-data false"...
+
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 1 of 2-fold cross validation...
+
 Fold 1 / 2:
+
 ○ Reading input data from file "python/tests/res/data/enron.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/enron.xml"...
 ○ Writing output data to file
@@ -520,15 +565,20 @@ csv"...
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/models/model_fold-1.pickle"...
 ✓ Successfully finished experiment after <duration>
 
-Running experiment (10 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
+Running experiment (10 / 16):
+
+Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset enron --estimator
 RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
 n-estimators_50/max-depth_2/dataset_enron/models --n-estimators 50 --parameter-save-dir
 n-estimators_50/max-depth_2/dataset_enron/parameters --result-dir n-estimators_50/max-depth_2/dataset_enron/results
---save-all true --save-evaluation true --save-meta-data false"
+--save-all true --save-evaluation true --save-meta-data false"...
+
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 2 of 2-fold cross validation...
+
 Fold 2 / 2:
+
 ○ Reading input data from file "python/tests/res/data/enron.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/enron.xml"...
 ○ Writing output data to file
@@ -574,16 +624,21 @@ csv"...
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/models/model_fold-2.pickle"...
 ✓ Successfully finished experiment after <duration>
 
-Running experiment (11 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
+Running experiment (11 / 16):
+
+Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset enron --estimator
 RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
 n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models --n-estimators 50 --parameter-save-dir
 n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters --result-dir
 n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-all true --save-evaluation true
---save-meta-data false"
+--save-meta-data false"...
+
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 1 of 2-fold cross validation...
+
 Fold 1 / 2:
+
 ○ Reading input data from file "python/tests/res/data/enron.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/enron.xml"...
 ○ Writing output data to file
@@ -635,16 +690,21 @@ sv"...
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models/model_fold-1.pickle"...
 ✓ Successfully finished experiment after <duration>
 
-Running experiment (12 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
+Running experiment (12 / 16):
+
+Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset enron --estimator
 RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
 n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models --n-estimators 50 --parameter-save-dir
 n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters --result-dir
 n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-all true --save-evaluation true
---save-meta-data false"
+--save-meta-data false"...
+
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 2 of 2-fold cross validation...
+
 Fold 2 / 2:
+
 ○ Reading input data from file "python/tests/res/data/enron.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/enron.xml"...
 ○ Writing output data to file
@@ -696,15 +756,20 @@ sv"...
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models/model_fold-2.pickle"...
 ✓ Successfully finished experiment after <duration>
 
-Running experiment (13 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
+Running experiment (13 / 16):
+
+Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset enron --estimator
 RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
 n-estimators_100/max-depth_2/dataset_enron/models --n-estimators 100 --parameter-save-dir
 n-estimators_100/max-depth_2/dataset_enron/parameters --result-dir n-estimators_100/max-depth_2/dataset_enron/results
---save-all true --save-evaluation true --save-meta-data false"
+--save-all true --save-evaluation true --save-meta-data false"...
+
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 1 of 2-fold cross validation...
+
 Fold 1 / 2:
+
 ○ Reading input data from file "python/tests/res/data/enron.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/enron.xml"...
 ○ Writing output data to file
@@ -750,15 +815,20 @@ Subset Accuracy (↑)          1.29
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/models/model_fold-1.pickle"...
 ✓ Successfully finished experiment after <duration>
 
-Running experiment (14 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
+Running experiment (14 / 16):
+
+Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset enron --estimator
 RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
 n-estimators_100/max-depth_2/dataset_enron/models --n-estimators 100 --parameter-save-dir
 n-estimators_100/max-depth_2/dataset_enron/parameters --result-dir n-estimators_100/max-depth_2/dataset_enron/results
---save-all true --save-evaluation true --save-meta-data false"
+--save-all true --save-evaluation true --save-meta-data false"...
+
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 2 of 2-fold cross validation...
+
 Fold 2 / 2:
+
 ○ Reading input data from file "python/tests/res/data/enron.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/enron.xml"...
 ○ Writing output data to file
@@ -804,16 +874,21 @@ Subset Accuracy (↑)          0.94
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/models/model_fold-2.pickle"...
 ✓ Successfully finished experiment after <duration>
 
-Running experiment (15 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
+Running experiment (15 / 16):
+
+Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset enron --estimator
 RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
 n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models --n-estimators 100 --parameter-save-dir
 n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters --result-dir
 n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-all true --save-evaluation true
---save-meta-data false"
+--save-meta-data false"...
+
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 1 of 2-fold cross validation...
+
 Fold 1 / 2:
+
 ○ Reading input data from file "python/tests/res/data/enron.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/enron.xml"...
 ○ Writing output data to file
@@ -866,16 +941,21 @@ csv"...
 .
 ✓ Successfully finished experiment after <duration>
 
-Running experiment (16 / 16): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
+Running experiment (16 / 16):
+
+Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
 python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset enron --estimator
 RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
 n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models --n-estimators 100 --parameter-save-dir
 n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters --result-dir
 n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-all true --save-evaluation true
---save-meta-data false"
+--save-meta-data false"...
+
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 2 of 2-fold cross validation...
+
 Fold 2 / 2:
+
 ○ Reading input data from file "python/tests/res/data/enron.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/enron.xml"...
 ○ Writing output data to file

@@ -8,12 +8,14 @@ currently used
 ○ No version conflicts detected
 Reading experimental results of 1 experiment...
 
-Reading experimental results of experiment (1 / 1)...
-The command "mlrl-testbed mlrl.boosting --log-width 120 --log-plain --log-level debug --base-dir
+Reading experimental results of experiment (1 / 1):
+
+Running command "mlrl-testbed mlrl.boosting --log-width 120 --log-plain --log-level debug --base-dir
 python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset emotions --result-dir results --load-models
 true --model-load-dir models --model-save-dir models --save-evaluation true --save-meta-data false --save-meta-data true
---save-models true --parallel-prediction false --parallel-rule-refinement false --parallel-statistic-update false" has
-been used originally for running this experiment
+--save-models true --parallel-prediction false --parallel-rule-refinement false --parallel-statistic-update false" that
+has originally been used for performing this experiment...
+
 Using separate training and test sets...
 ○ Reading input data from file "python/tests/res/tmp/<worker-id>/models/model.pickle"...
 ✓ Successfully loaded model
