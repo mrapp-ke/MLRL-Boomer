@@ -1,5 +1,0 @@
-File calculate_output_wise_qualities_generic.hpp
-================================================
-
-.. doxygenfile:: calculate_output_wise_qualities_generic.hpp
-   :project: boosting
