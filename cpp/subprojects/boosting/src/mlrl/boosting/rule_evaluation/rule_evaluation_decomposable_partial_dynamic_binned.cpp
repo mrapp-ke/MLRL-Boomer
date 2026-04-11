@@ -1,5 +1,7 @@
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_decomposable_partial_dynamic_binned.hpp"
 
+#include "mlrl/boosting/rule_evaluation/simd/vector_math_decomposable_simd.hpp"
+#include "mlrl/boosting/rule_evaluation/vector_math_decomposable.hpp"
 #include "rule_evaluation_decomposable_binned_common.hpp"
 #include "rule_evaluation_decomposable_partial_dynamic_common.hpp"
 
@@ -13,10 +15,11 @@ namespace boosting {
      * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
      * @tparam IndexVector      The type of the vector that provides access to the indices of the labels for which
      *                          predictions should be calculated
+     * @tparam VectorMath       The type that implements basic operations for calculating with gradients and Hessians
      */
-    template<typename StatisticVector, typename IndexVector>
+    template<typename StatisticVector, typename IndexVector, typename VectorMath>
     class DecomposableDynamicPartialBinnedRuleEvaluation final
-        : public AbstractDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector> {
+        : public AbstractDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector, VectorMath> {
         private:
 
             using statistic_type = StatisticVector::statistic_type;
@@ -29,36 +32,81 @@ namespace boosting {
 
             const float32 exponent_;
 
-        protected:
-
-            uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector,
-                                               typename View<statistic_type>::iterator criteria, uint32 numCriteria,
-                                               float32 l1RegularizationWeight,
-                                               float32 l2RegularizationWeight) override {
+            template<typename StatisticType, typename WeightType>
+            static inline void calculateOutputWiseCriteriaInternally(
+              const IndexVector& labelIndices,
+              const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& statisticVector,
+              PartialIndexVector& indexVector, typename View<statistic_type>::iterator criteria,
+              float32 l1RegularizationWeight, float32 l2RegularizationWeight, float32 threshold, float32 exponent) {
                 uint32 numElements = statisticVector.getNumElements();
-                typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
-                typename StatisticVector::hessian_const_iterator hessianIterator = statisticVector.hessians_cbegin();
+                auto gradientIterator = statisticVector.gradients_cbegin();
+                auto hessianIterator = statisticVector.hessians_cbegin();
                 const std::pair<statistic_type, statistic_type> pair = getMinAndMaxScore(
                   gradientIterator, hessianIterator, numElements, l1RegularizationWeight, l2RegularizationWeight);
                 statistic_type minAbsScore = pair.first;
-                statistic_type threshold = calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
-                PartialIndexVector::iterator indexIterator = indexVectorPtr_->begin();
-                typename IndexVector::const_iterator labelIndexIterator = labelIndices_.cbegin();
+                statistic_type scoreThreshold = calculateThreshold(minAbsScore, pair.second, threshold, exponent);
+                PartialIndexVector::iterator indexIterator = indexVector.begin();
+                typename IndexVector::const_iterator labelIndexIterator = labelIndices.cbegin();
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numElements; i++) {
                     statistic_type score = calculateOutputWiseScore(gradientIterator[i], hessianIterator[i],
                                                                     l1RegularizationWeight, l2RegularizationWeight);
 
-                    if (calculateWeightedScore(score, minAbsScore, exponent_) >= threshold) {
+                    if (calculateWeightedScore(score, minAbsScore, exponent) >= scoreThreshold) {
                         indexIterator[n] = labelIndexIterator[i];
                         criteria[n] = score;
                         n++;
                     }
                 }
 
-                indexVectorPtr_->setNumElements(n, false);
-                return n;
+                indexVector.setNumElements(n, false);
+            }
+
+            template<typename StatisticType>
+            static inline void calculateOutputWiseCriteriaInternally(
+              const IndexVector& labelIndices,
+              const DenseDecomposableStatisticVectorView<StatisticType>& statisticVector,
+              PartialIndexVector& indexVector, typename View<statistic_type>::iterator criteria,
+              float32 l1RegularizationWeight, float32 l2RegularizationWeight, float32 threshold, float32 exponent) {
+                uint32 numElements = statisticVector.getNumElements();
+                auto gradientIterator = statisticVector.gradients_cbegin();
+                auto hessianIterator = statisticVector.hessians_cbegin();
+
+                VectorMath::calculateOutputWiseScores(gradientIterator, hessianIterator, criteria, numElements,
+                                                      l1RegularizationWeight, l2RegularizationWeight);
+
+                const std::pair<statistic_type, statistic_type> pair = getMinAndMaxScore(
+                  gradientIterator, hessianIterator, numElements, l1RegularizationWeight, l2RegularizationWeight);
+                statistic_type minAbsScore = pair.first;
+                statistic_type scoreThreshold = calculateThreshold(minAbsScore, pair.second, threshold, exponent);
+                PartialIndexVector::iterator indexIterator = indexVector.begin();
+                typename IndexVector::const_iterator labelIndexIterator = labelIndices.cbegin();
+                uint32 n = 0;
+
+                for (uint32 i = 0; i < numElements; i++) {
+                    statistic_type score = criteria[i];
+
+                    if (calculateWeightedScore(score, minAbsScore, exponent) >= scoreThreshold) {
+                        indexIterator[n] = labelIndexIterator[i];
+                        criteria[n] = score;
+                        n++;
+                    }
+                }
+
+                indexVector.setNumElements(n, false);
+            }
+
+        protected:
+
+            uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector,
+                                               typename View<statistic_type>::iterator criteria, uint32 numCriteria,
+                                               float32 l1RegularizationWeight,
+                                               float32 l2RegularizationWeight) override {
+                calculateOutputWiseCriteriaInternally(labelIndices_, statisticVector, *indexVectorPtr_, criteria,
+                                                      l1RegularizationWeight, l2RegularizationWeight, threshold_,
+                                                      exponent_);
+                return indexVectorPtr_->getNumElements();
             }
 
         public:
@@ -85,153 +133,172 @@ namespace boosting {
                                                            float32 l1RegularizationWeight,
                                                            float32 l2RegularizationWeight,
                                                            std::unique_ptr<ILabelBinning<statistic_type>> binningPtr)
-                : AbstractDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector>(
+                : AbstractDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector, VectorMath>(
                     *indexVectorPtr, true, l1RegularizationWeight, l2RegularizationWeight, std::move(binningPtr)),
                   labelIndices_(labelIndices), indexVectorPtr_(std::move(indexVectorPtr)), threshold_(1.0f - threshold),
                   exponent_(exponent) {}
     };
 
-    DecomposableDynamicPartialBinnedRuleEvaluationFactory::DecomposableDynamicPartialBinnedRuleEvaluationFactory(
-      float32 threshold, float32 exponent, float32 l1RegularizationWeight, float32 l2RegularizationWeight,
-      std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr)
+    template<typename VectorMath>
+    DecomposableDynamicPartialBinnedRuleEvaluationFactory<VectorMath>::
+      DecomposableDynamicPartialBinnedRuleEvaluationFactory(
+        float32 threshold, float32 exponent, float32 l1RegularizationWeight, float32 l2RegularizationWeight,
+        std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr)
         : threshold_(threshold), exponent_(exponent), l1RegularizationWeight_(l1RegularizationWeight),
           l2RegularizationWeight_(l2RegularizationWeight), labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)) {}
 
+    template<typename VectorMath>
     std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float32>>>
-      DecomposableDynamicPartialBinnedRuleEvaluationFactory::create(
+      DecomposableDynamicPartialBinnedRuleEvaluationFactory<VectorMath>::create(
         const DenseDecomposableStatisticVectorView<float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         std::unique_ptr<PartialIndexVector> indexVectorPtr =
           std::make_unique<PartialIndexVector>(indexVector.getNumElements());
         std::unique_ptr<ILabelBinning<float32>> labelBinningPtr = labelBinningFactoryPtr_->create32Bit();
         return std::make_unique<DecomposableDynamicPartialBinnedRuleEvaluation<
-          DenseDecomposableStatisticVectorView<float32>, CompleteIndexVector>>(
+          DenseDecomposableStatisticVectorView<float32>, CompleteIndexVector, VectorMath>>(
           indexVector, std::move(indexVectorPtr), threshold_, exponent_, l1RegularizationWeight_,
           l2RegularizationWeight_, std::move(labelBinningPtr));
     }
 
+    template<typename VectorMath>
     std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float32>>>
-      DecomposableDynamicPartialBinnedRuleEvaluationFactory::create(
+      DecomposableDynamicPartialBinnedRuleEvaluationFactory<VectorMath>::create(
         const DenseDecomposableStatisticVectorView<float32>& statisticVector,
         const PartialIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning<float32>> labelBinningPtr = labelBinningFactoryPtr_->create32Bit();
-        return std::make_unique<
-          DecomposableCompleteBinnedRuleEvaluation<DenseDecomposableStatisticVectorView<float32>, PartialIndexVector>>(
+        return std::make_unique<DecomposableCompleteBinnedRuleEvaluation<DenseDecomposableStatisticVectorView<float32>,
+                                                                         PartialIndexVector, VectorMath>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr));
     }
 
+    template<typename VectorMath>
     std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float64>>>
-      DecomposableDynamicPartialBinnedRuleEvaluationFactory::create(
+      DecomposableDynamicPartialBinnedRuleEvaluationFactory<VectorMath>::create(
         const DenseDecomposableStatisticVectorView<float64>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         std::unique_ptr<PartialIndexVector> indexVectorPtr =
           std::make_unique<PartialIndexVector>(indexVector.getNumElements());
         std::unique_ptr<ILabelBinning<float64>> labelBinningPtr = labelBinningFactoryPtr_->create64Bit();
         return std::make_unique<DecomposableDynamicPartialBinnedRuleEvaluation<
-          DenseDecomposableStatisticVectorView<float64>, CompleteIndexVector>>(
+          DenseDecomposableStatisticVectorView<float64>, CompleteIndexVector, VectorMath>>(
           indexVector, std::move(indexVectorPtr), threshold_, exponent_, l1RegularizationWeight_,
           l2RegularizationWeight_, std::move(labelBinningPtr));
     }
 
+    template<typename VectorMath>
     std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float64>>>
-      DecomposableDynamicPartialBinnedRuleEvaluationFactory::create(
+      DecomposableDynamicPartialBinnedRuleEvaluationFactory<VectorMath>::create(
         const DenseDecomposableStatisticVectorView<float64>& statisticVector,
         const PartialIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning<float64>> labelBinningPtr = labelBinningFactoryPtr_->create64Bit();
-        return std::make_unique<
-          DecomposableCompleteBinnedRuleEvaluation<DenseDecomposableStatisticVectorView<float64>, PartialIndexVector>>(
+        return std::make_unique<DecomposableCompleteBinnedRuleEvaluation<DenseDecomposableStatisticVectorView<float64>,
+                                                                         PartialIndexVector, VectorMath>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr));
     }
 
+    template<typename VectorMath>
     std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVectorView<float32, uint32>>>
-      DecomposableDynamicPartialBinnedRuleEvaluationFactory::create(
+      DecomposableDynamicPartialBinnedRuleEvaluationFactory<VectorMath>::create(
         const SparseDecomposableStatisticVectorView<float32, uint32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         std::unique_ptr<PartialIndexVector> indexVectorPtr =
           std::make_unique<PartialIndexVector>(indexVector.getNumElements());
         std::unique_ptr<ILabelBinning<float32>> labelBinningPtr = labelBinningFactoryPtr_->create32Bit();
         return std::make_unique<DecomposableDynamicPartialBinnedRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float32, uint32>, CompleteIndexVector>>(
+          SparseDecomposableStatisticVectorView<float32, uint32>, CompleteIndexVector, VectorMath>>(
           indexVector, std::move(indexVectorPtr), threshold_, exponent_, l1RegularizationWeight_,
           l2RegularizationWeight_, std::move(labelBinningPtr));
     }
 
+    template<typename VectorMath>
     std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVectorView<float32, uint32>>>
-      DecomposableDynamicPartialBinnedRuleEvaluationFactory::create(
+      DecomposableDynamicPartialBinnedRuleEvaluationFactory<VectorMath>::create(
         const SparseDecomposableStatisticVectorView<float32, uint32>& statisticVector,
         const PartialIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning<float32>> labelBinningPtr = labelBinningFactoryPtr_->create32Bit();
         return std::make_unique<DecomposableCompleteBinnedRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float32, uint32>, PartialIndexVector>>(
+          SparseDecomposableStatisticVectorView<float32, uint32>, PartialIndexVector, VectorMath>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr));
     }
 
+    template<typename VectorMath>
     std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVectorView<float32, float32>>>
-      DecomposableDynamicPartialBinnedRuleEvaluationFactory::create(
+      DecomposableDynamicPartialBinnedRuleEvaluationFactory<VectorMath>::create(
         const SparseDecomposableStatisticVectorView<float32, float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         std::unique_ptr<PartialIndexVector> indexVectorPtr =
           std::make_unique<PartialIndexVector>(indexVector.getNumElements());
         std::unique_ptr<ILabelBinning<float32>> labelBinningPtr = labelBinningFactoryPtr_->create32Bit();
         return std::make_unique<DecomposableDynamicPartialBinnedRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float32, float32>, CompleteIndexVector>>(
+          SparseDecomposableStatisticVectorView<float32, float32>, CompleteIndexVector, VectorMath>>(
           indexVector, std::move(indexVectorPtr), threshold_, exponent_, l1RegularizationWeight_,
           l2RegularizationWeight_, std::move(labelBinningPtr));
     }
 
+    template<typename VectorMath>
     std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVectorView<float32, float32>>>
-      DecomposableDynamicPartialBinnedRuleEvaluationFactory::create(
+      DecomposableDynamicPartialBinnedRuleEvaluationFactory<VectorMath>::create(
         const SparseDecomposableStatisticVectorView<float32, float32>& statisticVector,
         const PartialIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning<float32>> labelBinningPtr = labelBinningFactoryPtr_->create32Bit();
         return std::make_unique<DecomposableCompleteBinnedRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float32, float32>, PartialIndexVector>>(
+          SparseDecomposableStatisticVectorView<float32, float32>, PartialIndexVector, VectorMath>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr));
     }
 
+    template<typename VectorMath>
     std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVectorView<float64, uint32>>>
-      DecomposableDynamicPartialBinnedRuleEvaluationFactory::create(
+      DecomposableDynamicPartialBinnedRuleEvaluationFactory<VectorMath>::create(
         const SparseDecomposableStatisticVectorView<float64, uint32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         std::unique_ptr<PartialIndexVector> indexVectorPtr =
           std::make_unique<PartialIndexVector>(indexVector.getNumElements());
         std::unique_ptr<ILabelBinning<float64>> labelBinningPtr = labelBinningFactoryPtr_->create64Bit();
         return std::make_unique<DecomposableDynamicPartialBinnedRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float64, uint32>, CompleteIndexVector>>(
+          SparseDecomposableStatisticVectorView<float64, uint32>, CompleteIndexVector, VectorMath>>(
           indexVector, std::move(indexVectorPtr), threshold_, exponent_, l1RegularizationWeight_,
           l2RegularizationWeight_, std::move(labelBinningPtr));
     }
 
+    template<typename VectorMath>
     std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVectorView<float64, uint32>>>
-      DecomposableDynamicPartialBinnedRuleEvaluationFactory::create(
+      DecomposableDynamicPartialBinnedRuleEvaluationFactory<VectorMath>::create(
         const SparseDecomposableStatisticVectorView<float64, uint32>& statisticVector,
         const PartialIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning<float64>> labelBinningPtr = labelBinningFactoryPtr_->create64Bit();
         return std::make_unique<DecomposableCompleteBinnedRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float64, uint32>, PartialIndexVector>>(
+          SparseDecomposableStatisticVectorView<float64, uint32>, PartialIndexVector, VectorMath>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr));
     }
 
+    template<typename VectorMath>
     std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVectorView<float64, float32>>>
-      DecomposableDynamicPartialBinnedRuleEvaluationFactory::create(
+      DecomposableDynamicPartialBinnedRuleEvaluationFactory<VectorMath>::create(
         const SparseDecomposableStatisticVectorView<float64, float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         std::unique_ptr<PartialIndexVector> indexVectorPtr =
           std::make_unique<PartialIndexVector>(indexVector.getNumElements());
         std::unique_ptr<ILabelBinning<float64>> labelBinningPtr = labelBinningFactoryPtr_->create64Bit();
         return std::make_unique<DecomposableDynamicPartialBinnedRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float64, float32>, CompleteIndexVector>>(
+          SparseDecomposableStatisticVectorView<float64, float32>, CompleteIndexVector, VectorMath>>(
           indexVector, std::move(indexVectorPtr), threshold_, exponent_, l1RegularizationWeight_,
           l2RegularizationWeight_, std::move(labelBinningPtr));
     }
 
+    template<typename VectorMath>
     std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVectorView<float64, float32>>>
-      DecomposableDynamicPartialBinnedRuleEvaluationFactory::create(
+      DecomposableDynamicPartialBinnedRuleEvaluationFactory<VectorMath>::create(
         const SparseDecomposableStatisticVectorView<float64, float32>& statisticVector,
         const PartialIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning<float64>> labelBinningPtr = labelBinningFactoryPtr_->create64Bit();
         return std::make_unique<DecomposableCompleteBinnedRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float64, float32>, PartialIndexVector>>(
+          SparseDecomposableStatisticVectorView<float64, float32>, PartialIndexVector, VectorMath>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr));
     }
+
+    template class DecomposableDynamicPartialBinnedRuleEvaluationFactory<SequentialDecomposableVectorMath>;
+#if SIMD_SUPPORT_ENABLED
+    template class DecomposableDynamicPartialBinnedRuleEvaluationFactory<SimdDecomposableVectorMath>;
+#endif
 }

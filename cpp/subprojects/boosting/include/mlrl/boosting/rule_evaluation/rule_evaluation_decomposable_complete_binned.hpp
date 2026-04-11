@@ -13,7 +13,10 @@ namespace boosting {
     /**
      * Allows to create instances of the class `IDecomposableRuleEvaluationFactory` that allow to calculate the
      * predictions of complete rules, which predict for all available outputs, using gradient-based label binning.
+     *
+     * @tparam VectorMath The type that implements basic operations for calculating with gradients and Hessians
      */
+    template<typename VectorMath>
     class DecomposableCompleteBinnedRuleEvaluationFactory final : public IDecomposableRuleEvaluationFactory {
         private:
 
