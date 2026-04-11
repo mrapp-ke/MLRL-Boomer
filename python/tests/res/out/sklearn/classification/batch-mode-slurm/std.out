@@ -2,11 +2,13 @@ mlrl-testbed mlrl.testbed_sklearn --mode batch --log-width 120 --log-plain --log
 ○ Writing output data to file "python/tests/res/tmp/<worker-id>/metadata.yml"...
 Submitting 8 experiments to Slurm...
 
-Submitting Slurm job (1 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width
-120 --max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_emotions/models --n-estimators 50
+Submitting Slurm job (1 / 8)
+The Slurm job will use the command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id>
+--data-dir python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain
+--log-width 120 --max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_emotions/models --n-estimators 50
 --parameter-save-dir n-estimators_50/max-depth_2/dataset_emotions/parameters --result-dir
 n-estimators_50/max-depth_2/dataset_emotions/results --save-evaluation true --save-meta-data false"
+
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/emotions_1.sh"
 Content of Slurm script is:
 
@@ -29,12 +31,14 @@ n-estimators_50/max-depth_2/dataset_emotions/results --save-evaluation true --sa
 deactivate
 
 
-Submitting Slurm job (2 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width
-120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
+Submitting Slurm job (2 / 8)
+The Slurm job will use the command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id>
+--data-dir python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain
+--log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
 n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/models --n-estimators 50 --parameter-save-dir
 n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters --result-dir
 n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-evaluation true --save-meta-data false"
+
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/emotions_2.sh"
 Content of Slurm script is:
 
@@ -59,11 +63,13 @@ n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-eva
 deactivate
 
 
-Submitting Slurm job (3 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width
-120 --max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_emotions/models --n-estimators 100
+Submitting Slurm job (3 / 8)
+The Slurm job will use the command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id>
+--data-dir python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain
+--log-width 120 --max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_emotions/models --n-estimators 100
 --parameter-save-dir n-estimators_100/max-depth_2/dataset_emotions/parameters --result-dir
 n-estimators_100/max-depth_2/dataset_emotions/results --save-evaluation true --save-meta-data false"
+
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/emotions_3.sh"
 Content of Slurm script is:
 
@@ -86,12 +92,14 @@ n-estimators_100/max-depth_2/dataset_emotions/results --save-evaluation true --s
 deactivate
 
 
-Submitting Slurm job (4 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width
-120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
+Submitting Slurm job (4 / 8)
+The Slurm job will use the command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id>
+--data-dir python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain
+--log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
 n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/models --n-estimators 100 --parameter-save-dir
 n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters --result-dir
 n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-evaluation true --save-meta-data false"
+
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/emotions_4.sh"
 Content of Slurm script is:
 
@@ -116,11 +124,13 @@ n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-ev
 deactivate
 
 
-Submitting Slurm job (5 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120
---max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_enron/models --n-estimators 50 --parameter-save-dir
-n-estimators_50/max-depth_2/dataset_enron/parameters --result-dir n-estimators_50/max-depth_2/dataset_enron/results
---save-evaluation true --save-meta-data false"
+Submitting Slurm job (5 / 8)
+The Slurm job will use the command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id>
+--data-dir python/tests/res/data --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain
+--log-width 120 --max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_enron/models --n-estimators 50
+--parameter-save-dir n-estimators_50/max-depth_2/dataset_enron/parameters --result-dir
+n-estimators_50/max-depth_2/dataset_enron/results --save-evaluation true --save-meta-data false"
+
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/enron_5.sh"
 Content of Slurm script is:
 
@@ -143,12 +153,14 @@ n-estimators_50/max-depth_2/dataset_enron/parameters --result-dir n-estimators_5
 deactivate
 
 
-Submitting Slurm job (6 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120
---max-depth 4 --max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models
---n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters
---result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-evaluation true --save-meta-data
-false"
+Submitting Slurm job (6 / 8)
+The Slurm job will use the command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id>
+--data-dir python/tests/res/data --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain
+--log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
+n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models --n-estimators 50 --parameter-save-dir
+n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters --result-dir
+n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-evaluation true --save-meta-data false"
+
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/enron_6.sh"
 Content of Slurm script is:
 
@@ -172,11 +184,13 @@ n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-evalua
 deactivate
 
 
-Submitting Slurm job (7 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120
---max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_enron/models --n-estimators 100 --parameter-save-dir
-n-estimators_100/max-depth_2/dataset_enron/parameters --result-dir n-estimators_100/max-depth_2/dataset_enron/results
---save-evaluation true --save-meta-data false"
+Submitting Slurm job (7 / 8)
+The Slurm job will use the command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id>
+--data-dir python/tests/res/data --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain
+--log-width 120 --max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_enron/models --n-estimators 100
+--parameter-save-dir n-estimators_100/max-depth_2/dataset_enron/parameters --result-dir
+n-estimators_100/max-depth_2/dataset_enron/results --save-evaluation true --save-meta-data false"
+
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/enron_7.sh"
 Content of Slurm script is:
 
@@ -199,12 +213,14 @@ n-estimators_100/max-depth_2/dataset_enron/parameters --result-dir n-estimators_
 deactivate
 
 
-Submitting Slurm job (8 / 8): "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120
---max-depth 4 --max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models
---n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters
---result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-evaluation true --save-meta-data
-false"
+Submitting Slurm job (8 / 8)
+The Slurm job will use the command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id>
+--data-dir python/tests/res/data --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain
+--log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
+n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models --n-estimators 100 --parameter-save-dir
+n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters --result-dir
+n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-evaluation true --save-meta-data false"
+
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/enron_8.sh"
 Content of Slurm script is:
 

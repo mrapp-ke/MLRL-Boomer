@@ -190,6 +190,24 @@ class Log:
             Log.__print(message=formatted_message, style=style, box=box, box_title=box_title)
 
     @staticmethod
+    def separator(title: str):
+        """
+        Writes a log messages that acts as a separator with a specific title.
+
+        :param title: The title to be used
+        """
+        log_level = logging.INFO
+
+        if logging.getLogger().isEnabledFor(log_level):
+            console = get_console()
+
+            if PLAIN:
+                console.print(f'{title}:\n')
+            else:
+                console.rule(title)
+                console.print('')
+
+    @staticmethod
     def source_code(source_code: str, language: str, box: bool = False, box_title: str | None = None):
         """
         Writes a log message containing source code in a specific language at level `Log.Level.INFO`.
