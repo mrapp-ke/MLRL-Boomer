@@ -116,7 +116,10 @@ class BatchMode(Mode):
                 if i == 0:
                     Log.info(f'Running {num_experiments} {("experiments" if num_experiments > 1 else "experiment")}...')
 
-                Log.info(f'\nRunning experiment ({i + 1} / {num_experiments}): "{command}"')
+                Log.info('')
+                Log.separator(f'Running experiment ({i + 1} / {num_experiments})')
+                Log.info(f'Running command "{command}"...\n')
+
                 recipe.create_experiment_builder(
                     experiment_mode=ExperimentMode.BATCH, args=command.apply_to_namespace(args), command=command
                 ).run(args)
