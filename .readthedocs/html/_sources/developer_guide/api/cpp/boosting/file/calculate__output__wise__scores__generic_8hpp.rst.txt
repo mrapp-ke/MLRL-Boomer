@@ -1,0 +1,5 @@
+File calculate_output_wise_scores_generic.hpp
+=============================================
+
+.. doxygenfile:: calculate_output_wise_scores_generic.hpp
+   :project: boosting
