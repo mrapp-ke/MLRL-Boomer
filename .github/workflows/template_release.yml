@@ -33,7 +33,7 @@ jobs:
       - name: Get changelog
         run: ./build print_latest_changelog >> changelog.txt
       - name: Publish release on GitHub
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           target_commitish: ${{ inputs.release_branch }}
           name: Version ${{ steps.release_version.outputs.content }}
