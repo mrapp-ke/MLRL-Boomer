@@ -351,14 +351,6 @@ namespace boosting {
         }
 
         std::unique_ptr<IDecomposableStatistics<ISparseDecomposableRuleEvaluationFactory>> statisticsPtr;
-        auto denseDecomposable32BitVisitor =
-          [&](const IQuantizationMatrix<DenseDecomposableStatisticView<float32>>& quantizationMatrix) {
-            throw std::runtime_error("not implemented");
-        };
-        auto denseDecomposable64BitVisitor =
-          [&](const IQuantizationMatrix<DenseDecomposableStatisticView<float64>>& quantizationMatrix) {
-            throw std::runtime_error("not implemented");
-        };
         auto sparseDecomposable32BitVisitor =
           [&](const IQuantizationMatrix<SparseSetView<Statistic<float32>>>& quantizationMatrix) {
             statisticsPtr =
@@ -373,17 +365,8 @@ namespace boosting {
                 std::move(quantizationPtr), std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory,
                 outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
         };
-        auto denseNonDecomposable32BitVisitor =
-          [&](const IQuantizationMatrix<DenseNonDecomposableStatisticView<float32>>& quantizationMatrix) {
-            throw std::runtime_error("not implemented");
-        };
-        auto denseNonDecomposable64BitVisitor =
-          [&](const IQuantizationMatrix<DenseNonDecomposableStatisticView<float64>>& quantizationMatrix) {
-            throw std::runtime_error("not implemented");
-        };
-        quantizationPtr->visitQuantizationMatrix(denseDecomposable32BitVisitor, denseDecomposable64BitVisitor,
-                                                 sparseDecomposable32BitVisitor, sparseDecomposable64BitVisitor,
-                                                 denseNonDecomposable32BitVisitor, denseNonDecomposable64BitVisitor);
+        quantizationPtr->visitQuantizationMatrix({}, {}, sparseDecomposable32BitVisitor, sparseDecomposable64BitVisitor,
+                                                 {}, {});
         return statisticsPtr;
     }
 
