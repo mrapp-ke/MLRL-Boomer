@@ -17,7 +17,8 @@ namespace boosting {
      * @tparam StatisticType the type of the gradients and Hessians
      */
     template<typename StatisticType>
-    class SparseDecomposableStatisticMatrix final : public MatrixDecorator<SparseSetView<Statistic<StatisticType>>> {
+    class SparseDecomposableStatisticMatrix final
+        : public MatrixDecorator<SparseDecomposableStatisticView<StatisticType>> {
         public:
 
             /**
@@ -25,8 +26,8 @@ namespace boosting {
              * @param numCols   The number of columns in the matrix
              */
             SparseDecomposableStatisticMatrix(uint32 numRows, uint32 numCols)
-                : MatrixDecorator<SparseSetView<Statistic<StatisticType>>>(
-                    SparseSetView<Statistic<StatisticType>>(numRows, numCols)) {}
+                : MatrixDecorator<SparseDecomposableStatisticView<StatisticType>>(
+                    SparseDecomposableStatisticView<StatisticType>(numRows, numCols)) {}
     };
 
     static inline void visitScoreMatrixInternally(
@@ -332,7 +333,7 @@ namespace boosting {
         const Loss* lossRawPtr = lossPtr.get();
         const OutputMatrix* outputMatrixPtr = &outputMatrix;
         const SparseSetView<statistic_type>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();
-        SparseSetView<Statistic<statistic_type>>* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
+        SparseDecomposableStatisticView<statistic_type>* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
 
 #if MULTI_THREADING_SUPPORT_ENABLED
     #pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(outputMatrixPtr) \

@@ -3,9 +3,8 @@
  */
 #pragma once
 
-#include "mlrl/boosting/data/statistic.hpp"
+#include "mlrl/boosting/data/view_statistic_decomposable_sparse.hpp"
 #include "mlrl/boosting/util/dll_exports.hpp"
-#include "mlrl/common/data/view_matrix_sparse_set.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 
@@ -454,7 +453,7 @@ namespace boosting {
              *              be added to this vector
              * @param row   The index of the row to be added to this vector
              */
-            void add(const SparseSetView<Statistic<StatisticType>>& view, uint32 row);
+            void add(const SparseDecomposableStatisticView<StatisticType>& view, uint32 row);
 
             /**
              * Adds all gradients and Hessians in a single row of a `SparseSetView` to this vector. The gradients and
@@ -465,7 +464,7 @@ namespace boosting {
              * @param row       The index of the row to be added to this vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void add(const SparseSetView<Statistic<StatisticType>>& view, uint32 row, WeightType weight);
+            void add(const SparseDecomposableStatisticView<StatisticType>& view, uint32 row, WeightType weight);
 
             /**
              * Removes all gradients and Hessians in a single row of a `SparseSetView` from this vector.
@@ -474,7 +473,7 @@ namespace boosting {
              *              be removed from this vector
              * @param row   The index of the row to be removed from this vector
              */
-            void remove(const SparseSetView<Statistic<StatisticType>>& view, uint32 row);
+            void remove(const SparseDecomposableStatisticView<StatisticType>& view, uint32 row);
 
             /**
              * Removes all gradients and Hessians in a single row of a `SparseSetView` from this vector. The gradients
@@ -485,7 +484,7 @@ namespace boosting {
              * @param row       The index of the row to be removed from this vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void remove(const SparseSetView<Statistic<StatisticType>>& view, uint32 row, WeightType weight);
+            void remove(const SparseDecomposableStatisticView<StatisticType>& view, uint32 row, WeightType weight);
 
             /**
              * Adds certain gradients and Hessians in a single row of a `SparseSetView`, whose positions are given as a
@@ -496,7 +495,7 @@ namespace boosting {
              * @param row       The index of the row to be added to this vector
              * @param indices   A reference to a `CompleteIndexVector` that provides access to the indices
              */
-            void addToSubset(const SparseSetView<Statistic<StatisticType>>& view, uint32 row,
+            void addToSubset(const SparseDecomposableStatisticView<StatisticType>& view, uint32 row,
                              const CompleteIndexVector& indices);
 
             /**
@@ -508,7 +507,7 @@ namespace boosting {
              * @param row       The index of the row to be added to this vector
              * @param indices   A reference to a `PartialIndexVector` that provides access to the indices
              */
-            void addToSubset(const SparseSetView<Statistic<StatisticType>>& view, uint32 row,
+            void addToSubset(const SparseDecomposableStatisticView<StatisticType>& view, uint32 row,
                              const PartialIndexVector& indices);
 
             /**
@@ -522,7 +521,7 @@ namespace boosting {
              * @param indices   A reference to a `CompleteIndexVector` that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(const SparseSetView<Statistic<StatisticType>>& view, uint32 row,
+            void addToSubset(const SparseDecomposableStatisticView<StatisticType>& view, uint32 row,
                              const CompleteIndexVector& indices, WeightType weight);
 
             /**
@@ -536,7 +535,7 @@ namespace boosting {
              * @param indices   A reference to a `PartialIndexVector` that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(const SparseSetView<Statistic<StatisticType>>& view, uint32 row,
+            void addToSubset(const SparseDecomposableStatisticView<StatisticType>& view, uint32 row,
                              const PartialIndexVector& indices, WeightType weight);
 
             /**

@@ -179,8 +179,8 @@ namespace boosting {
     template<typename StatisticType, typename WeightType>
     static inline void addToSparseDecomposableStatisticVector(
       typename View<SparseStatistic<StatisticType, WeightType>>::iterator statistics,
-      typename SparseSetView<Statistic<StatisticType>>::value_const_iterator begin,
-      typename SparseSetView<Statistic<StatisticType>>::value_const_iterator end) {
+      typename SparseDecomposableStatisticView<StatisticType>::value_const_iterator begin,
+      typename SparseDecomposableStatisticView<StatisticType>::value_const_iterator end) {
         uint32 numElements = end - begin;
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -196,8 +196,8 @@ namespace boosting {
     template<typename StatisticType, typename WeightType>
     static inline void addToSparseDecomposableStatisticVectorWeighted(
       typename View<SparseStatistic<StatisticType, WeightType>>::iterator statistics,
-      typename SparseSetView<Statistic<StatisticType>>::value_const_iterator begin,
-      typename SparseSetView<Statistic<StatisticType>>::value_const_iterator end, WeightType weight) {
+      typename SparseDecomposableStatisticView<StatisticType>::value_const_iterator begin,
+      typename SparseDecomposableStatisticView<StatisticType>::value_const_iterator end, WeightType weight) {
         uint32 numElements = end - begin;
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -213,8 +213,8 @@ namespace boosting {
     template<typename StatisticType, typename WeightType>
     static inline void removeFromSparseDecomposableStatisticVector(
       typename View<SparseStatistic<StatisticType, WeightType>>::iterator statistics,
-      typename SparseSetView<Statistic<StatisticType>>::value_const_iterator begin,
-      typename SparseSetView<Statistic<StatisticType>>::value_const_iterator end) {
+      typename SparseDecomposableStatisticView<StatisticType>::value_const_iterator begin,
+      typename SparseDecomposableStatisticView<StatisticType>::value_const_iterator end) {
         uint32 numElements = end - begin;
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -230,8 +230,8 @@ namespace boosting {
     template<typename StatisticType, typename WeightType>
     static inline void removeFromSparseDecomposableStatisticVectorWeighted(
       typename View<SparseStatistic<StatisticType, WeightType>>::iterator statistics,
-      typename SparseSetView<Statistic<StatisticType>>::value_const_iterator begin,
-      typename SparseSetView<Statistic<StatisticType>>::value_const_iterator end, WeightType weight) {
+      typename SparseDecomposableStatisticView<StatisticType>::value_const_iterator begin,
+      typename SparseDecomposableStatisticView<StatisticType>::value_const_iterator end, WeightType weight) {
         uint32 numElements = end - begin;
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -267,7 +267,7 @@ namespace boosting {
 
     template<typename StatisticType, typename WeightType, typename VectorMath>
     void SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>::add(
-      const SparseSetView<Statistic<StatisticType>>& view, uint32 row) {
+      const SparseDecomposableStatisticView<StatisticType>& view, uint32 row) {
         this->view.sumOfWeights += 1;
         addToSparseDecomposableStatisticVector<StatisticType, WeightType>(this->view.begin(), view.values_cbegin(row),
                                                                           view.values_cend(row));
@@ -275,7 +275,7 @@ namespace boosting {
 
     template<typename StatisticType, typename WeightType, typename VectorMath>
     void SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>::add(
-      const SparseSetView<Statistic<StatisticType>>& view, uint32 row, WeightType weight) {
+      const SparseDecomposableStatisticView<StatisticType>& view, uint32 row, WeightType weight) {
         if (!isEqualToZero(weight)) {
             this->view.sumOfWeights += weight;
             addToSparseDecomposableStatisticVectorWeighted<StatisticType, WeightType>(
@@ -285,7 +285,7 @@ namespace boosting {
 
     template<typename StatisticType, typename WeightType, typename VectorMath>
     void SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>::remove(
-      const SparseSetView<Statistic<StatisticType>>& view, uint32 row) {
+      const SparseDecomposableStatisticView<StatisticType>& view, uint32 row) {
         this->view.sumOfWeights -= 1;
         removeFromSparseDecomposableStatisticVector<StatisticType, WeightType>(
           this->view.begin(), view.values_cbegin(row), view.values_cend(row));
@@ -293,7 +293,7 @@ namespace boosting {
 
     template<typename StatisticType, typename WeightType, typename VectorMath>
     void SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>::remove(
-      const SparseSetView<Statistic<StatisticType>>& view, uint32 row, WeightType weight) {
+      const SparseDecomposableStatisticView<StatisticType>& view, uint32 row, WeightType weight) {
         if (!isEqualToZero(weight)) {
             this->view.sumOfWeights -= weight;
             removeFromSparseDecomposableStatisticVectorWeighted<StatisticType, WeightType>(
@@ -303,7 +303,7 @@ namespace boosting {
 
     template<typename StatisticType, typename WeightType, typename VectorMath>
     void SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>::addToSubset(
-      const SparseSetView<Statistic<StatisticType>>& view, uint32 row, const CompleteIndexVector& indices) {
+      const SparseDecomposableStatisticView<StatisticType>& view, uint32 row, const CompleteIndexVector& indices) {
         this->view.sumOfWeights += 1;
         addToSparseDecomposableStatisticVector<StatisticType, WeightType>(this->view.begin(), view.values_cbegin(row),
                                                                           view.values_cend(row));
@@ -311,9 +311,9 @@ namespace boosting {
 
     template<typename StatisticType, typename WeightType, typename VectorMath>
     void SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>::addToSubset(
-      const SparseSetView<Statistic<StatisticType>>& view, uint32 row, const PartialIndexVector& indices) {
+      const SparseDecomposableStatisticView<StatisticType>& view, uint32 row, const PartialIndexVector& indices) {
         this->view.sumOfWeights += 1;
-        typename SparseSetView<Statistic<StatisticType>>::const_row viewRow = view[row];
+        typename SparseDecomposableStatisticView<StatisticType>::const_row viewRow = view[row];
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
         uint32 numElements = indices.getNumElements();
 
@@ -333,7 +333,7 @@ namespace boosting {
 
     template<typename StatisticType, typename WeightType, typename VectorMath>
     void SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>::addToSubset(
-      const SparseSetView<Statistic<StatisticType>>& view, uint32 row, const CompleteIndexVector& indices,
+      const SparseDecomposableStatisticView<StatisticType>& view, uint32 row, const CompleteIndexVector& indices,
       WeightType weight) {
         if (!isEqualToZero(weight)) {
             this->view.sumOfWeights += weight;
@@ -344,11 +344,11 @@ namespace boosting {
 
     template<typename StatisticType, typename WeightType, typename VectorMath>
     void SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>::addToSubset(
-      const SparseSetView<Statistic<StatisticType>>& view, uint32 row, const PartialIndexVector& indices,
+      const SparseDecomposableStatisticView<StatisticType>& view, uint32 row, const PartialIndexVector& indices,
       WeightType weight) {
         if (!isEqualToZero(weight)) {
             this->view.sumOfWeights += weight;
-            typename SparseSetView<Statistic<StatisticType>>::const_row viewRow = view[row];
+            typename SparseDecomposableStatisticView<StatisticType>::const_row viewRow = view[row];
             PartialIndexVector::const_iterator indexIterator = indices.cbegin();
             uint32 numElements = indices.getNumElements();
 

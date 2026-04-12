@@ -62,7 +62,7 @@ namespace boosting {
       IndexIterator indicesBegin, IndexIterator indicesEnd,
       typename SparseSetView<StatisticType>::value_const_iterator scoresBegin,
       typename SparseSetView<StatisticType>::value_const_iterator scoresEnd,
-      typename SparseSetView<Statistic<StatisticType>>::row row,
+      typename SparseDecomposableStatisticView<StatisticType>::row row,
       typename DecomposableClassificationLoss<StatisticType>::UpdateFunction updateFunction) {
         row.clear();
         Statistic<StatisticType> statistic;
@@ -161,11 +161,11 @@ namespace boosting {
             using DecomposableClassificationLoss<StatisticType>::evaluate;
             using DecomposableClassificationLoss<StatisticType>::updateDecomposableStatistics;
 
-            void updateDecomposableStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
-                                              const SparseSetView<StatisticType>& scoreMatrix,
-                                              CompleteIndexVector::const_iterator indicesBegin,
-                                              CompleteIndexVector::const_iterator indicesEnd,
-                                              SparseSetView<Statistic<StatisticType>>& statisticView) const override {
+            void updateDecomposableStatistics(
+              uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+              const SparseSetView<StatisticType>& scoreMatrix, CompleteIndexVector::const_iterator indicesBegin,
+              CompleteIndexVector::const_iterator indicesEnd,
+              SparseDecomposableStatisticView<StatisticType>& statisticView) const override {
                 auto labelIndicesBegin = createNonZeroIndexForwardIterator(labelMatrix.values_cbegin(exampleIndex),
                                                                            labelMatrix.values_cend(exampleIndex));
                 auto labelIndicesEnd = createNonZeroIndexForwardIterator(labelMatrix.values_cend(exampleIndex),
@@ -175,15 +175,16 @@ namespace boosting {
                   scoreMatrix.values_cend(exampleIndex), statisticView[exampleIndex], this->updateFunction_);
             }
 
-            void updateDecomposableStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
-                                              const SparseSetView<StatisticType>& scoreMatrix,
-                                              PartialIndexVector::const_iterator indicesBegin,
-                                              PartialIndexVector::const_iterator indicesEnd,
-                                              SparseSetView<Statistic<StatisticType>>& statisticView) const override {
+            void updateDecomposableStatistics(
+              uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+              const SparseSetView<StatisticType>& scoreMatrix, PartialIndexVector::const_iterator indicesBegin,
+              PartialIndexVector::const_iterator indicesEnd,
+              SparseDecomposableStatisticView<StatisticType>& statisticView) const override {
                 const typename SparseSetView<StatisticType>::const_row scoreMatrixRow = scoreMatrix[exampleIndex];
                 CContiguousView<const uint8>::value_const_iterator labelIterator =
                   labelMatrix.values_cbegin(exampleIndex);
-                typename SparseSetView<Statistic<StatisticType>>::row statisticViewRow = statisticView[exampleIndex];
+                typename SparseDecomposableStatisticView<StatisticType>::row statisticViewRow =
+                  statisticView[exampleIndex];
                 uint32 numElements = indicesEnd - indicesBegin;
                 Statistic<StatisticType> statistic;
 
@@ -203,26 +204,25 @@ namespace boosting {
                 }
             }
 
-            void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                              const SparseSetView<StatisticType>& scoreMatrix,
-                                              CompleteIndexVector::const_iterator indicesBegin,
-                                              CompleteIndexVector::const_iterator indicesEnd,
-                                              SparseSetView<Statistic<StatisticType>>& statisticView) const override {
+            void updateDecomposableStatistics(
+              uint32 exampleIndex, const BinaryCsrView& labelMatrix, const SparseSetView<StatisticType>& scoreMatrix,
+              CompleteIndexVector::const_iterator indicesBegin, CompleteIndexVector::const_iterator indicesEnd,
+              SparseDecomposableStatisticView<StatisticType>& statisticView) const override {
                 updateDecomposableStatisticsInternally<StatisticType, BinaryCsrView::index_const_iterator>(
                   labelMatrix.indices_cbegin(exampleIndex), labelMatrix.indices_cend(exampleIndex),
                   scoreMatrix.values_cbegin(exampleIndex), scoreMatrix.values_cend(exampleIndex),
                   statisticView[exampleIndex], this->updateFunction_);
             }
 
-            void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                              const SparseSetView<StatisticType>& scoreMatrix,
-                                              PartialIndexVector::const_iterator indicesBegin,
-                                              PartialIndexVector::const_iterator indicesEnd,
-                                              SparseSetView<Statistic<StatisticType>>& statisticView) const override {
+            void updateDecomposableStatistics(
+              uint32 exampleIndex, const BinaryCsrView& labelMatrix, const SparseSetView<StatisticType>& scoreMatrix,
+              PartialIndexVector::const_iterator indicesBegin, PartialIndexVector::const_iterator indicesEnd,
+              SparseDecomposableStatisticView<StatisticType>& statisticView) const override {
                 const typename SparseSetView<StatisticType>::const_row scoreMatrixRow = scoreMatrix[exampleIndex];
                 BinaryCsrView::index_const_iterator labelIndicesBegin = labelMatrix.indices_cbegin(exampleIndex);
                 BinaryCsrView::index_const_iterator labelIndicesEnd = labelMatrix.indices_cend(exampleIndex);
-                typename SparseSetView<Statistic<StatisticType>>::row statisticViewRow = statisticView[exampleIndex];
+                typename SparseDecomposableStatisticView<StatisticType>::row statisticViewRow =
+                  statisticView[exampleIndex];
                 uint32 numElements = indicesEnd - indicesBegin;
                 Statistic<StatisticType> statistic;
 
