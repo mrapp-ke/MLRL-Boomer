@@ -152,11 +152,13 @@ class Beam final {
          * @param keepHeads             True, if further refinements should predict for the same outputs as before,
          *                              false otherwise
          * @param minCoverage           The number of training examples that must be covered by potential refinements
+         * @param allowNegations        True, if refinements with nominal conditions that use negation should be
+         *                              allowed, false otherwise
          * @return                      True, if any refinements have been found, false otherwise
          */
         static bool refine(const IRuleRefinement& ruleRefinement, RuleCompareFunction ruleCompareFunction,
                            std::unique_ptr<Beam>& beamPtr, uint32 beamWidth, IFeatureSampling& featureSampling,
-                           bool keepHeads, uint32 minCoverage) {
+                           bool keepHeads, uint32 minCoverage, bool allowNegations) {
             std::vector<std::reference_wrapper<BeamEntry>>& order = beamPtr->order_;
             std::unique_ptr<Beam> newBeamPtr = std::make_unique<Beam>(beamWidth);
             BeamEntry* newEntries = newBeamPtr->entries_;
@@ -178,8 +180,9 @@ class Beam final {
 
                     // Search for refinements of the existing beam entry...
                     FixedRefinementComparator refinementComparator(ruleCompareFunction, beamWidth, minQuality);
-                    foundRefinement = ruleRefinement.findRefinement(refinementComparator, *entry.featureSubspacePtr,
-                                                                    featureIndices, *entry.outputIndices, minCoverage);
+                    foundRefinement =
+                      ruleRefinement.findRefinement(refinementComparator, *entry.featureSubspacePtr, featureIndices,
+                                                    *entry.outputIndices, minCoverage, allowNegations);
 
                     if (foundRefinement) {
                         result = true;
@@ -276,6 +279,8 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
 
         const uint32 maxConditions_;
 
+        const bool allowNegations_;
+
         const uint32 maxHeadRefinements_;
 
     public:
@@ -296,6 +301,8 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
          *                                  be at least 1
          * @param maxConditions             The maximum number of conditions to be included in a rule's body. Must be at
          *                                  least 2 or 0, if the number of conditions should not be restricted
+         * @param allowNegations            True, if refinements with nominal conditions that use negation should be
+         *                                  allowed, false otherwise
          * @param maxHeadRefinements        The maximum number of times, the head of a rule may be refinement after a
          *                                  new condition has been added to its body. Must be at least 1 or 0, if the
          *                                  number of refinements should not be restricted
@@ -307,11 +314,12 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
                                        std::unique_ptr<IRulePruning> rulePruningPtr,
                                        std::unique_ptr<IPostProcessor> postProcessorPtr, uint32 beamWidth,
                                        bool resampleFeatures, uint32 minCoverage, uint32 maxConditions,
-                                       uint32 maxHeadRefinements, bool recalculatePredictions)
+                                       bool allowNegations, uint32 maxHeadRefinements, bool recalculatePredictions)
             : AbstractRuleInduction(std::move(ruleRefinementPtr), std::move(rulePruningPtr),
                                     std::move(postProcessorPtr), recalculatePredictions),
               ruleCompareFunction_(ruleCompareFunction), beamWidth_(beamWidth), resampleFeatures_(resampleFeatures),
-              minCoverage_(minCoverage), maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements) {}
+              minCoverage_(minCoverage), maxConditions_(maxConditions), allowNegations_(allowNegations),
+              maxHeadRefinements_(maxHeadRefinements) {}
 
     protected:
 
@@ -328,8 +336,9 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
 
             // Search for the best refinements using a single condition...
             FixedRefinementComparator refinementComparator(ruleCompareFunction_, beamWidth_);
-            bool foundRefinement = ruleRefinement.findRefinement(refinementComparator, *featureSubspacePtr,
-                                                                 sampledFeatureIndices, outputIndices, minCoverage_);
+            bool foundRefinement =
+              ruleRefinement.findRefinement(refinementComparator, *featureSubspacePtr, sampledFeatureIndices,
+                                            outputIndices, minCoverage_, allowNegations_);
 
             if (foundRefinement) {
                 bool keepHeads = maxHeadRefinements_ == 1;
@@ -346,8 +355,9 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
                       featureSampling.createBeamSearchFeatureSampling(resampleFeatures_);
 
                     // Search for the best refinements within the current beam...
-                    foundRefinement = beamPtr->refine(ruleRefinement, ruleCompareFunction_, beamPtr, beamWidth_,
-                                                      *beamSearchFeatureSamplingPtr, keepHeads, minCoverage_);
+                    foundRefinement =
+                      beamPtr->refine(ruleRefinement, ruleCompareFunction_, beamPtr, beamWidth_,
+                                      *beamSearchFeatureSamplingPtr, keepHeads, minCoverage_, allowNegations_);
                 }
 
                 BeamEntry& entry = beamPtr->getBestEntry();
@@ -384,6 +394,8 @@ class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory
 
         const uint32 maxConditions_;
 
+        const bool allowNegations_;
+
         const uint32 maxHeadRefinements_;
 
         const bool recalculatePredictions_;
@@ -403,6 +415,8 @@ class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory
          *                                  be at least 1
          * @param maxConditions             The maximum number of conditions to be included in a rule's body. Must be at
          *                                  least 2 or 0, if the number of conditions should not be restricted
+         * @param allowNegations            True, if refinements with nominal conditions that use negation should be
+         *                                  allowed, false otherwise
          * @param maxHeadRefinements        The maximum number of times, the head of a rule may be refined after a new
          *                                  condition has been added to its body. Must be at least 1 or 0, if the number
          *                                  of refinements should not be restricted
@@ -414,19 +428,20 @@ class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory
                                               std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr,
                                               std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
                                               uint32 beamWidth, bool resampleFeatures, uint32 minCoverage,
-                                              uint32 maxConditions, uint32 maxHeadRefinements,
+                                              uint32 maxConditions, bool allowNegations, uint32 maxHeadRefinements,
                                               bool recalculatePredictions)
             : ruleCompareFunction_(ruleCompareFunction), ruleRefinementFactoryPtr_(std::move(ruleRefinementFactoryPtr)),
               rulePruningFactoryPtr_(std::move(rulePruningFactoryPtr)),
               postProcessorFactoryPtr_(std::move(postProcessorFactoryPtr)), beamWidth_(beamWidth),
               resampleFeatures_(resampleFeatures), minCoverage_(minCoverage), maxConditions_(maxConditions),
-              maxHeadRefinements_(maxHeadRefinements), recalculatePredictions_(recalculatePredictions) {}
+              allowNegations_(allowNegations), maxHeadRefinements_(maxHeadRefinements),
+              recalculatePredictions_(recalculatePredictions) {}
 
         std::unique_ptr<IRuleInduction> create() const override {
             return std::make_unique<BeamSearchTopDownRuleInduction>(
               ruleCompareFunction_, ruleRefinementFactoryPtr_->create(), rulePruningFactoryPtr_->create(),
               postProcessorFactoryPtr_->create(), beamWidth_, resampleFeatures_, minCoverage_, maxConditions_,
-              maxHeadRefinements_, recalculatePredictions_);
+              allowNegations_, maxHeadRefinements_, recalculatePredictions_);
         }
 };
 
@@ -434,8 +449,8 @@ BeamSearchTopDownRuleInductionConfig::BeamSearchTopDownRuleInductionConfig(
   RuleCompareFunction ruleCompareFunction, ReadableProperty<IRuleRefinementConfig> ruleRefinementConfig,
   ReadableProperty<IRulePruningConfig> rulePruningConfig, ReadableProperty<IPostProcessorConfig> postProcessorConfig)
     : ruleCompareFunction_(ruleCompareFunction), beamWidth_(4), resampleFeatures_(false), minCoverage_(1),
-      minSupport_(0.0f), maxConditions_(0), maxHeadRefinements_(1), recalculatePredictions_(true),
-      ruleRefinementConfig_(ruleRefinementConfig), rulePruningConfig_(rulePruningConfig),
+      minSupport_(0.0f), maxConditions_(0), allowNegations_(true), maxHeadRefinements_(1),
+      recalculatePredictions_(true), ruleRefinementConfig_(ruleRefinementConfig), rulePruningConfig_(rulePruningConfig),
       postProcessorConfig_(postProcessorConfig) {}
 
 uint32 BeamSearchTopDownRuleInductionConfig::getBeamWidth() const {
@@ -492,6 +507,15 @@ IBeamSearchTopDownRuleInductionConfig& BeamSearchTopDownRuleInductionConfig::set
     return *this;
 }
 
+bool BeamSearchTopDownRuleInductionConfig::areNegationsAllowed() const {
+    return allowNegations_;
+}
+
+IBeamSearchTopDownRuleInductionConfig& BeamSearchTopDownRuleInductionConfig::setNegationsAllowed(bool allowNegations) {
+    allowNegations_ = allowNegations;
+    return *this;
+}
+
 uint32 BeamSearchTopDownRuleInductionConfig::getMaxHeadRefinements() const {
     return maxHeadRefinements_;
 }
@@ -528,5 +552,6 @@ std::unique_ptr<IRuleInductionFactory> BeamSearchTopDownRuleInductionConfig::cre
     return std::make_unique<BeamSearchTopDownRuleInductionFactory>(
       ruleCompareFunction_, ruleRefinementConfig_.get().createRuleRefinementFactory(featureMatrix, numOutputs),
       rulePruningConfig_.get().createRulePruningFactory(), postProcessorConfig_.get().createPostProcessorFactory(),
-      beamWidth_, resampleFeatures_, minCoverage, maxConditions_, maxHeadRefinements_, recalculatePredictions_);
+      beamWidth_, resampleFeatures_, minCoverage, maxConditions_, allowNegations_, maxHeadRefinements_,
+      recalculatePredictions_);
 }

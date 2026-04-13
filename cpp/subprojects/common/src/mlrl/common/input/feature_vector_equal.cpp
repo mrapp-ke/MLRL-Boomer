@@ -3,12 +3,12 @@
 void EqualFeatureVector::searchForRefinement(SingleRefinementComparator& comparator,
                                              const IWeightedStatistics& statistics, const IIndexVector& outputIndices,
                                              uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
-                                             Refinement& refinement) const {}
+                                             bool allowNegations, Refinement& refinement) const {}
 
 void EqualFeatureVector::searchForRefinement(FixedRefinementComparator& comparator,
                                              const IWeightedStatistics& statistics, const IIndexVector& outputIndices,
                                              uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
-                                             Refinement& refinement) const {}
+                                             bool allowNegations, Refinement& refinement) const {}
 
 std::unique_ptr<IResettableStatisticsSubset> EqualFeatureVector::createStatisticsSubset(
   const IWeightedStatistics& statistics, const CompleteIndexVector& outputIndices) const {

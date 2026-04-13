@@ -21,6 +21,10 @@ cdef extern from "mlrl/common/rule_induction/rule_induction_top_down_greedy.hpp"
 
         uint32 getMaxConditions() const
 
+        IGreedyTopDownRuleInductionConfig& setNegationsAllowed(bool allowNegations) except +
+
+        bool areNegationsAllowed() const
+
         IGreedyTopDownRuleInductionConfig& setMaxHeadRefinements(uint32 maxHeadRefinements) except +
 
         uint32 getMaxHeadRefinements() const
@@ -55,6 +59,10 @@ cdef extern from "mlrl/common/rule_induction/rule_induction_top_down_beam_search
         IBeamSearchTopDownRuleInductionConfig& setMaxConditions(uint32 maxConditions) except +
 
         uint32 getMaxConditions() const
+
+        IBeamSearchTopDownRuleInductionConfig& setNegationsAllowed(bool allowNegations) except +
+
+        bool areNegationsAllowed() const
 
         IBeamSearchTopDownRuleInductionConfig& setMaxHeadRefinements(uint32 maxHeadRefinements) except +
 
