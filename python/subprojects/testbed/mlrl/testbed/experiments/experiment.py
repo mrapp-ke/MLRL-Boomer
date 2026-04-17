@@ -467,9 +467,10 @@ class ExperimentalProcedure(ABC):
         :param experiment:  The experiment to be conducted
         :return:            The final state of the experiment
         """
-        state = self._before_experiment(experiment, experiment.initial_state)
-        state = self._conduct_experiment(experiment, state)
-        return self._after_experiment(experiment, state)
+        with Log.indented():
+            state = self._before_experiment(experiment, experiment.initial_state)
+            state = self._conduct_experiment(experiment, state)
+            return self._after_experiment(experiment, state)
 
     def _before_experiment(self, experiment: Experiment, state: ExperimentState) -> ExperimentState:
         """
@@ -557,21 +558,25 @@ class DefaultProcedure(ExperimentalProcedure):
                     training_state = listener.before_training(training_state)
 
                 # Train model...
-                training_result = experiment.training_procedure.train(
-                    learner=training_state.training_result.learner if training_state.training_result else None,
-                    parameters=training_state.parameters,
-                    dataset=training_state.dataset,
-                )
+                with Log.indented():
+                    training_result = experiment.training_procedure.train(
+                        learner=training_state.training_result.learner if training_state.training_result else None,
+                        parameters=training_state.parameters,
+                        dataset=training_state.dataset,
+                    )
+
                 training_state = replace(training_state, training_result=training_result)
                 test_state = split.get_state(DatasetType.TEST)
 
                 # Obtain and evaluate predictions for training data, if necessary...
                 if self.predict_for_training_dataset or (self.predict_for_test_dataset and not test_state):
-                    self.__predict(experiment, training_state)
+                    with Log.indented():
+                        self.__predict(experiment, training_state)
 
                 # Obtain and evaluate predictions for test data, if necessary...
                 if test_state and self.predict_for_test_dataset:
-                    self.__predict(experiment, replace(test_state, training_result=training_result))
+                    with Log.indented():
+                        self.__predict(experiment, replace(test_state, training_result=training_result))
 
                 for listener in listeners:
                     training_state = listener.after_training(training_state)
