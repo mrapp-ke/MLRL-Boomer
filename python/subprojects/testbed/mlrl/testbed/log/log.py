@@ -7,14 +7,16 @@ Provides classes for writing log messages.
 import contextlib
 import logging
 import os
+from contextvars import ContextVar
 
 from contextlib import contextmanager
 from typing import override
 
-from rich.console import Console, ConsoleRenderable
+from rich.console import Console, ConsoleRenderable, ConsoleOptions
 from rich.logging import LogRecord, RichHandler
 from rich.panel import Panel
 from rich.style import Style
+from rich.segment import Segment
 from rich.syntax import Syntax
 from rich.text import Text
 
@@ -23,6 +25,123 @@ from mlrl.testbed.util.io import ENCODING_UTF8
 WIDTH: int | None = None
 
 PLAIN: bool = False
+
+
+class IndentationLevel:
+    """
+    Used to manage the indentation level of log messages.
+    """
+
+    class IndentedRenderable:
+        """
+        Wraps a `ConsoleRenderable` and adds indentation, depending on the current level.
+        """
+
+        def __init__(self, renderable: ConsoleRenderable, level: int):
+            """
+            :param renderable:  The `ConsoleRenderable` to be wrapped
+            :param level:       The indentation level
+            """
+            self._renderable = renderable
+            self._level = level
+
+        def __rich_console__(self, console: Console, options: ConsoleOptions):
+            level = self._level
+            prefix = IndentationLevel.get_prefix(level)
+            max_width = max(1, options.max_width - len(prefix))
+            at_line_start = True
+
+            for segment in console.render(self._renderable, options.update_width(max_width)):
+                if segment.is_control:
+                    yield segment
+                else:
+                    text = segment.text
+                    style = segment.style
+
+                    while '\n' in text:
+                        current_index = text.index('\n')
+                        current_text = text[:current_index]
+
+                        if at_line_start:
+                            yield Segment(prefix, style=IndentationLevel.PREFIX_STYLE)
+
+                        if current_text:
+                            yield Segment(current_text, style)
+
+                        yield Segment('\n')
+                        at_line_start = True
+                        text = text[current_index + 1 :]
+
+                    if text:
+                        if at_line_start:
+                            yield Segment(prefix, style=IndentationLevel.PREFIX_STYLE)
+                            at_line_start = False
+
+                        yield Segment(text, style)
+
+            if not at_line_start:
+                yield Segment('\n')
+
+    PREFIX_STYLE = Style(color='grey50')
+
+    def __init__(self, level: int):
+        """
+        :param level:   The indentation level
+        """
+        self.level = level
+
+    def increase(self):
+        """
+        Increase the indentation level.
+        """
+        self.level += 1
+
+    def decrease(self):
+        """
+        Decreases the indentation level.
+        """
+        if self.level > 0:
+            self.level -= 1
+
+    def print(self, message: str, style: Style | None = None, box: bool = False, box_title: str | None = None):
+        renderable: ConsoleRenderable = Text(message, style=style) if style else Text(message)
+        console = get_console()
+        level = self.level
+
+        if box:
+            if PLAIN:
+                if box_title:
+                    title = f'{box_title}:\n'
+                    title_renderable = Text(title, style=style) if style else Text(title)
+                    console.print(IndentationLevel.IndentedRenderable(title_renderable, level=level))
+            else:
+                renderable = self.decorate_with_box(renderable, box_title=box_title)
+
+        console.print(IndentationLevel.IndentedRenderable(renderable, level=level))
+
+    @staticmethod
+    def decorate_with_box(renderable: ConsoleRenderable, box_title: str | None = None) -> ConsoleRenderable:
+        return Panel.fit(renderable, title=Text(box_title, style=Style(bold=True)) if box_title else None)
+
+    @staticmethod
+    def get_prefix(level: int, prefix: str = '│') -> str:
+        """
+        Returns the prefix to be used for log messages at a specific indentation level.
+
+        :param level:   The indentation level
+        :param prefix:  A text that should be printed before the log message
+        :return:        A prefix
+        """
+        text = ''
+
+        for i in range(level):
+            symbol = prefix if i == level - 1 else '│'
+            text += f' {symbol}'
+
+        return f'{text} '
+
+
+INDENTATION_LEVEL: ContextVar[IndentationLevel] = ContextVar('indentation_level', default=IndentationLevel(level=0))
 
 
 def get_console() -> Console:
@@ -90,9 +209,13 @@ class LogHandler(RichHandler):
         See :func:`rich.logging.RichHandler.render_message`
         """
         log_level = record.levelno
-        formatted_message = self.format_message(message, log_level)
-        style = self.get_style(log_level)
-        return Text(formatted_message, style=style) if style else Text(formatted_message)
+        message = self.format_message(message, log_level)
+        message_style = self.get_style(log_level)
+        formatted_message = Text(message, style=message_style) if message_style else Text(message)
+        indentation_level = INDENTATION_LEVEL.get()
+        level = indentation_level.level
+        prefix = Text(IndentationLevel.get_prefix(level), style=IndentationLevel.PREFIX_STYLE)
+        return prefix + formatted_message
 
 
 class Log:
@@ -101,23 +224,26 @@ class Log:
     """
 
     @staticmethod
-    def __decorate_with_box(renderable: ConsoleRenderable, box_title: str | None = None) -> ConsoleRenderable:
-        if PLAIN:
-            if box_title:
-                get_console().print(f'{box_title}:\n')
+    @contextmanager
+    def indented():
+        """
+        A context manager that indents all log messages emitted within the block. Nesting multiple context managers
+        results in deeper indentation levels.
+        """
+        indentation_level = INDENTATION_LEVEL.get()
+        console = get_console()
 
-            return renderable
-
-        return Panel.fit(renderable, title=Text(box_title, style=Style(bold=True)) if box_title else None)
-
-    @staticmethod
-    def __print(message: str, style: Style | None = None, box: bool = False, box_title: str | None = None):
-        if box:
-            renderable: ConsoleRenderable = Text(message, style=style) if style else Text(message)
-            renderable = Log.__decorate_with_box(renderable, box_title=box_title)
-            get_console().print(renderable, style=style)
-        else:
-            get_console().print(message, style=style)
+        try:
+            indentation_level.increase()
+            prefix = IndentationLevel.get_prefix(level=indentation_level.level, prefix='╭')
+            console.print(Text(prefix, style=IndentationLevel.PREFIX_STYLE))
+            yield
+        finally:
+            prefix = IndentationLevel.get_prefix(level=indentation_level.level, prefix='╰')
+            console.print(Text(prefix, style=IndentationLevel.PREFIX_STYLE))
+            indentation_level.decrease()
+            prefix = IndentationLevel.get_prefix(level=indentation_level.level)
+            console.print(Text(prefix), style=IndentationLevel.PREFIX_STYLE)
 
     @staticmethod
     def error(message: str, *args, error: Exception | None = None, box: bool = False, box_title: str | None = None):
@@ -135,7 +261,7 @@ class Log:
         if logging.getLogger().isEnabledFor(log_level):
             formatted_message = LogHandler.format_message(message.format(*args), log_level)
             style = LogHandler.get_style(log_level)
-            Log.__print(message=formatted_message, style=style, box=box, box_title=box_title)
+            INDENTATION_LEVEL.get().print(message=formatted_message, style=style, box=box, box_title=box_title)
 
             if error:
                 get_console().print_exception(extra_lines=2)
@@ -154,7 +280,7 @@ class Log:
         if logging.getLogger().isEnabledFor(log_level):
             formatted_message = LogHandler.format_message(message, log_level)
             style = LogHandler.get_style(log_level)
-            Log.__print(message=formatted_message, style=style, box=box, box_title=box_title)
+            INDENTATION_LEVEL.get().print(message=formatted_message, style=style, box=box, box_title=box_title)
 
     @staticmethod
     def success(message: str, box: bool = False, box_title: str | None = None):
@@ -171,7 +297,7 @@ class Log:
         if logging.getLogger().isEnabledFor(log_level):
             formatted_message = f'✓ {message}'
             style = Style(color='green', bold=True)
-            Log.__print(message=formatted_message, style=style, box=box, box_title=box_title)
+            INDENTATION_LEVEL.get().print(message=formatted_message, style=style, box=box, box_title=box_title)
 
     @staticmethod
     def info(message: str, box: bool = False, box_title: str | None = None):
@@ -187,7 +313,7 @@ class Log:
         if logging.getLogger().isEnabledFor(log_level):
             formatted_message = LogHandler.format_message(message, log_level)
             style = LogHandler.get_style(log_level)
-            Log.__print(message=formatted_message, style=style, box=box, box_title=box_title)
+            INDENTATION_LEVEL.get().print(message=formatted_message, style=style, box=box, box_title=box_title)
 
     @staticmethod
     def separator(title: str):
@@ -200,7 +326,7 @@ class Log:
 
         if logging.getLogger().isEnabledFor(log_level):
             if PLAIN:
-                Log.__print(f'{title}:\n')
+                INDENTATION_LEVEL.get().print(f'{title}:\n')
             else:
                 console = get_console()
                 console.rule(title)
@@ -223,9 +349,10 @@ class Log:
             renderable: ConsoleRenderable = Syntax(source_code, language, word_wrap=True)
 
             if box:
-                renderable = Log.__decorate_with_box(renderable, box_title=box_title)
+                renderable = IndentationLevel.decorate_with_box(renderable, box_title=box_title)
 
-            get_console().print(renderable)
+            indentation_level = INDENTATION_LEVEL.get()
+            get_console().print(IndentationLevel.IndentedRenderable(renderable, level=indentation_level.level))
 
     @staticmethod
     def verbose(message: str, box: bool = False, box_title: str | None = None):
@@ -241,4 +368,4 @@ class Log:
         if logging.getLogger().isEnabledFor(log_level):
             formatted_message = LogHandler.format_message(message, log_level)
             style = LogHandler.get_style(log_level)
-            Log.__print(message=formatted_message, style=style, box=box, box_title=box_title)
+            INDENTATION_LEVEL.get().print(message=formatted_message, style=style, box=box, box_title=box_title)
