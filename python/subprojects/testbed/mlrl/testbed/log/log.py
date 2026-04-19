@@ -199,11 +199,10 @@ class Log:
         log_level = logging.INFO
 
         if logging.getLogger().isEnabledFor(log_level):
-            console = get_console()
-
             if PLAIN:
-                console.print(f'{title}:\n')
+                Log.__print(f'{title}:\n')
             else:
+                console = get_console()
                 console.rule(title)
                 console.print('')
 
