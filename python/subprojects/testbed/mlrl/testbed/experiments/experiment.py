@@ -549,9 +549,9 @@ class DefaultProcedure(ExperimentalProcedure):
 
         for split in experiment.dataset_splitter.split(state):
             with Log.indented():
-                Log.info('Loading dataset...')
+                Log.info('Loading training dataset...')
                 training_state = split.get_state(DatasetType.TRAINING)
-                Log.success('Successfully loaded dataset!')
+                Log.success('Successfully loaded training dataset!')
 
                 if training_state:
                     for listener in listeners:

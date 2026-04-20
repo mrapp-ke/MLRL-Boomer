@@ -280,7 +280,7 @@ class SlurmRunner(BatchMode.Runner):
             )
             return 0
 
-        Log.error('Submission to Slurm failed:')
+        Log.error('Submission to Slurm failed:\n')
         Log.error(result.output, box=True)
         return result.exit_code
 

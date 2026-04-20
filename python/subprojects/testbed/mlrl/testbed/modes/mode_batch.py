@@ -121,10 +121,14 @@ class BatchMode(Mode):
                 ).run(args)
 
             run_time = Timer.stop(start_time)
-            Log.success(
-                f'Successfully finished {num_experiments} {("experiments" if num_experiments > 1 else "experiment")} '
-                f'after {run_time}'
-            )
+
+            if num_experiments > 0:
+                Log.success(
+                    f'Successfully finished {num_experiments} '
+                    f'{("experiments" if num_experiments > 1 else "experiment")} after {run_time}'
+                )
+            else:
+                Log.success(f'Successfully finished after {run_time}')
 
     class ConfigFile(ABC):
         """
