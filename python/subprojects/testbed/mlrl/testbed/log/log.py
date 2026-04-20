@@ -326,9 +326,13 @@ class Log:
 
         if logging.getLogger().isEnabledFor(log_level):
             if PLAIN:
-                INDENTATION_LEVEL.get().print(f'{title}:\n')
+                indentation_level = INDENTATION_LEVEL.get()
+                indentation_level.print('')
+                indentation_level.print(f'{title}:')
+                indentation_level.print('')
             else:
                 console = get_console()
+                console.print('')
                 console.rule(title)
                 console.print('')
 

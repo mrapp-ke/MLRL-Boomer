@@ -248,7 +248,6 @@ class ReadMode(InputMode):
             commands_and_their_states: list[tuple[Command, ExperimentState]] = []
 
             for command, command_args in commands:
-                Log.info('')
                 Log.separator(f'Reading experimental results of experiment ({i} / {num_experiments})')
                 state = self.__run_single_experiment(command_args, recipe, input_directory, command)
                 commands_and_their_states.append((command, state))

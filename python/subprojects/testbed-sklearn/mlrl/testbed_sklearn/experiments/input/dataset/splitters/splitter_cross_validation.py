@@ -227,7 +227,7 @@ class CrossValidationSplitter(DatasetSplitter):
         else:
             fold = 'full'
 
-        Log.info(f'Performing {fold} {num_folds}-fold cross validation...\n')
+        Log.info(f'Performing {fold} {num_folds}-fold cross validation...')
 
         # Check if predefined folds are available...
         state = replace(state, folding_strategy=folding_strategy)

@@ -116,7 +116,6 @@ class BatchMode(Mode):
                 if i == 0:
                     Log.info(f'Running {num_experiments} {("experiments" if num_experiments > 1 else "experiment")}...')
 
-                Log.info('')
                 Log.separator(f'Running experiment ({i + 1} / {num_experiments})')
                 Log.info(f'Running command "{command}"...\n')
 
