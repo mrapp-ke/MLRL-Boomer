@@ -280,7 +280,8 @@ class SlurmRunner(BatchMode.Runner):
             )
             return 0
 
-        Log.error(f'Submission to Slurm failed:\n{result.output}')
+        Log.error('Submission to Slurm failed:')
+        Log.error(result.output, box=True)
         return result.exit_code
 
     @staticmethod
@@ -381,7 +382,7 @@ class SlurmRunner(BatchMode.Runner):
                 Log.info(f'Slurm script saved to file "{sbatch_file}"')
 
             if print_file:
-                Log.info(f'Content of Slurm script is:\n\n{self.__read_sbatch_file(sbatch_file)}')
+                Log.info(self.__read_sbatch_file(sbatch_file), box=True, box_title='Slurm script')
 
             exit_code = self.__submit_command(sbatch_file) if submit_command else 0
 
