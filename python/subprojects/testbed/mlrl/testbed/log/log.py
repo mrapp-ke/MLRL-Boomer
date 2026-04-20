@@ -337,24 +337,20 @@ class Log:
                 console.print('')
 
     @staticmethod
-    def source_code(source_code: str, language: str, box: bool = False, box_title: str | None = None):
+    def source_code(source_code: str, language: str, box_title: str | None = None):
         """
         Writes a log message containing source code in a specific language at level `Log.Level.INFO`.
 
         :param source_code: The source code to be written
         :param args:        Optional arguments to be included in the log message
         :param language:    The language used by the source code
-        :param box:         True, if a box should be surrounded by a box, False otherwise
         :param box_title:   An optional title to be printed at the top of the box surrounding the log message
         """
         log_level = logging.INFO
 
         if logging.getLogger().isEnabledFor(log_level):
             renderable: ConsoleRenderable = Syntax(source_code, language, word_wrap=True)
-
-            if box:
-                renderable = IndentationLevel.decorate_with_box(renderable, box_title=box_title)
-
+            renderable = IndentationLevel.decorate_with_box(renderable, box_title=box_title)
             indentation_level = INDENTATION_LEVEL.get()
             get_console().print(IndentationLevel.IndentedRenderable(renderable, level=indentation_level.level))
 
