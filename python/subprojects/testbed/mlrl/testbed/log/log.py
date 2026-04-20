@@ -167,7 +167,7 @@ class LogHandler(RichHandler):
     """
 
     STYLE_PER_LOG_LEVEL = {
-        logging.DEBUG: Style(dim=True),
+        logging.DEBUG: Style(color='grey50'),
         logging.WARNING: Style(color='yellow'),
         logging.ERROR: Style(color='red', bold=True),
     }
