@@ -94,10 +94,7 @@ class BatchMode(Mode):
         @override
         def run_batch(self, args: Namespace, batch: Batch, recipe: Recipe):
             for i, command in enumerate(batch):
-                if i > 0:
-                    Log.info('')
-
-                Log.info(self.__format_command(command))
+                Log.source_code(self.__format_command(command), language='bash')
 
     class SequentialRunner(Runner):
         """
@@ -117,7 +114,7 @@ class BatchMode(Mode):
                     Log.info(f'Running {num_experiments} {("experiments" if num_experiments > 1 else "experiment")}...')
 
                 Log.separator(f'Running experiment ({i + 1} / {num_experiments})')
-                Log.info(f'Running command "{command}"...\n')
+                Log.source_code(str(command), language='bash', box_title='Command')
 
                 recipe.create_experiment_builder(
                     experiment_mode=ExperimentMode.BATCH, args=command.apply_to_namespace(args), command=command

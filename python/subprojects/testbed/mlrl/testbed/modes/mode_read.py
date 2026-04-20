@@ -144,7 +144,7 @@ class ReadMode(InputMode):
     def __run_single_experiment(
         args: Namespace, recipe: Recipe, input_directory: Path, command: Command
     ) -> ExperimentState:
-        Log.info(f'Running command "{command}" that has originally been used for performing this experiment...\n')
+        Log.source_code(str(command), language='bash', box_title='Command')
         return OutputUtil(
             args=args, recipe=recipe, command=command, input_directory=input_directory
         ).read_output_files()
