@@ -548,15 +548,19 @@ class DefaultProcedure(ExperimentalProcedure):
         listeners = experiment.listeners
 
         for split in experiment.dataset_splitter.split(state):
-            training_state = split.get_state(DatasetType.TRAINING)
+            with Log.indented():
+                Log.info('Loading dataset...')
+                training_state = split.get_state(DatasetType.TRAINING)
+                Log.success('Successfully loaded dataset!')
+
+                if training_state:
+                    for listener in listeners:
+                        training_state = listener.on_start(training_state)
+
+                    for listener in listeners:
+                        training_state = listener.before_training(training_state)
 
             if training_state:
-                for listener in listeners:
-                    training_state = listener.on_start(training_state)
-
-                for listener in listeners:
-                    training_state = listener.before_training(training_state)
-
                 # Train model...
                 with Log.indented():
                     training_result = experiment.training_procedure.train(
