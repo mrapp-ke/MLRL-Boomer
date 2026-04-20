@@ -579,6 +579,9 @@ class SklearnEstimator:
                 parameter_name = param.arg_name
                 type_name = param.type_name
 
+                if type_name and param.default and 'default=' not in type_name:
+                    type_name = f'{type_name}, default={param.default}'
+
                 if type_name and not parameter_name.startswith('_') and not parameter_name.endswith('_'):
                     argument_name = Argument.key_to_argument_name(prefix + parameter_name)
                     description = self.__format_argument_description(param.description or '')
