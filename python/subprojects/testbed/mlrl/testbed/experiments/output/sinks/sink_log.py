@@ -58,8 +58,6 @@ class LogSink(Sink):
             else:
                 Log.info(text, box=True, box_title=box_title)
 
-            Log.info('')
-
     @override
     def create_source(self, input_directory: Path) -> Source | None:
         source_factory = self._source_factory
