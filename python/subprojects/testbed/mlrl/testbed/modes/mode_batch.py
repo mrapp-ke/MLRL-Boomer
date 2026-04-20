@@ -111,14 +111,17 @@ class BatchMode(Mode):
 
             for i, command in enumerate(batch):
                 if i == 0:
-                    Log.info(f'Running {num_experiments} {("experiments" if num_experiments > 1 else "experiment")}...')
+                    Log.info(
+                        f'Running {num_experiments} {("experiments" if num_experiments > 1 else "experiment")}...\n'
+                    )
 
-                Log.separator(f'Running experiment ({i + 1} / {num_experiments})')
-                Log.source_code(str(command), language='bash', box_title='Command')
+                with Log.indented():
+                    Log.separator(f'Running experiment ({i + 1} / {num_experiments})')
+                    Log.source_code(str(command), language='bash', box_title='Command')
 
-                recipe.create_experiment_builder(
-                    experiment_mode=ExperimentMode.BATCH, args=command.apply_to_namespace(args), command=command
-                ).run(args)
+                    recipe.create_experiment_builder(
+                        experiment_mode=ExperimentMode.BATCH, args=command.apply_to_namespace(args), command=command
+                    ).run(args)
 
             run_time = Timer.stop(start_time)
 

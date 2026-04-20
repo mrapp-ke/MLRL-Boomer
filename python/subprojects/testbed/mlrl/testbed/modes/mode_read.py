@@ -238,34 +238,36 @@ class ReadMode(InputMode):
         num_experiments = len(batch)
         Log.info(
             f'Reading experimental results of {num_experiments} '
-            f'{("experiments" if num_experiments > 1 else "experiment")}...'
+            f'{("experiments" if num_experiments > 1 else "experiment")}...\n'
         )
-        i = 1
 
-        evaluation_by_dataset_type: dict[DatasetType, dict[str, Table]] = {}
+        with Log.indented():
+            i = 1
 
-        for dataset_name, commands in self.__group_batch_by_dataset(control_arguments, args, batch).items():
-            commands_and_their_states: list[tuple[Command, ExperimentState]] = []
+            evaluation_by_dataset_type: dict[DatasetType, dict[str, Table]] = {}
 
-            for command, command_args in commands:
-                Log.separator(f'Reading experimental results ({i} / {num_experiments})')
-                state = self.__run_single_experiment(command_args, recipe, input_directory, command)
-                commands_and_their_states.append((command, state))
-                i += 1
+            for dataset_name, commands in self.__group_batch_by_dataset(control_arguments, args, batch).items():
+                commands_and_their_states: list[tuple[Command, ExperimentState]] = []
 
-            for dataset_type in [DatasetType.TRAINING, DatasetType.TEST]:
-                table = self.__aggregate_evaluation(
-                    commands_and_their_states,
-                    algorithmic_arguments,
-                    dataset_name=dataset_name,
-                    dataset_type=dataset_type,
-                )
+                for command, command_args in commands:
+                    Log.separator(f'Reading experimental results ({i} / {num_experiments})')
+                    state = self.__run_single_experiment(command_args, recipe, input_directory, command)
+                    commands_and_their_states.append((command, state))
+                    i += 1
 
-                if table:
-                    evaluation_by_dataset = evaluation_by_dataset_type.setdefault(dataset_type, {})
-                    evaluation_by_dataset[dataset_name] = table
+                for dataset_type in [DatasetType.TRAINING, DatasetType.TEST]:
+                    table = self.__aggregate_evaluation(
+                        commands_and_their_states,
+                        algorithmic_arguments,
+                        dataset_name=dataset_name,
+                        dataset_type=dataset_type,
+                    )
 
-        self.__write_aggregated_evaluation_result(args, recipe, meta_data.command, evaluation_by_dataset_type)
+                    if table:
+                        evaluation_by_dataset = evaluation_by_dataset_type.setdefault(dataset_type, {})
+                        evaluation_by_dataset[dataset_name] = table
+
+            self.__write_aggregated_evaluation_result(args, recipe, meta_data.command, evaluation_by_dataset_type)
 
     @override
     def to_enum(self) -> ExperimentMode:

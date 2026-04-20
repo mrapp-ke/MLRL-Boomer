@@ -283,12 +283,13 @@ class Experiment(ABC):
 
             :param args: The command line arguments specified by the user
             """
-            should_predict = any(bool(output_writer.sinks) for output_writer in self.prediction_output_writers)
-            procedure = DefaultProcedure(
-                predict_for_training_dataset=should_predict and self.predict_for_training_dataset,
-                predict_for_test_dataset=should_predict and self.predict_for_test_dataset,
-            )
-            procedure.conduct_experiment(self.build(args))
+            with Log.indented():
+                should_predict = any(bool(output_writer.sinks) for output_writer in self.prediction_output_writers)
+                procedure = DefaultProcedure(
+                    predict_for_training_dataset=should_predict and self.predict_for_training_dataset,
+                    predict_for_test_dataset=should_predict and self.predict_for_test_dataset,
+                )
+                procedure.conduct_experiment(self.build(args))
 
         @abstractmethod
         def _create_experiment(
@@ -467,10 +468,9 @@ class ExperimentalProcedure(ABC):
         :param experiment:  The experiment to be conducted
         :return:            The final state of the experiment
         """
-        with Log.indented():
-            state = self._before_experiment(experiment, experiment.initial_state)
-            state = self._conduct_experiment(experiment, state)
-            return self._after_experiment(experiment, state)
+        state = self._before_experiment(experiment, experiment.initial_state)
+        state = self._conduct_experiment(experiment, state)
+        return self._after_experiment(experiment, state)
 
     def _before_experiment(self, experiment: Experiment, state: ExperimentState) -> ExperimentState:
         """
@@ -562,15 +562,17 @@ class DefaultProcedure(ExperimentalProcedure):
 
             if training_state:
                 # Train model...
-                with Log.indented():
-                    training_result = experiment.training_procedure.train(
-                        learner=training_state.training_result.learner if training_state.training_result else None,
-                        parameters=training_state.parameters,
-                        dataset=training_state.dataset,
-                    )
+                training_result = experiment.training_procedure.train(
+                    learner=training_state.training_result.learner if training_state.training_result else None,
+                    parameters=training_state.parameters,
+                    dataset=training_state.dataset,
+                )
 
-                training_state = replace(training_state, training_result=training_result)
-                test_state = split.get_state(DatasetType.TEST)
+                with Log.indented():
+                    Log.info('Loading test dataset...')
+                    training_state = replace(training_state, training_result=training_result)
+                    test_state = split.get_state(DatasetType.TEST)
+                    Log.success('Successfully loaded test dataset!')
 
                 # Obtain and evaluate predictions for training data, if necessary...
                 if self.predict_for_training_dataset or (self.predict_for_test_dataset and not test_state):
