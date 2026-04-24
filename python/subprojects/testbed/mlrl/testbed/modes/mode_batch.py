@@ -5,6 +5,7 @@ Provides classes that implement a mode of operation for performing multiple expe
 """
 
 import re as regex
+import sys
 
 from abc import ABC, abstractmethod
 from argparse import Namespace
@@ -340,6 +341,7 @@ class BatchMode(Mode):
                 f'"{OutputArguments.IF_OUTPUTS_EXIST.name} {OutputExistsPolicy.OVERWRITE}" to force-run all '
                 f'experiments.'
             )
+            sys.exit(0)
 
         self.__write_meta_data(args, recipe, batch, has_output_file_writers=has_output_file_writers)
         runner = self.__get_runner(args)

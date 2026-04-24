@@ -6,6 +6,7 @@ Provides classes that implement a mode of operation for performing a single expe
 
 from argparse import Namespace
 from typing import override
+import sys
 
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments.output.arguments import OutputArguments
@@ -58,6 +59,7 @@ class SingleMode(Mode):
                 f'Cancelling experiment, because all output files do already exist. Use the argument '
                 f'"{OutputArguments.IF_OUTPUTS_EXIST.name} {OutputExistsPolicy.OVERWRITE}" to force-run the experiment.'
             )
+            sys.exit(0)
         else:
             recipe.create_experiment_builder(experiment_mode=self.to_enum(), args=args, command=command).run(args)
 
