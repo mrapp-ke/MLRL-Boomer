@@ -1,4 +1,4 @@
-project('seco', 'cython', 'cpp')
+project('seco', 'cython', 'cpp', meson_version : '>=1.11')
 
 # Source files
 cython_dir = 'cython'
