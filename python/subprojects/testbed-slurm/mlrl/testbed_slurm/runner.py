@@ -361,7 +361,9 @@ class SlurmRunner(BatchMode.Runner):
         print_file = SlurmArguments.PRINT_SLURM_SCRIPTS.get_value(args)
         submit_command = not save_file and not print_file and self.__is_command_available()
         num_experiments = len(batch)
-        Log.info(f'Submitting {num_experiments} {("experiments" if num_experiments > 1 else "experiment")} to Slurm...')
+        Log.info(
+            f'Submitting {num_experiments} {("experiments" if num_experiments > 1 else "experiment")} to Slurm...\n'
+        )
         command_or_job_arrays = self.__assign_to_job_arrays(batch)
         num_jobs = len(command_or_job_arrays)
 

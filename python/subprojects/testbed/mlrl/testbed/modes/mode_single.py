@@ -36,6 +36,7 @@ class SingleMode(Mode):
             if output_util.check_if_output_files_exist():
                 return True
 
+        Log.info('')
         return False
 
     @override

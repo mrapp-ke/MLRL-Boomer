@@ -95,6 +95,7 @@ class BatchMode(Mode):
         def run_batch(self, args: Namespace, batch: Batch, recipe: Recipe):
             for i, command in enumerate(batch):
                 Log.source_code(self.__format_command(command), language='bash')
+                Log.info('')
 
     class SequentialRunner(Runner):
         """
