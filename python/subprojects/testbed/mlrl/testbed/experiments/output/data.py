@@ -8,7 +8,8 @@ import json
 from abc import ABC, abstractmethod
 from collections.abc import Iterable
 from dataclasses import replace
-from typing import Any, override
+from typing import Any, override, cast
+from rich.console import ConsoleRenderable
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties, TabularProperties
@@ -132,13 +133,13 @@ class TextualOutputData(OutputData, ABC):
             """
 
             @override
-            def to_text(self, options: Options, **kwargs) -> str | None:
+            def to_text(self, options: Options, **kwargs) -> str | ConsoleRenderable | None:
                 return text
 
         return TextOutputData(properties=properties, context=context)
 
     @abstractmethod
-    def to_text(self, options: Options, **kwargs) -> str | None:
+    def to_text(self, options: Options, **kwargs) -> str | ConsoleRenderable | None:
         """
         Creates and returns a textual representation of the object.
 
@@ -178,8 +179,8 @@ class TabularOutputData(TextualOutputData, ABC):
             """
 
             @override
-            def to_text(self, options: Options, **kwargs) -> str | None:
-                return table.format()
+            def to_text(self, options: Options, **kwargs) -> str | ConsoleRenderable | None:
+                return table.to_rich_table()
 
             @override
             def to_table(self, options: Options, **kwargs) -> Table | None:
@@ -230,10 +231,11 @@ class StructuralOutputData(TextualOutputData, ABC):
         :return:        A tuple that contains the source code and the language it uses
         """
         language = self.language
-        return self.to_text(options, **kwargs), language if language else None
+        text = self.to_text(options, **kwargs)
+        return cast(str, text), language if language else None
 
     @override
-    def to_text(self, options: Options, **kwargs) -> str | None:
+    def to_text(self, options: Options, **kwargs) -> str | ConsoleRenderable | None:
         dictionary = self.to_dict(options, **kwargs)
         return None if dictionary is None else json.dumps(dictionary, indent=4)
 

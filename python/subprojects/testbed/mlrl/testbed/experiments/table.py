@@ -6,9 +6,13 @@ Provides classes for representing tables.
 
 from abc import ABC, abstractmethod
 from collections.abc import Generator, Iterable, Iterator
-from enum import Enum, StrEnum
+from enum import Enum, auto
 from typing import Any, override
-
+from rich.table import Table as RichTable
+from rich import box
+from rich.text import Text
+from rich.console import ConsoleRenderable
+from rich.style import Style
 from tabulate import SEPARATING_LINE, tabulate
 
 
@@ -71,6 +75,14 @@ class Row(Iterable[Cell], ABC):
         :return:                The cell at the given index
         """
 
+    def __len__(self) -> int:
+        """
+        Returns the number of cells in the row.
+
+        :return: The number of cells in the row
+        """
+        return self.num_columns
+
 
 class Column(Iterable[Cell], ABC):
     """
@@ -121,14 +133,15 @@ class Table(ABC):
     An abstract base class for all tables.
     """
 
-    class Format(StrEnum):
+    class Format(Enum):
         """
         All formats that can be used for formatting tables.
         """
 
-        SIMPLE = 'simple'
-        PLAIN = 'plain'
-        OUTLINE = 'simple_outline'
+        SIMPLE = auto()
+        PLAIN = auto()
+        OUTLINE = auto()
+        HORIZONTAL_LINES = auto()
 
     @property
     def has_headers(self) -> bool:
@@ -201,6 +214,75 @@ class Table(ABC):
 
         :return: The `ColumnWiseTable` that has been created
         """
+
+    def to_rich_table(
+        self,
+        auto_rotate: bool = True,
+        table_format: 'Table.Format | None' = None,
+        separator_indices: list[int] | None = None,
+    ) -> ConsoleRenderable:
+        """
+        Creates and returns an object of type `rich.table.Table`.
+
+        :param auto_rotate:         True, if tables with a single row should automatically be rotated for legibility,
+                                    False otherwise
+        :param table_format:        The format that should be used for formatting the table or None, if the default
+                                    should be used
+        :param separator_indices:   A list that contains the indices of the row at which a separator should be inserted,
+                                    or None if no separators should be inserted
+        :return:                    The object that has been created
+        """
+        if self.num_cells > 0:
+            headers = self.header_row
+            rows: Iterable[Any] = self.rows
+            alignments: list[Alignment | None] = self.alignments if self.alignments else []
+            column_styles = []
+
+            if auto_rotate and headers and self.num_rows == 1:
+                first_row = next(self.rows)
+                rows = [[headers[column_index], first_row[column_index]] for column_index in range(self.num_columns)]
+                alignments = [Alignment.LEFT, Alignment.RIGHT]
+                column_styles = [Style(bold=True), None]
+                headers = None
+
+            table_box: box.Box | None = None
+
+            if headers:
+                if table_format == Table.Format.OUTLINE:
+                    table_box = box.ROUNDED
+                if table_format == Table.Format.SIMPLE:
+                    table_box = box.MINIMAL
+                if table_format == Table.Format.HORIZONTAL_LINES:
+                    table_box = box.HORIZONTALS
+
+            rich_table = RichTable(show_header=bool(headers), box=table_box)
+            num_columns = max(len(alignments), len(column_styles), headers.num_columns if headers else 0)
+
+            for column_index in range(num_columns):
+                alignment = alignments[column_index] if len(alignments) > column_index else None
+                column_style = column_styles[column_index] if len(column_styles) > column_index else None
+                header = headers[column_index] if headers and headers.num_columns > column_index else None
+                justify = alignment.value if alignment else None
+
+                if header:
+                    rich_table.add_column(str(header), style=column_style, justify=justify)  # type: ignore[arg-type]
+                else:
+                    rich_table.add_column(style=column_style, justify=justify)  # type: ignore[arg-type]
+
+            indices = set(separator_indices) if separator_indices else set()
+
+            for row_index, row in enumerate(rows):
+                rich_table.add_row(
+                    *(
+                        str(row[column_index]) if len(row) > column_index and row[column_index] else None
+                        for column_index in range(num_columns)
+                    ),
+                    end_section=row_index + 1 in indices,
+                )
+
+            return rich_table
+
+        return Text('<no data available>')
 
     def format(
         self,

@@ -6,7 +6,8 @@ Provides classes for representing models for the calibration of probabilities vi
 
 from dataclasses import dataclass, field
 from typing import override
-
+from rich.console import ConsoleRenderable, Group
+from rich.text import Text
 from mlrl.common.cython.probability_calibration import (
     IsotonicProbabilityCalibrationModel,
     IsotonicProbabilityCalibrationModelVisitor,
@@ -116,7 +117,7 @@ class IsotonicRegressionModel(TabularOutputData):
         return f'{(f"{prefix} " if prefix else "")}{list_index + 1} {self.COLUMN_PROBABILITIES}'
 
     @override
-    def to_text(self, options: Options, **kwargs) -> str | None:
+    def to_text(self, options: Options, **kwargs) -> str | ConsoleRenderable | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
@@ -125,7 +126,7 @@ class IsotonicRegressionModel(TabularOutputData):
 
         if table:
             columns = table.columns
-            result = ''
+            renderables: list[ConsoleRenderable] = []
 
             for list_index, _ in enumerate(range(0, table.num_columns, 2)):
                 bin_list_table = ColumnWiseTable()
@@ -138,12 +139,14 @@ class IsotonicRegressionModel(TabularOutputData):
                     header=self._format_probability_header(list_index),
                 )
 
-                if result:
-                    result += '\n'
+                if renderables:
+                    renderables.append(Text(''))
 
-                result += bin_list_table.format(auto_rotate=False)
+                renderables.append(
+                    bin_list_table.to_rich_table(auto_rotate=False, table_format=Table.Format.SIMPLE)
+                )
 
-            return result
+            return Group(*renderables) if renderables else None
 
         return None
 

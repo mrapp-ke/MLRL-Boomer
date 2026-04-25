@@ -103,8 +103,14 @@ class IndentationLevel:
         if self.level > 0:
             self.level -= 1
 
-    def print(self, message: str, style: Style | None = None, box: bool = False, box_title: str | None = None):
-        renderable: ConsoleRenderable = Text(message, style=style) if style else Text(message)
+    def print(
+        self,
+        message: str | ConsoleRenderable,
+        style: Style | None = None,
+        box: bool = False,
+        box_title: str | None = None,
+    ):
+        renderable = (Text(message, style=style) if style else Text(message)) if isinstance(message, str) else message
         console = get_console()
         level = self.level
 
@@ -187,7 +193,7 @@ class LogHandler(RichHandler):
         super().__init__(console=get_console(), show_time=False, show_level=False, show_path=False)
 
     @staticmethod
-    def format_message(message: str, log_level: int) -> str:
+    def format_message(message: str | ConsoleRenderable, log_level: int) -> str | ConsoleRenderable:
         """
         Formats a given log message, depending on a given log level.
 
@@ -195,8 +201,12 @@ class LogHandler(RichHandler):
         :param log_level:   The log level
         :return:            The formatted message
         """
-        symbol = LogHandler.SYMBOL_PER_LOG_LEVEL.get(log_level, '')
-        return symbol + (' ' if symbol else '') + message
+        if isinstance(message, str):
+            symbol = LogHandler.SYMBOL_PER_LOG_LEVEL.get(log_level, '')
+            prefix = symbol + (' ' if symbol else '')
+            return prefix + message
+
+        return message
 
     @staticmethod
     def get_style(log_level: int) -> Style | None:
@@ -214,13 +224,20 @@ class LogHandler(RichHandler):
         See :func:`rich.logging.RichHandler.render_message`
         """
         log_level = record.levelno
-        message = self.format_message(message, log_level)
-        message_style = self.get_style(log_level)
-        formatted_message = Text(message, style=message_style) if message_style else Text(message)
+        formatted_message = self.format_message(message, log_level)
+        renderable: ConsoleRenderable
+
+        if isinstance(formatted_message, str):
+            style = self.get_style(log_level)
+            renderable = Text(formatted_message, style=style) if style else Text(formatted_message)
+        else:
+            renderable = formatted_message
+
         indentation_level = INDENTATION_LEVEL.get()
         level = indentation_level.level
         prefix = Text(IndentationLevel.get_prefix(level), style=IndentationLevel.PREFIX_STYLE)
-        return prefix + formatted_message
+
+        return prefix + renderable
 
 
 class Log:
@@ -254,7 +271,12 @@ class Log:
             indentation_level.decrease()
 
     @staticmethod
-    def error(message: str, error: Exception | None = None, box: bool = False, box_title: str | None = None):
+    def error(
+        message: str | ConsoleRenderable,
+        error: Exception | None = None,
+        box: bool = False,
+        box_title: str | None = None,
+    ):
         """
         Writes a log message at level `Log.Level.ERROR` and terminates the build system.
 
@@ -274,7 +296,7 @@ class Log:
                 get_console().print_exception(extra_lines=2)
 
     @staticmethod
-    def warning(message: str, box: bool = False, box_title: str | None = None):
+    def warning(message: str | ConsoleRenderable, box: bool = False, box_title: str | None = None):
         """
         Writes a log message at level `Log.Level.WARNING`.
 
@@ -306,7 +328,7 @@ class Log:
             INDENTATION_LEVEL.get().print(message=formatted_message, style=style, box=box, box_title=box_title)
 
     @staticmethod
-    def info(message: str, box: bool = False, box_title: str | None = None):
+    def info(message: str | ConsoleRenderable, box: bool = False, box_title: str | None = None):
         """
         Writes a log message at level `Log.Level.INFO`.
 
@@ -365,7 +387,7 @@ class Log:
             get_console().print(IndentationLevel.IndentedRenderable(renderable, level=indentation_level.level))
 
     @staticmethod
-    def verbose(message: str, box: bool = False, box_title: str | None = None):
+    def verbose(message: str | ConsoleRenderable, box: bool = False, box_title: str | None = None):
         """
         Writes a log message at level `Log.Level.VERBOSE`.
 
