@@ -272,6 +272,7 @@ preprocessing
 preprocessors
 programmatically
 pseudocode
+quantizing
 refactorings
 regressors
 rng
