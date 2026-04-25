@@ -1,29 +1,38 @@
 mlrl-testbed mlrl.testbed_sklearn --mode batch --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id> --config python/tests/res/config/sklearn/regression/batch_config.yml --problem-type regression --save-evaluation true --save-meta-data false --save-meta-data true --save-all true --data-split cross-validation{num_folds=2} --n-estimators 1 --estimator RandomForestRegressor
-○ Writing output data to file "python/tests/res/tmp/<worker-id>/metadata.yml"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/metadata.yml"...
 Running 16 experiments...
+
 
 Running experiment (1 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset atp7d --estimator
-RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
-n-estimators_50/max-depth_2/dataset_atp7d/models --n-estimators 50 --parameter-save-dir
-n-estimators_50/max-depth_2/dataset_atp7d/parameters --problem-type regression --result-dir
-n-estimators_50/max-depth_2/dataset_atp7d/results --save-all true --save-evaluation true --save-meta-data false"...
-
+╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
+│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
+│ --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset atp7d --estimator                      │
+│ RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir                   │
+│ n-estimators_50/max-depth_2/dataset_atp7d/models --n-estimators 50 --parameter-save-dir                              │
+│ n-estimators_50/max-depth_2/dataset_atp7d/parameters --problem-type regression --result-dir                          │
+│ n-estimators_50/max-depth_2/dataset_atp7d/results --save-all true --save-evaluation true --save-meta-data false      │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 Starting experiment using the regression algorithm "RandomForestRegressor"...
 Performing fold 1 of 2-fold cross validation...
 
 Fold 1 / 2:
 
-○ Reading input data from file "python/tests/res/data/atp7d.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/atp7d.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d/results/data_characteristics_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d/parameters/parameters_fold-1.csv"...
+
 Fitting model to 148 training examples...
 ✓ Successfully fit model in <duration>
+
+Loading test dataset...
+✓ Successfully loaded test dataset!
+
 Predicting for 148 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -34,43 +43,54 @@ Mean Absolute Percentage Error (↓)     0.12
 Mean Squared Error (↓)              4960.77
 Median Absolute Error (↓)             26.25
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d/results/evaluation_test_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d/results/ground_truth_test_fold-1.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d/results/prediction_characteristics_test_fold-1.
 csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d/results/predictions_test_fold-1.arff"...
-○ Writing output data to file
+
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d/results/label_vectors_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d/models/model_fold-1.pickle"...
 ✓ Successfully finished experiment after <duration>
 
+
+
 Running experiment (2 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset atp7d --estimator
-RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
-n-estimators_50/max-depth_2/dataset_atp7d/models --n-estimators 50 --parameter-save-dir
-n-estimators_50/max-depth_2/dataset_atp7d/parameters --problem-type regression --result-dir
-n-estimators_50/max-depth_2/dataset_atp7d/results --save-all true --save-evaluation true --save-meta-data false"...
-
+╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
+│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
+│ --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset atp7d --estimator                      │
+│ RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir                   │
+│ n-estimators_50/max-depth_2/dataset_atp7d/models --n-estimators 50 --parameter-save-dir                              │
+│ n-estimators_50/max-depth_2/dataset_atp7d/parameters --problem-type regression --result-dir                          │
+│ n-estimators_50/max-depth_2/dataset_atp7d/results --save-all true --save-evaluation true --save-meta-data false      │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 Starting experiment using the regression algorithm "RandomForestRegressor"...
 Performing fold 2 of 2-fold cross validation...
 
 Fold 2 / 2:
 
-○ Reading input data from file "python/tests/res/data/atp7d.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/atp7d.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d/results/data_characteristics_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d/parameters/parameters_fold-2.csv"...
+
 Fitting model to 148 training examples...
 ✓ Successfully fit model in <duration>
+
+Loading test dataset...
+✓ Successfully loaded test dataset!
+
 Predicting for 148 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -81,46 +101,57 @@ Mean Absolute Percentage Error (↓)     0.11
 Mean Squared Error (↓)              3550.03
 Median Absolute Error (↓)             25.58
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d/results/evaluation_test_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d/results/ground_truth_test_fold-2.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d/results/prediction_characteristics_test_fold-2.
 csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d/results/predictions_test_fold-2.arff"...
-○ Writing output data to file
+
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d/results/label_vectors_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d/models/model_fold-2.pickle"...
 ✓ Successfully finished experiment after <duration>
 
+
+
 Running experiment (3 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset atp7d --estimator
-RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
-n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models --n-estimators 50 --parameter-save-dir
-n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters --problem-type regression --result-dir
-n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results --save-all true --save-evaluation true
---save-meta-data false"...
-
+╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
+│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
+│ --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset atp7d --estimator                      │
+│ RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4                 │
+│ --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models --n-estimators 50                 │
+│ --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters --problem-type regression │
+│ --result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results --save-all true --save-evaluation    │
+│ true --save-meta-data false                                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 Starting experiment using the regression algorithm "RandomForestRegressor"...
 Performing fold 1 of 2-fold cross validation...
 
 Fold 1 / 2:
 
-○ Reading input data from file "python/tests/res/data/atp7d.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/atp7d.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/data_characteristics_f
 old-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters/parameters_fold-1.c
 sv"...
+
 Fitting model to 148 training examples...
 ✓ Successfully fit model in <duration>
+
+Loading test dataset...
+✓ Successfully loaded test dataset!
+
 Predicting for 148 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -131,50 +162,61 @@ Mean Absolute Percentage Error (↓)     0.12
 Mean Squared Error (↓)              5023.36
 Median Absolute Error (↓)             26.45
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/evaluation_test_fold-1
 .csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/ground_truth_test_fold
 -1.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/prediction_characteris
 tics_test_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/predictions_test_fold-
 1.arff"...
-○ Writing output data to file
+
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/label_vectors_fold-1.c
 sv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models/model_fold-1.pickle"...
 ✓ Successfully finished experiment after <duration>
 
+
+
 Running experiment (4 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset atp7d --estimator
-RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
-n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models --n-estimators 50 --parameter-save-dir
-n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters --problem-type regression --result-dir
-n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results --save-all true --save-evaluation true
---save-meta-data false"...
-
+╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
+│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
+│ --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset atp7d --estimator                      │
+│ RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4                 │
+│ --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models --n-estimators 50                 │
+│ --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters --problem-type regression │
+│ --result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results --save-all true --save-evaluation    │
+│ true --save-meta-data false                                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 Starting experiment using the regression algorithm "RandomForestRegressor"...
 Performing fold 2 of 2-fold cross validation...
 
 Fold 2 / 2:
 
-○ Reading input data from file "python/tests/res/data/atp7d.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/atp7d.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/data_characteristics_f
 old-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters/parameters_fold-2.c
 sv"...
+
 Fitting model to 148 training examples...
 ✓ Successfully fit model in <duration>
+
+Loading test dataset...
+✓ Successfully loaded test dataset!
+
 Predicting for 148 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -185,47 +227,58 @@ Mean Absolute Percentage Error (↓)     0.11
 Mean Squared Error (↓)              3540.94
 Median Absolute Error (↓)             24.67
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/evaluation_test_fold-2
 .csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/ground_truth_test_fold
 -2.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/prediction_characteris
 tics_test_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/predictions_test_fold-
 2.arff"...
-○ Writing output data to file
+
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/label_vectors_fold-2.c
 sv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models/model_fold-2.pickle"...
 ✓ Successfully finished experiment after <duration>
 
+
+
 Running experiment (5 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset atp7d --estimator
-RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
-n-estimators_100/max-depth_2/dataset_atp7d/models --n-estimators 100 --parameter-save-dir
-n-estimators_100/max-depth_2/dataset_atp7d/parameters --problem-type regression --result-dir
-n-estimators_100/max-depth_2/dataset_atp7d/results --save-all true --save-evaluation true --save-meta-data false"...
-
+╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
+│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
+│ --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset atp7d --estimator                      │
+│ RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir                   │
+│ n-estimators_100/max-depth_2/dataset_atp7d/models --n-estimators 100 --parameter-save-dir                            │
+│ n-estimators_100/max-depth_2/dataset_atp7d/parameters --problem-type regression --result-dir                         │
+│ n-estimators_100/max-depth_2/dataset_atp7d/results --save-all true --save-evaluation true --save-meta-data false     │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 Starting experiment using the regression algorithm "RandomForestRegressor"...
 Performing fold 1 of 2-fold cross validation...
 
 Fold 1 / 2:
 
-○ Reading input data from file "python/tests/res/data/atp7d.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/atp7d.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d/results/data_characteristics_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d/parameters/parameters_fold-1.csv"...
+
 Fitting model to 148 training examples...
 ✓ Successfully fit model in <duration>
+
+Loading test dataset...
+✓ Successfully loaded test dataset!
+
 Predicting for 148 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -236,43 +289,54 @@ Mean Absolute Percentage Error (↓)     0.12
 Mean Squared Error (↓)              4781.26
 Median Absolute Error (↓)             25.57
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d/results/evaluation_test_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d/results/ground_truth_test_fold-1.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d/results/prediction_characteristics_test_fold-1
 .csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d/results/predictions_test_fold-1.arff"...
-○ Writing output data to file
+
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d/results/label_vectors_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d/models/model_fold-1.pickle"...
 ✓ Successfully finished experiment after <duration>
 
+
+
 Running experiment (6 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset atp7d --estimator
-RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
-n-estimators_100/max-depth_2/dataset_atp7d/models --n-estimators 100 --parameter-save-dir
-n-estimators_100/max-depth_2/dataset_atp7d/parameters --problem-type regression --result-dir
-n-estimators_100/max-depth_2/dataset_atp7d/results --save-all true --save-evaluation true --save-meta-data false"...
-
+╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
+│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
+│ --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset atp7d --estimator                      │
+│ RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir                   │
+│ n-estimators_100/max-depth_2/dataset_atp7d/models --n-estimators 100 --parameter-save-dir                            │
+│ n-estimators_100/max-depth_2/dataset_atp7d/parameters --problem-type regression --result-dir                         │
+│ n-estimators_100/max-depth_2/dataset_atp7d/results --save-all true --save-evaluation true --save-meta-data false     │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 Starting experiment using the regression algorithm "RandomForestRegressor"...
 Performing fold 2 of 2-fold cross validation...
 
 Fold 2 / 2:
 
-○ Reading input data from file "python/tests/res/data/atp7d.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/atp7d.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d/results/data_characteristics_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d/parameters/parameters_fold-2.csv"...
+
 Fitting model to 148 training examples...
 ✓ Successfully fit model in <duration>
+
+Loading test dataset...
+✓ Successfully loaded test dataset!
+
 Predicting for 148 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -283,46 +347,57 @@ Mean Absolute Percentage Error (↓)     0.11
 Mean Squared Error (↓)              3449.58
 Median Absolute Error (↓)             25.58
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d/results/evaluation_test_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d/results/ground_truth_test_fold-2.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d/results/prediction_characteristics_test_fold-2
 .csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d/results/predictions_test_fold-2.arff"...
-○ Writing output data to file
+
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d/results/label_vectors_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d/models/model_fold-2.pickle"...
 ✓ Successfully finished experiment after <duration>
 
+
+
 Running experiment (7 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset atp7d --estimator
-RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
-n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models --n-estimators 100 --parameter-save-dir
-n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters --problem-type regression --result-dir
-n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results --save-all true --save-evaluation true
---save-meta-data false"...
-
+╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
+│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
+│ --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset atp7d --estimator                      │
+│ RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4                 │
+│ --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models --n-estimators 100               │
+│ --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters --problem-type           │
+│ regression --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results --save-all true          │
+│ --save-evaluation true --save-meta-data false                                                                        │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 Starting experiment using the regression algorithm "RandomForestRegressor"...
 Performing fold 1 of 2-fold cross validation...
 
 Fold 1 / 2:
 
-○ Reading input data from file "python/tests/res/data/atp7d.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/atp7d.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/data_characteristics_
 fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters/parameters_fold-1.
 csv"...
+
 Fitting model to 148 training examples...
 ✓ Successfully fit model in <duration>
+
+Loading test dataset...
+✓ Successfully loaded test dataset!
+
 Predicting for 148 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -333,51 +408,62 @@ Mean Absolute Percentage Error (↓)     0.12
 Mean Squared Error (↓)              4788.65
 Median Absolute Error (↓)             25.62
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/evaluation_test_fold-
 1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/ground_truth_test_fol
 d-1.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/prediction_characteri
 stics_test_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/predictions_test_fold
 -1.arff"...
-○ Writing output data to file
+
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/label_vectors_fold-1.
 csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models/model_fold-1.pickle"..
 .
 ✓ Successfully finished experiment after <duration>
 
+
+
 Running experiment (8 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset atp7d --estimator
-RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
-n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models --n-estimators 100 --parameter-save-dir
-n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters --problem-type regression --result-dir
-n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results --save-all true --save-evaluation true
---save-meta-data false"...
-
+╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
+│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
+│ --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset atp7d --estimator                      │
+│ RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4                 │
+│ --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models --n-estimators 100               │
+│ --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters --problem-type           │
+│ regression --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results --save-all true          │
+│ --save-evaluation true --save-meta-data false                                                                        │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 Starting experiment using the regression algorithm "RandomForestRegressor"...
 Performing fold 2 of 2-fold cross validation...
 
 Fold 2 / 2:
 
-○ Reading input data from file "python/tests/res/data/atp7d.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/atp7d.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/data_characteristics_
 fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters/parameters_fold-2.
 csv"...
+
 Fitting model to 148 training examples...
 ✓ Successfully fit model in <duration>
+
+Loading test dataset...
+✓ Successfully loaded test dataset!
+
 Predicting for 148 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -388,50 +474,61 @@ Mean Absolute Percentage Error (↓)     0.11
 Mean Squared Error (↓)              3447.3
 Median Absolute Error (↓)             25.05
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/evaluation_test_fold-
 2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/ground_truth_test_fol
 d-2.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/prediction_characteri
 stics_test_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/predictions_test_fold
 -2.arff"...
-○ Writing output data to file
+
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/label_vectors_fold-2.
 csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models/model_fold-2.pickle"..
 .
 ✓ Successfully finished experiment after <duration>
 
+
+
 Running experiment (9 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset atp7d-binary
---estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
-n-estimators_50/max-depth_2/dataset_atp7d-binary/models --n-estimators 50 --parameter-save-dir
-n-estimators_50/max-depth_2/dataset_atp7d-binary/parameters --problem-type regression --result-dir
-n-estimators_50/max-depth_2/dataset_atp7d-binary/results --save-all true --save-evaluation true --save-meta-data
-false"...
-
+╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
+│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
+│ --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset atp7d-binary --estimator               │
+│ RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir                   │
+│ n-estimators_50/max-depth_2/dataset_atp7d-binary/models --n-estimators 50 --parameter-save-dir                       │
+│ n-estimators_50/max-depth_2/dataset_atp7d-binary/parameters --problem-type regression --result-dir                   │
+│ n-estimators_50/max-depth_2/dataset_atp7d-binary/results --save-all true --save-evaluation true --save-meta-data     │
+│ false                                                                                                                │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 Starting experiment using the regression algorithm "RandomForestRegressor"...
 Performing fold 1 of 2-fold cross validation...
 
 Fold 1 / 2:
 
-○ Reading input data from file "python/tests/res/data/atp7d-binary.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/atp7d-binary.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/atp7d-binary.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d-binary/results/data_characteristics_fold-1.csv"
 ...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d-binary/parameters/parameters_fold-1.csv"...
+
 Fitting model to 148 training examples...
 ✓ Successfully fit model in <duration>
+
+Loading test dataset...
+✓ Successfully loaded test dataset!
+
 Predicting for 148 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -442,46 +539,57 @@ Mean Absolute Percentage Error (↓)     0.12
 Mean Squared Error (↓)              4699.03
 Median Absolute Error (↓)             27.97
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d-binary/results/evaluation_test_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d-binary/results/ground_truth_test_fold-1.arff"..
 .
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d-binary/results/prediction_characteristics_test_
 fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d-binary/results/predictions_test_fold-1.arff"...
-○ Writing output data to file
+
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d-binary/results/label_vectors_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d-binary/models/model_fold-1.pickle"...
 ✓ Successfully finished experiment after <duration>
 
+
+
 Running experiment (10 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset atp7d-binary
---estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
-n-estimators_50/max-depth_2/dataset_atp7d-binary/models --n-estimators 50 --parameter-save-dir
-n-estimators_50/max-depth_2/dataset_atp7d-binary/parameters --problem-type regression --result-dir
-n-estimators_50/max-depth_2/dataset_atp7d-binary/results --save-all true --save-evaluation true --save-meta-data
-false"...
-
+╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
+│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
+│ --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset atp7d-binary --estimator               │
+│ RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir                   │
+│ n-estimators_50/max-depth_2/dataset_atp7d-binary/models --n-estimators 50 --parameter-save-dir                       │
+│ n-estimators_50/max-depth_2/dataset_atp7d-binary/parameters --problem-type regression --result-dir                   │
+│ n-estimators_50/max-depth_2/dataset_atp7d-binary/results --save-all true --save-evaluation true --save-meta-data     │
+│ false                                                                                                                │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 Starting experiment using the regression algorithm "RandomForestRegressor"...
 Performing fold 2 of 2-fold cross validation...
 
 Fold 2 / 2:
 
-○ Reading input data from file "python/tests/res/data/atp7d-binary.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/atp7d-binary.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/atp7d-binary.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d-binary/results/data_characteristics_fold-2.csv"
 ...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d-binary/parameters/parameters_fold-2.csv"...
+
 Fitting model to 148 training examples...
 ✓ Successfully fit model in <duration>
+
+Loading test dataset...
+✓ Successfully loaded test dataset!
+
 Predicting for 148 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -492,47 +600,58 @@ Mean Absolute Percentage Error (↓)     0.13
 Mean Squared Error (↓)              5396.22
 Median Absolute Error (↓)             28.95
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d-binary/results/evaluation_test_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d-binary/results/ground_truth_test_fold-2.arff"..
 .
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d-binary/results/prediction_characteristics_test_
 fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d-binary/results/predictions_test_fold-2.arff"...
-○ Writing output data to file
+
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d-binary/results/label_vectors_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d-binary/models/model_fold-2.pickle"...
 ✓ Successfully finished experiment after <duration>
 
+
+
 Running experiment (11 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset atp7d-binary
---estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4
---model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models --n-estimators 50
---parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters --problem-type
-regression --result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results --save-all true
---save-evaluation true --save-meta-data false"...
-
+╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
+│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
+│ --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset atp7d-binary --estimator               │
+│ RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4                 │
+│ --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models --n-estimators 50          │
+│ --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters --problem-type     │
+│ regression --result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results --save-all true    │
+│ --save-evaluation true --save-meta-data false                                                                        │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 Starting experiment using the regression algorithm "RandomForestRegressor"...
 Performing fold 1 of 2-fold cross validation...
 
 Fold 1 / 2:
 
-○ Reading input data from file "python/tests/res/data/atp7d-binary.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/atp7d-binary.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/atp7d-binary.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/data_characteri
 stics_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters/parameters_f
 old-1.csv"...
+
 Fitting model to 148 training examples...
 ✓ Successfully fit model in <duration>
+
+Loading test dataset...
+✓ Successfully loaded test dataset!
+
 Predicting for 148 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -543,51 +662,62 @@ Mean Absolute Percentage Error (↓)     0.12
 Mean Squared Error (↓)              4789.55
 Median Absolute Error (↓)             27.44
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/evaluation_test
 _fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/ground_truth_te
 st_fold-1.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/prediction_char
 acteristics_test_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/predictions_tes
 t_fold-1.arff"...
-○ Writing output data to file
+
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/label_vectors_f
 old-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models/model_fold-1.pic
 kle"...
 ✓ Successfully finished experiment after <duration>
 
+
+
 Running experiment (12 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset atp7d-binary
---estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4
---model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models --n-estimators 50
---parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters --problem-type
-regression --result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results --save-all true
---save-evaluation true --save-meta-data false"...
-
+╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
+│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
+│ --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset atp7d-binary --estimator               │
+│ RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4                 │
+│ --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models --n-estimators 50          │
+│ --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters --problem-type     │
+│ regression --result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results --save-all true    │
+│ --save-evaluation true --save-meta-data false                                                                        │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 Starting experiment using the regression algorithm "RandomForestRegressor"...
 Performing fold 2 of 2-fold cross validation...
 
 Fold 2 / 2:
 
-○ Reading input data from file "python/tests/res/data/atp7d-binary.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/atp7d-binary.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/atp7d-binary.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/data_characteri
 stics_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters/parameters_f
 old-2.csv"...
+
 Fitting model to 148 training examples...
 ✓ Successfully fit model in <duration>
+
+Loading test dataset...
+✓ Successfully loaded test dataset!
+
 Predicting for 148 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -598,50 +728,61 @@ Mean Absolute Percentage Error (↓)     0.13
 Mean Squared Error (↓)              5333.59
 Median Absolute Error (↓)             27.68
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/evaluation_test
 _fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/ground_truth_te
 st_fold-2.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/prediction_char
 acteristics_test_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/predictions_tes
 t_fold-2.arff"...
-○ Writing output data to file
+
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/label_vectors_f
 old-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models/model_fold-2.pic
 kle"...
 ✓ Successfully finished experiment after <duration>
 
+
+
 Running experiment (13 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset atp7d-binary
---estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
-n-estimators_100/max-depth_2/dataset_atp7d-binary/models --n-estimators 100 --parameter-save-dir
-n-estimators_100/max-depth_2/dataset_atp7d-binary/parameters --problem-type regression --result-dir
-n-estimators_100/max-depth_2/dataset_atp7d-binary/results --save-all true --save-evaluation true --save-meta-data
-false"...
-
+╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
+│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
+│ --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset atp7d-binary --estimator               │
+│ RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir                   │
+│ n-estimators_100/max-depth_2/dataset_atp7d-binary/models --n-estimators 100 --parameter-save-dir                     │
+│ n-estimators_100/max-depth_2/dataset_atp7d-binary/parameters --problem-type regression --result-dir                  │
+│ n-estimators_100/max-depth_2/dataset_atp7d-binary/results --save-all true --save-evaluation true --save-meta-data    │
+│ false                                                                                                                │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 Starting experiment using the regression algorithm "RandomForestRegressor"...
 Performing fold 1 of 2-fold cross validation...
 
 Fold 1 / 2:
 
-○ Reading input data from file "python/tests/res/data/atp7d-binary.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/atp7d-binary.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/atp7d-binary.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d-binary/results/data_characteristics_fold-1.csv
 "...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d-binary/parameters/parameters_fold-1.csv"...
+
 Fitting model to 148 training examples...
 ✓ Successfully fit model in <duration>
+
+Loading test dataset...
+✓ Successfully loaded test dataset!
+
 Predicting for 148 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -652,47 +793,58 @@ Mean Absolute Percentage Error (↓)     0.13
 Mean Squared Error (↓)              4722.82
 Median Absolute Error (↓)             28.66
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d-binary/results/evaluation_test_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d-binary/results/ground_truth_test_fold-1.arff".
 ..
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d-binary/results/prediction_characteristics_test
 _fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d-binary/results/predictions_test_fold-1.arff"..
 .
-○ Writing output data to file
+
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d-binary/results/label_vectors_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d-binary/models/model_fold-1.pickle"...
 ✓ Successfully finished experiment after <duration>
 
+
+
 Running experiment (14 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset atp7d-binary
---estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
-n-estimators_100/max-depth_2/dataset_atp7d-binary/models --n-estimators 100 --parameter-save-dir
-n-estimators_100/max-depth_2/dataset_atp7d-binary/parameters --problem-type regression --result-dir
-n-estimators_100/max-depth_2/dataset_atp7d-binary/results --save-all true --save-evaluation true --save-meta-data
-false"...
-
+╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
+│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
+│ --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset atp7d-binary --estimator               │
+│ RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir                   │
+│ n-estimators_100/max-depth_2/dataset_atp7d-binary/models --n-estimators 100 --parameter-save-dir                     │
+│ n-estimators_100/max-depth_2/dataset_atp7d-binary/parameters --problem-type regression --result-dir                  │
+│ n-estimators_100/max-depth_2/dataset_atp7d-binary/results --save-all true --save-evaluation true --save-meta-data    │
+│ false                                                                                                                │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 Starting experiment using the regression algorithm "RandomForestRegressor"...
 Performing fold 2 of 2-fold cross validation...
 
 Fold 2 / 2:
 
-○ Reading input data from file "python/tests/res/data/atp7d-binary.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/atp7d-binary.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/atp7d-binary.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d-binary/results/data_characteristics_fold-2.csv
 "...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d-binary/parameters/parameters_fold-2.csv"...
+
 Fitting model to 148 training examples...
 ✓ Successfully fit model in <duration>
+
+Loading test dataset...
+✓ Successfully loaded test dataset!
+
 Predicting for 148 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -703,48 +855,59 @@ Mean Absolute Percentage Error (↓)     0.13
 Mean Squared Error (↓)              5528
 Median Absolute Error (↓)             28.15
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d-binary/results/evaluation_test_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d-binary/results/ground_truth_test_fold-2.arff".
 ..
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d-binary/results/prediction_characteristics_test
 _fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d-binary/results/predictions_test_fold-2.arff"..
 .
-○ Writing output data to file
+
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d-binary/results/label_vectors_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d-binary/models/model_fold-2.pickle"...
 ✓ Successfully finished experiment after <duration>
 
+
+
 Running experiment (15 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset atp7d-binary
---estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4
---model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models --n-estimators 100
---parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters --problem-type
-regression --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results --save-all true
---save-evaluation true --save-meta-data false"...
-
+╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
+│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
+│ --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset atp7d-binary --estimator               │
+│ RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4                 │
+│ --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models --n-estimators 100        │
+│ --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters --problem-type    │
+│ regression --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results --save-all true   │
+│ --save-evaluation true --save-meta-data false                                                                        │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 Starting experiment using the regression algorithm "RandomForestRegressor"...
 Performing fold 1 of 2-fold cross validation...
 
 Fold 1 / 2:
 
-○ Reading input data from file "python/tests/res/data/atp7d-binary.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/atp7d-binary.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/atp7d-binary.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/data_character
 istics_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters/parameters_
 fold-1.csv"...
+
 Fitting model to 148 training examples...
 ✓ Successfully fit model in <duration>
+
+Loading test dataset...
+✓ Successfully loaded test dataset!
+
 Predicting for 148 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -755,51 +918,62 @@ Mean Absolute Percentage Error (↓)     0.13
 Mean Squared Error (↓)              4807.69
 Median Absolute Error (↓)             28.52
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/evaluation_tes
 t_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/ground_truth_t
 est_fold-1.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/prediction_cha
 racteristics_test_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/predictions_te
 st_fold-1.arff"...
-○ Writing output data to file
+
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/label_vectors_
 fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models/model_fold-1.pi
 ckle"...
 ✓ Successfully finished experiment after <duration>
 
+
+
 Running experiment (16 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset atp7d-binary
---estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4
---model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models --n-estimators 100
---parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters --problem-type
-regression --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results --save-all true
---save-evaluation true --save-meta-data false"...
-
+╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
+│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
+│ --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset atp7d-binary --estimator               │
+│ RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4                 │
+│ --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models --n-estimators 100        │
+│ --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters --problem-type    │
+│ regression --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results --save-all true   │
+│ --save-evaluation true --save-meta-data false                                                                        │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 Starting experiment using the regression algorithm "RandomForestRegressor"...
 Performing fold 2 of 2-fold cross validation...
 
 Fold 2 / 2:
 
-○ Reading input data from file "python/tests/res/data/atp7d-binary.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/atp7d-binary.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/atp7d-binary.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/data_character
 istics_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters/parameters_
 fold-2.csv"...
+
 Fitting model to 148 training examples...
 ✓ Successfully fit model in <duration>
+
+Loading test dataset...
+✓ Successfully loaded test dataset!
+
 Predicting for 148 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -810,23 +984,26 @@ Mean Absolute Percentage Error (↓)     0.13
 Mean Squared Error (↓)              5489.56
 Median Absolute Error (↓)             26.95
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/evaluation_tes
 t_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/ground_truth_t
 est_fold-2.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/prediction_cha
 racteristics_test_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/predictions_te
 st_fold-2.arff"...
-○ Writing output data to file
+
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/label_vectors_
 fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models/model_fold-2.pi
 ckle"...
 ✓ Successfully finished experiment after <duration>
+
+
 ✓ Successfully finished 16 experiments after <duration>

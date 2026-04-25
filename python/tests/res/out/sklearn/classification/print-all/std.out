@@ -1,10 +1,14 @@
 mlrl-testbed mlrl.testbed_sklearn --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --save-meta-data false --save-meta-data true --print-all true --n-estimators 1 --estimator RandomForestClassifier
 Checking if output files do already exist...
+
 Starting experiment using the classification algorithm "RandomForestClassifier"...
-○ Writing output data to file "python/tests/res/tmp/<worker-id>/metadata.yml"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/metadata.yml"...
 Using separate training and test sets...
-○ Reading input data from file "python/tests/res/data/emotions.arff"...
+
+Loading training dataset...
+○ Reading from file "python/tests/res/data/emotions.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+✓ Successfully loaded training dataset!
 
 🗀 Data characteristics:
 
@@ -27,8 +31,13 @@ Distinct Label Vectors   23
 
 <no data available>
 
+
 Fitting model to 397 training examples...
 ✓ Successfully fit model in <duration>
+
+Loading test dataset...
+✓ Successfully loaded test dataset!
+
 Predicting for 196 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -51,7 +60,7 @@ Micro Recall (↑)            53.07
 Subset 0/1 Loss (↓)         81.12
 Subset Accuracy (↑)         18.88
 
-○ Writing output data to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
 
 🗀 Ground truth for test data:
 
@@ -463,6 +472,7 @@ Distinct Label Vectors  21
  [0 0 1 0 1 1]]
 
 
+
 🗀 Label vectors:
 
   Index  Label vector      Frequency
@@ -491,3 +501,4 @@ Distinct Label Vectors  21
      22  [2 5]                     1
 
 ✓ Successfully finished experiment after <duration>
+

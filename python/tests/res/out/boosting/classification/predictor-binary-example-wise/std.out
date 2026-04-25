@@ -1,14 +1,23 @@
 mlrl-testbed mlrl.boosting --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --save-meta-data false --save-meta-data true --print-predictions true --print-ground-truth true --print-label-vectors true --parallel-prediction false --parallel-rule-refinement false --parallel-statistic-update false --binary-predictor example-wise
 Checking if output files do already exist...
+
 Starting experiment using the classification algorithm "BoomerClassifier"...
-○ Writing output data to file "python/tests/res/tmp/<worker-id>/metadata.yml"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/metadata.yml"...
 Using separate training and test sets...
-○ Reading input data from file "python/tests/res/data/emotions.arff"...
+
+Loading training dataset...
+○ Reading from file "python/tests/res/data/emotions.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+✓ Successfully loaded training dataset!
+
 Fitting model to 397 training examples...
 ○ A dense matrix is used to store the feature values of the training examples
 ○ A dense matrix is used to store the labels of the training examples
 ✓ Successfully fit model in <duration>
+
+Loading test dataset...
+✓ Successfully loaded test dataset!
+
 Predicting for 196 test examples...
 ○ A dense matrix is used to store the feature values of the query examples
 ○ A dense matrix is used to store the predicted labels
@@ -33,7 +42,7 @@ Micro Recall (↑)            63.47
 Subset 0/1 Loss (↓)         68.88
 Subset Accuracy (↑)         31.12
 
-○ Writing output data to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
 
 🗀 Ground truth for test data:
 
@@ -435,6 +444,7 @@ Subset Accuracy (↑)         31.12
  [0 0 0 0 0 1]]
 
 
+
 🗀 Label vectors:
 
   Index  Label vector      Frequency
@@ -463,3 +473,4 @@ Subset Accuracy (↑)         31.12
      22  [2 5]                     1
 
 ✓ Successfully finished experiment after <duration>
+

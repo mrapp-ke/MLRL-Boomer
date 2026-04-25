@@ -9,6 +9,7 @@ from dataclasses import replace
 from pathlib import Path
 from typing import override
 
+from mlrl.testbed.log import Log
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.experiment import Experiment, ExperimentalProcedure
@@ -41,7 +42,10 @@ class OutputUtil:
             listeners = experiment.listeners
 
             for split in experiment.dataset_splitter.split(state):
-                training_state = split.get_state(DatasetType.TRAINING)
+                with Log.indented():
+                    Log.info('Loading training dataset...')
+                    training_state = split.get_state(DatasetType.TRAINING)
+                    Log.success('Successfully loaded training dataset!')
 
                 if training_state:
                     for listener in listeners:

@@ -1,48 +1,54 @@
 mlrl-testbed mlrl.testbed_sklearn --mode read --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id>/rerun --input-dir python/tests/res/tmp/<worker-id> --save-evaluation true --save-meta-data false --save-all true --estimator RandomForestClassifier
 Reading meta-data...
-○ Reading input data from file "python/tests/res/tmp/<worker-id>/metadata.yml"...
+○ Reading from file "python/tests/res/tmp/<worker-id>/metadata.yml"...
 ✓ Successfully read meta-data
-○ Checking for version conflicts...
+
+Checking for version conflicts...
 ○ Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is
 currently used
-○ No version conflicts detected
+✓ No version conflicts detected
+
 Reading experimental results of 8 experiments...
 
-Reading experimental results of experiment (1 / 8):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width
-120 --max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_emotions/models --n-estimators 50
---parameter-save-dir n-estimators_50/max-depth_2/dataset_emotions/parameters --result-dir
-n-estimators_50/max-depth_2/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false" that
-has originally been used for performing this experiment...
+Reading experimental results (1 / 8):
 
+╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
+│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
+│ --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2    │
+│ --model-save-dir n-estimators_50/max-depth_2/dataset_emotions/models --n-estimators 50 --parameter-save-dir          │
+│ n-estimators_50/max-depth_2/dataset_emotions/parameters --result-dir                                                 │
+│ n-estimators_50/max-depth_2/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false   │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 Using separate training and test sets...
-○ Reading input data from file
+
+Loading training dataset...
+✓ Successfully loaded training dataset!
+
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/results/data_characteristics.csv"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/results/evaluation_test.csv"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/results/ground_truth_test.arff"...
 ○ Parsing meta-data from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/results/ground_truth_test.xml"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/results/label_vectors.csv"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/results/prediction_characteristics_test.csv"
 ...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/results/predictions_test.arff"...
 ○ Parsing meta-data from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/results/predictions_test.xml"...
-○ Reading input data from file
-"python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/models/model.pickle"...
+○ Reading from file "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/models/model.pickle"...
 ✓ Successfully loaded model
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/parameters/parameters.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_2/dataset_emotions/results/data_characteristics.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_2/dataset_emotions/parameters/parameters.csv"...
 
 🗀 Evaluation result for test data:
@@ -64,65 +70,69 @@ Micro Recall (↑)            42.67
 Subset 0/1 Loss (↓)         80.61
 Subset Accuracy (↑)         19.39
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_2/dataset_emotions/results/evaluation_test.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_2/dataset_emotions/results/ground_truth_test.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_2/dataset_emotions/results/prediction_characteristics_tes
 t.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_2/dataset_emotions/results/predictions_test.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_2/dataset_emotions/results/label_vectors.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_2/dataset_emotions/models/model.pickle"...
 
-Reading experimental results of experiment (2 / 8):
+Reading experimental results (2 / 8):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width
-120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
-n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/models --n-estimators 50 --parameter-save-dir
-n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters --result-dir
-n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-all true --save-evaluation true
---save-meta-data false" that has originally been used for performing this experiment...
-
+╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
+│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
+│ --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4    │
+│ --max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/models             │
+│ --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters      │
+│ --result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-all true --save-evaluation │
+│ true --save-meta-data false                                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 Using separate training and test sets...
-○ Reading input data from file
+
+Loading training dataset...
+✓ Successfully loaded training dataset!
+
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/data_characteristic
 s.csv"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/evaluation_test.csv
 "...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/ground_truth_test.a
 rff"...
 ○ Parsing meta-data from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/ground_truth_test.x
 ml"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/label_vectors.csv".
 ..
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/prediction_characte
 ristics_test.csv"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/predictions_test.ar
 ff"...
 ○ Parsing meta-data from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/predictions_test.xm
 l"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/models/model.pickle"...
 ✓ Successfully loaded model
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters/parameters.csv".
 ..
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/data_characte
 ristics.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters/parameters
 .csv"...
 
@@ -145,60 +155,63 @@ Micro Recall (↑)            44.27
 Subset 0/1 Loss (↓)         78.57
 Subset Accuracy (↑)         21.43
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/evaluation_te
 st.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/ground_truth_
 test.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/prediction_ch
 aracteristics_test.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/predictions_t
 est.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/label_vectors
 .csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/models/model.pickle".
 ..
 
-Reading experimental results of experiment (3 / 8):
+Reading experimental results (3 / 8):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width
-120 --max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_emotions/models --n-estimators 100
---parameter-save-dir n-estimators_100/max-depth_2/dataset_emotions/parameters --result-dir
-n-estimators_100/max-depth_2/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false"
-that has originally been used for performing this experiment...
-
+╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
+│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
+│ --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2    │
+│ --model-save-dir n-estimators_100/max-depth_2/dataset_emotions/models --n-estimators 100 --parameter-save-dir        │
+│ n-estimators_100/max-depth_2/dataset_emotions/parameters --result-dir                                                │
+│ n-estimators_100/max-depth_2/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 Using separate training and test sets...
-○ Reading input data from file
+
+Loading training dataset...
+✓ Successfully loaded training dataset!
+
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/results/data_characteristics.csv"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/results/evaluation_test.csv"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/results/ground_truth_test.arff"...
 ○ Parsing meta-data from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/results/ground_truth_test.xml"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/results/label_vectors.csv"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/results/prediction_characteristics_test.csv
 "...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/results/predictions_test.arff"...
 ○ Parsing meta-data from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/results/predictions_test.xml"...
-○ Reading input data from file
-"python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/models/model.pickle"...
+○ Reading from file "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/models/model.pickle"...
 ✓ Successfully loaded model
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/parameters/parameters.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_2/dataset_emotions/results/data_characteristics.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_2/dataset_emotions/parameters/parameters.csv"...
 
 🗀 Evaluation result for test data:
@@ -220,65 +233,69 @@ Micro Recall (↑)            40
 Subset 0/1 Loss (↓)         80.61
 Subset Accuracy (↑)         19.39
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_2/dataset_emotions/results/evaluation_test.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_2/dataset_emotions/results/ground_truth_test.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_2/dataset_emotions/results/prediction_characteristics_te
 st.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_2/dataset_emotions/results/predictions_test.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_2/dataset_emotions/results/label_vectors.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_2/dataset_emotions/models/model.pickle"...
 
-Reading experimental results of experiment (4 / 8):
+Reading experimental results (4 / 8):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width
-120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
-n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/models --n-estimators 100 --parameter-save-dir
-n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters --result-dir
-n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-all true --save-evaluation true
---save-meta-data false" that has originally been used for performing this experiment...
-
+╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
+│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
+│ --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4    │
+│ --max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/models            │
+│ --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters    │
+│ --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-all true                  │
+│ --save-evaluation true --save-meta-data false                                                                        │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 Using separate training and test sets...
-○ Reading input data from file
+
+Loading training dataset...
+✓ Successfully loaded training dataset!
+
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/data_characteristi
 cs.csv"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/evaluation_test.cs
 v"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/ground_truth_test.
 arff"...
 ○ Parsing meta-data from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/ground_truth_test.
 xml"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/label_vectors.csv"
 ...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/prediction_charact
 eristics_test.csv"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/predictions_test.a
 rff"...
 ○ Parsing meta-data from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/predictions_test.x
 ml"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/models/model.pickle"...
 ✓ Successfully loaded model
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters/parameters.csv"
 ...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/data_charact
 eristics.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters/parameter
 s.csv"...
 
@@ -301,59 +318,62 @@ Micro Recall (↑)            42.4
 Subset 0/1 Loss (↓)         79.59
 Subset Accuracy (↑)         20.41
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/evaluation_t
 est.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/ground_truth
 _test.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/prediction_c
 haracteristics_test.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/predictions_
 test.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/label_vector
 s.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/models/model.pickle"
 ...
 
-Reading experimental results of experiment (5 / 8):
+Reading experimental results (5 / 8):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120
---max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_enron/models --n-estimators 50 --parameter-save-dir
-n-estimators_50/max-depth_2/dataset_enron/parameters --result-dir n-estimators_50/max-depth_2/dataset_enron/results
---save-all true --save-evaluation true --save-meta-data false" that has originally been used for performing this
-experiment...
-
+╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
+│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
+│ --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2       │
+│ --model-save-dir n-estimators_50/max-depth_2/dataset_enron/models --n-estimators 50 --parameter-save-dir             │
+│ n-estimators_50/max-depth_2/dataset_enron/parameters --result-dir n-estimators_50/max-depth_2/dataset_enron/results  │
+│ --save-all true --save-evaluation true --save-meta-data false                                                        │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 Using separate training and test sets...
-○ Reading input data from file
+
+Loading training dataset...
+✓ Successfully loaded training dataset!
+
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/results/data_characteristics.csv"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/results/evaluation_test.csv"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/results/ground_truth_test.arff"...
 ○ Parsing meta-data from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/results/ground_truth_test.xml"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/results/label_vectors.csv"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/results/prediction_characteristics_test.csv"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/results/predictions_test.arff"...
 ○ Parsing meta-data from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/results/predictions_test.xml"...
-○ Reading input data from file
-"python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/models/model.pickle"...
+○ Reading from file "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/models/model.pickle"...
 ✓ Successfully loaded model
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/parameters/parameters.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_2/dataset_enron/results/data_characteristics.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_2/dataset_enron/parameters/parameters.csv"...
 
 🗀 Evaluation result for test data:
@@ -375,62 +395,66 @@ Micro Recall (↑)            23.31
 Subset 0/1 Loss (↓)         98.4
 Subset Accuracy (↑)          1.6
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_2/dataset_enron/results/evaluation_test.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_2/dataset_enron/results/ground_truth_test.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_2/dataset_enron/results/prediction_characteristics_test.c
 sv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_2/dataset_enron/results/predictions_test.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_2/dataset_enron/results/label_vectors.csv"...
-○ Writing output data to file
-"python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_2/dataset_enron/models/model.pickle"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_2/dataset_enron/models/model.pickle"...
 
-Reading experimental results of experiment (6 / 8):
+Reading experimental results (6 / 8):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120
---max-depth 4 --max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models
---n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters
---result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-all true --save-evaluation true
---save-meta-data false" that has originally been used for performing this experiment...
-
+╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
+│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
+│ --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4       │
+│ --max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models --n-estimators │
+│ 50 --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters --result-dir           │
+│ n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-all true --save-evaluation true            │
+│ --save-meta-data false                                                                                               │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 Using separate training and test sets...
-○ Reading input data from file
+
+Loading training dataset...
+✓ Successfully loaded training dataset!
+
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/data_characteristics.c
 sv"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/evaluation_test.csv"..
 .
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/ground_truth_test.arff
 "...
 ○ Parsing meta-data from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/ground_truth_test.xml"
 ...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/label_vectors.csv"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/prediction_characteris
 tics_test.csv"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/predictions_test.arff"
 ...
 ○ Parsing meta-data from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/predictions_test.xml".
 ..
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models/model.pickle"...
 ✓ Successfully loaded model
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters/parameters.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/data_characteris
 tics.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters/parameters.cs
 v"...
 
@@ -453,59 +477,62 @@ Micro Recall (↑)            23.26
 Subset 0/1 Loss (↓)         98.4
 Subset Accuracy (↑)          1.6
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/evaluation_test.
 csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/ground_truth_tes
 t.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/prediction_chara
 cteristics_test.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/predictions_test
 .arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/label_vectors.cs
 v"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models/model.pickle"...
 
-Reading experimental results of experiment (7 / 8):
+Reading experimental results (7 / 8):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120
---max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_enron/models --n-estimators 100 --parameter-save-dir
-n-estimators_100/max-depth_2/dataset_enron/parameters --result-dir n-estimators_100/max-depth_2/dataset_enron/results
---save-all true --save-evaluation true --save-meta-data false" that has originally been used for performing this
-experiment...
-
+╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
+│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
+│ --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2       │
+│ --model-save-dir n-estimators_100/max-depth_2/dataset_enron/models --n-estimators 100 --parameter-save-dir           │
+│ n-estimators_100/max-depth_2/dataset_enron/parameters --result-dir                                                   │
+│ n-estimators_100/max-depth_2/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false     │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 Using separate training and test sets...
-○ Reading input data from file
+
+Loading training dataset...
+✓ Successfully loaded training dataset!
+
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/results/data_characteristics.csv"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/results/evaluation_test.csv"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/results/ground_truth_test.arff"...
 ○ Parsing meta-data from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/results/ground_truth_test.xml"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/results/label_vectors.csv"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/results/prediction_characteristics_test.csv"..
 .
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/results/predictions_test.arff"...
 ○ Parsing meta-data from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/results/predictions_test.xml"...
-○ Reading input data from file
-"python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/models/model.pickle"...
+○ Reading from file "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/models/model.pickle"...
 ✓ Successfully loaded model
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/parameters/parameters.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_2/dataset_enron/results/data_characteristics.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_2/dataset_enron/parameters/parameters.csv"...
 
 🗀 Evaluation result for test data:
@@ -527,62 +554,67 @@ Micro Recall (↑)            23.31
 Subset 0/1 Loss (↓)         98.4
 Subset Accuracy (↑)          1.6
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_2/dataset_enron/results/evaluation_test.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_2/dataset_enron/results/ground_truth_test.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_2/dataset_enron/results/prediction_characteristics_test.
 csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_2/dataset_enron/results/predictions_test.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_2/dataset_enron/results/label_vectors.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_2/dataset_enron/models/model.pickle"...
 
-Reading experimental results of experiment (8 / 8):
+Reading experimental results (8 / 8):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120
---max-depth 4 --max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models
---n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters
---result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-all true --save-evaluation true
---save-meta-data false" that has originally been used for performing this experiment...
-
+╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
+│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
+│ --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4       │
+│ --max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models               │
+│ --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters       │
+│ --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-all true --save-evaluation   │
+│ true --save-meta-data false                                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 Using separate training and test sets...
-○ Reading input data from file
+
+Loading training dataset...
+✓ Successfully loaded training dataset!
+
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/data_characteristics.
 csv"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/evaluation_test.csv".
 ..
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/ground_truth_test.arf
 f"...
 ○ Parsing meta-data from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/ground_truth_test.xml
 "...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/label_vectors.csv"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/prediction_characteri
 stics_test.csv"...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/predictions_test.arff
 "...
 ○ Parsing meta-data from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/predictions_test.xml"
 ...
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models/model.pickle"...
 ✓ Successfully loaded model
-○ Reading input data from file
+○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters/parameters.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/data_characteri
 stics.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters/parameters.c
 sv"...
 
@@ -605,22 +637,22 @@ Micro Recall (↑)            23.63
 Subset 0/1 Loss (↓)         98.4
 Subset Accuracy (↑)          1.6
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/evaluation_test
 .csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/ground_truth_te
 st.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/prediction_char
 acteristics_test.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/predictions_tes
 t.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/label_vectors.c
 sv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/rerun/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models/model.pickle"...
 
 🗀 Evaluation results of several experiments for test data:
@@ -1075,4 +1107,5 @@ Averages
 2.00                                      100
 4.00                        4             100
 
-○ Writing output data to file "python/tests/res/tmp/<worker-id>/rerun/aggregated_evaluation_test.csv"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/aggregated_evaluation_test.csv"...
+

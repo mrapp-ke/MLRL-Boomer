@@ -283,12 +283,13 @@ class Experiment(ABC):
 
             :param args: The command line arguments specified by the user
             """
-            should_predict = any(bool(output_writer.sinks) for output_writer in self.prediction_output_writers)
-            procedure = DefaultProcedure(
-                predict_for_training_dataset=should_predict and self.predict_for_training_dataset,
-                predict_for_test_dataset=should_predict and self.predict_for_test_dataset,
-            )
-            procedure.conduct_experiment(self.build(args))
+            with Log.indented():
+                should_predict = any(bool(output_writer.sinks) for output_writer in self.prediction_output_writers)
+                procedure = DefaultProcedure(
+                    predict_for_training_dataset=should_predict and self.predict_for_training_dataset,
+                    predict_for_test_dataset=should_predict and self.predict_for_test_dataset,
+                )
+                procedure.conduct_experiment(self.build(args))
 
         @abstractmethod
         def _create_experiment(
@@ -547,31 +548,41 @@ class DefaultProcedure(ExperimentalProcedure):
         listeners = experiment.listeners
 
         for split in experiment.dataset_splitter.split(state):
-            training_state = split.get_state(DatasetType.TRAINING)
+            with Log.indented():
+                Log.info('Loading training dataset...')
+                training_state = split.get_state(DatasetType.TRAINING)
+                Log.success('Successfully loaded training dataset!')
+
+                if training_state:
+                    for listener in listeners:
+                        training_state = listener.on_start(training_state)
+
+                    for listener in listeners:
+                        training_state = listener.before_training(training_state)
 
             if training_state:
-                for listener in listeners:
-                    training_state = listener.on_start(training_state)
-
-                for listener in listeners:
-                    training_state = listener.before_training(training_state)
-
                 # Train model...
                 training_result = experiment.training_procedure.train(
                     learner=training_state.training_result.learner if training_state.training_result else None,
                     parameters=training_state.parameters,
                     dataset=training_state.dataset,
                 )
-                training_state = replace(training_state, training_result=training_result)
-                test_state = split.get_state(DatasetType.TEST)
+
+                with Log.indented():
+                    Log.info('Loading test dataset...')
+                    training_state = replace(training_state, training_result=training_result)
+                    test_state = split.get_state(DatasetType.TEST)
+                    Log.success('Successfully loaded test dataset!')
 
                 # Obtain and evaluate predictions for training data, if necessary...
                 if self.predict_for_training_dataset or (self.predict_for_test_dataset and not test_state):
-                    self.__predict(experiment, training_state)
+                    with Log.indented():
+                        self.__predict(experiment, training_state)
 
                 # Obtain and evaluate predictions for test data, if necessary...
                 if test_state and self.predict_for_test_dataset:
-                    self.__predict(experiment, replace(test_state, training_result=training_result))
+                    with Log.indented():
+                        self.__predict(experiment, replace(test_state, training_result=training_result))
 
                 for listener in listeners:
                     training_state = listener.after_training(training_state)

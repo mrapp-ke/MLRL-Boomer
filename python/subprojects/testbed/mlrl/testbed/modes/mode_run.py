@@ -37,7 +37,7 @@ class RunMode(InputMode):
         input_directory: Path,
     ):
         meta_data_command = meta_data.command
-        Log.info(f'Re-running experiment "{meta_data_command}"...')
+        Log.info('Re-running experiment...')
         overridden_arguments = Command.from_argv().argument_list.filter(*self.INPUT_DIR.names, *Mode.MODE.names)
 
         if overridden_arguments:
@@ -46,9 +46,10 @@ class RunMode(InputMode):
             meta_data_command = Command.from_dict(meta_data_command.module_name, ArgumentDict(merged_arguments))
             Log.info(
                 f'Arguments "{format_iterable(overridden_arguments, separator=" ")}" modifying the original '
-                f'experiments have been provided. The resulting command is "{meta_data_command}"...'
+                f'experiments have been provided'
             )
 
+        Log.source_code(str(meta_data_command), language='bash', box_title='Command')
         Log.info('')
         subprocess.run(list(meta_data_command), check=False)
 
