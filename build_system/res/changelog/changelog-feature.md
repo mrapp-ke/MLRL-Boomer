@@ -1,6 +1,6 @@
 # Algorithmic Enhancements
 
-- The BOOMER algorithm now explicitly uses SIMD operations for parallelizing vector computations by default. This can be controlled via the command line argument `--simd`.
+- The BOOMER algorithm now explicitly uses SIMD operations for parallelizing vector computations. This can be controlled via the command line argument `--simd`.
 
 # mlrl-testbed
 
