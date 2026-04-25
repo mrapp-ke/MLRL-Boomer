@@ -121,7 +121,9 @@ class IndentationLevel:
 
     @staticmethod
     def decorate_with_box(renderable: ConsoleRenderable, box_title: str | None = None) -> ConsoleRenderable:
-        return Panel.fit(renderable, title=Text(box_title, style=Style(bold=True)) if box_title else None)
+        return Panel.fit(
+            renderable, title=Text(box_title, style=Style(bold=True)) if box_title else None, padding=(1, 1)
+        )
 
     @staticmethod
     def get_prefix(level: int, prefix: str = '│') -> str:
