@@ -1,23 +1,30 @@
 mlrl-testbed mlrl.boosting --mode read --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id>/rerun --input-dir python/tests/res/tmp/<worker-id> --save-evaluation true --save-meta-data false --print-evaluation true --save-evaluation true
 Reading meta-data...
-○ Reading input data from file "python/tests/res/tmp/<worker-id>/metadata.yml"...
+○ Reading from file "python/tests/res/tmp/<worker-id>/metadata.yml"...
 ✓ Successfully read meta-data
-○ Checking for version conflicts...
+
+Checking for version conflicts...
 ○ Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is
 currently used
-○ No version conflicts detected
+✓ No version conflicts detected
+
 Reading experimental results of 1 experiment...
 
-Reading experimental results of experiment (1 / 1):
 
-Running command "mlrl-testbed mlrl.boosting --log-width 120 --log-plain --log-level debug --base-dir
-python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation
-true --save-meta-data false --save-meta-data true --incremental-evaluation true{step_size=50} --print-evaluation true
---save-evaluation true --parallel-prediction false --parallel-rule-refinement false --parallel-statistic-update false"
-that has originally been used for performing this experiment...
+Reading experimental results (1 / 1):
 
+╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
+│ mlrl-testbed mlrl.boosting --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id>    │
+│ --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --save-meta-data     │
+│ false --save-meta-data true --incremental-evaluation true{step_size=50} --print-evaluation true --save-evaluation    │
+│ true --parallel-prediction false --parallel-rule-refinement false --parallel-statistic-update false                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 Using separate training and test sets...
-○ Reading input data from file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
+
+Loading training dataset...
+✓ Successfully loaded training dataset!
+
+○ Reading from file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 50:
 
@@ -38,7 +45,7 @@ Micro Recall (↑)            56
 Subset 0/1 Loss (↓)         72.45
 Subset Accuracy (↑)         27.55
 
-○ Writing output data to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 100:
 
@@ -59,7 +66,7 @@ Micro Recall (↑)            57.33
 Subset 0/1 Loss (↓)         73.47
 Subset Accuracy (↑)         26.53
 
-○ Writing output data to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 150:
 
@@ -80,7 +87,7 @@ Micro Recall (↑)            60.27
 Subset 0/1 Loss (↓)         70.41
 Subset Accuracy (↑)         29.59
 
-○ Writing output data to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 200:
 
@@ -101,7 +108,7 @@ Micro Recall (↑)            59.73
 Subset 0/1 Loss (↓)         69.9
 Subset Accuracy (↑)         30.1
 
-○ Writing output data to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 250:
 
@@ -122,7 +129,7 @@ Micro Recall (↑)            60.53
 Subset 0/1 Loss (↓)         69.9
 Subset Accuracy (↑)         30.1
 
-○ Writing output data to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 300:
 
@@ -143,7 +150,7 @@ Micro Recall (↑)            61.07
 Subset 0/1 Loss (↓)         71.94
 Subset Accuracy (↑)         28.06
 
-○ Writing output data to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 350:
 
@@ -164,7 +171,7 @@ Micro Recall (↑)            61.33
 Subset 0/1 Loss (↓)         70.41
 Subset Accuracy (↑)         29.59
 
-○ Writing output data to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 400:
 
@@ -185,7 +192,7 @@ Micro Recall (↑)            62.67
 Subset 0/1 Loss (↓)         67.86
 Subset Accuracy (↑)         32.14
 
-○ Writing output data to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 450:
 
@@ -206,7 +213,7 @@ Micro Recall (↑)            61.07
 Subset 0/1 Loss (↓)         69.9
 Subset Accuracy (↑)         30.1
 
-○ Writing output data to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 500:
 
@@ -227,7 +234,7 @@ Micro Recall (↑)            61.87
 Subset 0/1 Loss (↓)         70.92
 Subset Accuracy (↑)         29.08
 
-○ Writing output data to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 550:
 
@@ -248,7 +255,7 @@ Micro Recall (↑)            61.87
 Subset 0/1 Loss (↓)         71.43
 Subset Accuracy (↑)         28.57
 
-○ Writing output data to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 600:
 
@@ -269,7 +276,7 @@ Micro Recall (↑)            61.6
 Subset 0/1 Loss (↓)         69.9
 Subset Accuracy (↑)         30.1
 
-○ Writing output data to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 650:
 
@@ -290,7 +297,7 @@ Micro Recall (↑)            61.87
 Subset 0/1 Loss (↓)         70.92
 Subset Accuracy (↑)         29.08
 
-○ Writing output data to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 700:
 
@@ -311,7 +318,7 @@ Micro Recall (↑)            61.87
 Subset 0/1 Loss (↓)         70.92
 Subset Accuracy (↑)         29.08
 
-○ Writing output data to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 750:
 
@@ -332,7 +339,7 @@ Micro Recall (↑)            61.87
 Subset 0/1 Loss (↓)         69.9
 Subset Accuracy (↑)         30.1
 
-○ Writing output data to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 800:
 
@@ -353,7 +360,7 @@ Micro Recall (↑)            61.6
 Subset 0/1 Loss (↓)         69.9
 Subset Accuracy (↑)         30.1
 
-○ Writing output data to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 850:
 
@@ -374,7 +381,7 @@ Micro Recall (↑)            61.6
 Subset 0/1 Loss (↓)         69.9
 Subset Accuracy (↑)         30.1
 
-○ Writing output data to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 900:
 
@@ -395,7 +402,7 @@ Micro Recall (↑)            61.6
 Subset 0/1 Loss (↓)         69.39
 Subset Accuracy (↑)         30.61
 
-○ Writing output data to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 950:
 
@@ -416,7 +423,7 @@ Micro Recall (↑)            61.87
 Subset 0/1 Loss (↓)         69.39
 Subset Accuracy (↑)         30.61
 
-○ Writing output data to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 1000:
 
@@ -437,4 +444,5 @@ Micro Recall (↑)            61.6
 Subset 0/1 Loss (↓)         69.39
 Subset Accuracy (↑)         30.61
 
-○ Writing output data to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
+
