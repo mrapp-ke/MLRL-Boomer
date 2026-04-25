@@ -132,13 +132,16 @@ class IndentationLevel:
         :param prefix:  A text that should be printed before the log message
         :return:        A prefix
         """
-        text = ''
+        if not PLAIN:
+            text = ''
 
-        for i in range(level):
-            symbol = prefix if i == level - 1 else '│'
-            text += f' {symbol}'
+            for i in range(level):
+                symbol = prefix if i == level - 1 else '│'
+                text += f' {symbol}'
 
-        return f'{text} '
+            return f'{text} ' if level > 0 else text
+
+        return ''
 
 
 INDENTATION_LEVEL: ContextVar[IndentationLevel] = ContextVar('indentation_level', default=IndentationLevel(level=0))
@@ -235,12 +238,17 @@ class Log:
 
         try:
             indentation_level.increase()
-            prefix = IndentationLevel.get_prefix(level=indentation_level.level, prefix='╭')
-            console.print(Text(prefix, style=IndentationLevel.PREFIX_STYLE))
+
+            if not PLAIN:
+                prefix = IndentationLevel.get_prefix(level=indentation_level.level, prefix='╭')
+                console.print(Text(prefix, style=IndentationLevel.PREFIX_STYLE))
+
             yield
         finally:
-            prefix = IndentationLevel.get_prefix(level=indentation_level.level, prefix='╰')
-            console.print(Text(prefix, style=IndentationLevel.PREFIX_STYLE))
+            if not PLAIN:
+                prefix = IndentationLevel.get_prefix(level=indentation_level.level, prefix='╰')
+                console.print(Text(prefix, style=IndentationLevel.PREFIX_STYLE))
+
             indentation_level.decrease()
             prefix = IndentationLevel.get_prefix(level=indentation_level.level)
             console.print(Text(prefix), style=IndentationLevel.PREFIX_STYLE)
