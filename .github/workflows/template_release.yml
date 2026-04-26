@@ -21,7 +21,7 @@ jobs:
         uses: actions/create-github-app-token@v3
         id: app-token
         with:
-          app-id: ${{ secrets.token_app_id }}
+          client-id: ${{ secrets.token_app_id }}
           private-key: ${{ secrets.token_app_secret }}
       - name: Determine release version
         uses: juliangruber/read-file-action@v1
