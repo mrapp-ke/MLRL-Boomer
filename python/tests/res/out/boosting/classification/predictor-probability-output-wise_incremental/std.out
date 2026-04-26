@@ -10,15 +10,12 @@ Loading training dataset...
 ✓ Successfully loaded training dataset!
 ○ Reading from file "models/model.pickle"...
 ✗ The file "models/model.pickle" does not exist
-
 Fitting model to 397 training examples...
 ○ A dense matrix is used to store the feature values of the training examples
 ○ A dense matrix is used to store the labels of the training examples
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 ○ A dense matrix is used to store the feature values of the query examples
 ○ A dense matrix is used to store the predicted probability estimates
 Predicting for 196 test examples using a model of size 50...
@@ -382,7 +379,6 @@ Ranking Loss (↓)                      0.16
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
 
-
 🗀 Marginal probability calibration model:
 
   Label 1 thresholds    Label 1 probabilities
@@ -446,4 +442,3 @@ Ranking Loss (↓)                      0.16
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/marginal_probability_calibration_model.csv"...
 ○ Writing to file "python/tests/res/tmp/<worker-id>/models/model.pickle"...
 ✓ Successfully finished experiment after <duration>
-

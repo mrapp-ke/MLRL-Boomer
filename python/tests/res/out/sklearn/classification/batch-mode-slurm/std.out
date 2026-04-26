@@ -5,13 +5,13 @@ Submitting 8 experiments to Slurm...
 
 Submitting Slurm job (1 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2    │
-│ --model-save-dir n-estimators_50/max-depth_2/dataset_emotions/models --n-estimators 50 --parameter-save-dir          │
-│ n-estimators_50/max-depth_2/dataset_emotions/parameters --result-dir                                                 │
-│ n-estimators_50/max-depth_2/dataset_emotions/results --save-evaluation true --save-meta-data false                   │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
+n-estimators_50/max-depth_2/dataset_emotions/models --n-estimators 50 --parameter-save-dir
+n-estimators_50/max-depth_2/dataset_emotions/parameters --result-dir
+n-estimators_50/max-depth_2/dataset_emotions/results --save-evaluation true --save-meta-data false
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/emotions_1.sh"
 Slurm script:
 
@@ -34,17 +34,15 @@ n-estimators_50/max-depth_2/dataset_emotions/results --save-evaluation true --sa
 deactivate
 
 
-
 Submitting Slurm job (2 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4    │
-│ --max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/models             │
-│ --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters      │
-│ --result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-evaluation true            │
-│ --save-meta-data false                                                                                               │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes
+4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/models --n-estimators 50
+--parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters --result-dir
+n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-evaluation true --save-meta-data false
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/emotions_2.sh"
 Slurm script:
 
@@ -69,16 +67,15 @@ n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-eva
 deactivate
 
 
-
 Submitting Slurm job (3 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2    │
-│ --model-save-dir n-estimators_100/max-depth_2/dataset_emotions/models --n-estimators 100 --parameter-save-dir        │
-│ n-estimators_100/max-depth_2/dataset_emotions/parameters --result-dir                                                │
-│ n-estimators_100/max-depth_2/dataset_emotions/results --save-evaluation true --save-meta-data false                  │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
+n-estimators_100/max-depth_2/dataset_emotions/models --n-estimators 100 --parameter-save-dir
+n-estimators_100/max-depth_2/dataset_emotions/parameters --result-dir
+n-estimators_100/max-depth_2/dataset_emotions/results --save-evaluation true --save-meta-data false
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/emotions_3.sh"
 Slurm script:
 
@@ -101,17 +98,15 @@ n-estimators_100/max-depth_2/dataset_emotions/results --save-evaluation true --s
 deactivate
 
 
-
 Submitting Slurm job (4 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4    │
-│ --max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/models            │
-│ --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters    │
-│ --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-evaluation true           │
-│ --save-meta-data false                                                                                               │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes
+4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/models --n-estimators 100
+--parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters --result-dir
+n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-evaluation true --save-meta-data false
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/emotions_4.sh"
 Slurm script:
 
@@ -136,16 +131,15 @@ n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-ev
 deactivate
 
 
-
 Submitting Slurm job (5 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2       │
-│ --model-save-dir n-estimators_50/max-depth_2/dataset_enron/models --n-estimators 50 --parameter-save-dir             │
-│ n-estimators_50/max-depth_2/dataset_enron/parameters --result-dir n-estimators_50/max-depth_2/dataset_enron/results  │
-│ --save-evaluation true --save-meta-data false                                                                        │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
+n-estimators_50/max-depth_2/dataset_enron/models --n-estimators 50 --parameter-save-dir
+n-estimators_50/max-depth_2/dataset_enron/parameters --result-dir n-estimators_50/max-depth_2/dataset_enron/results
+--save-evaluation true --save-meta-data false
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/enron_5.sh"
 Slurm script:
 
@@ -168,16 +162,15 @@ n-estimators_50/max-depth_2/dataset_enron/parameters --result-dir n-estimators_5
 deactivate
 
 
-
 Submitting Slurm job (6 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4       │
-│ --max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models --n-estimators │
-│ 50 --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters --result-dir           │
-│ n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-evaluation true --save-meta-data false     │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4
+--model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models --n-estimators 50
+--parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters --result-dir
+n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-evaluation true --save-meta-data false
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/enron_6.sh"
 Slurm script:
 
@@ -201,16 +194,15 @@ n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-evalua
 deactivate
 
 
-
 Submitting Slurm job (7 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2       │
-│ --model-save-dir n-estimators_100/max-depth_2/dataset_enron/models --n-estimators 100 --parameter-save-dir           │
-│ n-estimators_100/max-depth_2/dataset_enron/parameters --result-dir                                                   │
-│ n-estimators_100/max-depth_2/dataset_enron/results --save-evaluation true --save-meta-data false                     │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
+n-estimators_100/max-depth_2/dataset_enron/models --n-estimators 100 --parameter-save-dir
+n-estimators_100/max-depth_2/dataset_enron/parameters --result-dir n-estimators_100/max-depth_2/dataset_enron/results
+--save-evaluation true --save-meta-data false
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/enron_7.sh"
 Slurm script:
 
@@ -233,17 +225,15 @@ n-estimators_100/max-depth_2/dataset_enron/parameters --result-dir n-estimators_
 deactivate
 
 
-
 Submitting Slurm job (8 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4       │
-│ --max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models               │
-│ --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters       │
-│ --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-evaluation true              │
-│ --save-meta-data false                                                                                               │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4
+--model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models --n-estimators 100
+--parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters --result-dir
+n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-evaluation true --save-meta-data false
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/enron_8.sh"
 Slurm script:
 
@@ -266,5 +256,4 @@ enron --estimator RandomForestClassifier --log-level debug --log-plain --log-wid
 --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters --result-dir
 n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-evaluation true --save-meta-data false
 deactivate
-
 

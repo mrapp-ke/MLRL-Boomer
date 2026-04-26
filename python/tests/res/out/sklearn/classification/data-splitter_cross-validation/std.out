@@ -10,13 +10,10 @@ Loading training dataset...
 ○ Reading from file "python/tests/res/data/emotions.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 ✓ Successfully loaded training dataset!
-
 Fitting model to 533 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 60 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -41,18 +38,14 @@ Subset Accuracy (↑)         26.67
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test_fold-1.csv"...
 
-
 Fold 2 / 10:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 Fitting model to 533 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 60 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -77,18 +70,14 @@ Subset Accuracy (↑)         21.67
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test_fold-2.csv"...
 
-
 Fold 3 / 10:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 Fitting model to 533 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 60 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -113,18 +102,14 @@ Subset Accuracy (↑)         10
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test_fold-3.csv"...
 
-
 Fold 4 / 10:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 Fitting model to 534 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 59 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -149,18 +134,14 @@ Subset Accuracy (↑)         22.03
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test_fold-4.csv"...
 
-
 Fold 5 / 10:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 Fitting model to 534 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 59 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -185,18 +166,14 @@ Subset Accuracy (↑)         18.64
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test_fold-5.csv"...
 
-
 Fold 6 / 10:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 Fitting model to 534 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 59 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -221,18 +198,14 @@ Subset Accuracy (↑)         23.73
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test_fold-6.csv"...
 
-
 Fold 7 / 10:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 Fitting model to 534 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 59 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -257,18 +230,14 @@ Subset Accuracy (↑)         22.03
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test_fold-7.csv"...
 
-
 Fold 8 / 10:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 Fitting model to 534 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 59 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -293,18 +262,14 @@ Subset Accuracy (↑)         27.12
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test_fold-8.csv"...
 
-
 Fold 9 / 10:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 Fitting model to 534 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 59 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -329,18 +294,14 @@ Subset Accuracy (↑)         22.03
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test_fold-9.csv"...
 
-
 Fold 10 / 10:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 Fitting model to 534 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 59 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -385,6 +346,4 @@ Subset 0/1 Loss (↓)         78.91  ±4.73
 Subset Accuracy (↑)         21.09  ±4.73
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
-
 ✓ Successfully finished experiment after <duration>
-

@@ -2,28 +2,26 @@ mlrl-testbed mlrl.testbed_sklearn --mode read --log-width 120 --log-plain --log-
 Reading meta-data...
 ○ Reading from file "python/tests/res/tmp/<worker-id>/metadata.yml"...
 ✓ Successfully read meta-data
-
 Checking for version conflicts...
 ○ Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is
 currently used
 ✓ No version conflicts detected
-
 Reading experimental results of 1 experiment...
 
 
 Reading experimental results (1 / 1):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --log-width 120 --log-plain --log-level debug --base-dir                           │
-│ python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset emotions --result-dir results               │
-│ --model-save-dir models --parameter-save-dir results --save-evaluation true --save-meta-data false --save-meta-data  │
-│ true --save-all true --n-estimators 1 --estimator RandomForestClassifier                                             │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id>
+--data-dir python/tests/res/data --dataset emotions --result-dir results --model-save-dir models --parameter-save-dir
+results --save-evaluation true --save-meta-data false --save-meta-data true --save-all true --n-estimators 1 --estimator
+RandomForestClassifier
+
 Using separate training and test sets...
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 ○ Reading from file "python/tests/res/tmp/<worker-id>/results/data_characteristics.csv"...
 ○ Reading from file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
 ○ Reading from file "python/tests/res/tmp/<worker-id>/results/ground_truth_test.arff"...
@@ -63,4 +61,3 @@ Subset Accuracy (↑)         18.88
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/predictions_test.arff"...
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/label_vectors.csv"...
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/models/model.pickle"...
-

@@ -8,15 +8,12 @@ Loading training dataset...
 ○ Reading from file "python/tests/res/data/emotions.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 ✓ Successfully loaded training dataset!
-
 Fitting model to 397 training examples...
 ○ A dense matrix is used to store the feature values of the training examples
 ○ A dense matrix is used to store the labels of the training examples
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 196 test examples...
 ○ A dense matrix is used to store the feature values of the query examples
 ○ A dense matrix is used to store the predicted scores
@@ -437,6 +434,4 @@ Ranking Loss (↓)                      0.14
  [ -3.86  -0.8    2.9   -0.69  -3.66  -3.08]
  [ -5.62  -2.34  -2.46  -9.99  -4.23   1.93]]
 
-
 ✓ Successfully finished experiment after <duration>
-

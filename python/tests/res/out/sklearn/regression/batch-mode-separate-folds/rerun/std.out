@@ -2,32 +2,29 @@ mlrl-testbed mlrl.testbed_sklearn --mode read --log-width 120 --log-plain --log-
 Reading meta-data...
 ○ Reading from file "python/tests/res/tmp/<worker-id>/metadata.yml"...
 ✓ Successfully read meta-data
-
 Checking for version conflicts...
 ○ Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is
 currently used
 ✓ No version conflicts detected
-
 Reading experimental results of 8 experiments...
 
 
 Reading experimental results (1 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --data-split cross-validation{num_folds=2} --dataset atp7d --estimator RandomForestRegressor --log-level debug       │
-│ --log-plain --log-width 120 --max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_atp7d/models          │
-│ --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_2/dataset_atp7d/parameters --problem-type           │
-│ regression --result-dir n-estimators_50/max-depth_2/dataset_atp7d/results --save-all true --save-evaluation true     │
-│ --save-meta-data false                                                                                               │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
+cross-validation{num_folds=2} --dataset atp7d --estimator RandomForestRegressor --log-level debug --log-plain
+--log-width 120 --max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_atp7d/models --n-estimators 50
+--parameter-save-dir n-estimators_50/max-depth_2/dataset_atp7d/parameters --problem-type regression --result-dir
+n-estimators_50/max-depth_2/dataset_atp7d/results --save-all true --save-evaluation true --save-meta-data false
+
 Performing full 2-fold cross validation...
 
 Fold 1 / 2:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 ○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d/results/data_characteristics_fold-1.csv"...
 ○ Reading from file
@@ -81,7 +78,6 @@ Fold 2 / 2:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 ○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d/results/data_characteristics_fold-2.csv"...
 ○ Reading from file
@@ -143,22 +139,22 @@ old-2.csv"...
 
 Reading experimental results (2 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --data-split cross-validation{num_folds=2} --dataset atp7d --estimator RandomForestRegressor --log-level debug       │
-│ --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir                                        │
-│ n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models --n-estimators 50 --parameter-save-dir             │
-│ n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters --problem-type regression --result-dir         │
-│ n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results --save-all true --save-evaluation true            │
-│ --save-meta-data false                                                                                               │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
+cross-validation{num_folds=2} --dataset atp7d --estimator RandomForestRegressor --log-level debug --log-plain
+--log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
+n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models --n-estimators 50 --parameter-save-dir
+n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters --problem-type regression --result-dir
+n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results --save-all true --save-evaluation true
+--save-meta-data false
+
 Performing full 2-fold cross validation...
 
 Fold 1 / 2:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 ○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/data_characteristics_f
 old-1.csv"...
@@ -226,7 +222,6 @@ Fold 2 / 2:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 ○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/data_characteristics_f
 old-2.csv"...
@@ -303,21 +298,20 @@ le"...
 
 Reading experimental results (3 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --data-split cross-validation{num_folds=2} --dataset atp7d --estimator RandomForestRegressor --log-level debug       │
-│ --log-plain --log-width 120 --max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_atp7d/models         │
-│ --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_2/dataset_atp7d/parameters --problem-type         │
-│ regression --result-dir n-estimators_100/max-depth_2/dataset_atp7d/results --save-all true --save-evaluation true    │
-│ --save-meta-data false                                                                                               │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
+cross-validation{num_folds=2} --dataset atp7d --estimator RandomForestRegressor --log-level debug --log-plain
+--log-width 120 --max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_atp7d/models --n-estimators 100
+--parameter-save-dir n-estimators_100/max-depth_2/dataset_atp7d/parameters --problem-type regression --result-dir
+n-estimators_100/max-depth_2/dataset_atp7d/results --save-all true --save-evaluation true --save-meta-data false
+
 Performing full 2-fold cross validation...
 
 Fold 1 / 2:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 ○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d/results/data_characteristics_fold-1.csv"...
 ○ Reading from file
@@ -372,7 +366,6 @@ Fold 2 / 2:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 ○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d/results/data_characteristics_fold-2.csv"...
 ○ Reading from file
@@ -435,22 +428,22 @@ fold-2.csv"...
 
 Reading experimental results (4 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --data-split cross-validation{num_folds=2} --dataset atp7d --estimator RandomForestRegressor --log-level debug       │
-│ --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir                                        │
-│ n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models --n-estimators 100 --parameter-save-dir           │
-│ n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters --problem-type regression --result-dir        │
-│ n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results --save-all true --save-evaluation true           │
-│ --save-meta-data false                                                                                               │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
+cross-validation{num_folds=2} --dataset atp7d --estimator RandomForestRegressor --log-level debug --log-plain
+--log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
+n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models --n-estimators 100 --parameter-save-dir
+n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters --problem-type regression --result-dir
+n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results --save-all true --save-evaluation true
+--save-meta-data false
+
 Performing full 2-fold cross validation...
 
 Fold 1 / 2:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 ○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/data_characteristics_
 fold-1.csv"...
@@ -519,7 +512,6 @@ Fold 2 / 2:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 ○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/data_characteristics_
 fold-2.csv"...
@@ -597,22 +589,20 @@ kle"...
 
 Reading experimental results (5 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --data-split cross-validation{num_folds=2} --dataset atp7d-binary --estimator RandomForestRegressor --log-level      │
-│ debug --log-plain --log-width 120 --max-depth 2 --model-save-dir                                                     │
-│ n-estimators_50/max-depth_2/dataset_atp7d-binary/models --n-estimators 50 --parameter-save-dir                       │
-│ n-estimators_50/max-depth_2/dataset_atp7d-binary/parameters --problem-type regression --result-dir                   │
-│ n-estimators_50/max-depth_2/dataset_atp7d-binary/results --save-all true --save-evaluation true --save-meta-data     │
-│ false                                                                                                                │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
+cross-validation{num_folds=2} --dataset atp7d-binary --estimator RandomForestRegressor --log-level debug --log-plain
+--log-width 120 --max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_atp7d-binary/models --n-estimators 50
+--parameter-save-dir n-estimators_50/max-depth_2/dataset_atp7d-binary/parameters --problem-type regression --result-dir
+n-estimators_50/max-depth_2/dataset_atp7d-binary/results --save-all true --save-evaluation true --save-meta-data false
+
 Performing full 2-fold cross validation...
 
 Fold 1 / 2:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 ○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d-binary/results/data_characteristics_fold-1.csv"
 ...
@@ -673,7 +663,6 @@ Fold 2 / 2:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 ○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d-binary/results/data_characteristics_fold-2.csv"
 ...
@@ -742,22 +731,22 @@ ff"...
 
 Reading experimental results (6 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --data-split cross-validation{num_folds=2} --dataset atp7d-binary --estimator RandomForestRegressor --log-level      │
-│ debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir                                  │
-│ n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models --n-estimators 50 --parameter-save-dir      │
-│ n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters --problem-type regression --result-dir  │
-│ n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results --save-all true --save-evaluation true     │
-│ --save-meta-data false                                                                                               │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
+cross-validation{num_folds=2} --dataset atp7d-binary --estimator RandomForestRegressor --log-level debug --log-plain
+--log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
+n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models --n-estimators 50 --parameter-save-dir
+n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters --problem-type regression --result-dir
+n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results --save-all true --save-evaluation true
+--save-meta-data false
+
 Performing full 2-fold cross validation...
 
 Fold 1 / 2:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 ○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/data_characteri
 stics_fold-1.csv"...
@@ -826,7 +815,6 @@ Fold 2 / 2:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 ○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/data_characteri
 stics_fold-2.csv"...
@@ -904,22 +892,21 @@ tors_fold-2.csv"...
 
 Reading experimental results (7 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --data-split cross-validation{num_folds=2} --dataset atp7d-binary --estimator RandomForestRegressor --log-level      │
-│ debug --log-plain --log-width 120 --max-depth 2 --model-save-dir                                                     │
-│ n-estimators_100/max-depth_2/dataset_atp7d-binary/models --n-estimators 100 --parameter-save-dir                     │
-│ n-estimators_100/max-depth_2/dataset_atp7d-binary/parameters --problem-type regression --result-dir                  │
-│ n-estimators_100/max-depth_2/dataset_atp7d-binary/results --save-all true --save-evaluation true --save-meta-data    │
-│ false                                                                                                                │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
+cross-validation{num_folds=2} --dataset atp7d-binary --estimator RandomForestRegressor --log-level debug --log-plain
+--log-width 120 --max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_atp7d-binary/models --n-estimators
+100 --parameter-save-dir n-estimators_100/max-depth_2/dataset_atp7d-binary/parameters --problem-type regression
+--result-dir n-estimators_100/max-depth_2/dataset_atp7d-binary/results --save-all true --save-evaluation true
+--save-meta-data false
+
 Performing full 2-fold cross validation...
 
 Fold 1 / 2:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 ○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d-binary/results/data_characteristics_fold-1.csv
 "...
@@ -982,7 +969,6 @@ Fold 2 / 2:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 ○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d-binary/results/data_characteristics_fold-2.csv
 "...
@@ -1053,22 +1039,22 @@ rff"...
 
 Reading experimental results (8 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --data-split cross-validation{num_folds=2} --dataset atp7d-binary --estimator RandomForestRegressor --log-level      │
-│ debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir                                  │
-│ n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models --n-estimators 100 --parameter-save-dir    │
-│ n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters --problem-type regression --result-dir │
-│ n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results --save-all true --save-evaluation true    │
-│ --save-meta-data false                                                                                               │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
+cross-validation{num_folds=2} --dataset atp7d-binary --estimator RandomForestRegressor --log-level debug --log-plain
+--log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
+n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models --n-estimators 100 --parameter-save-dir
+n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters --problem-type regression --result-dir
+n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results --save-all true --save-evaluation true
+--save-meta-data false
+
 Performing full 2-fold cross validation...
 
 Fold 1 / 2:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 ○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/data_character
 istics_fold-1.csv"...
@@ -1137,7 +1123,6 @@ Fold 2 / 2:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 ○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/data_character
 istics_fold-2.csv"...
@@ -1366,4 +1351,3 @@ Averages
 4.00                           4             100
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/aggregated_evaluation_test.csv"...
-

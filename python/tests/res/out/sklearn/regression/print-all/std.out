@@ -28,13 +28,10 @@ Output Sparsity       0
 
 <no data available>
 
-
 Fitting model to 198 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 98 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -258,7 +255,6 @@ Output Sparsity    0
  [298. 397. 456. 513. 344. 513.]]
 
 
-
 🗀 Label vectors:
 
 Index         1
@@ -266,4 +262,3 @@ Label vector  [0 1 2 3 4 5]
 Frequency     198
 
 ✓ Successfully finished experiment after <duration>
-
