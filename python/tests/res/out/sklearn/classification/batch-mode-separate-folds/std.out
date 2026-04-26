@@ -1,29 +1,35 @@
 mlrl-testbed mlrl.testbed_sklearn --mode batch --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id> --config python/tests/res/config/sklearn/classification/batch_config.yml --save-evaluation true --save-meta-data false --save-meta-data true --save-all true --data-split cross-validation{num_folds=2} --n-estimators 1 --estimator RandomForestClassifier
-○ Writing output data to file "python/tests/res/tmp/<worker-id>/metadata.yml"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/metadata.yml"...
 Running 16 experiments...
+
 
 Running experiment (1 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset emotions --estimator
-RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
-n-estimators_50/max-depth_2/dataset_emotions/models --n-estimators 50 --parameter-save-dir
-n-estimators_50/max-depth_2/dataset_emotions/parameters --result-dir
-n-estimators_50/max-depth_2/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false"...
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
+cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset emotions --estimator RandomForestClassifier --log-level
+debug --log-plain --log-width 120 --max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_emotions/models
+--n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_2/dataset_emotions/parameters --result-dir
+n-estimators_50/max-depth_2/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false
 
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 1 of 2-fold cross validation...
 
 Fold 1 / 2:
 
-○ Reading input data from file "python/tests/res/data/emotions.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/emotions.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/results/data_characteristics_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/parameters/parameters_fold-1.csv"...
 Fitting model to 296 training examples...
 ✓ Successfully fit model in <duration>
+Loading test dataset...
+✓ Successfully loaded test dataset!
 Predicting for 297 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -46,43 +52,48 @@ Micro Recall (↑)            42.23
 Subset 0/1 Loss (↓)         80.81
 Subset Accuracy (↑)         19.19
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/results/evaluation_test_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/results/ground_truth_test_fold-1.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/results/prediction_characteristics_test_fold
 -1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/results/predictions_test_fold-1.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/results/label_vectors_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/models/model_fold-1.pickle"...
 ✓ Successfully finished experiment after <duration>
 
 Running experiment (2 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset emotions --estimator
-RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
-n-estimators_50/max-depth_2/dataset_emotions/models --n-estimators 50 --parameter-save-dir
-n-estimators_50/max-depth_2/dataset_emotions/parameters --result-dir
-n-estimators_50/max-depth_2/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false"...
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
+cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset emotions --estimator RandomForestClassifier --log-level
+debug --log-plain --log-width 120 --max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_emotions/models
+--n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_2/dataset_emotions/parameters --result-dir
+n-estimators_50/max-depth_2/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false
 
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 2 of 2-fold cross validation...
 
 Fold 2 / 2:
 
-○ Reading input data from file "python/tests/res/data/emotions.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/emotions.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/results/data_characteristics_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/parameters/parameters_fold-2.csv"...
 Fitting model to 297 training examples...
 ✓ Successfully fit model in <duration>
+Loading test dataset...
+✓ Successfully loaded test dataset!
 Predicting for 296 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -105,46 +116,52 @@ Micro Recall (↑)            42.99
 Subset 0/1 Loss (↓)         79.39
 Subset Accuracy (↑)         20.61
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/results/evaluation_test_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/results/ground_truth_test_fold-2.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/results/prediction_characteristics_test_fold
 -2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/results/predictions_test_fold-2.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/results/label_vectors_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/models/model_fold-2.pickle"...
 ✓ Successfully finished experiment after <duration>
 
 Running experiment (3 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset emotions --estimator
-RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
+cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset emotions --estimator RandomForestClassifier --log-level
+debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
 n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/models --n-estimators 50 --parameter-save-dir
 n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters --result-dir
 n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-all true --save-evaluation true
---save-meta-data false"...
+--save-meta-data false
 
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 1 of 2-fold cross validation...
 
 Fold 1 / 2:
 
-○ Reading input data from file "python/tests/res/data/emotions.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/emotions.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/data_characteristic
 s_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters/parameters_fold-
 1.csv"...
 Fitting model to 296 training examples...
 ✓ Successfully fit model in <duration>
+Loading test dataset...
+✓ Successfully loaded test dataset!
 Predicting for 297 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -167,51 +184,57 @@ Micro Recall (↑)            44.17
 Subset 0/1 Loss (↓)         78.79
 Subset Accuracy (↑)         21.21
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/evaluation_test_fol
 d-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/ground_truth_test_f
 old-1.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/prediction_characte
 ristics_test_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/predictions_test_fo
 ld-1.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/label_vectors_fold-
 1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/models/model_fold-1.pickle"
 ...
 ✓ Successfully finished experiment after <duration>
 
 Running experiment (4 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset emotions --estimator
-RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
+cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset emotions --estimator RandomForestClassifier --log-level
+debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
 n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/models --n-estimators 50 --parameter-save-dir
 n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters --result-dir
 n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-all true --save-evaluation true
---save-meta-data false"...
+--save-meta-data false
 
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 2 of 2-fold cross validation...
 
 Fold 2 / 2:
 
-○ Reading input data from file "python/tests/res/data/emotions.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/emotions.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/data_characteristic
 s_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters/parameters_fold-
 2.csv"...
 Fitting model to 297 training examples...
 ✓ Successfully fit model in <duration>
+Loading test dataset...
+✓ Successfully loaded test dataset!
 Predicting for 296 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -234,48 +257,53 @@ Micro Recall (↑)            44.83
 Subset 0/1 Loss (↓)         78.72
 Subset Accuracy (↑)         21.28
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/evaluation_test_fol
 d-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/ground_truth_test_f
 old-2.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/prediction_characte
 ristics_test_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/predictions_test_fo
 ld-2.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/label_vectors_fold-
 2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/models/model_fold-2.pickle"
 ...
 ✓ Successfully finished experiment after <duration>
 
 Running experiment (5 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset emotions --estimator
-RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
-n-estimators_100/max-depth_2/dataset_emotions/models --n-estimators 100 --parameter-save-dir
-n-estimators_100/max-depth_2/dataset_emotions/parameters --result-dir
-n-estimators_100/max-depth_2/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false"...
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
+cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset emotions --estimator RandomForestClassifier --log-level
+debug --log-plain --log-width 120 --max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_emotions/models
+--n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_2/dataset_emotions/parameters --result-dir
+n-estimators_100/max-depth_2/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false
 
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 1 of 2-fold cross validation...
 
 Fold 1 / 2:
 
-○ Reading input data from file "python/tests/res/data/emotions.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/emotions.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/results/data_characteristics_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/parameters/parameters_fold-1.csv"...
 Fitting model to 296 training examples...
 ✓ Successfully fit model in <duration>
+Loading test dataset...
+✓ Successfully loaded test dataset!
 Predicting for 297 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -298,43 +326,48 @@ Micro Recall (↑)            40.28
 Subset 0/1 Loss (↓)         81.14
 Subset Accuracy (↑)         18.86
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/results/evaluation_test_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/results/ground_truth_test_fold-1.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/results/prediction_characteristics_test_fol
 d-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/results/predictions_test_fold-1.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/results/label_vectors_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/models/model_fold-1.pickle"...
 ✓ Successfully finished experiment after <duration>
 
 Running experiment (6 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset emotions --estimator
-RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
-n-estimators_100/max-depth_2/dataset_emotions/models --n-estimators 100 --parameter-save-dir
-n-estimators_100/max-depth_2/dataset_emotions/parameters --result-dir
-n-estimators_100/max-depth_2/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false"...
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
+cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset emotions --estimator RandomForestClassifier --log-level
+debug --log-plain --log-width 120 --max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_emotions/models
+--n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_2/dataset_emotions/parameters --result-dir
+n-estimators_100/max-depth_2/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false
 
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 2 of 2-fold cross validation...
 
 Fold 2 / 2:
 
-○ Reading input data from file "python/tests/res/data/emotions.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/emotions.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/results/data_characteristics_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/parameters/parameters_fold-2.csv"...
 Fitting model to 297 training examples...
 ✓ Successfully fit model in <duration>
+Loading test dataset...
+✓ Successfully loaded test dataset!
 Predicting for 296 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -357,46 +390,52 @@ Micro Recall (↑)            42.44
 Subset 0/1 Loss (↓)         80.74
 Subset Accuracy (↑)         19.26
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/results/evaluation_test_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/results/ground_truth_test_fold-2.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/results/prediction_characteristics_test_fol
 d-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/results/predictions_test_fold-2.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/results/label_vectors_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/models/model_fold-2.pickle"...
 ✓ Successfully finished experiment after <duration>
 
 Running experiment (7 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset emotions --estimator
-RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
+cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset emotions --estimator RandomForestClassifier --log-level
+debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
 n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/models --n-estimators 100 --parameter-save-dir
 n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters --result-dir
 n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-all true --save-evaluation true
---save-meta-data false"...
+--save-meta-data false
 
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 1 of 2-fold cross validation...
 
 Fold 1 / 2:
 
-○ Reading input data from file "python/tests/res/data/emotions.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/emotions.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/data_characteristi
 cs_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters/parameters_fold
 -1.csv"...
 Fitting model to 296 training examples...
 ✓ Successfully fit model in <duration>
+Loading test dataset...
+✓ Successfully loaded test dataset!
 Predicting for 297 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -419,51 +458,57 @@ Micro Recall (↑)            42.23
 Subset 0/1 Loss (↓)         81.82
 Subset Accuracy (↑)         18.18
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/evaluation_test_fo
 ld-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/ground_truth_test_
 fold-1.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/prediction_charact
 eristics_test_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/predictions_test_f
 old-1.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/label_vectors_fold
 -1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/models/model_fold-1.pickle
 "...
 ✓ Successfully finished experiment after <duration>
 
 Running experiment (8 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset emotions --estimator
-RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
+cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset emotions --estimator RandomForestClassifier --log-level
+debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
 n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/models --n-estimators 100 --parameter-save-dir
 n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters --result-dir
 n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-all true --save-evaluation true
---save-meta-data false"...
+--save-meta-data false
 
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 2 of 2-fold cross validation...
 
 Fold 2 / 2:
 
-○ Reading input data from file "python/tests/res/data/emotions.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/emotions.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/data_characteristi
 cs_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters/parameters_fold
 -2.csv"...
 Fitting model to 297 training examples...
 ✓ Successfully fit model in <duration>
+Loading test dataset...
+✓ Successfully loaded test dataset!
 Predicting for 296 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -486,48 +531,53 @@ Micro Recall (↑)            46.31
 Subset 0/1 Loss (↓)         78.04
 Subset Accuracy (↑)         21.96
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/evaluation_test_fo
 ld-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/ground_truth_test_
 fold-2.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/prediction_charact
 eristics_test_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/predictions_test_f
 old-2.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/label_vectors_fold
 -2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/models/model_fold-2.pickle
 "...
 ✓ Successfully finished experiment after <duration>
 
 Running experiment (9 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset enron --estimator
-RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
-n-estimators_50/max-depth_2/dataset_enron/models --n-estimators 50 --parameter-save-dir
-n-estimators_50/max-depth_2/dataset_enron/parameters --result-dir n-estimators_50/max-depth_2/dataset_enron/results
---save-all true --save-evaluation true --save-meta-data false"...
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
+cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset enron --estimator RandomForestClassifier --log-level
+debug --log-plain --log-width 120 --max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_enron/models
+--n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_2/dataset_enron/parameters --result-dir
+n-estimators_50/max-depth_2/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false
 
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 1 of 2-fold cross validation...
 
 Fold 1 / 2:
 
-○ Reading input data from file "python/tests/res/data/enron.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/enron.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/enron.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/results/data_characteristics_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/parameters/parameters_fold-1.csv"...
 Fitting model to 851 training examples...
 ✓ Successfully fit model in <duration>
+Loading test dataset...
+✓ Successfully loaded test dataset!
 Predicting for 851 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -550,43 +600,48 @@ Micro Recall (↑)            23.9
 Subset 0/1 Loss (↓)         98.71
 Subset Accuracy (↑)          1.29
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/results/evaluation_test_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/results/ground_truth_test_fold-1.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/results/prediction_characteristics_test_fold-1.
 csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/results/predictions_test_fold-1.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/results/label_vectors_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/models/model_fold-1.pickle"...
 ✓ Successfully finished experiment after <duration>
 
 Running experiment (10 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset enron --estimator
-RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
-n-estimators_50/max-depth_2/dataset_enron/models --n-estimators 50 --parameter-save-dir
-n-estimators_50/max-depth_2/dataset_enron/parameters --result-dir n-estimators_50/max-depth_2/dataset_enron/results
---save-all true --save-evaluation true --save-meta-data false"...
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
+cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset enron --estimator RandomForestClassifier --log-level
+debug --log-plain --log-width 120 --max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_enron/models
+--n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_2/dataset_enron/parameters --result-dir
+n-estimators_50/max-depth_2/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false
 
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 2 of 2-fold cross validation...
 
 Fold 2 / 2:
 
-○ Reading input data from file "python/tests/res/data/enron.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/enron.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/enron.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/results/data_characteristics_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/parameters/parameters_fold-2.csv"...
 Fitting model to 851 training examples...
 ✓ Successfully fit model in <duration>
+Loading test dataset...
+✓ Successfully loaded test dataset!
 Predicting for 851 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -609,46 +664,52 @@ Micro Recall (↑)            22.81
 Subset 0/1 Loss (↓)         99.06
 Subset Accuracy (↑)          0.94
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/results/evaluation_test_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/results/ground_truth_test_fold-2.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/results/prediction_characteristics_test_fold-2.
 csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/results/predictions_test_fold-2.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/results/label_vectors_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/models/model_fold-2.pickle"...
 ✓ Successfully finished experiment after <duration>
 
 Running experiment (11 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset enron --estimator
-RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
+cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset enron --estimator RandomForestClassifier --log-level
+debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
 n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models --n-estimators 50 --parameter-save-dir
 n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters --result-dir
 n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-all true --save-evaluation true
---save-meta-data false"...
+--save-meta-data false
 
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 1 of 2-fold cross validation...
 
 Fold 1 / 2:
 
-○ Reading input data from file "python/tests/res/data/enron.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/enron.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/enron.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/data_characteristics_f
 old-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters/parameters_fold-1.c
 sv"...
 Fitting model to 851 training examples...
 ✓ Successfully fit model in <duration>
+Loading test dataset...
+✓ Successfully loaded test dataset!
 Predicting for 851 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -671,50 +732,56 @@ Micro Recall (↑)            23.55
 Subset 0/1 Loss (↓)         98.82
 Subset Accuracy (↑)          1.18
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/evaluation_test_fold-1
 .csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/ground_truth_test_fold
 -1.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/prediction_characteris
 tics_test_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/predictions_test_fold-
 1.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/label_vectors_fold-1.c
 sv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models/model_fold-1.pickle"...
 ✓ Successfully finished experiment after <duration>
 
 Running experiment (12 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset enron --estimator
-RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
+cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset enron --estimator RandomForestClassifier --log-level
+debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
 n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models --n-estimators 50 --parameter-save-dir
 n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters --result-dir
 n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-all true --save-evaluation true
---save-meta-data false"...
+--save-meta-data false
 
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 2 of 2-fold cross validation...
 
 Fold 2 / 2:
 
-○ Reading input data from file "python/tests/res/data/enron.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/enron.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/enron.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/data_characteristics_f
 old-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters/parameters_fold-2.c
 sv"...
 Fitting model to 851 training examples...
 ✓ Successfully fit model in <duration>
+Loading test dataset...
+✓ Successfully loaded test dataset!
 Predicting for 851 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -737,47 +804,52 @@ Micro Recall (↑)            22.78
 Subset 0/1 Loss (↓)         99.06
 Subset Accuracy (↑)          0.94
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/evaluation_test_fold-2
 .csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/ground_truth_test_fold
 -2.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/prediction_characteris
 tics_test_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/predictions_test_fold-
 2.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/label_vectors_fold-2.c
 sv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models/model_fold-2.pickle"...
 ✓ Successfully finished experiment after <duration>
 
 Running experiment (13 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset enron --estimator
-RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
-n-estimators_100/max-depth_2/dataset_enron/models --n-estimators 100 --parameter-save-dir
-n-estimators_100/max-depth_2/dataset_enron/parameters --result-dir n-estimators_100/max-depth_2/dataset_enron/results
---save-all true --save-evaluation true --save-meta-data false"...
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
+cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset enron --estimator RandomForestClassifier --log-level
+debug --log-plain --log-width 120 --max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_enron/models
+--n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_2/dataset_enron/parameters --result-dir
+n-estimators_100/max-depth_2/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false
 
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 1 of 2-fold cross validation...
 
 Fold 1 / 2:
 
-○ Reading input data from file "python/tests/res/data/enron.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/enron.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/enron.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/results/data_characteristics_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/parameters/parameters_fold-1.csv"...
 Fitting model to 851 training examples...
 ✓ Successfully fit model in <duration>
+Loading test dataset...
+✓ Successfully loaded test dataset!
 Predicting for 851 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -800,43 +872,48 @@ Micro Recall (↑)            24.04
 Subset 0/1 Loss (↓)         98.71
 Subset Accuracy (↑)          1.29
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/results/evaluation_test_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/results/ground_truth_test_fold-1.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/results/prediction_characteristics_test_fold-1
 .csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/results/predictions_test_fold-1.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/results/label_vectors_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/models/model_fold-1.pickle"...
 ✓ Successfully finished experiment after <duration>
 
 Running experiment (14 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset enron --estimator
-RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
-n-estimators_100/max-depth_2/dataset_enron/models --n-estimators 100 --parameter-save-dir
-n-estimators_100/max-depth_2/dataset_enron/parameters --result-dir n-estimators_100/max-depth_2/dataset_enron/results
---save-all true --save-evaluation true --save-meta-data false"...
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
+cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset enron --estimator RandomForestClassifier --log-level
+debug --log-plain --log-width 120 --max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_enron/models
+--n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_2/dataset_enron/parameters --result-dir
+n-estimators_100/max-depth_2/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false
 
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 2 of 2-fold cross validation...
 
 Fold 2 / 2:
 
-○ Reading input data from file "python/tests/res/data/enron.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/enron.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/enron.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/results/data_characteristics_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/parameters/parameters_fold-2.csv"...
 Fitting model to 851 training examples...
 ✓ Successfully fit model in <duration>
+Loading test dataset...
+✓ Successfully loaded test dataset!
 Predicting for 851 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -859,46 +936,52 @@ Micro Recall (↑)            22.78
 Subset 0/1 Loss (↓)         99.06
 Subset Accuracy (↑)          0.94
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/results/evaluation_test_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/results/ground_truth_test_fold-2.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/results/prediction_characteristics_test_fold-2
 .csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/results/predictions_test_fold-2.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/results/label_vectors_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/models/model_fold-2.pickle"...
 ✓ Successfully finished experiment after <duration>
 
 Running experiment (15 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset enron --estimator
-RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
+cross-validation{first_fold=1,last_fold=1,num_folds=2} --dataset enron --estimator RandomForestClassifier --log-level
+debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
 n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models --n-estimators 100 --parameter-save-dir
 n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters --result-dir
 n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-all true --save-evaluation true
---save-meta-data false"...
+--save-meta-data false
 
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 1 of 2-fold cross validation...
 
 Fold 1 / 2:
 
-○ Reading input data from file "python/tests/res/data/enron.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/enron.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/enron.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/data_characteristics_
 fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters/parameters_fold-1.
 csv"...
 Fitting model to 851 training examples...
 ✓ Successfully fit model in <duration>
+Loading test dataset...
+✓ Successfully loaded test dataset!
 Predicting for 851 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -921,51 +1004,57 @@ Micro Recall (↑)            24.39
 Subset 0/1 Loss (↓)         98.71
 Subset Accuracy (↑)          1.29
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/evaluation_test_fold-
 1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/ground_truth_test_fol
 d-1.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/prediction_characteri
 stics_test_fold-1.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/predictions_test_fold
 -1.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/label_vectors_fold-1.
 csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models/model_fold-1.pickle"..
 .
 ✓ Successfully finished experiment after <duration>
 
 Running experiment (16 / 16):
 
-Running command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
-python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset enron --estimator
-RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
+cross-validation{first_fold=2,last_fold=2,num_folds=2} --dataset enron --estimator RandomForestClassifier --log-level
+debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir
 n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models --n-estimators 100 --parameter-save-dir
 n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters --result-dir
 n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-all true --save-evaluation true
---save-meta-data false"...
+--save-meta-data false
 
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Performing fold 2 of 2-fold cross validation...
 
 Fold 2 / 2:
 
-○ Reading input data from file "python/tests/res/data/enron.arff"...
+Loading training dataset...
+○ Reading from file "python/tests/res/data/enron.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/enron.xml"...
-○ Writing output data to file
+✓ Successfully loaded training dataset!
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/data_characteristics_
 fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters/parameters_fold-2.
 csv"...
 Fitting model to 851 training examples...
 ✓ Successfully fit model in <duration>
+Loading test dataset...
+✓ Successfully loaded test dataset!
 Predicting for 851 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -988,22 +1077,22 @@ Micro Recall (↑)            23.19
 Subset 0/1 Loss (↓)         99.06
 Subset Accuracy (↑)          0.94
 
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/evaluation_test_fold-
 2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/ground_truth_test_fol
 d-2.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/prediction_characteri
 stics_test_fold-2.csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/predictions_test_fold
 -2.arff"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/label_vectors_fold-2.
 csv"...
-○ Writing output data to file
+○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models/model_fold-2.pickle"..
 .
 ✓ Successfully finished experiment after <duration>

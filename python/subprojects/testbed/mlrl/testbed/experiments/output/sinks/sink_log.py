@@ -54,7 +54,7 @@ class LogSink(Sink):
             Log.info('')
 
             if language:
-                Log.source_code(text, language=language, box=True, box_title=box_title)
+                Log.source_code(text, language=language, box_title=box_title)
             else:
                 Log.info(text, box=True, box_title=box_title)
 

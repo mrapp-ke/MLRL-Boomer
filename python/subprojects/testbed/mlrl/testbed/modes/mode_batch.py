@@ -5,6 +5,7 @@ Provides classes that implement a mode of operation for performing multiple expe
 """
 
 import re as regex
+import sys
 
 from abc import ABC, abstractmethod
 from argparse import Namespace
@@ -94,10 +95,8 @@ class BatchMode(Mode):
         @override
         def run_batch(self, args: Namespace, batch: Batch, recipe: Recipe):
             for i, command in enumerate(batch):
-                if i > 0:
-                    Log.info('')
-
-                Log.info(self.__format_command(command))
+                Log.source_code(self.__format_command(command), language='bash')
+                Log.info('')
 
     class SequentialRunner(Runner):
         """
@@ -114,21 +113,28 @@ class BatchMode(Mode):
 
             for i, command in enumerate(batch):
                 if i == 0:
-                    Log.info(f'Running {num_experiments} {("experiments" if num_experiments > 1 else "experiment")}...')
+                    Log.info(
+                        f'Running {num_experiments} {("experiments" if num_experiments > 1 else "experiment")}...\n'
+                    )
 
-                Log.info('')
-                Log.separator(f'Running experiment ({i + 1} / {num_experiments})')
-                Log.info(f'Running command "{command}"...\n')
+                with Log.indented():
+                    Log.separator(f'Running experiment ({i + 1} / {num_experiments})')
+                    Log.source_code(str(command), language='bash', box_title='Command')
+                    Log.info('')
 
-                recipe.create_experiment_builder(
-                    experiment_mode=ExperimentMode.BATCH, args=command.apply_to_namespace(args), command=command
-                ).run(args)
+                    recipe.create_experiment_builder(
+                        experiment_mode=ExperimentMode.BATCH, args=command.apply_to_namespace(args), command=command
+                    ).run(args)
 
             run_time = Timer.stop(start_time)
-            Log.success(
-                f'Successfully finished {num_experiments} {("experiments" if num_experiments > 1 else "experiment")} '
-                f'after {run_time}'
-            )
+
+            if num_experiments > 0:
+                Log.success(
+                    f'Successfully finished {num_experiments} '
+                    f'{("experiments" if num_experiments > 1 else "experiment")} after {run_time}'
+                )
+            else:
+                Log.success(f'Successfully finished after {run_time}')
 
     class ConfigFile(ABC):
         """
@@ -336,6 +342,7 @@ class BatchMode(Mode):
                 f'"{OutputArguments.IF_OUTPUTS_EXIST.name} {OutputExistsPolicy.OVERWRITE}" to force-run all '
                 f'experiments.'
             )
+            sys.exit(0)
 
         self.__write_meta_data(args, recipe, batch, has_output_file_writers=has_output_file_writers)
         runner = self.__get_runner(args)

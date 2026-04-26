@@ -1,4 +1,6 @@
 mlrl-testbed mlrl.testbed_sklearn --mode batch --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id> --config python/tests/res/config/sklearn/regression/batch_config.yml --problem-type regression --save-evaluation true --save-meta-data false --list --n-estimators 1 --estimator RandomForestRegressor
+None:
+
 mlrl-testbed mlrl.testbed_sklearn \
     --base-dir python/tests/res/tmp/<worker-id> \
     --data-dir python/tests/res/data \
@@ -15,6 +17,8 @@ mlrl-testbed mlrl.testbed_sklearn \
     --result-dir n-estimators_50/max-depth_2/dataset_atp7d/results \
     --save-evaluation true \
     --save-meta-data false
+
+None:
 
 mlrl-testbed mlrl.testbed_sklearn \
     --base-dir python/tests/res/tmp/<worker-id> \
@@ -34,6 +38,8 @@ mlrl-testbed mlrl.testbed_sklearn \
     --save-evaluation true \
     --save-meta-data false
 
+None:
+
 mlrl-testbed mlrl.testbed_sklearn \
     --base-dir python/tests/res/tmp/<worker-id> \
     --data-dir python/tests/res/data \
@@ -50,6 +56,8 @@ mlrl-testbed mlrl.testbed_sklearn \
     --result-dir n-estimators_100/max-depth_2/dataset_atp7d/results \
     --save-evaluation true \
     --save-meta-data false
+
+None:
 
 mlrl-testbed mlrl.testbed_sklearn \
     --base-dir python/tests/res/tmp/<worker-id> \
@@ -69,6 +77,8 @@ mlrl-testbed mlrl.testbed_sklearn \
     --save-evaluation true \
     --save-meta-data false
 
+None:
+
 mlrl-testbed mlrl.testbed_sklearn \
     --base-dir python/tests/res/tmp/<worker-id> \
     --data-dir python/tests/res/data \
@@ -85,6 +95,8 @@ mlrl-testbed mlrl.testbed_sklearn \
     --result-dir n-estimators_50/max-depth_2/dataset_atp7d-binary/results \
     --save-evaluation true \
     --save-meta-data false
+
+None:
 
 mlrl-testbed mlrl.testbed_sklearn \
     --base-dir python/tests/res/tmp/<worker-id> \
@@ -104,6 +116,8 @@ mlrl-testbed mlrl.testbed_sklearn \
     --save-evaluation true \
     --save-meta-data false
 
+None:
+
 mlrl-testbed mlrl.testbed_sklearn \
     --base-dir python/tests/res/tmp/<worker-id> \
     --data-dir python/tests/res/data \
@@ -120,6 +134,8 @@ mlrl-testbed mlrl.testbed_sklearn \
     --result-dir n-estimators_100/max-depth_2/dataset_atp7d-binary/results \
     --save-evaluation true \
     --save-meta-data false
+
+None:
 
 mlrl-testbed mlrl.testbed_sklearn \
     --base-dir python/tests/res/tmp/<worker-id> \
@@ -138,3 +154,4 @@ mlrl-testbed mlrl.testbed_sklearn \
     --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results \
     --save-evaluation true \
     --save-meta-data false
+

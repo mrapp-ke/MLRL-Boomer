@@ -1,18 +1,20 @@
 mlrl-testbed mlrl.testbed_sklearn --mode batch --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id> --config python/tests/res/config/sklearn/regression/batch_config.yml --runner slurm --slurm-config python/tests/res/config/slurm_config.yml --print-slurm-scripts true --save-slurm-scripts true --slurm-save-dir python/tests/res/tmp/<worker-id> --problem-type regression --save-evaluation true --save-meta-data false --save-meta-data true --data-split cross-validation{num_folds=2} --n-estimators 1 --estimator RandomForestRegressor
-○ Writing output data to file "python/tests/res/tmp/<worker-id>/metadata.yml"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/metadata.yml"...
 Submitting 16 experiments to Slurm...
 
-Submitting Slurm job (1 / 8)
-The Slurm job will use the command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id>
---data-dir python/tests/res/data --data-split
+
+Submitting Slurm job (1 / 8):
+
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
 cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset atp7d
 --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
 n-estimators_50/max-depth_2/dataset_atp7d/models --n-estimators 50 --parameter-save-dir
 n-estimators_50/max-depth_2/dataset_atp7d/parameters --problem-type regression --result-dir
-n-estimators_50/max-depth_2/dataset_atp7d/results --save-evaluation true --save-meta-data false"
-
+n-estimators_50/max-depth_2/dataset_atp7d/results --save-evaluation true --save-meta-data false
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/atp7d_1.sh"
-Content of Slurm script is:
+Slurm script:
 
 #!/bin/sh
 
@@ -35,18 +37,19 @@ n-estimators_50/max-depth_2/dataset_atp7d/results --save-evaluation true --save-
 deactivate
 
 
-Submitting Slurm job (2 / 8)
-The Slurm job will use the command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id>
---data-dir python/tests/res/data --data-split
+Submitting Slurm job (2 / 8):
+
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
 cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset atp7d
 --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4
 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models --n-estimators 50
 --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters --problem-type regression
 --result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results --save-evaluation true --save-meta-data
-false"
-
+false
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/atp7d_2.sh"
-Content of Slurm script is:
+Slurm script:
 
 #!/bin/sh
 
@@ -73,17 +76,18 @@ false
 deactivate
 
 
-Submitting Slurm job (3 / 8)
-The Slurm job will use the command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id>
---data-dir python/tests/res/data --data-split
+Submitting Slurm job (3 / 8):
+
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
 cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset atp7d
 --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
 n-estimators_100/max-depth_2/dataset_atp7d/models --n-estimators 100 --parameter-save-dir
 n-estimators_100/max-depth_2/dataset_atp7d/parameters --problem-type regression --result-dir
-n-estimators_100/max-depth_2/dataset_atp7d/results --save-evaluation true --save-meta-data false"
-
+n-estimators_100/max-depth_2/dataset_atp7d/results --save-evaluation true --save-meta-data false
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/atp7d_3.sh"
-Content of Slurm script is:
+Slurm script:
 
 #!/bin/sh
 
@@ -106,18 +110,19 @@ n-estimators_100/max-depth_2/dataset_atp7d/results --save-evaluation true --save
 deactivate
 
 
-Submitting Slurm job (4 / 8)
-The Slurm job will use the command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id>
---data-dir python/tests/res/data --data-split
+Submitting Slurm job (4 / 8):
+
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
 cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset atp7d
 --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4
 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models --n-estimators 100
 --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters --problem-type regression
 --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results --save-evaluation true --save-meta-data
-false"
-
+false
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/atp7d_4.sh"
-Content of Slurm script is:
+Slurm script:
 
 #!/bin/sh
 
@@ -145,17 +150,18 @@ false
 deactivate
 
 
-Submitting Slurm job (5 / 8)
-The Slurm job will use the command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id>
---data-dir python/tests/res/data --data-split
+Submitting Slurm job (5 / 8):
+
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
 cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset atp7d-binary
 --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
 n-estimators_50/max-depth_2/dataset_atp7d-binary/models --n-estimators 50 --parameter-save-dir
 n-estimators_50/max-depth_2/dataset_atp7d-binary/parameters --problem-type regression --result-dir
-n-estimators_50/max-depth_2/dataset_atp7d-binary/results --save-evaluation true --save-meta-data false"
-
+n-estimators_50/max-depth_2/dataset_atp7d-binary/results --save-evaluation true --save-meta-data false
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/atp7d-binary_5.sh"
-Content of Slurm script is:
+Slurm script:
 
 #!/bin/sh
 
@@ -178,18 +184,19 @@ n-estimators_50/max-depth_2/dataset_atp7d-binary/results --save-evaluation true 
 deactivate
 
 
-Submitting Slurm job (6 / 8)
-The Slurm job will use the command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id>
---data-dir python/tests/res/data --data-split
+Submitting Slurm job (6 / 8):
+
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
 cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset atp7d-binary
 --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4
 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models --n-estimators 50
 --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters --problem-type
 regression --result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results --save-evaluation true
---save-meta-data false"
-
+--save-meta-data false
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/atp7d-binary_6.sh"
-Content of Slurm script is:
+Slurm script:
 
 #!/bin/sh
 
@@ -217,17 +224,18 @@ atp7d-binary --estimator RandomForestRegressor --log-level debug --log-plain --l
 deactivate
 
 
-Submitting Slurm job (7 / 8)
-The Slurm job will use the command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id>
---data-dir python/tests/res/data --data-split
+Submitting Slurm job (7 / 8):
+
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
 cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset atp7d-binary
 --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
 n-estimators_100/max-depth_2/dataset_atp7d-binary/models --n-estimators 100 --parameter-save-dir
 n-estimators_100/max-depth_2/dataset_atp7d-binary/parameters --problem-type regression --result-dir
-n-estimators_100/max-depth_2/dataset_atp7d-binary/results --save-evaluation true --save-meta-data false"
-
+n-estimators_100/max-depth_2/dataset_atp7d-binary/results --save-evaluation true --save-meta-data false
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/atp7d-binary_7.sh"
-Content of Slurm script is:
+Slurm script:
 
 #!/bin/sh
 
@@ -250,18 +258,19 @@ n-estimators_100/max-depth_2/dataset_atp7d-binary/results --save-evaluation true
 deactivate
 
 
-Submitting Slurm job (8 / 8)
-The Slurm job will use the command "mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id>
---data-dir python/tests/res/data --data-split
+Submitting Slurm job (8 / 8):
+
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --data-split
 cross-validation{first_fold=${SLURM_ARRAY_TASK_ID},last_fold=${SLURM_ARRAY_TASK_ID},num_folds=2} --dataset atp7d-binary
 --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4
 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models --n-estimators 100
 --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters --problem-type
 regression --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results --save-evaluation
-true --save-meta-data false"
-
+true --save-meta-data false
 Slurm script saved to file "python/tests/res/tmp/<worker-id>/atp7d-binary_8.sh"
-Content of Slurm script is:
+Slurm script:
 
 #!/bin/sh
 

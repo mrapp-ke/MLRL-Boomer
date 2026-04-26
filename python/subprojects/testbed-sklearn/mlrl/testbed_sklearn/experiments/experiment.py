@@ -119,19 +119,21 @@ class SkLearnExperiment(Experiment):
             """
             See :func:`mlrl.testbed.experiments.experiment.Experiment.TrainingProcedure.train`
             """
-            new_learner = self.__create_learner(parameters=parameters)
+            with Log.indented():
+                Log.info(f'Fitting model to {dataset.num_examples} training examples...')
+                new_learner = self.__create_learner(parameters=parameters)
 
-            # Use existing model, if possible, otherwise train a new model...
-            if isinstance(learner, type(new_learner)):
-                self.__check_for_parameter_changes(
-                    expected_parameters=parameters, actual_parameters=learner.get_params()
-                )
-                return TrainingState(learner=learner)
+                # Use existing model, if possible, otherwise train a new model...
+                if isinstance(learner, type(new_learner)):
+                    self.__check_for_parameter_changes(
+                        expected_parameters=parameters, actual_parameters=learner.get_params()
+                    )
+                    Log.success('Successfully loaded model')
+                    return TrainingState(learner=learner)
 
-            Log.info(f'Fitting model to {dataset.num_examples} training examples...')
-            training_duration = self._fit(new_learner, dataset, fit_kwargs=self.fit_kwargs)
-            Log.success(f'Successfully fit model in {training_duration}')
-            return TrainingState(learner=new_learner, training_duration=training_duration)
+                training_duration = self._fit(new_learner, dataset, fit_kwargs=self.fit_kwargs)
+                Log.success(f'Successfully fit model in {training_duration}')
+                return TrainingState(learner=new_learner, training_duration=training_duration)
 
         def _fit(
             self, estimator: BaseEstimator, dataset: TabularDataset, fit_kwargs: dict[str, Any] | None

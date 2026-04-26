@@ -280,7 +280,8 @@ class SlurmRunner(BatchMode.Runner):
             )
             return 0
 
-        Log.error(f'Submission to Slurm failed:\n{result.output}')
+        Log.error('Submission to Slurm failed:\n')
+        Log.error(result.output, box=True)
         return result.exit_code
 
     @staticmethod
@@ -360,33 +361,35 @@ class SlurmRunner(BatchMode.Runner):
         print_file = SlurmArguments.PRINT_SLURM_SCRIPTS.get_value(args)
         submit_command = not save_file and not print_file and self.__is_command_available()
         num_experiments = len(batch)
-        Log.info(f'Submitting {num_experiments} {("experiments" if num_experiments > 1 else "experiment")} to Slurm...')
+        Log.info(
+            f'Submitting {num_experiments} {("experiments" if num_experiments > 1 else "experiment")} to Slurm...\n'
+        )
         command_or_job_arrays = self.__assign_to_job_arrays(batch)
         num_jobs = len(command_or_job_arrays)
 
         for i, command_or_job_array in enumerate(command_or_job_arrays):
-            job_array = command_or_job_array if isinstance(command_or_job_array, JobArray) else None
-            command = job_array.modified_command if job_array else cast(Command, command_or_job_array)
-            Log.info('')
-            Log.info(f'Submitting Slurm job ({i + 1} / {num_jobs})')
-            Log.info(f'The Slurm job will use the command "{command}"\n')
-            dataset_name = DatasetArguments.DATASET_NAME.get_value(command.to_namespace())
-            job_name = dataset_name if dataset_name else 'sbatch'
-            slurm_config_file = SlurmRunner.__read_config_file(args)
-            sbatch_file = SlurmRunner.__write_sbatch_file(
-                args, command, config_file=slurm_config_file, job_array=job_array, job_name=f'{job_name}_{i + 1}'
-            )
+            with Log.indented():
+                Log.separator(f'Submitting Slurm job ({i + 1} / {num_jobs})')
+                job_array = command_or_job_array if isinstance(command_or_job_array, JobArray) else None
+                command = job_array.modified_command if job_array else cast(Command, command_or_job_array)
+                Log.source_code(str(command), language='bash', box_title='Command')
+                dataset_name = DatasetArguments.DATASET_NAME.get_value(command.to_namespace())
+                job_name = dataset_name if dataset_name else 'sbatch'
+                slurm_config_file = SlurmRunner.__read_config_file(args)
+                sbatch_file = SlurmRunner.__write_sbatch_file(
+                    args, command, config_file=slurm_config_file, job_array=job_array, job_name=f'{job_name}_{i + 1}'
+                )
 
-            if save_file:
-                Log.info(f'Slurm script saved to file "{sbatch_file}"')
+                if save_file:
+                    Log.info(f'Slurm script saved to file "{sbatch_file}"')
 
-            if print_file:
-                Log.info(f'Content of Slurm script is:\n\n{self.__read_sbatch_file(sbatch_file)}')
+                if print_file:
+                    Log.info(self.__read_sbatch_file(sbatch_file), box=True, box_title='Slurm script')
 
-            exit_code = self.__submit_command(sbatch_file) if submit_command else 0
+                exit_code = self.__submit_command(sbatch_file) if submit_command else 0
 
-            if not save_file:
-                sbatch_file.unlink()
+                if not save_file:
+                    sbatch_file.unlink()
 
-            if exit_code != 0:
-                sys.exit(exit_code)
+                if exit_code != 0:
+                    sys.exit(exit_code)

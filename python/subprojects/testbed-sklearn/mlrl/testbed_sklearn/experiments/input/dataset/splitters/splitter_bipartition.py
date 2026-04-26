@@ -144,7 +144,7 @@ class BipartitionSplitter(DatasetSplitter):
         """
         See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.split`
         """
-        Log.info('Using separate training and test sets...')
+        Log.info('Using separate training and test sets...\n')
         dataset_reader = self.dataset_reader
         folding_strategy = self.folding_strategy
         state = replace(state, folding_strategy=folding_strategy)

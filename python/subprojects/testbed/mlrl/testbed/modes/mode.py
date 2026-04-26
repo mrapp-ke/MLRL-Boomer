@@ -93,33 +93,35 @@ class InputMode(Mode, ABC):
     )
 
     def __read_meta_data(self, args: Namespace, recipe: Recipe, input_directory: Path) -> MetaData:
-        Log.info('Reading meta-data...')
-        problem_domain = recipe.create_problem_domain(self.to_enum(), args)
-        state = ExperimentState(mode=self.to_enum(), args=args, meta_data=MetaData(), problem_domain=problem_domain)
-        reader = MetaDataReader(
-            YamlFileSource(directory=input_directory, schema_file_path=InputMetaData.SCHEMA_FILE_PATH)
-        )
-        meta_data = reader.read(state).meta_data
-        Log.success('Successfully read meta-data')
-        return meta_data
+        with Log.indented():
+            Log.info('Reading meta-data...')
+            problem_domain = recipe.create_problem_domain(self.to_enum(), args)
+            state = ExperimentState(mode=self.to_enum(), args=args, meta_data=MetaData(), problem_domain=problem_domain)
+            reader = MetaDataReader(
+                YamlFileSource(directory=input_directory, schema_file_path=InputMetaData.SCHEMA_FILE_PATH)
+            )
+            meta_data = reader.read(state).meta_data
+            Log.success('Successfully read meta-data')
+            return meta_data
 
     @staticmethod
     def __check_version(meta_data: MetaData):
-        Log.verbose('Checking for version conflicts...')
-        meta_data_version = meta_data.version
-        current_version = MetaData().version
-        Log.verbose(
-            f'Experimental results have been created with version "{meta_data_version}" of the package "mlrl-testbed", '
-            f'version "{current_version}" is currently used'
-        )
-
-        if meta_data_version > current_version:
-            Log.warning(
-                f'Experimental results have been created with a version ({meta_data_version}) of the package '
-                f'"mlrl-testbed" that is greater than currently used ({current_version}).'
+        with Log.indented():
+            Log.info('Checking for version conflicts...')
+            meta_data_version = meta_data.version
+            current_version = MetaData().version
+            Log.verbose(
+                f'Experimental results have been created with version "{meta_data_version}" of the package '
+                f'"mlrl-testbed", version "{current_version}" is currently used'
             )
-        else:
-            Log.verbose('No version conflicts detected')
+
+            if meta_data_version > current_version:
+                Log.warning(
+                    f'Experimental results have been created with a version ({meta_data_version}) of the package '
+                    f'"mlrl-testbed" that is greater than currently used ({current_version}).'
+                )
+            else:
+                Log.success('No version conflicts detected')
 
     @override
     def configure_control_arguments(self, cli: CommandLineInterface, control_arguments: list[Argument]):
