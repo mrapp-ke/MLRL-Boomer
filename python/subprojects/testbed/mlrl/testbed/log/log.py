@@ -250,8 +250,6 @@ class Log:
                 console.print(Text(prefix, style=IndentationLevel.PREFIX_STYLE))
 
             indentation_level.decrease()
-            prefix = IndentationLevel.get_prefix(level=indentation_level.level)
-            console.print(Text(prefix), style=IndentationLevel.PREFIX_STYLE)
 
     @staticmethod
     def error(message: str, *args, error: Exception | None = None, box: bool = False, box_title: str | None = None):
