@@ -153,7 +153,7 @@ class Requirement:
 
     @override
     def __str__(self) -> str:
-        return f'{self.package} {(f" {self.version}" if self.version else "")}'
+        return f'{self.package} {str(self.version) if self.version else ""}'
 
     @override
     def __eq__(self, other: Any) -> bool:
