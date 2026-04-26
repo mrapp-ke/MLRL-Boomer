@@ -358,7 +358,12 @@ class Log:
 
         if logging.getLogger().isEnabledFor(log_level):
             renderable: ConsoleRenderable = Syntax(source_code, language, word_wrap=True)
-            renderable = IndentationLevel.decorate_with_box(renderable, box_title=box_title)
+
+            if PLAIN:
+                Log.info(f'{box_title}:\n')
+            else:
+                renderable = IndentationLevel.decorate_with_box(renderable, box_title=box_title)
+
             indentation_level = INDENTATION_LEVEL.get()
             get_console().print(IndentationLevel.IndentedRenderable(renderable, level=indentation_level.level))
 
