@@ -145,6 +145,7 @@ class ReadMode(InputMode):
         args: Namespace, recipe: Recipe, input_directory: Path, command: Command
     ) -> ExperimentState:
         Log.source_code(str(command), language='bash', box_title='Command')
+        Log.info('')
         return OutputUtil(
             args=args, recipe=recipe, command=command, input_directory=input_directory
         ).read_output_files()

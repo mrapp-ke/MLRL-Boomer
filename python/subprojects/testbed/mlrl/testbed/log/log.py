@@ -250,8 +250,6 @@ class Log:
                 console.print(Text(prefix, style=IndentationLevel.PREFIX_STYLE))
 
             indentation_level.decrease()
-            prefix = IndentationLevel.get_prefix(level=indentation_level.level)
-            console.print(Text(prefix), style=IndentationLevel.PREFIX_STYLE)
 
     @staticmethod
     def error(message: str, *args, error: Exception | None = None, box: bool = False, box_title: str | None = None):
@@ -358,7 +356,12 @@ class Log:
 
         if logging.getLogger().isEnabledFor(log_level):
             renderable: ConsoleRenderable = Syntax(source_code, language, word_wrap=True)
-            renderable = IndentationLevel.decorate_with_box(renderable, box_title=box_title)
+
+            if PLAIN:
+                Log.info(f'{box_title}:\n')
+            else:
+                renderable = IndentationLevel.decorate_with_box(renderable, box_title=box_title)
+
             indentation_level = INDENTATION_LEVEL.get()
             get_console().print(IndentationLevel.IndentedRenderable(renderable, level=indentation_level.level))
 

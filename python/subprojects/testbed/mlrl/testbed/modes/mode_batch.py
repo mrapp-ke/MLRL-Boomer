@@ -120,6 +120,7 @@ class BatchMode(Mode):
                 with Log.indented():
                     Log.separator(f'Running experiment ({i + 1} / {num_experiments})')
                     Log.source_code(str(command), language='bash', box_title='Command')
+                    Log.info('')
 
                     recipe.create_experiment_builder(
                         experiment_mode=ExperimentMode.BATCH, args=command.apply_to_namespace(args), command=command

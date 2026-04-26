@@ -5,13 +5,14 @@ Running 8 experiments...
 
 Running experiment (1 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2    │
-│ --model-save-dir n-estimators_50/max-depth_2/dataset_emotions/models --n-estimators 50 --parameter-save-dir          │
-│ n-estimators_50/max-depth_2/dataset_emotions/parameters --result-dir                                                 │
-│ n-estimators_50/max-depth_2/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false   │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
+n-estimators_50/max-depth_2/dataset_emotions/models --n-estimators 50 --parameter-save-dir
+n-estimators_50/max-depth_2/dataset_emotions/parameters --result-dir
+n-estimators_50/max-depth_2/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false
+
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Using separate training and test sets...
 
@@ -23,13 +24,10 @@ Loading training dataset...
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/results/data_characteristics.csv"...
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/parameters/parameters.csv"...
-
 Fitting model to 397 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 196 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -61,24 +59,22 @@ Subset Accuracy (↑)         19.39
 ...
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/results/predictions_test.arff"...
-
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/results/label_vectors.csv"...
 ○ Writing to file "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/models/model.pickle"...
 ✓ Successfully finished experiment after <duration>
 
-
-
 Running experiment (2 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4    │
-│ --max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/models             │
-│ --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters      │
-│ --result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-all true --save-evaluation │
-│ true --save-meta-data false                                                                                          │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes
+4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/models --n-estimators 50
+--parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters --result-dir
+n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-all true --save-evaluation true
+--save-meta-data false
+
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Using separate training and test sets...
 
@@ -92,13 +88,10 @@ s.csv"...
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters/parameters.csv".
 ..
-
 Fitting model to 397 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 196 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -133,7 +126,6 @@ ristics_test.csv"...
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/predictions_test.ar
 ff"...
-
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/label_vectors.csv".
 ..
@@ -141,17 +133,16 @@ ff"...
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/models/model.pickle"...
 ✓ Successfully finished experiment after <duration>
 
-
-
 Running experiment (3 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2    │
-│ --model-save-dir n-estimators_100/max-depth_2/dataset_emotions/models --n-estimators 100 --parameter-save-dir        │
-│ n-estimators_100/max-depth_2/dataset_emotions/parameters --result-dir                                                │
-│ n-estimators_100/max-depth_2/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false  │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
+n-estimators_100/max-depth_2/dataset_emotions/models --n-estimators 100 --parameter-save-dir
+n-estimators_100/max-depth_2/dataset_emotions/parameters --result-dir
+n-estimators_100/max-depth_2/dataset_emotions/results --save-all true --save-evaluation true --save-meta-data false
+
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Using separate training and test sets...
 
@@ -163,13 +154,10 @@ Loading training dataset...
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/results/data_characteristics.csv"...
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/parameters/parameters.csv"...
-
 Fitting model to 397 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 196 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -201,24 +189,22 @@ Subset Accuracy (↑)         19.39
 "...
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/results/predictions_test.arff"...
-
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/results/label_vectors.csv"...
 ○ Writing to file "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/models/model.pickle"...
 ✓ Successfully finished experiment after <duration>
 
-
-
 Running experiment (4 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4    │
-│ --max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/models            │
-│ --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters    │
-│ --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-all true                  │
-│ --save-evaluation true --save-meta-data false                                                                        │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes
+4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/models --n-estimators 100
+--parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters --result-dir
+n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results --save-all true --save-evaluation true
+--save-meta-data false
+
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Using separate training and test sets...
 
@@ -232,13 +218,10 @@ cs.csv"...
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters/parameters.csv"
 ...
-
 Fitting model to 397 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 196 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -273,7 +256,6 @@ eristics_test.csv"...
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/predictions_test.a
 rff"...
-
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/label_vectors.csv"
 ...
@@ -281,17 +263,16 @@ rff"...
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/models/model.pickle"...
 ✓ Successfully finished experiment after <duration>
 
-
-
 Running experiment (5 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2       │
-│ --model-save-dir n-estimators_50/max-depth_2/dataset_enron/models --n-estimators 50 --parameter-save-dir             │
-│ n-estimators_50/max-depth_2/dataset_enron/parameters --result-dir n-estimators_50/max-depth_2/dataset_enron/results  │
-│ --save-all true --save-evaluation true --save-meta-data false                                                        │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
+n-estimators_50/max-depth_2/dataset_enron/models --n-estimators 50 --parameter-save-dir
+n-estimators_50/max-depth_2/dataset_enron/parameters --result-dir n-estimators_50/max-depth_2/dataset_enron/results
+--save-all true --save-evaluation true --save-meta-data false
+
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Using separate training and test sets...
 
@@ -302,13 +283,10 @@ Loading training dataset...
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/results/data_characteristics.csv"...
 ○ Writing to file "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/parameters/parameters.csv"...
-
 Fitting model to 1140 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 562 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -339,23 +317,21 @@ Subset Accuracy (↑)          1.6
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/results/prediction_characteristics_test.csv"...
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/results/predictions_test.arff"...
-
 ○ Writing to file "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/results/label_vectors.csv"...
 ○ Writing to file "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/models/model.pickle"...
 ✓ Successfully finished experiment after <duration>
 
-
-
 Running experiment (6 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4       │
-│ --max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models --n-estimators │
-│ 50 --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters --result-dir           │
-│ n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-all true --save-evaluation true            │
-│ --save-meta-data false                                                                                               │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4
+--model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models --n-estimators 50
+--parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters --result-dir
+n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-all true --save-evaluation true
+--save-meta-data false
+
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Using separate training and test sets...
 
@@ -368,13 +344,10 @@ Loading training dataset...
 sv"...
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters/parameters.csv"...
-
 Fitting model to 1140 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 562 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -409,24 +382,22 @@ tics_test.csv"...
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/predictions_test.arff"
 ...
-
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/label_vectors.csv"...
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models/model.pickle"...
 ✓ Successfully finished experiment after <duration>
 
-
-
 Running experiment (7 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2       │
-│ --model-save-dir n-estimators_100/max-depth_2/dataset_enron/models --n-estimators 100 --parameter-save-dir           │
-│ n-estimators_100/max-depth_2/dataset_enron/parameters --result-dir                                                   │
-│ n-estimators_100/max-depth_2/dataset_enron/results --save-all true --save-evaluation true --save-meta-data false     │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
+n-estimators_100/max-depth_2/dataset_enron/models --n-estimators 100 --parameter-save-dir
+n-estimators_100/max-depth_2/dataset_enron/parameters --result-dir n-estimators_100/max-depth_2/dataset_enron/results
+--save-all true --save-evaluation true --save-meta-data false
+
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Using separate training and test sets...
 
@@ -438,13 +409,10 @@ Loading training dataset...
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/results/data_characteristics.csv"...
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/parameters/parameters.csv"...
-
 Fitting model to 1140 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 562 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -476,24 +444,22 @@ Subset Accuracy (↑)          1.6
 .
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/results/predictions_test.arff"...
-
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/results/label_vectors.csv"...
 ○ Writing to file "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/models/model.pickle"...
 ✓ Successfully finished experiment after <duration>
 
-
-
 Running experiment (8 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4       │
-│ --max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models               │
-│ --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters       │
-│ --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-all true --save-evaluation   │
-│ true --save-meta-data false                                                                                          │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+enron --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4
+--model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models --n-estimators 100
+--parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters --result-dir
+n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results --save-all true --save-evaluation true
+--save-meta-data false
+
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Using separate training and test sets...
 
@@ -506,13 +472,10 @@ Loading training dataset...
 csv"...
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters/parameters.csv"...
-
 Fitting model to 1140 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 562 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -547,12 +510,9 @@ stics_test.csv"...
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/predictions_test.arff
 "...
-
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/label_vectors.csv"...
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models/model.pickle"...
 ✓ Successfully finished experiment after <duration>
-
-
 ✓ Successfully finished 8 experiments after <duration>

@@ -31,13 +31,10 @@ Distinct Label Vectors   23
 
 <no data available>
 
-
 Fitting model to 397 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 196 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -472,7 +469,6 @@ Distinct Label Vectors  21
  [0 0 1 0 1 1]]
 
 
-
 🗀 Label vectors:
 
   Index  Label vector      Frequency
@@ -501,4 +497,3 @@ Distinct Label Vectors  21
      22  [2 5]                     1
 
 ✓ Successfully finished experiment after <duration>
-

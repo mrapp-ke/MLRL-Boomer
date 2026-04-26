@@ -10,13 +10,10 @@ Loading training dataset...
 ○ Reading from file "python/tests/res/data/atp7d.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
 ✓ Successfully loaded training dataset!
-
 Fitting model to 266 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 30 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -29,18 +26,14 @@ Median Absolute Error (↓)              13
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test_fold-1.csv"...
 
-
 Fold 2 / 10:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 Fitting model to 266 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 30 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -53,18 +46,14 @@ Median Absolute Error (↓)              4.25
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test_fold-2.csv"...
 
-
 Fold 3 / 10:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 Fitting model to 266 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 30 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -77,18 +66,14 @@ Median Absolute Error (↓)              9.25
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test_fold-3.csv"...
 
-
 Fold 4 / 10:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 Fitting model to 266 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 30 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -101,18 +86,14 @@ Median Absolute Error (↓)              8.92
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test_fold-4.csv"...
 
-
 Fold 5 / 10:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 Fitting model to 266 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 30 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -125,18 +106,14 @@ Median Absolute Error (↓)              8.33
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test_fold-5.csv"...
 
-
 Fold 6 / 10:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 Fitting model to 266 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 30 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -149,18 +126,14 @@ Median Absolute Error (↓)              4.33
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test_fold-6.csv"...
 
-
 Fold 7 / 10:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 Fitting model to 267 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 29 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -173,18 +146,14 @@ Median Absolute Error (↓)              1
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test_fold-7.csv"...
 
-
 Fold 8 / 10:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 Fitting model to 267 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 29 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -197,18 +166,14 @@ Median Absolute Error (↓)              4.17
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test_fold-8.csv"...
 
-
 Fold 9 / 10:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 Fitting model to 267 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 29 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -221,18 +186,14 @@ Median Absolute Error (↓)             13.67
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test_fold-9.csv"...
 
-
 Fold 10 / 10:
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 Fitting model to 267 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 29 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -253,6 +214,4 @@ Mean Squared Error (↓)              6303.65  ±2483.52
 Median Absolute Error (↓)              8.06  ±4.28
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
-
 ✓ Successfully finished experiment after <duration>
-

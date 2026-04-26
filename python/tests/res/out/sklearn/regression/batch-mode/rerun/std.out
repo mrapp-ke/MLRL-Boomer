@@ -2,29 +2,27 @@ mlrl-testbed mlrl.testbed_sklearn --mode read --log-width 120 --log-plain --log-
 Reading meta-data...
 ○ Reading from file "python/tests/res/tmp/<worker-id>/metadata.yml"...
 ✓ Successfully read meta-data
-
 Checking for version conflicts...
 ○ Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is
 currently used
 ✓ No version conflicts detected
-
 Reading experimental results of 8 experiments...
 
 
 Reading experimental results (1 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --dataset atp7d --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2        │
-│ --model-save-dir n-estimators_50/max-depth_2/dataset_atp7d/models --n-estimators 50 --parameter-save-dir             │
-│ n-estimators_50/max-depth_2/dataset_atp7d/parameters --problem-type regression --result-dir                          │
-│ n-estimators_50/max-depth_2/dataset_atp7d/results --save-all true --save-evaluation true --save-meta-data false      │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+atp7d --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
+n-estimators_50/max-depth_2/dataset_atp7d/models --n-estimators 50 --parameter-save-dir
+n-estimators_50/max-depth_2/dataset_atp7d/parameters --problem-type regression --result-dir
+n-estimators_50/max-depth_2/dataset_atp7d/results --save-all true --save-evaluation true --save-meta-data false
+
 Using separate training and test sets...
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 ○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d/results/data_characteristics.csv"...
 ○ Reading from file
@@ -72,19 +70,19 @@ sv"...
 
 Reading experimental results (2 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --dataset atp7d --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4        │
-│ --max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models --n-estimators │
-│ 50 --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters --problem-type         │
-│ regression --result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results --save-all true           │
-│ --save-evaluation true --save-meta-data false                                                                        │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+atp7d --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4
+--model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models --n-estimators 50
+--parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters --problem-type regression
+--result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results --save-all true --save-evaluation true
+--save-meta-data false
+
 Using separate training and test sets...
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 ○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/data_characteristics.c
 sv"...
@@ -147,18 +145,18 @@ v"...
 
 Reading experimental results (3 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --dataset atp7d --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2        │
-│ --model-save-dir n-estimators_100/max-depth_2/dataset_atp7d/models --n-estimators 100 --parameter-save-dir           │
-│ n-estimators_100/max-depth_2/dataset_atp7d/parameters --problem-type regression --result-dir                         │
-│ n-estimators_100/max-depth_2/dataset_atp7d/results --save-all true --save-evaluation true --save-meta-data false     │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+atp7d --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2 --model-save-dir
+n-estimators_100/max-depth_2/dataset_atp7d/models --n-estimators 100 --parameter-save-dir
+n-estimators_100/max-depth_2/dataset_atp7d/parameters --problem-type regression --result-dir
+n-estimators_100/max-depth_2/dataset_atp7d/results --save-all true --save-evaluation true --save-meta-data false
+
 Using separate training and test sets...
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 ○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d/results/data_characteristics.csv"...
 ○ Reading from file
@@ -208,19 +206,19 @@ csv"...
 
 Reading experimental results (4 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --dataset atp7d --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4        │
-│ --max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models               │
-│ --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters       │
-│ --problem-type regression --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results           │
-│ --save-all true --save-evaluation true --save-meta-data false                                                        │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+atp7d --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4 --max-leaf-nodes 4
+--model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/models --n-estimators 100
+--parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/parameters --problem-type regression
+--result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results --save-all true --save-evaluation true
+--save-meta-data false
+
 Using separate training and test sets...
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 ○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/data_characteristics.
 csv"...
@@ -283,19 +281,18 @@ sv"...
 
 Reading experimental results (5 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --dataset atp7d-binary --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2 │
-│ --model-save-dir n-estimators_50/max-depth_2/dataset_atp7d-binary/models --n-estimators 50 --parameter-save-dir      │
-│ n-estimators_50/max-depth_2/dataset_atp7d-binary/parameters --problem-type regression --result-dir                   │
-│ n-estimators_50/max-depth_2/dataset_atp7d-binary/results --save-all true --save-evaluation true --save-meta-data     │
-│ false                                                                                                                │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+atp7d-binary --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2
+--model-save-dir n-estimators_50/max-depth_2/dataset_atp7d-binary/models --n-estimators 50 --parameter-save-dir
+n-estimators_50/max-depth_2/dataset_atp7d-binary/parameters --problem-type regression --result-dir
+n-estimators_50/max-depth_2/dataset_atp7d-binary/results --save-all true --save-evaluation true --save-meta-data false
+
 Using separate training and test sets...
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 ○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d-binary/results/data_characteristics.csv"...
 ○ Reading from file
@@ -347,19 +344,19 @@ _test.csv"...
 
 Reading experimental results (6 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --dataset atp7d-binary --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4 │
-│ --max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models         │
-│ --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters  │
-│ --problem-type regression --result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results     │
-│ --save-all true --save-evaluation true --save-meta-data false                                                        │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+atp7d-binary --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4
+--max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models
+--n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters
+--problem-type regression --result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results
+--save-all true --save-evaluation true --save-meta-data false
+
 Using separate training and test sets...
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 ○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/data_characteri
 stics.csv"...
@@ -425,19 +422,18 @@ le"...
 
 Reading experimental results (7 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --dataset atp7d-binary --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2 │
-│ --model-save-dir n-estimators_100/max-depth_2/dataset_atp7d-binary/models --n-estimators 100 --parameter-save-dir    │
-│ n-estimators_100/max-depth_2/dataset_atp7d-binary/parameters --problem-type regression --result-dir                  │
-│ n-estimators_100/max-depth_2/dataset_atp7d-binary/results --save-all true --save-evaluation true --save-meta-data    │
-│ false                                                                                                                │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+atp7d-binary --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 2
+--model-save-dir n-estimators_100/max-depth_2/dataset_atp7d-binary/models --n-estimators 100 --parameter-save-dir
+n-estimators_100/max-depth_2/dataset_atp7d-binary/parameters --problem-type regression --result-dir
+n-estimators_100/max-depth_2/dataset_atp7d-binary/results --save-all true --save-evaluation true --save-meta-data false
+
 Using separate training and test sets...
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 ○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d-binary/results/data_characteristics.csv"...
 ○ Reading from file
@@ -490,20 +486,19 @@ s_test.csv"...
 
 Reading experimental results (8 / 8):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data          │
-│ --dataset atp7d-binary --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4 │
-│ --max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models        │
-│ --n-estimators 100 --parameter-save-dir                                                                              │
-│ n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters --problem-type regression --result-dir │
-│ n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results --save-all true --save-evaluation true    │
-│ --save-meta-data false                                                                                               │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset
+atp7d-binary --estimator RandomForestRegressor --log-level debug --log-plain --log-width 120 --max-depth 4
+--max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/models
+--n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/parameters
+--problem-type regression --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results
+--save-all true --save-evaluation true --save-meta-data false
+
 Using separate training and test sets...
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 ○ Reading from file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/data_character
 istics.csv"...
@@ -721,4 +716,3 @@ Averages
 4.00                           4             100
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/aggregated_evaluation_test.csv"...
-

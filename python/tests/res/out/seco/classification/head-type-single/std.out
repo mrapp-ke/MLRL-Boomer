@@ -8,15 +8,12 @@ Loading training dataset...
 ○ Reading from file "python/tests/res/data/emotions.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 ✓ Successfully loaded training dataset!
-
 Fitting model to 397 training examples...
 ○ A dense matrix is used to store the feature values of the training examples
 ○ A dense matrix is used to store the labels of the training examples
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 196 test examples...
 ○ A dense matrix is used to store the feature values of the query examples
 ○ A dense matrix is used to store the predicted labels
@@ -43,7 +40,6 @@ Subset Accuracy (↑)         18.37
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
 
-
 🗀 Model characteristics:
 
 Statistics about conditions      Total    Numerical <= operator    Numerical > operator    Ordinal <= operator
@@ -62,4 +58,3 @@ Conditions                           1       1.11          3
 Predictions                          1       1             1
 
 ✓ Successfully finished experiment after <duration>
-

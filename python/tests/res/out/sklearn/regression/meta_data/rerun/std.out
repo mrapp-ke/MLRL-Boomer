@@ -2,42 +2,37 @@ mlrl-testbed mlrl.testbed_sklearn --mode read --log-width 120 --log-plain --log-
 Reading meta-data...
 ○ Reading from file "python/tests/res/tmp/<worker-id>/metadata.yml"...
 ✓ Successfully read meta-data
-
 Checking for version conflicts...
 ○ Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is
 currently used
 ✓ No version conflicts detected
-
 Reading experimental results of 1 experiment...
 
 
 Reading experimental results (1 / 1):
 
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --log-width 120 --log-plain --log-level debug --base-dir                           │
-│ python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type   │
-│ regression --save-evaluation true --save-meta-data false --save-meta-data true --print-evaluation false              │
-│ --save-evaluation false --print-meta-data true --save-meta-data true --n-estimators 1 --estimator                    │
-│ RandomForestRegressor                                                                                                │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Command:
 
-╭─────────────────────────────────────────── 🗀 Meta-data of the experiment ────────────────────────────────────────────╮
-│ {                                                                                                                    │
-│     "version": "<version>",                                                                                             │
-│     "timestamp": "<timestamp>",                                                                                 │
-│     "command": "mlrl-testbed mlrl.testbed_sklearn --log-width 120 --log-plain --log-level debug --base-dir           │
-│ python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type   │
-│ regression --save-evaluation true --save-meta-data false --save-meta-data true --print-evaluation false              │
-│ --save-evaluation false --print-meta-data true --save-meta-data true --n-estimators 1 --estimator                    │
-│ RandomForestRegressor"                                                                                               │
-│ }                                                                                                                    │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+mlrl-testbed mlrl.testbed_sklearn --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id>
+--data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true
+--save-meta-data false --save-meta-data true --print-evaluation false --save-evaluation false --print-meta-data true
+--save-meta-data true --n-estimators 1 --estimator RandomForestRegressor
+
+
+🗀 Meta-data of the experiment:
+
+{
+    "version": "<version>",
+    "timestamp": "<timestamp>",
+    "command": "mlrl-testbed mlrl.testbed_sklearn --log-width 120 --log-plain --log-level debug --base-dir
+python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type
+regression --save-evaluation true --save-meta-data false --save-meta-data true --print-evaluation false
+--save-evaluation false --print-meta-data true --save-meta-data true --n-estimators 1 --estimator RandomForestRegressor"
+}
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/metadata.yml"...
 Using separate training and test sets...
 
 Loading training dataset...
 ✓ Successfully loaded training dataset!
-
 ○ Reading from file "python/tests/res/tmp/<worker-id>/metadata.yml"...
-

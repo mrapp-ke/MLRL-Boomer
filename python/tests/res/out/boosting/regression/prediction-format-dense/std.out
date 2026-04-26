@@ -8,15 +8,12 @@ Loading training dataset...
 ○ Reading from file "python/tests/res/data/atp7d.arff"...
 ○ Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
 ✓ Successfully loaded training dataset!
-
 Fitting model to 198 training examples...
 ○ A dense matrix is used to store the feature values of the training examples
 ○ A dense matrix is used to store the regression scores of the training examples
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 98 test examples...
 ○ A dense matrix is used to store the feature values of the query examples
 ○ A dense matrix is used to store the predicted scores
@@ -234,6 +231,4 @@ Median Absolute Error (↓)             16.41
  [267.55 290.84 312.39 345.07 279.52 341.66]
  [216.85 230.69 462.02 490.89 276.56 500.64]]
 
-
 ✓ Successfully finished experiment after <duration>
-

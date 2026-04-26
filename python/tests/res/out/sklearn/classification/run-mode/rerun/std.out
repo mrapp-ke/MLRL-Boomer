@@ -2,21 +2,19 @@ mlrl-testbed mlrl.testbed_sklearn --mode run --log-width 120 --log-plain --log-l
 Reading meta-data...
 ○ Reading from file "python/tests/res/tmp/<worker-id>/metadata.yml"...
 ✓ Successfully read meta-data
-
 Checking for version conflicts...
 ○ Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is
 currently used
 ✓ No version conflicts detected
-
 Re-running experiment...
-Arguments "--log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id>/rerun
---save-evaluation true --save-meta-data false --save-all true --print-all true --estimator RandomForestClassifier"
-modifying the original experiments have been provided
-╭────────────────────────────────────────────────────── Command ───────────────────────────────────────────────────────╮
-│ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id>/rerun --data-dir python/tests/res/data    │
-│ --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --n-estimators 1 │
-│ --print-all true --result-dir results --save-all true --save-evaluation true --save-meta-data false                  │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+○ 17 arguments modifying the original experiments have been provided: --log-width 120 --log-plain --log-level debug
+--base-dir python/tests/res/tmp/<worker-id>/rerun --save-evaluation true --save-meta-data false --save-all true --print-all
+true --estimator RandomForestClassifier
+Command:
+
+mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id>/rerun --data-dir python/tests/res/data
+--dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --n-estimators 1
+--print-all true --result-dir results --save-all true --save-evaluation true --save-meta-data false
 
 Checking if output files do already exist...
 
@@ -51,13 +49,10 @@ Distinct Label Vectors   23
 <no data available>
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/parameters/parameters.csv"...
-
 Fitting model to 397 training examples...
 ✓ Successfully fit model in <duration>
-
 Loading test dataset...
 ✓ Successfully loaded test dataset!
-
 Predicting for 196 test examples...
 ✓ Successfully predicted in <duration>
 
@@ -495,7 +490,6 @@ Distinct Label Vectors  21
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/predictions_test.arff"...
 
-
 🗀 Label vectors:
 
   Index  Label vector      Frequency
@@ -526,4 +520,3 @@ Distinct Label Vectors  21
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/label_vectors.csv"...
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/models/model.pickle"...
 ✓ Successfully finished experiment after <duration>
-
