@@ -1,0 +1,7 @@
+mlrl.testbed.log.arguments module
+=================================
+
+.. automodule:: mlrl.testbed.log.arguments
+   :members:
+   :show-inheritance:
+   :undoc-members:
