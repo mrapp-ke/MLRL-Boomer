@@ -33,7 +33,11 @@ class OutputParameters(TabularOutputData):
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
         table = self.to_table(options, **kwargs)
-        return table.to_column_wise_table().sort_by_headers().to_rich_table() if table else None
+
+        if table and table.num_cells > 0:
+            return table.to_column_wise_table().sort_by_headers().to_rich_table()
+
+        return '<No custom parameters used>'
 
     @override
     def to_table(self, options: Options, **_) -> Table | None:
