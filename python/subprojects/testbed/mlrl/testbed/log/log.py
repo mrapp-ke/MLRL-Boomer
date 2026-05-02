@@ -252,12 +252,11 @@ class Log:
             indentation_level.decrease()
 
     @staticmethod
-    def error(message: str, *args, error: Exception | None = None, box: bool = False, box_title: str | None = None):
+    def error(message: str, error: Exception | None = None, box: bool = False, box_title: str | None = None):
         """
         Writes a log message at level `Log.Level.ERROR` and terminates the build system.
 
         :param message:     The log message to be written
-        :param args:        Optional arguments to be included in the log message
         :param error:       An optional error to be included in the log message
         :param box:         True, if a box should be surrounded by a box, False otherwise
         :param box_title:   An optional title to be printed at the top of the box surrounding the log message
@@ -265,7 +264,7 @@ class Log:
         log_level = logging.ERROR
 
         if logging.getLogger().isEnabledFor(log_level):
-            formatted_message = LogHandler.format_message(message.format(*args), log_level)
+            formatted_message = LogHandler.format_message(message, log_level)
             style = LogHandler.get_style(log_level)
             INDENTATION_LEVEL.get().print(message=formatted_message, style=style, box=box, box_title=box_title)
 
@@ -294,7 +293,6 @@ class Log:
         Writes a log message at level `Log.Level.INFO` indicating successful operation of an operation.
 
         :param message:     The log message to be written
-        :param args:        Optional arguments to be included in the log message
         :param box:         True, if a box should be surrounded by a box, False otherwise
         :param box_title:   An optional title to be printed at the top of the box surrounding the log message
         """
@@ -348,7 +346,6 @@ class Log:
         Writes a log message containing source code in a specific language at level `Log.Level.INFO`.
 
         :param source_code: The source code to be written
-        :param args:        Optional arguments to be included in the log message
         :param language:    The language used by the source code
         :param box_title:   An optional title to be printed at the top of the box surrounding the log message
         """
