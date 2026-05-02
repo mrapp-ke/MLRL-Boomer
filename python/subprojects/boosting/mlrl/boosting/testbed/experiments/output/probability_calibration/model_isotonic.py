@@ -143,7 +143,11 @@ class IsotonicRegressionModel(TabularOutputData):
                     renderables.append(Text(''))
 
                 renderables.append(
-                    bin_list_table.to_rich_table(auto_rotate=False, table_format=Table.Format.SIMPLE)
+                    bin_list_table.to_rich_table(
+                        auto_rotate=False,
+                        table_format=Table.Format.SIMPLE,
+                        column_styles=[Table.COLUMN_STYLE_VALUE, Table.COLUMN_STYLE_VALUE],
+                    )
                 )
 
             return Group(*renderables) if renderables else None

@@ -7,7 +7,7 @@ Provides classes for representing tables.
 from abc import ABC, abstractmethod
 from collections.abc import Generator, Iterable, Iterator
 from enum import Enum, auto
-from typing import Any, override
+from typing import Any, override, Sequence
 from rich.table import Table as RichTable
 from rich import box
 from rich.text import Text
@@ -143,6 +143,10 @@ class Table(ABC):
         OUTLINE = auto()
         HORIZONTAL_LINES = auto()
 
+    COLUMN_STYLE_VALUE = Style(color='turquoise2')
+
+    COLUMN_STYLE_HEADER = Style(bold=True)
+
     @property
     def has_headers(self) -> bool:
         """
@@ -219,7 +223,8 @@ class Table(ABC):
         self,
         auto_rotate: bool = True,
         table_format: 'Table.Format | None' = None,
-        separator_indices: list[int] | None = None,
+        column_styles: Sequence[Style | None] | None = None,
+        separator_indices: Sequence[int] | None = None,
     ) -> ConsoleRenderable:
         """
         Creates and returns an object of type `rich.table.Table`.
@@ -228,6 +233,7 @@ class Table(ABC):
                                     False otherwise
         :param table_format:        The format that should be used for formatting the table or None, if the default
                                     should be used
+        :param column_styles:       A list that contains the style of the columns of None, if no styling should be used
         :param separator_indices:   A list that contains the indices of the row at which a separator should be inserted,
                                     or None if no separators should be inserted
         :return:                    The object that has been created
@@ -236,13 +242,13 @@ class Table(ABC):
             headers = self.header_row
             rows: Iterable[Any] = self.rows
             alignments: list[Alignment | None] = self.alignments if self.alignments else []
-            column_styles = []
+            styles: list[Style | None] = list(column_styles) if column_styles else []
 
             if auto_rotate and headers and self.num_rows == 1:
                 first_row = next(self.rows)
                 rows = [[headers[column_index], first_row[column_index]] for column_index in range(self.num_columns)]
                 alignments = [Alignment.LEFT, Alignment.RIGHT]
-                column_styles = [Style(bold=True), None]
+                styles = [Table.COLUMN_STYLE_HEADER, Table.COLUMN_STYLE_VALUE]
                 headers = None
 
             table_box: box.Box | None = None
@@ -255,19 +261,19 @@ class Table(ABC):
                 if table_format == Table.Format.HORIZONTAL_LINES:
                     table_box = box.HORIZONTALS
 
-            rich_table = RichTable(show_header=bool(headers), box=table_box)
-            num_columns = max(len(alignments), len(column_styles), headers.num_columns if headers else 0)
+            rich_table = RichTable(show_header=bool(headers), box=table_box, header_style=Table.COLUMN_STYLE_HEADER)
+            num_columns = max(len(alignments), len(styles), headers.num_columns if headers else 0)
 
             for column_index in range(num_columns):
                 alignment = alignments[column_index] if len(alignments) > column_index else None
-                column_style = column_styles[column_index] if len(column_styles) > column_index else None
+                style = styles[column_index] if len(styles) > column_index else None
                 header = headers[column_index] if headers and headers.num_columns > column_index else None
                 justify = alignment.value if alignment else None
 
                 if header:
-                    rich_table.add_column(str(header), style=column_style, justify=justify)  # type: ignore[arg-type]
+                    rich_table.add_column(str(header), style=style, justify=justify)  # type: ignore[arg-type]
                 else:
-                    rich_table.add_column(style=column_style, justify=justify)  # type: ignore[arg-type]
+                    rich_table.add_column(style=style, justify=justify)  # type: ignore[arg-type]
 
             indices = set(separator_indices) if separator_indices else set()
 

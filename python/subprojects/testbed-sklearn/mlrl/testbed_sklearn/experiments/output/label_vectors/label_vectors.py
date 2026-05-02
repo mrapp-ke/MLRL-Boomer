@@ -56,7 +56,14 @@ class LabelVectors(TabularOutputData):
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
         table = self.to_table(options, **kwargs)
-        return table.to_rich_table(table_format=Table.Format.SIMPLE) if table else None
+
+        if table:
+            return table.to_rich_table(
+                table_format=Table.Format.SIMPLE,
+                column_styles=[Table.COLUMN_STYLE_VALUE, None, Table.COLUMN_STYLE_VALUE],
+            )
+
+        return None
 
     @override
     def to_table(self, options: Options, **kwargs) -> Table | None:

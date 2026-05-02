@@ -161,9 +161,14 @@ class AggregatedEvaluationResult(TabularOutputData):
                     for row_index, row in enumerate(row_wise_table.rows)
                     if row_index > 0 and (row[0] in separators or row_wise_table[row_index - 1][0] in separators)
                 ]
+                column_styles = [Table.COLUMN_STYLE_HEADER] + [
+                    Table.COLUMN_STYLE_VALUE for _ in range(row_wise_table.num_columns - 1)
+                ]
                 renderables.append(
                     row_wise_table.to_rich_table(
-                        table_format=Table.Format.HORIZONTAL_LINES, separator_indices=separator_indices,
+                        table_format=Table.Format.HORIZONTAL_LINES,
+                        separator_indices=separator_indices,
+                        column_styles=column_styles,
                     )
                 )
 

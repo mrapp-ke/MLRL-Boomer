@@ -7,6 +7,7 @@ Provides classes for representing evaluation results that are part of output dat
 from itertools import tee
 from typing import Any, override
 from rich.console import ConsoleRenderable
+from rich.style import Style
 
 from mlrl.testbed.experiments.output.data import OutputValue
 from mlrl.testbed.experiments.output.evaluation.evaluation_result import AggregatedEvaluationResult, EvaluationResult
@@ -144,7 +145,9 @@ class TabularEvaluationResult(EvaluationResult):
 
                 rotated_table.add_row(*new_row)
 
-            return rotated_table.sort_by_columns(0).to_rich_table()
+            return rotated_table.sort_by_columns(0).to_rich_table(
+                column_styles=[Table.COLUMN_STYLE_HEADER, Table.COLUMN_STYLE_VALUE, Style(color='turquoise4')]
+            )
 
         return None
 
