@@ -337,7 +337,7 @@ class Log:
             else:
                 console = get_console()
                 console.print('')
-                console.rule(title)
+                console.rule(Text(title, style=Style(bold=True)))
                 console.print('')
 
     @staticmethod
