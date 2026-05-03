@@ -13,7 +13,6 @@ from rich import box
 from rich.text import Text
 from rich.console import ConsoleRenderable
 from rich.style import Style
-from tabulate import SEPARATING_LINE, tabulate
 
 
 Header = Any | None
@@ -295,57 +294,6 @@ class Table(ABC):
             return rich_table
 
         return Text('<no data available>')
-
-    def format(
-        self,
-        auto_rotate: bool = True,
-        table_format: 'Table.Format | None' = None,
-        separator_indices: list[int] | None = None,
-    ) -> str:
-        """
-        Creates and returns a textual representation of the table.
-
-        :param auto_rotate:         True, if tables with a single row should automatically be rotated for legibility,
-                                    False otherwise
-        :param table_format:        The format that should be used for formatting the table or None, if the default
-                                    should be used
-        :param separator_indices:   A list that contains the indices of the row at which a separator should be inserted,
-                                    or None if no separators should be inserted
-        :return:                    The textual representation that has been created
-        """
-        if self.num_cells > 0:
-            headers = self.header_row
-            rows: list[Any] = list(self.rows)
-
-            if separator_indices:
-                separator_indices.sort()
-
-                for row_index in reversed(separator_indices):
-                    rows.insert(row_index, SEPARATING_LINE)
-
-            if auto_rotate and headers and self.num_rows == 1:
-                first_row = next(self.rows)
-                rotated_rows = [
-                    [headers[column_index], first_row[column_index]] for column_index in range(self.num_columns)
-                ]
-                return tabulate(rotated_rows, tablefmt=table_format if table_format else Table.Format.PLAIN)
-
-            if not headers:
-                return tabulate(rows, tablefmt=table_format if table_format else Table.Format.PLAIN)
-
-            alignments = (
-                map(lambda alignment: alignment.value if alignment else None, self.alignments)
-                if self.alignments
-                else None
-            )
-            return tabulate(
-                rows,
-                headers=headers,
-                tablefmt=table_format if table_format else Table.Format.PLAIN,
-                colalign=alignments,
-            )
-
-        return '<no data available>'
 
 
 class RowWiseTable(Table):
