@@ -5,6 +5,7 @@
 #pragma once
 
 #include "mlrl/boosting/losses/loss_decomposable.hpp"
+#include "mlrl/boosting/statistics/quantization.hpp"
 #include "mlrl/boosting/statistics/statistics_decomposable.hpp"
 #include "mlrl/common/multi_threading/multi_threading.hpp"
 #include "mlrl/common/statistics/statistics_provider.hpp"
@@ -26,6 +27,8 @@ namespace boosting {
         : public IClassificationStatisticsProviderFactory {
         private:
 
+            const std::unique_ptr<IQuantizationFactory> quantizationFactoryPtr_;
+
             const std::unique_ptr<IDecomposableClassificationLossFactory<StatisticType>> lossFactoryPtr_;
 
             const std::unique_ptr<IClassificationEvaluationMeasureFactory<StatisticType>> evaluationMeasureFactoryPtr_;
@@ -41,6 +44,9 @@ namespace boosting {
         public:
 
             /**
+             * @param quantizationFactoryPtr            An unique pointer to an object of type `IQuantizationFactory`
+             *                                          that allows to create implementations of the method that should
+             *                                          be used for quantizing gradients and Hessians
              * @param lossFactoryPtr                    An unique pointer to an object of type
              *                                          `IDecomposableClassificationLossFactory` that allows to create
              *                                          implementations of the loss function that should be used for
@@ -66,6 +72,7 @@ namespace boosting {
              *                                          parallel
              */
             DenseDecomposableClassificationStatisticsProviderFactory(
+              std::unique_ptr<IQuantizationFactory> quantizationFactoryPtr,
               std::unique_ptr<IDecomposableClassificationLossFactory<StatisticType>> lossFactoryPtr,
               std::unique_ptr<IClassificationEvaluationMeasureFactory<StatisticType>> evaluationMeasureFactoryPtr,
               std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
@@ -95,6 +102,8 @@ namespace boosting {
     class DenseDecomposableRegressionStatisticsProviderFactory final : public IRegressionStatisticsProviderFactory {
         private:
 
+            const std::unique_ptr<IQuantizationFactory> quantizationFactoryPtr_;
+
             const std::unique_ptr<IDecomposableRegressionLossFactory<StatisticType>> lossFactoryPtr_;
 
             const std::unique_ptr<IRegressionEvaluationMeasureFactory<StatisticType>> evaluationMeasureFactoryPtr_;
@@ -110,6 +119,9 @@ namespace boosting {
         public:
 
             /**
+             * @param quantizationFactoryPtr            An unique pointer to an object of type `IQuantizationFactory`
+             *                                          that allows to create implementations of the method that should
+             *                                          be used for quantizing gradients and Hessians
              * @param lossFactoryPtr                    An unique pointer to an object of type
              *                                          `IDecomposableRegressionLossFactory` that allows to create
              *                                          implementations of the loss function that should be used for
@@ -135,6 +147,7 @@ namespace boosting {
              *                                          parallel
              */
             DenseDecomposableRegressionStatisticsProviderFactory(
+              std::unique_ptr<IQuantizationFactory> quantizationFactoryPtr,
               std::unique_ptr<IDecomposableRegressionLossFactory<StatisticType>> lossFactoryPtr,
               std::unique_ptr<IRegressionEvaluationMeasureFactory<StatisticType>> evaluationMeasureFactoryPtr,
               std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,

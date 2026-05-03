@@ -111,6 +111,11 @@ namespace boosting {
             std::shared_ptr<IRegressionStatisticsConfig> regressionStatisticsConfigPtr_;
 
             /**
+             * An unique pointer that stores the configuration of the method for quantizing statistics.
+             */
+            std::unique_ptr<IQuantizationConfig> quantizationConfigPtr_;
+
+            /**
              * A shared pointer that stores the configuration of the loss function that should be used in classification
              * problems.
              */
@@ -164,6 +169,10 @@ namespace boosting {
 
             SharedProperty<IRegressionStatisticsConfig> getRegressionStatisticsConfig() override final {
                 return util::sharedProperty(regressionStatisticsConfigPtr_);
+            }
+
+            Property<IQuantizationConfig> getQuantizationConfig() override final {
+                return util::property(quantizationConfigPtr_);
             }
 
             Property<IRegularizationConfig> getL1RegularizationConfig() override final {

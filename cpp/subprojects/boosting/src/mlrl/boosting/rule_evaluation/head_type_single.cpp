@@ -13,6 +13,8 @@ namespace boosting {
     class SingleHeadPreset final : public IHeadConfig::IPreset<StatisticType> {
         private:
 
+            ReadableProperty<IQuantizationConfig> quantizationConfig_;
+
             ReadableProperty<ILabelBinningConfig> labelBinningConfig_;
 
             ReadableProperty<IMultiThreadingConfig> multiThreadingConfig_;
@@ -25,14 +27,15 @@ namespace boosting {
 
         public:
 
-            SingleHeadPreset(ReadableProperty<ILabelBinningConfig> labelBinningConfig,
+            SingleHeadPreset(ReadableProperty<IQuantizationConfig> quantizationConfig,
+                             ReadableProperty<ILabelBinningConfig> labelBinningConfig,
                              ReadableProperty<IMultiThreadingConfig> multiThreadingConfig,
                              ReadableProperty<ISimdConfig> simdConfig,
                              ReadableProperty<IRegularizationConfig> l1RegularizationConfig,
                              ReadableProperty<IRegularizationConfig> l2RegularizationConfig)
-                : labelBinningConfig_(labelBinningConfig), multiThreadingConfig_(multiThreadingConfig),
-                  simdConfig_(simdConfig), l1RegularizationConfig_(l1RegularizationConfig),
-                  l2RegularizationConfig_(l2RegularizationConfig) {}
+                : quantizationConfig_(quantizationConfig), labelBinningConfig_(labelBinningConfig),
+                  multiThreadingConfig_(multiThreadingConfig), simdConfig_(simdConfig),
+                  l1RegularizationConfig_(l1RegularizationConfig), l2RegularizationConfig_(l2RegularizationConfig) {}
 
             std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
@@ -43,6 +46,8 @@ namespace boosting {
                 float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
                 MultiThreadingSettings multiThreadingSettings =
                   multiThreadingConfig_.get().getSettings(featureMatrix, labelMatrix.getNumOutputs());
+                std::unique_ptr<IQuantizationFactory> quantizationFactoryPtr =
+                  quantizationConfig_.get().createQuantizationFactory(labelMatrix);
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
                   labelBinningConfig_.get().createDecomposableCompleteRuleEvaluationFactory();
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
@@ -56,15 +61,16 @@ namespace boosting {
                 if (simdConfig_.get().isSimdRecommended(labelMatrix.getNumOutputs())) {
                     return std::make_unique<
                       DenseDecomposableClassificationStatisticsProviderFactory<StatisticType, SimdVectorMath>>(
-                      std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
-                      std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
-                      std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
+                      std::move(quantizationFactoryPtr), std::move(lossFactoryPtr),
+                      std::move(evaluationMeasureFactoryPtr), std::move(defaultRuleEvaluationFactoryPtr),
+                      std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr),
+                      multiThreadingSettings);
                 }
 #endif
 
                 return std::make_unique<
                   DenseDecomposableClassificationStatisticsProviderFactory<StatisticType, SequentialVectorMath>>(
-                  std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
+                  std::move(quantizationFactoryPtr), std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
                   std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
                   std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
             }
@@ -78,6 +84,8 @@ namespace boosting {
                 float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
                 MultiThreadingSettings multiThreadingSettings =
                   multiThreadingConfig_.get().getSettings(featureMatrix, labelMatrix.getNumOutputs());
+                std::unique_ptr<IQuantizationFactory> quantizationFactoryPtr =
+                  quantizationConfig_.get().createQuantizationFactory(labelMatrix);
                 std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
                   std::make_unique<DecomposableSingleOutputRuleEvaluationFactory>(l1RegularizationWeight,
                                                                                   l2RegularizationWeight);
@@ -89,15 +97,15 @@ namespace boosting {
                 if (simdConfig_.get().isSimdRecommended(labelMatrix.getNumOutputs())) {
                     return std::make_unique<
                       SparseDecomposableClassificationStatisticsProviderFactory<StatisticType, SimdVectorMath>>(
-                      std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
-                      std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr),
-                      multiThreadingSettings);
+                      std::move(quantizationFactoryPtr), std::move(lossFactoryPtr),
+                      std::move(evaluationMeasureFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
+                      std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
                 }
 #endif
 
                 return std::make_unique<
                   SparseDecomposableClassificationStatisticsProviderFactory<StatisticType, SequentialVectorMath>>(
-                  std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
+                  std::move(quantizationFactoryPtr), std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
                   std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr),
                   multiThreadingSettings);
             }
@@ -111,6 +119,8 @@ namespace boosting {
                 float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
                 MultiThreadingSettings multiThreadingSettings =
                   multiThreadingConfig_.get().getSettings(featureMatrix, labelMatrix.getNumOutputs());
+                std::unique_ptr<IQuantizationFactory> quantizationFactoryPtr =
+                  quantizationConfig_.get().createQuantizationFactory(labelMatrix);
                 std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
                   labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blasFactory,
                                                                                                lapackFactory);
@@ -125,15 +135,16 @@ namespace boosting {
                 if (simdConfig_.get().isSimdRecommended(labelMatrix.getNumOutputs())) {
                     return std::make_unique<DenseConvertibleNonDecomposableClassificationStatisticsProviderFactory<
                       StatisticType, SimdVectorMath>>(
-                      std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
-                      std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
-                      std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
+                      std::move(quantizationFactoryPtr), std::move(lossFactoryPtr),
+                      std::move(evaluationMeasureFactoryPtr), std::move(defaultRuleEvaluationFactoryPtr),
+                      std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr),
+                      multiThreadingSettings);
                 }
 #endif
 
                 return std::make_unique<DenseConvertibleNonDecomposableClassificationStatisticsProviderFactory<
                   StatisticType, SequentialVectorMath>>(
-                  std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
+                  std::move(quantizationFactoryPtr), std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
                   std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
                   std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
             }
@@ -147,6 +158,8 @@ namespace boosting {
                 float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
                 MultiThreadingSettings multiThreadingSettings =
                   multiThreadingConfig_.get().getSettings(featureMatrix, regressionMatrix.getNumOutputs());
+                std::unique_ptr<IQuantizationFactory> quantizationFactoryPtr =
+                  quantizationConfig_.get().createQuantizationFactory(regressionMatrix);
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
                   labelBinningConfig_.get().createDecomposableCompleteRuleEvaluationFactory();
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
@@ -160,15 +173,16 @@ namespace boosting {
                 if (simdConfig_.get().isSimdRecommended(regressionMatrix.getNumOutputs())) {
                     return std::make_unique<
                       DenseDecomposableRegressionStatisticsProviderFactory<StatisticType, SimdVectorMath>>(
-                      std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
-                      std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
-                      std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
+                      std::move(quantizationFactoryPtr), std::move(lossFactoryPtr),
+                      std::move(evaluationMeasureFactoryPtr), std::move(defaultRuleEvaluationFactoryPtr),
+                      std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr),
+                      multiThreadingSettings);
                 }
 #endif
 
                 return std::make_unique<
                   DenseDecomposableRegressionStatisticsProviderFactory<StatisticType, SequentialVectorMath>>(
-                  std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
+                  std::move(quantizationFactoryPtr), std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
                   std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
                   std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
             }
@@ -182,6 +196,8 @@ namespace boosting {
                 float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
                 MultiThreadingSettings multiThreadingSettings =
                   multiThreadingConfig_.get().getSettings(featureMatrix, regressionMatrix.getNumOutputs());
+                std::unique_ptr<IQuantizationFactory> quantizationFactoryPtr =
+                  quantizationConfig_.get().createQuantizationFactory(regressionMatrix);
                 std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
                   labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blasFactory,
                                                                                                lapackFactory);
@@ -196,36 +212,41 @@ namespace boosting {
                 if (simdConfig_.get().isSimdRecommended(regressionMatrix.getNumOutputs())) {
                     return std::make_unique<DenseConvertibleNonDecomposableRegressionStatisticsProviderFactory<
                       StatisticType, SimdVectorMath>>(
-                      std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
-                      std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
-                      std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
+                      std::move(quantizationFactoryPtr), std::move(lossFactoryPtr),
+                      std::move(evaluationMeasureFactoryPtr), std::move(defaultRuleEvaluationFactoryPtr),
+                      std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr),
+                      multiThreadingSettings);
                 }
 #endif
 
                 return std::make_unique<DenseConvertibleNonDecomposableRegressionStatisticsProviderFactory<
                   StatisticType, SequentialVectorMath>>(
-                  std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
+                  std::move(quantizationFactoryPtr), std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
                   std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
                   std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
             }
     };
 
-    SingleOutputHeadConfig::SingleOutputHeadConfig(ReadableProperty<ILabelBinningConfig> labelBinningConfig,
+    SingleOutputHeadConfig::SingleOutputHeadConfig(ReadableProperty<IQuantizationConfig> quantizationConfig,
+                                                   ReadableProperty<ILabelBinningConfig> labelBinningConfig,
                                                    ReadableProperty<IMultiThreadingConfig> multiThreadingConfig,
                                                    ReadableProperty<ISimdConfig> simdConfig,
                                                    ReadableProperty<IRegularizationConfig> l1RegularizationConfig,
                                                    ReadableProperty<IRegularizationConfig> l2RegularizationConfig)
-        : labelBinningConfig_(labelBinningConfig), multiThreadingConfig_(multiThreadingConfig), simdConfig_(simdConfig),
+        : quantizationConfig_(quantizationConfig), labelBinningConfig_(labelBinningConfig),
+          multiThreadingConfig_(multiThreadingConfig), simdConfig_(simdConfig),
           l1RegularizationConfig_(l1RegularizationConfig), l2RegularizationConfig_(l2RegularizationConfig) {}
 
     std::unique_ptr<IHeadConfig::IPreset<float32>> SingleOutputHeadConfig::create32BitPreset() const {
-        return std::make_unique<SingleHeadPreset<float32>>(labelBinningConfig_, multiThreadingConfig_, simdConfig_,
-                                                           l1RegularizationConfig_, l2RegularizationConfig_);
+        return std::make_unique<SingleHeadPreset<float32>>(quantizationConfig_, labelBinningConfig_,
+                                                           multiThreadingConfig_, simdConfig_, l1RegularizationConfig_,
+                                                           l2RegularizationConfig_);
     }
 
     std::unique_ptr<IHeadConfig::IPreset<float64>> SingleOutputHeadConfig::create64BitPreset() const {
-        return std::make_unique<SingleHeadPreset<float64>>(labelBinningConfig_, multiThreadingConfig_, simdConfig_,
-                                                           l1RegularizationConfig_, l2RegularizationConfig_);
+        return std::make_unique<SingleHeadPreset<float64>>(quantizationConfig_, labelBinningConfig_,
+                                                           multiThreadingConfig_, simdConfig_, l1RegularizationConfig_,
+                                                           l2RegularizationConfig_);
     }
 
     bool SingleOutputHeadConfig::isPartial() const {
