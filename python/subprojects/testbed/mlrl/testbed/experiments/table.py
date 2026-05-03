@@ -87,6 +87,15 @@ class Column(Iterable[Cell], ABC):
         CENTER = 'center'
         RIGHT = 'right'
 
+    class Style(Enum):
+        """
+        Different styles of a column.
+        """
+
+        HEADER = Style(bold=True)
+        VALUE = Style(color='turquoise2')
+        VALUE_SECONDARY = Style(color='turquoise4')
+
     @abstractmethod
     def set_header(self, value: Header):
         """
@@ -133,10 +142,6 @@ class Table(ABC):
         HORIZONTAL_LINES = box.HORIZONTALS
         INNER_LINES = box.MINIMAL
         ALL_LINES = box.ROUNDED
-
-    COLUMN_STYLE_VALUE = Style(color='turquoise2')
-
-    COLUMN_STYLE_HEADER = Style(bold=True)
 
     @property
     def has_headers(self) -> bool:
@@ -207,7 +212,7 @@ class Table(ABC):
         self,
         auto_rotate: bool = True,
         border_style: 'Table.BorderStyle' = BorderStyle.NONE,
-        column_styles: Sequence[Style | None] | None = None,
+        column_styles: Sequence[Column.Style | None] | None = None,
         column_alignments: Sequence[Column.Alignment | None] | None = None,
         separator_indices: Sequence[int] | None = None,
     ) -> ConsoleRenderable:
@@ -229,25 +234,26 @@ class Table(ABC):
             headers = self.header_row
             rows: Iterable[Any] = self.rows
             alignments: list[Column.Alignment | None] = list(column_alignments) if column_alignments else []
-            styles: list[Style | None] = list(column_styles) if column_styles else []
+            styles: list[Column.Style | None] = list(column_styles) if column_styles else []
 
             if auto_rotate and headers and self.num_rows == 1:
                 first_row = next(self.rows)
                 rows = [[headers[column_index], first_row[column_index]] for column_index in range(self.num_columns)]
                 alignments = [Column.Alignment.LEFT, Column.Alignment.RIGHT]
-                styles = [Table.COLUMN_STYLE_HEADER, Table.COLUMN_STYLE_VALUE]
+                styles = [Column.Style.HEADER, Column.Style.VALUE]
                 headers = None
 
             rich_table = RichTable(
                 show_header=bool(headers),
                 box=border_style.value if headers else None,
-                header_style=Table.COLUMN_STYLE_HEADER,
+                header_style=Column.Style.HEADER.value,
             )
             num_columns = max(len(alignments), len(styles), headers.num_columns if headers else 0)
 
             for column_index in range(num_columns):
                 alignment = alignments[column_index] if len(alignments) > column_index else None
-                style = styles[column_index] if len(styles) > column_index else None
+                column_style = styles[column_index] if len(styles) > column_index else None
+                style = column_style.value if column_style else None
                 header = headers[column_index] if headers and headers.num_columns > column_index else None
                 justify = alignment.value if alignment else None
 

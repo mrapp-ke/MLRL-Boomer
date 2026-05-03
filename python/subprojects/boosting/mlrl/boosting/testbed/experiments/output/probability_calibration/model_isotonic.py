@@ -16,7 +16,7 @@ from mlrl.common.cython.probability_calibration import (
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.output.data import TabularOutputData
-from mlrl.testbed.experiments.table import ColumnWiseTable, Table
+from mlrl.testbed.experiments.table import ColumnWiseTable, Table, Column
 from mlrl.testbed.util.format import OPTION_DECIMALS
 
 from mlrl.util.format import format_value
@@ -146,7 +146,7 @@ class IsotonicRegressionModel(TabularOutputData):
                     bin_list_table.to_rich_table(
                         auto_rotate=False,
                         border_style=Table.BorderStyle.INNER_LINES,
-                        column_styles=[Table.COLUMN_STYLE_VALUE, Table.COLUMN_STYLE_VALUE],
+                        column_styles=[Column.Style.VALUE, Column.Style.VALUE],
                     )
                 )
 

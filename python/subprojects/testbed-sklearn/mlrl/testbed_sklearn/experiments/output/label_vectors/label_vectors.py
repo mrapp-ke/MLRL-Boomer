@@ -60,7 +60,7 @@ class LabelVectors(TabularOutputData):
         if table:
             return table.to_rich_table(
                 border_style=Table.BorderStyle.INNER_LINES,
-                column_styles=[Table.COLUMN_STYLE_VALUE, None, Table.COLUMN_STYLE_VALUE],
+                column_styles=[Column.Style.VALUE, None, Column.Style.VALUE],
                 column_alignments=[Column.Alignment.RIGHT, Column.Alignment.LEFT, Column.Alignment.RIGHT],
             )
 
