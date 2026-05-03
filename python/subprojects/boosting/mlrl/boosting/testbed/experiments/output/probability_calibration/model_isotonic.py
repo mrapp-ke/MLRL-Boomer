@@ -145,7 +145,7 @@ class IsotonicRegressionModel(TabularOutputData):
                 renderables.append(
                     bin_list_table.to_rich_table(
                         auto_rotate=False,
-                        table_format=Table.Format.SIMPLE,
+                        border_style=Table.BorderStyle.INNER_LINES,
                         column_styles=[Table.COLUMN_STYLE_VALUE, Table.COLUMN_STYLE_VALUE],
                     )
                 )

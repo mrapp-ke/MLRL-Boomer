@@ -143,6 +143,16 @@ class Table(ABC):
         OUTLINE = auto()
         HORIZONTAL_LINES = auto()
 
+    class BorderStyle(Enum):
+        """
+        All border styles that can be used by tables.
+        """
+
+        NONE = None
+        HORIZONTAL_LINES = box.HORIZONTALS
+        INNER_LINES = box.MINIMAL
+        ALL_LINES = box.ROUNDED
+
     COLUMN_STYLE_VALUE = Style(color='turquoise2')
 
     COLUMN_STYLE_HEADER = Style(bold=True)
@@ -222,7 +232,7 @@ class Table(ABC):
     def to_rich_table(
         self,
         auto_rotate: bool = True,
-        table_format: 'Table.Format | None' = None,
+        border_style: 'Table.BorderStyle' = BorderStyle.NONE,
         column_styles: Sequence[Style | None] | None = None,
         separator_indices: Sequence[int] | None = None,
     ) -> ConsoleRenderable:
@@ -231,8 +241,7 @@ class Table(ABC):
 
         :param auto_rotate:         True, if tables with a single row should automatically be rotated for legibility,
                                     False otherwise
-        :param table_format:        The format that should be used for formatting the table or None, if the default
-                                    should be used
+        :param border_style:        The border style to be used for formatting the table
         :param column_styles:       A list that contains the style of the columns of None, if no styling should be used
         :param separator_indices:   A list that contains the indices of the row at which a separator should be inserted,
                                     or None if no separators should be inserted
@@ -251,17 +260,11 @@ class Table(ABC):
                 styles = [Table.COLUMN_STYLE_HEADER, Table.COLUMN_STYLE_VALUE]
                 headers = None
 
-            table_box: box.Box | None = None
-
-            if headers:
-                if table_format == Table.Format.OUTLINE:
-                    table_box = box.ROUNDED
-                if table_format == Table.Format.SIMPLE:
-                    table_box = box.MINIMAL
-                if table_format == Table.Format.HORIZONTAL_LINES:
-                    table_box = box.HORIZONTALS
-
-            rich_table = RichTable(show_header=bool(headers), box=table_box, header_style=Table.COLUMN_STYLE_HEADER)
+            rich_table = RichTable(
+                show_header=bool(headers),
+                box=border_style.value if headers else None,
+                header_style=Table.COLUMN_STYLE_HEADER,
+            )
             num_columns = max(len(alignments), len(styles), headers.num_columns if headers else 0)
 
             for column_index in range(num_columns):

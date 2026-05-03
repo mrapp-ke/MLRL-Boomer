@@ -166,7 +166,7 @@ class AggregatedEvaluationResult(TabularOutputData):
                 ]
                 renderables.append(
                     row_wise_table.to_rich_table(
-                        table_format=Table.Format.HORIZONTAL_LINES,
+                        border_style=Table.BorderStyle.HORIZONTAL_LINES,
                         separator_indices=separator_indices,
                         column_styles=column_styles,
                     )

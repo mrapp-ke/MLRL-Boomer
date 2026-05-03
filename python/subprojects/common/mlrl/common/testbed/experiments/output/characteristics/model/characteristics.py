@@ -123,7 +123,9 @@ class RuleModelCharacteristics(TabularOutputData):
         body_statistics = aggregated_rule_statistics.body_statistics
         table.add_row(f'{statistics.num_rules} local rules', *self.__format_body_statistics(body_statistics))
         column_styles = [Table.COLUMN_STYLE_HEADER] + [Table.COLUMN_STYLE_VALUE for _ in range(len(headers) - 1)]
-        return table.to_rich_table(auto_rotate=False, table_format=Table.Format.SIMPLE, column_styles=column_styles)
+        return table.to_rich_table(
+            auto_rotate=False, border_style=Table.BorderStyle.INNER_LINES, column_styles=column_styles
+        )
 
     @staticmethod
     def __format_head_statistics(head_statistics: HeadStatistics) -> list[str]:
@@ -147,7 +149,9 @@ class RuleModelCharacteristics(TabularOutputData):
         head_statistics = aggregated_rule_statistics.head_statistics
         table.add_row(f'{statistics.num_rules} local rules', *self.__format_head_statistics(head_statistics))
         column_styles = [Table.COLUMN_STYLE_HEADER] + [Table.COLUMN_STYLE_VALUE for _ in range(len(headers) - 1)]
-        return table.to_rich_table(auto_rotate=False, table_format=Table.Format.SIMPLE, column_styles=column_styles)
+        return table.to_rich_table(
+            auto_rotate=False, border_style=Table.BorderStyle.INNER_LINES, column_styles=column_styles
+        )
 
     def __format_aggregated_rule_statistics(self, aggregated_rule_statistics: RuleStatistics) -> ConsoleRenderable:
         statistics = self.statistics
@@ -168,7 +172,9 @@ class RuleModelCharacteristics(TabularOutputData):
             format_value(statistics.max_predictions),
         )
         column_styles = [Table.COLUMN_STYLE_HEADER] + [Table.COLUMN_STYLE_VALUE for _ in range(len(headers) - 1)]
-        return table.to_rich_table(auto_rotate=False, table_format=Table.Format.SIMPLE, column_styles=column_styles)
+        return table.to_rich_table(
+            auto_rotate=False, border_style=Table.BorderStyle.INNER_LINES, column_styles=column_styles
+        )
 
     @override
     def to_table(self, options: Options, **_) -> Table | None:
