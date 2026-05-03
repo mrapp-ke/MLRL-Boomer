@@ -16,17 +16,6 @@ from rich.style import Style
 from tabulate import SEPARATING_LINE, tabulate
 
 
-class Alignment(Enum):
-    """
-    All possible alignments of a table column.
-    """
-
-    AUTO = None
-    LEFT = 'left'
-    CENTER = 'center'
-    RIGHT = 'right'
-
-
 Header = Any | None
 
 Cell = Any | None
@@ -88,6 +77,16 @@ class Column(Iterable[Cell], ABC):
     """
     Provides access to a single column of a table.
     """
+
+    class Alignment(Enum):
+        """
+        All possible alignments of a table column.
+        """
+
+        AUTO = None
+        LEFT = 'left'
+        CENTER = 'center'
+        RIGHT = 'right'
 
     @abstractmethod
     def set_header(self, value: Header):
@@ -194,7 +193,7 @@ class Table(ABC):
 
     @property
     @abstractmethod
-    def alignments(self) -> list[Alignment | None] | None:
+    def alignments(self) -> list[Column.Alignment | None] | None:
         """
         The individual alignments of the columns in the table or None, if no alignments have been specified.
         """
@@ -250,13 +249,13 @@ class Table(ABC):
         if self.num_cells > 0:
             headers = self.header_row
             rows: Iterable[Any] = self.rows
-            alignments: list[Alignment | None] = self.alignments if self.alignments else []
+            alignments: list[Column.Alignment | None] = self.alignments if self.alignments else []
             styles: list[Style | None] = list(column_styles) if column_styles else []
 
             if auto_rotate and headers and self.num_rows == 1:
                 first_row = next(self.rows)
                 rows = [[headers[column_index], first_row[column_index]] for column_index in range(self.num_columns)]
-                alignments = [Alignment.LEFT, Alignment.RIGHT]
+                alignments = [Column.Alignment.LEFT, Column.Alignment.RIGHT]
                 styles = [Table.COLUMN_STYLE_HEADER, Table.COLUMN_STYLE_VALUE]
                 headers = None
 
@@ -462,7 +461,7 @@ class RowWiseTable(Table):
 
         @override
         @property
-        def alignment(self) -> Alignment | None:
+        def alignment(self) -> Column.Alignment | None:
             alignments = self.table.alignments
             return alignments[self.column_index] if alignments else None
 
@@ -485,7 +484,7 @@ class RowWiseTable(Table):
             for row_index in range(self.num_rows):
                 yield self[row_index]
 
-    def __init__(self, *headers: Header, alignments: list[Alignment | None] | None = None):
+    def __init__(self, *headers: Header, alignments: list[Column.Alignment | None] | None = None):
         """
         :param headers:     The headers of the individual columns
         :param alignments:  The alignments of the individual columns or None
@@ -592,7 +591,7 @@ class RowWiseTable(Table):
 
     @override
     @property
-    def alignments(self) -> list[Alignment | None] | None:
+    def alignments(self) -> list[Column.Alignment | None] | None:
         return self._alignments
 
     @override
@@ -734,7 +733,7 @@ class ColumnWiseTable(Table):
 
         @override
         @property
-        def alignment(self) -> Alignment | None:
+        def alignment(self) -> Column.Alignment | None:
             alignments = self.table.alignments
             return alignments[self.column_index] if alignments else None
 
@@ -769,7 +768,7 @@ class ColumnWiseTable(Table):
 
     def __init__(self):
         self._headers: list[Header] | None = None
-        self._alignments: list[Alignment | None] | None = None
+        self._alignments: list[Column.Alignment | None] | None = None
         self._columns: list[list[Cell]] = []
         self._num_rows = 0
 
@@ -789,7 +788,7 @@ class ColumnWiseTable(Table):
         return sliced_table
 
     def add_column(
-        self, *values: Cell, header: Header | None = None, alignment: Alignment | None = None, position: int = -1
+        self, *values: Cell, header: Header | None = None, alignment: Column.Alignment | None = None, position: int = -1
     ) -> 'ColumnWiseTable':
         """
         Adds a new column to a table at a specific position.
@@ -835,7 +834,7 @@ class ColumnWiseTable(Table):
             ]
             sorted_columns = []
             sorted_headers = []
-            sorted_alignments: list[Alignment | None] | None = [] if alignments else None
+            sorted_alignments: list[Column.Alignment | None] | None = [] if alignments else None
 
             for column_index in sorted_column_indices:
                 sorted_columns.append(columns[column_index])
@@ -867,7 +866,7 @@ class ColumnWiseTable(Table):
 
     @override
     @property
-    def alignments(self) -> list[Alignment | None] | None:
+    def alignments(self) -> list[Column.Alignment | None] | None:
         return self._alignments
 
     @override

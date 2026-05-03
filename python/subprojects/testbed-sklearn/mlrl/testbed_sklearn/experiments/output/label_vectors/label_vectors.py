@@ -12,7 +12,7 @@ from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vector_histogra
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.output.data import TabularOutputData
-from mlrl.testbed.experiments.table import RowWiseTable, Table, Alignment
+from mlrl.testbed.experiments.table import RowWiseTable, Table, Column
 
 from mlrl.util.options import Options
 
@@ -74,7 +74,7 @@ class LabelVectors(TabularOutputData):
             self.COLUMN_INDEX,
             self.COLUMN_LABEL_VECTOR,
             self.COLUMN_FREQUENCY,
-            alignments=[Alignment.RIGHT, Alignment.LEFT, Alignment.RIGHT],
+            alignments=[Column.Alignment.RIGHT, Column.Alignment.LEFT, Column.Alignment.RIGHT],
         )
 
         for i, (label_vector, frequency) in enumerate(self.values):

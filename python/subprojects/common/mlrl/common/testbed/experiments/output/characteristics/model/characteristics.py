@@ -20,7 +20,7 @@ from mlrl.common.testbed.experiments.output.characteristics.model.statistics imp
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.output.data import TabularOutputData
-from mlrl.testbed.experiments.table import Alignment, RowWiseTable, Table
+from mlrl.testbed.experiments.table import Column, RowWiseTable, Table
 from mlrl.testbed.util.format import format_percentage
 from mlrl.testbed.util.math import divide_or_zero
 
@@ -112,7 +112,7 @@ class RuleModelCharacteristics(TabularOutputData):
             'Nominal == operator',
             'Nominal != operator',
         ]
-        alignments = [Alignment.LEFT] + [Alignment.RIGHT for _ in range(len(headers) - 1)]
+        alignments = [Column.Alignment.LEFT] + [Column.Alignment.RIGHT for _ in range(len(headers) - 1)]
         table = RowWiseTable(*headers, alignments=alignments)
         default_rule_statistics = statistics.default_rule_statistics
 
@@ -138,7 +138,7 @@ class RuleModelCharacteristics(TabularOutputData):
     def __format_aggregated_head_statistics(self, aggregated_rule_statistics: RuleStatistics) -> ConsoleRenderable:
         statistics = self.statistics
         headers = ['Statistics about predictions', 'Total', 'Positive', 'Negative']
-        alignments = [Alignment.LEFT] + [Alignment.RIGHT for _ in range(len(headers) - 1)]
+        alignments = [Column.Alignment.LEFT] + [Column.Alignment.RIGHT for _ in range(len(headers) - 1)]
         table = RowWiseTable(*headers, alignments=alignments)
         default_rule_statistics = statistics.default_rule_statistics
 
@@ -157,7 +157,7 @@ class RuleModelCharacteristics(TabularOutputData):
         statistics = self.statistics
         num_rules = statistics.num_rules
         headers = ['Statistics per local rule', 'Minimum', 'Average', 'Maximum']
-        alignments = [Alignment.LEFT] + [Alignment.RIGHT for _ in range(len(headers) - 1)]
+        alignments = [Column.Alignment.LEFT] + [Column.Alignment.RIGHT for _ in range(len(headers) - 1)]
         table = RowWiseTable(*headers, alignments=alignments)
         table.add_row(
             'Conditions',
