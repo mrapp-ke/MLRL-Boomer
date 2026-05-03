@@ -35,22 +35,22 @@ Predicting for 297 test examples...
 
 🗀 Evaluation result for test data (Fold 1):
 
-Example-wise F1 (↑)         43.48
-Example-wise Jaccard (↑)    37.43
-Example-wise Precision (↑)  82.55
-Example-wise Recall (↑)     41.19
-Hamming Accuracy (↑)        77.61
-Hamming Loss (↓)            22.39
-Macro F1 (↑)                47.86
-Macro Jaccard (↑)           34.11
-Macro Precision (↑)         84.29
-Macro Recall (↑)            39.3
-Micro F1 (↑)                54.5
-Micro Jaccard (↑)           37.46
-Micro Precision (↑)         76.85
-Micro Recall (↑)            42.23
-Subset 0/1 Loss (↓)         80.81
-Subset Accuracy (↑)         19.19
+ Example-wise F1 (↑)         43.48
+ Example-wise Jaccard (↑)    37.43
+ Example-wise Precision (↑)  82.55
+ Example-wise Recall (↑)     41.19
+ Hamming Accuracy (↑)        77.61
+ Hamming Loss (↓)            22.39
+ Macro F1 (↑)                47.86
+ Macro Jaccard (↑)           34.11
+ Macro Precision (↑)         84.29
+ Macro Recall (↑)            39.30
+ Micro F1 (↑)                54.50
+ Micro Jaccard (↑)           37.46
+ Micro Precision (↑)         76.85
+ Micro Recall (↑)            42.23
+ Subset 0/1 Loss (↓)         80.81
+ Subset Accuracy (↑)         19.19
 
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/results/evaluation_test_fold-1.csv"...
@@ -99,22 +99,22 @@ Predicting for 296 test examples...
 
 🗀 Evaluation result for test data (Fold 2):
 
-Example-wise F1 (↑)         44.31
-Example-wise Jaccard (↑)    38.37
-Example-wise Precision (↑)  81.14
-Example-wise Recall (↑)     42.45
-Hamming Accuracy (↑)        78.1
-Hamming Loss (↓)            21.9
-Macro F1 (↑)                46.91
-Macro Jaccard (↑)           33.55
-Macro Precision (↑)         81.6
-Macro Recall (↑)            39.34
-Micro F1 (↑)                54.5
-Micro Jaccard (↑)           37.46
-Micro Precision (↑)         74.44
-Micro Recall (↑)            42.99
-Subset 0/1 Loss (↓)         79.39
-Subset Accuracy (↑)         20.61
+ Example-wise F1 (↑)         44.31
+ Example-wise Jaccard (↑)    38.37
+ Example-wise Precision (↑)  81.14
+ Example-wise Recall (↑)     42.45
+ Hamming Accuracy (↑)        78.10
+ Hamming Loss (↓)            21.90
+ Macro F1 (↑)                46.91
+ Macro Jaccard (↑)           33.55
+ Macro Precision (↑)         81.60
+ Macro Recall (↑)            39.34
+ Micro F1 (↑)                54.50
+ Micro Jaccard (↑)           37.46
+ Micro Precision (↑)         74.44
+ Micro Recall (↑)            42.99
+ Subset 0/1 Loss (↓)         79.39
+ Subset Accuracy (↑)         20.61
 
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_emotions/results/evaluation_test_fold-2.csv"...
@@ -167,22 +167,22 @@ Predicting for 297 test examples...
 
 🗀 Evaluation result for test data (Fold 1):
 
-Example-wise F1 (↑)         45.08
-Example-wise Jaccard (↑)    39.17
-Example-wise Precision (↑)  82.83
-Example-wise Recall (↑)     43.15
-Hamming Accuracy (↑)        78.11
-Hamming Loss (↓)            21.89
-Macro F1 (↑)                49.67
-Macro Jaccard (↑)           35.91
-Macro Precision (↑)         83.42
-Macro Recall (↑)            41.48
-Micro F1 (↑)                56.18
-Micro Jaccard (↑)           39.06
-Micro Precision (↑)         77.16
-Micro Recall (↑)            44.17
-Subset 0/1 Loss (↓)         78.79
-Subset Accuracy (↑)         21.21
+ Example-wise F1 (↑)         45.08
+ Example-wise Jaccard (↑)    39.17
+ Example-wise Precision (↑)  82.83
+ Example-wise Recall (↑)     43.15
+ Hamming Accuracy (↑)        78.11
+ Hamming Loss (↓)            21.89
+ Macro F1 (↑)                49.67
+ Macro Jaccard (↑)           35.91
+ Macro Precision (↑)         83.42
+ Macro Recall (↑)            41.48
+ Micro F1 (↑)                56.18
+ Micro Jaccard (↑)           39.06
+ Micro Precision (↑)         77.16
+ Micro Recall (↑)            44.17
+ Subset 0/1 Loss (↓)         78.79
+ Subset Accuracy (↑)         21.21
 
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/evaluation_test_fol
@@ -240,22 +240,22 @@ Predicting for 296 test examples...
 
 🗀 Evaluation result for test data (Fold 2):
 
-Example-wise F1 (↑)         45.38
-Example-wise Jaccard (↑)    39.41
-Example-wise Precision (↑)  81.31
-Example-wise Recall (↑)     44.09
-Hamming Accuracy (↑)        78.43
-Hamming Loss (↓)            21.57
-Macro F1 (↑)                48.45
-Macro Jaccard (↑)           35.06
-Macro Precision (↑)         80.24
-Macro Recall (↑)            41.44
-Micro F1 (↑)                55.93
-Micro Jaccard (↑)           38.82
-Micro Precision (↑)         74.31
-Micro Recall (↑)            44.83
-Subset 0/1 Loss (↓)         78.72
-Subset Accuracy (↑)         21.28
+ Example-wise F1 (↑)         45.38
+ Example-wise Jaccard (↑)    39.41
+ Example-wise Precision (↑)  81.31
+ Example-wise Recall (↑)     44.09
+ Hamming Accuracy (↑)        78.43
+ Hamming Loss (↓)            21.57
+ Macro F1 (↑)                48.45
+ Macro Jaccard (↑)           35.06
+ Macro Precision (↑)         80.24
+ Macro Recall (↑)            41.44
+ Micro F1 (↑)                55.93
+ Micro Jaccard (↑)           38.82
+ Micro Precision (↑)         74.31
+ Micro Recall (↑)            44.83
+ Subset 0/1 Loss (↓)         78.72
+ Subset Accuracy (↑)         21.28
 
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/evaluation_test_fol
@@ -309,22 +309,22 @@ Predicting for 297 test examples...
 
 🗀 Evaluation result for test data (Fold 1):
 
-Example-wise F1 (↑)         42.23
-Example-wise Jaccard (↑)    36.25
-Example-wise Precision (↑)  83.56
-Example-wise Recall (↑)     39.9
-Hamming Accuracy (↑)        77.22
-Hamming Loss (↓)            22.78
-Macro F1 (↑)                45.81
-Macro Jaccard (↑)           32.39
-Macro Precision (↑)         85.83
-Macro Recall (↑)            37.24
-Micro F1 (↑)                52.9
-Micro Jaccard (↑)           35.96
-Micro Precision (↑)         77.03
-Micro Recall (↑)            40.28
-Subset 0/1 Loss (↓)         81.14
-Subset Accuracy (↑)         18.86
+ Example-wise F1 (↑)         42.23
+ Example-wise Jaccard (↑)    36.25
+ Example-wise Precision (↑)  83.56
+ Example-wise Recall (↑)     39.90
+ Hamming Accuracy (↑)        77.22
+ Hamming Loss (↓)            22.78
+ Macro F1 (↑)                45.81
+ Macro Jaccard (↑)           32.39
+ Macro Precision (↑)         85.83
+ Macro Recall (↑)            37.24
+ Micro F1 (↑)                52.90
+ Micro Jaccard (↑)           35.96
+ Micro Precision (↑)         77.03
+ Micro Recall (↑)            40.28
+ Subset 0/1 Loss (↓)         81.14
+ Subset Accuracy (↑)         18.86
 
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/results/evaluation_test_fold-1.csv"...
@@ -373,22 +373,22 @@ Predicting for 296 test examples...
 
 🗀 Evaluation result for test data (Fold 2):
 
-Example-wise F1 (↑)         43.91
-Example-wise Jaccard (↑)    37.84
-Example-wise Precision (↑)  81.64
-Example-wise Recall (↑)     41.72
-Hamming Accuracy (↑)        77.93
-Hamming Loss (↓)            22.07
-Macro F1 (↑)                46.09
-Macro Jaccard (↑)           32.84
-Macro Precision (↑)         80.49
-Macro Recall (↑)            38.66
-Micro F1 (↑)                53.99
-Micro Jaccard (↑)           36.98
-Micro Precision (↑)         74.19
-Micro Recall (↑)            42.44
-Subset 0/1 Loss (↓)         80.74
-Subset Accuracy (↑)         19.26
+ Example-wise F1 (↑)         43.91
+ Example-wise Jaccard (↑)    37.84
+ Example-wise Precision (↑)  81.64
+ Example-wise Recall (↑)     41.72
+ Hamming Accuracy (↑)        77.93
+ Hamming Loss (↓)            22.07
+ Macro F1 (↑)                46.09
+ Macro Jaccard (↑)           32.84
+ Macro Precision (↑)         80.49
+ Macro Recall (↑)            38.66
+ Micro F1 (↑)                53.99
+ Micro Jaccard (↑)           36.98
+ Micro Precision (↑)         74.19
+ Micro Recall (↑)            42.44
+ Subset 0/1 Loss (↓)         80.74
+ Subset Accuracy (↑)         19.26
 
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_emotions/results/evaluation_test_fold-2.csv"...
@@ -441,22 +441,22 @@ Predicting for 297 test examples...
 
 🗀 Evaluation result for test data (Fold 1):
 
-Example-wise F1 (↑)         42.55
-Example-wise Jaccard (↑)    36.5
-Example-wise Precision (↑)  83.22
-Example-wise Recall (↑)     40.68
-Hamming Accuracy (↑)        77.61
-Hamming Loss (↓)            22.39
-Macro F1 (↑)                48.13
-Macro Jaccard (↑)           34.42
-Macro Precision (↑)         83.57
-Macro Recall (↑)            39.5
-Micro F1 (↑)                54.5
-Micro Jaccard (↑)           37.46
-Micro Precision (↑)         76.85
-Micro Recall (↑)            42.23
-Subset 0/1 Loss (↓)         81.82
-Subset Accuracy (↑)         18.18
+ Example-wise F1 (↑)         42.55
+ Example-wise Jaccard (↑)    36.50
+ Example-wise Precision (↑)  83.22
+ Example-wise Recall (↑)     40.68
+ Hamming Accuracy (↑)        77.61
+ Hamming Loss (↓)            22.39
+ Macro F1 (↑)                48.13
+ Macro Jaccard (↑)           34.42
+ Macro Precision (↑)         83.57
+ Macro Recall (↑)            39.50
+ Micro F1 (↑)                54.50
+ Micro Jaccard (↑)           37.46
+ Micro Precision (↑)         76.85
+ Micro Recall (↑)            42.23
+ Subset 0/1 Loss (↓)         81.82
+ Subset Accuracy (↑)         18.18
 
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/evaluation_test_fo
@@ -514,22 +514,22 @@ Predicting for 296 test examples...
 
 🗀 Evaluation result for test data (Fold 2):
 
-Example-wise F1 (↑)         46.15
-Example-wise Jaccard (↑)    40.26
-Example-wise Precision (↑)  82.09
-Example-wise Recall (↑)     44.93
-Hamming Accuracy (↑)        79
-Hamming Loss (↓)            21
-Macro F1 (↑)                50.16
-Macro Jaccard (↑)           36.85
-Macro Precision (↑)         80.98
-Macro Recall (↑)            43.22
-Micro F1 (↑)                57.37
-Micro Jaccard (↑)           40.22
-Micro Precision (↑)         75.38
-Micro Recall (↑)            46.31
-Subset 0/1 Loss (↓)         78.04
-Subset Accuracy (↑)         21.96
+ Example-wise F1 (↑)         46.15
+ Example-wise Jaccard (↑)    40.26
+ Example-wise Precision (↑)  82.09
+ Example-wise Recall (↑)     44.93
+ Hamming Accuracy (↑)        79.00
+ Hamming Loss (↓)            21.00
+ Macro F1 (↑)                50.16
+ Macro Jaccard (↑)           36.85
+ Macro Precision (↑)         80.98
+ Macro Recall (↑)            43.22
+ Micro F1 (↑)                57.37
+ Micro Jaccard (↑)           40.22
+ Micro Precision (↑)         75.38
+ Micro Recall (↑)            46.31
+ Subset 0/1 Loss (↓)         78.04
+ Subset Accuracy (↑)         21.96
 
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results/evaluation_test_fo
@@ -583,22 +583,22 @@ Predicting for 851 test examples...
 
 🗀 Evaluation result for test data (Fold 1):
 
-Example-wise F1 (↑)         30.95
-Example-wise Jaccard (↑)    21.33
-Example-wise Precision (↑)  60.18
-Example-wise Recall (↑)     22.21
-Hamming Accuracy (↑)        94.28
-Hamming Loss (↓)             5.72
-Macro F1 (↑)                 5.93
-Macro Jaccard (↑)            4.75
-Macro Precision (↑)         98.21
-Macro Recall (↑)             5.66
-Micro F1 (↑)                34.7
-Micro Jaccard (↑)           20.99
-Micro Precision (↑)         63.28
-Micro Recall (↑)            23.9
-Subset 0/1 Loss (↓)         98.71
-Subset Accuracy (↑)          1.29
+ Example-wise F1 (↑)         30.95
+ Example-wise Jaccard (↑)    21.33
+ Example-wise Precision (↑)  60.18
+ Example-wise Recall (↑)     22.21
+ Hamming Accuracy (↑)        94.28
+ Hamming Loss (↓)            5.72
+ Macro F1 (↑)                5.93
+ Macro Jaccard (↑)           4.75
+ Macro Precision (↑)         98.21
+ Macro Recall (↑)            5.66
+ Micro F1 (↑)                34.70
+ Micro Jaccard (↑)           20.99
+ Micro Precision (↑)         63.28
+ Micro Recall (↑)            23.90
+ Subset 0/1 Loss (↓)         98.71
+ Subset Accuracy (↑)         1.29
 
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/results/evaluation_test_fold-1.csv"...
@@ -647,22 +647,22 @@ Predicting for 851 test examples...
 
 🗀 Evaluation result for test data (Fold 2):
 
-Example-wise F1 (↑)         29.8
-Example-wise Jaccard (↑)    20.33
-Example-wise Precision (↑)  73.97
-Example-wise Recall (↑)     21.15
-Hamming Accuracy (↑)        94.46
-Hamming Loss (↓)             5.54
-Macro F1 (↑)                 4.34
-Macro Jaccard (↑)            3.19
-Macro Precision (↑)         97.93
-Macro Recall (↑)             4.05
-Micro F1 (↑)                34.46
-Micro Jaccard (↑)           20.82
-Micro Precision (↑)         70.42
-Micro Recall (↑)            22.81
-Subset 0/1 Loss (↓)         99.06
-Subset Accuracy (↑)          0.94
+ Example-wise F1 (↑)         29.80
+ Example-wise Jaccard (↑)    20.33
+ Example-wise Precision (↑)  73.97
+ Example-wise Recall (↑)     21.15
+ Hamming Accuracy (↑)        94.46
+ Hamming Loss (↓)            5.54
+ Macro F1 (↑)                4.34
+ Macro Jaccard (↑)           3.19
+ Macro Precision (↑)         97.93
+ Macro Recall (↑)            4.05
+ Micro F1 (↑)                34.46
+ Micro Jaccard (↑)           20.82
+ Micro Precision (↑)         70.42
+ Micro Recall (↑)            22.81
+ Subset 0/1 Loss (↓)         99.06
+ Subset Accuracy (↑)         0.94
 
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_enron/results/evaluation_test_fold-2.csv"...
@@ -715,22 +715,22 @@ Predicting for 851 test examples...
 
 🗀 Evaluation result for test data (Fold 1):
 
-Example-wise F1 (↑)         30.61
-Example-wise Jaccard (↑)    21.21
-Example-wise Precision (↑)  78.81
-Example-wise Recall (↑)     21.92
-Hamming Accuracy (↑)        94.62
-Hamming Loss (↓)             5.38
-Macro F1 (↑)                 6.1
-Macro Jaccard (↑)            4.98
-Macro Precision (↑)         98.44
-Macro Recall (↑)             5.61
-Micro F1 (↑)                35.79
-Micro Jaccard (↑)           21.79
-Micro Precision (↑)         74.45
-Micro Recall (↑)            23.55
-Subset 0/1 Loss (↓)         98.82
-Subset Accuracy (↑)          1.18
+ Example-wise F1 (↑)         30.61
+ Example-wise Jaccard (↑)    21.21
+ Example-wise Precision (↑)  78.81
+ Example-wise Recall (↑)     21.92
+ Hamming Accuracy (↑)        94.62
+ Hamming Loss (↓)            5.38
+ Macro F1 (↑)                6.10
+ Macro Jaccard (↑)           4.98
+ Macro Precision (↑)         98.44
+ Macro Recall (↑)            5.61
+ Micro F1 (↑)                35.79
+ Micro Jaccard (↑)           21.79
+ Micro Precision (↑)         74.45
+ Micro Recall (↑)            23.55
+ Subset 0/1 Loss (↓)         98.82
+ Subset Accuracy (↑)         1.18
 
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/evaluation_test_fold-1
@@ -787,22 +787,22 @@ Predicting for 851 test examples...
 
 🗀 Evaluation result for test data (Fold 2):
 
-Example-wise F1 (↑)         29.58
-Example-wise Jaccard (↑)    20.25
-Example-wise Precision (↑)  79.61
-Example-wise Recall (↑)     21.06
-Hamming Accuracy (↑)        94.57
-Hamming Loss (↓)             5.43
-Macro F1 (↑)                 4.47
-Macro Jaccard (↑)            3.32
-Macro Precision (↑)         98.03
-Macro Recall (↑)             4.07
-Micro F1 (↑)                34.88
-Micro Jaccard (↑)           21.12
-Micro Precision (↑)         74.38
-Micro Recall (↑)            22.78
-Subset 0/1 Loss (↓)         99.06
-Subset Accuracy (↑)          0.94
+ Example-wise F1 (↑)         29.58
+ Example-wise Jaccard (↑)    20.25
+ Example-wise Precision (↑)  79.61
+ Example-wise Recall (↑)     21.06
+ Hamming Accuracy (↑)        94.57
+ Hamming Loss (↓)            5.43
+ Macro F1 (↑)                4.47
+ Macro Jaccard (↑)           3.32
+ Macro Precision (↑)         98.03
+ Macro Recall (↑)            4.07
+ Micro F1 (↑)                34.88
+ Micro Jaccard (↑)           21.12
+ Micro Precision (↑)         74.38
+ Micro Recall (↑)            22.78
+ Subset 0/1 Loss (↓)         99.06
+ Subset Accuracy (↑)         0.94
 
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results/evaluation_test_fold-2
@@ -855,22 +855,22 @@ Predicting for 851 test examples...
 
 🗀 Evaluation result for test data (Fold 1):
 
-Example-wise F1 (↑)         31.21
-Example-wise Jaccard (↑)    21.51
-Example-wise Precision (↑)  73.23
-Example-wise Recall (↑)     22.37
-Hamming Accuracy (↑)        94.53
-Hamming Loss (↓)             5.47
-Macro F1 (↑)                 6.04
-Macro Jaccard (↑)            4.9
-Macro Precision (↑)         98.36
-Macro Recall (↑)             5.65
-Micro F1 (↑)                35.87
-Micro Jaccard (↑)           21.86
-Micro Precision (↑)         70.62
-Micro Recall (↑)            24.04
-Subset 0/1 Loss (↓)         98.71
-Subset Accuracy (↑)          1.29
+ Example-wise F1 (↑)         31.21
+ Example-wise Jaccard (↑)    21.51
+ Example-wise Precision (↑)  73.23
+ Example-wise Recall (↑)     22.37
+ Hamming Accuracy (↑)        94.53
+ Hamming Loss (↓)            5.47
+ Macro F1 (↑)                6.04
+ Macro Jaccard (↑)           4.90
+ Macro Precision (↑)         98.36
+ Macro Recall (↑)            5.65
+ Micro F1 (↑)                35.87
+ Micro Jaccard (↑)           21.86
+ Micro Precision (↑)         70.62
+ Micro Recall (↑)            24.04
+ Subset 0/1 Loss (↓)         98.71
+ Subset Accuracy (↑)         1.29
 
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/results/evaluation_test_fold-1.csv"...
@@ -919,22 +919,22 @@ Predicting for 851 test examples...
 
 🗀 Evaluation result for test data (Fold 2):
 
-Example-wise F1 (↑)         29.78
-Example-wise Jaccard (↑)    20.27
-Example-wise Precision (↑)  74.44
-Example-wise Recall (↑)     21.05
-Hamming Accuracy (↑)        94.47
-Hamming Loss (↓)             5.53
-Macro F1 (↑)                 4.34
-Macro Jaccard (↑)            3.2
-Macro Precision (↑)         97.98
-Macro Recall (↑)             4.05
-Micro F1 (↑)                34.49
-Micro Jaccard (↑)           20.84
-Micro Precision (↑)         71
-Micro Recall (↑)            22.78
-Subset 0/1 Loss (↓)         99.06
-Subset Accuracy (↑)          0.94
+ Example-wise F1 (↑)         29.78
+ Example-wise Jaccard (↑)    20.27
+ Example-wise Precision (↑)  74.44
+ Example-wise Recall (↑)     21.05
+ Hamming Accuracy (↑)        94.47
+ Hamming Loss (↓)            5.53
+ Macro F1 (↑)                4.34
+ Macro Jaccard (↑)           3.20
+ Macro Precision (↑)         97.98
+ Macro Recall (↑)            4.05
+ Micro F1 (↑)                34.49
+ Micro Jaccard (↑)           20.84
+ Micro Precision (↑)         71.00
+ Micro Recall (↑)            22.78
+ Subset 0/1 Loss (↓)         99.06
+ Subset Accuracy (↑)         0.94
 
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_enron/results/evaluation_test_fold-2.csv"...
@@ -987,22 +987,22 @@ Predicting for 851 test examples...
 
 🗀 Evaluation result for test data (Fold 1):
 
-Example-wise F1 (↑)         31.7
-Example-wise Jaccard (↑)    21.97
-Example-wise Precision (↑)  80.57
-Example-wise Recall (↑)     22.66
-Hamming Accuracy (↑)        94.71
-Hamming Loss (↓)             5.29
-Macro F1 (↑)                 6.19
-Macro Jaccard (↑)            5.09
-Macro Precision (↑)         98.51
-Macro Recall (↑)             5.69
-Micro F1 (↑)                36.99
-Micro Jaccard (↑)           22.69
-Micro Precision (↑)         76.5
-Micro Recall (↑)            24.39
-Subset 0/1 Loss (↓)         98.71
-Subset Accuracy (↑)          1.29
+ Example-wise F1 (↑)         31.70
+ Example-wise Jaccard (↑)    21.97
+ Example-wise Precision (↑)  80.57
+ Example-wise Recall (↑)     22.66
+ Hamming Accuracy (↑)        94.71
+ Hamming Loss (↓)            5.29
+ Macro F1 (↑)                6.19
+ Macro Jaccard (↑)           5.09
+ Macro Precision (↑)         98.51
+ Macro Recall (↑)            5.69
+ Micro F1 (↑)                36.99
+ Micro Jaccard (↑)           22.69
+ Micro Precision (↑)         76.50
+ Micro Recall (↑)            24.39
+ Subset 0/1 Loss (↓)         98.71
+ Subset Accuracy (↑)         1.29
 
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/evaluation_test_fold-
@@ -1060,22 +1060,22 @@ Predicting for 851 test examples...
 
 🗀 Evaluation result for test data (Fold 2):
 
-Example-wise F1 (↑)         30.34
-Example-wise Jaccard (↑)    20.75
-Example-wise Precision (↑)  81.67
-Example-wise Recall (↑)     21.46
-Hamming Accuracy (↑)        94.65
-Hamming Loss (↓)             5.35
-Macro F1 (↑)                 4.54
-Macro Jaccard (↑)            3.43
-Macro Precision (↑)         98.12
-Macro Recall (↑)             4.14
-Micro F1 (↑)                35.63
-Micro Jaccard (↑)           21.67
-Micro Precision (↑)         76.78
-Micro Recall (↑)            23.19
-Subset 0/1 Loss (↓)         99.06
-Subset Accuracy (↑)          0.94
+ Example-wise F1 (↑)         30.34
+ Example-wise Jaccard (↑)    20.75
+ Example-wise Precision (↑)  81.67
+ Example-wise Recall (↑)     21.46
+ Hamming Accuracy (↑)        94.65
+ Hamming Loss (↓)            5.35
+ Macro F1 (↑)                4.54
+ Macro Jaccard (↑)           3.43
+ Macro Precision (↑)         98.12
+ Macro Recall (↑)            4.14
+ Micro F1 (↑)                35.63
+ Micro Jaccard (↑)           21.67
+ Micro Precision (↑)         76.78
+ Micro Recall (↑)            23.19
+ Subset 0/1 Loss (↓)         99.06
+ Subset Accuracy (↑)         0.94
 
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results/evaluation_test_fold-

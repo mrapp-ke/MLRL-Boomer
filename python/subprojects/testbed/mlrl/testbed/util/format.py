@@ -63,4 +63,4 @@ def format_percentage(fraction: float, decimals: int = 2) -> str:
     :return:            The textual representation that has been created
     """
     percentage = float(fraction) * 100
-    return f'{format_value(percentage, decimals)}%'
+    return f'{format_value(percentage, decimals)} %'

@@ -10,7 +10,7 @@ from typing import override
 from mlrl.common.cython.rule_model import Body, CompleteHead, ConjunctiveBody, EmptyBody, Head, PartialHead, RuleModel
 
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
-
+from rich.console import ConsoleRenderable
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties
 from mlrl.testbed.experiments.output.data import TextualOutputData
@@ -176,7 +176,7 @@ class RuleModelAsText(TextualOutputData):
         self.dataset = dataset
 
     @override
-    def to_text(self, options: Options, **_) -> str | None:
+    def to_text(self, options: Options, **_) -> str | ConsoleRenderable | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """

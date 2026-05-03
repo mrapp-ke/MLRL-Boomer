@@ -1,5 +1,5 @@
 mlrl-testbed mlrl.boosting --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --save-meta-data false --print-model-characteristics true --parallel-prediction false --parallel-rule-refinement false --parallel-statistic-update false --loss squared-error-decomposable --statistic-type 32-bit --head-type single
-Checking if output files do already exist...
+○ Checking if output files do already exist...
 
 Starting experiment using the regression algorithm "BoomerRegressor"...
 Using separate training and test sets...
@@ -21,28 +21,37 @@ Predicting for 98 test examples...
 
 🗀 Evaluation result for test data:
 
-Mean Absolute Error (↓)             1439.68
-Mean Absolute Percentage Error (↓)     2.54
-Mean Squared Error (↓)                 4.6297e+07
-Median Absolute Error (↓)             51.5
+ Mean Absolute Error (↓)             1439.68
+ Mean Absolute Percentage Error (↓)  2.54
+ Mean Squared Error (↓)              46296990.88
+ Median Absolute Error (↓)           51.50
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
 
 🗀 Model characteristics:
 
-Statistics about conditions      Total    Numerical <= operator    Numerical > operator    Ordinal <= operator
-Ordinal > operator    Nominal == operator    Nominal != operator
-Default rule                         0                    0.00%                   0.00%                  0.00%
-0.00%                  0.00%                  0.00%
-999 local rules                   1964                   41.14%                  58.86%                  0.00%
-0.00%                  0.00%                  0.00%
+                ╷       ╷               ╷               ╷               ╷               ╷              ╷
+  Statistics    │       │               │               │               │               │              │
+  about         │       │  Numerical <= │   Numerical > │    Ordinal <= │     Ordinal > │   Nominal == │    Nominal !=
+  conditions    │ Total │      operator │      operator │      operator │      operator │     operator │      operator
+╶───────────────┼───────┼───────────────┼───────────────┼───────────────┼───────────────┼──────────────┼───────────────╴
+  Default rule  │     0 │        0.00 % │        0.00 % │        0.00 % │        0.00 % │       0.00 % │        0.00 %
+  999 local     │  1964 │       41.14 % │       58.86 % │        0.00 % │        0.00 % │       0.00 % │        0.00 %
+  rules         │       │               │               │               │               │              │
+                ╵       ╵               ╵               ╵               ╵               ╵              ╵
 
-Statistics about predictions      Total    Positive    Negative
-Default rule                          6     100.00%       0.00%
-999 local rules                     999     100.00%       0.00%
+                               ╷       ╷          ╷
+  Statistics about predictions │ Total │ Positive │ Negative
+╶──────────────────────────────┼───────┼──────────┼──────────╴
+  Default rule                 │     6 │ 100.00 % │   0.00 %
+  999 local rules              │   999 │ 100.00 % │   0.00 %
+                               ╵       ╵          ╵
 
-Statistics per local rule      Minimum    Average    Maximum
-Conditions                           1       1.97          6
-Predictions                          1       1             1
+                            ╷         ╷         ╷
+  Statistics per local rule │ Minimum │ Average │ Maximum
+╶───────────────────────────┼─────────┼─────────┼─────────╴
+  Conditions                │       1 │    1.97 │       6
+  Predictions               │       1 │    1.00 │       1
+                            ╵         ╵         ╵
 
 ✓ Successfully finished experiment after <duration>

@@ -25,21 +25,21 @@ Loading training dataset...
 
 🗀 Evaluation result for test data:
 
-Example-wise F1 (↑)         50.49
-Example-wise Jaccard (↑)    42.39
-Example-wise Precision (↑)  53.32
-Example-wise Recall (↑)     53.15
-Hamming Accuracy (↑)        70.32
-Hamming Loss (↓)            29.68
-Macro F1 (↑)                52.15
-Macro Jaccard (↑)           35.93
-Macro Precision (↑)         52.55
-Macro Recall (↑)            52.16
-Micro F1 (↑)                53.28
-Micro Jaccard (↑)           36.31
-Micro Precision (↑)         53.49
-Micro Recall (↑)            53.07
-Subset 0/1 Loss (↓)         81.12
-Subset Accuracy (↑)         18.88
+ Example-wise F1 (↑)         50.49
+ Example-wise Jaccard (↑)    42.39
+ Example-wise Precision (↑)  53.32
+ Example-wise Recall (↑)     53.15
+ Hamming Accuracy (↑)        70.32
+ Hamming Loss (↓)            29.68
+ Macro F1 (↑)                52.15
+ Macro Jaccard (↑)           35.93
+ Macro Precision (↑)         52.55
+ Macro Recall (↑)            52.16
+ Micro F1 (↑)                53.28
+ Micro Jaccard (↑)           36.31
+ Micro Precision (↑)         53.49
+ Micro Recall (↑)            53.07
+ Subset 0/1 Loss (↓)         81.12
+ Subset Accuracy (↑)         18.88
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...

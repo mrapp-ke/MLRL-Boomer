@@ -9,6 +9,8 @@ from collections.abc import Iterable
 from functools import partial
 from itertools import chain
 from typing import override
+from rich.console import ConsoleRenderable, Group
+from rich.text import Text
 
 import numpy as np
 
@@ -74,13 +76,13 @@ class AggregatedEvaluationResult(TabularOutputData):
         self.evaluation_by_dataset = evaluation_by_dataset
 
     @override
-    def to_text(self, options: Options, **kwargs) -> str | None:
+    def to_text(self, options: Options, **kwargs) -> str | ConsoleRenderable | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
-        text = ''
         kwargs = dict(kwargs) | {OPTION_DECIMALS: 2}
         table = self.to_table(options, **kwargs)
+        renderables: list[ConsoleRenderable] = []
 
         if table:
             column_wise_table = table.to_column_wise_table()
@@ -119,9 +121,9 @@ class AggregatedEvaluationResult(TabularOutputData):
 
             for i, (measure_index, measure) in enumerate(measures):
                 if i > 0:
-                    text += '\n\n'
+                    renderables.append(Text(''))
 
-                text += f'Evaluation results for measure "{measure}":\n\n'
+                renderables.append(Text(f'Evaluation results for measure "{measure}":\n'))
                 std_dev_index = std_dev_column_indices.get(measure)
                 aggregation_measure_indices = aggregation_measure_column_indices.get(measure, {})
                 measure_indices = [measure_index] + ([std_dev_index] if std_dev_index else [])
@@ -159,9 +161,18 @@ class AggregatedEvaluationResult(TabularOutputData):
                     for row_index, row in enumerate(row_wise_table.rows)
                     if row_index > 0 and (row[0] in separators or row_wise_table[row_index - 1][0] in separators)
                 ]
-                text += row_wise_table.format(table_format=Table.Format.SIMPLE, separator_indices=separator_indices)
+                column_styles = [Column.Style.HEADER] + [
+                    Column.Style.VALUE for _ in range(row_wise_table.num_columns - 1)
+                ]
+                renderables.append(
+                    row_wise_table.to_rich_table(
+                        border_style=Table.BorderStyle.HORIZONTAL_LINES,
+                        separator_indices=separator_indices,
+                        column_styles=column_styles,
+                    )
+                )
 
-        return text if text else None
+        return Group(*renderables) if renderables else None
 
     @staticmethod
     def __get_average_rows(

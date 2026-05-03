@@ -534,7 +534,8 @@ class DefaultProcedure(ExperimentalProcedure):
     def _before_experiment(self, experiment: Experiment, state: ExperimentState) -> ExperimentState:
         problem_domain = state.problem_domain
         Log.info(
-            f'Starting experiment using the {problem_domain.problem_name} algorithm "{problem_domain.learner_name}"...'
+            f'Starting experiment using the {problem_domain.problem_name} algorithm "{problem_domain.learner_name}"...',
+            highlight=True,
         )
 
         for listener in experiment.listeners:
@@ -595,7 +596,7 @@ class DefaultProcedure(ExperimentalProcedure):
 
         if start_time:
             run_time = Timer.stop(start_time)
-            Log.success(f'Successfully finished experiment after {run_time}')
+            Log.success(f'Successfully finished experiment after {run_time}', highlight=True)
         else:
             Log.success('Successfully finished experiment')
 

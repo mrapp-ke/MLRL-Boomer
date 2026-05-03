@@ -114,7 +114,8 @@ class BatchMode(Mode):
             for i, command in enumerate(batch):
                 if i == 0:
                     Log.info(
-                        f'Running {num_experiments} {("experiments" if num_experiments > 1 else "experiment")}...\n'
+                        f'Running {num_experiments} {("experiments" if num_experiments > 1 else "experiment")}...\n',
+                        highlight=True,
                     )
 
                 with Log.indented():
@@ -134,7 +135,7 @@ class BatchMode(Mode):
                     f'{("experiments" if num_experiments > 1 else "experiment")} after {run_time}'
                 )
             else:
-                Log.success(f'Successfully finished after {run_time}')
+                Log.success(f'Successfully finished after {run_time}', highlight=True)
 
     class ConfigFile(ABC):
         """
@@ -340,7 +341,8 @@ class BatchMode(Mode):
                 f'Skipping {num_skipped} of {len(batch)} {("experiments" if num_skipped > 1 else "experiment")}, '
                 f'because all of their output files do already exist. Use the argument '
                 f'"{OutputArguments.IF_OUTPUTS_EXIST.name} {OutputExistsPolicy.OVERWRITE}" to force-run all '
-                f'experiments.'
+                f'experiments.',
+                highlight=True,
             )
             sys.exit(0)
 

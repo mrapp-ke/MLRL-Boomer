@@ -1,5 +1,5 @@
 mlrl-testbed mlrl.testbed_sklearn --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset emotions-predefined --result-dir results --save-evaluation true --save-meta-data false --save-meta-data true --print-evaluation true --save-evaluation true --n-estimators 1 --estimator RandomForestClassifier
-Checking if output files do already exist...
+○ Checking if output files do already exist...
 
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 ○ Writing to file "python/tests/res/tmp/<worker-id>/metadata.yml"...
@@ -20,22 +20,22 @@ Predicting for 202 test examples...
 
 🗀 Evaluation result for test data:
 
-Example-wise F1 (↑)         52.48
-Example-wise Jaccard (↑)    44.24
-Example-wise Precision (↑)  53.14
-Example-wise Recall (↑)     55.45
-Hamming Accuracy (↑)        70.38
-Hamming Loss (↓)            29.62
-Macro F1 (↑)                54.47
-Macro Jaccard (↑)           37.74
-Macro Precision (↑)         54.63
-Macro Recall (↑)            55.02
-Micro F1 (↑)                55.4
-Micro Jaccard (↑)           38.32
-Micro Precision (↑)         54.93
-Micro Recall (↑)            55.89
-Subset 0/1 Loss (↓)         79.7
-Subset Accuracy (↑)         20.3
+ Example-wise F1 (↑)         52.48
+ Example-wise Jaccard (↑)    44.24
+ Example-wise Precision (↑)  53.14
+ Example-wise Recall (↑)     55.45
+ Hamming Accuracy (↑)        70.38
+ Hamming Loss (↓)            29.62
+ Macro F1 (↑)                54.47
+ Macro Jaccard (↑)           37.74
+ Macro Precision (↑)         54.63
+ Macro Recall (↑)            55.02
+ Micro F1 (↑)                55.40
+ Micro Jaccard (↑)           38.32
+ Micro Precision (↑)         54.93
+ Micro Recall (↑)            55.89
+ Subset 0/1 Loss (↓)         79.70
+ Subset Accuracy (↑)         20.30
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
 ✓ Successfully finished experiment after <duration>

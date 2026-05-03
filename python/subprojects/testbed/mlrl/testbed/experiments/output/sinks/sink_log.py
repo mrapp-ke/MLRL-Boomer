@@ -5,7 +5,8 @@ Provides classes that allow writing output data to the log.
 """
 
 from pathlib import Path
-from typing import Callable, override
+from typing import Callable, override, cast
+from rich.console import ConsoleRenderable
 
 from mlrl.testbed.experiments.input.sources import Source
 from mlrl.testbed.experiments.output.data import OutputData, StructuralOutputData, TextualOutputData
@@ -37,7 +38,7 @@ class LogSink(Sink):
         """
         See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.write_to_sink`
         """
-        text: str | None = None
+        text: str | ConsoleRenderable | None = None
         language: str | None = None
 
         if isinstance(output_data, StructuralOutputData):
@@ -54,7 +55,7 @@ class LogSink(Sink):
             Log.info('')
 
             if language:
-                Log.source_code(text, language=language, box_title=box_title)
+                Log.source_code(cast(str, text), language=language, box_title=box_title)
             else:
                 Log.info(text, box=True, box_title=box_title)
 
