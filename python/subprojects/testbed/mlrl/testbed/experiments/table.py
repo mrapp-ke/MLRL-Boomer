@@ -6,7 +6,7 @@ Provides classes for representing tables.
 
 from abc import ABC, abstractmethod
 from collections.abc import Generator, Iterable, Iterator
-from enum import Enum, auto
+from enum import Enum
 from typing import Any, override, Sequence
 from rich.table import Table as RichTable
 from rich import box
@@ -123,16 +123,6 @@ class Table(ABC):
     """
     An abstract base class for all tables.
     """
-
-    class Format(Enum):
-        """
-        All formats that can be used for formatting tables.
-        """
-
-        SIMPLE = auto()
-        PLAIN = auto()
-        OUTLINE = auto()
-        HORIZONTAL_LINES = auto()
 
     class BorderStyle(Enum):
         """
