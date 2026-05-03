@@ -1,5 +1,5 @@
 mlrl-testbed mlrl.testbed_sklearn --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --save-meta-data false --data-split cross-validation{first_fold=1,last_fold=1} --n-estimators 1 --estimator RandomForestRegressor
-Checking if output files do already exist...
+○ Checking if output files do already exist...
 
 Starting experiment using the regression algorithm "RandomForestRegressor"...
 Performing fold 1 of 10-fold cross validation...
@@ -19,10 +19,10 @@ Predicting for 30 test examples...
 
 🗀 Evaluation result for test data (Fold 1):
 
-Mean Absolute Error (↓)                51.04
-Mean Absolute Percentage Error (↓)      0.13
-Mean Squared Error (↓)              11291.1
-Median Absolute Error (↓)              13
+ Mean Absolute Error (↓)             51.04
+ Mean Absolute Percentage Error (↓)  0.13
+ Mean Squared Error (↓)              11291.11
+ Median Absolute Error (↓)           13.00
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test_fold-1.csv"...
 ✓ Successfully finished experiment after <duration>

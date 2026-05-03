@@ -1,5 +1,5 @@
 mlrl-testbed mlrl.testbed_sklearn --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset atp7d-predefined --result-dir results --problem-type regression --save-evaluation true --save-meta-data false --save-meta-data true --print-evaluation true --save-evaluation true --n-estimators 1 --estimator RandomForestRegressor
-Checking if output files do already exist...
+○ Checking if output files do already exist...
 
 Starting experiment using the regression algorithm "RandomForestRegressor"...
 ○ Writing to file "python/tests/res/tmp/<worker-id>/metadata.yml"...
@@ -20,10 +20,10 @@ Predicting for 101 test examples...
 
 🗀 Evaluation result for test data:
 
-Mean Absolute Error (↓)                81.62
-Mean Absolute Percentage Error (↓)      0.22
-Mean Squared Error (↓)              12617.8
-Median Absolute Error (↓)              76.5
+ Mean Absolute Error (↓)             81.62
+ Mean Absolute Percentage Error (↓)  0.22
+ Mean Squared Error (↓)              12617.82
+ Median Absolute Error (↓)           76.50
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
 ✓ Successfully finished experiment after <duration>

@@ -17,7 +17,7 @@ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id>/re
 --print-all true --problem-type regression --result-dir results --save-all true --save-evaluation true --save-meta-data
 false
 
-Checking if output files do already exist...
+○ Checking if output files do already exist...
 
 Starting experiment using the regression algorithm "RandomForestRegressor"...
 Using separate training and test sets...
@@ -29,22 +29,22 @@ Loading training dataset...
 
 🗀 Data characteristics:
 
-Examples            198
-Features            411
-Numerical Features  411
-Ordinal Features      0
-Nominal Features      0
-Feature Density      88.62
-Feature Sparsity     11.38
-Outputs               6
-Output Density      100
-Output Sparsity       0
+ Examples               198
+ Features               411
+ Numerical Features     411
+ Ordinal Features         0
+ Nominal Features         0
+ Feature Density      88.62
+ Feature Sparsity     11.38
+ Outputs                  6
+ Output Density      100.00
+ Output Sparsity       0.00
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/data_characteristics.csv"...
 
 🗀 Custom parameters:
 
-<no data available>
+<No custom parameters used>
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/parameters/parameters.csv"...
 Fitting model to 198 training examples...
@@ -56,10 +56,10 @@ Predicting for 98 test examples...
 
 🗀 Evaluation result for test data:
 
-Mean Absolute Error (↓)               42.43
-Mean Absolute Percentage Error (↓)     0.11
-Mean Squared Error (↓)              8434.79
-Median Absolute Error (↓)              7.42
+ Mean Absolute Error (↓)             42.43
+ Mean Absolute Percentage Error (↓)  0.11
+ Mean Squared Error (↓)              8434.79
+ Median Absolute Error (↓)           7.42
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
@@ -168,9 +168,9 @@ Median Absolute Error (↓)              7.42
 
 🗀 Prediction characteristics for test data:
 
-Outputs            6
-Output Density   100
-Output Sparsity    0
+ Outputs               6
+ Output Density   100.00
+ Output Sparsity    0.00
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/prediction_characteristics_test.csv"...
 
@@ -279,9 +279,9 @@ Output Sparsity    0
 
 🗀 Label vectors:
 
-Index         1
-Label vector  [0 1 2 3 4 5]
-Frequency     198
+ Index                     1
+ Label vector  [0 1 2 3 4 5]
+ Frequency               198
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/label_vectors.csv"...
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/models/model.pickle"...

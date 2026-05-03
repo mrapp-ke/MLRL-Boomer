@@ -6,6 +6,7 @@ probabilities.
 """
 
 from typing import override
+from rich.console import ConsoleRenderable
 
 from mlrl.testbed.experiments.output.data import TabularOutputData
 from mlrl.testbed.experiments.table import Table
@@ -19,7 +20,7 @@ class NoCalibrationModel(TabularOutputData):
     """
 
     @override
-    def to_text(self, _: Options, **kwargs) -> str | None:
+    def to_text(self, _: Options, **kwargs) -> str | ConsoleRenderable | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """

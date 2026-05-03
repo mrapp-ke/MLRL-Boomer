@@ -6,21 +6,13 @@ Provides classes for representing tables.
 
 from abc import ABC, abstractmethod
 from collections.abc import Generator, Iterable, Iterator
-from enum import Enum, StrEnum
-from typing import Any, override
-
-from tabulate import SEPARATING_LINE, tabulate
-
-
-class Alignment(Enum):
-    """
-    All possible alignments of a table column.
-    """
-
-    AUTO = None
-    LEFT = 'left'
-    CENTER = 'center'
-    RIGHT = 'right'
+from enum import Enum
+from typing import Any, override, Sequence
+from rich.table import Table as RichTable
+from rich import box
+from rich.text import Text
+from rich.console import ConsoleRenderable
+from rich.style import Style
 
 
 Header = Any | None
@@ -71,11 +63,38 @@ class Row(Iterable[Cell], ABC):
         :return:                The cell at the given index
         """
 
+    def __len__(self) -> int:
+        """
+        Returns the number of cells in the row.
+
+        :return: The number of cells in the row
+        """
+        return self.num_columns
+
 
 class Column(Iterable[Cell], ABC):
     """
     Provides access to a single column of a table.
     """
+
+    class Alignment(Enum):
+        """
+        All possible alignments of a table column.
+        """
+
+        AUTO = None
+        LEFT = 'left'
+        CENTER = 'center'
+        RIGHT = 'right'
+
+    class Style(Enum):
+        """
+        Different styles of a column.
+        """
+
+        HEADER = Style(bold=True)
+        VALUE = Style(color='turquoise2')
+        VALUE_SECONDARY = Style(color='turquoise4')
 
     @abstractmethod
     def set_header(self, value: Header):
@@ -90,13 +109,6 @@ class Column(Iterable[Cell], ABC):
     def header(self) -> Header | None:
         """
         The header of the column.
-        """
-
-    @property
-    @abstractmethod
-    def alignment(self) -> Alignment | None:
-        """
-        The alignment of the column.
         """
 
     @property
@@ -121,14 +133,15 @@ class Table(ABC):
     An abstract base class for all tables.
     """
 
-    class Format(StrEnum):
+    class BorderStyle(Enum):
         """
-        All formats that can be used for formatting tables.
+        All border styles that can be used by tables.
         """
 
-        SIMPLE = 'simple'
-        PLAIN = 'plain'
-        OUTLINE = 'simple_outline'
+        NONE = None
+        HORIZONTAL_LINES = box.HORIZONTALS
+        INNER_LINES = box.MINIMAL
+        ALL_LINES = box.ROUNDED
 
     @property
     def has_headers(self) -> bool:
@@ -167,13 +180,6 @@ class Table(ABC):
 
     @property
     @abstractmethod
-    def alignments(self) -> list[Alignment | None] | None:
-        """
-        The individual alignments of the columns in the table or None, if no alignments have been specified.
-        """
-
-    @property
-    @abstractmethod
     def rows(self) -> Generator[Row, None, None]:
         """
         A generator that provides access to the individual rows in the table.
@@ -202,56 +208,74 @@ class Table(ABC):
         :return: The `ColumnWiseTable` that has been created
         """
 
-    def format(
+    def to_rich_table(
         self,
         auto_rotate: bool = True,
-        table_format: 'Table.Format | None' = None,
-        separator_indices: list[int] | None = None,
-    ) -> str:
+        border_style: 'Table.BorderStyle' = BorderStyle.NONE,
+        column_styles: Sequence[Column.Style | None] | None = None,
+        column_alignments: Sequence[Column.Alignment | None] | None = None,
+        separator_indices: Sequence[int] | None = None,
+    ) -> ConsoleRenderable:
         """
-        Creates and returns a textual representation of the table.
+        Creates and returns an object of type `rich.table.Table`.
 
         :param auto_rotate:         True, if tables with a single row should automatically be rotated for legibility,
                                     False otherwise
-        :param table_format:        The format that should be used for formatting the table or None, if the default
-                                    should be used
-        :param separator_indices:   A list that contains the indices of the row at which a separator should be inserted,
-                                    or None if no separators should be inserted
-        :return:                    The textual representation that has been created
+        :param border_style:        The border style to be used for formatting the table
+        :param column_styles:       A sequence that contains the style of the columns of None, if no styling should be
+                                    used
+        :param column_alignments:   A sequence that contains the alignments of individual columns or None, if the
+                                    default should be used
+        :param separator_indices:   A sequence that contains the indices of the row at which a separator should be
+                                    inserted, or None if no separators should be inserted
+        :return:                    The object that has been created
         """
         if self.num_cells > 0:
             headers = self.header_row
-            rows: list[Any] = list(self.rows)
-
-            if separator_indices:
-                separator_indices.sort()
-
-                for row_index in reversed(separator_indices):
-                    rows.insert(row_index, SEPARATING_LINE)
+            rows: Iterable[Any] = self.rows
+            alignments: list[Column.Alignment | None] = list(column_alignments) if column_alignments else []
+            styles: list[Column.Style | None] = list(column_styles) if column_styles else []
 
             if auto_rotate and headers and self.num_rows == 1:
                 first_row = next(self.rows)
-                rotated_rows = [
-                    [headers[column_index], first_row[column_index]] for column_index in range(self.num_columns)
-                ]
-                return tabulate(rotated_rows, tablefmt=table_format if table_format else Table.Format.PLAIN)
+                rows = [[headers[column_index], first_row[column_index]] for column_index in range(self.num_columns)]
+                alignments = [Column.Alignment.LEFT, Column.Alignment.RIGHT]
+                styles = [Column.Style.HEADER, Column.Style.VALUE]
+                headers = None
 
-            if not headers:
-                return tabulate(rows, tablefmt=table_format if table_format else Table.Format.PLAIN)
-
-            alignments = (
-                map(lambda alignment: alignment.value if alignment else None, self.alignments)
-                if self.alignments
-                else None
+            rich_table = RichTable(
+                show_header=bool(headers),
+                box=border_style.value if headers else None,
+                header_style=Column.Style.HEADER.value,
             )
-            return tabulate(
-                rows,
-                headers=headers,
-                tablefmt=table_format if table_format else Table.Format.PLAIN,
-                colalign=alignments,
-            )
+            num_columns = max(len(alignments), len(styles), headers.num_columns if headers else 0)
 
-        return '<no data available>'
+            for column_index in range(num_columns):
+                alignment = alignments[column_index] if len(alignments) > column_index else None
+                column_style = styles[column_index] if len(styles) > column_index else None
+                style = column_style.value if column_style else None
+                header = headers[column_index] if headers and headers.num_columns > column_index else None
+                justify = alignment.value if alignment else None
+
+                if header:
+                    rich_table.add_column(str(header), style=style, justify=justify)  # type: ignore[arg-type]
+                else:
+                    rich_table.add_column(style=style, justify=justify)  # type: ignore[arg-type]
+
+            indices = set(separator_indices) if separator_indices else set()
+
+            for row_index, row in enumerate(rows):
+                rich_table.add_row(
+                    *(
+                        str(row[column_index]) if len(row) > column_index and row[column_index] else None
+                        for column_index in range(num_columns)
+                    ),
+                    end_section=row_index + 1 in indices,
+                )
+
+            return rich_table
+
+        return Text('<no data available>')
 
 
 class RowWiseTable(Table):
@@ -371,12 +395,6 @@ class RowWiseTable(Table):
 
         @override
         @property
-        def alignment(self) -> Alignment | None:
-            alignments = self.table.alignments
-            return alignments[self.column_index] if alignments else None
-
-        @override
-        @property
         def num_rows(self) -> int:
             return self.table.num_rows
 
@@ -394,19 +412,11 @@ class RowWiseTable(Table):
             for row_index in range(self.num_rows):
                 yield self[row_index]
 
-    def __init__(self, *headers: Header, alignments: list[Alignment | None] | None = None):
+    def __init__(self, *headers: Header):
         """
-        :param headers:     The headers of the individual columns
-        :param alignments:  The alignments of the individual columns or None
+        :param headers: The headers of the individual columns
         """
-        if headers and alignments and len(headers) != len(alignments):
-            raise ValueError(
-                f'The number of alignments does not match the number headers: Expected {len(headers)}, but got '
-                f'{len(alignments)}'
-            )
-
         self._headers = list(headers) if headers else None
-        self._alignments = alignments
         self._rows: list[list[Any]] = []
         self._num_columns = len(headers) if headers else 0
 
@@ -442,7 +452,7 @@ class RowWiseTable(Table):
 
         :return: The copy that has been created
         """
-        copied_table = RowWiseTable(*(self._headers if self._headers else []), alignments=self._alignments)
+        copied_table = RowWiseTable(*(self._headers if self._headers else []))
 
         for row in self.rows:
             copied_table.add_row(*row)
@@ -501,11 +511,6 @@ class RowWiseTable(Table):
 
     @override
     @property
-    def alignments(self) -> list[Alignment | None] | None:
-        return self._alignments
-
-    @override
-    @property
     def rows(self) -> Generator[Row, None, None]:
         for row_index in range(self.num_rows):
             yield RowWiseTable.Row(self, row_index)
@@ -524,14 +529,9 @@ class RowWiseTable(Table):
     def to_column_wise_table(self) -> 'ColumnWiseTable':
         table = ColumnWiseTable()
         header_row = self.header_row
-        alignments = self.alignments
 
         for column_index, column in enumerate(self.columns):
-            table.add_column(
-                *column,
-                header=header_row[column_index] if header_row else None,
-                alignment=alignments[column_index] if alignments else None,
-            )
+            table.add_column(*column, header=header_row[column_index] if header_row else None)
 
         return table
 
@@ -643,12 +643,6 @@ class ColumnWiseTable(Table):
 
         @override
         @property
-        def alignment(self) -> Alignment | None:
-            alignments = self.table.alignments
-            return alignments[self.column_index] if alignments else None
-
-        @override
-        @property
         def num_rows(self) -> int:
             return self.table.num_rows
 
@@ -678,7 +672,6 @@ class ColumnWiseTable(Table):
 
     def __init__(self):
         self._headers: list[Header] | None = None
-        self._alignments: list[Alignment | None] | None = None
         self._columns: list[list[Cell]] = []
         self._num_rows = 0
 
@@ -693,19 +686,16 @@ class ColumnWiseTable(Table):
 
         for column_index in column_indices:
             column = self[column_index]
-            sliced_table.add_column(*column, header=column.header, alignment=column.alignment)
+            sliced_table.add_column(*column, header=column.header)
 
         return sliced_table
 
-    def add_column(
-        self, *values: Cell, header: Header | None = None, alignment: Alignment | None = None, position: int = -1
-    ) -> 'ColumnWiseTable':
+    def add_column(self, *values: Cell, header: Header | None = None, position: int = -1) -> 'ColumnWiseTable':
         """
         Adds a new column to a table at a specific position.
 
         :param values:      The values in the column
         :param header:      The header of the column or None
-        :param alignment:   The alignment of the column or None
         :param position:    The position, the column should be added at, or -1, if the column should be added at the end
         :return:            The modified table
         """
@@ -717,12 +707,6 @@ class ColumnWiseTable(Table):
                 self._headers = [None for _ in range(self.num_columns)]
 
             self._headers.insert(position, header)
-
-        if alignment:
-            if not self._alignments:
-                self._alignments = [None for _ in range(self.num_columns)]
-
-            self._alignments.insert(position, alignment)
 
         self._columns.insert(position, column)
         self._num_rows = max(len(column), self._num_rows)
@@ -738,23 +722,17 @@ class ColumnWiseTable(Table):
 
         if headers:
             columns = self._columns
-            alignments = self._alignments
             sorted_column_indices = [
                 index for index, _ in sorted(enumerate(headers), key=lambda x: str(x[1]) if x[1] else '')
             ]
             sorted_columns = []
             sorted_headers = []
-            sorted_alignments: list[Alignment | None] | None = [] if alignments else None
 
             for column_index in sorted_column_indices:
                 sorted_columns.append(columns[column_index])
                 sorted_headers.append(headers[column_index])
 
-                if sorted_alignments and alignments:
-                    sorted_alignments.append(alignments[column_index])
-
             self._headers = sorted_headers
-            self._alignments = sorted_alignments
             self._columns = sorted_columns
 
         return self
@@ -776,11 +754,6 @@ class ColumnWiseTable(Table):
 
     @override
     @property
-    def alignments(self) -> list[Alignment | None] | None:
-        return self._alignments
-
-    @override
-    @property
     def rows(self) -> Generator[Row, None, None]:
         for row_index in range(self.num_rows):
             yield ColumnWiseTable.Row(self, row_index)
@@ -794,7 +767,7 @@ class ColumnWiseTable(Table):
     @override
     def to_row_wise_table(self) -> RowWiseTable:
         headers = self._headers if self._headers else []
-        table = RowWiseTable(*headers, alignments=self._alignments)
+        table = RowWiseTable(*headers)
 
         for row in self.rows:
             table.add_row(*row)

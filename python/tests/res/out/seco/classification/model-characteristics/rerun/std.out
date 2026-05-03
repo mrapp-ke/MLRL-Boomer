@@ -27,19 +27,28 @@ Loading training dataset...
 
 🗀 Model characteristics:
 
-Statistics about conditions      Total    Numerical <= operator    Numerical > operator    Ordinal <= operator
-Ordinal > operator    Nominal == operator    Nominal != operator
-Default rule                         0                    0.00%                   0.00%                  0.00%
-0.00%                  0.00%                  0.00%
-61 local rules                      68                   54.41%                  45.59%                  0.00%
-0.00%                  0.00%                  0.00%
+                ╷       ╷               ╷               ╷               ╷               ╷              ╷
+  Statistics    │       │               │               │               │               │              │
+  about         │       │  Numerical <= │   Numerical > │    Ordinal <= │     Ordinal > │   Nominal == │    Nominal !=
+  conditions    │ Total │      operator │      operator │      operator │      operator │     operator │      operator
+╶───────────────┼───────┼───────────────┼───────────────┼───────────────┼───────────────┼──────────────┼───────────────╴
+  Default rule  │     0 │        0.00 % │        0.00 % │        0.00 % │        0.00 % │       0.00 % │        0.00 %
+  61 local      │    68 │       54.41 % │       45.59 % │        0.00 % │        0.00 % │       0.00 % │        0.00 %
+  rules         │       │               │               │               │               │              │
+                ╵       ╵               ╵               ╵               ╵               ╵              ╵
 
-Statistics about predictions      Total    Positive    Negative
-Default rule                          6       0.00%     100.00%
-61 local rules                       61     100.00%       0.00%
+                               ╷       ╷          ╷
+  Statistics about predictions │ Total │ Positive │ Negative
+╶──────────────────────────────┼───────┼──────────┼──────────╴
+  Default rule                 │     6 │   0.00 % │ 100.00 %
+  61 local rules               │    61 │ 100.00 % │   0.00 %
+                               ╵       ╵          ╵
 
-Statistics per local rule      Minimum    Average    Maximum
-Conditions                           1       1.11          3
-Predictions                          1       1             1
+                            ╷         ╷         ╷
+  Statistics per local rule │ Minimum │ Average │ Maximum
+╶───────────────────────────┼─────────┼─────────┼─────────╴
+  Conditions                │       1 │    1.11 │       3
+  Predictions               │       1 │    1.00 │       1
+                            ╵         ╵         ╵
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/model_characteristics.csv"...

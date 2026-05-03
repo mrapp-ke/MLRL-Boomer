@@ -16,7 +16,7 @@ mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id>/re
 --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain --log-width 120 --n-estimators 1
 --print-all true --result-dir results --save-all true --save-evaluation true --save-meta-data false
 
-Checking if output files do already exist...
+○ Checking if output files do already exist...
 
 Starting experiment using the classification algorithm "RandomForestClassifier"...
 Using separate training and test sets...
@@ -28,25 +28,25 @@ Loading training dataset...
 
 🗀 Data characteristics:
 
-Examples                397
-Features                 72
-Numerical Features       72
-Ordinal Features          0
-Nominal Features          0
-Feature Density          99.67
-Feature Sparsity          0.33
-Outputs                   6
-Output Density           30.77
-Output Sparsity          69.23
-Label Imbalance Ratio     1.45
-Label Cardinality         1.85
-Distinct Label Vectors   23
+ Examples                  397
+ Features                   72
+ Numerical Features         72
+ Ordinal Features            0
+ Nominal Features            0
+ Feature Density         99.67
+ Feature Sparsity         0.33
+ Outputs                     6
+ Output Density          30.77
+ Output Sparsity         69.23
+ Label Imbalance Ratio    1.45
+ Label Cardinality        1.85
+ Distinct Label Vectors     23
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/data_characteristics.csv"...
 
 🗀 Custom parameters:
 
-<no data available>
+<No custom parameters used>
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/parameters/parameters.csv"...
 Fitting model to 397 training examples...
@@ -58,22 +58,22 @@ Predicting for 196 test examples...
 
 🗀 Evaluation result for test data:
 
-Example-wise F1 (↑)         50.49
-Example-wise Jaccard (↑)    42.39
-Example-wise Precision (↑)  53.32
-Example-wise Recall (↑)     53.15
-Hamming Accuracy (↑)        70.32
-Hamming Loss (↓)            29.68
-Macro F1 (↑)                52.15
-Macro Jaccard (↑)           35.93
-Macro Precision (↑)         52.55
-Macro Recall (↑)            52.16
-Micro F1 (↑)                53.28
-Micro Jaccard (↑)           36.31
-Micro Precision (↑)         53.49
-Micro Recall (↑)            53.07
-Subset 0/1 Loss (↓)         81.12
-Subset Accuracy (↑)         18.88
+ Example-wise F1 (↑)         50.49
+ Example-wise Jaccard (↑)    42.39
+ Example-wise Precision (↑)  53.32
+ Example-wise Recall (↑)     53.15
+ Hamming Accuracy (↑)        70.32
+ Hamming Loss (↓)            29.68
+ Macro F1 (↑)                52.15
+ Macro Jaccard (↑)           35.93
+ Macro Precision (↑)         52.55
+ Macro Recall (↑)            52.16
+ Micro F1 (↑)                53.28
+ Micro Jaccard (↑)           36.31
+ Micro Precision (↑)         53.49
+ Micro Recall (↑)            53.07
+ Subset 0/1 Loss (↓)         81.12
+ Subset Accuracy (↑)         18.88
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
@@ -280,12 +280,12 @@ Subset Accuracy (↑)         18.88
 
 🗀 Prediction characteristics for test data:
 
-Outputs                  6
-Output Density          31.63
-Output Sparsity         68.37
-Label Imbalance Ratio    1.44
-Label Cardinality        1.9
-Distinct Label Vectors  21
+ Outputs                     6
+ Output Density          31.63
+ Output Sparsity         68.37
+ Label Imbalance Ratio    1.44
+ Label Cardinality        1.90
+ Distinct Label Vectors     21
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/prediction_characteristics_test.csv"...
 
@@ -492,30 +492,33 @@ Distinct Label Vectors  21
 
 🗀 Label vectors:
 
-  Index  Label vector      Frequency
-     12  [0 5]                    52
-      5  [5]                      50
-      9  [1 2]                    44
-      1  [2 3 4]                  42
-      4  [2]                      30
-      8  [0 1]                    26
-      6  [3 4]                    25
-     11  [2 4]                    20
-      3  [2 3]                    19
-     10  [1]                      18
-     14  [0]                      17
-     15  [4]                      10
-      2  [4 5]                     8
-     13  [0 1 5]                   7
-     16  [0 1 2]                   7
-      7  [1 5]                     5
-     19  [1 2 3]                   5
-     17  [2 4 5]                   3
-     23  [3]                       3
-     18  [0 4 5]                   2
-     20  [0 4]                     2
-     21  [3 4 5]                   1
-     22  [2 5]                     1
+        ╷              ╷
+  Index │ Label vector │ Frequency
+╶───────┼──────────────┼───────────╴
+     12 │ [0 5]        │        52
+      5 │ [5]          │        50
+      9 │ [1 2]        │        44
+      1 │ [2 3 4]      │        42
+      4 │ [2]          │        30
+      8 │ [0 1]        │        26
+      6 │ [3 4]        │        25
+     11 │ [2 4]        │        20
+      3 │ [2 3]        │        19
+     10 │ [1]          │        18
+     14 │ [0]          │        17
+     15 │ [4]          │        10
+      2 │ [4 5]        │         8
+     13 │ [0 1 5]      │         7
+     16 │ [0 1 2]      │         7
+      7 │ [1 5]        │         5
+     19 │ [1 2 3]      │         5
+     17 │ [2 4 5]      │         3
+     23 │ [3]          │         3
+     18 │ [0 4 5]      │         2
+     20 │ [0 4]        │         2
+     21 │ [3 4 5]      │         1
+     22 │ [2 5]        │         1
+        ╵              ╵
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/label_vectors.csv"...
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/models/model.pickle"...

@@ -46,7 +46,8 @@ class RunMode(InputMode):
             meta_data_command = Command.from_dict(meta_data_command.module_name, ArgumentDict(merged_arguments))
             Log.verbose(
                 f'{len(overridden_arguments)} {"arguments" if len(overridden_arguments) > 1 else "argument"} modifying '
-                f'the original experiments have been provided: {format_iterable(overridden_arguments, separator=" ")}'
+                f'the original experiments have been provided: {format_iterable(overridden_arguments, separator=" ")}',
+                highlight=True,
             )
 
         Log.source_code(str(meta_data_command), language='bash', box_title='Command')

@@ -26,180 +26,180 @@ Loading training dataset...
 
 🗀 Evaluation result for test data using a model of size 50:
 
-Mean Absolute Error (↓)               38.31
-Mean Absolute Percentage Error (↓)     0.11
-Mean Squared Error (↓)              3788.8
-Median Absolute Error (↓)             24.39
+ Mean Absolute Error (↓)             38.31
+ Mean Absolute Percentage Error (↓)  0.11
+ Mean Squared Error (↓)              3788.80
+ Median Absolute Error (↓)           24.39
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 100:
 
-Mean Absolute Error (↓)               34.75
-Mean Absolute Percentage Error (↓)     0.1
-Mean Squared Error (↓)              3321.3
-Median Absolute Error (↓)             21.65
+ Mean Absolute Error (↓)             34.75
+ Mean Absolute Percentage Error (↓)  0.10
+ Mean Squared Error (↓)              3321.30
+ Median Absolute Error (↓)           21.65
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 150:
 
-Mean Absolute Error (↓)               33.07
-Mean Absolute Percentage Error (↓)     0.09
-Mean Squared Error (↓)              3135.65
-Median Absolute Error (↓)             19.36
+ Mean Absolute Error (↓)             33.07
+ Mean Absolute Percentage Error (↓)  0.09
+ Mean Squared Error (↓)              3135.65
+ Median Absolute Error (↓)           19.36
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 200:
 
-Mean Absolute Error (↓)               31.81
-Mean Absolute Percentage Error (↓)     0.09
-Mean Squared Error (↓)              3003.37
-Median Absolute Error (↓)             18.76
+ Mean Absolute Error (↓)             31.81
+ Mean Absolute Percentage Error (↓)  0.09
+ Mean Squared Error (↓)              3003.37
+ Median Absolute Error (↓)           18.76
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 250:
 
-Mean Absolute Error (↓)               31.08
-Mean Absolute Percentage Error (↓)     0.08
-Mean Squared Error (↓)              2958.3
-Median Absolute Error (↓)             17.88
+ Mean Absolute Error (↓)             31.08
+ Mean Absolute Percentage Error (↓)  0.08
+ Mean Squared Error (↓)              2958.30
+ Median Absolute Error (↓)           17.88
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 300:
 
-Mean Absolute Error (↓)               30.62
-Mean Absolute Percentage Error (↓)     0.08
-Mean Squared Error (↓)              2913.46
-Median Absolute Error (↓)             17.14
+ Mean Absolute Error (↓)             30.62
+ Mean Absolute Percentage Error (↓)  0.08
+ Mean Squared Error (↓)              2913.46
+ Median Absolute Error (↓)           17.14
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 350:
 
-Mean Absolute Error (↓)               30.46
-Mean Absolute Percentage Error (↓)     0.08
-Mean Squared Error (↓)              2909.33
-Median Absolute Error (↓)             16.7
+ Mean Absolute Error (↓)             30.46
+ Mean Absolute Percentage Error (↓)  0.08
+ Mean Squared Error (↓)              2909.33
+ Median Absolute Error (↓)           16.70
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 400:
 
-Mean Absolute Error (↓)               30.27
-Mean Absolute Percentage Error (↓)     0.08
-Mean Squared Error (↓)              2894.6
-Median Absolute Error (↓)             16.39
+ Mean Absolute Error (↓)             30.27
+ Mean Absolute Percentage Error (↓)  0.08
+ Mean Squared Error (↓)              2894.60
+ Median Absolute Error (↓)           16.39
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 450:
 
-Mean Absolute Error (↓)               30.11
-Mean Absolute Percentage Error (↓)     0.08
-Mean Squared Error (↓)              2878.04
-Median Absolute Error (↓)             16.33
+ Mean Absolute Error (↓)             30.11
+ Mean Absolute Percentage Error (↓)  0.08
+ Mean Squared Error (↓)              2878.04
+ Median Absolute Error (↓)           16.33
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 500:
 
-Mean Absolute Error (↓)               30.01
-Mean Absolute Percentage Error (↓)     0.08
-Mean Squared Error (↓)              2869.81
-Median Absolute Error (↓)             16.41
+ Mean Absolute Error (↓)             30.01
+ Mean Absolute Percentage Error (↓)  0.08
+ Mean Squared Error (↓)              2869.81
+ Median Absolute Error (↓)           16.41
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 550:
 
-Mean Absolute Error (↓)               29.94
-Mean Absolute Percentage Error (↓)     0.08
-Mean Squared Error (↓)              2866.47
-Median Absolute Error (↓)             16.46
+ Mean Absolute Error (↓)             29.94
+ Mean Absolute Percentage Error (↓)  0.08
+ Mean Squared Error (↓)              2866.47
+ Median Absolute Error (↓)           16.46
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 600:
 
-Mean Absolute Error (↓)               29.9
-Mean Absolute Percentage Error (↓)     0.08
-Mean Squared Error (↓)              2860.42
-Median Absolute Error (↓)             16.72
+ Mean Absolute Error (↓)             29.90
+ Mean Absolute Percentage Error (↓)  0.08
+ Mean Squared Error (↓)              2860.42
+ Median Absolute Error (↓)           16.72
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 650:
 
-Mean Absolute Error (↓)               29.84
-Mean Absolute Percentage Error (↓)     0.08
-Mean Squared Error (↓)              2853.96
-Median Absolute Error (↓)             16.7
+ Mean Absolute Error (↓)             29.84
+ Mean Absolute Percentage Error (↓)  0.08
+ Mean Squared Error (↓)              2853.96
+ Median Absolute Error (↓)           16.70
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 700:
 
-Mean Absolute Error (↓)               29.82
-Mean Absolute Percentage Error (↓)     0.08
-Mean Squared Error (↓)              2850.79
-Median Absolute Error (↓)             16.63
+ Mean Absolute Error (↓)             29.82
+ Mean Absolute Percentage Error (↓)  0.08
+ Mean Squared Error (↓)              2850.79
+ Median Absolute Error (↓)           16.63
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 750:
 
-Mean Absolute Error (↓)               29.8
-Mean Absolute Percentage Error (↓)     0.08
-Mean Squared Error (↓)              2849.76
-Median Absolute Error (↓)             16.55
+ Mean Absolute Error (↓)             29.80
+ Mean Absolute Percentage Error (↓)  0.08
+ Mean Squared Error (↓)              2849.76
+ Median Absolute Error (↓)           16.55
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 800:
 
-Mean Absolute Error (↓)               29.77
-Mean Absolute Percentage Error (↓)     0.08
-Mean Squared Error (↓)              2846.59
-Median Absolute Error (↓)             16.51
+ Mean Absolute Error (↓)             29.77
+ Mean Absolute Percentage Error (↓)  0.08
+ Mean Squared Error (↓)              2846.59
+ Median Absolute Error (↓)           16.51
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 850:
 
-Mean Absolute Error (↓)               29.78
-Mean Absolute Percentage Error (↓)     0.08
-Mean Squared Error (↓)              2845.94
-Median Absolute Error (↓)             16.57
+ Mean Absolute Error (↓)             29.78
+ Mean Absolute Percentage Error (↓)  0.08
+ Mean Squared Error (↓)              2845.94
+ Median Absolute Error (↓)           16.57
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 900:
 
-Mean Absolute Error (↓)               29.75
-Mean Absolute Percentage Error (↓)     0.08
-Mean Squared Error (↓)              2844.37
-Median Absolute Error (↓)             16.47
+ Mean Absolute Error (↓)             29.75
+ Mean Absolute Percentage Error (↓)  0.08
+ Mean Squared Error (↓)              2844.37
+ Median Absolute Error (↓)           16.47
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 950:
 
-Mean Absolute Error (↓)               29.74
-Mean Absolute Percentage Error (↓)     0.08
-Mean Squared Error (↓)              2841.95
-Median Absolute Error (↓)             16.44
+ Mean Absolute Error (↓)             29.74
+ Mean Absolute Percentage Error (↓)  0.08
+ Mean Squared Error (↓)              2841.95
+ Median Absolute Error (↓)           16.44
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 
 🗀 Evaluation result for test data using a model of size 1000:
 
-Mean Absolute Error (↓)               29.74
-Mean Absolute Percentage Error (↓)     0.08
-Mean Squared Error (↓)              2840.67
-Median Absolute Error (↓)             16.41
+ Mean Absolute Error (↓)             29.74
+ Mean Absolute Percentage Error (↓)  0.08
+ Mean Squared Error (↓)              2840.67
+ Median Absolute Error (↓)           16.41
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...

@@ -183,7 +183,8 @@ class ReadMode(InputMode):
                 if num_tables > 0:
                     Log.error(
                         f'Evaluation results for {dataset_type} data of the dataset "{dataset_name}" are incomplete. '
-                        f'{num_missing} of {num_commands} {("files are" if num_missing > 1 else "file is")} missing.'
+                        f'{num_missing} of {num_commands} {("files are" if num_missing > 1 else "file is")} missing.',
+                        highlight=True,
                     )
             else:
                 return ReadMode.__aggregate_tables(commands_and_their_states, headers, tables)
@@ -239,7 +240,8 @@ class ReadMode(InputMode):
         num_experiments = len(batch)
         Log.info(
             f'Reading experimental results of {num_experiments} '
-            f'{("experiments" if num_experiments > 1 else "experiment")}...\n'
+            f'{("experiments" if num_experiments > 1 else "experiment")}...\n',
+            highlight=True,
         )
 
         with Log.indented():
