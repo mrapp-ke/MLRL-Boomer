@@ -1,5 +1,5 @@
 mlrl-testbed mlrl.seco --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --save-meta-data false --parallel-prediction false --parallel-rule-refinement false --parallel-statistic-update false --rule-pruning irep --pruning-heuristic weighted-relative-accuracy
-Checking if output files do already exist...
+○ Checking if output files do already exist...
 
 Starting experiment using the classification algorithm "SeCoClassifier"...
 Using separate training and test sets...
@@ -21,22 +21,22 @@ Predicting for 196 test examples...
 
 🗀 Evaluation result for test data:
 
-Example-wise F1 (↑)         54.88
-Example-wise Jaccard (↑)    45.65
-Example-wise Precision (↑)  62.7
-Example-wise Recall (↑)     61.14
-Hamming Accuracy (↑)        73.04
-Hamming Loss (↓)            26.96
-Macro F1 (↑)                52.24
-Macro Jaccard (↑)           38.2
-Macro Precision (↑)         64.37
-Macro Recall (↑)            59.21
-Micro F1 (↑)                59.2
-Micro Jaccard (↑)           42.05
-Micro Precision (↑)         57.21
-Micro Recall (↑)            61.33
-Subset 0/1 Loss (↓)         80.61
-Subset Accuracy (↑)         19.39
+ Example-wise F1 (↑)         54.88
+ Example-wise Jaccard (↑)    45.65
+ Example-wise Precision (↑)  62.70
+ Example-wise Recall (↑)     61.14
+ Hamming Accuracy (↑)        73.04
+ Hamming Loss (↓)            26.96
+ Macro F1 (↑)                52.24
+ Macro Jaccard (↑)           38.20
+ Macro Precision (↑)         64.37
+ Macro Recall (↑)            59.21
+ Micro F1 (↑)                59.20
+ Micro Jaccard (↑)           42.05
+ Micro Precision (↑)         57.21
+ Micro Recall (↑)            61.33
+ Subset 0/1 Loss (↓)         80.61
+ Subset Accuracy (↑)         19.39
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
 ✓ Successfully finished experiment after <duration>

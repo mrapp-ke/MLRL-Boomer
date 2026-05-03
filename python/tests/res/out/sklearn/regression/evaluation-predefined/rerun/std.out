@@ -26,9 +26,9 @@ Loading training dataset...
 
 🗀 Evaluation result for test data:
 
-Mean Absolute Error (↓)                81.62
-Mean Absolute Percentage Error (↓)      0.22
-Mean Squared Error (↓)              12617.8
-Median Absolute Error (↓)              76.5
+ Mean Absolute Error (↓)             81.62
+ Mean Absolute Percentage Error (↓)  0.22
+ Mean Squared Error (↓)              12617.82
+ Median Absolute Error (↓)           76.50
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...

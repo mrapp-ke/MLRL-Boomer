@@ -31,14 +31,14 @@ Loading training dataset...
 
 🗀 Custom parameters:
 
-<no data available>
+<No custom parameters used>
 
 
 🗀 Evaluation result for test data:
 
-Mean Absolute Error (↓)               42.43
-Mean Absolute Percentage Error (↓)     0.11
-Mean Squared Error (↓)              8434.79
-Median Absolute Error (↓)              7.42
+ Mean Absolute Error (↓)             42.43
+ Mean Absolute Percentage Error (↓)  0.11
+ Mean Squared Error (↓)              8434.79
+ Median Absolute Error (↓)           7.42
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...

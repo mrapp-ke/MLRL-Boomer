@@ -1,5 +1,5 @@
 mlrl-testbed mlrl.boosting --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset atp7d --result-dir results --problem-type regression --save-evaluation true --save-meta-data false --parallel-prediction false --parallel-rule-refinement false --parallel-statistic-update false --instance-sampling without-replacement --rule-pruning irep
-Checking if output files do already exist...
+○ Checking if output files do already exist...
 
 Starting experiment using the regression algorithm "BoomerRegressor"...
 Using separate training and test sets...
@@ -21,10 +21,10 @@ Predicting for 98 test examples...
 
 🗀 Evaluation result for test data:
 
-Mean Absolute Error (↓)               35.9
-Mean Absolute Percentage Error (↓)     0.1
-Mean Squared Error (↓)              3793.48
-Median Absolute Error (↓)             20.14
+ Mean Absolute Error (↓)             35.90
+ Mean Absolute Percentage Error (↓)  0.10
+ Mean Squared Error (↓)              3793.48
+ Median Absolute Error (↓)           20.14
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
 ✓ Successfully finished experiment after <duration>

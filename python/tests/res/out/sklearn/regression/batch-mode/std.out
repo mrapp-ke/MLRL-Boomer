@@ -32,10 +32,10 @@ Predicting for 98 test examples...
 
 🗀 Evaluation result for test data:
 
-Mean Absolute Error (↓)               46.64
-Mean Absolute Percentage Error (↓)     0.13
-Mean Squared Error (↓)              5696.31
-Median Absolute Error (↓)             29.02
+ Mean Absolute Error (↓)             46.64
+ Mean Absolute Percentage Error (↓)  0.13
+ Mean Squared Error (↓)              5696.31
+ Median Absolute Error (↓)           29.02
 
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d/results/evaluation_test.csv"...
@@ -81,10 +81,10 @@ Predicting for 98 test examples...
 
 🗀 Evaluation result for test data:
 
-Mean Absolute Error (↓)               46.53
-Mean Absolute Percentage Error (↓)     0.13
-Mean Squared Error (↓)              5736.25
-Median Absolute Error (↓)             28.26
+ Mean Absolute Error (↓)             46.53
+ Mean Absolute Percentage Error (↓)  0.13
+ Mean Squared Error (↓)              5736.25
+ Median Absolute Error (↓)           28.26
 
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/evaluation_test.csv"..
@@ -134,10 +134,10 @@ Predicting for 98 test examples...
 
 🗀 Evaluation result for test data:
 
-Mean Absolute Error (↓)               47.34
-Mean Absolute Percentage Error (↓)     0.13
-Mean Squared Error (↓)              5965.1
-Median Absolute Error (↓)             28.91
+ Mean Absolute Error (↓)             47.34
+ Mean Absolute Percentage Error (↓)  0.13
+ Mean Squared Error (↓)              5965.10
+ Median Absolute Error (↓)           28.91
 
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d/results/evaluation_test.csv"...
@@ -185,10 +185,10 @@ Predicting for 98 test examples...
 
 🗀 Evaluation result for test data:
 
-Mean Absolute Error (↓)               47.15
-Mean Absolute Percentage Error (↓)     0.13
-Mean Squared Error (↓)              6009.81
-Median Absolute Error (↓)             28.15
+ Mean Absolute Error (↓)             47.15
+ Mean Absolute Percentage Error (↓)  0.13
+ Mean Squared Error (↓)              6009.81
+ Median Absolute Error (↓)           28.15
 
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d/results/evaluation_test.csv".
@@ -238,10 +238,10 @@ Predicting for 98 test examples...
 
 🗀 Evaluation result for test data:
 
-Mean Absolute Error (↓)               50.01
-Mean Absolute Percentage Error (↓)     0.14
-Mean Squared Error (↓)              6350.18
-Median Absolute Error (↓)             29.61
+ Mean Absolute Error (↓)             50.01
+ Mean Absolute Percentage Error (↓)  0.14
+ Mean Squared Error (↓)              6350.18
+ Median Absolute Error (↓)           29.61
 
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_2/dataset_atp7d-binary/results/evaluation_test.csv"...
@@ -291,10 +291,10 @@ Predicting for 98 test examples...
 
 🗀 Evaluation result for test data:
 
-Mean Absolute Error (↓)               50.2
-Mean Absolute Percentage Error (↓)     0.14
-Mean Squared Error (↓)              6412.24
-Median Absolute Error (↓)             30.21
+ Mean Absolute Error (↓)             50.20
+ Mean Absolute Percentage Error (↓)  0.14
+ Mean Squared Error (↓)              6412.24
+ Median Absolute Error (↓)           30.21
 
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/evaluation_test
@@ -345,10 +345,10 @@ Predicting for 98 test examples...
 
 🗀 Evaluation result for test data:
 
-Mean Absolute Error (↓)               50.72
-Mean Absolute Percentage Error (↓)     0.14
-Mean Squared Error (↓)              6561.56
-Median Absolute Error (↓)             29.74
+ Mean Absolute Error (↓)             50.72
+ Mean Absolute Percentage Error (↓)  0.14
+ Mean Squared Error (↓)              6561.56
+ Median Absolute Error (↓)           29.74
 
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_2/dataset_atp7d-binary/results/evaluation_test.csv"...
@@ -398,10 +398,10 @@ Predicting for 98 test examples...
 
 🗀 Evaluation result for test data:
 
-Mean Absolute Error (↓)               50.92
-Mean Absolute Percentage Error (↓)     0.14
-Mean Squared Error (↓)              6643.24
-Median Absolute Error (↓)             30.08
+ Mean Absolute Error (↓)             50.92
+ Mean Absolute Percentage Error (↓)  0.14
+ Mean Squared Error (↓)              6643.24
+ Median Absolute Error (↓)           30.08
 
 ○ Writing to file
 "python/tests/res/tmp/<worker-id>/n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_atp7d-binary/results/evaluation_tes

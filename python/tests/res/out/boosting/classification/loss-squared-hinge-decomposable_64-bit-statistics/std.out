@@ -1,5 +1,5 @@
 mlrl-testbed mlrl.boosting --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --save-meta-data false --parallel-prediction false --parallel-rule-refinement false --parallel-statistic-update false --loss squared-hinge-decomposable --statistic-type 64-bit
-Checking if output files do already exist...
+○ Checking if output files do already exist...
 
 Starting experiment using the classification algorithm "BoomerClassifier"...
 Using separate training and test sets...
@@ -21,22 +21,22 @@ Predicting for 196 test examples...
 
 🗀 Evaluation result for test data:
 
-Example-wise F1 (↑)         58.66
-Example-wise Jaccard (↑)    50.78
-Example-wise Precision (↑)  74.45
-Example-wise Recall (↑)     59.86
-Hamming Accuracy (↑)        79.25
-Hamming Loss (↓)            20.75
-Macro F1 (↑)                63.31
-Macro Jaccard (↑)           46.78
-Macro Precision (↑)         71.11
-Macro Recall (↑)            57.56
-Micro F1 (↑)                64.12
-Micro Jaccard (↑)           47.19
-Micro Precision (↑)         71.48
-Micro Recall (↑)            58.13
-Subset 0/1 Loss (↓)         74.49
-Subset Accuracy (↑)         25.51
+ Example-wise F1 (↑)         58.66
+ Example-wise Jaccard (↑)    50.78
+ Example-wise Precision (↑)  74.45
+ Example-wise Recall (↑)     59.86
+ Hamming Accuracy (↑)        79.25
+ Hamming Loss (↓)            20.75
+ Macro F1 (↑)                63.31
+ Macro Jaccard (↑)           46.78
+ Macro Precision (↑)         71.11
+ Macro Recall (↑)            57.56
+ Micro F1 (↑)                64.12
+ Micro Jaccard (↑)           47.19
+ Micro Precision (↑)         71.48
+ Micro Recall (↑)            58.13
+ Subset 0/1 Loss (↓)         74.49
+ Subset Accuracy (↑)         25.51
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
 ✓ Successfully finished experiment after <duration>

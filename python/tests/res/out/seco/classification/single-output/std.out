@@ -1,5 +1,5 @@
 mlrl-testbed mlrl.seco --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset breast-cancer --result-dir results --save-evaluation true --save-meta-data false --print-evaluation true --parallel-prediction false --parallel-rule-refinement false --parallel-statistic-update false
-Checking if output files do already exist...
+○ Checking if output files do already exist...
 
 Starting experiment using the classification algorithm "SeCoClassifier"...
 Using separate training and test sets...
@@ -21,12 +21,12 @@ Predicting for 95 test examples...
 
 🗀 Evaluation result for test data:
 
-0/1 Loss (↓)   37.89
-Accuracy (↑)   62.11
-F1 (↑)         40
-Jaccard (↑)    25
-Precision (↑)  44.44
-Recall (↑)     36.36
+ 0/1 Loss (↓)   37.89
+ Accuracy (↑)   62.11
+ F1 (↑)         40.00
+ Jaccard (↑)    25.00
+ Precision (↑)  44.44
+ Recall (↑)     36.36
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
 ✓ Successfully finished experiment after <duration>
