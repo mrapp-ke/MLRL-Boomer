@@ -112,8 +112,7 @@ class RuleModelCharacteristics(TabularOutputData):
             'Nominal == operator',
             'Nominal != operator',
         ]
-        alignments = [Column.Alignment.LEFT] + [Column.Alignment.RIGHT for _ in range(len(headers) - 1)]
-        table = RowWiseTable(*headers, alignments=alignments)
+        table = RowWiseTable(*headers)
         default_rule_statistics = statistics.default_rule_statistics
 
         if default_rule_statistics:
@@ -123,8 +122,12 @@ class RuleModelCharacteristics(TabularOutputData):
         body_statistics = aggregated_rule_statistics.body_statistics
         table.add_row(f'{statistics.num_rules} local rules', *self.__format_body_statistics(body_statistics))
         column_styles = [Table.COLUMN_STYLE_HEADER] + [Table.COLUMN_STYLE_VALUE for _ in range(len(headers) - 1)]
+        column_alignments = [Column.Alignment.LEFT] + [Column.Alignment.RIGHT for _ in range(len(headers) - 1)]
         return table.to_rich_table(
-            auto_rotate=False, border_style=Table.BorderStyle.INNER_LINES, column_styles=column_styles
+            auto_rotate=False,
+            border_style=Table.BorderStyle.INNER_LINES,
+            column_styles=column_styles,
+            column_alignments=column_alignments,
         )
 
     @staticmethod
@@ -138,8 +141,7 @@ class RuleModelCharacteristics(TabularOutputData):
     def __format_aggregated_head_statistics(self, aggregated_rule_statistics: RuleStatistics) -> ConsoleRenderable:
         statistics = self.statistics
         headers = ['Statistics about predictions', 'Total', 'Positive', 'Negative']
-        alignments = [Column.Alignment.LEFT] + [Column.Alignment.RIGHT for _ in range(len(headers) - 1)]
-        table = RowWiseTable(*headers, alignments=alignments)
+        table = RowWiseTable(*headers)
         default_rule_statistics = statistics.default_rule_statistics
 
         if default_rule_statistics:
@@ -149,16 +151,19 @@ class RuleModelCharacteristics(TabularOutputData):
         head_statistics = aggregated_rule_statistics.head_statistics
         table.add_row(f'{statistics.num_rules} local rules', *self.__format_head_statistics(head_statistics))
         column_styles = [Table.COLUMN_STYLE_HEADER] + [Table.COLUMN_STYLE_VALUE for _ in range(len(headers) - 1)]
+        column_alignments = [Column.Alignment.LEFT] + [Column.Alignment.RIGHT for _ in range(len(headers) - 1)]
         return table.to_rich_table(
-            auto_rotate=False, border_style=Table.BorderStyle.INNER_LINES, column_styles=column_styles
+            auto_rotate=False,
+            border_style=Table.BorderStyle.INNER_LINES,
+            column_styles=column_styles,
+            column_alignments=column_alignments,
         )
 
     def __format_aggregated_rule_statistics(self, aggregated_rule_statistics: RuleStatistics) -> ConsoleRenderable:
         statistics = self.statistics
         num_rules = statistics.num_rules
         headers = ['Statistics per local rule', 'Minimum', 'Average', 'Maximum']
-        alignments = [Column.Alignment.LEFT] + [Column.Alignment.RIGHT for _ in range(len(headers) - 1)]
-        table = RowWiseTable(*headers, alignments=alignments)
+        table = RowWiseTable(*headers)
         table.add_row(
             'Conditions',
             format_value(statistics.min_conditions),
@@ -172,8 +177,12 @@ class RuleModelCharacteristics(TabularOutputData):
             format_value(statistics.max_predictions),
         )
         column_styles = [Table.COLUMN_STYLE_HEADER] + [Table.COLUMN_STYLE_VALUE for _ in range(len(headers) - 1)]
+        column_alignments = [Column.Alignment.LEFT] + [Column.Alignment.RIGHT for _ in range(len(headers) - 1)]
         return table.to_rich_table(
-            auto_rotate=False, border_style=Table.BorderStyle.INNER_LINES, column_styles=column_styles
+            auto_rotate=False,
+            border_style=Table.BorderStyle.INNER_LINES,
+            column_styles=column_styles,
+            column_alignments=column_alignments,
         )
 
     @override

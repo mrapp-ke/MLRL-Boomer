@@ -233,6 +233,7 @@ class Table(ABC):
         auto_rotate: bool = True,
         border_style: 'Table.BorderStyle' = BorderStyle.NONE,
         column_styles: Sequence[Style | None] | None = None,
+        column_alignments: Sequence[Column.Alignment | None] | None = None,
         separator_indices: Sequence[int] | None = None,
     ) -> ConsoleRenderable:
         """
@@ -241,15 +242,18 @@ class Table(ABC):
         :param auto_rotate:         True, if tables with a single row should automatically be rotated for legibility,
                                     False otherwise
         :param border_style:        The border style to be used for formatting the table
-        :param column_styles:       A list that contains the style of the columns of None, if no styling should be used
-        :param separator_indices:   A list that contains the indices of the row at which a separator should be inserted,
-                                    or None if no separators should be inserted
+        :param column_styles:       A sequence that contains the style of the columns of None, if no styling should be
+                                    used
+        :param column_alignments:   A sequence that contains the alignments of individual columns or None, if the
+                                    default should be used
+        :param separator_indices:   A sequence that contains the indices of the row at which a separator should be
+                                    inserted, or None if no separators should be inserted
         :return:                    The object that has been created
         """
         if self.num_cells > 0:
             headers = self.header_row
             rows: Iterable[Any] = self.rows
-            alignments: list[Column.Alignment | None] = self.alignments if self.alignments else []
+            alignments: list[Column.Alignment | None] = list(column_alignments) if column_alignments else []
             styles: list[Style | None] = list(column_styles) if column_styles else []
 
             if auto_rotate and headers and self.num_rows == 1:

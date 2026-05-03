@@ -61,6 +61,7 @@ class LabelVectors(TabularOutputData):
             return table.to_rich_table(
                 border_style=Table.BorderStyle.INNER_LINES,
                 column_styles=[Table.COLUMN_STYLE_VALUE, None, Table.COLUMN_STYLE_VALUE],
+                column_alignments=[Column.Alignment.RIGHT, Column.Alignment.LEFT, Column.Alignment.RIGHT],
             )
 
         return None
@@ -70,12 +71,7 @@ class LabelVectors(TabularOutputData):
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """
-        table = RowWiseTable(
-            self.COLUMN_INDEX,
-            self.COLUMN_LABEL_VECTOR,
-            self.COLUMN_FREQUENCY,
-            alignments=[Column.Alignment.RIGHT, Column.Alignment.LEFT, Column.Alignment.RIGHT],
-        )
+        table = RowWiseTable(self.COLUMN_INDEX, self.COLUMN_LABEL_VECTOR, self.COLUMN_FREQUENCY)
 
         for i, (label_vector, frequency) in enumerate(self.values):
             table.add_row(i + 1, label_vector, frequency)
