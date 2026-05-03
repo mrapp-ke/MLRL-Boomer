@@ -112,13 +112,15 @@ class InputMode(Mode, ABC):
             current_version = MetaData().version
             Log.verbose(
                 f'Experimental results have been created with version "{meta_data_version}" of the package '
-                f'"mlrl-testbed", version "{current_version}" is currently used'
+                f'"mlrl-testbed", version "{current_version}" is currently used',
+                highlight=True,
             )
 
             if meta_data_version > current_version:
                 Log.warning(
                     f'Experimental results have been created with a version ({meta_data_version}) of the package '
-                    f'"mlrl-testbed" that is greater than currently used ({current_version}).'
+                    f'"mlrl-testbed" that is greater than currently used ({current_version}).',
+                    highlight=True,
                 )
             else:
                 Log.success('No version conflicts detected')

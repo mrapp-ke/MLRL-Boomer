@@ -57,7 +57,9 @@ class SingleMode(Mode):
         if self.__should_experiment_be_cancelled(args=args, recipe=recipe, command=command):
             Log.info(
                 f'Cancelling experiment, because all output files do already exist. Use the argument '
-                f'"{OutputArguments.IF_OUTPUTS_EXIST.name} {OutputExistsPolicy.OVERWRITE}" to force-run the experiment.'
+                f'"{OutputArguments.IF_OUTPUTS_EXIST.name} {OutputExistsPolicy.OVERWRITE}" to force-run the '
+                f'experiment.',
+                highlight=True,
             )
             sys.exit(0)
         else:

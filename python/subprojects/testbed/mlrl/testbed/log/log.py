@@ -19,6 +19,7 @@ from rich.style import Style
 from rich.segment import Segment
 from rich.syntax import Syntax
 from rich.text import Text
+from rich.highlighter import RegexHighlighter
 
 from mlrl.testbed.util.io import ENCODING_UTF8
 
@@ -82,6 +83,23 @@ class IndentationLevel:
             if not at_line_start:
                 yield Segment('\n')
 
+    class Highlighter(RegexHighlighter):
+        """
+        Highlights substrings in log messages:
+
+        - quoted strings: "hello"
+        - durations: 1 minute, 30 seconds
+        - numbers: 123, 1,234, 1.5
+        """
+
+        REGEX_QUOTED = r'"[^"]*"'
+        REGEX_DURATION = r'\d+ (?:day|hour|minute|second|millisecond)s?'
+        REGEX_NUMBER = r'\d{1,3}(?:,\d{3})*(?:\.\d+)?|\d+(?:\.\d+)?'
+
+        highlights = [  # type: ignore[mutable-override]
+            rf'(?P<bold>{REGEX_QUOTED})|(?P<turquoise2>{REGEX_DURATION}|{REGEX_NUMBER})',
+        ]
+
     PREFIX_STYLE = Style(color='grey50')
 
     def __init__(self, level: int):
@@ -109,8 +127,19 @@ class IndentationLevel:
         style: Style | None = None,
         box: bool = False,
         box_title: str | None = None,
+        highlight: bool = False,
     ):
-        renderable = (Text(message, style=style) if style else Text(message)) if isinstance(message, str) else message
+        renderable: ConsoleRenderable
+        if isinstance(message, str):
+            text = Text(message, style=style) if style else Text(message)
+
+            if highlight:
+                IndentationLevel.Highlighter().highlight(text)
+
+            renderable = text
+        else:
+            renderable = message
+
         console = get_console()
         level = self.level
 
@@ -276,6 +305,7 @@ class Log:
         error: Exception | None = None,
         box: bool = False,
         box_title: str | None = None,
+        highlight: bool = False,
     ):
         """
         Writes a log message at level `Log.Level.ERROR` and terminates the build system.
@@ -284,64 +314,80 @@ class Log:
         :param error:       An optional error to be included in the log message
         :param box:         True, if a box should be surrounded by a box, False otherwise
         :param box_title:   An optional title to be printed at the top of the box surrounding the log message
+        :param highlight:   True, if certain values in the log message should be highlighted, False otherwise
         """
         log_level = logging.ERROR
 
         if logging.getLogger().isEnabledFor(log_level):
             formatted_message = LogHandler.format_message(message, log_level)
             style = LogHandler.get_style(log_level)
-            INDENTATION_LEVEL.get().print(message=formatted_message, style=style, box=box, box_title=box_title)
+            INDENTATION_LEVEL.get().print(
+                message=formatted_message, style=style, box=box, box_title=box_title, highlight=highlight
+            )
 
             if error:
                 get_console().print_exception(extra_lines=2)
 
     @staticmethod
-    def warning(message: str | ConsoleRenderable, box: bool = False, box_title: str | None = None):
+    def warning(
+        message: str | ConsoleRenderable, box: bool = False, box_title: str | None = None, highlight: bool = False
+    ):
         """
         Writes a log message at level `Log.Level.WARNING`.
 
         :param message:     The log message to be written
         :param box:         True, if a box should be surrounded by a box, False otherwise
         :param box_title:   An optional title to be printed at the top of the box surrounding the log message
+        :param highlight:   True, if certain values in the log message should be highlighted, False otherwise
         """
         log_level = logging.WARNING
 
         if logging.getLogger().isEnabledFor(log_level):
             formatted_message = LogHandler.format_message(message, log_level)
             style = LogHandler.get_style(log_level)
-            INDENTATION_LEVEL.get().print(message=formatted_message, style=style, box=box, box_title=box_title)
+            INDENTATION_LEVEL.get().print(
+                message=formatted_message, style=style, box=box, box_title=box_title, highlight=highlight
+            )
 
     @staticmethod
-    def success(message: str, box: bool = False, box_title: str | None = None):
+    def success(message: str, box: bool = False, box_title: str | None = None, highlight: bool = False):
         """
         Writes a log message at level `Log.Level.INFO` indicating successful operation of an operation.
 
         :param message:     The log message to be written
         :param box:         True, if a box should be surrounded by a box, False otherwise
         :param box_title:   An optional title to be printed at the top of the box surrounding the log message
+        :param highlight:   True, if certain values in the log message should be highlighted, False otherwise
         """
         log_level = logging.INFO
 
         if logging.getLogger().isEnabledFor(log_level):
             formatted_message = f'✓ {message}'
             style = Style(color='green', bold=True)
-            INDENTATION_LEVEL.get().print(message=formatted_message, style=style, box=box, box_title=box_title)
+            INDENTATION_LEVEL.get().print(
+                message=formatted_message, style=style, box=box, box_title=box_title, highlight=highlight
+            )
 
     @staticmethod
-    def info(message: str | ConsoleRenderable, box: bool = False, box_title: str | None = None):
+    def info(
+        message: str | ConsoleRenderable, box: bool = False, box_title: str | None = None, highlight: bool = False
+    ):
         """
         Writes a log message at level `Log.Level.INFO`.
 
         :param message:     The log message to be written
         :param box:         True, if a box should be surrounded by a box, False otherwise
         :param box_title:   An optional title to be printed at the top of the box surrounding the log message
+        :param highlight:   True, if certain values in the log message should be highlighted, False otherwise
         """
         log_level = logging.INFO
 
         if logging.getLogger().isEnabledFor(log_level):
             formatted_message = LogHandler.format_message(message, log_level)
             style = LogHandler.get_style(log_level)
-            INDENTATION_LEVEL.get().print(message=formatted_message, style=style, box=box, box_title=box_title)
+            INDENTATION_LEVEL.get().print(
+                message=formatted_message, style=style, box=box, box_title=box_title, highlight=highlight
+            )
 
     @staticmethod
     def separator(title: str):
@@ -387,17 +433,22 @@ class Log:
             get_console().print(IndentationLevel.IndentedRenderable(renderable, level=indentation_level.level))
 
     @staticmethod
-    def verbose(message: str | ConsoleRenderable, box: bool = False, box_title: str | None = None):
+    def verbose(
+        message: str | ConsoleRenderable, box: bool = False, box_title: str | None = None, highlight: bool = False
+    ):
         """
         Writes a log message at level `Log.Level.VERBOSE`.
 
         :param message:     The log message to be written
         :param box:         True, if a box should be surrounded by a box, False otherwise
         :param box_title:   An optional title to be printed at the top of the box surrounding the log message
+        :param highlight:   True, if certain values in the log message should be highlighted, False otherwise
         """
         log_level = logging.DEBUG
 
         if logging.getLogger().isEnabledFor(log_level):
             formatted_message = LogHandler.format_message(message, log_level)
             style = LogHandler.get_style(log_level)
-            INDENTATION_LEVEL.get().print(message=formatted_message, style=style, box=box, box_title=box_title)
+            INDENTATION_LEVEL.get().print(
+                message=formatted_message, style=style, box=box, box_title=box_title, highlight=highlight
+            )

@@ -39,7 +39,8 @@ class OneHotEncoder(Preprocessor):
             num_nominal_features = len(nominal_indices)
             Log.info(
                 f'Dataset contains {num_nominal_features} nominal and {len(dataset.features) - num_nominal_features} '
-                f'numerical features.'
+                f'numerical features.',
+                highlight=True,
             )
 
             if num_nominal_features > 0:

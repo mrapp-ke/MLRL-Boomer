@@ -88,7 +88,7 @@ class FileSource(Source, ABC):
     @override
     def read_from_source(self, state: ExperimentState, input_data: InputData) -> bool:
         file_path = self._get_file_path(state, input_data)
-        Log.verbose(f'Reading from file "{file_path}"...')
+        Log.verbose(f'Reading from file "{file_path}"...', highlight=True)
 
         if file_path.is_file():
             data = self._read_from_file(state, file_path, input_data)
@@ -99,7 +99,7 @@ class FileSource(Source, ABC):
         elif self.missing_input_policy == MissingInputPolicy.EXIT:
             raise IOError(f'The file "{file_path}" does not exist')
         else:
-            Log.error(f'The file "{file_path}" does not exist')
+            Log.error(f'The file "{file_path}" does not exist', highlight=True)
 
         return False
 

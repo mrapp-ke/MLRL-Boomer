@@ -78,7 +78,7 @@ class SkLearnExperiment(Experiment):
 
             if parameters:
                 learner.set_params(**parameters)
-                Log.success(f'Successfully applied parameter setting: {parameters}')
+                Log.success(f'Successfully applied parameter setting: {parameters}', highlight=True)
 
             return learner
 
@@ -120,7 +120,7 @@ class SkLearnExperiment(Experiment):
             See :func:`mlrl.testbed.experiments.experiment.Experiment.TrainingProcedure.train`
             """
             with Log.indented():
-                Log.info(f'Fitting model to {dataset.num_examples} training examples...')
+                Log.info(f'Fitting model to {dataset.num_examples} training examples...', highlight=True)
                 new_learner = self.__create_learner(parameters=parameters)
 
                 # Use existing model, if possible, otherwise train a new model...
@@ -132,7 +132,7 @@ class SkLearnExperiment(Experiment):
                     return TrainingState(learner=learner)
 
                 training_duration = self._fit(new_learner, dataset, fit_kwargs=self.fit_kwargs)
-                Log.success(f'Successfully fit model in {training_duration}')
+                Log.success(f'Successfully fit model in {training_duration}', highlight=True)
                 return TrainingState(learner=new_learner, training_duration=training_duration)
 
         def _fit(

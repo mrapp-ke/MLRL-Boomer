@@ -48,14 +48,14 @@ class GlobalPredictor(Predictor):
         """
         See :func:`mlrl.testbed_sklearn.experiments.prediction.predictor.Predictor.obtain_predictions`
         """
-        Log.info(f'Predicting for {dataset.num_examples} {dataset_type} examples...')
+        Log.info(f'Predicting for {dataset.num_examples} {dataset_type} examples...', highlight=True)
         start_time = Timer.start()
         prediction_function = GlobalPredictionFunction(learner)
         predictions = prediction_function.invoke(dataset, self.prediction_type, **kwargs)
         prediction_duration = Timer.stop(start_time)
 
         if predictions is not None:
-            Log.success(f'Successfully predicted in {prediction_duration}')
+            Log.success(f'Successfully predicted in {prediction_duration}', highlight=True)
             yield PredictionState(
                 prediction_scope=GlobalPredictionScope(),
                 prediction_result=PredictionResult(
