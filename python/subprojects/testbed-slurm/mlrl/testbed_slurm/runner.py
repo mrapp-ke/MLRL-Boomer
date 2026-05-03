@@ -13,8 +13,6 @@ from functools import partial
 from pathlib import Path
 from typing import Callable, cast, override
 
-from tabulate import tabulate
-
 from mlrl.testbed_slurm.arguments import SlurmArguments
 from mlrl.testbed_slurm.sbatch import Sbatch
 
@@ -30,6 +28,8 @@ from mlrl.testbed.util.yml import read_and_validate_yaml
 
 from mlrl.util.options import Options
 from mlrl.util.validation import ValidationError
+
+from mlrl.testbed.experiments.table import ColumnWiseTable
 
 
 @dataclass
@@ -275,9 +275,11 @@ class SlurmRunner(BatchMode.Runner):
         if result.ok:
             job_name = sbatch_file.stem
             job_id = result.output.split(' ')[-1]
-            Log.success(
-                f'Successfully submitted job:\n\n{tabulate([["JOBID", job_id], ["NAME", job_name]], tablefmt="plain")}'
-            )
+            Log.success('Successfully submitted job\n')
+            table = ColumnWiseTable()
+            table.add_column('JOBID', job_id)
+            table.add_column('NAME', job_name)
+            Log.info(table.to_rich_table())
             return 0
 
         Log.error('Submission to Slurm failed:\n')
