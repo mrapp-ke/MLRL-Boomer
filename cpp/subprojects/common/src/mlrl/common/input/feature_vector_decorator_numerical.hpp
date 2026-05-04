@@ -77,14 +77,14 @@ class AbstractNumericalFeatureVectorDecorator : public AbstractFeatureVectorDeco
 
         void searchForRefinement(SingleRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
-                                 uint32 minCoverage, Refinement& refinement) const override {
+                                 uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
             searchForNumericalRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
                                          outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }
 
         void searchForRefinement(FixedRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
-                                 uint32 minCoverage, Refinement& refinement) const override {
+                                 uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
             searchForNumericalRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
                                          outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }
