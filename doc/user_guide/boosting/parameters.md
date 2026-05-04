@@ -121,6 +121,9 @@ The parameters listed below allow to configure the algorithm used for the induct
   `max_conditions` *(Default value = `0`)*
   : The maximum number of conditions to be included in a rule's body. The given value must be at least 1 or 0, if the number of conditions should not be restricted.
 
+  `allow_negations` *(Default value = `'true'`)*
+  : `'true'`, if rules with nominal conditions that use negations should be allowed, `'false'` otherwise.
+
   `min_coverage` *(Default value = `1`)*
   : The minimum number of training examples that must be covered by a rule. The given value must be at least 1.
 
@@ -145,6 +148,9 @@ The parameters listed below allow to configure the algorithm used for the induct
 
   `max_conditions` *(Default value = `0`)*
   : The maximum number of conditions to be included in a rule's body. The given value must be at least 2 or 0, if the number of conditions should not be restricted.
+
+  `allow_negations` *(Default value = `'true'`)*
+  : `'true'`, if rules with nominal conditions that use negations should be allowed, `'false'` otherwise.
 
   `min_coverage` *(Default value = `1`)*
   : The minimum number of training examples that must be covered by a rule. The given value must be at least 1.
