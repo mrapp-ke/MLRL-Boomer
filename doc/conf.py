@@ -79,6 +79,9 @@ extlinks = {
 }
 
 # Configuration of the builder "linkcheck"
+linkcheck_ignore = [
+    r'https://www.contributor-covenant.org/.*',
+]
 linkcheck_timeout = 60
 linkcheck_retries = 3
 linkcheck_request_headers = {}
