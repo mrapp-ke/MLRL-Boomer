@@ -188,20 +188,20 @@ namespace seco {
       const DenseConfusionMatrixVector<StatisticType, VectorMath>& other)
         : DenseConfusionMatrixVector(other.getNumElements()) {
         uint32 numElements = this->getNumElements();
-        SequentialVectorMath::copy(other.in_cbegin(), this->in_begin(), numElements);
-        SequentialVectorMath::copy(other.ip_cbegin(), this->ip_begin(), numElements);
-        SequentialVectorMath::copy(other.rn_cbegin(), this->rn_begin(), numElements);
-        SequentialVectorMath::copy(other.rp_cbegin(), this->rp_begin(), numElements);
+        VectorMath::copy(other.in_cbegin(), this->in_begin(), numElements);
+        VectorMath::copy(other.ip_cbegin(), this->ip_begin(), numElements);
+        VectorMath::copy(other.rn_cbegin(), this->rn_begin(), numElements);
+        VectorMath::copy(other.rp_cbegin(), this->rp_begin(), numElements);
     }
 
     template<typename StatisticType, typename VectorMath>
     void DenseConfusionMatrixVector<StatisticType, VectorMath>::add(
       const DenseConfusionMatrixVectorView<StatisticType>& other) {
         uint32 numElements = this->getNumElements();
-        SequentialVectorMath::add(this->in_begin(), other.in_cbegin(), numElements);
-        SequentialVectorMath::add(this->ip_begin(), other.ip_cbegin(), numElements);
-        SequentialVectorMath::add(this->rn_begin(), other.rn_cbegin(), numElements);
-        SequentialVectorMath::add(this->rp_begin(), other.rp_cbegin(), numElements);
+        VectorMath::add(this->in_begin(), other.in_cbegin(), numElements);
+        VectorMath::add(this->ip_begin(), other.ip_cbegin(), numElements);
+        VectorMath::add(this->rn_begin(), other.rn_cbegin(), numElements);
+        VectorMath::add(this->rp_begin(), other.rp_cbegin(), numElements);
     }
 
     template<typename StatisticType, typename VectorMath>
@@ -421,10 +421,10 @@ namespace seco {
       const DenseConfusionMatrixVectorView<StatisticType>& first, const CompleteIndexVector& firstIndices,
       const DenseConfusionMatrixVectorView<StatisticType>& second) {
         uint32 numElements = this->getNumElements();
-        SequentialVectorMath::difference(this->in_begin(), first.in_cbegin(), second.in_cbegin(), numElements);
-        SequentialVectorMath::difference(this->ip_begin(), first.ip_cbegin(), second.ip_cbegin(), numElements);
-        SequentialVectorMath::difference(this->rn_begin(), first.rn_cbegin(), second.rn_cbegin(), numElements);
-        SequentialVectorMath::difference(this->rp_begin(), first.rp_cbegin(), second.rp_cbegin(), numElements);
+        VectorMath::difference(this->in_begin(), first.in_cbegin(), second.in_cbegin(), numElements);
+        VectorMath::difference(this->ip_begin(), first.ip_cbegin(), second.ip_cbegin(), numElements);
+        VectorMath::difference(this->rn_begin(), first.rn_cbegin(), second.rn_cbegin(), numElements);
+        VectorMath::difference(this->rp_begin(), first.rp_cbegin(), second.rp_cbegin(), numElements);
     }
 
     template<typename StatisticType, typename VectorMath>
@@ -433,14 +433,10 @@ namespace seco {
       const DenseConfusionMatrixVectorView<StatisticType>& second) {
         PartialIndexVector::const_iterator indexIterator = firstIndices.cbegin();
         uint32 numElements = this->getNumElements();
-        SequentialVectorMath::difference(this->in_begin(), first.in_cbegin(), second.in_cbegin(), indexIterator,
-                                         numElements);
-        SequentialVectorMath::difference(this->ip_begin(), first.ip_cbegin(), second.ip_cbegin(), indexIterator,
-                                         numElements);
-        SequentialVectorMath::difference(this->rn_begin(), first.rn_cbegin(), second.rn_cbegin(), indexIterator,
-                                         numElements);
-        SequentialVectorMath::difference(this->rp_begin(), first.rp_cbegin(), second.rp_cbegin(), indexIterator,
-                                         numElements);
+        VectorMath::difference(this->in_begin(), first.in_cbegin(), second.in_cbegin(), indexIterator, numElements);
+        VectorMath::difference(this->ip_begin(), first.ip_cbegin(), second.ip_cbegin(), indexIterator, numElements);
+        VectorMath::difference(this->rn_begin(), first.rn_cbegin(), second.rn_cbegin(), indexIterator, numElements);
+        VectorMath::difference(this->rp_begin(), first.rp_cbegin(), second.rp_cbegin(), indexIterator, numElements);
     }
 
     template class DenseConfusionMatrixVector<uint32, SequentialVectorMath>;
