@@ -7,5 +7,7 @@ namespace simd {
                                                                 const float32*, const uint32*, uint32);
     template void differenceWithSubset<xsimd::avx512f, float64>(xsimd::avx512f, float64*, const float64*,
                                                                 const float64*, const uint32*, uint32);
+    template void differenceWithSubset<xsimd::avx512f, uint32>(xsimd::avx512f, uint32*, const uint32*, const uint32*,
+                                                               const uint32*, uint32);
 }
 #endif
