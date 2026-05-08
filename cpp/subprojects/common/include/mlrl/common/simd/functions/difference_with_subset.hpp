@@ -17,23 +17,33 @@ namespace simd {
                                                                       const float32*, const uint32*, uint32);
     extern template void differenceWithSubset<xsimd::neon64, float64>(xsimd::neon64, float64*, const float64*,
                                                                       const float64*, const uint32*, uint32);
+    extern template void differenceWithSubset<xsimd::neon64, uint32>(xsimd::neon64, uint32*, const uint32*,
+                                                                     const uint32*, const uint32*, uint32);
     #else
     extern template void differenceWithSubset<xsimd::sse2, float32>(xsimd::sse2, float32*, const float32*,
                                                                     const float32*, const uint32*, uint32);
     extern template void differenceWithSubset<xsimd::sse2, float64>(xsimd::sse2, float64*, const float64*,
                                                                     const float64*, const uint32*, uint32);
+    extern template void differenceWithSubset<xsimd::sse2, uint32>(xsimd::sse2, uint32*, const uint32*, const uint32*,
+                                                                   const uint32*, uint32);
     extern template void differenceWithSubset<xsimd::avx, float32>(xsimd::avx, float32*, const float32*, const float32*,
                                                                    const uint32*, uint32);
     extern template void differenceWithSubset<xsimd::avx, float64>(xsimd::avx, float64*, const float64*, const float64*,
                                                                    const uint32*, uint32);
+    extern template void differenceWithSubset<xsimd::avx, uint32>(xsimd::avx, uint32*, const uint32*, const uint32*,
+                                                                  const uint32*, uint32);
     extern template void differenceWithSubset<xsimd::avx2, float32>(xsimd::avx2, float32*, const float32*,
                                                                     const float32*, const uint32*, uint32);
     extern template void differenceWithSubset<xsimd::avx2, float64>(xsimd::avx2, float64*, const float64*,
                                                                     const float64*, const uint32*, uint32);
+    extern template void differenceWithSubset<xsimd::avx2, uint32>(xsimd::avx2, uint32*, const uint32*, const uint32*,
+                                                                   const uint32*, uint32);
     extern template void differenceWithSubset<xsimd::avx512f, float32>(xsimd::avx512f, float32*, const float32*,
                                                                        const float32*, const uint32*, uint32);
     extern template void differenceWithSubset<xsimd::avx512f, float64>(xsimd::avx512f, float64*, const float64*,
                                                                        const float64*, const uint32*, uint32);
+    extern template void differenceWithSubset<xsimd::avx512f, uint32>(xsimd::avx512f, uint32*, const uint32*,
+                                                                      const uint32*, const uint32*, uint32);
     #endif
 }
 #endif
