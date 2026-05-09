@@ -70,18 +70,16 @@ namespace boosting {
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
                 uint32 numOutputs = statisticVector.getNumGradients();
                 uint32 numPredictions = indexVector_.getNumElements();
-                typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
-                typename StatisticVector::hessian_diagonal_const_iterator hessianIterator =
-                  statisticVector.hessians_diagonal_cbegin();
-                typename SparseArrayVector<statistic_type>::iterator tmpIterator = tmpVector_.begin();
+                auto gradientIterator = statisticVector.gradients_cbegin();
+                auto hessianIterator = statisticVector.hessians_diagonal_cbegin();
+                auto tmpIterator = tmpVector_.begin();
                 sortOutputWiseCriteria(tmpIterator, gradientIterator, hessianIterator, numOutputs, numPredictions,
                                        l1RegularizationWeight_, l2RegularizationWeight_);
 
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
-                PartialIndexVector::iterator indexIterator = indexVector_.begin();
-                typename DenseScoreVector<statistic_type, IndexVector>::value_iterator valueIterator =
-                  scoreVector_.values_begin();
-                typename IndexVector::const_iterator outputIndexIterator = outputIndices_.cbegin();
+                auto indexIterator = indexVector_.begin();
+                auto valueIterator = scoreVector_.values_begin();
+                auto outputIndexIterator = outputIndices_.cbegin();
 
                 for (uint32 i = 0; i < numPredictions; i++) {
                     const IndexedValue<statistic_type>& entry = tmpIterator[i];

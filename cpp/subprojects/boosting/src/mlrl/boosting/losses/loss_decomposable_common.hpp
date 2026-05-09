@@ -148,14 +148,11 @@ namespace boosting {
               uint32 exampleIndex, const BinaryCsrView& labelMatrix, const CContiguousView<StatisticType>& scoreMatrix,
               PartialIndexVector::const_iterator indicesBegin, PartialIndexVector::const_iterator indicesEnd,
               DenseDecomposableStatisticView<StatisticType>& statisticView) const override final {
-                typename DenseDecomposableStatisticView<StatisticType>::gradient_iterator gradientIterator =
-                  statisticView.gradients_begin(exampleIndex);
-                typename DenseDecomposableStatisticView<StatisticType>::hessian_iterator hessianIterator =
-                  statisticView.hessians_begin(exampleIndex);
-                typename CContiguousView<StatisticType>::value_const_iterator scoreIterator =
-                  scoreMatrix.values_cbegin(exampleIndex);
-                BinaryCsrView::index_const_iterator labelIndicesBegin = labelMatrix.indices_cbegin(exampleIndex);
-                BinaryCsrView::index_const_iterator labelIndicesEnd = labelMatrix.indices_cend(exampleIndex);
+                auto gradientIterator = statisticView.gradients_begin(exampleIndex);
+                auto hessianIterator = statisticView.hessians_begin(exampleIndex);
+                auto scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
+                auto labelIndicesBegin = labelMatrix.indices_cbegin(exampleIndex);
+                auto labelIndicesEnd = labelMatrix.indices_cend(exampleIndex);
                 uint32 numLabels = indicesEnd - indicesBegin;
 
                 for (uint32 i = 0; i < numLabels; i++) {
@@ -296,20 +293,13 @@ namespace boosting {
               const CContiguousView<StatisticType>& scoreMatrix, PartialIndexVector::const_iterator indicesBegin,
               PartialIndexVector::const_iterator indicesEnd,
               DenseDecomposableStatisticView<StatisticType>& statisticView) const override final {
-                typename DenseDecomposableStatisticView<StatisticType>::gradient_iterator gradientIterator =
-                  statisticView.gradients_begin(exampleIndex);
-                typename DenseDecomposableStatisticView<StatisticType>::hessian_iterator hessianIterator =
-                  statisticView.hessians_begin(exampleIndex);
-                typename CContiguousView<StatisticType>::value_const_iterator scoreIterator =
-                  scoreMatrix.values_cbegin(exampleIndex);
-                CsrView<const float32>::value_const_iterator groundTruthValueIterator =
-                  regressionMatrix.values_cbegin(exampleIndex);
-                CsrView<const float32>::index_const_iterator groundTruthIndexIterator =
-                  regressionMatrix.indices_cbegin(exampleIndex);
-                CsrView<const float32>::index_const_iterator groundTruthIndicesBegin =
-                  regressionMatrix.indices_cbegin(exampleIndex);
-                CsrView<const float32>::index_const_iterator groundTruthIndicesEnd =
-                  regressionMatrix.indices_cend(exampleIndex);
+                auto gradientIterator = statisticView.gradients_begin(exampleIndex);
+                auto hessianIterator = statisticView.hessians_begin(exampleIndex);
+                auto scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
+                auto groundTruthValueIterator = regressionMatrix.values_cbegin(exampleIndex);
+                auto groundTruthIndexIterator = regressionMatrix.indices_cbegin(exampleIndex);
+                auto groundTruthIndicesBegin = regressionMatrix.indices_cbegin(exampleIndex);
+                auto groundTruthIndicesEnd = regressionMatrix.indices_cend(exampleIndex);
                 uint32 numOutputs = indicesEnd - indicesBegin;
 
                 for (uint32 i = 0; i < numOutputs; i++) {

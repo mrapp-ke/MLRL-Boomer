@@ -118,8 +118,8 @@ namespace boosting {
                                            typename Model::const_iterator rulesBegin,
                                            typename Model::const_iterator rulesEnd, uint32 threadIndex,
                                            uint32 exampleIndex, uint32 predictionIndex) const override {
-                        CContiguousView<float64>::value_iterator realBegin = realMatrix_.values_begin(threadIndex);
-                        CContiguousView<float64>::value_iterator realEnd = realMatrix_.values_end(threadIndex);
+                        auto realBegin = realMatrix_.values_begin(threadIndex);
+                        auto realEnd = realMatrix_.values_end(threadIndex);
                         std::fill(realBegin, realEnd, 0);
                         ScorePredictionDelegate<FeatureMatrix, Model>(realMatrix_)
                           .predictForExample(featureMatrix, rulesBegin, rulesEnd, threadIndex, exampleIndex,
@@ -310,8 +310,8 @@ namespace boosting {
                                              typename Model::const_iterator rulesBegin,
                                              typename Model::const_iterator rulesEnd, uint32 threadIndex,
                                              uint32 exampleIndex, uint32 predictionIndex) const override {
-                        CContiguousView<float64>::value_iterator realBegin = realMatrix_.values_begin(threadIndex);
-                        CContiguousView<float64>::value_iterator realEnd = realMatrix_.values_end(threadIndex);
+                        auto realBegin = realMatrix_.values_begin(threadIndex);
+                        auto realEnd = realMatrix_.values_end(threadIndex);
                         std::fill(realBegin, realEnd, 0);
                         ScorePredictionDelegate<FeatureMatrix, Model>(realMatrix_)
                           .predictForExample(featureMatrix, rulesBegin, rulesEnd, threadIndex, exampleIndex,

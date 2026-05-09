@@ -162,8 +162,7 @@ namespace boosting {
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
         VectorMath::add(this->view.gradients_begin(), view.gradients_cbegin(row), indexIterator,
                         this->getNumGradients());
-        typename DenseNonDecomposableStatisticView<StatisticType>::hessian_const_iterator hessiansBegin =
-          view.hessians_cbegin(row);
+        auto hessiansBegin = view.hessians_cbegin(row);
 
         for (uint32 i = 0; i < this->getNumGradients(); i++) {
             uint32 index = indexIterator[i];
@@ -185,11 +184,10 @@ namespace boosting {
     void DenseNonDecomposableStatisticVector<StatisticType, VectorMath>::addToSubset(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row, const PartialIndexVector& indices,
       StatisticType weight) {
-        PartialIndexVector::const_iterator indexIterator = indices.cbegin();
+        auto indexIterator = indices.cbegin();
         VectorMath::addWeighted(this->view.gradients_begin(), view.gradients_cbegin(row), indexIterator,
                                 this->getNumGradients(), weight);
-        typename DenseNonDecomposableStatisticView<StatisticType>::hessian_const_iterator hessiansBegin =
-          view.hessians_cbegin(row);
+        auto hessiansBegin = view.hessians_cbegin(row);
 
         for (uint32 i = 0; i < this->getNumGradients(); i++) {
             uint32 index = indexIterator[i];
@@ -215,10 +213,8 @@ namespace boosting {
         PartialIndexVector::const_iterator indexIterator = firstIndices.cbegin();
         VectorMath::difference(this->view.gradients_begin(), first.gradients_cbegin(), second.gradients_cbegin(),
                                indexIterator, this->getNumGradients());
-        typename DenseNonDecomposableStatisticVectorView<StatisticType>::hessian_const_iterator firstHessiansBegin =
-          first.hessians_cbegin();
-        typename DenseNonDecomposableStatisticVectorView<StatisticType>::hessian_const_iterator secondHessiansBegin =
-          second.hessians_cbegin();
+        auto firstHessiansBegin = first.hessians_cbegin();
+        auto secondHessiansBegin = second.hessians_cbegin();
 
         for (uint32 i = 0; i < this->getNumGradients(); i++) {
             uint32 offset = math::triangularNumber(i);

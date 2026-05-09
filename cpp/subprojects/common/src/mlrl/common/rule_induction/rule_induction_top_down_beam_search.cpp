@@ -116,7 +116,7 @@ class Beam final {
         Beam(FixedRefinementComparator& refinementComparator, std::unique_ptr<IFeatureSubspace> featureSubspacePtr,
              const IIndexVector& outputIndices, bool keepHeads)
             : Beam(refinementComparator.getNumElements()) {
-            FixedRefinementComparator::iterator iterator = refinementComparator.begin();
+            auto iterator = refinementComparator.begin();
             uint32 i = 0;
 
             for (; i < numEntries_ - 1; i++) {
@@ -187,7 +187,7 @@ class Beam final {
                     if (foundRefinement) {
                         result = true;
                         uint32 numRefinements = refinementComparator.getNumElements();
-                        FixedRefinementComparator::iterator iterator = refinementComparator.begin();
+                        auto iterator = refinementComparator.begin();
                         uint32 i = 0;
 
                         // Include all refinements, except for the last one, in the new beam. The corresponding

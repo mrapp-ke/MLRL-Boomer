@@ -282,7 +282,7 @@ namespace boosting {
 
                 if (numBins > 0) {
                     // Reset arrays to zero...
-                    Array<uint32>::iterator numElementsPerBinIterator = numElementsPerBin_.begin();
+                    auto numElementsPerBinIterator = numElementsPerBin_.begin();
                     std::fill(numElementsPerBinIterator, numElementsPerBinIterator + numBins, 0);
 
                     // Apply binning method in order to aggregate the gradients and Hessians that belong to the same
@@ -303,8 +303,8 @@ namespace boosting {
                     scoreVector_.setNumBins(numBins, false);
 
                     // Aggregate gradients and Hessians...
-                    typename Array<statistic_type>::iterator aggregatedGradientIterator = aggregatedGradients_.begin();
-                    typename Array<statistic_type>::iterator aggregatedHessianIterator = aggregatedHessians_.begin();
+                    auto aggregatedGradientIterator = aggregatedGradients_.begin();
+                    auto aggregatedHessianIterator = aggregatedHessians_.begin();
                     std::fill(aggregatedGradientIterator, aggregatedGradientIterator + maxBins_, (statistic_type) 0);
                     std::fill(aggregatedHessianIterator, aggregatedHessianIterator + math::triangularNumber(maxBins_),
                               (statistic_type) 0);
@@ -370,9 +370,8 @@ namespace boosting {
                                                typename View<statistic_type>::iterator criteria, uint32 numCriteria,
                                                float32 l1RegularizationWeight,
                                                float32 l2RegularizationWeight) override {
-                typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
-                typename StatisticVector::hessian_diagonal_const_iterator hessianIterator =
-                  statisticVector.hessians_diagonal_cbegin();
+                auto gradientIterator = statisticVector.gradients_cbegin();
+                auto hessianIterator = statisticVector.hessians_diagonal_cbegin();
 
                 for (uint32 i = 0; i < numCriteria; i++) {
                     criteria[i] = calculateOutputWiseScore(gradientIterator[i], hessianIterator[i],

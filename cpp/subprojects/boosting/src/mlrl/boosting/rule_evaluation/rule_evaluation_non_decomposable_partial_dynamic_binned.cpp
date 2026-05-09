@@ -37,9 +37,8 @@ namespace boosting {
                                                float32 l1RegularizationWeight,
                                                float32 l2RegularizationWeight) override {
                 uint32 numLabels = statisticVector.getNumGradients();
-                typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
-                typename StatisticVector::hessian_diagonal_const_iterator hessianIterator =
-                  statisticVector.hessians_diagonal_cbegin();
+                auto gradientIterator = statisticVector.gradients_cbegin();
+                auto hessianIterator = statisticVector.hessians_diagonal_cbegin();
 
                 const std::pair<statistic_type, statistic_type> pair =
                   getMinAndMaxScore<statistic_type, typename StatisticVector::gradient_const_iterator,
@@ -48,8 +47,8 @@ namespace boosting {
                     l2RegularizationWeight);
                 statistic_type minAbsScore = pair.first;
                 statistic_type threshold = calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
-                PartialIndexVector::iterator indexIterator = indexVectorPtr_->begin();
-                typename IndexVector::const_iterator labelIndexIterator = labelIndices_.cbegin();
+                auto indexIterator = indexVectorPtr_->begin();
+                auto labelIndexIterator = labelIndices_.cbegin();
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numLabels; i++) {

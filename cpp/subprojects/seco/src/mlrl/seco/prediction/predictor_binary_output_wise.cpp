@@ -11,7 +11,7 @@
 namespace seco {
 
     static inline void applyHead(const CompleteHead<uint8>& head, View<uint8>::iterator iterator, BitVector& mask) {
-        CompleteHead<uint8>::value_const_iterator valueIterator = head.values_cbegin();
+        auto valueIterator = head.values_cbegin();
         uint32 numElements = head.getNumElements();
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -23,8 +23,8 @@ namespace seco {
     }
 
     static inline void applyHead(const PartialHead<uint8>& head, View<uint8>::iterator iterator, BitVector& mask) {
-        PartialHead<uint8>::value_const_iterator valueIterator = head.values_cbegin();
-        PartialHead<uint8>::index_const_iterator indexIterator = head.indices_cbegin();
+        auto valueIterator = head.values_cbegin();
+        auto indexIterator = head.indices_cbegin();
         uint32 numElements = head.getNumElements();
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -237,9 +237,8 @@ namespace seco {
                                  BinaryLilMatrix::row predictionRow, uint32 numLabels) {
         if (scoresBegin != scoresEnd) {
             if (predictionRow.size() > 0) {
-                BinaryLilMatrix::value_iterator end = predictionRow.end();
-                BinaryLilMatrix::value_iterator start =
-                  std::lower_bound(predictionRow.begin(), end, indexIterator[*scoresBegin]);
+                auto end = predictionRow.end();
+                auto start = std::lower_bound(predictionRow.begin(), end, indexIterator[*scoresBegin]);
                 uint32 bufferSize = end - start;
                 Array<uint32> buffer(bufferSize);
                 std::copy(start, end, buffer.begin());

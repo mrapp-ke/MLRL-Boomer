@@ -56,8 +56,8 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
         float32 sparseValue = numericalFeatureVector.sparseValue;
         uint32 sparseBinIndex = getBinIndex(sparseValue, min, width, numWidths);
         AllocatedBinnedFeatureVector binnedFeatureVector(numWidths, numElements, sparseBinIndex);
-        AllocatedBinnedFeatureVector::threshold_iterator thresholdIterator = binnedFeatureVector.thresholds_begin();
-        AllocatedBinnedFeatureVector::index_iterator indptrIterator = binnedFeatureVector.indptr;
+        auto thresholdIterator = binnedFeatureVector.thresholds_begin();
+        auto indptrIterator = binnedFeatureVector.indptr;
 
         // Iterate all non-sparse feature values and determine the bins they should be assigned to...
         Array<uint32> numExamplesPerBin(numWidths, true);
@@ -109,7 +109,7 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
                     uint32 numExamplesInCurrentBin = numExamplesPerBin[originalBinIndex];
                     uint32 numRemaining = numExamplesInCurrentBin - 1;
                     numExamplesPerBin[originalBinIndex] = numRemaining;
-                    BinnedFeatureVector::index_iterator indexIterator = binnedFeatureVector.indices_begin(binIndex);
+                    auto indexIterator = binnedFeatureVector.indices_begin(binIndex);
                     indexIterator[numRemaining] = entry.index;
                 }
             }

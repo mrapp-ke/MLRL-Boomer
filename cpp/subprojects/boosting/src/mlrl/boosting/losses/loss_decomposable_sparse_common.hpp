@@ -181,8 +181,7 @@ namespace boosting {
               PartialIndexVector::const_iterator indicesEnd,
               SparseDecomposableStatisticView<StatisticType>& statisticView) const override {
                 const typename SparseSetView<StatisticType>::const_row scoreMatrixRow = scoreMatrix[exampleIndex];
-                CContiguousView<const uint8>::value_const_iterator labelIterator =
-                  labelMatrix.values_cbegin(exampleIndex);
+                auto labelIterator = labelMatrix.values_cbegin(exampleIndex);
                 typename SparseDecomposableStatisticView<StatisticType>::row statisticViewRow =
                   statisticView[exampleIndex];
                 uint32 numElements = indicesEnd - indicesBegin;
@@ -219,8 +218,8 @@ namespace boosting {
               PartialIndexVector::const_iterator indicesBegin, PartialIndexVector::const_iterator indicesEnd,
               SparseDecomposableStatisticView<StatisticType>& statisticView) const override {
                 const typename SparseSetView<StatisticType>::const_row scoreMatrixRow = scoreMatrix[exampleIndex];
-                BinaryCsrView::index_const_iterator labelIndicesBegin = labelMatrix.indices_cbegin(exampleIndex);
-                BinaryCsrView::index_const_iterator labelIndicesEnd = labelMatrix.indices_cend(exampleIndex);
+                auto labelIndicesBegin = labelMatrix.indices_cbegin(exampleIndex);
+                auto labelIndicesEnd = labelMatrix.indices_cend(exampleIndex);
                 typename SparseDecomposableStatisticView<StatisticType>::row statisticViewRow =
                   statisticView[exampleIndex];
                 uint32 numElements = indicesEnd - indicesBegin;
