@@ -386,7 +386,7 @@ namespace seco {
                                              typename Model::const_iterator rulesBegin,
                                              typename Model::const_iterator rulesEnd, uint32 threadIndex,
                                              uint32 exampleIndex, uint32 predictionIndex) const override {
-                        BinaryLilMatrix::row predictionRow = predictionMatrix_[predictionIndex];
+                        auto& predictionRow = predictionMatrix_[predictionIndex];
                         predictForExampleInternally(featureMatrix, rulesBegin, rulesEnd, predictionRow, numLabels_,
                                                     exampleIndex);
                         return static_cast<uint32>(predictionRow.size());

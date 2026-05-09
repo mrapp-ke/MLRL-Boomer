@@ -180,7 +180,7 @@ namespace boosting {
               const SparseSetView<StatisticType>& scoreMatrix, PartialIndexVector::const_iterator indicesBegin,
               PartialIndexVector::const_iterator indicesEnd,
               SparseDecomposableStatisticView<StatisticType>& statisticView) const override {
-                const typename SparseSetView<StatisticType>::const_row scoreMatrixRow = scoreMatrix[exampleIndex];
+                const auto scoreMatrixRow = scoreMatrix[exampleIndex];
                 auto labelIterator = labelMatrix.values_cbegin(exampleIndex);
                 typename SparseDecomposableStatisticView<StatisticType>::row statisticViewRow =
                   statisticView[exampleIndex];
@@ -217,7 +217,7 @@ namespace boosting {
               uint32 exampleIndex, const BinaryCsrView& labelMatrix, const SparseSetView<StatisticType>& scoreMatrix,
               PartialIndexVector::const_iterator indicesBegin, PartialIndexVector::const_iterator indicesEnd,
               SparseDecomposableStatisticView<StatisticType>& statisticView) const override {
-                const typename SparseSetView<StatisticType>::const_row scoreMatrixRow = scoreMatrix[exampleIndex];
+                const auto scoreMatrixRow = scoreMatrix[exampleIndex];
                 auto labelIndicesBegin = labelMatrix.indices_cbegin(exampleIndex);
                 auto labelIndicesEnd = labelMatrix.indices_cend(exampleIndex);
                 typename SparseDecomposableStatisticView<StatisticType>::row statisticViewRow =

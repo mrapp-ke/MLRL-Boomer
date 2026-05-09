@@ -313,7 +313,7 @@ namespace boosting {
     void SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>::addToSubset(
       const SparseDecomposableStatisticView<StatisticType>& view, uint32 row, const PartialIndexVector& indices) {
         this->view.sumOfWeights += 1;
-        typename SparseDecomposableStatisticView<StatisticType>::const_row viewRow = view[row];
+        const auto viewRow = view[row];
         auto indexIterator = indices.cbegin();
         uint32 numElements = indices.getNumElements();
 
@@ -348,7 +348,7 @@ namespace boosting {
       WeightType weight) {
         if (!isEqualToZero(weight)) {
             this->view.sumOfWeights += weight;
-            typename SparseDecomposableStatisticView<StatisticType>::const_row viewRow = view[row];
+            const auto viewRow = view[row];
             auto indexIterator = indices.cbegin();
             uint32 numElements = indices.getNumElements();
 
