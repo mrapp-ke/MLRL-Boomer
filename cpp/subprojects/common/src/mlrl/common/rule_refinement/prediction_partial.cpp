@@ -96,9 +96,9 @@ void PartialPrediction<ScoreType>::sort() {
 
         if (numElements > 1) {
             SparseArrayVector<ScoreType> sortedVector(numElements);
-            typename SparseArrayVector<ScoreType>::iterator sortedIterator = sortedVector.begin();
-            index_iterator indexIterator = this->indices_begin();
-            value_iterator valueIterator = this->values_begin();
+            auto sortedIterator = sortedVector.begin();
+            auto indexIterator = this->indices_begin();
+            auto valueIterator = this->values_begin();
 
             for (uint32 i = 0; i < numElements; i++) {
                 IndexedValue<ScoreType>& entry = sortedIterator[i];

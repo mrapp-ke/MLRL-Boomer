@@ -31,9 +31,9 @@ class RandomBiPartitionSampling final : public IPartitionSampling {
         IPartition& partition() override {
             uint32 numTraining = partition_.getNumFirst();
             uint32 numHoldout = partition_.getNumSecond();
-            BiPartition::iterator trainingIterator = partition_.first_begin();
+            auto trainingIterator = partition_.first_begin();
             std::iota(trainingIterator, partition_.first_end(), 0);
-            BiPartition::iterator holdoutIterator = partition_.second_begin();
+            auto holdoutIterator = partition_.second_begin();
 
             for (uint32 i = 0; i < numHoldout; i++) {
                 holdoutIterator[i] = numTraining + i;

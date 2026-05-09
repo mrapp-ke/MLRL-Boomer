@@ -45,8 +45,8 @@ namespace boosting {
                   gradientIterator, hessianIterator, numElements, l1RegularizationWeight, l2RegularizationWeight);
                 statistic_type minAbsScore = pair.first;
                 statistic_type scoreThreshold = calculateThreshold(minAbsScore, pair.second, threshold, exponent);
-                PartialIndexVector::iterator indexIterator = indexVector.begin();
-                typename IndexVector::const_iterator labelIndexIterator = labelIndices.cbegin();
+                auto indexIterator = indexVector.begin();
+                auto labelIndexIterator = labelIndices.cbegin();
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numElements; i++) {
@@ -80,8 +80,8 @@ namespace boosting {
                   gradientIterator, hessianIterator, numElements, l1RegularizationWeight, l2RegularizationWeight);
                 statistic_type minAbsScore = pair.first;
                 statistic_type scoreThreshold = calculateThreshold(minAbsScore, pair.second, threshold, exponent);
-                PartialIndexVector::iterator indexIterator = indexVector.begin();
-                typename IndexVector::const_iterator labelIndexIterator = labelIndices.cbegin();
+                auto indexIterator = indexVector.begin();
+                auto labelIndexIterator = labelIndices.cbegin();
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numElements; i++) {

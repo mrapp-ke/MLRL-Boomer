@@ -109,7 +109,7 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
                         }
 
                         PartialIndexVector indexVector(uniqueFeatureIndices.size());
-                        PartialIndexVector::iterator indexIterator = indexVector.begin();
+                        auto indexIterator = indexVector.begin();
 
                         for (auto it2 = uniqueFeatureIndices.cbegin(); it2 != uniqueFeatureIndices.cend(); it2++) {
                             *indexIterator = *it2;

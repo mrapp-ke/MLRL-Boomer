@@ -107,9 +107,9 @@ static inline void aggregateNonIncreasingBins(ListOfLists<std::pair<float64, flo
 static inline float64 calibrateProbability(ListOfLists<std::pair<float64, float64>>::const_row bins,
                                            float64 probability) {
     // Find the bins that impose a lower and upper bound on the probability...
-    ListOfLists<std::pair<float64, float64>>::value_const_iterator begin = bins.cbegin();
-    ListOfLists<std::pair<float64, float64>>::value_const_iterator end = bins.cend();
-    ListOfLists<std::pair<float64, float64>>::value_const_iterator it =
+    auto begin = bins.cbegin();
+    auto end = bins.cend();
+    auto it =
       std::lower_bound(begin, end, probability, [=](const std::pair<float64, float64>& lhs, const float64& rhs) {
         return lhs.first < rhs;
     });

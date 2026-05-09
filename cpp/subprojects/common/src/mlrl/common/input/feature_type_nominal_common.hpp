@@ -86,9 +86,9 @@ static inline std::unique_ptr<BinaryFeatureVectorDecorator> createBinaryFeatureV
     uint32 numMinorityExamples = pair.second;
     AllocatedNominalFeatureVector binaryFeatureVector(1, numMinorityExamples, majorityValue);
     AllocatedMissingFeatureVector missingFeatureVector;
-    AllocatedNominalFeatureVector::value_iterator vectorValueIterator = binaryFeatureVector.values;
+    auto vectorValueIterator = binaryFeatureVector.values;
     vectorValueIterator[0] = minorityValue;
-    AllocatedNominalFeatureVector::index_iterator vectorIndexIterator = binaryFeatureVector.indices;
+    auto vectorIndexIterator = binaryFeatureVector.indices;
     uint32 n = 0;
 
     for (uint32 i = 0; i < numElements; i++) {

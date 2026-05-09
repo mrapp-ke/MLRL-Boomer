@@ -41,15 +41,15 @@ static inline std::unique_ptr<IFeatureVector> createFilteredBinnedFeatureVectorD
     // Filter the indices of examples not associated with the majority value...
     const BinnedFeatureVector& featureVector = view.getView().firstView;
     AllocatedBinnedFeatureVector& filteredFeatureVector = filteredDecoratorPtr->getView().firstView;
-    AllocatedBinnedFeatureVector::index_iterator filteredIndexIterator = filteredFeatureVector.indices;
-    AllocatedBinnedFeatureVector::index_iterator filteredIndptrIterator = filteredFeatureVector.indptr;
-    AllocatedBinnedFeatureVector::threshold_iterator filteredThresholdIterator = filteredFeatureVector.thresholds;
+    auto filteredIndexIterator = filteredFeatureVector.indices;
+    auto filteredIndptrIterator = filteredFeatureVector.indptr;
+    auto filteredThresholdIterator = filteredFeatureVector.thresholds;
     uint32 numFilteredBins = 0;
     uint32 numFilteredIndices = 0;
 
     for (uint32 i = 0; i < featureVector.numBins; i++) {
-        BinnedFeatureVector::index_const_iterator indexIterator = featureVector.indices_cbegin(i);
-        BinnedFeatureVector::index_const_iterator indicesEnd = featureVector.indices_cend(i);
+        auto indexIterator = featureVector.indices_cbegin(i);
+        auto indicesEnd = featureVector.indices_cend(i);
         uint32 numIndices = indicesEnd - indexIterator;
         uint32 indptr = numFilteredIndices;
 

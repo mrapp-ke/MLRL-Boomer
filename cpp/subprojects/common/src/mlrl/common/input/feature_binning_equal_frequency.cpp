@@ -13,9 +13,9 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
     if (numBins > 1) {
         uint32 numElements = numericalFeatureVector.numElements;
         AllocatedBinnedFeatureVector binnedFeatureVector(numBins, numElements);
-        AllocatedBinnedFeatureVector::threshold_iterator thresholdIterator = binnedFeatureVector.thresholds_begin();
-        AllocatedBinnedFeatureVector::index_iterator indexIterator = binnedFeatureVector.indices;
-        AllocatedBinnedFeatureVector::index_iterator indptrIterator = binnedFeatureVector.indptr;
+        auto thresholdIterator = binnedFeatureVector.thresholds_begin();
+        auto indexIterator = binnedFeatureVector.indices;
+        auto indptrIterator = binnedFeatureVector.indptr;
         uint32 numElementsPerBin = static_cast<uint32>(std::ceil((float64) numElements / (float64) numBins));
         bool sparse = numericalFeatureVector.sparse;
         float32 sparseValue = numericalFeatureVector.sparseValue;

@@ -11,7 +11,7 @@
 namespace seco {
 
     static inline void applyHead(const CompleteHead<uint8>& head, View<uint8>::iterator iterator, BitVector& mask) {
-        CompleteHead<uint8>::value_const_iterator valueIterator = head.values_cbegin();
+        auto valueIterator = head.values_cbegin();
         uint32 numElements = head.getNumElements();
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -23,8 +23,8 @@ namespace seco {
     }
 
     static inline void applyHead(const PartialHead<uint8>& head, View<uint8>::iterator iterator, BitVector& mask) {
-        PartialHead<uint8>::value_const_iterator valueIterator = head.values_cbegin();
-        PartialHead<uint8>::index_const_iterator indexIterator = head.indices_cbegin();
+        auto valueIterator = head.values_cbegin();
+        auto indexIterator = head.indices_cbegin();
         uint32 numElements = head.getNumElements();
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -165,9 +165,8 @@ namespace seco {
              * @see `IPredictor::predict`
              */
             std::unique_ptr<DensePredictionMatrix<uint8>> predict(uint32 maxRules) const override {
-                std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-                  std::make_unique<DensePredictionMatrix<uint8>>(featureMatrix_.numRows, numLabels_,
-                                                                 !model_.containsDefaultRule());
+                auto predictionMatrixPtr = std::make_unique<DensePredictionMatrix<uint8>>(
+                  featureMatrix_.numRows, numLabels_, !model_.containsDefaultRule());
                 PredictionDelegate delegate(predictionMatrixPtr->getView());
                 PredictionDispatcher<uint8, FeatureMatrix, Model>().predict(
                   delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules),
@@ -237,9 +236,8 @@ namespace seco {
                                  BinaryLilMatrix::row predictionRow, uint32 numLabels) {
         if (scoresBegin != scoresEnd) {
             if (predictionRow.size() > 0) {
-                BinaryLilMatrix::value_iterator end = predictionRow.end();
-                BinaryLilMatrix::value_iterator start =
-                  std::lower_bound(predictionRow.begin(), end, indexIterator[*scoresBegin]);
+                auto end = predictionRow.end();
+                auto start = std::lower_bound(predictionRow.begin(), end, indexIterator[*scoresBegin]);
                 uint32 bufferSize = end - start;
                 Array<uint32> buffer(bufferSize);
                 std::copy(start, end, buffer.begin());
@@ -387,7 +385,7 @@ namespace seco {
                                              typename Model::const_iterator rulesBegin,
                                              typename Model::const_iterator rulesEnd, uint32 threadIndex,
                                              uint32 exampleIndex, uint32 predictionIndex) const override {
-                        BinaryLilMatrix::row predictionRow = predictionMatrix_[predictionIndex];
+                        auto& predictionRow = predictionMatrix_[predictionIndex];
                         predictForExampleInternally(featureMatrix, rulesBegin, rulesEnd, predictionRow, numLabels_,
                                                     exampleIndex);
                         return static_cast<uint32>(predictionRow.size());

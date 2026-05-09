@@ -68,7 +68,7 @@ namespace math {
         typename util::iterator_value<Iterator> result = 0;
 
         for (uint32 i = 0; i < n; i++) {
-            typename util::iterator_value<Iterator> value = iterator[i];
+            auto value = iterator[i];
             result += (value * value);
         }
 
@@ -95,7 +95,7 @@ namespace math {
         typename util::iterator_value<Iterator> result = 0;
 
         for (uint32 i = 0; i < n; i++) {
-            typename util::iterator_value<Iterator> value = iterator[i];
+            auto value = iterator[i];
             result += ((value * value) * weightIterator[i]);
         }
 

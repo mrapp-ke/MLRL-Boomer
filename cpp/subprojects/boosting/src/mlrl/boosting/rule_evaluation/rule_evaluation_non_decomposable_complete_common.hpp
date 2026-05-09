@@ -193,8 +193,7 @@ namespace boosting {
                 addL2RegularizationWeight(this->sysvTmpArray1_.begin(), numPredictions, l2RegularizationWeight_);
 
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
-                typename DenseScoreVector<statistic_type, IndexVector>::value_iterator valueIterator =
-                  scoreVector_.values_begin();
+                auto valueIterator = scoreVector_.values_begin();
                 copyOrdinates(statisticVector.gradients_cbegin(), valueIterator, numPredictions);
                 addL1RegularizationWeight(valueIterator, numPredictions, l1RegularizationWeight_);
 

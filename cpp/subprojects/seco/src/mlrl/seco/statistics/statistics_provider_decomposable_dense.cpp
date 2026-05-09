@@ -65,8 +65,7 @@ namespace seco {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
                                                             const EqualWeightVector& weights) const override {
-                std::unique_ptr<StatisticVector<uint32>> subsetSumVectorPtr =
-                  std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
+                auto subsetSumVectorPtr = std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<StatisticsSubset<EqualWeightVector, CompleteIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
                   std::move(subsetSumVectorPtr));
@@ -77,8 +76,7 @@ namespace seco {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
                                                             const EqualWeightVector& weights) const override {
-                std::unique_ptr<StatisticVector<uint32>> subsetSumVectorPtr =
-                  std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
+                auto subsetSumVectorPtr = std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<StatisticsSubset<EqualWeightVector, PartialIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
                   std::move(subsetSumVectorPtr));
@@ -89,8 +87,7 @@ namespace seco {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
                                                             const BitWeightVector& weights) const override {
-                std::unique_ptr<StatisticVector<uint32>> subsetSumVectorPtr =
-                  std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
+                auto subsetSumVectorPtr = std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<StatisticsSubset<BitWeightVector, CompleteIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
                   std::move(subsetSumVectorPtr));
@@ -101,8 +98,7 @@ namespace seco {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
                                                             const BitWeightVector& weights) const override {
-                std::unique_ptr<StatisticVector<uint32>> subsetSumVectorPtr =
-                  std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
+                auto subsetSumVectorPtr = std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<StatisticsSubset<BitWeightVector, PartialIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
                   std::move(subsetSumVectorPtr));
@@ -313,7 +309,7 @@ namespace seco {
         uint32 numLabels = labelMatrix.numCols;
         std::unique_ptr<ResizableBinarySparseArrayVector> majorityLabelVectorPtr =
           std::make_unique<ResizableBinarySparseArrayVector>(numLabels);
-        ResizableBinarySparseArrayVector::iterator majorityIterator = majorityLabelVectorPtr->begin();
+        auto majorityIterator = majorityLabelVectorPtr->begin();
         float64 threshold = numExamples / 2.0;
         float64 sumOfUncoveredWeights = 0;
         uint32 n = 0;
@@ -352,10 +348,10 @@ namespace seco {
         uint32 numLabels = labelMatrix.numCols;
         std::unique_ptr<ResizableBinarySparseArrayVector> majorityLabelVectorPtr =
           std::make_unique<ResizableBinarySparseArrayVector>(numLabels, true);
-        ResizableBinarySparseArrayVector::iterator majorityIterator = majorityLabelVectorPtr->begin();
+        auto majorityIterator = majorityLabelVectorPtr->begin();
 
         for (uint32 i = 0; i < numExamples; i++) {
-            BinaryCsrView::index_const_iterator indexIterator = labelMatrix.indices_cbegin(i);
+            auto indexIterator = labelMatrix.indices_cbegin(i);
             uint32 numElements = labelMatrix.indices_cend(i) - indexIterator;
 
             for (uint32 j = 0; j < numElements; j++) {

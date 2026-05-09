@@ -37,11 +37,11 @@ namespace boosting {
                                                float32 l1RegularizationWeight,
                                                float32 l2RegularizationWeight) override {
                 uint32 numElements = statisticVector.getNumElements();
-                typename SparseArrayVector<statistic_type>::iterator tmpIterator = tmpVector_.begin();
+                auto tmpIterator = tmpVector_.begin();
                 sortOutputWiseScores(tmpIterator, statisticVector.gradients_cbegin(), statisticVector.hessians_cbegin(),
                                      numElements, numCriteria, l1RegularizationWeight, l2RegularizationWeight);
-                PartialIndexVector::iterator indexIterator = indexVectorPtr_->begin();
-                typename IndexVector::const_iterator labelIndexIterator = labelIndices_.cbegin();
+                auto indexIterator = indexVectorPtr_->begin();
+                auto labelIndexIterator = labelIndices_.cbegin();
 
                 for (uint32 i = 0; i < numCriteria; i++) {
                     const IndexedValue<statistic_type>& entry = tmpIterator[i];

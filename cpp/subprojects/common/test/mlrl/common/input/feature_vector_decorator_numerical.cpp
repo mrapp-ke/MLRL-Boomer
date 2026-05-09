@@ -7,7 +7,7 @@
 TEST(NumericalFeatureVectorDecoratorTest, updateCoverageMaskAndStatistics) {
     uint32 numDenseExamples = 10;
     AllocatedNumericalFeatureVector featureVector(numDenseExamples, -1, true);
-    AllocatedNumericalFeatureVector::iterator iterator = featureVector.begin();
+    auto iterator = featureVector.begin();
 
     for (uint32 i = 0; i < numDenseExamples; i++) {
         IndexedValue<float32>& entry = iterator[i];
@@ -47,7 +47,7 @@ TEST(NumericalFeatureVectorDecoratorTest, updateCoverageMaskAndStatistics) {
 TEST(NumericalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsInverse) {
     uint32 numDenseExamples = 10;
     AllocatedNumericalFeatureVector featureVector(numDenseExamples, -1, true);
-    AllocatedNumericalFeatureVector::iterator iterator = featureVector.begin();
+    auto iterator = featureVector.begin();
 
     for (uint32 i = 0; i < numDenseExamples; i++) {
         IndexedValue<float32>& entry = iterator[i];
@@ -99,7 +99,7 @@ TEST(NumericalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsInverse
 TEST(NumericalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsFromView) {
     uint32 numDenseExamples = 10;
     AllocatedNumericalFeatureVector featureVector(numDenseExamples, -1, true);
-    AllocatedNumericalFeatureVector::iterator iterator = featureVector.begin();
+    auto iterator = featureVector.begin();
 
     for (uint32 i = 0; i < numDenseExamples; i++) {
         IndexedValue<float32>& entry = iterator[i];
@@ -142,7 +142,7 @@ TEST(NumericalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsFromVie
 TEST(NumericalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsFromViewInverse) {
     uint32 numDenseExamples = 10;
     AllocatedNumericalFeatureVector featureVector(numDenseExamples, -1, true);
-    AllocatedNumericalFeatureVector::iterator iterator = featureVector.begin();
+    auto iterator = featureVector.begin();
 
     for (uint32 i = 0; i < numDenseExamples; i++) {
         IndexedValue<float32>& entry = iterator[i];
@@ -187,7 +187,7 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndices
     float32 sparseValue = -1;
     bool sparse = true;
     AllocatedNumericalFeatureVector featureVector(numDenseExamples, sparseValue, sparse);
-    AllocatedNumericalFeatureVector::iterator iterator = featureVector.begin();
+    auto iterator = featureVector.begin();
 
     for (uint32 i = 0; i < numDenseExamples; i++) {
         IndexedValue<float32>& entry = iterator[i];
@@ -224,7 +224,7 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWit
     float32 sparseValue = -1;
     bool sparse = true;
     AllocatedNumericalFeatureVector featureVector(numDenseExamples, sparseValue, sparse);
-    AllocatedNumericalFeatureVector::iterator iterator = featureVector.begin();
+    auto iterator = featureVector.begin();
 
     for (uint32 i = 0; i < numDenseExamples; i++) {
         IndexedValue<float32>& entry = iterator[i];
@@ -263,7 +263,7 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndices
     float32 sparseValue = -1;
     bool sparse = true;
     AllocatedNumericalFeatureVector featureVector(numDenseExamples, sparseValue, sparse);
-    AllocatedNumericalFeatureVector::iterator iterator = featureVector.begin();
+    auto iterator = featureVector.begin();
 
     for (uint32 i = 0; i < numDenseExamples; i++) {
         IndexedValue<float32>& entry = iterator[i];
@@ -300,7 +300,7 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWit
     float32 sparseValue = -1;
     bool sparse = true;
     AllocatedNumericalFeatureVector featureVector(numDenseExamples, sparseValue, sparse);
-    AllocatedNumericalFeatureVector::iterator iterator = featureVector.begin();
+    auto iterator = featureVector.begin();
 
     for (uint32 i = 0; i < numDenseExamples; i++) {
         IndexedValue<float32>& entry = iterator[i];
@@ -337,7 +337,7 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWit
 TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndicesReturnsEqualFeatureVector) {
     uint32 numDenseExamples = 10;
     AllocatedNumericalFeatureVector featureVector(numDenseExamples);
-    AllocatedNumericalFeatureVector::iterator iterator = featureVector.begin();
+    auto iterator = featureVector.begin();
 
     for (uint32 i = 0; i < numDenseExamples; i++) {
         IndexedValue<float32>& entry = iterator[i];
@@ -358,7 +358,7 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWit
     float32 sparseValue = -1;
     bool sparse = true;
     AllocatedNumericalFeatureVector featureVector(numDenseExamples, sparseValue, sparse);
-    AllocatedNumericalFeatureVector::iterator iterator = featureVector.begin();
+    auto iterator = featureVector.begin();
 
     for (uint32 i = 0; i < numDenseExamples; i++) {
         IndexedValue<float32>& entry = iterator[i];
@@ -369,7 +369,7 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWit
     CoverageMask coverageMask(numDenseExamples);
     uint32 indicatorValue = 1;
     coverageMask.indicatorValue = indicatorValue;
-    CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
+    auto coverageMaskIterator = coverageMask.begin();
 
     for (uint32 i = 0; i < numDenseExamples; i++) {
         if (i % 2 == 0) {
@@ -412,7 +412,7 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWit
 TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMask) {
     uint32 numDenseExamples = 10;
     AllocatedNumericalFeatureVector featureVector(numDenseExamples);
-    AllocatedNumericalFeatureVector::iterator iterator = featureVector.begin();
+    auto iterator = featureVector.begin();
 
     for (uint32 i = 0; i < numDenseExamples; i++) {
         IndexedValue<float32>& entry = iterator[i];
@@ -431,7 +431,7 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverag
     CoverageMask coverageMask(numExamples);
     uint32 indicatorValue = 1;
     coverageMask.indicatorValue = indicatorValue;
-    CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
+    auto coverageMaskIterator = coverageMask.begin();
 
     for (uint32 i = 0; i < numExamples; i++) {
         if (i % 2 == 0) {
@@ -480,7 +480,7 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverag
 TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMaskUsingExisting) {
     uint32 numDenseExamples = 10;
     AllocatedNumericalFeatureVector featureVector(numDenseExamples);
-    AllocatedNumericalFeatureVector::iterator iterator = featureVector.begin();
+    auto iterator = featureVector.begin();
 
     for (uint32 i = 0; i < numDenseExamples; i++) {
         IndexedValue<float32>& entry = iterator[i];

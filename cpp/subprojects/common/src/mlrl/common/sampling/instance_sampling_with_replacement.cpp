@@ -12,7 +12,7 @@ static inline void sampleInternally(const SinglePartition& partition, const Exam
                                     DenseWeightVector<WeightType>& weightVector, RNG& rng) {
     uint32 numExamples = partition.getNumElements();
     uint32 numSamples = math::calculateBoundedFraction(numExamples, sampleSize, minSamples, maxSamples);
-    typename DenseWeightVector<WeightType>::iterator weightIterator = weightVector.begin();
+    auto weightIterator = weightVector.begin();
     std::fill(weightIterator, weightVector.end(), (WeightType) 0);
     uint32 numNonZeroWeights = 0;
 
@@ -39,8 +39,8 @@ static inline void sampleInternally(BiPartition& partition, const ExampleWeights
                                     RNG& rng) {
     uint32 numTrainingExamples = partition.getNumFirst();
     uint32 numSamples = math::calculateBoundedFraction(numTrainingExamples, sampleSize, minSamples, maxSamples);
-    BiPartition::const_iterator indexIterator = partition.first_cbegin();
-    typename DenseWeightVector<WeightType>::iterator weightIterator = weightVector.begin();
+    auto indexIterator = partition.first_cbegin();
+    auto weightIterator = weightVector.begin();
     std::fill(weightIterator, weightVector.end(), (WeightType) 0);
     uint32 numNonZeroWeights = 0;
 
