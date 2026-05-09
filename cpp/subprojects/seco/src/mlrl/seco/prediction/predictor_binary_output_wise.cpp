@@ -165,9 +165,8 @@ namespace seco {
              * @see `IPredictor::predict`
              */
             std::unique_ptr<DensePredictionMatrix<uint8>> predict(uint32 maxRules) const override {
-                std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-                  std::make_unique<DensePredictionMatrix<uint8>>(featureMatrix_.numRows, numLabels_,
-                                                                 !model_.containsDefaultRule());
+                auto predictionMatrixPtr = std::make_unique<DensePredictionMatrix<uint8>>(
+                  featureMatrix_.numRows, numLabels_, !model_.containsDefaultRule());
                 PredictionDelegate delegate(predictionMatrixPtr->getView());
                 PredictionDispatcher<uint8, FeatureMatrix, Model>().predict(
                   delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules),

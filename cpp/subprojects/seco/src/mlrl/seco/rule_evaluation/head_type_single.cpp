@@ -15,14 +15,11 @@ namespace seco {
 
     std::unique_ptr<IClassificationStatisticsProviderFactory> SingleOutputHeadConfig::createStatisticsProviderFactory(
       const IRowWiseLabelMatrix& labelMatrix) const {
-        std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
-          std::make_unique<DecomposableMajorityRuleEvaluationFactory>();
-        std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-          std::make_unique<DecomposableSingleOutputRuleEvaluationFactory>(
-            heuristicConfig_.get().createHeuristicFactory());
-        std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-          std::make_unique<DecomposableSingleOutputRuleEvaluationFactory>(
-            pruningHeuristicConfig_.get().createHeuristicFactory());
+        auto defaultRuleEvaluationFactoryPtr = std::make_unique<DecomposableMajorityRuleEvaluationFactory>();
+        auto regularRuleEvaluationFactoryPtr = std::make_unique<DecomposableSingleOutputRuleEvaluationFactory>(
+          heuristicConfig_.get().createHeuristicFactory());
+        auto pruningRuleEvaluationFactoryPtr = std::make_unique<DecomposableSingleOutputRuleEvaluationFactory>(
+          pruningHeuristicConfig_.get().createHeuristicFactory());
 
 #if SIMD_SUPPORT_ENABLED
         if (simdConfig_.get().isSimdRecommended(labelMatrix.getNumOutputs())) {

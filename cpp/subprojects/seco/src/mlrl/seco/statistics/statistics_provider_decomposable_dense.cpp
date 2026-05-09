@@ -65,8 +65,7 @@ namespace seco {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
                                                             const EqualWeightVector& weights) const override {
-                std::unique_ptr<StatisticVector<uint32>> subsetSumVectorPtr =
-                  std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
+                auto subsetSumVectorPtr = std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<StatisticsSubset<EqualWeightVector, CompleteIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
                   std::move(subsetSumVectorPtr));
@@ -77,8 +76,7 @@ namespace seco {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
                                                             const EqualWeightVector& weights) const override {
-                std::unique_ptr<StatisticVector<uint32>> subsetSumVectorPtr =
-                  std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
+                auto subsetSumVectorPtr = std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<StatisticsSubset<EqualWeightVector, PartialIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
                   std::move(subsetSumVectorPtr));
@@ -89,8 +87,7 @@ namespace seco {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
                                                             const BitWeightVector& weights) const override {
-                std::unique_ptr<StatisticVector<uint32>> subsetSumVectorPtr =
-                  std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
+                auto subsetSumVectorPtr = std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<StatisticsSubset<BitWeightVector, CompleteIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
                   std::move(subsetSumVectorPtr));
@@ -101,8 +98,7 @@ namespace seco {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
                                                             const BitWeightVector& weights) const override {
-                std::unique_ptr<StatisticVector<uint32>> subsetSumVectorPtr =
-                  std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
+                auto subsetSumVectorPtr = std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<StatisticsSubset<BitWeightVector, PartialIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
                   std::move(subsetSumVectorPtr));
