@@ -22,7 +22,7 @@
  */
 static inline float64 evaluate(const SinglePartition& partition, bool useHoldoutSet, const IStatistics& statistics) {
     uint32 numExamples = partition.getNumElements();
-    SinglePartition::const_iterator iterator = partition.cbegin();
+    auto iterator = partition.cbegin();
     float64 mean = 0;
 
     for (uint32 i = 0; i < numExamples; i++) {

@@ -54,15 +54,14 @@ namespace boosting {
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
                 uint32 numElements = statisticVector.getNumElements();
                 uint32 numPredictions = indexVector_.getNumElements();
-                typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
-                typename StatisticVector::hessian_const_iterator hessianIterator = statisticVector.hessians_cbegin();
-                typename SparseArrayVector<statistic_type>::iterator tmpIterator = tmpVector_.begin();
+                auto gradientIterator = statisticVector.gradients_cbegin();
+                auto hessianIterator = statisticVector.hessians_cbegin();
+                auto tmpIterator = tmpVector_.begin();
                 sortOutputWiseScores(tmpIterator, gradientIterator, hessianIterator, numElements, numPredictions,
                                      l1RegularizationWeight_, l2RegularizationWeight_);
-                PartialIndexVector::iterator indexIterator = indexVector_.begin();
-                typename DenseScoreVector<statistic_type, PartialIndexVector>::value_iterator valueIterator =
-                  scoreVector_.values_begin();
-                typename IndexVector::const_iterator outputIndexIterator = outputIndices_.cbegin();
+                auto indexIterator = indexVector_.begin();
+                auto valueIterator = scoreVector_.values_begin();
+                auto outputIndexIterator = outputIndices_.cbegin();
                 statistic_type quality = 0;
 
                 for (uint32 i = 0; i < numPredictions; i++) {

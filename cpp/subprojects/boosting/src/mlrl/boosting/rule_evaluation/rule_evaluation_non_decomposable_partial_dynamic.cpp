@@ -75,11 +75,9 @@ namespace boosting {
              */
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
                 uint32 numOutputs = statisticVector.getNumGradients();
-                typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
-                typename StatisticVector::hessian_diagonal_const_iterator hessianIterator =
-                  statisticVector.hessians_diagonal_cbegin();
-                typename DenseScoreVector<statistic_type, IndexVector>::value_iterator valueIterator =
-                  scoreVector_.values_begin();
+                auto gradientIterator = statisticVector.gradients_cbegin();
+                auto hessianIterator = statisticVector.hessians_diagonal_cbegin();
+                auto valueIterator = scoreVector_.values_begin();
                 const std::pair<statistic_type, statistic_type> pair =
                   getMinAndMaxScore<statistic_type, typename StatisticVector::gradient_const_iterator,
                                     typename StatisticVector::hessian_diagonal_const_iterator>(
@@ -89,8 +87,8 @@ namespace boosting {
 
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
                 statistic_type threshold = calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
-                PartialIndexVector::iterator indexIterator = indexVector_.begin();
-                typename IndexVector::const_iterator outputIndexIterator = outputIndices_.cbegin();
+                auto indexIterator = indexVector_.begin();
+                auto outputIndexIterator = outputIndices_.cbegin();
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numOutputs; i++) {

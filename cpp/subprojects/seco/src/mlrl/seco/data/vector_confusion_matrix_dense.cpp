@@ -392,10 +392,10 @@ namespace seco {
       StatisticType weight) {
         auto majorityIterator =
           createBinarySparseForwardIterator(view.majorityLabelVector.cbegin(), view.majorityLabelVector.cend());
-        typename DenseCoverageMatrix::value_const_iterator coverageIterator = view.coverageMatrix.values_cbegin(row);
-        BinaryCsrView::index_const_iterator labelIndexIterator = view.labelMatrix.indices_cbegin(row);
-        BinaryCsrView::index_const_iterator labelIndicesEnd = view.labelMatrix.indices_cend(row);
-        PartialIndexVector::const_iterator indexIterator = indices.cbegin();
+        auto coverageIterator = view.coverageMatrix.values_cbegin(row);
+        auto labelIndexIterator = view.labelMatrix.indices_cbegin(row);
+        auto labelIndicesEnd = view.labelMatrix.indices_cend(row);
+        auto indexIterator = indices.cbegin();
         uint32 numElements = indices.getNumElements();
         uint32 previousIndex = 0;
 

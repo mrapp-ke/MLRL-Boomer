@@ -37,7 +37,7 @@ class FeatureSamplingWithoutReplacement final : public IFeatureSampling {
             : rngPtr_(rngPtr), numFeatures_(numFeatures), numSamples_(numSamples), numRetained_(numRetained),
               indexVector_(numSamples + numRetained) {
             if (numRetained > 0) {
-                PartialIndexVector::iterator iterator = indexVector_.begin();
+                auto iterator = indexVector_.begin();
                 uint32 offset = numFeatures - numRetained;
 
                 for (uint32 i = 0; i < numRetained; i++) {

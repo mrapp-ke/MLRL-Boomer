@@ -58,7 +58,7 @@ class CsrLabelMatrix final : public IterableBinarySparseMatrixDecorator<MatrixDe
             index_const_iterator indicesBegin = this->indices_cbegin(row);
             index_const_iterator indicesEnd = this->indices_cend(row);
             uint32 numElements = indicesEnd - indicesBegin;
-            std::unique_ptr<LabelVector> labelVectorPtr = std::make_unique<LabelVector>(numElements);
+            auto labelVectorPtr = std::make_unique<LabelVector>(numElements);
             std::copy(indicesBegin, indicesEnd, labelVectorPtr->begin());
             return labelVectorPtr;
         }

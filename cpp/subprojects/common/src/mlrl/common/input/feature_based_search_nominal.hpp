@@ -14,7 +14,7 @@ static inline void searchForNominalRefinementInternally(const NominalFeatureVect
                                                         Comparator& comparator, uint32 numExamplesWithNonZeroWeights,
                                                         uint32 minCoverage, bool allowNegations,
                                                         Refinement& refinement) {
-    NominalFeatureVector::value_const_iterator valueIterator = featureVector.values_cbegin();
+    auto valueIterator = featureVector.values_cbegin();
     uint32 numValues = featureVector.numBins;
     uint32 numExamplesWithMinorityValue = 0;
 

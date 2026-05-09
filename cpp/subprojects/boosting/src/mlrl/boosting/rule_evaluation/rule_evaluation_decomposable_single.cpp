@@ -46,8 +46,8 @@ namespace boosting {
 
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
                 uint32 numElements = statisticVector.getNumElements();
-                typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
-                typename StatisticVector::hessian_const_iterator hessianIterator = statisticVector.hessians_cbegin();
+                auto gradientIterator = statisticVector.gradients_cbegin();
+                auto hessianIterator = statisticVector.hessians_cbegin();
                 statistic_type bestScore = calculateOutputWiseScore(gradientIterator[0], hessianIterator[0],
                                                                     l1RegularizationWeight_, l2RegularizationWeight_);
                 uint32 bestIndex = 0;
@@ -62,8 +62,7 @@ namespace boosting {
                     }
                 }
 
-                typename DenseScoreVector<statistic_type, PartialIndexVector>::value_iterator valueIterator =
-                  scoreVector_.values_begin();
+                auto valueIterator = scoreVector_.values_begin();
                 valueIterator[0] = bestScore;
                 indexVector_.begin()[0] = outputIndices_.cbegin()[bestIndex];
                 scoreVector_.quality =

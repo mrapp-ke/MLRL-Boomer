@@ -40,8 +40,7 @@ namespace seco {
                                                 View<uint32>::const_iterator majorityLabelIndicesEnd,
                                                 const StatisticVector& confusionMatricesTotal,
                                                 const StatisticVector& confusionMatricesCovered) override {
-                typename BitScoreVector<IndexVector>::index_const_iterator indexIterator =
-                  scoreVector_.indices_cbegin();
+                auto indexIterator = scoreVector_.indices_cbegin();
                 auto labelIterator =
                   createBinarySparseForwardIterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
                 uint32 numElements = scoreVector_.getNumElements();
