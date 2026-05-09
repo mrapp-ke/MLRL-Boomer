@@ -1,0 +1,5 @@
+File add_from_subset_generic.hpp
+================================
+
+.. doxygenfile:: add_from_subset_generic.hpp
+   :project: common
