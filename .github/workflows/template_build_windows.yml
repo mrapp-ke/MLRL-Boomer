@@ -68,7 +68,7 @@ jobs:
           arch: ${{ steps.arch.outputs.lowercase }}
       - name: Install OpenCL
         if: ${{ inputs.gpu_support }}
-        uses: johnwason/vcpkg-action@v7
+        uses: johnwason/vcpkg-action@v8
         with:
           pkgs: opencl
           triplet: ${{ steps.arch.outputs.lowercase }}-windows
