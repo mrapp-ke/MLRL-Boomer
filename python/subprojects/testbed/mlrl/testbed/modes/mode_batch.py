@@ -39,6 +39,8 @@ from mlrl.testbed.util.yml import read_and_validate_yaml
 from mlrl.util.cli import AUTO, Argument, BoolArgument, CommandLineInterface, FlagArgument, PathArgument, SetArgument
 from mlrl.util.options import BooleanOption, Options
 
+from mlrl.testbed.util.format import format_progress
+
 Batch = list[Command]
 
 
@@ -119,7 +121,7 @@ class BatchMode(Mode):
                     )
 
                 with Log.indented():
-                    Log.separator(f'Running experiment ({i + 1} / {num_experiments})')
+                    Log.separator(f'Running experiment ({format_progress(i + 1, num_experiments)})')
                     Log.source_code(str(command), language='bash', box_title='Command')
                     Log.info('')
 
