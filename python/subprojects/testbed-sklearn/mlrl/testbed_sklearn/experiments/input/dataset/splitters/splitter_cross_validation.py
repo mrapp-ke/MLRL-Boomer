@@ -20,6 +20,8 @@ from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSpl
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.log import Log
 
+from mlrl.testbed.util.format import format_progress
+
 
 class CrossValidationSplitter(DatasetSplitter):
     """
@@ -237,7 +239,7 @@ class CrossValidationSplitter(DatasetSplitter):
         )
 
         for fold in folding_strategy.folds:
-            Log.separator(f'Fold {fold.index + 1} / {num_folds}')
+            Log.separator(f'Fold {format_progress(fold.index + 1, num_folds)}')
             state = replace(state, fold=fold)
 
             if predefined_splits_available:
