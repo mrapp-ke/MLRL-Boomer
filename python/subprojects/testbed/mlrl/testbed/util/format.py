@@ -64,3 +64,15 @@ def format_percentage(fraction: float, decimals: int = 2) -> str:
     """
     percentage = float(fraction) * 100
     return f'{format_value(percentage, decimals)} %'
+
+
+def format_progress(num_completed: int, num_total: int) -> str:
+    """
+    Creates and returns a textual representation of a progress consisting of a certain number of steps of which some are
+    already completed.
+
+    :param num_completed:   The number of already completed steps
+    :param num_total:       The total number of steps
+    :return:                The textual representation that has been created
+    """
+    return f'{num_completed} / {num_total}'

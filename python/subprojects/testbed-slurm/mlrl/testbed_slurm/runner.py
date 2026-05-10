@@ -31,6 +31,8 @@ from mlrl.util.validation import ValidationError
 
 from mlrl.testbed.experiments.table import ColumnWiseTable
 
+from mlrl.testbed.util.format import format_progress
+
 
 @dataclass
 class JobArray:
@@ -372,7 +374,7 @@ class SlurmRunner(BatchMode.Runner):
 
         for i, command_or_job_array in enumerate(command_or_job_arrays):
             with Log.indented():
-                Log.separator(f'Submitting Slurm job ({i + 1} / {num_jobs})')
+                Log.separator(f'Submitting Slurm job ({format_progress(i + 1, num_jobs)})')
                 job_array = command_or_job_array if isinstance(command_or_job_array, JobArray) else None
                 command = job_array.modified_command if job_array else cast(Command, command_or_job_array)
                 Log.source_code(str(command), language='bash', box_title='Command')
