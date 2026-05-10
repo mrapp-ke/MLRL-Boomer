@@ -664,7 +664,7 @@ class SkLearnEstimatorRunnable(SkLearnRunnable):
             supported_regressors: set[SklearnEstimator],
             supported_meta_classifiers: set[SklearnEstimator],
             supported_meta_regressors: set[SklearnEstimator],
-            *dependencies: 'Extension',
+            *dependencies: Extension,
         ):
             """
             :param supported_classifiers:       A set that contains all supported scikit-learn classifiers
