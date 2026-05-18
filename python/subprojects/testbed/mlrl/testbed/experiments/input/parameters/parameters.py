@@ -19,7 +19,7 @@ class InputParameters(TabularInputData):
     Represents algorithmic parameters, set by the user, that are part of input data.
     """
 
-    PROPERTIES = TabularProperties(name='Custom parameters', file_name='parameters', has_header=True)
+    PROPERTIES = TabularProperties(name='Parameters', file_name='parameters', has_header=True)
 
     CONTEXT = Context(include_dataset_type=False, include_prediction_scope=False)
 
