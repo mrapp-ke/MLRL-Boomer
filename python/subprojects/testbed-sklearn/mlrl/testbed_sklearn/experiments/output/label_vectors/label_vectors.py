@@ -5,13 +5,14 @@ Provides classes for representing unique label vectors contained in a dataset th
 """
 
 from typing import override
+from rich.console import ConsoleRenderable
 
 from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vector_histogram import LabelVectorHistogram
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.output.data import TabularOutputData
-from mlrl.testbed.experiments.table import RowWiseTable, Table
+from mlrl.testbed.experiments.table import RowWiseTable, Table, Column
 
 from mlrl.util.options import Options
 
@@ -50,12 +51,20 @@ class LabelVectors(TabularOutputData):
         return LabelVectors(values)
 
     @override
-    def to_text(self, options: Options, **kwargs) -> str | None:
+    def to_text(self, options: Options, **kwargs) -> str | ConsoleRenderable | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
         table = self.to_table(options, **kwargs)
-        return table.format() if table else None
+
+        if table:
+            return table.to_rich_table(
+                border_style=Table.BorderStyle.INNER_LINES,
+                column_styles=[Column.Style.VALUE, None, Column.Style.VALUE],
+                column_alignments=[Column.Alignment.RIGHT, Column.Alignment.LEFT, Column.Alignment.RIGHT],
+            )
+
+        return None
 
     @override
     def to_table(self, options: Options, **kwargs) -> Table | None:

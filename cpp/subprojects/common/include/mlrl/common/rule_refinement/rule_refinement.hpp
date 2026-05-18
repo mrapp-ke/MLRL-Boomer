@@ -31,11 +31,13 @@ class IRuleRefinement {
          * @param outputIndices     A reference to an object of type `IIndexVector` that provides access to the indices
          *                          of the outputs for which the refinement(s) may predict
          * @param minCoverage       The minimum number of examples that must be covered by the refinements
+         * @param allowNegations    True, if refinements with nominal conditions that use negation should be allowed,
+         *                          false otherwise
          * @return                  True, if at least one refinement has been found, false otherwise
          */
         virtual bool findRefinement(SingleRefinementComparator& comparator, IFeatureSubspace& featureSubspace,
                                     const IIndexVector& featureIndices, const IIndexVector& outputIndices,
-                                    uint32 minCoverage) const = 0;
+                                    uint32 minCoverage, bool allowNegations) const = 0;
 
         /**
          * Finds the best refinements of an existing rule.
@@ -49,11 +51,13 @@ class IRuleRefinement {
          * @param outputIndices     A reference to an object of type `IIndexVector` that provides access to the indices
          *                          of the outputs for which the refinement(s) may predict
          * @param minCoverage       The minimum number of examples that must be covered by the refinements
+         * @param allowNegations    True, if refinements with nominal conditions that use negation should be allowed,
+         *                          false otherwise
          * @return                  True, if at least one refinement has been found, false otherwise
          */
         virtual bool findRefinement(FixedRefinementComparator& comparator, IFeatureSubspace& featureSubspace,
                                     const IIndexVector& featureIndices, const IIndexVector& outputIndices,
-                                    uint32 minCoverage) const = 0;
+                                    uint32 minCoverage, bool allowNegations) const = 0;
 };
 
 /**

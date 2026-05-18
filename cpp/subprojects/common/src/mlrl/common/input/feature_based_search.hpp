@@ -100,6 +100,8 @@ static inline void searchForNumericalRefinement(const NumericalFeatureVector& fe
  * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered by a
  *                                      refinement
  * @param minCoverage                   The minimum number of examples that must be covered by the refinement
+ * @param allowNegations                True, if refinements with nominal conditions that use negation should be
+ *                                      allowed, false otherwise
  * @param refinement                    A reference to an object of type `Refinement` that should be used for
  *                                      storing the properties of the best refinement that is found
  */
@@ -108,11 +110,11 @@ static inline void searchForNominalRefinement(const NominalFeatureVector& featur
                                               const MissingFeatureVector& missingFeatureVector, Comparator& comparator,
                                               const IWeightedStatistics& statistics, const IIndexVector& outputIndices,
                                               uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
-                                              Refinement& refinement) {
+                                              bool allowNegations, Refinement& refinement) {
     std::unique_ptr<IResettableStatisticsSubset> statisticsSubsetPtr =
       createStatisticsSubset(statistics, missingFeatureVector, outputIndices);
     searchForNominalRefinementInternally(featureVector, *statisticsSubsetPtr, comparator, numExamplesWithNonZeroWeights,
-                                         minCoverage, refinement);
+                                         minCoverage, allowNegations, refinement);
 }
 
 /**
@@ -134,6 +136,8 @@ static inline void searchForNominalRefinement(const NominalFeatureVector& featur
  * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered by a
  *                                      refinement
  * @param minCoverage                   The minimum number of examples that must be covered by the refinement
+ * @param allowNegations                True, if refinements with conditions that use negation should be allowed, false
+ *                                      otherwise
  * @param refinement                    A reference to an object of type `Refinement` that should be used for
  *                                      storing the properties of the best refinement that is found
  */
@@ -142,11 +146,11 @@ static inline void searchForBinaryRefinement(const BinaryFeatureVector& featureV
                                              const MissingFeatureVector& missingFeatureVector, Comparator& comparator,
                                              const IWeightedStatistics& statistics, const IIndexVector& outputIndices,
                                              uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
-                                             Refinement& refinement) {
+                                             bool allowNegations, Refinement& refinement) {
     std::unique_ptr<IResettableStatisticsSubset> statisticsSubsetPtr =
       createStatisticsSubset(statistics, missingFeatureVector, outputIndices);
     searchForBinaryRefinementInternally(featureVector, *statisticsSubsetPtr, comparator, numExamplesWithNonZeroWeights,
-                                        minCoverage, refinement);
+                                        minCoverage, allowNegations, refinement);
 }
 
 /**

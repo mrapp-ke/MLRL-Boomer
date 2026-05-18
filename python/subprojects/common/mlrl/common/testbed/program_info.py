@@ -99,7 +99,7 @@ class RuleLearnerProgramInfo:
 
     @staticmethod
     def __format_parent_packages(parent_packages: set[str]) -> str:
-        return 'used by ' + format_iterable(parent_packages) if parent_packages else ''
+        return f'used by {(format_iterable(parent_packages) if parent_packages else "")}'
 
     def __get_package_info(self) -> str:
         rows = []

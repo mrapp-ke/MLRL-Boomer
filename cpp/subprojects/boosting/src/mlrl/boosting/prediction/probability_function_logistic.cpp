@@ -1,6 +1,6 @@
 #include "mlrl/boosting/prediction/probability_function_logistic.hpp"
 
-#include "mlrl/boosting/util/math.hpp"
+#include "mlrl/boosting/math/scalar_math.hpp"
 
 namespace boosting {
 
@@ -24,13 +24,13 @@ namespace boosting {
                 : marginalProbabilityCalibrationModel_(marginalProbabilityCalibrationModel) {}
 
             float64 transformScoreIntoMarginalProbability(uint32 labelIndex, float32 score) const override {
-                float64 marginalProbability = util::logisticFunction(score);
+                float64 marginalProbability = math::logisticFunction(score);
                 return marginalProbabilityCalibrationModel_.calibrateMarginalProbability(labelIndex,
                                                                                          marginalProbability);
             }
 
             float64 transformScoreIntoMarginalProbability(uint32 labelIndex, float64 score) const override {
-                float64 marginalProbability = util::logisticFunction(score);
+                float64 marginalProbability = math::logisticFunction(score);
                 return marginalProbabilityCalibrationModel_.calibrateMarginalProbability(labelIndex,
                                                                                          marginalProbability);
             }

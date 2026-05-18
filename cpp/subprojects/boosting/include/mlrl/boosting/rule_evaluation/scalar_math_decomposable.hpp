@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/util/math.hpp"
+#include "mlrl/boosting/math/scalar_math.hpp"
 
 namespace boosting {
 
@@ -41,7 +41,7 @@ namespace boosting {
     static inline constexpr StatisticType calculateOutputWiseScore(StatisticType gradient, StatisticType hessian,
                                                                    float32 l1RegularizationWeight,
                                                                    float32 l2RegularizationWeight) {
-        return util::divideOrZero(-gradient + getL1RegularizationWeight(gradient, l1RegularizationWeight),
+        return math::divideOrZero(-gradient + getL1RegularizationWeight(gradient, l1RegularizationWeight),
                                   hessian + l2RegularizationWeight);
     }
 
@@ -67,5 +67,4 @@ namespace boosting {
         StatisticType l2RegularizationTerm = 0.5 * l2RegularizationWeight * scorePow;
         return quality + l1RegularizationTerm + l2RegularizationTerm;
     }
-
 }

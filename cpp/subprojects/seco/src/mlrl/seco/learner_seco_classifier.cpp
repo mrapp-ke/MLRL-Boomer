@@ -87,8 +87,7 @@ namespace seco {
     }
 
     std::unique_ptr<ISeCoClassifier> createSeCoClassifier(std::unique_ptr<ISeCoClassifier::IConfig> configPtr) {
-        std::unique_ptr<SeCoRuleLearnerConfigurator> configuratorPtr =
-          std::make_unique<SeCoRuleLearnerConfigurator>(std::move(configPtr));
+        auto configuratorPtr = std::make_unique<SeCoRuleLearnerConfigurator>(std::move(configPtr));
         return std::make_unique<SeCoClassifier>(std::move(configuratorPtr));
     }
 

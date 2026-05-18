@@ -83,6 +83,7 @@ In addition to the features mentioned above, several techniques that may speed u
 ### Parallelization
 
 - **Multi-threading** can be used for parallelizing the evaluation of a rule's potential refinements across several features, updating the gradients and Hessians of individual examples in parallel, or obtaining predictions for several examples in parallel.
+- **Single instruction, multiple data (SIMD)** operations supported by modern CPUs are used for parallelizing vector calculations.
 
 ### Other Optimizations
 

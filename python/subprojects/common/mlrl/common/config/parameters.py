@@ -28,6 +28,7 @@ from mlrl.common.cython.learner import (
     NoPartitionSamplingMixin,
     NoRulePruningMixin,
     NoSequentialPostOptimizationMixin,
+    NoSimdMixin,
     NoSizeStoppingCriterionMixin,
     NoTimeStoppingCriterionMixin,
     ParallelPredictionMixin,
@@ -39,6 +40,7 @@ from mlrl.common.cython.learner import (
     RNGMixin,
     RoundRobinOutputSamplingMixin,
     SequentialPostOptimizationMixin,
+    SimdMixin,
     SizeStoppingCriterionMixin,
     TimeStoppingCriterionMixin,
 )
@@ -122,7 +124,7 @@ class Parameter(ABC):
         """
         The name of a command line argument that corresponds to the parameter.
         """
-        return '--' + self.name.replace('_', '-')
+        return f'--{self.name.replace("_", "-")}'
 
     @override
     def __eq__(self, other):
@@ -329,6 +331,8 @@ class RuleInductionParameter(NominalParameter):
 
     OPTION_MAX_CONDITIONS = 'max_conditions'
 
+    OPTION_ALLOW_NEGATIONS = 'allow_negations'
+
     OPTION_MAX_HEAD_REFINEMENTS = 'max_head_refinements'
 
     OPTION_RECALCULATE_PREDICTIONS = 'recalculate_predictions'
@@ -349,6 +353,7 @@ class RuleInductionParameter(NominalParameter):
                 self.OPTION_MIN_COVERAGE,
                 self.OPTION_MIN_SUPPORT,
                 self.OPTION_MAX_CONDITIONS,
+                self.OPTION_ALLOW_NEGATIONS,
                 self.OPTION_MAX_HEAD_REFINEMENTS,
                 self.OPTION_RECALCULATE_PREDICTIONS,
             },
@@ -360,6 +365,7 @@ class RuleInductionParameter(NominalParameter):
                 self.OPTION_MIN_COVERAGE,
                 self.OPTION_MIN_SUPPORT,
                 self.OPTION_MAX_CONDITIONS,
+                self.OPTION_ALLOW_NEGATIONS,
                 self.OPTION_MAX_HEAD_REFINEMENTS,
                 self.OPTION_RECALCULATE_PREDICTIONS,
                 self.OPTION_BEAM_WIDTH,
@@ -374,6 +380,7 @@ class RuleInductionParameter(NominalParameter):
             conf.set_min_coverage(options.get_int(self.OPTION_MIN_COVERAGE, conf.get_min_coverage()))
             conf.set_min_support(options.get_float(self.OPTION_MIN_SUPPORT, conf.get_min_support()))
             conf.set_max_conditions(options.get_int(self.OPTION_MAX_CONDITIONS, conf.get_max_conditions()))
+            conf.set_negations_allowed(options.get_bool(self.OPTION_ALLOW_NEGATIONS, conf.are_negations_allowed()))
             conf.set_max_head_refinements(
                 options.get_int(self.OPTION_MAX_HEAD_REFINEMENTS, conf.get_max_head_refinements())
             )
@@ -385,6 +392,7 @@ class RuleInductionParameter(NominalParameter):
             conf.set_min_coverage(options.get_int(self.OPTION_MIN_COVERAGE, conf.get_min_coverage()))
             conf.set_min_support(options.get_float(self.OPTION_MIN_SUPPORT, conf.get_min_support()))
             conf.set_max_conditions(options.get_int(self.OPTION_MAX_CONDITIONS, conf.get_max_conditions()))
+            conf.set_negations_allowed(options.get_bool(self.OPTION_ALLOW_NEGATIONS, conf.are_negations_allowed()))
             conf.set_max_head_refinements(
                 options.get_int(self.OPTION_MAX_HEAD_REFINEMENTS, conf.get_max_head_refinements())
             )
@@ -827,6 +835,27 @@ class ParallelPredictionParameter(NominalParameter):
                 )
 
 
+class SimdParameter(NominalParameter):
+    """
+    A parameter that allows to configure whether single instruction, multiple data (SIMD) operations should be used or
+    not.
+    """
+
+    def __init__(self):
+        super().__init__(
+            name='simd', description='Whether single instruction, multiple data (SIMD) operations should be used or not'
+        )
+        self.add_value(name=BooleanOption.FALSE, mixin=NoSimdMixin)
+        self.add_value(name=BooleanOption.TRUE, mixin=SimdMixin)
+
+    @override
+    def _configure(self, config, value: str, options: Options):
+        if value == BooleanOption.FALSE:
+            config.use_no_simd_operations()
+        else:
+            config.use_simd_operations()
+
+
 class SizeStoppingCriterionParameter(IntParameter):
     """
     A parameter that allows to configure the maximum number of rules to be induced.
@@ -917,6 +946,7 @@ RULE_LEARNER_PARAMETERS = {
     ParallelRuleRefinementParameter(),
     ParallelStatisticUpdateParameter(),
     ParallelPredictionParameter(),
+    SimdParameter(),
     SizeStoppingCriterionParameter(),
     TimeStoppingCriterionParameter(),
     PostOptimizationParameter(),

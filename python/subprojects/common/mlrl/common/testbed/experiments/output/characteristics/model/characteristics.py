@@ -7,6 +7,8 @@ Provides classes for representing characteristics of rule models that are part o
 from functools import reduce
 from itertools import chain
 from typing import override
+from rich.console import ConsoleRenderable, Group
+from rich.text import Text
 
 from mlrl.common.testbed.experiments.output.characteristics.model.statistics import (
     BodyStatistics,
@@ -18,10 +20,11 @@ from mlrl.common.testbed.experiments.output.characteristics.model.statistics imp
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.output.data import TabularOutputData
-from mlrl.testbed.experiments.table import Alignment, RowWiseTable, Table
-from mlrl.testbed.util.format import format_number, format_percentage
+from mlrl.testbed.experiments.table import Column, RowWiseTable, Table
+from mlrl.testbed.util.format import format_percentage
 from mlrl.testbed.util.math import divide_or_zero
 
+from mlrl.util.format import format_value
 from mlrl.util.options import Options
 
 
@@ -70,17 +73,20 @@ class RuleModelCharacteristics(TabularOutputData):
         self.statistics = statistics
 
     @override
-    def to_text(self, options: Options, **_) -> str | None:
+    def to_text(self, options: Options, **_) -> str | ConsoleRenderable | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
         aggregated_rule_statistics = reduce(
             lambda aggr, rule_statistics: aggr + rule_statistics, self.statistics.rule_statistics, RuleStatistics()
         )
-        text = f'{self.__format_aggregated_body_statistics(aggregated_rule_statistics)}\n\n'
-        text += f'{self.__format_aggregated_head_statistics(aggregated_rule_statistics)}\n\n'
-        text += self.__format_aggregated_rule_statistics(aggregated_rule_statistics)
-        return text
+        return Group(
+            self.__format_aggregated_body_statistics(aggregated_rule_statistics),
+            Text(''),
+            self.__format_aggregated_head_statistics(aggregated_rule_statistics),
+            Text(''),
+            self.__format_aggregated_rule_statistics(aggregated_rule_statistics),
+        )
 
     @staticmethod
     def __format_body_statistics(body_statistics: BodyStatistics) -> list[str]:
@@ -94,7 +100,7 @@ class RuleModelCharacteristics(TabularOutputData):
             format_percentage(body_statistics.fraction_nominal_neq),
         ]
 
-    def __format_aggregated_body_statistics(self, aggregated_rule_statistics: RuleStatistics) -> str:
+    def __format_aggregated_body_statistics(self, aggregated_rule_statistics: RuleStatistics) -> ConsoleRenderable:
         statistics = self.statistics
         headers = [
             'Statistics about conditions',
@@ -106,8 +112,7 @@ class RuleModelCharacteristics(TabularOutputData):
             'Nominal == operator',
             'Nominal != operator',
         ]
-        alignments = [Alignment.LEFT] + [Alignment.RIGHT for _ in range(len(headers) - 1)]
-        table = RowWiseTable(*headers, alignments=alignments)
+        table = RowWiseTable(*headers)
         default_rule_statistics = statistics.default_rule_statistics
 
         if default_rule_statistics:
@@ -116,7 +121,14 @@ class RuleModelCharacteristics(TabularOutputData):
 
         body_statistics = aggregated_rule_statistics.body_statistics
         table.add_row(f'{statistics.num_rules} local rules', *self.__format_body_statistics(body_statistics))
-        return table.format(auto_rotate=False)
+        column_styles = [Column.Style.HEADER] + [Column.Style.VALUE for _ in range(len(headers) - 1)]
+        column_alignments = [Column.Alignment.LEFT] + [Column.Alignment.RIGHT for _ in range(len(headers) - 1)]
+        return table.to_rich_table(
+            auto_rotate=False,
+            border_style=Table.BorderStyle.INNER_LINES,
+            column_styles=column_styles,
+            column_alignments=column_alignments,
+        )
 
     @staticmethod
     def __format_head_statistics(head_statistics: HeadStatistics) -> list[str]:
@@ -126,11 +138,10 @@ class RuleModelCharacteristics(TabularOutputData):
             format_percentage(head_statistics.fraction_negative_predictions),
         ]
 
-    def __format_aggregated_head_statistics(self, aggregated_rule_statistics: RuleStatistics) -> str:
+    def __format_aggregated_head_statistics(self, aggregated_rule_statistics: RuleStatistics) -> ConsoleRenderable:
         statistics = self.statistics
         headers = ['Statistics about predictions', 'Total', 'Positive', 'Negative']
-        alignments = [Alignment.LEFT] + [Alignment.RIGHT for _ in range(len(headers) - 1)]
-        table = RowWiseTable(*headers, alignments=alignments)
+        table = RowWiseTable(*headers)
         default_rule_statistics = statistics.default_rule_statistics
 
         if default_rule_statistics:
@@ -139,26 +150,40 @@ class RuleModelCharacteristics(TabularOutputData):
 
         head_statistics = aggregated_rule_statistics.head_statistics
         table.add_row(f'{statistics.num_rules} local rules', *self.__format_head_statistics(head_statistics))
+        column_styles = [Column.Style.HEADER] + [Column.Style.VALUE for _ in range(len(headers) - 1)]
+        column_alignments = [Column.Alignment.LEFT] + [Column.Alignment.RIGHT for _ in range(len(headers) - 1)]
+        return table.to_rich_table(
+            auto_rotate=False,
+            border_style=Table.BorderStyle.INNER_LINES,
+            column_styles=column_styles,
+            column_alignments=column_alignments,
+        )
 
-        return table.format(auto_rotate=False)
-
-    def __format_aggregated_rule_statistics(self, aggregated_rule_statistics: RuleStatistics) -> str:
+    def __format_aggregated_rule_statistics(self, aggregated_rule_statistics: RuleStatistics) -> ConsoleRenderable:
         statistics = self.statistics
         num_rules = statistics.num_rules
-        table = RowWiseTable('Statistics per local rule', 'Minimum', 'Average', 'Maximum')
+        headers = ['Statistics per local rule', 'Minimum', 'Average', 'Maximum']
+        table = RowWiseTable(*headers)
         table.add_row(
             'Conditions',
-            format_number(statistics.min_conditions),
-            format_number(divide_or_zero(aggregated_rule_statistics.body_statistics.num_conditions, num_rules)),
-            format_number(statistics.max_conditions),
+            format_value(statistics.min_conditions),
+            format_value(divide_or_zero(aggregated_rule_statistics.body_statistics.num_conditions, num_rules)),
+            format_value(statistics.max_conditions),
         )
         table.add_row(
             'Predictions',
-            format_number(statistics.min_predictions),
-            format_number(divide_or_zero(aggregated_rule_statistics.head_statistics.num_predictions, num_rules)),
-            format_number(statistics.max_predictions),
+            format_value(statistics.min_predictions),
+            format_value(divide_or_zero(aggregated_rule_statistics.head_statistics.num_predictions, num_rules)),
+            format_value(statistics.max_predictions),
         )
-        return table.format(auto_rotate=False)
+        column_styles = [Column.Style.HEADER] + [Column.Style.VALUE for _ in range(len(headers) - 1)]
+        column_alignments = [Column.Alignment.LEFT] + [Column.Alignment.RIGHT for _ in range(len(headers) - 1)]
+        return table.to_rich_table(
+            auto_rotate=False,
+            border_style=Table.BorderStyle.INNER_LINES,
+            column_styles=column_styles,
+            column_alignments=column_alignments,
+        )
 
     @override
     def to_table(self, options: Options, **_) -> Table | None:
@@ -185,7 +210,7 @@ class RuleModelCharacteristics(TabularOutputData):
         )
 
         for i, rule_statistics in enumerate(chain(default_rule_statistics, statistics.rule_statistics)):
-            rule_name = 'Rule ' + str(i + 1)
+            rule_name = f'Rule {i + 1}'
 
             if i == 0 and statistics.has_default_rule:
                 rule_name += ' (Default rule)'

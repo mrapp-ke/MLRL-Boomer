@@ -79,7 +79,7 @@ class PredictionWriter(ResultWriter):
                     attribute_type = AttributeType.NUMERICAL
 
                 outputs = dataset.outputs
-                outputs = [Attribute('Prediction ' + output.name, attribute_type, nominal_values) for output in outputs]
+                outputs = [Attribute(f'Prediction {output.name}', attribute_type, nominal_values) for output in outputs]
                 return [(state, PredictionDataset(replace(dataset, y=predictions, outputs=outputs)))]
 
             return []

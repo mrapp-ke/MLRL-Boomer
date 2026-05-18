@@ -9,3 +9,4 @@
 
 #define MULTI_THREADING_SUPPORT_ENABLED @multi_threading_support_enabled@
 #define GPU_SUPPORT_ENABLED @gpu_support_enabled@
+#define SIMD_SUPPORT_ENABLED @simd_support_enabled@

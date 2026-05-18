@@ -4,8 +4,6 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for writing output data to sinks.
 """
 
-import logging as log
-
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from pathlib import Path
@@ -21,6 +19,7 @@ from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData, 
 from mlrl.testbed.experiments.output.policies import OutputErrorPolicy
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.log import Log
 
 
 class DataExtractor(ABC):
@@ -157,10 +156,10 @@ class OutputWriter:
             if self.output_error_policy == OutputErrorPolicy.EXIT:
                 raise error
 
-            log.error(
+            Log.error(
                 f'Failed to extract output data from experimental state via extractor of type '
                 f'{type(extractor).__name__}',
-                exc_info=error,
+                error=error,
             )
             return []
 
@@ -174,7 +173,7 @@ class OutputWriter:
                 if result:
                     return result
         else:
-            log.warning(f'No extractors have been added to output writer of type {type(self).__name__}')
+            Log.warning(f'No extractors have been added to output writer of type {type(self).__name__}')
 
         return []
 
@@ -185,9 +184,9 @@ class OutputWriter:
             if self.output_error_policy == OutputErrorPolicy.EXIT:
                 raise error
 
-            log.error(
+            Log.error(
                 f'Failed to write output data of type "{type(output_data).__name__}" to sink {type(sink).__name__}',
-                exc_info=error,
+                error=error,
             )
 
     def __init__(self, *extractors: DataExtractor):

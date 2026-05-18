@@ -12,7 +12,10 @@ namespace boosting {
     /**
      * Allows to create instances of the class `IDecomposableRuleEvaluationFactory` that allow to calculate the
      * predictions of complete rules, which predict for all available outputs.
+     *
+     * @tparam VectorMath The type that implements basic operations for calculating with gradients and Hessians
      */
+    template<typename VectorMath>
     class DecomposableCompleteRuleEvaluationFactory final : public IDecomposableRuleEvaluationFactory {
         private:
 
@@ -30,20 +33,20 @@ namespace boosting {
              */
             DecomposableCompleteRuleEvaluationFactory(float32 l1RegularizationWeight, float32 l2RegularizationWeight);
 
-            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float32>>> create(
-              const DenseDecomposableStatisticVector<float32>& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float32>>> create(
+              const DenseDecomposableStatisticVectorView<float32>& statisticVector,
               const CompleteIndexVector& indexVector) const override;
 
-            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float32>>> create(
-              const DenseDecomposableStatisticVector<float32>& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float32>>> create(
+              const DenseDecomposableStatisticVectorView<float32>& statisticVector,
               const PartialIndexVector& indexVector) const override;
 
-            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float64>>> create(
-              const DenseDecomposableStatisticVector<float64>& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float64>>> create(
+              const DenseDecomposableStatisticVectorView<float64>& statisticVector,
               const CompleteIndexVector& indexVector) const override;
 
-            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float64>>> create(
-              const DenseDecomposableStatisticVector<float64>& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float64>>> create(
+              const DenseDecomposableStatisticVectorView<float64>& statisticVector,
               const PartialIndexVector& indexVector) const override;
     };
 

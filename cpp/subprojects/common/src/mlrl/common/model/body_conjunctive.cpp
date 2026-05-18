@@ -10,8 +10,8 @@ template<typename Threshold, typename Compare>
 bool ConjunctiveBody::ConditionVector<Threshold, Compare>::covers(View<const float32>::const_iterator begin,
                                                                   View<const float32>::const_iterator end) const {
     uint32 numConditions = this->getNumElements();
-    typename ConditionVector<Threshold, Compare>::index_const_iterator featureIndexIterator = this->indices_cbegin();
-    typename ConditionVector<Threshold, Compare>::value_const_iterator thresholdIterator = this->values_cbegin();
+    auto featureIndexIterator = this->indices_cbegin();
+    auto thresholdIterator = this->values_cbegin();
 
     for (uint32 i = 0; i < numConditions; i++) {
         uint32 featureIndex = featureIndexIterator[i];
@@ -34,8 +34,8 @@ bool ConjunctiveBody::ConditionVector<Threshold, Compare>::covers(View<uint32>::
                                                                   float32 sparseValue, float32* tmpArray1,
                                                                   uint32* tmpArray2, uint32 n) const {
     uint32 numConditions = this->getNumElements();
-    typename ConditionVector<Threshold, Compare>::index_const_iterator featureIndexIterator = this->indices_cbegin();
-    typename ConditionVector<Threshold, Compare>::value_const_iterator thresholdIterator = this->values_cbegin();
+    auto featureIndexIterator = this->indices_cbegin();
+    auto thresholdIterator = this->values_cbegin();
 
     for (uint32 i = 0; i < numConditions; i++) {
         uint32 featureIndex = featureIndexIterator[i];
