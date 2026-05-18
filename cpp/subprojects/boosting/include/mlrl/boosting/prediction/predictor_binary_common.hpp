@@ -118,13 +118,13 @@ namespace boosting {
                                            typename Model::const_iterator rulesBegin,
                                            typename Model::const_iterator rulesEnd, uint32 threadIndex,
                                            uint32 exampleIndex, uint32 predictionIndex) const override {
-                        CContiguousView<float64>::value_iterator realIterator = realMatrix_.values_begin(threadIndex);
-                        util::setViewToZeros(realIterator, realMatrix_.numCols);
+                        auto realBegin = realMatrix_.values_begin(threadIndex);
+                        auto realEnd = realMatrix_.values_end(threadIndex);
+                        std::fill(realBegin, realEnd, 0);
                         ScorePredictionDelegate<FeatureMatrix, Model>(realMatrix_)
                           .predictForExample(featureMatrix, rulesBegin, rulesEnd, threadIndex, exampleIndex,
                                              threadIndex);
-                        binaryTransformation_.apply(realIterator, realMatrix_.values_end(threadIndex),
-                                                    predictionMatrix_.values_begin(predictionIndex),
+                        binaryTransformation_.apply(realBegin, realEnd, predictionMatrix_.values_begin(predictionIndex),
                                                     predictionMatrix_.values_end(predictionIndex));
                     }
             };
@@ -239,7 +239,7 @@ namespace boosting {
                                 ScorePredictionDelegate<FeatureMatrix, Model>(realMatrix_)
                                   .predictForExample(featureMatrix, rulesBegin, rulesEnd, threadIndex, exampleIndex,
                                                      predictionIndex);
-                                BinaryLilMatrix::row predictionRow = predictionMatrix_[predictionIndex];
+                                auto& predictionRow = predictionMatrix_[predictionIndex];
                                 predictionRow.clear();
                                 binaryTransformation_.apply(realMatrix_.values_cbegin(predictionIndex),
                                                             realMatrix_.values_cend(predictionIndex), predictionRow);
@@ -310,13 +310,14 @@ namespace boosting {
                                              typename Model::const_iterator rulesBegin,
                                              typename Model::const_iterator rulesEnd, uint32 threadIndex,
                                              uint32 exampleIndex, uint32 predictionIndex) const override {
-                        CContiguousView<float64>::value_iterator realIterator = realMatrix_.values_begin(threadIndex);
-                        util::setViewToZeros(realIterator, realMatrix_.numCols);
+                        auto realBegin = realMatrix_.values_begin(threadIndex);
+                        auto realEnd = realMatrix_.values_end(threadIndex);
+                        std::fill(realBegin, realEnd, 0);
                         ScorePredictionDelegate<FeatureMatrix, Model>(realMatrix_)
                           .predictForExample(featureMatrix, rulesBegin, rulesEnd, threadIndex, exampleIndex,
                                              threadIndex);
-                        BinaryLilMatrix::row predictionRow = predictionMatrix_[predictionIndex];
-                        binaryTransformation_.apply(realIterator, realMatrix_.values_end(threadIndex), predictionRow);
+                        auto& predictionRow = predictionMatrix_[predictionIndex];
+                        binaryTransformation_.apply(realBegin, realEnd, predictionRow);
                         return static_cast<uint32>(predictionRow.size());
                     }
             };

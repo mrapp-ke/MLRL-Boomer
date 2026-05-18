@@ -13,7 +13,7 @@ TEST(NumericalFeatureTypeTest, createNumericalFeatureVectorFromFortranContiguous
     // Initialize feature matrix...
     uint32 numExamples = 7;
     AllocatedFortranContiguousView<float32> featureView(numExamples, 1);
-    AllocatedFortranContiguousView<float32>::value_iterator features = featureView.values_begin(0);
+    auto features = featureView.values_begin(0);
     features[0] = 0.2;
     features[1] = -0.1;
     features[2] = NAN;
@@ -62,7 +62,7 @@ TEST(NumericalFeatureTypeTest, createEqualFeatureVectorFromFortranContiguousView
     // Initialize feature matrix...
     uint32 numExamples = 2;
     AllocatedFortranContiguousView<float32> featureView(numExamples, 1);
-    AllocatedFortranContiguousView<float32>::value_iterator features = featureView.values_begin(0);
+    auto features = featureView.values_begin(0);
     features[0] = 0.0;
     features[1] = 0.0;
     FortranContiguousView<const float32> view(features, numExamples, 1);

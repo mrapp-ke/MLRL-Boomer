@@ -2,8 +2,8 @@
 
 #include "mlrl/common/data/array.hpp"
 #include "mlrl/common/data/indexed_value.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 #include "mlrl/common/sampling/partition_single.hpp"
-#include "mlrl/common/util/math.hpp"
 #include "stratified_sampling_common.hpp"
 
 #include <set>
@@ -40,12 +40,12 @@ static inline uint32* copyLabelMatrix(uint32* indices, uint32* indptr, const Bin
     uint32 numLabels = labelMatrix.numCols;
 
     // Set column indices of the CSC matrix to zero...
-    util::setViewToZeros(indptr, numLabels);
+    std::fill(indptr, indptr + numLabels, 0);
 
     // Determine the number of dense elements per column...
     for (uint32 i = 0; i < numExamples; i++) {
         uint32 exampleIndex = indicesBegin[i];
-        BinaryCsrView::index_const_iterator labelIndexIterator = labelMatrix.indices_cbegin(exampleIndex);
+        auto labelIndexIterator = labelMatrix.indices_cbegin(exampleIndex);
         uint32 numRelevantLabels = labelMatrix.indices_cend(exampleIndex) - labelIndexIterator;
 
         for (uint32 j = 0; j < numRelevantLabels; j++) {
@@ -67,7 +67,7 @@ static inline uint32* copyLabelMatrix(uint32* indices, uint32* indptr, const Bin
     // Set the row indices of the CSC matrix. This will modify the column indices...
     for (uint32 i = 0; i < numExamples; i++) {
         uint32 exampleIndex = indicesBegin[i];
-        BinaryCsrView::index_const_iterator labelIndexIterator = labelMatrix.indices_cbegin(exampleIndex);
+        auto labelIndexIterator = labelMatrix.indices_cbegin(exampleIndex);
         uint32 numRelevantLabels = labelMatrix.indices_cend(exampleIndex) - labelIndexIterator;
 
         for (uint32 j = 0; j < numRelevantLabels; j++) {
@@ -186,7 +186,7 @@ struct CompareIndexedValue final {
 static inline void updateNumExamplesPerLabel(const CContiguousView<const uint8>& labelMatrix, uint32 exampleIndex,
                                              Array<uint32>& numExamplesPerLabel,
                                              std::unordered_map<uint32, uint32>& affectedLabelIndices) {
-    CContiguousView<const uint8>::value_const_iterator labelIterator = labelMatrix.values_cbegin(exampleIndex);
+    auto labelIterator = labelMatrix.values_cbegin(exampleIndex);
     uint32 numLabels = labelMatrix.numCols;
 
     for (uint32 i = 0; i < numLabels; i++) {
@@ -201,7 +201,7 @@ static inline void updateNumExamplesPerLabel(const CContiguousView<const uint8>&
 static inline void updateNumExamplesPerLabel(const BinaryCsrView& labelMatrix, uint32 exampleIndex,
                                              Array<uint32>& numExamplesPerLabel,
                                              std::unordered_map<uint32, uint32>& affectedLabelIndices) {
-    BinaryCsrView::index_const_iterator indexIterator = labelMatrix.indices_cbegin(exampleIndex);
+    auto indexIterator = labelMatrix.indices_cbegin(exampleIndex);
     uint32 numLabels = labelMatrix.indices_cend(exampleIndex) - indexIterator;
 
     for (uint32 i = 0; i < numLabels; i++) {
@@ -286,7 +286,7 @@ class StratificationMatrix final : public AllocatedBinaryCscView {
                 numCols++;
 
                 // Iterate the examples that are associated with the current label, if no weight has been set yet...
-                CscLabelMatrix::index_const_iterator indexIterator = columnWiseLabelMatrix.indices_cbegin(labelIndex);
+                auto indexIterator = columnWiseLabelMatrix.indices_cbegin(labelIndex);
                 uint32 numExamples = columnWiseLabelMatrix.indices_cend(labelIndex) - indexIterator;
 
                 for (uint32 i = 0; i < numExamples; i++) {
@@ -314,7 +314,7 @@ class StratificationMatrix final : public AllocatedBinaryCscView {
 
                     if (key != labelIndex) {
                         uint32 value = it->second;
-                        SortedSet::iterator it2 = sortedLabelIndices.find(IndexedValue<uint32>(key, value));
+                        auto it2 = sortedLabelIndices.find(IndexedValue<uint32>(key, value));
                         uint32 numRemaining = numExamplesPerLabel[key];
 
                         if (numRemaining > 0) {
@@ -372,7 +372,7 @@ static inline void sampleWeightsInternally(WeightVector& weightVector, WeightIte
                                            uint32 minSamples, uint32 maxSamples, RNG& rng) {
     uint32 numRows = stratificationMatrix.getNumRows();
     uint32 numCols = stratificationMatrix.getNumCols();
-    uint32 numTotalSamples = util::calculateBoundedFraction(numRows, sampleSize, minSamples, maxSamples);
+    uint32 numTotalSamples = math::calculateBoundedFraction(numRows, sampleSize, minSamples, maxSamples);
     uint32 numTotalOutOfSamples = numRows - numTotalSamples;
     uint32 numNonZeroWeights = 0;
     uint32 numZeroWeights = 0;
@@ -438,8 +438,8 @@ void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleWeights(
 template<typename LabelMatrix, typename IndexIterator>
 void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleBiPartition(BiPartition& partition) {
     uint32 numCols = stratificationMatrix_.getNumCols();
-    BiPartition::iterator firstIterator = partition.first_begin();
-    BiPartition::iterator secondIterator = partition.second_begin();
+    auto firstIterator = partition.first_begin();
+    auto secondIterator = partition.second_begin();
     uint32 numFirst = partition.getNumFirst();
     uint32 numSecond = partition.getNumSecond();
 

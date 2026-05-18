@@ -47,14 +47,14 @@ class OrdinalFeatureVectorView final : public AbstractFeatureVectorDecorator<Nom
 
         void searchForRefinement(SingleRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
-                                 uint32 minCoverage, Refinement& refinement) const override {
+                                 uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
             searchForOrdinalRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
                                        outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }
 
         void searchForRefinement(FixedRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
-                                 uint32 minCoverage, Refinement& refinement) const override {
+                                 uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
             searchForOrdinalRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
                                        outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }
@@ -109,14 +109,14 @@ class AllocatedOrdinalFeatureVectorView final : public AbstractFeatureVectorDeco
 
         void searchForRefinement(SingleRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
-                                 uint32 minCoverage, Refinement& refinement) const override {
+                                 uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
             searchForOrdinalRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
                                        outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }
 
         void searchForRefinement(FixedRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
-                                 uint32 minCoverage, Refinement& refinement) const override {
+                                 uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
             searchForOrdinalRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
                                        outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }
@@ -201,14 +201,14 @@ class OrdinalFeatureVectorDecorator final : public AbstractBinnedFeatureVectorDe
 
         void searchForRefinement(SingleRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
-                                 uint32 minCoverage, Refinement& refinement) const override {
+                                 uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
             searchForOrdinalRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
                                        outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }
 
         void searchForRefinement(FixedRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
-                                 uint32 minCoverage, Refinement& refinement) const override {
+                                 uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
             searchForOrdinalRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
                                        outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }

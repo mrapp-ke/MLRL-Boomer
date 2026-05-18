@@ -22,6 +22,10 @@ on:
         required: false
         type: string
         default: enabled
+      simd_support:
+        required: false
+        type: string
+        default: enabled
       gpu_support:
         required: false
         type: string
@@ -33,6 +37,7 @@ on:
 env:
   SUBPROJECTS: ${{ inputs.subproject }}
   MULTI_THREADING_SUPPORT: ${{ inputs.multi_threading_support }}
+  SIMD_SUPPORT: ${{ inputs.simd_support }}
   GPU_SUPPORT: ${{ inputs.gpu_support }}
 jobs:
   linux_build:

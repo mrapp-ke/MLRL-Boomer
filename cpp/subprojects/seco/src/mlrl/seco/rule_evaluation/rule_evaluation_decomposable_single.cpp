@@ -45,17 +45,25 @@ namespace seco {
                                                 const StatisticVector& confusionMatricesTotal,
                                                 const StatisticVector& confusionMatricesCovered) override {
                 uint32 numElements = labelIndices_.getNumElements();
-                typename IndexVector::const_iterator indexIterator = labelIndices_.cbegin();
-                typename StatisticVector::const_iterator totalIterator = confusionMatricesTotal.cbegin();
-                typename StatisticVector::const_iterator coveredIterator = confusionMatricesCovered.cbegin();
+                auto indexIterator = labelIndices_.cbegin();
+                auto inTotal = confusionMatricesTotal.in_cbegin();
+                auto ipTotal = confusionMatricesTotal.ip_cbegin();
+                auto rnTotal = confusionMatricesTotal.rn_cbegin();
+                auto rpTotal = confusionMatricesTotal.rp_cbegin();
+                auto inCovered = confusionMatricesCovered.in_cbegin();
+                auto ipCovered = confusionMatricesCovered.ip_cbegin();
+                auto rnCovered = confusionMatricesCovered.rn_cbegin();
+                auto rpCovered = confusionMatricesCovered.rp_cbegin();
                 uint32 bestIndex = indexIterator[0];
-                float32 bestQuality =
-                  calculateOutputWiseQuality(totalIterator[bestIndex], coveredIterator[0], *heuristicPtr_);
+                float32 bestQuality = calculateOutputWiseQuality(
+                  inTotal[bestIndex], ipTotal[bestIndex], rnTotal[bestIndex], rpTotal[bestIndex], inCovered[0],
+                  ipCovered[0], rnCovered[0], rpCovered[0], *heuristicPtr_);
 
                 for (uint32 i = 1; i < numElements; i++) {
                     uint32 index = indexIterator[i];
-                    float32 quality =
-                      calculateOutputWiseQuality(totalIterator[index], coveredIterator[i], *heuristicPtr_);
+                    float32 quality = calculateOutputWiseQuality(inTotal[index], ipTotal[index], rnTotal[index],
+                                                                 rpTotal[index], inCovered[i], ipCovered[i],
+                                                                 rnCovered[i], rpCovered[i], *heuristicPtr_);
 
                     if (quality > bestQuality) {
                         bestIndex = index;
@@ -77,39 +85,39 @@ namespace seco {
       std::unique_ptr<IHeuristicFactory> heuristicFactoryPtr)
         : heuristicFactoryPtr_(std::move(heuristicFactoryPtr)) {}
 
-    std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVector<uint32>>>
-      DecomposableSingleOutputRuleEvaluationFactory::create(const DenseConfusionMatrixVector<uint32>& statisticVector,
-                                                            const CompleteIndexVector& indexVector) const {
+    std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVectorView<uint32>>>
+      DecomposableSingleOutputRuleEvaluationFactory::create(
+        const DenseConfusionMatrixVectorView<uint32>& statisticVector, const CompleteIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         return std::make_unique<
-          DecomposableSingleOutputRuleEvaluation<DenseConfusionMatrixVector<uint32>, CompleteIndexVector>>(
+          DecomposableSingleOutputRuleEvaluation<DenseConfusionMatrixVectorView<uint32>, CompleteIndexVector>>(
           indexVector, std::move(heuristicPtr));
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVector<uint32>>>
-      DecomposableSingleOutputRuleEvaluationFactory::create(const DenseConfusionMatrixVector<uint32>& statisticVector,
-                                                            const PartialIndexVector& indexVector) const {
+    std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVectorView<uint32>>>
+      DecomposableSingleOutputRuleEvaluationFactory::create(
+        const DenseConfusionMatrixVectorView<uint32>& statisticVector, const PartialIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         return std::make_unique<
-          DecomposableSingleOutputRuleEvaluation<DenseConfusionMatrixVector<uint32>, PartialIndexVector>>(
+          DecomposableSingleOutputRuleEvaluation<DenseConfusionMatrixVectorView<uint32>, PartialIndexVector>>(
           indexVector, std::move(heuristicPtr));
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVector<float32>>>
-      DecomposableSingleOutputRuleEvaluationFactory::create(const DenseConfusionMatrixVector<float32>& statisticVector,
-                                                            const CompleteIndexVector& indexVector) const {
+    std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVectorView<float32>>>
+      DecomposableSingleOutputRuleEvaluationFactory::create(
+        const DenseConfusionMatrixVectorView<float32>& statisticVector, const CompleteIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         return std::make_unique<
-          DecomposableSingleOutputRuleEvaluation<DenseConfusionMatrixVector<float32>, CompleteIndexVector>>(
+          DecomposableSingleOutputRuleEvaluation<DenseConfusionMatrixVectorView<float32>, CompleteIndexVector>>(
           indexVector, std::move(heuristicPtr));
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVector<float32>>>
-      DecomposableSingleOutputRuleEvaluationFactory::create(const DenseConfusionMatrixVector<float32>& statisticVector,
-                                                            const PartialIndexVector& indexVector) const {
+    std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVectorView<float32>>>
+      DecomposableSingleOutputRuleEvaluationFactory::create(
+        const DenseConfusionMatrixVectorView<float32>& statisticVector, const PartialIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         return std::make_unique<
-          DecomposableSingleOutputRuleEvaluation<DenseConfusionMatrixVector<float32>, PartialIndexVector>>(
+          DecomposableSingleOutputRuleEvaluation<DenseConfusionMatrixVectorView<float32>, PartialIndexVector>>(
           indexVector, std::move(heuristicPtr));
     }
 

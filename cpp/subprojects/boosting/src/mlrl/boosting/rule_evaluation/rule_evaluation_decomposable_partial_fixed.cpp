@@ -1,5 +1,7 @@
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_decomposable_partial_fixed.hpp"
 
+#include "mlrl/boosting/rule_evaluation/simd/vector_math_decomposable_simd.hpp"
+#include "mlrl/boosting/rule_evaluation/vector_math_decomposable.hpp"
 #include "rule_evaluation_decomposable_complete_common.hpp"
 #include "rule_evaluation_decomposable_partial_fixed_common.hpp"
 
@@ -52,14 +54,14 @@ namespace boosting {
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
                 uint32 numElements = statisticVector.getNumElements();
                 uint32 numPredictions = indexVector_.getNumElements();
-                typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                typename SparseArrayVector<statistic_type>::iterator tmpIterator = tmpVector_.begin();
-                sortOutputWiseScores(tmpIterator, statisticIterator, numElements, numPredictions,
+                auto gradientIterator = statisticVector.gradients_cbegin();
+                auto hessianIterator = statisticVector.hessians_cbegin();
+                auto tmpIterator = tmpVector_.begin();
+                sortOutputWiseScores(tmpIterator, gradientIterator, hessianIterator, numElements, numPredictions,
                                      l1RegularizationWeight_, l2RegularizationWeight_);
-                PartialIndexVector::iterator indexIterator = indexVector_.begin();
-                typename DenseScoreVector<statistic_type, PartialIndexVector>::value_iterator valueIterator =
-                  scoreVector_.values_begin();
-                typename IndexVector::const_iterator outputIndexIterator = outputIndices_.cbegin();
+                auto indexIterator = indexVector_.begin();
+                auto valueIterator = scoreVector_.values_begin();
+                auto outputIndexIterator = outputIndices_.cbegin();
                 statistic_type quality = 0;
 
                 for (uint32 i = 0; i < numPredictions; i++) {
@@ -68,9 +70,9 @@ namespace boosting {
                     statistic_type predictedScore = entry.value;
                     indexIterator[i] = outputIndexIterator[index];
                     valueIterator[i] = predictedScore;
-                    const Statistic<statistic_type>& statistic = statisticIterator[index];
-                    quality += calculateOutputWiseQuality(predictedScore, statistic.gradient, statistic.hessian,
-                                                          l1RegularizationWeight_, l2RegularizationWeight_);
+                    quality +=
+                      calculateOutputWiseQuality(predictedScore, gradientIterator[index], hessianIterator[index],
+                                                 l1RegularizationWeight_, l2RegularizationWeight_);
                 }
 
                 scoreVector_.quality = quality;
@@ -78,128 +80,186 @@ namespace boosting {
             }
     };
 
-    DecomposableFixedPartialRuleEvaluationFactory::DecomposableFixedPartialRuleEvaluationFactory(
+    template<typename VectorMath>
+    DecomposableFixedPartialRuleEvaluationFactory<VectorMath>::DecomposableFixedPartialRuleEvaluationFactory(
       float32 outputRatio, uint32 minOutputs, uint32 maxOutputs, float32 l1RegularizationWeight,
       float32 l2RegularizationWeight)
         : outputRatio_(outputRatio), minOutputs_(minOutputs), maxOutputs_(maxOutputs),
           l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {}
 
-    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float32>>>
-      DecomposableFixedPartialRuleEvaluationFactory::create(
-        const DenseDecomposableStatisticVector<float32>& statisticVector,
+    template<typename VectorMath>
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float32>>>
+      DecomposableFixedPartialRuleEvaluationFactory<VectorMath>::create(
+        const DenseDecomposableStatisticVectorView<float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
-          util::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
+          math::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
         return std::make_unique<
-          DecomposableFixedPartialRuleEvaluation<DenseDecomposableStatisticVector<float32>, CompleteIndexVector>>(
+          DecomposableFixedPartialRuleEvaluation<DenseDecomposableStatisticVectorView<float32>, CompleteIndexVector>>(
           indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float32>>>
-      DecomposableFixedPartialRuleEvaluationFactory::create(
-        const DenseDecomposableStatisticVector<float32>& statisticVector, const PartialIndexVector& indexVector) const {
-        return std::make_unique<
-          DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVector<float32>, PartialIndexVector>>(
-          indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
-    }
-
-    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float64>>>
-      DecomposableFixedPartialRuleEvaluationFactory::create(
-        const DenseDecomposableStatisticVector<float64>& statisticVector,
-        const CompleteIndexVector& indexVector) const {
-        uint32 numPredictions =
-          util::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
-        return std::make_unique<
-          DecomposableFixedPartialRuleEvaluation<DenseDecomposableStatisticVector<float64>, CompleteIndexVector>>(
-          indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);
-    }
-
-    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float64>>>
-      DecomposableFixedPartialRuleEvaluationFactory::create(
-        const DenseDecomposableStatisticVector<float64>& statisticVector, const PartialIndexVector& indexVector) const {
-        return std::make_unique<
-          DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVector<float64>, PartialIndexVector>>(
-          indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
-    }
-
-    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32, uint32>>>
-      DecomposableFixedPartialRuleEvaluationFactory::create(
-        const SparseDecomposableStatisticVector<float32, uint32>& statisticVector,
-        const CompleteIndexVector& indexVector) const {
-        uint32 numPredictions =
-          util::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
-        return std::make_unique<DecomposableFixedPartialRuleEvaluation<
-          SparseDecomposableStatisticVector<float32, uint32>, CompleteIndexVector>>(
-          indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);
-    }
-
-    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32, uint32>>>
-      DecomposableFixedPartialRuleEvaluationFactory::create(
-        const SparseDecomposableStatisticVector<float32, uint32>& statisticVector,
+    template<typename VectorMath>
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float32>>>
+      DecomposableFixedPartialRuleEvaluationFactory<VectorMath>::create(
+        const DenseDecomposableStatisticVectorView<float32>& statisticVector,
         const PartialIndexVector& indexVector) const {
-        return std::make_unique<
-          DecomposableCompleteRuleEvaluation<SparseDecomposableStatisticVector<float32, uint32>, PartialIndexVector>>(
+        if (indexVector.getNumElements() > 1) {
+            return std::make_unique<DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVectorView<float32>,
+                                                                       PartialIndexVector, VectorMath>>(
+              indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
+        }
+
+        return std::make_unique<DecomposableCompleteRuleEvaluation<
+          DenseDecomposableStatisticVectorView<float32>, PartialIndexVector, SequentialDecomposableVectorMath>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
-    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32, float32>>>
-      DecomposableFixedPartialRuleEvaluationFactory::create(
-        const SparseDecomposableStatisticVector<float32, float32>& statisticVector,
+    template<typename VectorMath>
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float64>>>
+      DecomposableFixedPartialRuleEvaluationFactory<VectorMath>::create(
+        const DenseDecomposableStatisticVectorView<float64>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
-          util::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
-        return std::make_unique<DecomposableFixedPartialRuleEvaluation<
-          SparseDecomposableStatisticVector<float32, float32>, CompleteIndexVector>>(
+          math::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
+        return std::make_unique<
+          DecomposableFixedPartialRuleEvaluation<DenseDecomposableStatisticVectorView<float64>, CompleteIndexVector>>(
           indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
-    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32, float32>>>
-      DecomposableFixedPartialRuleEvaluationFactory::create(
-        const SparseDecomposableStatisticVector<float32, float32>& statisticVector,
+    template<typename VectorMath>
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float64>>>
+      DecomposableFixedPartialRuleEvaluationFactory<VectorMath>::create(
+        const DenseDecomposableStatisticVectorView<float64>& statisticVector,
         const PartialIndexVector& indexVector) const {
-        return std::make_unique<
-          DecomposableCompleteRuleEvaluation<SparseDecomposableStatisticVector<float32, float32>, PartialIndexVector>>(
+        if (indexVector.getNumElements() > 1) {
+            return std::make_unique<DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVectorView<float64>,
+                                                                       PartialIndexVector, VectorMath>>(
+              indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
+        }
+
+        return std::make_unique<DecomposableCompleteRuleEvaluation<
+          DenseDecomposableStatisticVectorView<float64>, PartialIndexVector, SequentialDecomposableVectorMath>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
-    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float64, uint32>>>
-      DecomposableFixedPartialRuleEvaluationFactory::create(
-        const SparseDecomposableStatisticVector<float64, uint32>& statisticVector,
+    template<typename VectorMath>
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVectorView<float32, uint32>>>
+      DecomposableFixedPartialRuleEvaluationFactory<VectorMath>::create(
+        const SparseDecomposableStatisticVectorView<float32, uint32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
-          util::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
+          math::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
         return std::make_unique<DecomposableFixedPartialRuleEvaluation<
-          SparseDecomposableStatisticVector<float64, uint32>, CompleteIndexVector>>(
+          SparseDecomposableStatisticVectorView<float32, uint32>, CompleteIndexVector>>(
           indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
-    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float64, uint32>>>
-      DecomposableFixedPartialRuleEvaluationFactory::create(
-        const SparseDecomposableStatisticVector<float64, uint32>& statisticVector,
+    template<typename VectorMath>
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVectorView<float32, uint32>>>
+      DecomposableFixedPartialRuleEvaluationFactory<VectorMath>::create(
+        const SparseDecomposableStatisticVectorView<float32, uint32>& statisticVector,
         const PartialIndexVector& indexVector) const {
+        if (indexVector.getNumElements() > 1) {
+            return std::make_unique<DecomposableCompleteRuleEvaluation<
+              SparseDecomposableStatisticVectorView<float32, uint32>, PartialIndexVector, VectorMath>>(
+              indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
+        }
+
         return std::make_unique<
-          DecomposableCompleteRuleEvaluation<SparseDecomposableStatisticVector<float64, uint32>, PartialIndexVector>>(
-          indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
+          DecomposableCompleteRuleEvaluation<SparseDecomposableStatisticVectorView<float32, uint32>, PartialIndexVector,
+                                             SequentialDecomposableVectorMath>>(indexVector, l1RegularizationWeight_,
+                                                                                l2RegularizationWeight_);
     }
 
-    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float64, float32>>>
-      DecomposableFixedPartialRuleEvaluationFactory::create(
-        const SparseDecomposableStatisticVector<float64, float32>& statisticVector,
+    template<typename VectorMath>
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVectorView<float32, float32>>>
+      DecomposableFixedPartialRuleEvaluationFactory<VectorMath>::create(
+        const SparseDecomposableStatisticVectorView<float32, float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
-          util::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
+          math::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
         return std::make_unique<DecomposableFixedPartialRuleEvaluation<
-          SparseDecomposableStatisticVector<float64, float32>, CompleteIndexVector>>(
+          SparseDecomposableStatisticVectorView<float32, float32>, CompleteIndexVector>>(
           indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
-    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float64, float32>>>
-      DecomposableFixedPartialRuleEvaluationFactory::create(
-        const SparseDecomposableStatisticVector<float64, float32>& statisticVector,
+    template<typename VectorMath>
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVectorView<float32, float32>>>
+      DecomposableFixedPartialRuleEvaluationFactory<VectorMath>::create(
+        const SparseDecomposableStatisticVectorView<float32, float32>& statisticVector,
         const PartialIndexVector& indexVector) const {
+        if (indexVector.getNumElements() > 1) {
+            return std::make_unique<DecomposableCompleteRuleEvaluation<
+              SparseDecomposableStatisticVectorView<float32, float32>, PartialIndexVector, VectorMath>>(
+              indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
+        }
+
         return std::make_unique<
-          DecomposableCompleteRuleEvaluation<SparseDecomposableStatisticVector<float64, float32>, PartialIndexVector>>(
+          DecomposableCompleteRuleEvaluation<SparseDecomposableStatisticVectorView<float32, float32>,
+                                             PartialIndexVector, SequentialDecomposableVectorMath>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
+    template<typename VectorMath>
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVectorView<float64, uint32>>>
+      DecomposableFixedPartialRuleEvaluationFactory<VectorMath>::create(
+        const SparseDecomposableStatisticVectorView<float64, uint32>& statisticVector,
+        const CompleteIndexVector& indexVector) const {
+        uint32 numPredictions =
+          math::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
+        return std::make_unique<DecomposableFixedPartialRuleEvaluation<
+          SparseDecomposableStatisticVectorView<float64, uint32>, CompleteIndexVector>>(
+          indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);
+    }
+
+    template<typename VectorMath>
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVectorView<float64, uint32>>>
+      DecomposableFixedPartialRuleEvaluationFactory<VectorMath>::create(
+        const SparseDecomposableStatisticVectorView<float64, uint32>& statisticVector,
+        const PartialIndexVector& indexVector) const {
+        if (indexVector.getNumElements() > 1) {
+            return std::make_unique<DecomposableCompleteRuleEvaluation<
+              SparseDecomposableStatisticVectorView<float64, uint32>, PartialIndexVector, VectorMath>>(
+              indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
+        }
+        return std::make_unique<
+          DecomposableCompleteRuleEvaluation<SparseDecomposableStatisticVectorView<float64, uint32>, PartialIndexVector,
+                                             SequentialDecomposableVectorMath>>(indexVector, l1RegularizationWeight_,
+                                                                                l2RegularizationWeight_);
+    }
+
+    template<typename VectorMath>
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVectorView<float64, float32>>>
+      DecomposableFixedPartialRuleEvaluationFactory<VectorMath>::create(
+        const SparseDecomposableStatisticVectorView<float64, float32>& statisticVector,
+        const CompleteIndexVector& indexVector) const {
+        uint32 numPredictions =
+          math::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
+        return std::make_unique<DecomposableFixedPartialRuleEvaluation<
+          SparseDecomposableStatisticVectorView<float64, float32>, CompleteIndexVector>>(
+          indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);
+    }
+
+    template<typename VectorMath>
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVectorView<float64, float32>>>
+      DecomposableFixedPartialRuleEvaluationFactory<VectorMath>::create(
+        const SparseDecomposableStatisticVectorView<float64, float32>& statisticVector,
+        const PartialIndexVector& indexVector) const {
+        if (indexVector.getNumElements() > 1) {
+            return std::make_unique<DecomposableCompleteRuleEvaluation<
+              SparseDecomposableStatisticVectorView<float64, float32>, PartialIndexVector, VectorMath>>(
+              indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
+        }
+
+        return std::make_unique<
+          DecomposableCompleteRuleEvaluation<SparseDecomposableStatisticVectorView<float64, float32>,
+                                             PartialIndexVector, SequentialDecomposableVectorMath>>(
+          indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
+    }
+
+    template class DecomposableFixedPartialRuleEvaluationFactory<SequentialDecomposableVectorMath>;
+#if SIMD_SUPPORT_ENABLED
+    template class DecomposableFixedPartialRuleEvaluationFactory<SimdDecomposableVectorMath>;
+#endif
 }

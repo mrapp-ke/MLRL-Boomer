@@ -6,8 +6,8 @@
 #include "mlrl/boosting/prediction/probability_function_marginal.hpp"
 #include "mlrl/common/data/vector_dense.hpp"
 #include "mlrl/common/data/view_matrix_sparse_set.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 #include "mlrl/common/measures/measure_distance.hpp"
-#include "mlrl/common/util/math.hpp"
 
 #include <memory>
 
@@ -100,11 +100,11 @@ namespace boosting {
                 uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
                 std::unique_ptr<DenseVector<float64>> jointProbabilityVectorPtr =
                   std::make_unique<DenseVector<float64>>(numLabelVectors);
-                DenseVector<float64>::iterator jointProbabilityIterator = jointProbabilityVectorPtr->begin();
+                auto jointProbabilityIterator = jointProbabilityVectorPtr->begin();
                 float64 sumOfJointProbabilities = 0;
 
                 // Calculate joint probabilities...
-                LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet.cbegin();
+                auto labelVectorIterator = labelVectorSet.cbegin();
 
                 for (uint32 i = 0; i < numLabelVectors; i++) {
                     const LabelVector& labelVector = *labelVectorIterator[i];
@@ -117,7 +117,7 @@ namespace boosting {
                 // Normalize joint probabilities...
                 for (uint32 i = 0; i < numLabelVectors; i++) {
                     float64 jointProbability = jointProbabilityIterator[i];
-                    jointProbabilityIterator[i] = util::divideOrZero(jointProbability, sumOfJointProbabilities);
+                    jointProbabilityIterator[i] = math::divideOrZero(jointProbability, sumOfJointProbabilities);
                 }
 
                 return jointProbabilityVectorPtr;

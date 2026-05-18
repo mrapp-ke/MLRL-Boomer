@@ -7,7 +7,6 @@ from libcpp.utility cimport move
 from abc import abstractmethod
 from dataclasses import dataclass
 from enum import StrEnum
-from numbers import Number
 
 import numpy as np
 
@@ -36,7 +35,7 @@ class Condition:
     """
     feature_index: int
     comparator: Comparator
-    threshold: Number
+    threshold: int | float
 
 
 cdef class Body:
@@ -173,7 +172,7 @@ class Prediction:
         value:          The predicted value
     """
     output_index: int
-    value: Number
+    value: int | float
 
 
 cdef class Head:

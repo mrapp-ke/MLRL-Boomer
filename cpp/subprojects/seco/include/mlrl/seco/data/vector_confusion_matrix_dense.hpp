@@ -6,19 +6,181 @@
 #include "mlrl/common/data/vector_dense.hpp"
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 #include "mlrl/common/data/view_matrix_csr_binary.hpp"
-#include "mlrl/seco/data/confusion_matrix.hpp"
+#include "mlrl/common/data/view_vector_composite.hpp"
 #include "mlrl/seco/data/matrix_statistic_decomposable_dense.hpp"
+#include "mlrl/seco/util/dll_exports.hpp"
 
 namespace seco {
 
     /**
-     * An one-dimensional vector that stores a fixed number of confusion matrices in a C-contiguous array.
+     * An one-dimensional view that provides access to a fixed number of confusion matrices in a pre-allocated
+     * C-contiguous array.
      *
      * @tparam StatisticType The type of the elements stored in the confusion matrices
      */
     template<typename StatisticType>
+    class MLRLSECO_API DenseConfusionMatrixVectorView final
+        : public CompositeVector<CompositeVector<AllocatedVector<StatisticType>, AllocatedVector<StatisticType>>,
+                                 CompositeVector<AllocatedVector<StatisticType>, AllocatedVector<StatisticType>>> {
+        public:
+
+            /**
+             * @param numElements   The number of elements in the view
+             * @param init          True, if all elements in the view should be value-initialized, false otherwise
+             */
+            DenseConfusionMatrixVectorView(uint32 numElements, bool init = false);
+
+            /**
+             * The type of the confusion matrix elements.
+             */
+            using statistic_type = StatisticType;
+
+            /**
+             * An iterator that provides access to confusion matrix elements in the view and allows to modify them.
+             */
+            using iterator = View<StatisticType>::iterator;
+
+            /**
+             * An iterator that provides read-only access to confusion matrix elements in the view.
+             */
+            using const_iterator = View<StatisticType>::const_iterator;
+
+            /**
+             * Returns a `const_iterator` to the beginning of the irrelevant labels for which a rule predicts
+             * negatively.
+             *
+             * @return A `const_iterator` to the beginning of the irrelevant labels for which a rule predicts negatively
+             */
+            typename View<StatisticType>::const_iterator in_cbegin() const;
+
+            /**
+             * Returns a `const_iterator` to the end of the irrelevant labels for which a rule predicts negatively.
+             *
+             * @return A `const_iterator` to the end of the irrelevant labels for which a rule predicts negatively
+             */
+            typename View<StatisticType>::const_iterator in_cend() const;
+
+            /**
+             * Returns an `iterator` to the beginning of the irrelevant labels for which a rule predicts negatively.
+             *
+             * @return An `iterator` to the beginning of the irrelevant labels for which a rule predicts negatively
+             */
+            typename View<StatisticType>::iterator in_begin();
+
+            /**
+             * Returns an `iterator` to the end of the irrelevant labels for which a rule predicts negatively.
+             *
+             * @return An `iterator` to the end of the irrelevant labels for which a rule predicts negatively
+             */
+            typename View<StatisticType>::iterator in_end();
+
+            /**
+             * Returns a `const_iterator` to the beginning of the irrelevant labels for which a rule predicts
+             * positively.
+             *
+             * @return A `const_iterator` to the beginning of the irrelevant labels for which a rule predicts positively
+             */
+            typename View<StatisticType>::const_iterator ip_cbegin() const;
+
+            /**
+             * Returns a `const_iterator` to the end of the irrelevant labels for which a rule predicts positively.
+             *
+             * @return A `const_iterator` to the end of the irrelevant labels for which a rule predicts positively
+             */
+            typename View<StatisticType>::const_iterator ip_cend() const;
+
+            /**
+             * Returns an `iterator` to the beginning of the irrelevant labels for which a rule predicts positively.
+             *
+             * @return An `iterator` to the beginning of the irrelevant labels for which a rule predicts positively
+             */
+            typename View<StatisticType>::iterator ip_begin();
+
+            /**
+             * Returns an `iterator` to the end of the irrelevant labels for which a rule predicts positively.
+             *
+             * @return An `iterator` to the end of the irrelevant labels for which a rule predicts positively
+             */
+            typename View<StatisticType>::iterator ip_end();
+
+            /**
+             * Returns a `const_iterator` to the beginning of the relevant labels for which a rule predicts negatively.
+             *
+             * @return A `const_iterator` to the beginning of the relevant labels for which a rule predicts negatively
+             */
+            typename View<StatisticType>::const_iterator rn_cbegin() const;
+
+            /**
+             * Returns a `const_iterator` to the end of the relevant labels for which a rule predicts negatively.
+             *
+             * @return A `const_iterator` to the end of the relevant labels for which a rule predicts negatively
+             */
+            typename View<StatisticType>::const_iterator rn_cend() const;
+
+            /**
+             * Returns an `iterator` to the beginning of the relevant labels for which a rule predicts negatively.
+             *
+             * @return An `iterator` to the beginning of the relevant labels for which a rule predicts negatively
+             */
+            typename View<StatisticType>::iterator rn_begin();
+
+            /**
+             * Returns an `iterator` to the end of the relevant labels for which a rule predicts negatively.
+             *
+             * @return An `iterator` to the end of the relevant labels for which a rule predicts negatively
+             */
+            typename View<StatisticType>::iterator rn_end();
+
+            /**
+             * Returns a `const_iterator` to the beginning of the relevant labels for which a rule predicts positively.
+             *
+             * @return A `const_iterator` to the beginning of the relevant labels for which a rule predicts positively
+             */
+            typename View<StatisticType>::const_iterator rp_cbegin() const;
+
+            /**
+             * Returns a `const_iterator` to the end of the relevant labels for which a rule predicts positively.
+             *
+             * @return A `const_iterator` to the end of the relevant labels for which a rule predicts positively
+             */
+            typename View<StatisticType>::const_iterator rp_cend() const;
+
+            /**
+             * Returns an `iterator` to the beginning of the relevant labels for which a rule predicts positively.
+             *
+             * @return An `iterator` to the beginning of the relevant labels for which a rule predicts positively
+             */
+            typename View<StatisticType>::iterator rp_begin();
+
+            /**
+             * Returns an `iterator` to the end of the relevant labels for which a rule predicts positively.
+             *
+             * @return An `iterator` to the end of the relevant labels for which a rule predicts positively
+             */
+            typename View<StatisticType>::iterator rp_end();
+
+            /**
+             * Returns the number of elements in the view.
+             *
+             * @return The number of elements
+             */
+            uint32 getNumElements() const;
+
+            /**
+             * Sets all values stored in the view to zero.
+             */
+            void clear();
+    };
+
+    /**
+     * An one-dimensional vector that stores a fixed number of confusion matrices in a C-contiguous array.
+     *
+     * @tparam StatisticType    The type of the elements stored in the confusion matrices
+     * @tparam VectorMath       The type that implements basic operations for calculating with numerical arrays
+     */
+    template<typename StatisticType, typename VectorMath>
     class DenseConfusionMatrixVector final
-        : public ClearableViewDecorator<DenseVectorDecorator<AllocatedVector<ConfusionMatrix<StatisticType>>>> {
+        : public ClearableViewDecorator<ViewDecorator<DenseConfusionMatrixVectorView<StatisticType>>> {
         public:
 
             /**
@@ -30,14 +192,136 @@ namespace seco {
             /**
              * @param other A reference to an object of type `DenseConfusionMatrixVector` to be copied
              */
-            DenseConfusionMatrixVector(const DenseConfusionMatrixVector& other);
+            DenseConfusionMatrixVector(const DenseConfusionMatrixVector<StatisticType, VectorMath>& other);
+
+            /**
+             * Returns a `const_iterator` to the beginning of the irrelevant labels for which a rule predicts
+             * negatively.
+             *
+             * @return A `const_iterator` to the beginning of the irrelevant labels for which a rule predicts negatively
+             */
+            typename View<StatisticType>::const_iterator in_cbegin() const;
+
+            /**
+             * Returns a `const_iterator` to the end of the irrelevant labels for which a rule predicts negatively.
+             *
+             * @return A `const_iterator` to the end of the irrelevant labels for which a rule predicts negatively
+             */
+            typename View<StatisticType>::const_iterator in_cend() const;
+
+            /**
+             * Returns an `iterator` to the beginning of the irrelevant labels for which a rule predicts negatively.
+             *
+             * @return An `iterator` to the beginning of the irrelevant labels for which a rule predicts negatively
+             */
+            typename View<StatisticType>::iterator in_begin();
+
+            /**
+             * Returns an `iterator` to the end of the irrelevant labels for which a rule predicts negatively.
+             *
+             * @return An `iterator` to the end of the irrelevant labels for which a rule predicts negatively
+             */
+            typename View<StatisticType>::iterator in_end();
+
+            /**
+             * Returns a `const_iterator` to the beginning of the irrelevant labels for which a rule predicts
+             * positively.
+             *
+             * @return A `const_iterator` to the beginning of the irrelevant labels for which a rule predicts positively
+             */
+            typename View<StatisticType>::const_iterator ip_cbegin() const;
+
+            /**
+             * Returns a `const_iterator` to the end of the irrelevant labels for which a rule predicts positively.
+             *
+             * @return A `const_iterator` to the end of the irrelevant labels for which a rule predicts positively
+             */
+            typename View<StatisticType>::const_iterator ip_cend() const;
+
+            /**
+             * Returns an `iterator` to the beginning of the irrelevant labels for which a rule predicts positively.
+             *
+             * @return An `iterator` to the beginning of the irrelevant labels for which a rule predicts positively
+             */
+            typename View<StatisticType>::iterator ip_begin();
+
+            /**
+             * Returns an `iterator` to the end of the irrelevant labels for which a rule predicts positively.
+             *
+             * @return An `iterator` to the end of the irrelevant labels for which a rule predicts positively
+             */
+            typename View<StatisticType>::iterator ip_end();
+
+            /**
+             * Returns a `const_iterator` to the beginning of the relevant labels for which a rule predicts negatively.
+             *
+             * @return A `const_iterator` to the beginning of the relevant labels for which a rule predicts negatively
+             */
+            typename View<StatisticType>::const_iterator rn_cbegin() const;
+
+            /**
+             * Returns a `const_iterator` to the end of the relevant labels for which a rule predicts negatively.
+             *
+             * @return A `const_iterator` to the end of the relevant labels for which a rule predicts negatively
+             */
+            typename View<StatisticType>::const_iterator rn_cend() const;
+
+            /**
+             * Returns an `iterator` to the beginning of the relevant labels for which a rule predicts negatively.
+             *
+             * @return An `iterator` to the beginning of the relevant labels for which a rule predicts negatively
+             */
+            typename View<StatisticType>::iterator rn_begin();
+
+            /**
+             * Returns an `iterator` to the end of the relevant labels for which a rule predicts negatively.
+             *
+             * @return An `iterator` to the end of the relevant labels for which a rule predicts negatively
+             */
+            typename View<StatisticType>::iterator rn_end();
+
+            /**
+             * Returns a `const_iterator` to the beginning of the relevant labels for which a rule predicts positively.
+             *
+             * @return A `const_iterator` to the beginning of the relevant labels for which a rule predicts positively
+             */
+            typename View<StatisticType>::const_iterator rp_cbegin() const;
+
+            /**
+             * Returns a `const_iterator` to the end of the relevant labels for which a rule predicts positively.
+             *
+             * @return A `const_iterator` to the end of the relevant labels for which a rule predicts positively
+             */
+            typename View<StatisticType>::const_iterator rp_cend() const;
+
+            /**
+             * Returns an `iterator` to the beginning of the relevant labels for which a rule predicts positively.
+             *
+             * @return An `iterator` to the beginning of the relevant labels for which a rule predicts positively
+             */
+            typename View<StatisticType>::iterator rp_begin();
+
+            /**
+             * Returns an `iterator` to the end of the relevant labels for which a rule predicts positively.
+             *
+             * @return An `iterator` to the end of the relevant labels for which a rule predicts positively
+             */
+            typename View<StatisticType>::iterator rp_end();
+
+            /**
+             * Returns the number of elements in the view.
+             *
+             * @return The number of elements
+             */
+            uint32 getNumElements() const;
 
             /**
              * Adds all confusion matrix elements in another vector to this vector.
              *
-             * @param other A reference to an object of type `DenseConfusionMatrixVector` to be copied
+             * @param other A reference to an object of type `DenseConfusionMatrixVectorView`  that stores the confusion
+             *              matrices to be added to this vector
              */
-            void add(const DenseConfusionMatrixVector<StatisticType>& other);
+            void add(const DenseConfusionMatrixVectorView<StatisticType>& other);
 
             /**
              * Adds the confusion matrix elements that correspond to an example at a specific index to this vector. The
@@ -152,36 +436,32 @@ namespace seco {
              * in two other vectors, considering only the elements in the first vector that correspond to the positions
              * provided by a `CompleteIndexVector`.
              *
-             * @param firstBegin    A `const_iterator` to the beginning of the first vector
-             * @param firstEnd      A `const_iterator` to the end of the first vector
+             * @param first         A reference to an object of type `DenseConfusionMatrixVectorView` that stores the
+             *                      confusion matrices in the first vector
              * @param firstIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
              *                      indices
-             * @param secondBegin  A `const_iterator` to the beginning of the second vector
-             * @param secondEnd    A `const_iterator` to the end of the second vector
+             * @param second        A reference to an object of type `DenseConfusionMatrixVectorView` that stores the
+             *                      confusion matrices in the second vector
              */
-            void difference(typename View<ConfusionMatrix<StatisticType>>::const_iterator firstBegin,
-                            typename View<ConfusionMatrix<StatisticType>>::const_iterator firstEnd,
+            void difference(const DenseConfusionMatrixVectorView<StatisticType>& first,
                             const CompleteIndexVector& firstIndices,
-                            typename View<ConfusionMatrix<StatisticType>>::const_iterator secondBegin,
-                            typename View<ConfusionMatrix<StatisticType>>::const_iterator secondEnd);
+                            const DenseConfusionMatrixVectorView<StatisticType>& second);
 
             /**
              * Sets the confusion matrix elements in this vector to the difference `first - second` between the elements
              * in two other vectors, considering only the elements in the first vector that correspond to the positions
              * provided by a `PartialIndexVector`.
              *
-             * @param firstBegin    A `const_iterator` to the beginning of the first vector
-             * @param firstEnd      A `const_iterator` to the end of the first vector
+             * @param first         A reference to an object of type `DenseConfusionMatrixVectorView` that stores the
+             *                      confusion matrices in the first vector
              * @param firstIndices  A reference to an object of type `PartialIndexVector` that provides access to the
              *                      indices
-             * @param secondBegin   A `const_iterator` to the beginning of the second vector
-             * @param secondEnd     A `const_iterator` to the end of the second vector
+             * @param second        A reference to an object of type `DenseConfusionMatrixVectorView` that stores the
+             *                      confusion matrices in the second vector
              */
-            void difference(typename View<ConfusionMatrix<StatisticType>>::const_iterator firstBegin,
-                            typename View<ConfusionMatrix<StatisticType>>::const_iterator firstEnd,
+            void difference(const DenseConfusionMatrixVectorView<StatisticType>& first,
                             const PartialIndexVector& firstIndices,
-                            typename View<ConfusionMatrix<StatisticType>>::const_iterator secondBegin,
-                            typename View<ConfusionMatrix<StatisticType>>::const_iterator secondEnd);
+                            const DenseConfusionMatrixVectorView<StatisticType>& second);
     };
 
 }

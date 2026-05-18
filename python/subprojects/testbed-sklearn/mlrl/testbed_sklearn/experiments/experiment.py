@@ -4,8 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for performing experiments using the scikit-learn framework.
 """
 
-import logging as log
-
 from argparse import Namespace
 from collections.abc import Generator
 from dataclasses import replace
@@ -30,6 +28,7 @@ from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.state import ExperimentState, ParameterDict, PredictionState, TrainingState
 from mlrl.testbed.experiments.timer import Timer
+from mlrl.testbed.log import Log
 
 
 class SkLearnExperiment(Experiment):
@@ -79,7 +78,7 @@ class SkLearnExperiment(Experiment):
 
             if parameters:
                 learner.set_params(**parameters)
-                log.info(f'Successfully applied parameter setting: {parameters}')
+                Log.success(f'Successfully applied parameter setting: {parameters}', highlight=True)
 
             return learner
 
@@ -102,7 +101,7 @@ class SkLearnExperiment(Experiment):
                     changes,
                     '',
                 )
-                log.warning(
+                Log.warning(
                     f"The loaded model's values for the following parameters differ from the expected configuration: "
                     f'{formatted_changes}'
                 )
@@ -120,19 +119,21 @@ class SkLearnExperiment(Experiment):
             """
             See :func:`mlrl.testbed.experiments.experiment.Experiment.TrainingProcedure.train`
             """
-            new_learner = self.__create_learner(parameters=parameters)
+            with Log.indented():
+                Log.info(f'Fitting model to {dataset.num_examples} training examples...', highlight=True)
+                new_learner = self.__create_learner(parameters=parameters)
 
-            # Use existing model, if possible, otherwise train a new model...
-            if isinstance(learner, type(new_learner)):
-                self.__check_for_parameter_changes(
-                    expected_parameters=parameters, actual_parameters=learner.get_params()
-                )
-                return TrainingState(learner=learner)
+                # Use existing model, if possible, otherwise train a new model...
+                if isinstance(learner, type(new_learner)):
+                    self.__check_for_parameter_changes(
+                        expected_parameters=parameters, actual_parameters=learner.get_params()
+                    )
+                    Log.success('Successfully loaded model')
+                    return TrainingState(learner=learner)
 
-            log.info(f'Fitting model to {dataset.num_examples} training examples...')
-            training_duration = self._fit(new_learner, dataset, fit_kwargs=self.fit_kwargs)
-            log.info(f'Successfully fit model in {training_duration}')
-            return TrainingState(learner=new_learner, training_duration=training_duration)
+                training_duration = self._fit(new_learner, dataset, fit_kwargs=self.fit_kwargs)
+                Log.success(f'Successfully fit model in {training_duration}', highlight=True)
+                return TrainingState(learner=new_learner, training_duration=training_duration)
 
         def _fit(
             self, estimator: BaseEstimator, dataset: TabularDataset, fit_kwargs: dict[str, Any] | None

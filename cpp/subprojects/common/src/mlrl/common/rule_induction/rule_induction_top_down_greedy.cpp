@@ -1,6 +1,6 @@
 #include "mlrl/common/rule_induction/rule_induction_top_down_greedy.hpp"
 
-#include "mlrl/common/util/math.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 #include "mlrl/common/util/validation.hpp"
 #include "rule_induction_common.hpp"
 
@@ -16,6 +16,8 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
         const uint32 minCoverage_;
 
         const uint32 maxConditions_;
+
+        const bool allowNegations_;
 
         const uint32 maxHeadRefinements_;
 
@@ -34,6 +36,8 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
          *                                  be at least 1
          * @param maxConditions             The maximum number of conditions to be included in a rule's body. Must be at
          *                                  least 1 or 0, if the number of conditions should not be restricted
+         * @param allowNegations            True, if refinements with nominal conditions that use negation should be
+         *                                  allowed, false otherwise
          * @param maxHeadRefinements        The maximum number of times, the head of a rule may be refinement after a
          *                                  new condition has been added to its body. Must be at least 1 or 0, if the
          *                                  number of refinements should not be restricted
@@ -44,11 +48,12 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
                                    std::unique_ptr<IRuleRefinement> ruleRefinementPtr,
                                    std::unique_ptr<IRulePruning> rulePruningPtr,
                                    std::unique_ptr<IPostProcessor> postProcessorPtr, uint32 minCoverage,
-                                   uint32 maxConditions, uint32 maxHeadRefinements, bool recalculatePredictions)
+                                   uint32 maxConditions, bool allowNegations, uint32 maxHeadRefinements,
+                                   bool recalculatePredictions)
             : AbstractRuleInduction(std::move(ruleRefinementPtr), std::move(rulePruningPtr),
                                     std::move(postProcessorPtr), recalculatePredictions),
               ruleCompareFunction_(ruleCompareFunction), minCoverage_(minCoverage), maxConditions_(maxConditions),
-              maxHeadRefinements_(maxHeadRefinements) {}
+              allowNegations_(allowNegations), maxHeadRefinements_(maxHeadRefinements) {}
 
     protected:
 
@@ -78,7 +83,7 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
                 // Search for the best refinement...
                 foundRefinement =
                   ruleRefinement.findRefinement(refinementComparator, *featureSubspacePtr, sampledFeatureIndices,
-                                                *currentOutputIndices, minCoverage_);
+                                                *currentOutputIndices, minCoverage_, allowNegations_);
 
                 if (foundRefinement) {
                     Refinement& bestRefinement = *refinementComparator.begin();
@@ -130,6 +135,8 @@ class GreedyTopDownRuleInductionFactory final : public IRuleInductionFactory {
 
         const uint32 maxConditions_;
 
+        const bool allowNegations_;
+
         const uint32 maxHeadRefinements_;
 
         const bool recalculatePredictions_;
@@ -146,6 +153,8 @@ class GreedyTopDownRuleInductionFactory final : public IRuleInductionFactory {
          *                                  be at least 1
          * @param maxConditions             The maximum number of conditions to be included in a rule's body. Must be at
          *                                  least 1 or 0, if the number of conditions should not be restricted
+         * @param allowNegations            True, if refinements with nominal conditions that use negation should be
+         *                                  allowed, false otherwise
          * @param maxHeadRefinements        The maximum number of times, the head of a rule may be refined after a new
          *                                  condition has been added to its body. Must be at least 1 or 0, if the number
          *                                  of refinements should not be restricted
@@ -156,18 +165,18 @@ class GreedyTopDownRuleInductionFactory final : public IRuleInductionFactory {
                                           std::unique_ptr<IRuleRefinementFactory> ruleRefinementFactoryPtr,
                                           std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr,
                                           std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
-                                          uint32 minCoverage, uint32 maxConditions, uint32 maxHeadRefinements,
-                                          bool recalculatePredictions)
+                                          uint32 minCoverage, uint32 maxConditions, bool allowNegations,
+                                          uint32 maxHeadRefinements, bool recalculatePredictions)
             : ruleCompareFunction_(ruleCompareFunction), ruleRefinementFactoryPtr_(std::move(ruleRefinementFactoryPtr)),
               rulePruningFactoryPtr_(std::move(rulePruningFactoryPtr)),
               postProcessorFactoryPtr_(std::move(postProcessorFactoryPtr)), minCoverage_(minCoverage),
-              maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
+              maxConditions_(maxConditions), allowNegations_(allowNegations), maxHeadRefinements_(maxHeadRefinements),
               recalculatePredictions_(recalculatePredictions) {}
 
         std::unique_ptr<IRuleInduction> create() const override {
             return std::make_unique<GreedyTopDownRuleInduction>(
               ruleCompareFunction_, ruleRefinementFactoryPtr_->create(), rulePruningFactoryPtr_->create(),
-              postProcessorFactoryPtr_->create(), minCoverage_, maxConditions_, maxHeadRefinements_,
+              postProcessorFactoryPtr_->create(), minCoverage_, maxConditions_, allowNegations_, maxHeadRefinements_,
               recalculatePredictions_);
         }
 };
@@ -176,8 +185,9 @@ GreedyTopDownRuleInductionConfig::GreedyTopDownRuleInductionConfig(
   RuleCompareFunction ruleCompareFunction, ReadableProperty<IRuleRefinementConfig> ruleRefinementConfig,
   ReadableProperty<IRulePruningConfig> rulePruningConfig, ReadableProperty<IPostProcessorConfig> postProcessorConfig)
     : ruleCompareFunction_(ruleCompareFunction), minCoverage_(1), minSupport_(0.0f), maxConditions_(0),
-      maxHeadRefinements_(1), recalculatePredictions_(true), ruleRefinementConfig_(ruleRefinementConfig),
-      rulePruningConfig_(rulePruningConfig), postProcessorConfig_(postProcessorConfig) {}
+      allowNegations_(true), maxHeadRefinements_(1), recalculatePredictions_(true),
+      ruleRefinementConfig_(ruleRefinementConfig), rulePruningConfig_(rulePruningConfig),
+      postProcessorConfig_(postProcessorConfig) {}
 
 uint32 GreedyTopDownRuleInductionConfig::getMinCoverage() const {
     return minCoverage_;
@@ -213,6 +223,15 @@ IGreedyTopDownRuleInductionConfig& GreedyTopDownRuleInductionConfig::setMaxCondi
     return *this;
 }
 
+bool GreedyTopDownRuleInductionConfig::areNegationsAllowed() const {
+    return allowNegations_;
+}
+
+IGreedyTopDownRuleInductionConfig& GreedyTopDownRuleInductionConfig::setNegationsAllowed(bool allowNegations) {
+    allowNegations_ = allowNegations;
+    return *this;
+}
+
 uint32 GreedyTopDownRuleInductionConfig::getMaxHeadRefinements() const {
     return maxHeadRefinements_;
 }
@@ -239,7 +258,7 @@ std::unique_ptr<IRuleInductionFactory> GreedyTopDownRuleInductionConfig::createR
     uint32 minCoverage;
 
     if (minSupport_ > 0) {
-        minCoverage = util::calculateBoundedFraction(numExamples, minSupport_, minCoverage_, numExamples);
+        minCoverage = math::calculateBoundedFraction(numExamples, minSupport_, minCoverage_, numExamples);
     } else {
         minCoverage = std::min(numExamples, minCoverage_);
     }
@@ -248,5 +267,5 @@ std::unique_ptr<IRuleInductionFactory> GreedyTopDownRuleInductionConfig::createR
     return std::make_unique<GreedyTopDownRuleInductionFactory>(
       ruleCompareFunction_, ruleRefinementConfig_.get().createRuleRefinementFactory(featureMatrix, numOutputs),
       rulePruningConfig_.get().createRulePruningFactory(), postProcessorConfig_.get().createPostProcessorFactory(),
-      minCoverage, maxConditions_, maxHeadRefinements_, recalculatePredictions_);
+      minCoverage, maxConditions_, allowNegations_, maxHeadRefinements_, recalculatePredictions_);
 }

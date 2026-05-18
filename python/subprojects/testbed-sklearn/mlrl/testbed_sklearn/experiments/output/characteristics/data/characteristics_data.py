@@ -5,6 +5,7 @@ Provides classes for representing characteristics of a datasets that are part of
 """
 
 from typing import Any, override
+from rich.console import ConsoleRenderable
 
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import (
@@ -80,13 +81,13 @@ class DataCharacteristics(TabularOutputData):
         )
 
     @override
-    def to_text(self, options: Options, **kwargs) -> str | None:
+    def to_text(self, options: Options, **kwargs) -> str | ConsoleRenderable | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
         kwargs = dict(kwargs) | {OPTION_DECIMALS: 2}
         table = self.to_table(options, **kwargs)
-        return table.format() if table else None
+        return table.to_rich_table() if table else None
 
     @override
     def to_table(self, options: Options, **kwargs) -> Table | None:
