@@ -12,9 +12,22 @@ on:
       workflow_python_version:
         required: true
         type: string
+      linux:
+        required: false
+        type: boolean
+      macos:
+        required: false
+        type: boolean
+      windows:
+        required: false
+        type: boolean
 jobs:
   python_versions:
     name: Determine Python versions supported by ${{ inputs.subproject }} (${{ inputs.os }})
+    if: >-
+      (startsWith(inputs.os, 'ubuntu-') && inputs.linux == true) ||
+      (startsWith(inputs.os, 'macos-') && inputs.macos == true) ||
+      (startsWith(inputs.os, 'windows-') && inputs.windows == true)
     runs-on: ${{ inputs.os }}
     outputs:
       python_versions: ${{ steps.python_versions.outputs.python_versions || steps.python_versions_windows.outputs.python_versions }}
