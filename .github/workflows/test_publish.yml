@@ -92,13 +92,14 @@ jobs:
       macos: ${{ needs.changes.outputs.macos == 'true' }}
       windows: ${{ needs.changes.outputs.windows == 'true' }}
   run_wheels:
-    needs:
-      - workflow_python_version
-      - test_release
+    needs: test_release
     name: Run wheel packages
     uses: ./.github/workflows/template_run.yml
     with:
       workflow_python_version: ${{ needs.workflow_python_version.outputs.workflow_python_version }}
+      linux: ${{ needs.changes.outputs.linux == 'true' }}
+      macos: ${{ needs.changes.outputs.macos == 'true' }}
+      windows: ${{ needs.changes.outputs.windows == 'true' }}
   check_success:
     needs: run_wheels
     if: ${{ always() && !cancelled() && needs.changes.outputs.any == 'true' }}
