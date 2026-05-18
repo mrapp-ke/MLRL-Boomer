@@ -6,7 +6,7 @@ tocdepth: 2
 
 # Release Notes
 
-##  Version 0.15.4 (May. 18th,2026)
+## Version 0.15.4 (May. 18th,2026)
 
 A bugfix release that comes with the following changes.
 
