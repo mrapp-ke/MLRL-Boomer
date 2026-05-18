@@ -63,7 +63,13 @@ class LabelVectorHistogram:
         unique_label_vectors = []
 
         for label_vector_string, frequency in unique_label_vector_strings.items():
-            label_vector = np.asarray([int(label_index) for label_index in label_vector_string.split(separator)])
+            label_indices = []
+
+            for label_index in label_vector_string.split(separator):
+                if label_index:
+                    label_indices.append(int(label_index))
+
+            label_vector = np.asarray(label_indices)
             unique_label_vectors.append(LabelVector(label_indices=label_vector, frequency=frequency))
 
         return LabelVectorHistogram(unique_label_vectors)

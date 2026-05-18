@@ -293,7 +293,7 @@ class Release:
         changesets = self.changesets
 
         if changesets:
-            release = f'{self.PREFIX_SUB_HEADER} Version {self.version} ({self.__format_release_date()})\n\n'
+            release = f'{self.PREFIX_SUB_HEADER}Version {self.version} ({self.__format_release_date()})\n\n'
             release += f'A {self.release_type} release that comes with the following changes.\n\n'
             release += self.__format_disclaimer()
 
