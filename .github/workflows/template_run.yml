@@ -6,6 +6,15 @@ on:
       workflow_python_version:
         required: true
         type: string
+      linux:
+        required: false
+        type: boolean
+      macos:
+        required: false
+        type: boolean
+      windows:
+        required: false
+        type: boolean
 jobs:
   run_wheels:
     name: Run Python packages
@@ -27,3 +36,6 @@ jobs:
       os: ${{ matrix.os }}
       subproject: ${{ matrix.subproject }}
       workflow_python_version: ${{ inputs.workflow_python_version }}
+      linux: ${{ inputs.linux }}
+      macos: ${{ inputs.macos }}
+      windows: ${{ inputs.windows }}
