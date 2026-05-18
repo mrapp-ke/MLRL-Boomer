@@ -77,14 +77,16 @@ class SkLearnExperiment(Experiment):
         def __create_learner(self, parameters: ParameterDict) -> BaseEstimator:
             learner = clone(self.base_learner)
 
-            if parameters:
+            if parameters and self.__get_parameter_changes(parameters, learner.get_params()):
                 learner.set_params(**parameters)
                 log.info(f'Successfully applied parameter setting: {parameters}')
 
             return learner
 
         @staticmethod
-        def __check_for_parameter_changes(expected_parameters: dict[str, Any], actual_parameters: dict[str, Any]):
+        def __get_parameter_changes(
+            expected_parameters: dict[str, Any], actual_parameters: dict[str, Any]
+        ) -> list[tuple[str, str, str]]:
             changes = []
 
             for key, expected_value in expected_parameters.items():
@@ -93,6 +95,14 @@ class SkLearnExperiment(Experiment):
 
                 if actual_value != expected_value:
                     changes.append((key, expected_value, actual_value))
+
+            return changes
+
+        @staticmethod
+        def __check_for_parameter_changes(expected_parameters: dict[str, Any], actual_parameters: dict[str, Any]):
+            changes = SkLearnExperiment.TrainingProcedure.__get_parameter_changes(
+                expected_parameters=expected_parameters, actual_parameters=actual_parameters
+            )
 
             if changes:
                 formatted_changes = reduce(
