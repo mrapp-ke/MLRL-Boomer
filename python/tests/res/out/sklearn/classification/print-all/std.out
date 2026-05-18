@@ -27,9 +27,21 @@ Loading training dataset...
  Distinct Label Vectors     23
 
 
-🗀 Custom parameters:
+🗀 Parameters:
 
-<No custom parameters used>
+ bootstrap                 True
+ ccp_alpha
+ criterion                 gini
+ max_features              sqrt
+ min_impurity_decrease
+ min_samples_leaf             1
+ min_samples_split            2
+ min_weight_fraction_leaf
+ n_estimators                 1
+ oob_score
+ random_state                 1
+ verbose
+ warm_start
 
 Fitting model to 397 training examples...
 ✓ Successfully fit model in <duration>

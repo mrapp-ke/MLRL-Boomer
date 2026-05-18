@@ -1,0 +1,2 @@
+bootstrap,ccp_alpha,criterion,max_depth,max_features,max_leaf_nodes,min_impurity_decrease,min_samples_leaf,min_samples_split,min_weight_fraction_leaf,n_estimators,oob_score,random_state,verbose,warm_start
+True,0.0,squared_error,4,1.0,4,0.0,1,2,0.0,50,False,1,0,False
