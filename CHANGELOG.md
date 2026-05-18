@@ -6,6 +6,15 @@ tocdepth: 2
 
 # Release Notes
 
+##  Version 0.15.4 (May. 18th,2026)
+
+A bugfix release that comes with the following changes.
+
+### Fixes
+
+- A bug in "mlrl-testbed" has been fixed that resulted in parameters being ignored when using the command line argument "--print-parameters" or "--save-parameters".
+- The package "mlrl-testbed-sklearn" now properly handles empty label vectors when using the command line argument "--print-label-vectors" or "--save-label-vectors".
+
 ## Version 0.15.3 (Apr. 8th,2026)
 
 A bugfix release that comes with the following changes.
