@@ -6,6 +6,27 @@
 
 namespace seco {
 
+    template<typename T, typename Constant>
+    static inline void addConstantToSubset(T* array, Constant constant, const uint32* indices, uint32 numIndices,
+                                           const PartialIndexVector& indexVector) {
+        auto indexVectorIterator = indexVector.cbegin();
+        auto indexVectorEnd = indexVector.cend();
+        uint32 n = 0;
+
+        for (uint32 i = 0; i < numIndices; i++) {
+            uint32 index = indices[i];
+
+            while (indexVectorIterator != indexVectorEnd && *indexVectorIterator < index) {
+                indexVectorIterator++;
+                n++;
+            }
+
+            if (indexVectorIterator != indexVectorEnd && *indexVectorIterator == index) {
+                array[n] += constant;
+            }
+        }
+    }
+
     template<typename StatisticType>
     DenseConfusionMatrixVectorView<StatisticType>::DenseConfusionMatrixVectorView(uint32 numElements, bool init)
         : CompositeVector<CompositeVector<AllocatedVector<StatisticType>, AllocatedVector<StatisticType>>,
@@ -414,6 +435,62 @@ namespace seco {
                 previousIndex = index;
             }
         }
+    }
+
+    template<typename StatisticType, typename VectorMath>
+    void DenseConfusionMatrixVector<StatisticType, VectorMath>::add(const SparseDecomposableStatisticView& view,
+                                                                    uint32 row, StatisticType weight) {
+        VectorMath::addConstantToSubset(this->in_begin(), weight, view.in_indices_cbegin(row),
+                                        view.in_indices_cend(row) - view.in_indices_cbegin(row));
+        VectorMath::addConstantToSubset(this->rn_begin(), weight, view.rn_indices_cbegin(row),
+                                        view.rn_indices_cend(row) - view.rn_indices_cbegin(row));
+        VectorMath::addConstantToSubset(this->ip_begin(), weight, view.ip_indices_cbegin(row),
+                                        view.ip_indices_cend(row) - view.ip_indices_cbegin(row));
+        VectorMath::addConstantToSubset(this->rp_begin(), weight, view.rp_indices_cbegin(row),
+                                        view.rp_indices_cend(row) - view.rp_indices_cbegin(row));
+    }
+
+    template<typename StatisticType, typename VectorMath>
+    void DenseConfusionMatrixVector<StatisticType, VectorMath>::remove(const SparseDecomposableStatisticView& view,
+                                                                       uint32 row, StatisticType weight) {
+        VectorMath::subtractConstantFromSubset(this->in_begin(), weight, view.in_indices_cbegin(row),
+                                               view.in_indices_cend(row) - view.in_indices_cbegin(row));
+        VectorMath::subtractConstantFromSubset(this->rn_begin(), weight, view.rn_indices_cbegin(row),
+                                               view.rn_indices_cend(row) - view.rn_indices_cbegin(row));
+        VectorMath::subtractConstantFromSubset(this->ip_begin(), weight, view.ip_indices_cbegin(row),
+                                               view.ip_indices_cend(row) - view.ip_indices_cbegin(row));
+        VectorMath::subtractConstantFromSubset(this->rp_begin(), weight, view.rp_indices_cbegin(row),
+                                               view.rp_indices_cend(row) - view.rp_indices_cbegin(row));
+    }
+
+    template<typename StatisticType, typename VectorMath>
+    void DenseConfusionMatrixVector<StatisticType, VectorMath>::addToSubset(const SparseDecomposableStatisticView& view,
+                                                                            uint32 row,
+                                                                            const CompleteIndexVector& indices,
+                                                                            StatisticType weight) {
+        VectorMath::addConstantToSubset(this->in_begin(), weight, view.in_indices_cbegin(row),
+                                        view.in_indices_cend(row) - view.in_indices_cbegin(row));
+        VectorMath::addConstantToSubset(this->rn_begin(), weight, view.rn_indices_cbegin(row),
+                                        view.rn_indices_cend(row) - view.rn_indices_cbegin(row));
+        VectorMath::addConstantToSubset(this->ip_begin(), weight, view.ip_indices_cbegin(row),
+                                        view.ip_indices_cend(row) - view.ip_indices_cbegin(row));
+        VectorMath::addConstantToSubset(this->rp_begin(), weight, view.rp_indices_cbegin(row),
+                                        view.rp_indices_cend(row) - view.rp_indices_cbegin(row));
+    }
+
+    template<typename StatisticType, typename VectorMath>
+    void DenseConfusionMatrixVector<StatisticType, VectorMath>::addToSubset(const SparseDecomposableStatisticView& view,
+                                                                            uint32 row,
+                                                                            const PartialIndexVector& indices,
+                                                                            StatisticType weight) {
+        addConstantToSubset(this->in_begin(), weight, view.in_indices_cbegin(row),
+                            view.in_indices_cend(row) - view.in_indices_cbegin(row), indices);
+        addConstantToSubset(this->rn_begin(), weight, view.rn_indices_cbegin(row),
+                            view.rn_indices_cend(row) - view.rn_indices_cbegin(row), indices);
+        addConstantToSubset(this->ip_begin(), weight, view.ip_indices_cbegin(row),
+                            view.ip_indices_cend(row) - view.ip_indices_cbegin(row), indices);
+        addConstantToSubset(this->rp_begin(), weight, view.rp_indices_cbegin(row),
+                            view.rp_indices_cend(row) - view.rp_indices_cbegin(row), indices);
     }
 
     template<typename StatisticType, typename VectorMath>
