@@ -3,7 +3,7 @@
 #include "mlrl/common/math/vector_math.hpp"
 #include "mlrl/common/simd/vector_math.hpp"
 #include "mlrl/seco/rule_evaluation/rule_evaluation_decomposable_single.hpp"
-#include "mlrl/seco/statistics/statistics_provider_decomposable_dense.hpp"
+#include "mlrl/seco/statistics/statistics_provider_decomposable_sparse.hpp"
 #include "rule_evaluation_decomposable_majority.hpp"
 
 namespace seco {
@@ -23,13 +23,13 @@ namespace seco {
 
 #if SIMD_SUPPORT_ENABLED
         if (simdConfig_.get().isSimdRecommended(labelMatrix.getNumOutputs())) {
-            return std::make_unique<DenseDecomposableStatisticsProviderFactory<SimdVectorMath>>(
+            return std::make_unique<SparseDecomposableStatisticsProviderFactory<SimdVectorMath>>(
               std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
               std::move(pruningRuleEvaluationFactoryPtr));
         }
 #endif
 
-        return std::make_unique<DenseDecomposableStatisticsProviderFactory<SequentialVectorMath>>(
+        return std::make_unique<SparseDecomposableStatisticsProviderFactory<SequentialVectorMath>>(
           std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
           std::move(pruningRuleEvaluationFactoryPtr));
     }

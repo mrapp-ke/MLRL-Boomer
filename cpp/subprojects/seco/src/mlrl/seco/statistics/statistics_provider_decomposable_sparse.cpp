@@ -1,4 +1,4 @@
-#include "mlrl/seco/statistics/statistics_provider_decomposable_dense.hpp"
+#include "mlrl/seco/statistics/statistics_provider_decomposable_sparse.hpp"
 
 #include "mlrl/common/math/vector_math.hpp"
 #include "mlrl/common/simd/vector_math.hpp"
@@ -386,7 +386,7 @@ namespace seco {
     }
 
     template<typename VectorMath>
-    DenseDecomposableStatisticsProviderFactory<VectorMath>::DenseDecomposableStatisticsProviderFactory(
+    SparseDecomposableStatisticsProviderFactory<VectorMath>::SparseDecomposableStatisticsProviderFactory(
       std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
       std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
       std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr)
@@ -395,7 +395,7 @@ namespace seco {
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)) {}
 
     template<typename VectorMath>
-    std::unique_ptr<IStatisticsProvider> DenseDecomposableStatisticsProviderFactory<VectorMath>::create(
+    std::unique_ptr<IStatisticsProvider> SparseDecomposableStatisticsProviderFactory<VectorMath>::create(
       const CContiguousView<const uint8>& labelMatrix) const {
         std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> statisticsPtr =
           createStatistics(*defaultRuleEvaluationFactoryPtr_, labelMatrix, std::type_identity<VectorMath> {});
@@ -404,7 +404,7 @@ namespace seco {
     }
 
     template<typename VectorMath>
-    std::unique_ptr<IStatisticsProvider> DenseDecomposableStatisticsProviderFactory<VectorMath>::create(
+    std::unique_ptr<IStatisticsProvider> SparseDecomposableStatisticsProviderFactory<VectorMath>::create(
       const BinaryCsrView& labelMatrix) const {
         std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> statisticsPtr =
           createStatistics(*defaultRuleEvaluationFactoryPtr_, labelMatrix, std::type_identity<VectorMath> {});
@@ -412,9 +412,9 @@ namespace seco {
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
-    template class DenseDecomposableStatisticsProviderFactory<SequentialVectorMath>;
+    template class SparseDecomposableStatisticsProviderFactory<SequentialVectorMath>;
 
 #if SIMD_SUPPORT_ENABLED
-    template class DenseDecomposableStatisticsProviderFactory<SimdVectorMath>;
+    template class SparseDecomposableStatisticsProviderFactory<SimdVectorMath>;
 #endif
 }
