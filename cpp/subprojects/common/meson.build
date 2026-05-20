@@ -184,6 +184,7 @@ if simd_support_enabled
         'src/mlrl/common/simd/functions/difference',
         'src/mlrl/common/simd/functions/difference_with_subset',
         'src/mlrl/common/simd/functions/subtract',
+        'src/mlrl/common/simd/functions/subtract_constant_from_subset',
         'src/mlrl/common/simd/functions/subtract_weighted'
     ]
     simd_source_files = []

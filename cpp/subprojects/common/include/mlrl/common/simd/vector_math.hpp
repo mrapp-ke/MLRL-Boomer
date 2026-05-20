@@ -12,6 +12,7 @@
 #include "mlrl/common/simd/functions/difference.hpp"
 #include "mlrl/common/simd/functions/difference_with_subset.hpp"
 #include "mlrl/common/simd/functions/subtract.hpp"
+#include "mlrl/common/simd/functions/subtract_constant_from_subset.hpp"
 #include "mlrl/common/simd/functions/subtract_weighted.hpp"
 
 #if SIMD_SUPPORT_ENABLED
@@ -183,11 +184,10 @@ struct SimdVectorMath {
         template<typename T, typename Constant>
         static inline void subtractConstantFromSubset(T* array, Constant constant, const uint32* indices,
                                                       uint32 numIndices) {
-            // TODO SIMD implementation
-            for (uint32 i = 0; i < numIndices; i++) {
-                uint32 index = indices[i];
-                array[index] -= constant;
-            }
+            auto dispatched = xsimd::dispatch<util::simd_architectures>([&](auto arch) {
+                simd::subtractConstantFromSubset(arch, array, constant, indices, numIndices);
+            });
+            dispatched();
         }
 
         /**
