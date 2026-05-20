@@ -103,8 +103,8 @@ namespace seco {
              */
             std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresAccumulated() override {
                 const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(
-                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
-                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), this->subsetSumVector_.getView(),
+                  this->state_.statisticMatrixPtr->majority_label_indices_cbegin(),
+                  this->state_.statisticMatrixPtr->majority_label_indices_cend(), this->subsetSumVector_.getView(),
                   accumulatedSumVectorPtr_->getView());
                 return this->state_.createUpdateCandidate(scoreVector);
             }
@@ -115,8 +115,8 @@ namespace seco {
             std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresUncovered() override {
                 tmpVector_.difference(totalSumVector_->getView(), this->outputIndices_, this->sumVector_.getView());
                 const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(
-                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
-                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), this->subsetSumVector_.getView(),
+                  this->state_.statisticMatrixPtr->majority_label_indices_cbegin(),
+                  this->state_.statisticMatrixPtr->majority_label_indices_cend(), this->subsetSumVector_.getView(),
                   tmpVector_.getView());
                 return this->state_.createUpdateCandidate(scoreVector);
             }
@@ -128,8 +128,8 @@ namespace seco {
                 tmpVector_.difference(totalSumVector_->getView(), this->outputIndices_,
                                       accumulatedSumVectorPtr_->getView());
                 const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(
-                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
-                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), this->subsetSumVector_.getView(),
+                  this->state_.statisticMatrixPtr->majority_label_indices_cbegin(),
+                  this->state_.statisticMatrixPtr->majority_label_indices_cend(), this->subsetSumVector_.getView(),
                   tmpVector_.getView());
                 return this->state_.createUpdateCandidate(scoreVector);
             }

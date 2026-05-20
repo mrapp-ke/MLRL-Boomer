@@ -46,7 +46,7 @@ namespace seco {
              * @see `ICoverageStatistics::getSumOfUncoveredWeights`
              */
             float64 getSumOfUncoveredWeights() const override final {
-                return this->statePtr_->statisticMatrixPtr->coverageMatrixPtr->getSumOfUncoveredWeights();
+                return this->statePtr_->statisticMatrixPtr->getSumOfUncoveredWeights();
             }
 
             /**

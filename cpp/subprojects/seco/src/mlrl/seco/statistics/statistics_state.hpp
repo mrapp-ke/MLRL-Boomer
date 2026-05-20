@@ -80,33 +80,25 @@ namespace seco {
             void update(uint32 statisticIndex, View<uint8>::const_iterator scoresBegin,
                         View<uint8>::const_iterator scoresEnd, CompleteIndexVector::const_iterator indicesBegin,
                         CompleteIndexVector::const_iterator indicesEnd) override {
-                statisticMatrixPtr->coverageMatrixPtr->increaseCoverage(
-                  statisticIndex, statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
-                  statisticMatrixPtr->majorityLabelVectorPtr->cend(), scoresBegin, scoresEnd, indicesBegin, indicesEnd);
+                statisticMatrixPtr->increaseCoverage(statisticIndex, scoresBegin, scoresEnd, indicesBegin, indicesEnd);
             }
 
             void update(uint32 statisticIndex, View<uint8>::const_iterator scoresBegin,
                         View<uint8>::const_iterator scoresEnd, PartialIndexVector::const_iterator indicesBegin,
                         PartialIndexVector::const_iterator indicesEnd) override {
-                statisticMatrixPtr->coverageMatrixPtr->increaseCoverage(
-                  statisticIndex, statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
-                  statisticMatrixPtr->majorityLabelVectorPtr->cend(), scoresBegin, scoresEnd, indicesBegin, indicesEnd);
+                statisticMatrixPtr->increaseCoverage(statisticIndex, scoresBegin, scoresEnd, indicesBegin, indicesEnd);
             }
 
             void revert(uint32 statisticIndex, View<uint8>::const_iterator scoresBegin,
                         View<uint8>::const_iterator scoresEnd, CompleteIndexVector::const_iterator indicesBegin,
                         CompleteIndexVector::const_iterator indicesEnd) override {
-                statisticMatrixPtr->coverageMatrixPtr->decreaseCoverage(
-                  statisticIndex, statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
-                  statisticMatrixPtr->majorityLabelVectorPtr->cend(), scoresBegin, scoresEnd, indicesBegin, indicesEnd);
+                statisticMatrixPtr->decreaseCoverage(statisticIndex, scoresBegin, scoresEnd, indicesBegin, indicesEnd);
             }
 
             void revert(uint32 statisticIndex, View<uint8>::const_iterator scoresBegin,
                         View<uint8>::const_iterator scoresEnd, PartialIndexVector::const_iterator indicesBegin,
                         PartialIndexVector::const_iterator indicesEnd) override {
-                statisticMatrixPtr->coverageMatrixPtr->decreaseCoverage(
-                  statisticIndex, statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
-                  statisticMatrixPtr->majorityLabelVectorPtr->cend(), scoresBegin, scoresEnd, indicesBegin, indicesEnd);
+                statisticMatrixPtr->decreaseCoverage(statisticIndex, scoresBegin, scoresEnd, indicesBegin, indicesEnd);
             }
 
             std::unique_ptr<IStatisticsUpdateCandidate> createUpdateCandidate(
