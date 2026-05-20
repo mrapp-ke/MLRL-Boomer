@@ -6,7 +6,6 @@
 #include "mlrl/common/data/vector_sparse_array_binary.hpp"
 #include "mlrl/common/statistics/statistics_state.hpp"
 #include "mlrl/common/statistics/statistics_update_candidate_common.hpp"
-#include "mlrl/seco/data/matrix_statistic_decomposable_dense.hpp"
 
 #include <memory>
 

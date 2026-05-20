@@ -5,7 +5,8 @@
 
 #include "mlrl/common/data/vector_dense.hpp"
 #include "mlrl/common/data/view_vector_composite.hpp"
-#include "mlrl/seco/data/matrix_statistic_decomposable_dense.hpp"
+#include "mlrl/common/indices/index_vector_complete.hpp"
+#include "mlrl/common/indices/index_vector_partial.hpp"
 #include "mlrl/seco/data/view_statistic_decomposable_sparse.hpp"
 #include "mlrl/seco/util/dll_exports.hpp"
 
