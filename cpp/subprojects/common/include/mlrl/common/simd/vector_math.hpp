@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/simd/functions/add.hpp"
+#include "mlrl/common/simd/functions/add_constant_to_subset.hpp"
 #include "mlrl/common/simd/functions/add_from_subset.hpp"
 #include "mlrl/common/simd/functions/add_weighted.hpp"
 #include "mlrl/common/simd/functions/add_weighted_from_subset.hpp"
@@ -127,11 +128,10 @@ struct SimdVectorMath {
          */
         template<typename T, typename Constant>
         static inline void addConstantToSubset(T* array, Constant constant, const uint32* indices, uint32 numIndices) {
-            // TODO SIMD implementation
-            for (uint32 i = 0; i < numIndices; i++) {
-                uint32 index = indices[i];
-                array[index] += constant;
-            }
+            auto dispatched = xsimd::dispatch<util::simd_architectures>([&](auto arch) {
+                simd::addConstantToSubset(arch, array, constant, indices, numIndices);
+            });
+            dispatched();
         }
 
         /**

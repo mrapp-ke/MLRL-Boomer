@@ -176,6 +176,7 @@ simd_libs = []
 if simd_support_enabled
     simd_source_file_names = [
         'src/mlrl/common/simd/functions/add',
+        'src/mlrl/common/simd/functions/add_constant_to_subset',
         'src/mlrl/common/simd/functions/add_from_subset',
         'src/mlrl/common/simd/functions/add_weighted',
         'src/mlrl/common/simd/functions/add_weighted_from_subset',
