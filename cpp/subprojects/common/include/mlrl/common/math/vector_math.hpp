@@ -103,6 +103,25 @@ struct SequentialVectorMath {
         }
 
         /**
+         * Adds a specific constant to the elements in a given array `array` that correspond to the indices in another
+         * array `indices`.
+         *
+         * @tparam T            The type of the values in the array `array`
+         * @tparam Constant     The type of the constant
+         * @param array         A pointer to the beginning  of the array `array`
+         * @param constant      The constant
+         * @param indices       A pointer to the beginning of the array `indices`
+         * @param numIndices    The number of elements in the array `indices`
+         */
+        template<typename T, typename Constant>
+        static inline void addConstantToSubset(T* array, Constant constant, const uint32* indices, uint32 numIndices) {
+            for (uint32 i = 0; i < numIndices; i++) {
+                uint32 index = indices[i];
+                array[index] += constant;
+            }
+        }
+
+        /**
          * Removes the elements in an array `b` from the elements in another array `a`, such that `a = a - b`.
          *
          * @tparam T            The type of the values in the arrays `a` and `b`
