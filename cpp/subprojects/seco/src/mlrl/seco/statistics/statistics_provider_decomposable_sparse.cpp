@@ -246,8 +246,75 @@ namespace seco {
         return numModified;
     }
 
+    static inline uint32 initializeMajorityLabelVector(const CContiguousView<const uint8>& labelMatrix,
+                                                       ResizableBinarySparseArrayVector& majorityLabelVector) {
+        uint32 numExamples = labelMatrix.numRows;
+        uint32 numLabels = labelMatrix.numCols;
+        float64 threshold = numExamples / 2.0;
+        auto majorityIterator = majorityLabelVector.begin();
+        uint32 sumOfUncoveredWeights = 0;
+        uint32 n = 0;
+
+        for (uint32 i = 0; i < numLabels; i++) {
+            uint32 numRelevant = 0;
+
+            for (uint32 j = 0; j < numExamples; j++) {
+                uint8 trueLabel = labelMatrix.values_cbegin(j)[i];
+                numRelevant += trueLabel;
+            }
+
+            if (numRelevant > threshold) {
+                sumOfUncoveredWeights += (numExamples - numRelevant);
+                majorityIterator[n] = i;
+                n++;
+            } else {
+                sumOfUncoveredWeights += numRelevant;  // rp-pairs (minority class)
+            }
+        }
+
+        majorityLabelVector.setNumElements(n, true);
+        return sumOfUncoveredWeights;
+    }
+
+    static inline uint32 initializeMajorityLabelVector(const BinaryCsrView& labelMatrix,
+                                                       ResizableBinarySparseArrayVector& majorityLabelVector) {
+        uint32 numExamples = labelMatrix.numRows;
+        uint32 numLabels = labelMatrix.numCols;
+        auto majorityIterator = majorityLabelVector.begin();
+        std::fill(majorityIterator, majorityLabelVector.end(), 0);
+
+        for (uint32 i = 0; i < numExamples; i++) {
+            auto indexIterator = labelMatrix.indices_cbegin(i);
+            uint32 numElements = labelMatrix.indices_cend(i) - indexIterator;
+
+            for (uint32 j = 0; j < numElements; j++) {
+                uint32 index = indexIterator[j];
+                majorityIterator[index] += 1;
+            }
+        }
+
+        float64 threshold = numExamples / 2.0;
+        uint32 sumOfUncoveredWeights = 0;
+        uint32 n = 0;
+
+        for (uint32 i = 0; i < numLabels; i++) {
+            uint32 numRelevant = majorityIterator[i];
+
+            if (numRelevant > threshold) {
+                sumOfUncoveredWeights += (numExamples - numRelevant);
+                majorityIterator[n] = i;
+                n++;
+            } else {
+                sumOfUncoveredWeights += numRelevant;
+            }
+        }
+
+        majorityLabelVector.setNumElements(n, true);
+        return sumOfUncoveredWeights;
+    }
+
     static inline void initializeStatisticMatrix(const CContiguousView<const uint8>& labelMatrix,
-                                                 const BinarySparseArrayVector& majorityLabelVector,
+                                                 const ResizableBinarySparseArrayVector& majorityLabelVector,
                                                  SparseDecomposableStatisticView& statisticView) {
         uint32 numExamples = labelMatrix.numRows;
         uint32 numLabels = labelMatrix.numCols;
@@ -286,7 +353,7 @@ namespace seco {
     }
 
     static inline void initializeStatisticMatrix(const BinaryCsrView& labelMatrix,
-                                                 const BinarySparseArrayVector& majorityLabelVector,
+                                                 const ResizableBinarySparseArrayVector& majorityLabelVector,
                                                  SparseDecomposableStatisticView& statisticView) {
         uint32 numExamples = labelMatrix.numRows;
         uint32 numLabels = labelMatrix.numCols;
@@ -338,7 +405,7 @@ namespace seco {
         : public ClearableViewDecorator<MatrixDecorator<SparseDecomposableStatisticView>> {
         private:
 
-            const std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr_;
+            ResizableBinarySparseArrayVector majorityLabelVector_;
 
             CContiguousMatrix<uint32> coverageMatrix_;
 
@@ -349,19 +416,16 @@ namespace seco {
         public:
 
             /**
-             * @param majorityLabelVectorPtr  An unique pointer to an object of type `BinarySparseArrayVector` that
-             *                                stores the predictions of the default rule
-             * @param labelMatrix             A reference to an object of template type `LabelMatrix` that provides
-             *                                random or row-wise access to the labels of the training examples
+             * @param labelMatrix A reference to an object of template type `LabelMatrix` that provides random or
+             *                    row-wise access to the labels of the training examples
              */
-            SparseDecomposableStatisticMatrix(std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr,
-                                              const LabelMatrix& labelMatrix)
+            SparseDecomposableStatisticMatrix(const LabelMatrix& labelMatrix)
                 : ClearableViewDecorator<MatrixDecorator<SparseDecomposableStatisticView>>(
                     SparseDecomposableStatisticView(labelMatrix.numRows, labelMatrix.numCols)),
-                  majorityLabelVectorPtr_(std::move(majorityLabelVectorPtr)),
-                  coverageMatrix_(labelMatrix.numRows, labelMatrix.numCols, true), labelMatrix_(labelMatrix),
-                  sumOfUncoveredWeights_(labelMatrix.numRows * labelMatrix.numCols) {
-                initializeStatisticMatrix(labelMatrix_, *majorityLabelVectorPtr_, this->getView());
+                  majorityLabelVector_(labelMatrix.numCols),
+                  coverageMatrix_(labelMatrix.numRows, labelMatrix.numCols, true), labelMatrix_(labelMatrix) {
+                sumOfUncoveredWeights_ = initializeMajorityLabelVector(labelMatrix_, majorityLabelVector_);
+                initializeStatisticMatrix(labelMatrix_, majorityLabelVector_, this->getView());
             }
 
             /**
@@ -446,7 +510,7 @@ namespace seco {
              * @return An `index_const_iterator` to the beginning
              */
             BinarySparseArrayVector::const_iterator majority_label_indices_cbegin() const {
-                return majorityLabelVectorPtr_->cbegin();
+                return majorityLabelVector_.cbegin();
             }
 
             /**
@@ -455,7 +519,7 @@ namespace seco {
              * @return An `index_const_iterator` to the end
              */
             BinarySparseArrayVector::const_iterator majority_label_indices_cend() const {
-                return majorityLabelVectorPtr_->cend();
+                return majorityLabelVector_.cend();
             }
 
             /**
@@ -501,19 +565,15 @@ namespace seco {
             /**
              * @param labelMatrix             A reference to an object of template type `LabelMatrix` that provides
              *                                access to the labels of the training examples
-             * @param majorityLabelVectorPtr  An unique pointer to an object of type `BinarySparseArrayVector` that
-             *                                stores the predictions of the default rule
              * @param ruleEvaluationFactory   A reference to an object of type `IDecomposableRuleEvaluationFactory` that
              *                                allows to create instances of the class that is used for calculating the
              *                                predictions of rules, as well as their overall quality
              */
             SparseDecomposableStatistics(const LabelMatrix& labelMatrix,
-                                         std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr,
                                          const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory)
                 : AbstractDecomposableStatistics<SparseDecomposableStatisticMatrix<LabelMatrix, VectorMath>,
                                                  IDecomposableRuleEvaluationFactory>(
-                    std::make_unique<SparseDecomposableStatisticMatrix<LabelMatrix, VectorMath>>(
-                      std::move(majorityLabelVectorPtr), labelMatrix),
+                    std::make_unique<SparseDecomposableStatisticMatrix<LabelMatrix, VectorMath>>(labelMatrix),
                     ruleEvaluationFactory) {}
 
             /**
@@ -761,70 +821,16 @@ namespace seco {
     static inline std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> createStatistics(
       const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory, const CContiguousView<const uint8>& labelMatrix,
       std::type_identity<VectorMath>) {
-        uint32 numExamples = labelMatrix.numRows;
-        uint32 numLabels = labelMatrix.numCols;
-        std::unique_ptr<ResizableBinarySparseArrayVector> majorityLabelVectorPtr =
-          std::make_unique<ResizableBinarySparseArrayVector>(numLabels);
-        auto majorityIterator = majorityLabelVectorPtr->begin();
-        float64 threshold = numExamples / 2.0;
-        uint32 n = 0;
-
-        for (uint32 i = 0; i < numLabels; i++) {
-            uint32 numRelevant = 0;
-
-            for (uint32 j = 0; j < numExamples; j++) {
-                uint8 trueLabel = labelMatrix.values_cbegin(j)[i];
-                numRelevant += trueLabel;
-            }
-
-            if (numRelevant > threshold) {
-                majorityIterator[n] = i;
-                n++;
-            }
-        }
-
-        majorityLabelVectorPtr->setNumElements(n, true);
         return std::make_unique<SparseDecomposableStatistics<CContiguousView<const uint8>, VectorMath>>(
-          labelMatrix, std::make_unique<BinarySparseArrayVector>(std::move(majorityLabelVectorPtr->getView())),
-          ruleEvaluationFactory);
+          labelMatrix, ruleEvaluationFactory);
     }
 
     template<typename VectorMath>
     static inline std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> createStatistics(
       const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory, const BinaryCsrView& labelMatrix,
       std::type_identity<VectorMath> vectorMath) {
-        uint32 numExamples = labelMatrix.numRows;
-        uint32 numLabels = labelMatrix.numCols;
-        std::unique_ptr<ResizableBinarySparseArrayVector> majorityLabelVectorPtr =
-          std::make_unique<ResizableBinarySparseArrayVector>(numLabels, true);
-        auto majorityIterator = majorityLabelVectorPtr->begin();
-
-        for (uint32 i = 0; i < numExamples; i++) {
-            auto indexIterator = labelMatrix.indices_cbegin(i);
-            uint32 numElements = labelMatrix.indices_cend(i) - indexIterator;
-
-            for (uint32 j = 0; j < numElements; j++) {
-                uint32 index = indexIterator[j];
-                majorityIterator[index] += 1;
-            }
-        }
-
-        float64 threshold = numExamples / 2.0;
-        uint32 n = 0;
-
-        for (uint32 i = 0; i < numLabels; i++) {
-            uint32 numRelevant = majorityIterator[i];
-
-            if (numRelevant > threshold) {
-                majorityIterator[n] = i;
-                n++;
-            }
-        }
-
-        majorityLabelVectorPtr->setNumElements(n, true);
-        return std::make_unique<SparseDecomposableStatistics<BinaryCsrView, VectorMath>>(
-          labelMatrix, std::make_unique<BinarySparseArrayVector>(std::move(majorityLabelVectorPtr->getView())),
-          ruleEvaluationFactory);
+        return std::make_unique<SparseDecomposableStatistics<BinaryCsrView, VectorMath>>(labelMatrix,
+                                                                                         ruleEvaluationFactory);
     }
 
     template<typename VectorMath>
