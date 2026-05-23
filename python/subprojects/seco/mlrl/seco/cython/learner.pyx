@@ -7,34 +7,6 @@ from mlrl.seco.cython.heuristic import FMeasureConfig, MEstimateConfig
 from mlrl.seco.cython.lift_function import KlnLiftFunctionConfig, PeakLiftFunctionConfig
 
 
-class NoCoverageStoppingCriterionMixin(ABC):
-    """
-    Allows to configure a rule learner to not use any stopping criterion that stops the induction of rules as soon as
-    the entire label space is covered.
-    """
-
-    @abstractmethod
-    def use_no_coverage_stopping_criterion(self):
-        """
-        Configures the rule learner to not use any stopping criterion that stops the induction of rules as soon as the
-        entire label space is covered.
-        """
-
-
-class CoverageStoppingCriterionMixin(ABC):
-    """
-    Allows to configure a rule learner to use a stopping criterion that stops the induction of rules as soon as the
-    entire label space is covered.
-    """
-
-    @abstractmethod
-    def use_coverage_stopping_criterion(self):
-        """
-        Configures the rule learner to use a stopping criterion that stops the induction of rules as soon as the entire
-        label space is covered.
-        """
-
-
 class SingleOutputHeadMixin(ABC):
     """
     Allows to configure a rule learner to induce rules with single-output heads that predict for a single output.

@@ -45,18 +45,16 @@ from mlrl.common.cython.learner_classification import ExampleWiseStratifiedBiPar
     ExampleWiseStratifiedInstanceSamplingMixin, OutputWiseStratifiedBiPartitionSamplingMixin, \
     OutputWiseStratifiedInstanceSamplingMixin
 
-from mlrl.seco.cython.learner import AccuracyHeuristicMixin, AccuracyPruningHeuristicMixin, \
-    CoverageStoppingCriterionMixin, FMeasureHeuristicMixin, FMeasurePruningHeuristicMixin, KlnLiftFunctionMixin, \
-    LaplaceHeuristicMixin, LaplacePruningHeuristicMixin, MEstimateHeuristicMixin, MEstimatePruningHeuristicMixin, \
-    NoCoverageStoppingCriterionMixin, NoLiftFunctionMixin, OutputWiseBinaryPredictionMixin, PartialHeadMixin, \
-    PeakLiftFunctionMixin, PrecisionHeuristicMixin, PrecisionPruningHeuristicMixin, RecallHeuristicMixin, \
-    RecallPruningHeuristicMixin, SingleOutputHeadMixin, WraHeuristicMixin, WraPruningHeuristicMixin
+from mlrl.seco.cython.learner import AccuracyHeuristicMixin, AccuracyPruningHeuristicMixin, FMeasureHeuristicMixin, \
+    FMeasurePruningHeuristicMixin, KlnLiftFunctionMixin, LaplaceHeuristicMixin, LaplacePruningHeuristicMixin, \
+    MEstimateHeuristicMixin, MEstimatePruningHeuristicMixin, NoLiftFunctionMixin, OutputWiseBinaryPredictionMixin, \
+    PartialHeadMixin, PeakLiftFunctionMixin, PrecisionHeuristicMixin, PrecisionPruningHeuristicMixin, \
+    RecallHeuristicMixin, RecallPruningHeuristicMixin, SingleOutputHeadMixin, WraHeuristicMixin, \
+    WraPruningHeuristicMixin
 
 
 cdef class SeCoClassifierConfig(RuleLearnerConfig,
                                 RNGMixin,
-                                NoCoverageStoppingCriterionMixin,
-                                CoverageStoppingCriterionMixin,
                                 SingleOutputHeadMixin,
                                 PartialHeadMixin,
                                 NoLiftFunctionMixin,
@@ -135,14 +133,6 @@ cdef class SeCoClassifierConfig(RuleLearnerConfig,
     @override
     def use_default_rule(self):
         self.config_ptr.get().useDefaultRule()
-
-    @override
-    def use_no_coverage_stopping_criterion(self):
-        self.config_ptr.get().useNoCoverageStoppingCriterion()
-
-    @override
-    def use_coverage_stopping_criterion(self):
-        self.config_ptr.get().useCoverageStoppingCriterion()
 
     @override
     def use_single_output_heads(self):

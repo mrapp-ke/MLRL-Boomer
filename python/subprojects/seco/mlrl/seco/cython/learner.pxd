@@ -4,18 +4,6 @@ from mlrl.seco.cython.lift_function cimport IKlnLiftFunctionConfig, IPeakLiftFun
 
 cdef extern from "mlrl/seco/learner.hpp" namespace "seco" nogil:
 
-    cdef cppclass INoCoverageStoppingCriterionMixin:
-
-        # Functions:
-
-        void useNoCoverageStoppingCriterion()
-
-    cdef cppclass ICoverageStoppingCriterionMixin:
-
-        # Functions:
-
-        void useCoverageStoppingCriterion()
-
     cdef cppclass ISingleOutputHeadMixin:
 
         # Functions:

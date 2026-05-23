@@ -83,42 +83,6 @@ namespace seco {
     };
 
     /**
-     * Defines an interface for all classes that allow to configure a rule learner to not use any stopping criterion
-     * that stops the induction of rules as soon as the entire label space is covered.
-     */
-    class MLRLSECO_API INoCoverageStoppingCriterionMixin : virtual public ISeCoRuleLearnerConfig {
-        public:
-
-            virtual ~INoCoverageStoppingCriterionMixin() override {}
-
-            /**
-             * Configures the rule learner to not use any stopping criterion that stops the induction of rules as soon
-             * as the entire label space is covered.
-             */
-            virtual void useNoCoverageStoppingCriterion() {
-                this->getCoverageStoppingCriterionConfig().set(std::make_unique<NoStoppingCriterionConfig>());
-            }
-    };
-
-    /**
-     * Defines an interface for all classes that allow to configure a rule learner to use a stopping criterion that
-     * stops the induction of rules as soon as the entire label space is covered.
-     */
-    class MLRLSECO_API ICoverageStoppingCriterionMixin : virtual public ISeCoRuleLearnerConfig {
-        public:
-
-            virtual ~ICoverageStoppingCriterionMixin() override {}
-
-            /**
-             * Configures the rule learner to use a stopping criterion that stops the induction of rules as soon as the
-             * entire label space is covered.
-             */
-            virtual void useCoverageStoppingCriterion() {
-                this->getCoverageStoppingCriterionConfig().set(std::make_unique<CoverageStoppingCriterionConfig>());
-            }
-    };
-
-    /**
      * Defines an interface for all classes that allow to configure a rule learner to induce rules with single-output
      * heads that predict for a single output.
      */
@@ -510,7 +474,6 @@ namespace seco {
      */
     class ISeCoRuleLearnerMixin : virtual public IRuleLearnerMixin,
                                   virtual public ISimdMixin,
-                                  virtual public INoCoverageStoppingCriterionMixin,
                                   virtual public INoLiftFunctionMixin {
         public:
 
@@ -522,7 +485,6 @@ namespace seco {
             virtual void useDefaults() override {
                 IRuleLearnerMixin::useDefaults();
                 this->useSimdOperations();
-                this->useNoCoverageStoppingCriterion();
                 this->useNoLiftFunction();
             }
     };
