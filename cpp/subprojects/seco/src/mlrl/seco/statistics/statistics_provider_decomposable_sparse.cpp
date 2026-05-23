@@ -430,24 +430,6 @@ namespace seco {
 
             /**
              * Increases the number of times the elements at a specific row of this matrix are covered, given the
-             * predictions of a rule that predicts for all available labels.
-             *
-             * @param row               The row
-             * @param predictionsBegin  An iterator to the beginning of the predictions
-             * @param predictionsEnd    An iterator to the end of the predictions
-             * @param indicesBegin      An iterator to the beginning of the label indices
-             * @param indicesEnd        An iterator to the end of the label indices
-             */
-            void increaseCoverage(uint32 row, View<uint8>::const_iterator predictionsBegin,
-                                  View<uint8>::const_iterator predictionsEnd,
-                                  CompleteIndexVector::const_iterator indicesBegin,
-                                  CompleteIndexVector::const_iterator indicesEnd) {
-                // In case of the default rule, the statistics are not updated, because the default rule will be
-                // appended at the end of the final rule list and therefore has not effect of the other rules
-            }
-
-            /**
-             * Increases the number of times the elements at a specific row of this matrix are covered, given the
              * predictions of a rule that predicts for a subset of the available labels.
              *
              * @param row             The row
@@ -464,24 +446,6 @@ namespace seco {
                 sumOfUncoveredWeights_ -=
                   increaseCoverageInternally(row, labelMatrix_, coverageMatrix_.getView(), this->getView(),
                                              indicesBegin, predictionsBegin, numIndices);
-            }
-
-            /**
-             * Decreases the number of times the elements at a specific row of this matrix are covered, given the
-             * predictions of a rule that predicts for all available labels.
-             *
-             * @param row             The row
-             * @param predictionBegin An iterator to the beginning of the predictions
-             * @param predictionEnd   An iterator to the end of the predictions
-             * @param indicesBegin    An iterator to the beginning of the label indices
-             * @param indicesEnd      An iterator to the end of the label indices
-             */
-            void decreaseCoverage(uint32 row, View<uint8>::const_iterator predictionBegin,
-                                  View<uint8>::const_iterator predictionEnd,
-                                  CompleteIndexVector::const_iterator indicesBegin,
-                                  CompleteIndexVector::const_iterator indicesEnd) {
-                // In case of the default rule, the statistics are not updated, because the default rule will be
-                // appended at the end of the final rule list and therefore has not effect of the other rules
             }
 
             /**

@@ -79,7 +79,8 @@ namespace seco {
             void update(uint32 statisticIndex, View<uint8>::const_iterator scoresBegin,
                         View<uint8>::const_iterator scoresEnd, CompleteIndexVector::const_iterator indicesBegin,
                         CompleteIndexVector::const_iterator indicesEnd) override {
-                statisticMatrixPtr->increaseCoverage(statisticIndex, scoresBegin, scoresEnd, indicesBegin, indicesEnd);
+                // In case of the default rule, the statistics are not updated, because the default rule will be
+                // appended at the end of the final rule list and therefore has not effect of the other rules
             }
 
             void update(uint32 statisticIndex, View<uint8>::const_iterator scoresBegin,
@@ -91,7 +92,8 @@ namespace seco {
             void revert(uint32 statisticIndex, View<uint8>::const_iterator scoresBegin,
                         View<uint8>::const_iterator scoresEnd, CompleteIndexVector::const_iterator indicesBegin,
                         CompleteIndexVector::const_iterator indicesEnd) override {
-                statisticMatrixPtr->decreaseCoverage(statisticIndex, scoresBegin, scoresEnd, indicesBegin, indicesEnd);
+                // In case of the default rule, the statistics are not updated, because the default rule will be
+                // appended at the end of the final rule list and therefore has not effect of the other rules
             }
 
             void revert(uint32 statisticIndex, View<uint8>::const_iterator scoresBegin,
