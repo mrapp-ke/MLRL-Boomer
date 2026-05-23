@@ -35,12 +35,11 @@ namespace seco {
 
             /**
              * Returns a `Property` that allows to access the `IStoppingCriterionConfig` that stores the configuration
-             * of the stopping criterion that stops the induction of rules as soon as the sum of the weights of the
-             * uncovered labels is smaller or equal to a certain threshold.
+             * of the stopping criterion that stops the induction of rules as soon as the entire label space is covered.
              *
              * @return A `Property` that allows to access the `IStoppingCriterionConfig` that stores the configuration
-             *         of the stopping criterion that stops the induction of rules as soon as the sum of the weights of
-             *         the uncovered labels is smaller or equal to a certain threshold
+             *         of the stopping criterion that stops the induction of rules as soon as the entire label space is
+             *         covered
              */
             virtual Property<IStoppingCriterionConfig> getCoverageStoppingCriterionConfig() = 0;
 
@@ -85,8 +84,7 @@ namespace seco {
 
     /**
      * Defines an interface for all classes that allow to configure a rule learner to not use any stopping criterion
-     * that stops the induction of rules as soon as the sum of the weights of the uncovered labels is smaller or equal
-     * to a certain threshold.
+     * that stops the induction of rules as soon as the entire label space is covered.
      */
     class MLRLSECO_API INoCoverageStoppingCriterionMixin : virtual public ISeCoRuleLearnerConfig {
         public:
@@ -95,7 +93,7 @@ namespace seco {
 
             /**
              * Configures the rule learner to not use any stopping criterion that stops the induction of rules as soon
-             * as the sum of the weights of the uncovered labels is smaller or equal to a certain threshold.
+             * as the entire label space is covered.
              */
             virtual void useNoCoverageStoppingCriterion() {
                 this->getCoverageStoppingCriterionConfig().set(std::make_unique<NoStoppingCriterionConfig>());
@@ -104,8 +102,7 @@ namespace seco {
 
     /**
      * Defines an interface for all classes that allow to configure a rule learner to use a stopping criterion that
-     * stops the induction of rules as soon as the sum of the weights of the uncovered labels is smaller or equal to a
-     * certain threshold.
+     * stops the induction of rules as soon as the entire label space is covered.
      */
     class MLRLSECO_API ICoverageStoppingCriterionMixin : virtual public ISeCoRuleLearnerConfig {
         public:
@@ -114,16 +111,10 @@ namespace seco {
 
             /**
              * Configures the rule learner to use a stopping criterion that stops the induction of rules as soon as the
-             * sum of the weights of the uncovered labels is smaller or equal to a certain threshold.
-             *
-             * @return A reference to an object of type `ICoverageStoppingCriterionConfig` that allows further
-             *         configuration of the stopping criterion
+             * entire label space is covered.
              */
-            virtual ICoverageStoppingCriterionConfig& useCoverageStoppingCriterion() {
-                auto ptr = std::make_unique<CoverageStoppingCriterionConfig>();
-                ICoverageStoppingCriterionConfig& ref = *ptr;
-                this->getCoverageStoppingCriterionConfig().set(std::move(ptr));
-                return ref;
+            virtual void useCoverageStoppingCriterion() {
+                this->getCoverageStoppingCriterionConfig().set(std::make_unique<CoverageStoppingCriterionConfig>());
             }
     };
 

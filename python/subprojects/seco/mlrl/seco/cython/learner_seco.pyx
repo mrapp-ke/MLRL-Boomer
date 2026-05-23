@@ -30,7 +30,6 @@ from mlrl.common.cython.stopping_criterion cimport ISizeStoppingCriterionConfig,
 from mlrl.seco.cython.heuristic cimport FMeasureConfig, IFMeasureConfig, IMEstimateConfig, MEstimateConfig
 from mlrl.seco.cython.lift_function cimport IKlnLiftFunctionConfig, IPeakLiftFunctionConfig, KlnLiftFunctionConfig, \
     PeakLiftFunctionConfig
-from mlrl.seco.cython.stopping_criterion cimport CoverageStoppingCriterionConfig, ICoverageStoppingCriterionConfig
 
 from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, DefaultRuleMixin, \
     EqualFrequencyFeatureBinningMixin, EqualWidthFeatureBinningMixin, FeatureSamplingWithoutReplacementMixin, \
@@ -142,13 +141,8 @@ cdef class SeCoClassifierConfig(RuleLearnerConfig,
         self.config_ptr.get().useNoCoverageStoppingCriterion()
 
     @override
-    def use_coverage_stopping_criterion(self) -> CoverageStoppingCriterionConfig:
-        cdef ICoverageStoppingCriterionConfig* config_ptr = \
-            &self.config_ptr.get().useCoverageStoppingCriterion()
-        cdef CoverageStoppingCriterionConfig config = \
-            CoverageStoppingCriterionConfig.__new__(CoverageStoppingCriterionConfig)
-        config.config_ptr = config_ptr
-        return config
+    def use_coverage_stopping_criterion(self):
+        self.config_ptr.get().useCoverageStoppingCriterion()
 
     @override
     def use_single_output_heads(self):

@@ -8,7 +8,6 @@ cython_module_names = [
     'learner',
     'lift_function',
     'package_info',
-    'stopping_criterion'
 ]
 
 # Dependencies
