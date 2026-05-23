@@ -463,7 +463,7 @@ namespace seco {
              *
              * @return The sum of the weights of all examples and labels that have not been covered yet
              */
-            float64 getSumOfUncoveredWeights() const {
+            uint32 getSumOfUncoveredWeights() const {
                 return sumOfUncoveredWeights_;
             }
     };

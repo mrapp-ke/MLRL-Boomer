@@ -22,7 +22,7 @@ namespace seco {
              *
              * @return The sum of the weights
              */
-            virtual float64 getSumOfUncoveredWeights() const = 0;
+            virtual uint32 getSumOfUncoveredWeights() const = 0;
     };
 
 }
