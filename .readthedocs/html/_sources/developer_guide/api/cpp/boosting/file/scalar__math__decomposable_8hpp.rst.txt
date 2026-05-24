@@ -1,0 +1,5 @@
+File scalar_math_decomposable.hpp
+=================================
+
+.. doxygenfile:: scalar_math_decomposable.hpp
+   :project: boosting
