@@ -24,7 +24,7 @@ namespace boosting {
      */
     template<typename StatisticType, typename VectorMath>
     class DenseDecomposableStatisticMatrix final
-        : public ClearableViewDecorator<MatrixDecorator<DenseDecomposableStatisticView<StatisticType>>> {
+        : public ClearableViewDecorator<ViewDecorator<DenseDecomposableStatisticView<StatisticType>>> {
         public:
 
             /**
@@ -32,26 +32,25 @@ namespace boosting {
              * @param numCols   The number of columns in the matrix
              */
             DenseDecomposableStatisticMatrix(uint32 numRows, uint32 numCols)
-                : ClearableViewDecorator<MatrixDecorator<DenseDecomposableStatisticView<StatisticType>>>(
+                : ClearableViewDecorator<ViewDecorator<DenseDecomposableStatisticView<StatisticType>>>(
                     DenseDecomposableStatisticView<StatisticType>(numRows, numCols)) {}
 
             /**
-             * Adds all gradients and Hessians in a vector to a specific row of this matrix. The gradients and Hessians
-             * to be added are multiplied by a specific weight.
+             * Returns the number rows in the matrix.
              *
-             * @param row             The row
-             * @param gradientsBegin  An iterator to the beginning of the gradients
-             * @param gradientsEnd    An iterator to the end of the gradients
-             * @param hessiansBegin   An iterator to the beginning of the Hessians
-             * @param hessiansEnd     An iterator to the end of the Hessians
-             * @param weight          The weight, the gradients and Hessians should be multiplied by
+             * @return The number of rows
              */
-            void addToRow(uint32 row, typename View<StatisticType>::const_iterator gradientsBegin,
-                          typename View<StatisticType>::const_iterator gradientsEnd,
-                          typename View<StatisticType>::const_iterator hessiansBegin,
-                          typename View<StatisticType>::const_iterator hessiansEnd, uint32 weight) {
-                VectorMath::addWeighted(this->view.gradients_begin(row), gradientsBegin, this->getNumCols(), weight);
-                VectorMath::addWeighted(this->view.hessians_begin(row), hessiansBegin, this->getNumCols(), weight);
+            uint32 getNumRows() const {
+                return this->getView().getNumRows();
+            }
+
+            /**
+             * Returns the number of columns in the matrix.
+             *
+             * @return The number of columns
+             */
+            uint32 getNumCols() const {
+                return this->getView().getNumCols();
             }
     };
 

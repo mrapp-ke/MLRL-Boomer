@@ -5,7 +5,6 @@
 
 #include "mlrl/boosting/data/view_statistic_non_decomposable_dense.hpp"
 #include "mlrl/boosting/iterator/iterator_diagonal.hpp"
-#include "mlrl/common/data/view_vector_composite.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 
@@ -18,8 +17,11 @@ namespace boosting {
      * @tparam StatisticType The type of the gradient and Hessians
      */
     template<typename StatisticType>
-    class MLRLBOOSTING_API DenseNonDecomposableStatisticVectorView final
-        : public CompositeVector<AllocatedVector<StatisticType>, AllocatedVector<StatisticType>> {
+    class MLRLBOOSTING_API DenseNonDecomposableStatisticVectorView final : public AllocatedVector<StatisticType> {
+        private:
+
+            const uint32 numGradients_;
+
         public:
 
             /**
