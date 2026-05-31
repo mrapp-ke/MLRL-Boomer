@@ -21,22 +21,22 @@ Predicting for 196 test examples...
 
 🗀 Evaluation result for test data:
 
- Example-wise F1 (↑)         56.56
- Example-wise Jaccard (↑)    46.98
- Example-wise Precision (↑)  63.29
- Example-wise Recall (↑)     61.99
- Hamming Accuracy (↑)        74.23
- Hamming Loss (↓)            25.77
- Macro F1 (↑)                52.79
- Macro Jaccard (↑)           38.87
- Macro Precision (↑)         52.53
- Macro Recall (↑)            57.85
- Micro F1 (↑)                59.87
- Micro Jaccard (↑)           42.72
- Micro Precision (↑)         59.47
- Micro Recall (↑)            60.27
- Subset 0/1 Loss (↓)         80.10
- Subset Accuracy (↑)         19.90
+ Example-wise F1 (↑)         57.16
+ Example-wise Jaccard (↑)    43.71
+ Example-wise Precision (↑)  48.18
+ Example-wise Recall (↑)     85.37
+ Hamming Accuracy (↑)        60.63
+ Hamming Loss (↓)            39.37
+ Macro F1 (↑)                57.65
+ Macro Jaccard (↑)           41.18
+ Macro Precision (↑)         44.61
+ Macro Recall (↑)            83.73
+ Micro F1 (↑)                57.72
+ Micro Jaccard (↑)           40.56
+ Micro Precision (↑)         43.89
+ Micro Recall (↑)            84.27
+ Subset 0/1 Loss (↓)         92.86
+ Subset Accuracy (↑)         7.14
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
 ✓ Successfully finished experiment after <duration>

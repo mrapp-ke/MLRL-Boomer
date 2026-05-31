@@ -4,10 +4,10 @@
 #pragma once
 
 #include "mlrl/common/data/vector_dense.hpp"
-#include "mlrl/common/data/view_matrix_c_contiguous.hpp"
-#include "mlrl/common/data/view_matrix_csr_binary.hpp"
 #include "mlrl/common/data/view_vector_composite.hpp"
-#include "mlrl/seco/data/matrix_statistic_decomposable_dense.hpp"
+#include "mlrl/common/indices/index_vector_complete.hpp"
+#include "mlrl/common/indices/index_vector_partial.hpp"
+#include "mlrl/seco/data/view_statistic_decomposable_sparse.hpp"
 #include "mlrl/seco/util/dll_exports.hpp"
 
 namespace seco {
@@ -327,79 +327,36 @@ namespace seco {
              * Adds the confusion matrix elements that correspond to an example at a specific index to this vector. The
              * confusion matrix elements to be added are multiplied by a specific weight.
              *
-             * @param view      A reference to an object of type
-             *                  `DenseDecomposableStatisticMatrix<CContiguousView<const uint8>>::View` that provides
-             *                  random access to the confusion matrices of the training examples
+             * @param view      A reference to an object of type `SparseDecomposableStatisticView` that provides access
+             *                  to the confusion matrices of the training examples
              * @param row       The index of the row to be added to this vector
              * @param weight    The weight, the confusion matrix elements should be multiplied by
              */
-            void add(const DenseDecomposableStatisticMatrix<CContiguousView<const uint8>>::View& view, uint32 row,
-                     StatisticType weight = 1);
-
-            /**
-             * Adds the confusion matrix elements that correspond to an example at a specific index to this vector. The
-             * confusion matrix elements to be added are multiplied by a specific weight.
-             *
-             * @param view      A reference to an object of type `DenseDecomposableStatisticMatrix<BinaryCsrView>::View`
-             *                  that provides random access to the confusion matrices of the training examples
-             * @param row       The index of the row to be added to this vector
-             * @param weight    The weight, the confusion matrix elements should be multiplied by
-             */
-            void add(const DenseDecomposableStatisticMatrix<BinaryCsrView>::View& view, uint32 row,
-                     StatisticType weight = 1);
+            void add(const SparseDecomposableStatisticView& view, uint32 row, StatisticType weight = 1);
 
             /**
              * Removes the confusion matrix elements at a specific row of a view from this vector.  The confusion matrix
              * elements to be added are multiplied by a specific weight.
              *
-             * @param view      A reference to an object of type
-             *                  `DenseDecomposableStatisticMatrix<CContiguousView<const uint8>>::View` that provides
-             *                  random access to the confusion matrices of the training examples
+             * @param view      A reference to an object of type `SparseDecomposableStatisticView` that provides access
+             *                  to the confusion matrices of the training examples
              * @param row       The index of the row to be removed from this vector
              * @param weight    The weight, the confusion matrix elements should be multiplied by
              */
-            void remove(const DenseDecomposableStatisticMatrix<CContiguousView<const uint8>>::View& view, uint32 row,
-                        StatisticType weight = 1);
-
-            /**
-             * Removes the confusion matrix elements at a specific row of a view from this vector. The confusion matrix
-             * elements to be added are multiplied by a specific weight.
-             *
-             * @param view      A reference to an object of type `DenseDecomposableStatisticMatrix<BinaryCsrView>::View`
-             *                  that provides random access to the confusion matrices of the training examples
-             * @param row       The index of the row to be removed from this vector
-             * @param weight    The weight, the confusion matrix elements should be multiplied by
-             */
-            void remove(const DenseDecomposableStatisticMatrix<BinaryCsrView>::View& view, uint32 row,
-                        StatisticType weight = 1);
+            void remove(const SparseDecomposableStatisticView& view, uint32 row, StatisticType weight = 1);
 
             /**
              * Adds certain confusion matrix elements in a specific row of a view, whose positions are given as a
              * `CompleteIndexVector`, to this vector. The confusion matrix elements to be added are multiplied by a
              * specific weight.
              *
-             * @param view      A reference to an object of type
-             *                  `DenseDecomposableStatisticMatrix<CContiguousView<const uint8>>::View` that provides
-             *                  random access to the confusion matrices of the training examples
+             * @param view      A reference to an object of type `SparseDecomposableStatisticView` that provides access
+             *                  to the confusion matrices of the training examples
              * @param row       The index of the row to be added to this vector
              * @param indices   A reference to a `CompleteIndexVector` that provides access to the indices
              * @param weight    The weight, the confusion matrix elements should be multiplied by
              */
-            void addToSubset(const DenseDecomposableStatisticMatrix<CContiguousView<const uint8>>::View& view,
-                             uint32 row, const CompleteIndexVector& indices, StatisticType weight = 1);
-
-            /**
-             * Adds certain confusion matrix elements in a specific row of a view, whose positions are given as a
-             * `CompleteIndexVector`, to this vector. The confusion matrix elements to be added are multiplied by a
-             * specific weight.
-             *
-             * @param view      A reference to an object of type `DenseDecomposableStatisticMatrix<BinaryCsrView>::View`
-             *                  that provides row-wise access to the labels of the training examples
-             * @param row       The index of the row to be added to this vector
-             * @param indices   A reference to a `CompleteIndexVector` that provides access to the indices
-             * @param weight    The weight, the confusion matrix elements should be multiplied by
-             */
-            void addToSubset(const DenseDecomposableStatisticMatrix<BinaryCsrView>::View& view, uint32 row,
+            void addToSubset(const SparseDecomposableStatisticView& view, uint32 row,
                              const CompleteIndexVector& indices, StatisticType weight = 1);
 
             /**
@@ -407,29 +364,14 @@ namespace seco {
              * `CompleteIndexVector`, to this vector. The confusion matrix elements to be added are multiplied by a
              * specific weight.
              *
-             * @param view      A reference to an object of type
-             *                  `DenseDecomposableStatisticMatrix<CContiguousView<const uint8>>::View` that provides
-             *                  random access to the confusion matrices of the training examples
+             * @param view      A reference to an object of type `SparseDecomposableStatisticView` that provides access
+             *                  to the confusion matrices of the training examples
              * @param row       The index of the row to be added to this vector
              * @param indices   A reference to a `PartialIndexVector` that provides access to the indices
              * @param weight    The weight, the confusion matrix elements should be multiplied by
              */
-            void addToSubset(const DenseDecomposableStatisticMatrix<CContiguousView<const uint8>>::View& view,
-                             uint32 row, const PartialIndexVector& indices, StatisticType weight = 1);
-
-            /**
-             * Adds certain confusion matrix elements in a specific row of a view, whose positions are given as a
-             * `CompleteIndexVector`, to this vector. The confusion matrix elements to be added are multiplied by a
-             * specific weight.
-             *
-             * @param view      A reference to an object of type `DenseDecomposableStatisticMatrix<BinaryCsrView>::View`
-             *                  that provides row-wise access to the labels of the training examples
-             * @param row       The index of the row to be added to this vector
-             * @param indices   A reference to a `PartialIndexVector` that provides access to the indices
-             * @param weight    The weight, the confusion matrix elements should be multiplied by
-             */
-            void addToSubset(const DenseDecomposableStatisticMatrix<BinaryCsrView>::View& view, uint32 row,
-                             const PartialIndexVector& indices, StatisticType weight = 1);
+            void addToSubset(const SparseDecomposableStatisticView& view, uint32 row, const PartialIndexVector& indices,
+                             StatisticType weight = 1);
 
             /**
              * Sets the confusion matrix elements in this vector to the difference `first - second` between the elements

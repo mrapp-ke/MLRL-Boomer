@@ -29,7 +29,6 @@ namespace seco {
                         this->useParallelPrediction();
                         this->useSizeStoppingCriterion();
                         this->useOutputWiseBinaryPredictor();
-                        this->useCoverageStoppingCriterion();
                         this->useSingleOutputHeads();
                         this->useFMeasureHeuristic();
                         this->useAccuracyPruningHeuristic();

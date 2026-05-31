@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/simd/functions/add.hpp"
+#include "mlrl/common/simd/functions/add_constant_to_subset.hpp"
 #include "mlrl/common/simd/functions/add_from_subset.hpp"
 #include "mlrl/common/simd/functions/add_weighted.hpp"
 #include "mlrl/common/simd/functions/add_weighted_from_subset.hpp"
@@ -11,6 +12,7 @@
 #include "mlrl/common/simd/functions/difference.hpp"
 #include "mlrl/common/simd/functions/difference_with_subset.hpp"
 #include "mlrl/common/simd/functions/subtract.hpp"
+#include "mlrl/common/simd/functions/subtract_constant_from_subset.hpp"
 #include "mlrl/common/simd/functions/subtract_weighted.hpp"
 
 #if SIMD_SUPPORT_ENABLED
@@ -115,6 +117,25 @@ struct SimdVectorMath {
         }
 
         /**
+         * Adds a specific constant to the elements in a given array `array` that correspond to the indices in another
+         * array `indices`.
+         *
+         * @tparam T            The type of the values in the array `array`
+         * @tparam Constant     The type of the constant
+         * @param array         A pointer to the beginning  of the array `array`
+         * @param constant      The constant
+         * @param indices       A pointer to the beginning of the array `indices`
+         * @param numIndices    The number of elements in the array `indices`
+         */
+        template<typename T, typename Constant>
+        static inline void addConstantToSubset(T* array, Constant constant, const uint32* indices, uint32 numIndices) {
+            auto dispatched = xsimd::dispatch<util::simd_architectures>([&](auto arch) {
+                simd::addConstantToSubset(arch, array, constant, indices, numIndices);
+            });
+            dispatched();
+        }
+
+        /**
          * Removes the elements in an array `b` from the elements in another array `a`, such that `a = a - b`.
          *
          * @tparam T            The type of the values in the arrays `a` and `b`
@@ -145,6 +166,26 @@ struct SimdVectorMath {
         static inline void subtractWeighted(T* a, const T* b, uint32 numElements, Weight weight) {
             auto dispatched = xsimd::dispatch<util::simd_architectures>([&](auto arch) {
                 simd::subtractWeighted(arch, a, b, numElements, weight);
+            });
+            dispatched();
+        }
+
+        /**
+         * Subtracts a specific constant from the elements in a given array `array` that correspond to the indices in
+         * another array `indices`.
+         *
+         * @tparam T            The type of the values in the array `array`
+         * @tparam Constant     The type of the constant
+         * @param array         A pointer to the beginning  of the array `array`
+         * @param constant      The constant
+         * @param indices       A pointer to the beginning of the array `indices`
+         * @param numIndices    The number of elements in the array `indices`
+         */
+        template<typename T, typename Constant>
+        static inline void subtractConstantFromSubset(T* array, Constant constant, const uint32* indices,
+                                                      uint32 numIndices) {
+            auto dispatched = xsimd::dispatch<util::simd_architectures>([&](auto arch) {
+                simd::subtractConstantFromSubset(arch, array, constant, indices, numIndices);
             });
             dispatched();
         }

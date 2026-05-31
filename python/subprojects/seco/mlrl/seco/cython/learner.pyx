@@ -5,37 +5,6 @@ from abc import ABC, abstractmethod
 
 from mlrl.seco.cython.heuristic import FMeasureConfig, MEstimateConfig
 from mlrl.seco.cython.lift_function import KlnLiftFunctionConfig, PeakLiftFunctionConfig
-from mlrl.seco.cython.stopping_criterion import CoverageStoppingCriterionConfig
-
-
-class NoCoverageStoppingCriterionMixin(ABC):
-    """
-    Allows to configure a rule learner to not use any stopping criterion that stops the induction of rules as soon as
-    the sum of the weights of the uncovered labels is smaller or equal to a certain threshold.
-    """
-
-    @abstractmethod
-    def use_no_coverage_stopping_criterion(self):
-        """
-        Configures the rule learner to not use any stopping criterion that stops the induction of rules as soon as the
-        sum of the weights of the uncovered labels is smaller or equal to a certain threshold.
-        """
-
-
-class CoverageStoppingCriterionMixin(ABC):
-    """
-    Allows to configure a rule learner to use a stopping criterion that stops the induction of rules as soon as the sum
-    of the weights of the uncovered labels is smaller or equal to a certain threshold.
-    """
-
-    @abstractmethod
-    def use_coverage_stopping_criterion(self) -> CoverageStoppingCriterionConfig:
-        """
-        Configures the rule learner to use a stopping criterion that stops the induction of rules as soon as the sum of
-        the weights of the uncovered labels is smaller or equal to a certain threshold.
-
-        :return: A `CoverageStoppingCriterionConfig` that allows further configuration of the stopping criterion
-        """
 
 
 class SingleOutputHeadMixin(ABC):
