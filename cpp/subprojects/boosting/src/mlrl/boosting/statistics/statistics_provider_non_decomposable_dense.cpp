@@ -33,26 +33,6 @@ namespace boosting {
             DenseNonDecomposableStatisticMatrix(uint32 numRows, uint32 numCols)
                 : ClearableViewDecorator<MatrixDecorator<DenseNonDecomposableStatisticView<StatisticType>>>(
                     DenseNonDecomposableStatisticView<StatisticType>(numRows, numCols)) {}
-
-            /**
-             * Adds all gradients and Hessians in a vector to a specific row of this matrix. The gradients and Hessians
-             * to be added are multiplied by a specific weight.
-             *
-             * @param row               The row
-             * @param gradientsBegin    An iterator to the beginning of the gradients in the vector
-             * @param gradientsEnd      An iterator to the end of the gradients in the vector
-             * @param hessiansBegin     An iterator to the beginning of the Hessians in the vector
-             * @param hessiansEnd       An iterator to the end of the Hessians in the vector
-             * @param weight            The weight, the gradients and Hessians should be multiplied by
-             */
-            void addToRow(uint32 row, View<float64>::const_iterator gradientsBegin,
-                          View<float64>::const_iterator gradientsEnd, View<float64>::const_iterator hessiansBegin,
-                          View<float64>::const_iterator hessiansEnd, uint32 weight) {
-                VectorMath::addWeighted(this->view.firstView.values_begin(row), gradientsBegin,
-                                        this->view.firstView.numCols, weight);
-                VectorMath::addWeighted(this->view.secondView.values_begin(row), hessiansBegin,
-                                        this->view.secondView.numCols, weight);
-            }
     };
 
     /**
