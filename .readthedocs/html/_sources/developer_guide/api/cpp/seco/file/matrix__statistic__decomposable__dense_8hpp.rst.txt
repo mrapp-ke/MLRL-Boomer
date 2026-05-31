@@ -1,5 +1,0 @@
-File matrix_statistic_decomposable_dense.hpp
-============================================
-
-.. doxygenfile:: matrix_statistic_decomposable_dense.hpp
-   :project: seco
