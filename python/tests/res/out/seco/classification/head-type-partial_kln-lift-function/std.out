@@ -14,22 +14,22 @@ DEBUG: A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Example-wise F1 (↑)         55.05
-Example-wise Jaccard (↑)    46.16
-Example-wise Precision (↑)  66.34
-Example-wise Recall (↑)     59.86
-Hamming Accuracy (↑)        74.49
-Hamming Loss (↓)            25.51
-Macro F1 (↑)                52.66
-Macro Jaccard (↑)           38.66
-Macro Precision (↑)         52.21
-Macro Recall (↑)            56.23
-Micro F1 (↑)                59.89
-Micro Jaccard (↑)           42.75
-Micro Precision (↑)         60.05
-Micro Recall (↑)            59.73
-Subset 0/1 Loss (↓)         79.08
-Subset Accuracy (↑)         20.92
+Example-wise F1 (↑)         55.42
+Example-wise Jaccard (↑)    46.2
+Example-wise Precision (↑)  64
+Example-wise Recall (↑)     62.41
+Hamming Accuracy (↑)        73.13
+Hamming Loss (↓)            26.87
+Macro F1 (↑)                52.53
+Macro Jaccard (↑)           38.51
+Macro Precision (↑)         48.42
+Macro Recall (↑)            59.29
+Micro F1 (↑)                59.8
+Micro Jaccard (↑)           42.65
+Micro Precision (↑)         57.18
+Micro Recall (↑)            62.67
+Subset 0/1 Loss (↓)         79.59
+Subset Accuracy (↑)         20.41
 
 DEBUG: Writing output data to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
 Model characteristics:
@@ -38,7 +38,7 @@ Model characteristics:
 │ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
 ├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
 │ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
-│ 64 local rules                │      71 │                  47.89% │                 52.11% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+│ 64 local rules                │      64 │                  45.31% │                 54.69% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
 └───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
 
 ┌────────────────────────────────┬─────────┬────────────┬────────────┐
@@ -51,7 +51,7 @@ Model characteristics:
 ┌─────────────────────────────┬───────────┬───────────┬───────────┐
 │ Statistics per local rule   │   Minimum │   Average │   Maximum │
 ├─────────────────────────────┼───────────┼───────────┼───────────┤
-│ Conditions                  │         1 │      1.11 │         3 │
+│ Conditions                  │         1 │      1    │         1 │
 │ Predictions                 │         1 │      1.11 │         3 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 

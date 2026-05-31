@@ -13,41 +13,41 @@ Using separate training and test sets...
 DEBUG: Reading input data from file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
 Evaluation result for test data using a model of size 50:
 
-Example-wise F1 (↑)         52.09
-Example-wise Jaccard (↑)    43.17
-Example-wise Precision (↑)  65.23
-Example-wise Recall (↑)     56.46
-Hamming Accuracy (↑)        73.3
-Hamming Loss (↓)            26.7
-Macro F1 (↑)                49.73
-Macro Jaccard (↑)           35.98
-Macro Precision (↑)         65.08
-Macro Recall (↑)            53.78
-Micro F1 (↑)                57.34
-Micro Jaccard (↑)           40.19
-Micro Precision (↑)         58.45
-Micro Recall (↑)            56.27
-Subset 0/1 Loss (↓)         81.12
-Subset Accuracy (↑)         18.88
+Example-wise F1 (↑)         54.56
+Example-wise Jaccard (↑)    44.97
+Example-wise Precision (↑)  64.85
+Example-wise Recall (↑)     59.86
+Hamming Accuracy (↑)        73.64
+Hamming Loss (↓)            26.36
+Macro F1 (↑)                50.83
+Macro Jaccard (↑)           37.26
+Macro Precision (↑)         64.81
+Macro Recall (↑)            57.04
+Micro F1 (↑)                59.42
+Micro Jaccard (↑)           42.27
+Micro Precision (↑)         58.35
+Micro Recall (↑)            60.53
+Subset 0/1 Loss (↓)         81.63
+Subset Accuracy (↑)         18.37
 
 DEBUG: Writing output data to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
 Evaluation result for test data using a model of size 62:
 
-Example-wise F1 (↑)         53.72
-Example-wise Jaccard (↑)    44.55
-Example-wise Precision (↑)  63.06
-Example-wise Recall (↑)     59.18
-Hamming Accuracy (↑)        72.96
-Hamming Loss (↓)            27.04
-Macro F1 (↑)                50.95
-Macro Jaccard (↑)           36.98
-Macro Precision (↑)         64.57
-Macro Recall (↑)            56.59
-Micro F1 (↑)                58.16
-Micro Jaccard (↑)           41
-Micro Precision (↑)         57.4
-Micro Recall (↑)            58.93
-Subset 0/1 Loss (↓)         81.63
-Subset Accuracy (↑)         18.37
+Example-wise F1 (↑)         56.29
+Example-wise Jaccard (↑)    46.89
+Example-wise Precision (↑)  62.79
+Example-wise Recall (↑)     63.35
+Hamming Accuracy (↑)        73.38
+Hamming Loss (↓)            26.62
+Macro F1 (↑)                52.97
+Macro Jaccard (↑)           39.06
+Macro Precision (↑)         64.33
+Macro Recall (↑)            61.18
+Micro F1 (↑)                60.63
+Micro Jaccard (↑)           43.5
+Micro Precision (↑)         57.38
+Micro Recall (↑)            64.27
+Subset 0/1 Loss (↓)         79.59
+Subset Accuracy (↑)         20.41
 
 DEBUG: Writing output data to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
