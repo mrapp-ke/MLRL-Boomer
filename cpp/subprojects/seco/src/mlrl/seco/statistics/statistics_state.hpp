@@ -15,9 +15,9 @@ namespace seco {
     /**
      * Represents the current state of a sequential covering process and allows to update it.
      *
-     * The state consists of coverage matrices and keeps track of how often individual examples and labels have been
-     * covered by the rules in a model. When the model has been modified, this state can be updated accordingly by
-     * updating the coverage.
+     * The state consists of a matrix that stores confusion matrix elements corresponding to individual examples and
+     * labels. When the model has been modified, this state can be updated accordingly by updating the confusion matrix
+     * elements.
      *
      * @tparam StatisticMatrix The type of the matrix that provides access to the confusion matrices
      */
@@ -65,18 +65,14 @@ namespace seco {
         public:
 
             /**
-             * A reference to an object of template type `LabelMatrix` that provides access to the labels of the
+             * A reference to an object of template type `StatisticMatrix` that provides access to the labels of the
              * training examples.
              */
             std::unique_ptr<StatisticMatrix> statisticMatrixPtr;
 
             /**
-             * @param labelMatrix               A reference to an object of template type `LabelMatrix` that provides
-             *                                  access to the labels of the training examples
-             * @param coverageMatrixPtr         An unique pointer to an object of template type `CoverageMatrix` that
-             *                                  stores how often individual examples and labels have been covered
-             * @param majorityLabelVectorPtr    An unique pointer to an object of type `BinarySparseArrayVector` that
-             *                                  stores the predictions of the default rule
+             * @param statisticMatrixPtr An unique pointer to an object of template type `StatisticMatrix` that stores
+             *                           confusion matrix elements
              */
             CoverageStatisticsState(std::unique_ptr<StatisticMatrix> statisticMatrixPtr)
                 : statisticMatrixPtr(std::move(statisticMatrixPtr)) {}
