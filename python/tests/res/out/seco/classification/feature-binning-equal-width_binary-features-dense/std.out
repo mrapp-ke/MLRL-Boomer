@@ -21,20 +21,20 @@ Predicting for 562 test examples...
 
 🗀 Evaluation result for test data:
 
- Example-wise F1 (↑)         49.17
- Example-wise Jaccard (↑)    34.86
- Example-wise Precision (↑)  43.09
- Example-wise Recall (↑)     66.91
- Hamming Accuracy (↑)        91.86
- Hamming Loss (↓)            8.14
- Macro F1 (↑)                17.03
- Macro Jaccard (↑)           11.99
- Macro Precision (↑)         56.74
- Macro Recall (↑)            22.14
- Micro F1 (↑)                50.39
- Micro Jaccard (↑)           33.68
- Micro Precision (↑)         41.12
- Micro Recall (↑)            65.06
+ Example-wise F1 (↑)         42.99
+ Example-wise Jaccard (↑)    28.87
+ Example-wise Precision (↑)  31.17
+ Example-wise Recall (↑)     79.66
+ Hamming Accuracy (↑)        86.49
+ Hamming Loss (↓)            13.51
+ Macro F1 (↑)                16.78
+ Macro Jaccard (↑)           11.60
+ Macro Precision (↑)         46.23
+ Macro Recall (↑)            33.22
+ Micro F1 (↑)                42.52
+ Micro Jaccard (↑)           27.00
+ Micro Precision (↑)         29.13
+ Micro Recall (↑)            78.70
  Subset 0/1 Loss (↓)         100.00
  Subset Accuracy (↑)         0.00
 

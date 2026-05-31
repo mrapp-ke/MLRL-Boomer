@@ -21,22 +21,22 @@ Predicting for 196 test examples...
 
 🗀 Evaluation result for test data:
 
- Example-wise F1 (↑)         56.66
- Example-wise Jaccard (↑)    43.99
- Example-wise Precision (↑)  48.80
- Example-wise Recall (↑)     80.44
- Hamming Accuracy (↑)        61.82
- Hamming Loss (↓)            38.18
- Macro F1 (↑)                56.88
- Macro Jaccard (↑)           40.77
- Macro Precision (↑)         45.06
- Macro Recall (↑)            78.97
- Micro F1 (↑)                57.20
- Micro Jaccard (↑)           40.05
- Micro Precision (↑)         44.51
- Micro Recall (↑)            80.00
- Subset 0/1 Loss (↓)         90.82
- Subset Accuracy (↑)         9.18
+ Example-wise F1 (↑)         57.64
+ Example-wise Jaccard (↑)    43.94
+ Example-wise Precision (↑)  46.33
+ Example-wise Recall (↑)     87.24
+ Hamming Accuracy (↑)        59.78
+ Hamming Loss (↓)            40.22
+ Macro F1 (↑)                58.08
+ Macro Jaccard (↑)           41.73
+ Macro Precision (↑)         44.65
+ Macro Recall (↑)            86.58
+ Micro F1 (↑)                57.88
+ Micro Jaccard (↑)           40.73
+ Micro Precision (↑)         43.45
+ Micro Recall (↑)            86.67
+ Subset 0/1 Loss (↓)         95.41
+ Subset Accuracy (↑)         4.59
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
 
@@ -48,7 +48,7 @@ Predicting for 196 test examples...
   conditions    │ Total │      operator │      operator │      operator │      operator │     operator │      operator
 ╶───────────────┼───────┼───────────────┼───────────────┼───────────────┼───────────────┼──────────────┼───────────────╴
   Default rule  │     0 │        0.00 % │        0.00 % │        0.00 % │        0.00 % │       0.00 % │        0.00 %
-  171 local     │   228 │       46.05 % │       53.95 % │        0.00 % │        0.00 % │       0.00 % │        0.00 %
+  171 local     │   171 │       44.44 % │       55.56 % │        0.00 % │        0.00 % │       0.00 % │        0.00 %
   rules         │       │               │               │               │               │              │
                 ╵       ╵               ╵               ╵               ╵               ╵              ╵
 
@@ -62,7 +62,7 @@ Predicting for 196 test examples...
                             ╷         ╷         ╷
   Statistics per local rule │ Minimum │ Average │ Maximum
 ╶───────────────────────────┼─────────┼─────────┼─────────╴
-  Conditions                │       1 │    1.33 │       3
+  Conditions                │       1 │    1.00 │       1
   Predictions               │       1 │    1.02 │       2
                             ╵         ╵         ╵
 

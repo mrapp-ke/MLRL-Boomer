@@ -14,9 +14,9 @@ namespace seco {
             float32 evaluateConfusionMatrix(float32 cin, float32 cip, float32 crn, float32 crp, float32 uin,
                                             float32 uip, float32 urn, float32 urp) const override {
                 float32 numCoveredCorrect = cin + crp;
-                float32 numUncoveredCorrect = uin + uip;
+                float32 numUncoveredCorrect = uin + urp;
                 float32 numCorrect = numCoveredCorrect + numUncoveredCorrect;
-                float32 numTotal = numCorrect + cip + crn + urn + urp;
+                float32 numTotal = numCorrect + cip + crn + urn + uip;
                 return math::divideOrZero(numCorrect, numTotal);
             }
     };
