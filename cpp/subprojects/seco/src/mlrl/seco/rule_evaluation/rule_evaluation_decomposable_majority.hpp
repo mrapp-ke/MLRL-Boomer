@@ -38,8 +38,8 @@ namespace seco {
 
             const IScoreVector& calculateScores(View<uint32>::const_iterator majorityLabelIndicesBegin,
                                                 View<uint32>::const_iterator majorityLabelIndicesEnd,
-                                                const StatisticVector& confusionMatricesTotal,
-                                                const StatisticVector& confusionMatricesCovered) override {
+                                                const StatisticVector& statisticsTotal,
+                                                const StatisticVector& statisticsCovered) override {
                 auto indexIterator = scoreVector_.indices_cbegin();
                 auto labelIterator =
                   createBinarySparseForwardIterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);

@@ -51,18 +51,18 @@ namespace seco {
 
             const IScoreVector& calculateScores(View<uint32>::const_iterator majorityLabelIndicesBegin,
                                                 View<uint32>::const_iterator majorityLabelIndicesEnd,
-                                                const StatisticVector& confusionMatricesTotal,
-                                                const StatisticVector& confusionMatricesCovered) override {
+                                                const StatisticVector& statisticsTotal,
+                                                const StatisticVector& statisticsCovered) override {
                 uint32 numElements = scoreVector_.getNumElements();
                 auto indexIterator = scoreVector_.indices_cbegin();
-                auto in = confusionMatricesTotal.in_cbegin();
-                auto ip = confusionMatricesTotal.ip_cbegin();
-                auto rn = confusionMatricesTotal.rn_cbegin();
-                auto rp = confusionMatricesTotal.rp_cbegin();
-                auto cin = confusionMatricesCovered.in_cbegin();
-                auto cip = confusionMatricesCovered.ip_cbegin();
-                auto crn = confusionMatricesCovered.rn_cbegin();
-                auto crp = confusionMatricesCovered.rp_cbegin();
+                auto in = statisticsTotal.in_cbegin();
+                auto ip = statisticsTotal.ip_cbegin();
+                auto rn = statisticsTotal.rn_cbegin();
+                auto rp = statisticsTotal.rp_cbegin();
+                auto cin = statisticsCovered.in_cbegin();
+                auto cip = statisticsCovered.ip_cbegin();
+                auto crn = statisticsCovered.rn_cbegin();
+                auto crp = statisticsCovered.rp_cbegin();
                 auto labelIterator =
                   createBinarySparseForwardIterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
                 float32 sumOfQualities = 0;
@@ -125,18 +125,18 @@ namespace seco {
 
             const IScoreVector& calculateScores(View<uint32>::const_iterator majorityLabelIndicesBegin,
                                                 View<uint32>::const_iterator majorityLabelIndicesEnd,
-                                                const StatisticVector& confusionMatricesTotal,
-                                                const StatisticVector& confusionMatricesCovered) override {
+                                                const StatisticVector& statisticsTotal,
+                                                const StatisticVector& statisticsCovered) override {
                 uint32 numElements = labelIndices_.getNumElements();
                 auto indexIterator = labelIndices_.cbegin();
-                auto in = confusionMatricesTotal.in_cbegin();
-                auto ip = confusionMatricesTotal.ip_cbegin();
-                auto rn = confusionMatricesTotal.rn_cbegin();
-                auto rp = confusionMatricesTotal.rp_cbegin();
-                auto cin = confusionMatricesCovered.in_cbegin();
-                auto cip = confusionMatricesCovered.ip_cbegin();
-                auto crn = confusionMatricesCovered.rn_cbegin();
-                auto crp = confusionMatricesCovered.rp_cbegin();
+                auto in = statisticsTotal.in_cbegin();
+                auto ip = statisticsTotal.ip_cbegin();
+                auto rn = statisticsTotal.rn_cbegin();
+                auto rp = statisticsTotal.rp_cbegin();
+                auto cin = statisticsCovered.in_cbegin();
+                auto cip = statisticsCovered.ip_cbegin();
+                auto crn = statisticsCovered.rn_cbegin();
+                auto crp = statisticsCovered.rp_cbegin();
                 auto labelIterator =
                   createBinarySparseForwardIterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
                 auto sortedIterator = sortedVector_.begin();
