@@ -72,8 +72,8 @@ namespace seco {
              */
             std::unique_ptr<IStatisticsUpdateCandidate> calculateScores() override final {
                 const IScoreVector& scoreVector =
-                  ruleEvaluationPtr_->calculateScores(this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
-                                                      this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(),
+                  ruleEvaluationPtr_->calculateScores(this->state_.statisticMatrixPtr->majority_label_indices_cbegin(),
+                                                      this->state_.statisticMatrixPtr->majority_label_indices_cend(),
                                                       subsetSumVector_.getView(), this->sumVector_.getView());
                 return this->state_.createUpdateCandidate(scoreVector);
             }

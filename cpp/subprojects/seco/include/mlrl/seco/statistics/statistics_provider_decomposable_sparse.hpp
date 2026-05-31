@@ -1,5 +1,4 @@
 /*
- * @author Jakob Steeg (jakob.steeg@gmail.com)
  * @author Michael Rapp (michael.rapp.ml@gmail.com)
  */
 #pragma once
@@ -13,12 +12,12 @@ namespace seco {
 
     /**
      * Allows to create instances of the class `IStatisticsProvider` that provide access to an object of type
-     * `IDecomposableStatistics` using dense data structures for storing the statistics.
+     * `IDecomposableStatistics` using sparse data structures for storing the statistics.
      *
      * @tparam VectorMath The type that implements basic operations for calculating with numerical arrays
      */
     template<typename VectorMath>
-    class DenseDecomposableStatisticsProviderFactory final : public IClassificationStatisticsProviderFactory {
+    class SparseDecomposableStatisticsProviderFactory final : public IClassificationStatisticsProviderFactory {
         private:
 
             const std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
@@ -43,7 +42,7 @@ namespace seco {
              *                                          calculating the predictions, as well as corresponding quality
              *                                          scores, when pruning rules
              */
-            DenseDecomposableStatisticsProviderFactory(
+            SparseDecomposableStatisticsProviderFactory(
               std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
               std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
               std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr);

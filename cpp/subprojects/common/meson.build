@@ -176,6 +176,7 @@ simd_libs = []
 if simd_support_enabled
     simd_source_file_names = [
         'src/mlrl/common/simd/functions/add',
+        'src/mlrl/common/simd/functions/add_constant_to_subset',
         'src/mlrl/common/simd/functions/add_from_subset',
         'src/mlrl/common/simd/functions/add_weighted',
         'src/mlrl/common/simd/functions/add_weighted_from_subset',
@@ -183,6 +184,7 @@ if simd_support_enabled
         'src/mlrl/common/simd/functions/difference',
         'src/mlrl/common/simd/functions/difference_with_subset',
         'src/mlrl/common/simd/functions/subtract',
+        'src/mlrl/common/simd/functions/subtract_constant_from_subset',
         'src/mlrl/common/simd/functions/subtract_weighted'
     ]
     simd_source_files = []

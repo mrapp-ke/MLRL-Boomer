@@ -21,12 +21,12 @@ Predicting for 95 test examples...
 
 🗀 Evaluation result for test data:
 
- 0/1 Loss (↓)   37.89
- Accuracy (↑)   62.11
- F1 (↑)         40.00
- Jaccard (↑)    25.00
- Precision (↑)  44.44
- Recall (↑)     36.36
+ 0/1 Loss (↓)   34.74
+ Accuracy (↑)   65.26
+ F1 (↑)         57.14
+ Jaccard (↑)    40.00
+ Precision (↑)  50.00
+ Recall (↑)     66.67
 
 ○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
 ✓ Successfully finished experiment after <duration>

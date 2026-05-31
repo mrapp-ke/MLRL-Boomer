@@ -129,6 +129,16 @@ class MLRLCOMMON_API ListOfLists : public Matrix {
         }
 
         /**
+         * Sets all values stored in the matrix to zero.
+         */
+        void clear() {
+            for (uint32 i = 0; i < numRows; i++) {
+                row row = (*this)[i];
+                row.clear();
+            }
+        }
+
+        /**
          * Releases the ownership of the array that stores vectors corresponding to each row in the matrix. As a result,
          * the behavior of this view becomes undefined and it should not be used anymore. The caller is responsible for
          * freeing the memory that is occupied by the array.
