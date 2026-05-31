@@ -122,8 +122,8 @@ namespace boosting {
              *         configuration of the method for the assignment of labels to bins
              */
             virtual IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning() {
-                auto ptr = std::make_unique<EqualWidthLabelBinningConfig>(this->getL1RegularizationConfig(),
-                                                                          this->getL2RegularizationConfig());
+                auto ptr = std::make_unique<EqualWidthLabelBinningConfig>(
+                  this->getL1RegularizationConfig(), this->getL2RegularizationConfig(), this->getSimdConfig());
                 IEqualWidthLabelBinningConfig& ref = *ptr;
                 this->getLabelBinningConfig().set(std::move(ptr));
                 return ref;
@@ -145,7 +145,7 @@ namespace boosting {
              */
             virtual void useAutomaticLabelBinning() {
                 this->getLabelBinningConfig().set(std::make_unique<AutomaticLabelBinningConfig>(
-                  this->getL1RegularizationConfig(), this->getL2RegularizationConfig()));
+                  this->getL1RegularizationConfig(), this->getL2RegularizationConfig(), this->getSimdConfig()));
             }
     };
 

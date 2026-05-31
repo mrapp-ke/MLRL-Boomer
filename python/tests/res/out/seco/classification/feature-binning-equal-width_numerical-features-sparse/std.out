@@ -1,35 +1,42 @@
-mlrl-testbed mlrl.seco --log-level debug --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --save-meta-data false --parallel-prediction false --parallel-rule-refinement false --parallel-statistic-update false --feature-binning equal-width --feature-format sparse
-Checking if output files do already exist...
+mlrl-testbed mlrl.seco --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --save-meta-data false --parallel-prediction false --parallel-rule-refinement false --parallel-statistic-update false --feature-binning equal-width --feature-format sparse
+○ Checking if output files do already exist...
+
 Starting experiment using the classification algorithm "SeCoClassifier"...
 Using separate training and test sets...
-DEBUG: Reading input data from file "python/tests/res/data/emotions.arff"...
-DEBUG: Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+
+Loading training dataset...
+○ Reading from file "python/tests/res/data/emotions.arff"...
+○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+✓ Successfully loaded training dataset!
 Fitting model to 397 training examples...
-DEBUG: A sparse matrix with sparse value 0.0 is used to store the feature values of the training examples
-DEBUG: A dense matrix is used to store the labels of the training examples
-Successfully fit model in <duration>
+○ A sparse matrix with sparse value 0.0 is used to store the feature values of the training examples
+○ A dense matrix is used to store the labels of the training examples
+✓ Successfully fit model in <duration>
+Loading test dataset...
+✓ Successfully loaded test dataset!
 Predicting for 196 test examples...
-DEBUG: A sparse matrix with sparse value 0.0 is used to store the feature values of the query examples
-DEBUG: A dense matrix is used to store the predicted labels
-Successfully predicted in <duration>
-Evaluation result for test data:
+○ A sparse matrix with sparse value 0.0 is used to store the feature values of the query examples
+○ A dense matrix is used to store the predicted labels
+✓ Successfully predicted in <duration>
 
-Example-wise F1 (↑)         60.21
-Example-wise Jaccard (↑)    48.94
-Example-wise Precision (↑)  58.58
-Example-wise Recall (↑)     72.11
-Hamming Accuracy (↑)        71.6
-Hamming Loss (↓)            28.4
-Macro F1 (↑)                56.08
-Macro Jaccard (↑)           41.6
-Macro Precision (↑)         49.52
-Macro Recall (↑)            69.03
-Micro F1 (↑)                61.7
-Micro Jaccard (↑)           44.61
-Micro Precision (↑)         54.12
-Micro Recall (↑)            71.73
-Subset 0/1 Loss (↓)         83.16
-Subset Accuracy (↑)         16.84
+🗀 Evaluation result for test data:
 
-DEBUG: Writing output data to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
-Successfully finished experiment after <duration>
+ Example-wise F1 (↑)         54.37
+ Example-wise Jaccard (↑)    39.12
+ Example-wise Precision (↑)  39.79
+ Example-wise Recall (↑)     94.81
+ Hamming Accuracy (↑)        50.68
+ Hamming Loss (↓)            49.32
+ Macro F1 (↑)                56.07
+ Macro Jaccard (↑)           39.79
+ Macro Precision (↑)         41.12
+ Macro Recall (↑)            94.58
+ Micro F1 (↑)                55.04
+ Micro Jaccard (↑)           37.97
+ Micro Precision (↑)         38.80
+ Micro Recall (↑)            94.67
+ Subset 0/1 Loss (↓)         99.49
+ Subset Accuracy (↑)         0.51
+
+○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
+✓ Successfully finished experiment after <duration>

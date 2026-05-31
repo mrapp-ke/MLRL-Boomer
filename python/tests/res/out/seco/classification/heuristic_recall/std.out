@@ -1,35 +1,42 @@
-mlrl-testbed mlrl.seco --log-level debug --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --save-meta-data false --parallel-prediction false --parallel-rule-refinement false --parallel-statistic-update false --heuristic recall
-Checking if output files do already exist...
+mlrl-testbed mlrl.seco --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --save-meta-data false --parallel-prediction false --parallel-rule-refinement false --parallel-statistic-update false --heuristic recall
+○ Checking if output files do already exist...
+
 Starting experiment using the classification algorithm "SeCoClassifier"...
 Using separate training and test sets...
-DEBUG: Reading input data from file "python/tests/res/data/emotions.arff"...
-DEBUG: Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+
+Loading training dataset...
+○ Reading from file "python/tests/res/data/emotions.arff"...
+○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+✓ Successfully loaded training dataset!
 Fitting model to 397 training examples...
-DEBUG: A dense matrix is used to store the feature values of the training examples
-DEBUG: A dense matrix is used to store the labels of the training examples
-Successfully fit model in <duration>
+○ A dense matrix is used to store the feature values of the training examples
+○ A dense matrix is used to store the labels of the training examples
+✓ Successfully fit model in <duration>
+Loading test dataset...
+✓ Successfully loaded test dataset!
 Predicting for 196 test examples...
-DEBUG: A dense matrix is used to store the feature values of the query examples
-DEBUG: A dense matrix is used to store the predicted labels
-Successfully predicted in <duration>
-Evaluation result for test data:
+○ A dense matrix is used to store the feature values of the query examples
+○ A dense matrix is used to store the predicted labels
+✓ Successfully predicted in <duration>
 
-Example-wise F1 (↑)         37.11
-Example-wise Jaccard (↑)    30.44
-Example-wise Precision (↑)  37.5
-Example-wise Recall (↑)     38.78
-Hamming Accuracy (↑)        59.86
-Hamming Loss (↓)            40.14
-Macro F1 (↑)                17.96
-Macro Jaccard (↑)           12.52
-Macro Precision (↑)         79.19
-Macro Recall (↑)            33.33
-Micro F1 (↑)                38.38
-Micro Jaccard (↑)           23.75
-Micro Precision (↑)         37.6
-Micro Recall (↑)            39.2
-Subset 0/1 Loss (↓)         84.69
-Subset Accuracy (↑)         15.31
+🗀 Evaluation result for test data:
 
-DEBUG: Writing output data to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
-Successfully finished experiment after <duration>
+ Example-wise F1 (↑)         47.08
+ Example-wise Jaccard (↑)    31.72
+ Example-wise Precision (↑)  31.73
+ Example-wise Recall (↑)     99.23
+ Hamming Accuracy (↑)        31.80
+ Hamming Loss (↓)            68.20
+ Macro F1 (↑)                47.78
+ Macro Jaccard (↑)           31.74
+ Macro Precision (↑)         31.79
+ Macro Recall (↑)            99.44
+ Micro F1 (↑)                48.19
+ Micro Jaccard (↑)           31.74
+ Micro Precision (↑)         31.80
+ Micro Recall (↑)            99.47
+ Subset 0/1 Loss (↓)         100.00
+ Subset Accuracy (↑)         0.00
+
+○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
+✓ Successfully finished experiment after <duration>

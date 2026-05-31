@@ -75,11 +75,9 @@ namespace boosting {
              */
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
                 uint32 numOutputs = statisticVector.getNumGradients();
-                typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
-                typename StatisticVector::hessian_diagonal_const_iterator hessianIterator =
-                  statisticVector.hessians_diagonal_cbegin();
-                typename DenseScoreVector<statistic_type, IndexVector>::value_iterator valueIterator =
-                  scoreVector_.values_begin();
+                auto gradientIterator = statisticVector.gradients_cbegin();
+                auto hessianIterator = statisticVector.hessians_diagonal_cbegin();
+                auto valueIterator = scoreVector_.values_begin();
                 const std::pair<statistic_type, statistic_type> pair =
                   getMinAndMaxScore<statistic_type, typename StatisticVector::gradient_const_iterator,
                                     typename StatisticVector::hessian_diagonal_const_iterator>(
@@ -89,8 +87,8 @@ namespace boosting {
 
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
                 statistic_type threshold = calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
-                PartialIndexVector::iterator indexIterator = indexVector_.begin();
-                typename IndexVector::const_iterator outputIndexIterator = outputIndices_.cbegin();
+                auto indexIterator = indexVector_.begin();
+                auto outputIndexIterator = outputIndices_.cbegin();
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numOutputs; i++) {
@@ -135,42 +133,42 @@ namespace boosting {
         : threshold_(threshold), exponent_(exponent), l1RegularizationWeight_(l1RegularizationWeight),
           l2RegularizationWeight_(l2RegularizationWeight), blasFactory_(blasFactory), lapackFactory_(lapackFactory) {}
 
-    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float32>>>
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVectorView<float32>>>
       NonDecomposableDynamicPartialRuleEvaluationFactory::create(
-        const DenseNonDecomposableStatisticVector<float32>& statisticVector,
+        const DenseNonDecomposableStatisticVectorView<float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         return std::make_unique<DenseNonDecomposableDynamicPartialRuleEvaluation<
-          DenseNonDecomposableStatisticVector<float32>, CompleteIndexVector>>(
+          DenseNonDecomposableStatisticVectorView<float32>, CompleteIndexVector>>(
           indexVector, threshold_, exponent_, l1RegularizationWeight_, l2RegularizationWeight_,
           blasFactory_.create32Bit(), lapackFactory_.create32Bit());
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float32>>>
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVectorView<float32>>>
       NonDecomposableDynamicPartialRuleEvaluationFactory::create(
-        const DenseNonDecomposableStatisticVector<float32>& statisticVector,
+        const DenseNonDecomposableStatisticVectorView<float32>& statisticVector,
         const PartialIndexVector& indexVector) const {
-        return std::make_unique<
-          DenseNonDecomposableCompleteRuleEvaluation<DenseNonDecomposableStatisticVector<float32>, PartialIndexVector>>(
+        return std::make_unique<DenseNonDecomposableCompleteRuleEvaluation<
+          DenseNonDecomposableStatisticVectorView<float32>, PartialIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blasFactory_.create32Bit(),
           lapackFactory_.create32Bit());
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>>
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVectorView<float64>>>
       NonDecomposableDynamicPartialRuleEvaluationFactory::create(
-        const DenseNonDecomposableStatisticVector<float64>& statisticVector,
+        const DenseNonDecomposableStatisticVectorView<float64>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         return std::make_unique<DenseNonDecomposableDynamicPartialRuleEvaluation<
-          DenseNonDecomposableStatisticVector<float64>, CompleteIndexVector>>(
+          DenseNonDecomposableStatisticVectorView<float64>, CompleteIndexVector>>(
           indexVector, threshold_, exponent_, l1RegularizationWeight_, l2RegularizationWeight_,
           blasFactory_.create64Bit(), lapackFactory_.create64Bit());
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>>
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVectorView<float64>>>
       NonDecomposableDynamicPartialRuleEvaluationFactory::create(
-        const DenseNonDecomposableStatisticVector<float64>& statisticVector,
+        const DenseNonDecomposableStatisticVectorView<float64>& statisticVector,
         const PartialIndexVector& indexVector) const {
-        return std::make_unique<
-          DenseNonDecomposableCompleteRuleEvaluation<DenseNonDecomposableStatisticVector<float64>, PartialIndexVector>>(
+        return std::make_unique<DenseNonDecomposableCompleteRuleEvaluation<
+          DenseNonDecomposableStatisticVectorView<float64>, PartialIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blasFactory_.create64Bit(),
           lapackFactory_.create64Bit());
     }

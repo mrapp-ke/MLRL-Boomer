@@ -37,7 +37,7 @@ class Irep final : public IRulePruning {
                 // We process the existing rule's conditions (except for the last one) in the order they have been
                 // learned. At each iteration, we calculate the quality of a rule that only contains the conditions
                 // processed so far and keep track of the best rule...
-                ConditionList::const_iterator conditionIterator = conditions.cbegin();
+                auto conditionIterator = conditions.cbegin();
                 uint32 numPrunedConditions = 0;
 
                 for (uint32 n = 1; n < numConditions; n++) {

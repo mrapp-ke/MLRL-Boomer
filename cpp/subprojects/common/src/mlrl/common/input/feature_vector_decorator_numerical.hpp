@@ -39,8 +39,8 @@ static inline std::unique_ptr<IFeatureVector> createFilteredNumericalFeatureVect
 
     // Filter the indices of examples not associated with the majority value...
     AllocatedNumericalFeatureVector& filteredFeatureVector = filteredDecoratorPtr->getView().firstView;
-    AllocatedNumericalFeatureVector::iterator filteredIterator = filteredFeatureVector.begin();
-    AllocatedNumericalFeatureVector::const_iterator iterator = view.getView().firstView.cbegin();
+    auto filteredIterator = filteredFeatureVector.begin();
+    auto iterator = view.getView().firstView.cbegin();
     uint32 numFilteredElements = 0;
 
     for (uint32 i = 0; i < filteredFeatureVector.numElements; i++) {
@@ -77,14 +77,14 @@ class AbstractNumericalFeatureVectorDecorator : public AbstractFeatureVectorDeco
 
         void searchForRefinement(SingleRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
-                                 uint32 minCoverage, Refinement& refinement) const override {
+                                 uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
             searchForNumericalRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
                                          outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }
 
         void searchForRefinement(FixedRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
-                                 uint32 minCoverage, Refinement& refinement) const override {
+                                 uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
             searchForNumericalRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
                                          outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }
@@ -93,7 +93,7 @@ class AbstractNumericalFeatureVectorDecorator : public AbstractFeatureVectorDeco
                                              uint32 indicatorValue,
                                              IWeightedStatistics& statistics) const override final {
             const FeatureVector& featureVector = this->view.firstView;
-            CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
+            auto coverageMaskIterator = coverageMask.begin();
 
             if (interval.inverse) {
                 // Discard the indices in the range [interval.start, interval.end) and set the corresponding values in

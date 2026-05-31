@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/ring_buffer.hpp"
-#include "mlrl/common/util/math.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 
 #include <memory>
 
@@ -89,7 +89,7 @@ class ArithmeticMeanAggregationFunction final : public IAggregationFunction {
 
             for (uint32 i = 0; i < numElements; i++) {
                 float64 value = begin[i];
-                mean = util::iterativeArithmeticMean<float64>(i + 1, value, mean);
+                mean = math::iterativeArithmeticMean<float64>(i + 1, value, mean);
             }
 
             return mean;

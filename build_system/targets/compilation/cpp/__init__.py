@@ -8,11 +8,11 @@ from pathlib import Path
 
 from core.build_unit import BuildUnit
 from core.targets import TargetBuilder
+from targets.dependencies import INSTALL_RUNTIME_DEPENDENCIES
 from util.files import FileType
 
 from targets.compilation.cpp.targets import CompileCpp, InstallCpp, SetupCpp
 from targets.compilation.modules import CompilationModule
-from targets.dependencies.python import INSTALL_RUNTIME_DEPENDENCIES
 from targets.project import Project
 
 SETUP_CPP = 'setup_cpp'

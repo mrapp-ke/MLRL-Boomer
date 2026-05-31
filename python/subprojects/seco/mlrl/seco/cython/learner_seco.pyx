@@ -2,6 +2,7 @@
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from libcpp.utility cimport move
+
 from typing import override
 
 from mlrl.common.cython.feature_binning cimport EqualFrequencyFeatureBinningConfig, EqualWidthFeatureBinningConfig, \
@@ -29,34 +30,31 @@ from mlrl.common.cython.stopping_criterion cimport ISizeStoppingCriterionConfig,
 from mlrl.seco.cython.heuristic cimport FMeasureConfig, IFMeasureConfig, IMEstimateConfig, MEstimateConfig
 from mlrl.seco.cython.lift_function cimport IKlnLiftFunctionConfig, IPeakLiftFunctionConfig, KlnLiftFunctionConfig, \
     PeakLiftFunctionConfig
-from mlrl.seco.cython.stopping_criterion cimport CoverageStoppingCriterionConfig, ICoverageStoppingCriterionConfig
 
 from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, DefaultRuleMixin, \
     EqualFrequencyFeatureBinningMixin, EqualWidthFeatureBinningMixin, FeatureSamplingWithoutReplacementMixin, \
     GreedyTopDownRuleInductionMixin, InstanceSamplingWithoutReplacementMixin, InstanceSamplingWithReplacementMixin, \
     IrepRulePruningMixin, NoFeatureBinningMixin, NoFeatureSamplingMixin, NoInstanceSamplingMixin, \
     NoOutputSamplingMixin, NoParallelPredictionMixin, NoParallelRuleRefinementMixin, NoParallelStatisticUpdateMixin, \
-    NoPartitionSamplingMixin, NoRulePruningMixin, NoSequentialPostOptimizationMixin, NoSizeStoppingCriterionMixin, \
-    NoTimeStoppingCriterionMixin, OutputSamplingWithoutReplacementMixin, ParallelPredictionMixin, \
-    ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, RandomBiPartitionSamplingMixin, RNGMixin, \
-    RoundRobinOutputSamplingMixin, SequentialPostOptimizationMixin, SequentialRuleModelAssemblageMixin, \
-    SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
+    NoPartitionSamplingMixin, NoRulePruningMixin, NoSequentialPostOptimizationMixin, NoSimdMixin, \
+    NoSizeStoppingCriterionMixin, NoTimeStoppingCriterionMixin, OutputSamplingWithoutReplacementMixin, \
+    ParallelPredictionMixin, ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, \
+    RandomBiPartitionSamplingMixin, RNGMixin, RoundRobinOutputSamplingMixin, SequentialPostOptimizationMixin, \
+    SequentialRuleModelAssemblageMixin, SimdMixin, SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
 from mlrl.common.cython.learner_classification import ExampleWiseStratifiedBiPartitionSamplingMixin, \
     ExampleWiseStratifiedInstanceSamplingMixin, OutputWiseStratifiedBiPartitionSamplingMixin, \
     OutputWiseStratifiedInstanceSamplingMixin
 
-from mlrl.seco.cython.learner import AccuracyHeuristicMixin, AccuracyPruningHeuristicMixin, \
-    CoverageStoppingCriterionMixin, FMeasureHeuristicMixin, FMeasurePruningHeuristicMixin, KlnLiftFunctionMixin, \
-    LaplaceHeuristicMixin, LaplacePruningHeuristicMixin, MEstimateHeuristicMixin, MEstimatePruningHeuristicMixin, \
-    NoCoverageStoppingCriterionMixin, NoLiftFunctionMixin, OutputWiseBinaryPredictionMixin, PartialHeadMixin, \
-    PeakLiftFunctionMixin, PrecisionHeuristicMixin, PrecisionPruningHeuristicMixin, RecallHeuristicMixin, \
-    RecallPruningHeuristicMixin, SingleOutputHeadMixin, WraHeuristicMixin, WraPruningHeuristicMixin
+from mlrl.seco.cython.learner import AccuracyHeuristicMixin, AccuracyPruningHeuristicMixin, FMeasureHeuristicMixin, \
+    FMeasurePruningHeuristicMixin, KlnLiftFunctionMixin, LaplaceHeuristicMixin, LaplacePruningHeuristicMixin, \
+    MEstimateHeuristicMixin, MEstimatePruningHeuristicMixin, NoLiftFunctionMixin, OutputWiseBinaryPredictionMixin, \
+    PartialHeadMixin, PeakLiftFunctionMixin, PrecisionHeuristicMixin, PrecisionPruningHeuristicMixin, \
+    RecallHeuristicMixin, RecallPruningHeuristicMixin, SingleOutputHeadMixin, WraHeuristicMixin, \
+    WraPruningHeuristicMixin
 
 
 cdef class SeCoClassifierConfig(RuleLearnerConfig,
                                 RNGMixin,
-                                NoCoverageStoppingCriterionMixin,
-                                CoverageStoppingCriterionMixin,
                                 SingleOutputHeadMixin,
                                 PartialHeadMixin,
                                 NoLiftFunctionMixin,
@@ -106,6 +104,8 @@ cdef class SeCoClassifierConfig(RuleLearnerConfig,
                                 ParallelStatisticUpdateMixin,
                                 NoParallelPredictionMixin,
                                 ParallelPredictionMixin,
+                                NoSimdMixin,
+                                SimdMixin,
                                 NoSizeStoppingCriterionMixin,
                                 SizeStoppingCriterionMixin,
                                 NoTimeStoppingCriterionMixin,
@@ -133,19 +133,6 @@ cdef class SeCoClassifierConfig(RuleLearnerConfig,
     @override
     def use_default_rule(self):
         self.config_ptr.get().useDefaultRule()
-
-    @override
-    def use_no_coverage_stopping_criterion(self):
-        self.config_ptr.get().useNoCoverageStoppingCriterion()
-
-    @override
-    def use_coverage_stopping_criterion(self) -> CoverageStoppingCriterionConfig:
-        cdef ICoverageStoppingCriterionConfig* config_ptr = \
-            &self.config_ptr.get().useCoverageStoppingCriterion()
-        cdef CoverageStoppingCriterionConfig config = \
-            CoverageStoppingCriterionConfig.__new__(CoverageStoppingCriterionConfig)
-        config.config_ptr = config_ptr
-        return config
 
     @override
     def use_single_output_heads(self):
@@ -422,6 +409,14 @@ cdef class SeCoClassifierConfig(RuleLearnerConfig,
         cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
         config.config_ptr = config_ptr
         return config
+
+    @override
+    def use_no_simd_operations(self):
+        self.config_ptr.get().useNoSimdOperations()
+
+    @override
+    def use_simd_operations(self):
+        self.config_ptr.get().useSimdOperations()
 
     @override
     def use_no_size_stopping_criterion(self):

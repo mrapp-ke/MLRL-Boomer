@@ -17,9 +17,8 @@ namespace boosting {
       const CContiguousView<ScoreType>& scoreMatrix, const IMarginalProbabilityFunction& marginalProbabilityFunction) {
         for (uint32 i = 0; i < numExamples; i++) {
             uint32 exampleIndex = indexIterator[i];
-            CContiguousView<const uint8>::value_const_iterator labelIterator = labelMatrix.values_cbegin(exampleIndex);
-            typename CContiguousView<ScoreType>::value_const_iterator scoreIterator =
-              scoreMatrix.values_cbegin(exampleIndex);
+            auto labelIterator = labelMatrix.values_cbegin(exampleIndex);
+            auto scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
 
             for (uint32 j = 0; j < numLabels; j++) {
                 float64 trueProbability = labelIterator[j] ? 1 : 0;
@@ -40,8 +39,7 @@ namespace boosting {
             uint32 exampleIndex = indexIterator[i];
             auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                    labelMatrix.indices_cend(exampleIndex));
-            typename CContiguousView<ScoreType>::value_const_iterator scoreIterator =
-              scoreMatrix.values_cbegin(exampleIndex);
+            auto scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
 
             for (uint32 j = 0; j < numLabels; j++) {
                 float64 trueProbability = (*labelIterator) ? 1 : 0;
@@ -67,8 +65,8 @@ namespace boosting {
 
         for (uint32 i = 0; i < numExamples; i++) {
             uint32 exampleIndex = indexIterator[i];
-            CContiguousView<const uint8>::value_const_iterator labelIterator = labelMatrix.values_cbegin(exampleIndex);
-            typename SparseSetView<ScoreType>::const_row scoreRow = scoreMatrix[exampleIndex];
+            auto labelIterator = labelMatrix.values_cbegin(exampleIndex);
+            const auto scoreRow = scoreMatrix[exampleIndex];
 
             for (uint32 j = 0; j < numLabels; j++) {
                 float64 trueProbability = labelIterator[j] ? 1 : 0;
@@ -80,12 +78,12 @@ namespace boosting {
                       marginalProbabilityFunction.transformScoreIntoMarginalProbability(j, score);
                     calibrationModel.addBin(j, marginalProbability, trueProbability);
                 } else {
-                    IsotonicProbabilityCalibrationModel::row bins = calibrationModel[j];
+                    auto& bins = calibrationModel[j];
                     std::pair<float64, float64>& firstBin = bins[0];
                     uint32 numSparse = numSparsePerLabel[j] + 1;
 
                     if (numSparse > 1) {
-                        firstBin.second = util::iterativeArithmeticMean(numSparse, trueProbability, firstBin.second);
+                        firstBin.second = math::iterativeArithmeticMean(numSparse, trueProbability, firstBin.second);
                     } else {
                         firstBin.second = trueProbability;
                     }
@@ -106,13 +104,13 @@ namespace boosting {
         }
 
         Array<uint32> numSparsePerLabel(numLabels);
-        util::setViewToValue(numSparsePerLabel.begin(), numLabels, numExamples);
+        std::fill(numSparsePerLabel.begin(), numSparsePerLabel.begin() + numLabels, numExamples);
         Array<uint32> numSparseRelevantPerLabel(numLabels, true);
 
         for (uint32 i = 0; i < numExamples; i++) {
             uint32 exampleIndex = indexIterator[i];
-            BinaryCsrView::index_const_iterator labelIndicesBegin = labelMatrix.indices_cbegin(exampleIndex);
-            BinaryCsrView::index_const_iterator labelIndicesEnd = labelMatrix.indices_cend(exampleIndex);
+            auto labelIndicesBegin = labelMatrix.indices_cbegin(exampleIndex);
+            auto labelIndicesEnd = labelMatrix.indices_cend(exampleIndex);
             uint32 numRelevantLabels = labelIndicesEnd - labelIndicesBegin;
 
             for (uint32 j = 0; j < numRelevantLabels; j++) {
@@ -137,7 +135,7 @@ namespace boosting {
         }
 
         for (uint32 i = 0; i < numLabels; i++) {
-            IsotonicProbabilityCalibrationModel::row bins = calibrationModel[i];
+            auto& bins = calibrationModel[i];
             std::pair<float64, float64>& firstBin = bins[0];
             firstBin.second = (float64) numSparseRelevantPerLabel[i] / (float64) numSparsePerLabel[i];
         }
@@ -353,7 +351,7 @@ namespace boosting {
     static inline bool areLabelVectorsEqual(LabelIndexIterator labelIndicesBegin, LabelIndexIterator labelIndicesEnd,
                                             const LabelVector& labelVector) {
         uint32 numRelevantLabels = labelVector.getNumElements();
-        LabelVector::const_iterator labelIndexIterator = labelVector.cbegin();
+        auto labelIndexIterator = labelVector.cbegin();
 
         for (uint32 i = 0; i < numRelevantLabels; i++) {
             if (labelIndicesBegin == labelIndicesEnd || *labelIndicesBegin != labelIndexIterator[i]) {
@@ -373,11 +371,11 @@ namespace boosting {
                                                          const CContiguousView<ScoreType>& scoreMatrix,
                                                          const IJointProbabilityFunction& jointProbabilityFunction,
                                                          const LabelVectorSet& labelVectorSet) {
-        LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet.cbegin();
+        auto labelVectorIterator = labelVectorSet.cbegin();
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
 
         for (uint32 i = 0; i < numLabelVectors; i++) {
-            IsotonicProbabilityCalibrationModel::row bins = calibrationModel[i];
+            auto& bins = calibrationModel[i];
             const LabelVector& labelVector = *labelVectorIterator[i];
 
             for (uint32 j = 0; j < numExamples; j++) {
@@ -387,10 +385,8 @@ namespace boosting {
                 auto labelIndicesEnd = createNonZeroIndexForwardIterator(labelMatrix.values_cend(exampleIndex),
                                                                          labelMatrix.values_cend(exampleIndex));
                 float64 trueProbability = areLabelVectorsEqual(labelIndicesBegin, labelIndicesEnd, labelVector) ? 1 : 0;
-                typename CContiguousView<ScoreType>::value_const_iterator scoresBegin =
-                  scoreMatrix.values_cbegin(exampleIndex);
-                typename CContiguousView<ScoreType>::value_const_iterator scoresEnd =
-                  scoreMatrix.values_cend(exampleIndex);
+                auto scoresBegin = scoreMatrix.values_cbegin(exampleIndex);
+                auto scoresEnd = scoreMatrix.values_cend(exampleIndex);
                 float64 jointProbability =
                   jointProbabilityFunction.transformScoresIntoJointProbability(i, labelVector, scoresBegin, scoresEnd);
                 bins.emplace_back(jointProbability, trueProbability);
@@ -405,22 +401,20 @@ namespace boosting {
                                                          const CContiguousView<ScoreType>& scoreMatrix,
                                                          const IJointProbabilityFunction& jointProbabilityFunction,
                                                          const LabelVectorSet& labelVectorSet) {
-        LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet.cbegin();
+        auto labelVectorIterator = labelVectorSet.cbegin();
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
 
         for (uint32 i = 0; i < numLabelVectors; i++) {
-            IsotonicProbabilityCalibrationModel::row bins = calibrationModel[i];
+            auto& bins = calibrationModel[i];
             const LabelVector& labelVector = *labelVectorIterator[i];
 
             for (uint32 j = 0; j < numExamples; j++) {
                 uint32 exampleIndex = indexIterator[j];
-                BinaryCsrView::index_const_iterator labelIndicesBegin = labelMatrix.indices_cbegin(exampleIndex);
-                BinaryCsrView::index_const_iterator labelIndicesEnd = labelMatrix.indices_cend(exampleIndex);
+                auto labelIndicesBegin = labelMatrix.indices_cbegin(exampleIndex);
+                auto labelIndicesEnd = labelMatrix.indices_cend(exampleIndex);
                 float64 trueProbability = areLabelVectorsEqual(labelIndicesBegin, labelIndicesEnd, labelVector) ? 1 : 0;
-                typename CContiguousView<ScoreType>::value_const_iterator scoresBegin =
-                  scoreMatrix.values_cbegin(exampleIndex);
-                typename CContiguousView<ScoreType>::value_const_iterator scoresEnd =
-                  scoreMatrix.values_cend(exampleIndex);
+                auto scoresBegin = scoreMatrix.values_cbegin(exampleIndex);
+                auto scoresEnd = scoreMatrix.values_cend(exampleIndex);
                 float64 jointProbability =
                   jointProbabilityFunction.transformScoresIntoJointProbability(i, labelVector, scoresBegin, scoresEnd);
                 bins.emplace_back(jointProbability, trueProbability);
@@ -435,12 +429,12 @@ namespace boosting {
                                                          const SparseSetView<ScoreType>& scoreMatrix,
                                                          const IJointProbabilityFunction& jointProbabilityFunction,
                                                          const LabelVectorSet& labelVectorSet) {
-        LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet.cbegin();
+        auto labelVectorIterator = labelVectorSet.cbegin();
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
         uint32 numLabels = labelMatrix.numCols;
 
         for (uint32 i = 0; i < numLabelVectors; i++) {
-            IsotonicProbabilityCalibrationModel::row bins = calibrationModel[i];
+            auto& bins = calibrationModel[i];
             const LabelVector& labelVector = *labelVectorIterator[i];
 
             for (uint32 j = 0; j < numExamples; j++) {
@@ -450,7 +444,7 @@ namespace boosting {
                 auto labelIndicesEnd = createNonZeroIndexForwardIterator(labelMatrix.values_cend(exampleIndex),
                                                                          labelMatrix.values_cend(exampleIndex));
                 float64 trueProbability = areLabelVectorsEqual(labelIndicesBegin, labelIndicesEnd, labelVector) ? 1 : 0;
-                typename SparseSetView<ScoreType>::const_row scores = scoreMatrix[exampleIndex];
+                const auto scores = scoreMatrix[exampleIndex];
                 float64 jointProbability =
                   jointProbabilityFunction.transformScoresIntoJointProbability(i, labelVector, scores, numLabels);
                 bins.emplace_back(jointProbability, trueProbability);
@@ -465,20 +459,20 @@ namespace boosting {
                                                          const SparseSetView<ScoreType>& scoreMatrix,
                                                          const IJointProbabilityFunction& jointProbabilityFunction,
                                                          const LabelVectorSet& labelVectorSet) {
-        LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet.cbegin();
+        auto labelVectorIterator = labelVectorSet.cbegin();
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
         uint32 numLabels = labelMatrix.numCols;
 
         for (uint32 i = 0; i < numLabelVectors; i++) {
-            IsotonicProbabilityCalibrationModel::row bins = calibrationModel[i];
+            auto& bins = calibrationModel[i];
             const LabelVector& labelVector = *labelVectorIterator[i];
 
             for (uint32 j = 0; j < numExamples; j++) {
                 uint32 exampleIndex = indexIterator[j];
-                BinaryCsrView::index_const_iterator labelIndicesBegin = labelMatrix.indices_cbegin(exampleIndex);
-                BinaryCsrView::index_const_iterator labelIndicesEnd = labelMatrix.indices_cend(exampleIndex);
+                auto labelIndicesBegin = labelMatrix.indices_cbegin(exampleIndex);
+                auto labelIndicesEnd = labelMatrix.indices_cend(exampleIndex);
                 float64 trueProbability = areLabelVectorsEqual(labelIndicesBegin, labelIndicesEnd, labelVector) ? 1 : 0;
-                typename SparseSetView<ScoreType>::const_row scores = scoreMatrix[exampleIndex];
+                const auto scores = scoreMatrix[exampleIndex];
                 float64 jointProbability =
                   jointProbabilityFunction.transformScoresIntoJointProbability(i, labelVector, scores, numLabels);
                 bins.emplace_back(jointProbability, trueProbability);

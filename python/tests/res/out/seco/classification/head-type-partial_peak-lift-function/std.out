@@ -1,58 +1,69 @@
-mlrl-testbed mlrl.seco --log-level debug --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --save-meta-data false --print-model-characteristics true --parallel-prediction false --parallel-rule-refinement false --parallel-statistic-update false --head-type partial --lift-function peak
-Checking if output files do already exist...
+mlrl-testbed mlrl.seco --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --save-meta-data false --print-model-characteristics true --parallel-prediction false --parallel-rule-refinement false --parallel-statistic-update false --head-type partial --lift-function peak
+○ Checking if output files do already exist...
+
 Starting experiment using the classification algorithm "SeCoClassifier"...
 Using separate training and test sets...
-DEBUG: Reading input data from file "python/tests/res/data/emotions.arff"...
-DEBUG: Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+
+Loading training dataset...
+○ Reading from file "python/tests/res/data/emotions.arff"...
+○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+✓ Successfully loaded training dataset!
 Fitting model to 397 training examples...
-DEBUG: A dense matrix is used to store the feature values of the training examples
-DEBUG: A dense matrix is used to store the labels of the training examples
-Successfully fit model in <duration>
+○ A dense matrix is used to store the feature values of the training examples
+○ A dense matrix is used to store the labels of the training examples
+✓ Successfully fit model in <duration>
+Loading test dataset...
+✓ Successfully loaded test dataset!
 Predicting for 196 test examples...
-DEBUG: A dense matrix is used to store the feature values of the query examples
-DEBUG: A dense matrix is used to store the predicted labels
-Successfully predicted in <duration>
-Evaluation result for test data:
+○ A dense matrix is used to store the feature values of the query examples
+○ A dense matrix is used to store the predicted labels
+✓ Successfully predicted in <duration>
 
-Example-wise F1 (↑)         54.63
-Example-wise Jaccard (↑)    46.05
-Example-wise Precision (↑)  61.85
-Example-wise Recall (↑)     59.44
-Hamming Accuracy (↑)        72.7
-Hamming Loss (↓)            27.3
-Macro F1 (↑)                53.56
-Macro Jaccard (↑)           38.59
-Macro Precision (↑)         53.28
-Macro Recall (↑)            57.4
-Micro F1 (↑)                58.15
-Micro Jaccard (↑)           40.99
-Micro Precision (↑)         56.89
-Micro Recall (↑)            59.47
-Subset 0/1 Loss (↓)         79.08
-Subset Accuracy (↑)         20.92
+🗀 Evaluation result for test data:
 
-DEBUG: Writing output data to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
-Model characteristics:
+ Example-wise F1 (↑)         56.66
+ Example-wise Jaccard (↑)    43.99
+ Example-wise Precision (↑)  48.80
+ Example-wise Recall (↑)     80.44
+ Hamming Accuracy (↑)        61.82
+ Hamming Loss (↓)            38.18
+ Macro F1 (↑)                56.88
+ Macro Jaccard (↑)           40.77
+ Macro Precision (↑)         45.06
+ Macro Recall (↑)            78.97
+ Micro F1 (↑)                57.20
+ Micro Jaccard (↑)           40.05
+ Micro Precision (↑)         44.51
+ Micro Recall (↑)            80.00
+ Subset 0/1 Loss (↓)         90.82
+ Subset Accuracy (↑)         9.18
 
-┌───────────────────────────────┬─────────┬─────────────────────────┬────────────────────────┬───────────────────────┬──────────────────────┬───────────────────────┬───────────────────────┐
-│ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
-├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
-│ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
-│ 58 local rules                │      58 │                  51.72% │                 48.28% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
-└───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
+○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
 
-┌────────────────────────────────┬─────────┬────────────┬────────────┐
-│ Statistics about predictions   │   Total │   Positive │   Negative │
-├────────────────────────────────┼─────────┼────────────┼────────────┤
-│ Default rule                   │       6 │      0.00% │    100.00% │
-│ 58 local rules                 │      61 │    100.00% │      0.00% │
-└────────────────────────────────┴─────────┴────────────┴────────────┘
+🗀 Model characteristics:
 
-┌─────────────────────────────┬───────────┬───────────┬───────────┐
-│ Statistics per local rule   │   Minimum │   Average │   Maximum │
-├─────────────────────────────┼───────────┼───────────┼───────────┤
-│ Conditions                  │         1 │      1    │         1 │
-│ Predictions                 │         1 │      1.05 │         2 │
-└─────────────────────────────┴───────────┴───────────┴───────────┘
+                ╷       ╷               ╷               ╷               ╷               ╷              ╷
+  Statistics    │       │               │               │               │               │              │
+  about         │       │  Numerical <= │   Numerical > │    Ordinal <= │     Ordinal > │   Nominal == │    Nominal !=
+  conditions    │ Total │      operator │      operator │      operator │      operator │     operator │      operator
+╶───────────────┼───────┼───────────────┼───────────────┼───────────────┼───────────────┼──────────────┼───────────────╴
+  Default rule  │     0 │        0.00 % │        0.00 % │        0.00 % │        0.00 % │       0.00 % │        0.00 %
+  171 local     │   228 │       46.05 % │       53.95 % │        0.00 % │        0.00 % │       0.00 % │        0.00 %
+  rules         │       │               │               │               │               │              │
+                ╵       ╵               ╵               ╵               ╵               ╵              ╵
 
-Successfully finished experiment after <duration>
+                               ╷       ╷          ╷
+  Statistics about predictions │ Total │ Positive │ Negative
+╶──────────────────────────────┼───────┼──────────┼──────────╴
+  Default rule                 │     6 │   0.00 % │ 100.00 %
+  171 local rules              │   174 │ 100.00 % │   0.00 %
+                               ╵       ╵          ╵
+
+                            ╷         ╷         ╷
+  Statistics per local rule │ Minimum │ Average │ Maximum
+╶───────────────────────────┼─────────┼─────────┼─────────╴
+  Conditions                │       1 │    1.33 │       3
+  Predictions               │       1 │    1.02 │       2
+                            ╵         ╵         ╵
+
+✓ Successfully finished experiment after <duration>

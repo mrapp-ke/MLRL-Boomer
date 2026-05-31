@@ -1,53 +1,109 @@
-mlrl-testbed mlrl.seco --mode read --log-level debug --base-dir python/tests/res/tmp/<worker-id>/rerun --input-dir python/tests/res/tmp/<worker-id> --save-evaluation true --save-meta-data false --print-evaluation true --save-evaluation true
+mlrl-testbed mlrl.seco --mode read --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id>/rerun --input-dir python/tests/res/tmp/<worker-id> --save-evaluation true --save-meta-data false --print-evaluation true --save-evaluation true
 Reading meta-data...
-DEBUG: Reading input data from file "python/tests/res/tmp/<worker-id>/metadata.yml"...
-Successfully read meta-data
-DEBUG: Checking for version conflicts...
-DEBUG: Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is currently used
-DEBUG: No version conflicts detected
+○ Reading from file "python/tests/res/tmp/<worker-id>/metadata.yml"...
+✓ Successfully read meta-data
+Checking for version conflicts...
+○ Experimental results have been created with version "<version>" of the package "mlrl-testbed", version "<version>" is
+currently used
+✓ No version conflicts detected
 Reading experimental results of 1 experiment...
 
-Reading experimental results of experiment (1 / 1)...
-The command "mlrl-testbed mlrl.seco --log-level debug --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --save-meta-data false --save-meta-data true --incremental-evaluation true{step_size=50} --print-evaluation true --save-evaluation true --parallel-prediction false --parallel-rule-refinement false --parallel-statistic-update false" has been used originally for running this experiment
+
+Reading experimental results (1 / 1):
+
+Command:
+
+mlrl-testbed mlrl.seco --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id> --data-dir
+python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --save-meta-data false
+--save-meta-data true --incremental-evaluation true{step_size=50} --print-evaluation true --save-evaluation true
+--parallel-prediction false --parallel-rule-refinement false --parallel-statistic-update false
+
 Using separate training and test sets...
-DEBUG: Reading input data from file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
-Evaluation result for test data using a model of size 50:
 
-Example-wise F1 (↑)         54.56
-Example-wise Jaccard (↑)    44.97
-Example-wise Precision (↑)  64.85
-Example-wise Recall (↑)     59.86
-Hamming Accuracy (↑)        73.64
-Hamming Loss (↓)            26.36
-Macro F1 (↑)                50.83
-Macro Jaccard (↑)           37.26
-Macro Precision (↑)         64.81
-Macro Recall (↑)            57.04
-Micro F1 (↑)                59.42
-Micro Jaccard (↑)           42.27
-Micro Precision (↑)         58.35
-Micro Recall (↑)            60.53
-Subset 0/1 Loss (↓)         81.63
-Subset Accuracy (↑)         18.37
+Loading training dataset...
+✓ Successfully loaded training dataset!
+○ Reading from file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
 
-DEBUG: Writing output data to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
-Evaluation result for test data using a model of size 62:
+🗀 Evaluation result for test data using a model of size 50:
 
-Example-wise F1 (↑)         56.29
-Example-wise Jaccard (↑)    46.89
-Example-wise Precision (↑)  62.79
-Example-wise Recall (↑)     63.35
-Hamming Accuracy (↑)        73.38
-Hamming Loss (↓)            26.62
-Macro F1 (↑)                52.97
-Macro Jaccard (↑)           39.06
-Macro Precision (↑)         64.33
-Macro Recall (↑)            61.18
-Micro F1 (↑)                60.63
-Micro Jaccard (↑)           43.5
-Micro Precision (↑)         57.38
-Micro Recall (↑)            64.27
-Subset 0/1 Loss (↓)         79.59
-Subset Accuracy (↑)         20.41
+ Example-wise F1 (↑)         52.09
+ Example-wise Jaccard (↑)    43.17
+ Example-wise Precision (↑)  65.23
+ Example-wise Recall (↑)     56.46
+ Hamming Accuracy (↑)        73.30
+ Hamming Loss (↓)            26.70
+ Macro F1 (↑)                49.73
+ Macro Jaccard (↑)           35.98
+ Macro Precision (↑)         65.08
+ Macro Recall (↑)            53.78
+ Micro F1 (↑)                57.34
+ Micro Jaccard (↑)           40.19
+ Micro Precision (↑)         58.45
+ Micro Recall (↑)            56.27
+ Subset 0/1 Loss (↓)         81.12
+ Subset Accuracy (↑)         18.88
 
-DEBUG: Writing output data to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
+○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
+
+🗀 Evaluation result for test data using a model of size 100:
+
+ Example-wise F1 (↑)         56.02
+ Example-wise Jaccard (↑)    45.42
+ Example-wise Precision (↑)  58.16
+ Example-wise Recall (↑)     64.71
+ Hamming Accuracy (↑)        70.49
+ Hamming Loss (↓)            29.51
+ Macro F1 (↑)                50.55
+ Macro Jaccard (↑)           36.69
+ Macro Precision (↑)         44.67
+ Macro Recall (↑)            60.98
+ Micro F1 (↑)                58.14
+ Micro Jaccard (↑)           40.99
+ Micro Precision (↑)         53.08
+ Micro Recall (↑)            64.27
+ Subset 0/1 Loss (↓)         84.18
+ Subset Accuracy (↑)         15.82
+
+○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
+
+🗀 Evaluation result for test data using a model of size 150:
+
+ Example-wise F1 (↑)         57.68
+ Example-wise Jaccard (↑)    46.37
+ Example-wise Precision (↑)  53.40
+ Example-wise Recall (↑)     76.45
+ Hamming Accuracy (↑)        66.84
+ Hamming Loss (↓)            33.16
+ Macro F1 (↑)                58.80
+ Macro Jaccard (↑)           42.33
+ Macro Precision (↑)         48.50
+ Macro Recall (↑)            75.38
+ Micro F1 (↑)                59.63
+ Micro Jaccard (↑)           42.48
+ Micro Precision (↑)         48.73
+ Micro Recall (↑)            76.80
+ Subset 0/1 Loss (↓)         86.22
+ Subset Accuracy (↑)         13.78
+
+○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...
+
+🗀 Evaluation result for test data using a model of size 173:
+
+ Example-wise F1 (↑)         57.20
+ Example-wise Jaccard (↑)    45.31
+ Example-wise Precision (↑)  50.66
+ Example-wise Recall (↑)     80.19
+ Hamming Accuracy (↑)        63.78
+ Hamming Loss (↓)            36.22
+ Macro F1 (↑)                58.35
+ Macro Jaccard (↑)           41.81
+ Macro Precision (↑)         46.38
+ Macro Recall (↑)            80.01
+ Micro F1 (↑)                58.72
+ Micro Jaccard (↑)           41.56
+ Micro Precision (↑)         46.12
+ Micro Recall (↑)            80.80
+ Subset 0/1 Loss (↓)         89.29
+ Subset Accuracy (↑)         10.71
+
+○ Writing to file "python/tests/res/tmp/<worker-id>/rerun/results/evaluation_test.csv"...

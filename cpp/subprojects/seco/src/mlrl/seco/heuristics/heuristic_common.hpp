@@ -4,20 +4,20 @@
  */
 #pragma once
 
-#include "mlrl/common/util/math.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 
 namespace seco {
 
     static inline constexpr float32 precision(float32 cin, float32 cip, float32 crn, float32 crp) {
         float32 numCoveredCorrect = cin + crp;
         float32 numCovered = numCoveredCorrect + cip + crn;
-        return util::divideOrZero(numCoveredCorrect, numCovered);
+        return math::divideOrZero(numCoveredCorrect, numCovered);
     }
 
     static inline constexpr float32 recall(float32 cin, float32 crp, float32 uin, float32 urp) {
         float32 numCoveredEqual = cin + crp;
         float32 numEqual = numCoveredEqual + uin + urp;
-        return util::divideOrZero(numCoveredEqual, numEqual);
+        return math::divideOrZero(numCoveredEqual, numEqual);
     }
 
     static inline constexpr float32 wra(float32 cin, float32 cip, float32 crn, float32 crp, float32 uin, float32 uip,

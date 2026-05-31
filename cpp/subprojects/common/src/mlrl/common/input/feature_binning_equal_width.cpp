@@ -3,7 +3,7 @@
 #include "feature_type_numerical_common.hpp"
 #include "feature_vector_decorator_binned.hpp"
 #include "mlrl/common/data/array.hpp"
-#include "mlrl/common/util/math.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 #include "mlrl/common/util/validation.hpp"
 
 #include <utility>
@@ -45,7 +45,7 @@ static inline uint32 getBinIndex(float32 value, float32 min, float32 width, uint
 static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
   AllocatedMissingFeatureVector&& missingFeatureVector, const NumericalFeatureVector& numericalFeatureVector,
   uint32 numExamples, float32 binRatio, uint32 minBins, uint32 maxBins) {
-    uint32 numWidths = util::calculateBoundedFraction(numExamples, binRatio, minBins, maxBins);
+    uint32 numWidths = math::calculateBoundedFraction(numExamples, binRatio, minBins, maxBins);
 
     if (numWidths > 0) {
         const std::pair<float32, float32> pair = getMinAndMaxFeatureValue(numericalFeatureVector);
@@ -56,8 +56,8 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
         float32 sparseValue = numericalFeatureVector.sparseValue;
         uint32 sparseBinIndex = getBinIndex(sparseValue, min, width, numWidths);
         AllocatedBinnedFeatureVector binnedFeatureVector(numWidths, numElements, sparseBinIndex);
-        AllocatedBinnedFeatureVector::threshold_iterator thresholdIterator = binnedFeatureVector.thresholds_begin();
-        AllocatedBinnedFeatureVector::index_iterator indptrIterator = binnedFeatureVector.indptr;
+        auto thresholdIterator = binnedFeatureVector.thresholds_begin();
+        auto indptrIterator = binnedFeatureVector.indptr;
 
         // Iterate all non-sparse feature values and determine the bins they should be assigned to...
         Array<uint32> numExamplesPerBin(numWidths, true);
@@ -109,7 +109,7 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
                     uint32 numExamplesInCurrentBin = numExamplesPerBin[originalBinIndex];
                     uint32 numRemaining = numExamplesInCurrentBin - 1;
                     numExamplesPerBin[originalBinIndex] = numRemaining;
-                    BinnedFeatureVector::index_iterator indexIterator = binnedFeatureVector.indices_begin(binIndex);
+                    auto indexIterator = binnedFeatureVector.indices_begin(binIndex);
                     indexIterator[numRemaining] = entry.index;
                 }
             }

@@ -4,8 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for obtaining predictions from machine learning models.
 """
 
-import logging as log
-
 from abc import ABC, abstractmethod
 from collections.abc import Generator
 from typing import Any, Callable
@@ -14,6 +12,7 @@ from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.state import PredictionState
+from mlrl.testbed.log import Log
 
 
 class PredictionFunction:
@@ -45,7 +44,7 @@ class PredictionFunction:
                 return self.decision_function(dataset.x, **kwargs)
             raise RuntimeError()
         except RuntimeError:
-            log.error('Prediction of scores not supported')
+            Log.error('Prediction of scores not supported')
             return None
 
     def __predict_probabilities(self, dataset: Dataset, **kwargs) -> Any:
@@ -54,7 +53,7 @@ class PredictionFunction:
                 return self.predict_proba_function(dataset.x, **kwargs)
             raise RuntimeError()
         except RuntimeError:
-            log.error('Prediction of probabilities not supported')
+            Log.error('Prediction of probabilities not supported')
             return None
 
     def __predict_binary(self, dataset: Dataset, **kwargs) -> Any:
@@ -63,7 +62,7 @@ class PredictionFunction:
                 return self.predict_function(dataset.x, **kwargs)
             raise RuntimeError()
         except RuntimeError:
-            log.error('Prediction of binary values not supported')
+            Log.error('Prediction of binary values not supported')
             return None
 
     def invoke(self, dataset: Dataset, prediction_type: PredictionType, **kwargs) -> Any:
