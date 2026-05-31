@@ -55,14 +55,14 @@ namespace seco {
                                                 const StatisticVector& confusionMatricesCovered) override {
                 uint32 numElements = scoreVector_.getNumElements();
                 auto indexIterator = scoreVector_.indices_cbegin();
-                auto inTotal = confusionMatricesTotal.in_cbegin();
-                auto ipTotal = confusionMatricesTotal.ip_cbegin();
-                auto rnTotal = confusionMatricesTotal.rn_cbegin();
-                auto rpTotal = confusionMatricesTotal.rp_cbegin();
-                auto inCovered = confusionMatricesCovered.in_cbegin();
-                auto ipCovered = confusionMatricesCovered.ip_cbegin();
-                auto rnCovered = confusionMatricesCovered.rn_cbegin();
-                auto rpCovered = confusionMatricesCovered.rp_cbegin();
+                auto in = confusionMatricesTotal.in_cbegin();
+                auto ip = confusionMatricesTotal.ip_cbegin();
+                auto rn = confusionMatricesTotal.rn_cbegin();
+                auto rp = confusionMatricesTotal.rp_cbegin();
+                auto cin = confusionMatricesCovered.in_cbegin();
+                auto cip = confusionMatricesCovered.ip_cbegin();
+                auto crn = confusionMatricesCovered.rn_cbegin();
+                auto crp = confusionMatricesCovered.rp_cbegin();
                 auto labelIterator =
                   createBinarySparseForwardIterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
                 float32 sumOfQualities = 0;
@@ -72,9 +72,8 @@ namespace seco {
                     uint32 index = indexIterator[i];
                     std::advance(labelIterator, index - previousIndex);
                     scoreVector_.set(i, !(*labelIterator));
-                    sumOfQualities += calculateOutputWiseQuality(inTotal[index], ipTotal[index], rnTotal[index],
-                                                                 rpTotal[index], inCovered[i], ipCovered[i],
-                                                                 rnCovered[i], rpCovered[i], *heuristicPtr_);
+                    sumOfQualities += calculateOutputWiseQuality(in[index], ip[index], rn[index], rp[index], cin[i],
+                                                                 cip[i], crn[i], crp[i], *heuristicPtr_);
                     previousIndex = index;
                 }
 
@@ -130,14 +129,14 @@ namespace seco {
                                                 const StatisticVector& confusionMatricesCovered) override {
                 uint32 numElements = labelIndices_.getNumElements();
                 auto indexIterator = labelIndices_.cbegin();
-                auto inTotal = confusionMatricesTotal.in_cbegin();
-                auto ipTotal = confusionMatricesTotal.ip_cbegin();
-                auto rnTotal = confusionMatricesTotal.rn_cbegin();
-                auto rpTotal = confusionMatricesTotal.rp_cbegin();
-                auto inCovered = confusionMatricesCovered.in_cbegin();
-                auto ipCovered = confusionMatricesCovered.ip_cbegin();
-                auto rnCovered = confusionMatricesCovered.rn_cbegin();
-                auto rpCovered = confusionMatricesCovered.rp_cbegin();
+                auto in = confusionMatricesTotal.in_cbegin();
+                auto ip = confusionMatricesTotal.ip_cbegin();
+                auto rn = confusionMatricesTotal.rn_cbegin();
+                auto rp = confusionMatricesTotal.rp_cbegin();
+                auto cin = confusionMatricesCovered.in_cbegin();
+                auto cip = confusionMatricesCovered.ip_cbegin();
+                auto crn = confusionMatricesCovered.rn_cbegin();
+                auto crp = confusionMatricesCovered.rp_cbegin();
                 auto labelIterator =
                   createBinarySparseForwardIterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
                 auto sortedIterator = sortedVector_.begin();
@@ -149,9 +148,8 @@ namespace seco {
                     IndexedValue<std::pair<float32, bool>>& entry = sortedIterator[i];
                     std::pair<float32, bool>& pair = entry.value;
                     entry.index = index;
-                    pair.first = calculateOutputWiseQuality(inTotal[index], ipTotal[index], rnTotal[index],
-                                                            rpTotal[index], inCovered[i], ipCovered[i], rnCovered[i],
-                                                            rpCovered[i], *heuristicPtr_);
+                    pair.first = calculateOutputWiseQuality(in[index], ip[index], rn[index], rp[index], cin[i], cip[i],
+                                                            crn[i], crp[i], *heuristicPtr_);
                     pair.second = !(*labelIterator);
                     previousIndex = index;
                 }

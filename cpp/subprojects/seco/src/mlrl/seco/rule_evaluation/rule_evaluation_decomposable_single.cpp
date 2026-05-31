@@ -46,24 +46,23 @@ namespace seco {
                                                 const StatisticVector& confusionMatricesCovered) override {
                 uint32 numElements = labelIndices_.getNumElements();
                 auto indexIterator = labelIndices_.cbegin();
-                auto inTotal = confusionMatricesTotal.in_cbegin();
-                auto ipTotal = confusionMatricesTotal.ip_cbegin();
-                auto rnTotal = confusionMatricesTotal.rn_cbegin();
-                auto rpTotal = confusionMatricesTotal.rp_cbegin();
-                auto inCovered = confusionMatricesCovered.in_cbegin();
-                auto ipCovered = confusionMatricesCovered.ip_cbegin();
-                auto rnCovered = confusionMatricesCovered.rn_cbegin();
-                auto rpCovered = confusionMatricesCovered.rp_cbegin();
+                auto in = confusionMatricesTotal.in_cbegin();
+                auto ip = confusionMatricesTotal.ip_cbegin();
+                auto rn = confusionMatricesTotal.rn_cbegin();
+                auto rp = confusionMatricesTotal.rp_cbegin();
+                auto cin = confusionMatricesCovered.in_cbegin();
+                auto cip = confusionMatricesCovered.ip_cbegin();
+                auto crn = confusionMatricesCovered.rn_cbegin();
+                auto crp = confusionMatricesCovered.rp_cbegin();
                 uint32 bestIndex = indexIterator[0];
-                float32 bestQuality = calculateOutputWiseQuality(
-                  inTotal[bestIndex], ipTotal[bestIndex], rnTotal[bestIndex], rpTotal[bestIndex], inCovered[0],
-                  ipCovered[0], rnCovered[0], rpCovered[0], *heuristicPtr_);
+                float32 bestQuality =
+                  calculateOutputWiseQuality(in[bestIndex], ip[bestIndex], rn[bestIndex], rp[bestIndex], cin[0], cip[0],
+                                             crn[0], crp[0], *heuristicPtr_);
 
                 for (uint32 i = 1; i < numElements; i++) {
                     uint32 index = indexIterator[i];
-                    float32 quality = calculateOutputWiseQuality(inTotal[index], ipTotal[index], rnTotal[index],
-                                                                 rpTotal[index], inCovered[i], ipCovered[i],
-                                                                 rnCovered[i], rpCovered[i], *heuristicPtr_);
+                    float32 quality = calculateOutputWiseQuality(in[index], ip[index], rn[index], rp[index], cin[i],
+                                                                 cip[i], crn[i], crp[i], *heuristicPtr_);
 
                     if (quality > bestQuality) {
                         bestIndex = index;
