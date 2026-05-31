@@ -118,44 +118,31 @@ namespace boosting {
     template<typename StatisticType, typename VectorMath>
     void DenseNonDecomposableStatisticVector<StatisticType, VectorMath>::add(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row) {
-        // TODO Packed array access
-        VectorMath::add(this->view.gradients_begin(), view.gradients_cbegin(row), this->getNumGradients());
-        VectorMath::add(this->view.hessians_begin(), view.hessians_cbegin(row), this->getNumHessians());
+        VectorMath::add(this->view.begin(), view.values_cbegin(row), this->view.numElements);
     }
 
     template<typename StatisticType, typename VectorMath>
     void DenseNonDecomposableStatisticVector<StatisticType, VectorMath>::add(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row, StatisticType weight) {
-        // TODO Packed array access
-        VectorMath::addWeighted(this->view.gradients_begin(), view.gradients_cbegin(row), this->getNumGradients(),
-                                weight);
-        VectorMath::addWeighted(this->view.hessians_begin(), view.hessians_cbegin(row), this->getNumHessians(), weight);
+        VectorMath::addWeighted(this->view.begin(), view.values_cbegin(row), this->view.numElements, weight);
     }
 
     template<typename StatisticType, typename VectorMath>
     void DenseNonDecomposableStatisticVector<StatisticType, VectorMath>::remove(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row) {
-        // TODO Packed array access
-        VectorMath::subtract(this->view.gradients_begin(), view.gradients_cbegin(row), this->getNumGradients());
-        VectorMath::subtract(this->view.hessians_begin(), view.hessians_cbegin(row), this->getNumHessians());
+        VectorMath::subtract(this->view.begin(), view.values_cbegin(row), this->view.numElements);
     }
 
     template<typename StatisticType, typename VectorMath>
     void DenseNonDecomposableStatisticVector<StatisticType, VectorMath>::remove(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row, StatisticType weight) {
-        // TODO Packed array access
-        VectorMath::subtractWeighted(this->view.gradients_begin(), view.gradients_cbegin(row), this->getNumGradients(),
-                                     weight);
-        VectorMath::subtractWeighted(this->view.hessians_begin(), view.hessians_cbegin(row), this->getNumHessians(),
-                                     weight);
+        VectorMath::subtractWeighted(this->view.begin(), view.values_cbegin(row), this->view.numElements, weight);
     }
 
     template<typename StatisticType, typename VectorMath>
     void DenseNonDecomposableStatisticVector<StatisticType, VectorMath>::addToSubset(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row, const CompleteIndexVector& indices) {
-        // TODO Packed array access
-        VectorMath::add(this->view.gradients_begin(), view.gradients_cbegin(row), this->getNumGradients());
-        VectorMath::add(this->view.hessians_begin(), view.hessians_cbegin(row), this->getNumHessians());
+        VectorMath::add(this->view.begin(), view.values_cbegin(row), this->view.numElements);
     }
 
     template<typename StatisticType, typename VectorMath>
@@ -177,10 +164,7 @@ namespace boosting {
     void DenseNonDecomposableStatisticVector<StatisticType, VectorMath>::addToSubset(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row, const CompleteIndexVector& indices,
       StatisticType weight) {
-        // TODO Packed array access
-        VectorMath::addWeighted(this->view.gradients_begin(), view.gradients_cbegin(row), this->getNumGradients(),
-                                weight);
-        VectorMath::addWeighted(this->view.hessians_begin(), view.hessians_cbegin(row), this->getNumHessians(), weight);
+        VectorMath::addWeighted(this->view.begin(), view.values_cbegin(row), this->view.numElements, weight);
     }
 
     template<typename StatisticType, typename VectorMath>
