@@ -11,12 +11,9 @@ namespace seco {
     class Accuracy final : public IHeuristic {
         public:
 
-            float32 evaluateConfusionMatrix(float32 cin, float32 cip, float32 crn, float32 crp, float32 uin,
-                                            float32 uip, float32 urn, float32 urp) const override {
-                float32 numCoveredCorrect = cin + crp;
-                float32 numUncoveredCorrect = uin + urp;
-                float32 numCorrect = numCoveredCorrect + numUncoveredCorrect;
-                float32 numTotal = numCorrect + cip + crn + urn + uip;
+            float32 evaluateConfusionMatrix(float32 tp, float32 fp, float32 fn, float32 tn) const override {
+                float32 numCorrect = tp + fn;
+                float32 numTotal = numCorrect + fp + tn;
                 return math::divideOrZero(numCorrect, numTotal);
             }
     };

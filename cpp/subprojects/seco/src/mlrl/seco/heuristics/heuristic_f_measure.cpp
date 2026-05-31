@@ -21,23 +21,19 @@ namespace seco {
              */
             FMeasure(float32 beta) : beta_(beta) {}
 
-            float32 evaluateConfusionMatrix(float32 cin, float32 cip, float32 crn, float32 crp, float32 uin,
-                                            float32 uip, float32 urn, float32 urp) const override {
+            float32 evaluateConfusionMatrix(float32 tp, float32 fp, float32 fn, float32 tn) const override {
                 if (std::isinf(beta_)) {
                     // Equivalent to recall
-                    return recall(cin, crp, uin, urp);
+                    return recall(tp, fn);
                 } else if (beta_ > 0) {
                     // Weighted harmonic mean between precision and recall
                     float32 betaPow = beta_ * beta_;
-                    float32 numCoveredEqual = cin + crp;
-                    float32 numUncoveredCorrect = uin + urp;
-                    float32 numCoveredIncorrect = cip + crn;
-                    float32 numerator = (1 + betaPow) * numCoveredEqual;
-                    float32 denominator = numerator + (betaPow * numUncoveredCorrect) + numCoveredIncorrect;
+                    float32 numerator = (1 + betaPow) * tp;
+                    float32 denominator = numerator + (betaPow * fn) + fp;
                     return math::divideOrZero(numerator, denominator);
                 } else {
                     // Equivalent to precision
-                    return precision(cin, cip, crn, crp);
+                    return precision(tp, fp);
                 }
             }
     };

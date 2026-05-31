@@ -28,14 +28,11 @@ namespace seco {
                                                      StatisticType inCovered, StatisticType ipCovered,
                                                      StatisticType rnCovered, StatisticType rpCovered,
                                                      const IHeuristic& heuristic) {
-        StatisticType inUncovered = inTotal - inCovered;
-        StatisticType ipUncovered = ipTotal - ipCovered;
-        StatisticType rnUncovered = rnTotal - rnCovered;
-        StatisticType rpUncovered = rpTotal - rpCovered;
-
-        return heuristic.evaluateConfusionMatrix((float32) inCovered, (float32) ipCovered, (float32) rnCovered,
-                                                 (float32) rpCovered, (float32) inUncovered, (float32) ipUncovered,
-                                                 (float32) rnUncovered, (float32) rpUncovered);
+        float32 tp = (float32) inCovered + (float32) rpCovered;
+        float32 fp = (float32) ipCovered + (float32) rnCovered;
+        float32 fn = (float32) (inTotal - inCovered) + (float32) (rpTotal - rpCovered);
+        float32 tn = (float32) (ipTotal - ipCovered) + (float32) (rnTotal - rnCovered);
+        return heuristic.evaluateConfusionMatrix(tp, fp, fn, tn);
     }
 
 }
