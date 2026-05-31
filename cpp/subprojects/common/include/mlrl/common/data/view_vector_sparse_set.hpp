@@ -80,12 +80,12 @@ class SparseSetVector {
         /**
          * An iterator that provides read-only access to the sparse elements in the view.
          */
-        using const_iterator = ValueArray::const_iterator;
+        using const_iterator = View<value_type>::const_iterator;
 
         /**
          * An iterator that provides access to the sparse elements in the row and allows to modify them.
          */
-        using iterator = ValueArray::iterator;
+        using iterator = View<value_type>::iterator;
 
         /**
          * Returns a `const_iterator` to the beginning of the view.
@@ -93,7 +93,7 @@ class SparseSetVector {
          * @return A `const_iterator` to the beginning
          */
         const_iterator cbegin() const {
-            return values->cbegin();
+            return std::to_address(values->cbegin());
         }
 
         /**
@@ -102,7 +102,7 @@ class SparseSetVector {
          * @return A `const_iterator` to the end
          */
         const_iterator cend() const {
-            return values->cend();
+            return std::to_address(values->cend());
         }
 
         /**
@@ -111,7 +111,7 @@ class SparseSetVector {
          * @return An `iterator` to the beginning
          */
         iterator begin() {
-            return values->begin();
+            return std::to_address(values->begin());
         }
 
         /**
@@ -120,7 +120,7 @@ class SparseSetVector {
          * @return An `iterator` to the end
          */
         iterator end() {
-            return values->end();
+            return std::to_address(values->end());
         }
 
         /**
