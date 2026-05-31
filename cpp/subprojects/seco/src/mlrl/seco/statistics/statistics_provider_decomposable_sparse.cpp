@@ -252,7 +252,7 @@ namespace seco {
         uint32 numLabels = labelMatrix.numCols;
         float64 threshold = numExamples / 2.0;
         auto majorityIterator = majorityLabelVector.begin();
-        uint32 sumOfUncoveredWeights = 0;
+        uint32 numCoveredIncorrect = 0;
         uint32 n = 0;
 
         for (uint32 i = 0; i < numLabels; i++) {
@@ -264,16 +264,16 @@ namespace seco {
             }
 
             if (numRelevant > threshold) {
-                sumOfUncoveredWeights += (numExamples - numRelevant);
+                numCoveredIncorrect += (numExamples - numRelevant);
                 majorityIterator[n] = i;
                 n++;
             } else {
-                sumOfUncoveredWeights += numRelevant;  // rp-pairs (minority class)
+                numCoveredIncorrect += numRelevant;
             }
         }
 
         majorityLabelVector.setNumElements(n, true);
-        return sumOfUncoveredWeights;
+        return numCoveredIncorrect;
     }
 
     static inline uint32 initializeMajorityLabelVector(const BinaryCsrView& labelMatrix,
@@ -294,23 +294,23 @@ namespace seco {
         }
 
         float64 threshold = numExamples / 2.0;
-        uint32 sumOfUncoveredWeights = 0;
+        uint32 numCoveredIncorrect = 0;
         uint32 n = 0;
 
         for (uint32 i = 0; i < numLabels; i++) {
             uint32 numRelevant = majorityIterator[i];
 
             if (numRelevant > threshold) {
-                sumOfUncoveredWeights += (numExamples - numRelevant);
+                numCoveredIncorrect += (numExamples - numRelevant);
                 majorityIterator[n] = i;
                 n++;
             } else {
-                sumOfUncoveredWeights += numRelevant;
+                numCoveredIncorrect += numRelevant;
             }
         }
 
         majorityLabelVector.setNumElements(n, true);
-        return sumOfUncoveredWeights;
+        return numCoveredIncorrect;
     }
 
     static inline void initializeStatisticMatrix(const CContiguousView<const uint8>& labelMatrix,
@@ -411,7 +411,7 @@ namespace seco {
 
             const LabelMatrix& labelMatrix_;
 
-            uint32 sumOfUncoveredWeights_;
+            uint32 numCoveredIncorrect_;
 
         public:
 
@@ -424,7 +424,7 @@ namespace seco {
                     SparseDecomposableStatisticView(labelMatrix.numRows, labelMatrix.numCols)),
                   majorityLabelVector_(labelMatrix.numCols),
                   coverageMatrix_(labelMatrix.numRows, labelMatrix.numCols, true), labelMatrix_(labelMatrix) {
-                sumOfUncoveredWeights_ = initializeMajorityLabelVector(labelMatrix_, majorityLabelVector_);
+                numCoveredIncorrect_ = initializeMajorityLabelVector(labelMatrix_, majorityLabelVector_);
                 initializeStatisticMatrix(labelMatrix_, majorityLabelVector_, this->getView());
             }
 
@@ -443,7 +443,7 @@ namespace seco {
                                   PartialIndexVector::const_iterator indicesBegin,
                                   PartialIndexVector::const_iterator indicesEnd) {
                 uint32 numIndices = indicesEnd - indicesBegin;
-                sumOfUncoveredWeights_ -=
+                numCoveredIncorrect_ -=
                   increaseCoverageInternally(row, labelMatrix_, coverageMatrix_.getView(), this->getView(),
                                              indicesBegin, predictionsBegin, numIndices);
             }
@@ -463,7 +463,7 @@ namespace seco {
                                   PartialIndexVector::const_iterator indicesBegin,
                                   PartialIndexVector::const_iterator indicesEnd) {
                 uint32 numIndices = indicesEnd - indicesBegin;
-                sumOfUncoveredWeights_ +=
+                numCoveredIncorrect_ +=
                   decreaseCoverageInternally(row, labelMatrix_, coverageMatrix_.getView(), this->getView(),
                                              indicesBegin, predictionBegin, numIndices);
             }
@@ -492,7 +492,7 @@ namespace seco {
              * @return The sum of the weights of all examples and labels that have not been covered yet
              */
             uint32 getSumOfUncoveredWeights() const {
-                return sumOfUncoveredWeights_;
+                return numCoveredIncorrect_;
             }
     };
 
