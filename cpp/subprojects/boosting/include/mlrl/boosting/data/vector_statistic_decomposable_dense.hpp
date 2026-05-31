@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/boosting/data/view_statistic_decomposable_dense.hpp"
-#include "mlrl/common/data/view_vector_composite.hpp"
+#include "mlrl/common/data/view_vector.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 
@@ -17,8 +17,7 @@ namespace boosting {
      * @tparam StatisticType The type of the gradient and Hessians
      */
     template<typename StatisticType>
-    class MLRLBOOSTING_API DenseDecomposableStatisticVectorView final
-        : public CompositeVector<AllocatedVector<StatisticType>, AllocatedVector<StatisticType>> {
+    class MLRLBOOSTING_API DenseDecomposableStatisticVectorView final : public AllocatedVector<StatisticType> {
         public:
 
             /**
