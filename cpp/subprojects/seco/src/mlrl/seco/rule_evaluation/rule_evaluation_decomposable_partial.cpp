@@ -51,14 +51,14 @@ namespace seco {
 
             const IScoreVector& calculateScores(View<uint32>::const_iterator majorityLabelIndicesBegin,
                                                 View<uint32>::const_iterator majorityLabelIndicesEnd,
-                                                const StatisticVector& statisticsTotal,
+                                                const StatisticVector& statisticsUncovered,
                                                 const StatisticVector& statisticsCovered) override {
                 uint32 numElements = scoreVector_.getNumElements();
                 auto indexIterator = scoreVector_.indices_cbegin();
-                auto in = statisticsTotal.in_cbegin();
-                auto ip = statisticsTotal.ip_cbegin();
-                auto rn = statisticsTotal.rn_cbegin();
-                auto rp = statisticsTotal.rp_cbegin();
+                auto uin = statisticsUncovered.in_cbegin();
+                auto uip = statisticsUncovered.ip_cbegin();
+                auto urn = statisticsUncovered.rn_cbegin();
+                auto urp = statisticsUncovered.rp_cbegin();
                 auto cin = statisticsCovered.in_cbegin();
                 auto cip = statisticsCovered.ip_cbegin();
                 auto crn = statisticsCovered.rn_cbegin();
@@ -72,8 +72,8 @@ namespace seco {
                     uint32 index = indexIterator[i];
                     std::advance(labelIterator, index - previousIndex);
                     scoreVector_.set(i, !(*labelIterator));
-                    sumOfQualities += calculateOutputWiseQuality(in[index], ip[index], rn[index], rp[index], cin[i],
-                                                                 cip[i], crn[i], crp[i], *heuristicPtr_);
+                    sumOfQualities += calculateOutputWiseQuality(uin[i], uip[i], urn[i], urp[i], cin[i], cip[i], crn[i],
+                                                                 crp[i], *heuristicPtr_);
                     previousIndex = index;
                 }
 
@@ -125,14 +125,14 @@ namespace seco {
 
             const IScoreVector& calculateScores(View<uint32>::const_iterator majorityLabelIndicesBegin,
                                                 View<uint32>::const_iterator majorityLabelIndicesEnd,
-                                                const StatisticVector& statisticsTotal,
+                                                const StatisticVector& statisticsUncovered,
                                                 const StatisticVector& statisticsCovered) override {
                 uint32 numElements = labelIndices_.getNumElements();
                 auto indexIterator = labelIndices_.cbegin();
-                auto in = statisticsTotal.in_cbegin();
-                auto ip = statisticsTotal.ip_cbegin();
-                auto rn = statisticsTotal.rn_cbegin();
-                auto rp = statisticsTotal.rp_cbegin();
+                auto uin = statisticsUncovered.in_cbegin();
+                auto uip = statisticsUncovered.ip_cbegin();
+                auto urn = statisticsUncovered.rn_cbegin();
+                auto urp = statisticsUncovered.rp_cbegin();
                 auto cin = statisticsCovered.in_cbegin();
                 auto cip = statisticsCovered.ip_cbegin();
                 auto crn = statisticsCovered.rn_cbegin();
@@ -148,8 +148,8 @@ namespace seco {
                     IndexedValue<std::pair<float32, bool>>& entry = sortedIterator[i];
                     std::pair<float32, bool>& pair = entry.value;
                     entry.index = index;
-                    pair.first = calculateOutputWiseQuality(in[index], ip[index], rn[index], rp[index], cin[i], cip[i],
-                                                            crn[i], crp[i], *heuristicPtr_);
+                    pair.first = calculateOutputWiseQuality(uin[i], uip[i], urn[i], urp[i], cin[i], cip[i], crn[i],
+                                                            crp[i], *heuristicPtr_);
                     pair.second = !(*labelIterator);
                     previousIndex = index;
                 }

@@ -28,8 +28,8 @@ namespace seco {
              *                                  relevant to the majority of the training examples
              * @param majorityLabelIndicesEnd   An iterator to the end of the indices of the labels that are relevant to
              *                                  the majority of the training examples
-             * @param statisticsTotal           A reference to an object of template type `StatisticVector` that stores
-             *                                  confusion matrices corresponding to all available examples
+             * @param statisticsUncovered       A reference to an object of template type `StatisticVector` that stores
+             *                                  confusion matrices corresponding to all examples not covered by the rule
              * @param statisticsCovered         A reference to an object of template type `StatisticVector` that stores
              *                                  confusion matrices corresponding to all examples covered by the rule
              * @return                          A reference to an object of type `IScoreVector` that stores the
@@ -37,7 +37,7 @@ namespace seco {
              */
             virtual const IScoreVector& calculateScores(View<uint32>::const_iterator majorityLabelIndicesBegin,
                                                         View<uint32>::const_iterator majorityLabelIndicesEnd,
-                                                        const StatisticVector& statisticsTotal,
+                                                        const StatisticVector& statisticsUncovered,
                                                         const StatisticVector& statisticsCovered) = 0;
     };
 
