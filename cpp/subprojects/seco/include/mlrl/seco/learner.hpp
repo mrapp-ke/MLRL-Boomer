@@ -17,7 +17,6 @@
 #include "mlrl/seco/prediction/predictor_binary_output_wise.hpp"
 #include "mlrl/seco/rule_evaluation/head_type_partial.hpp"
 #include "mlrl/seco/rule_evaluation/head_type_single.hpp"
-#include "mlrl/seco/stopping/stopping_criterion_coverage.hpp"
 
 #include <memory>
 #include <utility>
@@ -32,16 +31,6 @@ namespace seco {
         public:
 
             virtual ~ISeCoRuleLearnerConfig() override {}
-
-            /**
-             * Returns a `Property` that allows to access the `IStoppingCriterionConfig` that stores the configuration
-             * of the stopping criterion that stops the induction of rules as soon as the entire label space is covered.
-             *
-             * @return A `Property` that allows to access the `IStoppingCriterionConfig` that stores the configuration
-             *         of the stopping criterion that stops the induction of rules as soon as the entire label space is
-             *         covered
-             */
-            virtual Property<IStoppingCriterionConfig> getCoverageStoppingCriterionConfig() = 0;
 
             /**
              * Returns a `Property` that allows to access the `IHeadConfig` that stores the configuration of the rule
