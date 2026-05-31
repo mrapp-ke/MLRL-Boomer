@@ -93,46 +93,31 @@ namespace boosting {
     template<typename StatisticType, typename VectorMath>
     void DenseDecomposableStatisticVector<StatisticType, VectorMath>::add(
       const DenseDecomposableStatisticView<StatisticType>& view, uint32 row) {
-        // TODO Use packed iterators
-        uint32 numElements = this->getNumElements();
-        VectorMath::add(this->view.gradients_begin(), view.gradients_cbegin(row), numElements);
-        VectorMath::add(this->view.hessians_begin(), view.hessians_cbegin(row), numElements);
+        VectorMath::add(this->view.begin(), view.values_cbegin(row), this->view.numElements);
     }
 
     template<typename StatisticType, typename VectorMath>
     void DenseDecomposableStatisticVector<StatisticType, VectorMath>::add(
       const DenseDecomposableStatisticView<StatisticType>& view, uint32 row, StatisticType weight) {
-        // TODO Use packed iterators
-        uint32 numElements = this->getNumElements();
-        VectorMath::addWeighted(this->view.gradients_begin(), view.gradients_cbegin(row), numElements, weight);
-        VectorMath::addWeighted(this->view.hessians_begin(), view.hessians_cbegin(row), numElements, weight);
+        VectorMath::addWeighted(this->view.begin(), view.values_cbegin(row), this->view.numElements, weight);
     }
 
     template<typename StatisticType, typename VectorMath>
     void DenseDecomposableStatisticVector<StatisticType, VectorMath>::remove(
       const DenseDecomposableStatisticView<StatisticType>& view, uint32 row) {
-        // TODO Use packed iterators
-        uint32 numElements = this->getNumElements();
-        VectorMath::subtract(this->view.gradients_begin(), view.gradients_cbegin(row), numElements);
-        VectorMath::subtract(this->view.hessians_begin(), view.hessians_cbegin(row), numElements);
+        VectorMath::subtract(this->view.begin(), view.values_cbegin(row), this->view.numElements);
     }
 
     template<typename StatisticType, typename VectorMath>
     void DenseDecomposableStatisticVector<StatisticType, VectorMath>::remove(
       const DenseDecomposableStatisticView<StatisticType>& view, uint32 row, StatisticType weight) {
-        // TODO Use packed iterators
-        uint32 numElements = this->getNumElements();
-        VectorMath::subtractWeighted(this->view.gradients_begin(), view.gradients_cbegin(row), numElements, weight);
-        VectorMath::subtractWeighted(this->view.hessians_begin(), view.hessians_cbegin(row), numElements, weight);
+        VectorMath::subtractWeighted(this->view.begin(), view.values_cbegin(row), this->view.numElements, weight);
     }
 
     template<typename StatisticType, typename VectorMath>
     void DenseDecomposableStatisticVector<StatisticType, VectorMath>::addToSubset(
       const DenseDecomposableStatisticView<StatisticType>& view, uint32 row, const CompleteIndexVector& indices) {
-        // TODO Use packed iterators
-        uint32 numElements = this->getNumElements();
-        VectorMath::add(this->view.gradients_begin(), view.gradients_cbegin(row), numElements);
-        VectorMath::add(this->view.hessians_begin(), view.hessians_cbegin(row), numElements);
+        VectorMath::add(this->view.begin(), view.values_cbegin(row), this->view.numElements);
     }
 
     template<typename StatisticType, typename VectorMath>
@@ -148,10 +133,7 @@ namespace boosting {
     void DenseDecomposableStatisticVector<StatisticType, VectorMath>::addToSubset(
       const DenseDecomposableStatisticView<StatisticType>& view, uint32 row, const CompleteIndexVector& indices,
       StatisticType weight) {
-        // TODO Use packed iterators
-        uint32 numElements = this->getNumElements();
-        VectorMath::addWeighted(this->view.gradients_begin(), view.gradients_cbegin(row), numElements, weight);
-        VectorMath::addWeighted(this->view.hessians_begin(), view.hessians_cbegin(row), numElements, weight);
+        VectorMath::addWeighted(this->view.begin(), view.values_cbegin(row), this->view.numElements, weight);
     }
 
     template<typename StatisticType, typename VectorMath>

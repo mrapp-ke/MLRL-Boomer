@@ -5,7 +5,6 @@
 
 #include "mlrl/boosting/util/dll_exports.hpp"
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
-#include "mlrl/common/data/view_matrix_composite.hpp"
 
 namespace boosting {
 
@@ -16,8 +15,7 @@ namespace boosting {
      * @tparam StatisticType The type of the gradients and Hessians
      */
     template<typename StatisticType>
-    class MLRLBOOSTING_API DenseDecomposableStatisticView
-        : public CompositeMatrix<AllocatedCContiguousView<StatisticType>, AllocatedCContiguousView<StatisticType>> {
+    class MLRLBOOSTING_API DenseDecomposableStatisticView : public AllocatedCContiguousView<StatisticType> {
         public:
 
             /**
@@ -116,5 +114,19 @@ namespace boosting {
              * @return      A `hessian_iterator` to the end of the given row
              */
             hessian_iterator hessians_end(uint32 row);
+
+            /**
+             * Returns the number of rows in the view.
+             *
+             * @return The number of rows
+             */
+            uint32 getNumRows() const;
+
+            /**
+             * Returns the number of columns in the view.
+             *
+             * @return The number of columns
+             */
+            uint32 getNumCols() const;
     };
 }
