@@ -14,22 +14,22 @@ DEBUG: A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Example-wise F1 (↑)         53.72
-Example-wise Jaccard (↑)    44.55
-Example-wise Precision (↑)  63.06
-Example-wise Recall (↑)     59.18
-Hamming Accuracy (↑)        72.96
-Hamming Loss (↓)            27.04
-Macro F1 (↑)                50.95
-Macro Jaccard (↑)           36.98
-Macro Precision (↑)         64.57
-Macro Recall (↑)            56.59
-Micro F1 (↑)                58.16
-Micro Jaccard (↑)           41
-Micro Precision (↑)         57.4
-Micro Recall (↑)            58.93
-Subset 0/1 Loss (↓)         81.63
-Subset Accuracy (↑)         18.37
+Example-wise F1 (↑)         56.29
+Example-wise Jaccard (↑)    46.89
+Example-wise Precision (↑)  62.79
+Example-wise Recall (↑)     63.35
+Hamming Accuracy (↑)        73.38
+Hamming Loss (↓)            26.62
+Macro F1 (↑)                52.97
+Macro Jaccard (↑)           39.06
+Macro Precision (↑)         64.33
+Macro Recall (↑)            61.18
+Micro F1 (↑)                60.63
+Micro Jaccard (↑)           43.5
+Micro Precision (↑)         57.38
+Micro Recall (↑)            64.27
+Subset 0/1 Loss (↓)         79.59
+Subset Accuracy (↑)         20.41
 
 DEBUG: Writing output data to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
 Ground truth for test data:
@@ -245,7 +245,7 @@ Predictions for test data:
  [0 0 1 1 0 0]
  [0 0 0 0 0 1]
  [0 0 1 0 0 0]
- [1 0 0 0 0 1]
+ [1 0 1 0 0 1]
  [1 0 0 0 1 1]
  [1 0 0 0 0 1]
  [1 0 0 0 0 1]
@@ -255,18 +255,18 @@ Predictions for test data:
  [0 0 1 1 1 0]
  [0 0 0 0 0 1]
  [0 0 1 1 0 0]
- [0 0 1 0 0 0]
- [1 0 0 1 0 1]
+ [1 0 1 0 0 0]
+ [1 0 1 1 0 1]
  [0 0 0 1 0 0]
  [0 0 1 0 0 0]
  [0 0 1 0 0 0]
- [1 0 0 0 0 0]
- [0 0 1 1 0 0]
- [1 0 0 0 0 1]
- [1 0 0 0 0 1]
- [1 0 0 0 0 1]
  [1 0 1 0 0 0]
  [0 0 1 1 0 0]
+ [1 0 0 0 0 1]
+ [1 0 1 0 0 1]
+ [1 0 0 0 0 1]
+ [1 0 1 0 0 0]
+ [0 0 1 1 1 0]
  [1 0 0 0 0 1]
  [1 0 0 0 0 1]
  [1 0 1 1 0 1]
@@ -290,20 +290,20 @@ Predictions for test data:
  [0 0 1 0 0 0]
  [0 0 1 1 1 0]
  [1 0 0 0 0 1]
- [0 0 1 1 0 0]
+ [0 0 1 1 1 0]
  [0 0 1 1 0 0]
  [0 0 0 0 0 1]
  [1 0 1 1 1 1]
  [0 0 1 0 0 0]
  [1 0 1 0 0 0]
  [0 0 0 0 0 1]
- [0 0 1 0 0 0]
+ [1 0 1 0 0 0]
  [1 0 0 0 0 0]
  [0 0 0 0 0 1]
  [1 0 1 1 1 0]
  [1 0 1 1 0 1]
- [0 0 0 0 0 0]
- [0 0 0 1 0 0]
+ [0 0 1 0 0 0]
+ [0 0 1 1 0 0]
  [0 0 1 1 1 0]
  [0 0 0 0 0 1]
  [1 0 1 1 0 1]
@@ -313,7 +313,7 @@ Predictions for test data:
  [0 0 1 1 0 1]
  [0 0 1 0 0 1]
  [0 0 1 0 0 1]
- [1 0 0 1 0 0]
+ [1 0 1 1 0 0]
  [1 0 0 0 0 1]
  [0 0 1 1 0 0]
  [0 0 1 0 0 1]
@@ -325,15 +325,15 @@ Predictions for test data:
  [0 0 1 1 0 0]
  [0 0 1 0 0 0]
  [0 0 0 0 0 0]
- [0 0 1 0 0 0]
+ [1 0 1 0 0 0]
  [0 0 1 1 1 1]
- [0 0 0 0 0 0]
- [1 0 0 0 0 1]
+ [1 0 0 0 0 0]
+ [1 0 1 0 0 1]
  [0 0 1 1 0 0]
  [1 0 1 0 0 0]
  [0 0 1 1 1 0]
- [0 0 1 1 0 1]
- [0 0 1 1 0 0]
+ [1 0 1 1 1 1]
+ [0 0 1 1 1 0]
  [0 0 1 0 0 0]
  [0 0 1 0 0 0]
  [0 0 1 1 1 0]
@@ -354,21 +354,21 @@ Predictions for test data:
  [1 0 1 1 0 1]
  [0 0 1 1 1 0]
  [1 0 0 0 0 1]
- [0 0 0 1 0 0]
+ [0 0 1 1 0 0]
  [1 0 0 0 0 1]
  [1 0 1 0 0 0]
  [1 0 0 0 0 1]
- [0 0 0 1 1 0]
+ [0 0 1 1 1 0]
  [1 0 0 0 0 1]
- [1 0 1 1 0 1]
+ [1 0 1 1 1 1]
  [0 0 0 0 0 0]
  [0 0 1 1 0 0]
- [1 0 0 1 0 1]
- [0 0 1 1 1 0]
+ [1 0 1 1 0 1]
+ [1 0 1 1 1 0]
  [0 0 1 1 0 0]
  [0 0 0 0 0 1]
  [0 0 0 0 0 1]
- [0 0 0 1 1 0]
+ [0 0 1 1 1 0]
  [1 0 1 1 1 1]
  [0 0 1 1 0 0]
  [0 0 0 0 0 0]
@@ -384,22 +384,22 @@ Predictions for test data:
  [0 0 1 0 0 0]
  [0 0 0 0 0 1]
  [1 0 0 0 0 1]
- [0 0 0 1 1 0]
+ [0 0 1 1 1 0]
  [1 0 0 0 0 0]
  [0 0 1 0 0 0]
- [0 0 1 0 0 0]
+ [1 0 1 0 0 0]
  [0 0 0 0 0 0]
  [1 0 1 1 0 1]
- [0 0 1 0 0 0]
- [0 0 0 0 0 1]
+ [1 0 1 0 0 0]
+ [1 0 0 0 0 1]
  [0 0 1 0 0 1]
- [0 0 0 1 0 0]
+ [0 0 1 1 1 0]
  [1 0 1 1 1 0]
  [0 0 1 0 0 0]
  [1 0 1 0 0 0]
- [0 0 0 1 1 0]
+ [0 0 1 1 1 0]
  [0 0 1 0 0 0]
- [0 0 1 1 0 1]
+ [0 0 1 1 1 1]
  [0 0 0 0 0 0]
  [1 0 1 0 0 1]
  [0 0 0 0 0 1]
@@ -407,11 +407,11 @@ Predictions for test data:
  [0 0 1 0 0 0]
  [0 0 1 1 1 1]
  [0 0 1 1 1 0]
- [1 0 0 0 0 1]
+ [1 0 1 0 0 1]
  [0 0 1 1 0 0]
- [1 0 0 0 0 0]
+ [1 0 1 0 0 0]
  [1 0 0 0 0 1]
- [0 0 1 1 0 0]
+ [0 0 1 1 1 0]
  [0 0 1 1 1 0]
  [0 0 1 0 0 0]
  [0 0 1 0 1 0]
@@ -419,7 +419,7 @@ Predictions for test data:
  [1 0 0 0 0 1]
  [1 0 0 0 0 0]
  [0 0 0 0 0 1]
- [0 0 0 0 0 1]
+ [0 0 1 0 0 1]
  [1 0 1 1 0 0]
  [0 0 1 1 0 1]
  [0 0 1 0 0 0]

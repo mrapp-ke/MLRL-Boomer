@@ -14,22 +14,22 @@ DEBUG: A dense matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Example-wise F1 (↑)         55.5
-Example-wise Jaccard (↑)    45.33
-Example-wise Precision (↑)  60.51
-Example-wise Recall (↑)     60.29
-Hamming Accuracy (↑)        72.96
-Hamming Loss (↓)            27.04
-Macro F1 (↑)                53.08
-Macro Jaccard (↑)           38.79
-Macro Precision (↑)         51.13
-Macro Recall (↑)            57.98
-Micro F1 (↑)                58.81
-Micro Jaccard (↑)           41.65
-Micro Precision (↑)         57.18
-Micro Recall (↑)            60.53
-Subset 0/1 Loss (↓)         83.67
-Subset Accuracy (↑)         16.33
+Example-wise F1 (↑)         58.07
+Example-wise Jaccard (↑)    47.39
+Example-wise Precision (↑)  60.08
+Example-wise Recall (↑)     65.39
+Hamming Accuracy (↑)        72.87
+Hamming Loss (↓)            27.13
+Macro F1 (↑)                54.79
+Macro Jaccard (↑)           40.55
+Macro Precision (↑)         49.93
+Macro Recall (↑)            63.01
+Micro F1 (↑)                60.57
+Micro Jaccard (↑)           43.44
+Micro Precision (↑)         56.45
+Micro Recall (↑)            65.33
+Subset 0/1 Loss (↓)         83.16
+Subset Accuracy (↑)         16.84
 
 DEBUG: Writing output data to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
 Successfully finished experiment after <duration>

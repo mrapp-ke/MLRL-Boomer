@@ -14,22 +14,22 @@ DEBUG: A sparse matrix is used to store the predicted labels
 Successfully predicted in <duration>
 Evaluation result for test data:
 
-Example-wise F1 (↑)         27.41
-Example-wise Jaccard (↑)    26.09
-Example-wise Precision (↑)  80.78
-Example-wise Recall (↑)     28.15
-Hamming Accuracy (↑)        98.31
-Hamming Loss (↓)             1.69
-Macro F1 (↑)                12.03
-Macro Jaccard (↑)           10.45
-Macro Precision (↑)         84.63
-Macro Recall (↑)            11.37
-Micro F1 (↑)                20.52
-Micro Jaccard (↑)           11.43
-Micro Precision (↑)         37.98
-Micro Recall (↑)            14.06
-Subset 0/1 Loss (↓)         77.39
-Subset Accuracy (↑)         22.61
+Example-wise F1 (↑)         31.55
+Example-wise Jaccard (↑)    28.08
+Example-wise Precision (↑)  48.26
+Example-wise Recall (↑)     38.08
+Hamming Accuracy (↑)        97.31
+Hamming Loss (↓)             2.69
+Macro F1 (↑)                13.35
+Macro Jaccard (↑)           11.25
+Macro Precision (↑)         81.81
+Macro Recall (↑)            15.83
+Micro F1 (↑)                22.73
+Micro Jaccard (↑)           12.83
+Micro Precision (↑)         20.55
+Micro Recall (↑)            25.44
+Subset 0/1 Loss (↓)         79.67
+Subset Accuracy (↑)         20.33
 
 DEBUG: Writing output data to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
 Successfully finished experiment after <duration>
