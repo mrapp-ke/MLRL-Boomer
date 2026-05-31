@@ -17,7 +17,7 @@ namespace seco {
                 Result result;
                 const ICoverageStatistics& coverageStatistics = dynamic_cast<const ICoverageStatistics&>(statistics);
 
-                if (!(coverageStatistics.getSumOfUncoveredWeights() > 0)) {
+                if (!(coverageStatistics.getUncoveredFraction() > 0)) {
                     result.stop = true;
                 }
 

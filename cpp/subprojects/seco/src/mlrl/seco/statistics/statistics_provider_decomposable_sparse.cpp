@@ -252,7 +252,7 @@ namespace seco {
         uint32 numLabels = labelMatrix.numCols;
         float64 threshold = numExamples / 2.0;
         auto majorityIterator = majorityLabelVector.begin();
-        uint32 numCoveredIncorrect = 0;
+        uint32 numUncovered = 0;
         uint32 n = 0;
 
         for (uint32 i = 0; i < numLabels; i++) {
@@ -264,16 +264,16 @@ namespace seco {
             }
 
             if (numRelevant > threshold) {
-                numCoveredIncorrect += (numExamples - numRelevant);
+                numUncovered += (numExamples - numRelevant);
                 majorityIterator[n] = i;
                 n++;
             } else {
-                numCoveredIncorrect += numRelevant;
+                numUncovered += numRelevant;
             }
         }
 
         majorityLabelVector.setNumElements(n, true);
-        return numCoveredIncorrect;
+        return numUncovered;
     }
 
     static inline uint32 initializeMajorityLabelVector(const BinaryCsrView& labelMatrix,
@@ -294,23 +294,23 @@ namespace seco {
         }
 
         float64 threshold = numExamples / 2.0;
-        uint32 numCoveredIncorrect = 0;
+        uint32 numUncovered = 0;
         uint32 n = 0;
 
         for (uint32 i = 0; i < numLabels; i++) {
             uint32 numRelevant = majorityIterator[i];
 
             if (numRelevant > threshold) {
-                numCoveredIncorrect += (numExamples - numRelevant);
+                numUncovered += (numExamples - numRelevant);
                 majorityIterator[n] = i;
                 n++;
             } else {
-                numCoveredIncorrect += numRelevant;
+                numUncovered += numRelevant;
             }
         }
 
         majorityLabelVector.setNumElements(n, true);
-        return numCoveredIncorrect;
+        return numUncovered;
     }
 
     static inline void initializeStatisticMatrix(const CContiguousView<const uint8>& labelMatrix,
@@ -411,7 +411,9 @@ namespace seco {
 
             const LabelMatrix& labelMatrix_;
 
-            uint32 numCoveredIncorrect_;
+            const uint32 numTotalUncovered_;
+
+            uint32 numRemainingUncovered_;
 
         public:
 
@@ -423,8 +425,9 @@ namespace seco {
                 : ClearableViewDecorator<MatrixDecorator<SparseDecomposableStatisticView>>(
                     SparseDecomposableStatisticView(labelMatrix.numRows, labelMatrix.numCols)),
                   majorityLabelVector_(labelMatrix.numCols),
-                  coverageMatrix_(labelMatrix.numRows, labelMatrix.numCols, true), labelMatrix_(labelMatrix) {
-                numCoveredIncorrect_ = initializeMajorityLabelVector(labelMatrix_, majorityLabelVector_);
+                  coverageMatrix_(labelMatrix.numRows, labelMatrix.numCols, true), labelMatrix_(labelMatrix),
+                  numTotalUncovered_(initializeMajorityLabelVector(labelMatrix_, majorityLabelVector_)),
+                  numRemainingUncovered_(numTotalUncovered_) {
                 initializeStatisticMatrix(labelMatrix_, majorityLabelVector_, this->getView());
             }
 
@@ -443,7 +446,7 @@ namespace seco {
                                   PartialIndexVector::const_iterator indicesBegin,
                                   PartialIndexVector::const_iterator indicesEnd) {
                 uint32 numIndices = indicesEnd - indicesBegin;
-                numCoveredIncorrect_ -=
+                numRemainingUncovered_ -=
                   increaseCoverageInternally(row, labelMatrix_, coverageMatrix_.getView(), this->getView(),
                                              indicesBegin, predictionsBegin, numIndices);
             }
@@ -463,7 +466,7 @@ namespace seco {
                                   PartialIndexVector::const_iterator indicesBegin,
                                   PartialIndexVector::const_iterator indicesEnd) {
                 uint32 numIndices = indicesEnd - indicesBegin;
-                numCoveredIncorrect_ +=
+                numRemainingUncovered_ +=
                   decreaseCoverageInternally(row, labelMatrix_, coverageMatrix_.getView(), this->getView(),
                                              indicesBegin, predictionBegin, numIndices);
             }
@@ -487,12 +490,12 @@ namespace seco {
             }
 
             /**
-             * Returns the sum of the weights of all examples and labels that have not been covered yet.
+             * Returns the fraction of statistics that remain to be covered.
              *
-             * @return The sum of the weights of all examples and labels that have not been covered yet
+             * @return The fraction of statistics that remain to be covered
              */
-            uint32 getSumOfUncoveredWeights() const {
-                return numCoveredIncorrect_;
+            float64 getUncoveredFraction() const {
+                return ((float64) numRemainingUncovered_) / ((float64) numTotalUncovered_);
             }
     };
 

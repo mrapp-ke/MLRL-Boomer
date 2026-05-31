@@ -9,8 +9,8 @@
 namespace seco {
 
     /**
-     * Defines an interface for all classes that allow to store the elements of confusion matrices that have been
-     * computed based on a weight matrix and the ground truth of the training examples.
+     * Defines an interface for all classes that allow to store the elements of confusion matrices that are successively
+     * covered.
      */
     class ICoverageStatistics : virtual public IStatistics {
         public:
@@ -18,11 +18,11 @@ namespace seco {
             virtual ~ICoverageStatistics() override {}
 
             /**
-             * Returns the sum of the weights of all examples and outputs that remain to be covered.
+             * Returns the fraction of statistics that remain to be covered.
              *
-             * @return The sum of the weights
+             * @return The fraction of statistics that remain to be covered
              */
-            virtual uint32 getSumOfUncoveredWeights() const = 0;
+            virtual float64 getUncoveredFraction() const = 0;
     };
 
 }
