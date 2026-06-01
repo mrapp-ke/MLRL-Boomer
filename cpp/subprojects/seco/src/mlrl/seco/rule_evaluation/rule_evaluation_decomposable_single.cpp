@@ -83,39 +83,43 @@ namespace seco {
       std::unique_ptr<IHeuristicFactory> heuristicFactoryPtr)
         : heuristicFactoryPtr_(std::move(heuristicFactoryPtr)) {}
 
-    std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVectorView<uint32>>>
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<uint32>>>
       DecomposableSingleOutputRuleEvaluationFactory::create(
-        const DenseConfusionMatrixVectorView<uint32>& statisticVector, const CompleteIndexVector& indexVector) const {
+        const DenseDecomposableStatisticVectorView<uint32>& statisticVector,
+        const CompleteIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         return std::make_unique<
-          DecomposableSingleOutputRuleEvaluation<DenseConfusionMatrixVectorView<uint32>, CompleteIndexVector>>(
+          DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVectorView<uint32>, CompleteIndexVector>>(
           indexVector, std::move(heuristicPtr));
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVectorView<uint32>>>
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<uint32>>>
       DecomposableSingleOutputRuleEvaluationFactory::create(
-        const DenseConfusionMatrixVectorView<uint32>& statisticVector, const PartialIndexVector& indexVector) const {
+        const DenseDecomposableStatisticVectorView<uint32>& statisticVector,
+        const PartialIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         return std::make_unique<
-          DecomposableSingleOutputRuleEvaluation<DenseConfusionMatrixVectorView<uint32>, PartialIndexVector>>(
+          DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVectorView<uint32>, PartialIndexVector>>(
           indexVector, std::move(heuristicPtr));
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVectorView<float32>>>
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float32>>>
       DecomposableSingleOutputRuleEvaluationFactory::create(
-        const DenseConfusionMatrixVectorView<float32>& statisticVector, const CompleteIndexVector& indexVector) const {
+        const DenseDecomposableStatisticVectorView<float32>& statisticVector,
+        const CompleteIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         return std::make_unique<
-          DecomposableSingleOutputRuleEvaluation<DenseConfusionMatrixVectorView<float32>, CompleteIndexVector>>(
+          DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVectorView<float32>, CompleteIndexVector>>(
           indexVector, std::move(heuristicPtr));
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVectorView<float32>>>
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float32>>>
       DecomposableSingleOutputRuleEvaluationFactory::create(
-        const DenseConfusionMatrixVectorView<float32>& statisticVector, const PartialIndexVector& indexVector) const {
+        const DenseDecomposableStatisticVectorView<float32>& statisticVector,
+        const PartialIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         return std::make_unique<
-          DecomposableSingleOutputRuleEvaluation<DenseConfusionMatrixVectorView<float32>, PartialIndexVector>>(
+          DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVectorView<float32>, PartialIndexVector>>(
           indexVector, std::move(heuristicPtr));
     }
 

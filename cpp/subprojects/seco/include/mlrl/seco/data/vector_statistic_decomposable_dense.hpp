@@ -19,7 +19,7 @@ namespace seco {
      * @tparam StatisticType The type of the elements stored in the confusion matrices
      */
     template<typename StatisticType>
-    class MLRLSECO_API DenseConfusionMatrixVectorView final
+    class MLRLSECO_API DenseDecomposableStatisticVectorView final
         : public CompositeVector<CompositeVector<AllocatedVector<StatisticType>, AllocatedVector<StatisticType>>,
                                  CompositeVector<AllocatedVector<StatisticType>, AllocatedVector<StatisticType>>> {
         public:
@@ -28,7 +28,7 @@ namespace seco {
              * @param numElements   The number of elements in the view
              * @param init          True, if all elements in the view should be value-initialized, false otherwise
              */
-            DenseConfusionMatrixVectorView(uint32 numElements, bool init = false);
+            DenseDecomposableStatisticVectorView(uint32 numElements, bool init = false);
 
             /**
              * The type of the confusion matrix elements.
@@ -179,20 +179,20 @@ namespace seco {
      * @tparam VectorMath       The type that implements basic operations for calculating with numerical arrays
      */
     template<typename StatisticType, typename VectorMath>
-    class DenseConfusionMatrixVector final
-        : public ClearableViewDecorator<ViewDecorator<DenseConfusionMatrixVectorView<StatisticType>>> {
+    class DenseDecomposableStatisticVector final
+        : public ClearableViewDecorator<ViewDecorator<DenseDecomposableStatisticVectorView<StatisticType>>> {
         public:
 
             /**
              * @param numElements   The number of elements in the vector
              * @param init          True, if the elements of all confusion matrices should be value-initialized
              */
-            DenseConfusionMatrixVector(uint32 numElements, bool init = false);
+            DenseDecomposableStatisticVector(uint32 numElements, bool init = false);
 
             /**
-             * @param other A reference to an object of type `DenseConfusionMatrixVector` to be copied
+             * @param other A reference to an object of type `DenseDecomposableStatisticVector` to be copied
              */
-            DenseConfusionMatrixVector(const DenseConfusionMatrixVector<StatisticType, VectorMath>& other);
+            DenseDecomposableStatisticVector(const DenseDecomposableStatisticVector<StatisticType, VectorMath>& other);
 
             /**
              * Returns a `const_iterator` to the beginning of the irrelevant labels for which a rule predicts
@@ -318,10 +318,10 @@ namespace seco {
             /**
              * Adds all confusion matrix elements in another vector to this vector.
              *
-             * @param other A reference to an object of type `DenseConfusionMatrixVectorView`  that stores the confusion
-             *              matrices to be added to this vector
+             * @param other A reference to an object of type `DenseDecomposableStatisticVectorView` that stores the
+             *              confusion matrices to be added to this vector
              */
-            void add(const DenseConfusionMatrixVectorView<StatisticType>& other);
+            void add(const DenseDecomposableStatisticVectorView<StatisticType>& other);
 
             /**
              * Adds the confusion matrix elements that correspond to an example at a specific index to this vector. The
@@ -378,32 +378,32 @@ namespace seco {
              * in two other vectors, considering only the elements in the first vector that correspond to the positions
              * provided by a `CompleteIndexVector`.
              *
-             * @param first         A reference to an object of type `DenseConfusionMatrixVectorView` that stores the
-             *                      confusion matrices in the first vector
+             * @param first         A reference to an object of type `DenseDecomposableStatisticVectorView` that stores
+             *                      the confusion matrices in the first vector
              * @param firstIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
              *                      indices
-             * @param second        A reference to an object of type `DenseConfusionMatrixVectorView` that stores the
-             *                      confusion matrices in the second vector
+             * @param second        A reference to an object of type `DenseDecomposableStatisticVectorView` that stores
+             *                      the confusion matrices in the second vector
              */
-            void difference(const DenseConfusionMatrixVectorView<StatisticType>& first,
+            void difference(const DenseDecomposableStatisticVectorView<StatisticType>& first,
                             const CompleteIndexVector& firstIndices,
-                            const DenseConfusionMatrixVectorView<StatisticType>& second);
+                            const DenseDecomposableStatisticVectorView<StatisticType>& second);
 
             /**
              * Sets the confusion matrix elements in this vector to the difference `first - second` between the elements
              * in two other vectors, considering only the elements in the first vector that correspond to the positions
              * provided by a `PartialIndexVector`.
              *
-             * @param first         A reference to an object of type `DenseConfusionMatrixVectorView` that stores the
-             *                      confusion matrices in the first vector
+             * @param first         A reference to an object of type `DenseDecomposableStatisticVectorView` that stores
+             *                      the confusion matrices in the first vector
              * @param firstIndices  A reference to an object of type `PartialIndexVector` that provides access to the
              *                      indices
-             * @param second        A reference to an object of type `DenseConfusionMatrixVectorView` that stores the
-             *                      confusion matrices in the second vector
+             * @param second        A reference to an object of type `DenseDecomposableStatisticVectorView` that stores
+             *                      the confusion matrices in the second vector
              */
-            void difference(const DenseConfusionMatrixVectorView<StatisticType>& first,
+            void difference(const DenseDecomposableStatisticVectorView<StatisticType>& first,
                             const PartialIndexVector& firstIndices,
-                            const DenseConfusionMatrixVectorView<StatisticType>& second);
+                            const DenseDecomposableStatisticVectorView<StatisticType>& second);
     };
 
 }
