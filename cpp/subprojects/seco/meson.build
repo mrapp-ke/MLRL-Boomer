@@ -2,7 +2,7 @@ project('seco', 'cpp', meson_version : '>=1.1')
 
 # Source files
 source_files = [
-    'src/mlrl/seco/data/vector_confusion_matrix_dense.cpp',
+    'src/mlrl/seco/data/vector_statistic_decomposable_dense.cpp',
     'src/mlrl/seco/data/view_statistic_decomposable_sparse.cpp',
     'src/mlrl/seco/heuristics/heuristic_accuracy.cpp',
     'src/mlrl/seco/heuristics/heuristic_f_measure.cpp',

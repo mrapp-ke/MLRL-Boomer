@@ -8,29 +8,20 @@
 
 namespace seco {
 
-    static inline constexpr float32 precision(float32 cin, float32 cip, float32 crn, float32 crp) {
-        float32 numCoveredCorrect = cin + crp;
-        float32 numCovered = numCoveredCorrect + cip + crn;
-        return math::divideOrZero(numCoveredCorrect, numCovered);
+    static inline constexpr float32 precision(float32 tp, float32 fp) {
+        return math::divideOrZero(tp, tp + fp);
     }
 
-    static inline constexpr float32 recall(float32 cin, float32 crp, float32 uin, float32 urp) {
-        float32 numCoveredEqual = cin + crp;
-        float32 numEqual = numCoveredEqual + uin + urp;
-        return math::divideOrZero(numCoveredEqual, numEqual);
+    static inline constexpr float32 recall(float32 tp, float32 fn) {
+        return math::divideOrZero(tp, tp + fn);
     }
 
-    static inline constexpr float32 wra(float32 cin, float32 cip, float32 crn, float32 crp, float32 uin, float32 uip,
-                                        float32 urn, float32 urp) {
-        float32 numCoveredEqual = cin + crp;
-        float32 numUncoveredEqual = uin + urp;
-        float32 numEqual = numUncoveredEqual + numCoveredEqual;
-        float32 numCovered = numCoveredEqual + cip + crn;
-        float32 numUncovered = numUncoveredEqual + uip + urn;
-        float32 numTotal = numCovered + numUncovered;
+    static inline constexpr float32 wra(float32 tp, float32 fp, float32 fn, float32 tn) {
+        float32 numCovered = tp + fp;
+        float32 numTotal = numCovered + fn + tn;
 
         if (numCovered > 0 && numTotal > 0) {
-            return (numCovered / numTotal) * ((numCoveredEqual / numCovered) - (numEqual / numTotal));
+            return (numCovered / numTotal) * ((tp / numCovered) - ((fn + tp) / numTotal));
         }
 
         return 0;

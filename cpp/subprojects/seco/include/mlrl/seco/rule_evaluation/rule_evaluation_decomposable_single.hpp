@@ -28,20 +28,20 @@ namespace seco {
              */
             DecomposableSingleOutputRuleEvaluationFactory(std::unique_ptr<IHeuristicFactory> heuristicFactoryPtr);
 
-            std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVectorView<uint32>>> create(
-              const DenseConfusionMatrixVectorView<uint32>& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<uint32>>> create(
+              const DenseDecomposableStatisticVectorView<uint32>& statisticVector,
               const CompleteIndexVector& indexVector) const override;
 
-            std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVectorView<uint32>>> create(
-              const DenseConfusionMatrixVectorView<uint32>& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<uint32>>> create(
+              const DenseDecomposableStatisticVectorView<uint32>& statisticVector,
               const PartialIndexVector& indexVector) const override;
 
-            std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVectorView<float32>>> create(
-              const DenseConfusionMatrixVectorView<float32>& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float32>>> create(
+              const DenseDecomposableStatisticVectorView<float32>& statisticVector,
               const CompleteIndexVector& indexVector) const override;
 
-            std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVectorView<float32>>> create(
-              const DenseConfusionMatrixVectorView<float32>& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float32>>> create(
+              const DenseDecomposableStatisticVectorView<float32>& statisticVector,
               const PartialIndexVector& indexVector) const override;
     };
 

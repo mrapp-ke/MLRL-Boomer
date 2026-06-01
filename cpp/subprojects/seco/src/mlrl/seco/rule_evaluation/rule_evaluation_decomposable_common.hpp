@@ -11,31 +11,35 @@ namespace seco {
      * Calculates and returns the quality of a rule's prediction for a single output based on confusion matrices.
      *
      * @tparam StatisticType    The type of the elements that are stored in the confusion matrices
-     * @param inTotal           The number of irrelevant labels predicted as negative by the current model
-     * @param ipTotal           The number of irrelevant labels predicted as positive by the current model
-     * @param rnTotal           The number of relevant labels predicted as negative by the current model
-     * @param rpTotal           The number of relevant labels predicted as positive by the current model
-     * @param inCovered         The number of irrelevant labels predicted as negative by a new rule
-     * @param ipCovered         The number of irrelevant labels predicted as positive by a new rule
-     * @param rnCovered         The number of relevant labels predicted as negative by a new rule
-     * @param rpCovered         The number of relevant labels predicted as positive by a new rule
+     * @param uin               The number of uncovered (U), irrelevant (I) labels for which the rule predicts
+     *                          negatively (N)
+     * @param uip               The number of uncovered (U), irrelevant (I) labels for which the rule predicts
+     *                          positively (P)
+     * @param urn               The number of uncovered (U), relevant (R) labels for which the rule predicts negatively
+     *                          (N)
+     * @param urp               The number of uncovered (U), relevant (R) labels for which the rule predicts positively
+     *                          (P)
+     * @param cin               The number of covered (C), irrelevant (I) labels for which the rule predicts negatively
+     *                          (N)
+     * @param cip               The number of covered (C), irrelevant (I) labels for which the rule predicts positively
+     *                          (P)
+     * @param crn               The number of covered (C), relevant (R) labels for which the rule predicts negatively
+     *                          (N)
+     * @param crp               The number of covered (C), relevant (R) labels for which the rule predicts positively
+     *                          (P)
      * @param heuristic         The heuristic that should be used to assess the quality
      * @return                  The quality that has been calculated
      */
     template<typename StatisticType>
-    static inline float32 calculateOutputWiseQuality(StatisticType inTotal, StatisticType ipTotal,
-                                                     StatisticType rnTotal, StatisticType rpTotal,
-                                                     StatisticType inCovered, StatisticType ipCovered,
-                                                     StatisticType rnCovered, StatisticType rpCovered,
+    static inline float32 calculateOutputWiseQuality(StatisticType uin, StatisticType uip, StatisticType urn,
+                                                     StatisticType urp, StatisticType cin, StatisticType cip,
+                                                     StatisticType crn, StatisticType crp,
                                                      const IHeuristic& heuristic) {
-        StatisticType inUncovered = inTotal - inCovered;
-        StatisticType ipUncovered = ipTotal - ipCovered;
-        StatisticType rnUncovered = rnTotal - rnCovered;
-        StatisticType rpUncovered = rpTotal - rpCovered;
-
-        return heuristic.evaluateConfusionMatrix((float32) inCovered, (float32) ipCovered, (float32) rnCovered,
-                                                 (float32) rpCovered, (float32) inUncovered, (float32) ipUncovered,
-                                                 (float32) rnUncovered, (float32) rpUncovered);
+        float32 tp = (float32) cin + (float32) crp;
+        float32 fp = (float32) cip + (float32) crn;
+        float32 fn = (float32) uin + (float32) urp;
+        float32 tn = (float32) uip + (float32) urn;
+        return heuristic.evaluateConfusionMatrix(tp, fp, fn, tn);
     }
 
 }
