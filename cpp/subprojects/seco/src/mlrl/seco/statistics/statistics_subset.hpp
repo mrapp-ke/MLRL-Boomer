@@ -40,6 +40,11 @@ namespace seco {
              */
             const StatisticVector& subsetSumVector_;
 
+            /**
+             * A `StatisticVector` for storing temporary values.
+             */
+            StatisticVector tmpVector_;
+
         public:
 
             /**
@@ -63,7 +68,7 @@ namespace seco {
                 : AbstractStatisticsSubset<State, StatisticVector, WeightVector, IndexVector>(state, weights,
                                                                                               outputIndices),
                   ruleEvaluationPtr_(ruleEvaluationFactory.create(this->sumVector_.getView(), outputIndices)),
-                  subsetSumVector_(subsetSumVector) {}
+                  subsetSumVector_(subsetSumVector), tmpVector_(outputIndices.getNumElements()) {}
 
             virtual ~AbstractCoverageStatisticsSubset() override {}
 
@@ -71,10 +76,12 @@ namespace seco {
              * @see `IStatisticsSubset::calculateScores`
              */
             std::unique_ptr<IStatisticsUpdateCandidate> calculateScores() override final {
-                const IScoreVector& scoreVector =
-                  ruleEvaluationPtr_->calculateScores(this->state_.statisticMatrixPtr->majority_label_indices_cbegin(),
-                                                      this->state_.statisticMatrixPtr->majority_label_indices_cend(),
-                                                      subsetSumVector_.getView(), this->sumVector_.getView());
+                auto& statisticMatrix = *this->state_.statisticMatrixPtr;
+                auto& statisticsCovered = this->sumVector_.getView();
+                tmpVector_.difference(subsetSumVector_.getView(), this->outputIndices_, statisticsCovered);
+                const IScoreVector& scoreVector = ruleEvaluationPtr_->calculateScores(
+                  statisticMatrix.majority_label_indices_cbegin(), statisticMatrix.majority_label_indices_cend(),
+                  tmpVector_.getView(), statisticsCovered);
                 return this->state_.createUpdateCandidate(scoreVector);
             }
     };

@@ -11,9 +11,8 @@ namespace seco {
     class Recall final : public IHeuristic {
         public:
 
-            float32 evaluateConfusionMatrix(float32 cin, float32 cip, float32 crn, float32 crp, float32 uin,
-                                            float32 uip, float32 urn, float32 urp) const override {
-                return recall(cin, crp, uin, urp);
+            float32 evaluateConfusionMatrix(float32 tp, float32 fp, float32 fn, float32 tn) const override {
+                return recall(tp, fn);
             }
     };
 

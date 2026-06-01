@@ -54,29 +54,28 @@ namespace seco {
              *            |         1 |         0 | URN
              *            |         1 |         1 | URP
              *
-             * Real numbers may be used for the individual elements, if real-valued weights are assigned to the
-             * corresponding labels.
+             * However, all common heuristics are calculated based on confusion matrices with 4 elements, denoted as TP,
+             * FP, TN and FN. We define these elements in terms of the previous notation:
              *
-             * @param cin   The number of covered (C) labels that are irrelevant (I) according to the ground truth and
-             *              for which the prediction in the rule's head is negative (N)
-             * @param cip   The number of covered (C) labels that are irrelevant (I) according to the ground truth and
-             *              for which the prediction in the rule's head is negative (N)
-             * @param crn   The number of covered (C) labels that are relevant (R) according to the ground truth and for
-             *              which the prediction in the rule's head is negative (N)
-             * @param crp   The number of covered (C) labels that are relevant (R) according to the ground truth and for
-             *              which the prediction in the rule's head is positive (P)
-             * @param uin   The number of uncovered (U) labels that are irrelevant (I) according to the ground truth and
-             *              for which the prediction in the rule's head is negative (N)
-             * @param uip   The number of uncovered (U) labels that are irrelevant (I) according to the ground truth and
-             *              for which the prediction in the rule's head is positive (P)
-             * @param urn   The number of uncovered (U) labels that are relevant (R) according to the ground truth and
-             *              for which the prediction in the rule's head is negative (N)
-             * @param urp   The number of uncovered (U) labels that are relevant (R) according to the ground truth and
-             *              for which the prediction in the rule's head is positive (P)
+             * - True Positives: TP = CIN + CRP
+             * - False Positives: FP = CIP + CRN
+             * - True Negatives: TN = UIN + URP
+             * - False Negatives: FN = UIP + URN
+             *
+             * Real numbers are used for the individual elements to cater for scenarios where real-valued weights are
+             * assigned to the individual labels or examples.
+             *
+             * @param tp    The number of true positives, i.e., the number of covered labels for which the prediction in
+             *              the rule's head is correct
+             * @param fp    The number of false positives, i.e., the number of covered labels for which the prediction
+             *              in the rule's head is incorrect
+             * @param fn    The number of false positives, i.e., the number of uncovered labels for which the prediction
+             *              in the rule's head would be correct
+             * @param tn    The number of true negatives, i.e., the number of uncovered labels for which the prediction
+             *              in the rule's head would be incorrect
              * @return      The quality that has been calculated
              */
-            virtual float32 evaluateConfusionMatrix(float32 cin, float32 cip, float32 crn, float32 crp, float32 uin,
-                                                    float32 uip, float32 urn, float32 urp) const = 0;
+            virtual float32 evaluateConfusionMatrix(float32 tp, float32 fp, float32 fn, float32 tn) const = 0;
     };
 
     /**

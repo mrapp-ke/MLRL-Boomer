@@ -4,7 +4,7 @@
 #include "mlrl/common/iterator/iterator_forward_sparse_binary.hpp"
 #include "mlrl/common/math/vector_math.hpp"
 #include "mlrl/common/simd/vector_math.hpp"
-#include "mlrl/seco/data/vector_confusion_matrix_dense.hpp"
+#include "mlrl/seco/data/vector_statistic_decomposable_dense.hpp"
 #include "mlrl/seco/data/view_statistic_decomposable_sparse.hpp"
 #include "statistics_decomposable_common.hpp"
 #include "statistics_provider_decomposable.hpp"
@@ -515,7 +515,7 @@ namespace seco {
             using StatisticMatrix = SparseDecomposableStatisticMatrix<LabelMatrix, VectorMath>;
 
             template<typename StatisticType>
-            using StatisticVector = DenseConfusionMatrixVector<StatisticType, VectorMath>;
+            using StatisticVector = DenseDecomposableStatisticVector<StatisticType, VectorMath>;
 
             template<typename WeightVector, typename IndexVector, typename StatisticType>
             using StatisticsSubset = CoverageStatisticsSubset<
