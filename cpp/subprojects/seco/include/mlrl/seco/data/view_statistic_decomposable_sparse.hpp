@@ -14,8 +14,7 @@ namespace seco {
      * in the list of lists (LIL) format.
      */
     class MLRLSECO_API SparseDecomposableStatisticView final
-        : public CompositeMatrix<CompositeMatrix<AllocatedListOfLists<uint32>, AllocatedListOfLists<uint32>>,
-                                 CompositeMatrix<AllocatedListOfLists<uint32>, AllocatedListOfLists<uint32>>> {
+        : public CompositeMatrix<AllocatedListOfLists<uint32>, AllocatedListOfLists<uint32>> {
         public:
 
             /**
@@ -54,219 +53,111 @@ namespace seco {
             using index_const_iterator = typename ListOfLists<uint32>::value_const_iterator;
 
             /**
-             * Returns an `index_const_iterator` to the beginning of the indices at a specific row that corresponds to
-             * irrelevant labels for which a rule predicts negatively.
+             * Returns an `index_const_iterator` to the beginning of the indices at a specific row that correspond to
+             * the labels for which a rule predicts correctly.
              *
              * @param row   The row
              * @return      An `index_const_iterator` to the beginning of the given row
              */
-            index_const_iterator in_indices_cbegin(uint32 row) const;
+            index_const_iterator correct_indices_cbegin(uint32 row) const;
 
             /**
-             * Returns an `index_const_iterator` to the end of the indices at a specific row that correspond to
-             * irrelevant labels for which a rule predicts negatively.
+             * Returns an `index_const_iterator` to the end of the indices at a specific row that correspond to the
+             * labels for which a rule predicts correctly.
              *
              * @param row   The row
              * @return      An `index_const_iterator` to the end of the given row
              */
-            index_const_iterator in_indices_cend(uint32 row) const;
+            index_const_iterator correct_indices_cend(uint32 row) const;
 
             /**
-             * Returns an `index_iterator` to the beginning of the indices at a specific row that corresponds to
-             * irrelevant labels for which a rule predicts negatively.
+             * Returns an `index_iterator` to the beginning of the indices at a specific row that correspond to the
+             * labels for which a rule predicts correctly.
              *
              * @param row   The row
              * @return      An `index_iterator` to the beginning of the given row
              */
-            index_iterator in_indices_begin(uint32 row);
+            index_iterator correct_indices_begin(uint32 row);
 
             /**
-             * Returns an `index_iterator` to the end of the indices at a specific row that correspond to irrelevant
-             * labels for which a rule predicts negatively.
+             * Returns an `index_iterator` to the end of the indices at a specific row that correspond to the labels for
+             * which a rule predicts correctly.
              *
              * @param row   The row
              * @return      An `index_iterator` to the end of the given row
              */
-            index_iterator in_indices_end(uint32 row);
+            index_iterator correct_indices_end(uint32 row);
 
             /**
-             * Returns a view that provides read-only access to a specific row in the view that corresponds to
-             * irrelevant labels for which a rule predicts negatively.
+             * Returns a view that provides read-only access to a specific row in the view that correspond to the labels
+             * for which a rule predicts correctly.
              *
              * @param row   The index of the row
              * @return      A `const_row`
              */
-            const_row in_const_row(uint32 row) const;
+            const_row correct_indices_const_row(uint32 row) const;
 
             /**
-             * Returns a view that provides access to a specific row in the view that corresponds to irrelevant labels
-             * for which a rule predicts negatively and allows to modify it.
+             * Returns a view that provides access to a specific row in the view that correspond to the labels for which
+             * a rule predicts correctly and allows to modify it.
              *
              * @param row   The index of the row
              * @return      A `row`
              */
-            row in_row(uint32 row);
+            row correct_indices_row(uint32 row);
 
             /**
-             * Returns an `index_const_iterator` to the beginning of the indices at a specific row that corresponds to
-             * irrelevant labels for which a rule predicts positively.
+             * Returns an `index_const_iterator` to the beginning of the indices at a specific row that correspond to
+             * the labels for which a rule predicts incorrectly.
              *
              * @param row   The row
              * @return      An `index_const_iterator` to the beginning of the given row
              */
-            index_const_iterator ip_indices_cbegin(uint32 row) const;
+            index_const_iterator incorrect_indices_cbegin(uint32 row) const;
 
             /**
-             * Returns an `index_const_iterator` to the end of the indices at a specific row that correspond to
-             * irrelevant labels for which a rule predicts positively.
+             * Returns an `index_const_iterator` to the end of the indices at a specific row that correspond to the
+             * labels for which a rule predicts incorrectly.
              *
              * @param row   The row
              * @return      An `index_const_iterator` to the end of the given row
              */
-            index_const_iterator ip_indices_cend(uint32 row) const;
+            index_const_iterator incorrect_indices_cend(uint32 row) const;
 
             /**
-             * Returns an `index_iterator` to the beginning of the indices at a specific row that corresponds to
-             * irrelevant labels for which a rule predicts positively.
+             * Returns an `index_iterator` to the beginning of the indices at a specific row that correspond to the
+             * labels for which a rule predicts incorrectly.
              *
              * @param row   The row
              * @return      An `index_iterator` to the beginning of the given row
              */
-            index_iterator ip_indices_begin(uint32 row);
+            index_iterator incorrect_indices_begin(uint32 row);
 
             /**
-             * Returns an `index_iterator` to the end of the indices at a specific row that correspond to irrelevant
-             * labels for which a rule predicts positively.
+             * Returns an `index_iterator` to the end of the indices at a specific row that correspond to the labels for
+             * which a rule predicts incorrectly.
              *
              * @param row   The row
              * @return      An `index_iterator` to the end of the given row
              */
-            index_iterator ip_indices_end(uint32 row);
+            index_iterator incorrect_indices_end(uint32 row);
 
             /**
-             * Returns a view that provides read-only access to a specific row in the view that corresponds to
-             * irrelevant labels for which a rule predicts positively.
+             * Returns a view that provides read-only access to a specific row in the view that correspond to the labels
+             * for which a rule predicts incorrectly.
              *
              * @param row   The index of the row
              * @return      A `const_row`
              */
-            const_row ip_const_row(uint32 row) const;
+            const_row incorrect_indices_const_row(uint32 row) const;
 
             /**
-             * Returns a view that provides access to a specific row in the view that corresponds to irrelevant labels
-             * for which a rule predicts positively and allows to modify it.
+             * Returns a view that provides access to a specific row in the view that correspond to the labels for which
+             * a rule predicts incorrectly and allows to modify it.
              *
              * @param row   The index of the row
              * @return      A `row`
              */
-            row ip_row(uint32 row);
-
-            /**
-             * Returns an `index_const_iterator` to the beginning of the indices at a specific row that corresponds to
-             * relevant labels for which a rule predicts negatively.
-             *
-             * @param row   The row
-             * @return      An `index_const_iterator` to the beginning of the given row
-             */
-            index_const_iterator rn_indices_cbegin(uint32 row) const;
-
-            /**
-             * Returns an `index_const_iterator` to the end of the indices at a specific row that correspond to relevant
-             * labels for which a rule predicts negatively.
-             *
-             * @param row   The row
-             * @return      An `index_const_iterator` to the end of the given row
-             */
-            index_const_iterator rn_indices_cend(uint32 row) const;
-
-            /**
-             * Returns an `index_iterator` to the beginning of the indices at a specific row that corresponds to
-             * relevant labels for which a rule predicts negatively.
-             *
-             * @param row   The row
-             * @return      An `index_iterator` to the beginning of the given row
-             */
-            index_iterator rn_indices_begin(uint32 row);
-
-            /**
-             * Returns an `index_iterator` to the end of the indices at a specific row that correspond to relevant
-             * labels for which a rule predicts negatively.
-             *
-             * @param row   The row
-             * @return      An `index_iterator` to the end of the given row
-             */
-            index_iterator rn_indices_end(uint32 row);
-
-            /**
-             * Returns a view that provides read-only access to a specific row in the view that corresponds to relevant
-             * labels for which a rule predicts negatively.
-             *
-             * @param row   The index of the row
-             * @return      A `const_row`
-             */
-            const_row rn_const_row(uint32 row) const;
-
-            /**
-             * Returns a view that provides access to a specific row in the view that corresponds to relevant labels for
-             * which a rule predicts negatively and allows to modify it.
-             *
-             * @param row   The index of the row
-             * @return      A `row`
-             */
-            row rn_row(uint32 row);
-
-            /**
-             * Returns an `index_const_iterator` to the beginning of the indices at a specific row that corresponds to
-             * relevant labels for which a rule predicts positively.
-             *
-             * @param row   The row
-             * @return      An `index_const_iterator` to the beginning of the given row
-             */
-            index_const_iterator rp_indices_cbegin(uint32 row) const;
-
-            /**
-             * Returns an `index_const_iterator` to the end of the indices at a specific row that correspond to relevant
-             * labels for which a rule predicts positively.
-             *
-             * @param row   The row
-             * @return      An `index_const_iterator` to the end of the given row
-             */
-            index_const_iterator rp_indices_cend(uint32 row) const;
-
-            /**
-             * Returns an `index_iterator` to the beginning of the indices at a specific row that corresponds to
-             * relevant labels for which a rule predicts positively.
-             *
-             * @param row   The row
-             * @return      An `index_iterator` to the beginning of the given row
-             */
-            index_iterator rp_indices_begin(uint32 row);
-
-            /**
-             * Returns an `index_iterator` to the end of the indices at a specific row that correspond to relevant
-             * labels for which a rule predicts positively.
-             *
-             * @param row   The row
-             * @return      An `index_iterator` to the end of the given row
-             */
-            index_iterator rp_indices_end(uint32 row);
-
-            /**
-             * Returns a view that provides read-only access to a specific row in the view that corresponds to relevant
-             * labels for which a rule predicts positively.
-             *
-             * @param row   The index of the row
-             * @return      A `const_row`
-             */
-            const_row rp_const_row(uint32 row) const;
-
-            /**
-             * Returns a view that provides access to a specific row in the view that corresponds to relevant labels for
-             * which a rule predicts positively and allows to modify it.
-             *
-             * @param row   The index of the row
-             * @return      A `row`
-             */
-            row rp_row(uint32 row);
+            row incorrect_indices_row(uint32 row);
     };
 }

@@ -27,22 +27,14 @@ namespace seco {
     }
 
     template<typename IndexIterator>
-    static inline void eraseIfPresent(SparseDecomposableStatisticView::row in, SparseDecomposableStatisticView::row ip,
-                                      SparseDecomposableStatisticView::row rn, SparseDecomposableStatisticView::row rp,
-                                      IndexIterator& inIterator, IndexIterator& ipIterator, IndexIterator& rnIterator,
-                                      IndexIterator& rpIterator, bool trueLabel, bool prediction, uint32 index) {
-        if (trueLabel) {
-            if (prediction) {
-                eraseIfPresent(rp, rpIterator, index);
-            } else {
-                eraseIfPresent(rn, rnIterator, index);
-            }
+    static inline void eraseIfPresent(SparseDecomposableStatisticView::row correctIndices,
+                                      SparseDecomposableStatisticView::row incorrectIndices,
+                                      IndexIterator& correctIndicesIterator, IndexIterator& incorrectIndicesIterator,
+                                      bool trueLabel, bool prediction, uint32 index) {
+        if (trueLabel == prediction) {
+            eraseIfPresent(correctIndices, correctIndicesIterator, index);
         } else {
-            if (prediction) {
-                eraseIfPresent(ip, ipIterator, index);
-            } else {
-                eraseIfPresent(in, inIterator, index);
-            }
+            eraseIfPresent(incorrectIndices, incorrectIndicesIterator, index);
         }
     }
 
@@ -53,14 +45,10 @@ namespace seco {
                                                     View<uint8>::const_iterator predictionIterator, uint32 numIndices) {
         auto groundTruthIterator = labelMatrix.values_cbegin(row);
         auto coverageIterator = coverageMatrix.values_begin(row);
-        auto& in = statisticView.in_row(row);
-        auto& ip = statisticView.ip_row(row);
-        auto& rn = statisticView.rn_row(row);
-        auto& rp = statisticView.rp_row(row);
-        auto inIterator = in.begin();
-        auto ipIterator = ip.begin();
-        auto rnIterator = rn.begin();
-        auto rpIterator = rp.begin();
+        auto& correctIndices = statisticView.correct_indices_row(row);
+        auto& incorrectIndices = statisticView.incorrect_indices_row(row);
+        auto correctIndicesIterator = correctIndices.begin();
+        auto incorrectIndicesIterator = incorrectIndices.begin();
         uint32 numModified = 0;
 
         for (uint32 i = 0; i < numIndices; i++) {
@@ -70,8 +58,8 @@ namespace seco {
             if (coverage == 0) {
                 bool trueLabel = groundTruthIterator[index];
                 bool prediction = predictionIterator[i];
-                eraseIfPresent(in, ip, rn, rp, inIterator, ipIterator, rnIterator, rpIterator, trueLabel, prediction,
-                               index);
+                eraseIfPresent(correctIndices, incorrectIndices, correctIndicesIterator, incorrectIndicesIterator,
+                               trueLabel, prediction, index);
 
                 if (prediction == trueLabel) {
                     numModified++;
@@ -92,14 +80,10 @@ namespace seco {
         auto groundTruthIterator =
           createBinarySparseForwardIterator(labelMatrix.indices_cbegin(row), labelMatrix.indices_cend(row));
         auto coverageIterator = coverageMatrix.values_begin(row);
-        auto& in = statisticView.in_row(row);
-        auto& ip = statisticView.ip_row(row);
-        auto& rn = statisticView.rn_row(row);
-        auto& rp = statisticView.rp_row(row);
-        auto inIterator = in.begin();
-        auto ipIterator = ip.begin();
-        auto rnIterator = rn.begin();
-        auto rpIterator = rp.begin();
+        auto& correctIndices = statisticView.correct_indices_row(row);
+        auto& incorrectIndices = statisticView.incorrect_indices_row(row);
+        auto correctIndicesIterator = correctIndices.begin();
+        auto incorrectIndicesIterator = incorrectIndices.begin();
         uint32 numModified = 0;
         uint32 previousIndex = 0;
 
@@ -111,8 +95,8 @@ namespace seco {
                 std::advance(groundTruthIterator, index - previousIndex);
                 bool trueLabel = *groundTruthIterator;
                 bool prediction = predictionIterator[i];
-                eraseIfPresent(in, ip, rn, rp, inIterator, ipIterator, rnIterator, rpIterator, trueLabel, prediction,
-                               index);
+                eraseIfPresent(correctIndices, incorrectIndices, correctIndicesIterator, incorrectIndicesIterator,
+                               trueLabel, prediction, index);
 
                 if (prediction == trueLabel) {
                     numModified++;
@@ -142,22 +126,14 @@ namespace seco {
     }
 
     template<typename IndexIterator>
-    static inline void addIfNotPresent(SparseDecomposableStatisticView::row in, SparseDecomposableStatisticView::row ip,
-                                       SparseDecomposableStatisticView::row rn, SparseDecomposableStatisticView::row rp,
-                                       IndexIterator& inIterator, IndexIterator& ipIterator, IndexIterator& rnIterator,
-                                       IndexIterator& rpIterator, bool trueLabel, bool prediction, uint32 index) {
-        if (trueLabel) {
-            if (prediction) {
-                addIfNotPresent(rp, rpIterator, index);
-            } else {
-                addIfNotPresent(rn, rnIterator, index);
-            }
+    static inline void addIfNotPresent(SparseDecomposableStatisticView::row correctIndices,
+                                       SparseDecomposableStatisticView::row incorrectIndices,
+                                       IndexIterator& correctIndicesIterator, IndexIterator& incorrectIndicesIterator,
+                                       bool trueLabel, bool prediction, uint32 index) {
+        if (trueLabel == prediction) {
+            addIfNotPresent(correctIndices, correctIndicesIterator, index);
         } else {
-            if (prediction) {
-                addIfNotPresent(ip, ipIterator, index);
-            } else {
-                addIfNotPresent(in, inIterator, index);
-            }
+            addIfNotPresent(incorrectIndices, incorrectIndicesIterator, index);
         }
     }
 
@@ -168,14 +144,10 @@ namespace seco {
                                                     View<uint8>::const_iterator predictionIterator, uint32 numIndices) {
         auto groundTruthIterator = labelMatrix.values_cbegin(row);
         auto coverageIterator = coverageMatrix.values_begin(row);
-        auto& in = statisticView.in_row(row);
-        auto& ip = statisticView.ip_row(row);
-        auto& rn = statisticView.rn_row(row);
-        auto& rp = statisticView.rp_row(row);
-        auto inIterator = in.begin();
-        auto ipIterator = ip.begin();
-        auto rnIterator = rn.begin();
-        auto rpIterator = rp.begin();
+        auto& correctIndices = statisticView.correct_indices_row(row);
+        auto& incorrectIndices = statisticView.incorrect_indices_row(row);
+        auto correctIndicesIterator = correctIndices.begin();
+        auto incorrectIndicesIterator = incorrectIndices.begin();
         uint32 numModified = 0;
 
         for (uint32 i = 0; i < numIndices; i++) {
@@ -185,8 +157,8 @@ namespace seco {
             if (coverage == 1) {
                 bool trueLabel = groundTruthIterator[index];
                 bool prediction = predictionIterator[i];
-                addIfNotPresent(in, ip, rn, rp, inIterator, ipIterator, rnIterator, rpIterator, trueLabel, prediction,
-                                index);
+                addIfNotPresent(correctIndices, incorrectIndices, correctIndicesIterator, incorrectIndicesIterator,
+                                trueLabel, prediction, index);
 
                 if (prediction == trueLabel) {
                     numModified++;
@@ -209,14 +181,10 @@ namespace seco {
         auto groundTruthIterator =
           createBinarySparseForwardIterator(labelMatrix.indices_cbegin(row), labelMatrix.indices_cend(row));
         auto coverageIterator = coverageMatrix.values_begin(row);
-        auto& in = statisticView.in_row(row);
-        auto& ip = statisticView.ip_row(row);
-        auto& rn = statisticView.rn_row(row);
-        auto& rp = statisticView.rp_row(row);
-        auto inIterator = in.begin();
-        auto ipIterator = ip.begin();
-        auto rnIterator = rn.begin();
-        auto rpIterator = rp.begin();
+        auto& correctIndices = statisticView.correct_indices_row(row);
+        auto& incorrectIndices = statisticView.incorrect_indices_row(row);
+        auto correctIndicesIterator = correctIndices.begin();
+        auto incorrectIndicesIterator = incorrectIndices.begin();
         uint32 numModified = 0;
         uint32 previousIndex = 0;
 
@@ -228,8 +196,8 @@ namespace seco {
                 std::advance(groundTruthIterator, index - previousIndex);
                 bool trueLabel = *groundTruthIterator;
                 bool prediction = predictionIterator[i];
-                addIfNotPresent(in, ip, rn, rp, inIterator, ipIterator, rnIterator, rpIterator, trueLabel, prediction,
-                                index);
+                addIfNotPresent(correctIndices, incorrectIndices, correctIndicesIterator, incorrectIndicesIterator,
+                                trueLabel, prediction, index);
 
                 if (trueLabel == prediction) {
                     numModified++;
@@ -320,10 +288,8 @@ namespace seco {
         uint32 numLabels = labelMatrix.numCols;
 
         for (uint32 i = 0; i < numExamples; i++) {
-            auto& in = statisticView.in_row(i);
-            auto& ip = statisticView.ip_row(i);
-            auto& rn = statisticView.rn_row(i);
-            auto& rp = statisticView.rp_row(i);
+            auto& correctIndices = statisticView.correct_indices_row(i);
+            auto& incorrectIndices = statisticView.incorrect_indices_row(i);
             auto groundTruthIterator = labelMatrix.values_cbegin(i);
             auto majorityIterator =
               createBinarySparseForwardIterator(majorityLabelVector.cbegin(), majorityLabelVector.cend());
@@ -333,18 +299,10 @@ namespace seco {
                 bool majorityLabel = *majorityIterator;
                 bool prediction = !majorityLabel;  // Rules predict the opposite of the majority label
 
-                if (trueLabel) {
-                    if (prediction) {
-                        rp.emplace_back(j);
-                    } else {
-                        rn.emplace_back(j);
-                    }
+                if (trueLabel == prediction) {
+                    correctIndices.emplace_back(j);
                 } else {
-                    if (prediction) {
-                        ip.emplace_back(j);
-                    } else {
-                        in.emplace_back(j);
-                    }
+                    incorrectIndices.emplace_back(j);
                 }
 
                 majorityIterator++;
@@ -359,10 +317,8 @@ namespace seco {
         uint32 numLabels = labelMatrix.numCols;
 
         for (uint32 i = 0; i < numExamples; i++) {
-            auto& in = statisticView.in_row(i);
-            auto& ip = statisticView.ip_row(i);
-            auto& rn = statisticView.rn_row(i);
-            auto& rp = statisticView.rp_row(i);
+            auto& correctIndices = statisticView.correct_indices_row(i);
+            auto& incorrectIndices = statisticView.incorrect_indices_row(i);
             auto groundTruthIterator =
               createBinarySparseForwardIterator(labelMatrix.indices_cbegin(i), labelMatrix.indices_cend(i));
             auto majorityIterator =
@@ -373,18 +329,10 @@ namespace seco {
                 bool majorityLabel = *majorityIterator;
                 bool prediction = !majorityLabel;  // Rules predict the opposite of the majority label
 
-                if (trueLabel) {
-                    if (prediction) {
-                        rp.emplace_back(j);
-                    } else {
-                        rn.emplace_back(j);
-                    }
+                if (trueLabel == prediction) {
+                    correctIndices.emplace_back(j);
                 } else {
-                    if (prediction) {
-                        ip.emplace_back(j);
-                    } else {
-                        in.emplace_back(j);
-                    }
+                    incorrectIndices.emplace_back(j);
                 }
 
                 groundTruthIterator++;
