@@ -26,6 +26,7 @@ class SeCoClassifier(ClassificationRuleLearner):
         output_format: str | None = None,
         prediction_format: str | None = None,
         rule_induction: str | None = None,
+        min_coverage: float | None = None,
         max_rules: int | None = None,
         time_limit: int | None = None,
         post_optimization: str | None = None,
@@ -49,6 +50,8 @@ class SeCoClassifier(ClassificationRuleLearner):
         :param rule_induction:              An algorithm to be used for the induction of individual rules. Must be
                                             'top-down-greedy' or 'top-down-beam-search'. For additional options refer to
                                             the documentation
+        :param min_coverage:                The fraction of the available training examples and labels that must be
+                                            covered before the induction of rules is stopped. Must be in [0, 1)
         :param max_rules:                   The maximum number of rules to be learned (including the default rule). Must
                                             be at least 1 or 0, if the number of rules should not be restricted
         :param time_limit:                  The duration in seconds after which the induction of rules should be
@@ -106,6 +109,7 @@ class SeCoClassifier(ClassificationRuleLearner):
         super().__init__(feature_format, output_format, prediction_format)
         self.random_state = random_state
         self.rule_induction = rule_induction
+        self.min_coverage = min_coverage
         self.max_rules = max_rules
         self.time_limit = time_limit
         self.post_optimization = post_optimization
