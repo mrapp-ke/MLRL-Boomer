@@ -55,14 +55,10 @@ namespace seco {
                                                 const StatisticVector& statisticsCovered) override {
                 uint32 numElements = scoreVector_.getNumElements();
                 auto indexIterator = scoreVector_.indices_cbegin();
-                auto uin = statisticsUncovered.in_cbegin();
-                auto uip = statisticsUncovered.ip_cbegin();
-                auto urn = statisticsUncovered.rn_cbegin();
-                auto urp = statisticsUncovered.rp_cbegin();
-                auto cin = statisticsCovered.in_cbegin();
-                auto cip = statisticsCovered.ip_cbegin();
-                auto crn = statisticsCovered.rn_cbegin();
-                auto crp = statisticsCovered.rp_cbegin();
+                auto tp = statisticsCovered.correct_indices_cbegin();
+                auto fp = statisticsCovered.incorrect_indices_cbegin();
+                auto fn = statisticsUncovered.correct_indices_cbegin();
+                auto tn = statisticsUncovered.incorrect_indices_cbegin();
                 auto labelIterator =
                   createBinarySparseForwardIterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
                 float32 sumOfQualities = 0;
@@ -72,8 +68,7 @@ namespace seco {
                     uint32 index = indexIterator[i];
                     std::advance(labelIterator, index - previousIndex);
                     scoreVector_.set(i, !(*labelIterator));
-                    sumOfQualities += calculateOutputWiseQuality(uin[i], uip[i], urn[i], urp[i], cin[i], cip[i], crn[i],
-                                                                 crp[i], *heuristicPtr_);
+                    sumOfQualities += calculateOutputWiseQuality(tp[i], fp[i], fn[i], tn[i], *heuristicPtr_);
                     previousIndex = index;
                 }
 
@@ -129,14 +124,10 @@ namespace seco {
                                                 const StatisticVector& statisticsCovered) override {
                 uint32 numElements = labelIndices_.getNumElements();
                 auto indexIterator = labelIndices_.cbegin();
-                auto uin = statisticsUncovered.in_cbegin();
-                auto uip = statisticsUncovered.ip_cbegin();
-                auto urn = statisticsUncovered.rn_cbegin();
-                auto urp = statisticsUncovered.rp_cbegin();
-                auto cin = statisticsCovered.in_cbegin();
-                auto cip = statisticsCovered.ip_cbegin();
-                auto crn = statisticsCovered.rn_cbegin();
-                auto crp = statisticsCovered.rp_cbegin();
+                auto tp = statisticsCovered.correct_indices_cbegin();
+                auto fp = statisticsCovered.incorrect_indices_cbegin();
+                auto fn = statisticsUncovered.correct_indices_cbegin();
+                auto tn = statisticsUncovered.incorrect_indices_cbegin();
                 auto labelIterator =
                   createBinarySparseForwardIterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
                 auto sortedIterator = sortedVector_.begin();
@@ -148,8 +139,7 @@ namespace seco {
                     IndexedValue<std::pair<float32, bool>>& entry = sortedIterator[i];
                     std::pair<float32, bool>& pair = entry.value;
                     entry.index = index;
-                    pair.first = calculateOutputWiseQuality(uin[i], uip[i], urn[i], urp[i], cin[i], cip[i], crn[i],
-                                                            crp[i], *heuristicPtr_);
+                    pair.first = calculateOutputWiseQuality(tp[i], fp[i], fn[i], tn[i], *heuristicPtr_);
                     pair.second = !(*labelIterator);
                     previousIndex = index;
                 }

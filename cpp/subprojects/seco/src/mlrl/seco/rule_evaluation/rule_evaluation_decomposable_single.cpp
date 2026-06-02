@@ -46,22 +46,16 @@ namespace seco {
                                                 const StatisticVector& statisticsCovered) override {
                 uint32 numElements = labelIndices_.getNumElements();
                 auto indexIterator = labelIndices_.cbegin();
-                auto uin = statisticsUncovered.in_cbegin();
-                auto uip = statisticsUncovered.ip_cbegin();
-                auto urn = statisticsUncovered.rn_cbegin();
-                auto urp = statisticsUncovered.rp_cbegin();
-                auto cin = statisticsCovered.in_cbegin();
-                auto cip = statisticsCovered.ip_cbegin();
-                auto crn = statisticsCovered.rn_cbegin();
-                auto crp = statisticsCovered.rp_cbegin();
+                auto tp = statisticsCovered.correct_indices_cbegin();
+                auto fp = statisticsCovered.incorrect_indices_cbegin();
+                auto fn = statisticsUncovered.correct_indices_cbegin();
+                auto tn = statisticsUncovered.incorrect_indices_cbegin();
                 uint32 bestIndex = indexIterator[0];
-                float32 bestQuality = calculateOutputWiseQuality(uin[0], uip[0], urn[0], urp[0], cin[0], cip[0], crn[0],
-                                                                 crp[0], *heuristicPtr_);
+                float32 bestQuality = calculateOutputWiseQuality(tp[0], fp[0], fn[0], tn[0], *heuristicPtr_);
 
                 for (uint32 i = 1; i < numElements; i++) {
                     uint32 index = indexIterator[i];
-                    float32 quality = calculateOutputWiseQuality(uin[i], uip[i], urn[i], urp[i], cin[i], cip[i], crn[i],
-                                                                 crp[i], *heuristicPtr_);
+                    float32 quality = calculateOutputWiseQuality(tp[i], fp[i], fn[i], tn[i], *heuristicPtr_);
 
                     if (quality > bestQuality) {
                         bestIndex = index;
