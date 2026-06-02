@@ -20,8 +20,7 @@ namespace seco {
      */
     template<typename StatisticType>
     class MLRLSECO_API DenseDecomposableStatisticVectorView final
-        : public CompositeVector<CompositeVector<AllocatedVector<StatisticType>, AllocatedVector<StatisticType>>,
-                                 CompositeVector<AllocatedVector<StatisticType>, AllocatedVector<StatisticType>>> {
+        : public CompositeVector<AllocatedVector<StatisticType>, AllocatedVector<StatisticType>> {
         public:
 
             /**
@@ -46,118 +45,60 @@ namespace seco {
             using const_iterator = View<StatisticType>::const_iterator;
 
             /**
-             * Returns a `const_iterator` to the beginning of the irrelevant labels for which a rule predicts
-             * negatively.
+             * Returns a `const_iterator` to the beginning of the label indices for which a rule predicts correctly.
              *
-             * @return A `const_iterator` to the beginning of the irrelevant labels for which a rule predicts negatively
+             * @return A `const_iterator` to the beginning of the label indices for which a rule predicts correctly
              */
-            typename View<StatisticType>::const_iterator in_cbegin() const;
+            typename View<StatisticType>::const_iterator correct_indices_cbegin() const;
 
             /**
-             * Returns a `const_iterator` to the end of the irrelevant labels for which a rule predicts negatively.
+             * Returns a `const_iterator` to the end of the label indices for which a rule predicts correctly.
              *
-             * @return A `const_iterator` to the end of the irrelevant labels for which a rule predicts negatively
+             * @return A `const_iterator` to the end of the label indices for which a rule predicts correctly
              */
-            typename View<StatisticType>::const_iterator in_cend() const;
+            typename View<StatisticType>::const_iterator correct_indices_cend() const;
 
             /**
-             * Returns an `iterator` to the beginning of the irrelevant labels for which a rule predicts negatively.
+             * Returns an `iterator` to the beginning of the label indices for which a rule predicts correctly.
              *
-             * @return An `iterator` to the beginning of the irrelevant labels for which a rule predicts negatively
+             * @return An `iterator` to the beginning of the label indices for which a rule predicts correctly
              */
-            typename View<StatisticType>::iterator in_begin();
+            typename View<StatisticType>::iterator correct_indices_begin();
 
             /**
-             * Returns an `iterator` to the end of the irrelevant labels for which a rule predicts negatively.
+             * Returns an `iterator` to the end of the label indices for which a rule predicts correctly.
              *
-             * @return An `iterator` to the end of the irrelevant labels for which a rule predicts negatively
+             * @return An `iterator` to the end of the label indices for which a rule predicts correctly
              */
-            typename View<StatisticType>::iterator in_end();
+            typename View<StatisticType>::iterator correct_indices_end();
 
             /**
-             * Returns a `const_iterator` to the beginning of the irrelevant labels for which a rule predicts
-             * positively.
+             * Returns a `const_iterator` to the beginning of the label indices for which a rule predicts incorrectly.
              *
-             * @return A `const_iterator` to the beginning of the irrelevant labels for which a rule predicts positively
+             * @return A `const_iterator` to the beginning of the label indices for which a rule predicts incorrectly
              */
-            typename View<StatisticType>::const_iterator ip_cbegin() const;
+            typename View<StatisticType>::const_iterator incorrect_indices_cbegin() const;
 
             /**
-             * Returns a `const_iterator` to the end of the irrelevant labels for which a rule predicts positively.
+             * Returns a `const_iterator` to the end of the label indices for which a rule predicts incorrectly.
              *
-             * @return A `const_iterator` to the end of the irrelevant labels for which a rule predicts positively
+             * @return A `const_iterator` to the end of the label indices for which a rule predicts incorrectly
              */
-            typename View<StatisticType>::const_iterator ip_cend() const;
+            typename View<StatisticType>::const_iterator incorrect_indices_cend() const;
 
             /**
-             * Returns an `iterator` to the beginning of the irrelevant labels for which a rule predicts positively.
+             * Returns an `iterator` to the beginning of the label indices for which a rule predicts incorrectly.
              *
-             * @return An `iterator` to the beginning of the irrelevant labels for which a rule predicts positively
+             * @return An `iterator` to the beginning of the label indices for which a rule predicts incorrectly
              */
-            typename View<StatisticType>::iterator ip_begin();
+            typename View<StatisticType>::iterator incorrect_indices_begin();
 
             /**
-             * Returns an `iterator` to the end of the irrelevant labels for which a rule predicts positively.
+             * Returns an `iterator` to the end of the label indices for which a rule predicts incorrectly.
              *
-             * @return An `iterator` to the end of the irrelevant labels for which a rule predicts positively
+             * @return An `iterator` to the end of the label indices for which a rule predicts incorrectly
              */
-            typename View<StatisticType>::iterator ip_end();
-
-            /**
-             * Returns a `const_iterator` to the beginning of the relevant labels for which a rule predicts negatively.
-             *
-             * @return A `const_iterator` to the beginning of the relevant labels for which a rule predicts negatively
-             */
-            typename View<StatisticType>::const_iterator rn_cbegin() const;
-
-            /**
-             * Returns a `const_iterator` to the end of the relevant labels for which a rule predicts negatively.
-             *
-             * @return A `const_iterator` to the end of the relevant labels for which a rule predicts negatively
-             */
-            typename View<StatisticType>::const_iterator rn_cend() const;
-
-            /**
-             * Returns an `iterator` to the beginning of the relevant labels for which a rule predicts negatively.
-             *
-             * @return An `iterator` to the beginning of the relevant labels for which a rule predicts negatively
-             */
-            typename View<StatisticType>::iterator rn_begin();
-
-            /**
-             * Returns an `iterator` to the end of the relevant labels for which a rule predicts negatively.
-             *
-             * @return An `iterator` to the end of the relevant labels for which a rule predicts negatively
-             */
-            typename View<StatisticType>::iterator rn_end();
-
-            /**
-             * Returns a `const_iterator` to the beginning of the relevant labels for which a rule predicts positively.
-             *
-             * @return A `const_iterator` to the beginning of the relevant labels for which a rule predicts positively
-             */
-            typename View<StatisticType>::const_iterator rp_cbegin() const;
-
-            /**
-             * Returns a `const_iterator` to the end of the relevant labels for which a rule predicts positively.
-             *
-             * @return A `const_iterator` to the end of the relevant labels for which a rule predicts positively
-             */
-            typename View<StatisticType>::const_iterator rp_cend() const;
-
-            /**
-             * Returns an `iterator` to the beginning of the relevant labels for which a rule predicts positively.
-             *
-             * @return An `iterator` to the beginning of the relevant labels for which a rule predicts positively
-             */
-            typename View<StatisticType>::iterator rp_begin();
-
-            /**
-             * Returns an `iterator` to the end of the relevant labels for which a rule predicts positively.
-             *
-             * @return An `iterator` to the end of the relevant labels for which a rule predicts positively
-             */
-            typename View<StatisticType>::iterator rp_end();
+            typename View<StatisticType>::iterator incorrect_indices_end();
 
             /**
              * Returns the number of elements in the view.
@@ -195,118 +136,60 @@ namespace seco {
             DenseDecomposableStatisticVector(const DenseDecomposableStatisticVector<StatisticType, VectorMath>& other);
 
             /**
-             * Returns a `const_iterator` to the beginning of the irrelevant labels for which a rule predicts
-             * negatively.
+             * Returns a `const_iterator` to the beginning of the label indices for which a rule predicts correctly.
              *
-             * @return A `const_iterator` to the beginning of the irrelevant labels for which a rule predicts negatively
+             * @return A `const_iterator` to the beginning of the label indices for which a rule predicts correctly
              */
-            typename View<StatisticType>::const_iterator in_cbegin() const;
+            typename View<StatisticType>::const_iterator correct_indices_cbegin() const;
 
             /**
-             * Returns a `const_iterator` to the end of the irrelevant labels for which a rule predicts negatively.
+             * Returns a `const_iterator` to the end of the label indices for which a rule predicts correctly.
              *
-             * @return A `const_iterator` to the end of the irrelevant labels for which a rule predicts negatively
+             * @return A `const_iterator` to the end of the label indices for which a rule predicts correctly
              */
-            typename View<StatisticType>::const_iterator in_cend() const;
+            typename View<StatisticType>::const_iterator correct_indices_cend() const;
 
             /**
-             * Returns an `iterator` to the beginning of the irrelevant labels for which a rule predicts negatively.
+             * Returns an `iterator` to the beginning of the label indices for which a rule predicts correctly.
              *
-             * @return An `iterator` to the beginning of the irrelevant labels for which a rule predicts negatively
+             * @return An `iterator` to the beginning of the label indices for which a rule predicts correctly
              */
-            typename View<StatisticType>::iterator in_begin();
+            typename View<StatisticType>::iterator correct_indices_begin();
 
             /**
-             * Returns an `iterator` to the end of the irrelevant labels for which a rule predicts negatively.
+             * Returns an `iterator` to the end of the label indices for which a rule predicts correctly.
              *
-             * @return An `iterator` to the end of the irrelevant labels for which a rule predicts negatively
+             * @return An `iterator` to the end of the label indices for which a rule predicts correctly
              */
-            typename View<StatisticType>::iterator in_end();
+            typename View<StatisticType>::iterator correct_indices_end();
 
             /**
-             * Returns a `const_iterator` to the beginning of the irrelevant labels for which a rule predicts
-             * positively.
+             * Returns a `const_iterator` to the beginning of the label indices for which a rule predicts incorrectly.
              *
-             * @return A `const_iterator` to the beginning of the irrelevant labels for which a rule predicts positively
+             * @return A `const_iterator` to the beginning of the label indices for which a rule predicts incorrectly
              */
-            typename View<StatisticType>::const_iterator ip_cbegin() const;
+            typename View<StatisticType>::const_iterator incorrect_indices_cbegin() const;
 
             /**
-             * Returns a `const_iterator` to the end of the irrelevant labels for which a rule predicts positively.
+             * Returns a `const_iterator` to the end of the label indices for which a rule predicts incorrectly.
              *
-             * @return A `const_iterator` to the end of the irrelevant labels for which a rule predicts positively
+             * @return A `const_iterator` to the end of the label indices for which a rule predicts incorrectly
              */
-            typename View<StatisticType>::const_iterator ip_cend() const;
+            typename View<StatisticType>::const_iterator incorrect_indices_cend() const;
 
             /**
-             * Returns an `iterator` to the beginning of the irrelevant labels for which a rule predicts positively.
+             * Returns an `iterator` to the beginning of the label indices for which a rule predicts incorrectly.
              *
-             * @return An `iterator` to the beginning of the irrelevant labels for which a rule predicts positively
+             * @return An `iterator` to the beginning of the label indices for which a rule predicts incorrectly
              */
-            typename View<StatisticType>::iterator ip_begin();
+            typename View<StatisticType>::iterator incorrect_indices_begin();
 
             /**
-             * Returns an `iterator` to the end of the irrelevant labels for which a rule predicts positively.
+             * Returns an `iterator` to the end of the label indices for which a rule predicts incorrectly.
              *
-             * @return An `iterator` to the end of the irrelevant labels for which a rule predicts positively
+             * @return An `iterator` to the end of the label indices for which a rule predicts incorrectly
              */
-            typename View<StatisticType>::iterator ip_end();
-
-            /**
-             * Returns a `const_iterator` to the beginning of the relevant labels for which a rule predicts negatively.
-             *
-             * @return A `const_iterator` to the beginning of the relevant labels for which a rule predicts negatively
-             */
-            typename View<StatisticType>::const_iterator rn_cbegin() const;
-
-            /**
-             * Returns a `const_iterator` to the end of the relevant labels for which a rule predicts negatively.
-             *
-             * @return A `const_iterator` to the end of the relevant labels for which a rule predicts negatively
-             */
-            typename View<StatisticType>::const_iterator rn_cend() const;
-
-            /**
-             * Returns an `iterator` to the beginning of the relevant labels for which a rule predicts negatively.
-             *
-             * @return An `iterator` to the beginning of the relevant labels for which a rule predicts negatively
-             */
-            typename View<StatisticType>::iterator rn_begin();
-
-            /**
-             * Returns an `iterator` to the end of the relevant labels for which a rule predicts negatively.
-             *
-             * @return An `iterator` to the end of the relevant labels for which a rule predicts negatively
-             */
-            typename View<StatisticType>::iterator rn_end();
-
-            /**
-             * Returns a `const_iterator` to the beginning of the relevant labels for which a rule predicts positively.
-             *
-             * @return A `const_iterator` to the beginning of the relevant labels for which a rule predicts positively
-             */
-            typename View<StatisticType>::const_iterator rp_cbegin() const;
-
-            /**
-             * Returns a `const_iterator` to the end of the relevant labels for which a rule predicts positively.
-             *
-             * @return A `const_iterator` to the end of the relevant labels for which a rule predicts positively
-             */
-            typename View<StatisticType>::const_iterator rp_cend() const;
-
-            /**
-             * Returns an `iterator` to the beginning of the relevant labels for which a rule predicts positively.
-             *
-             * @return An `iterator` to the beginning of the relevant labels for which a rule predicts positively
-             */
-            typename View<StatisticType>::iterator rp_begin();
-
-            /**
-             * Returns an `iterator` to the end of the relevant labels for which a rule predicts positively.
-             *
-             * @return An `iterator` to the end of the relevant labels for which a rule predicts positively
-             */
-            typename View<StatisticType>::iterator rp_end();
+            typename View<StatisticType>::iterator incorrect_indices_end();
 
             /**
              * Returns the number of elements in the view.
