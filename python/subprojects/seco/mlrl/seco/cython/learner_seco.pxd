@@ -18,9 +18,9 @@ from mlrl.common.cython.learner_classification cimport ClassificationRuleLearner
 from mlrl.seco.cython.learner cimport IAccuracyHeuristicMixin, IAccuracyPruningHeuristicMixin, \
     ICoverageStoppingCriterionMixin, IFMeasureHeuristicMixin, IFMeasurePruningHeuristicMixin, IKlnLiftFunctionMixin, \
     ILaplaceHeuristicMixin, ILaplacePruningHeuristicMixin, IMEstimateHeuristicMixin, IMEstimatePruningHeuristicMixin, \
-    INoLiftFunctionMixin, IOutputWiseBinaryPredictorMixin, IPartialHeadMixin, \
-    IPeakLiftFunctionMixin, IPrecisionHeuristicMixin, IPrecisionPruningHeuristicMixin, IRecallHeuristicMixin, \
-    IRecallPruningHeuristicMixin, ISingleOutputHeadMixin, IWraHeuristicMixin, IWraPruningHeuristicMixin
+    INoLiftFunctionMixin, IOutputWiseBinaryPredictorMixin, IPartialHeadMixin, IPeakLiftFunctionMixin, \
+    IPrecisionHeuristicMixin, IPrecisionPruningHeuristicMixin, IRecallHeuristicMixin, IRecallPruningHeuristicMixin, \
+    ISingleOutputHeadMixin, IWraHeuristicMixin, IWraPruningHeuristicMixin
 
 
 cdef extern from "mlrl/seco/learner_seco_classifier.hpp" namespace "seco" nogil:

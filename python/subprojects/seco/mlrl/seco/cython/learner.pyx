@@ -5,19 +5,22 @@ from abc import ABC, abstractmethod
 
 from mlrl.seco.cython.heuristic import FMeasureConfig, MEstimateConfig
 from mlrl.seco.cython.lift_function import KlnLiftFunctionConfig, PeakLiftFunctionConfig
+from mlrl.seco.cython.stopping_criterion import CoverageStoppingCriterionConfig
 
 
 class CoverageStoppingCriterionMixin(ABC):
     """
-    Allows to configure a rule learner to use a stopping criterion that stops the induction of rules as soon as the
-    entire label space is covered.
+    Allows to configure a rule learner to use a stopping criterion that stops the induction of rules as soon as a
+    certain fraction of the available training examples and labels is covered.
     """
 
     @abstractmethod
-    def use_coverage_stopping_criterion(self):
+    def use_coverage_stopping_criterion(self) -> CoverageStoppingCriterionConfig:
         """
-        Configures the rule learner to use a stopping criterion that stops the induction of rules as soon as the entire
-        label space is covered.
+        Configures the rule learner to use a stopping criterion that stops the induction of rules as soon as a certain
+        fraction of the available training examples and labels is covered.
+
+        :return: A `CoverageStoppingCriterionConfig` that allows further configuration of the stopping criterion
         """
 
 

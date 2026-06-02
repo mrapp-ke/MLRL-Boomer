@@ -89,7 +89,7 @@ namespace seco {
 
             /**
              * An unique pointer that stores the configuration of the stopping criterion that stops the induction of
-             * rules as soon as the entire label space is covered.
+             * rules as soon as enough of the label space is covered.
              */
             std::unique_ptr<IStoppingCriterionConfig> coverageStoppingCriterionConfigPtr_;
 

@@ -1,5 +1,6 @@
 from mlrl.seco.cython.heuristic cimport IFMeasureConfig, IMEstimateConfig
 from mlrl.seco.cython.lift_function cimport IKlnLiftFunctionConfig, IPeakLiftFunctionConfig
+from mlrl.seco.cython.stopping_criterion cimport ICoverageStoppingCriterionConfig
 
 
 cdef extern from "mlrl/seco/learner.hpp" namespace "seco" nogil:
@@ -8,7 +9,7 @@ cdef extern from "mlrl/seco/learner.hpp" namespace "seco" nogil:
 
         # Functions:
 
-        void useCoverageStoppingCriterion()
+        ICoverageStoppingCriterionConfig& useCoverageStoppingCriterion()
 
     cdef cppclass ISingleOutputHeadMixin:
 
