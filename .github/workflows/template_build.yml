@@ -9,6 +9,9 @@ on:
       python_version:
         required: true
         type: string
+      skip:
+        required: false
+        type: boolean
       linux:
         required: false
         type: boolean
@@ -41,7 +44,7 @@ on:
         default: true
 jobs:
   linux_build:
-    if: ${{ inputs.linux == true || inputs.compile == true || inputs.run_cpp_tests == true || inputs.run_python_tests == true }}
+    if: ${{ inputs.skip != true && (inputs.linux == true || inputs.compile == true || inputs.run_cpp_tests == true || inputs.run_python_tests == true) }}
     name: Test Linux build (${{ inputs.subproject }})
     uses: ./.github/workflows/template_build_linux.yml
     with:
@@ -55,7 +58,7 @@ jobs:
       ccache: ${{ inputs.ccache }}
     secrets: inherit
   python_tests:
-    if: ${{ inputs.run_python_tests == true }}
+    if: ${{ inputs.skip != true && inputs.run_python_tests == true }}
     needs: linux_build
     name: Test Python packages (${{ inputs.subproject }})
     uses: ./.github/workflows/template_test_python.yml
@@ -64,7 +67,7 @@ jobs:
       python_version: ${{ inputs.python_version }}
     secrets: inherit
   macos_build:
-    if: ${{ inputs.macos == true || inputs.compile == true }}
+    if: ${{ inputs.skip != true && (inputs.macos == true || inputs.compile == true) }}
     name: Test MacOS build (${{ inputs.subproject }})
     uses: ./.github/workflows/template_build_macos.yml
     with:
@@ -74,7 +77,7 @@ jobs:
       gpu_support: ${{ inputs.gpu_support }}
       ccache: ${{ inputs.ccache }}
   windows_build:
-    if: ${{ inputs.windows == true || inputs.compile == true }}
+    if: ${{ inputs.skip != true && (inputs.windows == true || inputs.compile == true) }}
     name: Test windows build (${{ inputs.subproject }})
     uses: ./.github/workflows/template_build_windows.yml
     with:
