@@ -7,7 +7,6 @@
 #include "mlrl/seco/learner.hpp"
 #include "mlrl/seco/model/decision_list_builder.hpp"
 #include "mlrl/seco/rule_evaluation/rule_compare_function.hpp"
-#include "mlrl/seco/stopping/stopping_criterion_coverage.hpp"
 
 #include <memory>
 #include <utility>
@@ -23,6 +22,10 @@ namespace seco {
 
             std::unique_ptr<ISeCoRuleLearnerConfig> configPtr_;
 
+            std::unique_ptr<IStoppingCriterionFactory> createCoverageStoppingCriterionFactory() const {
+                return configPtr_->getCoverageStoppingCriterionConfig().get().createStoppingCriterionFactory();
+            }
+
         public:
 
             /**
@@ -36,8 +39,12 @@ namespace seco {
              */
             void createStoppingCriterionFactories(StoppingCriterionListFactory& factory) const override {
                 RuleLearnerConfigurator::createStoppingCriterionFactories(factory);
-                factory.addStoppingCriterionFactory(
-                  std::make_unique<CoverageStoppingCriterionConfig>()->createStoppingCriterionFactory());
+                std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactory =
+                  this->createCoverageStoppingCriterionFactory();
+
+                if (stoppingCriterionFactory) {
+                    factory.addStoppingCriterionFactory(std::move(stoppingCriterionFactory));
+                }
             }
 
             /**
@@ -81,6 +88,12 @@ namespace seco {
         protected:
 
             /**
+             * An unique pointer that stores the configuration of the stopping criterion that stops the induction of
+             * rules as soon as the entire label space is covered.
+             */
+            std::unique_ptr<IStoppingCriterionConfig> coverageStoppingCriterionConfigPtr_;
+
+            /**
              * An unique pointer that stores the configuration of the rule heads.
              */
             std::unique_ptr<IHeadConfig> headConfigPtr_;
@@ -113,6 +126,10 @@ namespace seco {
                   liftFunctionConfigPtr_(std::make_unique<NoLiftFunctionConfig>()) {}
 
             virtual ~SeCoRuleLearnerConfig() override {}
+
+            Property<IStoppingCriterionConfig> getCoverageStoppingCriterionConfig() override final {
+                return util::property(coverageStoppingCriterionConfigPtr_);
+            }
 
             Property<IHeadConfig> getHeadConfig() override final {
                 return util::property(headConfigPtr_);
