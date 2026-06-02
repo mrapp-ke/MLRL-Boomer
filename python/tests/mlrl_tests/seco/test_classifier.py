@@ -46,6 +46,10 @@ class TestSeCoClassifier(ClassificationIntegrationTests, RuleLearnerIntegrationT
     def test_scikit_learn_compatibility(self):
         check_estimator(SeCoClassifier())
 
+    def test_min_coverage(self):
+        builder = self.create_cmd_builder().min_coverage(0.2)
+        CmdRunner(builder).run('min_coverage')
+
     @pytest.mark.parametrize(
         'heuristic',
         [
