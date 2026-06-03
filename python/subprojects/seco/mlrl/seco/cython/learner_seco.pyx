@@ -30,6 +30,7 @@ from mlrl.common.cython.stopping_criterion cimport ISizeStoppingCriterionConfig,
 from mlrl.seco.cython.heuristic cimport FMeasureConfig, IFMeasureConfig, IMEstimateConfig, MEstimateConfig
 from mlrl.seco.cython.lift_function cimport IKlnLiftFunctionConfig, IPeakLiftFunctionConfig, KlnLiftFunctionConfig, \
     PeakLiftFunctionConfig
+from mlrl.seco.cython.stopping_criterion cimport CoverageStoppingCriterionConfig, ICoverageStoppingCriterionConfig
 
 from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, DefaultRuleMixin, \
     EqualFrequencyFeatureBinningMixin, EqualWidthFeatureBinningMixin, FeatureSamplingWithoutReplacementMixin, \
@@ -45,16 +46,17 @@ from mlrl.common.cython.learner_classification import ExampleWiseStratifiedBiPar
     ExampleWiseStratifiedInstanceSamplingMixin, OutputWiseStratifiedBiPartitionSamplingMixin, \
     OutputWiseStratifiedInstanceSamplingMixin
 
-from mlrl.seco.cython.learner import AccuracyHeuristicMixin, AccuracyPruningHeuristicMixin, FMeasureHeuristicMixin, \
-    FMeasurePruningHeuristicMixin, KlnLiftFunctionMixin, LaplaceHeuristicMixin, LaplacePruningHeuristicMixin, \
-    MEstimateHeuristicMixin, MEstimatePruningHeuristicMixin, NoLiftFunctionMixin, OutputWiseBinaryPredictionMixin, \
-    PartialHeadMixin, PeakLiftFunctionMixin, PrecisionHeuristicMixin, PrecisionPruningHeuristicMixin, \
-    RecallHeuristicMixin, RecallPruningHeuristicMixin, SingleOutputHeadMixin, WraHeuristicMixin, \
-    WraPruningHeuristicMixin
+from mlrl.seco.cython.learner import AccuracyHeuristicMixin, AccuracyPruningHeuristicMixin, \
+    CoverageStoppingCriterionMixin, FMeasureHeuristicMixin, FMeasurePruningHeuristicMixin, KlnLiftFunctionMixin, \
+    LaplaceHeuristicMixin, LaplacePruningHeuristicMixin, MEstimateHeuristicMixin, MEstimatePruningHeuristicMixin, \
+    NoLiftFunctionMixin, OutputWiseBinaryPredictionMixin, PartialHeadMixin, PeakLiftFunctionMixin, \
+    PrecisionHeuristicMixin, PrecisionPruningHeuristicMixin, RecallHeuristicMixin, RecallPruningHeuristicMixin, \
+    SingleOutputHeadMixin, WraHeuristicMixin, WraPruningHeuristicMixin
 
 
 cdef class SeCoClassifierConfig(RuleLearnerConfig,
                                 RNGMixin,
+                                CoverageStoppingCriterionMixin,
                                 SingleOutputHeadMixin,
                                 PartialHeadMixin,
                                 NoLiftFunctionMixin,
@@ -133,6 +135,15 @@ cdef class SeCoClassifierConfig(RuleLearnerConfig,
     @override
     def use_default_rule(self):
         self.config_ptr.get().useDefaultRule()
+
+    @override
+    def use_coverage_stopping_criterion(self) -> CoverageStoppingCriterionConfig:
+        cdef ICoverageStoppingCriterionConfig* config_ptr = \
+            &self.config_ptr.get().useCoverageStoppingCriterion()
+        cdef CoverageStoppingCriterionConfig config = \
+            CoverageStoppingCriterionConfig.__new__(CoverageStoppingCriterionConfig)
+        config.config_ptr = config_ptr
+        return config
 
     @override
     def use_single_output_heads(self):

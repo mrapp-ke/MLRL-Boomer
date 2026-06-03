@@ -224,6 +224,12 @@ The parameters listed below allow to configure the algorithm used for the induct
 
 The following parameters can be used to configure different stopping mechanisms that may be used to terminate the induction of new rules as soon as certain criteria are met.
 
+### `min_coverage`
+
+> *Default value = `0.0`.*
+
+The fraction of the available training examples and labels that must be covered before the induction of rules is stopped. The given value must be at least 0 and less than 1.
+
 ### `max_rules`
 
 > *Default value = `1000`.*

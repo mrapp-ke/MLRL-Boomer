@@ -33,6 +33,17 @@ class SeCoClassifierCmdBuilder(ClassificationCmdBuilder, RuleLearnerCmdBuilderMi
         self.add_algorithmic_argument('--parallel-rule-refinement', 'false')
         self.add_algorithmic_argument('--parallel-statistic-update', 'false')
 
+    def min_coverage(self, min_coverage: float | None = 0.0):
+        """
+        Configures the algorithm to stop the induction of rules when a certain fraction of the available training
+        examples and labels is covered.
+
+        :param min_coverage:    The fraction to be used
+        :return:                The builder itself
+        """
+        self.add_algorithmic_argument('--min-coverage', str(min_coverage))
+        return self
+
     def heuristic(self, heuristic: str | None = HEURISTIC_F_MEASURE):
         """
         Configures the algorithm to use a specific heuristic for learning rules.

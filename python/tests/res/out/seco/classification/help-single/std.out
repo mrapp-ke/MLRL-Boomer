@@ -26,9 +26,9 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL] [--log-width LOG_
                     [--sparse-feature-value SPARSE_FEATURE_VALUE] [--feature-binning FEATURE_BINNING]
                     [--feature-format FEATURE_FORMAT] [--feature-sampling FEATURE_SAMPLING] [--head-type HEAD_TYPE]
                     [--heuristic HEURISTIC] [--holdout HOLDOUT] [--instance-sampling INSTANCE_SAMPLING]
-                    [--lift-function LIFT_FUNCTION] [--max-rules MAX_RULES] [--output-format OUTPUT_FORMAT]
-                    [--output-sampling OUTPUT_SAMPLING] [--parallel-prediction PARALLEL_PREDICTION]
-                    [--parallel-rule-refinement PARALLEL_RULE_REFINEMENT]
+                    [--lift-function LIFT_FUNCTION] [--max-rules MAX_RULES] [--min-coverage MIN_COVERAGE]
+                    [--output-format OUTPUT_FORMAT] [--output-sampling OUTPUT_SAMPLING]
+                    [--parallel-prediction PARALLEL_PREDICTION] [--parallel-rule-refinement PARALLEL_RULE_REFINEMENT]
                     [--parallel-statistic-update PARALLEL_STATISTIC_UPDATE] [--post-optimization POST_OPTIMIZATION]
                     [--pruning-heuristic PRUNING_HEURISTIC] [--rule-induction RULE_INDUCTION]
                     [--rule-pruning RULE_PRUNING] [--simd SIMD] [--time-limit TIME_LIMIT] [-h]
@@ -230,6 +230,9 @@ algorithmic arguments:
   --max-rules MAX_RULES
                         The maximum number of rules to be induced. Must be at least 1 or 0, if the number of rules
                         should not be restricted.
+  --min-coverage MIN_COVERAGE
+                        The fraction of the available training examples and labels that must be covered before the
+                        induction of rules is stopped. Must be in [0, 1).
   --output-format OUTPUT_FORMAT
                         The format to be used for the representation of the output matrix. Must be one of {"auto",
                         "dense", "sparse"}.

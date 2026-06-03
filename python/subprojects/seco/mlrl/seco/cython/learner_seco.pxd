@@ -16,16 +16,17 @@ from mlrl.common.cython.learner_classification cimport ClassificationRuleLearner
     IOutputWiseStratifiedBiPartitionSamplingMixin, IOutputWiseStratifiedInstanceSamplingMixin
 
 from mlrl.seco.cython.learner cimport IAccuracyHeuristicMixin, IAccuracyPruningHeuristicMixin, \
-    IFMeasureHeuristicMixin, IFMeasurePruningHeuristicMixin, IKlnLiftFunctionMixin, ILaplaceHeuristicMixin, \
-    ILaplacePruningHeuristicMixin, IMEstimateHeuristicMixin, IMEstimatePruningHeuristicMixin, INoLiftFunctionMixin, \
-    IOutputWiseBinaryPredictorMixin, IPartialHeadMixin, IPeakLiftFunctionMixin, IPrecisionHeuristicMixin, \
-    IPrecisionPruningHeuristicMixin, IRecallHeuristicMixin, IRecallPruningHeuristicMixin, ISingleOutputHeadMixin, \
-    IWraHeuristicMixin, IWraPruningHeuristicMixin
+    ICoverageStoppingCriterionMixin, IFMeasureHeuristicMixin, IFMeasurePruningHeuristicMixin, IKlnLiftFunctionMixin, \
+    ILaplaceHeuristicMixin, ILaplacePruningHeuristicMixin, IMEstimateHeuristicMixin, IMEstimatePruningHeuristicMixin, \
+    INoLiftFunctionMixin, IOutputWiseBinaryPredictorMixin, IPartialHeadMixin, IPeakLiftFunctionMixin, \
+    IPrecisionHeuristicMixin, IPrecisionPruningHeuristicMixin, IRecallHeuristicMixin, IRecallPruningHeuristicMixin, \
+    ISingleOutputHeadMixin, IWraHeuristicMixin, IWraPruningHeuristicMixin
 
 
 cdef extern from "mlrl/seco/learner_seco_classifier.hpp" namespace "seco" nogil:
 
     cdef cppclass ISeCoClassifierConfig"seco::ISeCoClassifier::IConfig"(IRNGMixin,
+                                                                        ICoverageStoppingCriterionMixin,
                                                                         ISingleOutputHeadMixin,
                                                                         IPartialHeadMixin,
                                                                         INoLiftFunctionMixin,
