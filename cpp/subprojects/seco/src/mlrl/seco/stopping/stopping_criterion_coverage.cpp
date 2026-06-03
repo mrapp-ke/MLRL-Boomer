@@ -6,18 +6,27 @@
 namespace seco {
 
     /**
-     * An implementation of the type `IStoppingCriterion` that stops the induction of rules as soon as the sum of the
-     * weights of the uncovered labels, as provided by an object of type `ICoverageStatistics`, is smaller than or equal
-     * to a certain threshold.
+     * An implementation of the type `IStoppingCriterion` that stops the induction of rules as soon as a certain
+     * fraction of the available training examples and labels is covered.
      */
     class CoverageStoppingCriterion final : public IStoppingCriterion {
+        private:
+
+            const float32 minCoverage_;
+
         public:
+
+            /**
+             * @param minCoverage The fraction of training examples and labels that must be covered before the induction
+             *                    of rules is stopped. Must be in [0, 1)
+             */
+            CoverageStoppingCriterion(float32 minCoverage) : minCoverage_(minCoverage) {}
 
             Result test(const IStatistics& statistics, uint32 numRules) override {
                 Result result;
                 const ICoverageStatistics& coverageStatistics = dynamic_cast<const ICoverageStatistics&>(statistics);
 
-                if (!(coverageStatistics.getUncoveredFraction() > 0)) {
+                if (!(coverageStatistics.getUncoveredFraction() > minCoverage_)) {
                     result.stop = true;
                 }
 
@@ -26,23 +35,46 @@ namespace seco {
     };
 
     /**
-     * Allows to create instances of the type `IStoppingCriterion` that stop the induction of rules as soon as the
-     * entire label space is covered.
+     * Allows to create instances of the type `IStoppingCriterion` that stop the induction of rules as soon as a certain
+     * fraction of the training examples and labels is covered.
      */
     class CoverageStoppingCriterionFactory final : public IStoppingCriterionFactory {
+        private:
+
+            const float32 minCoverage_;
+
         public:
 
+            /**
+             * @param minCoverage The fraction of training examples and labels that must be covered before the induction
+             *                    of rules is stopped. Must be in [0, 1)
+             */
+            CoverageStoppingCriterionFactory(float32 minCoverage) : minCoverage_(minCoverage) {}
+
             std::unique_ptr<IStoppingCriterion> create(const SinglePartition& partition) const override {
-                return std::make_unique<CoverageStoppingCriterion>();
+                return std::make_unique<CoverageStoppingCriterion>(minCoverage_);
             }
 
             std::unique_ptr<IStoppingCriterion> create(BiPartition& partition) const override {
-                return std::make_unique<CoverageStoppingCriterion>();
+                return std::make_unique<CoverageStoppingCriterion>(minCoverage_);
             }
     };
 
+    CoverageStoppingCriterionConfig::CoverageStoppingCriterionConfig() : minCoverage_(0.0f) {}
+
+    float32 CoverageStoppingCriterionConfig::getMinCoverage() const {
+        return minCoverage_;
+    }
+
+    ICoverageStoppingCriterionConfig& CoverageStoppingCriterionConfig::setMinCoverage(float32 minCoverage) {
+        util::assertGreaterOrEqual<float32>("minCoverage", minCoverage, 0);
+        util::assertLess<float32>("minCoverage", minCoverage, 1);
+        minCoverage_ = minCoverage;
+        return *this;
+    }
+
     std::unique_ptr<IStoppingCriterionFactory> CoverageStoppingCriterionConfig::createStoppingCriterionFactory() const {
-        return std::make_unique<CoverageStoppingCriterionFactory>();
+        return std::make_unique<CoverageStoppingCriterionFactory>(minCoverage_);
     }
 
 }

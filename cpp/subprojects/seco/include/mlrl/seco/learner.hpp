@@ -17,6 +17,7 @@
 #include "mlrl/seco/prediction/predictor_binary_output_wise.hpp"
 #include "mlrl/seco/rule_evaluation/head_type_partial.hpp"
 #include "mlrl/seco/rule_evaluation/head_type_single.hpp"
+#include "mlrl/seco/stopping/stopping_criterion_coverage.hpp"
 
 #include <memory>
 #include <utility>
@@ -31,6 +32,17 @@ namespace seco {
         public:
 
             virtual ~ISeCoRuleLearnerConfig() override {}
+
+            /**
+             * Returns a `Property` that allows to access the `IStoppingCriterionConfig` that stores the configuration
+             * of the stopping criterion that stops the induction of rules as soon as enough of the label space is
+             * covered.
+             *
+             * @return A `Property` that allows to access the `IStoppingCriterionConfig` that stores the configuration
+             *         of the stopping criterion that stops the induction of rules as soon as enough of the label space
+             *         is covered
+             */
+            virtual Property<IStoppingCriterionConfig> getCoverageStoppingCriterionConfig() = 0;
 
             /**
              * Returns a `Property` that allows to access the `IHeadConfig` that stores the configuration of the rule
@@ -69,6 +81,31 @@ namespace seco {
              *         predict
              */
             virtual Property<ILiftFunctionConfig> getLiftFunctionConfig() = 0;
+    };
+
+    /**
+     * Defines an interface for all classes that allow to configure a rule learner to use a stopping criterion that
+     * stops the induction of rules as soon as a certain fraction of the available training examples and labels is
+     * covered.
+     */
+    class MLRLSECO_API ICoverageStoppingCriterionMixin : virtual public ISeCoRuleLearnerConfig {
+        public:
+
+            virtual ~ICoverageStoppingCriterionMixin() override {}
+
+            /**
+             * Configures the rule learner to use a stopping criterion that stops the induction of rules as soon as a
+             * certain fraction of the available training examples and labels is covered.
+             *
+             * @return A reference to an object of type `ICoverageStoppingCriterionConfig` that allows further
+             *         configuration of the stopping criterion
+             */
+            virtual ICoverageStoppingCriterionConfig& useCoverageStoppingCriterion() {
+                auto ptr = std::make_unique<CoverageStoppingCriterionConfig>();
+                ICoverageStoppingCriterionConfig& ref = *ptr;
+                this->getCoverageStoppingCriterionConfig().set(std::move(ptr));
+                return ref;
+            }
     };
 
     /**
@@ -463,6 +500,7 @@ namespace seco {
      */
     class ISeCoRuleLearnerMixin : virtual public IRuleLearnerMixin,
                                   virtual public ISimdMixin,
+                                  virtual public ICoverageStoppingCriterionMixin,
                                   virtual public INoLiftFunctionMixin {
         public:
 
