@@ -45,6 +45,8 @@ from mlrl.boosting.cython.learner import (
     NoL2RegularizationMixin,
     NonDecomposableSquaredErrorLossMixin,
     SingleOutputHeadMixin,
+    NoQuantizationMixin,
+    StochasticQuantizationMixin,
 )
 from mlrl.boosting.cython.learner_classification import (
     AutomaticBinaryPredictorMixin,
@@ -304,6 +306,30 @@ class StatisticFormatParameter(NominalParameter):
             config.use_sparse_statistics()
         elif value == AUTO:
             config.use_automatic_statistics()
+
+
+class QuantizationParameter(NominalParameter):
+    """
+    A parameter that allows to configure the method to be used for quantizing gradients and Hessians.
+    """
+
+    QUANTIZATION_STOCHASTIC = 'stochastic'
+
+    OPTION_NUM_BINS = 'num_bins'
+
+    def __init__(self):
+        super().__init__(name='quantization', description='The method to be used for quantizing gradients and Hessians')
+        self.add_value(name=NONE, mixin=NoQuantizationMixin)
+        self.add_value(
+            name=self.QUANTIZATION_STOCHASTIC, mixin=StochasticQuantizationMixin, options={self.OPTION_NUM_BINS}
+        )
+
+    def _configure(self, config, value: str, options: Options):
+        if value == NONE:
+            config.use_no_quantization()
+        elif value == self.QUANTIZATION_STOCHASTIC:
+            conf = config.use_stochastic_quantization()
+            conf.set_num_bins(options.get_int(self.OPTION_NUM_BINS, conf.get_num_bits()))
 
 
 class LabelBinningParameter(NominalParameter):

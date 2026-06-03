@@ -71,6 +71,11 @@ typename PartialPrediction<ScoreType>::index_const_iterator PartialPrediction<Sc
 }
 
 template<typename ScoreType>
+const PartialIndexVector& PartialPrediction<ScoreType>::getIndexVector() const {
+    return indexVector_;
+}
+
+template<typename ScoreType>
 uint32 PartialPrediction<ScoreType>::getNumElements() const {
     return VectorDecorator<ResizableVector<ScoreType>>::getNumElements();
 }
@@ -189,13 +194,8 @@ std::unique_ptr<IStatisticsSubset> PartialPrediction<ScoreType>::createStatistic
 }
 
 template<typename ScoreType>
-void PartialPrediction<ScoreType>::applyPrediction(uint32 statisticIndex) {
-    statisticsUpdatePtr_->applyPrediction(statisticIndex);
-}
-
-template<typename ScoreType>
-void PartialPrediction<ScoreType>::revertPrediction(uint32 statisticIndex) {
-    statisticsUpdatePtr_->revertPrediction(statisticIndex);
+std::unique_ptr<IStatisticsUpdate::ITransaction> PartialPrediction<ScoreType>::updateStatistics() {
+    return statisticsUpdatePtr_->updateStatistics();
 }
 
 template<typename ScoreType>
