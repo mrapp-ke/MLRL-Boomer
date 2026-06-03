@@ -17,3 +17,4 @@ Submodules
    mlrl.seco.cython.learner_seco
    mlrl.seco.cython.lift_function
    mlrl.seco.cython.package_info
+   mlrl.seco.cython.stopping_criterion
