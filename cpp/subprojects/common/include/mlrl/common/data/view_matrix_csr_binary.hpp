@@ -135,8 +135,8 @@ class MLRLCOMMON_API BinaryCsrViewAllocator : public Matrix {
          * @param numCols           The number of columns in the view
          */
         BinaryCsrViewAllocator(uint32 numDenseElements, uint32 numRows, uint32 numCols)
-            : Matrix(util::allocateMemory<uint32>(numDenseElements), util::allocateMemory<uint32>(numRows + 1), numRows,
-                     numCols) {
+            : Matrix(MemoryAllocator::allocateMemory<uint32>(numDenseElements),
+                     MemoryAllocator::allocateMemory<uint32>(numRows + 1), numRows, numCols) {
             Matrix::indptr[0] = 0;
             Matrix::indptr[numRows] = numDenseElements;
         }
@@ -157,8 +157,8 @@ class MLRLCOMMON_API BinaryCsrViewAllocator : public Matrix {
         }
 
         virtual ~BinaryCsrViewAllocator() override {
-            util::freeMemory(Matrix::indices);
-            util::freeMemory(Matrix::indptr);
+            MemoryAllocator::freeMemory(Matrix::indices);
+            MemoryAllocator::freeMemory(Matrix::indptr);
         }
 };
 

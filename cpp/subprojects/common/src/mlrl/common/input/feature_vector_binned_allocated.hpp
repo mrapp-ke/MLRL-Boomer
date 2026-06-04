@@ -19,8 +19,10 @@ class MLRLCOMMON_API AllocatedBinnedFeatureVector : public BinnedFeatureVector {
          * @param sparseBinIndex    The index of the most frequent bin
          */
         AllocatedBinnedFeatureVector(uint32 numBins, uint32 numIndices, uint32 sparseBinIndex = 0)
-            : BinnedFeatureVector(util::allocateMemory<float32>(numBins - 1), util::allocateMemory<uint32>(numIndices),
-                                  util::allocateMemory<uint32>(numBins + 1), numBins, numIndices, sparseBinIndex) {
+            : BinnedFeatureVector(MemoryAllocator::allocateMemory<float32>(numBins - 1),
+                                  MemoryAllocator::allocateMemory<uint32>(numIndices),
+                                  MemoryAllocator::allocateMemory<uint32>(numBins + 1), numBins, numIndices,
+                                  sparseBinIndex) {
             BinnedFeatureVector::indptr[0] = 0;
             BinnedFeatureVector::indptr[numBins] = numIndices;
         }
@@ -42,9 +44,9 @@ class MLRLCOMMON_API AllocatedBinnedFeatureVector : public BinnedFeatureVector {
         }
 
         virtual ~AllocatedBinnedFeatureVector() override {
-            util::freeMemory(BinnedFeatureVector::thresholds);
-            util::freeMemory(BinnedFeatureVector::indices);
-            util::freeMemory(BinnedFeatureVector::indptr);
+            MemoryAllocator::freeMemory(BinnedFeatureVector::thresholds);
+            MemoryAllocator::freeMemory(BinnedFeatureVector::indices);
+            MemoryAllocator::freeMemory(BinnedFeatureVector::indptr);
         }
 
         /**
@@ -54,9 +56,10 @@ class MLRLCOMMON_API AllocatedBinnedFeatureVector : public BinnedFeatureVector {
          * @param numIndices    The number of examples not associated with the most frequent bin
          */
         void resize(uint32 numBins, uint32 numIndices) {
-            BinnedFeatureVector::thresholds = util::reallocateMemory(BinnedFeatureVector::thresholds, numBins - 1);
-            BinnedFeatureVector::indices = util::reallocateMemory(BinnedFeatureVector::indices, numIndices);
-            BinnedFeatureVector::indptr = util::reallocateMemory(BinnedFeatureVector::indptr, numBins + 1);
+            BinnedFeatureVector::thresholds =
+              MemoryAllocator::reallocateMemory(BinnedFeatureVector::thresholds, numBins - 1);
+            BinnedFeatureVector::indices = MemoryAllocator::reallocateMemory(BinnedFeatureVector::indices, numIndices);
+            BinnedFeatureVector::indptr = MemoryAllocator::reallocateMemory(BinnedFeatureVector::indptr, numBins + 1);
             BinnedFeatureVector::numBins = numBins;
             BinnedFeatureVector::indptr[numBins] = numIndices;
 
