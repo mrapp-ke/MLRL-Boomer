@@ -47,7 +47,7 @@ namespace boosting {
 
             /**
              * Adds the gradient, Hessian and weight of a given statistic to the gradient, Hessian and weight of this
-             * statistic,
+             * statistic.
              *
              * @param rhs   A reference to the statistic, whose gradient, Hessian and weight should be added
              * @return      A reference to the modified statistic
