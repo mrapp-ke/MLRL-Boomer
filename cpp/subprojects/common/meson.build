@@ -149,6 +149,7 @@ gpu_support_enabled = opencl_dep.found()
 simd_support_enabled = xsimd_dep.found() and os != 'windows'
 
 configuration = configuration_data()
+configuration.set10('debug', get_option('buildtype').startswith('debug'))
 configuration.set('mlrlcommon_library_name', 'lib' + library_name)
 configuration.set('mlrlcommon_library_version', library_version)
 configuration.set('mlrlcommon_target_architecture', target_architecture + '-' + os)

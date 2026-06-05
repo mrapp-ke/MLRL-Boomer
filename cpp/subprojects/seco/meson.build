@@ -51,6 +51,7 @@ target_architecture = common_project.get_variable('target_architecture')
 
 # Set configuration options
 configuration = configuration_data()
+configuration.set10('debug', get_option('buildtype').startswith('debug'))
 configuration.set('mlrlseco_library_name', 'lib' + library_name)
 configuration.set('mlrlseco_library_version', library_version)
 configuration.set('mlrlseco_target_architecture', target_architecture)
