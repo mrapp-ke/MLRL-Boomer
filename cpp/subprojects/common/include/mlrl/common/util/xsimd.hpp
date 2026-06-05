@@ -9,6 +9,7 @@
 #include <vector>
 
 #if SIMD_SUPPORT_ENABLED
+    #include <stdexcept>
     #include <xsimd/xsimd.hpp>
 #endif
 
@@ -33,6 +34,12 @@ namespace util {
      */
     template<typename batch, typename T>
     static inline constexpr batch load_simd(T* array) {
+    #if DEBUG
+        if (!xsimd::is_aligned(array)) {
+            throw std::runtime_error("Array to be loaded into SIMD register is not properly aligned");
+        }
+    #endif
+
         return batch::load_unaligned(array);
     }
 #endif
