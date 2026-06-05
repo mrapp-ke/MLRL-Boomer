@@ -22,6 +22,21 @@ namespace util {
     #endif
 #endif
 
+#if SIMD_SUPPORT_ENABLED
+    /**
+     * Loads an array into a SIMD register and returns the corresponding batch.
+     *
+     * @tparam batch    The type of the batch
+     * @tparam T        The type of the array
+     * @param array     The array to be loaded
+     * @return          The batch
+     */
+    template<typename batch, typename T>
+    static inline constexpr batch load_simd(T* array) {
+        return batch::load_unaligned(array);
+    }
+#endif
+
     /**
      * Returns the names of all instruction set extensions for SIMD operations available on the machine.
      *
