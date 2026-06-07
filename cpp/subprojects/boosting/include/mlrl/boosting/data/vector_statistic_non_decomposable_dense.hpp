@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/boosting/data/vector_statistic_dense.hpp"
 #include "mlrl/boosting/data/view_statistic_non_decomposable_dense.hpp"
 #include "mlrl/boosting/iterator/iterator_diagonal.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
@@ -12,48 +13,44 @@ namespace boosting {
 
     /**
      * A one-dimensional view that provides access to aggregated gradients and Hessians that have been calculated using
-     * a non-decomposable loss function and are stored in pre-allocated arrays.
+     * a non-decomposable loss function and are stored in a single pre-allocated array.
      *
      * @tparam StatisticType The type of the gradient and Hessians
      */
     template<typename StatisticType>
-    class MLRLBOOSTING_API DenseNonDecomposableStatisticVectorView final : public AllocatedVector<StatisticType> {
-        private:
-
-            const uint32 numGradients_;
-
+    class MLRLBOOSTING_API DenseNonDecomposableStatisticVectorView : public DenseStatisticVectorView<StatisticType> {
         public:
 
             /**
              * @param numGradients  The number of gradients in the view
              * @param init          True, if all elements in the view should be value-initialized, false otherwise
              */
-            DenseNonDecomposableStatisticVectorView(uint32 numGradients, bool init = false);
+            explicit DenseNonDecomposableStatisticVectorView(uint32 numGradients, bool init = false);
 
             /**
-             * The type of the gradients and Hessians.
+             * @param array         A pointer to an array of template type `StatisticType` that stores the gradients and
+             *                      Hessians
+             * @param numGradients  The number of gradients in the view
+             * @param numHessians   The number of Hessians in the view
              */
-            using statistic_type = StatisticType;
+            DenseNonDecomposableStatisticVectorView(StatisticType* array, uint32 numGradients, uint32 numHessians)
+                : DenseStatisticVectorView<StatisticType>(array, numGradients, numHessians) {}
 
             /**
-             * An iterator that provides access to the gradients in the view and allows to modify them.
+             * @param other A reference to an object of type `DenseNonDecomposableStatisticVectorView` that should be
+             *              copied
              */
-            using gradient_iterator = View<StatisticType>::iterator;
+            DenseNonDecomposableStatisticVectorView(const DenseNonDecomposableStatisticVectorView<StatisticType>& other)
+                : DenseStatisticVectorView<StatisticType>(other) {}
 
             /**
-             * An iterator that provides read-only access to the gradients in the view.
+             * @param other A reference to an object of type `DenseNonDecomposableStatisticVectorView` that should be
+             *              moved
              */
-            using gradient_const_iterator = View<StatisticType>::const_iterator;
+            DenseNonDecomposableStatisticVectorView(DenseNonDecomposableStatisticVectorView<StatisticType>&& other)
+                : DenseStatisticVectorView<StatisticType>(std::move(other)) {}
 
-            /**
-             * An iterator that provides access to the Hessians in the view and allows to modify them.
-             */
-            using hessian_iterator = View<StatisticType>::iterator;
-
-            /**
-             * An iterator that provides read-only access to the Hessians in the view.
-             */
-            using hessian_const_iterator = View<StatisticType>::const_iterator;
+            virtual ~DenseNonDecomposableStatisticVectorView() override {}
 
             /**
              * An iterator that provides read-only access to the Hessians that correspond to the diagonal of the Hessian
@@ -62,68 +59,14 @@ namespace boosting {
             using hessian_diagonal_const_iterator = DiagonalIterator<const StatisticType>;
 
             /**
-             * Returns a `gradient_iterator` to the beginning of the gradients.
-             *
-             * @return A `gradient_iterator` to the beginning
-             */
-            gradient_iterator gradients_begin();
-
-            /**
-             * Returns a `gradient_iterator` to the end of the gradients.
-             *
-             * @return A `gradient_iterator` to the end
-             */
-            gradient_iterator gradients_end();
-
-            /**
-             * Returns a `gradient_const_iterator` to the beginning of the gradients.
-             *
-             * @return A `gradient_const_iterator` to the beginning
-             */
-            gradient_const_iterator gradients_cbegin() const;
-
-            /**
-             * Returns a `gradient_const_iterator` to the end of the gradients.
-             *
-             * @return A `gradient_const_iterator` to the end
-             */
-            gradient_const_iterator gradients_cend() const;
-
-            /**
-             * Returns a `hessian_iterator` to the beginning of the Hessians.
-             *
-             * @return A `hessian_iterator` to the beginning
-             */
-            hessian_iterator hessians_begin();
-
-            /**
-             * Returns a `hessian_iterator` to the end of the Hessians.
-             *
-             * @return A `hessian_iterator` to the end
-             */
-            hessian_iterator hessians_end();
-
-            /**
-             * Returns a `hessian_const_iterator` to the beginning of the Hessians.
-             *
-             * @return A `hessian_const_iterator` to the beginning
-             */
-            hessian_const_iterator hessians_cbegin() const;
-
-            /**
-             * Returns a `hessian_const_iterator` to the end of the Hessians.
-             *
-             * @return A `hessian_const_iterator` to the end
-             */
-            hessian_const_iterator hessians_cend() const;
-
-            /**
              * Returns a `hessian_diagonal_const_iterator` to the beginning of the Hessians that correspond to the
              * diagonal of the Hessian matrix.
              *
              * @return A `hessian_diagonal_const_iterator` to the beginning
              */
-            hessian_diagonal_const_iterator hessians_diagonal_cbegin() const;
+            hessian_diagonal_const_iterator hessians_diagonal_cbegin() const {
+                return hessian_diagonal_const_iterator(View<const StatisticType>(this->hessians_cbegin()), 0);
+            }
 
             /**
              * Returns a `hessian_diagonal_const_iterator` to the end of the Hessians that correspond to the diagonal of
@@ -131,21 +74,10 @@ namespace boosting {
              *
              * @return A `hessian_diagonal_const_iterator` to the end
              */
-            hessian_diagonal_const_iterator hessians_diagonal_cend() const;
-
-            /**
-             * Returns the number of gradients in the view.
-             *
-             * @return The number of gradients
-             */
-            uint32 getNumGradients() const;
-
-            /**
-             * Returns the number of Hessians in the view.
-             *
-             + @return The number of Hessians
-             */
-            uint32 getNumHessians() const;
+            hessian_diagonal_const_iterator hessians_diagonal_cend() const {
+                return hessian_diagonal_const_iterator(View<const StatisticType>(this->hessians_cbegin()),
+                                                       this->getNumHessians());
+            }
     };
 
     /**
@@ -159,7 +91,8 @@ namespace boosting {
      */
     template<typename StatisticType, typename VectorMath>
     class DenseNonDecomposableStatisticVector final
-        : public ClearableViewDecorator<ViewDecorator<DenseNonDecomposableStatisticVectorView<StatisticType>>> {
+        : public ClearableViewDecorator<
+            ViewDecorator<DenseStatisticVectorAllocator<DenseNonDecomposableStatisticVectorView<StatisticType>>>> {
         public:
 
             /**

@@ -6,91 +6,13 @@
 
 namespace boosting {
 
-    template<typename StatisticType>
-    DenseNonDecomposableStatisticVectorView<StatisticType>::DenseNonDecomposableStatisticVectorView(uint32 numGradients,
-                                                                                                    bool init)
-        : AllocatedVector<StatisticType>(numGradients + math::triangularNumber(numGradients), init),
-          numGradients_(numGradients) {}
-
-    template<typename StatisticType>
-    typename DenseNonDecomposableStatisticVectorView<StatisticType>::gradient_iterator
-      DenseNonDecomposableStatisticVectorView<StatisticType>::gradients_begin() {
-        return this->begin();
-    }
-
-    template<typename StatisticType>
-    typename DenseNonDecomposableStatisticVectorView<StatisticType>::gradient_iterator
-      DenseNonDecomposableStatisticVectorView<StatisticType>::gradients_end() {
-        return &(this->begin())[numGradients_];
-    }
-
-    template<typename StatisticType>
-    typename DenseNonDecomposableStatisticVectorView<StatisticType>::gradient_const_iterator
-      DenseNonDecomposableStatisticVectorView<StatisticType>::gradients_cbegin() const {
-        return this->cbegin();
-    }
-
-    template<typename StatisticType>
-    typename DenseNonDecomposableStatisticVectorView<StatisticType>::gradient_const_iterator
-      DenseNonDecomposableStatisticVectorView<StatisticType>::gradients_cend() const {
-        return &(this->cbegin())[numGradients_];
-    }
-
-    template<typename StatisticType>
-    typename DenseNonDecomposableStatisticVectorView<StatisticType>::hessian_iterator
-      DenseNonDecomposableStatisticVectorView<StatisticType>::hessians_begin() {
-        return &(this->begin())[numGradients_];
-    }
-
-    template<typename StatisticType>
-    typename DenseNonDecomposableStatisticVectorView<StatisticType>::hessian_iterator
-      DenseNonDecomposableStatisticVectorView<StatisticType>::hessians_end() {
-        return this->end();
-    }
-
-    template<typename StatisticType>
-    typename DenseNonDecomposableStatisticVectorView<StatisticType>::hessian_const_iterator
-      DenseNonDecomposableStatisticVectorView<StatisticType>::hessians_cbegin() const {
-        return &(this->cbegin())[numGradients_];
-    }
-
-    template<typename StatisticType>
-    typename DenseNonDecomposableStatisticVectorView<StatisticType>::hessian_const_iterator
-      DenseNonDecomposableStatisticVectorView<StatisticType>::hessians_cend() const {
-        return this->cend();
-    }
-
-    template<typename StatisticType>
-    typename DenseNonDecomposableStatisticVectorView<StatisticType>::hessian_diagonal_const_iterator
-      DenseNonDecomposableStatisticVectorView<StatisticType>::hessians_diagonal_cbegin() const {
-        return hessian_diagonal_const_iterator(View<const StatisticType>(this->hessians_cbegin()), 0);
-    }
-
-    template<typename StatisticType>
-    typename DenseNonDecomposableStatisticVectorView<StatisticType>::hessian_diagonal_const_iterator
-      DenseNonDecomposableStatisticVectorView<StatisticType>::hessians_diagonal_cend() const {
-        return hessian_diagonal_const_iterator(View<const StatisticType>(this->hessians_cbegin()),
-                                               this->getNumHessians());
-    }
-
-    template<typename StatisticType>
-    uint32 DenseNonDecomposableStatisticVectorView<StatisticType>::getNumGradients() const {
-        return numGradients_;
-    }
-
-    template<typename StatisticType>
-    uint32 DenseNonDecomposableStatisticVectorView<StatisticType>::getNumHessians() const {
-        return math::triangularNumber(numGradients_);
-    }
-
-    template class DenseNonDecomposableStatisticVectorView<float32>;
-    template class DenseNonDecomposableStatisticVectorView<float64>;
-
     template<typename StatisticType, typename VectorMath>
     DenseNonDecomposableStatisticVector<StatisticType, VectorMath>::DenseNonDecomposableStatisticVector(
       uint32 numGradients, bool init)
-        : ClearableViewDecorator<ViewDecorator<DenseNonDecomposableStatisticVectorView<StatisticType>>>(
-            DenseNonDecomposableStatisticVectorView<StatisticType>(numGradients, init)) {}
+        : ClearableViewDecorator<
+            ViewDecorator<DenseStatisticVectorAllocator<DenseNonDecomposableStatisticVectorView<StatisticType>>>>(
+            DenseStatisticVectorAllocator<DenseNonDecomposableStatisticVectorView<StatisticType>>(
+              numGradients, math::triangularNumber(numGradients), init)) {}
 
     template<typename StatisticType, typename VectorMath>
     DenseNonDecomposableStatisticVector<StatisticType, VectorMath>::DenseNonDecomposableStatisticVector(
