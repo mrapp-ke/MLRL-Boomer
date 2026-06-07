@@ -184,6 +184,29 @@ class MLRLCOMMON_API Allocator : public View {
         virtual ~Allocator() override {
             MemoryAllocator::freeMemory(View::array);
         }
+
+        /**
+         * The type of the view for which this allocated manages memory.
+         */
+        using allocated_view_type = View;
+
+        /**
+         * Returns a const reference to the view for which this allocator manages memory.
+         *
+         * @return A const reference to an object of template type `View` for which this allocator manages memory
+         */
+        const View& getAllocatedView() const {
+            return *this;
+        }
+
+        /**
+         * Returns a reference to the view for which this allocator manages memory.
+         *
+         * @return A reference to an object of template type `View` for which this allocator manages memory
+         */
+        View& getAllocatedView() {
+            return *this;
+        }
 };
 
 /**
