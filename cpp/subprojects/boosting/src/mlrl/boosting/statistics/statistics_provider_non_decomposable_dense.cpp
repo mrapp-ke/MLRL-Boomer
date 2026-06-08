@@ -24,7 +24,8 @@ namespace boosting {
      */
     template<typename StatisticType, typename VectorMath>
     class DenseNonDecomposableStatisticMatrix final
-        : public ClearableViewDecorator<ViewDecorator<DenseNonDecomposableStatisticView<StatisticType>>> {
+        : public ClearableViewDecorator<
+            ViewDecorator<DenseStatisticViewAllocator<DenseNonDecomposableStatisticView<StatisticType>>>> {
         public:
 
             /**
@@ -32,8 +33,10 @@ namespace boosting {
              * @param numCols The number of columns in the matrix
              */
             DenseNonDecomposableStatisticMatrix(uint32 numRows, uint32 numCols)
-                : ClearableViewDecorator<ViewDecorator<DenseNonDecomposableStatisticView<StatisticType>>>(
-                    DenseNonDecomposableStatisticView<StatisticType>(numRows, numCols)) {}
+                : ClearableViewDecorator<
+                    ViewDecorator<DenseStatisticViewAllocator<DenseNonDecomposableStatisticView<StatisticType>>>>(
+                    DenseStatisticViewAllocator<DenseNonDecomposableStatisticView<StatisticType>>(
+                      numRows, numCols, math::triangularNumber(numCols))) {}
 
             /**
              * Returns the number rows in the matrix.
