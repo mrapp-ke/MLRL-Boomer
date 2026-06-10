@@ -51,7 +51,7 @@ namespace seco {
              * @return A `const_iterator` to the beginning of the counts that correspond to examples for which a rule
              *         predicts correctly
              */
-            typename View<StatisticType>::const_iterator correct_indices_cbegin() const;
+            typename View<StatisticType>::const_iterator correct_counts_cbegin() const;
 
             /**
              * Returns a `const_iterator` to the end of the counts that correspond to examples for which a rule predicts
@@ -60,7 +60,7 @@ namespace seco {
              * @return A `const_iterator` to the end of the counts that correspond to examples for which a rule predicts
              *         correctly
              */
-            typename View<StatisticType>::const_iterator correct_indices_cend() const;
+            typename View<StatisticType>::const_iterator correct_counts_cend() const;
 
             /**
              * Returns an `iterator` to the beginning of the counts that correspond to examples for which a rule
@@ -69,7 +69,7 @@ namespace seco {
              * @return An `iterator` to the beginning of the counts that correspond to examples for which a rule
              *         predicts correctly
              */
-            typename View<StatisticType>::iterator correct_indices_begin();
+            typename View<StatisticType>::iterator correct_counts_begin();
 
             /**
              * Returns an `iterator` to the end of the counts that correspond to examples for which a rule predicts
@@ -78,7 +78,7 @@ namespace seco {
              * @return An `iterator` to the end of the counts that correspond to examples for which a rule predicts
              *         correctly
              */
-            typename View<StatisticType>::iterator correct_indices_end();
+            typename View<StatisticType>::iterator correct_counts_end();
 
             /**
              * Returns a `const_iterator` to the beginning of the counts that correspond to examples  for which a rule
@@ -87,7 +87,7 @@ namespace seco {
              * @return A `const_iterator` to the beginning of the counts that correspond to examples  for which a rule
              *         predicts incorrectly
              */
-            typename View<StatisticType>::const_iterator incorrect_indices_cbegin() const;
+            typename View<StatisticType>::const_iterator incorrect_counts_cbegin() const;
 
             /**
              * Returns a `const_iterator` to the end of the counts that correspond to examples  for which a rule
@@ -96,7 +96,7 @@ namespace seco {
              * @return A `const_iterator` to the end of the counts that correspond to examples  for which a rule
              *         predicts incorrectly
              */
-            typename View<StatisticType>::const_iterator incorrect_indices_cend() const;
+            typename View<StatisticType>::const_iterator incorrect_counts_cend() const;
 
             /**
              * Returns an `iterator` to the beginning of the counts that correspond to examples for which a rule
@@ -105,7 +105,7 @@ namespace seco {
              * @return An `iterator` to the beginning of the counts that correspond to examples for which a rule
              *         predicts incorrectly
              */
-            typename View<StatisticType>::iterator incorrect_indices_begin();
+            typename View<StatisticType>::iterator incorrect_counts_begin();
 
             /**
              * Returns an `iterator` to the end of the counts that correspond to examples for which a rule predicts
@@ -114,7 +114,7 @@ namespace seco {
              * @return An `iterator` to the end of the counts that correspond to examples for which a rule predicts
              *         incorrectly
              */
-            typename View<StatisticType>::iterator incorrect_indices_end();
+            typename View<StatisticType>::iterator incorrect_counts_end();
 
             /**
              * Returns the number of elements in the view.
@@ -159,7 +159,7 @@ namespace seco {
              * @return A `const_iterator` to the beginning of the counts that correspond to examples for which a rule
              *         predicts correctly
              */
-            typename View<StatisticType>::const_iterator correct_indices_cbegin() const;
+            typename View<StatisticType>::const_iterator correct_counts_cbegin() const;
 
             /**
              * Returns a `const_iterator` to the end of the counts that correspond to examples for which a rule predicts
@@ -168,7 +168,7 @@ namespace seco {
              * @return A `const_iterator` to the end of the counts that correspond to examples for which a rule predicts
              *         correctly
              */
-            typename View<StatisticType>::const_iterator correct_indices_cend() const;
+            typename View<StatisticType>::const_iterator correct_counts_cend() const;
 
             /**
              * Returns an `iterator` to the beginning of the counts that correspond to examples for which a rule
@@ -177,7 +177,7 @@ namespace seco {
              * @return An `iterator` to the beginning of the counts that correspond to examples for which a rule
              *         predicts correctly
              */
-            typename View<StatisticType>::iterator correct_indices_begin();
+            typename View<StatisticType>::iterator correct_counts_begin();
 
             /**
              * Returns an `iterator` to the end of the counts that correspond to examples for which a rule predicts
@@ -186,7 +186,7 @@ namespace seco {
              * @return An `iterator` to the end of the counts that correspond to examples for which a rule predicts
              *         correctly
              */
-            typename View<StatisticType>::iterator correct_indices_end();
+            typename View<StatisticType>::iterator correct_counts_end();
 
             /**
              * Returns a `const_iterator` to the beginning of the counts that correspond to examples  for which a rule
@@ -195,7 +195,7 @@ namespace seco {
              * @return A `const_iterator` to the beginning of the counts that correspond to examples  for which a rule
              *         predicts incorrectly
              */
-            typename View<StatisticType>::const_iterator incorrect_indices_cbegin() const;
+            typename View<StatisticType>::const_iterator incorrect_counts_cbegin() const;
 
             /**
              * Returns a `const_iterator` to the end of the counts that correspond to examples  for which a rule
@@ -204,7 +204,7 @@ namespace seco {
              * @return A `const_iterator` to the end of the counts that correspond to examples  for which a rule
              *         predicts incorrectly
              */
-            typename View<StatisticType>::const_iterator incorrect_indices_cend() const;
+            typename View<StatisticType>::const_iterator incorrect_counts_cend() const;
 
             /**
              * Returns an `iterator` to the beginning of the counts that correspond to examples for which a rule
@@ -213,7 +213,7 @@ namespace seco {
              * @return An `iterator` to the beginning of the counts that correspond to examples for which a rule
              *         predicts incorrectly
              */
-            typename View<StatisticType>::iterator incorrect_indices_begin();
+            typename View<StatisticType>::iterator incorrect_counts_begin();
 
             /**
              * Returns an `iterator` to the end of the counts that correspond to examples for which a rule predicts
@@ -222,7 +222,7 @@ namespace seco {
              * @return An `iterator` to the end of the counts that correspond to examples for which a rule predicts
              *         incorrectly
              */
-            typename View<StatisticType>::iterator incorrect_indices_end();
+            typename View<StatisticType>::iterator incorrect_counts_end();
 
             /**
              * Returns the number of elements in the view.

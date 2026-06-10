@@ -35,48 +35,46 @@ namespace seco {
 
     template<typename StatisticType>
     typename View<StatisticType>::const_iterator
-      DenseDecomposableStatisticVectorView<StatisticType>::correct_indices_cbegin() const {
+      DenseDecomposableStatisticVectorView<StatisticType>::correct_counts_cbegin() const {
         return this->firstView.cbegin();
     }
 
     template<typename StatisticType>
     typename View<StatisticType>::const_iterator
-      DenseDecomposableStatisticVectorView<StatisticType>::correct_indices_cend() const {
+      DenseDecomposableStatisticVectorView<StatisticType>::correct_counts_cend() const {
         return this->firstView.cend();
     }
 
     template<typename StatisticType>
-    typename View<StatisticType>::iterator
-      DenseDecomposableStatisticVectorView<StatisticType>::correct_indices_begin() {
+    typename View<StatisticType>::iterator DenseDecomposableStatisticVectorView<StatisticType>::correct_counts_begin() {
         return this->firstView.begin();
     }
 
     template<typename StatisticType>
-    typename View<StatisticType>::iterator DenseDecomposableStatisticVectorView<StatisticType>::correct_indices_end() {
+    typename View<StatisticType>::iterator DenseDecomposableStatisticVectorView<StatisticType>::correct_counts_end() {
         return this->firstView.end();
     }
 
     template<typename StatisticType>
     typename View<StatisticType>::const_iterator
-      DenseDecomposableStatisticVectorView<StatisticType>::incorrect_indices_cbegin() const {
+      DenseDecomposableStatisticVectorView<StatisticType>::incorrect_counts_cbegin() const {
         return this->secondView.cbegin();
     }
 
     template<typename StatisticType>
     typename View<StatisticType>::const_iterator
-      DenseDecomposableStatisticVectorView<StatisticType>::incorrect_indices_cend() const {
+      DenseDecomposableStatisticVectorView<StatisticType>::incorrect_counts_cend() const {
         return this->secondView.cend();
     }
 
     template<typename StatisticType>
     typename View<StatisticType>::iterator
-      DenseDecomposableStatisticVectorView<StatisticType>::incorrect_indices_begin() {
+      DenseDecomposableStatisticVectorView<StatisticType>::incorrect_counts_begin() {
         return this->secondView.begin();
     }
 
     template<typename StatisticType>
-    typename View<StatisticType>::iterator
-      DenseDecomposableStatisticVectorView<StatisticType>::incorrect_indices_end() {
+    typename View<StatisticType>::iterator DenseDecomposableStatisticVectorView<StatisticType>::incorrect_counts_end() {
         return this->secondView.end();
     }
 
@@ -105,64 +103,64 @@ namespace seco {
       const DenseDecomposableStatisticVector<StatisticType, VectorMath>& other)
         : DenseDecomposableStatisticVector(other.getNumElements()) {
         uint32 numElements = this->getNumElements();
-        VectorMath::copy(other.correct_indices_cbegin(), this->correct_indices_begin(), numElements);
-        VectorMath::copy(other.incorrect_indices_cbegin(), this->incorrect_indices_begin(), numElements);
+        VectorMath::copy(other.correct_counts_cbegin(), this->correct_counts_begin(), numElements);
+        VectorMath::copy(other.incorrect_counts_cbegin(), this->incorrect_counts_begin(), numElements);
     }
 
     template<typename StatisticType, typename VectorMath>
     void DenseDecomposableStatisticVector<StatisticType, VectorMath>::add(
       const DenseDecomposableStatisticVectorView<StatisticType>& other) {
         uint32 numElements = this->getNumElements();
-        VectorMath::add(this->correct_indices_begin(), other.correct_indices_cbegin(), numElements);
-        VectorMath::add(this->incorrect_indices_begin(), other.incorrect_indices_cbegin(), numElements);
+        VectorMath::add(this->correct_counts_begin(), other.correct_counts_cbegin(), numElements);
+        VectorMath::add(this->incorrect_counts_begin(), other.incorrect_counts_cbegin(), numElements);
     }
 
     template<typename StatisticType, typename VectorMath>
     typename View<StatisticType>::const_iterator
-      DenseDecomposableStatisticVector<StatisticType, VectorMath>::correct_indices_cbegin() const {
-        return this->view.correct_indices_cbegin();
+      DenseDecomposableStatisticVector<StatisticType, VectorMath>::correct_counts_cbegin() const {
+        return this->view.correct_counts_cbegin();
     }
 
     template<typename StatisticType, typename VectorMath>
     typename View<StatisticType>::const_iterator
-      DenseDecomposableStatisticVector<StatisticType, VectorMath>::correct_indices_cend() const {
-        return this->view.correct_indices_cend();
+      DenseDecomposableStatisticVector<StatisticType, VectorMath>::correct_counts_cend() const {
+        return this->view.correct_counts_cend();
     }
 
     template<typename StatisticType, typename VectorMath>
     typename View<StatisticType>::iterator
-      DenseDecomposableStatisticVector<StatisticType, VectorMath>::correct_indices_begin() {
-        return this->view.correct_indices_begin();
+      DenseDecomposableStatisticVector<StatisticType, VectorMath>::correct_counts_begin() {
+        return this->view.correct_counts_begin();
     }
 
     template<typename StatisticType, typename VectorMath>
     typename View<StatisticType>::iterator
-      DenseDecomposableStatisticVector<StatisticType, VectorMath>::correct_indices_end() {
-        return this->view.correct_indices_end();
+      DenseDecomposableStatisticVector<StatisticType, VectorMath>::correct_counts_end() {
+        return this->view.correct_counts_end();
     }
 
     template<typename StatisticType, typename VectorMath>
     typename View<StatisticType>::const_iterator
-      DenseDecomposableStatisticVector<StatisticType, VectorMath>::incorrect_indices_cbegin() const {
-        return this->view.incorrect_indices_cbegin();
+      DenseDecomposableStatisticVector<StatisticType, VectorMath>::incorrect_counts_cbegin() const {
+        return this->view.incorrect_counts_cbegin();
     }
 
     template<typename StatisticType, typename VectorMath>
     typename View<StatisticType>::const_iterator
-      DenseDecomposableStatisticVector<StatisticType, VectorMath>::incorrect_indices_cend() const {
-        return this->view.incorrect_indices_cend();
+      DenseDecomposableStatisticVector<StatisticType, VectorMath>::incorrect_counts_cend() const {
+        return this->view.incorrect_counts_cend();
     }
 
     template<typename StatisticType, typename VectorMath>
     typename View<StatisticType>::iterator
-      DenseDecomposableStatisticVector<StatisticType, VectorMath>::incorrect_indices_begin() {
-        return this->view.incorrect_indices_begin();
+      DenseDecomposableStatisticVector<StatisticType, VectorMath>::incorrect_counts_begin() {
+        return this->view.incorrect_counts_begin();
     }
 
     template<typename StatisticType, typename VectorMath>
     typename View<StatisticType>::iterator
-      DenseDecomposableStatisticVector<StatisticType, VectorMath>::incorrect_indices_end() {
-        return this->view.incorrect_indices_end();
+      DenseDecomposableStatisticVector<StatisticType, VectorMath>::incorrect_counts_end() {
+        return this->view.incorrect_counts_end();
     }
 
     template<typename StatisticType, typename VectorMath>
@@ -173,18 +171,18 @@ namespace seco {
     template<typename StatisticType, typename VectorMath>
     void DenseDecomposableStatisticVector<StatisticType, VectorMath>::add(const SparseDecomposableStatisticView& view,
                                                                           uint32 row, StatisticType weight) {
-        VectorMath::addConstantToSubset(this->correct_indices_begin(), weight, view.correct_indices_cbegin(row),
+        VectorMath::addConstantToSubset(this->correct_counts_begin(), weight, view.correct_indices_cbegin(row),
                                         view.correct_indices_cend(row) - view.correct_indices_cbegin(row));
-        VectorMath::addConstantToSubset(this->incorrect_indices_begin(), weight, view.incorrect_indices_cbegin(row),
+        VectorMath::addConstantToSubset(this->incorrect_counts_begin(), weight, view.incorrect_indices_cbegin(row),
                                         view.incorrect_indices_cend(row) - view.incorrect_indices_cbegin(row));
     }
 
     template<typename StatisticType, typename VectorMath>
     void DenseDecomposableStatisticVector<StatisticType, VectorMath>::remove(
       const SparseDecomposableStatisticView& view, uint32 row, StatisticType weight) {
-        VectorMath::subtractConstantFromSubset(this->correct_indices_begin(), weight, view.correct_indices_cbegin(row),
+        VectorMath::subtractConstantFromSubset(this->correct_counts_begin(), weight, view.correct_indices_cbegin(row),
                                                view.correct_indices_cend(row) - view.correct_indices_cbegin(row));
-        VectorMath::subtractConstantFromSubset(this->incorrect_indices_begin(), weight,
+        VectorMath::subtractConstantFromSubset(this->incorrect_counts_begin(), weight,
                                                view.incorrect_indices_cbegin(row),
                                                view.incorrect_indices_cend(row) - view.incorrect_indices_cbegin(row));
     }
@@ -193,9 +191,9 @@ namespace seco {
     void DenseDecomposableStatisticVector<StatisticType, VectorMath>::addToSubset(
       const SparseDecomposableStatisticView& view, uint32 row, const CompleteIndexVector& indices,
       StatisticType weight) {
-        VectorMath::addConstantToSubset(this->correct_indices_begin(), weight, view.correct_indices_cbegin(row),
+        VectorMath::addConstantToSubset(this->correct_counts_begin(), weight, view.correct_indices_cbegin(row),
                                         view.correct_indices_cend(row) - view.correct_indices_cbegin(row));
-        VectorMath::addConstantToSubset(this->incorrect_indices_begin(), weight, view.incorrect_indices_cbegin(row),
+        VectorMath::addConstantToSubset(this->incorrect_counts_begin(), weight, view.incorrect_indices_cbegin(row),
                                         view.incorrect_indices_cend(row) - view.incorrect_indices_cbegin(row));
     }
 
@@ -203,9 +201,9 @@ namespace seco {
     void DenseDecomposableStatisticVector<StatisticType, VectorMath>::addToSubset(
       const SparseDecomposableStatisticView& view, uint32 row, const PartialIndexVector& indices,
       StatisticType weight) {
-        addConstantToSubset(this->correct_indices_begin(), weight, view.correct_indices_cbegin(row),
+        addConstantToSubset(this->correct_counts_begin(), weight, view.correct_indices_cbegin(row),
                             view.correct_indices_cend(row) - view.correct_indices_cbegin(row), indices);
-        addConstantToSubset(this->incorrect_indices_begin(), weight, view.incorrect_indices_cbegin(row),
+        addConstantToSubset(this->incorrect_counts_begin(), weight, view.incorrect_indices_cbegin(row),
                             view.incorrect_indices_cend(row) - view.incorrect_indices_cbegin(row), indices);
     }
 
@@ -214,10 +212,10 @@ namespace seco {
       const DenseDecomposableStatisticVectorView<StatisticType>& first, const CompleteIndexVector& firstIndices,
       const DenseDecomposableStatisticVectorView<StatisticType>& second) {
         uint32 numElements = this->getNumElements();
-        VectorMath::difference(this->correct_indices_begin(), first.correct_indices_cbegin(),
-                               second.correct_indices_cbegin(), numElements);
-        VectorMath::difference(this->incorrect_indices_begin(), first.incorrect_indices_cbegin(),
-                               second.incorrect_indices_cbegin(), numElements);
+        VectorMath::difference(this->correct_counts_begin(), first.correct_counts_cbegin(),
+                               second.correct_counts_cbegin(), numElements);
+        VectorMath::difference(this->incorrect_counts_begin(), first.incorrect_counts_cbegin(),
+                               second.incorrect_counts_cbegin(), numElements);
     }
 
     template<typename StatisticType, typename VectorMath>
@@ -226,10 +224,10 @@ namespace seco {
       const DenseDecomposableStatisticVectorView<StatisticType>& second) {
         PartialIndexVector::const_iterator indexIterator = firstIndices.cbegin();
         uint32 numElements = this->getNumElements();
-        VectorMath::difference(this->correct_indices_begin(), first.correct_indices_cbegin(),
-                               second.correct_indices_cbegin(), indexIterator, numElements);
-        VectorMath::difference(this->incorrect_indices_begin(), first.incorrect_indices_cbegin(),
-                               second.incorrect_indices_cbegin(), indexIterator, numElements);
+        VectorMath::difference(this->correct_counts_begin(), first.correct_counts_cbegin(),
+                               second.correct_counts_cbegin(), indexIterator, numElements);
+        VectorMath::difference(this->incorrect_counts_begin(), first.incorrect_counts_cbegin(),
+                               second.incorrect_counts_cbegin(), indexIterator, numElements);
     }
 
     template class DenseDecomposableStatisticVector<uint32, SequentialVectorMath>;
