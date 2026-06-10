@@ -71,7 +71,8 @@ class MLRLCOMMON_API DenseMatrixAllocator : public Matrix {
          * @param init      True, if all elements in the view should be value-initialized, false otherwise
          */
         DenseMatrixAllocator(uint32 numRows, uint32 numCols, bool init = false)
-            : Matrix(util::allocateMemory<typename Matrix::value_type>(numRows * numCols, init), numRows, numCols) {}
+            : Matrix(MemoryAllocator::allocateMemory<typename Matrix::value_type>(numRows * numCols, init), numRows,
+                     numCols) {}
 
         /**
          * @param other A reference to an object of type `DenseMatrixAllocator` that should be copied
@@ -88,7 +89,7 @@ class MLRLCOMMON_API DenseMatrixAllocator : public Matrix {
         }
 
         virtual ~DenseMatrixAllocator() override {
-            util::freeMemory(Matrix::array);
+            MemoryAllocator::freeMemory(Matrix::array);
         }
 };
 

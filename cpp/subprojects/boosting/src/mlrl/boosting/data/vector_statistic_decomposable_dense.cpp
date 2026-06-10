@@ -5,72 +5,13 @@
 
 namespace boosting {
 
-    template<typename StatisticType>
-    DenseDecomposableStatisticVectorView<StatisticType>::DenseDecomposableStatisticVectorView(uint32 numElements,
-                                                                                              bool init)
-        : AllocatedVector<StatisticType>(numElements * 2, init) {}
-
-    template<typename StatisticType>
-    typename DenseDecomposableStatisticVectorView<StatisticType>::gradient_iterator
-      DenseDecomposableStatisticVectorView<StatisticType>::gradients_begin() {
-        return this->begin();
-    }
-
-    template<typename StatisticType>
-    typename DenseDecomposableStatisticVectorView<StatisticType>::gradient_iterator
-      DenseDecomposableStatisticVectorView<StatisticType>::gradients_end() {
-        return &(this->end())[this->getNumElements()];
-    }
-
-    template<typename StatisticType>
-    typename DenseDecomposableStatisticVectorView<StatisticType>::gradient_const_iterator
-      DenseDecomposableStatisticVectorView<StatisticType>::gradients_cbegin() const {
-        return this->cbegin();
-    }
-
-    template<typename StatisticType>
-    typename DenseDecomposableStatisticVectorView<StatisticType>::gradient_const_iterator
-      DenseDecomposableStatisticVectorView<StatisticType>::gradients_cend() const {
-        return &(this->cend())[this->getNumElements()];
-    }
-
-    template<typename StatisticType>
-    typename DenseDecomposableStatisticVectorView<StatisticType>::hessian_iterator
-      DenseDecomposableStatisticVectorView<StatisticType>::hessians_begin() {
-        return &(this->begin())[this->getNumElements()];
-    }
-
-    template<typename StatisticType>
-    typename DenseDecomposableStatisticVectorView<StatisticType>::hessian_iterator
-      DenseDecomposableStatisticVectorView<StatisticType>::hessians_end() {
-        return &(this->begin())[this->numElements];
-    }
-
-    template<typename StatisticType>
-    typename DenseDecomposableStatisticVectorView<StatisticType>::hessian_const_iterator
-      DenseDecomposableStatisticVectorView<StatisticType>::hessians_cbegin() const {
-        return &(this->cbegin())[this->getNumElements()];
-    }
-
-    template<typename StatisticType>
-    typename DenseDecomposableStatisticVectorView<StatisticType>::hessian_const_iterator
-      DenseDecomposableStatisticVectorView<StatisticType>::hessians_cend() const {
-        return &(this->cbegin())[this->numElements];
-    }
-
-    template<typename StatisticType>
-    uint32 DenseDecomposableStatisticVectorView<StatisticType>::getNumElements() const {
-        return this->numElements / 2;
-    }
-
-    template class DenseDecomposableStatisticVectorView<float32>;
-    template class DenseDecomposableStatisticVectorView<float64>;
-
     template<typename StatisticType, typename VectorMath>
     DenseDecomposableStatisticVector<StatisticType, VectorMath>::DenseDecomposableStatisticVector(uint32 numElements,
                                                                                                   bool init)
-        : ClearableViewDecorator<ViewDecorator<DenseDecomposableStatisticVectorView<StatisticType>>>(
-            DenseDecomposableStatisticVectorView<StatisticType>(numElements, init)) {}
+        : ClearableViewDecorator<
+            ViewDecorator<DenseStatisticVectorAllocator<DenseDecomposableStatisticVectorView<StatisticType>>>>(
+            DenseStatisticVectorAllocator<DenseDecomposableStatisticVectorView<StatisticType>>(numElements, numElements,
+                                                                                               init)) {}
 
     template<typename StatisticType, typename VectorMath>
     DenseDecomposableStatisticVector<StatisticType, VectorMath>::DenseDecomposableStatisticVector(
@@ -81,7 +22,7 @@ namespace boosting {
 
     template<typename StatisticType, typename VectorMath>
     uint32 DenseDecomposableStatisticVector<StatisticType, VectorMath>::getNumElements() const {
-        return this->view.getNumElements();
+        return this->view.getNumGradients();
     }
 
     template<typename StatisticType, typename VectorMath>

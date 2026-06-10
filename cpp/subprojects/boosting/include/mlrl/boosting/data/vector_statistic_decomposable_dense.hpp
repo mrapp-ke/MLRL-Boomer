@@ -3,8 +3,8 @@
  */
 #pragma once
 
+#include "mlrl/boosting/data/vector_statistic_dense.hpp"
 #include "mlrl/boosting/data/view_statistic_decomposable_dense.hpp"
-#include "mlrl/common/data/view_vector.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 
@@ -12,108 +12,12 @@ namespace boosting {
 
     /**
      * A one-dimensional view that provides access to aggregated gradients and Hessians that have been calculated using
-     * a decomposable loss function and are stored in pre-allocated arrays.
+     * a decomposable loss function and are stored in a single pre-allocated array.
      *
      * @tparam StatisticType The type of the gradient and Hessians
      */
     template<typename StatisticType>
-    class MLRLBOOSTING_API DenseDecomposableStatisticVectorView final : public AllocatedVector<StatisticType> {
-        public:
-
-            /**
-             * @param numElements The number of elements in the view
-             * @param init        True, if all elements in the view should be value-initialized, false otherwise
-             */
-            DenseDecomposableStatisticVectorView(uint32 numElements, bool init = false);
-
-            /**
-             * The type of the gradients and Hessians.
-             */
-            using statistic_type = StatisticType;
-
-            /**
-             * An iterator that provides access to the gradients in the view and allows to modify them.
-             */
-            using gradient_iterator = View<StatisticType>::iterator;
-
-            /**
-             * An iterator that provides read-only access to the gradients in the view.
-             */
-            using gradient_const_iterator = View<StatisticType>::const_iterator;
-
-            /**
-             * An iterator that provides access to the Hessians in the view and allows to modify them.
-             */
-            using hessian_iterator = View<StatisticType>::iterator;
-
-            /**
-             * An iterator that provides read-only access to the Hessians in the view.
-             */
-            using hessian_const_iterator = View<StatisticType>::const_iterator;
-
-            /**
-             * Returns a `gradient_iterator` to the beginning of the gradients.
-             *
-             * @return A `gradient_iterator` to the beginning
-             */
-            gradient_iterator gradients_begin();
-
-            /**
-             * Returns a `gradient_iterator` to the end of the gradients.
-             *
-             * @return A `gradient_iterator` to the end
-             */
-            gradient_iterator gradients_end();
-
-            /**
-             * Returns a `gradient_const_iterator` to the beginning of the gradients.
-             *
-             * @return A `gradient_const_iterator` to the beginning
-             */
-            gradient_const_iterator gradients_cbegin() const;
-
-            /**
-             * Returns a `gradient_const_iterator` to the end of the gradients.
-             *
-             * @return A `gradient_const_iterator` to the end
-             */
-            gradient_const_iterator gradients_cend() const;
-
-            /**
-             * Returns a `hessian_iterator` to the beginning of the Hessians.
-             *
-             * @return A `hessian_iterator` to the beginning
-             */
-            hessian_iterator hessians_begin();
-
-            /**
-             * Returns a `hessian_iterator` to the end of the Hessians.
-             *
-             * @return A `hessian_iterator` to the end
-             */
-            hessian_iterator hessians_end();
-
-            /**
-             * Returns a `hessian_const_iterator` to the beginning of the Hessians.
-             *
-             * @return A `hessian_const_iterator` to the beginning
-             */
-            hessian_const_iterator hessians_cbegin() const;
-
-            /**
-             * Returns a `hessian_const_iterator` to the end of the Hessians.
-             *
-             * @return A `hessian_const_iterator` to the end
-             */
-            hessian_const_iterator hessians_cend() const;
-
-            /**
-             * Returns the number of elements in the view.
-             *
-             * @return The number of elements
-             */
-            uint32 getNumElements() const;
-    };
+    using DenseDecomposableStatisticVectorView = DenseStatisticVectorView<StatisticType>;
 
     /**
      * An one-dimensional vector that stores aggregated gradients and Hessians that have been calculated using a
@@ -125,7 +29,8 @@ namespace boosting {
      */
     template<typename StatisticType, typename VectorMath>
     class DenseDecomposableStatisticVector final
-        : public ClearableViewDecorator<ViewDecorator<DenseDecomposableStatisticVectorView<StatisticType>>> {
+        : public ClearableViewDecorator<
+            ViewDecorator<DenseStatisticVectorAllocator<DenseDecomposableStatisticVectorView<StatisticType>>>> {
         public:
 
             /**

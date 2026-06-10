@@ -45,7 +45,7 @@ namespace boosting {
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {}
 
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
-                uint32 numElements = statisticVector.getNumElements();
+                uint32 numElements = statisticVector.getNumGradients();
                 auto gradientIterator = statisticVector.gradients_cbegin();
                 auto hessianIterator = statisticVector.hessians_cbegin();
                 statistic_type bestScore = calculateOutputWiseScore(gradientIterator[0], hessianIterator[0],

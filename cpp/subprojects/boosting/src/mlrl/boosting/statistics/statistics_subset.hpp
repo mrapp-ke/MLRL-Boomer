@@ -33,7 +33,8 @@ namespace boosting {
              * An unique pointer to an object of type `IRuleEvaluation` that is used for calculating the predictions of
              * rules, as well as their overall quality.
              */
-            const std::unique_ptr<IRuleEvaluation<typename StatisticVector::view_type>> ruleEvaluationPtr_;
+            const std::unique_ptr<IRuleEvaluation<typename StatisticVector::view_type::allocated_view_type>>
+              ruleEvaluationPtr_;
 
         public:
 
@@ -52,7 +53,8 @@ namespace boosting {
                                      const RuleEvaluationFactory& ruleEvaluationFactory)
                 : AbstractStatisticsSubset<State, StatisticVector, WeightVector, IndexVector>(state, weights,
                                                                                               outputIndices),
-                  ruleEvaluationPtr_(ruleEvaluationFactory.create(this->sumVector_.getView(), outputIndices)) {}
+                  ruleEvaluationPtr_(
+                    ruleEvaluationFactory.create(this->sumVector_.getView().getAllocatedView(), outputIndices)) {}
 
             virtual ~BoostingStatisticsSubset() override {}
 

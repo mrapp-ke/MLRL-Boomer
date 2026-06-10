@@ -36,7 +36,7 @@ namespace boosting {
               const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& statisticVector,
               DenseScoreVector<StatisticType, IndexVector>& scoreVector, float32 l1RegularizationWeight,
               float32 l2RegularizationWeight) {
-                uint32 numElements = statisticVector.getNumElements();
+                uint32 numElements = statisticVector.getNumGradients();
                 auto gradientIterator = statisticVector.gradients_cbegin();
                 auto hessianIterator = statisticVector.hessians_cbegin();
                 auto valueIterator = scoreVector.values_begin();
@@ -60,7 +60,7 @@ namespace boosting {
               const DenseDecomposableStatisticVectorView<StatisticType>& statisticVector,
               DenseScoreVector<StatisticType, IndexVector>& scoreVector, float32 l1RegularizationWeight,
               float32 l2RegularizationWeight) {
-                uint32 numElements = statisticVector.getNumElements();
+                uint32 numElements = statisticVector.getNumGradients();
                 auto gradientIterator = statisticVector.gradients_cbegin();
                 auto hessianIterator = statisticVector.hessians_cbegin();
                 auto valueIterator = scoreVector.values_begin();

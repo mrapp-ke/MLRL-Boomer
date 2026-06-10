@@ -38,7 +38,7 @@ namespace boosting {
               const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& statisticVector,
               PartialIndexVector& indexVector, typename View<statistic_type>::iterator criteria,
               float32 l1RegularizationWeight, float32 l2RegularizationWeight, float32 threshold, float32 exponent) {
-                uint32 numElements = statisticVector.getNumElements();
+                uint32 numElements = statisticVector.getNumGradients();
                 auto gradientIterator = statisticVector.gradients_cbegin();
                 auto hessianIterator = statisticVector.hessians_cbegin();
                 const std::pair<statistic_type, statistic_type> pair = getMinAndMaxScore(
@@ -69,7 +69,7 @@ namespace boosting {
               const DenseDecomposableStatisticVectorView<StatisticType>& statisticVector,
               PartialIndexVector& indexVector, typename View<statistic_type>::iterator criteria,
               float32 l1RegularizationWeight, float32 l2RegularizationWeight, float32 threshold, float32 exponent) {
-                uint32 numElements = statisticVector.getNumElements();
+                uint32 numElements = statisticVector.getNumGradients();
                 auto gradientIterator = statisticVector.gradients_cbegin();
                 auto hessianIterator = statisticVector.hessians_cbegin();
 
