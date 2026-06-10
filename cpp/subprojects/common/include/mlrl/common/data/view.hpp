@@ -165,7 +165,7 @@ class MLRLCOMMON_API Allocator : public View {
          * @param init          True, if all elements in the view should be value-initialized, false otherwise
          */
         explicit Allocator(uint32 numElements, bool init = false)
-            : View(util::allocateMemory<typename View::value_type>(numElements, init), {numElements}) {}
+            : View(MemoryAllocator::allocateMemory<typename View::value_type>(numElements, init), {numElements}) {}
 
         /**
          * @param other A reference to an object of type `Allocator` that should be copied
@@ -182,7 +182,30 @@ class MLRLCOMMON_API Allocator : public View {
         }
 
         virtual ~Allocator() override {
-            util::freeMemory(View::array);
+            MemoryAllocator::freeMemory(View::array);
+        }
+
+        /**
+         * The type of the view for which this allocated manages memory.
+         */
+        using allocated_view_type = View;
+
+        /**
+         * Returns a const reference to the view for which this allocator manages memory.
+         *
+         * @return A const reference to an object of template type `View` for which this allocator manages memory
+         */
+        const View& getAllocatedView() const {
+            return *this;
+        }
+
+        /**
+         * Returns a reference to the view for which this allocator manages memory.
+         *
+         * @return A reference to an object of template type `View` for which this allocator manages memory
+         */
+        View& getAllocatedView() {
+            return *this;
         }
 };
 
@@ -240,11 +263,11 @@ class MLRLCOMMON_API ResizableAllocator : public Allocator<View> {
         void resize(uint32 numElements, bool freeMemory) {
             if (numElements < maxCapacity) {
                 if (freeMemory) {
-                    View::array = util::reallocateMemory(View::array, numElements);
+                    View::array = MemoryAllocator::reallocateMemory(View::array, numElements);
                     maxCapacity = numElements;
                 }
             } else if (numElements > maxCapacity) {
-                View::array = util::reallocateMemory(View::array, numElements);
+                View::array = MemoryAllocator::reallocateMemory(View::array, numElements);
                 maxCapacity = numElements;
             }
 

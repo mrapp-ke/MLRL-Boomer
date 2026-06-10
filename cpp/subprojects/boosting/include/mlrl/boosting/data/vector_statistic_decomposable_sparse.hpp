@@ -107,14 +107,14 @@ namespace boosting {
     /**
      * A one-dimensional view that provides access to aggregated gradients and Hessians, as well as the sums of the
      * weights of the aggregated gradients and Hessians, that have been calculated using a decomposable loss function
-     * and are stored in pre-allocated arrays.
+     * and are stored in a single pre-allocated array.
      *
      * @tparam StatisticType    The type of the gradients and Hessians
      * @tparam WeightType       The type of the weights
      */
     template<typename StatisticType, typename WeightType>
-    class MLRLBOOSTING_API SparseDecomposableStatisticVectorView final
-        : public AllocatedVector<SparseStatistic<StatisticType, WeightType>> {
+    class MLRLBOOSTING_API SparseDecomposableStatisticVectorView
+        : public Vector<SparseStatistic<StatisticType, WeightType>> {
         private:
 
             /**
@@ -137,7 +137,8 @@ namespace boosting {
                      */
                     GradientConstIterator(
                       typename View<SparseStatistic<StatisticType, WeightType>>::const_iterator iterator,
-                      WeightType sumOfWeights);
+                      WeightType sumOfWeights)
+                        : iterator_(iterator), sumOfWeights_(sumOfWeights) {}
 
                     /**
                      * The type that is used to represent the difference between two iterators.
@@ -170,42 +171,58 @@ namespace boosting {
                      * @param index The index of the element to be returned
                      * @return      The element at the given index
                      */
-                    value_type operator[](uint32 index) const;
+                    value_type operator[](uint32 index) const {
+                        return iterator_[index].gradient;
+                    }
 
                     /**
                      * Returns the element, the iterator currently refers to.
                      *
                      * @return The element, the iterator currently refers to
                      */
-                    value_type operator*() const;
+                    value_type operator*() const {
+                        return (*iterator_).gradient;
+                    }
 
                     /**
                      * Returns an iterator to the next element.
                      *
                      * @return A reference to an iterator that refers to the next element
                      */
-                    GradientConstIterator& operator++();
+                    GradientConstIterator& operator++() {
+                        ++iterator_;
+                        return *this;
+                    }
 
                     /**
                      * Returns an iterator to the next element.
                      *
                      * @return A reference to an iterator that refers to the next element
                      */
-                    GradientConstIterator& operator++(int n);
+                    GradientConstIterator& operator++(int n) {
+                        iterator_++;
+                        return *this;
+                    }
 
                     /**
                      * Returns an iterator to the previous element.
                      *
                      * @return A reference to an iterator that refers to the previous element
                      */
-                    GradientConstIterator& operator--();
+                    GradientConstIterator& operator--() {
+                        --iterator_;
+                        return *this;
+                    }
 
                     /**
                      * Returns an iterator to the previous element.
                      *
                      * @return A reference to an iterator that refers to the previous element
                      */
-                    GradientConstIterator& operator--(int n);
+                    GradientConstIterator& operator--(int n) {
+                        iterator_--;
+                        return *this;
+                    }
 
                     /**
                      * Returns whether this iterator and another one refer to the same element.
@@ -213,7 +230,9 @@ namespace boosting {
                      * @param rhs   A reference to another iterator
                      * @return      True, if the iterators do not refer to the same element, false otherwise
                      */
-                    bool operator!=(const GradientConstIterator& rhs) const;
+                    bool operator!=(const GradientConstIterator& rhs) const {
+                        return iterator_ != rhs.iterator_;
+                    }
 
                     /**
                      * Returns whether this iterator and another one refer to the same element.
@@ -221,7 +240,9 @@ namespace boosting {
                      * @param rhs   A reference to another iterator
                      * @return      True, if the iterators refer to the same element, false otherwise
                      */
-                    bool operator==(const GradientConstIterator& rhs) const;
+                    bool operator==(const GradientConstIterator& rhs) const {
+                        return iterator_ == rhs.iterator_;
+                    }
 
                     /**
                      * Returns the difference between this iterator and another one.
@@ -229,7 +250,9 @@ namespace boosting {
                      * @param rhs   A reference to another iterator
                      * @return      The difference between the iterators
                      */
-                    difference_type operator-(const GradientConstIterator& rhs) const;
+                    difference_type operator-(const GradientConstIterator& rhs) const {
+                        return iterator_ - rhs.iterator_;
+                    }
             };
 
             /**
@@ -252,7 +275,8 @@ namespace boosting {
                      */
                     HessianConstIterator(
                       typename View<SparseStatistic<StatisticType, WeightType>>::const_iterator iterator,
-                      WeightType sumOfWeights);
+                      WeightType sumOfWeights)
+                        : iterator_(iterator), sumOfWeights_(sumOfWeights) {}
 
                     /**
                      * The type that is used to represent the difference between two iterators.
@@ -285,42 +309,60 @@ namespace boosting {
                      * @param index The index of the element to be returned
                      * @return      The element at the given index
                      */
-                    value_type operator[](uint32 index) const;
+                    value_type operator[](uint32 index) const {
+                        const SparseStatistic<StatisticType, WeightType>& statistic = iterator_[index];
+                        return statistic.hessian + (sumOfWeights_ - statistic.weight);
+                    }
 
                     /**
                      * Returns the element, the iterator currently refers to.
                      *
                      * @return The element, the iterator currently refers to
                      */
-                    value_type operator*() const;
+                    value_type operator*() const {
+                        const SparseStatistic<StatisticType, WeightType>& statistic = *iterator_;
+                        return statistic.hessian + (sumOfWeights_ - statistic.weight);
+                    }
 
                     /**
                      * Returns an iterator to the next element.
                      *
                      * @return A reference to an iterator that refers to the next element
                      */
-                    HessianConstIterator& operator++();
+                    HessianConstIterator& operator++() {
+                        ++iterator_;
+                        return *this;
+                    }
 
                     /**
                      * Returns an iterator to the next element.
                      *
                      * @return A reference to an iterator that refers to the next element
                      */
-                    HessianConstIterator& operator++(int n);
+                    HessianConstIterator& operator++(int n) {
+                        iterator_++;
+                        return *this;
+                    }
 
                     /**
                      * Returns an iterator to the previous element.
                      *
                      * @return A reference to an iterator that refers to the previous element
                      */
-                    HessianConstIterator& operator--();
+                    HessianConstIterator& operator--() {
+                        --iterator_;
+                        return *this;
+                    }
 
                     /**
                      * Returns an iterator to the previous element.
                      *
                      * @return A reference to an iterator that refers to the previous element
                      */
-                    HessianConstIterator& operator--(int n);
+                    HessianConstIterator& operator--(int n) {
+                        iterator_--;
+                        return *this;
+                    }
 
                     /**
                      * Returns whether this iterator and another one refer to the same element.
@@ -328,7 +370,9 @@ namespace boosting {
                      * @param rhs   A reference to another iterator
                      * @return      True, if the iterators do not refer to the same element, false otherwise
                      */
-                    bool operator!=(const HessianConstIterator& rhs) const;
+                    bool operator!=(const HessianConstIterator& rhs) const {
+                        return iterator_ != rhs.iterator_;
+                    }
 
                     /**
                      * Returns whether this iterator and another one refer to the same element.
@@ -336,7 +380,9 @@ namespace boosting {
                      * @param rhs   A reference to another iterator
                      * @return      True, if the iterators refer to the same element, false otherwise
                      */
-                    bool operator==(const HessianConstIterator& rhs) const;
+                    bool operator==(const HessianConstIterator& rhs) const {
+                        return iterator_ == rhs.iterator_;
+                    }
 
                     /**
                      * Returns the difference between this iterator and another one.
@@ -344,7 +390,9 @@ namespace boosting {
                      * @param rhs   A reference to another iterator
                      * @return      The difference between the iterators
                      */
-                    difference_type operator-(const HessianConstIterator& rhs) const;
+                    difference_type operator-(const HessianConstIterator& rhs) const {
+                        return iterator_ - rhs.iterator_;
+                    }
             };
 
         public:
@@ -355,10 +403,40 @@ namespace boosting {
             WeightType sumOfWeights;
 
             /**
-             * @param numElements The number of gradients and Hessians in the view
-             * @param init        True, if all elements in the view should be value-initialized, false otherwise
+             * @param array         A pointer to an array of template type `StatisticType` that stores the gradients and
+             *                      Hessians
+             * @param dimensions    The number of elements in each dimension of the view
              */
-            SparseDecomposableStatisticVectorView(uint32 numElements, bool init = false);
+            SparseDecomposableStatisticVectorView(SparseStatistic<StatisticType, WeightType>* array,
+                                                  std::initializer_list<uint32> dimensions)
+                : Vector<SparseStatistic<StatisticType, WeightType>>(array, dimensions), sumOfWeights(0) {}
+
+            /**
+             * @param array         A pointer to an array of template type `StatisticType` that stores the gradients and
+             *                      Hessians
+             * @param numElements   The number of elements in the view
+             */
+            SparseDecomposableStatisticVectorView(SparseStatistic<StatisticType, WeightType>* array, uint32 numElements)
+                : Vector<SparseStatistic<StatisticType, WeightType>>(array, numElements), sumOfWeights(0) {}
+
+            /**
+             * @param other A reference to an object of type `SparseDecomposableStatisticVectorView` that should be
+             *              copied
+             */
+            SparseDecomposableStatisticVectorView(
+              const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& other)
+                : Vector<SparseStatistic<StatisticType, WeightType>>(other), sumOfWeights(other.sumOfWeights) {}
+
+            /**
+             * @param other A reference to an object of type `SparseDecomposableStatisticVectorView` that should be
+             * moved
+             */
+            SparseDecomposableStatisticVectorView(
+              SparseDecomposableStatisticVectorView<StatisticType, WeightType>&& other)
+                : Vector<SparseStatistic<StatisticType, WeightType>>(std::move(other)),
+                  sumOfWeights(other.sumOfWeights) {}
+
+            virtual ~SparseDecomposableStatisticVectorView() override {}
 
             /**
              * The type of the gradients and Hessians.
@@ -380,35 +458,54 @@ namespace boosting {
              *
              * @return a `gradient_const_iterator` to the beginning
              */
-            gradient_const_iterator gradients_cbegin() const;
+            gradient_const_iterator gradients_cbegin() const {
+                return GradientConstIterator(this->cbegin(), sumOfWeights);
+            }
 
             /**
              * Returns a `gradient_const_iterator` to the end of the gradients.
              *
              * @return a `gradient_const_iterator` to the end
              */
-            gradient_const_iterator gradients_cend() const;
+            gradient_const_iterator gradients_cend() const {
+                return GradientConstIterator(this->cend(), sumOfWeights);
+            }
 
             /**
              * Returns a `hessian_const_iterator` to the beginning of the Hessians.
              *
              * @return a `hessian_const_iterator` to the beginning
              */
-            hessian_const_iterator hessians_cbegin() const;
+            hessian_const_iterator hessians_cbegin() const {
+                return HessianConstIterator(this->cbegin(), sumOfWeights);
+            }
 
             /**
              * Returns a `hessian_const_iterator` to the end of the Hessians.
              *
              * @return a `hessian_const_iterator` to the end
              */
-            hessian_const_iterator hessians_cend() const;
+            hessian_const_iterator hessians_cend() const {
+                return HessianConstIterator(this->cend(), sumOfWeights);
+            }
 
             /**
-             * Returns the number of elements in the view.
+             * Returns the number of gradients in the view.
              *
-             * @return The number of elements in the view
+             * @return The number of gradients in the view
              */
-            const uint32 getNumElements() const;
+            const uint32 getNumGradients() const {
+                return this->numElements;
+            }
+
+            /**
+             * Returns the number of Hessians in the view.
+             *
+             * @return The number of Hessians in the view
+             */
+            const uint32 getNumHessians() const {
+                return this->numElements;
+            }
     };
 
     /**
@@ -422,7 +519,7 @@ namespace boosting {
      */
     template<typename StatisticType, typename WeightType, typename VectorMath>
     class SparseDecomposableStatisticVector final
-        : public VectorDecorator<SparseDecomposableStatisticVectorView<StatisticType, WeightType>> {
+        : public VectorDecorator<Allocator<SparseDecomposableStatisticVectorView<StatisticType, WeightType>>> {
         public:
 
             /**

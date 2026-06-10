@@ -36,7 +36,7 @@ namespace boosting {
                                                typename View<statistic_type>::iterator criteria, uint32 numCriteria,
                                                float32 l1RegularizationWeight,
                                                float32 l2RegularizationWeight) override {
-                uint32 numElements = statisticVector.getNumElements();
+                uint32 numElements = statisticVector.getNumGradients();
                 auto tmpIterator = tmpVector_.begin();
                 sortOutputWiseScores(tmpIterator, statisticVector.gradients_cbegin(), statisticVector.hessians_cbegin(),
                                      numElements, numCriteria, l1RegularizationWeight, l2RegularizationWeight);

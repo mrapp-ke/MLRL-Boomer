@@ -43,7 +43,7 @@ namespace boosting {
               const IndexVector& outputIndices, DenseScoreVector<StatisticType, PartialIndexVector>& scoreVector,
               PartialIndexVector& indexVector, float32 l1RegularizationWeight, float32 l2RegularizationWeight,
               float32 threshold, float32 exponent) {
-                uint32 numElements = statisticVector.getNumElements();
+                uint32 numElements = statisticVector.getNumGradients();
                 auto gradientIterator = statisticVector.gradients_cbegin();
                 auto hessianIterator = statisticVector.hessians_cbegin();
                 const std::pair<statistic_type, statistic_type> pair = getMinAndMaxScore(
@@ -81,7 +81,7 @@ namespace boosting {
               const IndexVector& outputIndices, DenseScoreVector<StatisticType, PartialIndexVector>& scoreVector,
               PartialIndexVector& indexVector, float32 l1RegularizationWeight, float32 l2RegularizationWeight,
               float32 threshold, float32 exponent) {
-                uint32 numElements = statisticVector.getNumElements();
+                uint32 numElements = statisticVector.getNumGradients();
                 auto gradientIterator = statisticVector.gradients_cbegin();
                 auto hessianIterator = statisticVector.hessians_cbegin();
                 auto valueIterator = scoreVector.values_begin();

@@ -52,7 +52,7 @@ namespace boosting {
                   tmpVector_(outputIndices.getNumElements()) {}
 
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
-                uint32 numElements = statisticVector.getNumElements();
+                uint32 numElements = statisticVector.getNumGradients();
                 uint32 numPredictions = indexVector_.getNumElements();
                 auto gradientIterator = statisticVector.gradients_cbegin();
                 auto hessianIterator = statisticVector.hessians_cbegin();
