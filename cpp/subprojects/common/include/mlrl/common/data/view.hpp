@@ -186,7 +186,7 @@ class MLRLCOMMON_API Allocator : public View {
         }
 
         /**
-         * The type of the view for which this allocated manages memory.
+         * The type of the view for which this allocator manages memory.
          */
         using allocated_view_type = View;
 

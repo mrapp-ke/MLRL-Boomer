@@ -172,7 +172,7 @@ class MLRLCOMMON_API DenseStatisticVectorAllocator : public View {
     public:
 
         /**
-         * @param numGradients  The number of elements in the view
+         * @param numGradients  The number of gradients in the view
          * @param numHessians   The number of Hessians in the view
          * @param init          True, if all elements in the view should be value-initialized, false otherwise
          */
@@ -199,7 +199,7 @@ class MLRLCOMMON_API DenseStatisticVectorAllocator : public View {
         }
 
         /**
-         * The type of the view for which this allocated manages memory.
+         * The type of the view for which this allocator manages memory.
          */
         using allocated_view_type = View;
 
