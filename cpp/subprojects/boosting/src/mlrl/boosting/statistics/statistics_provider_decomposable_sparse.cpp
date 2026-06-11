@@ -50,9 +50,11 @@ namespace boosting {
      * @tparam OutputMatrix       The type of the matrix that provides access to the ground truth of the training
      *                            examples
      * @tparam EvaluationMeasure  The type of the evaluation that should be used to access the quality of predictions
+     * @tparam MemoryAllocator    The type of the memory allocator to be used
      * @tparam VectorMath         The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename Loss, typename OutputMatrix, typename EvaluationMeasure, typename VectorMath>
+    template<typename Loss, typename OutputMatrix, typename EvaluationMeasure, typename MemoryAllocator,
+             typename VectorMath>
     class SparseDecomposableStatistics final
         : public AbstractDecomposableStatistics<OutputMatrix,
                                                 SparseDecomposableStatisticMatrix<typename Loss::statistic_type>,
@@ -68,7 +70,7 @@ namespace boosting {
 
             template<typename WeightType>
             using StatisticVector =
-              SparseDecomposableStatisticVector<statistic_type, WeightType, DefaultMemoryAllocator, VectorMath>;
+              SparseDecomposableStatisticVector<statistic_type, WeightType, MemoryAllocator, VectorMath>;
 
             template<typename WeightVector, typename IndexVector, typename WeightType>
             using StatisticsSubset =
@@ -346,7 +348,8 @@ namespace boosting {
                                                      IndexIterator(outputMatrixPtr->numCols), *statisticMatrixRawPtr);
         }
 
-        return std::make_unique<SparseDecomposableStatistics<Loss, OutputMatrix, EvaluationMeasure, VectorMath>>(
+        return std::make_unique<
+          SparseDecomposableStatistics<Loss, OutputMatrix, EvaluationMeasure, DefaultMemoryAllocator, VectorMath>>(
           std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
           std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
     }
