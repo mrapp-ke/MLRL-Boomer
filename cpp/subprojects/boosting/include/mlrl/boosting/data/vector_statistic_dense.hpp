@@ -165,9 +165,10 @@ namespace boosting {
 /**
  * Allocates the memory, a `DenseStatisticVectorView` provides access to.
  *
- * @tparam View The type of the view
+ * @tparam View             The type of the view
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
  */
-template<typename View>
+template<typename View, typename MemoryAllocator = DefaultMemoryAllocator>
 class MLRLCOMMON_API DenseStatisticVectorAllocator : public View {
     public:
 
@@ -177,20 +178,22 @@ class MLRLCOMMON_API DenseStatisticVectorAllocator : public View {
          * @param init          True, if all elements in the view should be value-initialized, false otherwise
          */
         explicit DenseStatisticVectorAllocator(uint32 numGradients, uint32 numHessians, bool init = false)
-            : View(MemoryAllocator::allocateMemory<typename View::value_type>(numGradients + numHessians, init),
-                   numGradients, numHessians) {}
+            : View(
+                MemoryAllocator::template allocateMemory<typename View::value_type>(numGradients + numHessians, init),
+                numGradients, numHessians) {}
 
         /**
          * @param other A reference to an object of type `DenseStatisticVectorAllocator` that should be copied
          */
-        DenseStatisticVectorAllocator(const DenseStatisticVectorAllocator<View>& other) : View(other) {
+        DenseStatisticVectorAllocator(const DenseStatisticVectorAllocator<View, MemoryAllocator>& other) : View(other) {
             throw std::runtime_error("Objects of type DenseStatisticVectorAllocator cannot be copied");
         }
 
         /**
          * @param other A reference to an object of type `DenseStatisticVectorAllocator` that should be moved
          */
-        DenseStatisticVectorAllocator(DenseStatisticVectorAllocator<View>&& other) : View(std::move(other)) {
+        DenseStatisticVectorAllocator(DenseStatisticVectorAllocator<View, MemoryAllocator>&& other)
+            : View(std::move(other)) {
             other.release();
         }
 
