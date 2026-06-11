@@ -83,12 +83,6 @@ namespace seco {
         return this->firstView.numElements;
     }
 
-    template<typename StatisticType>
-    void DenseDecomposableStatisticVectorView<StatisticType>::clear() {
-        this->firstView.clear();
-        this->secondView.clear();
-    }
-
     template class DenseDecomposableStatisticVectorView<uint32>;
     template class DenseDecomposableStatisticVectorView<float32>;
 

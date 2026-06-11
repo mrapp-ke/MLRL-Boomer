@@ -123,9 +123,10 @@ class MLRLCOMMON_API BinaryCsrView : public BinarySparseMatrix {
  * Allocates the memory for a two-dimensional view that provides row-wise access to binary values stored in a matrix in
  * the compressed sparse row (CSR) format.
  *
- * @tparam Matrix The type of the view
+ * @tparam Matrix           The type of the view
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
  */
-template<typename Matrix>
+template<typename Matrix, typename MemoryAllocator = DefaultMemoryAllocator>
 class MLRLCOMMON_API BinaryCsrViewAllocator : public Matrix {
     public:
 
@@ -135,8 +136,8 @@ class MLRLCOMMON_API BinaryCsrViewAllocator : public Matrix {
          * @param numCols           The number of columns in the view
          */
         BinaryCsrViewAllocator(uint32 numDenseElements, uint32 numRows, uint32 numCols)
-            : Matrix(MemoryAllocator::allocateMemory<uint32>(numDenseElements),
-                     MemoryAllocator::allocateMemory<uint32>(numRows + 1), numRows, numCols) {
+            : Matrix(MemoryAllocator::template allocateMemory<uint32>(numDenseElements),
+                     MemoryAllocator::template allocateMemory<uint32>(numRows + 1), numRows, numCols) {
             Matrix::indptr[0] = 0;
             Matrix::indptr[numRows] = numDenseElements;
         }
@@ -144,14 +145,14 @@ class MLRLCOMMON_API BinaryCsrViewAllocator : public Matrix {
         /**
          * @param other A reference to an object of type `BinaryCsrViewAllocator` that should be copied
          */
-        BinaryCsrViewAllocator(const BinaryCsrViewAllocator<Matrix>& other) : Matrix(other) {
+        BinaryCsrViewAllocator(const BinaryCsrViewAllocator<Matrix, MemoryAllocator>& other) : Matrix(other) {
             throw std::runtime_error("Objects of type BinaryCsrViewAllocator cannot be copied");
         }
 
         /**
          * @param other A reference to an object of type `BinaryCsrViewAllocator` that should be moved
          */
-        BinaryCsrViewAllocator(BinaryCsrViewAllocator<Matrix>&& other) : Matrix(std::move(other)) {
+        BinaryCsrViewAllocator(BinaryCsrViewAllocator<Matrix, MemoryAllocator>&& other) : Matrix(std::move(other)) {
             other.releaseIndices();
             other.releaseIndptr();
         }

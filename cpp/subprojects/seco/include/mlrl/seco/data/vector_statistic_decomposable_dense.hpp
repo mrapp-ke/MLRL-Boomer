@@ -122,11 +122,6 @@ namespace seco {
              * @return The number of elements
              */
             uint32 getNumElements() const;
-
-            /**
-             * Sets all counts stored in the view to zero.
-             */
-            void clear();
     };
 
     /**

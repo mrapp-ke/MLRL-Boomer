@@ -513,13 +513,15 @@ namespace boosting {
      * decomposable loss function in a C-contiguous array. For each element in the vector, a single gradient and
      * Hessian, as well as the sums of the weights of the aggregated gradients and Hessians, is stored.
      *
-     * @tparam StatisticType  The type of the gradients and Hessians
-     * @tparam WeightType     The type of the weights
-     * @tparam VectorMath     The type that implements basic operations for calculating with numerical arrays
+     * @tparam StatisticType    The type of the gradients and Hessians
+     * @tparam WeightType       The type of the weights
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
+     * @tparam VectorMath       The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename StatisticType, typename WeightType, typename VectorMath>
+    template<typename StatisticType, typename WeightType, typename MemoryAllocator, typename VectorMath>
     class SparseDecomposableStatisticVector final
-        : public VectorDecorator<Allocator<SparseDecomposableStatisticVectorView<StatisticType, WeightType>>> {
+        : public VectorDecorator<
+            Allocator<SparseDecomposableStatisticVectorView<StatisticType, WeightType>, MemoryAllocator>> {
         public:
 
             /**
@@ -533,7 +535,7 @@ namespace boosting {
              * @param other A reference to an object of type `SparseDecomposableStatisticVector` to be copied
              */
             SparseDecomposableStatisticVector(
-              const SparseDecomposableStatisticVector<StatisticType, WeightType, VectorMath>& other);
+              const SparseDecomposableStatisticVector<StatisticType, WeightType, MemoryAllocator, VectorMath>& other);
 
             /**
              * Adds all gradients and Hessians in another vector to this vector.

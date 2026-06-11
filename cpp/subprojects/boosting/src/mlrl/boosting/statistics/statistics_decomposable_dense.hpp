@@ -74,9 +74,11 @@ namespace boosting {
      * @tparam OutputMatrix       The type of the matrix that provides access to the ground truth of the training
      *                            examples
      * @tparam EvaluationMeasure  The type of the evaluation that should be used to access the quality of predictions
+     * @tparam MemoryAllocator    The type of the memory allocator to be used
      * @tparam VectorMath         The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename Loss, typename OutputMatrix, typename EvaluationMeasure, typename VectorMath>
+    template<typename Loss, typename OutputMatrix, typename EvaluationMeasure, typename MemoryAllocator,
+             typename VectorMath>
     class DenseDecomposableStatistics final
         : public AbstractDecomposableStatistics<
             OutputMatrix, DenseDecomposableStatisticMatrix<typename Loss::statistic_type, VectorMath>,
@@ -91,7 +93,7 @@ namespace boosting {
             using StatisticsState = DecomposableBoostingStatisticsState<OutputMatrix, StatisticMatrix,
                                                                         NumericCContiguousMatrix<statistic_type>, Loss>;
 
-            using StatisticVector = DenseDecomposableStatisticVector<statistic_type, VectorMath>;
+            using StatisticVector = DenseDecomposableStatisticVector<statistic_type, MemoryAllocator, VectorMath>;
 
             template<typename WeightVector, typename IndexVector>
             using StatisticsSubset = BoostingStatisticsSubset<StatisticsState, StatisticVector, WeightVector,
