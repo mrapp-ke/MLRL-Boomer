@@ -46,10 +46,10 @@ namespace seco {
                                                 const StatisticVector& statisticsCovered) override {
                 uint32 numElements = labelIndices_.getNumElements();
                 auto indexIterator = labelIndices_.cbegin();
-                auto tp = statisticsCovered.correct_indices_cbegin();
-                auto fp = statisticsCovered.incorrect_indices_cbegin();
-                auto fn = statisticsUncovered.correct_indices_cbegin();
-                auto tn = statisticsUncovered.incorrect_indices_cbegin();
+                auto tp = statisticsCovered.correct_counts_cbegin();
+                auto fp = statisticsCovered.incorrect_counts_cbegin();
+                auto fn = statisticsUncovered.correct_counts_cbegin();
+                auto tn = statisticsUncovered.incorrect_counts_cbegin();
                 uint32 bestIndex = indexIterator[0];
                 float32 bestQuality = calculateOutputWiseQuality(tp[0], fp[0], fn[0], tn[0], *heuristicPtr_);
 

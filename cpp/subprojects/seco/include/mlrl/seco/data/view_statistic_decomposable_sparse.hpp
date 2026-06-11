@@ -10,8 +10,8 @@
 namespace seco {
 
     /**
-     * Implements row-wise read and write access to confusion matrices that are stored in a pre-allocated sparse matrix
-     * in the list of lists (LIL) format.
+     * Implements row-wise read and write access to the indices of labels for which a rule predicts correctly or
+     * incorrectly, respectively. The label indices are stored in two sparse matrices in the list of lists (LIL) format.
      */
     class MLRLSECO_API SparseDecomposableStatisticView final
         : public CompositeMatrix<AllocatedListOfLists<uint32>, AllocatedListOfLists<uint32>> {
@@ -41,14 +41,12 @@ namespace seco {
             using row = typename ListOfLists<uint32>::row;
 
             /**
-             * An iterator that provides access to the indices individual confusion matrix elements in the view
-             * correspond to and allows to modify them.
+             * An iterator that provides access to the label indices in the view and allows to modify them.
              */
             using index_iterator = typename ListOfLists<uint32>::value_iterator;
 
             /**
-             * An iterator that provides read-only access to the indices individual confusion matrix elements in the
-             * view correspond to.
+             * An iterator that provides read-only access to the label indices in the view.
              */
             using index_const_iterator = typename ListOfLists<uint32>::value_const_iterator;
 
