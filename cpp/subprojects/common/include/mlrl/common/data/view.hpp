@@ -222,10 +222,11 @@ using AllocatedView = Allocator<View<T>>;
 /**
  * Allocates the memory, a view provides access to, and allows to resize it afterwards.
  *
- * @tparam View The type of the view
+ * @tparam View             The type of the view
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
  */
-template<typename View>
-class MLRLCOMMON_API ResizableAllocator : public Allocator<View> {
+template<typename View, typename MemoryAllocator = DefaultMemoryAllocator>
+class MLRLCOMMON_API ResizableAllocator : public Allocator<View, MemoryAllocator> {
     public:
 
         /**
@@ -243,7 +244,7 @@ class MLRLCOMMON_API ResizableAllocator : public Allocator<View> {
         /**
          * @param other A reference to an object of type `ResizableAllocator` that should be copied
          */
-        ResizableAllocator(const ResizableAllocator<View>& other)
+        ResizableAllocator(const ResizableAllocator<View, MemoryAllocator>& other)
             : Allocator<View>(other), maxCapacity(other.maxCapacity) {
             throw std::runtime_error("Objects of type ResizableAllocator cannot be copied");
         }
@@ -251,7 +252,7 @@ class MLRLCOMMON_API ResizableAllocator : public Allocator<View> {
         /**
          * @param other A reference to an object of type `ResizableAllocator` that should be moved
          */
-        ResizableAllocator(ResizableAllocator<View>&& other)
+        ResizableAllocator(ResizableAllocator<View, MemoryAllocator>&& other)
             : Allocator<View>(std::move(other)), maxCapacity(other.maxCapacity) {}
 
         virtual ~ResizableAllocator() override {}
