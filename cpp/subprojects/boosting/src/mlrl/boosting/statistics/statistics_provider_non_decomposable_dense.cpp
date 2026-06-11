@@ -361,7 +361,8 @@ namespace boosting {
                     }
                 }
 
-                return std::make_unique<DenseDecomposableStatistics<Loss, OutputMatrix, EvaluationMeasure, VectorMath>>(
+                return std::make_unique<DenseDecomposableStatistics<Loss, OutputMatrix, EvaluationMeasure,
+                                                                    DefaultMemoryAllocator, VectorMath>>(
                   std::move(this->statePtr_->lossFunctionPtr), std::move(this->evaluationMeasurePtr_),
                   ruleEvaluationFactory, this->statePtr_->outputMatrix, std::move(decomposableStatisticMatrixPtr),
                   std::move(this->statePtr_->scoreMatrixPtr));
