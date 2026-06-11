@@ -67,7 +67,8 @@ namespace boosting {
                                                   NumericSparseSetMatrix<statistic_type>, Loss>;
 
             template<typename WeightType>
-            using StatisticVector = SparseDecomposableStatisticVector<statistic_type, WeightType, VectorMath>;
+            using StatisticVector =
+              SparseDecomposableStatisticVector<statistic_type, WeightType, DefaultMemoryAllocator, VectorMath>;
 
             template<typename WeightVector, typename IndexVector, typename WeightType>
             using StatisticsSubset =
