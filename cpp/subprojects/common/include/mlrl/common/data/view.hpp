@@ -154,9 +154,10 @@ class MLRLCOMMON_API View : public BaseView<T> {
 /**
  * Allocates the memory, a view provides access to.
  *
- * @tparam View The type of the view
+ * @tparam View             The type of the view
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
  */
-template<typename View>
+template<typename View, typename MemoryAllocator = DefaultMemoryAllocator>
 class MLRLCOMMON_API Allocator : public View {
     public:
 
@@ -165,19 +166,20 @@ class MLRLCOMMON_API Allocator : public View {
          * @param init          True, if all elements in the view should be value-initialized, false otherwise
          */
         explicit Allocator(uint32 numElements, bool init = false)
-            : View(MemoryAllocator::allocateMemory<typename View::value_type>(numElements, init), {numElements}) {}
+            : View(MemoryAllocator::template allocateMemory<typename View::value_type>(numElements, init),
+                   {numElements}) {}
 
         /**
          * @param other A reference to an object of type `Allocator` that should be copied
          */
-        Allocator(const Allocator<View>& other) : View(other) {
+        Allocator(const Allocator<View, MemoryAllocator>& other) : View(other) {
             throw std::runtime_error("Objects of type Allocator cannot be copied");
         }
 
         /**
          * @param other A reference to an object of type `Allocator` that should be moved
          */
-        Allocator(Allocator<View>&& other) : View(std::move(other)) {
+        Allocator(Allocator<View, MemoryAllocator>&& other) : View(std::move(other)) {
             other.release();
         }
 

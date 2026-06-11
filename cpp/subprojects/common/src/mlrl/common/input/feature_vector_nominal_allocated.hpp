@@ -19,9 +19,10 @@ class MLRLCOMMON_API AllocatedNominalFeatureVector : public NominalFeatureVector
          * @param majorityValue The majority value, i.e., the most frequent value, of the nominal feature
          */
         AllocatedNominalFeatureVector(uint32 numValues, uint32 numIndices, int32 majorityValue = 0)
-            : NominalFeatureVector(
-                MemoryAllocator::allocateMemory<int32>(numValues), MemoryAllocator::allocateMemory<uint32>(numIndices),
-                MemoryAllocator::allocateMemory<uint32>(numValues + 1), numValues, numIndices, majorityValue) {
+            : NominalFeatureVector(DefaultMemoryAllocator::allocateMemory<int32>(numValues),
+                                   DefaultMemoryAllocator::allocateMemory<uint32>(numIndices),
+                                   DefaultMemoryAllocator::allocateMemory<uint32>(numValues + 1), numValues, numIndices,
+                                   majorityValue) {
             NominalFeatureVector::indptr[0] = 0;
             NominalFeatureVector::indptr[numValues] = numIndices;
         }
@@ -43,9 +44,9 @@ class MLRLCOMMON_API AllocatedNominalFeatureVector : public NominalFeatureVector
         }
 
         virtual ~AllocatedNominalFeatureVector() override {
-            MemoryAllocator::freeMemory(NominalFeatureVector::values);
-            MemoryAllocator::freeMemory(NominalFeatureVector::indices);
-            MemoryAllocator::freeMemory(NominalFeatureVector::indptr);
+            DefaultMemoryAllocator::freeMemory(NominalFeatureVector::values);
+            DefaultMemoryAllocator::freeMemory(NominalFeatureVector::indices);
+            DefaultMemoryAllocator::freeMemory(NominalFeatureVector::indptr);
         }
 
         /**
@@ -56,11 +57,12 @@ class MLRLCOMMON_API AllocatedNominalFeatureVector : public NominalFeatureVector
          *                      be resized
          */
         void resize(uint32 numValues, uint32 numIndices) {
-            NominalFeatureVector::values = MemoryAllocator::reallocateMemory(NominalFeatureVector::values, numValues);
+            NominalFeatureVector::values =
+              DefaultMemoryAllocator::reallocateMemory(NominalFeatureVector::values, numValues);
             NominalFeatureVector::indices =
-              MemoryAllocator::reallocateMemory(NominalFeatureVector::indices, numIndices);
+              DefaultMemoryAllocator::reallocateMemory(NominalFeatureVector::indices, numIndices);
             NominalFeatureVector::indptr =
-              MemoryAllocator::reallocateMemory(NominalFeatureVector::indptr, numValues + 1);
+              DefaultMemoryAllocator::reallocateMemory(NominalFeatureVector::indptr, numValues + 1);
             NominalFeatureVector::numBins = numValues;
             NominalFeatureVector::indptr[numValues] = numIndices;
         }

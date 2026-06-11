@@ -30,7 +30,7 @@ static inline uint32* copyLabelMatrix(uint32* indices, uint32* indptr, const CCo
     }
 
     indptr[numLabels] = n;
-    return MemoryAllocator::reallocateMemory(indices, n);
+    return DefaultMemoryAllocator::reallocateMemory(indices, n);
 }
 
 template<typename IndexIterator>
@@ -88,7 +88,7 @@ static inline uint32* copyLabelMatrix(uint32* indices, uint32* indptr, const Bin
     }
 
     indptr[numLabels] = tmp;
-    return MemoryAllocator::reallocateMemory(indices, tmp);
+    return DefaultMemoryAllocator::reallocateMemory(indices, tmp);
 }
 
 /**
@@ -333,9 +333,10 @@ class StratificationMatrix final : public AllocatedBinaryCscView {
 
             if (numRemaining > 0) {
                 // Adjust the size of the arrays that are used to store row and column indices...
-                BinarySparseMatrix::indices =
-                  MemoryAllocator::reallocateMemory(BinarySparseMatrix::indices, numDenseElements + numRemaining);
-                BinarySparseMatrix::indptr = MemoryAllocator::reallocateMemory(BinarySparseMatrix::indptr, numCols + 2);
+                BinarySparseMatrix::indices = DefaultMemoryAllocator::reallocateMemory(BinarySparseMatrix::indices,
+                                                                                       numDenseElements + numRemaining);
+                BinarySparseMatrix::indptr =
+                  DefaultMemoryAllocator::reallocateMemory(BinarySparseMatrix::indptr, numCols + 2);
 
                 // Add the number of dense elements that have been processed so far to the array of column indices...
                 BinarySparseMatrix::indptr[numCols] = numDenseElements;
@@ -352,8 +353,9 @@ class StratificationMatrix final : public AllocatedBinaryCscView {
             } else {
                 // Adjust the size of the arrays that are used to store row and column indices...
                 BinarySparseMatrix::indices =
-                  MemoryAllocator::reallocateMemory(BinarySparseMatrix::indices, numDenseElements);
-                BinarySparseMatrix::indptr = MemoryAllocator::reallocateMemory(BinarySparseMatrix::indptr, numCols + 1);
+                  DefaultMemoryAllocator::reallocateMemory(BinarySparseMatrix::indices, numDenseElements);
+                BinarySparseMatrix::indptr =
+                  DefaultMemoryAllocator::reallocateMemory(BinarySparseMatrix::indptr, numCols + 1);
             }
 
             BinarySparseMatrix::indptr[numCols] = numDenseElements;
