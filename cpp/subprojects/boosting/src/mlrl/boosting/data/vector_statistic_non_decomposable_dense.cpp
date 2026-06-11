@@ -6,69 +6,70 @@
 
 namespace boosting {
 
-    template<typename StatisticType, typename VectorMath>
-    DenseNonDecomposableStatisticVector<StatisticType, VectorMath>::DenseNonDecomposableStatisticVector(
-      uint32 numGradients, bool init)
-        : ClearableViewDecorator<
-            ViewDecorator<DenseStatisticVectorAllocator<DenseNonDecomposableStatisticVectorView<StatisticType>>>>(
-            DenseStatisticVectorAllocator<DenseNonDecomposableStatisticVectorView<StatisticType>>(
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
+    DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator,
+                                        VectorMath>::DenseNonDecomposableStatisticVector(uint32 numGradients, bool init)
+        : ClearableViewDecorator<ViewDecorator<
+            DenseStatisticVectorAllocator<DenseNonDecomposableStatisticVectorView<StatisticType>, MemoryAllocator>>>(
+            DenseStatisticVectorAllocator<DenseNonDecomposableStatisticVectorView<StatisticType>, MemoryAllocator>(
               numGradients, math::triangularNumber(numGradients), init)) {}
 
-    template<typename StatisticType, typename VectorMath>
-    DenseNonDecomposableStatisticVector<StatisticType, VectorMath>::DenseNonDecomposableStatisticVector(
-      const DenseNonDecomposableStatisticVector<StatisticType, VectorMath>& other)
-        : DenseNonDecomposableStatisticVector<StatisticType, VectorMath>(other.getNumGradients()) {
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
+    DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::
+      DenseNonDecomposableStatisticVector(
+        const DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>& other)
+        : DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>(other.getNumGradients()) {
         VectorMath::copy(other.view.cbegin(), this->view.begin(), this->view.numElements);
     }
 
-    template<typename StatisticType, typename VectorMath>
-    uint32 DenseNonDecomposableStatisticVector<StatisticType, VectorMath>::getNumGradients() const {
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
+    uint32 DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::getNumGradients() const {
         return this->view.getNumGradients();
     }
 
-    template<typename StatisticType, typename VectorMath>
-    uint32 DenseNonDecomposableStatisticVector<StatisticType, VectorMath>::getNumHessians() const {
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
+    uint32 DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::getNumHessians() const {
         return this->view.getNumHessians();
     }
 
-    template<typename StatisticType, typename VectorMath>
-    void DenseNonDecomposableStatisticVector<StatisticType, VectorMath>::add(
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
+    void DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::add(
       const DenseNonDecomposableStatisticVectorView<StatisticType>& vector) {
         VectorMath::add(this->view.begin(), vector.cbegin(), this->view.numElements);
     }
 
-    template<typename StatisticType, typename VectorMath>
-    void DenseNonDecomposableStatisticVector<StatisticType, VectorMath>::add(
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
+    void DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::add(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row) {
         VectorMath::add(this->view.begin(), view.values_cbegin(row), this->view.numElements);
     }
 
-    template<typename StatisticType, typename VectorMath>
-    void DenseNonDecomposableStatisticVector<StatisticType, VectorMath>::add(
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
+    void DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::add(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row, StatisticType weight) {
         VectorMath::addWeighted(this->view.begin(), view.values_cbegin(row), this->view.numElements, weight);
     }
 
-    template<typename StatisticType, typename VectorMath>
-    void DenseNonDecomposableStatisticVector<StatisticType, VectorMath>::remove(
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
+    void DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::remove(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row) {
         VectorMath::subtract(this->view.begin(), view.values_cbegin(row), this->view.numElements);
     }
 
-    template<typename StatisticType, typename VectorMath>
-    void DenseNonDecomposableStatisticVector<StatisticType, VectorMath>::remove(
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
+    void DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::remove(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row, StatisticType weight) {
         VectorMath::subtractWeighted(this->view.begin(), view.values_cbegin(row), this->view.numElements, weight);
     }
 
-    template<typename StatisticType, typename VectorMath>
-    void DenseNonDecomposableStatisticVector<StatisticType, VectorMath>::addToSubset(
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
+    void DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::addToSubset(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row, const CompleteIndexVector& indices) {
         VectorMath::add(this->view.begin(), view.values_cbegin(row), this->view.numElements);
     }
 
-    template<typename StatisticType, typename VectorMath>
-    void DenseNonDecomposableStatisticVector<StatisticType, VectorMath>::addToSubset(
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
+    void DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::addToSubset(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row, const PartialIndexVector& indices) {
         auto indexIterator = indices.cbegin();
         VectorMath::add(this->view.gradients_begin(), view.gradients_cbegin(row), indexIterator,
@@ -82,15 +83,15 @@ namespace boosting {
         }
     }
 
-    template<typename StatisticType, typename VectorMath>
-    void DenseNonDecomposableStatisticVector<StatisticType, VectorMath>::addToSubset(
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
+    void DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::addToSubset(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row, const CompleteIndexVector& indices,
       StatisticType weight) {
         VectorMath::addWeighted(this->view.begin(), view.values_cbegin(row), this->view.numElements, weight);
     }
 
-    template<typename StatisticType, typename VectorMath>
-    void DenseNonDecomposableStatisticVector<StatisticType, VectorMath>::addToSubset(
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
+    void DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::addToSubset(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row, const PartialIndexVector& indices,
       StatisticType weight) {
         auto indexIterator = indices.cbegin();
@@ -105,15 +106,15 @@ namespace boosting {
         }
     }
 
-    template<typename StatisticType, typename VectorMath>
-    void DenseNonDecomposableStatisticVector<StatisticType, VectorMath>::difference(
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
+    void DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::difference(
       const DenseNonDecomposableStatisticVectorView<StatisticType>& first, const CompleteIndexVector& firstIndices,
       const DenseNonDecomposableStatisticVectorView<StatisticType>& second) {
         VectorMath::difference(this->view.begin(), first.cbegin(), second.cbegin(), this->view.numElements);
     }
 
-    template<typename StatisticType, typename VectorMath>
-    void DenseNonDecomposableStatisticVector<StatisticType, VectorMath>::difference(
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
+    void DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::difference(
       const DenseNonDecomposableStatisticVectorView<StatisticType>& first, const PartialIndexVector& firstIndices,
       const DenseNonDecomposableStatisticVectorView<StatisticType>& second) {
         auto indexIterator = firstIndices.cbegin();
@@ -131,11 +132,11 @@ namespace boosting {
         }
     }
 
-    template class DenseNonDecomposableStatisticVector<float32, SequentialVectorMath>;
-    template class DenseNonDecomposableStatisticVector<float64, SequentialVectorMath>;
+    template class DenseNonDecomposableStatisticVector<float32, DefaultMemoryAllocator, SequentialVectorMath>;
+    template class DenseNonDecomposableStatisticVector<float64, DefaultMemoryAllocator, SequentialVectorMath>;
 
 #if SIMD_SUPPORT_ENABLED
-    template class DenseNonDecomposableStatisticVector<float32, SimdVectorMath>;
-    template class DenseNonDecomposableStatisticVector<float64, SimdVectorMath>;
+    template class DenseNonDecomposableStatisticVector<float32, DefaultMemoryAllocator, SimdVectorMath>;
+    template class DenseNonDecomposableStatisticVector<float64, DefaultMemoryAllocator, SimdVectorMath>;
 #endif
 }

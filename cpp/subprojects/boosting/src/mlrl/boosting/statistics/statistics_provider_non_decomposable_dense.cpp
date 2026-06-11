@@ -80,7 +80,8 @@ namespace boosting {
               NonDecomposableBoostingStatisticsState<OutputMatrix, StatisticMatrix,
                                                      NumericCContiguousMatrix<statistic_type>, Loss>;
 
-            using StatisticVector = DenseNonDecomposableStatisticVector<statistic_type, VectorMath>;
+            using StatisticVector =
+              DenseNonDecomposableStatisticVector<statistic_type, DefaultMemoryAllocator, VectorMath>;
 
             template<typename WeightVector, typename IndexVector>
             using StatisticsSubset = BoostingStatisticsSubset<StatisticsState, StatisticVector, WeightVector,
