@@ -87,12 +87,13 @@ namespace boosting {
      * as a symmetric Hessian matrix with `n` rows and columns.
      *
      * @tparam StatisticType    The type of the gradients and Hessians
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
      * @tparam VectorMath       The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename StatisticType, typename VectorMath>
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     class DenseNonDecomposableStatisticVector final
-        : public ClearableViewDecorator<
-            ViewDecorator<DenseStatisticVectorAllocator<DenseNonDecomposableStatisticVectorView<StatisticType>>>> {
+        : public ClearableViewDecorator<ViewDecorator<
+            DenseStatisticVectorAllocator<DenseNonDecomposableStatisticVectorView<StatisticType>, MemoryAllocator>>> {
         public:
 
             /**
@@ -106,7 +107,7 @@ namespace boosting {
              * @param other A reference to an object of type `DenseNonDecomposableStatisticVector` to be copied
              */
             DenseNonDecomposableStatisticVector(
-              const DenseNonDecomposableStatisticVector<StatisticType, VectorMath>& other);
+              const DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>& other);
 
             /**
              * Returns the number of gradients in the vector.

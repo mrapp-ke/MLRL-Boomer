@@ -62,9 +62,11 @@ namespace boosting {
      *                            examples
      * @tparam EvaluationMeasure  The type of the evaluation measure that should be used to access the quality of
      *                            predictions
-     * @tparam VectorMath    The type that implements basic operations for calculating with numerical arrays
+     * @tparam MemoryAllocator    The type of the memory allocator to be used
+     * @tparam VectorMath         The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename Loss, typename OutputMatrix, typename EvaluationMeasure, typename VectorMath>
+    template<typename Loss, typename OutputMatrix, typename EvaluationMeasure, typename MemoryAllocator,
+             typename VectorMath>
     class DenseNonDecomposableStatistics final
         : public AbstractNonDecomposableStatistics<
             OutputMatrix, DenseNonDecomposableStatisticMatrix<typename Loss::statistic_type, VectorMath>,
@@ -80,7 +82,7 @@ namespace boosting {
               NonDecomposableBoostingStatisticsState<OutputMatrix, StatisticMatrix,
                                                      NumericCContiguousMatrix<statistic_type>, Loss>;
 
-            using StatisticVector = DenseNonDecomposableStatisticVector<statistic_type, VectorMath>;
+            using StatisticVector = DenseNonDecomposableStatisticVector<statistic_type, MemoryAllocator, VectorMath>;
 
             template<typename WeightVector, typename IndexVector>
             using StatisticsSubset = BoostingStatisticsSubset<StatisticsState, StatisticVector, WeightVector,
@@ -361,7 +363,8 @@ namespace boosting {
                     }
                 }
 
-                return std::make_unique<DenseDecomposableStatistics<Loss, OutputMatrix, EvaluationMeasure, VectorMath>>(
+                return std::make_unique<DenseDecomposableStatistics<Loss, OutputMatrix, EvaluationMeasure,
+                                                                    DefaultMemoryAllocator, VectorMath>>(
                   std::move(this->statePtr_->lossFunctionPtr), std::move(this->evaluationMeasurePtr_),
                   ruleEvaluationFactory, this->statePtr_->outputMatrix, std::move(decomposableStatisticMatrixPtr),
                   std::move(this->statePtr_->scoreMatrixPtr));
@@ -397,7 +400,8 @@ namespace boosting {
                                                         *statisticMatrixRawPtr);
         }
 
-        return std::make_unique<DenseNonDecomposableStatistics<Loss, OutputMatrix, EvaluationMeasure, VectorMath>>(
+        return std::make_unique<
+          DenseNonDecomposableStatistics<Loss, OutputMatrix, EvaluationMeasure, DefaultMemoryAllocator, VectorMath>>(
           std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
           std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
     }

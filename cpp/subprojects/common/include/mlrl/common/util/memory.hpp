@@ -10,7 +10,7 @@
 /**
  * Provides functions for allocating memory.
  */
-struct MemoryAllocator final {
+struct DefaultMemoryAllocator final {
     public:
 
         /**
