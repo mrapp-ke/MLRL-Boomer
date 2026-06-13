@@ -16,7 +16,7 @@ namespace simd {
         uint32 i = 0;
 
         for (; i < batchEnd; i += batchSize) {
-            batch::load_unaligned(from + i).store_unaligned(to + i);
+            util::load_simd<batch, const T>(from + i).store_unaligned(to + i);
         }
 
         for (; i < numElements; i++) {

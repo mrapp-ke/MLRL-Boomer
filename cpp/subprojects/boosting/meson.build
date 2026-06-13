@@ -107,6 +107,7 @@ gpu_support_enabled = common_project.get_variable('gpu_support_enabled')
 simd_support_enabled = common_project.get_variable('simd_support_enabled')
 
 configuration = configuration_data()
+configuration.set10('debug', get_option('buildtype').startswith('debug'))
 configuration.set('mlrlboosting_library_name', 'lib' + library_name)
 configuration.set('mlrlboosting_library_version', library_version)
 configuration.set('mlrlboosting_target_architecture', target_architecture)

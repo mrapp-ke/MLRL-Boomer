@@ -23,7 +23,7 @@ namespace simd {
                 tmp[j] = array[indices[i + j]];
             }
 
-            batch batchTmp = batch::load_unaligned(tmp.data());
+            batch batchTmp = util::load_simd<batch, T>(tmp.data());
             (batchTmp + constant).store_unaligned(tmp.data());
 
             for (std::size_t j = 0; j < batchSize; j++) {

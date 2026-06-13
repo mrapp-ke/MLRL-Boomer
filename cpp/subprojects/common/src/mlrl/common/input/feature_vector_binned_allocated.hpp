@@ -56,12 +56,13 @@ class MLRLCOMMON_API AllocatedBinnedFeatureVector : public BinnedFeatureVector {
          * @param numIndices    The number of examples not associated with the most frequent bin
          */
         void resize(uint32 numBins, uint32 numIndices) {
+            uint32 previousBins = BinnedFeatureVector::numBins;
             BinnedFeatureVector::thresholds =
-              DefaultMemoryAllocator::reallocateMemory(BinnedFeatureVector::thresholds, numBins - 1);
-            BinnedFeatureVector::indices =
-              DefaultMemoryAllocator::reallocateMemory(BinnedFeatureVector::indices, numIndices);
+              DefaultMemoryAllocator::reallocateMemory(BinnedFeatureVector::thresholds, previousBins, numBins - 1);
+            BinnedFeatureVector::indices = DefaultMemoryAllocator::reallocateMemory(
+              BinnedFeatureVector::indices, BinnedFeatureVector::indptr[previousBins], numIndices);
             BinnedFeatureVector::indptr =
-              DefaultMemoryAllocator::reallocateMemory(BinnedFeatureVector::indptr, numBins + 1);
+              DefaultMemoryAllocator::reallocateMemory(BinnedFeatureVector::indptr, previousBins + 1, numBins + 1);
             BinnedFeatureVector::numBins = numBins;
             BinnedFeatureVector::indptr[numBins] = numIndices;
 

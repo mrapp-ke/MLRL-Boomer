@@ -41,7 +41,8 @@ cpp_build_dir = cpp_dir / 'build/subprojects/common/'
 common_lib = cpp.find_library('mlrlcommon', dirs : meson.current_source_dir() / cpp_build_dir)
 common_include = declare_dependency(include_directories : [
     cpp_build_dir,
-    cpp_dir / 'subprojects/common/include/'
+    cpp_dir / 'subprojects/common/include/',
+    cpp_dir / 'subprojects/xsimd/include/'
 ])
 
 dependencies = [

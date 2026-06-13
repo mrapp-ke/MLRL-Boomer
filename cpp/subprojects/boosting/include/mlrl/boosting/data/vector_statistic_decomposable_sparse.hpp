@@ -515,13 +515,10 @@ namespace boosting {
      *
      * @tparam StatisticType    The type of the gradients and Hessians
      * @tparam WeightType       The type of the weights
-     * @tparam MemoryAllocator  The type of the memory allocator to be used
-     * @tparam VectorMath       The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename StatisticType, typename WeightType, typename MemoryAllocator, typename VectorMath>
+    template<typename StatisticType, typename WeightType>
     class SparseDecomposableStatisticVector final
-        : public VectorDecorator<
-            Allocator<SparseDecomposableStatisticVectorView<StatisticType, WeightType>, MemoryAllocator>> {
+        : public VectorDecorator<Allocator<SparseDecomposableStatisticVectorView<StatisticType, WeightType>>> {
         public:
 
             /**
@@ -535,7 +532,7 @@ namespace boosting {
              * @param other A reference to an object of type `SparseDecomposableStatisticVector` to be copied
              */
             SparseDecomposableStatisticVector(
-              const SparseDecomposableStatisticVector<StatisticType, WeightType, MemoryAllocator, VectorMath>& other);
+              const SparseDecomposableStatisticVector<StatisticType, WeightType>& other);
 
             /**
              * Adds all gradients and Hessians in another vector to this vector.

@@ -24,8 +24,8 @@ namespace boosting {
             uint32 i = 0;
 
             for (; i < batchEnd; i += batchSize) {
-                batch batchGradients = batch::load_unaligned(gradients + i);
-                batch batchHessians = batch::load_unaligned(hessians + i);
+                batch batchGradients = util::load_simd<batch, const StatisticType>(gradients + i);
+                batch batchHessians = util::load_simd<batch, const StatisticType>(hessians + i);
                 batch l1Term = xsimd::select(batchGradients > l1Weight, -l1Weight,
                                              xsimd::select(batchGradients < -l1Weight, l1Weight, zero));
                 batch numerator = -batchGradients + l1Term;
@@ -54,9 +54,9 @@ namespace boosting {
             uint32 i = 0;
 
             for (; i < batchEnd; i += batchSize) {
-                const batch batchWeights = batch::load_unaligned(weights);
-                batch batchGradients = batch::load_unaligned(gradients + i);
-                batch batchHessians = batch::load_unaligned(hessians + i);
+                const batch batchWeights = util::load_simd<batch, const uint32>(weights);
+                batch batchGradients = util::load_simd<batch, const StatisticType>(gradients + i);
+                batch batchHessians = util::load_simd<batch, const StatisticType>(hessians + i);
                 batch l1Weighted = l1Weight * batchWeights;
                 batch l2Weighted = l2Weight * batchWeights;
                 batch l1Term = xsimd::select(batchGradients > l1Weighted, -l1Weighted,

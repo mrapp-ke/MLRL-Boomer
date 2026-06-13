@@ -149,6 +149,7 @@ gpu_support_enabled = opencl_dep.found()
 simd_support_enabled = xsimd_dep.found() and os != 'windows'
 
 configuration = configuration_data()
+configuration.set10('debug', get_option('buildtype').startswith('debug'))
 configuration.set('mlrlcommon_library_name', 'lib' + library_name)
 configuration.set('mlrlcommon_library_version', library_version)
 configuration.set('mlrlcommon_target_architecture', target_architecture + '-' + os)
@@ -183,6 +184,7 @@ if simd_support_enabled
         'src/mlrl/common/simd/functions/copy',
         'src/mlrl/common/simd/functions/difference',
         'src/mlrl/common/simd/functions/difference_with_subset',
+        'src/mlrl/common/simd/functions/memory',
         'src/mlrl/common/simd/functions/subtract',
         'src/mlrl/common/simd/functions/subtract_constant_from_subset',
         'src/mlrl/common/simd/functions/subtract_weighted'
