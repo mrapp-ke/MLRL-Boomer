@@ -24,9 +24,9 @@ namespace boosting {
             StatisticType overallQuality = 0;
 
             for (; i < batchEnd; i += batchSize) {
-                batch batchScores = batch::load_unaligned(scores + i);
-                batch batchGradients = batch::load_unaligned(gradients + i);
-                batch batchHessians = batch::load_unaligned(hessians + i);
+                batch batchScores = util::load_simd<batch, const StatisticType>(scores + i);
+                batch batchGradients = util::load_simd<batch, const StatisticType>(gradients + i);
+                batch batchHessians = util::load_simd<batch, const StatisticType>(hessians + i);
                 batch scorePow = batchScores * batchScores;
                 batch l1Term = l1Weight * xsimd::abs(batchScores);
                 batch l2Term = half * l2Weight * scorePow;
@@ -58,10 +58,10 @@ namespace boosting {
             StatisticType overallQuality = 0;
 
             for (; i < batchEnd; i += batchSize) {
-                batch batchScores = batch::load_unaligned(scores + i);
-                batch batchGradients = batch::load_unaligned(gradients + i);
-                batch batchHessians = batch::load_unaligned(hessians + i);
-                batch batchWeights = batch::load_unaligned(weights + i);
+                batch batchScores = util::load_simd<batch, const StatisticType>(scores + i);
+                batch batchGradients = util::load_simd<batch, const StatisticType>(gradients + i);
+                batch batchHessians = util::load_simd<batch, const StatisticType>(hessians + i);
+                batch batchWeights = util::load_simd<batch, const uint32>(weights + i);
                 batch scorePow = batchScores * batchScores;
                 batch l1Term = l1Weight * batchWeights * xsimd::abs(batchScores);
                 batch l2Term = half * batchWeights * l2Weight * scorePow;

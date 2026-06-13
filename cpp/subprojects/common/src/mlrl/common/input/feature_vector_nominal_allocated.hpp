@@ -57,12 +57,13 @@ class MLRLCOMMON_API AllocatedNominalFeatureVector : public NominalFeatureVector
          *                      be resized
          */
         void resize(uint32 numValues, uint32 numIndices) {
+            uint32 previousValues = NominalFeatureVector::numBins;
             NominalFeatureVector::values =
-              DefaultMemoryAllocator::reallocateMemory(NominalFeatureVector::values, numValues);
-            NominalFeatureVector::indices =
-              DefaultMemoryAllocator::reallocateMemory(NominalFeatureVector::indices, numIndices);
+              DefaultMemoryAllocator::reallocateMemory(NominalFeatureVector::values, previousValues, numValues);
+            NominalFeatureVector::indices = DefaultMemoryAllocator::reallocateMemory(
+              NominalFeatureVector::indices, NominalFeatureVector::indptr[previousValues], numIndices);
             NominalFeatureVector::indptr =
-              DefaultMemoryAllocator::reallocateMemory(NominalFeatureVector::indptr, numValues + 1);
+              DefaultMemoryAllocator::reallocateMemory(NominalFeatureVector::indptr, previousValues + 1, numValues + 1);
             NominalFeatureVector::numBins = numValues;
             NominalFeatureVector::indptr[numValues] = numIndices;
         }

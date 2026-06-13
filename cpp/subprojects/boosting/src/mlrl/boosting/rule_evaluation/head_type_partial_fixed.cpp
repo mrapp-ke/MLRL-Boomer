@@ -4,6 +4,7 @@
 #include "mlrl/boosting/statistics/statistics_provider_decomposable_sparse.hpp"
 #include "mlrl/boosting/statistics/statistics_provider_non_decomposable_dense.hpp"
 #include "mlrl/common/math/vector_math.hpp"
+#include "mlrl/common/simd/memory.hpp"
 #include "mlrl/common/simd/vector_math.hpp"
 #include "mlrl/common/util/validation.hpp"
 
@@ -70,16 +71,16 @@ namespace boosting {
 
 #if SIMD_SUPPORT_ENABLED
                 if (simdConfig_.get().isSimdRecommended(labelMatrix.getNumOutputs())) {
-                    return std::make_unique<
-                      DenseDecomposableClassificationStatisticsProviderFactory<StatisticType, SimdVectorMath>>(
+                    return std::make_unique<DenseDecomposableClassificationStatisticsProviderFactory<
+                      StatisticType, SimdMemoryAllocator, SimdVectorMath>>(
                       std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
                       std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
                       std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
                 }
 #endif
 
-                return std::make_unique<
-                  DenseDecomposableClassificationStatisticsProviderFactory<StatisticType, SequentialVectorMath>>(
+                return std::make_unique<DenseDecomposableClassificationStatisticsProviderFactory<
+                  StatisticType, DefaultMemoryAllocator, SequentialVectorMath>>(
                   std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
                   std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
                   std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
@@ -102,16 +103,16 @@ namespace boosting {
 
 #if SIMD_SUPPORT_ENABLED
                 if (simdConfig_.get().isSimdRecommended(labelMatrix.getNumOutputs())) {
-                    return std::make_unique<
-                      SparseDecomposableClassificationStatisticsProviderFactory<StatisticType, SimdVectorMath>>(
+                    return std::make_unique<SparseDecomposableClassificationStatisticsProviderFactory<
+                      StatisticType, SimdMemoryAllocator, SimdVectorMath>>(
                       std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
                       std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr),
                       multiThreadingSettings);
                 }
 #endif
 
-                return std::make_unique<
-                  SparseDecomposableClassificationStatisticsProviderFactory<StatisticType, SequentialVectorMath>>(
+                return std::make_unique<SparseDecomposableClassificationStatisticsProviderFactory<
+                  StatisticType, DefaultMemoryAllocator, SequentialVectorMath>>(
                   std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
                   std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr),
                   multiThreadingSettings);
@@ -137,16 +138,16 @@ namespace boosting {
 
 #if SIMD_SUPPORT_ENABLED
                 if (simdConfig_.get().isSimdRecommended(labelMatrix.getNumOutputs())) {
-                    return std::make_unique<
-                      DenseNonDecomposableClassificationStatisticsProviderFactory<StatisticType, SimdVectorMath>>(
+                    return std::make_unique<DenseNonDecomposableClassificationStatisticsProviderFactory<
+                      StatisticType, SimdMemoryAllocator, SimdVectorMath>>(
                       std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
                       std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
                       std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
                 }
 #endif
 
-                return std::make_unique<
-                  DenseNonDecomposableClassificationStatisticsProviderFactory<StatisticType, SequentialVectorMath>>(
+                return std::make_unique<DenseNonDecomposableClassificationStatisticsProviderFactory<
+                  StatisticType, DefaultMemoryAllocator, SequentialVectorMath>>(
                   std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
                   std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
                   std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
@@ -171,16 +172,16 @@ namespace boosting {
 
 #if SIMD_SUPPORT_ENABLED
                 if (simdConfig_.get().isSimdRecommended(regressionMatrix.getNumOutputs())) {
-                    return std::make_unique<
-                      DenseDecomposableRegressionStatisticsProviderFactory<StatisticType, SimdVectorMath>>(
+                    return std::make_unique<DenseDecomposableRegressionStatisticsProviderFactory<
+                      StatisticType, SimdMemoryAllocator, SimdVectorMath>>(
                       std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
                       std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
                       std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
                 }
 #endif
 
-                return std::make_unique<
-                  DenseDecomposableRegressionStatisticsProviderFactory<StatisticType, SequentialVectorMath>>(
+                return std::make_unique<DenseDecomposableRegressionStatisticsProviderFactory<
+                  StatisticType, DefaultMemoryAllocator, SequentialVectorMath>>(
                   std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
                   std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
                   std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
@@ -206,16 +207,16 @@ namespace boosting {
 
 #if SIMD_SUPPORT_ENABLED
                 if (simdConfig_.get().isSimdRecommended(regressionMatrix.getNumOutputs())) {
-                    return std::make_unique<
-                      DenseNonDecomposableRegressionStatisticsProviderFactory<StatisticType, SimdVectorMath>>(
+                    return std::make_unique<DenseNonDecomposableRegressionStatisticsProviderFactory<
+                      StatisticType, SimdMemoryAllocator, SimdVectorMath>>(
                       std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
                       std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
                       std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
                 }
 #endif
 
-                return std::make_unique<
-                  DenseNonDecomposableRegressionStatisticsProviderFactory<StatisticType, SequentialVectorMath>>(
+                return std::make_unique<DenseNonDecomposableRegressionStatisticsProviderFactory<
+                  StatisticType, DefaultMemoryAllocator, SequentialVectorMath>>(
                   std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
                   std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
                   std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);

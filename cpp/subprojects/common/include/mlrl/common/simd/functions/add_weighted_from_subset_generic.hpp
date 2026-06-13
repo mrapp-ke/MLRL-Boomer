@@ -24,8 +24,8 @@ namespace simd {
                 tmp[j] = b[index];
             }
 
-            batch batchA = batch::load_unaligned(a + i);
-            batch batchTmp = batch::load_unaligned(tmp.data());
+            batch batchA = util::load_simd<batch, T>(a + i);
+            batch batchTmp = util::load_simd<batch, T>(tmp.data());
             (batchA + (batchTmp * weight)).store_unaligned(a + i);
         }
 

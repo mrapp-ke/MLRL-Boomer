@@ -10,8 +10,9 @@
 #include <unordered_map>
 
 template<typename IndexIterator>
-static inline uint32* copyLabelMatrix(uint32* indices, uint32* indptr, const CContiguousView<const uint8>& labelMatrix,
-                                      IndexIterator indicesBegin, IndexIterator indicesEnd) {
+static inline uint32* copyLabelMatrix(uint32* indices, uint32 numIndices, uint32* indptr,
+                                      const CContiguousView<const uint8>& labelMatrix, IndexIterator indicesBegin,
+                                      IndexIterator indicesEnd) {
     uint32 numExamples = indicesEnd - indicesBegin;
     uint32 numLabels = labelMatrix.numCols;
     uint32 n = 0;
@@ -30,12 +31,13 @@ static inline uint32* copyLabelMatrix(uint32* indices, uint32* indptr, const CCo
     }
 
     indptr[numLabels] = n;
-    return DefaultMemoryAllocator::reallocateMemory(indices, n);
+    return DefaultMemoryAllocator::reallocateMemory(indices, numIndices, n);
 }
 
 template<typename IndexIterator>
-static inline uint32* copyLabelMatrix(uint32* indices, uint32* indptr, const BinaryCsrView& labelMatrix,
-                                      IndexIterator indicesBegin, IndexIterator indicesEnd) {
+static inline uint32* copyLabelMatrix(uint32* indices, uint32 numIndices, uint32* indptr,
+                                      const BinaryCsrView& labelMatrix, IndexIterator indicesBegin,
+                                      IndexIterator indicesEnd) {
     uint32 numExamples = indicesEnd - indicesBegin;
     uint32 numLabels = labelMatrix.numCols;
 
@@ -88,7 +90,7 @@ static inline uint32* copyLabelMatrix(uint32* indices, uint32* indptr, const Bin
     }
 
     indptr[numLabels] = tmp;
-    return DefaultMemoryAllocator::reallocateMemory(indices, tmp);
+    return DefaultMemoryAllocator::reallocateMemory(indices, numIndices, tmp);
 }
 
 /**
@@ -110,8 +112,9 @@ class CscLabelMatrix final : public AllocatedBinaryCscView {
                        CompleteIndexVector::const_iterator indicesBegin, CompleteIndexVector::const_iterator indicesEnd)
             : AllocatedBinaryCscView((indicesEnd - indicesBegin) * labelMatrix.numCols, labelMatrix.numRows,
                                      labelMatrix.numCols) {
-            BinarySparseMatrix::indices = copyLabelMatrix(BinarySparseMatrix::indices, BinarySparseMatrix::indptr,
-                                                          labelMatrix, indicesBegin, indicesEnd);
+            BinarySparseMatrix::indices =
+              copyLabelMatrix(BinarySparseMatrix::indices, this->getNumDenseElements(), BinarySparseMatrix::indptr,
+                              labelMatrix, indicesBegin, indicesEnd);
         }
 
         /**
@@ -125,8 +128,9 @@ class CscLabelMatrix final : public AllocatedBinaryCscView {
                        PartialIndexVector::const_iterator indicesEnd)
             : AllocatedBinaryCscView((indicesEnd - indicesBegin) * labelMatrix.numCols, labelMatrix.numRows,
                                      labelMatrix.numCols) {
-            BinarySparseMatrix::indices = copyLabelMatrix(BinarySparseMatrix::indices, BinarySparseMatrix::indptr,
-                                                          labelMatrix, indicesBegin, indicesEnd);
+            BinarySparseMatrix::indices =
+              copyLabelMatrix(BinarySparseMatrix::indices, this->getNumDenseElements(), BinarySparseMatrix::indptr,
+                              labelMatrix, indicesBegin, indicesEnd);
         }
 
         /**
@@ -139,8 +143,9 @@ class CscLabelMatrix final : public AllocatedBinaryCscView {
         CscLabelMatrix(const BinaryCsrView& labelMatrix, CompleteIndexVector::const_iterator indicesBegin,
                        CompleteIndexVector::const_iterator indicesEnd)
             : AllocatedBinaryCscView(labelMatrix.getNumDenseElements(), labelMatrix.numRows, labelMatrix.numCols) {
-            BinarySparseMatrix::indices = copyLabelMatrix(BinarySparseMatrix::indices, BinarySparseMatrix::indptr,
-                                                          labelMatrix, indicesBegin, indicesEnd);
+            BinarySparseMatrix::indices =
+              copyLabelMatrix(BinarySparseMatrix::indices, this->getNumDenseElements(), BinarySparseMatrix::indptr,
+                              labelMatrix, indicesBegin, indicesEnd);
         }
 
         /**
@@ -153,8 +158,9 @@ class CscLabelMatrix final : public AllocatedBinaryCscView {
         CscLabelMatrix(const BinaryCsrView& labelMatrix, PartialIndexVector::const_iterator indicesBegin,
                        PartialIndexVector::const_iterator indicesEnd)
             : AllocatedBinaryCscView(labelMatrix.getNumDenseElements(), labelMatrix.numRows, labelMatrix.numCols) {
-            BinarySparseMatrix::indices = copyLabelMatrix(BinarySparseMatrix::indices, BinarySparseMatrix::indptr,
-                                                          labelMatrix, indicesBegin, indicesEnd);
+            BinarySparseMatrix::indices =
+              copyLabelMatrix(BinarySparseMatrix::indices, this->getNumDenseElements(), BinarySparseMatrix::indptr,
+                              labelMatrix, indicesBegin, indicesEnd);
         }
 
         /**
@@ -333,10 +339,10 @@ class StratificationMatrix final : public AllocatedBinaryCscView {
 
             if (numRemaining > 0) {
                 // Adjust the size of the arrays that are used to store row and column indices...
-                BinarySparseMatrix::indices = DefaultMemoryAllocator::reallocateMemory(BinarySparseMatrix::indices,
-                                                                                       numDenseElements + numRemaining);
-                BinarySparseMatrix::indptr =
-                  DefaultMemoryAllocator::reallocateMemory(BinarySparseMatrix::indptr, numCols + 2);
+                BinarySparseMatrix::indices = DefaultMemoryAllocator::reallocateMemory(
+                  BinarySparseMatrix::indices, this->getNumDenseElements(), numDenseElements + numRemaining);
+                BinarySparseMatrix::indptr = DefaultMemoryAllocator::reallocateMemory(BinarySparseMatrix::indptr,
+                                                                                      Matrix::numCols + 2, numCols + 2);
 
                 // Add the number of dense elements that have been processed so far to the array of column indices...
                 BinarySparseMatrix::indptr[numCols] = numDenseElements;
@@ -352,10 +358,10 @@ class StratificationMatrix final : public AllocatedBinaryCscView {
                 }
             } else {
                 // Adjust the size of the arrays that are used to store row and column indices...
-                BinarySparseMatrix::indices =
-                  DefaultMemoryAllocator::reallocateMemory(BinarySparseMatrix::indices, numDenseElements);
-                BinarySparseMatrix::indptr =
-                  DefaultMemoryAllocator::reallocateMemory(BinarySparseMatrix::indptr, numCols + 1);
+                BinarySparseMatrix::indices = DefaultMemoryAllocator::reallocateMemory(
+                  BinarySparseMatrix::indices, this->getNumDenseElements(), numDenseElements);
+                BinarySparseMatrix::indptr = DefaultMemoryAllocator::reallocateMemory(BinarySparseMatrix::indptr,
+                                                                                      Matrix::numCols + 1, numCols + 1);
             }
 
             BinarySparseMatrix::indptr[numCols] = numDenseElements;

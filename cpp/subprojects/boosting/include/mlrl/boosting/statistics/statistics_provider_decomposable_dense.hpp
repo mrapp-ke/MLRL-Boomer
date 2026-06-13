@@ -19,9 +19,10 @@ namespace boosting {
      * statistics.
      *
      * @tparam StatisticType    The type of the statistics
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
      * @tparam VectorMath       The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename StatisticType, typename VectorMath>
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     class DenseDecomposableClassificationStatisticsProviderFactory final
         : public IClassificationStatisticsProviderFactory {
         private:
@@ -89,9 +90,10 @@ namespace boosting {
      * access to an object of type `IDecomposableStatistics` using dense data structures for storing the statistics.
      *
      * @tparam StatisticType    The type of the statistics
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
      * @tparam VectorMath       The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename StatisticType, typename VectorMath>
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     class DenseDecomposableRegressionStatisticsProviderFactory final : public IRegressionStatisticsProviderFactory {
         private:
 

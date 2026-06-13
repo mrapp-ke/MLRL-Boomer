@@ -2,6 +2,7 @@
 
 #include "mlrl/boosting/math/scalar_math.hpp"
 #include "mlrl/common/math/vector_math.hpp"
+#include "mlrl/common/simd/memory.hpp"
 #include "mlrl/common/simd/vector_math.hpp"
 
 namespace boosting {
@@ -136,7 +137,7 @@ namespace boosting {
     template class DenseNonDecomposableStatisticVector<float64, DefaultMemoryAllocator, SequentialVectorMath>;
 
 #if SIMD_SUPPORT_ENABLED
-    template class DenseNonDecomposableStatisticVector<float32, DefaultMemoryAllocator, SimdVectorMath>;
-    template class DenseNonDecomposableStatisticVector<float64, DefaultMemoryAllocator, SimdVectorMath>;
+    template class DenseNonDecomposableStatisticVector<float32, SimdMemoryAllocator, SimdVectorMath>;
+    template class DenseNonDecomposableStatisticVector<float64, SimdMemoryAllocator, SimdVectorMath>;
 #endif
 }

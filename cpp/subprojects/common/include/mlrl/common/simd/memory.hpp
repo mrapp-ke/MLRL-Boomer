@@ -3,14 +3,14 @@
  */
 #pragma once
 
-#include "mlrl/common/data/types.hpp"
+#include "mlrl/common/simd/functions/memory.hpp"
+#include "mlrl/common/util/memory.hpp"
 
-#include <cstdlib>
-
+#if SIMD_SUPPORT_ENABLED
 /**
- * Provides functions for allocating memory.
+ * Provides functions for allocating memory, such that it is properly aligned for being loaded into SIMD registers.
  */
-struct DefaultMemoryAllocator final {
+struct SimdMemoryAllocator final {
     public:
 
         /**
@@ -23,11 +23,10 @@ struct DefaultMemoryAllocator final {
          */
         template<typename T>
         static inline constexpr T* allocateMemory(uint32 numElements, bool init = false) {
-            if (init) {
-                return reinterpret_cast<T*>(calloc(numElements, sizeof(T)));
-            } else {
-                return reinterpret_cast<T*>(malloc(numElements * sizeof(T)));
-            }
+            auto dispatched = xsimd::dispatch<util::simd_architectures>([&](auto arch) {
+                return simd::allocateMemory<decltype(arch), T>(arch, numElements, init);
+            });
+            return dispatched();
         }
 
         /**
@@ -41,7 +40,10 @@ struct DefaultMemoryAllocator final {
          */
         template<typename T>
         static inline constexpr T* reallocateMemory(T* array, uint32 previousElements, uint32 newElements) {
-            return reinterpret_cast<T*>(realloc(array, newElements * sizeof(T)));
+            auto dispatched = xsimd::dispatch<util::simd_architectures>([&](auto arch) {
+                return simd::reallocateMemory<decltype(arch), T>(arch, array, previousElements, newElements);
+            });
+            return dispatched();
         }
 
         /**
@@ -53,7 +55,11 @@ struct DefaultMemoryAllocator final {
         template<typename T>
         static inline constexpr void freeMemory(T* array) {
             if (array) {
-                free(array);
+                auto dispatched = xsimd::dispatch<util::simd_architectures>([&](auto arch) {
+                    return simd::freeMemory<decltype(arch), T>(arch, array);
+                });
+                return dispatched();
             }
         }
 };
+#endif
