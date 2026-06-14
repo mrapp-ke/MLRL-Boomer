@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/boosting/math/scalar_math.hpp"
 #include "mlrl/boosting/util/dll_exports.hpp"
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 
@@ -156,12 +157,21 @@ namespace boosting {
             }
 
             /**
-             * Returns the number of columns in the view.
+             * Returns the number of gradients in each row of the view.
              *
-             * @return The number of columns
+             * @return The number of gradients in each row
              */
-            uint32 getNumCols() const {
+            uint32 getNumGradients() const {
                 return numGradients_;
+            }
+
+            /**
+             * Returns the number of Hessians in each row of the view.
+             *
+             * @return The number of Hessians in each row
+             */
+            uint32 getNumHessians() const {
+                return math::triangularNumber(numGradients_);
             }
     };
 

@@ -54,7 +54,7 @@ namespace boosting {
              * @return The number of columns
              */
             uint32 getNumCols() const {
-                return this->getView().getNumCols();
+                return this->getView().getNumGradients();
             }
     };
 
