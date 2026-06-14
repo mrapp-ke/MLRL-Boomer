@@ -160,7 +160,7 @@ class Beam final {
                            std::unique_ptr<Beam>& beamPtr, uint32 beamWidth, IFeatureSampling& featureSampling,
                            bool keepHeads, uint32 minCoverage, bool allowNegations) {
             std::vector<std::reference_wrapper<BeamEntry>>& order = beamPtr->order_;
-            std::unique_ptr<Beam> newBeamPtr = std::make_unique<Beam>(beamWidth);
+            auto newBeamPtr = std::make_unique<Beam>(beamWidth);
             BeamEntry* newEntries = newBeamPtr->entries_;
             std::vector<std::reference_wrapper<BeamEntry>>& newOrder = newBeamPtr->order_;
             const BeamEntry& worstEntry = order.back();
@@ -342,7 +342,7 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
 
             if (foundRefinement) {
                 bool keepHeads = maxHeadRefinements_ == 1;
-                std::unique_ptr<Beam> beamPtr =
+                auto beamPtr =
                   std::make_unique<Beam>(refinementComparator, std::move(featureSubspacePtr), outputIndices, keepHeads);
                 uint32 searchDepth = 1;
 

@@ -486,8 +486,7 @@ namespace boosting {
       const IJointProbabilityFunction& jointProbabilityFunction, const LabelVectorSet& labelVectorSet) {
         // Extract thresholds and ground truth probabilities from score matrix and label matrix, respectively...
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
-        std::unique_ptr<IsotonicProbabilityCalibrationModel> calibrationModelPtr =
-          std::make_unique<IsotonicProbabilityCalibrationModel>(numLabelVectors);
+        auto calibrationModelPtr = std::make_unique<IsotonicProbabilityCalibrationModel>(numLabelVectors);
         const IBoostingStatistics& boostingStatistics = dynamic_cast<const IBoostingStatistics&>(statistics);
         auto dense32BitVisitor = [=, &jointProbabilityFunction, &calibrationModelPtr,
                                   &labelVectorSet](const CContiguousView<float32>& scoreMatrix) {

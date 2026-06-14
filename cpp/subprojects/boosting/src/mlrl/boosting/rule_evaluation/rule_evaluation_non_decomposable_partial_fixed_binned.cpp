@@ -99,7 +99,7 @@ namespace boosting {
         const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
           math::calculateBoundedFraction(statisticVector.getNumGradients(), labelRatio_, minLabels_, maxLabels_);
-        std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(numPredictions);
+        auto indexVectorPtr = std::make_unique<PartialIndexVector>(numPredictions);
         std::unique_ptr<ILabelBinning<float32>> labelBinningPtr = labelBinningFactoryPtr_->create32Bit();
         uint32 maxBins = labelBinningPtr->getMaxBins(numPredictions);
         return std::make_unique<DenseNonDecomposableFixedPartialBinnedRuleEvaluation<
@@ -126,7 +126,7 @@ namespace boosting {
         const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
           math::calculateBoundedFraction(statisticVector.getNumGradients(), labelRatio_, minLabels_, maxLabels_);
-        std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(numPredictions);
+        auto indexVectorPtr = std::make_unique<PartialIndexVector>(numPredictions);
         std::unique_ptr<ILabelBinning<float64>> labelBinningPtr = labelBinningFactoryPtr_->create64Bit();
         uint32 maxBins = labelBinningPtr->getMaxBins(numPredictions);
         return std::make_unique<DenseNonDecomposableFixedPartialBinnedRuleEvaluation<

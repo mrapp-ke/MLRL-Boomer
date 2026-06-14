@@ -326,14 +326,13 @@ namespace boosting {
       std::unique_ptr<Loss> lossPtr, std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
       const ISparseDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
       MultiThreadingSettings multiThreadingSettings, const OutputMatrix& outputMatrix,
-      std::type_identity<MemoryAllocator> memoryAllocator, std::type_identity<VectorMath> vectorMath) {
+      std::type_identity<MemoryAllocator>, std::type_identity<VectorMath>) {
         using statistic_type = Loss::statistic_type;
         uint32 numExamples = outputMatrix.numRows;
         uint32 numOutputs = outputMatrix.numCols;
-        std::unique_ptr<SparseDecomposableStatisticMatrix<statistic_type>> statisticMatrixPtr =
+        auto statisticMatrixPtr =
           std::make_unique<SparseDecomposableStatisticMatrix<statistic_type>>(numExamples, numOutputs);
-        std::unique_ptr<NumericSparseSetMatrix<statistic_type>> scoreMatrixPtr =
-          std::make_unique<NumericSparseSetMatrix<statistic_type>>(numExamples, numOutputs);
+        auto scoreMatrixPtr = std::make_unique<NumericSparseSetMatrix<statistic_type>>(numExamples, numOutputs);
         const Loss* lossRawPtr = lossPtr.get();
         const OutputMatrix* outputMatrixPtr = &outputMatrix;
         const SparseSetView<statistic_type>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();

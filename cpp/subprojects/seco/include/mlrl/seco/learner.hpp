@@ -329,7 +329,7 @@ namespace seco {
              *         heuristic
              */
             virtual IMEstimateConfig& useMEstimatePruningHeuristic() {
-                std::unique_ptr<MEstimateConfig> ptr = std::make_unique<MEstimateConfig>();
+                auto ptr = std::make_unique<MEstimateConfig>();
                 IMEstimateConfig& ref = *ptr;
                 this->getPruningHeuristicConfig().set(std::move(ptr));
                 return ref;

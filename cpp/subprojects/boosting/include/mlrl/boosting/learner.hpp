@@ -409,7 +409,7 @@ namespace boosting {
              *         of the regularization term
              */
             virtual IManualRegularizationConfig& useL2Regularization() {
-                std::unique_ptr<ManualRegularizationConfig> ptr = std::make_unique<ManualRegularizationConfig>();
+                auto ptr = std::make_unique<ManualRegularizationConfig>();
                 IManualRegularizationConfig& ref = *ptr;
                 this->getL2RegularizationConfig().set(std::move(ptr));
                 return ref;

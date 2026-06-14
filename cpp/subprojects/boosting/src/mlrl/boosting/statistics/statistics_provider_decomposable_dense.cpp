@@ -16,15 +16,14 @@ namespace boosting {
     static inline std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> createStatistics(
       std::unique_ptr<Loss> lossPtr, std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
       const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory, MultiThreadingSettings multiThreadingSettings,
-      const OutputMatrix& outputMatrix, std::type_identity<MemoryAllocator>,
-      std::type_identity<VectorMath> vectorMath) {
+      const OutputMatrix& outputMatrix, std::type_identity<MemoryAllocator>, std::type_identity<VectorMath>) {
         using statistic_type = Loss::statistic_type;
         uint32 numExamples = outputMatrix.numRows;
         uint32 numOutputs = outputMatrix.numCols;
-        std::unique_ptr<DenseDecomposableStatisticMatrix<statistic_type, VectorMath>> statisticMatrixPtr =
-          std::make_unique<DenseDecomposableStatisticMatrix<statistic_type, VectorMath>>(numExamples, numOutputs);
-        std::unique_ptr<NumericCContiguousMatrix<statistic_type>> scoreMatrixPtr =
-          std::make_unique<NumericCContiguousMatrix<statistic_type>>(numExamples, numOutputs, true);
+        auto statisticMatrixPtr =
+          std::make_unique<DenseDecomposableStatisticMatrix<statistic_type, MemoryAllocator, VectorMath>>(numExamples,
+                                                                                                          numOutputs);
+        auto scoreMatrixPtr = std::make_unique<NumericCContiguousMatrix<statistic_type>>(numExamples, numOutputs, true);
         const Loss* lossRawPtr = lossPtr.get();
         const OutputMatrix* outputMatrixPtr = &outputMatrix;
         const CContiguousView<statistic_type>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();

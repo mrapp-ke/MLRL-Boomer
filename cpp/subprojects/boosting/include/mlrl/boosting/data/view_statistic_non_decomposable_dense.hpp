@@ -3,9 +3,8 @@
  */
 #pragma once
 
+#include "mlrl/boosting/data/view_statistic_dense.hpp"
 #include "mlrl/boosting/iterator/iterator_diagonal.hpp"
-#include "mlrl/boosting/util/dll_exports.hpp"
-#include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 
 namespace boosting {
 
@@ -16,98 +15,37 @@ namespace boosting {
      * @tparam StatisticType The type of the gradients and Hessians
      */
     template<typename StatisticType>
-    class MLRLBOOSTING_API DenseNonDecomposableStatisticView : public AllocatedCContiguousView<StatisticType> {
-        private:
-
-            const uint32 numGradients_;
-
+    class MLRLBOOSTING_API DenseNonDecomposableStatisticView : public DenseStatisticView<StatisticType> {
         public:
 
             /**
-             * @param numRows   The number of rows in the view
-             * @param numCols   The number of columns in the view
+             * @param array         A pointer to an array of template type `T` that stores the gradients and Hessians
+             * @param numRows       The number of rows in the view
+             * @param numGradients  The number of gradients in each row of the view
+             * @param numHessians   The number of Hessians in each row of the view
              */
-            DenseNonDecomposableStatisticView(uint32 numRows, uint32 numCols);
+            DenseNonDecomposableStatisticView(StatisticType* array, uint32 numRows, uint32 numGradients,
+                                              uint32 numHessians)
+                : DenseStatisticView<StatisticType>(array, numRows, numGradients, numHessians) {}
 
             /**
              * @param other A reference to an object of type `DenseNonDecomposableStatisticView` that should be copied
              */
-            DenseNonDecomposableStatisticView(DenseNonDecomposableStatisticView<StatisticType>&& other);
+            DenseNonDecomposableStatisticView(const DenseNonDecomposableStatisticView<StatisticType>& other)
+                : DenseStatisticView<StatisticType>(other) {}
+
+            /**
+             * @param other A reference to an object of type `DenseNonDecomposableStatisticView` that should be moved
+             */
+            DenseNonDecomposableStatisticView(DenseNonDecomposableStatisticView<StatisticType>&& other)
+                : DenseStatisticView<StatisticType>(std::move(other)) {}
 
             virtual ~DenseNonDecomposableStatisticView() override {}
-
-            /**
-             * An iterator that provides read-only access to the gradients.
-             */
-            using gradient_const_iterator = AllocatedCContiguousView<StatisticType>::value_const_iterator;
-
-            /**
-             * An iterator that provides access to the gradients and allows to modify them.
-             */
-            using gradient_iterator = AllocatedCContiguousView<StatisticType>::value_iterator;
-
-            /**
-             * An iterator that provides read-only access to the Hessians.
-             */
-            using hessian_const_iterator = AllocatedCContiguousView<StatisticType>::value_const_iterator;
-
-            /**
-             * An iterator that provides access to the Hessians and allows to modify them.
-             */
-            using hessian_iterator = AllocatedCContiguousView<StatisticType>::value_iterator;
 
             /**
              * An iterator that provides read-only access to the Hessians that correspond to the diagonal of the matrix.
              */
             using hessian_diagonal_const_iterator = DiagonalIterator<const StatisticType>;
-
-            /**
-             * Returns a `gradient_const_iterator` to the beginning of the gradients at a specific row.
-             *
-             * @param row   The row
-             * @return      A `gradient_const_iterator` to the beginning of the given row
-             */
-            gradient_const_iterator gradients_cbegin(uint32 row) const;
-
-            /**
-             * Returns a `gradient_const_iterator` to the end of the gradients at a specific row.
-             *
-             * @param row   The row
-             * @return      A `gradient_const_iterator` to the end of the given row
-             */
-            gradient_const_iterator gradients_cend(uint32 row) const;
-
-            /**
-             * Returns a `gradient_iterator` to the beginning of the gradients at a specific row.
-             *
-             * @param row   The row
-             * @return      A `gradient_iterator` to the beginning of the given row
-             */
-            gradient_iterator gradients_begin(uint32 row);
-
-            /**
-             * Returns a `gradient_iterator` to the end of the gradients at a specific row.
-             *
-             * @param row   The row
-             * @return      A `gradient_iterator` to the end of the given row
-             */
-            gradient_iterator gradients_end(uint32 row);
-
-            /**
-             * Returns a `hessian_const_iterator` to the beginning of the Hessians at a specific row.
-             *
-             * @param row   The row
-             * @return      A `hessian_const_iterator` to the beginning of the given row
-             */
-            hessian_const_iterator hessians_cbegin(uint32 row) const;
-
-            /**
-             * Returns a `hessian_const_iterator` to the end of the Hessians at a specific row.
-             *
-             * @param row   The row
-             * @return      A `hessian_const_iterator` to the end of the given row
-             */
-            hessian_const_iterator hessians_cend(uint32 row) const;
 
             /**
              * Returns a `hessian_diagonal_const_iterator` to the beginning of the Hessians that correspond to the
@@ -116,7 +54,9 @@ namespace boosting {
              * @param row   The row
              * @return      A `hessian_diagonal_const_iterator` to the beginning
              */
-            hessian_diagonal_const_iterator hessians_diagonal_cbegin(uint32 row) const;
+            hessian_diagonal_const_iterator hessians_diagonal_cbegin(uint32 row) const {
+                return hessian_diagonal_const_iterator(View<const StatisticType>(this->hessians_cbegin(row)), 0);
+            }
 
             /**
              * Returns a `hessian_diagonal_const_iterator` to the end of the Hessians that correspond to the diagonal of
@@ -125,37 +65,10 @@ namespace boosting {
              * @param row   The row
              * @return      A `hessian_diagonal_const_iterator` to the end
              */
-            hessian_diagonal_const_iterator hessians_diagonal_cend(uint32 row) const;
-
-            /**
-             * Returns a `hessian_iterator` to the beginning of the Hessians at a specific row.
-             *
-             * @param row   The row
-             * @return      A `hessian_iterator` to the beginning of the given row
-             */
-            hessian_iterator hessians_begin(uint32 row);
-
-            /**
-             * Returns a `hessian_iterator` to the end of the Hessians at a specific row.
-             *
-             * @param row   The row
-             * @return      A `hessian_iterator` to the end of the given row
-             */
-            hessian_iterator hessians_end(uint32 row);
-
-            /**
-             * Returns the number of rows in the view.
-             *
-             * @return The number of rows
-             */
-            uint32 getNumRows() const;
-
-            /**
-             * Returns the number of columns in the view.
-             *
-             * @return The number of columns
-             */
-            uint32 getNumCols() const;
+            hessian_diagonal_const_iterator hessians_diagonal_cend(uint32 row) const {
+                return hessian_diagonal_const_iterator(View<const StatisticType>(this->hessians_cbegin(row)),
+                                                       math::triangularNumber(this->numGradients_));
+            }
     };
 
 }

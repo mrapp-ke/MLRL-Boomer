@@ -91,7 +91,7 @@ namespace boosting {
       DecomposableFixedPartialBinnedRuleEvaluationFactory<VectorMath>::create(
         const DenseDecomposableStatisticVectorView<float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
-        std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(
+        auto indexVectorPtr = std::make_unique<PartialIndexVector>(
           math::calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_, maxLabels_));
         std::unique_ptr<ILabelBinning<float32>> labelBinningPtr = labelBinningFactoryPtr_->create32Bit();
         return std::make_unique<DecomposableFixedPartialBinnedRuleEvaluation<
@@ -116,7 +116,7 @@ namespace boosting {
       DecomposableFixedPartialBinnedRuleEvaluationFactory<VectorMath>::create(
         const DenseDecomposableStatisticVectorView<float64>& statisticVector,
         const CompleteIndexVector& indexVector) const {
-        std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(
+        auto indexVectorPtr = std::make_unique<PartialIndexVector>(
           math::calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_, maxLabels_));
         std::unique_ptr<ILabelBinning<float64>> labelBinningPtr = labelBinningFactoryPtr_->create64Bit();
         return std::make_unique<DecomposableFixedPartialBinnedRuleEvaluation<
@@ -141,7 +141,7 @@ namespace boosting {
       DecomposableFixedPartialBinnedRuleEvaluationFactory<VectorMath>::create(
         const SparseDecomposableStatisticVectorView<float32, uint32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
-        std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(
+        auto indexVectorPtr = std::make_unique<PartialIndexVector>(
           math::calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_, maxLabels_));
         std::unique_ptr<ILabelBinning<float32>> labelBinningPtr = labelBinningFactoryPtr_->create32Bit();
         return std::make_unique<DecomposableFixedPartialBinnedRuleEvaluation<
@@ -166,7 +166,7 @@ namespace boosting {
       DecomposableFixedPartialBinnedRuleEvaluationFactory<VectorMath>::create(
         const SparseDecomposableStatisticVectorView<float32, float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
-        std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(
+        auto indexVectorPtr = std::make_unique<PartialIndexVector>(
           math::calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_, maxLabels_));
         std::unique_ptr<ILabelBinning<float32>> labelBinningPtr = labelBinningFactoryPtr_->create32Bit();
         return std::make_unique<DecomposableFixedPartialBinnedRuleEvaluation<
@@ -191,7 +191,7 @@ namespace boosting {
       DecomposableFixedPartialBinnedRuleEvaluationFactory<VectorMath>::create(
         const SparseDecomposableStatisticVectorView<float64, uint32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
-        std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(
+        auto indexVectorPtr = std::make_unique<PartialIndexVector>(
           math::calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_, maxLabels_));
         std::unique_ptr<ILabelBinning<float64>> labelBinningPtr = labelBinningFactoryPtr_->create64Bit();
         return std::make_unique<DecomposableFixedPartialBinnedRuleEvaluation<
@@ -216,7 +216,7 @@ namespace boosting {
       DecomposableFixedPartialBinnedRuleEvaluationFactory<VectorMath>::create(
         const SparseDecomposableStatisticVectorView<float64, float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
-        std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(
+        auto indexVectorPtr = std::make_unique<PartialIndexVector>(
           math::calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_, maxLabels_));
         std::unique_ptr<ILabelBinning<float64>> labelBinningPtr = labelBinningFactoryPtr_->create64Bit();
         return std::make_unique<DecomposableFixedPartialBinnedRuleEvaluation<

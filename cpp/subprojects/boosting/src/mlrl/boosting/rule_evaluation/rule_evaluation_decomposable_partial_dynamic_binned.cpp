@@ -152,8 +152,7 @@ namespace boosting {
       DecomposableDynamicPartialBinnedRuleEvaluationFactory<VectorMath>::create(
         const DenseDecomposableStatisticVectorView<float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
-        std::unique_ptr<PartialIndexVector> indexVectorPtr =
-          std::make_unique<PartialIndexVector>(indexVector.getNumElements());
+        auto indexVectorPtr = std::make_unique<PartialIndexVector>(indexVector.getNumElements());
         std::unique_ptr<ILabelBinning<float32>> labelBinningPtr = labelBinningFactoryPtr_->create32Bit();
         return std::make_unique<DecomposableDynamicPartialBinnedRuleEvaluation<
           DenseDecomposableStatisticVectorView<float32>, CompleteIndexVector, VectorMath>>(
@@ -177,8 +176,7 @@ namespace boosting {
       DecomposableDynamicPartialBinnedRuleEvaluationFactory<VectorMath>::create(
         const DenseDecomposableStatisticVectorView<float64>& statisticVector,
         const CompleteIndexVector& indexVector) const {
-        std::unique_ptr<PartialIndexVector> indexVectorPtr =
-          std::make_unique<PartialIndexVector>(indexVector.getNumElements());
+        auto indexVectorPtr = std::make_unique<PartialIndexVector>(indexVector.getNumElements());
         std::unique_ptr<ILabelBinning<float64>> labelBinningPtr = labelBinningFactoryPtr_->create64Bit();
         return std::make_unique<DecomposableDynamicPartialBinnedRuleEvaluation<
           DenseDecomposableStatisticVectorView<float64>, CompleteIndexVector, VectorMath>>(
@@ -202,8 +200,7 @@ namespace boosting {
       DecomposableDynamicPartialBinnedRuleEvaluationFactory<VectorMath>::create(
         const SparseDecomposableStatisticVectorView<float32, uint32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
-        std::unique_ptr<PartialIndexVector> indexVectorPtr =
-          std::make_unique<PartialIndexVector>(indexVector.getNumElements());
+        auto indexVectorPtr = std::make_unique<PartialIndexVector>(indexVector.getNumElements());
         std::unique_ptr<ILabelBinning<float32>> labelBinningPtr = labelBinningFactoryPtr_->create32Bit();
         return std::make_unique<DecomposableDynamicPartialBinnedRuleEvaluation<
           SparseDecomposableStatisticVectorView<float32, uint32>, CompleteIndexVector, VectorMath>>(
@@ -227,8 +224,7 @@ namespace boosting {
       DecomposableDynamicPartialBinnedRuleEvaluationFactory<VectorMath>::create(
         const SparseDecomposableStatisticVectorView<float32, float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
-        std::unique_ptr<PartialIndexVector> indexVectorPtr =
-          std::make_unique<PartialIndexVector>(indexVector.getNumElements());
+        auto indexVectorPtr = std::make_unique<PartialIndexVector>(indexVector.getNumElements());
         std::unique_ptr<ILabelBinning<float32>> labelBinningPtr = labelBinningFactoryPtr_->create32Bit();
         return std::make_unique<DecomposableDynamicPartialBinnedRuleEvaluation<
           SparseDecomposableStatisticVectorView<float32, float32>, CompleteIndexVector, VectorMath>>(
@@ -252,8 +248,7 @@ namespace boosting {
       DecomposableDynamicPartialBinnedRuleEvaluationFactory<VectorMath>::create(
         const SparseDecomposableStatisticVectorView<float64, uint32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
-        std::unique_ptr<PartialIndexVector> indexVectorPtr =
-          std::make_unique<PartialIndexVector>(indexVector.getNumElements());
+        auto indexVectorPtr = std::make_unique<PartialIndexVector>(indexVector.getNumElements());
         std::unique_ptr<ILabelBinning<float64>> labelBinningPtr = labelBinningFactoryPtr_->create64Bit();
         return std::make_unique<DecomposableDynamicPartialBinnedRuleEvaluation<
           SparseDecomposableStatisticVectorView<float64, uint32>, CompleteIndexVector, VectorMath>>(
@@ -277,8 +272,7 @@ namespace boosting {
       DecomposableDynamicPartialBinnedRuleEvaluationFactory<VectorMath>::create(
         const SparseDecomposableStatisticVectorView<float64, float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
-        std::unique_ptr<PartialIndexVector> indexVectorPtr =
-          std::make_unique<PartialIndexVector>(indexVector.getNumElements());
+        auto indexVectorPtr = std::make_unique<PartialIndexVector>(indexVector.getNumElements());
         std::unique_ptr<ILabelBinning<float64>> labelBinningPtr = labelBinningFactoryPtr_->create64Bit();
         return std::make_unique<DecomposableDynamicPartialBinnedRuleEvaluation<
           SparseDecomposableStatisticVectorView<float64, float32>, CompleteIndexVector, VectorMath>>(

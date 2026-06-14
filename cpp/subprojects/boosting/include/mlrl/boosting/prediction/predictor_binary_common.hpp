@@ -164,9 +164,8 @@ namespace boosting {
              * @see `IPredictor::predict`
              */
             std::unique_ptr<DensePredictionMatrix<uint8>> predict(uint32 maxRules) const override {
-                std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-                  std::make_unique<DensePredictionMatrix<uint8>>(featureMatrix_.numRows, numLabels_,
-                                                                 binaryTransformationPtr_ == nullptr);
+                auto predictionMatrixPtr = std::make_unique<DensePredictionMatrix<uint8>>(
+                  featureMatrix_.numRows, numLabels_, binaryTransformationPtr_ == nullptr);
 
                 if (binaryTransformationPtr_) {
                     CContiguousMatrix<float64> scoreMatrix(multiThreadingSettings_.numThreads, numLabels_);
