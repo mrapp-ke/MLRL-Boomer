@@ -16,8 +16,7 @@ namespace boosting {
     static inline std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> createStatistics(
       std::unique_ptr<Loss> lossPtr, std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
       const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory, MultiThreadingSettings multiThreadingSettings,
-      const OutputMatrix& outputMatrix, std::type_identity<MemoryAllocator>,
-      std::type_identity<VectorMath> vectorMath) {
+      const OutputMatrix& outputMatrix, std::type_identity<MemoryAllocator>, std::type_identity<VectorMath>) {
         using statistic_type = Loss::statistic_type;
         uint32 numExamples = outputMatrix.numRows;
         uint32 numOutputs = outputMatrix.numCols;

@@ -735,7 +735,7 @@ namespace seco {
     template<typename VectorMath>
     static inline std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> createStatistics(
       const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory, const CContiguousView<const uint8>& labelMatrix,
-      std::type_identity<VectorMath> vectorMath) {
+      std::type_identity<VectorMath>) {
         return std::make_unique<SparseDecomposableStatistics<CContiguousView<const uint8>, VectorMath>>(
           labelMatrix, ruleEvaluationFactory);
     }
@@ -743,7 +743,7 @@ namespace seco {
     template<typename VectorMath>
     static inline std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> createStatistics(
       const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory, const BinaryCsrView& labelMatrix,
-      std::type_identity<VectorMath> vectorMath) {
+      std::type_identity<VectorMath>) {
         return std::make_unique<SparseDecomposableStatistics<BinaryCsrView, VectorMath>>(labelMatrix,
                                                                                          ruleEvaluationFactory);
     }
