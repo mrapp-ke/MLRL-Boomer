@@ -6,15 +6,14 @@
 #include "mlrl/common/statistics/statistics.hpp"
 
 static inline std::unique_ptr<IHead> createHeadInternally(const CompletePrediction<uint8>& prediction) {
-    std::unique_ptr<CompleteHead<uint8>> headPtr = std::make_unique<CompleteHead<uint8>>(prediction.getNumElements());
+    auto headPtr = std::make_unique<CompleteHead<uint8>>(prediction.getNumElements());
     std::copy(prediction.values_cbegin(), prediction.values_cend(), headPtr->values_begin());
     return headPtr;
 }
 
 template<typename ScoreType>
 static inline std::unique_ptr<IHead> createHeadInternally(const CompletePrediction<ScoreType>& prediction) {
-    std::unique_ptr<CompleteHead<ScoreType>> headPtr =
-      std::make_unique<CompleteHead<ScoreType>>(prediction.getNumElements());
+    auto headPtr = std::make_unique<CompleteHead<ScoreType>>(prediction.getNumElements());
     std::copy(prediction.values_cbegin(), prediction.values_cend(), headPtr->values_begin());
     return headPtr;
 }

@@ -540,8 +540,7 @@ namespace seco {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
                                                             const DenseWeightVector<uint16>& weights) const override {
-                std::unique_ptr<StatisticVector<uint32>> subsetSumVectorPtr =
-                  std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
+                auto subsetSumVectorPtr = std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<StatisticsSubset<DenseWeightVector<uint16>, CompleteIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
                   std::move(subsetSumVectorPtr));
@@ -552,8 +551,7 @@ namespace seco {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
                                                             const DenseWeightVector<uint16>& weights) const override {
-                std::unique_ptr<StatisticVector<uint32>> subsetSumVectorPtr =
-                  std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
+                auto subsetSumVectorPtr = std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<StatisticsSubset<DenseWeightVector<uint16>, PartialIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
                   std::move(subsetSumVectorPtr));
@@ -564,8 +562,7 @@ namespace seco {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
                                                             const DenseWeightVector<float32>& weights) const override {
-                std::unique_ptr<StatisticVector<float32>> subsetSumVectorPtr =
-                  std::make_unique<StatisticVector<float32>>(this->getNumOutputs(), true);
+                auto subsetSumVectorPtr = std::make_unique<StatisticVector<float32>>(this->getNumOutputs(), true);
                 return std::make_unique<StatisticsSubset<DenseWeightVector<float32>, CompleteIndexVector, float32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
                   std::move(subsetSumVectorPtr));
@@ -576,8 +573,7 @@ namespace seco {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
                                                             const DenseWeightVector<float32>& weights) const override {
-                std::unique_ptr<StatisticVector<float32>> subsetSumVectorPtr =
-                  std::make_unique<StatisticVector<float32>>(this->getNumOutputs(), true);
+                auto subsetSumVectorPtr = std::make_unique<StatisticVector<float32>>(this->getNumOutputs(), true);
                 return std::make_unique<StatisticsSubset<DenseWeightVector<float32>, PartialIndexVector, float32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
                   std::move(subsetSumVectorPtr));
@@ -589,8 +585,7 @@ namespace seco {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const CompleteIndexVector& outputIndices,
               const OutOfSampleWeightVector<EqualWeightVector>& weights) const override {
-                std::unique_ptr<StatisticVector<uint32>> subsetSumVectorPtr =
-                  std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
+                auto subsetSumVectorPtr = std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<
                   StatisticsSubset<OutOfSampleWeightVector<EqualWeightVector>, CompleteIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
@@ -603,8 +598,7 @@ namespace seco {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const PartialIndexVector& outputIndices,
               const OutOfSampleWeightVector<EqualWeightVector>& weights) const override {
-                std::unique_ptr<StatisticVector<uint32>> subsetSumVectorPtr =
-                  std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
+                auto subsetSumVectorPtr = std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<
                   StatisticsSubset<OutOfSampleWeightVector<EqualWeightVector>, PartialIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
@@ -617,8 +611,7 @@ namespace seco {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const CompleteIndexVector& outputIndices,
               const OutOfSampleWeightVector<BitWeightVector>& weights) const override {
-                std::unique_ptr<StatisticVector<uint32>> subsetSumVectorPtr =
-                  std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
+                auto subsetSumVectorPtr = std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<
                   StatisticsSubset<OutOfSampleWeightVector<BitWeightVector>, CompleteIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
@@ -631,8 +624,7 @@ namespace seco {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const PartialIndexVector& outputIndices,
               const OutOfSampleWeightVector<BitWeightVector>& weights) const override {
-                std::unique_ptr<StatisticVector<uint32>> subsetSumVectorPtr =
-                  std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
+                auto subsetSumVectorPtr = std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<
                   StatisticsSubset<OutOfSampleWeightVector<BitWeightVector>, PartialIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
@@ -645,8 +637,7 @@ namespace seco {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const CompleteIndexVector& outputIndices,
               const OutOfSampleWeightVector<DenseWeightVector<uint16>>& weights) const override {
-                std::unique_ptr<StatisticVector<uint32>> subsetSumVectorPtr =
-                  std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
+                auto subsetSumVectorPtr = std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<
                   StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<uint16>>, CompleteIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
@@ -659,8 +650,7 @@ namespace seco {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const PartialIndexVector& outputIndices,
               const OutOfSampleWeightVector<DenseWeightVector<uint16>>& weights) const override {
-                std::unique_ptr<StatisticVector<uint32>> subsetSumVectorPtr =
-                  std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
+                auto subsetSumVectorPtr = std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<
                   StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<uint16>>, PartialIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
@@ -673,8 +663,7 @@ namespace seco {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const CompleteIndexVector& outputIndices,
               const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const override {
-                std::unique_ptr<StatisticVector<uint32>> subsetSumVectorPtr =
-                  std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
+                auto subsetSumVectorPtr = std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<
                   StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<float32>>, CompleteIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
@@ -687,8 +676,7 @@ namespace seco {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const PartialIndexVector& outputIndices,
               const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const override {
-                std::unique_ptr<StatisticVector<uint32>> subsetSumVectorPtr =
-                  std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
+                auto subsetSumVectorPtr = std::make_unique<StatisticVector<uint32>>(this->getNumOutputs(), true);
                 return std::make_unique<
                   StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<float32>>, PartialIndexVector, uint32>>(
                   *this->statePtr_, weights, outputIndices, *this->ruleEvaluationFactory_,
@@ -735,7 +723,7 @@ namespace seco {
     template<typename VectorMath>
     static inline std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> createStatistics(
       const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory, const CContiguousView<const uint8>& labelMatrix,
-      std::type_identity<VectorMath> vectorMath) {
+      std::type_identity<VectorMath>) {
         return std::make_unique<SparseDecomposableStatistics<CContiguousView<const uint8>, VectorMath>>(
           labelMatrix, ruleEvaluationFactory);
     }
@@ -743,7 +731,7 @@ namespace seco {
     template<typename VectorMath>
     static inline std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> createStatistics(
       const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory, const BinaryCsrView& labelMatrix,
-      std::type_identity<VectorMath> vectorMath) {
+      std::type_identity<VectorMath>) {
         return std::make_unique<SparseDecomposableStatistics<BinaryCsrView, VectorMath>>(labelMatrix,
                                                                                          ruleEvaluationFactory);
     }

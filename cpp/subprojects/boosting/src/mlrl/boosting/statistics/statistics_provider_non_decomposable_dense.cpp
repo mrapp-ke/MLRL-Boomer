@@ -19,12 +19,14 @@ namespace boosting {
      * A matrix that stores gradients and Hessians that have been calculated using a non-decomposable loss function
      * using C-contiguous arrays.
      *
-     * @tparam StatisticType  The type of the gradients and Hessians
-     * @tparam VectorMath     The type that implements basic operations for calculating with numerical arrays
+     * @tparam StatisticType    The type of the gradients and Hessians
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
+     * @tparam VectorMath       The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename StatisticType, typename VectorMath>
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     class DenseNonDecomposableStatisticMatrix final
-        : public ClearableViewDecorator<ViewDecorator<DenseNonDecomposableStatisticView<StatisticType>>> {
+        : public ClearableViewDecorator<ViewDecorator<
+            DenseStatisticViewAllocator<DenseNonDecomposableStatisticView<StatisticType>, MemoryAllocator>>> {
         public:
 
             /**
@@ -32,8 +34,10 @@ namespace boosting {
              * @param numCols The number of columns in the matrix
              */
             DenseNonDecomposableStatisticMatrix(uint32 numRows, uint32 numCols)
-                : ClearableViewDecorator<ViewDecorator<DenseNonDecomposableStatisticView<StatisticType>>>(
-                    DenseNonDecomposableStatisticView<StatisticType>(numRows, numCols)) {}
+                : ClearableViewDecorator<ViewDecorator<
+                    DenseStatisticViewAllocator<DenseNonDecomposableStatisticView<StatisticType>, MemoryAllocator>>>(
+                    DenseStatisticViewAllocator<DenseNonDecomposableStatisticView<StatisticType>, MemoryAllocator>(
+                      numRows, numCols, math::triangularNumber(numCols))) {}
 
             /**
              * Returns the number rows in the matrix.
@@ -50,7 +54,7 @@ namespace boosting {
              * @return The number of columns
              */
             uint32 getNumCols() const {
-                return this->getView().getNumCols();
+                return this->getView().getNumGradients();
             }
     };
 
@@ -70,14 +74,15 @@ namespace boosting {
              typename VectorMath>
     class DenseNonDecomposableStatistics final
         : public AbstractNonDecomposableStatistics<
-            OutputMatrix, DenseNonDecomposableStatisticMatrix<typename Loss::statistic_type, VectorMath>,
+            OutputMatrix,
+            DenseNonDecomposableStatisticMatrix<typename Loss::statistic_type, MemoryAllocator, VectorMath>,
             NumericCContiguousMatrix<typename Loss::statistic_type>, Loss, EvaluationMeasure,
             INonDecomposableRuleEvaluationFactory, IDecomposableRuleEvaluationFactory> {
         private:
 
             using statistic_type = Loss::statistic_type;
 
-            using StatisticMatrix = DenseNonDecomposableStatisticMatrix<statistic_type, VectorMath>;
+            using StatisticMatrix = DenseNonDecomposableStatisticMatrix<statistic_type, MemoryAllocator, VectorMath>;
 
             using StatisticsState =
               NonDecomposableBoostingStatisticsState<OutputMatrix, StatisticMatrix,
@@ -339,9 +344,9 @@ namespace boosting {
               MultiThreadingSettings multiThreadingSettings) override final {
                 uint32 numRows = this->statePtr_->statisticMatrixPtr->getNumRows();
                 uint32 numCols = this->statePtr_->statisticMatrixPtr->getNumCols();
-                std::unique_ptr<DenseDecomposableStatisticMatrix<statistic_type, VectorMath>>
-                  decomposableStatisticMatrixPtr =
-                    std::make_unique<DenseDecomposableStatisticMatrix<statistic_type, VectorMath>>(numRows, numCols);
+                auto decomposableStatisticMatrixPtr =
+                  std::make_unique<DenseDecomposableStatisticMatrix<statistic_type, MemoryAllocator, VectorMath>>(
+                    numRows, numCols);
                 DenseDecomposableStatisticView<statistic_type>* decomposableStatisticMatrixRawPtr =
                   &decomposableStatisticMatrixPtr->getView();
                 DenseNonDecomposableStatisticView<statistic_type>* nonDecomposableStatisticViewRawPtr =
@@ -379,14 +384,14 @@ namespace boosting {
       createStatistics(std::unique_ptr<Loss> lossPtr, std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
                        const INonDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
                        MultiThreadingSettings multiThreadingSettings, const OutputMatrix& outputMatrix,
-                       std::type_identity<MemoryAllocator> memoryAllocator, std::type_identity<VectorMath> vectorMath) {
+                       std::type_identity<MemoryAllocator>, std::type_identity<VectorMath>) {
         using statistic_type = Loss::statistic_type;
         uint32 numExamples = outputMatrix.numRows;
         uint32 numOutputs = outputMatrix.numCols;
-        std::unique_ptr<DenseNonDecomposableStatisticMatrix<statistic_type, VectorMath>> statisticMatrixPtr =
-          std::make_unique<DenseNonDecomposableStatisticMatrix<statistic_type, VectorMath>>(numExamples, numOutputs);
-        std::unique_ptr<NumericCContiguousMatrix<statistic_type>> scoreMatrixPtr =
-          std::make_unique<NumericCContiguousMatrix<statistic_type>>(numExamples, numOutputs, true);
+        auto statisticMatrixPtr =
+          std::make_unique<DenseNonDecomposableStatisticMatrix<statistic_type, MemoryAllocator, VectorMath>>(
+            numExamples, numOutputs);
+        auto scoreMatrixPtr = std::make_unique<NumericCContiguousMatrix<statistic_type>>(numExamples, numOutputs, true);
         const Loss* lossRawPtr = lossPtr.get();
         const OutputMatrix* outputMatrixPtr = &outputMatrix;
         const CContiguousView<statistic_type>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();
