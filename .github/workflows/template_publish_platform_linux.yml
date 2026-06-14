@@ -78,7 +78,7 @@ jobs:
         with:
           key: ccache-${{ runner.os }}-${{ runner.arch }}-${{ inputs.subproject }}-${{ matrix.build_identifier }}
       - name: Build package
-        uses: pypa/cibuildwheel@v3.4
+        uses: pypa/cibuildwheel@v4.1
         env:
           CIBW_ENVIRONMENT_PASS_LINUX: SUBPROJECTS RELEASE TEST_SUPPORT SIMD_SUPPORT GPU_SUPPORT
           CIBW_BUILD: ${{ matrix.build_identifier }}
