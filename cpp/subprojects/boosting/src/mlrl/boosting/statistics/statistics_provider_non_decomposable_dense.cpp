@@ -342,9 +342,9 @@ namespace boosting {
               MultiThreadingSettings multiThreadingSettings) override final {
                 uint32 numRows = this->statePtr_->statisticMatrixPtr->getNumRows();
                 uint32 numCols = this->statePtr_->statisticMatrixPtr->getNumCols();
-                std::unique_ptr<DenseDecomposableStatisticMatrix<statistic_type, VectorMath>>
-                  decomposableStatisticMatrixPtr =
-                    std::make_unique<DenseDecomposableStatisticMatrix<statistic_type, VectorMath>>(numRows, numCols);
+                auto decomposableStatisticMatrixPtr =
+                  std::make_unique<DenseDecomposableStatisticMatrix<statistic_type, MemoryAllocator, VectorMath>>(
+                    numRows, numCols);
                 DenseDecomposableStatisticView<statistic_type>* decomposableStatisticMatrixRawPtr =
                   &decomposableStatisticMatrixPtr->getView();
                 DenseNonDecomposableStatisticView<statistic_type>* nonDecomposableStatisticViewRawPtr =

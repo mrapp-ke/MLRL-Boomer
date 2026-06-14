@@ -19,13 +19,14 @@ namespace boosting {
      * A matrix that stores gradients and Hessians that have been calculated using a decomposable loss function using
      * C-contiguous arrays.
      *
-     * @tparam StatisticType  The type of the gradients and Hessians
-     * @tparam VectorMath     The type that implements basic operations for calculating with numerical arrays
+     * @tparam StatisticType    The type of the gradients and Hessians
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
+     * @tparam VectorMath       The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename StatisticType, typename VectorMath>
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     class DenseDecomposableStatisticMatrix final
-        : public ClearableViewDecorator<
-            ViewDecorator<DenseStatisticViewAllocator<DenseDecomposableStatisticView<StatisticType>>>> {
+        : public ClearableViewDecorator<ViewDecorator<
+            DenseStatisticViewAllocator<DenseDecomposableStatisticView<StatisticType>, MemoryAllocator>>> {
         public:
 
             /**
@@ -33,10 +34,10 @@ namespace boosting {
              * @param numCols   The number of columns in the matrix
              */
             DenseDecomposableStatisticMatrix(uint32 numRows, uint32 numCols)
-                : ClearableViewDecorator<
-                    ViewDecorator<DenseStatisticViewAllocator<DenseDecomposableStatisticView<StatisticType>>>>(
-                    DenseStatisticViewAllocator<DenseDecomposableStatisticView<StatisticType>>(numRows, numCols,
-                                                                                               numCols)) {}
+                : ClearableViewDecorator<ViewDecorator<
+                    DenseStatisticViewAllocator<DenseDecomposableStatisticView<StatisticType>, MemoryAllocator>>>(
+                    DenseStatisticViewAllocator<DenseDecomposableStatisticView<StatisticType>, MemoryAllocator>(
+                      numRows, numCols, numCols)) {}
 
             /**
              * Returns the number rows in the matrix.
@@ -84,14 +85,14 @@ namespace boosting {
              typename VectorMath>
     class DenseDecomposableStatistics final
         : public AbstractDecomposableStatistics<
-            OutputMatrix, DenseDecomposableStatisticMatrix<typename Loss::statistic_type, VectorMath>,
+            OutputMatrix, DenseDecomposableStatisticMatrix<typename Loss::statistic_type, MemoryAllocator, VectorMath>,
             NumericCContiguousMatrix<typename Loss::statistic_type>, Loss, EvaluationMeasure,
             IDecomposableRuleEvaluationFactory> {
         private:
 
             using statistic_type = Loss::statistic_type;
 
-            using StatisticMatrix = DenseDecomposableStatisticMatrix<statistic_type, VectorMath>;
+            using StatisticMatrix = DenseDecomposableStatisticMatrix<statistic_type, MemoryAllocator, VectorMath>;
 
             using StatisticsState = DecomposableBoostingStatisticsState<OutputMatrix, StatisticMatrix,
                                                                         NumericCContiguousMatrix<statistic_type>, Loss>;
