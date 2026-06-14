@@ -164,4 +164,47 @@ namespace boosting {
                 return numGradients_;
             }
     };
+
+    /**
+     * Allocates the memory, a `DenseStatisticView` provides access to.
+     *
+     * @tparam View             The type of the view
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
+     */
+    template<typename View, typename MemoryAllocator = DefaultMemoryAllocator>
+    class MLRLCOMMON_API DenseStatisticViewAllocator : public View {
+        public:
+
+            /**
+             * @param numRows       The number of rows in the view
+             * @param numGradients  The number of gradients in the view
+             * @param numHessians   The number of Hessians in the view
+             * @param init          True, if all elements in the view should be value-initialized, false otherwise
+             */
+            explicit DenseStatisticViewAllocator(uint32 numRows, uint32 numGradients, uint32 numHessians,
+                                                 bool init = false)
+                : View(MemoryAllocator::template allocateMemory<typename View::value_type>(
+                         numRows * (numGradients + numHessians), init),
+                       numRows, numGradients, numHessians) {}
+
+            /**
+             * @param other A reference to an object of type `DenseStatisticViewAllocator` that should be copied
+             */
+            DenseStatisticViewAllocator(const DenseStatisticViewAllocator<View, MemoryAllocator>& other) : View(other) {
+                throw std::runtime_error("Objects of type DenseStatisticViewAllocator cannot be copied");
+            }
+
+            /**
+             * @param other A reference to an object of type `DenseStatisticViewAllocator` that should be moved
+             */
+            DenseStatisticViewAllocator(DenseStatisticViewAllocator<View, MemoryAllocator>&& other)
+                : View(std::move(other)) {
+                other.release();
+            }
+
+            virtual ~DenseStatisticViewAllocator() override {
+                MemoryAllocator::freeMemory(View::array);
+            }
+    };
+
 }
