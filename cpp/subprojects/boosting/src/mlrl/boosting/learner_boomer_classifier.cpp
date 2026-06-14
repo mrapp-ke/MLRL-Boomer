@@ -79,11 +79,10 @@ namespace boosting {
                                                               Blas<float64>::SpmvFunction dspmvFunction,
                                                               Lapack<float32>::SysvFunction ssysvFunction,
                                                               Lapack<float64>::SysvFunction dsysvFunction) {
-        std::unique_ptr<BoostedRuleLearnerConfigurator> configuratorPtr =
-          std::make_unique<BoostedRuleLearnerConfigurator>(
-            std::move(configPtr), Blas<float32>::Routines(sdotFunction, sspmvFunction),
-            Blas<float64>::Routines(ddotFunction, dspmvFunction), Lapack<float32>::Routines(ssysvFunction),
-            Lapack<float64>::Routines(dsysvFunction));
+        auto configuratorPtr = std::make_unique<BoostedRuleLearnerConfigurator>(
+          std::move(configPtr), Blas<float32>::Routines(sdotFunction, sspmvFunction),
+          Blas<float64>::Routines(ddotFunction, dspmvFunction), Lapack<float32>::Routines(ssysvFunction),
+          Lapack<float64>::Routines(dsysvFunction));
         return std::make_unique<BoomerClassifier>(std::move(configuratorPtr));
     }
 

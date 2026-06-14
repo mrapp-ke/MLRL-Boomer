@@ -8,7 +8,7 @@
 
 static inline std::unique_ptr<IHead> createHeadInternally(const PartialPrediction<uint8>& prediction) {
     uint32 numElements = prediction.getNumElements();
-    std::unique_ptr<PartialHead<uint8>> headPtr = std::make_unique<PartialHead<uint8>>(numElements);
+    auto headPtr = std::make_unique<PartialHead<uint8>>(numElements);
     std::copy(prediction.values_cbegin(), prediction.values_cend(), headPtr->values_begin());
     std::copy(prediction.indices_cbegin(), prediction.indices_cend(), headPtr->indices_begin());
     return headPtr;
@@ -16,8 +16,7 @@ static inline std::unique_ptr<IHead> createHeadInternally(const PartialPredictio
 
 template<typename ScoreType>
 static inline std::unique_ptr<IHead> createHeadInternally(const PartialPrediction<ScoreType>& prediction) {
-    std::unique_ptr<PartialHead<ScoreType>> headPtr =
-      std::make_unique<PartialHead<ScoreType>>(prediction.getNumElements());
+    auto headPtr = std::make_unique<PartialHead<ScoreType>>(prediction.getNumElements());
     std::copy(prediction.values_cbegin(), prediction.values_cend(), headPtr->values_begin());
     std::copy(prediction.indices_cbegin(), prediction.indices_cend(), headPtr->indices_begin());
     return headPtr;

@@ -60,8 +60,7 @@ class CContiguousLabelMatrix final : public DenseMatrixDecorator<CContiguousView
 
         std::unique_ptr<LabelVector> createLabelVector(uint32 row) const override {
             uint32 numCols = this->getNumCols();
-            std::unique_ptr<ResizableBinarySparseArrayVector> labelVectorPtr =
-              std::make_unique<ResizableBinarySparseArrayVector>(numCols);
+            auto labelVectorPtr = std::make_unique<ResizableBinarySparseArrayVector>(numCols);
             auto iterator = labelVectorPtr->begin();
             value_const_iterator labelIterator = this->values_cbegin(row);
             uint32 n = 0;

@@ -32,13 +32,11 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
                                              const IColumnWiseFeatureMatrix& featureMatrix,
                                              const IRowWiseLabelMatrix& labelMatrix) const override {
             // Create stopping criteria...
-            std::unique_ptr<StoppingCriterionListFactory> stoppingCriterionFactoryPtr =
-              std::make_unique<StoppingCriterionListFactory>();
+            auto stoppingCriterionFactoryPtr = std::make_unique<StoppingCriterionListFactory>();
             configurator_.createStoppingCriterionFactories(*stoppingCriterionFactoryPtr);
 
             // Create post-optimization phases...
-            std::unique_ptr<PostOptimizationPhaseListFactory> postOptimizationFactoryPtr =
-              std::make_unique<PostOptimizationPhaseListFactory>();
+            auto postOptimizationFactoryPtr = std::make_unique<PostOptimizationPhaseListFactory>();
             configurator_.createPostOptimizationPhaseFactories(*postOptimizationFactoryPtr, featureMatrix, labelMatrix);
 
             // Create output space info...
