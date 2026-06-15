@@ -16,6 +16,14 @@
 namespace simd {
 
     template<typename Arch, typename T>
+    uint32 getPadding(Arch, uint32 numElements) {
+        constexpr std::size_t alignment = Arch::alignment();
+        constexpr uint32 numElementsPerBatch = static_cast<uint32>(alignment / sizeof(T));
+        uint32 remainder = numElements % numElementsPerBatch;
+        return remainder == 0 ? 0 : numElementsPerBatch - remainder;
+    }
+
+    template<typename Arch, typename T>
     T* allocateMemory(Arch, uint32 numElements, bool init) {
         constexpr std::size_t alignment = Arch::alignment();
         std::size_t bytes = static_cast<std::size_t>(numElements) * sizeof(T);
