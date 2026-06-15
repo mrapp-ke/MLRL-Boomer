@@ -23,10 +23,12 @@ namespace boosting {
              * @param numRows       The number of rows in the view
              * @param numGradients  The number of gradients in each row of the view
              * @param numHessians   The number of Hessians in each row of the view
+             * @param innerPadding  The number of unused elements to be inserted between gradients and Hessians
+             * @param padding       The number of unused elements to be inserted at the end of each row
              */
             DenseNonDecomposableStatisticView(StatisticType* array, uint32 numRows, uint32 numGradients,
-                                              uint32 numHessians)
-                : DenseStatisticView<StatisticType>(array, numRows, numGradients, numHessians) {}
+                                              uint32 numHessians, uint32 innerPadding = 0, uint32 padding = 0)
+                : DenseStatisticView<StatisticType>(array, numRows, numGradients, numHessians, innerPadding, padding) {}
 
             /**
              * @param other A reference to an object of type `DenseNonDecomposableStatisticView` that should be copied

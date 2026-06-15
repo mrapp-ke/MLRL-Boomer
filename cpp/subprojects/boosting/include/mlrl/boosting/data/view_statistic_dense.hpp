@@ -5,7 +5,7 @@
 
 #include "mlrl/boosting/math/scalar_math.hpp"
 #include "mlrl/boosting/util/dll_exports.hpp"
-#include "mlrl/common/data/view_matrix_c_contiguous.hpp"
+#include "mlrl/common/data/view_matrix_dense.hpp"
 
 namespace boosting {
 
@@ -16,10 +16,12 @@ namespace boosting {
      * @tparam StatisticType The type of the gradients and Hessians
      */
     template<typename StatisticType>
-    class MLRLBOOSTING_API DenseStatisticView : public CContiguousView<StatisticType> {
+    class MLRLBOOSTING_API DenseStatisticView : public DenseMatrix<StatisticType> {
         private:
 
             const uint32 numGradients_;
+
+            const uint32 innerPadding_;
 
         public:
 
@@ -28,44 +30,95 @@ namespace boosting {
              * @param numRows       The number of rows in the view
              * @param numGradients  The number of gradients in each row of the view
              * @param numHessians   The number of Hessians in each row of the view
+             * @param innerPadding  The number of unused elements to be inserted between gradients and Hessians
+             * @param endPadding    The number of unused elements to be inserted at the end of each row
              */
-            DenseStatisticView(StatisticType* array, uint32 numRows, uint32 numGradients, uint32 numHessians)
-                : CContiguousView<StatisticType>(array, numRows, numGradients + numHessians),
-                  numGradients_(numGradients) {}
+            DenseStatisticView(StatisticType* array, uint32 numRows, uint32 numGradients, uint32 numHessians,
+                               uint32 innerPadding = 0, uint32 padding = 0)
+                : DenseMatrix<StatisticType>(array, numRows, numGradients + numHessians, padding),
+                  numGradients_(numGradients), innerPadding_(innerPadding) {}
 
             /**
              * @param other A reference to an object of type `DenseStatisticView` that should be copied
              */
             DenseStatisticView(const DenseStatisticView<StatisticType>& other)
-                : CContiguousView<StatisticType>(other), numGradients_(other.numGradients_) {}
+                : DenseMatrix<StatisticType>(other), numGradients_(other.numGradients_),
+                  innerPadding_(other.innerPadding_) {}
 
             /**
              * @param other A reference to an object of type `DenseStatisticView` that should be moved
              */
             DenseStatisticView(DenseStatisticView<StatisticType>&& other)
-                : CContiguousView<StatisticType>(std::move(other)), numGradients_(other.numGradients_) {}
+                : DenseMatrix<StatisticType>(std::move(other)), numGradients_(other.numGradients_),
+                  innerPadding_(other.innerPadding_) {}
 
             virtual ~DenseStatisticView() override {}
 
             /**
              * An iterator that provides read-only access to the gradients.
              */
-            using gradient_const_iterator = CContiguousView<StatisticType>::value_const_iterator;
+            using gradient_const_iterator = DenseMatrix<StatisticType>::value_const_iterator;
 
             /**
              * An iterator that provides access to the gradients and allows to modify them.
              */
-            using gradient_iterator = CContiguousView<StatisticType>::value_iterator;
+            using gradient_iterator = DenseMatrix<StatisticType>::value_iterator;
 
             /**
              * An iterator that provides read-only access to the Hessians.
              */
-            using hessian_const_iterator = CContiguousView<StatisticType>::value_const_iterator;
+            using hessian_const_iterator = DenseMatrix<StatisticType>::value_const_iterator;
 
             /**
              * An iterator that provides access to the Hessians and allows to modify them.
              */
-            using hessian_iterator = CContiguousView<StatisticType>::value_iterator;
+            using hessian_iterator = DenseMatrix<StatisticType>::value_iterator;
+
+            /**
+             * Returns a `value_const_iterator` to the beginning of a specific row in the view.
+             *
+             * @param row   The index of the row
+             * @return      A `value_const_iterator` to the beginning of the row
+             */
+            typename DenseMatrix<StatisticType>::value_const_iterator values_cbegin(uint32 row) const {
+                return &View<StatisticType>::array[row
+                                                   * (Matrix::numCols + View<StatisticType>::padding + innerPadding_)];
+            }
+
+            /**
+             * Returns a `value_const_iterator` to the end of a specific row in the view.
+             *
+             * @param row   The index of the row
+             * @return      A `value_const_iterator` to the end of the row
+             */
+            typename DenseMatrix<StatisticType>::value_const_iterator values_cend(uint32 row) const {
+                return &View<StatisticType>::array[(row
+                                                    * (Matrix::numCols + View<StatisticType>::padding + innerPadding_))
+                                                   + Matrix::numCols + innerPadding_];
+            }
+
+            /**
+             * Returns a `value_iterator` to the beginning of a specific row in the view.
+             *
+             * @param row   The index of the row
+             * @return      A `value_iterator` to the beginning of the row
+             */
+            typename DenseMatrix<StatisticType>::value_iterator values_begin(uint32 row) {
+                return &View<StatisticType>::array[row
+                                                   * (Matrix::numCols + View<StatisticType>::padding + innerPadding_)];
+            }
+
+            /**
+             * Returns a `value_iterator` to the end of a specific row in the view.
+             *
+             * @param row   The index of the row
+             * @return      A `value_iterator` to the end of the row
+             */
+            typename DenseMatrix<StatisticType>::value_iterator values_end(uint32 row) {
+                return &View<StatisticType>::array[(row
+                                                    * (Matrix::numCols + View<StatisticType>::padding + innerPadding_))
+                                                   + Matrix::numCols + innerPadding_];
+            }
 
             /**
              * Returns a `gradient_const_iterator` to the beginning of the gradients at a specific row.
@@ -114,7 +167,7 @@ namespace boosting {
              * @return      A `hessian_const_iterator` to the beginning of the given row
              */
             hessian_const_iterator hessians_cbegin(uint32 row) const {
-                return &(this->values_cbegin(row))[numGradients_];
+                return &(this->values_cbegin(row))[numGradients_ + innerPadding_];
             }
 
             /**
@@ -124,7 +177,7 @@ namespace boosting {
              * @return      A `hessian_const_iterator` to the end of the given row
              */
             hessian_const_iterator hessians_cend(uint32 row) const {
-                return &(this->values_cbegin(row))[this->numCols];
+                return &(this->values_cbegin(row))[this->numCols + innerPadding_];
             }
 
             /**
@@ -134,7 +187,7 @@ namespace boosting {
              * @return      A `hessian_iterator` to the beginning of the given row
              */
             hessian_iterator hessians_begin(uint32 row) {
-                return &(this->values_begin(row))[numGradients_];
+                return &(this->values_begin(row))[numGradients_ + innerPadding_];
             }
 
             /**
@@ -144,7 +197,7 @@ namespace boosting {
              * @return      A `hessian_iterator` to the end of the given row
              */
             hessian_iterator hessians_end(uint32 row) {
-                return &(this->values_begin(row))[this->numCols];
+                return &(this->values_begin(row))[this->numCols + innerPadding_];
             }
 
             /**
@@ -173,6 +226,16 @@ namespace boosting {
             uint32 getNumHessians() const {
                 return math::triangularNumber(numGradients_);
             }
+
+            /**
+             * Sets all values in the view to zero.
+             */
+            void clear() {
+                std::fill(View<StatisticType>::array,
+                          View<StatisticType>::array
+                            + (Matrix::numRows * (Matrix::numCols + View<StatisticType>::padding + innerPadding_)),
+                          (StatisticType) 0);
+            }
     };
 
     /**
@@ -193,9 +256,16 @@ namespace boosting {
              */
             explicit DenseStatisticViewAllocator(uint32 numRows, uint32 numGradients, uint32 numHessians,
                                                  bool init = false)
-                : View(MemoryAllocator::template allocateMemory<typename View::value_type>(
-                         numRows * (numGradients + numHessians), init),
-                       numRows, numGradients, numHessians) {}
+                : View(
+                    MemoryAllocator::template allocateMemory<typename View::value_type>(
+                      numRows
+                        * (numGradients + MemoryAllocator::template getPadding<typename View::value_type>(numGradients)
+                           + numHessians
+                           + MemoryAllocator::template getPadding<typename View::value_type>(numHessians)),
+                      init),
+                    numRows, numGradients, numHessians,
+                    MemoryAllocator::template getPadding<typename View::value_type>(numGradients),
+                    MemoryAllocator::template getPadding<typename View::value_type>(numHessians)) {}
 
             /**
              * @param other A reference to an object of type `DenseStatisticViewAllocator` that should be copied
