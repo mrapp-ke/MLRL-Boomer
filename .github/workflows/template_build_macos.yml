@@ -30,6 +30,7 @@ env:
   MULTI_THREADING_SUPPORT: ${{ inputs.multi_threading_support }}
   SIMD_SUPPORT: ${{ inputs.simd_support }}
   GPU_SUPPORT: ${{ inputs.gpu_support }}
+  BUILDTYPE: debugoptimized
 jobs:
   macos_build:
     name: Test MacOS build
