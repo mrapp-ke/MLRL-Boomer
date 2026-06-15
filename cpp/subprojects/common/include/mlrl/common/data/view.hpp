@@ -24,21 +24,27 @@ class MLRLCOMMON_API View {
         T* array;
 
         /**
+         * The number of unused elements inserted into the view where necessary to ensure aligned iterator access.
+         */
+        uint32 padding;
+
+        /**
          * @param array         A pointer to an array of template type `T` that stores the values, the view should
          *                      provide access to
          * @param numElements   The number of elements in the view
+         * @param padding       The number of unused elements to be inserted into the view where necessary
          */
-        explicit View(T* array, uint32 numElements = 0) : array(array) {}
+        explicit View(T* array, uint32 numElements = 0, uint32 padding = 0) : array(array), padding(padding) {}
 
         /**
          * @param other A const reference to an object of type `View` that should be copied
          */
-        View(const View<T>& other) : array(other.array) {}
+        View(const View<T>& other) : array(other.array), padding(other.padding) {}
 
         /**
          * @param other A reference to an object of type `View` that should be moved
          */
-        View(View<T>&& other) : array(other.array) {}
+        View(View<T>&& other) : array(other.array), padding(other.padding) {}
 
         virtual ~View() {}
 
