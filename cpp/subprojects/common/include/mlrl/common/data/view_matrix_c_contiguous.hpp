@@ -22,8 +22,10 @@ class MLRLCOMMON_API CContiguousView : public DenseMatrix<T> {
          *                  access to
          * @param numRows   The number of rows in the view
          * @param numCols   The number of columns in the view
+         * @param padding   The number of unused elements to be inserted at the end of each row
          */
-        CContiguousView(T* array, uint32 numRows, uint32 numCols) : DenseMatrix<T>(array, numRows, numCols) {}
+        CContiguousView(T* array, uint32 numRows, uint32 numCols, uint32 padding = 0)
+            : DenseMatrix<T>(array, numRows, numCols, padding) {}
 
         /**
          * @param other A const reference to an object of type `CContiguousView` that should be copied
@@ -74,7 +76,7 @@ class MLRLCOMMON_API CContiguousView : public DenseMatrix<T> {
          * @return      A `value_const_iterator` to the beginning of the row
          */
         typename DenseMatrix<T>::value_const_iterator values_cbegin(uint32 row) const {
-            return &DenseMatrix<T>::array[row * Matrix::numCols];
+            return &DenseMatrix<T>::array[row * (Matrix::numCols + View<T>::padding)];
         }
 
         /**
@@ -84,7 +86,7 @@ class MLRLCOMMON_API CContiguousView : public DenseMatrix<T> {
          * @return      A `value_const_iterator` to the end of the row
          */
         typename DenseMatrix<T>::value_const_iterator values_cend(uint32 row) const {
-            return &DenseMatrix<T>::array[(row + 1) * Matrix::numCols];
+            return &DenseMatrix<T>::array[(row * (Matrix::numCols + View<T>::padding)) + Matrix::numCols];
         }
 
         /**
@@ -94,7 +96,7 @@ class MLRLCOMMON_API CContiguousView : public DenseMatrix<T> {
          * @return      A `value_iterator` to the beginning of the row
          */
         typename DenseMatrix<T>::value_iterator values_begin(uint32 row) {
-            return &DenseMatrix<T>::array[row * Matrix::numCols];
+            return &DenseMatrix<T>::array[row * (Matrix::numCols + View<T>::padding)];
         }
 
         /**
@@ -104,7 +106,55 @@ class MLRLCOMMON_API CContiguousView : public DenseMatrix<T> {
          * @return      A `value_iterator` to the end of the row
          */
         typename DenseMatrix<T>::value_iterator values_end(uint32 row) {
-            return &DenseMatrix<T>::array[(row + 1) * Matrix::numCols];
+            return &DenseMatrix<T>::array[(row * (Matrix::numCols + View<T>::padding)) + Matrix::numCols];
+        }
+
+        /**
+         * Sets all values in the view to zero.
+         */
+        void clear() {
+            std::fill(DenseMatrix<T>::array,
+                      DenseMatrix<T>::array + (Matrix::numRows * (Matrix::numCols + View<T>::padding)), (T) 0);
+        }
+};
+
+/**
+ * Allocates the memory, a `CContiguousView` provides access to.
+ *
+ * @tparam Matrix           The type of the view
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
+ */
+template<typename Matrix, typename MemoryAllocator = DefaultMemoryAllocator>
+class MLRLCOMMON_API CContiguousViewAllocator : public Matrix {
+    public:
+
+        /**
+         * @param numRows   The number of rows in the view
+         * @param numCols   The number of columns in the view
+         * @param init      True, if all elements in the view should be value-initialized, false otherwise
+         */
+        CContiguousViewAllocator(uint32 numRows, uint32 numCols, bool init = false)
+            : Matrix(MemoryAllocator::template allocateMemory<typename Matrix::value_type>(
+                       numRows * (numCols + MemoryAllocator::template getPadding<typename Matrix::value_type>(numCols)),
+                       init),
+                     numRows, numCols, MemoryAllocator::template getPadding<typename Matrix::value_type>(numCols)) {}
+
+        /**
+         * @param other A reference to an object of type `CContiguousViewAllocator` that should be copied
+         */
+        CContiguousViewAllocator(const CContiguousViewAllocator<Matrix, MemoryAllocator>& other) : Matrix(other) {
+            throw std::runtime_error("Objects of type CContiguousViewAllocator cannot be copied");
+        }
+
+        /**
+         * @param other A reference to an object of type `CContiguousViewAllocator` that should be moved
+         */
+        CContiguousViewAllocator(CContiguousViewAllocator<Matrix, MemoryAllocator>&& other) : Matrix(std::move(other)) {
+            other.release();
+        }
+
+        virtual ~CContiguousViewAllocator() override {
+            MemoryAllocator::freeMemory(Matrix::array);
         }
 };
 
@@ -114,4 +164,4 @@ class MLRLCOMMON_API CContiguousView : public DenseMatrix<T> {
  * @tparam T The type of the values stored in the `CContiguousView`
  */
 template<typename T>
-using AllocatedCContiguousView = DenseMatrixAllocator<CContiguousView<T>>;
+using AllocatedCContiguousView = CContiguousViewAllocator<CContiguousView<T>>;
