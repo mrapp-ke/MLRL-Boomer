@@ -43,6 +43,7 @@ env:
   SIMD_SUPPORT: ${{ inputs.simd_support }}
   SIMD_ARCHITECTURE: ${{ inputs.simd_architecture }}
   GPU_SUPPORT: ${{ inputs.gpu_support }}
+  BUILDTYPE: debugoptimized
 jobs:
   linux_build:
     name: Test Linux build
