@@ -14,7 +14,7 @@
  * @tparam T The type of the values, the view provides access to
  */
 template<typename T>
-class MLRLCOMMON_API DenseMatrix : public BaseView<T>,
+class MLRLCOMMON_API DenseMatrix : public View<T>,
                                    public Matrix {
     public:
 
@@ -24,35 +24,35 @@ class MLRLCOMMON_API DenseMatrix : public BaseView<T>,
          * @param numRows   The number of rows in the view
          * @param numCols   The number of columns in the view
          */
-        DenseMatrix(T* array, uint32 numRows, uint32 numCols) : BaseView<T>(array), Matrix(numRows, numCols) {}
+        DenseMatrix(T* array, uint32 numRows, uint32 numCols) : View<T>(array), Matrix(numRows, numCols) {}
 
         /**
          * @param other A const reference to an object of type `DenseMatrix` that should be copied
          */
-        DenseMatrix(const DenseMatrix<T>& other) : BaseView<T>(other), Matrix(std::move(other)) {}
+        DenseMatrix(const DenseMatrix<T>& other) : View<T>(other), Matrix(std::move(other)) {}
 
         /**
          * @param other A reference to an object of type `DenseMatrix` that should be moved
          */
-        DenseMatrix(DenseMatrix<T>&& other) : BaseView<T>(std::move(other)), Matrix(std::move(other)) {}
+        DenseMatrix(DenseMatrix<T>&& other) : View<T>(std::move(other)), Matrix(std::move(other)) {}
 
         virtual ~DenseMatrix() override {}
 
         /**
          * An iterator that provides read-only access to the values in the view.
          */
-        using value_const_iterator = const BaseView<T>::value_type*;
+        using value_const_iterator = const View<T>::value_type*;
 
         /**
          * An iterator that provides access to the values in the view and allows to modify them.
          */
-        using value_iterator = BaseView<T>::value_type*;
+        using value_iterator = View<T>::value_type*;
 
         /**
          * Sets all values stored in the matrix to zero.
          */
         void clear() {
-            std::fill(BaseView<T>::array, BaseView<T>::array + (Matrix::numRows * Matrix::numCols), (T) 0);
+            std::fill(View<T>::array, View<T>::array + (Matrix::numRows * Matrix::numCols), (T) 0);
         }
 };
 
