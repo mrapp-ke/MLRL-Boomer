@@ -67,8 +67,8 @@ namespace boosting {
       const DenseDecomposableStatisticView<StatisticType>& view, uint32 row, const PartialIndexVector& indices) {
         uint32 numElements = this->getNumElements();
         auto indexIterator = indices.cbegin();
-        VectorMath::add(this->view.gradients_begin(), view.gradients_cbegin(row), indexIterator, numElements);
-        VectorMath::add(this->view.hessians_begin(), view.hessians_cbegin(row), indexIterator, numElements);
+        VectorMath::addToSubset(this->view.gradients_begin(), view.gradients_cbegin(row), indexIterator, numElements);
+        VectorMath::addToSubset(this->view.hessians_begin(), view.hessians_cbegin(row), indexIterator, numElements);
     }
 
     template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
@@ -84,10 +84,10 @@ namespace boosting {
       StatisticType weight) {
         uint32 numElements = this->getNumElements();
         auto indexIterator = indices.cbegin();
-        VectorMath::addWeighted(this->view.gradients_begin(), view.gradients_cbegin(row), indexIterator, numElements,
-                                weight);
-        VectorMath::addWeighted(this->view.hessians_begin(), view.hessians_cbegin(row), indexIterator, numElements,
-                                weight);
+        VectorMath::addToSubsetWeighted(this->view.gradients_begin(), view.gradients_cbegin(row), indexIterator,
+                                        numElements, weight);
+        VectorMath::addToSubsetWeighted(this->view.hessians_begin(), view.hessians_cbegin(row), indexIterator,
+                                        numElements, weight);
     }
 
     template<typename StatisticType, typename MemoryAllocator, typename VectorMath>

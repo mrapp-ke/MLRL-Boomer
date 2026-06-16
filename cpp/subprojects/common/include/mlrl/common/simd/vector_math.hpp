@@ -87,7 +87,7 @@ struct SimdVectorMath {
          *                      array `b` that correspond to the elements in the array `a`
          */
         template<typename T>
-        static inline void add(T* a, const T* b, const uint32* indices, uint32 numElements) {
+        static inline void addToSubset(T* a, const T* b, const uint32* indices, uint32 numElements) {
             auto dispatched = xsimd::dispatch<util::simd_architectures>([&](auto arch) {
                 simd::addFromSubset(arch, a, b, indices, numElements);
             });
@@ -109,7 +109,8 @@ struct SimdVectorMath {
          *                      array `b` that correspond to the elements in the array `a`
          */
         template<typename T, typename Weight>
-        static inline void addWeighted(T* a, const T* b, const uint32* indices, uint32 numElements, Weight weight) {
+        static inline void addToSubsetWeighted(T* a, const T* b, const uint32* indices, uint32 numElements,
+                                               Weight weight) {
             auto dispatched = xsimd::dispatch<util::simd_architectures>([&](auto arch) {
                 simd::addWeightedFromSubset(arch, a, b, indices, numElements, weight);
             });

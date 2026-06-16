@@ -73,7 +73,7 @@ struct SequentialVectorMath {
          * array `b` that correspond to the elements in the array `a`
          */
         template<typename T>
-        static inline void add(T* a, const T* b, const uint32* indices, uint32 numElements) {
+        static inline void addToSubset(T* a, const T* b, const uint32* indices, uint32 numElements) {
             for (uint32 i = 0; i < numElements; i++) {
                 uint32 index = indices[i];
                 a[i] += b[index];
@@ -95,7 +95,8 @@ struct SequentialVectorMath {
          * array `b` that correspond to the elements in the array `a`
          */
         template<typename T, typename Weight>
-        static inline void addWeighted(T* a, const T* b, const uint32* indices, uint32 numElements, Weight weight) {
+        static inline void addToSubsetWeighted(T* a, const T* b, const uint32* indices, uint32 numElements,
+                                               Weight weight) {
             for (uint32 i = 0; i < numElements; i++) {
                 uint32 index = indices[i];
                 a[i] += (b[index] * weight);
