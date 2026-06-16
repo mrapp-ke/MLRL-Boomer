@@ -6,7 +6,6 @@
 #include "mlrl/common/util/dll_exports.hpp"
 #include "mlrl/common/util/memory.hpp"
 
-#include <initializer_list>
 #include <stdexcept>
 #include <utility>
 
@@ -27,15 +26,9 @@ class MLRLCOMMON_API View {
         /**
          * @param array         A pointer to an array of template type `T` that stores the values, the view should
          *                      provide access to
-         * @param dimensions    The number of elements in each dimension of the view
+         * @param numElements   The number of elements in the view
          */
-        View(T* array, std::initializer_list<uint32> dimensions) : array(array) {}
-
-        /**
-         * @param array A pointer to an array of template type `T` that stores the values, the view should provide
-         *              access to
-         */
-        explicit View(T* array) : array(array) {}
+        explicit View(T* array, uint32 numElements = 0) : array(array) {}
 
         /**
          * @param other A const reference to an object of type `View` that should be copied
@@ -132,7 +125,7 @@ class MLRLCOMMON_API Allocator : public View {
          */
         explicit Allocator(uint32 numElements, bool init = false)
             : View(MemoryAllocator::template allocateMemory<typename View::value_type>(numElements, init),
-                   {numElements}) {}
+                   numElements) {}
 
         /**
          * @param other A reference to an object of type `Allocator` that should be copied

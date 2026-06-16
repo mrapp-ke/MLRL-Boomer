@@ -84,14 +84,6 @@ class MLRLCOMMON_API Vector : public View<T> {
         /**
          * @param array         A pointer to an array of template type `T` that stores the values, the view should
          *                      provide access to
-         * @param dimensions    The number of elements in each dimension of the view
-         */
-        Vector(T* array, std::initializer_list<uint32> dimensions)
-            : View<T>(array), numElements(dimensions.begin()[0]) {}
-
-        /**
-         * @param array         A pointer to an array of template type `T` that stores the values, the view should
-         *                      provide access to
          * @param numElements   The number of elements in the view
          */
         Vector(T* array, uint32 numElements) : View<T>(array), numElements(numElements) {}
