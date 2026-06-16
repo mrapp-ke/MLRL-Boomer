@@ -121,6 +121,9 @@ The parameters listed below allow to configure the algorithm used for the induct
   `max_conditions` *(Default value = `0`)*
   : The maximum number of conditions to be included in a rule's body. The given value must be at least 1 or 0, if the number of conditions should not be restricted.
 
+  `allow_negations` *(Default value = `'true'`)*
+  : `'true'`, if rules with nominal conditions that use negations should be allowed, `'false'` otherwise.
+
   `min_coverage` *(Default value = `1`)*
   : The minimum number of training examples that must be covered by a rule. The given value must be at least 1.
 
@@ -145,6 +148,9 @@ The parameters listed below allow to configure the algorithm used for the induct
 
   `max_conditions` *(Default value = `0`)*
   : The maximum number of conditions to be included in a rule's body. The given value must be at least 2 or 0, if the number of conditions should not be restricted.
+
+  `allow_negations` *(Default value = `'true'`)*
+  : `'true'`, if rules with nominal conditions that use negations should be allowed, `'false'` otherwise.
 
   `min_coverage` *(Default value = `1`)*
   : The minimum number of training examples that must be covered by a rule. The given value must be at least 1.
@@ -653,12 +659,12 @@ The following parameters allow to configure the mechanism that is employed for o
   `use_probability_calibration` *(Default value = `'true'`)*
   : `'true'`, if a model for the calibration of probabilities should be used, if available, `'false'` otherwise.
 
-## Multi-Threading
+## Parallelization
 
-The following parameters allow to specify whether multi-threading should be used for different aspects of the algorithm. Depending on your hardware, they may help to reduce the time needed for training or prediction.
+The following parameters allow to specify whether parallelization techniques should be used for different aspects of the algorithm. Depending on your hardware, they may help to reduce the time needed for training or prediction.
 
 ```{important}
-To be able to use the algorithm's multi-threading capabilities, it must have been compiled with multi-threading support enabled, which should be the case with pre-built packages available on [PyPI](https://pypi.org/). Please refer to the section {ref}`build-options` if you intend to compile the program yourself, or if you want to check if multi-threading support is enabled for your installation.
+To be able to use the algorithm's multi-threading capabilities, it must have been compiled with multi-threading support enabled. Accordingly, if single instruction, multiple data (SIMD) operations should be used, the algorithm must have been compiled with SIMD support enabled. These prerequisites should be met when using pre-built packages available on [PyPI](https://pypi.org/). Please refer to the section {ref}`build-options` if you intend to compile the program yourself, or if you want to check if multi-threading and SIMD support are enabled for your installation.
 ```
 
 ### `parallel_rule_refinement`
@@ -713,3 +719,13 @@ To be able to use the algorithm's multi-threading capabilities, it must have bee
 
   `num_preferred_threads` *(Default value = `0`)*
   : The number of preferred threads. The given value must be at least 1 or 0, if the number of cores available on the machine should be used. If not enough CPU cores are available or if multi-threading support is disabled, as many threads as possible are used.
+
+### `simd`
+
+> *Default value = `'true'`*
+
+`'false'`
+: No SIMD operations are used for parallelizing vector calculations.
+
+`'true'`
+: If supported by the GPU, SIMD operations are used for parallelizing vector calculations.
