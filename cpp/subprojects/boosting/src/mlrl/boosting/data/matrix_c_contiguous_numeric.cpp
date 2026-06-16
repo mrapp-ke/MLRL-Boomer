@@ -1,16 +1,18 @@
 #include "mlrl/boosting/data/matrix_c_contiguous_numeric.hpp"
 
+#include "mlrl/common/simd/memory.hpp"
+
 namespace boosting {
 
-    template<typename T>
-    NumericCContiguousMatrix<T>::NumericCContiguousMatrix(uint32 numRows, uint32 numCols, bool init)
-        : DenseMatrixDecorator<AllocatedCContiguousView<T>>(AllocatedCContiguousView<T>(numRows, numCols, init)) {}
+    template<typename T, typename MemoryAllocator>
+    NumericCContiguousMatrix<T, MemoryAllocator>::NumericCContiguousMatrix(uint32 numRows, uint32 numCols, bool init)
+        : DenseMatrixDecorator<DenseMatrixAllocator<CContiguousView<T>, MemoryAllocator>>(
+            DenseMatrixAllocator<CContiguousView<T>, MemoryAllocator>(numRows, numCols, init)) {}
 
-    template<typename T>
-    void NumericCContiguousMatrix<T>::addToRowFromSubset(uint32 row, typename View<T>::const_iterator begin,
-                                                         typename View<T>::const_iterator end,
-                                                         CompleteIndexVector::const_iterator indicesBegin,
-                                                         CompleteIndexVector::const_iterator indicesEnd) {
+    template<typename T, typename MemoryAllocator>
+    void NumericCContiguousMatrix<T, MemoryAllocator>::addToRowFromSubset(
+      uint32 row, typename View<T>::const_iterator begin, typename View<T>::const_iterator end,
+      CompleteIndexVector::const_iterator indicesBegin, CompleteIndexVector::const_iterator indicesEnd) {
         auto iterator = this->values_begin(row);
         uint32 numCols = this->getNumCols();
 
@@ -19,11 +21,10 @@ namespace boosting {
         }
     }
 
-    template<typename T>
-    void NumericCContiguousMatrix<T>::addToRowFromSubset(uint32 row, typename View<T>::const_iterator begin,
-                                                         typename View<T>::const_iterator end,
-                                                         PartialIndexVector::const_iterator indicesBegin,
-                                                         PartialIndexVector::const_iterator indicesEnd) {
+    template<typename T, typename MemoryAllocator>
+    void NumericCContiguousMatrix<T, MemoryAllocator>::addToRowFromSubset(
+      uint32 row, typename View<T>::const_iterator begin, typename View<T>::const_iterator end,
+      PartialIndexVector::const_iterator indicesBegin, PartialIndexVector::const_iterator indicesEnd) {
         auto iterator = this->values_begin(row);
         uint32 numCols = indicesEnd - indicesBegin;
 
@@ -33,11 +34,10 @@ namespace boosting {
         }
     }
 
-    template<typename T>
-    void NumericCContiguousMatrix<T>::removeFromRowFromSubset(uint32 row, typename View<T>::const_iterator begin,
-                                                              typename View<T>::const_iterator end,
-                                                              CompleteIndexVector::const_iterator indicesBegin,
-                                                              CompleteIndexVector::const_iterator indicesEnd) {
+    template<typename T, typename MemoryAllocator>
+    void NumericCContiguousMatrix<T, MemoryAllocator>::removeFromRowFromSubset(
+      uint32 row, typename View<T>::const_iterator begin, typename View<T>::const_iterator end,
+      CompleteIndexVector::const_iterator indicesBegin, CompleteIndexVector::const_iterator indicesEnd) {
         auto iterator = this->values_begin(row);
         uint32 numCols = this->getNumCols();
 
@@ -46,11 +46,10 @@ namespace boosting {
         }
     }
 
-    template<typename T>
-    void NumericCContiguousMatrix<T>::removeFromRowFromSubset(uint32 row, typename View<T>::const_iterator begin,
-                                                              typename View<T>::const_iterator end,
-                                                              PartialIndexVector::const_iterator indicesBegin,
-                                                              PartialIndexVector::const_iterator indicesEnd) {
+    template<typename T, typename MemoryAllocator>
+    void NumericCContiguousMatrix<T, MemoryAllocator>::removeFromRowFromSubset(
+      uint32 row, typename View<T>::const_iterator begin, typename View<T>::const_iterator end,
+      PartialIndexVector::const_iterator indicesBegin, PartialIndexVector::const_iterator indicesEnd) {
         auto iterator = this->values_begin(row);
         uint32 numCols = indicesEnd - indicesBegin;
 
@@ -60,6 +59,11 @@ namespace boosting {
         }
     }
 
-    template class NumericCContiguousMatrix<float32>;
-    template class NumericCContiguousMatrix<float64>;
+    template class NumericCContiguousMatrix<float32, DefaultMemoryAllocator>;
+    template class NumericCContiguousMatrix<float64, DefaultMemoryAllocator>;
+
+#if SIMD_SUPPORT_ENABLED
+    template class NumericCContiguousMatrix<float32, SimdMemoryAllocator>;
+    template class NumericCContiguousMatrix<float64, SimdMemoryAllocator>;
+#endif
 }

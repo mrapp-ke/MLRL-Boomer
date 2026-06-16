@@ -23,7 +23,8 @@ namespace boosting {
         auto statisticMatrixPtr =
           std::make_unique<DenseDecomposableStatisticMatrix<statistic_type, MemoryAllocator, VectorMath>>(numExamples,
                                                                                                           numOutputs);
-        auto scoreMatrixPtr = std::make_unique<NumericCContiguousMatrix<statistic_type>>(numExamples, numOutputs, true);
+        auto scoreMatrixPtr =
+          std::make_unique<NumericCContiguousMatrix<statistic_type, MemoryAllocator>>(numExamples, numOutputs, true);
         const Loss* lossRawPtr = lossPtr.get();
         const OutputMatrix* outputMatrixPtr = &outputMatrix;
         const CContiguousView<statistic_type>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();

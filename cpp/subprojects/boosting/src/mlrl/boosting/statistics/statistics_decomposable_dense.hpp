@@ -86,16 +86,18 @@ namespace boosting {
     class DenseDecomposableStatistics final
         : public AbstractDecomposableStatistics<
             OutputMatrix, DenseDecomposableStatisticMatrix<typename Loss::statistic_type, MemoryAllocator, VectorMath>,
-            NumericCContiguousMatrix<typename Loss::statistic_type>, Loss, EvaluationMeasure,
+            NumericCContiguousMatrix<typename Loss::statistic_type, MemoryAllocator>, Loss, EvaluationMeasure,
             IDecomposableRuleEvaluationFactory> {
         private:
 
             using statistic_type = Loss::statistic_type;
 
+            using ScoreMatrix = NumericCContiguousMatrix<typename Loss::statistic_type, MemoryAllocator>;
+
             using StatisticMatrix = DenseDecomposableStatisticMatrix<statistic_type, MemoryAllocator, VectorMath>;
 
-            using StatisticsState = DecomposableBoostingStatisticsState<OutputMatrix, StatisticMatrix,
-                                                                        NumericCContiguousMatrix<statistic_type>, Loss>;
+            using StatisticsState =
+              DecomposableBoostingStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, Loss>;
 
             using StatisticVector = DenseDecomposableStatisticVector<statistic_type, MemoryAllocator, VectorMath>;
 
@@ -130,9 +132,8 @@ namespace boosting {
                                         const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
                                         const OutputMatrix& outputMatrix,
                                         std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
-                                        std::unique_ptr<NumericCContiguousMatrix<statistic_type>> scoreMatrixPtr)
-                : AbstractDecomposableStatistics<OutputMatrix, StatisticMatrix,
-                                                 NumericCContiguousMatrix<statistic_type>, Loss, EvaluationMeasure,
+                                        std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
+                : AbstractDecomposableStatistics<OutputMatrix, StatisticMatrix, ScoreMatrix, Loss, EvaluationMeasure,
                                                  IDecomposableRuleEvaluationFactory>(
                     std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
                     std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
