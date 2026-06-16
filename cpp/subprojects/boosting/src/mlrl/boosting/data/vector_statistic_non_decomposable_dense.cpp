@@ -73,14 +73,14 @@ namespace boosting {
     void DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::addToSubset(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row, const PartialIndexVector& indices) {
         auto indexIterator = indices.cbegin();
-        VectorMath::add(this->view.gradients_begin(), view.gradients_cbegin(row), indexIterator,
-                        this->getNumGradients());
+        VectorMath::addToSubset(this->view.gradients_begin(), view.gradients_cbegin(row), indexIterator,
+                                this->getNumGradients());
         auto hessiansBegin = view.hessians_cbegin(row);
 
         for (uint32 i = 0; i < this->getNumGradients(); i++) {
             uint32 index = indexIterator[i];
-            VectorMath::add(&this->view.hessians_begin()[math::triangularNumber(i)],
-                            &hessiansBegin[math::triangularNumber(index)], indexIterator, i + 1);
+            VectorMath::addToSubset(&this->view.hessians_begin()[math::triangularNumber(i)],
+                                    &hessiansBegin[math::triangularNumber(index)], indexIterator, i + 1);
         }
     }
 
@@ -96,14 +96,15 @@ namespace boosting {
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row, const PartialIndexVector& indices,
       StatisticType weight) {
         auto indexIterator = indices.cbegin();
-        VectorMath::addWeighted(this->view.gradients_begin(), view.gradients_cbegin(row), indexIterator,
-                                this->getNumGradients(), weight);
+        VectorMath::addToSubsetWeighted(this->view.gradients_begin(), view.gradients_cbegin(row), indexIterator,
+                                        this->getNumGradients(), weight);
         auto hessiansBegin = view.hessians_cbegin(row);
 
         for (uint32 i = 0; i < this->getNumGradients(); i++) {
             uint32 index = indexIterator[i];
-            VectorMath::addWeighted(&this->view.hessians_begin()[math::triangularNumber(i)],
-                                    &hessiansBegin[math::triangularNumber(index)], indexIterator, i + 1, weight);
+            VectorMath::addToSubsetWeighted(&this->view.hessians_begin()[math::triangularNumber(i)],
+                                            &hessiansBegin[math::triangularNumber(index)], indexIterator, i + 1,
+                                            weight);
         }
     }
 
