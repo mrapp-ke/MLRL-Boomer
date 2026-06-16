@@ -114,7 +114,7 @@ class MLRLCOMMON_API Vector : public View<T> {
          * @return A `const_iterator` to the end
          */
         typename View<T>::const_iterator cend() const {
-            return &BaseView<T>::array[numElements];
+            return &View<T>::array[numElements];
         }
 
         /**
@@ -123,7 +123,7 @@ class MLRLCOMMON_API Vector : public View<T> {
          * @return An `iterator` to the end
          */
         typename View<T>::iterator end() {
-            return &BaseView<T>::array[numElements];
+            return &View<T>::array[numElements];
         }
 
         /**
