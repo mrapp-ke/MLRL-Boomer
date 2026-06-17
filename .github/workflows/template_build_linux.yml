@@ -76,7 +76,7 @@ jobs:
         if: ${{ inputs.ccache }}
         uses: hendrikmuhs/ccache-action@v1
         with:
-          key: ccache-${{ runner.os }}-${{ runner.arch }}-${{ inputs.subproject }}
+          key: ccache-${{ runner.os }}-${{ runner.arch }}
       - name: Compile via GCC
         run: ./build compile
       - name: Test C++ code
