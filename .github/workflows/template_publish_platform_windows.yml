@@ -98,6 +98,7 @@ jobs:
         env:
           CIBW_BUILD: ${{ matrix.build_identifier }}
           CIBW_BEFORE_BUILD: .\build.bat pyproject_toml
+          CIBW_REPAIR_WHEEL_COMMAND: delvewheel repair --ignore-existing -w {dest_dir} -v {wheel}
         with:
           package-dir: python/subprojects/${{ inputs.subproject }}/
       - name: Upload wheels as artifacts
