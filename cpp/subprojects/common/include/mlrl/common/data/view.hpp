@@ -128,10 +128,11 @@ class MLRLCOMMON_API Allocator : public View {
         /**
          * @param numElements   The number of elements in the view
          * @param init          True, if all elements in the view should be value-initialized, false otherwise
+         * @param padding       The number of unused elements to be inserted at the end of the view
          */
-        explicit Allocator(uint32 numElements, bool init = false)
-            : View(MemoryAllocator::template allocateMemory<typename View::value_type>(numElements, init),
-                   numElements) {}
+        explicit Allocator(uint32 numElements, bool init = false, uint32 padding = 0)
+            : View(MemoryAllocator::template allocateMemory<typename View::value_type>(numElements + padding, init),
+                   numElements, padding) {}
 
         /**
          * @param other A reference to an object of type `Allocator` that should be copied
@@ -201,9 +202,10 @@ class MLRLCOMMON_API ResizableAllocator : public Allocator<View, MemoryAllocator
         /**
          * @param numElements   The number of elements in the view
          * @param init          True, if all elements in the view should be value-initialized, false otherwise
+         * @param padding       The number of unused elements to be inserted at the end of the view
          */
-        explicit ResizableAllocator(uint32 numElements, bool init = false)
-            : Allocator<View>(numElements, init), maxCapacity(numElements) {}
+        explicit ResizableAllocator(uint32 numElements, bool init = false, uint32 padding = 0)
+            : Allocator<View>(numElements, init, padding), maxCapacity(numElements) {}
 
         /**
          * @param other A reference to an object of type `ResizableAllocator` that should be copied
@@ -228,16 +230,20 @@ class MLRLCOMMON_API ResizableAllocator : public Allocator<View, MemoryAllocator
          * @param freeMemory    True, if unused memory should be freed, false otherwise
          */
         void resize(uint32 numElements, bool freeMemory) {
+            uint32 padding = MemoryAllocator::template getPadding<typename View::value_type>(numElements);
+
             if (numElements < maxCapacity) {
                 if (freeMemory) {
-                    View::array = MemoryAllocator::reallocateMemory(View::array, View::numElements, numElements);
+                    View::array =
+                      MemoryAllocator::reallocateMemory(View::array, View::numElements, numElements + padding);
                     maxCapacity = numElements;
                 }
             } else if (numElements > maxCapacity) {
-                View::array = MemoryAllocator::reallocateMemory(View::array, View::numElements, numElements);
+                View::array = MemoryAllocator::reallocateMemory(View::array, View::numElements, numElements + padding);
                 maxCapacity = numElements;
             }
 
+            View::padding = padding;
             View::numElements = numElements;
         }
 };

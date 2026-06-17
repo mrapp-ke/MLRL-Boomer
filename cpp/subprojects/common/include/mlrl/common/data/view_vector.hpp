@@ -85,8 +85,10 @@ class MLRLCOMMON_API Vector : public View<T> {
          * @param array         A pointer to an array of template type `T` that stores the values, the view should
          *                      provide access to
          * @param numElements   The number of elements in the view
+         * @param padding       The number of unused elements to be added at the end of the view
          */
-        Vector(T* array, uint32 numElements) : View<T>(array), numElements(numElements) {}
+        Vector(T* array, uint32 numElements, uint32 padding = 0)
+            : View<T>(array, 0, padding), numElements(numElements) {}
 
         /**
          * @param other A const reference to an object of type `Vector` that should be copied

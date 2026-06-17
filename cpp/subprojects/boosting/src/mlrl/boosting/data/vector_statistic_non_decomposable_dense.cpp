@@ -20,7 +20,7 @@ namespace boosting {
       DenseNonDecomposableStatisticVector(
         const DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>& other)
         : DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>(other.getNumGradients()) {
-        VectorMath::copy(other.view.cbegin(), this->view.begin(), this->view.numElements);
+        VectorMath::copy(other.view.cbegin(), this->view.begin(), this->view.numElementsWithInnerPadding);
     }
 
     template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
@@ -36,37 +36,39 @@ namespace boosting {
     template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     void DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::add(
       const DenseNonDecomposableStatisticVectorView<StatisticType>& vector) {
-        VectorMath::add(this->view.begin(), vector.cbegin(), this->view.numElements);
+        VectorMath::add(this->view.begin(), vector.cbegin(), this->view.numElementsWithInnerPadding);
     }
 
     template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     void DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::add(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row) {
-        VectorMath::add(this->view.begin(), view.values_cbegin(row), this->view.numElements);
+        VectorMath::add(this->view.begin(), view.values_cbegin(row), this->view.numElementsWithInnerPadding);
     }
 
     template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     void DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::add(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row, StatisticType weight) {
-        VectorMath::addWeighted(this->view.begin(), view.values_cbegin(row), this->view.numElements, weight);
+        VectorMath::addWeighted(this->view.begin(), view.values_cbegin(row), this->view.numElementsWithInnerPadding,
+                                weight);
     }
 
     template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     void DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::remove(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row) {
-        VectorMath::subtract(this->view.begin(), view.values_cbegin(row), this->view.numElements);
+        VectorMath::subtract(this->view.begin(), view.values_cbegin(row), this->view.numElementsWithInnerPadding);
     }
 
     template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     void DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::remove(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row, StatisticType weight) {
-        VectorMath::subtractWeighted(this->view.begin(), view.values_cbegin(row), this->view.numElements, weight);
+        VectorMath::subtractWeighted(this->view.begin(), view.values_cbegin(row),
+                                     this->view.numElementsWithInnerPadding, weight);
     }
 
     template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     void DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::addToSubset(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row, const CompleteIndexVector& indices) {
-        VectorMath::add(this->view.begin(), view.values_cbegin(row), this->view.numElements);
+        VectorMath::add(this->view.begin(), view.values_cbegin(row), this->view.numElementsWithInnerPadding);
     }
 
     template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
@@ -88,7 +90,8 @@ namespace boosting {
     void DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::addToSubset(
       const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row, const CompleteIndexVector& indices,
       StatisticType weight) {
-        VectorMath::addWeighted(this->view.begin(), view.values_cbegin(row), this->view.numElements, weight);
+        VectorMath::addWeighted(this->view.begin(), view.values_cbegin(row), this->view.numElementsWithInnerPadding,
+                                weight);
     }
 
     template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
@@ -112,7 +115,8 @@ namespace boosting {
     void DenseNonDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::difference(
       const DenseNonDecomposableStatisticVectorView<StatisticType>& first, const CompleteIndexVector& firstIndices,
       const DenseNonDecomposableStatisticVectorView<StatisticType>& second) {
-        VectorMath::difference(this->view.begin(), first.cbegin(), second.cbegin(), this->view.numElements);
+        VectorMath::difference(this->view.begin(), first.cbegin(), second.cbegin(),
+                               this->view.numElementsWithInnerPadding);
     }
 
     template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
