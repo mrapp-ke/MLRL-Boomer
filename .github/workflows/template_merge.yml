@@ -21,7 +21,7 @@ jobs:
           client-id: ${{ secrets.TOKEN_APP_ID }}
           private-key: ${{ secrets.TOKEN_APP_SECRET }}
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: ${{ inputs.target_branch }}
           token: ${{ steps.app-token.outputs.token }}

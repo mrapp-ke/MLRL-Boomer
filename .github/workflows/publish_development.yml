@@ -13,7 +13,7 @@ jobs:
       doc: ${{ steps.filter.outputs.doc }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           sparse-checkout: |
             .github
@@ -62,7 +62,7 @@ jobs:
           client-id: ${{ secrets.TOKEN_APP_ID }}
           private-key: ${{ secrets.TOKEN_APP_SECRET }}
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           token: ${{ steps.app-token.outputs.token }}
           sparse-checkout: |
@@ -97,7 +97,7 @@ jobs:
       workflow_python_version: ${{ steps.workflow_python_version.outputs.workflow_python_version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           sparse-checkout: build_system/res/versioning/version-python
           sparse-checkout-cone-mode: false
