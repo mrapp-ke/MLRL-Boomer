@@ -21,7 +21,13 @@ namespace boosting {
 
             const uint32 numGradients_;
 
-            const uint32 innerPadding_;
+            const uint32 numHessians_;
+
+            const uint32 numGradientsWithInnerPadding_;
+
+            const uint32 numColsWithInnerPadding_;
+
+            const uint32 numColsWithPadding_;
 
         public:
 
@@ -36,21 +42,28 @@ namespace boosting {
             DenseStatisticView(StatisticType* array, uint32 numRows, uint32 numGradients, uint32 numHessians,
                                uint32 innerPadding = 0, uint32 padding = 0)
                 : DenseMatrix<StatisticType>(array, numRows, numGradients + numHessians, padding),
-                  numGradients_(numGradients), innerPadding_(innerPadding) {}
+                  numGradients_(numGradients), numHessians_(numHessians),
+                  numGradientsWithInnerPadding_(numGradients_ + innerPadding),
+                  numColsWithInnerPadding_(Matrix::numCols + innerPadding),
+                  numColsWithPadding_(numColsWithInnerPadding_ + View<StatisticType>::padding) {}
 
             /**
              * @param other A reference to an object of type `DenseStatisticView` that should be copied
              */
             DenseStatisticView(const DenseStatisticView<StatisticType>& other)
                 : DenseMatrix<StatisticType>(other), numGradients_(other.numGradients_),
-                  innerPadding_(other.innerPadding_) {}
+                  numHessians_(other.numHessians_), numGradientsWithInnerPadding_(other.numGradientsWithInnerPadding_),
+                  numColsWithInnerPadding_(other.numColsWithInnerPadding_),
+                  numColsWithPadding_(other.numColsWithPadding_) {}
 
             /**
              * @param other A reference to an object of type `DenseStatisticView` that should be moved
              */
             DenseStatisticView(DenseStatisticView<StatisticType>&& other)
                 : DenseMatrix<StatisticType>(std::move(other)), numGradients_(other.numGradients_),
-                  innerPadding_(other.innerPadding_) {}
+                  numHessians_(other.numHessians_), numGradientsWithInnerPadding_(other.numGradientsWithInnerPadding_),
+                  numColsWithInnerPadding_(other.numColsWithInnerPadding_),
+                  numColsWithPadding_(other.numColsWithPadding_) {}
 
             virtual ~DenseStatisticView() override {}
 
@@ -81,8 +94,7 @@ namespace boosting {
              * @return      A `value_const_iterator` to the beginning of the row
              */
             typename DenseMatrix<StatisticType>::value_const_iterator values_cbegin(uint32 row) const {
-                return &View<StatisticType>::array[row
-                                                   * (Matrix::numCols + View<StatisticType>::padding + innerPadding_)];
+                return &View<StatisticType>::array[row * numColsWithPadding_];
             }
 
             /**
@@ -92,9 +104,7 @@ namespace boosting {
              * @return      A `value_const_iterator` to the end of the row
              */
             typename DenseMatrix<StatisticType>::value_const_iterator values_cend(uint32 row) const {
-                return &View<StatisticType>::array[(row
-                                                    * (Matrix::numCols + View<StatisticType>::padding + innerPadding_))
-                                                   + Matrix::numCols + innerPadding_];
+                return &View<StatisticType>::array[(row * numColsWithPadding_) + numColsWithInnerPadding_];
             }
 
             /**
@@ -104,8 +114,7 @@ namespace boosting {
              * @return      A `value_iterator` to the beginning of the row
              */
             typename DenseMatrix<StatisticType>::value_iterator values_begin(uint32 row) {
-                return &View<StatisticType>::array[row
-                                                   * (Matrix::numCols + View<StatisticType>::padding + innerPadding_)];
+                return &View<StatisticType>::array[row * numColsWithPadding_];
             }
 
             /**
@@ -115,9 +124,7 @@ namespace boosting {
              * @return      A `value_iterator` to the end of the row
              */
             typename DenseMatrix<StatisticType>::value_iterator values_end(uint32 row) {
-                return &View<StatisticType>::array[(row
-                                                    * (Matrix::numCols + View<StatisticType>::padding + innerPadding_))
-                                                   + Matrix::numCols + innerPadding_];
+                return &View<StatisticType>::array[(row * numColsWithPadding_) + numColsWithInnerPadding_];
             }
 
             /**
@@ -167,7 +174,7 @@ namespace boosting {
              * @return      A `hessian_const_iterator` to the beginning of the given row
              */
             hessian_const_iterator hessians_cbegin(uint32 row) const {
-                return &(this->values_cbegin(row))[numGradients_ + innerPadding_];
+                return &(this->values_cbegin(row))[numGradientsWithInnerPadding_];
             }
 
             /**
@@ -177,7 +184,7 @@ namespace boosting {
              * @return      A `hessian_const_iterator` to the end of the given row
              */
             hessian_const_iterator hessians_cend(uint32 row) const {
-                return &(this->values_cbegin(row))[this->numCols + innerPadding_];
+                return &(this->values_cbegin(row))[numColsWithInnerPadding_];
             }
 
             /**
@@ -187,7 +194,7 @@ namespace boosting {
              * @return      A `hessian_iterator` to the beginning of the given row
              */
             hessian_iterator hessians_begin(uint32 row) {
-                return &(this->values_begin(row))[numGradients_ + innerPadding_];
+                return &(this->values_begin(row))[numGradientsWithInnerPadding_];
             }
 
             /**
@@ -197,7 +204,7 @@ namespace boosting {
              * @return      A `hessian_iterator` to the end of the given row
              */
             hessian_iterator hessians_end(uint32 row) {
-                return &(this->values_begin(row))[this->numCols + innerPadding_];
+                return &(this->values_begin(row))[numColsWithInnerPadding_];
             }
 
             /**
@@ -224,7 +231,7 @@ namespace boosting {
              * @return The number of Hessians in each row
              */
             uint32 getNumHessians() const {
-                return math::triangularNumber(numGradients_);
+                return numHessians_;
             }
 
             /**
@@ -232,9 +239,7 @@ namespace boosting {
              */
             void clear() {
                 std::fill(View<StatisticType>::array,
-                          View<StatisticType>::array
-                            + (Matrix::numRows * (Matrix::numCols + View<StatisticType>::padding + innerPadding_)),
-                          (StatisticType) 0);
+                          &View<StatisticType>::array[Matrix::numRows * numColsWithPadding_], (StatisticType) 0);
             }
     };
 
