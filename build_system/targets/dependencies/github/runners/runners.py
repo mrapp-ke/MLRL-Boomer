@@ -97,11 +97,11 @@ class Runner:
         """
         parts = text.split(Runner.SEPARATOR)
 
-        if len(parts) < 2 or len(parts) > 3:
-            raise ValueError(f'Runner must contain the symbol + "{Runner.SEPARATOR}" once or twice, but got "{text}"')
+        if len(parts) < 2 or len(parts) > 4:
+            raise ValueError(f'Runner must contain the symbol "{Runner.SEPARATOR}" 1, 2 or 3 times, but got "{text}"')
 
         return Runner(
-            image=parts[0], version=RunnerVersion(parts[1]), architecture=parts[2] if len(parts) > 2 else None
+            image=parts[0], version=RunnerVersion(parts[1]), architecture=parts[-1] if len(parts) > 2 else None
         )
 
     @property
