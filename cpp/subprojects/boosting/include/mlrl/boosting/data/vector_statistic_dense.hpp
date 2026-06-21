@@ -20,6 +20,10 @@ namespace boosting {
 
             const uint32 numGradients_;
 
+            const uint32 numHessians_;
+
+            const uint32 numGradientsWithInnerPadding_;
+
         public:
 
             /**
@@ -42,14 +46,16 @@ namespace boosting {
              */
             DenseStatisticVectorView(StatisticType* array, uint32 numGradients, uint32 numHessians,
                                      uint32 innerPadding = 0, uint32 padding = 0)
-                : View<StatisticType>(array, 0, padding), numGradients_(numGradients),
-                  numElements(numGradients + numHessians), numElementsWithInnerPadding(numElements + innerPadding) {}
+                : View<StatisticType>(array, 0, padding), numGradients_(numGradients), numHessians_(numHessians),
+                  numGradientsWithInnerPadding_(numGradients_ + innerPadding), numElements(numGradients + numHessians),
+                  numElementsWithInnerPadding(numElements + innerPadding) {}
 
             /**
              * @param other A reference to an object of type `DenseStatisticVectorView` that should be copied
              */
             DenseStatisticVectorView(const DenseStatisticVectorView<StatisticType>& other)
-                : View<StatisticType>(other), numGradients_(other.numGradients_), numElements(other.numElements),
+                : View<StatisticType>(other), numGradients_(other.numGradients_), numHessians_(other.numHessians_),
+                  numGradientsWithInnerPadding_(other.numGradientsWithInnerPadding_), numElements(other.numElements),
                   numElementsWithInnerPadding(other.numElementsWithInnerPadding) {}
 
             /**
@@ -57,6 +63,7 @@ namespace boosting {
              */
             DenseStatisticVectorView(DenseStatisticVectorView<StatisticType>&& other)
                 : View<StatisticType>(std::move(other)), numGradients_(other.numGradients_),
+                  numHessians_(other.numHessians_), numGradientsWithInnerPadding_(other.numGradientsWithInnerPadding_),
                   numElements(other.numElements), numElementsWithInnerPadding(other.numElementsWithInnerPadding) {}
 
             virtual ~DenseStatisticVectorView() override {}
@@ -146,7 +153,7 @@ namespace boosting {
              * @return A `hessian_iterator` to the beginning
              */
             hessian_iterator hessians_begin() {
-                return &(this->begin())[numElementsWithInnerPadding - this->getNumHessians()];
+                return &(this->begin())[numGradientsWithInnerPadding_];
             }
 
             /**
@@ -164,7 +171,7 @@ namespace boosting {
              * @return A `hessian_const_iterator` to the beginning
              */
             hessian_const_iterator hessians_cbegin() const {
-                return &(this->cbegin())[numElementsWithInnerPadding - this->getNumHessians()];
+                return &(this->cbegin())[numGradientsWithInnerPadding_];
             }
 
             /**
@@ -199,7 +206,7 @@ namespace boosting {
              + @return The number of Hessians
              */
             uint32 getNumHessians() const {
-                return numElements - numGradients_;
+                return numHessians_;
             }
     };
 }
