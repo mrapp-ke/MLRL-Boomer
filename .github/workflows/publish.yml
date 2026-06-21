@@ -12,7 +12,7 @@ jobs:
       workflow_python_version: ${{ steps.workflow_python_version.outputs.workflow_python_version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           sparse-checkout: build_system/res/versioning/version-python
           sparse-checkout-cone-mode: false
