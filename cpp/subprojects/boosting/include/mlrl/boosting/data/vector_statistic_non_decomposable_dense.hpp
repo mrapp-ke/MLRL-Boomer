@@ -22,19 +22,16 @@ namespace boosting {
         public:
 
             /**
-             * @param numGradients  The number of gradients in the view
-             * @param init          True, if all elements in the view should be value-initialized, false otherwise
-             */
-            explicit DenseNonDecomposableStatisticVectorView(uint32 numGradients, bool init = false);
-
-            /**
              * @param array         A pointer to an array of template type `StatisticType` that stores the gradients and
              *                      Hessians
              * @param numGradients  The number of gradients in the view
              * @param numHessians   The number of Hessians in the view
+             * @param innerPadding  The number of unused elements to be inserted between gradients and Hessians
+             * @param padding       The number of unused elements to be inserted at the end of the view
              */
-            DenseNonDecomposableStatisticVectorView(StatisticType* array, uint32 numGradients, uint32 numHessians)
-                : DenseStatisticVectorView<StatisticType>(array, numGradients, numHessians) {}
+            DenseNonDecomposableStatisticVectorView(StatisticType* array, uint32 numGradients, uint32 numHessians,
+                                                    uint32 innerPadding = 0, uint32 padding = 0)
+                : DenseStatisticVectorView<StatisticType>(array, numGradients, numHessians, innerPadding, padding) {}
 
             /**
              * @param other A reference to an object of type `DenseNonDecomposableStatisticVectorView` that should be

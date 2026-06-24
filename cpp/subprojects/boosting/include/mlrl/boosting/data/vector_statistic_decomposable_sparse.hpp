@@ -406,9 +406,11 @@ namespace boosting {
              * @param array         A pointer to an array of template type `StatisticType` that stores the gradients and
              *                      Hessians
              * @param numElements   The number of elements in the view
+             * @param padding       The number of unused elements to be inserted at the end of the view
              */
-            SparseDecomposableStatisticVectorView(SparseStatistic<StatisticType, WeightType>* array, uint32 numElements)
-                : Vector<SparseStatistic<StatisticType, WeightType>>(array, numElements), sumOfWeights(0) {}
+            SparseDecomposableStatisticVectorView(SparseStatistic<StatisticType, WeightType>* array, uint32 numElements,
+                                                  uint32 padding = 0)
+                : Vector<SparseStatistic<StatisticType, WeightType>>(array, numElements, padding), sumOfWeights(0) {}
 
             /**
              * @param other A reference to an object of type `SparseDecomposableStatisticVectorView` that should be

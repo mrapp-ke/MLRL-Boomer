@@ -17,7 +17,7 @@ namespace boosting {
      */
     template<typename T, typename MemoryAllocator = DefaultMemoryAllocator>
     class NumericCContiguousMatrix final
-        : public DenseMatrixDecorator<DenseMatrixAllocator<CContiguousView<T>, MemoryAllocator>> {
+        : public DenseMatrixDecorator<CContiguousViewAllocator<CContiguousView<T>, MemoryAllocator>> {
         public:
 
             /**

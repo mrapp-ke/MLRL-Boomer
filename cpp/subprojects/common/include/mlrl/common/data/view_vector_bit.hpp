@@ -178,9 +178,10 @@ class MLRLCOMMON_API BitView : public Vector<uint32> {
          * @param array     A pointer to an array of type `uint32` that stores the values, the view should provide
          *                  access to
          * @param numBits   The number of bits in the view
+         * @param padding   The number of unused bits to be inserted at the end of the view
          */
-        BitView(uint32* array, uint32 numBits)
-            : Vector<uint32>(array, calculateNumElements(numBits)), numBits(numBits) {}
+        BitView(uint32* array, uint32 numBits, uint32 padding = 0)
+            : Vector<uint32>(array, calculateNumElements(numBits), padding), numBits(numBits) {}
 
         /**
          * @param other A const reference to an object of type `BitView` that should be copied
