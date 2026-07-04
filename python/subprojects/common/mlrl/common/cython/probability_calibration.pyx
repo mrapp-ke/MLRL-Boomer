@@ -117,7 +117,7 @@ cdef class IsotonicMarginalProbabilityCalibrationModel(MarginalProbabilityCalibr
 
     def __reduce__(self):
         cdef uint32 num_bin_lists = self.probability_calibration_model_ptr.get().getNumBinLists()
-        self.state = [[] for i in range(num_bin_lists)]
+        self.state = [[] for _ in range(num_bin_lists)]
         self.probability_calibration_model_ptr.get().visit(
             wrapBinVisitor(<void*>self, <BinCythonVisitor>self.__serialize_bin))
         cdef object state = (SERIALIZATION_VERSION, self.state)
@@ -175,7 +175,7 @@ cdef class IsotonicJointProbabilityCalibrationModel(JointProbabilityCalibrationM
 
     def __reduce__(self):
         cdef uint32 num_bin_lists = self.probability_calibration_model_ptr.get().getNumBinLists()
-        self.state = [[] for i in range(num_bin_lists)]
+        self.state = [[] for _ in range(num_bin_lists)]
         self.probability_calibration_model_ptr.get().visit(
             wrapBinVisitor(<void*>self, <BinCythonVisitor>self.__serialize_bin))
         cdef object state = (SERIALIZATION_VERSION, self.state)
