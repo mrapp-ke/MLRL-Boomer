@@ -24,7 +24,7 @@ jobs:
           sparse-checkout: .github/labels.yml
           sparse-checkout-cone-mode: false
       - name: Assign labels to pull request
-        uses: actions/labeler@v6
+        uses: actions/labeler@v7
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           configuration-path: .github/labels.yml
