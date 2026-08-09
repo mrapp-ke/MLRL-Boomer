@@ -46,7 +46,6 @@ class Log:
         Writes a log message at level `Log.Level.ERROR` and terminates the build system.
 
         :param message:     The log message to be written
-        :param args:        Optional arguments to be included in the log message
         :param error:       An optional error to be included in the log message
         :param exit_code:   The exit code to be returned when terminating the build system
         """
