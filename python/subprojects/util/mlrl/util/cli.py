@@ -83,7 +83,7 @@ class Argument:
         """
         The name of the argument.
         """
-        return sorted(self.names)[0]
+        return min(self.names)
 
     @cached_property
     def key(self) -> str:
