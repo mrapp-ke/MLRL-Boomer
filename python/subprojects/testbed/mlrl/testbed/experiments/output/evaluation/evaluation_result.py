@@ -8,7 +8,7 @@ from abc import ABC
 from collections.abc import Iterable
 from functools import partial
 from itertools import chain
-from typing import override
+from typing import ClassVar, override
 
 import numpy as np
 from scipy.stats import rankdata
@@ -52,7 +52,7 @@ class AggregatedEvaluationResult(TabularOutputData):
 
     COLUMN_PREFIX_PARAMETER = 'Parameter'
 
-    AGGREGATION_MEASURES = [
+    AGGREGATION_MEASURES: ClassVar[list[AggregationMeasure]] = [
         AggregationMeasure(
             option_key=OPTION_RANK,
             name='Rank',

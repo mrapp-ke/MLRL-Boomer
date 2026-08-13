@@ -6,12 +6,7 @@ Provides classes that allow configuring the functionality to split datasets into
 
 from argparse import Namespace
 from itertools import chain
-from typing import override
-
-from mlrl.testbed_sklearn.experiments.input.dataset.extension import ArffFileExtension, SvmFileExtension
-from mlrl.testbed_sklearn.experiments.input.dataset.preprocessors.extension import PreprocessorExtension
-from mlrl.testbed_sklearn.experiments.input.dataset.splitters.splitter_bipartition import BipartitionSplitter
-from mlrl.testbed_sklearn.experiments.input.dataset.splitters.splitter_cross_validation import CrossValidationSplitter
+from typing import ClassVar, override
 
 from mlrl.testbed.experiments.input.dataset.arguments import DatasetArguments
 from mlrl.testbed.experiments.input.dataset.dataset import InputDataset
@@ -22,7 +17,10 @@ from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSpl
 from mlrl.testbed.experiments.input.dataset.splitters.splitter_no import NoSplitter
 from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions.extension import Extension
-
+from mlrl.testbed_sklearn.experiments.input.dataset.extension import ArffFileExtension, SvmFileExtension
+from mlrl.testbed_sklearn.experiments.input.dataset.preprocessors.extension import PreprocessorExtension
+from mlrl.testbed_sklearn.experiments.input.dataset.splitters.splitter_bipartition import BipartitionSplitter
+from mlrl.testbed_sklearn.experiments.input.dataset.splitters.splitter_cross_validation import CrossValidationSplitter
 from mlrl.util.cli import AUTO, Argument, SetArgument
 from mlrl.util.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
 
@@ -32,7 +30,7 @@ class DatasetSplitterExtension(Extension):
     An extension that configures the functionality to split tabular datasets into training and test datasets.
     """
 
-    DATASET_READER_EXTENSIONS: list[DatasetFileExtension] = [ArffFileExtension(), SvmFileExtension()]
+    DATASET_READER_EXTENSIONS: ClassVar[list[DatasetFileExtension]] = [ArffFileExtension(), SvmFileExtension()]
 
     DATASET_FORMAT = SetArgument(
         '--dataset-format',

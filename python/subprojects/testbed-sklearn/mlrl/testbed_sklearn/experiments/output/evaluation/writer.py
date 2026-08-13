@@ -8,19 +8,7 @@ from abc import ABC, abstractmethod
 from dataclasses import replace
 from functools import reduce
 from itertools import chain
-from typing import Any, override
-
-from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import (
-    EVALUATION_MEASURE_PREDICTION_TIME,
-    EVALUATION_MEASURE_TRAINING_TIME,
-    TabularEvaluationResult,
-)
-from mlrl.testbed_sklearn.experiments.output.evaluation.measures_classification import (
-    MULTI_LABEL_EVALUATION_MEASURES,
-    SINGLE_LABEL_EVALUATION_MEASURES,
-)
-from mlrl.testbed_sklearn.experiments.output.evaluation.measures_ranking import RANKING_EVALUATION_MEASURES
-from mlrl.testbed_sklearn.experiments.output.evaluation.measures_regression import REGRESSION_EVALUATION_MEASURES
+from typing import Any, ClassVar, override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
@@ -35,7 +23,17 @@ from mlrl.testbed.experiments.output.writer import DataExtractor, ResultWriter, 
 from mlrl.testbed.experiments.prediction_scope import IncrementalPredictionScope
 from mlrl.testbed.experiments.state import ExperimentState, PredictionState
 from mlrl.testbed.util.format import parse_number
-
+from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import (
+    EVALUATION_MEASURE_PREDICTION_TIME,
+    EVALUATION_MEASURE_TRAINING_TIME,
+    TabularEvaluationResult,
+)
+from mlrl.testbed_sklearn.experiments.output.evaluation.measures_classification import (
+    MULTI_LABEL_EVALUATION_MEASURES,
+    SINGLE_LABEL_EVALUATION_MEASURES,
+)
+from mlrl.testbed_sklearn.experiments.output.evaluation.measures_ranking import RANKING_EVALUATION_MEASURES
+from mlrl.testbed_sklearn.experiments.output.evaluation.measures_regression import REGRESSION_EVALUATION_MEASURES
 from mlrl.util.options import Options
 
 
@@ -110,7 +108,7 @@ class EvaluationWriter(ResultWriter):
         Uses `TabularInputData` that has previously been loaded via an input reader.
         """
 
-        ALL_MEASURES = set(
+        ALL_MEASURES: ClassVar[set[Measure]] = set(
             chain(
                 MULTI_LABEL_EVALUATION_MEASURES,
                 SINGLE_LABEL_EVALUATION_MEASURES,
