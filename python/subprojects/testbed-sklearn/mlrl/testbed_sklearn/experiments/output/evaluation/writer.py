@@ -22,6 +22,8 @@ from mlrl.testbed_sklearn.experiments.output.evaluation.measures_classification 
 from mlrl.testbed_sklearn.experiments.output.evaluation.measures_ranking import RANKING_EVALUATION_MEASURES
 from mlrl.testbed_sklearn.experiments.output.evaluation.measures_regression import REGRESSION_EVALUATION_MEASURES
 
+from mlrl.testbed.experiments.context import Context
+from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.input.data import TabularInputData
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
@@ -43,7 +45,8 @@ class EvaluationDataExtractor(DataExtractor, ABC):
     measures.
     """
 
-    measurements: dict[DatasetType, Measurements] = {}
+    def __init__(self):
+        self.measurements: dict[DatasetType, Measurements] = {}
 
     @override
     def extract_data(self, state: ExperimentState, sinks: list[Sink]) -> list[tuple[ExperimentState, OutputData]]:
@@ -116,7 +119,13 @@ class EvaluationWriter(ResultWriter):
             )
         )
 
-        measurements: dict[DatasetType, dict[int, Measurements]] = {}
+        def __init__(self, properties: TabularProperties, context: Context):
+            """
+            :param properties:  The properties of the input data
+            :param context:     The context of the input data
+            """
+            super().__init__(properties=properties, context=context)
+            self.measurements: dict[DatasetType, dict[int, Measurements]] = {}
 
         @override
         def extract_data(self, state: ExperimentState, sinks: list[Sink]) -> list[tuple[ExperimentState, OutputData]]:
