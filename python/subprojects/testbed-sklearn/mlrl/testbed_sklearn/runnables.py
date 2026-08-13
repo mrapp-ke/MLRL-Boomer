@@ -346,7 +346,7 @@ class SklearnEstimator:
                 parts2 = [part2.strip() for part2 in regex.split(r',|or', part) if part2]
 
                 if all(part2 == 'None' or (part2.startswith('"') and part2.endswith('"')) for part2 in parts2):
-                    values = set(filter(lambda part2: part2 != 'None', map(lambda part2: part2.strip('"'), parts2)))
+                    values = set(filter(lambda part2: part2 != 'None', (part2.strip('"') for part2 in parts2)))
                     arguments.append(SetArgument(argument_name, values=values))
                     type_hints.append('one of ' + format_set(values))
                 else:

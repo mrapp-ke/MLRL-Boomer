@@ -289,7 +289,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
                 f'The machine learning algorithm does not support {problem_domain.problem_name} problems'
             )
 
-        return set(filter(None, map(lambda param: param.as_argument(config_type), parameters))) | {
+        return set(filter(None, (param.as_argument(config_type) for param in parameters))) | {
             RuleLearnerRunnable.RuleLearnerExtension.FEATURE_FORMAT,
             RuleLearnerRunnable.RuleLearnerExtension.OUTPUT_FORMAT,
         }

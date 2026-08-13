@@ -37,7 +37,7 @@ class DatasetSplitterExtension(Extension):
     DATASET_FORMAT = SetArgument(
         '--dataset-format',
         default=AUTO,
-        values={AUTO} | set(map(lambda extension: extension.file_type, DATASET_READER_EXTENSIONS)),
+        values={AUTO} | {extension.file_type for extension in DATASET_READER_EXTENSIONS},
         description='The dataset format to be used.',
     )
 

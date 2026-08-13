@@ -443,9 +443,9 @@ class BatchMode(Mode):
     @staticmethod
     def __get_output_dir(argument_dict: ArgumentDict, dataset_name: str) -> Path:
         return Path(
-            *map(
-                lambda argument: argument[0].lstrip('-') + ('_' + argument[1]) if argument[1] else '',
-                argument_dict.items(),
+            *(
+                argument[0].lstrip('-') + ('_' + argument[1]) if argument[1] else ''
+                for argument in argument_dict.items()
             ),
             'dataset_' + dataset_name,
         )

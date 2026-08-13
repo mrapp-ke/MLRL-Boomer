@@ -119,11 +119,9 @@ class ReadMode(InputMode):
 
     @staticmethod
     def __create_command_args(arguments: set[Argument], args: Namespace, command: Command) -> Namespace:
-        ignored_arguments = set(
-            argument_name
-            for argument_names in map(lambda arg: arg.names, arguments)
-            for argument_name in argument_names
-        )
+        ignored_arguments = {
+            argument_name for argument_names in (arg.names for arg in arguments) for argument_name in argument_names
+        }
         return command.apply_to_namespace(args, ignore=ignored_arguments)
 
     @staticmethod
@@ -160,7 +158,7 @@ class ReadMode(InputMode):
 
         if num_commands > 1:
             input_data = TabularInputData(properties=EvaluationResult.PROPERTIES, context=EvaluationResult.CONTEXT)
-            algorithmic_argument_names = set(map(lambda arg: arg.name, algorithmic_arguments))
+            algorithmic_argument_names = {arg.name for arg in algorithmic_arguments}
             tables: list[Table] = []
             headers: set[str] = set()
 

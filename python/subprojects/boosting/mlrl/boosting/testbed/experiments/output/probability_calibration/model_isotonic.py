@@ -156,9 +156,9 @@ class IsotonicRegressionModel(TabularOutputData):
         table = ColumnWiseTable()
 
         for list_index, bin_list in self.bin_lists.items():
-            thresholds = map(lambda value: format_number(value, decimals=decimals), bin_list.thresholds)
+            thresholds = (format_number(value, decimals=decimals) for value in bin_list.thresholds)
             table.add_column(*thresholds, header=self._format_threshold_header(list_index))
-            probabilities = map(lambda value: format_number(value, decimals=decimals), bin_list.probabilities)
+            probabilities = (format_number(value, decimals=decimals) for value in bin_list.probabilities)
             table.add_column(*probabilities, header=self._format_probability_header(list_index))
 
         return table

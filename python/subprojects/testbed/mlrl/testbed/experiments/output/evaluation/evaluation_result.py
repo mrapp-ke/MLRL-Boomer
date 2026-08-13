@@ -311,7 +311,7 @@ class AggregatedEvaluationResult(TabularOutputData):
                                 )
                             )
                             aggregated_table.add_column(
-                                *map(lambda x: format_number(x, decimals=decimals), aggregated_column),
+                                *(format_number(value, decimals=decimals) for value in aggregated_column),
                                 header=f'{aggregation_measure.name} {header}',
                                 position=column_index + 1,
                             )

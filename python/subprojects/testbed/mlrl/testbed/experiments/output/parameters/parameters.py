@@ -43,5 +43,5 @@ class OutputParameters(TabularOutputData):
         """
         parameters = self.custom_parameters
         parameter_names = parameters.keys()
-        parameter_values = map(lambda parameter_name: parameters[parameter_name], parameter_names)
+        parameter_values = (parameters[parameter_name] for parameter_name in parameter_names)
         return RowWiseTable(*parameter_names).add_row(*parameter_values)

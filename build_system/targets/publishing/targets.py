@@ -31,7 +31,7 @@ def __get_cibuildwheel_identifiers(build_unit: BuildUnit) -> set[str]:
         .print_command(False)
         .capture_output()
     )
-    return set(filter(None, map(lambda build_identifier: build_identifier.strip(), stdout.split('\n'))))
+    return set(filter(None, (build_identifier.strip() for build_identifier in stdout.split('\n'))))
 
 
 def __parse_python_version(build_identifier: str) -> str:

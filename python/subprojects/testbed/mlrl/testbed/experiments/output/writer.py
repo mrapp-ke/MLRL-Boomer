@@ -248,7 +248,7 @@ class OutputWriter:
         :param input_directory: The directory, the data should be read from
         :return:                A list that contains the sources that has been created
         """
-        return list(filter(None, map(lambda sink: sink.create_source(input_directory), self.sinks)))
+        return list(filter(None, (sink.create_source(input_directory) for sink in self.sinks)))
 
     def create_input_reader(self, args: Namespace, input_directory: Path) -> InputReader | None:
         """

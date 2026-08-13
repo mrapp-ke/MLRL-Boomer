@@ -240,9 +240,7 @@ class Table(ABC):
                 return tabulate(rows, tablefmt=table_format if table_format else Table.Format.PLAIN)
 
             alignments = (
-                map(lambda alignment: alignment.value if alignment else None, self.alignments)
-                if self.alignments
-                else None
+                (alignment.value if alignment else None for alignment in self.alignments) if self.alignments else None
             )
             return tabulate(
                 rows,
