@@ -6,7 +6,7 @@ Provides utility functions for handling arrays.
 
 from enum import StrEnum
 from itertools import chain
-from typing import Any, Union
+from typing import Any
 
 import numpy as np
 from scipy.sparse import (
@@ -196,7 +196,7 @@ def ensure_no_complex_data(array) -> Any:
     return array
 
 
-def enforce_dense(array, order: str, dtype: np.dtype | None = None, sparse_value: Union[int, float] = 0) -> np.ndarray:
+def enforce_dense(array, order: str, dtype: np.dtype | None = None, sparse_value: float = 0) -> np.ndarray:
     """
     Converts a given array into a `np.ndarray`, if necessary, and enforces a specific memory layout and data type to be
     used.
