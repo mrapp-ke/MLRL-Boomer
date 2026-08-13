@@ -49,12 +49,14 @@ class OutputCharacteristics(TabularOutputData):
 
     OPTION_DISTINCT_LABEL_VECTORS = 'distinct_label_vectors'
 
-    def __init__(self, values: list[tuple[Characteristic, Any]], properties: Properties, context: Context = Context()):
+    def __init__(
+        self, values: list[tuple[Characteristic, Any]], properties: Properties, context: Context | None = None
+    ):
         """
         :param values:          A list that stores different data characteristics and their corresponding values
         :param properties:      The properties of the output data
         :param context:         A `Context` to be used by default for finding a suitable sink this output data can be
-                                written to
+                                written to or None, if the default should be used
         """
         super().__init__(properties=properties, context=context)
         self.values = values

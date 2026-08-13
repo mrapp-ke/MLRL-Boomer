@@ -24,9 +24,9 @@ class LogSink(Sink):
 
     SourceFactory = Callable[[Path], Source]
 
-    def __init__(self, options: Options = Options(), source_factory: SourceFactory | None = None):
+    def __init__(self, options: Options | None = None, source_factory: SourceFactory | None = None):
         """
-        :param options:         Options to be taken into account
+        :param options:         Options to be taken into account or None, if the defaults should be used
         :param source_factory:  A factory that allows to create a `Source` that can read the data written to this sink
                                 or None, if no such source is available
         """

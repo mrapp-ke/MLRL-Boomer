@@ -22,10 +22,10 @@ class YamlFileSink(FileSink):
     Allows to write structural output data to a YAML file.
     """
 
-    def __init__(self, directory: Path, options: Options = Options(), create_directory: bool = False):
+    def __init__(self, directory: Path, options: Options | None = None, create_directory: bool = False):
         """
         :param directory:           The path to the directory of the file
-        :param options:             Options to be taken into account
+        :param options:             Options to be taken into account or None, if the defaults should be used
         :param create_directory:    True, if the given directory should be created, if it does not exist, False
                                     otherwise
         """

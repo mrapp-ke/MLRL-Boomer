@@ -36,7 +36,7 @@ class PythonApidocModule(ApidocModule):
         root_directory: Path,
         output_directory: Path,
         source_directory_name: str,
-        source_file_search: FileSearch = FileSearch().set_recursive(True),
+        source_file_search: FileSearch | None = None,
     ):
         """
         :param root_directory:          The path to the module's root directory
@@ -44,12 +44,12 @@ class PythonApidocModule(ApidocModule):
         :param source_directory_name:   The name of the directory that contains the Python source files to be included
                                         in the API documentation
         :param source_file_search:      The `FileSearch` that should be used to search for the header files to be
-                                        included in the API documentation
+                                        included in the API documentation or None, if the default should be used
         """
         super().__init__(output_directory)
         self.root_directory = root_directory
         self.source_directory_name = source_directory_name
-        self.source_file_search = source_file_search
+        self.source_file_search = source_file_search if source_file_search else FileSearch().set_recursive(True)
 
     @property
     def source_directory(self) -> Path:

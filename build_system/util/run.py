@@ -25,12 +25,13 @@ class Program(Command):
         Allows to customize options for running an external program.
         """
 
-        def __init__(self, build_unit: BuildUnit = BuildUnit.for_file(Path(__file__))):
+        def __init__(self, build_unit: BuildUnit | None = None):
             """
-            :param build_unit: The build unit from which the program should be run
+            :param build_unit: The build unit from which the program should be run or None, if the build unit
+                               corresponding to this module should be used
             """
             super().__init__()
-            self.build_unit = build_unit
+            self.build_unit = build_unit if build_unit else BuildUnit.for_file(Path(__file__))
             self.install_program = True
             self.install_silent = False
             self.dependencies: set[str] = set()

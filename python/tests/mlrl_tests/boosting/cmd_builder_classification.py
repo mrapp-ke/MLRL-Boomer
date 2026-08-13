@@ -54,12 +54,12 @@ class BoomerClassifierCmdBuilder(ClassificationCmdBuilder, BoomerCmdBuilderMixin
 
         return self
 
-    def binary_predictor(self, binary_predictor: str | None = AUTO, options: Options = Options()):
+    def binary_predictor(self, binary_predictor: str | None = AUTO, options: Options | None = None):
         """
         Configures the algorithm to use a specific method for predicting binary labels.
 
         :param binary_predictor:    The name of the method that should be used for predicting binary labels
-        :param options:             Options to be taken into account
+        :param options:             Options to be taken into account or None, if the defaults should be used
         :return:                    The builder itself
         """
         if binary_predictor:

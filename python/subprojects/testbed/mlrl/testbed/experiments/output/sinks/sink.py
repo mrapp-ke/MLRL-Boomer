@@ -25,11 +25,11 @@ class Sink(ABC):
     An abstract base class for all sinks, output data may be written to.
     """
 
-    def __init__(self, options: Options = Options()):
+    def __init__(self, options: Options | None = None):
         """
-        :param options: Options to be taken into account
+        :param options: Options to be taken into account or None, if the defaults should be used
         """
-        self.options = options
+        self.options = options if options else Options()
 
     @abstractmethod
     def write_to_sink(self, state: ExperimentState, output_data: OutputData, **kwargs):
@@ -54,11 +54,11 @@ class FileSink(Sink, ABC):
     An abstract base class for all sinks that write output data to a file.
     """
 
-    def __init__(self, directory: Path, suffix: str, options: Options = Options(), create_directory: bool = False):
+    def __init__(self, directory: Path, suffix: str, options: Options | None = None, create_directory: bool = False):
         """
         :param directory:           The path to the directory of the file
         :param suffix:              The suffix of the file
-        :param options:             Options to be taken into account
+        :param options:             Options to be taken into account or None, if the defaults should be used
         :param create_directory:    True, if the given directory should be created, if it does not exist, False
                                     otherwise
         """
@@ -100,11 +100,11 @@ class TabularFileSink(FileSink, ABC):
     An abstract base class for all sinks that write tabular output data to a file.
     """
 
-    def __init__(self, directory: Path, suffix: str, options: Options = Options(), create_directory: bool = False):
+    def __init__(self, directory: Path, suffix: str, options: Options | None = None, create_directory: bool = False):
         """
         :param directory:           The path to the directory of the file
         :param suffix:              The suffix of the file
-        :param options:             Options to be taken into account
+        :param options:             Options to be taken into account or None, if the defaults should be used
         :param create_directory:    True, if the given directory should be created, if it does not exist, False
                                     otherwise
         """
@@ -138,11 +138,11 @@ class DatasetFileSink(FileSink, ABC):
     An abstract base class for all sinks that write datasets to a file.
     """
 
-    def __init__(self, directory: Path, suffix: str, options: Options = Options(), create_directory: bool = False):
+    def __init__(self, directory: Path, suffix: str, options: Options | None = None, create_directory: bool = False):
         """
         :param directory:           The path to the directory of the file
         :param suffix:              The suffix of the file
-        :param options:             Options to be taken into account
+        :param options:             Options to be taken into account or None, if the defaults should be used
         :param create_directory:    True, if the given directory should be created, if it does not exist, False
                                     otherwise
         """

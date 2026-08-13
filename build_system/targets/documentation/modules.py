@@ -53,17 +53,17 @@ class SphinxModule(Module):
         self,
         root_directory: Path,
         output_directory: Path,
-        source_file_search: FileSearch = FileSearch().set_recursive(True),
+        source_file_search: FileSearch | None = None,
     ):
         """
         :param root_directory:      The path to the module's root directory
         :param output_directory:    The path to the directory where the documentation should be stored
         :param source_file_search:  The `FileSearch` that should be used to search for the source files of the
-                                    documentation
+                                    documentation or None, if the default should be used
         """
         self.root_directory = root_directory
         self.output_directory = output_directory
-        self.source_file_search = source_file_search
+        self.source_file_search = source_file_search if source_file_search else FileSearch().set_recursive(True)
 
     def find_source_files(self) -> list[Path]:
         """

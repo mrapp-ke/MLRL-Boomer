@@ -22,12 +22,12 @@ class TabularOutputDataset(OutputDataset):
     Represents a tabular dataset that is part of output data.
     """
 
-    def __init__(self, dataset: TabularDataset, properties: Properties, context: Context = Context()):
+    def __init__(self, dataset: TabularDataset, properties: Properties, context: Context | None = None):
         """
         :param dataset:     A tabular dataset
         :param properties:  The properties of the output data
         :param context:     A `Context` to be used by default for finding a suitable sink this output data can be
-                            written to
+                            written to or None, if the default should be used
         """
         super().__init__(dataset=dataset.enforce_dense_outputs(), properties=properties, context=context)
 
