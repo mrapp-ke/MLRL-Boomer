@@ -473,7 +473,7 @@ class SklearnEstimator:
                 instance.fit(x, y)
 
             return True
-        except Exception:
+        except Exception:  # noqa: BLE001
             return False
 
     def __init__(self, estimator_name: str, estimator_type: type[SkLearnBaseEstimator]):
