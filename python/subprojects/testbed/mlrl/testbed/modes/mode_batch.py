@@ -4,7 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that implement a mode of operation for performing multiple experiments.
 """
 
-import logging as log
 import re as regex
 from abc import ABC, abstractmethod
 from argparse import Namespace
@@ -34,6 +33,7 @@ from mlrl.testbed.modes.mode import Mode
 from mlrl.testbed.modes.util import OutputUtil
 from mlrl.testbed.util.yml import read_and_validate_yaml
 from mlrl.util.cli import AUTO, Argument, BoolArgument, CommandLineInterface, FlagArgument, PathArgument, SetArgument
+from mlrl.util.log import Log
 from mlrl.util.options import BooleanOption, Options
 
 Batch = list[Command]
@@ -93,9 +93,9 @@ class BatchMode(Mode):
         def run_batch(self, args: Namespace, batch: Batch, recipe: Recipe):
             for i, command in enumerate(batch):
                 if i > 0:
-                    log.info('')
+                    Log.info('')
 
-                log.info(self.__format_command(command))
+                Log.info(self.__format_command(command))
 
     class SequentialRunner(Runner):
         """
@@ -112,15 +112,15 @@ class BatchMode(Mode):
 
             for i, command in enumerate(batch):
                 if i == 0:
-                    log.info(f'Running {num_experiments} {("experiments" if num_experiments > 1 else "experiment")}...')
+                    Log.info(f'Running {num_experiments} {("experiments" if num_experiments > 1 else "experiment")}...')
 
-                log.info(f'\nRunning experiment ({i + 1} / {num_experiments}): "{command}"')
+                Log.info(f'\nRunning experiment ({i + 1} / {num_experiments}): "{command}"')
                 recipe.create_experiment_builder(
                     experiment_mode=ExperimentMode.BATCH, args=command.apply_to_namespace(args), command=command
                 ).run(args)
 
             run_time = Timer.stop(start_time)
-            log.info(
+            Log.info(
                 f'Successfully finished {num_experiments} {("experiments" if num_experiments > 1 else "experiment")} '
                 f'after {run_time}'
             )
@@ -325,7 +325,7 @@ class BatchMode(Mode):
         num_skipped = len(batch) - len(filtered_batch)
 
         if num_skipped > 0:
-            log.info(
+            Log.info(
                 f'Skipping {num_skipped} of {len(batch)} {("experiments" if num_skipped > 1 else "experiment")}, '
                 f'because all of their output files do already exist. Use the argument '
                 f'"{OutputArguments.IF_OUTPUTS_EXIST.name} {OutputExistsPolicy.OVERWRITE}" to force-run all '

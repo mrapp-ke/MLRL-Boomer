@@ -4,8 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow writing textual representations of probability calibration models to one or several sinks.
 """
 
-import logging as log
-
 from abc import ABC, abstractmethod
 from typing import override
 
@@ -24,7 +22,7 @@ from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor, ResultWriter, TabularDataExtractor
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import ColumnWiseTable
-
+from mlrl.util.log import Log
 from mlrl.util.options import Options
 
 
@@ -167,7 +165,7 @@ class MarginalProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWrite
                     context=MarginalProbabilityCalibrationModelWriter.CONTEXT,
                 )
 
-            log.error(
+            Log.error(
                 f'{type(self).__name__} expected type of calibration model to be '
                 f'{IsotonicProbabilityCalibrationModel.__name__}, but calibration model has type '
                 f'{type(calibration_model).__name__}'
@@ -237,7 +235,7 @@ class JointProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWriter):
                     context=JointProbabilityCalibrationModelWriter.CONTEXT,
                 )
 
-            log.error(
+            Log.error(
                 f'{type(self).__name__} expected type of calibration model to be '
                 f'{IsotonicProbabilityCalibrationModel.__name__}, but calibration model has type '
                 f'{type(calibration_model).__name__}'

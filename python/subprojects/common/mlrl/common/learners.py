@@ -4,7 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides base classes for implementing rule learning algorithms.
 """
 
-import logging as log
 import re as regex
 from abc import ABC, abstractmethod
 from enum import StrEnum
@@ -58,6 +57,7 @@ from mlrl.util.arrays import (
     is_sparse,
     is_sparse_and_memory_efficient,
 )
+from mlrl.util.log import Log
 from mlrl.util.options import parse_enum
 from mlrl.util.validation import assert_greater_or_equal
 
@@ -400,7 +400,7 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
                     num_examples=feature_matrix.get_num_examples(), num_outputs=num_outputs, value=constant_prediction
                 ).apply_next(1)
 
-            log.debug('A dense matrix is used to store the predicted scores')
+            Log.verbose('A dense matrix is used to store the predicted scores')
             max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
             predictions = self._create_score_predictor(
                 learner, self.model_, self.output_space_info_, num_outputs, feature_matrix
@@ -432,7 +432,7 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
                     num_examples=feature_matrix.get_num_examples(), num_outputs=num_outputs, value=constant_prediction
                 )
 
-            log.debug('A dense matrix is used to store the predicted scores')
+            Log.verbose('A dense matrix is used to store the predicted scores')
             model = self.model_
             predictor = self._create_score_predictor(
                 learner, model, self.output_space_info_, num_outputs, feature_matrix
@@ -540,7 +540,7 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
             raise ValueError('x must contain more than 1 feature(s)')
 
         if is_sparse(x):
-            log.debug(
+            Log.verbose(
                 f'A sparse matrix with sparse value {sparse_feature_value} is used to store the feature values of the '
                 f'training examples'
             )
@@ -549,7 +549,7 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
             x_indptr = np.ascontiguousarray(x.indptr, dtype=np.uint32)
             return CscFeatureMatrix(x_data, x_indices, x_indptr, x.shape[0], x.shape[1], sparse_feature_value)
 
-        log.debug('A dense matrix is used to store the feature values of the training examples')
+        Log.verbose('A dense matrix is used to store the feature values of the training examples')
         return FortranContiguousFeatureMatrix(x)
 
     def _create_row_wise_feature_matrix(self, x, **kwargs) -> RowWiseFeatureMatrix:
@@ -585,7 +585,7 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
             raise ValueError('Reshape your data. ' + message) if regex.fullmatch(pattern, message) else error
 
         if is_sparse(x):
-            log.debug(
+            Log.verbose(
                 f'A sparse matrix with sparse value {sparse_feature_value} is used to store the feature values of the '
                 f'query examples'
             )
@@ -594,7 +594,7 @@ class RuleLearner(NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, Learne
             x_indptr = np.ascontiguousarray(x.indptr, dtype=np.uint32)
             return CsrFeatureMatrix(x_data, x_indices, x_indptr, x.shape[0], x.shape[1], sparse_feature_value)
 
-        log.debug('A dense matrix is used to store the feature values of the query examples')
+        Log.verbose('A dense matrix is used to store the feature values of the query examples')
         return CContiguousFeatureMatrix(x)
 
     def __create_row_wise_output_matrix(self, y, example_weights: np.ndarray | None) -> Any | None:
@@ -702,12 +702,12 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
 
         if unique_values.size > 1:
             if sparse:
-                log.debug('A sparse matrix is used to store the labels of the training examples')
+                Log.verbose('A sparse matrix is used to store the labels of the training examples')
                 y_indices = np.ascontiguousarray(y.indices, dtype=np.uint32)
                 y_indptr = np.ascontiguousarray(y.indptr, dtype=np.uint32)
                 return CsrLabelMatrix(y_indices, y_indptr, num_examples, num_labels)
 
-            log.debug('A dense matrix is used to store the labels of the training examples')
+            Log.verbose('A dense matrix is used to store the labels of the training examples')
             return CContiguousLabelMatrix(y.astype(dtype=np.uint8, copy=False))
 
         self.constant_prediction_ = unique_values[0]
@@ -801,7 +801,9 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
                 ).apply_next(1)
 
             sparse_predictions = self.sparse_predictions_
-            log.debug(f'A {("sparse" if sparse_predictions else "dense")} matrix is used to store the predicted labels')
+            Log.verbose(
+                f'A {("sparse" if sparse_predictions else "dense")} matrix is used to store the predicted labels'
+            )
             max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
             predictions = self._create_binary_predictor(
                 learner,
@@ -849,7 +851,9 @@ class ClassificationRuleLearner(IncrementalClassifierMixin, RuleLearner, ABC):
                 )
 
             sparse_predictions = self.sparse_predictions_
-            log.debug(f'A {("sparse" if sparse_predictions else "dense")} matrix is used to store the predicted labels')
+            Log.verbose(
+                f'A {("sparse" if sparse_predictions else "dense")} matrix is used to store the predicted labels'
+            )
             model = self.model_
             predictor = self._create_binary_predictor(
                 learner,
@@ -901,13 +905,13 @@ class RegressionRuleLearner(IncrementalRegressorMixin, RuleLearner, ABC):
         )
 
         if is_sparse(y):
-            log.debug('A sparse matrix is used to store the regression scores of the training examples')
+            Log.verbose('A sparse matrix is used to store the regression scores of the training examples')
             y_data = np.ascontiguousarray(y.data, dtype=np.float32)
             y_indices = np.ascontiguousarray(y.indices, dtype=np.uint32)
             y_indptr = np.ascontiguousarray(y.indptr, dtype=np.uint32)
             return CsrRegressionMatrix(y_data, y_indices, y_indptr, y.shape[0], y.shape[1])
 
-        log.debug('A dense matrix is used to store the regression scores of the training examples')
+        Log.verbose('A dense matrix is used to store the regression scores of the training examples')
         return CContiguousRegressionMatrix(y)
 
     @override
@@ -1013,7 +1017,7 @@ class ProbabilisticClassificationRuleLearner(
                     num_examples=feature_matrix.get_num_examples(), num_outputs=num_outputs, value=constant_prediction
                 ).apply_next(1)
 
-            log.debug('A dense matrix is used to store the predicted probability estimates')
+            Log.verbose('A dense matrix is used to store the predicted probability estimates')
             max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
             predictions = convert_into_sklearn_compatible_probabilities(
                 self._create_probability_predictor(
@@ -1086,7 +1090,7 @@ class ProbabilisticClassificationRuleLearner(
                     num_examples=feature_matrix.get_num_examples(), num_outputs=num_outputs, value=constant_prediction
                 )
 
-            log.debug('A dense matrix is used to store the predicted probability estimates')
+            Log.verbose('A dense matrix is used to store the predicted probability estimates')
             model = self.model_
             predictor = self._create_probability_predictor(
                 learner,

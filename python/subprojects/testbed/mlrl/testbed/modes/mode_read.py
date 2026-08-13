@@ -4,8 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that implement a mode of operation for reading experimental results.
 """
 
-import logging as log
-
 from argparse import Namespace
 from dataclasses import replace
 from pathlib import Path
@@ -26,6 +24,7 @@ from mlrl.testbed.modes.mode import InputMode
 from mlrl.testbed.modes.mode_batch import BatchMode
 from mlrl.testbed.modes.util import OutputUtil
 from mlrl.util.cli import Argument
+from mlrl.util.log import Log
 from mlrl.util.options import Options
 
 
@@ -142,7 +141,7 @@ class ReadMode(InputMode):
     def __run_single_experiment(
         args: Namespace, recipe: Recipe, input_directory: Path, command: Command
     ) -> ExperimentState:
-        log.info(f'The command "{command}" has been used originally for running this experiment')
+        Log.info(f'The command "{command}" has been used originally for running this experiment')
         return OutputUtil(
             args=args, recipe=recipe, command=command, input_directory=input_directory
         ).read_output_files()
@@ -178,7 +177,7 @@ class ReadMode(InputMode):
 
             if num_missing > 0:
                 if num_tables > 0:
-                    log.error(
+                    Log.error(
                         f'Evaluation results for {dataset_type} data of the dataset "{dataset_name}" are incomplete. '
                         f'{num_missing} of {num_commands} {("files are" if num_missing > 1 else "file is")} missing.'
                     )
@@ -234,7 +233,7 @@ class ReadMode(InputMode):
     ):
         batch = self.__get_batch(control_arguments, args, meta_data)
         num_experiments = len(batch)
-        log.info(
+        Log.info(
             f'Reading experimental results of {num_experiments} '
             f'{("experiments" if num_experiments > 1 else "experiment")}...'
         )
@@ -246,7 +245,7 @@ class ReadMode(InputMode):
             commands_and_their_states: list[tuple[Command, ExperimentState]] = []
 
             for command, command_args in commands:
-                log.info(f'\nReading experimental results of experiment ({i} / {num_experiments})...')
+                Log.info(f'\nReading experimental results of experiment ({i} / {num_experiments})...')
                 state = self.__run_single_experiment(command_args, recipe, input_directory, command)
                 commands_and_their_states.append((command, state))
                 i += 1

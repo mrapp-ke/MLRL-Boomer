@@ -4,8 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow writing textual representations of models to one or several sinks.
 """
 
-import logging as log
-
 from typing import override
 
 from mlrl.common.cython.rule_model import RuleModel
@@ -17,6 +15,7 @@ from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor, ResultWriter, TextualDataExtractor
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
+from mlrl.util.log import Log
 
 
 class RuleModelAsTextWriter(ResultWriter):
@@ -43,7 +42,7 @@ class RuleModelAsTextWriter(ResultWriter):
                 if isinstance(model, RuleModel):
                     return [(state, RuleModelAsText(model, dataset))]
 
-                log.error(
+                Log.error(
                     f'{type(self).__name__} expected type of model to be {RuleModel.__name__}, but model has type '
                     f'{type(model).__name__}'
                 )

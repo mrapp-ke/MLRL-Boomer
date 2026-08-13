@@ -18,6 +18,7 @@ from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
 from mlrl.testbed.program_info import ProgramInfo
 from mlrl.testbed.runnables import Runnable
 from mlrl.util.cli import Argument, CommandLineInterface, EnumArgument
+from mlrl.util.log import Log
 from mlrl.util.validation import ValidationError
 
 
@@ -219,7 +220,7 @@ def main():
         try:
             runnable.run(mode, control_arguments, algorithmic_arguments, args)
         except ValidationError as error:
-            log.error(str(error))
+            Log.error(str(error))
             sys.exit(1)
 
 

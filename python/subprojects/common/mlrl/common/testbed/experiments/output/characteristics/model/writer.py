@@ -4,8 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow writing characteristics of models to one or several sinks.
 """
 
-import logging as log
-
 from typing import override
 
 import numpy as np
@@ -24,7 +22,7 @@ from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor, ResultWriter, TabularDataExtractor
 from mlrl.testbed.experiments.state import ExperimentState
-
+from mlrl.util.log import Log
 from mlrl.util.options import Options
 
 
@@ -151,7 +149,7 @@ class RuleModelCharacteristicsWriter(ResultWriter):
                 if isinstance(model, RuleModel):
                     return [(state, self.__create_rule_model_characteristics(model))]
 
-                log.error(
+                Log.error(
                     f'{type(self).__name__} expected type of model to be {RuleModel.__name__}, but model has type '
                     f'{type(model).__name__}'
                 )

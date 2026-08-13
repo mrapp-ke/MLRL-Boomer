@@ -4,8 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write label vectors to one or several sinks.
 """
 
-import logging as log
-
 from argparse import Namespace
 from typing import override
 
@@ -26,6 +24,7 @@ from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vector_histogra
 )
 from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vectors import LabelVectors
 from mlrl.util.cli import Argument
+from mlrl.util.log import Log
 
 
 class LabelVectorSetExtension(Extension):
@@ -72,7 +71,7 @@ class LabelVectorSetExtension(Extension):
                     return [(state, LabelVectors.from_histogram(visitor.label_vector_histogram))]
 
                 if not isinstance(output_space_info, NoOutputSpaceInfo):
-                    log.error(
+                    Log.error(
                         f'{type(self).__name__} expected type of output space info to be {LabelVectorSet.__name__}, '
                         f'but output space info has type {type(output_space_info).__name__}'
                     )

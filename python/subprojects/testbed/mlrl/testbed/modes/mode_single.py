@@ -4,8 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that implement a mode of operation for performing a single experiment.
 """
 
-import logging as log
-
 from argparse import Namespace
 from typing import override
 
@@ -17,6 +15,7 @@ from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.modes.mode import Mode
 from mlrl.testbed.modes.util import OutputUtil
 from mlrl.util.cli import Argument, CommandLineInterface
+from mlrl.util.log import Log
 
 
 class SingleMode(Mode):
@@ -27,7 +26,7 @@ class SingleMode(Mode):
     @staticmethod
     def __should_experiment_be_cancelled(args: Namespace, recipe: Recipe, command: Command) -> bool:
         if OutputArguments.IF_OUTPUTS_EXIST.get_value(args) == OutputExistsPolicy.CANCEL:
-            log.info('Checking if output files do already exist...')
+            Log.info('Checking if output files do already exist...')
             base_dir = OutputArguments.BASE_DIR.get_value(args)
             output_util = OutputUtil(
                 args=args, recipe=recipe, command=command, input_directory=base_dir, file_sinks_only=True
@@ -53,7 +52,7 @@ class SingleMode(Mode):
         command = Command.from_argv()
 
         if self.__should_experiment_be_cancelled(args=args, recipe=recipe, command=command):
-            log.info(
+            Log.info(
                 f'Cancelling experiment, because all output files do already exist. Use the argument '
                 f'"{OutputArguments.IF_OUTPUTS_EXIST.name} {OutputExistsPolicy.OVERWRITE}" to force-run the experiment.'
             )

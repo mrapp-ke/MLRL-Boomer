@@ -5,8 +5,6 @@ Provides classes for repeatedly obtaining predictions from an ensemble model, us
 members.
 """
 
-import logging as log
-
 from collections.abc import Generator
 from typing import Any, override
 
@@ -20,6 +18,7 @@ from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.state import PredictionResult, PredictionState
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed_sklearn.experiments.prediction.predictor import PredictionFunction, Predictor
+from mlrl.util.log import Log
 
 
 class IncrementalPredictionFunction(PredictionFunction):
@@ -85,7 +84,7 @@ class IncrementalPredictor(Predictor):
             current_size = min(next_step_size, total_size)
 
             while incremental_predictor.has_next():
-                log.info(
+                Log.info(
                     f'Predicting for {dataset.num_examples} {dataset_type} examples using a model of size '
                     f'{current_size}...'
                 )
@@ -94,7 +93,7 @@ class IncrementalPredictor(Predictor):
                 prediction_duration = Timer.stop(start_time)
 
                 if predictions is not None:
-                    log.info(f'Successfully predicted in {prediction_duration}')
+                    Log.info(f'Successfully predicted in {prediction_duration}')
                     yield PredictionState(
                         prediction_scope=IncrementalPredictionScope(current_size),
                         prediction_result=PredictionResult(
