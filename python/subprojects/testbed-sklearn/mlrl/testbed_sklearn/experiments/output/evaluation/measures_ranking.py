@@ -34,7 +34,7 @@ def at_k(measure: Measure) -> Generator[Measure, None, None]:
             evaluation_function=measure.evaluation_function,
             smaller_is_better=measure.smaller_is_better,
             percentage=measure.percentage,
-            **{'k': k},
+            k=k,
         )
 
 
