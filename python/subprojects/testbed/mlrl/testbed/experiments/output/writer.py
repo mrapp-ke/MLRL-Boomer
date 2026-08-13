@@ -266,7 +266,7 @@ class OutputWriter:
         return type(self).__name__
 
     @override
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         return isinstance(other, type(self))
 
     @override

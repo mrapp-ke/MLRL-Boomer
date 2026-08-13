@@ -6,7 +6,7 @@ Provides utilities for dealing with version numbers.
 
 from dataclasses import dataclass
 from functools import reduce
-from typing import Any, override
+from typing import override
 
 
 @dataclass
@@ -68,11 +68,11 @@ class Version:
         return hash(self.numbers)
 
     @override
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         return isinstance(other, type(self)) and self.numbers == other.numbers
 
     @override
-    def __ne__(self, other: Any) -> bool:
+    def __ne__(self, other: object) -> bool:
         return not self.__eq__(other)
 
     def __lt__(self, other: 'Version') -> bool:

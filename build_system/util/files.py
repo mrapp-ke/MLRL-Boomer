@@ -606,7 +606,7 @@ class FileType:
         return self.name
 
     @override
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         return isinstance(other, type(self)) and self.name == other.name
 
     @override

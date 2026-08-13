@@ -128,7 +128,7 @@ class Argument:
         return hash(self.key)
 
     @override
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         return isinstance(other, type(self)) and self.key == other.key
 
     @override

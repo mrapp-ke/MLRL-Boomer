@@ -120,7 +120,7 @@ class Runner:
         return result
 
     @override
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         return isinstance(other, type(self)) and str(self) == str(other)
 
     @override
@@ -225,7 +225,7 @@ class RunnerUpdater(Workflows):
             return str(self.runner)
 
         @override
-        def __eq__(self, other: Any) -> bool:
+        def __eq__(self, other: object) -> bool:
             return isinstance(other, type(self)) and self.runner == other.runner
 
         @override
@@ -250,7 +250,7 @@ class RunnerUpdater(Workflows):
             return str(self.updated)
 
         @override
-        def __eq__(self, other: Any) -> bool:
+        def __eq__(self, other: object) -> bool:
             return isinstance(other, type(self)) and self.updated == other.updated
 
         @override

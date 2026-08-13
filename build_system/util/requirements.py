@@ -8,7 +8,7 @@ from abc import ABC, abstractmethod
 from collections.abc import Iterable, Iterator
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, override
+from typing import override
 
 from core.build_unit import BuildUnit
 
@@ -39,7 +39,7 @@ class Package:
         return self.normalized_name
 
     @override
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         return isinstance(other, type(self)) and self.normalized_name == other.normalized_name
 
     @override
@@ -157,7 +157,7 @@ class Requirement:
         return f'{self.package} {str(self.version) if self.version else ""}'
 
     @override
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         return isinstance(other, type(self)) and self.package == other.package
 
     @override
@@ -238,7 +238,7 @@ class RequirementsFile(ABC):
         return str(self.path)
 
     @override
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         return isinstance(other, type(self)) and self.path == other.path
 
     @override

@@ -286,7 +286,7 @@ class RowWiseTable(Table):
             return iter(headers if headers else [])
 
         @override
-        def __eq__(self, other: Any) -> bool:
+        def __eq__(self, other: object) -> bool:
             return (
                 isinstance(other, type(self))
                 and other.num_columns == self.num_columns

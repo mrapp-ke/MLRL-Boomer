@@ -5,7 +5,7 @@ Provides utilities for checking and updating the versions of Python dependencies
 """
 
 from dataclasses import dataclass, replace
-from typing import Any, override
+from typing import override
 
 from core.build_unit import BuildUnit
 from util.log import Log
@@ -32,7 +32,7 @@ class Dependency:
     latest: RequirementVersion
 
     @override
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         return (
             isinstance(other, type(self))
             and self.requirements_file == other.requirements_file
