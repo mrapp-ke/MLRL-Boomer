@@ -484,7 +484,7 @@ class MetaDataFileComparison(FileComparison):
         another_yaml_dict = self.__load_yaml(another_file)
 
         for key, expected_value in another_yaml_dict.items():
-            if key not in yaml_dict.keys():
+            if key not in yaml_dict:
                 return MetaDataFileComparison.MissingField(file=another_file, missing_field=key)
 
             if key not in {self.FIELD_VERSION, self.FIELD_TIMESTAMP}:

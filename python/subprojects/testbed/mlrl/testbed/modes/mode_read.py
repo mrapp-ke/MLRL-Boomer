@@ -64,7 +64,7 @@ class ReadMode(InputMode):
         def _conduct_experiment(self, experiment: Experiment, state: ExperimentState) -> ExperimentState:
             listeners = experiment.listeners
 
-            for dataset_type in self.evaluation_by_dataset_type.keys():
+            for dataset_type in self.evaluation_by_dataset_type:
                 prediction_state = replace(state, dataset_type=dataset_type)
 
                 for listener in listeners:
@@ -171,7 +171,7 @@ class ReadMode(InputMode):
                 if isinstance(extra, Table):
                     tables.append(extra)
 
-                    for argument in command.argument_dict.keys():
+                    for argument in command.argument_dict:
                         if argument in algorithmic_argument_names:
                             headers.add(f'{AggregatedEvaluationResult.COLUMN_PREFIX_PARAMETER} {argument}')
 

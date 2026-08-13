@@ -80,7 +80,7 @@ class ChangeDetection:
             cache = self.json
             module_cache = cache.setdefault(module_name, {})
 
-            for invalid_key in [key for key in module_cache.keys() if Path(key) not in files]:
+            for invalid_key in [key for key in module_cache if Path(key) not in files]:
                 del module_cache[invalid_key]
 
             for file in files:
