@@ -199,8 +199,9 @@ class TextFileComparison(FileComparison):
     @override
     def _write(self, file: Path):
         with open(file, 'w+', encoding=ENCODING_UTF8) as output_file:
-            for line_index, line in enumerate(self.lines):
-                output_file.write(f'{self.__mask_line(line_index, line)}\n')
+            output_file.writelines(
+                f'{self.__mask_line(line_index, line)}\n' for line_index, line in enumerate(self.lines)
+            )
 
 
 class PickleFileComparison(FileComparison):
