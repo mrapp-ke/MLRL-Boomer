@@ -8,8 +8,8 @@ from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
 
 __all__ = [
-    'Experiment',
     'ClassificationProblem',
+    'Experiment',
     'ProblemDomain',
     'RegressionProblem',
 ]
