@@ -5,13 +5,13 @@ Provides classes for detecting changes in files.
 """
 
 import json
-
 from functools import cached_property
 from pathlib import Path
 from typing import Any, override
 
-from core.modules import Module
 from util.io import TextFile, create_directories
+
+from core.modules import Module
 
 
 class JsonFile(TextFile):

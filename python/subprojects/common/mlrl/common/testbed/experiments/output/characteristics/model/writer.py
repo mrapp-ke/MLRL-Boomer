@@ -19,7 +19,6 @@ from mlrl.common.testbed.experiments.output.characteristics.model.characteristic
     RuleModelStatistics,
     RuleStatistics,
 )
-
 from mlrl.testbed.experiments.input.data import TabularInputData
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks import Sink

@@ -10,7 +10,6 @@ from typing import override
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions.extension import Extension
-
 from mlrl.util.cli import Argument, EnumArgument
 
 

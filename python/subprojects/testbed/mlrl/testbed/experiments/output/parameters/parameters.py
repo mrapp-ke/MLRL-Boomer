@@ -10,7 +10,6 @@ from mlrl.testbed.experiments.input.parameters.parameters import InputParameters
 from mlrl.testbed.experiments.output.data import TabularOutputData
 from mlrl.testbed.experiments.state import ParameterDict
 from mlrl.testbed.experiments.table import RowWiseTable, Table
-
 from mlrl.util.options import Options
 
 

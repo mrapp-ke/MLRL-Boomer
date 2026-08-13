@@ -7,9 +7,6 @@ dependency.
 
 from typing import override
 
-from mlrl.common.testbed.program_info import RuleLearnerProgramInfo
-from mlrl.common.testbed.runnables import RuleLearnerRunnable
-
 from mlrl.boosting.config.parameters import BOOMER_CLASSIFIER_PARAMETERS, BOOMER_REGRESSOR_PARAMETERS
 from mlrl.boosting.cython.learner_boomer import BoomerClassifierConfig, BoomerRegressorConfig
 from mlrl.boosting.learners import BoomerClassifier, BoomerRegressor
@@ -18,7 +15,8 @@ from mlrl.boosting.testbed.experiments.output.probability_calibration.extension 
     JointProbabilityCalibrationModelExtension,
     MarginalProbabilityCalibrationModelExtension,
 )
-
+from mlrl.common.testbed.program_info import RuleLearnerProgramInfo
+from mlrl.common.testbed.runnables import RuleLearnerRunnable
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.program_info import ProgramInfo
 

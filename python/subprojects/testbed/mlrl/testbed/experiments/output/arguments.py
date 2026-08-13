@@ -8,7 +8,6 @@ from datetime import datetime
 from pathlib import Path
 
 from mlrl.testbed.experiments.output.policies import OutputErrorPolicy, OutputExistsPolicy
-
 from mlrl.util.cli import BoolArgument, EnumArgument, PathArgument
 
 

@@ -11,16 +11,14 @@ from typing import Any, override
 
 import numpy as np
 
-from mlrl.testbed_sklearn.experiments.dataset import Attribute, AttributeType, TabularDataset
-from mlrl.testbed_sklearn.experiments.output.dataset.dataset_prediction import PredictionDataset
-
 from mlrl.testbed.experiments.input.data import DatasetInputData
 from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor, DatasetExtractor, ResultWriter
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem
 from mlrl.testbed.experiments.state import ExperimentState
-
+from mlrl.testbed_sklearn.experiments.dataset import Attribute, AttributeType, TabularDataset
+from mlrl.testbed_sklearn.experiments.output.dataset.dataset_prediction import PredictionDataset
 from mlrl.util.arrays import is_sparse
 
 

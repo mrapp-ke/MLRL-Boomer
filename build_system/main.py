@@ -5,7 +5,6 @@ Initializes the build system and runs targets specified via command line argumen
 """
 
 import sys
-
 from argparse import ArgumentParser
 from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path

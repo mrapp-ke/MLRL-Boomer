@@ -4,10 +4,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for listing files and directories.
 """
 
+from collections.abc import Callable
 from functools import partial
 from itertools import chain
 from pathlib import Path
-from typing import Any, Callable, override
+from typing import Any, override
 
 
 class DirectorySearch:

@@ -14,7 +14,6 @@ from mlrl.testbed.experiments.output.data import OutputData, StructuralOutputDat
 from mlrl.testbed.experiments.output.sinks.sink import FileSink
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.io import open_writable_file
-
 from mlrl.util.options import Options
 
 

@@ -4,8 +4,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing characteristics of an output matrix that are part of output data.
 """
 
+from collections.abc import Callable
 from numbers import Number
-from typing import Any, Callable, override
+from typing import Any, override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties
@@ -13,7 +14,6 @@ from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain
 from mlrl.testbed.experiments.table import RowWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
-
 from mlrl.util.options import Options
 
 

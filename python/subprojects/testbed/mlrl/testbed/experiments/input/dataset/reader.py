@@ -6,7 +6,6 @@ Provides classes that allow reading datasets from one or several sources.
 
 import logging as log
 import sys
-
 from dataclasses import replace
 from typing import override
 

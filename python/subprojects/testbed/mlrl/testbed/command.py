@@ -5,7 +5,6 @@ Provides classes for dealing with commands and their arguments.
 """
 
 import sys
-
 from argparse import Namespace
 from collections.abc import Iterable, Iterator
 from copy import copy

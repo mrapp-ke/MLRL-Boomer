@@ -5,7 +5,6 @@ Provides utility classes to be used by different modes of operation.
 """
 
 import logging as log
-
 from argparse import Namespace
 from dataclasses import replace
 from pathlib import Path

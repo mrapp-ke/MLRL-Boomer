@@ -7,8 +7,8 @@ Provides classes for obtaining predictions from machine learning models.
 import logging as log
 
 from abc import ABC, abstractmethod
-from collections.abc import Generator
-from typing import Any, Callable
+from collections.abc import Callable, Generator
+from typing import Any
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType

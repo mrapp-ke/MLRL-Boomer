@@ -9,7 +9,6 @@ from typing import Any, override
 from mlrl.testbed.experiments.input.meta_data.meta_data import InputMetaData
 from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.output.data import StructuralOutputData
-
 from mlrl.util.options import Options
 
 

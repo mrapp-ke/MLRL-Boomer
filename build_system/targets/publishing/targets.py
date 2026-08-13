@@ -5,10 +5,10 @@ Implements targets for publishing pre-built packages.
 """
 
 import re as regex
-
+from collections.abc import Iterable
 from os import environ
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 from core.build_unit import BuildUnit
 from util.env import get_env

@@ -7,20 +7,18 @@ Provides classes for writing characteristics of datasets to one or several sinks
 from itertools import chain
 from typing import override
 
-from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
-from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import get_output_characteristics
-from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics_data import (
-    FEATURE_CHARACTERISTICS,
-    DataCharacteristics,
-)
-
 from mlrl.testbed.experiments.input.data import TabularInputData
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor, ResultWriter, TabularDataExtractor
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.format import parse_number
-
+from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
+from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import get_output_characteristics
+from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics_data import (
+    FEATURE_CHARACTERISTICS,
+    DataCharacteristics,
+)
 from mlrl.util.options import Options
 
 

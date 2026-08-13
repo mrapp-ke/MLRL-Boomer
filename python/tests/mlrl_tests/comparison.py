@@ -4,7 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 import csv
 import re as regex
-
 from abc import ABC, abstractmethod
 from collections.abc import Iterable
 from dataclasses import dataclass
@@ -12,7 +11,6 @@ from pathlib import Path
 from typing import Any, override
 
 import yaml
-
 from mlrl.testbed.experiments.input.meta_data.meta_data import InputMetaData
 from mlrl.testbed.experiments.input.sources import CsvFileSource, PickleFileSource, YamlFileSource
 from mlrl.testbed.util.io import ENCODING_UTF8, open_readable_file, open_writable_file

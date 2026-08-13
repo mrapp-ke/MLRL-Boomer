@@ -6,7 +6,6 @@ Provides utility functions for running command line programs during the build pr
 
 import subprocess
 import sys
-
 from pathlib import Path
 from subprocess import CompletedProcess
 from typing import Any, override

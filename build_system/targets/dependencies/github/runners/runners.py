@@ -6,7 +6,6 @@ https://docs.github.com/actions/using-github-hosted-runners/using-github-hosted-
 """
 
 import re
-
 from dataclasses import dataclass, replace
 from functools import cached_property
 from typing import Any, override

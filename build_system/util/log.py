@@ -6,7 +6,6 @@ Provides classes for writing log messages.
 
 import logging
 import sys
-
 from enum import Enum
 
 

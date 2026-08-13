@@ -9,7 +9,11 @@ from typing import Any, override
 
 from sklearn.base import (
     BaseEstimator,
+)
+from sklearn.base import (
     ClassifierMixin as SkLearnClassifierMixin,
+)
+from sklearn.base import (
     RegressorMixin as SkLearnRegressorMixin,
 )
 
@@ -21,11 +25,6 @@ from mlrl.common.testbed.experiments.output.characteristics.model import RuleMod
 from mlrl.common.testbed.experiments.output.label_vectors.extension import LabelVectorSetExtension
 from mlrl.common.testbed.experiments.output.model_text import RuleModelAsTextExtension
 from mlrl.common.testbed.experiments.prediction.predictor_incremental import IncrementalPredictor
-
-from mlrl.testbed_sklearn.experiments import SkLearnProblem
-from mlrl.testbed_sklearn.experiments.prediction.predictor import Predictor
-from mlrl.testbed_sklearn.runnables import SkLearnRunnable
-
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.meta_data import MetaData
@@ -33,10 +32,11 @@ from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, RegressionProblem
 from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
 from mlrl.testbed.extensions.extension import Extension
-
+from mlrl.testbed_sklearn.experiments import SkLearnProblem
+from mlrl.testbed_sklearn.experiments.prediction.predictor import Predictor
+from mlrl.testbed_sklearn.runnables import SkLearnRunnable
 from mlrl.util.cli import Argument, BoolArgument, EnumArgument, FloatArgument
 from mlrl.util.validation import assert_greater, assert_greater_or_equal
-
 
 OPTION_MIN_SIZE = 'min_size'
 

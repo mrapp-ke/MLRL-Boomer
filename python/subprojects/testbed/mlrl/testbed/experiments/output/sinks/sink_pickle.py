@@ -5,7 +5,6 @@ Provides classes that allow writing output data to files by using Python's pickl
 """
 
 import pickle
-
 from pathlib import Path
 from typing import override
 
@@ -14,7 +13,6 @@ from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.model.model import OutputModel
 from mlrl.testbed.experiments.output.sinks.sink import FileSink
 from mlrl.testbed.experiments.state import ExperimentState
-
 from mlrl.util.options import Options
 
 

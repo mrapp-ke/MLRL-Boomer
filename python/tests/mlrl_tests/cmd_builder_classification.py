@@ -4,10 +4,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 from pathlib import Path
 
+from mlrl.testbed.experiments.prediction_type import PredictionType
+
 from .cmd_builder import CmdBuilder
 from .datasets import Dataset
-
-from mlrl.testbed.experiments.prediction_type import PredictionType
 
 
 class ClassificationCmdBuilder(CmdBuilder):

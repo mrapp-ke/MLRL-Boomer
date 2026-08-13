@@ -13,13 +13,6 @@ import numpy as np
 
 from mlrl.common.cython.output_space_info import LabelVectorSet, LabelVectorSetVisitor, NoOutputSpaceInfo
 from mlrl.common.learners import ClassificationRuleLearner
-
-from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vector_histogram import (
-    LabelVector,
-    LabelVectorHistogram,
-)
-from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vectors import LabelVectors
-
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
@@ -27,7 +20,11 @@ from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor
 from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
 from mlrl.testbed.extensions.extension import Extension
-
+from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vector_histogram import (
+    LabelVector,
+    LabelVectorHistogram,
+)
+from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vectors import LabelVectors
 from mlrl.util.cli import Argument
 
 

@@ -2,18 +2,15 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 
+from mlrl.boosting.config.parameters import PROBABILITY_CALIBRATION_ISOTONIC
+from mlrl.common.config.parameters import BINNING_EQUAL_WIDTH
+from mlrl.util.cli import AUTO
+from mlrl.util.options import Options
+
 from ..cmd_builder import CmdBuilder
 from ..cmd_builder_classification import ClassificationCmdBuilder
 from ..datasets import Dataset
 from .cmd_builder import BoomerCmdBuilderMixin
-
-
-from mlrl.common.config.parameters import BINNING_EQUAL_WIDTH
-
-from mlrl.boosting.config.parameters import PROBABILITY_CALIBRATION_ISOTONIC
-
-from mlrl.util.cli import AUTO
-from mlrl.util.options import Options
 
 
 class BoomerClassifierCmdBuilder(ClassificationCmdBuilder, BoomerCmdBuilderMixin):

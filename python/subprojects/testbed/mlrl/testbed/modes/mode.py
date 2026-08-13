@@ -17,7 +17,6 @@ from mlrl.testbed.experiments.input.sources import YamlFileSource
 from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
-
 from mlrl.util.cli import Argument, CommandLineInterface, PathArgument, SetArgument
 
 

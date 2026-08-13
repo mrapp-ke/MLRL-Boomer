@@ -13,15 +13,13 @@ from typing import Any, override
 from sklearn.base import BaseEstimator
 
 from mlrl.common.mixins import IncrementalClassifierMixin, IncrementalRegressorMixin
-
-from mlrl.testbed_sklearn.experiments.prediction.predictor import PredictionFunction, Predictor
-
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.prediction_scope import IncrementalPredictionScope
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.state import PredictionResult, PredictionState
 from mlrl.testbed.experiments.timer import Timer
+from mlrl.testbed_sklearn.experiments.prediction.predictor import PredictionFunction, Predictor
 
 
 class IncrementalPredictionFunction(PredictionFunction):

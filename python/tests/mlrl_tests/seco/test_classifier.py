@@ -5,17 +5,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 from typing import Any, override
 
 import pytest
-
-from sklearn.utils.estimator_checks import check_estimator
-
-from ..cmd_runner import CmdRunner
-from ..common.integration_tests import RuleLearnerIntegrationTestsMixin
-from ..datasets import Dataset
-from ..integration_tests_classification import ClassificationIntegrationTests
-from .cmd_builder import SeCoClassifierCmdBuilder
-
 from mlrl.common.config.parameters import RulePruningParameter
-
 from mlrl.seco.config.parameters import (
     HEURISTIC_ACCURACY,
     HEURISTIC_F_MEASURE,
@@ -28,8 +18,14 @@ from mlrl.seco.config.parameters import (
     LiftFunctionParameter,
 )
 from mlrl.seco.learners import SeCoClassifier
-
 from mlrl.util.cli import NONE
+from sklearn.utils.estimator_checks import check_estimator
+
+from ..cmd_runner import CmdRunner
+from ..common.integration_tests import RuleLearnerIntegrationTestsMixin
+from ..datasets import Dataset
+from ..integration_tests_classification import ClassificationIntegrationTests
+from .cmd_builder import SeCoClassifierCmdBuilder
 
 
 @pytest.mark.seco

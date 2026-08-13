@@ -50,7 +50,6 @@ from mlrl.common.cython.learner_classification import (
 )
 from mlrl.common.cython.package_info import get_num_cpu_cores, is_multi_threading_support_enabled
 from mlrl.common.cython.stopping_criterion import AggregationFunction
-
 from mlrl.util.cli import NONE, Argument, SetArgument
 from mlrl.util.options import BooleanOption, Options, parse_param, parse_param_and_options
 

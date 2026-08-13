@@ -11,7 +11,6 @@ from itertools import chain
 from typing import override
 
 import numpy as np
-
 from scipy.stats import rankdata
 
 from mlrl.testbed.experiments.context import Context
@@ -20,7 +19,6 @@ from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
 from mlrl.testbed.experiments.output.evaluation.measures import AggregationMeasure, Measure
 from mlrl.testbed.experiments.table import Cell, Column, ColumnWiseTable, RowWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, format_number
-
 from mlrl.util.options import Options
 
 

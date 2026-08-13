@@ -6,12 +6,11 @@ from os import environ
 from pathlib import Path
 from typing import Any
 
-from .datasets import Dataset
-
 from mlrl.testbed.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 from mlrl.testbed.experiments.state import ExperimentMode
-
 from mlrl.util.options import Options
+
+from .datasets import Dataset
 
 
 class CmdBuilder:

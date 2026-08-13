@@ -6,13 +6,12 @@ Provides classes that implement regression evaluation measures.
 
 from sklearn import metrics
 
+from mlrl.testbed.experiments.output.evaluation.measures import Measure
 from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import (
     EVALUATION_MEASURE_PREDICTION_TIME,
     EVALUATION_MEASURE_TRAINING_TIME,
     TabularEvaluationResult,
 )
-
-from mlrl.testbed.experiments.output.evaluation.measures import Measure
 
 REGRESSION_EVALUATION_MEASURES = [
     Measure(

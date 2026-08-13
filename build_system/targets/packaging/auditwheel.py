@@ -5,7 +5,6 @@ Provides classes that allow to run the external program "auditwheel".
 """
 
 import shutil
-
 from pathlib import Path
 from typing import override
 

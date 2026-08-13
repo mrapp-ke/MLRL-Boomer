@@ -9,15 +9,13 @@ import logging as log
 from abc import ABC, abstractmethod
 from typing import override
 
+from mlrl.boosting.testbed.experiments.output.probability_calibration.model_isotonic import IsotonicRegressionModel
+from mlrl.boosting.testbed.experiments.output.probability_calibration.model_no import NoCalibrationModel
 from mlrl.common.cython.probability_calibration import (
     IsotonicProbabilityCalibrationModel,
     NoProbabilityCalibrationModel,
 )
 from mlrl.common.learners import ClassificationRuleLearner
-
-from mlrl.boosting.testbed.experiments.output.probability_calibration.model_isotonic import IsotonicRegressionModel
-from mlrl.boosting.testbed.experiments.output.probability_calibration.model_no import NoCalibrationModel
-
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.input.data import TabularInputData

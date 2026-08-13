@@ -5,7 +5,6 @@ Provides classes that allow reading input data from files using Python's pickle 
 """
 
 import pickle
-
 from pathlib import Path
 from typing import Any, override
 

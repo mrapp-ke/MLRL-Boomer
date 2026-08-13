@@ -9,7 +9,6 @@ from functools import cached_property
 import numpy as np
 
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.matrix_output import OutputMatrix
-
 from mlrl.util.arrays import is_sparse
 
 

@@ -6,7 +6,6 @@ Imports and invokes the program to be run by the command line utility.
 
 import logging as log
 import sys
-
 from argparse import ArgumentParser, HelpFormatter, Namespace
 from enum import Enum
 from importlib import import_module
@@ -18,7 +17,6 @@ from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
 from mlrl.testbed.program_info import ProgramInfo
 from mlrl.testbed.runnables import Runnable
-
 from mlrl.util.cli import Argument, CommandLineInterface, EnumArgument
 from mlrl.util.validation import ValidationError
 

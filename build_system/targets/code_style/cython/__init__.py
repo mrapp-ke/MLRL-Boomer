@@ -8,13 +8,14 @@ from pathlib import Path
 
 from core.build_unit import BuildUnit
 from core.targets import TargetBuilder
+from util.files import FileType
+
 from targets.code_style.cython.targets import (
     CheckCythonCodeStyle,
     EnforceCythonCodeStyle,
 )
 from targets.code_style.modules import CodeModule
 from targets.project import Project
-from util.files import FileType
 
 FORMAT_CYTHON = 'format_cython'
 

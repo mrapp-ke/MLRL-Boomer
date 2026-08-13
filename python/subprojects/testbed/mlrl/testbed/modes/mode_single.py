@@ -16,7 +16,6 @@ from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.modes.mode import Mode
 from mlrl.testbed.modes.util import OutputUtil
-
 from mlrl.util.cli import Argument, CommandLineInterface
 
 

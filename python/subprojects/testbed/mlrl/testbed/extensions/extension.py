@@ -12,7 +12,6 @@ from typing import override
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.modes import BatchMode, ReadMode, RunMode
-
 from mlrl.util.cli import Argument
 
 

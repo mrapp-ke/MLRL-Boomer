@@ -5,7 +5,6 @@ Provides classes for representing output data.
 """
 
 import json
-
 from abc import ABC, abstractmethod
 from collections.abc import Iterable
 from dataclasses import replace
@@ -17,7 +16,6 @@ from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_number
-
 from mlrl.util.options import Options
 
 

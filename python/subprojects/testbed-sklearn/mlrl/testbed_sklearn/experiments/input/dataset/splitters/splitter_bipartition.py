@@ -12,13 +12,12 @@ from typing import Any, override
 
 from sklearn.model_selection import train_test_split
 
-from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
-
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.fold import FoldingStrategy
 from mlrl.testbed.experiments.input.dataset import DatasetReader
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
 
 
 class BipartitionSplitter(DatasetSplitter):

@@ -3,15 +3,12 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 
 import pytest
+from mlrl.boosting.config.parameters import RegressionLossParameter, StatisticTypeParameter
+from mlrl.common.config.parameters import GlobalPruningParameter, PartitionSamplingParameter
+from mlrl.util.cli import NONE
 
 from ..cmd_runner import CmdRunner
 from ..integration_tests import IntegrationTests
-
-from mlrl.common.config.parameters import GlobalPruningParameter, PartitionSamplingParameter
-
-from mlrl.boosting.config.parameters import RegressionLossParameter, StatisticTypeParameter
-
-from mlrl.util.cli import NONE
 
 
 class BoomerIntegrationTestsMixin(IntegrationTests):

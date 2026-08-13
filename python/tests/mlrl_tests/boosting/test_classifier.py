@@ -5,24 +5,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 from typing import Any, override
 
 import pytest
-
-from sklearn.utils.estimator_checks import check_estimator
-
-from ..cmd_runner import CmdRunner
-from ..common.integration_tests import ClassificationRuleLearnerIntegrationTestsMixin
-from ..datasets import Dataset
-from ..integration_tests_classification import ClassificationIntegrationTests
-from .cmd_builder_classification import BoomerClassifierCmdBuilder
-from .integration_tests import BoomerIntegrationTestsMixin
-
-from mlrl.common.config.parameters import (
-    BINNING_EQUAL_WIDTH,
-    SAMPLING_STRATIFIED_EXAMPLE_WISE,
-    SAMPLING_STRATIFIED_OUTPUT_WISE,
-    GlobalPruningParameter,
-)
-from mlrl.common.learners import SparsePolicy
-
 from mlrl.boosting.config.parameters import (
     OPTION_BASED_ON_PROBABILITIES,
     PROBABILITY_CALIBRATION_ISOTONIC,
@@ -33,12 +15,25 @@ from mlrl.boosting.config.parameters import (
     StatisticTypeParameter,
 )
 from mlrl.boosting.learners import BoomerClassifier
-
+from mlrl.common.config.parameters import (
+    BINNING_EQUAL_WIDTH,
+    SAMPLING_STRATIFIED_EXAMPLE_WISE,
+    SAMPLING_STRATIFIED_OUTPUT_WISE,
+    GlobalPruningParameter,
+)
+from mlrl.common.learners import SparsePolicy
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.state import ExperimentMode
-
 from mlrl.util.cli import NONE
 from mlrl.util.options import BooleanOption, Options
+from sklearn.utils.estimator_checks import check_estimator
+
+from ..cmd_runner import CmdRunner
+from ..common.integration_tests import ClassificationRuleLearnerIntegrationTestsMixin
+from ..datasets import Dataset
+from ..integration_tests_classification import ClassificationIntegrationTests
+from .cmd_builder_classification import BoomerClassifierCmdBuilder
+from .integration_tests import BoomerIntegrationTestsMixin
 
 
 @pytest.mark.boosting

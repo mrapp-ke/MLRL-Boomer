@@ -9,7 +9,6 @@ from itertools import chain
 from typing import Any, Union
 
 import numpy as np
-
 from scipy.sparse import (
     issparse,
     isspmatrix_bsr,

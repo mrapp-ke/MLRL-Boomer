@@ -6,13 +6,11 @@ Provides base classes for implementing rule learning algorithms.
 
 import logging as log
 import re as regex
-
 from abc import ABC, abstractmethod
 from enum import StrEnum
 from typing import Any, override
 
 import numpy as np
-
 from sklearn.preprocessing import LabelEncoder
 from sklearn.utils import InputTags
 from sklearn.utils.multiclass import type_of_target
@@ -51,7 +49,6 @@ from mlrl.common.mixins import (
     OrdinalFeatureSupportMixin,
     ProbabilisticClassifierMixin,
 )
-
 from mlrl.util.arrays import (
     SparseFormat,
     enforce_2d,

@@ -6,12 +6,6 @@ Provides classes for writing characteristics of binary predictions to one or sev
 
 from typing import override
 
-from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import get_output_characteristics
-from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics_prediction import (
-    PredictionCharacteristics,
-)
-from mlrl.testbed_sklearn.experiments.output.characteristics.data.matrix_label import LabelMatrix
-
 from mlrl.testbed.experiments.input.data import TabularInputData
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks import Sink
@@ -19,7 +13,11 @@ from mlrl.testbed.experiments.output.writer import DataExtractor, ResultWriter, 
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.format import parse_number
-
+from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import get_output_characteristics
+from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics_prediction import (
+    PredictionCharacteristics,
+)
+from mlrl.testbed_sklearn.experiments.output.characteristics.data.matrix_label import LabelMatrix
 from mlrl.util.options import Options
 
 

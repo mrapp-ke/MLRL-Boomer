@@ -6,6 +6,12 @@ Provides classes for representing characteristics of a datasets that are part of
 
 from typing import Any, override
 
+from mlrl.testbed.experiments.context import Context
+from mlrl.testbed.experiments.data import TabularProperties
+from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
+from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain
+from mlrl.testbed.experiments.table import RowWiseTable, Table
+from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import (
     Characteristic,
@@ -14,14 +20,6 @@ from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristic
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.matrix_feature import FeatureMatrix
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.matrix_label import LabelMatrix
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.matrix_output import OutputMatrix
-
-from mlrl.testbed.experiments.context import Context
-from mlrl.testbed.experiments.data import TabularProperties
-from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
-from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain
-from mlrl.testbed.experiments.table import RowWiseTable, Table
-from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
-
 from mlrl.util.options import Options
 
 

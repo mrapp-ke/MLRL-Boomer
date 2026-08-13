@@ -5,7 +5,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 from typing import Any, override
 
 import pytest
-
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.multioutput import RegressorChain
 

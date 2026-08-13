@@ -5,12 +5,12 @@ Provides classes for configuring the arguments of a command line interface.
 """
 
 import sys
-
 from argparse import Action, ArgumentError, ArgumentParser, Namespace, _ArgumentGroup
+from collections.abc import Callable
 from enum import Enum
 from functools import cached_property
 from pathlib import Path
-from typing import Any, Callable, override
+from typing import Any, override
 
 from mlrl.util.format import format_enum_values, format_set, format_value
 from mlrl.util.options import BooleanOption, Options, parse_enum, parse_param, parse_param_and_options

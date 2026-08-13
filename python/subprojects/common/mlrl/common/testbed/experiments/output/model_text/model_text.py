@@ -8,14 +8,11 @@ from io import StringIO
 from typing import override
 
 from mlrl.common.cython.rule_model import Body, CompleteHead, ConjunctiveBody, EmptyBody, Head, PartialHead, RuleModel
-
-from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
-
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties
 from mlrl.testbed.experiments.output.data import TextualOutputData
 from mlrl.testbed.util.format import format_number
-
+from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
 from mlrl.util.options import Options
 
 

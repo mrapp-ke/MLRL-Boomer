@@ -4,18 +4,16 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for obtaining predictions from global machine learning models.
 """
 
-import logging as log
-
 from collections.abc import Generator
 from typing import Any, override
-
-from mlrl.testbed_sklearn.experiments.prediction.predictor import PredictionFunction, Predictor
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.prediction_scope import GlobalPredictionScope
 from mlrl.testbed.experiments.state import PredictionResult, PredictionState
 from mlrl.testbed.experiments.timer import Timer
+from mlrl.testbed_sklearn.experiments.prediction.predictor import PredictionFunction, Predictor
+from mlrl.util.log import Log
 
 
 class GlobalPredictionFunction(PredictionFunction):
@@ -49,14 +47,14 @@ class GlobalPredictor(Predictor):
         """
         See :func:`mlrl.testbed_sklearn.experiments.prediction.predictor.Predictor.obtain_predictions`
         """
-        log.info(f'Predicting for {dataset.num_examples} {dataset_type} examples...')
+        Log.info(f'Predicting for {dataset.num_examples} {dataset_type} examples...')
         start_time = Timer.start()
         prediction_function = GlobalPredictionFunction(learner)
         predictions = prediction_function.invoke(dataset, self.prediction_type, **kwargs)
         prediction_duration = Timer.stop(start_time)
 
         if predictions is not None:
-            log.info(f'Successfully predicted in {prediction_duration}')
+            Log.info(f'Successfully predicted in {prediction_duration}')
             yield PredictionState(
                 prediction_scope=GlobalPredictionScope(),
                 prediction_result=PredictionResult(

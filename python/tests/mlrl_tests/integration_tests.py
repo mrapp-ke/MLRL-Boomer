@@ -3,16 +3,14 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 
 import os
-
 from abc import ABC
 from typing import Any
 
 import pytest
+from mlrl.testbed.experiments.state import ExperimentMode
 
 from .cmd_runner import CmdRunner
 from .datasets import Dataset
-
-from mlrl.testbed.experiments.state import ExperimentMode
 
 ci_only = pytest.mark.skipif(os.getenv('GITHUB_ACTIONS') != 'true', reason='Disabled unless run on CI')
 
