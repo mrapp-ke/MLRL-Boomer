@@ -53,9 +53,9 @@ class Version:
         for part in version.split('.'):
             try:
                 numbers.append(Version.parse_version_number(part))
-            except ValueError as error:
+            except ValueError:
                 if not skip_on_error:
-                    raise error
+                    raise
 
         return Version(tuple(numbers))
 

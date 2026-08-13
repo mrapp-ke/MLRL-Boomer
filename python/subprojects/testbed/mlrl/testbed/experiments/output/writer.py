@@ -155,7 +155,7 @@ class OutputWriter:
             return extractor.extract_data(state, self.sinks)
         except Exception as error:
             if self.output_error_policy == OutputErrorPolicy.EXIT:
-                raise error
+                raise
 
             log.error(
                 f'Failed to extract output data from experimental state via extractor of type '
@@ -183,7 +183,7 @@ class OutputWriter:
             self._write_to_sink(sink, state, output_data)
         except Exception as error:
             if self.output_error_policy == OutputErrorPolicy.EXIT:
-                raise error
+                raise
 
             log.error(
                 f'Failed to write output data of type "{type(output_data).__name__}" to sink {type(sink).__name__}',

@@ -160,12 +160,12 @@ class SkLearnExperiment(Experiment):
                 start_time = Timer.start()
                 estimator.fit(dataset.x, dataset.y, **fit_kwargs)
                 return Timer.stop(start_time)
-            except ValueError as error:
+            except ValueError:
                 if dataset.has_sparse_features:
                     return self._fit(estimator, dataset.enforce_dense_features(), fit_kwargs)
                 if dataset.has_sparse_outputs:
                     return self._fit(estimator, dataset.enforce_dense_outputs(), fit_kwargs)
-                raise error
+                raise
 
     class PredictionProcedure(Experiment.PredictionProcedure):
         """
@@ -194,11 +194,11 @@ class SkLearnExperiment(Experiment):
                     predictor = problem_domain.predictor_factory.create()
                     dataset_type = state.dataset_type
                     yield from predictor.obtain_predictions(learner, dataset, dataset_type, **predict_kwargs)
-                except ValueError as error:
+                except ValueError:
                     if dataset.has_sparse_features:
                         yield self.predict(replace(state, dataset=dataset.enforce_dense_features()))
 
-                    raise error
+                    raise
 
     def __init__(
         self,
