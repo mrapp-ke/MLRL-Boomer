@@ -5,7 +5,7 @@ Provides actions for validating and updating the project's changelog.
 """
 
 from dataclasses import dataclass, field
-from datetime import date
+from datetime import date, datetime, timezone
 from enum import Enum, StrEnum, auto
 from functools import cached_property
 from pathlib import Path
@@ -399,7 +399,7 @@ def __update_changelog(release_type: ReleaseType, *changeset_files: ChangesetFil
 
     new_release = Release(
         version=Project.version(release=True),
-        release_date=date.today(),
+        release_date=datetime.now(timezone.utc).date(),
         release_type=release_type,
         changesets=merged_changesets,
     )
