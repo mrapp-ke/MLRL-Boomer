@@ -217,7 +217,7 @@ class PickleFileComparison(FileComparison):
     @override
     def _compare(self, another_file: Path) -> Difference | None:
         if not another_file.is_file():
-            raise IOError(f'File "{another_file}" does not exist')
+            raise OSError(f'File "{another_file}" does not exist')
         return None
 
     @override
@@ -504,7 +504,7 @@ class MetaDataFileComparison(FileComparison):
             return None
 
         if not another_file.is_file():
-            raise IOError(f'File "{another_file}" does not exist')
+            raise OSError(f'File "{another_file}" does not exist')
         return None
 
     @override

@@ -115,7 +115,7 @@ class OutputUtil:
                 experiment = experiment_builder.build(self.args)
                 OutputUtil.ReadProcedure().conduct_experiment(experiment)
                 return True
-        except IOError:
+        except OSError:
             return False
         finally:
             log.disable(log.NOTSET)  # Re-enable logging
