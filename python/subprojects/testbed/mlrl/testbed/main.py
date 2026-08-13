@@ -29,7 +29,6 @@ class LogLevel(Enum):
 
     DEBUG = log.DEBUG
     INFO = log.INFO
-    WARN = log.WARN
     WARNING = log.WARNING
     ERROR = log.ERROR
     CRITICAL = log.CRITICAL
