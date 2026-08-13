@@ -4,11 +4,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Defines command line arguments for configuring the functionality to write output data to one or several sinks.
 """
 
-from datetime import datetime
 from pathlib import Path
 
 from mlrl.testbed.experiments.output.policies import OutputErrorPolicy, OutputExistsPolicy
 from mlrl.util.cli import BoolArgument, EnumArgument, PathArgument
+from mlrl.util.time import get_current_datetime
 
 
 class OutputArguments:
@@ -18,7 +18,7 @@ class OutputArguments:
 
     BASE_DIR = PathArgument(
         '--base-dir',
-        default=Path('experiments') / datetime.now().strftime('%Y-%m-%d_%H-%M'),
+        default=Path('experiments') / get_current_datetime().strftime('%Y-%m-%d_%H-%M'),
         description=f'If relative paths to directories, where files should be saved, are given, they are considered '
         f'relative to the directory specified via this argument. The default value is '
         f'"{Path("experiments") / "YYY-MM-DD_hh-mm"}".',
