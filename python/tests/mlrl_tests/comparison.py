@@ -139,7 +139,7 @@ class TextFileComparison(FileComparison):
             if not line:
                 self.block_of_durations = (-1, -1)
                 return line
-            if line.startswith('--') or line.startswith('"'):
+            if line.startswith(('--', '"')):
                 return line
             return line[: self.block_of_durations[1]].rstrip()
 

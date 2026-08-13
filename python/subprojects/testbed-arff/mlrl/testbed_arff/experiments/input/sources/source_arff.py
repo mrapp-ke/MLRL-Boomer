@@ -35,9 +35,9 @@ def normalize_attribute_name(name: str) -> str:
     :return:        The normalized name
     """
     name = name.strip()
-    if name.startswith("'") or name.startswith('"'):
+    if name.startswith(("'", '"')):
         name = name[1:]
-    if name.endswith("'") or name.endswith('"'):
+    if name.endswith(("'", '"')):
         name = name[: (len(name) - 1)]
     return name.replace("\\'", "'").replace('\\"', '"')
 

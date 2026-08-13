@@ -126,10 +126,7 @@ def is_sparse(array, supported_formats: set[SparseFormat] | None = None) -> bool
         csr = SparseFormat.CSR in supported_formats and is_csr(array)
         dia = SparseFormat.DIA in supported_formats and is_dia(array)
         bsr = SparseFormat.BSR in supported_formats and is_bsr(array)
-
-        if lil or coo or dok or csc or csr or dia or bsr:
-            return True
-        return False
+        return lil or coo or dok or csc or csr or dia or bsr
 
     return issparse(array)
 

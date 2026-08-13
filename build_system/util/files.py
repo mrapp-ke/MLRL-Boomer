@@ -190,11 +190,7 @@ class DirectorySearch:
         def filter_subdirectory(subdirectory: Path, filters: list[DirectorySearch.Filter]) -> bool:
             parent = subdirectory.parent
             directory_name = subdirectory.name
-
-            if any(directory_filter(parent, directory_name) for directory_filter in filters):
-                return True
-
-            return False
+            return any(directory_filter(parent, directory_name) for directory_filter in filters)
 
         for directory in directories:
             subdirectories = [file for file in directory.glob('*') if filter_file(file)]

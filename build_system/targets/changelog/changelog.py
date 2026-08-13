@@ -40,7 +40,7 @@ class LineType(Enum):
             return LineType.BLANK
         if line.startswith(Line.PREFIX_HEADER):
             return LineType.HEADER
-        if line.startswith(Line.PREFIX_DASH) or line.startswith(Line.PREFIX_ASTERISK):
+        if line.startswith((Line.PREFIX_DASH, Line.PREFIX_ASTERISK)):
             return LineType.ENUMERATION
         return None
 
@@ -163,12 +163,15 @@ class ChangesetFile(TextFile):
                 f'File "{self.file}" must start with a top-level header (starting with "{Line.PREFIX_HEADER}")'
             )
 
-        if previous_line and previous_line.line_type == LineType.HEADER:
-            if not current_line or current_line.line_type == LineType.HEADER:
-                raise ValueError(
-                    f'Header "{previous_line.line}" at line {previous_line.line_number} of file "{self.file}" is not '
-                    f'followed by any content'
-                )
+        if (
+            previous_line
+            and previous_line.line_type == LineType.HEADER
+            and (not current_line or current_line.line_type == LineType.HEADER)
+        ):
+            raise ValueError(
+                f'Header "{previous_line.line}" at line {previous_line.line_number} of file "{self.file}" is not '
+                f'followed by any content'
+            )
 
     @cached_property
     def parsed_lines(self) -> list[Line]:
