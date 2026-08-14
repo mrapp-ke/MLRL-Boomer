@@ -31,16 +31,6 @@ jobs:
             cpp
             python
             doc
-      - name: Determine Python version for workflow
-        id: workflow_python_version
-        run: echo "workflow_python_version=$(sed s/,//g build_system/res/versioning/version-python)" >> $GITHUB_OUTPUT
-      - name: Setup Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ steps.workflow_python_version.outputs.workflow_python_version }}
-          check-latest: true
-          cache: pip
-          cache-dependency-path: '**/requirements.txt'
       - name: Detect changes
         uses: dorny/paths-filter@v4
         id: filter
