@@ -35,7 +35,7 @@ jobs:
             build_system
             python
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ inputs.workflow_python_version }}
           check-latest: true
@@ -76,7 +76,7 @@ jobs:
         with:
           key: ccache-${{ runner.os }}-${{ runner.arch }}
       - name: Build package
-        uses: pypa/cibuildwheel@v4.1
+        uses: pypa/cibuildwheel@v4.2
         env:
           CIBW_BUILD: ${{ matrix.build_identifier }}
           CIBW_BEFORE_ALL: GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} ./build dependency_libomp && ./build --clean
