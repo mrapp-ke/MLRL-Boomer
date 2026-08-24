@@ -21,27 +21,23 @@ namespace seco {
              */
             MEstimate(float32 m) : m_(m) {}
 
-            float32 evaluateConfusionMatrix(float32 cin, float32 cip, float32 crn, float32 crp, float32 uin,
-                                            float32 uip, float32 urn, float32 urp) const override {
+            float32 evaluateConfusionMatrix(float32 tp, float32 fp, float32 fn, float32 tn) const override {
                 if (std::isinf(m_)) {
                     // Equivalent to weighted relative accuracy
-                    return wra(cin, cip, crn, crp, uin, uip, urn, urp);
+                    return wra(tp, fp, fn, tn);
                 } else if (m_ > 0) {
                     // Trade-off between precision and weighted relative accuracy
-                    float32 numCoveredEqual = cin + crp;
-                    float32 numCovered = numCoveredEqual + cip + crn;
-                    float32 numUncoveredEqual = uin + urp;
-                    float32 numEqual = numCoveredEqual + numUncoveredEqual;
-                    float32 numTotal = numCovered + numUncoveredEqual + uip + urn;
+                    float32 numCovered = tp + fp;
+                    float32 numTotal = numCovered + fn + tn;
 
                     if (numTotal > 0) {
-                        return (numCoveredEqual + (m_ * (numEqual / numTotal))) / (numCovered + m_);
+                        return (tp + (m_ * ((tp + fn) / numTotal))) / (numCovered + m_);
                     }
 
                     return 0;
                 } else {
                     // Equivalent to precision
-                    return precision(cin, cip, crn, crp);
+                    return precision(tp, fp);
                 }
             }
     };

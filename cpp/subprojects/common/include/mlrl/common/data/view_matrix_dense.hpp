@@ -4,8 +4,8 @@
 #pragma once
 
 #include "mlrl/common/data/view_matrix.hpp"
-#include "mlrl/common/util/view_functions.hpp"
 
+#include <algorithm>
 #include <utility>
 
 /**
@@ -14,7 +14,7 @@
  * @tparam T The type of the values, the view provides access to
  */
 template<typename T>
-class MLRLCOMMON_API DenseMatrix : public BaseView<T>,
+class MLRLCOMMON_API DenseMatrix : public View<T>,
                                    public Matrix {
     public:
 
@@ -24,44 +24,45 @@ class MLRLCOMMON_API DenseMatrix : public BaseView<T>,
          * @param numRows   The number of rows in the view
          * @param numCols   The number of columns in the view
          */
-        DenseMatrix(T* array, uint32 numRows, uint32 numCols) : BaseView<T>(array), Matrix(numRows, numCols) {}
+        DenseMatrix(T* array, uint32 numRows, uint32 numCols) : View<T>(array), Matrix(numRows, numCols) {}
 
         /**
          * @param other A const reference to an object of type `DenseMatrix` that should be copied
          */
-        DenseMatrix(const DenseMatrix<T>& other) : BaseView<T>(other), Matrix(std::move(other)) {}
+        DenseMatrix(const DenseMatrix<T>& other) : View<T>(other), Matrix(std::move(other)) {}
 
         /**
          * @param other A reference to an object of type `DenseMatrix` that should be moved
          */
-        DenseMatrix(DenseMatrix<T>&& other) : BaseView<T>(std::move(other)), Matrix(std::move(other)) {}
+        DenseMatrix(DenseMatrix<T>&& other) : View<T>(std::move(other)), Matrix(std::move(other)) {}
 
         virtual ~DenseMatrix() override {}
 
         /**
          * An iterator that provides read-only access to the values in the view.
          */
-        using value_const_iterator = const BaseView<T>::value_type*;
+        using value_const_iterator = const View<T>::value_type*;
 
         /**
          * An iterator that provides access to the values in the view and allows to modify them.
          */
-        using value_iterator = BaseView<T>::value_type*;
+        using value_iterator = View<T>::value_type*;
 
         /**
          * Sets all values stored in the matrix to zero.
          */
         void clear() {
-            util::setViewToZeros(BaseView<T>::array, Matrix::numRows * Matrix::numCols);
+            std::fill(View<T>::array, View<T>::array + (Matrix::numRows * Matrix::numCols), (T) 0);
         }
 };
 
 /**
  * Allocates the memory, a two-dimensional dense view provides access to.
  *
- * @tparam Matrix The type of the view
+ * @tparam Matrix           The type of the view
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
  */
-template<typename Matrix>
+template<typename Matrix, typename MemoryAllocator = DefaultMemoryAllocator>
 class MLRLCOMMON_API DenseMatrixAllocator : public Matrix {
     public:
 
@@ -71,24 +72,25 @@ class MLRLCOMMON_API DenseMatrixAllocator : public Matrix {
          * @param init      True, if all elements in the view should be value-initialized, false otherwise
          */
         DenseMatrixAllocator(uint32 numRows, uint32 numCols, bool init = false)
-            : Matrix(util::allocateMemory<typename Matrix::value_type>(numRows * numCols, init), numRows, numCols) {}
+            : Matrix(MemoryAllocator::template allocateMemory<typename Matrix::value_type>(numRows * numCols, init),
+                     numRows, numCols) {}
 
         /**
          * @param other A reference to an object of type `DenseMatrixAllocator` that should be copied
          */
-        DenseMatrixAllocator(const DenseMatrixAllocator<Matrix>& other) : Matrix(other) {
+        DenseMatrixAllocator(const DenseMatrixAllocator<Matrix, MemoryAllocator>& other) : Matrix(other) {
             throw std::runtime_error("Objects of type DenseMatrixAllocator cannot be copied");
         }
 
         /**
          * @param other A reference to an object of type `DenseMatrixAllocator` that should be moved
          */
-        DenseMatrixAllocator(DenseMatrixAllocator<Matrix>&& other) : Matrix(std::move(other)) {
+        DenseMatrixAllocator(DenseMatrixAllocator<Matrix, MemoryAllocator>&& other) : Matrix(std::move(other)) {
             other.release();
         }
 
         virtual ~DenseMatrixAllocator() override {
-            util::freeMemory(Matrix::array);
+            MemoryAllocator::freeMemory(Matrix::array);
         }
 };
 

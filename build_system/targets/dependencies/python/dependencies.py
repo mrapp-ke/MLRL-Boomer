@@ -20,7 +20,7 @@ class Dependency:
     Provides information about an outdated dependency.
 
     Attributes:
-        requirements_file:  The path to the requirements file that defines the dependency
+        requirements_file:  The requirements file that defines the dependency
         package:            The package, the dependency corresponds to
         outdated:           The outdated version of the dependency
         latest:             The latest version of the dependency

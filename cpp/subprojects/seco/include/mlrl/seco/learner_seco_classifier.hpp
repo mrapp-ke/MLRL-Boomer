@@ -25,7 +25,6 @@ namespace seco {
              * Defines an interface for all classes that allow to configure the multi-label SeCo algorithm.
              */
             class IConfig : virtual public ISeCoRuleLearnerMixin,
-                            virtual public ICoverageStoppingCriterionMixin,
                             virtual public ISingleOutputHeadMixin,
                             virtual public IPartialHeadMixin,
                             virtual public IPeakLiftFunctionMixin,
@@ -65,6 +64,7 @@ namespace seco {
                             virtual public IParallelRuleRefinementMixin,
                             virtual public IParallelStatisticUpdateMixin,
                             virtual public IParallelPredictionMixin,
+                            virtual public ISimdMixin,
                             virtual public ISizeStoppingCriterionMixin,
                             virtual public ITimeStoppingCriterionMixin,
                             virtual public ISequentialPostOptimizationMixin {

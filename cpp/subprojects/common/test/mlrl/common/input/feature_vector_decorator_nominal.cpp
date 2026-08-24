@@ -9,9 +9,9 @@ TEST(NominalFeatureVectorDecoratorTest, updateCoverageMaskAndStatistics) {
     uint32 numExamplesPerValue = 10;
     uint32 numMinorityExamples = numValues * numExamplesPerValue;
     AllocatedNominalFeatureVector featureVector(numValues, numMinorityExamples, 0);
-    AllocatedNominalFeatureVector::value_iterator valueIterator = featureVector.values;
-    AllocatedNominalFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto valueIterator = featureVector.values;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numValues; i++) {
         valueIterator[i] = i;
@@ -73,9 +73,9 @@ TEST(NominalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsInverse) 
     uint32 numExamplesPerValue = 10;
     uint32 numMinorityExamples = numValues * numExamplesPerValue;
     AllocatedNominalFeatureVector featureVector(numValues, numMinorityExamples, 0);
-    AllocatedNominalFeatureVector::value_iterator valueIterator = featureVector.values;
-    AllocatedNominalFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto valueIterator = featureVector.values;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numValues; i++) {
         valueIterator[i] = i;
@@ -149,9 +149,9 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndices) 
     uint32 numExamplesPerValue = 10;
     uint32 numMinorityExamples = numValues * numExamplesPerValue;
     AllocatedNominalFeatureVector featureVector(numValues, numMinorityExamples, 0);
-    AllocatedNominalFeatureVector::value_iterator valueIterator = featureVector.values;
-    AllocatedNominalFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto valueIterator = featureVector.values;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numValues; i++) {
         valueIterator[i] = i;
@@ -175,9 +175,9 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndicesIn
     uint32 numExamplesPerValue = 10;
     uint32 numMinorityExamples = numValues * numExamplesPerValue;
     AllocatedNominalFeatureVector featureVector(numValues, numMinorityExamples, 0);
-    AllocatedNominalFeatureVector::value_iterator valueIterator = featureVector.values;
-    AllocatedNominalFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto valueIterator = featureVector.values;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numValues; i++) {
         valueIterator[i] = i;
@@ -201,13 +201,13 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndicesIn
         // Check filtered indices...
         const NominalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
         EXPECT_EQ(filteredFeatureVector.numBins, interval.start + (numValues - interval.end));
-        NominalFeatureVector::value_const_iterator valuesBegin = filteredFeatureVector.values_cbegin();
+        auto valuesBegin = filteredFeatureVector.values_cbegin();
         uint32 n = 0;
 
         for (uint32 i = 0; i < interval.start; i++) {
             EXPECT_EQ(valuesBegin[n], (int32) i);
-            NominalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(n);
-            NominalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(n);
+            auto indicesBegin = filteredFeatureVector.indices_cbegin(n);
+            auto indicesEnd = filteredFeatureVector.indices_cend(n);
             uint32 numIndices = indicesEnd - indicesBegin;
             EXPECT_EQ(numIndices, numExamplesPerValue);
 
@@ -220,8 +220,8 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndicesIn
 
         for (uint32 i = interval.end; i < featureVector.numBins; i++) {
             EXPECT_EQ(valuesBegin[n], (int32) i);
-            NominalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(n);
-            NominalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(n);
+            auto indicesBegin = filteredFeatureVector.indices_cbegin(n);
+            auto indicesEnd = filteredFeatureVector.indices_cend(n);
             uint32 numIndices = indicesEnd - indicesBegin;
             EXPECT_EQ(numIndices, numExamplesPerValue);
 
@@ -239,9 +239,9 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndicesIn
     uint32 numExamplesPerValue = 10;
     uint32 numMinorityExamples = numValues * numExamplesPerValue;
     AllocatedNominalFeatureVector featureVector(numValues, numMinorityExamples, 0);
-    AllocatedNominalFeatureVector::value_iterator valueIterator = featureVector.values;
-    AllocatedNominalFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto valueIterator = featureVector.values;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numValues; i++) {
         valueIterator[i] = i;
@@ -265,13 +265,13 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndicesIn
         // Check filtered indices...
         const NominalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
         EXPECT_EQ(filteredFeatureVector.numBins, interval.start + (numValues - interval.end));
-        NominalFeatureVector::value_const_iterator valuesBegin = filteredFeatureVector.values_cbegin();
+        auto valuesBegin = filteredFeatureVector.values_cbegin();
         uint32 n = 0;
 
         for (uint32 i = 0; i < interval.start; i++) {
             EXPECT_EQ(valuesBegin[n], (int32) i);
-            NominalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(n);
-            NominalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(n);
+            auto indicesBegin = filteredFeatureVector.indices_cbegin(n);
+            auto indicesEnd = filteredFeatureVector.indices_cend(n);
             uint32 numIndices = indicesEnd - indicesBegin;
             EXPECT_EQ(numIndices, numExamplesPerValue);
 
@@ -284,8 +284,8 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndicesIn
 
         for (uint32 i = interval.end; i < featureVector.numBins; i++) {
             EXPECT_EQ(valuesBegin[n], (int32) i);
-            NominalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(n);
-            NominalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(n);
+            auto indicesBegin = filteredFeatureVector.indices_cbegin(n);
+            auto indicesEnd = filteredFeatureVector.indices_cend(n);
             uint32 numIndices = indicesEnd - indicesBegin;
             EXPECT_EQ(numIndices, numExamplesPerValue);
 
@@ -303,9 +303,9 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
     uint32 numExamplesPerValue = 10;
     uint32 numMinorityExamples = numValues * numExamplesPerValue;
     AllocatedNominalFeatureVector featureVector(numValues, numMinorityExamples, 0);
-    AllocatedNominalFeatureVector::value_iterator valueIterator = featureVector.values;
-    AllocatedNominalFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto valueIterator = featureVector.values;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numValues; i++) {
         valueIterator[i] = i;
@@ -328,7 +328,7 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
     CoverageMask coverageMask(numExamples);
     uint32 indicatorValue = 1;
     coverageMask.indicatorValue = indicatorValue;
-    CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
+    auto coverageMaskIterator = coverageMask.begin();
 
     for (uint32 i = 0; i < numExamples; i++) {
         if (i % 2 == 0) {
@@ -348,8 +348,8 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
         const NominalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
 
         for (uint32 i = 0; i < numValues; i++) {
-            NominalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
-            NominalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
+            auto indicesBegin = filteredFeatureVector.indices_cbegin(i);
+            auto indicesEnd = filteredFeatureVector.indices_cend(i);
             uint32 numIndices = indicesEnd - indicesBegin;
             EXPECT_EQ(numIndices, numExamplesPerValue / 2);
 
@@ -388,9 +388,9 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
     uint32 numExamplesPerValue = 10;
     uint32 numMinorityExamples = numValues * numExamplesPerValue;
     AllocatedNominalFeatureVector featureVector(numValues, numMinorityExamples, 0);
-    AllocatedNominalFeatureVector::value_iterator valueIterator = featureVector.values;
-    AllocatedNominalFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto valueIterator = featureVector.values;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numValues; i++) {
         valueIterator[i] = i;
@@ -413,7 +413,7 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
     CoverageMask coverageMask(numExamples);
     uint32 indicatorValue = 1;
     coverageMask.indicatorValue = indicatorValue;
-    CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
+    auto coverageMaskIterator = coverageMask.begin();
 
     for (uint32 i = 0; i < numExamples; i++) {
         if (i % 2 == 0) {
@@ -434,8 +434,8 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
         const NominalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
 
         for (uint32 i = 0; i < numValues; i++) {
-            NominalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
-            NominalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
+            auto indicesBegin = filteredFeatureVector.indices_cbegin(i);
+            auto indicesEnd = filteredFeatureVector.indices_cend(i);
             uint32 numIndices = indicesEnd - indicesBegin;
             EXPECT_EQ(numIndices, numExamplesPerValue / 2);
 
@@ -474,7 +474,7 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
     uint32 numExamplesPerValue = 10;
     uint32 numMinorityExamples = numValues * numExamplesPerValue;
     AllocatedNominalFeatureVector featureVector(1, numMinorityExamples, 0);
-    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numValues; i++) {
         for (uint32 j = 0; j < numExamplesPerValue; j++) {

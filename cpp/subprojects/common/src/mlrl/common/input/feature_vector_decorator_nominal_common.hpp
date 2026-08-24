@@ -17,15 +17,15 @@ static inline std::unique_ptr<IFeatureVector> createFilteredNominalFeatureVector
     // Filter the indices of examples not associated with the majority value...
     const NominalFeatureVector& featureVector = view.getView().firstView;
     AllocatedNominalFeatureVector& filteredFeatureVector = filteredDecoratorPtr->getView().firstView;
-    AllocatedNominalFeatureVector::index_iterator filteredIndexIterator = filteredFeatureVector.indices;
-    AllocatedNominalFeatureVector::index_iterator filteredIndptrIterator = filteredFeatureVector.indptr;
-    AllocatedNominalFeatureVector::value_iterator filteredValueIterator = filteredFeatureVector.values;
+    auto filteredIndexIterator = filteredFeatureVector.indices;
+    auto filteredIndptrIterator = filteredFeatureVector.indptr;
+    auto filteredValueIterator = filteredFeatureVector.values;
     uint32 numFilteredValues = 0;
     uint32 numFilteredIndices = 0;
 
     for (uint32 i = 0; i < featureVector.numBins; i++) {
-        NominalFeatureVector::index_const_iterator indexIterator = featureVector.indices_cbegin(i);
-        NominalFeatureVector::index_const_iterator indicesEnd = featureVector.indices_cend(i);
+        auto indexIterator = featureVector.indices_cbegin(i);
+        auto indicesEnd = featureVector.indices_cend(i);
         uint32 numIndices = indicesEnd - indexIterator;
         uint32 indptr = numFilteredIndices;
 

@@ -115,7 +115,7 @@ class RuleModelCharacteristicsWriter(ResultWriter):
                 statistics.rule_statistics.append(RuleStatistics(body_statistics=body_statistics))
                 return False
 
-            raise ValueError('Unsupported type of body: ' + str(type(body)))
+            raise ValueError(f'Unsupported type of body: {type(body)}')
 
         @staticmethod
         def __create_head_characteristics(statistics: RuleModelStatistics, head: Head, default_rule: bool):
@@ -143,7 +143,7 @@ class RuleModelCharacteristicsWriter(ResultWriter):
                 else:
                     statistics.rule_statistics[-1].head_statistics = head_statistics
             else:
-                raise ValueError('Unsupported type of head: ' + str(type(head)))
+                raise ValueError(f'Unsupported type of head: {type(head)}')
 
         @override
         def extract_data(self, state: ExperimentState, _: list[Sink]) -> list[tuple[ExperimentState, OutputData]]:

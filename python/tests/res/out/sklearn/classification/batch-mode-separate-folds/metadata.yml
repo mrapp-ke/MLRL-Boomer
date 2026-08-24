@@ -1,118 +1,118 @@
 child-commands:
 - mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
   python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2}
-  --dataset emotions --estimator RandomForestClassifier --log-level debug --max-depth
-  2 --model-save-dir n-estimators_50/max-depth_2/dataset_emotions/models --n-estimators
-  50 --parameter-save-dir n-estimators_50/max-depth_2/dataset_emotions/parameters
+  --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain
+  --log-width 120 --max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_emotions/models
+  --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_2/dataset_emotions/parameters
   --result-dir n-estimators_50/max-depth_2/dataset_emotions/results --save-all true
   --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
   python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2}
-  --dataset emotions --estimator RandomForestClassifier --log-level debug --max-depth
-  2 --model-save-dir n-estimators_50/max-depth_2/dataset_emotions/models --n-estimators
-  50 --parameter-save-dir n-estimators_50/max-depth_2/dataset_emotions/parameters
+  --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain
+  --log-width 120 --max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_emotions/models
+  --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_2/dataset_emotions/parameters
   --result-dir n-estimators_50/max-depth_2/dataset_emotions/results --save-all true
   --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
   python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2}
-  --dataset emotions --estimator RandomForestClassifier --log-level debug --max-depth
-  4 --max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/models
+  --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain
+  --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/models
   --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters
   --result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results
   --save-all true --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
   python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2}
-  --dataset emotions --estimator RandomForestClassifier --log-level debug --max-depth
-  4 --max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/models
+  --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain
+  --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/models
   --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters
   --result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/results
   --save-all true --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
   python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2}
-  --dataset emotions --estimator RandomForestClassifier --log-level debug --max-depth
-  2 --model-save-dir n-estimators_100/max-depth_2/dataset_emotions/models --n-estimators
-  100 --parameter-save-dir n-estimators_100/max-depth_2/dataset_emotions/parameters
+  --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain
+  --log-width 120 --max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_emotions/models
+  --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_2/dataset_emotions/parameters
   --result-dir n-estimators_100/max-depth_2/dataset_emotions/results --save-all true
   --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
   python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2}
-  --dataset emotions --estimator RandomForestClassifier --log-level debug --max-depth
-  2 --model-save-dir n-estimators_100/max-depth_2/dataset_emotions/models --n-estimators
-  100 --parameter-save-dir n-estimators_100/max-depth_2/dataset_emotions/parameters
+  --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain
+  --log-width 120 --max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_emotions/models
+  --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_2/dataset_emotions/parameters
   --result-dir n-estimators_100/max-depth_2/dataset_emotions/results --save-all true
   --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
   python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2}
-  --dataset emotions --estimator RandomForestClassifier --log-level debug --max-depth
-  4 --max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/models
+  --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain
+  --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/models
   --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters
   --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results
   --save-all true --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
   python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2}
-  --dataset emotions --estimator RandomForestClassifier --log-level debug --max-depth
-  4 --max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/models
+  --dataset emotions --estimator RandomForestClassifier --log-level debug --log-plain
+  --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/models
   --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/parameters
   --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/results
   --save-all true --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
   python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2}
-  --dataset enron --estimator RandomForestClassifier --log-level debug --max-depth
-  2 --model-save-dir n-estimators_50/max-depth_2/dataset_enron/models --n-estimators
-  50 --parameter-save-dir n-estimators_50/max-depth_2/dataset_enron/parameters --result-dir
-  n-estimators_50/max-depth_2/dataset_enron/results --save-all true --save-evaluation
+  --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain
+  --log-width 120 --max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_enron/models
+  --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_2/dataset_enron/parameters
+  --result-dir n-estimators_50/max-depth_2/dataset_enron/results --save-all true --save-evaluation
   true --save-meta-data false
 - mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
   python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2}
-  --dataset enron --estimator RandomForestClassifier --log-level debug --max-depth
-  2 --model-save-dir n-estimators_50/max-depth_2/dataset_enron/models --n-estimators
-  50 --parameter-save-dir n-estimators_50/max-depth_2/dataset_enron/parameters --result-dir
-  n-estimators_50/max-depth_2/dataset_enron/results --save-all true --save-evaluation
+  --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain
+  --log-width 120 --max-depth 2 --model-save-dir n-estimators_50/max-depth_2/dataset_enron/models
+  --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_2/dataset_enron/parameters
+  --result-dir n-estimators_50/max-depth_2/dataset_enron/results --save-all true --save-evaluation
   true --save-meta-data false
 - mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
   python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2}
-  --dataset enron --estimator RandomForestClassifier --log-level debug --max-depth
-  4 --max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models
+  --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain
+  --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models
   --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters
   --result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results
   --save-all true --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
   python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2}
-  --dataset enron --estimator RandomForestClassifier --log-level debug --max-depth
-  4 --max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models
+  --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain
+  --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models
   --n-estimators 50 --parameter-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters
   --result-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/results
   --save-all true --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
   python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2}
-  --dataset enron --estimator RandomForestClassifier --log-level debug --max-depth
-  2 --model-save-dir n-estimators_100/max-depth_2/dataset_enron/models --n-estimators
-  100 --parameter-save-dir n-estimators_100/max-depth_2/dataset_enron/parameters --result-dir
-  n-estimators_100/max-depth_2/dataset_enron/results --save-all true --save-evaluation
-  true --save-meta-data false
+  --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain
+  --log-width 120 --max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_enron/models
+  --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_2/dataset_enron/parameters
+  --result-dir n-estimators_100/max-depth_2/dataset_enron/results --save-all true
+  --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
   python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2}
-  --dataset enron --estimator RandomForestClassifier --log-level debug --max-depth
-  2 --model-save-dir n-estimators_100/max-depth_2/dataset_enron/models --n-estimators
-  100 --parameter-save-dir n-estimators_100/max-depth_2/dataset_enron/parameters --result-dir
-  n-estimators_100/max-depth_2/dataset_enron/results --save-all true --save-evaluation
-  true --save-meta-data false
+  --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain
+  --log-width 120 --max-depth 2 --model-save-dir n-estimators_100/max-depth_2/dataset_enron/models
+  --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_2/dataset_enron/parameters
+  --result-dir n-estimators_100/max-depth_2/dataset_enron/results --save-all true
+  --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
   python/tests/res/data --data-split cross-validation{first_fold=1,last_fold=1,num_folds=2}
-  --dataset enron --estimator RandomForestClassifier --log-level debug --max-depth
-  4 --max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models
+  --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain
+  --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models
   --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters
   --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results
   --save-all true --save-evaluation true --save-meta-data false
 - mlrl-testbed mlrl.testbed_sklearn --base-dir python/tests/res/tmp/<worker-id> --data-dir
   python/tests/res/data --data-split cross-validation{first_fold=2,last_fold=2,num_folds=2}
-  --dataset enron --estimator RandomForestClassifier --log-level debug --max-depth
-  4 --max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models
+  --dataset enron --estimator RandomForestClassifier --log-level debug --log-plain
+  --log-width 120 --max-depth 4 --max-leaf-nodes 4 --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models
   --n-estimators 100 --parameter-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/parameters
   --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results
   --save-all true --save-evaluation true --save-meta-data false
-command: mlrl-testbed mlrl.testbed_sklearn --mode batch --log-level debug --base-dir
-  python/tests/res/tmp/<worker-id> --config python/tests/res/config/sklearn/classification/batch_config.yml
+command: mlrl-testbed mlrl.testbed_sklearn --mode batch --log-width 120 --log-plain
+  --log-level debug --base-dir python/tests/res/tmp/<worker-id> --config python/tests/res/config/sklearn/classification/batch_config.yml
   --save-evaluation true --save-meta-data false --save-meta-data true --save-all true
   --data-split cross-validation{num_folds=2} --n-estimators 1 --estimator RandomForestClassifier
 timestamp: <timestamp>

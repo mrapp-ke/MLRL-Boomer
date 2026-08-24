@@ -69,7 +69,7 @@ class IncrementalPredictor(Predictor):
         See :func:`mlrl.testbed_sklearn.experiments.prediction.predictor.Predictor.obtain_predictions`
         """
         if not isinstance(learner, IncrementalClassifierMixin) and not isinstance(learner, IncrementalRegressorMixin):
-            raise ValueError('Cannot obtain incremental predictions from a model of type ' + type(learner.__name__))
+            raise ValueError(f'Cannot obtain incremental predictions from a model of type {type(learner.__name__)}')
 
         prediction_function = IncrementalPredictionFunction(learner)
         incremental_predictor = prediction_function.invoke(dataset, self.prediction_type, **kwargs)

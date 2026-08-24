@@ -9,6 +9,8 @@ from collections.abc import Iterable
 from functools import partial
 from itertools import chain
 from typing import override
+from rich.console import ConsoleRenderable, Group
+from rich.text import Text
 
 import numpy as np
 
@@ -19,8 +21,9 @@ from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
 from mlrl.testbed.experiments.output.evaluation.measures import AggregationMeasure, Measure
 from mlrl.testbed.experiments.table import Cell, Column, ColumnWiseTable, RowWiseTable, Table
-from mlrl.testbed.util.format import OPTION_DECIMALS, format_number
+from mlrl.testbed.util.format import OPTION_DECIMALS
 
+from mlrl.util.format import format_value
 from mlrl.util.options import Options
 
 
@@ -73,13 +76,13 @@ class AggregatedEvaluationResult(TabularOutputData):
         self.evaluation_by_dataset = evaluation_by_dataset
 
     @override
-    def to_text(self, options: Options, **kwargs) -> str | None:
+    def to_text(self, options: Options, **kwargs) -> str | ConsoleRenderable | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
-        text = ''
         kwargs = dict(kwargs) | {OPTION_DECIMALS: 2}
         table = self.to_table(options, **kwargs)
+        renderables: list[ConsoleRenderable] = []
 
         if table:
             column_wise_table = table.to_column_wise_table()
@@ -118,9 +121,9 @@ class AggregatedEvaluationResult(TabularOutputData):
 
             for i, (measure_index, measure) in enumerate(measures):
                 if i > 0:
-                    text += '\n\n'
+                    renderables.append(Text(''))
 
-                text += f'Evaluation results for measure "{measure}":\n\n'
+                renderables.append(Text(f'Evaluation results for measure "{measure}":\n'))
                 std_dev_index = std_dev_column_indices.get(measure)
                 aggregation_measure_indices = aggregation_measure_column_indices.get(measure, {})
                 measure_indices = [measure_index] + ([std_dev_index] if std_dev_index else [])
@@ -158,9 +161,18 @@ class AggregatedEvaluationResult(TabularOutputData):
                     for row_index, row in enumerate(row_wise_table.rows)
                     if row_index > 0 and (row[0] in separators or row_wise_table[row_index - 1][0] in separators)
                 ]
-                text += row_wise_table.format(table_format=Table.Format.SIMPLE, separator_indices=separator_indices)
+                column_styles = [Column.Style.HEADER] + [
+                    Column.Style.VALUE for _ in range(row_wise_table.num_columns - 1)
+                ]
+                renderables.append(
+                    row_wise_table.to_rich_table(
+                        border_style=Table.BorderStyle.HORIZONTAL_LINES,
+                        separator_indices=separator_indices,
+                        column_styles=column_styles,
+                    )
+                )
 
-        return text if text else None
+        return Group(*renderables) if renderables else None
 
     @staticmethod
     def __get_average_rows(
@@ -195,7 +207,7 @@ class AggregatedEvaluationResult(TabularOutputData):
                             except ValueError:
                                 pass
 
-                row.append(format_number(np.asarray(values, dtype=float).mean(), decimals=decimals) if values else None)
+                row.append(format_value(np.asarray(values, dtype=float).mean(), decimals=decimals) if values else None)
 
             result.append(row)
 
@@ -217,7 +229,7 @@ class AggregatedEvaluationResult(TabularOutputData):
         std_dev_column = sliced_table[sliced_table.num_columns - 1]
 
         for row_index in range(std_dev_column.num_rows):
-            std_dev_column[row_index] = '±' + str(std_dev_column[row_index])
+            std_dev_column[row_index] = f'±{std_dev_column[row_index]}'
 
     @staticmethod
     def __add_separator_rows(dataset_column: Column, table: RowWiseTable, averages: bool = False) -> set[str]:
@@ -284,7 +296,7 @@ class AggregatedEvaluationResult(TabularOutputData):
                         if value is not None:
                             float_value = float(value)
                             values_by_dataset[-1].append(float_value)
-                            column[row_index] = format_number(float_value, decimals=decimals)
+                            column[row_index] = format_value(float_value, decimals=decimals)
                     except ValueError:
                         pass
 
@@ -313,7 +325,7 @@ class AggregatedEvaluationResult(TabularOutputData):
                                 )
                             )
                             aggregated_table.add_column(
-                                *map(lambda x: format_number(x, decimals=decimals), aggregated_column),
+                                *map(lambda x: format_value(x, decimals=decimals), aggregated_column),
                                 header=f'{aggregation_measure.name} {header}',
                                 position=column_index + 1,
                             )

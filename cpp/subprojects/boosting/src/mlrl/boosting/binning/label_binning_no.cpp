@@ -6,19 +6,31 @@
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_non_decomposable_complete.hpp"
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_non_decomposable_partial_dynamic.hpp"
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_non_decomposable_partial_fixed.hpp"
+#include "mlrl/boosting/rule_evaluation/simd/vector_math_decomposable_simd.hpp"
+#include "mlrl/boosting/rule_evaluation/vector_math_decomposable.hpp"
 
 namespace boosting {
 
     NoLabelBinningConfig::NoLabelBinningConfig(ReadableProperty<IRegularizationConfig> l1RegularizationConfig,
-                                               ReadableProperty<IRegularizationConfig> l2RegularizationConfig)
-        : l1RegularizationConfig_(l1RegularizationConfig), l2RegularizationConfig_(l2RegularizationConfig) {}
+                                               ReadableProperty<IRegularizationConfig> l2RegularizationConfig,
+                                               ReadableProperty<ISimdConfig> simdConfig)
+        : l1RegularizationConfig_(l1RegularizationConfig), l2RegularizationConfig_(l2RegularizationConfig),
+          simdConfig_(simdConfig) {}
 
     std::unique_ptr<IDecomposableRuleEvaluationFactory>
       NoLabelBinningConfig::createDecomposableCompleteRuleEvaluationFactory() const {
         float32 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
         float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
-        return std::make_unique<DecomposableCompleteRuleEvaluationFactory>(l1RegularizationWeight,
-                                                                           l2RegularizationWeight);
+
+#if SIMD_SUPPORT_ENABLED
+        if (simdConfig_.get().isSimdEnabled()) {
+            return std::make_unique<DecomposableCompleteRuleEvaluationFactory<SimdDecomposableVectorMath>>(
+              l1RegularizationWeight, l2RegularizationWeight);
+        }
+#endif
+
+        return std::make_unique<DecomposableCompleteRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
+          l1RegularizationWeight, l2RegularizationWeight);
     }
 
     std::unique_ptr<ISparseDecomposableRuleEvaluationFactory>
@@ -26,7 +38,15 @@ namespace boosting {
                                                                                 uint32 maxOutputs) const {
         float32 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
         float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
-        return std::make_unique<DecomposableFixedPartialRuleEvaluationFactory>(
+
+#if SIMD_SUPPORT_ENABLED
+        if (simdConfig_.get().isSimdEnabled()) {
+            return std::make_unique<DecomposableFixedPartialRuleEvaluationFactory<SimdDecomposableVectorMath>>(
+              outputRatio, minOutputs, maxOutputs, l1RegularizationWeight, l2RegularizationWeight);
+        }
+#endif
+
+        return std::make_unique<DecomposableFixedPartialRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
           outputRatio, minOutputs, maxOutputs, l1RegularizationWeight, l2RegularizationWeight);
     }
 
@@ -35,7 +55,15 @@ namespace boosting {
                                                                                   float32 exponent) const {
         float32 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
         float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
-        return std::make_unique<DecomposableDynamicPartialRuleEvaluationFactory>(
+
+#if SIMD_SUPPORT_ENABLED
+        if (simdConfig_.get().isSimdEnabled()) {
+            return std::make_unique<DecomposableDynamicPartialRuleEvaluationFactory<SimdDecomposableVectorMath>>(
+              threshold, exponent, l1RegularizationWeight, l2RegularizationWeight);
+        }
+#endif
+
+        return std::make_unique<DecomposableDynamicPartialRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
           threshold, exponent, l1RegularizationWeight, l2RegularizationWeight);
     }
 

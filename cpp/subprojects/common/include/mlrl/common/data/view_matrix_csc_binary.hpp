@@ -123,9 +123,10 @@ class MLRLCOMMON_API BinaryCscView : public BinarySparseMatrix {
  * Allocates the memory for a two-dimensional view that provides column-wise access to binary values stored in a matrix
  * in the compressed sparse column (CSC) format.
  *
- * @tparam Matrix The type of the view
+ * @tparam Matrix           The type of the view
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
  */
-template<typename Matrix>
+template<typename Matrix, typename MemoryAllocator = DefaultMemoryAllocator>
 class MLRLCOMMON_API BinaryCscViewAllocator : public Matrix {
     public:
 
@@ -135,8 +136,8 @@ class MLRLCOMMON_API BinaryCscViewAllocator : public Matrix {
          * @param numCols           The number of columns in the view
          */
         BinaryCscViewAllocator(uint32 numDenseElements, uint32 numRows, uint32 numCols)
-            : Matrix(util::allocateMemory<uint32>(numDenseElements), util::allocateMemory<uint32>(numCols + 1), numRows,
-                     numCols) {
+            : Matrix(MemoryAllocator::template allocateMemory<uint32>(numDenseElements),
+                     MemoryAllocator::template allocateMemory<uint32>(numCols + 1), numRows, numCols) {
             Matrix::indptr[0] = 0;
             Matrix::indptr[numCols] = numDenseElements;
         }
@@ -144,21 +145,21 @@ class MLRLCOMMON_API BinaryCscViewAllocator : public Matrix {
         /**
          * @param other A reference to an object of type `BinaryCscViewAllocator` that should be copied
          */
-        BinaryCscViewAllocator(const BinaryCscViewAllocator<Matrix>& other) : Matrix(other) {
+        BinaryCscViewAllocator(const BinaryCscViewAllocator<Matrix, MemoryAllocator>& other) : Matrix(other) {
             throw std::runtime_error("Objects of type BinaryCscViewAllocator cannot be copied");
         }
 
         /**
          * @param other A reference to an object of type `BinaryCscViewAllocator` that should be moved
          */
-        BinaryCscViewAllocator(BinaryCscViewAllocator<Matrix>&& other) : Matrix(std::move(other)) {
+        BinaryCscViewAllocator(BinaryCscViewAllocator<Matrix, MemoryAllocator>&& other) : Matrix(std::move(other)) {
             other.releaseIndices();
             other.releaseIndptr();
         }
 
         virtual ~BinaryCscViewAllocator() override {
-            util::freeMemory(Matrix::indices);
-            util::freeMemory(Matrix::indptr);
+            MemoryAllocator::freeMemory(Matrix::indices);
+            MemoryAllocator::freeMemory(Matrix::indptr);
         }
 };
 

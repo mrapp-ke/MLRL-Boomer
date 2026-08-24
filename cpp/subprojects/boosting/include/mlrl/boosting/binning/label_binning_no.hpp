@@ -5,6 +5,7 @@
 
 #include "mlrl/boosting/binning/label_binning.hpp"
 #include "mlrl/boosting/rule_evaluation/regularization.hpp"
+#include "mlrl/common/simd/simd.hpp"
 #include "mlrl/common/util/properties.hpp"
 
 #include <memory>
@@ -21,6 +22,8 @@ namespace boosting {
 
             const ReadableProperty<IRegularizationConfig> l2RegularizationConfig_;
 
+            const ReadableProperty<ISimdConfig> simdConfig_;
+
         public:
 
             /**
@@ -28,9 +31,12 @@ namespace boosting {
              *                                that stores the configuration of the L1 regularization
              * @param l2RegularizationConfig  A `ReadableProperty` that allows to access the `IRegularizationConfig`
              *                                that stores the configuration of the L2 regularization
+             * @param simdConfig              A `ReadableProperty` that allows to access the `ISimdConfig` that stores
+             *                                the configuration of SIMD operations
              */
             NoLabelBinningConfig(ReadableProperty<IRegularizationConfig> l1RegularizationConfig,
-                                 ReadableProperty<IRegularizationConfig> l2RegularizationConfig);
+                                 ReadableProperty<IRegularizationConfig> l2RegularizationConfig,
+                                 ReadableProperty<ISimdConfig> simdConfig);
 
             std::unique_ptr<IDecomposableRuleEvaluationFactory> createDecomposableCompleteRuleEvaluationFactory()
               const override;

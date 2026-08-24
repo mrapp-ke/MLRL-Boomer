@@ -24,7 +24,7 @@ class CmdRunner:
 
     def __format_cmd(self, args: list[str] | None = None) -> str:
         args = self.args if args is None else args
-        return reduce(lambda aggr, arg: aggr + (' ' + arg if len(aggr) > 0 else arg), args, '')
+        return reduce(lambda aggr, arg: aggr + (f' {arg}' if len(aggr) > 0 else arg), args, '')
 
     def __run_cmd(self):
         args = self.args

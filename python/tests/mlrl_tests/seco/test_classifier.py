@@ -46,6 +46,10 @@ class TestSeCoClassifier(ClassificationIntegrationTests, RuleLearnerIntegrationT
     def test_scikit_learn_compatibility(self):
         check_estimator(SeCoClassifier())
 
+    def test_min_coverage(self):
+        builder = self.create_cmd_builder().min_coverage(0.2)
+        CmdRunner(builder).run('min_coverage')
+
     @pytest.mark.parametrize(
         'heuristic',
         [
@@ -95,4 +99,4 @@ class TestSeCoClassifier(ClassificationIntegrationTests, RuleLearnerIntegrationT
         builder = (
             self.create_cmd_builder().head_type(head_type).lift_function(lift_function).print_model_characteristics()
         )
-        CmdRunner(builder).run(f'head-type-{head_type}' + (f'_{lift_function}-lift-function' if lift_function else ''))
+        CmdRunner(builder).run(f'head-type-{head_type}{(f"_{lift_function}-lift-function" if lift_function else "")}')

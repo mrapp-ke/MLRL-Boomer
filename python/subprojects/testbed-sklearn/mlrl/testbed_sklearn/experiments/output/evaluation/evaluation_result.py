@@ -6,13 +6,14 @@ Provides classes for representing evaluation results that are part of output dat
 
 from itertools import tee
 from typing import Any, override
+from rich.console import ConsoleRenderable
 
 from mlrl.testbed.experiments.output.data import OutputValue
 from mlrl.testbed.experiments.output.evaluation.evaluation_result import AggregatedEvaluationResult, EvaluationResult
 from mlrl.testbed.experiments.output.evaluation.measurements import Measurements
 from mlrl.testbed.experiments.output.evaluation.measures import Measure
 from mlrl.testbed.experiments.output.sinks import CsvFileSink
-from mlrl.testbed.experiments.table import RowWiseTable, Table
+from mlrl.testbed.experiments.table import RowWiseTable, Table, Column
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
 from mlrl.util.options import Options
@@ -103,7 +104,7 @@ class TabularEvaluationResult(EvaluationResult):
         return str(header).rstrip('(↑)').rstrip('(↓)').rstrip()
 
     @override
-    def to_text(self, options: Options, **kwargs) -> str | None:
+    def to_text(self, options: Options, **kwargs) -> str | ConsoleRenderable | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
@@ -139,11 +140,13 @@ class TabularEvaluationResult(EvaluationResult):
                     new_row.append(first_row[column_index])
 
                     if fold is None:
-                        new_row.append('±' + first_row[column_index + 1])
+                        new_row.append(f'±{first_row[column_index + 1]}')
 
                 rotated_table.add_row(*new_row)
 
-            return rotated_table.sort_by_columns(0).format()
+            return rotated_table.sort_by_columns(0).to_rich_table(
+                column_styles=[Column.Style.HEADER, Column.Style.VALUE, Column.Style.VALUE_SECONDARY]
+            )
 
         return None
 

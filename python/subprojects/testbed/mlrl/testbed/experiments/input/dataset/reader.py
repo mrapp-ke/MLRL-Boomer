@@ -4,7 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow reading datasets from one or several sources.
 """
 
-import logging as log
 import sys
 
 from dataclasses import replace
@@ -15,6 +14,7 @@ from mlrl.testbed.experiments.input.dataset.preprocessors import Preprocessor
 from mlrl.testbed.experiments.input.reader import InputReader
 from mlrl.testbed.experiments.input.sources import Source
 from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.log import Log
 
 
 class DatasetReader(InputReader):
@@ -50,9 +50,9 @@ class DatasetReader(InputReader):
                 if source.read_from_source(new_state, self.input_data):
                     return new_state
             except Exception as error:
-                log.error(str(error))
+                Log.error(str(error))
 
-        log.error('Failed to load dataset!')
+        Log.error('Failed to load dataset!')
         sys.exit(1)
 
     @override

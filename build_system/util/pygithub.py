@@ -43,7 +43,7 @@ class GithubApi:
 
         def get_latest_release(self) -> Any | None:
             """
-            Returns repository's latest release, if any.
+            Returns the repository's latest release, if any.
 
             :return: The latest release or None, if no release is available
             """
@@ -56,6 +56,19 @@ class GithubApi:
                     raise RuntimeError(
                         f'Failed to query latest release of GitHub repository "{self.repository_name}"'
                     ) from error
+
+        def get_all_tags(self) -> Iterable[Any]:
+            """
+            Returns all tags of the repository.
+
+            :return: The tags
+            """
+            with self.__create_client() as client:
+                try:
+                    repository = client.get_repo(self.repository_name)
+                    return repository.get_tags()
+                except Exception as error:
+                    raise RuntimeError(f'Failed to query tags of GitHub repository "{self.repository_name}"') from error
 
         def get_all_releases(self) -> Iterable[Any]:
             """

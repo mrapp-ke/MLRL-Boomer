@@ -127,7 +127,7 @@ class MlrlTestbedIntegrationTestsMixin(IntegrationTests):
 
     @pytest.mark.parametrize('predefined', [False, True])
     def test_evaluation(self, predefined: bool, dataset: Dataset):
-        test_name = 'evaluation' + ('-predefined' if predefined else '')
+        test_name = f'evaluation{("-predefined" if predefined else "")}'
         builder = (
             self.create_cmd_builder(dataset=dataset.default + ('-predefined' if predefined else ''))
             .save_meta_data()

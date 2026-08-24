@@ -16,15 +16,18 @@ namespace boosting {
 
     template<typename ScoreType>
     static inline void applyHead(const CompleteHead<ScoreType>& head, View<float64>::iterator iterator) {
-        typename CompleteHead<ScoreType>::value_const_iterator valueIterator = head.values_cbegin();
+        auto valueIterator = head.values_cbegin();
         uint32 numElements = head.getNumElements();
-        util::addToView(iterator, valueIterator, numElements);
+
+        for (uint32 i = 0; i < numElements; i++) {
+            iterator[i] += valueIterator[i];
+        }
     }
 
     template<typename ScoreType>
     static inline void applyHead(const PartialHead<ScoreType>& head, View<float64>::iterator iterator) {
-        typename PartialHead<ScoreType>::value_const_iterator valueIterator = head.values_cbegin();
-        typename PartialHead<ScoreType>::index_const_iterator indexIterator = head.indices_cbegin();
+        auto valueIterator = head.values_cbegin();
+        auto indexIterator = head.indices_cbegin();
         uint32 numElements = head.getNumElements();
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -228,7 +231,7 @@ namespace boosting {
              * @see `IPredictor::predict`
              */
             std::unique_ptr<DensePredictionMatrix<float64>> predict(uint32 maxRules) const override {
-                std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
+                auto predictionMatrixPtr =
                   std::make_unique<DensePredictionMatrix<float64>>(featureMatrix_.numRows, numOutputs_, true);
                 ScorePredictionDelegate<FeatureMatrix, Model> delegate(predictionMatrixPtr->getView());
                 PredictionDispatcher<float64, FeatureMatrix, Model>().predict(

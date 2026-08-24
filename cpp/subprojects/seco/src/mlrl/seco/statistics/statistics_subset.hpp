@@ -33,12 +33,17 @@ namespace seco {
              * An unique pointer to an object of type `IRuleEvaluation` that is used for calculating the predictions of
              * rules, as well as their overall quality.
              */
-            const std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr_;
+            const std::unique_ptr<IRuleEvaluation<typename StatisticVector::view_type>> ruleEvaluationPtr_;
 
             /**
              * A reference to an object of template type `StatisticVector` that stores the total sums of statistics.
              */
             const StatisticVector& subsetSumVector_;
+
+            /**
+             * A `StatisticVector` for storing temporary values.
+             */
+            StatisticVector tmpVector_;
 
         public:
 
@@ -62,8 +67,8 @@ namespace seco {
                                              const StatisticVector& subsetSumVector)
                 : AbstractStatisticsSubset<State, StatisticVector, WeightVector, IndexVector>(state, weights,
                                                                                               outputIndices),
-                  ruleEvaluationPtr_(ruleEvaluationFactory.create(this->sumVector_, outputIndices)),
-                  subsetSumVector_(subsetSumVector) {}
+                  ruleEvaluationPtr_(ruleEvaluationFactory.create(this->sumVector_.getView(), outputIndices)),
+                  subsetSumVector_(subsetSumVector), tmpVector_(outputIndices.getNumElements()) {}
 
             virtual ~AbstractCoverageStatisticsSubset() override {}
 
@@ -71,9 +76,12 @@ namespace seco {
              * @see `IStatisticsSubset::calculateScores`
              */
             std::unique_ptr<IStatisticsUpdateCandidate> calculateScores() override final {
+                auto& statisticMatrix = *this->state_.statisticMatrixPtr;
+                auto& statisticsCovered = this->sumVector_.getView();
+                tmpVector_.difference(subsetSumVector_.getView(), this->outputIndices_, statisticsCovered);
                 const IScoreVector& scoreVector = ruleEvaluationPtr_->calculateScores(
-                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
-                  this->state_.statisticMatrixPtr->majorityLabelVectorPtr->cend(), subsetSumVector_, this->sumVector_);
+                  statisticMatrix.majority_label_indices_cbegin(), statisticMatrix.majority_label_indices_cend(),
+                  tmpVector_.getView(), statisticsCovered);
                 return this->state_.createUpdateCandidate(scoreVector);
             }
     };

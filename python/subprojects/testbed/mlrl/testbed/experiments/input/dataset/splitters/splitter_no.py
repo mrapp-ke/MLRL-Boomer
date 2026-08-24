@@ -4,8 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that preserve a dataset instead of splitting it into training and test datasets.
 """
 
-import logging as log
-
 from collections.abc import Generator
 from dataclasses import replace
 from typing import override
@@ -15,6 +13,7 @@ from mlrl.testbed.experiments.fold import FoldingStrategy
 from mlrl.testbed.experiments.input.dataset import DatasetReader
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.log import Log
 
 
 class NoSplitter(DatasetSplitter):
@@ -58,7 +57,7 @@ class NoSplitter(DatasetSplitter):
         """
         See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.split`
         """
-        log.warning('Not using separate training and test sets. The model will be evaluated on the training data...')
+        Log.warning('Not using separate training and test sets. The model will be evaluated on the training data...')
         folding_strategy = self.folding_strategy
         state = replace(state, folding_strategy=folding_strategy)
         dataset_reader = self.dataset_reader

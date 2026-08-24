@@ -4,7 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that implement a mode of operation for re-running experiments based on their meta-data.
 """
 
-import logging as log
 import subprocess
 
 from argparse import Namespace
@@ -15,6 +14,7 @@ from mlrl.testbed.command import ArgumentDict, Command
 from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.experiments.state import ExperimentMode
+from mlrl.testbed.log import Log
 from mlrl.testbed.modes.mode import InputMode, Mode
 
 from mlrl.util.cli import Argument
@@ -37,19 +37,21 @@ class RunMode(InputMode):
         input_directory: Path,
     ):
         meta_data_command = meta_data.command
-        log.info(f'Re-running experiment "{meta_data_command}"...')
+        Log.info('Re-running experiment...')
         overridden_arguments = Command.from_argv().argument_list.filter(*self.INPUT_DIR.names, *Mode.MODE.names)
 
         if overridden_arguments:
             meta_data_arguments = meta_data_command.argument_dict
             merged_arguments = meta_data_arguments | overridden_arguments.to_dict()
             meta_data_command = Command.from_dict(meta_data_command.module_name, ArgumentDict(merged_arguments))
-            log.info(
-                f'Arguments "{format_iterable(overridden_arguments, separator=" ")}" modifying the original '
-                f'experiments have been provided. The resulting command is "{meta_data_command}"...'
+            Log.verbose(
+                f'{len(overridden_arguments)} {"arguments" if len(overridden_arguments) > 1 else "argument"} modifying '
+                f'the original experiments have been provided: {format_iterable(overridden_arguments, separator=" ")}',
+                highlight=True,
             )
 
-        log.info('')
+        Log.source_code(str(meta_data_command), language='bash', box_title='Command')
+        Log.info('')
         subprocess.run(list(meta_data_command), check=False)
 
     @override

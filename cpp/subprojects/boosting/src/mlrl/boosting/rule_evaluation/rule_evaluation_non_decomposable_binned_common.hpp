@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/boosting/util/math.hpp"
+#include "mlrl/boosting/math/vector_math.hpp"
 #include "mlrl/common/rule_evaluation/score_vector_binned_dense.hpp"
 #include "rule_evaluation_non_decomposable_complete_common.hpp"
 
@@ -74,8 +74,8 @@ namespace boosting {
 
                 // Add the Hessian that corresponds to the `i`-th element on the diagonal of the original Hessian matrix
                 // to the corresponding element of the aggregated Hessian matrix...
-                aggregatedHessians[util::triangularNumber(binIndex + 1) - 1] +=
-                  hessians[util::triangularNumber(i + 1) - 1];
+                aggregatedHessians[math::triangularNumber(binIndex + 1) - 1] +=
+                  hessians[math::triangularNumber(i + 1) - 1];
             }
         }
 
@@ -100,7 +100,7 @@ namespace boosting {
                             c = binIndex;
                         }
 
-                        aggregatedHessians[util::triangularNumber(c) + r] += hessians[util::triangularNumber(i) + j];
+                        aggregatedHessians[math::triangularNumber(c) + r] += hessians[math::triangularNumber(i) + j];
                     }
                 }
             }
@@ -161,13 +161,13 @@ namespace boosting {
         typename util::iterator_value<ScoreIterator> regularizationTerm;
 
         if (l1RegularizationWeight > 0) {
-            regularizationTerm = l1RegularizationWeight * util::l1Norm(scores, numElementsPerBin, numBins);
+            regularizationTerm = l1RegularizationWeight * math::l1Norm(scores, numElementsPerBin, numBins);
         } else {
             regularizationTerm = 0;
         }
 
         if (l2RegularizationWeight > 0) {
-            regularizationTerm += 0.5 * l2RegularizationWeight * util::l2NormPow(scores, numElementsPerBin, numBins);
+            regularizationTerm += 0.5 * l2RegularizationWeight * math::l2NormPow(scores, numElementsPerBin, numBins);
         }
 
         return regularizationTerm;
@@ -258,7 +258,7 @@ namespace boosting {
                                                         std::unique_ptr<Lapack<statistic_type>> lapackPtr)
                 : AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector>(maxBins, *lapackPtr),
                   maxBins_(maxBins), scoreVector_(labelIndices, maxBins + 1, indicesSorted),
-                  aggregatedGradients_(maxBins), aggregatedHessians_(util::triangularNumber(maxBins)),
+                  aggregatedGradients_(maxBins), aggregatedHessians_(math::triangularNumber(maxBins)),
                   binIndices_(maxBins), numElementsPerBin_(maxBins), criteria_(labelIndices.getNumElements()),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
                   binningPtr_(std::move(binningPtr)), blasPtr_(std::move(blasPtr)), lapackPtr_(std::move(lapackPtr)) {
@@ -282,7 +282,8 @@ namespace boosting {
 
                 if (numBins > 0) {
                     // Reset arrays to zero...
-                    util::setViewToZeros(numElementsPerBin_.begin(), numBins);
+                    auto numElementsPerBinIterator = numElementsPerBin_.begin();
+                    std::fill(numElementsPerBinIterator, numElementsPerBinIterator + numBins, 0);
 
                     // Apply binning method in order to aggregate the gradients and Hessians that belong to the same
                     // bins...
@@ -302,21 +303,24 @@ namespace boosting {
                     scoreVector_.setNumBins(numBins, false);
 
                     // Aggregate gradients and Hessians...
-                    util::setViewToZeros(aggregatedGradients_.begin(), numBins);
-                    util::setViewToZeros(aggregatedHessians_.begin(), util::triangularNumber(numBins));
+                    auto aggregatedGradientIterator = aggregatedGradients_.begin();
+                    auto aggregatedHessianIterator = aggregatedHessians_.begin();
+                    std::fill(aggregatedGradientIterator, aggregatedGradientIterator + maxBins_, (statistic_type) 0);
+                    std::fill(aggregatedHessianIterator, aggregatedHessianIterator + math::triangularNumber(maxBins_),
+                              (statistic_type) 0);
                     aggregateGradientsAndHessians(statisticVector.gradients_cbegin(), statisticVector.hessians_cbegin(),
                                                   numCriteria, binIndexIterator, binIndices_.cbegin(),
-                                                  aggregatedGradients_.begin(), aggregatedHessians_.begin(), maxBins_);
+                                                  aggregatedGradientIterator, aggregatedHessianIterator, maxBins_);
 
                     // Copy Hessians to the matrix of coefficients and add regularization weight to its diagonal...
-                    copyCoefficients(aggregatedHessians_.cbegin(), this->sysvTmpArray1_.begin(), numBins);
+                    copyCoefficients(aggregatedHessianIterator, this->sysvTmpArray1_.begin(), numBins);
                     addL2RegularizationWeight(this->sysvTmpArray1_.begin(), numBins, numElementsPerBin_.cbegin(),
                                               l2RegularizationWeight_);
 
                     // Copy gradients to the vector of ordinates...
                     typename DenseBinnedScoreVector<statistic_type, IndexVector>::bin_value_iterator binValueIterator =
                       scoreVector_.bin_values_begin();
-                    copyOrdinates(aggregatedGradients_.cbegin(), binValueIterator, numBins);
+                    copyOrdinates(aggregatedGradientIterator, binValueIterator, numBins);
                     addL1RegularizationWeight(binValueIterator, numBins, numElementsPerBin_.cbegin(),
                                               l1RegularizationWeight_);
 
@@ -336,7 +340,7 @@ namespace boosting {
 
                     scoreVector_.quality = quality;
                 } else {
-                    util::setViewToValue(scoreVector_.bin_indices_begin(), numCriteria, maxBins_);
+                    std::fill(scoreVector_.bin_indices_begin(), scoreVector_.bin_indices_end(), maxBins_);
                     scoreVector_.quality = 0;
                 }
 
@@ -366,9 +370,8 @@ namespace boosting {
                                                typename View<statistic_type>::iterator criteria, uint32 numCriteria,
                                                float32 l1RegularizationWeight,
                                                float32 l2RegularizationWeight) override {
-                typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
-                typename StatisticVector::hessian_diagonal_const_iterator hessianIterator =
-                  statisticVector.hessians_diagonal_cbegin();
+                auto gradientIterator = statisticVector.gradients_cbegin();
+                auto hessianIterator = statisticVector.hessians_diagonal_cbegin();
 
                 for (uint32 i = 0; i < numCriteria; i++) {
                     criteria[i] = calculateOutputWiseScore(gradientIterator[i], hessianIterator[i],

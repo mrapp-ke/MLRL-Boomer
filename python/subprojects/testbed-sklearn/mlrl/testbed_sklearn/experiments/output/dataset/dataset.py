@@ -9,6 +9,7 @@ import sys
 from typing import override
 
 import numpy as np
+from rich.console import ConsoleRenderable
 
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
 
@@ -35,7 +36,7 @@ class TabularOutputDataset(OutputDataset):
         super().__init__(dataset=dataset.enforce_dense_outputs(), properties=properties, context=context)
 
     @override
-    def to_text(self, options: Options, **_) -> str | None:
+    def to_text(self, options: Options, **_) -> str | ConsoleRenderable | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """

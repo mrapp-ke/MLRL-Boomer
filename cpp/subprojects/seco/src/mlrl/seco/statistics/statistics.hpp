@@ -43,10 +43,10 @@ namespace seco {
             virtual ~AbstractCoverageStatistics() override {}
 
             /**
-             * @see `ICoverageStatistics::getSumOfUncoveredWeights`
+             * @see `ICoverageStatistics::getUncoveredFraction`
              */
-            float64 getSumOfUncoveredWeights() const override final {
-                return this->statePtr_->statisticMatrixPtr->coverageMatrixPtr->getSumOfUncoveredWeights();
+            float64 getUncoveredFraction() const override final {
+                return this->statePtr_->statisticMatrixPtr->getUncoveredFraction();
             }
 
             /**
