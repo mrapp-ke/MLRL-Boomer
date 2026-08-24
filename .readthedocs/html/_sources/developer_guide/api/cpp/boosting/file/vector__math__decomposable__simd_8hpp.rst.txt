@@ -1,0 +1,5 @@
+File vector_math_decomposable_simd.hpp
+======================================
+
+.. doxygenfile:: vector_math_decomposable_simd.hpp
+   :project: boosting
