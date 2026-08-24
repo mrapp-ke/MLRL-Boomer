@@ -14,7 +14,7 @@ from mlrl.testbed.experiments.data import Properties
 from mlrl.testbed.experiments.input.data import StructuralInputData
 from mlrl.testbed.experiments.meta_data import MetaData
 from mlrl.testbed.experiments.state import ExperimentState
-
+from mlrl.util.time import get_default_timezone
 from mlrl.util.version import Version
 
 
@@ -45,7 +45,9 @@ class InputMetaData(StructuralInputData):
     @override
     def _update_state(self, state: ExperimentState, dictionary: dict[Any, Any]):
         version = Version.parse(dictionary[self.ATTRIBUTE_VERSION], skip_on_error=True)
-        timestamp = datetime.strptime(dictionary[self.ATTRIBUTE_TIMESTAMP], MetaData.TIMESTAMP_FORMAT)
+        timestamp = datetime.strptime(dictionary[self.ATTRIBUTE_TIMESTAMP], MetaData.TIMESTAMP_FORMAT).astimezone(
+            get_default_timezone()
+        )
         command = Command.from_string(dictionary[self.ATTRIBUTE_COMMAND])
         meta_data = MetaData(command=command, version=version, timestamp=timestamp)
 

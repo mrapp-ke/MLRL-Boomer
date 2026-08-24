@@ -6,7 +6,6 @@ Implements targets for compiling native library dependencies on macOS.
 
 import platform
 import shutil
-
 from pathlib import Path
 from typing import Any
 

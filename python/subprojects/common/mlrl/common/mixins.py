@@ -9,8 +9,14 @@ from typing import override
 
 from sklearn.base import (
     BaseEstimator as SkLearnBaseEstimator,
+)
+from sklearn.base import (
     ClassifierMixin as SkLearnClassifierMixin,
+)
+from sklearn.base import (
     MultiOutputMixin as SkLearnMultiOutputMixin,
+)
+from sklearn.base import (
     RegressorMixin as SkLearnRegressorMixin,
 )
 from sklearn.utils import ClassifierTags

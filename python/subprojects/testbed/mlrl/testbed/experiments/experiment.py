@@ -4,14 +4,12 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for implementing experiments.
 """
 
-import logging as log
-
 from abc import ABC, abstractmethod
 from argparse import Namespace
-from collections.abc import Generator, Iterable
+from collections.abc import Callable, Generator, Iterable
 from dataclasses import replace
 from itertools import chain
-from typing import Any, Callable, override
+from typing import Any, override
 
 from mlrl.testbed.arguments import PredictionDatasetArguments
 from mlrl.testbed.experiments.dataset import Dataset
@@ -28,6 +26,7 @@ from mlrl.testbed.experiments.output.sinks import FileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState, ParameterDict, PredictionState, TrainingState
 from mlrl.testbed.experiments.timer import Timer
+from mlrl.util.log import Log
 
 
 class ExperimentListener(ABC):
@@ -533,7 +532,7 @@ class DefaultProcedure(ExperimentalProcedure):
     @override
     def _before_experiment(self, experiment: Experiment, state: ExperimentState) -> ExperimentState:
         problem_domain = state.problem_domain
-        log.info(
+        Log.info(
             f'Starting experiment using the {problem_domain.problem_name} algorithm "{problem_domain.learner_name}"...'
         )
 
@@ -585,8 +584,8 @@ class DefaultProcedure(ExperimentalProcedure):
 
         if start_time:
             run_time = Timer.stop(start_time)
-            log.info(f'Successfully finished experiment after {run_time}')
+            Log.info(f'Successfully finished experiment after {run_time}')
         else:
-            log.info('Successfully finished experiment')
+            Log.info('Successfully finished experiment')
 
         return state

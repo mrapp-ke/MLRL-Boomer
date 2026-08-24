@@ -6,10 +6,9 @@ Provides utility functions for handling arrays.
 
 from enum import StrEnum
 from itertools import chain
-from typing import Any, Union
+from typing import Any
 
 import numpy as np
-
 from scipy.sparse import (
     issparse,
     isspmatrix_bsr,
@@ -127,10 +126,7 @@ def is_sparse(array, supported_formats: set[SparseFormat] | None = None) -> bool
         csr = SparseFormat.CSR in supported_formats and is_csr(array)
         dia = SparseFormat.DIA in supported_formats and is_dia(array)
         bsr = SparseFormat.BSR in supported_formats and is_bsr(array)
-
-        if lil or coo or dok or csc or csr or dia or bsr:
-            return True
-        return False
+        return lil or coo or dok or csc or csr or dia or bsr
 
     return issparse(array)
 
@@ -200,7 +196,7 @@ def ensure_no_complex_data(array) -> Any:
     return array
 
 
-def enforce_dense(array, order: str, dtype: np.dtype | None = None, sparse_value: Union[int, float] = 0) -> np.ndarray:
+def enforce_dense(array, order: str, dtype: np.dtype | None = None, sparse_value: float = 0) -> np.ndarray:
     """
     Converts a given array into a `np.ndarray`, if necessary, and enforces a specific memory layout and data type to be
     used.

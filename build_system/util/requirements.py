@@ -8,9 +8,10 @@ from abc import ABC, abstractmethod
 from collections.abc import Iterable, Iterator
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, override
+from typing import override
 
 from core.build_unit import BuildUnit
+
 from util.format import format_iterable
 from util.io import TextFile
 
@@ -38,7 +39,7 @@ class Package:
         return self.normalized_name
 
     @override
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         return isinstance(other, type(self)) and self.normalized_name == other.normalized_name
 
     @override
@@ -156,7 +157,7 @@ class Requirement:
         return f'{self.package} {str(self.version) if self.version else ""}'
 
     @override
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         return isinstance(other, type(self)) and self.package == other.package
 
     @override
@@ -237,7 +238,7 @@ class RequirementsFile(ABC):
         return str(self.path)
 
     @override
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         return isinstance(other, type(self)) and self.path == other.path
 
     @override
@@ -294,14 +295,17 @@ class RequirementsFiles(Iterable[RequirementsFile]):
         self._requirements_files = list(requirements_files)
 
     @staticmethod
-    def for_build_unit(build_unit: BuildUnit = BuildUnit.for_file(Path(__file__))):
+    def for_build_unit(build_unit: BuildUnit | None = None):
         """
         Creates and returns a new `RequirementsFiles` instance for installing packages for a specific build unit.
 
-        :param build_unit:  The build unit for which packages should be installed
+        :param build_unit:  The build unit for which packages should be installed or None, if the build unit
+                            corresponding to this module should be used
         :return:            The `RequirementsFiles` instance that has been created
         """
-        return RequirementsFiles(*[RequirementsTextFile(file) for file in build_unit.find_requirements_files()])
+        build_unit = build_unit if build_unit else BuildUnit.for_file(Path(__file__))
+        requirements_files = build_unit.find_requirements_files()
+        return RequirementsFiles(*[RequirementsTextFile(file) for file in requirements_files])
 
     def lookup_requirements(
         self, *package_names: str, accept_missing: bool = False

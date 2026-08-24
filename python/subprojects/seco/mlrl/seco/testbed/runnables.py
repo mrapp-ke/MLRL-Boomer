@@ -9,12 +9,10 @@ from typing import override
 
 from mlrl.common.testbed.program_info import RuleLearnerProgramInfo
 from mlrl.common.testbed.runnables import RuleLearnerRunnable
-
 from mlrl.seco.config.parameters import SECO_CLASSIFIER_PARAMETERS
 from mlrl.seco.cython.learner_seco import SeCoClassifierConfig
 from mlrl.seco.learners import SeCoClassifier
 from mlrl.seco.package_info import get_package_info
-
 from mlrl.testbed.program_info import ProgramInfo
 
 

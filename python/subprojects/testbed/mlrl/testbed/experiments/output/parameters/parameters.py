@@ -10,7 +10,6 @@ from mlrl.testbed.experiments.input.parameters.parameters import InputParameters
 from mlrl.testbed.experiments.output.data import TabularOutputData
 from mlrl.testbed.experiments.state import ParameterDict
 from mlrl.testbed.experiments.table import RowWiseTable, Table
-
 from mlrl.util.options import Options
 
 
@@ -44,5 +43,5 @@ class OutputParameters(TabularOutputData):
         """
         parameters = self.custom_parameters
         parameter_names = parameters.keys()
-        parameter_values = map(lambda parameter_name: parameters[parameter_name], parameter_names)
+        parameter_values = (parameters[parameter_name] for parameter_name in parameter_names)
         return RowWiseTable(*parameter_names).add_row(*parameter_values)

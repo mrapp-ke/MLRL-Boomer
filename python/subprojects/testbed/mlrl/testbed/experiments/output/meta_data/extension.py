@@ -14,7 +14,6 @@ from mlrl.testbed.experiments.output.meta_data.arguments import MetaDataArgument
 from mlrl.testbed.experiments.output.sinks import LogSink, YamlFileSink
 from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions.extension import Extension
-
 from mlrl.util.cli import AUTO, Argument
 from mlrl.util.options import BooleanOption
 

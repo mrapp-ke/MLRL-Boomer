@@ -240,9 +240,7 @@ class Table(ABC):
                 return tabulate(rows, tablefmt=table_format if table_format else Table.Format.PLAIN)
 
             alignments = (
-                map(lambda alignment: alignment.value if alignment else None, self.alignments)
-                if self.alignments
-                else None
+                (alignment.value if alignment else None for alignment in self.alignments) if self.alignments else None
             )
             return tabulate(
                 rows,
@@ -286,7 +284,7 @@ class RowWiseTable(Table):
             return iter(headers if headers else [])
 
         @override
-        def __eq__(self, other: Any) -> bool:
+        def __eq__(self, other: object) -> bool:
             return (
                 isinstance(other, type(self))
                 and other.num_columns == self.num_columns

@@ -6,15 +6,18 @@ Provides scikit-learn implementations of boosting algorithms.
 
 from typing import Any, override
 
-from mlrl.common.learners import ProbabilisticClassificationRuleLearner, RegressionRuleLearner, configure_rule_learner
-
 from mlrl.boosting.config.parameters import BOOMER_CLASSIFIER_PARAMETERS, BOOMER_REGRESSOR_PARAMETERS
 from mlrl.boosting.cython.learner_boomer import (
     BoomerClassifier as BoomerClassifierWrapper,
+)
+from mlrl.boosting.cython.learner_boomer import (
     BoomerClassifierConfig,
-    BoomerRegressor as BoomerRegressorWrapper,
     BoomerRegressorConfig,
 )
+from mlrl.boosting.cython.learner_boomer import (
+    BoomerRegressor as BoomerRegressorWrapper,
+)
+from mlrl.common.learners import ProbabilisticClassificationRuleLearner, RegressionRuleLearner, configure_rule_learner
 
 
 class BoomerClassifier(ProbabilisticClassificationRuleLearner):

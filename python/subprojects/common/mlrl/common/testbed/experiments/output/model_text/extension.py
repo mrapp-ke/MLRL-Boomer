@@ -9,7 +9,6 @@ from typing import override
 
 from mlrl.common.testbed.experiments.output.model_text.model_text import RuleModelAsText
 from mlrl.common.testbed.experiments.output.model_text.writer import RuleModelAsTextWriter
-
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.input.sources import TextFileSource
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
@@ -17,7 +16,6 @@ from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDir
 from mlrl.testbed.experiments.output.sinks import LogSink, Sink, TextFileSink
 from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions import Extension
-
 from mlrl.util.cli import Argument, BoolArgument
 
 

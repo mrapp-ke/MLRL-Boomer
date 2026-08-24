@@ -38,7 +38,7 @@ options:
                         The Python class name of the program that should be run
   --log-level LOG_LEVEL
                         The log level to be used. Must be one of {"critical", "debug", "error", "info", "notset",
-                        "warn"}. The default value is "info".
+                        "warning"}. The default value is "info".
   --mode MODE           The mode of operation to be used. Must be one of {"batch", "read", "run", "single"}. The default
                         value is "single".
   -h, --help            Show this help message and exit

@@ -8,13 +8,11 @@ from abc import ABC, abstractmethod
 from typing import Any, override
 
 import numpy as np
-
 from sklearn.base import BaseEstimator
-
-from mlrl.testbed_sklearn.experiments.prediction import Predictor
 
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
+from mlrl.testbed_sklearn.experiments.prediction import Predictor
 
 
 class SkLearnProblem(ProblemDomain, ABC):

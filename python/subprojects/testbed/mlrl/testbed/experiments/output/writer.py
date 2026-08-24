@@ -4,8 +4,6 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for writing output data to sinks.
 """
 
-import logging as log
-
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from pathlib import Path
@@ -21,6 +19,7 @@ from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData, 
 from mlrl.testbed.experiments.output.policies import OutputErrorPolicy
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.util.log import Log
 
 
 class DataExtractor(ABC):
@@ -155,9 +154,9 @@ class OutputWriter:
             return extractor.extract_data(state, self.sinks)
         except Exception as error:
             if self.output_error_policy == OutputErrorPolicy.EXIT:
-                raise error
+                raise
 
-            log.error(
+            Log.error(
                 f'Failed to extract output data from experimental state via extractor of type '
                 f'{type(extractor).__name__}',
                 exc_info=error,
@@ -174,7 +173,7 @@ class OutputWriter:
                 if result:
                     return result
         else:
-            log.warning(f'No extractors have been added to output writer of type {type(self).__name__}')
+            Log.warning(f'No extractors have been added to output writer of type {type(self).__name__}')
 
         return []
 
@@ -183,9 +182,9 @@ class OutputWriter:
             self._write_to_sink(sink, state, output_data)
         except Exception as error:
             if self.output_error_policy == OutputErrorPolicy.EXIT:
-                raise error
+                raise
 
-            log.error(
+            Log.error(
                 f'Failed to write output data of type "{type(output_data).__name__}" to sink {type(sink).__name__}',
                 exc_info=error,
             )
@@ -248,7 +247,7 @@ class OutputWriter:
         :param input_directory: The directory, the data should be read from
         :return:                A list that contains the sources that has been created
         """
-        return list(filter(None, map(lambda sink: sink.create_source(input_directory), self.sinks)))
+        return list(filter(None, (sink.create_source(input_directory) for sink in self.sinks)))
 
     def create_input_reader(self, args: Namespace, input_directory: Path) -> InputReader | None:
         """
@@ -266,7 +265,7 @@ class OutputWriter:
         return type(self).__name__
 
     @override
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         return isinstance(other, type(self))
 
     @override

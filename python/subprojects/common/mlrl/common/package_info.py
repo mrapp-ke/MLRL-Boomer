@@ -6,7 +6,7 @@ Provides utility functions for retrieving information about this Python packages
 
 from dataclasses import dataclass, field
 from importlib.metadata import requires, version
-from typing import Any, override
+from typing import override
 
 from packaging.requirements import Requirement
 
@@ -57,7 +57,7 @@ class PackageInfo:
         return f'{self.package_name} {self.package_version}'
 
     @override
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         return (
             isinstance(other, type(self))
             and self.package_name == other.package_name

@@ -4,10 +4,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for listing files and directories.
 """
 
+from collections.abc import Callable
 from functools import partial
 from itertools import chain
 from pathlib import Path
-from typing import Any, Callable, override
+from typing import Any, override
 
 
 class DirectorySearch:
@@ -189,11 +190,7 @@ class DirectorySearch:
         def filter_subdirectory(subdirectory: Path, filters: list[DirectorySearch.Filter]) -> bool:
             parent = subdirectory.parent
             directory_name = subdirectory.name
-
-            if any(directory_filter(parent, directory_name) for directory_filter in filters):
-                return True
-
-            return False
+            return any(directory_filter(parent, directory_name) for directory_filter in filters)
 
         for directory in directories:
             subdirectories = [file for file in directory.glob('*') if filter_file(file)]
@@ -605,7 +602,7 @@ class FileType:
         return self.name
 
     @override
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         return isinstance(other, type(self)) and self.name == other.name
 
     @override

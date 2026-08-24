@@ -4,8 +4,6 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for implementing sinks, output data may be written to.
 """
 
-import logging as log
-
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import override
@@ -16,7 +14,7 @@ from mlrl.testbed.experiments.input.sources import Source
 from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData, TabularOutputData
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
-
+from mlrl.util.log import Log
 from mlrl.util.options import Options
 
 
@@ -25,11 +23,11 @@ class Sink(ABC):
     An abstract base class for all sinks, output data may be written to.
     """
 
-    def __init__(self, options: Options = Options()):
+    def __init__(self, options: Options | None = None):
         """
-        :param options: Options to be taken into account
+        :param options: Options to be taken into account or None, if the defaults should be used
         """
-        self.options = options
+        self.options = options if options else Options()
 
     @abstractmethod
     def write_to_sink(self, state: ExperimentState, output_data: OutputData, **kwargs):
@@ -54,11 +52,11 @@ class FileSink(Sink, ABC):
     An abstract base class for all sinks that write output data to a file.
     """
 
-    def __init__(self, directory: Path, suffix: str, options: Options = Options(), create_directory: bool = False):
+    def __init__(self, directory: Path, suffix: str, options: Options | None = None, create_directory: bool = False):
         """
         :param directory:           The path to the directory of the file
         :param suffix:              The suffix of the file
-        :param options:             Options to be taken into account
+        :param options:             Options to be taken into account or None, if the defaults should be used
         :param create_directory:    True, if the given directory should be created, if it does not exist, False
                                     otherwise
         """
@@ -81,7 +79,7 @@ class FileSink(Sink, ABC):
         file_path = FilePath(
             directory=directory, file_name=output_data.properties.file_name, suffix=self.suffix, context=context
         ).resolve(state)
-        log.debug(f'Writing output data to file "{file_path}"...')
+        Log.verbose(f'Writing output data to file "{file_path}"...')
         self._write_to_file(file_path, state, output_data, **kwargs)
 
     @abstractmethod
@@ -100,11 +98,11 @@ class TabularFileSink(FileSink, ABC):
     An abstract base class for all sinks that write tabular output data to a file.
     """
 
-    def __init__(self, directory: Path, suffix: str, options: Options = Options(), create_directory: bool = False):
+    def __init__(self, directory: Path, suffix: str, options: Options | None = None, create_directory: bool = False):
         """
         :param directory:           The path to the directory of the file
         :param suffix:              The suffix of the file
-        :param options:             Options to be taken into account
+        :param options:             Options to be taken into account or None, if the defaults should be used
         :param create_directory:    True, if the given directory should be created, if it does not exist, False
                                     otherwise
         """
@@ -113,7 +111,7 @@ class TabularFileSink(FileSink, ABC):
     @override
     def _write_to_file(self, file_path: Path, state: ExperimentState, output_data: OutputData, **kwargs):
         if not isinstance(output_data, TabularOutputData):
-            raise ValueError(
+            raise TypeError(
                 f'Output data of type "{type(output_data).__name__}" cannot be converted into a tabular representation'
             )
 
@@ -138,11 +136,11 @@ class DatasetFileSink(FileSink, ABC):
     An abstract base class for all sinks that write datasets to a file.
     """
 
-    def __init__(self, directory: Path, suffix: str, options: Options = Options(), create_directory: bool = False):
+    def __init__(self, directory: Path, suffix: str, options: Options | None = None, create_directory: bool = False):
         """
         :param directory:           The path to the directory of the file
         :param suffix:              The suffix of the file
-        :param options:             Options to be taken into account
+        :param options:             Options to be taken into account or None, if the defaults should be used
         :param create_directory:    True, if the given directory should be created, if it does not exist, False
                                     otherwise
         """
@@ -151,7 +149,7 @@ class DatasetFileSink(FileSink, ABC):
     @override
     def _write_to_file(self, file_path: Path, state: ExperimentState, output_data: OutputData, **kwargs):
         if not isinstance(output_data, DatasetOutputData):
-            raise ValueError(f'Output data of type "{type(output_data).__name__}" cannot be converted into a dataset')
+            raise TypeError(f'Output data of type "{type(output_data).__name__}" cannot be converted into a dataset')
 
         dataset = output_data.to_dataset(self.options, **kwargs)
 

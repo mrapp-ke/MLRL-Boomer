@@ -9,7 +9,7 @@ from datetime import datetime
 from importlib.metadata import version
 
 from mlrl.testbed.command import Command
-
+from mlrl.util.time import get_current_datetime
 from mlrl.util.version import Version
 
 
@@ -28,7 +28,7 @@ class MetaData:
     command: Command = field(default_factory=Command.from_argv)
     child_commands: list[Command] = field(default_factory=list)
     version: Version = field(default_factory=lambda: Version.parse(version('mlrl-testbed'), skip_on_error=True))
-    timestamp: datetime = datetime.now()
+    timestamp: datetime = field(default_factory=lambda: get_current_datetime())
 
     TIMESTAMP_FORMAT = '%Y-%m-%d_%H-%M'
 

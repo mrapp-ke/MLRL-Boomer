@@ -86,14 +86,13 @@ class PythonPackageModule(SubprojectModule):
             for dependency_module in other_module.get_dependencies(self.build_unit, module_registry):
                 dependency_package_name = dependency_module.get_package_name(self.build_unit)
 
-                if dependency_package_name not in dependencies_to_be_skipped:
-                    if self.__is_dependency_of_module(
-                        module,
-                        dependency_module,
-                        module_registry,
-                        dependencies_to_be_skipped | {dependency_package_name},
-                    ):
-                        return True
+                if dependency_package_name not in dependencies_to_be_skipped and self.__is_dependency_of_module(
+                    module,
+                    dependency_module,
+                    module_registry,
+                    dependencies_to_be_skipped | {dependency_package_name},
+                ):
+                    return True
 
             return False
 

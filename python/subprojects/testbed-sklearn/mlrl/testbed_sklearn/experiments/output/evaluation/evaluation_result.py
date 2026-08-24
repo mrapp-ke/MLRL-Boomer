@@ -14,7 +14,6 @@ from mlrl.testbed.experiments.output.evaluation.measures import Measure
 from mlrl.testbed.experiments.output.sinks import CsvFileSink
 from mlrl.testbed.experiments.table import RowWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
-
 from mlrl.util.options import Options
 
 
@@ -162,9 +161,7 @@ class TabularEvaluationResult(EvaluationResult):
         headers, measures = tee(
             filter(lambda measure: options.get_bool(measure.option_key, enable_all), dictionary.keys())
         )
-        values = map(
-            lambda measure: measure.format(dictionary[measure], percentage=percentage, decimals=decimals), measures
-        )
+        values = (measure.format(dictionary[measure], percentage=percentage, decimals=decimals) for measure in measures)
         return RowWiseTable(*headers).add_row(*values)
 
 

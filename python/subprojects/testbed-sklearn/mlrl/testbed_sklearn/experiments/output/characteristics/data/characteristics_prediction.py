@@ -6,16 +6,15 @@ Provides classes for representing characteristics of binary predictions that are
 
 from typing import Any
 
+from mlrl.testbed.experiments.context import Context
+from mlrl.testbed.experiments.data import TabularProperties
+from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import (
     Characteristic,
     OutputCharacteristics,
     get_output_characteristics,
 )
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.matrix_output import OutputMatrix
-
-from mlrl.testbed.experiments.context import Context
-from mlrl.testbed.experiments.data import TabularProperties
-from mlrl.testbed.experiments.problem_domain import ProblemDomain
 
 
 class PredictionCharacteristics(OutputCharacteristics):

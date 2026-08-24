@@ -61,7 +61,11 @@ class RuffCheck(RuffProgram):
     """
 
     def __init__(self, build_unit: BuildUnit, module: CodeModule, enforce_changes: bool = False):
-        """ """
+        """
+        :param build_unit:      The build unit from which the program should be run
+        :param module:          The module, the program should be applied to
+        :param enforce_changes: True, if changes should be applied to files, False otherwise
+        """
         super().__init__(
             build_unit,
             module,

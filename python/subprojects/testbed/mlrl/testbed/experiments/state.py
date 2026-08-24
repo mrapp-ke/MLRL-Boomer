@@ -119,9 +119,8 @@ class ExperimentState:
         """
         dataset = self.dataset
 
-        if dataset:
-            if any(isinstance(dataset, dataset_type) for dataset_type in types):
-                return dataset
+        if dataset and any(isinstance(dataset, dataset_type) for dataset_type in types):
+            return dataset
 
         return None
 

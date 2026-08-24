@@ -4,8 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow writing characteristics of models to one or several sinks.
 """
 
-import logging as log
-
 from typing import override
 
 import numpy as np
@@ -19,13 +17,12 @@ from mlrl.common.testbed.experiments.output.characteristics.model.characteristic
     RuleModelStatistics,
     RuleStatistics,
 )
-
 from mlrl.testbed.experiments.input.data import TabularInputData
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor, ResultWriter, TabularDataExtractor
 from mlrl.testbed.experiments.state import ExperimentState
-
+from mlrl.util.log import Log
 from mlrl.util.options import Options
 
 
@@ -121,13 +118,7 @@ class RuleModelCharacteristicsWriter(ResultWriter):
         def __create_head_characteristics(statistics: RuleModelStatistics, head: Head, default_rule: bool):
             head_statistics = None
 
-            if isinstance(head, CompleteHead):
-                num_positive_predictions = int(np.count_nonzero(head.scores > 0))
-                num_negative_predictions = int(head.scores.shape[0] - num_positive_predictions)
-                head_statistics = HeadStatistics(
-                    num_positive_predictions=num_positive_predictions, num_negative_predictions=num_negative_predictions
-                )
-            elif isinstance(head, PartialHead):
+            if isinstance(head, (CompleteHead, PartialHead)):
                 num_positive_predictions = int(np.count_nonzero(head.scores > 0))
                 num_negative_predictions = int(head.scores.shape[0] - num_positive_predictions)
                 head_statistics = HeadStatistics(
@@ -158,7 +149,7 @@ class RuleModelCharacteristicsWriter(ResultWriter):
                 if isinstance(model, RuleModel):
                     return [(state, self.__create_rule_model_characteristics(model))]
 
-                log.error(
+                Log.error(
                     f'{type(self).__name__} expected type of model to be {RuleModel.__name__}, but model has type '
                     f'{type(model).__name__}'
                 )

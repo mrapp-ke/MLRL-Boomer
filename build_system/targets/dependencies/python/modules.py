@@ -41,16 +41,17 @@ class PythonDependencyModule(SubprojectModule):
             return isinstance(module, PythonDependencyModule)
 
     def __init__(
-        self, dependency_type: DependencyType, root_directory: Path, requirements_file_search: FileSearch = FileSearch()
+        self, dependency_type: DependencyType, root_directory: Path, requirements_file_search: FileSearch | None = None
     ):
         """
         :param dependency_type:             The type of the Python dependencies
         :param root_directory:              The path to the module's root directory
-        :param requirements_file_search:    The `FileSearch` that should be used to search for requirements files
+        :param requirements_file_search:    The `FileSearch` that should be used to search for requirements files or
+                                            None if the default should be used
         """
         self.dependency_type = dependency_type
         self.root_directory = root_directory
-        self.requirements_file_search = requirements_file_search
+        self.requirements_file_search = requirements_file_search if requirements_file_search else FileSearch()
 
     def find_requirements_files(
         self, build_unit: BuildUnit, dependency_type: DependencyType | None = None

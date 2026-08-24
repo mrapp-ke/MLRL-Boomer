@@ -3,7 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 
 import shutil
-
 from pathlib import Path
 from typing import override
 

@@ -4,7 +4,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 from typing import override
 
-from sklearn.base import BaseEstimator as SkLearnBaseEstimator, ClassifierMixin as SkLearnClassifierMixin
+from sklearn.base import BaseEstimator as SkLearnBaseEstimator
+from sklearn.base import ClassifierMixin as SkLearnClassifierMixin
 
 from ..cmd_builder import CmdBuilder
 from ..cmd_builder_classification import ClassificationCmdBuilder

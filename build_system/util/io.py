@@ -7,7 +7,7 @@ Provides utility functions for reading and writing files.
 from functools import cached_property
 from pathlib import Path
 from shutil import rmtree
-from typing import Any, override
+from typing import override
 
 from util.log import Log
 
@@ -117,7 +117,7 @@ class TextFile:
         return str(self.file)
 
     @override
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         return isinstance(other, type(self)) and self.file == other.file
 
     @override

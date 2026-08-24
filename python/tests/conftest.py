@@ -3,7 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 
 import inspect
-
 from sys import platform
 
 import numpy as np

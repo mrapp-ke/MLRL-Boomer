@@ -13,9 +13,9 @@ from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_regression imp
 from mlrl.testbed_sklearn.experiments.output.evaluation.writer import EvaluationWriter
 
 __all__ = [
-    'TabularEvaluationResult',
     'ClassificationEvaluationDataExtractor',
+    'EvaluationWriter',
     'RankingEvaluationDataExtractor',
     'RegressionEvaluationDataExtractor',
-    'EvaluationWriter',
+    'TabularEvaluationResult',
 ]

@@ -4,8 +4,6 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow reading datasets from ARFF files.
 """
 
-import logging as log
-
 from dataclasses import replace
 from functools import cached_property
 from pathlib import Path
@@ -14,10 +12,7 @@ from xml.dom import minidom
 
 import arff
 import numpy as np
-
 from scipy.sparse import coo_array, csc_array, sparray
-
-from mlrl.testbed_sklearn.experiments.dataset import Attribute, AttributeType, TabularDataset
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties
@@ -27,6 +22,8 @@ from mlrl.testbed.experiments.input.data import DatasetInputData
 from mlrl.testbed.experiments.input.sources.source import DatasetFileSource
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.io import open_readable_file
+from mlrl.testbed_sklearn.experiments.dataset import Attribute, AttributeType, TabularDataset
+from mlrl.util.log import Log
 
 
 def normalize_attribute_name(name: str) -> str:
@@ -37,9 +34,9 @@ def normalize_attribute_name(name: str) -> str:
     :return:        The normalized name
     """
     name = name.strip()
-    if name.startswith("'") or name.startswith('"'):
+    if name.startswith(("'", '"')):
         name = name[1:]
-    if name.endswith("'") or name.endswith('"'):
+    if name.endswith(("'", '"')):
         name = name[: (len(name) - 1)]
     return name.replace("\\'", "'").replace('\\"', '"')
 
@@ -178,13 +175,13 @@ class ArffFileSource(DatasetFileSource):
             :return:                The ARFF dataset that has been created
             """
             if file_path.is_file():
-                log.debug(f'Parsing meta-data from file "{file_path}"...')
+                Log.verbose(f'Parsing meta-data from file "{file_path}"...')
                 xml_doc = minidom.parse(str(file_path))
                 tags = xml_doc.getElementsByTagName('label')
                 output_names = {normalize_attribute_name(tag.getAttribute('name')) for tag in tags}
             else:
                 output_names = None
-                log.debug(
+                Log.verbose(
                     f'Mulan XML file "{file_path}" does not exist. If possible, information about the dataset\'s '
                     f"outputs is parsed from the ARFF file's @relation declaration as intended by the MEKA dataset "
                     f'format...'

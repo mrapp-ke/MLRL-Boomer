@@ -6,7 +6,6 @@ Imports and invokes the program to be run by the command line utility.
 
 import logging as log
 import sys
-
 from argparse import ArgumentParser, HelpFormatter, Namespace
 from enum import Enum
 from importlib import import_module
@@ -18,8 +17,8 @@ from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
 from mlrl.testbed.program_info import ProgramInfo
 from mlrl.testbed.runnables import Runnable
-
 from mlrl.util.cli import Argument, CommandLineInterface, EnumArgument
+from mlrl.util.log import Log
 from mlrl.util.validation import ValidationError
 
 
@@ -30,7 +29,6 @@ class LogLevel(Enum):
 
     DEBUG = log.DEBUG
     INFO = log.INFO
-    WARN = log.WARN
     WARNING = log.WARNING
     ERROR = log.ERROR
     CRITICAL = log.CRITICAL
@@ -221,7 +219,7 @@ def main():
         try:
             runnable.run(mode, control_arguments, algorithmic_arguments, args)
         except ValidationError as error:
-            log.error(str(error))
+            Log.error(str(error))
             sys.exit(1)
 
 

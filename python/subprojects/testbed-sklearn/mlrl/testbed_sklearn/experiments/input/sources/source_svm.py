@@ -9,17 +9,15 @@ from pathlib import Path
 from typing import override
 
 import numpy as np
-
 from scipy.sparse import csr_array, sparray
 from sklearn.datasets import load_svmlight_file
-
-from mlrl.testbed_sklearn.experiments.dataset import Attribute, AttributeType, TabularDataset
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.input.data import DatasetInputData
 from mlrl.testbed.experiments.input.sources.source import DatasetFileSource
 from mlrl.testbed.experiments.problem_domain import ProblemDomain, RegressionProblem
 from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed_sklearn.experiments.dataset import Attribute, AttributeType, TabularDataset
 
 
 class SvmFileSource(DatasetFileSource):

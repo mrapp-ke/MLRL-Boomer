@@ -4,8 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for performing experiments using the scikit-learn framework.
 """
 
-import logging as log
-
 from argparse import Namespace
 from collections.abc import Generator
 from dataclasses import replace
@@ -14,6 +12,11 @@ from typing import Any, override
 
 from sklearn.base import BaseEstimator, clone
 
+from mlrl.testbed.experiments.dataset import Dataset
+from mlrl.testbed.experiments.experiment import Experiment
+from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
+from mlrl.testbed.experiments.state import ExperimentState, ParameterDict, PredictionState, TrainingState
+from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.writer_data import DataCharacteristicsWriter
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.writer_prediction import (
@@ -24,12 +27,7 @@ from mlrl.testbed_sklearn.experiments.output.dataset.writer_prediction import Pr
 from mlrl.testbed_sklearn.experiments.output.evaluation.writer import EvaluationWriter
 from mlrl.testbed_sklearn.experiments.output.label_vectors import LabelVectorWriter
 from mlrl.testbed_sklearn.experiments.problem_domain import SkLearnProblem
-
-from mlrl.testbed.experiments.dataset import Dataset
-from mlrl.testbed.experiments.experiment import Experiment
-from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
-from mlrl.testbed.experiments.state import ExperimentState, ParameterDict, PredictionState, TrainingState
-from mlrl.testbed.experiments.timer import Timer
+from mlrl.util.log import Log
 
 
 class SkLearnExperiment(Experiment):
@@ -79,7 +77,7 @@ class SkLearnExperiment(Experiment):
 
             if parameters and self.__get_parameter_changes(parameters, learner.get_params()):
                 learner.set_params(**parameters)
-                log.info(f'Successfully applied parameter setting: {parameters}')
+                Log.info(f'Successfully applied parameter setting: {parameters}')
 
             return learner
 
@@ -112,7 +110,7 @@ class SkLearnExperiment(Experiment):
                     changes,
                     '',
                 )
-                log.warning(
+                Log.warning(
                     f"The loaded model's values for the following parameters differ from the expected configuration: "
                     f'{formatted_changes}'
                 )
@@ -139,9 +137,9 @@ class SkLearnExperiment(Experiment):
                 )
                 return TrainingState(learner=learner)
 
-            log.info(f'Fitting model to {dataset.num_examples} training examples...')
+            Log.info(f'Fitting model to {dataset.num_examples} training examples...')
             training_duration = self._fit(new_learner, dataset, fit_kwargs=self.fit_kwargs)
-            log.info(f'Successfully fit model in {training_duration}')
+            Log.info(f'Successfully fit model in {training_duration}')
             return TrainingState(learner=new_learner, training_duration=training_duration)
 
         def _fit(
@@ -160,12 +158,12 @@ class SkLearnExperiment(Experiment):
                 start_time = Timer.start()
                 estimator.fit(dataset.x, dataset.y, **fit_kwargs)
                 return Timer.stop(start_time)
-            except ValueError as error:
+            except ValueError:
                 if dataset.has_sparse_features:
                     return self._fit(estimator, dataset.enforce_dense_features(), fit_kwargs)
                 if dataset.has_sparse_outputs:
                     return self._fit(estimator, dataset.enforce_dense_outputs(), fit_kwargs)
-                raise error
+                raise
 
     class PredictionProcedure(Experiment.PredictionProcedure):
         """
@@ -194,11 +192,11 @@ class SkLearnExperiment(Experiment):
                     predictor = problem_domain.predictor_factory.create()
                     dataset_type = state.dataset_type
                     yield from predictor.obtain_predictions(learner, dataset, dataset_type, **predict_kwargs)
-                except ValueError as error:
+                except ValueError:
                     if dataset.has_sparse_features:
                         yield self.predict(replace(state, dataset=dataset.enforce_dense_features()))
 
-                    raise error
+                    raise
 
     def __init__(
         self,

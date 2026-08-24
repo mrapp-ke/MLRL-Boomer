@@ -4,7 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 import csv
 import re as regex
-
 from abc import ABC, abstractmethod
 from collections.abc import Iterable
 from dataclasses import dataclass
@@ -12,7 +11,6 @@ from pathlib import Path
 from typing import Any, override
 
 import yaml
-
 from mlrl.testbed.experiments.input.meta_data.meta_data import InputMetaData
 from mlrl.testbed.experiments.input.sources import CsvFileSource, PickleFileSource, YamlFileSource
 from mlrl.testbed.util.io import ENCODING_UTF8, open_readable_file, open_writable_file
@@ -141,7 +139,7 @@ class TextFileComparison(FileComparison):
             if not line:
                 self.block_of_durations = (-1, -1)
                 return line
-            if line.startswith('--') or line.startswith('"'):
+            if line.startswith(('--', '"')):
                 return line
             return line[: self.block_of_durations[1]].rstrip()
 
@@ -201,8 +199,9 @@ class TextFileComparison(FileComparison):
     @override
     def _write(self, file: Path):
         with open(file, 'w+', encoding=ENCODING_UTF8) as output_file:
-            for line_index, line in enumerate(self.lines):
-                output_file.write(f'{self.__mask_line(line_index, line)}\n')
+            output_file.writelines(
+                f'{self.__mask_line(line_index, line)}\n' for line_index, line in enumerate(self.lines)
+            )
 
 
 class PickleFileComparison(FileComparison):
@@ -219,7 +218,7 @@ class PickleFileComparison(FileComparison):
     @override
     def _compare(self, another_file: Path) -> Difference | None:
         if not another_file.is_file():
-            raise IOError(f'File "{another_file}" does not exist')
+            raise OSError(f'File "{another_file}" does not exist')
         return None
 
     @override
@@ -486,7 +485,7 @@ class MetaDataFileComparison(FileComparison):
         another_yaml_dict = self.__load_yaml(another_file)
 
         for key, expected_value in another_yaml_dict.items():
-            if key not in yaml_dict.keys():
+            if key not in yaml_dict:
                 return MetaDataFileComparison.MissingField(file=another_file, missing_field=key)
 
             if key not in {self.FIELD_VERSION, self.FIELD_TIMESTAMP}:
@@ -506,7 +505,7 @@ class MetaDataFileComparison(FileComparison):
             return None
 
         if not another_file.is_file():
-            raise IOError(f'File "{another_file}" does not exist')
+            raise OSError(f'File "{another_file}" does not exist')
         return None
 
     @override

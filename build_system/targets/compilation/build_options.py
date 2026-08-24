@@ -7,7 +7,7 @@ Provides classes that allow to configure build options.
 from abc import ABC, abstractmethod
 from collections.abc import Iterable, Iterator
 from os import environ
-from typing import Any, override
+from typing import override
 
 from util.env import get_env, get_env_array
 
@@ -60,7 +60,7 @@ class BuildOption(ABC):
         """
 
     @override
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         return isinstance(other, type(self)) and self.keys == other.keys
 
     @override

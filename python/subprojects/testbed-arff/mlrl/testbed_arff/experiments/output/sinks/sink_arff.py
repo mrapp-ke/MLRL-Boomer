@@ -5,18 +5,12 @@ Provides classes that allow writing datasets to ARFF files.
 """
 
 import xml.etree.ElementTree as XmlTree
-
 from pathlib import Path
 from typing import Any, override
 from xml.dom import minidom
 
 import arff
-
 from scipy.sparse import dok_array
-
-from mlrl.testbed_arff.experiments.input.sources import ArffFileSource
-
-from mlrl.testbed_sklearn.experiments.dataset import Attribute, AttributeType, TabularDataset
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.input.sources import Source
@@ -24,7 +18,8 @@ from mlrl.testbed.experiments.output.sinks.sink import DatasetFileSink
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.format import to_int_or_float
 from mlrl.testbed.util.io import ENCODING_UTF8, open_writable_file
-
+from mlrl.testbed_arff.experiments.input.sources import ArffFileSource
+from mlrl.testbed_sklearn.experiments.dataset import Attribute, AttributeType, TabularDataset
 from mlrl.util.options import Options
 
 
@@ -119,10 +114,10 @@ class ArffFileSink(DatasetFileSink):
             xml_string = minidom.parseString(XmlTree.tostring(root_element)).toprettyxml(encoding=ENCODING_UTF8)
             xml_file.write(xml_string.decode(ENCODING_UTF8))
 
-    def __init__(self, directory: Path, options: Options = Options(), create_directory: bool = False):
+    def __init__(self, directory: Path, options: Options | None = None, create_directory: bool = False):
         """
         :param directory:           The path to the directory, where the ARFF file should be located
-        :param options:             Options to be taken into account
+        :param options:             Options to be taken into account or None, if the defaults should be used
         :param create_directory:    True, if the given directory should be created, if it does not exist, False
                                     otherwise
         """

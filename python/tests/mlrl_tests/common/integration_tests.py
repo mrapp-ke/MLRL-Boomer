@@ -3,11 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 
 import pytest
-
-from ..cmd_runner import CmdRunner
-from ..datasets import Dataset
-from ..integration_tests import IntegrationTests
-
 from mlrl.common.config.parameters import (
     BINNING_EQUAL_FREQUENCY,
     BINNING_EQUAL_WIDTH,
@@ -21,10 +16,12 @@ from mlrl.common.config.parameters import (
     RulePruningParameter,
 )
 from mlrl.common.learners import SparsePolicy
-
 from mlrl.testbed.experiments.state import ExperimentMode
-
 from mlrl.util.cli import NONE
+
+from ..cmd_runner import CmdRunner
+from ..datasets import Dataset
+from ..integration_tests import IntegrationTests
 
 
 class RuleLearnerIntegrationTestsMixin(IntegrationTests):

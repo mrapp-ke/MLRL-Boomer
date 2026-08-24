@@ -7,12 +7,10 @@ Provides classes that allow configuring the functionality to preprocess tabular 
 from argparse import Namespace
 from typing import override
 
-from mlrl.testbed_sklearn.experiments.input.dataset.preprocessors.one_hot_encoder import OneHotEncoder
-
 from mlrl.testbed.experiments.input.dataset.preprocessors.preprocessor import Preprocessor
 from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions.extension import Extension
-
+from mlrl.testbed_sklearn.experiments.input.dataset.preprocessors.one_hot_encoder import OneHotEncoder
 from mlrl.util.cli import Argument, BoolArgument
 
 

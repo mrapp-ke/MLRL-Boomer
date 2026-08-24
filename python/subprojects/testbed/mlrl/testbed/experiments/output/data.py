@@ -5,7 +5,6 @@ Provides classes for representing output data.
 """
 
 import json
-
 from abc import ABC, abstractmethod
 from collections.abc import Iterable
 from dataclasses import replace
@@ -17,7 +16,6 @@ from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_number
-
 from mlrl.util.options import Options
 
 
@@ -26,14 +24,14 @@ class OutputData(ABC):
     An abstract class for all classes that represent output data.
     """
 
-    def __init__(self, properties: Properties, context: Context = Context()):
+    def __init__(self, properties: Properties, context: Context | None = None):
         """
         :param properties:  The properties of the output data
         :param context:     A `Context` to be used by default for finding a suitable sink this output data can be
-                            written to
+                            written to or None, if the default should be used
         """
         self.properties = properties
-        self.context = context
+        self.context = context if context else Context()
         self.custom_context: dict[type[Any], Context] = {}
 
     def get_context(self, lookup_type: type[Any]) -> Context:
@@ -152,11 +150,11 @@ class TabularOutputData(TextualOutputData, ABC):
     tabular, representation.
     """
 
-    def __init__(self, properties: TabularProperties, context: Context = Context()):
+    def __init__(self, properties: TabularProperties, context: Context | None = None):
         """
         :param properties:  The properties of the output data
         :param context:     A `Context` to be used by default for finding a suitable sink this output data can be
-                            written to
+                            written to or None, if the default should be used
         """
         super().__init__(properties=properties, context=context)
 

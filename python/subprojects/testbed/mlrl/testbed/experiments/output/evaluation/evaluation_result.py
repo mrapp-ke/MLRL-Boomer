@@ -8,10 +8,9 @@ from abc import ABC
 from collections.abc import Iterable
 from functools import partial
 from itertools import chain
-from typing import override
+from typing import ClassVar, override
 
 import numpy as np
-
 from scipy.stats import rankdata
 
 from mlrl.testbed.experiments.context import Context
@@ -20,7 +19,6 @@ from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
 from mlrl.testbed.experiments.output.evaluation.measures import AggregationMeasure, Measure
 from mlrl.testbed.experiments.table import Cell, Column, ColumnWiseTable, RowWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, format_number
-
 from mlrl.util.options import Options
 
 
@@ -54,7 +52,7 @@ class AggregatedEvaluationResult(TabularOutputData):
 
     COLUMN_PREFIX_PARAMETER = 'Parameter'
 
-    AGGREGATION_MEASURES = [
+    AGGREGATION_MEASURES: ClassVar[list[AggregationMeasure]] = [
         AggregationMeasure(
             option_key=OPTION_RANK,
             name='Rank',
@@ -207,7 +205,7 @@ class AggregatedEvaluationResult(TabularOutputData):
         unique_parameters: dict[tuple[Cell, ...], list[int]] = {}
 
         for row_index in range(num_rows):
-            parameters = tuple((parameter_column[row_index] for parameter_column in parameter_columns))
+            parameters = tuple(parameter_column[row_index] for parameter_column in parameter_columns)
             unique_parameters.setdefault(parameters, []).append(row_index)
 
         return unique_parameters
@@ -258,7 +256,7 @@ class AggregatedEvaluationResult(TabularOutputData):
             for dataset_name in dataset_names:
                 table = evaluation_by_dataset[dataset_name]
                 tables.append(table)
-                dataset_column.extend((dataset_name for _ in range(table.num_rows)))
+                dataset_column.extend(dataset_name for _ in range(table.num_rows))
 
             aggregated_table = RowWiseTable.aggregate(*tables).to_column_wise_table()
             aggregated_table.add_column(*dataset_column, header=self.COLUMN_DATASET, position=0)
@@ -313,7 +311,7 @@ class AggregatedEvaluationResult(TabularOutputData):
                                 )
                             )
                             aggregated_table.add_column(
-                                *map(lambda x: format_number(x, decimals=decimals), aggregated_column),
+                                *(format_number(value, decimals=decimals) for value in aggregated_column),
                                 header=f'{aggregation_measure.name} {header}',
                                 position=column_index + 1,
                             )
