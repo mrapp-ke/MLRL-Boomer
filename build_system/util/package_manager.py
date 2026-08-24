@@ -65,7 +65,7 @@ class PackageManager:
                 install_command = PackageManager.InstallCommand(*requirements)
 
                 if silent:
-                    install_command.capture_output()
+                    install_command.print_command(False).capture_output()
                 else:
                     install_command.print_arguments(True).run()
 
