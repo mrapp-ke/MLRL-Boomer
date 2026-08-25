@@ -8,11 +8,11 @@ from abc import ABC
 from collections.abc import Iterable
 from functools import partial
 from itertools import chain
-from typing import override
-from rich.console import ConsoleRenderable, Group
-from rich.text import Text
+from typing import ClassVar, override
 
 import numpy as np
+from rich.console import ConsoleRenderable, Group
+from rich.text import Text
 from scipy.stats import rankdata
 
 from mlrl.testbed.experiments.context import Context
@@ -21,7 +21,6 @@ from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
 from mlrl.testbed.experiments.output.evaluation.measures import AggregationMeasure, Measure
 from mlrl.testbed.experiments.table import Cell, Column, ColumnWiseTable, RowWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS
-
 from mlrl.util.format import format_value
 from mlrl.util.options import Options
 

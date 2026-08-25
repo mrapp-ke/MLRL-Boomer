@@ -15,7 +15,6 @@ from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData, 
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
 from mlrl.testbed.log import Log
-
 from mlrl.util.options import Options
 
 

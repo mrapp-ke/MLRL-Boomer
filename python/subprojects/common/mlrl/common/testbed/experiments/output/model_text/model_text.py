@@ -7,14 +7,13 @@ Provides classes for representing rule models as text that is part of output dat
 from io import StringIO
 from typing import override
 
-from mlrl.common.cython.rule_model import Body, CompleteHead, ConjunctiveBody, EmptyBody, Head, PartialHead, RuleModel
-
-from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
 from rich.console import ConsoleRenderable
+
+from mlrl.common.cython.rule_model import Body, CompleteHead, ConjunctiveBody, EmptyBody, Head, PartialHead, RuleModel
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties
 from mlrl.testbed.experiments.output.data import TextualOutputData
-
+from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
 from mlrl.util.format import format_value
 from mlrl.util.options import Options
 

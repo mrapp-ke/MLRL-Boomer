@@ -8,7 +8,8 @@ import json
 from abc import ABC, abstractmethod
 from collections.abc import Iterable
 from dataclasses import replace
-from typing import Any, override, cast
+from typing import Any, cast, override
+
 from rich.console import ConsoleRenderable
 
 from mlrl.testbed.experiments.context import Context
@@ -204,11 +205,11 @@ class StructuralOutputData(TextualOutputData, ABC):
     representation, e.g., YAML or JSON.
     """
 
-    def __init__(self, properties: Properties, context: Context = Context(), language: str | None = None):
+    def __init__(self, properties: Properties, context: Context | None = None, language: str | None = None):
         """
         :param properties:  The properties of the output data
         :param context:     A `Context` to be used by default for finding a suitable sink this output data can be
-                            written to
+                            written to or None, if the default should be used
         :param language:    The language of the source code that represents the output data, if any
         """
         super().__init__(properties=properties, context=context)
@@ -317,7 +318,7 @@ class OutputValue:
 
         return filtered
 
-    def format(self, value: int | float, **kwargs) -> str:
+    def format(self, value: float, **kwargs) -> str:
         """
         Creates and returns a textual representation of a given value.
 

@@ -11,16 +11,14 @@ from typing import Any, cast, override
 from scipy.sparse import vstack
 from sklearn.model_selection import KFold
 
-from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
-
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.fold import Fold, FoldingStrategy
 from mlrl.testbed.experiments.input.dataset import DatasetReader
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.log import Log
-
 from mlrl.testbed.util.format import format_progress
+from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
 
 
 class CrossValidationSplitter(DatasetSplitter):

@@ -5,7 +5,6 @@ Imports and invokes the program to be run by the command line utility.
 """
 
 import sys
-
 from argparse import ArgumentParser, HelpFormatter
 from importlib import import_module
 from importlib.metadata import version
@@ -17,7 +16,6 @@ from mlrl.testbed.log.arguments import LogArguments, configure_logger
 from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode, SingleMode
 from mlrl.testbed.program_info import ProgramInfo
 from mlrl.testbed.runnables import Runnable
-
 from mlrl.util.cli import Argument, CommandLineInterface
 from mlrl.util.validation import ValidationError
 
@@ -172,7 +170,7 @@ def main():
         except ValidationError as error:
             Log.error(str(error))
             sys.exit(1)
-        except Exception as error:
+        except Exception as error:  # noqa: BLE001
             Log.error('An unexpected error occurred', error=error)
             sys.exit(1)
 

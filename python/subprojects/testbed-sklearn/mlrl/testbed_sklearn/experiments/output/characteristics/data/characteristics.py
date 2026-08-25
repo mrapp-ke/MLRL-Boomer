@@ -7,7 +7,9 @@ Provides classes for representing characteristics of an output matrix that are p
 from collections.abc import Callable
 from numbers import Number
 from typing import Any, override
+
 from rich.console import ConsoleRenderable
+
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties
 from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData

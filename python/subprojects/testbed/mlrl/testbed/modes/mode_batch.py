@@ -6,7 +6,6 @@ Provides classes that implement a mode of operation for performing multiple expe
 
 import re as regex
 import sys
-
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from collections.abc import Callable, Generator, Iterable
@@ -34,11 +33,10 @@ from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.log import Log
 from mlrl.testbed.modes.mode import Mode
 from mlrl.testbed.modes.util import OutputUtil
+from mlrl.testbed.util.format import format_progress
 from mlrl.testbed.util.yml import read_and_validate_yaml
 from mlrl.util.cli import AUTO, Argument, BoolArgument, CommandLineInterface, FlagArgument, PathArgument, SetArgument
 from mlrl.util.options import BooleanOption, Options
-
-from mlrl.testbed.util.format import format_progress
 
 Batch = list[Command]
 

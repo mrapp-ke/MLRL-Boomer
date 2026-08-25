@@ -5,15 +5,14 @@ Provides classes for representing unique label vectors contained in a dataset th
 """
 
 from typing import override
-from rich.console import ConsoleRenderable
 
-from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vector_histogram import LabelVectorHistogram
+from rich.console import ConsoleRenderable
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.output.data import TabularOutputData
-from mlrl.testbed.experiments.table import RowWiseTable, Table, Column
-
+from mlrl.testbed.experiments.table import Column, RowWiseTable, Table
+from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vector_histogram import LabelVectorHistogram
 from mlrl.util.options import Options
 
 

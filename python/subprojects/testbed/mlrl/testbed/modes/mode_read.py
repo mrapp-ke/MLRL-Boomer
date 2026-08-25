@@ -24,10 +24,9 @@ from mlrl.testbed.log import Log
 from mlrl.testbed.modes.mode import InputMode
 from mlrl.testbed.modes.mode_batch import BatchMode
 from mlrl.testbed.modes.util import OutputUtil
+from mlrl.testbed.util.format import format_progress
 from mlrl.util.cli import Argument
 from mlrl.util.options import Options
-
-from mlrl.testbed.util.format import format_progress
 
 
 class ReadMode(InputMode):

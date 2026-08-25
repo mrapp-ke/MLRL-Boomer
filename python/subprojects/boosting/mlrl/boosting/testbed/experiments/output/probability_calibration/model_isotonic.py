@@ -6,8 +6,10 @@ Provides classes for representing models for the calibration of probabilities vi
 
 from dataclasses import dataclass, field
 from typing import override
+
 from rich.console import ConsoleRenderable, Group
 from rich.text import Text
+
 from mlrl.common.cython.probability_calibration import (
     IsotonicProbabilityCalibrationModel,
     IsotonicProbabilityCalibrationModelVisitor,
@@ -15,9 +17,8 @@ from mlrl.common.cython.probability_calibration import (
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.output.data import TabularOutputData
-from mlrl.testbed.experiments.table import ColumnWiseTable, Table, Column
+from mlrl.testbed.experiments.table import Column, ColumnWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS
-
 from mlrl.util.format import format_value
 from mlrl.util.options import Options
 

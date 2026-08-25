@@ -14,8 +14,6 @@ import arff
 import numpy as np
 from scipy.sparse import coo_array, csc_array, sparray
 
-from mlrl.testbed_sklearn.experiments.dataset import Attribute, AttributeType, TabularDataset
-
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties
 from mlrl.testbed.experiments.dataset import Dataset
@@ -25,6 +23,7 @@ from mlrl.testbed.experiments.input.sources.source import DatasetFileSource
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.log import Log
 from mlrl.testbed.util.io import open_readable_file
+from mlrl.testbed_sklearn.experiments.dataset import Attribute, AttributeType, TabularDataset
 
 
 def normalize_attribute_name(name: str) -> str:

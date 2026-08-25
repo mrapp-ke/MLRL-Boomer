@@ -5,15 +5,15 @@ Provides classes for representing tables.
 """
 
 from abc import ABC, abstractmethod
-from collections.abc import Generator, Iterable, Iterator
+from collections.abc import Generator, Iterable, Iterator, Sequence
 from enum import Enum
-from typing import Any, override, Sequence
-from rich.table import Table as RichTable
+from typing import Any, override
+
 from rich import box
-from rich.text import Text
 from rich.console import ConsoleRenderable
 from rich.style import Style
-
+from rich.table import Table as RichTable
+from rich.text import Text
 
 Header = Any | None
 

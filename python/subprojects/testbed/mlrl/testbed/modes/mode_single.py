@@ -4,9 +4,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that implement a mode of operation for performing a single experiment.
 """
 
+import sys
 from argparse import Namespace
 from typing import override
-import sys
 
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments.output.arguments import OutputArguments

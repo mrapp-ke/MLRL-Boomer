@@ -9,7 +9,6 @@ from dataclasses import replace
 from pathlib import Path
 from typing import override
 
-from mlrl.testbed.log import Log
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.experiment import Experiment, ExperimentalProcedure
@@ -17,7 +16,7 @@ from mlrl.testbed.experiments.input.policies import MissingInputPolicy
 from mlrl.testbed.experiments.output.sinks.sink import FileSink
 from mlrl.testbed.experiments.recipe import Recipe
 from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
-from mlrl.testbed.log import disable_log
+from mlrl.testbed.log import Log, disable_log
 
 
 class OutputUtil:

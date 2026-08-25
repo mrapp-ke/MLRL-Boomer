@@ -9,20 +9,19 @@ from typing import override
 from mlrl.common.config.parameters import (
     RULE_LEARNER_PARAMETERS,
     FeatureBinningParameter,
-    NominalParameter,
     FloatParameter,
+    NominalParameter,
 )
-
 from mlrl.seco.cython.learner import (
     AccuracyHeuristicMixin,
     AccuracyPruningHeuristicMixin,
+    CoverageStoppingCriterionMixin,
     FMeasureHeuristicMixin,
     FMeasurePruningHeuristicMixin,
     KlnLiftFunctionMixin,
     LaplaceHeuristicMixin,
     LaplacePruningHeuristicMixin,
     MEstimateHeuristicMixin,
-    CoverageStoppingCriterionMixin,
     MEstimatePruningHeuristicMixin,
     NoLiftFunctionMixin,
     PartialHeadMixin,
