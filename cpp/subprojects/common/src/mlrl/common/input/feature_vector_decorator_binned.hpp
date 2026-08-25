@@ -41,15 +41,15 @@ static inline std::unique_ptr<IFeatureVector> createFilteredBinnedFeatureVectorD
     // Filter the indices of examples not associated with the majority value...
     const BinnedFeatureVector& featureVector = view.getView().firstView;
     AllocatedBinnedFeatureVector& filteredFeatureVector = filteredDecoratorPtr->getView().firstView;
-    AllocatedBinnedFeatureVector::index_iterator filteredIndexIterator = filteredFeatureVector.indices;
-    AllocatedBinnedFeatureVector::index_iterator filteredIndptrIterator = filteredFeatureVector.indptr;
-    AllocatedBinnedFeatureVector::threshold_iterator filteredThresholdIterator = filteredFeatureVector.thresholds;
+    auto filteredIndexIterator = filteredFeatureVector.indices;
+    auto filteredIndptrIterator = filteredFeatureVector.indptr;
+    auto filteredThresholdIterator = filteredFeatureVector.thresholds;
     uint32 numFilteredBins = 0;
     uint32 numFilteredIndices = 0;
 
     for (uint32 i = 0; i < featureVector.numBins; i++) {
-        BinnedFeatureVector::index_const_iterator indexIterator = featureVector.indices_cbegin(i);
-        BinnedFeatureVector::index_const_iterator indicesEnd = featureVector.indices_cend(i);
+        auto indexIterator = featureVector.indices_cbegin(i);
+        auto indicesEnd = featureVector.indices_cend(i);
         uint32 numIndices = indicesEnd - indexIterator;
         uint32 indptr = numFilteredIndices;
 
@@ -103,14 +103,14 @@ class BinnedFeatureVectorView final : public AbstractFeatureVectorDecorator<Binn
 
         void searchForRefinement(SingleRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
-                                 uint32 minCoverage, Refinement& refinement) const override {
+                                 uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
             searchForBinnedRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
                                       outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }
 
         void searchForRefinement(FixedRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
-                                 uint32 minCoverage, Refinement& refinement) const override {
+                                 uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
             searchForBinnedRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
                                       outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }
@@ -164,14 +164,14 @@ class AllocatedBinnedFeatureVectorView final : public AbstractFeatureVectorDecor
 
         void searchForRefinement(SingleRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
-                                 uint32 minCoverage, Refinement& refinement) const override {
+                                 uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
             searchForBinnedRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
                                       outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }
 
         void searchForRefinement(FixedRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
-                                 uint32 minCoverage, Refinement& refinement) const override {
+                                 uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
             searchForBinnedRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
                                       outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }
@@ -260,14 +260,14 @@ class BinnedFeatureVectorDecorator final : public AbstractBinnedFeatureVectorDec
 
         void searchForRefinement(SingleRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
-                                 uint32 minCoverage, Refinement& refinement) const override {
+                                 uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
             searchForBinnedRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
                                       outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }
 
         void searchForRefinement(FixedRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
-                                 uint32 minCoverage, Refinement& refinement) const override {
+                                 uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
             searchForBinnedRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
                                       outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }

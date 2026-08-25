@@ -8,10 +8,10 @@ from mlrl.common.cython.learner cimport IBeamSearchTopDownRuleInductionMixin, ID
     INoInstanceSamplingMixin, INoJointProbabilityCalibrationMixin, INoMarginalProbabilityCalibrationMixin, \
     INoOutputSamplingMixin, INoParallelPredictionMixin, INoParallelRuleRefinementMixin, \
     INoParallelStatisticUpdateMixin, INoPartitionSamplingMixin, INoPostProcessorMixin, INoRulePruningMixin, \
-    INoSequentialPostOptimizationMixin, INoSizeStoppingCriterionMixin, INoTimeStoppingCriterionMixin, \
+    INoSequentialPostOptimizationMixin, INoSimdMixin, INoSizeStoppingCriterionMixin, INoTimeStoppingCriterionMixin, \
     IOutputSamplingWithoutReplacementMixin, IParallelPredictionMixin, IParallelRuleRefinementMixin, \
     IParallelStatisticUpdateMixin, IPostPruningMixin, IPrePruningMixin, IRandomBiPartitionSamplingMixin, IRNGMixin, \
-    IRoundRobinOutputSamplingMixin, ISequentialPostOptimizationMixin, ISequentialRuleModelAssemblageMixin, \
+    IRoundRobinOutputSamplingMixin, ISequentialPostOptimizationMixin, ISequentialRuleModelAssemblageMixin, ISimdMixin, \
     ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, RuleLearnerConfig
 from mlrl.common.cython.learner_classification cimport ClassificationRuleLearner, IClassificationRuleLearner, \
     IExampleWiseStratifiedBiPartitionSamplingMixin, IExampleWiseStratifiedInstanceSamplingMixin, \
@@ -108,6 +108,8 @@ cdef extern from "mlrl/boosting/learner_boomer_classifier.hpp" namespace "boosti
             IParallelStatisticUpdateMixin,
             INoParallelPredictionMixin,
             IParallelPredictionMixin,
+            INoSimdMixin,
+            ISimdMixin,
             INoSizeStoppingCriterionMixin,
             ISizeStoppingCriterionMixin,
             INoTimeStoppingCriterionMixin,
@@ -185,6 +187,8 @@ cdef extern from "mlrl/boosting/learner_boomer_regressor.hpp" namespace "boostin
             IParallelStatisticUpdateMixin,
             INoParallelPredictionMixin,
             IParallelPredictionMixin,
+            INoSimdMixin,
+            ISimdMixin,
             INoSizeStoppingCriterionMixin,
             ISizeStoppingCriterionMixin,
             INoTimeStoppingCriterionMixin,

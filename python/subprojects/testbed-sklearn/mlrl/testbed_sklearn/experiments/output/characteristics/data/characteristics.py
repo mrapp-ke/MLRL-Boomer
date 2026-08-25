@@ -7,7 +7,7 @@ Provides classes for representing characteristics of an output matrix that are p
 from collections.abc import Callable
 from numbers import Number
 from typing import Any, override
-
+from rich.console import ConsoleRenderable
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties
 from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
@@ -63,13 +63,13 @@ class OutputCharacteristics(TabularOutputData):
         self.characteristics = [characteristic for characteristic, _ in values]
 
     @override
-    def to_text(self, options: Options, **kwargs) -> str | None:
+    def to_text(self, options: Options, **kwargs) -> str | ConsoleRenderable | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
         kwargs = dict(kwargs) | {OPTION_DECIMALS: 2}
         table = self.to_table(options, **kwargs)
-        return table.format() if table else None
+        return table.to_rich_table() if table else None
 
     @override
     def to_table(self, options: Options, **kwargs) -> Table | None:

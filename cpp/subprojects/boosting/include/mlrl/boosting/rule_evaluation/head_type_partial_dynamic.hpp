@@ -8,6 +8,7 @@
 #include "mlrl/boosting/rule_evaluation/regularization.hpp"
 #include "mlrl/boosting/util/dll_exports.hpp"
 #include "mlrl/common/multi_threading/multi_threading.hpp"
+#include "mlrl/common/simd/simd.hpp"
 #include "mlrl/common/util/properties.hpp"
 
 #include <memory>
@@ -81,6 +82,8 @@ namespace boosting {
 
             const ReadableProperty<IMultiThreadingConfig> multiThreadingConfig_;
 
+            const ReadableProperty<ISimdConfig> simdConfig_;
+
         public:
 
             /**
@@ -89,9 +92,12 @@ namespace boosting {
              * @param multiThreadingConfig  A `ReadableProperty` that allows to access the `IMultiThreadingConfig` that
              *                              stores the configuration of the multi-threading behavior that should be used
              *                              for the parallel update of statistics
+             * @param simdConfig            A `ReadableProperty` that allows to access the `ISimdConfig` that stores the
+             *                              configuration of SIMD operations
              */
             DynamicPartialHeadConfig(ReadableProperty<ILabelBinningConfig> labelBinningConfig,
-                                     ReadableProperty<IMultiThreadingConfig> multiThreadingConfig);
+                                     ReadableProperty<IMultiThreadingConfig> multiThreadingConfig,
+                                     ReadableProperty<ISimdConfig> simdConfig);
 
             float32 getThreshold() const override;
 

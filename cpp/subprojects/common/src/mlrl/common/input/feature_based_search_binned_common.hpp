@@ -19,8 +19,8 @@
 template<typename FeatureVector>
 static inline uint32 addAllToSubset(IStatisticsSubset& statisticsSubset, const FeatureVector& featureVector,
                                     uint32 index) {
-    typename FeatureVector::index_const_iterator indexIterator = featureVector.indices_cbegin(index);
-    typename FeatureVector::index_const_iterator indicesEnd = featureVector.indices_cend(index);
+    auto indexIterator = featureVector.indices_cbegin(index);
+    auto indicesEnd = featureVector.indices_cend(index);
     uint32 numIndices = indicesEnd - indexIterator;
     uint32 numUncovered = 0;
 

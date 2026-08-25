@@ -132,6 +132,7 @@ Qiwei
 Rakesh
 Ranka
 Rapp
+Renderable
 Reutemann
 Rijsbergen
 Rissanen
@@ -182,6 +183,8 @@ Wojciech
 XGBoost
 Xie
 Xorshift
+xsimd
+yml
 Yan
 Yannik
 Yoav
@@ -277,6 +280,7 @@ sbatch
 scikit
 seco
 sexualized
+simd
 sklearn
 slurm
 socio

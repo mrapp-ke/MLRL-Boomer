@@ -6,17 +6,16 @@
 #include "mlrl/common/util/dll_exports.hpp"
 #include "mlrl/common/util/memory.hpp"
 
-#include <initializer_list>
 #include <stdexcept>
 #include <utility>
 
 /**
- * A view that provides access to values stored in a pre-allocated array.
+ * A view that provides random access, as well as access via iterators, to values stored in a pre-allocated array.
  *
  * @tparam T The type of the values, the view provides access to
  */
 template<typename T>
-class MLRLCOMMON_API BaseView {
+class MLRLCOMMON_API View {
     public:
 
         /**
@@ -27,32 +26,74 @@ class MLRLCOMMON_API BaseView {
         /**
          * @param array         A pointer to an array of template type `T` that stores the values, the view should
          *                      provide access to
-         * @param dimensions    The number of elements in each dimension of the view
+         * @param numElements   The number of elements in the view
          */
-        BaseView(T* array, std::initializer_list<uint32> dimensions) : array(array) {}
-
-        /**
-         * @param array A pointer to an array of template type `T` that stores the values, the view should provide
-         *              access to
-         */
-        explicit BaseView(T* array) : array(array) {}
+        explicit View(T* array, uint32 numElements = 0) : array(array) {}
 
         /**
          * @param other A const reference to an object of type `View` that should be copied
          */
-        BaseView(const BaseView<T>& other) : array(other.array) {}
+        View(const View<T>& other) : array(other.array) {}
 
         /**
          * @param other A reference to an object of type `View` that should be moved
          */
-        BaseView(BaseView<T>&& other) : array(other.array) {}
+        View(View<T>&& other) : array(other.array) {}
 
-        virtual ~BaseView() {}
+        virtual ~View() {}
 
         /**
          * The type of the values, the view provides access to.
          */
         using value_type = T;
+
+        /**
+         * An iterator that provides read-only access to the elements in the view.
+         */
+        using const_iterator = const value_type*;
+
+        /**
+         * An iterator that provides access to the elements in the view and allows to modify them.
+         */
+        using iterator = value_type*;
+
+        /**
+         * Returns a `const_iterator` to the beginning of the view.
+         *
+         * @return A `const_iterator` to the beginning
+         */
+        const_iterator cbegin() const {
+            return array;
+        }
+
+        /**
+         * Returns an `iterator` to the beginning of the view.
+         *
+         * @return An `iterator` to the beginning
+         */
+        iterator begin() {
+            return array;
+        }
+
+        /**
+         * Returns a const reference to the element at a specific position.
+         *
+         * @param pos   The position of the element
+         * @return      A const reference to the specified element
+         */
+        const value_type& operator[](uint32 pos) const {
+            return array[pos];
+        }
+
+        /**
+         * Returns a reference to the element at a specific position.
+         *
+         * @param pos   The position of the element
+         * @return      A reference to the specified element
+         */
+        value_type& operator[](uint32 pos) {
+            return array[pos];
+        }
 
         /**
          * Releases the ownership of the array that stores the values, the view provides access to. As a result, the
@@ -69,94 +110,12 @@ class MLRLCOMMON_API BaseView {
 };
 
 /**
- * A view that provides random access, as well as access via iterators, to values stored in a pre-allocated array.
- *
- * @tparam T The type of the values, the view provides access to
- */
-template<typename T>
-class MLRLCOMMON_API View : public BaseView<T> {
-    public:
-
-        /**
-         * @param array         A pointer to an array of template type `T` that stores the values, the view should
-         *                      provide access to
-         * @param dimensions    The number of elements in each dimension of the view
-         */
-        View(T* array, std::initializer_list<uint32> dimensions) : BaseView<T>(array, dimensions) {}
-
-        /**
-         * @param array A pointer to an array of template type `T` that stores the values, the view should provide
-         *              access to
-         */
-        explicit View(T* array) : BaseView<T>(array) {}
-
-        /**
-         * @param other A const reference to an object of type `View` that should be copied
-         */
-        View(const View<T>& other) : BaseView<T>(other) {}
-
-        /**
-         * @param other A reference to an object of type `View` that should be moved
-         */
-        View(View<T>&& other) : BaseView<T>(std::move(other)) {}
-
-        virtual ~View() override {}
-
-        /**
-         * An iterator that provides read-only access to the elements in the view.
-         */
-        using const_iterator = const BaseView<T>::value_type*;
-
-        /**
-         * An iterator that provides access to the elements in the view and allows to modify them.
-         */
-        using iterator = BaseView<T>::value_type*;
-
-        /**
-         * Returns a `const_iterator` to the beginning of the view.
-         *
-         * @return A `const_iterator` to the beginning
-         */
-        const_iterator cbegin() const {
-            return BaseView<T>::array;
-        }
-
-        /**
-         * Returns an `iterator` to the beginning of the view.
-         *
-         * @return An `iterator` to the beginning
-         */
-        iterator begin() {
-            return BaseView<T>::array;
-        }
-
-        /**
-         * Returns a const reference to the element at a specific position.
-         *
-         * @param pos   The position of the element
-         * @return      A const reference to the specified element
-         */
-        const typename BaseView<T>::value_type& operator[](uint32 pos) const {
-            return BaseView<T>::array[pos];
-        }
-
-        /**
-         * Returns a reference to the element at a specific position.
-         *
-         * @param pos   The position of the element
-         * @return      A reference to the specified element
-         */
-        typename BaseView<T>::value_type& operator[](uint32 pos) {
-            return BaseView<T>::array[pos];
-        }
-};
-
-/**
  * Allocates the memory, a view provides access to.
  *
- * @tparam View The type of the view
+ * @tparam View             The type of the view
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
  */
-template<typename View>
+template<typename View, typename MemoryAllocator = DefaultMemoryAllocator>
 class MLRLCOMMON_API Allocator : public View {
     public:
 
@@ -165,24 +124,48 @@ class MLRLCOMMON_API Allocator : public View {
          * @param init          True, if all elements in the view should be value-initialized, false otherwise
          */
         explicit Allocator(uint32 numElements, bool init = false)
-            : View(util::allocateMemory<typename View::value_type>(numElements, init), {numElements}) {}
+            : View(MemoryAllocator::template allocateMemory<typename View::value_type>(numElements, init),
+                   numElements) {}
 
         /**
          * @param other A reference to an object of type `Allocator` that should be copied
          */
-        Allocator(const Allocator<View>& other) : View(other) {
+        Allocator(const Allocator<View, MemoryAllocator>& other) : View(other) {
             throw std::runtime_error("Objects of type Allocator cannot be copied");
         }
 
         /**
          * @param other A reference to an object of type `Allocator` that should be moved
          */
-        Allocator(Allocator<View>&& other) : View(std::move(other)) {
+        Allocator(Allocator<View, MemoryAllocator>&& other) : View(std::move(other)) {
             other.release();
         }
 
         virtual ~Allocator() override {
-            util::freeMemory(View::array);
+            MemoryAllocator::freeMemory(View::array);
+        }
+
+        /**
+         * The type of the view for which this allocator manages memory.
+         */
+        using allocated_view_type = View;
+
+        /**
+         * Returns a const reference to the view for which this allocator manages memory.
+         *
+         * @return A const reference to an object of template type `View` for which this allocator manages memory
+         */
+        const View& getAllocatedView() const {
+            return *this;
+        }
+
+        /**
+         * Returns a reference to the view for which this allocator manages memory.
+         *
+         * @return A reference to an object of template type `View` for which this allocator manages memory
+         */
+        View& getAllocatedView() {
+            return *this;
         }
 };
 
@@ -197,10 +180,11 @@ using AllocatedView = Allocator<View<T>>;
 /**
  * Allocates the memory, a view provides access to, and allows to resize it afterwards.
  *
- * @tparam View The type of the view
+ * @tparam View             The type of the view
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
  */
-template<typename View>
-class MLRLCOMMON_API ResizableAllocator : public Allocator<View> {
+template<typename View, typename MemoryAllocator = DefaultMemoryAllocator>
+class MLRLCOMMON_API ResizableAllocator : public Allocator<View, MemoryAllocator> {
     public:
 
         /**
@@ -218,7 +202,7 @@ class MLRLCOMMON_API ResizableAllocator : public Allocator<View> {
         /**
          * @param other A reference to an object of type `ResizableAllocator` that should be copied
          */
-        ResizableAllocator(const ResizableAllocator<View>& other)
+        ResizableAllocator(const ResizableAllocator<View, MemoryAllocator>& other)
             : Allocator<View>(other), maxCapacity(other.maxCapacity) {
             throw std::runtime_error("Objects of type ResizableAllocator cannot be copied");
         }
@@ -226,7 +210,7 @@ class MLRLCOMMON_API ResizableAllocator : public Allocator<View> {
         /**
          * @param other A reference to an object of type `ResizableAllocator` that should be moved
          */
-        ResizableAllocator(ResizableAllocator<View>&& other)
+        ResizableAllocator(ResizableAllocator<View, MemoryAllocator>&& other)
             : Allocator<View>(std::move(other)), maxCapacity(other.maxCapacity) {}
 
         virtual ~ResizableAllocator() override {}
@@ -240,11 +224,11 @@ class MLRLCOMMON_API ResizableAllocator : public Allocator<View> {
         void resize(uint32 numElements, bool freeMemory) {
             if (numElements < maxCapacity) {
                 if (freeMemory) {
-                    View::array = util::reallocateMemory(View::array, numElements);
+                    View::array = MemoryAllocator::reallocateMemory(View::array, View::numElements, numElements);
                     maxCapacity = numElements;
                 }
             } else if (numElements > maxCapacity) {
-                View::array = util::reallocateMemory(View::array, numElements);
+                View::array = MemoryAllocator::reallocateMemory(View::array, View::numElements, numElements);
                 maxCapacity = numElements;
             }
 

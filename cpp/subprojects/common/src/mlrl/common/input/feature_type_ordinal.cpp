@@ -30,8 +30,8 @@ static inline std::unique_ptr<OrdinalFeatureVectorDecorator> createOrdinalFeatur
 
     AllocatedNominalFeatureVector ordinalFeatureVector(numValues, numIndices, majorityValue);
     AllocatedMissingFeatureVector missingFeatureVector;
-    AllocatedNominalFeatureVector::value_iterator vectorValueIterator = ordinalFeatureVector.values;
-    AllocatedNominalFeatureVector::index_iterator vectorIndptrIterator = ordinalFeatureVector.indptr;
+    auto vectorValueIterator = ordinalFeatureVector.values;
+    auto vectorIndptrIterator = ordinalFeatureVector.indptr;
     uint32 offset = 0;
 
     for (uint32 i = 0; i < numValues; i++) {
@@ -56,8 +56,7 @@ static inline std::unique_ptr<OrdinalFeatureVectorDecorator> createOrdinalFeatur
                 std::pair<uint32, uint32>& pair = mapping.at(nominalValue);
                 uint32 numRemaining = pair.second - 1;
                 pair.second = numRemaining;
-                AllocatedNominalFeatureVector::index_iterator vectorIndexIterator =
-                  ordinalFeatureVector.indices_begin(pair.first);
+                auto vectorIndexIterator = ordinalFeatureVector.indices_begin(pair.first);
                 vectorIndexIterator[numRemaining] = index;
             }
         }
@@ -104,8 +103,7 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
 
 static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
   uint32 featureIndex, const FortranContiguousView<const float32>& featureMatrix) {
-    FortranContiguousView<const float32>::value_const_iterator valueIterator =
-      featureMatrix.values_cbegin(featureIndex);
+    auto valueIterator = featureMatrix.values_cbegin(featureIndex);
     uint32 numElements = featureMatrix.numRows;
     std::unordered_map<int32, std::pair<uint32, uint32>> mapping;
     uint32 numExamples = createMapping(valueIterator, numElements, mapping);
@@ -116,9 +114,9 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
 
 static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
   uint32 featureIndex, const CscView<const float32>& featureMatrix) {
-    CscView<const float32>::index_const_iterator indexIterator = featureMatrix.indices_cbegin(featureIndex);
-    CscView<const float32>::value_const_iterator valuesBegin = featureMatrix.values_cbegin(featureIndex);
-    CscView<const float32>::value_const_iterator valuesEnd = featureMatrix.values_cend(featureIndex);
+    auto indexIterator = featureMatrix.indices_cbegin(featureIndex);
+    auto valuesBegin = featureMatrix.values_cbegin(featureIndex);
+    auto valuesEnd = featureMatrix.values_cend(featureIndex);
     uint32 numElements = valuesEnd - valuesBegin;
     std::unordered_map<int32, std::pair<uint32, uint32>> mapping;
     uint32 numExamples = createMapping(valuesBegin, numElements, mapping);

@@ -7,13 +7,14 @@ Provides classes for obtaining predictions from global machine learning models.
 from collections.abc import Generator
 from typing import Any, override
 
+from mlrl.testbed_sklearn.experiments.prediction.predictor import PredictionFunction, Predictor
+
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.prediction_scope import GlobalPredictionScope
 from mlrl.testbed.experiments.state import PredictionResult, PredictionState
 from mlrl.testbed.experiments.timer import Timer
-from mlrl.testbed_sklearn.experiments.prediction.predictor import PredictionFunction, Predictor
-from mlrl.util.log import Log
+from mlrl.testbed.log import Log
 
 
 class GlobalPredictionFunction(PredictionFunction):
@@ -47,14 +48,14 @@ class GlobalPredictor(Predictor):
         """
         See :func:`mlrl.testbed_sklearn.experiments.prediction.predictor.Predictor.obtain_predictions`
         """
-        Log.info(f'Predicting for {dataset.num_examples} {dataset_type} examples...')
+        Log.info(f'Predicting for {dataset.num_examples} {dataset_type} examples...', highlight=True)
         start_time = Timer.start()
         prediction_function = GlobalPredictionFunction(learner)
         predictions = prediction_function.invoke(dataset, self.prediction_type, **kwargs)
         prediction_duration = Timer.stop(start_time)
 
         if predictions is not None:
-            Log.info(f'Successfully predicted in {prediction_duration}')
+            Log.success(f'Successfully predicted in {prediction_duration}', highlight=True)
             yield PredictionState(
                 prediction_scope=GlobalPredictionScope(),
                 prediction_result=PredictionResult(

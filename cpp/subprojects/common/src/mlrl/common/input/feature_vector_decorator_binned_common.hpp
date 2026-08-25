@@ -15,14 +15,14 @@ static inline void updateCoverageMaskAndStatisticsBasedOnBinnedFeatureVector(con
                                                                              uint32 indicatorValue,
                                                                              IWeightedStatistics& statistics) {
     const FeatureVector& featureVector = view.getView().firstView;
-    CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
+    auto coverageMaskIterator = coverageMask.begin();
 
     if (interval.inverse) {
         // Discard the indices that correspond to the values in the range [interval.start, interval.end) and set the
         // corresponding values in `coverageMask` to `indicatorValue`, which marks them as uncovered...
         for (uint32 i = interval.start; i < interval.end; i++) {
-            typename FeatureVector::index_const_iterator indexIterator = featureVector.indices_cbegin(i);
-            typename FeatureVector::index_const_iterator indicesEnd = featureVector.indices_cend(i);
+            auto indexIterator = featureVector.indices_cbegin(i);
+            auto indicesEnd = featureVector.indices_cend(i);
             uint32 numIndices = indicesEnd - indexIterator;
 
             for (uint32 j = 0; j < numIndices; j++) {
@@ -41,8 +41,8 @@ static inline void updateCoverageMaskAndStatisticsBasedOnBinnedFeatureVector(con
         // Retain the indices in the range [interval.start, interval.end) and set the corresponding values in the given
         // `coverageMask` to `indicatorValue` to mark them as covered...
         for (uint32 i = interval.start; i < interval.end; i++) {
-            typename FeatureVector::index_const_iterator indexIterator = featureVector.indices_cbegin(i);
-            typename FeatureVector::index_const_iterator indicesEnd = featureVector.indices_cend(i);
+            auto indexIterator = featureVector.indices_cbegin(i);
+            auto indicesEnd = featureVector.indices_cend(i);
             uint32 numIndices = indicesEnd - indexIterator;
 
             for (uint32 j = 0; j < numIndices; j++) {

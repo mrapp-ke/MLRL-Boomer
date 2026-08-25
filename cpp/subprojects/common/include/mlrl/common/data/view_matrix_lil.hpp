@@ -51,12 +51,12 @@ class MLRLCOMMON_API ListOfLists : public Matrix {
         /**
          * An iterator that provides read-only access to the values in the view.
          */
-        using value_const_iterator = std::vector<T>::const_iterator;
+        using value_const_iterator = View<T>::const_iterator;
 
         /**
          * An iterator that provides access to the values in the view and allows to modify them.
          */
-        using value_iterator = std::vector<T>::iterator;
+        using value_iterator = View<T>::iterator;
 
         /**
          * Provides read-only access to an individual row in the view.
@@ -95,7 +95,7 @@ class MLRLCOMMON_API ListOfLists : public Matrix {
          * @return      A `value_const_iterator` to the beginning of the values
          */
         value_const_iterator values_cbegin(uint32 row) const {
-            return array[row].cbegin();
+            return std::to_address(array[row].cbegin());
         }
 
         /**
@@ -105,7 +105,7 @@ class MLRLCOMMON_API ListOfLists : public Matrix {
          * @return      A `value_const_iterator` to the end of the values
          */
         value_const_iterator values_cend(uint32 row) const {
-            return array[row].cend();
+            return std::to_address(array[row].cend());
         }
 
         /**
@@ -115,7 +115,7 @@ class MLRLCOMMON_API ListOfLists : public Matrix {
          * @return      A `value_iterator` to the beginning of the values
          */
         value_iterator values_begin(uint32 row) {
-            return array[row].begin();
+            return std::to_address(array[row].begin());
         }
 
         /**
@@ -125,7 +125,17 @@ class MLRLCOMMON_API ListOfLists : public Matrix {
          * @return      A `value_iterator` to the end of the values
          */
         value_iterator values_end(uint32 row) {
-            return array[row].end();
+            return std::to_address(array[row].end());
+        }
+
+        /**
+         * Sets all values stored in the matrix to zero.
+         */
+        void clear() {
+            for (uint32 i = 0; i < numRows; i++) {
+                row row = (*this)[i];
+                row.clear();
+            }
         }
 
         /**

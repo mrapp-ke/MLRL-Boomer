@@ -11,6 +11,7 @@ using int64 = long int;
 using uint8 = unsigned char;
 using uint16 = unsigned short;
 using uint32 = unsigned int;
+using uint64 = unsigned long;
 using float32 = float;
 using float64 = double;
 

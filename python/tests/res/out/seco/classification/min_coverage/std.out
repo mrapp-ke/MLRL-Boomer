@@ -1,0 +1,42 @@
+mlrl-testbed mlrl.seco --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id> --data-dir python/tests/res/data --dataset emotions --result-dir results --save-evaluation true --save-meta-data false --parallel-prediction false --parallel-rule-refinement false --parallel-statistic-update false --min-coverage 0.2
+○ Checking if output files do already exist...
+
+Starting experiment using the classification algorithm "SeCoClassifier"...
+Using separate training and test sets...
+
+Loading training dataset...
+○ Reading from file "python/tests/res/data/emotions.arff"...
+○ Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+✓ Successfully loaded training dataset!
+Fitting model to 397 training examples...
+○ A dense matrix is used to store the feature values of the training examples
+○ A dense matrix is used to store the labels of the training examples
+✓ Successfully fit model in <duration>
+Loading test dataset...
+✓ Successfully loaded test dataset!
+Predicting for 196 test examples...
+○ A dense matrix is used to store the feature values of the query examples
+○ A dense matrix is used to store the predicted labels
+✓ Successfully predicted in <duration>
+
+🗀 Evaluation result for test data:
+
+ Example-wise F1 (↑)         57.13
+ Example-wise Jaccard (↑)    46.25
+ Example-wise Precision (↑)  55.68
+ Example-wise Recall (↑)     70.24
+ Hamming Accuracy (↑)        69.22
+ Hamming Loss (↓)            30.78
+ Macro F1 (↑)                55.70
+ Macro Jaccard (↑)           40.08
+ Macro Precision (↑)         49.06
+ Macro Recall (↑)            67.62
+ Micro F1 (↑)                59.42
+ Micro Jaccard (↑)           42.26
+ Micro Precision (↑)         51.26
+ Micro Recall (↑)            70.67
+ Subset 0/1 Loss (↓)         83.67
+ Subset Accuracy (↑)         16.33
+
+○ Writing to file "python/tests/res/tmp/<worker-id>/results/evaluation_test.csv"...
+✓ Successfully finished experiment after <duration>

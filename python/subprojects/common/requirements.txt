@@ -1,2 +1,2 @@
-packaging >= 25.0, < 26.0
-scikit-learn >= 1.8, < 1.9
+packaging >= 26.3, < 26.4
+scikit-learn >= 1.9, < 1.10
