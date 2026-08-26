@@ -6,6 +6,16 @@ tocdepth: 2
 
 # Release Notes
 
+## Version 0.15.5 (Aug. 26th,2026)
+
+A bugfix release that comes with the following changes.
+
+### Fixes
+
+- A crash when using the package "mlrl-testbed-sklearn" with estimators that do not support sparse data has been fixed (https://github.com/mrapp-ke/MLRL-Boomer/issues/2970).
+- A mistake in the documentation regarding the command line argument "--data-split" has been fixed (https://github.com/mrapp-ke/MLRL-Boomer/issues/2971).
+- The implementation of the SeCo algorithm's accuracy heuristic has been fixed.
+
 ## Version 0.15.4 (May. 18th,2026)
 
 A bugfix release that comes with the following changes.
