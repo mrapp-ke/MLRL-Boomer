@@ -7,13 +7,11 @@ Provides classes that allow configuring the functionality to run experiments via
 from argparse import Namespace
 from typing import override
 
-from mlrl.testbed_slurm.arguments import SlurmArguments
-from mlrl.testbed_slurm.runner import SlurmRunner
-
 from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.modes import BatchMode
-
+from mlrl.testbed_slurm.arguments import SlurmArguments
+from mlrl.testbed_slurm.runner import SlurmRunner
 from mlrl.util.cli import Argument
 
 

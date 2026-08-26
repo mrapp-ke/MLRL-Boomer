@@ -6,11 +6,11 @@ probabilities.
 """
 
 from typing import override
+
 from rich.console import ConsoleRenderable
 
 from mlrl.testbed.experiments.output.data import TabularOutputData
 from mlrl.testbed.experiments.table import Table
-
 from mlrl.util.options import Options
 
 

@@ -9,8 +9,9 @@ from typing import override
 
 from core.build_unit import BuildUnit
 from core.modules import Module, ModuleRegistry
-from targets.dependencies.cpp.wrap_file import WrapFile
 from util.files import FileSearch
+
+from targets.dependencies.cpp.wrap_file import WrapFile
 
 
 class WrapFileModule(Module):
@@ -27,13 +28,14 @@ class WrapFileModule(Module):
         def matches(self, module: Module, _: ModuleRegistry) -> bool:
             return isinstance(module, WrapFileModule)
 
-    def __init__(self, root_directory: Path, wrap_file_search: FileSearch = FileSearch().set_recursive(True)):
+    def __init__(self, root_directory: Path, wrap_file_search: FileSearch | None = None):
         """
         :param root_directory:      The path to the module's root directory
-        :param wrap_file_search:    The `FileSearch` that should be used to search for Meson wrap files
+        :param wrap_file_search:    The `FileSearch` that should be used to search for Meson wrap files or None, if the
+                                    default should be used
         """
         self.root_directory = root_directory
-        self.wrap_file_search = wrap_file_search
+        self.wrap_file_search = wrap_file_search if wrap_file_search else FileSearch().set_recursive(True)
 
     def find_wrap_files(self, build_unit: BuildUnit) -> list[WrapFile]:
         """

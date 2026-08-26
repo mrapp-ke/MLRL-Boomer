@@ -6,7 +6,7 @@ Provides utility functions for checking the project's GitHub workflows for outda
 
 from dataclasses import dataclass, replace
 from functools import cached_property, reduce
-from typing import Any, override
+from typing import override
 
 from core.build_unit import BuildUnit
 from util.files import FileType
@@ -112,7 +112,7 @@ class Action:
         return self.name + self.SEPARATOR + str(self.version)
 
     @override
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         return isinstance(other, type(self)) and str(self) == str(other)
 
     @override
@@ -206,7 +206,7 @@ class ActionUpdater(Workflows):
             return str(self.action)
 
         @override
-        def __eq__(self, other: Any) -> bool:
+        def __eq__(self, other: object) -> bool:
             return isinstance(other, type(self)) and self.action == other.action
 
         @override
@@ -231,7 +231,7 @@ class ActionUpdater(Workflows):
             return str(self.updated)
 
         @override
-        def __eq__(self, other: Any) -> bool:
+        def __eq__(self, other: object) -> bool:
             return isinstance(other, type(self)) and self.updated == other.updated
 
         @override

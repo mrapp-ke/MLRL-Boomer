@@ -7,6 +7,16 @@ Provides classes that allow configuring the functionality to write evaluation re
 from argparse import Namespace
 from typing import override
 
+from mlrl.testbed.experiments.experiment import Experiment
+from mlrl.testbed.experiments.input.sources.source_csv import CsvFileSource
+from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
+from mlrl.testbed.experiments.output.evaluation.extension import AggregatedEvaluationExtension
+from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
+from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink
+from mlrl.testbed.experiments.prediction_type import PredictionType
+from mlrl.testbed.experiments.problem_domain import ClassificationProblem, RegressionProblem
+from mlrl.testbed.experiments.state import ExperimentMode
+from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import TabularEvaluationResult
 from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_classification import (
     ClassificationEvaluationDataExtractor,
@@ -20,18 +30,6 @@ from mlrl.testbed_sklearn.experiments.output.evaluation.measures_classification 
 from mlrl.testbed_sklearn.experiments.output.evaluation.measures_ranking import RANKING_EVALUATION_MEASURES
 from mlrl.testbed_sklearn.experiments.output.evaluation.measures_regression import REGRESSION_EVALUATION_MEASURES
 from mlrl.testbed_sklearn.experiments.output.evaluation.writer import EvaluationWriter
-
-from mlrl.testbed.experiments.experiment import Experiment
-from mlrl.testbed.experiments.input.sources.source_csv import CsvFileSource
-from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
-from mlrl.testbed.experiments.output.evaluation.extension import AggregatedEvaluationExtension
-from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
-from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink
-from mlrl.testbed.experiments.prediction_type import PredictionType
-from mlrl.testbed.experiments.problem_domain import ClassificationProblem, RegressionProblem
-from mlrl.testbed.experiments.state import ExperimentMode
-from mlrl.testbed.extensions.extension import Extension
-
 from mlrl.util.cli import Argument, BoolArgument
 
 

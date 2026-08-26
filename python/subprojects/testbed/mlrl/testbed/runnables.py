@@ -21,7 +21,6 @@ from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions import Extension
 from mlrl.testbed.modes import BatchMode, Mode, ReadMode, RunMode
 from mlrl.testbed.program_info import ProgramInfo
-
 from mlrl.util.cli import Argument, CommandLineInterface
 
 try:

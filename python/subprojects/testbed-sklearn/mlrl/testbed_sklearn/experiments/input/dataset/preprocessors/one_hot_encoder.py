@@ -10,11 +10,10 @@ from typing import override
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder as SkLearnOneHotEncoder
 
-from mlrl.testbed_sklearn.experiments.dataset import AttributeType
-
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.input.dataset.preprocessors.preprocessor import Preprocessor
 from mlrl.testbed.log import Log
+from mlrl.testbed_sklearn.experiments.dataset import AttributeType
 
 
 class OneHotEncoder(Preprocessor):

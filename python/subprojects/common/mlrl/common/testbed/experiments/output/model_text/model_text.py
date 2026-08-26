@@ -7,14 +7,13 @@ Provides classes for representing rule models as text that is part of output dat
 from io import StringIO
 from typing import override
 
-from mlrl.common.cython.rule_model import Body, CompleteHead, ConjunctiveBody, EmptyBody, Head, PartialHead, RuleModel
-
-from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
 from rich.console import ConsoleRenderable
+
+from mlrl.common.cython.rule_model import Body, CompleteHead, ConjunctiveBody, EmptyBody, Head, PartialHead, RuleModel
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties
 from mlrl.testbed.experiments.output.data import TextualOutputData
-
+from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
 from mlrl.util.format import format_value
 from mlrl.util.options import Options
 
@@ -62,7 +61,7 @@ class RuleModelAsText(TextualOutputData):
                 RuleModelAsText.__format_conditions(text, body, dataset, options)
                 text.write('}')
             else:
-                raise ValueError(f'Unsupported type of body: {type(body)}')
+                raise TypeError(f'Unsupported type of body: {type(body)}')
 
     @staticmethod
     def __format_head(text: StringIO, head: Head, dataset: TabularDataset, options: Options):
@@ -71,7 +70,7 @@ class RuleModelAsText(TextualOutputData):
         elif isinstance(head, PartialHead):
             RuleModelAsText.__format_partial_head(text, head, dataset, options)
         else:
-            raise ValueError(f'Unsupported type of head: {type(head)}')
+            raise TypeError(f'Unsupported type of head: {type(head)}')
 
     @staticmethod
     def __format_conditions(text: StringIO, body: Body, dataset: TabularDataset, options: Options):

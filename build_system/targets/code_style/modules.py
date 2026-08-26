@@ -36,16 +36,17 @@ class CodeModule(Module):
         self,
         file_type: FileType,
         root_directory: Path,
-        source_file_search: FileSearch = FileSearch().set_recursive(True),
+        source_file_search: FileSearch | None = None,
     ):
         """
         :param file_type:           The `FileType` of the source files that belongs to the module
         :param root_directory:      The path to the module's root directory
-        :param source_file_search:  The `FileSearch` that should be used to search for source files
+        :param source_file_search:  The `FileSearch` that should be used to search for source files or None, if the
+                                    default should be used
         """
         self.file_type = file_type
         self.root_directory = root_directory
-        self.source_file_search = source_file_search
+        self.source_file_search = source_file_search if source_file_search else FileSearch().set_recursive(True)
 
     def find_source_files(self) -> list[Path]:
         """

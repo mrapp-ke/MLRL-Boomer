@@ -9,12 +9,13 @@ from typing import cast, override
 from core.build_unit import BuildUnit
 from core.modules import Module
 from core.targets import PhonyTarget
-from targets.code_style.modules import CodeModule
+from util.files import FileType
+from util.log import Log
+
 from targets.code_style.cython.autoflake import Autoflake
 from targets.code_style.cython.cython_lint import CythonLint
 from targets.code_style.cython.isort import ISort
-from util.files import FileType
-from util.log import Log
+from targets.code_style.modules import CodeModule
 
 CYTHON_MODULE_FILTER = CodeModule.Filter(FileType.cython())
 

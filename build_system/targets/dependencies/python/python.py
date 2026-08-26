@@ -31,7 +31,7 @@ def __query_latest_python_version(build_unit: BuildUnit) -> Version:
         except ValueError:
             pass
 
-    return sorted(available_versions)[-1]
+    return max(available_versions)
 
 
 def update_python_version(build_unit: BuildUnit):

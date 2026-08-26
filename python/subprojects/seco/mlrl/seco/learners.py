@@ -8,9 +8,9 @@ classification rules.
 from typing import Any, override
 
 from mlrl.common.learners import ClassificationRuleLearner, configure_rule_learner
-
 from mlrl.seco.config.parameters import SECO_CLASSIFIER_PARAMETERS
-from mlrl.seco.cython.learner_seco import SeCoClassifier as SeCoWrapper, SeCoClassifierConfig
+from mlrl.seco.cython.learner_seco import SeCoClassifier as SeCoWrapper
+from mlrl.seco.cython.learner_seco import SeCoClassifierConfig
 
 
 class SeCoClassifier(ClassificationRuleLearner):

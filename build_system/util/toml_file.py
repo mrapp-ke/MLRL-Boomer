@@ -4,13 +4,13 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utilities for reading and writing TOML files via "toml".
 """
 
-import tomllib
-
 from functools import cached_property
 from pathlib import Path
 from typing import Any, override
 
+import tomllib
 from core.build_unit import BuildUnit
+
 from util.io import TextFile, read_file
 
 

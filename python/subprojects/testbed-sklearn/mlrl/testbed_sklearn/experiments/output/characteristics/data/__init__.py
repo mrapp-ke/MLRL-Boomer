@@ -12,8 +12,8 @@ from mlrl.testbed_sklearn.experiments.output.characteristics.data.writer_predict
 )
 
 __all__ = [
-    'OutputCharacteristics',
     'DataCharacteristics',
     'DataCharacteristicsWriter',
+    'OutputCharacteristics',
     'PredictionCharacteristicsWriter',
 ]

@@ -208,7 +208,7 @@ class RuleModelStatistics:
         rule_statistics = self.rule_statistics
 
         if rule_statistics:
-            return min(map(lambda statistics: statistics.body_statistics.num_conditions, rule_statistics))
+            return min(statistics.body_statistics.num_conditions for statistics in rule_statistics)
         return 0
 
     @cached_property
@@ -219,7 +219,7 @@ class RuleModelStatistics:
         rule_statistics = self.rule_statistics
 
         if rule_statistics:
-            return max(map(lambda statistics: statistics.body_statistics.num_conditions, rule_statistics))
+            return max(statistics.body_statistics.num_conditions for statistics in rule_statistics)
         return 0
 
     @cached_property
@@ -230,7 +230,7 @@ class RuleModelStatistics:
         rule_statistics = self.rule_statistics
 
         if rule_statistics:
-            return min(map(lambda statistics: statistics.head_statistics.num_predictions, rule_statistics))
+            return min(statistics.head_statistics.num_predictions for statistics in rule_statistics)
         return 0
 
     @cached_property
@@ -241,5 +241,5 @@ class RuleModelStatistics:
         rule_statistics = self.rule_statistics
 
         if rule_statistics:
-            return max(map(lambda statistics: statistics.head_statistics.num_predictions, rule_statistics))
+            return max(statistics.head_statistics.num_predictions for statistics in rule_statistics)
         return 0

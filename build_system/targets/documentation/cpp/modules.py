@@ -36,7 +36,7 @@ class CppApidocModule(ApidocModule):
         root_directory: Path,
         output_directory: Path,
         include_directory_name: str,
-        header_file_search: FileSearch = FileSearch().set_recursive(True),
+        header_file_search: FileSearch | None = None,
     ):
         """
         :param root_directory:          The path to the module's root directory
@@ -44,12 +44,12 @@ class CppApidocModule(ApidocModule):
         :param include_directory_name:  The name of the directory that contains the header files to be included in the
                                         API documentation
         :param header_file_search:      The `FileSearch` that should be used to search for the header files to be
-                                        included in the API documentation
+                                        included in the API documentation or None, if the default should be used
         """
         super().__init__(output_directory)
         self.root_directory = root_directory
         self.include_directory_name = include_directory_name
-        self.header_file_search = header_file_search
+        self.header_file_search = header_file_search if header_file_search else FileSearch().set_recursive(True)
 
     @property
     def include_directory(self) -> Path:

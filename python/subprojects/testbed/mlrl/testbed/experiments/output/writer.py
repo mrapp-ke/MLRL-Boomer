@@ -154,7 +154,7 @@ class OutputWriter:
             return extractor.extract_data(state, self.sinks)
         except Exception as error:
             if self.output_error_policy == OutputErrorPolicy.EXIT:
-                raise error
+                raise
 
             Log.error(
                 f'Failed to extract output data from experimental state via extractor of type '
@@ -182,7 +182,7 @@ class OutputWriter:
             self._write_to_sink(sink, state, output_data)
         except Exception as error:
             if self.output_error_policy == OutputErrorPolicy.EXIT:
-                raise error
+                raise
 
             Log.error(
                 f'Failed to write output data of type "{type(output_data).__name__}" to sink {type(sink).__name__}',
@@ -247,7 +247,7 @@ class OutputWriter:
         :param input_directory: The directory, the data should be read from
         :return:                A list that contains the sources that has been created
         """
-        return list(filter(None, map(lambda sink: sink.create_source(input_directory), self.sinks)))
+        return list(filter(None, (sink.create_source(input_directory) for sink in self.sinks)))
 
     def create_input_reader(self, args: Namespace, input_directory: Path) -> InputReader | None:
         """
@@ -265,7 +265,7 @@ class OutputWriter:
         return type(self).__name__
 
     @override
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         return isinstance(other, type(self))
 
     @override

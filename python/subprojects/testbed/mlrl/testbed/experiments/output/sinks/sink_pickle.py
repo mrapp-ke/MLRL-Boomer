@@ -5,7 +5,6 @@ Provides classes that allow writing output data to files by using Python's pickl
 """
 
 import pickle
-
 from pathlib import Path
 from typing import override
 
@@ -14,7 +13,6 @@ from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.model.model import OutputModel
 from mlrl.testbed.experiments.output.sinks.sink import FileSink
 from mlrl.testbed.experiments.state import ExperimentState
-
 from mlrl.util.options import Options
 
 
@@ -23,10 +21,10 @@ class PickleFileSink(FileSink):
     Allows to write output data to a file by using Python's pickle mechanism.
     """
 
-    def __init__(self, directory: Path, options: Options = Options(), create_directory: bool = False):
+    def __init__(self, directory: Path, options: Options | None = None, create_directory: bool = False):
         """
         :param directory:           The path to the directory of the file
-        :param options:             Options to be taken into account
+        :param options:             Options to be taken into account or None, if the defaults should be used
         :param create_directory:    True, if the given directory should be created, if it does not exist, False
                                     otherwise
         """

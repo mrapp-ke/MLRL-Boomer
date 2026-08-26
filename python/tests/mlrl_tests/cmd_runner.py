@@ -4,17 +4,15 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 import shutil
 import subprocess
-
 from functools import reduce
 from os import environ
 from pathlib import Path
 
 import pytest
+from mlrl.testbed.experiments.state import ExperimentMode
 
 from .cmd_builder import CmdBuilder
 from .comparison import FileComparison, TextFileComparison
-
-from mlrl.testbed.experiments.state import ExperimentMode
 
 
 class CmdRunner:

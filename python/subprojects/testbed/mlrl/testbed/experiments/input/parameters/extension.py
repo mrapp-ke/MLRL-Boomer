@@ -13,7 +13,6 @@ from mlrl.testbed.experiments.input.parameters.reader import ParameterReader
 from mlrl.testbed.experiments.input.sources.source_csv import CsvFileSource
 from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions.extension import Extension
-
 from mlrl.util.cli import Argument, BoolArgument, PathArgument
 
 

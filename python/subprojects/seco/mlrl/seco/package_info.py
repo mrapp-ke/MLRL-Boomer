@@ -5,8 +5,8 @@ Provides utility functions for retrieving information about this Python package.
 """
 
 from mlrl.common.cython.package_info import get_cpp_library_info as get_common_cpp_library_info
-from mlrl.common.package_info import PackageInfo, get_package_info as get_common_package_info
-
+from mlrl.common.package_info import PackageInfo
+from mlrl.common.package_info import get_package_info as get_common_package_info
 from mlrl.seco.cython.package_info import get_cpp_library_info
 
 

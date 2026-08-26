@@ -18,7 +18,6 @@ from mlrl.testbed.experiments.input.sources import FileSource, Source
 from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.modes import BatchMode
-
 from mlrl.util.cli import Argument, PathArgument
 from mlrl.util.validation import ValidationError
 

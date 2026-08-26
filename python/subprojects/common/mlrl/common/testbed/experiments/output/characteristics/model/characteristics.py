@@ -7,6 +7,7 @@ Provides classes for representing characteristics of rule models that are part o
 from functools import reduce
 from itertools import chain
 from typing import override
+
 from rich.console import ConsoleRenderable, Group
 from rich.text import Text
 
@@ -16,14 +17,12 @@ from mlrl.common.testbed.experiments.output.characteristics.model.statistics imp
     RuleModelStatistics,
     RuleStatistics,
 )
-
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.output.data import TabularOutputData
 from mlrl.testbed.experiments.table import Column, RowWiseTable, Table
 from mlrl.testbed.util.format import format_percentage
 from mlrl.testbed.util.math import divide_or_zero
-
 from mlrl.util.format import format_value
 from mlrl.util.options import Options
 

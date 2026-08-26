@@ -5,7 +5,6 @@ Defines command line arguments for configuring the functionality to read input d
 """
 
 from mlrl.testbed.experiments.input.policies import MissingInputPolicy
-
 from mlrl.util.cli import EnumArgument
 
 

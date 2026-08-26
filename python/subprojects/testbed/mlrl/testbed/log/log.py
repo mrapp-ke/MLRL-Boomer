@@ -7,19 +7,18 @@ Provides classes for writing log messages.
 import contextlib
 import logging
 import os
-from contextvars import ContextVar
-
 from contextlib import contextmanager
-from typing import override
+from contextvars import ContextVar
+from typing import ClassVar, override
 
-from rich.console import Console, ConsoleRenderable, ConsoleOptions
+from rich.console import Console, ConsoleOptions, ConsoleRenderable
+from rich.highlighter import RegexHighlighter
 from rich.logging import LogRecord, RichHandler
 from rich.panel import Panel
-from rich.style import Style
 from rich.segment import Segment
+from rich.style import Style
 from rich.syntax import Syntax
 from rich.text import Text
-from rich.highlighter import RegexHighlighter
 
 from mlrl.testbed.util.io import ENCODING_UTF8
 
@@ -96,7 +95,7 @@ class IndentationLevel:
         REGEX_DURATION = r'\d+ (?:day|hour|minute|second|millisecond)s?'
         REGEX_NUMBER = r'\d{1,3}(?:,\d{3})*(?:\.\d+)?|\d+(?:\.\d+)?'
 
-        highlights = [  # type: ignore[mutable-override]
+        highlights: ClassVar[list[str]] = [  # type: ignore[mutable-override]
             rf'(?P<bold>{REGEX_QUOTED})|(?P<turquoise2>{REGEX_DURATION}|{REGEX_NUMBER})',
         ]
 
@@ -181,14 +180,31 @@ class IndentationLevel:
         return ''
 
 
-INDENTATION_LEVEL: ContextVar[IndentationLevel] = ContextVar('indentation_level', default=IndentationLevel(level=0))
+INDENTATION_LEVEL: ContextVar[IndentationLevel | None] = ContextVar('indentation_level', default=None)
 
 
 def get_console() -> Console:
     """
     Returns the console to be used for logging.
+
+    :return: The console
     """
     return Console(width=WIDTH, color_system=None if PLAIN else 'auto')
+
+
+def get_indentation_level() -> IndentationLevel:
+    """
+    Returns the current indentation level of log messages.
+
+    :return: The current indentation level
+    """
+    indentation_level = INDENTATION_LEVEL.get()
+
+    if indentation_level is None:
+        indentation_level = IndentationLevel(level=0)
+        INDENTATION_LEVEL.set(indentation_level)
+
+    return indentation_level
 
 
 @contextmanager
@@ -196,9 +212,12 @@ def disable_log():
     """
     Prevents any output from being written to stdout or stderr.
     """
-    with open(os.devnull, mode='w', encoding=ENCODING_UTF8) as devnull:
-        with contextlib.redirect_stdout(devnull), contextlib.redirect_stderr(devnull):
-            yield
+    with (
+        open(os.devnull, mode='w', encoding=ENCODING_UTF8) as devnull,
+        contextlib.redirect_stdout(devnull),
+        contextlib.redirect_stderr(devnull),
+    ):
+        yield
 
 
 class LogHandler(RichHandler):
@@ -206,13 +225,13 @@ class LogHandler(RichHandler):
     Customizes the appearance of log messages emitted by Python's "logging" module, depending on the log level.
     """
 
-    STYLE_PER_LOG_LEVEL = {
+    STYLE_PER_LOG_LEVEL: ClassVar[dict[int, Style]] = {
         logging.DEBUG: Style(color='grey50'),
         logging.WARNING: Style(color='yellow'),
         logging.ERROR: Style(color='red', bold=True),
     }
 
-    SYMBOL_PER_LOG_LEVEL = {
+    SYMBOL_PER_LOG_LEVEL: ClassVar[dict[int, str]] = {
         logging.DEBUG: '○',
         logging.WARNING: '⚠',
         logging.ERROR: '✗',
@@ -262,7 +281,7 @@ class LogHandler(RichHandler):
         else:
             renderable = formatted_message
 
-        indentation_level = INDENTATION_LEVEL.get()
+        indentation_level = get_indentation_level()
         level = indentation_level.level
         prefix = Text(IndentationLevel.get_prefix(level), style=IndentationLevel.PREFIX_STYLE)
 
@@ -281,7 +300,7 @@ class Log:
         A context manager that indents all log messages emitted within the block. Nesting multiple context managers
         results in deeper indentation levels.
         """
-        indentation_level = INDENTATION_LEVEL.get()
+        indentation_level = get_indentation_level()
         console = get_console()
 
         try:
@@ -321,7 +340,7 @@ class Log:
         if logging.getLogger().isEnabledFor(log_level):
             formatted_message = LogHandler.format_message(message, log_level)
             style = LogHandler.get_style(log_level)
-            INDENTATION_LEVEL.get().print(
+            get_indentation_level().print(
                 message=formatted_message, style=style, box=box, box_title=box_title, highlight=highlight
             )
 
@@ -345,7 +364,7 @@ class Log:
         if logging.getLogger().isEnabledFor(log_level):
             formatted_message = LogHandler.format_message(message, log_level)
             style = LogHandler.get_style(log_level)
-            INDENTATION_LEVEL.get().print(
+            get_indentation_level().print(
                 message=formatted_message, style=style, box=box, box_title=box_title, highlight=highlight
             )
 
@@ -364,7 +383,7 @@ class Log:
         if logging.getLogger().isEnabledFor(log_level):
             formatted_message = f'✓ {message}'
             style = Style(color='green', bold=True)
-            INDENTATION_LEVEL.get().print(
+            get_indentation_level().print(
                 message=formatted_message, style=style, box=box, box_title=box_title, highlight=highlight
             )
 
@@ -385,7 +404,7 @@ class Log:
         if logging.getLogger().isEnabledFor(log_level):
             formatted_message = LogHandler.format_message(message, log_level)
             style = LogHandler.get_style(log_level)
-            INDENTATION_LEVEL.get().print(
+            get_indentation_level().print(
                 message=formatted_message, style=style, box=box, box_title=box_title, highlight=highlight
             )
 
@@ -400,7 +419,7 @@ class Log:
 
         if logging.getLogger().isEnabledFor(log_level):
             if PLAIN:
-                indentation_level = INDENTATION_LEVEL.get()
+                indentation_level = get_indentation_level()
                 indentation_level.print('')
                 indentation_level.print(f'{title}:')
                 indentation_level.print('')
@@ -429,7 +448,7 @@ class Log:
             else:
                 renderable = IndentationLevel.decorate_with_box(renderable, box_title=box_title)
 
-            indentation_level = INDENTATION_LEVEL.get()
+            indentation_level = get_indentation_level()
             get_console().print(IndentationLevel.IndentedRenderable(renderable, level=indentation_level.level))
 
     @staticmethod
@@ -449,6 +468,6 @@ class Log:
         if logging.getLogger().isEnabledFor(log_level):
             formatted_message = LogHandler.format_message(message, log_level)
             style = LogHandler.get_style(log_level)
-            INDENTATION_LEVEL.get().print(
+            get_indentation_level().print(
                 message=formatted_message, style=style, box=box, box_title=box_title, highlight=highlight
             )

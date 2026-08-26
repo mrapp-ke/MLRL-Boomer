@@ -6,10 +6,10 @@ Provides classes for implementing experiments.
 
 from abc import ABC, abstractmethod
 from argparse import Namespace
-from collections.abc import Generator, Iterable
+from collections.abc import Callable, Generator, Iterable
 from dataclasses import replace
 from itertools import chain
-from typing import Any, Callable, override
+from typing import Any, override
 
 from mlrl.testbed.arguments import PredictionDatasetArguments
 from mlrl.testbed.experiments.dataset import Dataset

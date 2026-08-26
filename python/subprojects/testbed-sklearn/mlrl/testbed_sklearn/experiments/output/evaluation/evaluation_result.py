@@ -6,6 +6,7 @@ Provides classes for representing evaluation results that are part of output dat
 
 from itertools import tee
 from typing import Any, override
+
 from rich.console import ConsoleRenderable
 
 from mlrl.testbed.experiments.output.data import OutputValue
@@ -13,9 +14,8 @@ from mlrl.testbed.experiments.output.evaluation.evaluation_result import Aggrega
 from mlrl.testbed.experiments.output.evaluation.measurements import Measurements
 from mlrl.testbed.experiments.output.evaluation.measures import Measure
 from mlrl.testbed.experiments.output.sinks import CsvFileSink
-from mlrl.testbed.experiments.table import RowWiseTable, Table, Column
+from mlrl.testbed.experiments.table import Column, RowWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
-
 from mlrl.util.options import Options
 
 
@@ -165,9 +165,7 @@ class TabularEvaluationResult(EvaluationResult):
         headers, measures = tee(
             filter(lambda measure: options.get_bool(measure.option_key, enable_all), dictionary.keys())
         )
-        values = map(
-            lambda measure: measure.format(dictionary[measure], percentage=percentage, decimals=decimals), measures
-        )
+        values = (measure.format(dictionary[measure], percentage=percentage, decimals=decimals) for measure in measures)
         return RowWiseTable(*headers).add_row(*values)
 
 

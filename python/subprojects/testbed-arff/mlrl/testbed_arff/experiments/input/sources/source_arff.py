@@ -12,10 +12,7 @@ from xml.dom import minidom
 
 import arff
 import numpy as np
-
 from scipy.sparse import coo_array, csc_array, sparray
-
-from mlrl.testbed_sklearn.experiments.dataset import Attribute, AttributeType, TabularDataset
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties
@@ -26,6 +23,7 @@ from mlrl.testbed.experiments.input.sources.source import DatasetFileSource
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.log import Log
 from mlrl.testbed.util.io import open_readable_file
+from mlrl.testbed_sklearn.experiments.dataset import Attribute, AttributeType, TabularDataset
 
 
 def normalize_attribute_name(name: str) -> str:
@@ -36,9 +34,9 @@ def normalize_attribute_name(name: str) -> str:
     :return:        The normalized name
     """
     name = name.strip()
-    if name.startswith("'") or name.startswith('"'):
+    if name.startswith(("'", '"')):
         name = name[1:]
-    if name.endswith("'") or name.endswith('"'):
+    if name.endswith(("'", '"')):
         name = name[: (len(name) - 1)]
     return name.replace("\\'", "'").replace('\\"', '"')
 

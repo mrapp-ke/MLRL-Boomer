@@ -8,7 +8,6 @@ from typing import Any, override
 
 from mlrl.testbed.experiments.input.model.model import InputModel
 from mlrl.testbed.experiments.output.data import ObjectOutputData
-
 from mlrl.util.options import Options
 
 

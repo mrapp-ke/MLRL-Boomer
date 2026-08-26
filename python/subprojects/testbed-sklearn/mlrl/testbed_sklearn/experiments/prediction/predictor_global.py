@@ -7,14 +7,13 @@ Provides classes for obtaining predictions from global machine learning models.
 from collections.abc import Generator
 from typing import Any, override
 
-from mlrl.testbed_sklearn.experiments.prediction.predictor import PredictionFunction, Predictor
-
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.prediction_scope import GlobalPredictionScope
 from mlrl.testbed.experiments.state import PredictionResult, PredictionState
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.log import Log
+from mlrl.testbed_sklearn.experiments.prediction.predictor import PredictionFunction, Predictor
 
 
 class GlobalPredictionFunction(PredictionFunction):

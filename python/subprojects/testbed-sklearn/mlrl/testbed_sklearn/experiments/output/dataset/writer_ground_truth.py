@@ -6,14 +6,13 @@ Provides classes that allow writing the ground truth to one or several sinks.
 
 from typing import Any, override
 
-from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
-from mlrl.testbed_sklearn.experiments.output.dataset.dataset_ground_truth import GroundTruthDataset
-
 from mlrl.testbed.experiments.input.data import DatasetInputData
 from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor, DatasetExtractor, ResultWriter
 from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
+from mlrl.testbed_sklearn.experiments.output.dataset.dataset_ground_truth import GroundTruthDataset
 
 
 class GroundTruthWriter(ResultWriter):

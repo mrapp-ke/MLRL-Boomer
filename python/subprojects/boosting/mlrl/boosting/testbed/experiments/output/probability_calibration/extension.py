@@ -11,7 +11,6 @@ from mlrl.boosting.testbed.experiments.output.probability_calibration.writer imp
     JointProbabilityCalibrationModelWriter,
     MarginalProbabilityCalibrationModelWriter,
 )
-
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.sources.source_csv import CsvFileSource
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
@@ -20,7 +19,6 @@ from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, Sink
 from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.util.format import OPTION_DECIMALS
-
 from mlrl.util.cli import Argument, BoolArgument
 
 

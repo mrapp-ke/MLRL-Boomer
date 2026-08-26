@@ -11,7 +11,6 @@ import yamale
 import yaml
 
 from mlrl.testbed.util.io import open_readable_file
-
 from mlrl.util.validation import ValidationError
 
 

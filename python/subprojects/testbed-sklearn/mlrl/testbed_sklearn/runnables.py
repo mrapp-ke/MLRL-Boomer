@@ -5,7 +5,6 @@ Provides classes for running experiments using the scikit-learn framework.
 """
 
 import re as regex
-
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from collections.abc import Iterable
@@ -16,33 +15,17 @@ from typing import Any, override
 
 import docstring_parser
 import numpy as np
-
 from sklearn.base import (
     BaseEstimator as SkLearnBaseEstimator,
+)
+from sklearn.base import (
     ClassifierMixin as SkLearnClassifierMixin,
+)
+from sklearn.base import (
     RegressorMixin as SkLearnRegressorMixin,
 )
 from sklearn.dummy import DummyClassifier, DummyRegressor
 from sklearn.utils import all_estimators
-
-from mlrl.testbed_sklearn.experiments import SkLearnExperiment
-from mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension import DatasetSplitterExtension
-from mlrl.testbed_sklearn.experiments.output.characteristics.data.extension import TabularDataCharacteristicExtension
-from mlrl.testbed_sklearn.experiments.output.characteristics.data.extension_prediction import (
-    PredictionCharacteristicsExtension,
-)
-from mlrl.testbed_sklearn.experiments.output.dataset.extension_ground_truth import GroundTruthExtension
-from mlrl.testbed_sklearn.experiments.output.dataset.extension_prediction import PredictionExtension
-from mlrl.testbed_sklearn.experiments.output.evaluation.extension import EvaluationExtension
-from mlrl.testbed_sklearn.experiments.output.label_vectors.extension import LabelVectorExtension
-from mlrl.testbed_sklearn.experiments.prediction import GlobalPredictor
-from mlrl.testbed_sklearn.experiments.prediction.extension import PredictionTypeExtension
-from mlrl.testbed_sklearn.experiments.prediction.predictor import Predictor
-from mlrl.testbed_sklearn.experiments.problem_domain import (
-    SkLearnClassificationProblem,
-    SkLearnProblem,
-    SkLearnRegressionProblem,
-)
 
 from mlrl.testbed.command import ArgumentList, Command
 from mlrl.testbed.experiments import Experiment
@@ -64,7 +47,24 @@ from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.log import disable_log
 from mlrl.testbed.modes import BatchMode
 from mlrl.testbed.runnables import Runnable
-
+from mlrl.testbed_sklearn.experiments import SkLearnExperiment
+from mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension import DatasetSplitterExtension
+from mlrl.testbed_sklearn.experiments.output.characteristics.data.extension import TabularDataCharacteristicExtension
+from mlrl.testbed_sklearn.experiments.output.characteristics.data.extension_prediction import (
+    PredictionCharacteristicsExtension,
+)
+from mlrl.testbed_sklearn.experiments.output.dataset.extension_ground_truth import GroundTruthExtension
+from mlrl.testbed_sklearn.experiments.output.dataset.extension_prediction import PredictionExtension
+from mlrl.testbed_sklearn.experiments.output.evaluation.extension import EvaluationExtension
+from mlrl.testbed_sklearn.experiments.output.label_vectors.extension import LabelVectorExtension
+from mlrl.testbed_sklearn.experiments.prediction import GlobalPredictor
+from mlrl.testbed_sklearn.experiments.prediction.extension import PredictionTypeExtension
+from mlrl.testbed_sklearn.experiments.prediction.predictor import Predictor
+from mlrl.testbed_sklearn.experiments.problem_domain import (
+    SkLearnClassificationProblem,
+    SkLearnProblem,
+    SkLearnRegressionProblem,
+)
 from mlrl.util.cli import Argument, BoolArgument, FloatArgument, IntArgument, SetArgument
 from mlrl.util.format import format_list, format_set
 
@@ -344,7 +344,7 @@ class SklearnEstimator:
                 parts2 = [part2.strip() for part2 in regex.split(r',|or', part) if part2]
 
                 if all(part2 == 'None' or (part2.startswith('"') and part2.endswith('"')) for part2 in parts2):
-                    values = set(filter(lambda part2: part2 != 'None', map(lambda part2: part2.strip('"'), parts2)))
+                    values = set(filter(lambda part2: part2 != 'None', (part2.strip('"') for part2 in parts2)))
                     arguments.append(SetArgument(argument_name, values=values))
                     type_hints.append(f'one of {format_set(values)}')
                 else:
@@ -461,7 +461,7 @@ class SklearnEstimator:
                 instance.fit(x, y)
 
             return True
-        except Exception:
+        except Exception:  # noqa: BLE001
             return False
 
     def __init__(self, estimator_name: str, estimator_type: type[SkLearnBaseEstimator]):

@@ -6,32 +6,28 @@ Provides classes that allow to run experiments via the Slurm Workload Manager.
 
 import re as regex
 import sys
-
 from argparse import Namespace
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from functools import partial
 from pathlib import Path
-from typing import Callable, cast, override
-
-from mlrl.testbed_slurm.arguments import SlurmArguments
-from mlrl.testbed_slurm.sbatch import Sbatch
+from typing import cast, override
 
 from mlrl.testbed.command import Command
 from mlrl.testbed.experiments.input.dataset.arguments import DatasetArguments
 from mlrl.testbed.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.recipe import Recipe
+from mlrl.testbed.experiments.table import ColumnWiseTable
 from mlrl.testbed.log import Log
 from mlrl.testbed.modes.mode_batch import Batch, BatchMode
+from mlrl.testbed.util.format import format_progress
 from mlrl.testbed.util.io import open_readable_file, open_writable_file
 from mlrl.testbed.util.yml import read_and_validate_yaml
-
+from mlrl.testbed_slurm.arguments import SlurmArguments
+from mlrl.testbed_slurm.sbatch import Sbatch
 from mlrl.util.options import Options
 from mlrl.util.validation import ValidationError
-
-from mlrl.testbed.experiments.table import ColumnWiseTable
-
-from mlrl.testbed.util.format import format_progress
 
 
 @dataclass

@@ -5,13 +5,13 @@ Provides classes for detecting changes in files.
 """
 
 import json
-
 from functools import cached_property
 from pathlib import Path
 from typing import Any, override
 
-from core.modules import Module
 from util.io import TextFile, create_directories
+
+from core.modules import Module
 
 
 class JsonFile(TextFile):
@@ -80,7 +80,7 @@ class ChangeDetection:
             cache = self.json
             module_cache = cache.setdefault(module_name, {})
 
-            for invalid_key in [key for key in module_cache.keys() if Path(key) not in files]:
+            for invalid_key in [key for key in module_cache if Path(key) not in files]:
                 del module_cache[invalid_key]
 
             for file in files:

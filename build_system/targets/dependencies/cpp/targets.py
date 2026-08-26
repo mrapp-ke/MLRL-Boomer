@@ -6,16 +6,17 @@ project's C++ code.
 """
 
 from functools import reduce
-from typing import override, cast
+from typing import cast, override
 
 from core.build_unit import BuildUnit
 from core.modules import Module
 from core.targets import PhonyTarget
+from util.log import Log
+
 from targets.dependencies.cpp.dependencies import WrapFileUpdater
 from targets.dependencies.cpp.modules import WrapFileModule
 from targets.dependencies.cpp.wrap_file import WrapFile
 from targets.dependencies.table import Table
-from util.log import Log
 
 
 class UpdateWrapFiles(PhonyTarget.Runnable):

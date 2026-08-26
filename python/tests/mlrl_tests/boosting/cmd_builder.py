@@ -2,11 +2,10 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 
-from ..common.cmd_builder import RuleLearnerCmdBuilderMixin
-
+from mlrl.boosting.config.parameters import HeadTypeParameter, StatisticTypeParameter
 from mlrl.common.config.parameters import GlobalPruningParameter
 
-from mlrl.boosting.config.parameters import HeadTypeParameter, StatisticTypeParameter
+from ..common.cmd_builder import RuleLearnerCmdBuilderMixin
 
 
 class BoomerCmdBuilderMixin(RuleLearnerCmdBuilderMixin):

@@ -11,7 +11,6 @@ from functools import reduce
 from scipy.sparse import lil_array
 
 from mlrl.testbed.experiments.dataset import Dataset
-
 from mlrl.util.arrays import is_sparse
 
 

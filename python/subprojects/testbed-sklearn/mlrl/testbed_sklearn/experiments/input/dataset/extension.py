@@ -9,13 +9,11 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import override
 
-from mlrl.testbed_arff.experiments.input.sources import ArffFileSource
-
-from mlrl.testbed_sklearn.experiments.input.sources.source_svm import SvmFileSource
-
 from mlrl.testbed.experiments.input.dataset.dataset import InputDataset
 from mlrl.testbed.experiments.input.dataset.extension import DatasetFileExtension
 from mlrl.testbed.experiments.input.sources import FileSource
+from mlrl.testbed_arff.experiments.input.sources import ArffFileSource
+from mlrl.testbed_sklearn.experiments.input.sources.source_svm import SvmFileSource
 
 
 class ArffFileExtension(DatasetFileExtension):

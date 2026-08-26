@@ -12,8 +12,8 @@ from mlrl.testbed_sklearn.experiments.problem_domain import (
 )
 
 __all__ = [
-    'SkLearnExperiment',
     'SkLearnClassificationProblem',
+    'SkLearnExperiment',
     'SkLearnProblem',
     'SkLearnRegressionProblem',
 ]
