@@ -1,0 +1,7 @@
+mlrl.util.log module
+====================
+
+.. automodule:: mlrl.util.log
+   :members:
+   :show-inheritance:
+   :undoc-members:
