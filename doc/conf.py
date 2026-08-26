@@ -81,6 +81,7 @@ extlinks = {
 # Configuration of the builder "linkcheck"
 linkcheck_ignore = [
     r'https://www.contributor-covenant.org.*',
+    r'https://doi.org/.*/tuprints.*',
 ]
 linkcheck_timeout = 60
 linkcheck_retries = 3
