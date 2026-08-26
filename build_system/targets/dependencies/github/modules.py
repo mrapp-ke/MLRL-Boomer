@@ -25,13 +25,14 @@ class GithubWorkflowModule(Module):
         def matches(self, module: Module, _: ModuleRegistry) -> bool:
             return isinstance(module, GithubWorkflowModule)
 
-    def __init__(self, root_directory: Path, workflow_file_search: FileSearch = FileSearch().set_recursive(True)):
+    def __init__(self, root_directory: Path, workflow_file_search: FileSearch | None = None):
         """
         :param root_directory:          The path to the module's root directory
-        :param workflow_file_search:    The `FileSearch` that should be used to search for workflow definition files
+        :param workflow_file_search:    The `FileSearch` that should be used to search for workflow definition files or
+                                        None, if the default should be used
         """
         self.root_directory = root_directory
-        self.workflow_file_search = workflow_file_search
+        self.workflow_file_search = workflow_file_search if workflow_file_search else FileSearch().set_recursive(True)
 
     def find_workflow_files(self) -> list[Path]:
         """

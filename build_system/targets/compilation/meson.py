@@ -62,18 +62,18 @@ class MesonSetup(Meson):
         build_unit: BuildUnit,
         module: CompilationModule,
         *meson_options: str,
-        build_options: BuildOptions = BuildOptions(),
+        build_options: BuildOptions | None = None,
     ):
         """
         :param build_unit:      The build unit from which the program should be run
         :param module:          The module, the program should be applied to
-        :param build_options:   The build options to be used
+        :param build_options:   The build options to be used or None, if defaults should be used
         :param meson_options:   Options to be passed to meson
         """
         super().__init__(
             build_unit,
             'setup',
-            *get_meson_arguments(build_options),
+            *get_meson_arguments(build_options if build_options else BuildOptions()),
             *meson_options,
             str(module.build_directory),
             str(module.root_directory),
@@ -91,16 +91,20 @@ class MesonConfigure(Meson):
         build_unit: BuildUnit,
         module: CompilationModule,
         *meson_options: str,
-        build_options: BuildOptions = BuildOptions(),
+        build_options: BuildOptions | None = None,
     ):
         """
         :param build_unit:      The build unit from which the program should be run
         :param module:          The module, the program should be applied to
-        :param build_options:   The build options to be used
+        :param build_options:   The build options to be used or None, if the defaults should be used
         :param meson_options:   Options to be passed to meson
         """
         super().__init__(
-            build_unit, 'configure', *get_meson_arguments(build_options), *meson_options, str(module.build_directory)
+            build_unit,
+            'configure',
+            *get_meson_arguments(build_options if build_options else BuildOptions()),
+            *meson_options,
+            str(module.build_directory),
         )
         self.build_options = build_options
 

@@ -5,7 +5,6 @@ Provides classes that allow reading datasets from one or several sources.
 """
 
 import sys
-
 from dataclasses import replace
 from typing import override
 
@@ -49,7 +48,7 @@ class DatasetReader(InputReader):
 
                 if source.read_from_source(new_state, self.input_data):
                     return new_state
-            except Exception as error:
+            except Exception as error:  # noqa: BLE001
                 Log.error(str(error))
 
         Log.error('Failed to load dataset!')

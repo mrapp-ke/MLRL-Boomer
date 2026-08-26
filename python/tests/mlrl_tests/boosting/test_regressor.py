@@ -5,7 +5,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 from typing import Any, override
 
 import pytest
-
+from mlrl.boosting.config.parameters import HeadTypeParameter, RegressionLossParameter, StatisticTypeParameter
+from mlrl.boosting.learners import BoomerRegressor
 from sklearn.utils.estimator_checks import check_estimator
 
 from ..cmd_runner import CmdRunner
@@ -14,9 +15,6 @@ from ..datasets import Dataset
 from ..integration_tests_regression import RegressionIntegrationTests
 from .cmd_builder_regression import BoomerRegressorCmdBuilder
 from .integration_tests import BoomerIntegrationTestsMixin
-
-from mlrl.boosting.config.parameters import HeadTypeParameter, RegressionLossParameter, StatisticTypeParameter
-from mlrl.boosting.learners import BoomerRegressor
 
 
 @pytest.mark.boosting

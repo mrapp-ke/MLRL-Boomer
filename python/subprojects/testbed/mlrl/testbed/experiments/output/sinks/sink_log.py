@@ -4,8 +4,10 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow writing output data to the log.
 """
 
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable, override, cast
+from typing import cast, override
+
 from rich.console import ConsoleRenderable
 
 from mlrl.testbed.experiments.input.sources import Source
@@ -13,7 +15,6 @@ from mlrl.testbed.experiments.output.data import OutputData, StructuralOutputDat
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.log import Log
-
 from mlrl.util.options import Options
 
 
@@ -24,9 +25,9 @@ class LogSink(Sink):
 
     SourceFactory = Callable[[Path], Source]
 
-    def __init__(self, options: Options = Options(), source_factory: SourceFactory | None = None):
+    def __init__(self, options: Options | None = None, source_factory: SourceFactory | None = None):
         """
-        :param options:         Options to be taken into account
+        :param options:         Options to be taken into account or None, if the defaults should be used
         :param source_factory:  A factory that allows to create a `Source` that can read the data written to this sink
                                 or None, if no such source is available
         """

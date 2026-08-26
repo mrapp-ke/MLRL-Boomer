@@ -5,7 +5,6 @@ Provides classes that allow reading input data from CSV files.
 """
 
 import csv
-
 from pathlib import Path
 from typing import override
 

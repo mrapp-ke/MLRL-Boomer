@@ -6,16 +6,14 @@ Provides classes that allow writing unique label vectors that are contained in a
 
 from typing import override
 
-from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
-from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vector_histogram import LabelVectorHistogram
-from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vectors import LabelVectors
-
 from mlrl.testbed.experiments.input.data import TabularInputData
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor, ResultWriter, TabularDataExtractor
 from mlrl.testbed.experiments.state import ExperimentState
-
+from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
+from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vector_histogram import LabelVectorHistogram
+from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vectors import LabelVectors
 from mlrl.util.options import Options
 
 

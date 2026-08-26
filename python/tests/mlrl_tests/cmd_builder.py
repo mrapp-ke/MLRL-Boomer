@@ -6,12 +6,11 @@ from os import environ
 from pathlib import Path
 from typing import Any
 
-from .datasets import Dataset
-
 from mlrl.testbed.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
 from mlrl.testbed.experiments.state import ExperimentMode
-
 from mlrl.util.options import Options
+
+from .datasets import Dataset
 
 
 class CmdBuilder:
@@ -291,15 +290,16 @@ class CmdBuilder:
         return self
 
     def data_split(
-        self, data_split: str | None = DatasetSplitterArguments.VALUE_TRAIN_TEST, options: Options = Options()
+        self, data_split: str | None = DatasetSplitterArguments.VALUE_TRAIN_TEST, options: Options | None = None
     ):
         """
         Configures the rule learner to use a specific strategy for splitting datasets into training and test datasets.
 
         :param data_split:  The name of the strategy to be used
-        :param options:     Options to be taken into account
+        :param options:     Options to be taken into account or None, if the defaults should be used
         :return:            The builder itself
         """
+        options = options if options else Options()
         num_folds = 0
         current_fold = None
 

@@ -8,11 +8,12 @@ from pathlib import Path
 
 from core.build_unit import BuildUnit
 from core.targets import TargetBuilder
+
 from targets.dependencies.cpp.targets import UpdateWrapFiles
 from targets.dependencies.python.modules import DependencyType
 from targets.dependencies.python.targets import (
-    UpdatePythonDependencies,
     InstallPythonDependencies,
+    UpdatePythonDependencies,
 )
 
 VENV = 'venv'

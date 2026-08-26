@@ -14,7 +14,6 @@ from mlrl.testbed.experiments.output.model.arguments import ModelOutputDirectory
 from mlrl.testbed.experiments.output.sinks import PickleFileSink
 from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions.extension import Extension
-
 from mlrl.util.cli import Argument, BoolArgument
 
 

@@ -8,6 +8,6 @@ from mlrl.testbed.experiments.input.dataset.dataset import InputDataset
 from mlrl.testbed.experiments.input.dataset.reader import DatasetReader
 
 __all__ = [
-    'InputDataset',
     'DatasetReader',
+    'InputDataset',
 ]

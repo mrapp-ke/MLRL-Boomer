@@ -2,11 +2,11 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 
+from mlrl.testbed.experiments.state import ExperimentMode
+
 from mlrl_tests.cmd_runner import CmdRunner
 from mlrl_tests.datasets import Dataset
 from mlrl_tests.integration_tests_classification import ClassificationIntegrationTests
-
-from mlrl.testbed.experiments.state import ExperimentMode
 
 
 class MlrlTestbedSklearnClassificationIntegrationTests(ClassificationIntegrationTests):

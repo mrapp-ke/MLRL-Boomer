@@ -24,11 +24,9 @@ from mlrl.testbed.log import Log
 from mlrl.testbed.modes.mode import InputMode
 from mlrl.testbed.modes.mode_batch import BatchMode
 from mlrl.testbed.modes.util import OutputUtil
-
+from mlrl.testbed.util.format import format_progress
 from mlrl.util.cli import Argument
 from mlrl.util.options import Options
-
-from mlrl.testbed.util.format import format_progress
 
 
 class ReadMode(InputMode):
@@ -66,7 +64,7 @@ class ReadMode(InputMode):
         def _conduct_experiment(self, experiment: Experiment, state: ExperimentState) -> ExperimentState:
             listeners = experiment.listeners
 
-            for dataset_type in self.evaluation_by_dataset_type.keys():
+            for dataset_type in self.evaluation_by_dataset_type:
                 prediction_state = replace(state, dataset_type=dataset_type)
 
                 for listener in listeners:
@@ -121,11 +119,9 @@ class ReadMode(InputMode):
 
     @staticmethod
     def __create_command_args(arguments: set[Argument], args: Namespace, command: Command) -> Namespace:
-        ignored_arguments = set(
-            argument_name
-            for argument_names in map(lambda arg: arg.names, arguments)
-            for argument_name in argument_names
-        )
+        ignored_arguments = {
+            argument_name for argument_names in (arg.names for arg in arguments) for argument_name in argument_names
+        }
         return command.apply_to_namespace(args, ignore=ignored_arguments)
 
     @staticmethod
@@ -163,7 +159,7 @@ class ReadMode(InputMode):
 
         if num_commands > 1:
             input_data = TabularInputData(properties=EvaluationResult.PROPERTIES, context=EvaluationResult.CONTEXT)
-            algorithmic_argument_names = set(map(lambda arg: arg.name, algorithmic_arguments))
+            algorithmic_argument_names = {arg.name for arg in algorithmic_arguments}
             tables: list[Table] = []
             headers: set[str] = set()
 
@@ -174,7 +170,7 @@ class ReadMode(InputMode):
                 if isinstance(extra, Table):
                     tables.append(extra)
 
-                    for argument in command.argument_dict.keys():
+                    for argument in command.argument_dict:
                         if argument in algorithmic_argument_names:
                             headers.add(f'{AggregatedEvaluationResult.COLUMN_PREFIX_PARAMETER} {argument}')
 

@@ -5,13 +5,14 @@ Provides utilities for checking and updating the versions of Python dependencies
 """
 
 from dataclasses import dataclass
-from typing import Any, override
+from typing import override
 
 from core.build_unit import BuildUnit
-from targets.dependencies.cpp.wrap_file import WrapFile
 from util.log import Log
 from util.pygithub import GithubApi
 from util.version import Version
+
+from targets.dependencies.cpp.wrap_file import WrapFile
 
 
 @dataclass
@@ -30,7 +31,7 @@ class Dependency:
     latest: Version
 
     @override
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         return isinstance(other, type(self)) and self.wrap_file == other.wrap_file
 
     @override

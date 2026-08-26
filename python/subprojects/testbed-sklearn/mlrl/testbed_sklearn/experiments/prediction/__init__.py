@@ -8,6 +8,6 @@ from mlrl.testbed_sklearn.experiments.prediction.predictor import Predictor
 from mlrl.testbed_sklearn.experiments.prediction.predictor_global import GlobalPredictor
 
 __all__ = [
-    'Predictor',
     'GlobalPredictor',
+    'Predictor',
 ]

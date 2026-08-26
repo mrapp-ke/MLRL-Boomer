@@ -46,9 +46,7 @@ class ReadTheDocsApi:
             response = requests.post(url, headers=headers, timeout=5)
 
             if response.ok:
-                Log.verbose(
-                    f'Request succeeded with status code {response.status_code} and response: {response.content}'
-                )
+                Log.verbose(f'Request succeeded with status code {response.status_code} and response: {response.text}')
             else:
                 Log.error(f'Request POST {url} failed with status code {response.status_code}')
 

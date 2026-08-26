@@ -12,11 +12,11 @@ from mlrl.testbed.experiments.output.sinks.sink_text import TextFileSink
 from mlrl.testbed.experiments.output.sinks.sink_yaml import YamlFileSink
 
 __all__ = [
-    'FileSink',
-    'Sink',
     'CsvFileSink',
+    'FileSink',
     'LogSink',
     'PickleFileSink',
+    'Sink',
     'TextFileSink',
     'YamlFileSink',
 ]

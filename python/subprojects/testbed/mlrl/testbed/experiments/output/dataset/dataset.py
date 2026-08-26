@@ -11,7 +11,6 @@ from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.output.data import DatasetOutputData
-
 from mlrl.util.options import Options
 
 
@@ -20,12 +19,12 @@ class OutputDataset(DatasetOutputData, ABC):
     An abstract base class for all classes that represent a dataset that is part of output data.
     """
 
-    def __init__(self, dataset: Dataset, properties: Properties, context: Context = Context()):
+    def __init__(self, dataset: Dataset, properties: Properties, context: Context | None = None):
         """
         :param dataset:     A dataset
         :param properties:  The properties of the output data
         :param context:     A `Context` to be used by default for finding a suitable sink this output data can be
-                            written to
+                            written to or None, if the default should be used
         """
         super().__init__(properties=properties, context=context)
         self.dataset = dataset

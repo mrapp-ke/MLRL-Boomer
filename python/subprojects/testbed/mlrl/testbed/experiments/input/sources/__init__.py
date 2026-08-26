@@ -11,10 +11,10 @@ from mlrl.testbed.experiments.input.sources.source_text import TextFileSource
 from mlrl.testbed.experiments.input.sources.source_yaml import YamlFileSource
 
 __all__ = [
-    'FileSource',
-    'Source',
     'CsvFileSource',
+    'FileSource',
     'PickleFileSource',
+    'Source',
     'TextFileSource',
     'YamlFileSource',
 ]

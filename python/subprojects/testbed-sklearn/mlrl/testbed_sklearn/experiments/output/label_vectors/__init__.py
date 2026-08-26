@@ -8,6 +8,6 @@ from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vectors import 
 from mlrl.testbed_sklearn.experiments.output.label_vectors.writer import LabelVectorWriter
 
 __all__ = [
-    'LabelVectors',
     'LabelVectorWriter',
+    'LabelVectors',
 ]

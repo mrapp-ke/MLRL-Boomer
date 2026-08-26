@@ -8,7 +8,6 @@ from dataclasses import dataclass
 from typing import override
 
 import numpy as np
-
 from scipy.sparse import lil_array
 
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset

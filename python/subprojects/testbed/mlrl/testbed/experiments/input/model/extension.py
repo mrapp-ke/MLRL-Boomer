@@ -13,7 +13,6 @@ from mlrl.testbed.experiments.input.model.reader import ModelReader
 from mlrl.testbed.experiments.input.sources.source_pickle import PickleFileSource
 from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions.extension import Extension
-
 from mlrl.util.cli import Argument, BoolArgument, PathArgument
 
 

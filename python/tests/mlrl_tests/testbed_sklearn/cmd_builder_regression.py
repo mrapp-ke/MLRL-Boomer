@@ -4,7 +4,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 from typing import override
 
-from sklearn.base import BaseEstimator as SkLearnBaseEstimator, RegressorMixin as SkLearnRegressorMixin
+from sklearn.base import BaseEstimator as SkLearnBaseEstimator
+from sklearn.base import RegressorMixin as SkLearnRegressorMixin
 
 from ..cmd_builder import CmdBuilder
 from ..cmd_builder_regression import RegressionCmdBuilder

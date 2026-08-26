@@ -7,8 +7,6 @@ Provides classes that allow configuring the functionality to write ground truth 
 from argparse import Namespace
 from typing import override
 
-from mlrl.testbed_arff.experiments.output.sinks import ArffFileSink
-
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
 from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
@@ -16,7 +14,7 @@ from mlrl.testbed.experiments.output.sinks import LogSink
 from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.util.format import OPTION_DECIMALS
-
+from mlrl.testbed_arff.experiments.output.sinks import ArffFileSink
 from mlrl.util.cli import Argument, BoolArgument
 
 

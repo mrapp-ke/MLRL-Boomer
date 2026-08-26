@@ -8,20 +8,10 @@ from abc import ABC, abstractmethod
 from dataclasses import replace
 from functools import reduce
 from itertools import chain
-from typing import Any, override
+from typing import Any, ClassVar, override
 
-from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import (
-    EVALUATION_MEASURE_PREDICTION_TIME,
-    EVALUATION_MEASURE_TRAINING_TIME,
-    TabularEvaluationResult,
-)
-from mlrl.testbed_sklearn.experiments.output.evaluation.measures_classification import (
-    MULTI_LABEL_EVALUATION_MEASURES,
-    SINGLE_LABEL_EVALUATION_MEASURES,
-)
-from mlrl.testbed_sklearn.experiments.output.evaluation.measures_ranking import RANKING_EVALUATION_MEASURES
-from mlrl.testbed_sklearn.experiments.output.evaluation.measures_regression import REGRESSION_EVALUATION_MEASURES
-
+from mlrl.testbed.experiments.context import Context
+from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.input.data import TabularInputData
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
@@ -33,7 +23,17 @@ from mlrl.testbed.experiments.output.writer import DataExtractor, ResultWriter, 
 from mlrl.testbed.experiments.prediction_scope import IncrementalPredictionScope
 from mlrl.testbed.experiments.state import ExperimentState, PredictionState
 from mlrl.testbed.util.format import parse_number
-
+from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import (
+    EVALUATION_MEASURE_PREDICTION_TIME,
+    EVALUATION_MEASURE_TRAINING_TIME,
+    TabularEvaluationResult,
+)
+from mlrl.testbed_sklearn.experiments.output.evaluation.measures_classification import (
+    MULTI_LABEL_EVALUATION_MEASURES,
+    SINGLE_LABEL_EVALUATION_MEASURES,
+)
+from mlrl.testbed_sklearn.experiments.output.evaluation.measures_ranking import RANKING_EVALUATION_MEASURES
+from mlrl.testbed_sklearn.experiments.output.evaluation.measures_regression import REGRESSION_EVALUATION_MEASURES
 from mlrl.util.options import Options
 
 
@@ -43,7 +43,8 @@ class EvaluationDataExtractor(DataExtractor, ABC):
     measures.
     """
 
-    measurements: dict[DatasetType, Measurements] = {}
+    def __init__(self):
+        self.measurements: dict[DatasetType, Measurements] = {}
 
     @override
     def extract_data(self, state: ExperimentState, sinks: list[Sink]) -> list[tuple[ExperimentState, OutputData]]:
@@ -107,7 +108,7 @@ class EvaluationWriter(ResultWriter):
         Uses `TabularInputData` that has previously been loaded via an input reader.
         """
 
-        ALL_MEASURES = set(
+        ALL_MEASURES: ClassVar[set[Measure]] = set(
             chain(
                 MULTI_LABEL_EVALUATION_MEASURES,
                 SINGLE_LABEL_EVALUATION_MEASURES,
@@ -116,7 +117,13 @@ class EvaluationWriter(ResultWriter):
             )
         )
 
-        measurements: dict[DatasetType, dict[int, Measurements]] = {}
+        def __init__(self, properties: TabularProperties, context: Context):
+            """
+            :param properties:  The properties of the input data
+            :param context:     The context of the input data
+            """
+            super().__init__(properties=properties, context=context)
+            self.measurements: dict[DatasetType, dict[int, Measurements]] = {}
 
         @override
         def extract_data(self, state: ExperimentState, sinks: list[Sink]) -> list[tuple[ExperimentState, OutputData]]:

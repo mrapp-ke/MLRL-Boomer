@@ -6,7 +6,6 @@ Provides classes for writing log messages.
 
 import logging
 import sys
-
 from enum import Enum
 
 
@@ -46,11 +45,10 @@ class Log:
         Writes a log message at level `Log.Level.ERROR` and terminates the build system.
 
         :param message:     The log message to be written
-        :param args:        Optional arguments to be included in the log message
         :param error:       An optional error to be included in the log message
         :param exit_code:   The exit code to be returned when terminating the build system
         """
-        logging.error(f'{message}: {error}' if error else message)
+        logging.getLogger(__name__).error(f'{message}: {error}' if error else message)
         sys.exit(exit_code)
 
     @staticmethod
@@ -60,7 +58,7 @@ class Log:
 
         :param message: The log message to be written
         """
-        logging.warning(message)
+        logging.getLogger(__name__).warning(message)
 
     @staticmethod
     def info(message: str):
@@ -69,7 +67,7 @@ class Log:
 
         :param message: The log message to be written
         """
-        logging.info(message)
+        logging.getLogger(__name__).info(message)
 
     @staticmethod
     def verbose(message: str):
@@ -78,4 +76,4 @@ class Log:
 
         :param message: The log message to be written
         """
-        logging.debug(message)
+        logging.getLogger(__name__).debug(message)

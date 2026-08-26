@@ -3,13 +3,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 
 import pytest
+from mlrl.testbed.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
+from mlrl.util.options import Options
 
 from ..cmd_runner import CmdRunner
 from ..integration_tests import IntegrationTests
-
-from mlrl.testbed.experiments.input.dataset.splitters.arguments import DatasetSplitterArguments
-
-from mlrl.util.options import Options
 
 
 class MlrlTestbedSklearnIntegrationTestsMixin(IntegrationTests):

@@ -5,18 +5,20 @@ Provides base classes for defining individual targets of the build process.
 """
 
 from abc import ABC, abstractmethod
+from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum, auto
 from functools import reduce
 from pathlib import Path
-from typing import Any, Callable, override
+from typing import Any, override
+
+from util.format import format_iterable
+from util.io import delete_files
+from util.log import Log
 
 from core.build_unit import BuildUnit
 from core.changes import ChangeDetection
 from core.modules import Module, ModuleRegistry
-from util.format import format_iterable
-from util.io import delete_files
-from util.log import Log
 
 
 class Target(ABC):

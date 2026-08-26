@@ -6,27 +6,6 @@ Provides utility function for configuring boosting algorithms.
 
 from typing import override
 
-from mlrl.common.config.parameters import (
-    BINNING_EQUAL_WIDTH,
-    OPTION_BIN_RATIO,
-    OPTION_MAX_BINS,
-    OPTION_MIN_BINS,
-    OPTION_USE_HOLDOUT_SET,
-    RULE_LEARNER_PARAMETERS,
-    FeatureBinningParameter,
-    FloatParameter,
-    NominalParameter,
-    ParallelRuleRefinementParameter,
-    ParallelStatisticUpdateParameter,
-    PartitionSamplingParameter,
-)
-from mlrl.common.cython.learner import (
-    DefaultRuleMixin,
-    NoJointProbabilityCalibrationMixin,
-    NoMarginalProbabilityCalibrationMixin,
-    NoPostProcessorMixin,
-)
-
 from mlrl.boosting.cython.learner import (
     AutomaticFeatureBinningMixin,
     AutomaticHeadMixin,
@@ -70,7 +49,26 @@ from mlrl.boosting.cython.learner_classification import (
     OutputWiseProbabilityPredictorMixin,
     SparseStatisticsMixin,
 )
-
+from mlrl.common.config.parameters import (
+    BINNING_EQUAL_WIDTH,
+    OPTION_BIN_RATIO,
+    OPTION_MAX_BINS,
+    OPTION_MIN_BINS,
+    OPTION_USE_HOLDOUT_SET,
+    RULE_LEARNER_PARAMETERS,
+    FeatureBinningParameter,
+    FloatParameter,
+    NominalParameter,
+    ParallelRuleRefinementParameter,
+    ParallelStatisticUpdateParameter,
+    PartitionSamplingParameter,
+)
+from mlrl.common.cython.learner import (
+    DefaultRuleMixin,
+    NoJointProbabilityCalibrationMixin,
+    NoMarginalProbabilityCalibrationMixin,
+    NoPostProcessorMixin,
+)
 from mlrl.util.cli import AUTO, NONE
 from mlrl.util.options import BooleanOption, Options
 

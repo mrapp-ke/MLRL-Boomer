@@ -4,12 +4,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing predictions that are part of output data.
 """
 
-from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
-from mlrl.testbed_sklearn.experiments.output.dataset.dataset import TabularOutputDataset
-
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import Properties
 from mlrl.testbed.experiments.input.dataset import InputDataset
+from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
+from mlrl.testbed_sklearn.experiments.output.dataset.dataset import TabularOutputDataset
 
 
 class GroundTruthDataset(TabularOutputDataset):

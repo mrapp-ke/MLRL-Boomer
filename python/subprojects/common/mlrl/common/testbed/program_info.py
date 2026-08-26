@@ -11,9 +11,7 @@ from typing import override
 from tabulate import tabulate
 
 from mlrl.common.package_info import PackageInfo
-
 from mlrl.testbed.program_info import ProgramInfo
-
 from mlrl.util.format import format_iterable
 
 

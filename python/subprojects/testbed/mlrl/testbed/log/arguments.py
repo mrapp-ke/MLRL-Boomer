@@ -5,13 +5,11 @@ Defines command line arguments for configuring the functionality to write log me
 """
 
 import logging
-
 from argparse import Namespace
 from enum import Enum
 
 from mlrl.testbed.log import log
 from mlrl.testbed.log.log import LogHandler
-
 from mlrl.util.cli import EnumArgument, FlagArgument, IntArgument
 
 

@@ -10,14 +10,12 @@ from typing import Any, override
 from sklearn.base import BaseEstimator
 
 from mlrl.common.mixins import NominalFeatureSupportMixin, OrdinalFeatureSupportMixin
-
-from mlrl.testbed_sklearn.experiments import SkLearnExperiment
-from mlrl.testbed_sklearn.experiments.dataset import AttributeType, TabularDataset
-
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.timer import Timer
+from mlrl.testbed_sklearn.experiments import SkLearnExperiment
+from mlrl.testbed_sklearn.experiments.dataset import AttributeType, TabularDataset
 
 
 class RuleLearnerExperiment(SkLearnExperiment):

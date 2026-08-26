@@ -97,7 +97,7 @@ class FileSource(Source, ABC):
                 input_data.update_state(state, data)
                 return True
         elif self.missing_input_policy == MissingInputPolicy.EXIT:
-            raise IOError(f'The file "{file_path}" does not exist')
+            raise OSError(f'The file "{file_path}" does not exist')
         else:
             Log.error(f'The file "{file_path}" does not exist', highlight=True)
 

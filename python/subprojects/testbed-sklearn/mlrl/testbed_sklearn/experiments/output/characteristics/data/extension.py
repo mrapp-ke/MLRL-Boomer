@@ -8,9 +8,6 @@ sinks.
 from argparse import Namespace
 from typing import override
 
-from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import OutputCharacteristics
-from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics_data import DataCharacteristics
-
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.sources import CsvFileSource
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
@@ -19,7 +16,8 @@ from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink
 from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
-
+from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import OutputCharacteristics
+from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics_data import DataCharacteristics
 from mlrl.util.cli import Argument, BoolArgument
 
 

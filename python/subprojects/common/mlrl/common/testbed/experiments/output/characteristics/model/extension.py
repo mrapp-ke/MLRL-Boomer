@@ -9,7 +9,6 @@ from argparse import Namespace
 from typing import override
 
 from mlrl.common.testbed.experiments.output.characteristics.model.writer import RuleModelCharacteristicsWriter
-
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.sources.source_csv import CsvFileSource
 from mlrl.testbed.experiments.output.arguments import OutputArguments, ResultDirectoryArguments
@@ -17,7 +16,6 @@ from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDir
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, Sink
 from mlrl.testbed.experiments.state import ExperimentMode
 from mlrl.testbed.extensions.extension import Extension
-
 from mlrl.util.cli import Argument, BoolArgument
 
 

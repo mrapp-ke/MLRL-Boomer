@@ -6,7 +6,6 @@ Provides utility functions for running command line programs during the build pr
 
 import subprocess
 import sys
-
 from pathlib import Path
 from subprocess import CompletedProcess
 from typing import Any, override
@@ -108,20 +107,21 @@ class Command:
         self,
         command: str,
         *arguments: str,
-        print_options: PrintOptions = PrintOptions(),
-        run_options: RunOptions = RunOptions(),
+        print_options: PrintOptions | None = None,
+        run_options: RunOptions | None = None,
     ):
         """
         :param command:         The name of the command line program
         :param arguments:       Optional arguments to be passed to the command line program
-        :param run_options:     The options that should eb used for running the command line program
+        :param run_options:     The options that should be used for running the command line program of None, if the
+                                defaults should be used
         :param print_options:   The options that should be used for creating textual representations of the command line
-                                program
+                                program or None, if the default should be used
         """
         self.command = command
         self.arguments = list(arguments)
-        self.print_options = print_options
-        self.run_options = run_options
+        self.print_options = Command.PrintOptions() if print_options is None else print_options
+        self.run_options = Command.RunOptions() if run_options is None else run_options
 
     def add_arguments(self, *arguments: str) -> 'Command':
         """

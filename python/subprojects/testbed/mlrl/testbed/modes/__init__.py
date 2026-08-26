@@ -11,8 +11,8 @@ from mlrl.testbed.modes.mode_run import RunMode
 from mlrl.testbed.modes.mode_single import SingleMode
 
 __all__ = [
-    'Mode',
     'BatchMode',
+    'Mode',
     'ReadMode',
     'RunMode',
     'SingleMode',

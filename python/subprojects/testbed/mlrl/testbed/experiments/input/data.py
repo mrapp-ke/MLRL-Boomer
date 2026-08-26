@@ -19,14 +19,14 @@ class InputData:
     Represents input data.
     """
 
-    def __init__(self, properties: Properties, context: Context = Context()):
+    def __init__(self, properties: Properties, context: Context | None = None):
         """
         :param properties:  The properties of the input data
         :param context:     A `Context` to be used by default for finding a suitable input reader this data can be
-                            handled by
+                            handled by or None, if the default should be used
         """
         self.properties = properties
-        self.context = context
+        self.context = context if context else Context()
 
     def update_state(self, state: ExperimentState, input_data: Any):
         """
@@ -87,11 +87,11 @@ class TabularInputData(InputData):
     Input data that can be converted into a tabular representation.
     """
 
-    def __init__(self, properties: TabularProperties, context: Context = Context()):
+    def __init__(self, properties: TabularProperties, context: Context | None = None):
         """
         :param properties:  The properties of the input data
         :param context:     A `Context` to be used by default for finding a suitable input reader this data can be
-                            handled by
+                            handled by or None, if the default should be used
         """
         super().__init__(properties=properties, context=context)
 

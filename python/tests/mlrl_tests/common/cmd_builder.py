@@ -2,8 +2,6 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 
-from ..cmd_builder import CmdBuilder
-
 from mlrl.common.config.parameters import (
     BINNING_EQUAL_WIDTH,
     SAMPLING_WITHOUT_REPLACEMENT,
@@ -13,6 +11,8 @@ from mlrl.common.config.parameters import (
     RulePruningParameter,
 )
 from mlrl.common.learners import SparsePolicy
+
+from ..cmd_builder import CmdBuilder
 
 
 class RuleLearnerCmdBuilderMixin(CmdBuilder):

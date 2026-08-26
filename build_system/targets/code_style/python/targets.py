@@ -9,12 +9,12 @@ from typing import cast, override
 from core.build_unit import BuildUnit
 from core.modules import Module
 from core.targets import PhonyTarget
-from targets.code_style.python.ruff import RuffFormat, RuffCheck
 from util.files import FileType
 from util.log import Log
 
 from targets.code_style.modules import CodeModule
 from targets.code_style.python.mypy import Mypy
+from targets.code_style.python.ruff import RuffCheck, RuffFormat
 
 PYTHON_MODULE_FILTER = CodeModule.Filter(FileType.python())
 

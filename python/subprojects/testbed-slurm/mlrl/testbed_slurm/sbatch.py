@@ -5,7 +5,6 @@ Provides classes that allow to run "sbatch" commands.
 """
 
 import subprocess
-
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
