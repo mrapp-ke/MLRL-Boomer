@@ -160,7 +160,7 @@ class SkLearnExperiment(Experiment):
                 start_time = Timer.start()
                 estimator.fit(dataset.x, dataset.y, **fit_kwargs)
                 return Timer.stop(start_time)
-            except ValueError:
+            except (ValueError, TypeError):
                 if dataset.has_sparse_features:
                     return self._fit(estimator, dataset.enforce_dense_features(), fit_kwargs)
                 if dataset.has_sparse_outputs:
