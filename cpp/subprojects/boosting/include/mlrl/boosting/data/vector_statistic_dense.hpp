@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/boosting/util/dll_exports.hpp"
-#include "mlrl/common/data/view_vector.hpp"
+#include "mlrl/common/data/view.hpp"
 
 namespace boosting {
 
@@ -15,33 +15,56 @@ namespace boosting {
      * @tparam StatisticType The type of the gradient and Hessians
      */
     template<typename StatisticType>
-    class MLRLBOOSTING_API DenseStatisticVectorView : public Vector<StatisticType> {
+    class MLRLBOOSTING_API DenseStatisticVectorView : public View<StatisticType> {
         private:
 
             const uint32 numGradients_;
 
+            const uint32 numHessians_;
+
+            const uint32 numGradientsWithInnerPadding_;
+
         public:
+
+            /**
+             * The number of elements in the view.
+             */
+            const uint32 numElements;
+
+            /**
+             * The number of elements in the view, including the unused ones between gradients and Hessians.
+             */
+            const uint32 numElementsWithInnerPadding;
 
             /**
              * @param array         A pointer to an array of template type `StatisticType` that stores the gradients and
              *                      Hessians
              * @param numGradients  The number of gradients in the view
              * @param numHessians   The number of Hessians in the view
+             * @param innerPadding  The number of unused elements to be inserted between gradients and Hessians
+             * @param padding       The number of unused elements to be inserted at the end of the view
              */
-            DenseStatisticVectorView(StatisticType* array, uint32 numGradients, uint32 numHessians)
-                : Vector<StatisticType>(array, numGradients + numHessians), numGradients_(numGradients) {}
+            DenseStatisticVectorView(StatisticType* array, uint32 numGradients, uint32 numHessians,
+                                     uint32 innerPadding = 0, uint32 padding = 0)
+                : View<StatisticType>(array, 0, padding), numGradients_(numGradients), numHessians_(numHessians),
+                  numGradientsWithInnerPadding_(numGradients_ + innerPadding), numElements(numGradients + numHessians),
+                  numElementsWithInnerPadding(numElements + innerPadding) {}
 
             /**
              * @param other A reference to an object of type `DenseStatisticVectorView` that should be copied
              */
             DenseStatisticVectorView(const DenseStatisticVectorView<StatisticType>& other)
-                : Vector<StatisticType>(other), numGradients_(other.numGradients_) {}
+                : View<StatisticType>(other), numGradients_(other.numGradients_), numHessians_(other.numHessians_),
+                  numGradientsWithInnerPadding_(other.numGradientsWithInnerPadding_), numElements(other.numElements),
+                  numElementsWithInnerPadding(other.numElementsWithInnerPadding) {}
 
             /**
              * @param other A reference to an object of type `DenseStatisticVectorView` that should be moved
              */
             DenseStatisticVectorView(DenseStatisticVectorView<StatisticType>&& other)
-                : Vector<StatisticType>(std::move(other)), numGradients_(other.numGradients_) {}
+                : View<StatisticType>(std::move(other)), numGradients_(other.numGradients_),
+                  numHessians_(other.numHessians_), numGradientsWithInnerPadding_(other.numGradientsWithInnerPadding_),
+                  numElements(other.numElements), numElementsWithInnerPadding(other.numElementsWithInnerPadding) {}
 
             virtual ~DenseStatisticVectorView() override {}
 
@@ -69,6 +92,24 @@ namespace boosting {
              * An iterator that provides read-only access to the Hessians in the view.
              */
             using hessian_const_iterator = View<StatisticType>::const_iterator;
+
+            /**
+             * Returns a `const_iterator` to the end of the vector.
+             *
+             * @return A `const_iterator` to the end
+             */
+            typename View<StatisticType>::const_iterator cend() const {
+                return &View<StatisticType>::array[numElementsWithInnerPadding];
+            }
+
+            /**
+             * Returns an `iterator` to the end of the vector.
+             *
+             * @return An `iterator` to the end
+             */
+            typename View<StatisticType>::iterator end() {
+                return &View<StatisticType>::array[numElementsWithInnerPadding];
+            }
 
             /**
              * Returns a `gradient_iterator` to the beginning of the gradients.
@@ -112,7 +153,7 @@ namespace boosting {
              * @return A `hessian_iterator` to the beginning
              */
             hessian_iterator hessians_begin() {
-                return &(this->begin())[numGradients_];
+                return &(this->begin())[numGradientsWithInnerPadding_];
             }
 
             /**
@@ -121,7 +162,7 @@ namespace boosting {
              * @return A `hessian_iterator` to the end
              */
             hessian_iterator hessians_end() {
-                return &(this->begin())[this->numElements];
+                return &(this->begin())[numElementsWithInnerPadding];
             }
 
             /**
@@ -130,7 +171,7 @@ namespace boosting {
              * @return A `hessian_const_iterator` to the beginning
              */
             hessian_const_iterator hessians_cbegin() const {
-                return &(this->cbegin())[numGradients_];
+                return &(this->cbegin())[numGradientsWithInnerPadding_];
             }
 
             /**
@@ -139,7 +180,15 @@ namespace boosting {
              * @return A `hessian_const_iterator` to the end
              */
             hessian_const_iterator hessians_cend() const {
-                return &(this->cbegin())[this->numElements];
+                return &(this->cbegin())[numElementsWithInnerPadding];
+            }
+
+            /**
+             * Sets all values stored in the view to zero.
+             */
+            void clear() {
+                std::fill(this->gradients_begin(), this->gradients_end(), (StatisticType) 0);
+                std::fill(this->hessians_begin(), this->hessians_end(), (StatisticType) 0);
             }
 
             /**
@@ -157,7 +206,7 @@ namespace boosting {
              + @return The number of Hessians
              */
             uint32 getNumHessians() const {
-                return this->numElements - numGradients_;
+                return numHessians_;
             }
     };
 }
@@ -178,9 +227,13 @@ class MLRLCOMMON_API DenseStatisticVectorAllocator : public View {
          * @param init          True, if all elements in the view should be value-initialized, false otherwise
          */
         explicit DenseStatisticVectorAllocator(uint32 numGradients, uint32 numHessians, bool init = false)
-            : View(
-                MemoryAllocator::template allocateMemory<typename View::value_type>(numGradients + numHessians, init),
-                numGradients, numHessians) {}
+            : View(MemoryAllocator::template allocateMemory<typename View::value_type>(
+                     numGradients + MemoryAllocator::template getPadding<typename View::value_type>(numGradients)
+                       + numHessians + MemoryAllocator::template getPadding<typename View::value_type>(numHessians),
+                     init),
+                   numGradients, numHessians,
+                   MemoryAllocator::template getPadding<typename View::value_type>(numGradients),
+                   MemoryAllocator::template getPadding<typename View::value_type>(numHessians)) {}
 
         /**
          * @param other A reference to an object of type `DenseStatisticVectorAllocator` that should be copied

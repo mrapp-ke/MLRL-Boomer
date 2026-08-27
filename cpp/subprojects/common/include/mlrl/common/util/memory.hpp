@@ -14,6 +14,18 @@ struct DefaultMemoryAllocator final {
     public:
 
         /**
+         * Returns the padding that needs to be added to an array of a specific size to ensure that the element after it
+         * is properly aligned.
+         *
+         * @param numElements   The number of elements in the array
+         * @return              The padding that is needed
+         */
+        template<typename T>
+        static inline constexpr uint32 getPadding(uint32 numElements) {
+            return 0;
+        }
+
+        /**
          * Allocates memory to be used by an array of a specific size.
          *
          * @tparam T            The type of the values stored in the array

@@ -22,8 +22,10 @@ class MLRLCOMMON_API FortranContiguousView : public DenseMatrix<T> {
          *                  access to
          * @param numRows   The number of rows in the view
          * @param numCols   The number of columns in the view
+         * @param padding   The number of unused elements to be inserted at the end of each column
          */
-        FortranContiguousView(T* array, uint32 numRows, uint32 numCols) : DenseMatrix<T>(array, numRows, numCols) {}
+        FortranContiguousView(T* array, uint32 numRows, uint32 numCols, uint32 padding = 0)
+            : DenseMatrix<T>(array, numRows, numCols, padding) {}
 
         /**
          * @param other A const reference to an object of type `FortranContiguousView` that should be copied
@@ -74,7 +76,7 @@ class MLRLCOMMON_API FortranContiguousView : public DenseMatrix<T> {
          * @return          A `value_const_iterator` to the beginning of the column
          */
         typename DenseMatrix<T>::value_const_iterator values_cbegin(uint32 column) const {
-            return &DenseMatrix<T>::array[column * Matrix::numRows];
+            return &DenseMatrix<T>::array[column * (Matrix::numRows + View<T>::padding)];
         }
 
         /**
@@ -84,7 +86,7 @@ class MLRLCOMMON_API FortranContiguousView : public DenseMatrix<T> {
          * @return          A `value_const_iterator` to the end of the column
          */
         typename DenseMatrix<T>::value_const_iterator values_cend(uint32 column) const {
-            return &DenseMatrix<T>::array[(column + 1) * Matrix::numRows];
+            return &DenseMatrix<T>::array[(column * (Matrix::numRows + View<T>::padding)) + Matrix::numRows];
         }
 
         /**
@@ -94,7 +96,7 @@ class MLRLCOMMON_API FortranContiguousView : public DenseMatrix<T> {
          * @return          A `value_iterator` to the beginning of the column
          */
         typename DenseMatrix<T>::value_iterator values_begin(uint32 column) {
-            return &DenseMatrix<T>::array[column * Matrix::numRows];
+            return &DenseMatrix<T>::array[column * (Matrix::numRows + View<T>::padding)];
         }
 
         /**
@@ -104,7 +106,57 @@ class MLRLCOMMON_API FortranContiguousView : public DenseMatrix<T> {
          * @return          A `value_iterator` to the end of the column
          */
         typename DenseMatrix<T>::value_iterator values_end(uint32 column) {
-            return &DenseMatrix<T>::array[(column + 1) * Matrix::numRows];
+            return &DenseMatrix<T>::array[(column * (Matrix::numRows + View<T>::padding)) + Matrix::numRows];
+        }
+
+        /**
+         * Sets all values in the view to zero.
+         */
+        void clear() {
+            std::fill(DenseMatrix<T>::array,
+                      DenseMatrix<T>::array + ((Matrix::numRows + View<T>::padding) * Matrix::numCols), (T) 0);
+        }
+};
+
+/**
+ * Allocates the memory, a `FortranContiguousView` provides access to.
+ *
+ * @tparam Matrix           The type of the view
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
+ */
+template<typename Matrix, typename MemoryAllocator = DefaultMemoryAllocator>
+class MLRLCOMMON_API FortranContiguousViewAllocator : public Matrix {
+    public:
+
+        /**
+         * @param numRows   The number of rows in the view
+         * @param numCols   The number of columns in the view
+         * @param init      True, if all elements in the view should be value-initialized, false otherwise
+         */
+        FortranContiguousViewAllocator(uint32 numRows, uint32 numCols, bool init = false)
+            : Matrix(MemoryAllocator::template allocateMemory<typename Matrix::value_type>(
+                       (numRows + MemoryAllocator::template getPadding<typename Matrix::value_type>(numRows)) * numCols,
+                       init),
+                     numRows, numCols, MemoryAllocator::template getPadding<typename Matrix::value_type>(numRows)) {}
+
+        /**
+         * @param other A reference to an object of type `FortranContiguousViewAllocator` that should be copied
+         */
+        FortranContiguousViewAllocator(const FortranContiguousViewAllocator<Matrix, MemoryAllocator>& other)
+            : Matrix(other) {
+            throw std::runtime_error("Objects of type FortranContiguousViewAllocator cannot be copied");
+        }
+
+        /**
+         * @param other A reference to an object of type `FortranContiguousViewAllocator` that should be moved
+         */
+        FortranContiguousViewAllocator(FortranContiguousViewAllocator<Matrix, MemoryAllocator>&& other)
+            : Matrix(std::move(other)) {
+            other.release();
+        }
+
+        virtual ~FortranContiguousViewAllocator() override {
+            MemoryAllocator::freeMemory(Matrix::array);
         }
 };
 
@@ -114,4 +166,4 @@ class MLRLCOMMON_API FortranContiguousView : public DenseMatrix<T> {
  * @tparam T The type of the values stored in the `FortranContiguousView`
  */
 template<typename T>
-using AllocatedFortranContiguousView = DenseMatrixAllocator<FortranContiguousView<T>>;
+using AllocatedFortranContiguousView = FortranContiguousViewAllocator<FortranContiguousView<T>>;
