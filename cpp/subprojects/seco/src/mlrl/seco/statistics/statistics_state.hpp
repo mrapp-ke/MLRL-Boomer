@@ -6,7 +6,6 @@
 #include "mlrl/common/data/vector_sparse_array_binary.hpp"
 #include "mlrl/common/statistics/statistics_state.hpp"
 #include "mlrl/common/statistics/statistics_update_candidate_common.hpp"
-#include "mlrl/seco/data/matrix_statistic_decomposable_dense.hpp"
 
 #include <memory>
 
@@ -80,33 +79,27 @@ namespace seco {
             void update(uint32 statisticIndex, View<uint8>::const_iterator scoresBegin,
                         View<uint8>::const_iterator scoresEnd, CompleteIndexVector::const_iterator indicesBegin,
                         CompleteIndexVector::const_iterator indicesEnd) override {
-                statisticMatrixPtr->coverageMatrixPtr->increaseCoverage(
-                  statisticIndex, statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
-                  statisticMatrixPtr->majorityLabelVectorPtr->cend(), scoresBegin, scoresEnd, indicesBegin, indicesEnd);
+                // In case of the default rule, the statistics are not updated, because the default rule will be
+                // appended at the end of the final rule list and therefore has not effect of the other rules
             }
 
             void update(uint32 statisticIndex, View<uint8>::const_iterator scoresBegin,
                         View<uint8>::const_iterator scoresEnd, PartialIndexVector::const_iterator indicesBegin,
                         PartialIndexVector::const_iterator indicesEnd) override {
-                statisticMatrixPtr->coverageMatrixPtr->increaseCoverage(
-                  statisticIndex, statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
-                  statisticMatrixPtr->majorityLabelVectorPtr->cend(), scoresBegin, scoresEnd, indicesBegin, indicesEnd);
+                statisticMatrixPtr->increaseCoverage(statisticIndex, scoresBegin, scoresEnd, indicesBegin, indicesEnd);
             }
 
             void revert(uint32 statisticIndex, View<uint8>::const_iterator scoresBegin,
                         View<uint8>::const_iterator scoresEnd, CompleteIndexVector::const_iterator indicesBegin,
                         CompleteIndexVector::const_iterator indicesEnd) override {
-                statisticMatrixPtr->coverageMatrixPtr->decreaseCoverage(
-                  statisticIndex, statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
-                  statisticMatrixPtr->majorityLabelVectorPtr->cend(), scoresBegin, scoresEnd, indicesBegin, indicesEnd);
+                // In case of the default rule, the statistics are not updated, because the default rule will be
+                // appended at the end of the final rule list and therefore has not effect of the other rules
             }
 
             void revert(uint32 statisticIndex, View<uint8>::const_iterator scoresBegin,
                         View<uint8>::const_iterator scoresEnd, PartialIndexVector::const_iterator indicesBegin,
                         PartialIndexVector::const_iterator indicesEnd) override {
-                statisticMatrixPtr->coverageMatrixPtr->decreaseCoverage(
-                  statisticIndex, statisticMatrixPtr->majorityLabelVectorPtr->cbegin(),
-                  statisticMatrixPtr->majorityLabelVectorPtr->cend(), scoresBegin, scoresEnd, indicesBegin, indicesEnd);
+                statisticMatrixPtr->decreaseCoverage(statisticIndex, scoresBegin, scoresEnd, indicesBegin, indicesEnd);
             }
 
             std::unique_ptr<IStatisticsUpdateCandidate> createUpdateCandidate(

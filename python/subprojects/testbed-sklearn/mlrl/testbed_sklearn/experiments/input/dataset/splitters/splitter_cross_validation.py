@@ -16,8 +16,9 @@ from mlrl.testbed.experiments.fold import Fold, FoldingStrategy
 from mlrl.testbed.experiments.input.dataset import DatasetReader
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.log import Log
+from mlrl.testbed.util.format import format_progress
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
-from mlrl.util.log import Log
 
 
 class CrossValidationSplitter(DatasetSplitter):
@@ -226,7 +227,7 @@ class CrossValidationSplitter(DatasetSplitter):
         else:
             fold = 'full'
 
-        Log.info(f'Performing {fold} {num_folds}-fold cross validation...')
+        Log.info(f'Performing {fold} {num_folds}-fold cross validation...', highlight=True)
 
         # Check if predefined folds are available...
         state = replace(state, folding_strategy=folding_strategy)
@@ -236,7 +237,7 @@ class CrossValidationSplitter(DatasetSplitter):
         )
 
         for fold in folding_strategy.folds:
-            Log.info(f'Fold {fold.index + 1} / {num_folds}:')
+            Log.separator(f'Fold {format_progress(fold.index + 1, num_folds)}')
             state = replace(state, fold=fold)
 
             if predefined_splits_available:

@@ -491,6 +491,30 @@ class ParallelPredictionMixin(ABC):
         """
 
 
+class NoSimdMixin(ABC):
+    """
+    Allows to configure a rule learner to not use any single instruction, multiple data (SIMD) operations.
+    """
+
+    @abstractmethod
+    def use_no_simd_operations(self):
+        """
+        Configures the rule learner to not use any single instruction, multiple data (SIMD) operations.
+        """
+
+
+class SimdMixin(ABC):
+    """
+    Allows to configure a rule learner to use single instruction, multiple data (SIMD) operations.
+    """
+
+    @abstractmethod
+    def use_simd_operations(self):
+        """
+        Configures the rule learner to use single instruction, multiple data (SIMD) operations.
+        """
+
+
 class NoSizeStoppingCriterionMixin(ABC):
     """
     Allows to configure a rule learner to not use a stopping criterion that ensures that the number of induced rules

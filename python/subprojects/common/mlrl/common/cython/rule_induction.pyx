@@ -76,6 +76,24 @@ cdef class GreedyTopDownRuleInductionConfig:
         self.config_ptr.setMaxConditions(max_conditions)
         return self
 
+    def are_negations_allowed(self) -> bool:
+        """
+        Returns whether refinements with nominal conditions that use negation are allowed, or not.
+
+        :return: True, if refinements with nominal conditions that use negation are allowed, False otherwise
+        """
+
+    def set_negations_allowed(self, allow_negations: bool) -> GreedyTopDownRuleInductionConfig:
+        """
+        Sets whether refinements with nominal conditions that use negation should be allowed, or not.
+
+        :param allowNegations:  True, if negation should be allowed, False otherwise
+        :return:                A `GreedyTopDownRuleInductionConfig` that allows further configuration of the algorithm
+                                for the induction of individual rules
+        """
+        self.config_ptr.setNegationsAllowed(allow_negations)
+        return self
+
     def get_max_head_refinements(self) -> int:
         """
         Returns the maximum number of times, the head of a rule may be refinement after a new condition has been added
@@ -235,6 +253,25 @@ cdef class BeamSearchTopDownRuleInductionConfig:
         if max_conditions != 0:
             assert_greater_or_equal('max_conditions', max_conditions, 2)
         self.config_ptr.setMaxConditions(max_conditions)
+        return self
+
+    def are_negations_allowed(self) -> bool:
+        """
+        Returns whether refinements with nominal conditions that use negation are allowed, or not.
+
+        :return: True, if refinements with nominal conditions that use negation are allowed, False otherwise
+        """
+        return self.config_ptr.areNegationsAllowed()
+
+    def set_negations_allowed(self, allow_negations: bool) -> BeamSearchTopDownRuleInductionConfig:
+        """
+        Sets whether refinements with nominal conditions that use negation should be allowed, or not.
+
+        :param allowNegations:  True, if negation should be allowed, False otherwise
+        :return:                A `BeamSearchTopDownRuleInductionConfig` that allows further configuration of the
+                                algorithm for the induction of individual rules
+        """
+        self.config_ptr.setNegationsAllowed(allow_negations)
         return self
 
     def get_max_head_refinements(self) -> int:

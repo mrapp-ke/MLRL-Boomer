@@ -19,7 +19,7 @@ from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData, 
 from mlrl.testbed.experiments.output.policies import OutputErrorPolicy
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.util.log import Log
+from mlrl.testbed.log import Log
 
 
 class DataExtractor(ABC):
@@ -159,7 +159,7 @@ class OutputWriter:
             Log.error(
                 f'Failed to extract output data from experimental state via extractor of type '
                 f'{type(extractor).__name__}',
-                exc_info=error,
+                error=error,
             )
             return []
 
@@ -186,7 +186,7 @@ class OutputWriter:
 
             Log.error(
                 f'Failed to write output data of type "{type(output_data).__name__}" to sink {type(sink).__name__}',
-                exc_info=error,
+                error=error,
             )
 
     def __init__(self, *extractors: DataExtractor):

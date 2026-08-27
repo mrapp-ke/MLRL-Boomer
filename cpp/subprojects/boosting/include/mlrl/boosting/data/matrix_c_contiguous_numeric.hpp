@@ -12,10 +12,12 @@ namespace boosting {
     /**
      * A two-dimensional matrix that provides random access to a fixed number of values stored in a C-contiguous array.
      *
-     * @tparam T The type of the values that are stored in the matrix
+     * @tparam T                The type of the values that are stored in the matrix
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
      */
-    template<typename T>
-    class NumericCContiguousMatrix final : public DenseMatrixDecorator<AllocatedCContiguousView<T>> {
+    template<typename T, typename MemoryAllocator = DefaultMemoryAllocator>
+    class NumericCContiguousMatrix final
+        : public DenseMatrixDecorator<DenseMatrixAllocator<CContiguousView<T>, MemoryAllocator>> {
         public:
 
             /**

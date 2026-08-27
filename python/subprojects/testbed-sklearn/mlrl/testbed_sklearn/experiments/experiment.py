@@ -17,6 +17,7 @@ from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.state import ExperimentState, ParameterDict, PredictionState, TrainingState
 from mlrl.testbed.experiments.timer import Timer
+from mlrl.testbed.log import Log
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.writer_data import DataCharacteristicsWriter
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.writer_prediction import (
@@ -27,7 +28,6 @@ from mlrl.testbed_sklearn.experiments.output.dataset.writer_prediction import Pr
 from mlrl.testbed_sklearn.experiments.output.evaluation.writer import EvaluationWriter
 from mlrl.testbed_sklearn.experiments.output.label_vectors import LabelVectorWriter
 from mlrl.testbed_sklearn.experiments.problem_domain import SkLearnProblem
-from mlrl.util.log import Log
 
 
 class SkLearnExperiment(Experiment):
@@ -77,7 +77,7 @@ class SkLearnExperiment(Experiment):
 
             if parameters and self.__get_parameter_changes(parameters, learner.get_params()):
                 learner.set_params(**parameters)
-                Log.info(f'Successfully applied parameter setting: {parameters}')
+                Log.success(f'Successfully applied parameter setting: {parameters}', highlight=True)
 
             return learner
 
@@ -128,19 +128,21 @@ class SkLearnExperiment(Experiment):
             """
             See :func:`mlrl.testbed.experiments.experiment.Experiment.TrainingProcedure.train`
             """
-            new_learner = self.__create_learner(parameters=parameters)
+            with Log.indented():
+                Log.info(f'Fitting model to {dataset.num_examples} training examples...', highlight=True)
+                new_learner = self.__create_learner(parameters=parameters)
 
-            # Use existing model, if possible, otherwise train a new model...
-            if isinstance(learner, type(new_learner)):
-                self.__check_for_parameter_changes(
-                    expected_parameters=parameters, actual_parameters=learner.get_params()
-                )
-                return TrainingState(learner=learner)
+                # Use existing model, if possible, otherwise train a new model...
+                if isinstance(learner, type(new_learner)):
+                    self.__check_for_parameter_changes(
+                        expected_parameters=parameters, actual_parameters=learner.get_params()
+                    )
+                    Log.success('Successfully loaded model')
+                    return TrainingState(learner=learner)
 
-            Log.info(f'Fitting model to {dataset.num_examples} training examples...')
-            training_duration = self._fit(new_learner, dataset, fit_kwargs=self.fit_kwargs)
-            Log.info(f'Successfully fit model in {training_duration}')
-            return TrainingState(learner=new_learner, training_duration=training_duration)
+                training_duration = self._fit(new_learner, dataset, fit_kwargs=self.fit_kwargs)
+                Log.success(f'Successfully fit model in {training_duration}', highlight=True)
+                return TrainingState(learner=new_learner, training_duration=training_duration)
 
         def _fit(
             self, estimator: BaseEstimator, dataset: TabularDataset, fit_kwargs: dict[str, Any] | None

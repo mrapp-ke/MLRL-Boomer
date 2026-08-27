@@ -14,7 +14,7 @@ static inline void searchForBinnedRefinementInternally(const BinnedFeatureVector
                                                        Comparator& comparator, uint32 numExamplesWithNonZeroWeights,
                                                        uint32 minCoverage, Refinement& refinement) {
     // Mark all examples corresponding to the first bin with index `i < sparseBinIndex` as covered...
-    BinnedFeatureVector::threshold_const_iterator thresholdIterator = featureVector.thresholds_cbegin();
+    auto thresholdIterator = featureVector.thresholds_cbegin();
     uint32 numBins = featureVector.numBins;
     int32 sparseBinIndex = featureVector.sparseBinIndex;
     uint32 numCovered = 0;

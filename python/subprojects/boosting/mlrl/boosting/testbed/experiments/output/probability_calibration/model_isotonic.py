@@ -7,6 +7,9 @@ Provides classes for representing models for the calibration of probabilities vi
 from dataclasses import dataclass, field
 from typing import override
 
+from rich.console import ConsoleRenderable, Group
+from rich.text import Text
+
 from mlrl.common.cython.probability_calibration import (
     IsotonicProbabilityCalibrationModel,
     IsotonicProbabilityCalibrationModelVisitor,
@@ -14,8 +17,9 @@ from mlrl.common.cython.probability_calibration import (
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.data import TabularProperties
 from mlrl.testbed.experiments.output.data import TabularOutputData
-from mlrl.testbed.experiments.table import ColumnWiseTable, Table
-from mlrl.testbed.util.format import OPTION_DECIMALS, format_number
+from mlrl.testbed.experiments.table import Column, ColumnWiseTable, Table
+from mlrl.testbed.util.format import OPTION_DECIMALS
+from mlrl.util.format import format_value
 from mlrl.util.options import Options
 
 
@@ -116,7 +120,7 @@ class IsotonicRegressionModel(TabularOutputData):
         return f'{(f"{prefix} " if prefix else "")}{list_index + 1} {self.COLUMN_PROBABILITIES}'
 
     @override
-    def to_text(self, options: Options, **kwargs) -> str | None:
+    def to_text(self, options: Options, **kwargs) -> str | ConsoleRenderable | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
@@ -125,7 +129,7 @@ class IsotonicRegressionModel(TabularOutputData):
 
         if table:
             columns = table.columns
-            result = ''
+            renderables: list[ConsoleRenderable] = []
 
             for list_index, _ in enumerate(range(0, table.num_columns, 2)):
                 bin_list_table = ColumnWiseTable()
@@ -138,12 +142,18 @@ class IsotonicRegressionModel(TabularOutputData):
                     header=self._format_probability_header(list_index),
                 )
 
-                if result:
-                    result += '\n'
+                if renderables:
+                    renderables.append(Text(''))
 
-                result += bin_list_table.format(auto_rotate=False)
+                renderables.append(
+                    bin_list_table.to_rich_table(
+                        auto_rotate=False,
+                        border_style=Table.BorderStyle.INNER_LINES,
+                        column_styles=[Column.Style.VALUE, Column.Style.VALUE],
+                    )
+                )
 
-            return result
+            return Group(*renderables) if renderables else None
 
         return None
 
@@ -156,9 +166,9 @@ class IsotonicRegressionModel(TabularOutputData):
         table = ColumnWiseTable()
 
         for list_index, bin_list in self.bin_lists.items():
-            thresholds = (format_number(value, decimals=decimals) for value in bin_list.thresholds)
+            thresholds = (format_value(value, decimals=decimals) for value in bin_list.thresholds)
             table.add_column(*thresholds, header=self._format_threshold_header(list_index))
-            probabilities = (format_number(value, decimals=decimals) for value in bin_list.probabilities)
+            probabilities = (format_value(value, decimals=decimals) for value in bin_list.probabilities)
             table.add_column(*probabilities, header=self._format_probability_header(list_index))
 
         return table

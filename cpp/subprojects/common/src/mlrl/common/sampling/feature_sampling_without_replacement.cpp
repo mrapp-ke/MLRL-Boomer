@@ -3,8 +3,8 @@
 #include "index_sampling.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 #include "mlrl/common/iterator/iterator_index.hpp"
+#include "mlrl/common/math/scalar_math.hpp"
 #include "mlrl/common/sampling/feature_sampling_predefined.hpp"
-#include "mlrl/common/util/math.hpp"
 #include "mlrl/common/util/validation.hpp"
 
 /**
@@ -37,7 +37,7 @@ class FeatureSamplingWithoutReplacement final : public IFeatureSampling {
             : rngPtr_(rngPtr), numFeatures_(numFeatures), numSamples_(numSamples), numRetained_(numRetained),
               indexVector_(numSamples + numRetained) {
             if (numRetained > 0) {
-                PartialIndexVector::iterator iterator = indexVector_.begin();
+                auto iterator = indexVector_.begin();
                 uint32 offset = numFeatures - numRetained;
 
                 for (uint32 i = 0; i < numRetained; i++) {
@@ -150,7 +150,7 @@ std::unique_ptr<IFeatureSamplingFactory> FeatureSamplingWithoutReplacementConfig
     uint32 numSamples;
 
     if (sampleSize_ > 0) {
-        numSamples = util::calculateBoundedFraction(numRemainingFeatures, sampleSize_, minSamples_, maxSamples_);
+        numSamples = math::calculateBoundedFraction(numRemainingFeatures, sampleSize_, minSamples_, maxSamples_);
     } else {
         numSamples = static_cast<uint32>(log2(numRemainingFeatures - 1) + 1);
     }
