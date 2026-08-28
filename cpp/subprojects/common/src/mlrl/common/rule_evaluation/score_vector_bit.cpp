@@ -34,12 +34,12 @@ typename BitScoreVector<IndexVector>::index_const_iterator BitScoreVector<IndexV
 }
 
 template<typename IndexVector>
-typename BitScoreVector<IndexVector>::value_const_iterator BitScoreVector<IndexVector>::values_cbegin() const {
+typename BitScoreVector<IndexVector>::value_const_iterator BitScoreVector<IndexVector>::cbegin() const {
     return this->view.cbegin();
 }
 
 template<typename IndexVector>
-typename BitScoreVector<IndexVector>::value_const_iterator BitScoreVector<IndexVector>::values_cend() const {
+typename BitScoreVector<IndexVector>::value_const_iterator BitScoreVector<IndexVector>::cend() const {
     return this->view.cend();
 }
 
@@ -51,6 +51,11 @@ bool BitScoreVector<IndexVector>::isPartial() const {
 template<typename IndexVector>
 bool BitScoreVector<IndexVector>::isSorted() const {
     return sorted_;
+}
+
+template<typename IndexVector>
+float64 BitScoreVector<IndexVector>::getQuality() const {
+    return this->quality;
 }
 
 template<typename IndexVector>

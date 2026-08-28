@@ -19,7 +19,7 @@ static inline void processCompleteScores(
         existingHead = static_cast<CompletePrediction<score_type>*>(existingHeadPtr.get());
     }
 
-    std::copy(scoreVector.values_cbegin(), scoreVector.values_cend(), existingHead->values_begin());
+    std::copy(scoreVector.cbegin(), scoreVector.cend(), existingHead->values_begin());
     existingHead->quality = scoreVector.quality;
 }
 
@@ -45,7 +45,7 @@ static inline void processPartialScores(
         existingHead->setSorted(scoreVector.isSorted());
     }
 
-    std::copy(scoreVector.values_cbegin(), scoreVector.values_cend(), existingHead->values_begin());
+    std::copy(scoreVector.cbegin(), scoreVector.cend(), existingHead->values_begin());
     std::copy(scoreVector.indices_cbegin(), scoreVector.indices_cend(), existingHead->indices_begin());
     existingHead->quality = scoreVector.quality;
 }
@@ -61,19 +61,19 @@ void ScoreProcessor::processScores(const IStatisticsUpdateCandidate& scores) {
                                     IStatisticsUpdateFactory<uint8>& statisticsUpdateFactory) {
         processPartialScores(headPtr_, scoreVector, statisticsUpdateFactory);
     };
-    auto completeDense32BitVisitor = [this](const DenseScoreVector<float32, CompleteIndexVector>& scoreVector,
+    auto completeDense32BitVisitor = [this](const DenseScoreVectorView<float32, CompleteIndexVector>& scoreVector,
                                             IStatisticsUpdateFactory<float32>& statisticsUpdateFactory) {
         processCompleteScores(headPtr_, scoreVector, statisticsUpdateFactory);
     };
-    auto partialDense32BitVisitor = [this](const DenseScoreVector<float32, PartialIndexVector>& scoreVector,
+    auto partialDense32BitVisitor = [this](const DenseScoreVectorView<float32, PartialIndexVector>& scoreVector,
                                            IStatisticsUpdateFactory<float32>& statisticsUpdateFactory) {
         processPartialScores(headPtr_, scoreVector, statisticsUpdateFactory);
     };
-    auto completeDense64BitVisitor = [this](const DenseScoreVector<float64, CompleteIndexVector>& scoreVector,
+    auto completeDense64BitVisitor = [this](const DenseScoreVectorView<float64, CompleteIndexVector>& scoreVector,
                                             IStatisticsUpdateFactory<float64>& statisticsUpdateFactory) {
         processCompleteScores(headPtr_, scoreVector, statisticsUpdateFactory);
     };
-    auto partialDense64BitVisitor = [this](const DenseScoreVector<float64, PartialIndexVector>& scoreVector,
+    auto partialDense64BitVisitor = [this](const DenseScoreVectorView<float64, PartialIndexVector>& scoreVector,
                                            IStatisticsUpdateFactory<float64>& statisticsUpdateFactory) {
         processPartialScores(headPtr_, scoreVector, statisticsUpdateFactory);
     };

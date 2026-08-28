@@ -5,6 +5,7 @@
 
 #include "mlrl/common/iterator/iterator_binned.hpp"
 #include "mlrl/common/rule_evaluation/score_vector.hpp"
+#include "mlrl/common/util/quality.hpp"
 
 /**
  * An one dimensional vector that stores the scores that may be predicted by a rule, corresponding to bins for which the
@@ -16,7 +17,8 @@
  *                     predict
  */
 template<typename ScoreType, typename IndexVector>
-class DenseBinnedScoreVector final : virtual public IScoreVector {
+class DenseBinnedScoreVector final : virtual public IScoreVector,
+                                     public Quality {
     private:
 
         const IndexVector& outputIndices_;
@@ -96,14 +98,14 @@ class DenseBinnedScoreVector final : virtual public IScoreVector {
          *
          * @return A `value_const_iterator` to the beginning
          */
-        value_const_iterator values_cbegin() const;
+        value_const_iterator cbegin() const;
 
         /**
          * Returns a `value_const_iterator` to the end of the predicted scores that correspond to individual outputs.
          *
          * @return A `value_const_iterator` to the end
          */
-        value_const_iterator values_cend() const;
+        value_const_iterator cend() const;
 
         /**
          * Returns an `bin_index_iterator` to the beginning of the indices that correspond to individual bins.
@@ -192,6 +194,8 @@ class DenseBinnedScoreVector final : virtual public IScoreVector {
          *         false otherwise
          */
         bool isSorted() const;
+
+        float64 getQuality() const override;
 
         void visit(BitVisitor<CompleteIndexVector> completeBitVisitor, BitVisitor<PartialIndexVector> partialBitVisitor,
                    DenseVisitor<float32, CompleteIndexVector> completeDense32BitVisitor,

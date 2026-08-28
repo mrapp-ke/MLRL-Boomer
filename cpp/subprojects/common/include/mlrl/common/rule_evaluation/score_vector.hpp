@@ -5,7 +5,7 @@
 
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
-#include "mlrl/common/util/quality.hpp"
+#include "mlrl/common/util/dll_exports.hpp"
 
 #include <functional>
 
@@ -14,7 +14,7 @@ template<typename IndexVector>
 class BitScoreVector;
 
 template<typename ScoreType, typename IndexVector>
-class DenseScoreVector;
+class DenseScoreVectorView;
 
 template<typename ScoreType, typename IndexVector>
 class DenseBinnedScoreVector;
@@ -23,10 +23,10 @@ class DenseBinnedScoreVector;
  * Defines an interface for all one-dimensional vectors that store the scores that may be predicted by a rule, as well
  * as a numerical score that assess the overall quality of the rule.
  */
-class IScoreVector : public Quality {
+class MLRLCOMMON_API IScoreVector {
     public:
 
-        virtual ~IScoreVector() override {}
+        virtual ~IScoreVector() {}
 
         /**
          * A visitor function for handling objects of type `BitScoreVector`.
@@ -38,14 +38,14 @@ class IScoreVector : public Quality {
         using BitVisitor = std::function<void(const BitScoreVector<IndexVector>&)>;
 
         /**
-         * A visitor function for handling objects of type `DenseScoreVector`.
+         * A visitor function for handling objects of type `DenseScoreVectorView`.
          *
          * @tparam ScoreType    The type of the predicted scores
          * @tparam IndexVector  The type of the vector that provides access to the indices of the outputs, the predicted
          *                      scores correspond to
          */
         template<typename ScoreType, typename IndexVector>
-        using DenseVisitor = std::function<void(const DenseScoreVector<ScoreType, IndexVector>&)>;
+        using DenseVisitor = std::function<void(const DenseScoreVectorView<ScoreType, IndexVector>&)>;
 
         /**
          * A visitor function for handling objects of type `DenseBinnedScoreVector`.
@@ -66,13 +66,13 @@ class IScoreVector : public Quality {
          * @param partialBitVisitor                 The visitor function for handling objects of type
          *                                          `BitScoreVector<PartialIndexVector>`
          * @param completeDense32BitVisitor         The visitor function for handling objects of type
-         *                                          `DenseScoreVector<float32, CompleteIndexVector>`
+         *                                          `DenseScoreVectorView<float32, CompleteIndexVector>`
          * @param partialDense32BitVisitor          The visitor function for handling objects of type
-         *                                          `DenseScoreVector<float32, PartialIndexVector>`
+         *                                          `DenseScoreVectorView<float32, PartialIndexVector>`
          * @param completeDense64BitVisitor         The visitor function for handling objects of type
-         *                                          `DenseScoreVector<float64, CompleteIndexVector>`
+         *                                          `DenseScoreVectorView<float64, CompleteIndexVector>`
          * @param partialDense64BitVisitor          The visitor function for handling objects of type
-         *                                          `DenseScoreVector<float64, PartialIndexVector>`
+         *                                          `DenseScoreVectorView<float64, PartialIndexVector>`
          * @param completeDenseBinned32BitVisitor   The visitor function for handling objects of type
          *                                          `DenseBinnedScoreVector<float32, CompleteIndexVector>`
          * @param partialDenseBinned32BitVisitor    The visitor function for handling objects of type
@@ -92,4 +92,11 @@ class IScoreVector : public Quality {
                            DenseBinnedVisitor<float32, PartialIndexVector> partialDenseBinned32BitVisitor,
                            DenseBinnedVisitor<float64, CompleteIndexVector> completeDenseBinned64BitVisitor,
                            DenseBinnedVisitor<float64, PartialIndexVector> partialDenseBinned64BitVisitor) const = 0;
+
+        /**
+         * Returns the quality of the rule.
+         *
+         * @return The quality of the rule
+         */
+        virtual float64 getQuality() const = 0;
 };

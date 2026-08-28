@@ -40,14 +40,14 @@ namespace boosting {
 
                     void invokeVisitor(
                       DenseVisitor<float32, CompleteIndexVector> visitor,
-                      const DenseScoreVector<float32, CompleteIndexVector>& scoreVector) const override {
+                      const DenseScoreVectorView<float32, CompleteIndexVector>& scoreVector) const override {
                         StatisticsUpdateFactory<IStatisticsState<float32>> statisticsUpdateFactory(state_);
                         visitor(scoreVector, statisticsUpdateFactory);
                     }
 
                     void invokeVisitor(
                       DenseVisitor<float32, PartialIndexVector> visitor,
-                      const DenseScoreVector<float32, PartialIndexVector>& scoreVector) const override {
+                      const DenseScoreVectorView<float32, PartialIndexVector>& scoreVector) const override {
                         StatisticsUpdateFactory<IStatisticsState<float32>> statisticsUpdateFactory(state_);
                         visitor(scoreVector, statisticsUpdateFactory);
                     }
@@ -91,14 +91,14 @@ namespace boosting {
 
                     void invokeVisitor(
                       DenseVisitor<float64, CompleteIndexVector> visitor,
-                      const DenseScoreVector<float64, CompleteIndexVector>& scoreVector) const override {
+                      const DenseScoreVectorView<float64, CompleteIndexVector>& scoreVector) const override {
                         StatisticsUpdateFactory<IStatisticsState<float64>> statisticsUpdateFactory(state_);
                         visitor(scoreVector, statisticsUpdateFactory);
                     }
 
                     void invokeVisitor(
                       DenseVisitor<float64, PartialIndexVector> visitor,
-                      const DenseScoreVector<float64, PartialIndexVector>& scoreVector) const override {
+                      const DenseScoreVectorView<float64, PartialIndexVector>& scoreVector) const override {
                         StatisticsUpdateFactory<IStatisticsState<float64>> statisticsUpdateFactory(state_);
                         visitor(scoreVector, statisticsUpdateFactory);
                     }

@@ -52,14 +52,14 @@ typename DenseBinnedScoreVector<ScoreType, IndexVector>::index_const_iterator
 
 template<typename ScoreType, typename IndexVector>
 typename DenseBinnedScoreVector<ScoreType, IndexVector>::value_const_iterator
-  DenseBinnedScoreVector<ScoreType, IndexVector>::values_cbegin() const {
+  DenseBinnedScoreVector<ScoreType, IndexVector>::cbegin() const {
     return value_const_iterator(View<const uint32>(this->bin_indices_cbegin()),
                                 View<const ScoreType>(this->bin_values_cbegin()), 0);
 }
 
 template<typename ScoreType, typename IndexVector>
 typename DenseBinnedScoreVector<ScoreType, IndexVector>::value_const_iterator
-  DenseBinnedScoreVector<ScoreType, IndexVector>::values_cend() const {
+  DenseBinnedScoreVector<ScoreType, IndexVector>::cend() const {
     return value_const_iterator(View<const uint32>(this->bin_indices_cbegin()),
                                 View<const ScoreType>(this->bin_values_cbegin()), this->getNumElements());
 }
@@ -130,6 +130,11 @@ bool DenseBinnedScoreVector<ScoreType, IndexVector>::isPartial() const {
 template<typename ScoreType, typename IndexVector>
 bool DenseBinnedScoreVector<ScoreType, IndexVector>::isSorted() const {
     return sorted_;
+}
+
+template<typename ScoreType, typename IndexVector>
+float64 DenseBinnedScoreVector<ScoreType, IndexVector>::getQuality() const {
+    return this->quality;
 }
 
 template<typename ScoreType, typename IndexVector>

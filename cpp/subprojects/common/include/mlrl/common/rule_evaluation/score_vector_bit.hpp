@@ -5,6 +5,7 @@
 
 #include "mlrl/common/data/view_vector_bit.hpp"
 #include "mlrl/common/rule_evaluation/score_vector.hpp"
+#include "mlrl/common/util/quality.hpp"
 
 /**
  * An one-dimensional vector that stores binary scores that may be predicted by a rule, as well as an overall quality
@@ -15,7 +16,8 @@
  */
 template<typename IndexVector>
 class BitScoreVector final : public IndexableBitVectorDecorator<ViewDecorator<AllocatedBitVector>>,
-                             virtual public IScoreVector {
+                             virtual public IScoreVector,
+                             public Quality {
     private:
 
         const IndexVector& outputIndices_;
@@ -66,14 +68,14 @@ class BitScoreVector final : public IndexableBitVectorDecorator<ViewDecorator<Al
          *
          * @return A `value_const_iterator` to the beginning
          */
-        value_const_iterator values_cbegin() const;
+        value_const_iterator cbegin() const;
 
         /**
          * Returns a `value_const_iterator` to the end of the predicted scores.
          *
          * @return A `value_const_iterator` to the end
          */
-        value_const_iterator values_cend() const;
+        value_const_iterator cend() const;
 
         /**
          * Returns the number of outputs for which the rule may predict.
@@ -97,6 +99,8 @@ class BitScoreVector final : public IndexableBitVectorDecorator<ViewDecorator<Al
          *         false otherwise
          */
         bool isSorted() const;
+
+        float64 getQuality() const override;
 
         void visit(BitVisitor<CompleteIndexVector> completeBitVisitor, BitVisitor<PartialIndexVector> partialBitVisitor,
                    DenseVisitor<float32, CompleteIndexVector> completeDense32BitVisitor,
