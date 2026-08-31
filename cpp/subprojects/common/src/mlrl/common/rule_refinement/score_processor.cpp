@@ -8,8 +8,8 @@
 template<typename ScoreVector>
 static inline void processCompleteScores(
   std::unique_ptr<IEvaluatedPrediction>& existingHeadPtr, const ScoreVector& scoreVector,
-  IStatisticsUpdateFactory<typename ScoreVector::value_type>& statisticsUpdateFactory) {
-    using score_type = ScoreVector::value_type;
+  IStatisticsUpdateFactory<typename ScoreVector::score_type>& statisticsUpdateFactory) {
+    using score_type = ScoreVector::score_type;
     CompletePrediction<score_type>* existingHead = dynamic_cast<CompletePrediction<score_type>*>(existingHeadPtr.get());
 
     if (!existingHead) {
@@ -26,8 +26,8 @@ static inline void processCompleteScores(
 template<typename ScoreVector>
 static inline void processPartialScores(
   std::unique_ptr<IEvaluatedPrediction>& existingHeadPtr, const ScoreVector& scoreVector,
-  IStatisticsUpdateFactory<typename ScoreVector::value_type>& statisticsUpdateFactory) {
-    using score_type = ScoreVector::value_type;
+  IStatisticsUpdateFactory<typename ScoreVector::score_type>& statisticsUpdateFactory) {
+    using score_type = ScoreVector::score_type;
     PartialPrediction<score_type>* existingHead = dynamic_cast<PartialPrediction<score_type>*>(existingHeadPtr.get());
     uint32 numElements = scoreVector.getNumElements();
 
@@ -53,11 +53,11 @@ static inline void processPartialScores(
 ScoreProcessor::ScoreProcessor(std::unique_ptr<IEvaluatedPrediction>& headPtr) : headPtr_(headPtr) {}
 
 void ScoreProcessor::processScores(const IStatisticsUpdateCandidate& scores) {
-    auto completeBitVisitor = [this](const BitScoreVector<CompleteIndexVector>& scoreVector,
+    auto completeBitVisitor = [this](const BitScoreVectorView<CompleteIndexVector>& scoreVector,
                                      IStatisticsUpdateFactory<uint8>& statisticsUpdateFactory) {
         processCompleteScores(headPtr_, scoreVector, statisticsUpdateFactory);
     };
-    auto partialBitVisitor = [this](const BitScoreVector<PartialIndexVector>& scoreVector,
+    auto partialBitVisitor = [this](const BitScoreVectorView<PartialIndexVector>& scoreVector,
                                     IStatisticsUpdateFactory<uint8>& statisticsUpdateFactory) {
         processPartialScores(headPtr_, scoreVector, statisticsUpdateFactory);
     };

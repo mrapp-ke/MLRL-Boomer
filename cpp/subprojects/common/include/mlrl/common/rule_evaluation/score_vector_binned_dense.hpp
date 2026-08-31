@@ -45,7 +45,7 @@ class DenseBinnedScoreVector final : virtual public IScoreVector,
         /**
          * The type of the predicted scores that are stored by the vector.
          */
-        using value_type = ScoreType;
+        using score_type = ScoreType;
 
         /**
          * An iterator that provides read-only access to the indices of the output for which the rule predicts.

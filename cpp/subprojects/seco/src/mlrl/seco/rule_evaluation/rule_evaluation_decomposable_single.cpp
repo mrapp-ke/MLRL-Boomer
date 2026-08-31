@@ -68,7 +68,7 @@ namespace seco {
                 std::advance(labelIterator, bestIndex);
                 scoreVector_.set(0, !(*labelIterator));
                 indexVector_.begin()[0] = bestIndex;
-                scoreVector_.quality = bestQuality;
+                scoreVector_.setQuality(bestQuality);
                 return scoreVector_;
             }
     };

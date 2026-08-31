@@ -56,6 +56,11 @@ class MLRLCOMMON_API DenseScoreVectorView : public View<ScoreType>,
         using index_vector_type = IndexVector;
 
         /**
+         * The type of the predicted scores.
+         */
+        using score_type = ScoreType;
+
+        /**
          * An iterator that provides read-only access to the indices.
          */
         using index_const_iterator = IndexVector::const_iterator;

@@ -109,27 +109,27 @@ class AbstractStatisticsUpdateCandidate : public IStatisticsUpdateCandidate {
 
         /**
          * May be overridden by subclasses in order to invoke a given `BitVisitor` for handling objects of type
-         * `BitScoreVector<CompleteIndexVector>`.
+         * `BitScoreVectorView<CompleteIndexVector>`.
          *
          * @param visitor       The visitor to be invoked
-         * @param scoreVector   A reference to an object of type `BitScoreVector<CompleteIndexVector>` to be handled by
-         *                      the visitor
+         * @param scoreVector   A reference to an object of type `BitScoreVectorView<CompleteIndexVector>` to be handled
+         *                      by the visitor
          */
         virtual void invokeVisitor(BitVisitor<CompleteIndexVector> visitor,
-                                   const BitScoreVector<CompleteIndexVector>& scoreVector) const {
+                                   const BitScoreVectorView<CompleteIndexVector>& scoreVector) const {
             throw std::runtime_error("not implemented");
         }
 
         /**
          * May be overridden by subclasses in order to invoke a given `BitVisitor` for handling objects of type
-         * `BitScoreVector<PartialIndexVector>`.
+         * `BitScoreVectorView<PartialIndexVector>`.
          *
          * @param visitor       The visitor to be invoked
-         * @param scoreVector   A reference to an object of type `BitScoreVector<PartialIndexVector>` to be handled by
-         *                      the visitor
+         * @param scoreVector   A reference to an object of type `BitScoreVectorView<PartialIndexVector>` to be handled
+         *                      by the visitor
          */
         virtual void invokeVisitor(BitVisitor<PartialIndexVector> visitor,
-                                   const BitScoreVector<PartialIndexVector>& scoreVector) const {
+                                   const BitScoreVectorView<PartialIndexVector>& scoreVector) const {
             throw std::runtime_error("not implemented");
         }
 
@@ -258,12 +258,12 @@ class AbstractStatisticsUpdateCandidate : public IStatisticsUpdateCandidate {
           DenseBinnedVisitor<float32, PartialIndexVector> partialDenseBinned32BitVisitor,
           DenseBinnedVisitor<float64, CompleteIndexVector> completeDenseBinned64BitVisitor,
           DenseBinnedVisitor<float64, PartialIndexVector> partialDenseBinned64BitVisitor) const override final {
-            auto tmpCompleteBitVisitor = [this,
-                                          completeBitVisitor](const BitScoreVector<CompleteIndexVector>& scoreVector) {
+            auto tmpCompleteBitVisitor =
+              [this, completeBitVisitor](const BitScoreVectorView<CompleteIndexVector>& scoreVector) {
                 invokeVisitor(completeBitVisitor, scoreVector);
             };
             auto tmpPartialBitVisitor = [this,
-                                         partialBitVisitor](const BitScoreVector<PartialIndexVector>& scoreVector) {
+                                         partialBitVisitor](const BitScoreVectorView<PartialIndexVector>& scoreVector) {
                 invokeVisitor(partialBitVisitor, scoreVector);
             };
             auto tmpCompleteDense32BitVisitor =

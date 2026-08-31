@@ -18,13 +18,14 @@ class IStatisticsUpdateCandidate : public Quality {
     public:
 
         /**
-         * A visitor function for handling objects of type `BitScoreVector`.
+         * A visitor function for handling objects of type `BitScoreVectorView`.
          *
          * @tparam IndexVector  The type of the vector that provides access to the indices of the outputs, the predicted
          *                      scores correspond to
          */
         template<typename IndexVector>
-        using BitVisitor = std::function<void(const BitScoreVector<IndexVector>&, IStatisticsUpdateFactory<uint8>&)>;
+        using BitVisitor =
+          std::function<void(const BitScoreVectorView<IndexVector>&, IStatisticsUpdateFactory<uint8>&)>;
 
         /**
          * A visitor function for handling objects of type `DenseScoreVectorView`.
@@ -53,9 +54,9 @@ class IStatisticsUpdateCandidate : public Quality {
          * vector that stores the calculated scores.
          *
          * @param completeBitVisitor                The visitor function for handling objects of type
-         *                                          `BitScoreVector<CompleteIndexVector>`
+         *                                          `BitScoreVectorView<CompleteIndexVector>`
          * @param partialBitVisitor                 The visitor function for handling objects of type
-         *                                          `BitScoreVector<PartialIndexVector>`
+         *                                          `BitScoreVectorView<PartialIndexVector>`
          * @param completeDense32BitVisitor         The visitor function for handling objects of type
          *                                          `DenseScoreVectorView<float32, CompleteIndexVector>`
          * @param partialDense32BitVisitor          The visitor function for handling objects of type

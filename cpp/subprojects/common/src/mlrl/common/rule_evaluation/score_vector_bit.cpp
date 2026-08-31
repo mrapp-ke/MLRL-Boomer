@@ -1,12 +1,12 @@
 #include "mlrl/common/rule_evaluation/score_vector_bit.hpp"
 
-static inline void visitInternally(const BitScoreVector<CompleteIndexVector>& scoreVector,
+static inline void visitInternally(const BitScoreVectorView<CompleteIndexVector>& scoreVector,
                                    IScoreVector::BitVisitor<CompleteIndexVector> completeBitVisitor,
                                    IScoreVector::BitVisitor<PartialIndexVector> partialBitVisitor) {
     completeBitVisitor(scoreVector);
 }
 
-static inline void visitInternally(const BitScoreVector<PartialIndexVector>& scoreVector,
+static inline void visitInternally(const BitScoreVectorView<PartialIndexVector>& scoreVector,
                                    IScoreVector::BitVisitor<CompleteIndexVector> completeBitVisitor,
                                    IScoreVector::BitVisitor<PartialIndexVector> partialBitVisitor) {
     partialBitVisitor(scoreVector);
@@ -14,48 +14,47 @@ static inline void visitInternally(const BitScoreVector<PartialIndexVector>& sco
 
 template<typename IndexVector>
 BitScoreVector<IndexVector>::BitScoreVector(const IndexVector& outputIndices, bool sorted)
-    : IndexableBitVectorDecorator<ViewDecorator<AllocatedBitVector>>(
-        AllocatedBitVector(outputIndices.getNumElements())),
-      outputIndices_(outputIndices), sorted_(sorted) {}
-
-template<typename IndexVector>
-uint32 BitScoreVector<IndexVector>::getNumElements() const {
-    return outputIndices_.getNumElements();
-}
+    : IndexableBitVectorDecorator<ViewDecorator<BitScoreVectorAllocator<BitScoreVectorView<IndexVector>>>>(
+        BitScoreVectorAllocator<BitScoreVectorView<IndexVector>>(outputIndices, sorted)) {}
 
 template<typename IndexVector>
 typename BitScoreVector<IndexVector>::index_const_iterator BitScoreVector<IndexVector>::indices_cbegin() const {
-    return outputIndices_.cbegin();
+    return this->view.indices_cbegin();
 }
 
 template<typename IndexVector>
 typename BitScoreVector<IndexVector>::index_const_iterator BitScoreVector<IndexVector>::indices_cend() const {
-    return outputIndices_.cend();
+    return this->view.indices_cend();
 }
 
 template<typename IndexVector>
-typename BitScoreVector<IndexVector>::value_const_iterator BitScoreVector<IndexVector>::cbegin() const {
+typename BitScoreVector<IndexVector>::value_const_iterator BitScoreVector<IndexVector>::values_cbegin() const {
     return this->view.cbegin();
 }
 
 template<typename IndexVector>
-typename BitScoreVector<IndexVector>::value_const_iterator BitScoreVector<IndexVector>::cend() const {
+typename BitScoreVector<IndexVector>::value_const_iterator BitScoreVector<IndexVector>::values_cend() const {
     return this->view.cend();
 }
 
 template<typename IndexVector>
-bool BitScoreVector<IndexVector>::isPartial() const {
-    return outputIndices_.isPartial();
+uint32 BitScoreVector<IndexVector>::getNumElements() const {
+    return this->view.getNumElements();
 }
 
 template<typename IndexVector>
-bool BitScoreVector<IndexVector>::isSorted() const {
-    return sorted_;
+bool BitScoreVector<IndexVector>::isPartial() const {
+    return this->view.isPartial();
+}
+
+template<typename IndexVector>
+void BitScoreVector<IndexVector>::setQuality(float64 quality) {
+    this->view.quality = quality;
 }
 
 template<typename IndexVector>
 float64 BitScoreVector<IndexVector>::getQuality() const {
-    return this->quality;
+    return this->view.quality;
 }
 
 template<typename IndexVector>
@@ -69,7 +68,7 @@ void BitScoreVector<IndexVector>::visit(
   DenseBinnedVisitor<float32, PartialIndexVector> partialDense32BitBinnedVisitor,
   DenseBinnedVisitor<float64, CompleteIndexVector> completeDense64BitBinnedVisitor,
   DenseBinnedVisitor<float64, PartialIndexVector> partialDense64BitBinnedVisitor) const {
-    visitInternally(*this, completeBitVisitor, partialBitVisitor);
+    visitInternally(this->getView(), completeBitVisitor, partialBitVisitor);
 }
 
 template class BitScoreVector<CompleteIndexVector>;

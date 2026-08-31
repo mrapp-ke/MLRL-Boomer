@@ -11,7 +11,7 @@
 
 // Forward declarations
 template<typename IndexVector>
-class BitScoreVector;
+class BitScoreVectorView;
 
 template<typename ScoreType, typename IndexVector>
 class DenseScoreVectorView;
@@ -29,13 +29,13 @@ class MLRLCOMMON_API IScoreVector {
         virtual ~IScoreVector() {}
 
         /**
-         * A visitor function for handling objects of type `BitScoreVector`.
+         * A visitor function for handling objects of type `BitScoreVectorView`.
          *
          * @tparam IndexVector The type of the vector that provides access to the indices of the outputs, the predicted
          *                     scores correspond to
          */
         template<typename IndexVector>
-        using BitVisitor = std::function<void(const BitScoreVector<IndexVector>&)>;
+        using BitVisitor = std::function<void(const BitScoreVectorView<IndexVector>&)>;
 
         /**
          * A visitor function for handling objects of type `DenseScoreVectorView`.
@@ -62,9 +62,9 @@ class MLRLCOMMON_API IScoreVector {
          * vector.
          *
          * @param completeBitVisitor                The visitor function for handling objects of type
-         *                                          `BitScoreVector<CompleteIndexVector>`
+         *                                          `BitScoreVectorView<CompleteIndexVector>`
          * @param partialBitVisitor                 The visitor function for handling objects of type
-         *                                          `BitScoreVector<PartialIndexVector>`
+         *                                          `BitScoreVectorView<PartialIndexVector>`
          * @param completeDense32BitVisitor         The visitor function for handling objects of type
          *                                          `DenseScoreVectorView<float32, CompleteIndexVector>`
          * @param partialDense32BitVisitor          The visitor function for handling objects of type
