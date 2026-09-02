@@ -26,9 +26,8 @@ class MLRLCOMMON_API View {
         /**
          * @param array         A pointer to an array of template type `T` that stores the values, the view should
          *                      provide access to
-         * @param numElements   The number of elements in the view
          */
-        explicit View(T* array, uint32 numElements = 0) : array(array) {}
+        explicit View(T* array, uint32 = 0) : array(array) {}
 
         /**
          * @param other A const reference to an object of type `View` that should be copied
