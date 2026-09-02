@@ -1,0 +1,5 @@
+File add_weighted_generic.hpp
+=============================
+
+.. doxygenfile:: add_weighted_generic.hpp
+   :project: common
