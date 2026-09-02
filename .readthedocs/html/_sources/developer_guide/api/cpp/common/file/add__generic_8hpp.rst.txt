@@ -1,0 +1,5 @@
+File add_generic.hpp
+====================
+
+.. doxygenfile:: add_generic.hpp
+   :project: common
