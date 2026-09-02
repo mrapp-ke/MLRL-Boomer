@@ -4,7 +4,6 @@
 #pragma once
 
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
-#include "mlrl/common/data/view_matrix_composite.hpp"
 #include "mlrl/common/data/view_matrix_lil.hpp"
 #include "mlrl/common/data/view_vector_sparse_set.hpp"
 
@@ -24,8 +23,13 @@
  * @tparam T The type of the values, the view provides access to
  */
 template<typename T>
-class MLRLCOMMON_API SparseSetView
-    : public CompositeMatrix<AllocatedListOfLists<IndexedValue<T>>, AllocatedCContiguousView<uint32>> {
+class MLRLCOMMON_API SparseSetView : public Matrix {
+    private:
+
+        AllocatedListOfLists<IndexedValue<T>> values_;
+
+        AllocatedCContiguousView<uint32> indices_;
+
     public:
 
         /**
@@ -38,19 +42,15 @@ class MLRLCOMMON_API SparseSetView
          * @param numCols   The number of columns in the view
          */
         SparseSetView(uint32 numRows, uint32 numCols)
-            : CompositeMatrix<AllocatedListOfLists<IndexedValue<T>>, AllocatedCContiguousView<uint32>>(
-                AllocatedListOfLists<IndexedValue<T>>(numRows, numCols),
-                AllocatedCContiguousView<uint32>(numRows, numCols), numRows, numCols) {
-            std::fill(this->secondView.array,
-                      this->secondView.array + (this->secondView.numRows * this->secondView.numCols), MAX_INDEX);
+            : Matrix(numRows, numCols), values_(numRows, numCols), indices_(numRows, numCols) {
+            std::fill(indices_.array, indices_.array + (indices_.numRows * indices_.numCols), MAX_INDEX);
         }
 
         /**
          * @param other A reference to an object of type `SparseSetView` that should be moved
          */
         SparseSetView(SparseSetView&& other)
-            : CompositeMatrix<AllocatedListOfLists<IndexedValue<T>>, AllocatedCContiguousView<uint32>>(
-                std::move(other)) {}
+            : Matrix(other), values_(std::move(other.values_)), indices_(std::move(other.indices_)) {}
 
         virtual ~SparseSetView() override {}
 
@@ -86,8 +86,7 @@ class MLRLCOMMON_API SparseSetView
          * @return      A `const_row`
          */
         const_row operator[](uint32 row) const {
-            return SparseSetView<T>::const_row(&this->firstView[row], this->secondView.values_cbegin(row),
-                                               this->numCols);
+            return SparseSetView<T>::const_row(&values_[row], indices_.values_cbegin(row), this->numCols);
         }
 
         /**
@@ -97,7 +96,7 @@ class MLRLCOMMON_API SparseSetView
          * @return      A `row`
          */
         row operator[](uint32 row) {
-            return SparseSetView<T>::row(&this->firstView[row], this->secondView.values_begin(row), this->numCols);
+            return SparseSetView<T>::row(&values_[row], indices_.values_begin(row), this->numCols);
         }
 
         /**
@@ -107,7 +106,7 @@ class MLRLCOMMON_API SparseSetView
          * @return      A `value_const_iterator` to the beginning of the values
          */
         value_const_iterator values_cbegin(uint32 row) const {
-            return this->firstView.values_cbegin(row);
+            return values_.values_cbegin(row);
         }
 
         /**
@@ -117,7 +116,7 @@ class MLRLCOMMON_API SparseSetView
          * @return      A `value_const_iterator` to the end of the values
          */
         value_const_iterator values_cend(uint32 row) const {
-            return this->firstView.values_cend(row);
+            return values_.values_cend(row);
         }
 
         /**
@@ -127,7 +126,7 @@ class MLRLCOMMON_API SparseSetView
          * @return      A `value_iterator` to the beginning of the values
          */
         value_iterator values_begin(uint32 row) {
-            return this->firstView.values_begin(row);
+            return values_.values_begin(row);
         }
 
         /**
@@ -137,7 +136,7 @@ class MLRLCOMMON_API SparseSetView
          * @return      A `value_iterator` to the end of the values
          */
         value_iterator values_end(uint32 row) {
-            return this->firstView.values_end(row);
+            return values_.values_end(row);
         }
 
         /**
