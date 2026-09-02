@@ -19,7 +19,7 @@ template<typename LabelMatrix, typename IndexIterator, typename ExampleWeights, 
 class ExampleWiseStratifiedSampling final : public IInstanceSampling {
     private:
 
-        const ExampleWeights exampleWeights_;
+        const ExampleWeights& exampleWeights_;
 
         const float32 sampleSize_;
 
