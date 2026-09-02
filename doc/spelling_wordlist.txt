@@ -226,13 +226,16 @@ dtype
 fortran
 fuernkranz
 gfm
+github
 hpp
+https
 hyperparameter
 hyperparameters
 imodels
 interpretability
 irep
 jaccard
+ke
 kln
 labelings
 labelset
@@ -251,6 +254,7 @@ mispredicted
 mixin
 mixins
 mlrl
+mrapp
 multilabel
 multivariant
 namespace
