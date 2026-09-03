@@ -21,8 +21,7 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
          */
         template<typename Threshold, typename Compare>
         class MLRLCOMMON_API ConditionVector final
-            : public IterableIndexedVectorDecorator<
-                IndexedVectorDecorator<AllocatedVector<uint32>, AllocatedVector<Threshold>>>,
+            : public IterableIndexedVectorDecorator<IndexedVectorDecorator<AllocatedIndexedVector<Threshold>>>,
               public IConditional {
             private:
 
