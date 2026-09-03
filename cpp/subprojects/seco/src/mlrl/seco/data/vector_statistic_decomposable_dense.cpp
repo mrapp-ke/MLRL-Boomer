@@ -30,57 +30,62 @@ namespace seco {
     template<typename StatisticType>
     DenseDecomposableStatisticVectorView<StatisticType>::DenseDecomposableStatisticVectorView(uint32 numElements,
                                                                                               bool init)
-        : CompositeVector<AllocatedVector<StatisticType>, AllocatedVector<StatisticType>>(
-            AllocatedVector<StatisticType>(numElements, init), AllocatedVector<StatisticType>(numElements, init)) {}
+        : correctCounts_(numElements, init), incorrectCounts_(numElements, init) {}
 
     template<typename StatisticType>
     typename View<StatisticType>::const_iterator
       DenseDecomposableStatisticVectorView<StatisticType>::correct_counts_cbegin() const {
-        return this->firstView.cbegin();
+        return correctCounts_.cbegin();
     }
 
     template<typename StatisticType>
     typename View<StatisticType>::const_iterator
       DenseDecomposableStatisticVectorView<StatisticType>::correct_counts_cend() const {
-        return this->firstView.cend();
+        return correctCounts_.cend();
     }
 
     template<typename StatisticType>
     typename View<StatisticType>::iterator DenseDecomposableStatisticVectorView<StatisticType>::correct_counts_begin() {
-        return this->firstView.begin();
+        return correctCounts_.begin();
     }
 
     template<typename StatisticType>
     typename View<StatisticType>::iterator DenseDecomposableStatisticVectorView<StatisticType>::correct_counts_end() {
-        return this->firstView.end();
+        return correctCounts_.end();
     }
 
     template<typename StatisticType>
     typename View<StatisticType>::const_iterator
       DenseDecomposableStatisticVectorView<StatisticType>::incorrect_counts_cbegin() const {
-        return this->secondView.cbegin();
+        return incorrectCounts_.cbegin();
     }
 
     template<typename StatisticType>
     typename View<StatisticType>::const_iterator
       DenseDecomposableStatisticVectorView<StatisticType>::incorrect_counts_cend() const {
-        return this->secondView.cend();
+        return incorrectCounts_.cend();
     }
 
     template<typename StatisticType>
     typename View<StatisticType>::iterator
       DenseDecomposableStatisticVectorView<StatisticType>::incorrect_counts_begin() {
-        return this->secondView.begin();
+        return incorrectCounts_.begin();
     }
 
     template<typename StatisticType>
     typename View<StatisticType>::iterator DenseDecomposableStatisticVectorView<StatisticType>::incorrect_counts_end() {
-        return this->secondView.end();
+        return incorrectCounts_.end();
     }
 
     template<typename StatisticType>
     uint32 DenseDecomposableStatisticVectorView<StatisticType>::getNumElements() const {
-        return this->firstView.numElements;
+        return correctCounts_.numElements;
+    }
+
+    template<typename StatisticType>
+    void DenseDecomposableStatisticVectorView<StatisticType>::clear() {
+        correctCounts_.clear();
+        incorrectCounts_.clear();
     }
 
     template class DenseDecomposableStatisticVectorView<uint32>;
