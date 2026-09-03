@@ -35,10 +35,8 @@ static inline void visitInternally(const DenseBinnedScoreVector<float64, Partial
 template<typename ScoreType, typename IndexVector>
 DenseBinnedScoreVector<ScoreType, IndexVector>::DenseBinnedScoreVector(const IndexVector& outputIndices, uint32 numBins,
                                                                        bool sorted)
-    : BinnedVectorDecorator<ViewDecorator<CompositeVector<AllocatedVector<uint32>, ResizableVector<ScoreType>>>>(
-        CompositeVector<AllocatedVector<uint32>, ResizableVector<ScoreType>>(
-          AllocatedVector<uint32>(outputIndices.getNumElements()), ResizableVector<ScoreType>(numBins))),
-      outputIndices_(outputIndices), sorted_(sorted), maxCapacity_(numBins) {}
+    : outputIndices_(outputIndices), sorted_(sorted), binIndices_(outputIndices.getNumElements()), binValues_(numBins),
+      maxCapacity_(numBins) {}
 
 template<typename ScoreType, typename IndexVector>
 typename DenseBinnedScoreVector<ScoreType, IndexVector>::index_const_iterator
@@ -69,49 +67,49 @@ typename DenseBinnedScoreVector<ScoreType, IndexVector>::value_const_iterator
 template<typename ScoreType, typename IndexVector>
 typename DenseBinnedScoreVector<ScoreType, IndexVector>::bin_index_iterator
   DenseBinnedScoreVector<ScoreType, IndexVector>::bin_indices_begin() {
-    return this->view.firstView.begin();
+    return binIndices_.begin();
 }
 
 template<typename ScoreType, typename IndexVector>
 typename DenseBinnedScoreVector<ScoreType, IndexVector>::bin_index_iterator
   DenseBinnedScoreVector<ScoreType, IndexVector>::bin_indices_end() {
-    return &this->view.firstView.array[this->getNumElements()];
+    return &binIndices_.array[this->getNumElements()];
 }
 
 template<typename ScoreType, typename IndexVector>
 typename DenseBinnedScoreVector<ScoreType, IndexVector>::bin_index_const_iterator
   DenseBinnedScoreVector<ScoreType, IndexVector>::bin_indices_cbegin() const {
-    return this->view.firstView.cbegin();
+    return binIndices_.cbegin();
 }
 
 template<typename ScoreType, typename IndexVector>
 typename DenseBinnedScoreVector<ScoreType, IndexVector>::bin_index_const_iterator
   DenseBinnedScoreVector<ScoreType, IndexVector>::bin_indices_cend() const {
-    return &this->view.firstView.array[this->getNumElements()];
+    return &binIndices_.array[this->getNumElements()];
 }
 
 template<typename ScoreType, typename IndexVector>
 typename DenseBinnedScoreVector<ScoreType, IndexVector>::bin_value_iterator
   DenseBinnedScoreVector<ScoreType, IndexVector>::bin_values_begin() {
-    return this->view.secondView.begin();
+    return binValues_.begin();
 }
 
 template<typename ScoreType, typename IndexVector>
 typename DenseBinnedScoreVector<ScoreType, IndexVector>::bin_value_iterator
   DenseBinnedScoreVector<ScoreType, IndexVector>::bin_values_end() {
-    return this->view.secondView.end();
+    return binValues_.end();
 }
 
 template<typename ScoreType, typename IndexVector>
 typename DenseBinnedScoreVector<ScoreType, IndexVector>::bin_value_const_iterator
   DenseBinnedScoreVector<ScoreType, IndexVector>::bin_values_cbegin() const {
-    return this->view.secondView.cbegin();
+    return binValues_.cbegin();
 }
 
 template<typename ScoreType, typename IndexVector>
 typename DenseBinnedScoreVector<ScoreType, IndexVector>::bin_value_const_iterator
   DenseBinnedScoreVector<ScoreType, IndexVector>::bin_values_cend() const {
-    return this->view.secondView.cend();
+    return binValues_.cend();
 }
 
 template<typename ScoreType, typename IndexVector>
@@ -121,7 +119,7 @@ uint32 DenseBinnedScoreVector<ScoreType, IndexVector>::getNumElements() const {
 
 template<typename ScoreType, typename IndexVector>
 void DenseBinnedScoreVector<ScoreType, IndexVector>::setNumBins(uint32 numBins, bool freeMemory) {
-    this->view.secondView.resize(numBins, freeMemory);
+    binValues_.resize(numBins, freeMemory);
 }
 
 template<typename ScoreType, typename IndexVector>

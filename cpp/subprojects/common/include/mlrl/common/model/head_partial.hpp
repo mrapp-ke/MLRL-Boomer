@@ -14,19 +14,17 @@
  * @tparam ScoreType The type of the numerical scores
  */
 template<typename ScoreType>
-class MLRLCOMMON_API PartialHead final : public IterableIndexedVectorDecorator<
-                                           IndexedVectorDecorator<AllocatedVector<uint32>, AllocatedVector<ScoreType>>>,
-                                         public IHead {
+class MLRLCOMMON_API PartialHead final
+    : public IterableIndexedVectorDecorator<IndexedVectorDecorator<AllocatedIndexedVector<ScoreType>>>,
+      public IHead {
     public:
 
         /**
          * @param numElements The number of scores that are contained by the head
          */
         PartialHead(uint32 numElements)
-            : IterableIndexedVectorDecorator<
-                IndexedVectorDecorator<AllocatedVector<uint32>, AllocatedVector<ScoreType>>>(
-                CompositeVector<AllocatedVector<uint32>, AllocatedVector<ScoreType>>(
-                  AllocatedVector<uint32>(numElements), AllocatedVector<ScoreType>(numElements))) {}
+            : IterableIndexedVectorDecorator<IndexedVectorDecorator<AllocatedIndexedVector<ScoreType>>>(
+                AllocatedIndexedVector<ScoreType>(numElements)) {}
 
         void visit(CompleteHeadVisitor<uint8> completeBinaryHeadVisitor,
                    CompleteHeadVisitor<float32> complete32BitHeadVisitor,

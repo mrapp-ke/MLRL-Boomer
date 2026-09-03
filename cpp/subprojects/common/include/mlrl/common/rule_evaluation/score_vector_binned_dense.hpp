@@ -3,7 +3,6 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_vector_binned.hpp"
 #include "mlrl/common/iterator/iterator_binned.hpp"
 #include "mlrl/common/rule_evaluation/score_vector.hpp"
 
@@ -17,14 +16,16 @@
  *                     predict
  */
 template<typename ScoreType, typename IndexVector>
-class DenseBinnedScoreVector final
-    : public BinnedVectorDecorator<ViewDecorator<CompositeVector<AllocatedVector<uint32>, ResizableVector<ScoreType>>>>,
-      virtual public IScoreVector {
+class DenseBinnedScoreVector final : virtual public IScoreVector {
     private:
 
         const IndexVector& outputIndices_;
 
         const bool sorted_;
+
+        AllocatedVector<uint32> binIndices_;
+
+        ResizableVector<ScoreType> binValues_;
 
         uint32 maxCapacity_;
 
