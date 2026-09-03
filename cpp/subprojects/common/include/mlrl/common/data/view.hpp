@@ -26,9 +26,8 @@ class MLRLCOMMON_API View {
         /**
          * @param array         A pointer to an array of template type `T` that stores the values, the view should
          *                      provide access to
-         * @param numElements   The number of elements in the view
          */
-        explicit View(T* array, uint32 numElements = 0) : array(array) {}
+        explicit View(T* array, uint32 = 0) : array(array) {}
 
         /**
          * @param other A const reference to an object of type `View` that should be copied
@@ -197,7 +196,7 @@ class MLRLCOMMON_API ResizableAllocator : public Allocator<View, MemoryAllocator
          * @param init          True, if all elements in the view should be value-initialized, false otherwise
          */
         explicit ResizableAllocator(uint32 numElements, bool init = false)
-            : Allocator<View>(numElements, init), maxCapacity(numElements) {}
+            : Allocator<View, MemoryAllocator>(numElements, init), maxCapacity(numElements) {}
 
         /**
          * @param other A reference to an object of type `ResizableAllocator` that should be copied
@@ -211,7 +210,7 @@ class MLRLCOMMON_API ResizableAllocator : public Allocator<View, MemoryAllocator
          * @param other A reference to an object of type `ResizableAllocator` that should be moved
          */
         ResizableAllocator(ResizableAllocator<View, MemoryAllocator>&& other)
-            : Allocator<View>(std::move(other)), maxCapacity(other.maxCapacity) {}
+            : Allocator<View, MemoryAllocator>(std::move(other)), maxCapacity(other.maxCapacity) {}
 
         virtual ~ResizableAllocator() override {}
 
