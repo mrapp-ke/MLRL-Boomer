@@ -33,12 +33,12 @@ TEST(NumericalFeatureTypeTest, createNumericalFeatureVectorFromFortranContiguous
 
     if (featureVectorDecorator) {
         // Check for missing feature values...
-        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().secondView;
+        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().missingFeatureVector;
         EXPECT_TRUE(missingFeatureVector[2]);
         EXPECT_TRUE(missingFeatureVector[5]);
 
         // Check dimensionality of feature vector...
-        const NumericalFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
+        const NumericalFeatureVector& featureVector = featureVectorDecorator->getView().featureVector;
         EXPECT_FLOAT_EQ(featureVector.sparseValue, 0.0);
         EXPECT_FALSE(featureVector.sparse);
         EXPECT_EQ(featureVector.numElements, (uint32) 5);
@@ -109,12 +109,12 @@ TEST(NumericalFeatureTypeTest, createNumericalFeatureVectorFromCscView) {
 
     if (featureVectorDecorator) {
         // Check for missing feature values...
-        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().secondView;
+        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().missingFeatureVector;
         EXPECT_TRUE(missingFeatureVector[3]);
         EXPECT_TRUE(missingFeatureVector[7]);
 
         // Check dimensionality of feature vector...
-        const NumericalFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
+        const NumericalFeatureVector& featureVector = featureVectorDecorator->getView().featureVector;
         EXPECT_FLOAT_EQ(featureVector.sparseValue, 0.0);
         EXPECT_TRUE(featureVector.sparse);
         EXPECT_EQ(featureVector.numElements, (uint32) 5);

@@ -3,7 +3,6 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_composite.hpp"
 #include "mlrl/common/input/feature_vector.hpp"
 #include "mlrl/common/input/feature_vector_missing.hpp"
 
@@ -16,7 +15,7 @@ static inline void updateCoverageMaskAndStatisticsBasedOnMissingFeatureVector(
   IWeightedStatistics& statistics) {
     // Iterate the indices of examples with missing feature values and set the corresponding values in `coverageMask` to
     // `indicatorValue`, which marks them as uncovered...
-    const MissingFeatureVector& missingFeatureVector = view.getView().secondView;
+    const MissingFeatureVector& missingFeatureVector = view.getView().missingFeatureVector;
 
     for (auto it = missingFeatureVector.indices_cbegin(); it != missingFeatureVector.indices_cend(); it++) {
         uint32 index = *it;
@@ -38,7 +37,7 @@ static inline std::unique_ptr<Decorator> createFilteredFeatureVectorDecorator(co
         filteredDecoratorPtr = std::unique_ptr<Decorator>(existingDecorator);
 
         // Filter the indices of examples with missing feature values...
-        MissingFeatureVector& missingFeatureVector = filteredDecoratorPtr->getView().secondView;
+        MissingFeatureVector& missingFeatureVector = filteredDecoratorPtr->getView().missingFeatureVector;
 
         for (auto it = missingFeatureVector.indices_cbegin(); it != missingFeatureVector.indices_cend();) {
             uint32 index = *it;
@@ -53,10 +52,10 @@ static inline std::unique_ptr<Decorator> createFilteredFeatureVectorDecorator(co
         filteredDecoratorPtr = std::make_unique<Decorator>(view);
 
         // Add the indices of examples with missing feature values...
-        MissingFeatureVector& missingFeatureVector = filteredDecoratorPtr->getView().secondView;
+        MissingFeatureVector& missingFeatureVector = filteredDecoratorPtr->getView().missingFeatureVector;
 
-        for (auto it = view.getView().secondView.indices_cbegin(); it != view.getView().secondView.indices_cend();
-             it++) {
+        for (auto it = view.getView().missingFeatureVector.indices_cbegin();
+             it != view.getView().missingFeatureVector.indices_cend(); it++) {
             uint32 index = *it;
 
             if (coverageMask[index]) {
@@ -69,33 +68,74 @@ static inline std::unique_ptr<Decorator> createFilteredFeatureVectorDecorator(co
 }
 
 /**
+ * A view that provides access to the values and indices of training examples stored in a feature vector.
+ *
+ * @tparam FeatureVector The type of the feature vector
+ */
+template<typename FeatureVector>
+class MLRLCOMMON_API FeatureVectorView final {
+    public:
+
+        /**
+         * A vector that stores feature values.
+         */
+        FeatureVector featureVector;
+
+        /**
+         * A vector that stores missing feature values.
+         */
+        AllocatedMissingFeatureVector missingFeatureVector;
+
+        /**
+         * @param featureVector         A reference to an object of template type `FeatureVector`
+         * @param missingFeatureVector  A reference to an object of type `AllocatedMissingFeatureVector`
+         */
+        FeatureVectorView(FeatureVector&& featureVector, AllocatedMissingFeatureVector&& missingFeatureVector)
+            : featureVector(std::move(featureVector)), missingFeatureVector(std::move(missingFeatureVector)) {}
+
+        /**
+         * @param other A reference to an object of type `FeatureVectorView` that should be copied
+         */
+        FeatureVectorView(const FeatureVectorView& other)
+            : featureVector(other.featureVector), missingFeatureVector(other.missingFeatureVector) {}
+
+        /**
+         * @param other A reference to an object of type `FeatureVectorView` that should be moved
+         */
+        FeatureVectorView(FeatureVectorView&& other)
+            : featureVector(std::move(other.featureVector)),
+              missingFeatureVector(std::move(other.missingFeatureVector)) {}
+
+        virtual ~FeatureVectorView() {}
+};
+
+/**
  * An abstract base class for all decorators that provide access to the values and indices of training examples stored
  * in a feature vector.
  *
  * @tparam FeatureVector The type of the feature vector
  */
 template<typename FeatureVector>
-class AbstractFeatureVectorDecorator
-    : public ViewDecorator<CompositeView<FeatureVector, AllocatedMissingFeatureVector>>,
-      public IFeatureVector {
+class AbstractFeatureVectorDecorator : public ViewDecorator<FeatureVectorView<FeatureVector>>,
+                                       public IFeatureVector {
     public:
 
         /**
-         * @param firstView   A reference to an object of template type `FeatureVector`
-         * @param secondView  A reference to an object of type `AllocatedMissingFeatureVector`
+         * @param featureVector         A reference to an object of template type `FeatureVector`
+         * @param missingFeatureVector  A reference to an object of type `AllocatedMissingFeatureVector`
          */
-        AbstractFeatureVectorDecorator(FeatureVector&& firstView, AllocatedMissingFeatureVector&& secondView)
-            : ViewDecorator<CompositeView<FeatureVector, AllocatedMissingFeatureVector>>(
-                CompositeView<FeatureVector, AllocatedMissingFeatureVector>(std::move(firstView),
-                                                                            std::move(secondView))) {}
+        AbstractFeatureVectorDecorator(FeatureVector&& featureVector,
+                                       AllocatedMissingFeatureVector&& missingFeatureVector)
+            : ViewDecorator<FeatureVectorView<FeatureVector>>(
+                FeatureVectorView<FeatureVector>(std::move(featureVector), std::move(missingFeatureVector))) {}
 
         std::unique_ptr<IResettableStatisticsSubset> createStatisticsSubset(
           const IWeightedStatistics& statistics, const CompleteIndexVector& outputIndices) const override {
-            return statistics.createSubset(this->view.secondView, outputIndices);
+            return statistics.createSubset(this->view.missingFeatureVector, outputIndices);
         }
 
         std::unique_ptr<IResettableStatisticsSubset> createStatisticsSubset(
           const IWeightedStatistics& statistics, const PartialIndexVector& outputIndices) const override {
-            return statistics.createSubset(this->view.secondView, outputIndices);
+            return statistics.createSubset(this->view.missingFeatureVector, outputIndices);
         }
 };

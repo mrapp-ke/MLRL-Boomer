@@ -30,12 +30,12 @@ TEST(EqualFrequencyFeatureBinningTest, createBinnedFeatureVectorFromFortranConti
 
     if (featureVectorDecorator) {
         // Check for missing feature values...
-        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().secondView;
+        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().missingFeatureVector;
         EXPECT_TRUE(missingFeatureVector[2]);
         EXPECT_TRUE(missingFeatureVector[5]);
 
         // Check dimensionality of feature vector...
-        const BinnedFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
+        const BinnedFeatureVector& featureVector = featureVectorDecorator->getView().featureVector;
         EXPECT_EQ(featureVector.numBins, (uint32) 3);
         EXPECT_EQ(featureVector.sparseBinIndex, (uint32) 0);
 
@@ -117,12 +117,12 @@ TEST(EqualFrequencyFeatureBinningTest, createBinnedFeatureVectorFromCscView) {
 
     if (featureVectorDecorator) {
         // Check for missing feature values...
-        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().secondView;
+        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().missingFeatureVector;
         EXPECT_TRUE(missingFeatureVector[3]);
         EXPECT_TRUE(missingFeatureVector[7]);
 
         // Check dimensionality of feature vector...
-        const BinnedFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
+        const BinnedFeatureVector& featureVector = featureVectorDecorator->getView().featureVector;
         EXPECT_EQ(featureVector.numBins, (uint32) 3);
         EXPECT_EQ(featureVector.sparseBinIndex, (uint32) 1);
 

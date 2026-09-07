@@ -14,7 +14,7 @@ static inline void updateCoverageMaskAndStatisticsBasedOnBinnedFeatureVector(con
                                                                              CoverageMask& coverageMask,
                                                                              uint32 indicatorValue,
                                                                              IWeightedStatistics& statistics) {
-    const FeatureVector& featureVector = view.getView().firstView;
+    const FeatureVector& featureVector = view.getView().featureVector;
     auto coverageMaskIterator = coverageMask.begin();
 
     if (interval.inverse) {
@@ -64,21 +64,22 @@ class AbstractBinnedFeatureVectorDecorator : public AbstractFeatureVectorDecorat
     public:
 
         /**
-         * @param firstView   A reference to an object of template type `AllocatedFeatureVector`
-         * @param secondView  A reference to an object of type `AllocatedMissingFeatureVector`
+         * @param featureVector         A reference to an object of template type `AllocatedFeatureVector`
+         * @param missingFeatureVector  A reference to an object of type `AllocatedMissingFeatureVector`
          */
-        AbstractBinnedFeatureVectorDecorator(AllocatedFeatureVector&& firstView,
-                                             AllocatedMissingFeatureVector&& secondView)
-            : AbstractFeatureVectorDecorator<AllocatedFeatureVector>(std::move(firstView), std::move(secondView)) {}
+        AbstractBinnedFeatureVectorDecorator(AllocatedFeatureVector&& featureVector,
+                                             AllocatedMissingFeatureVector&& missingFeatureVector)
+            : AbstractFeatureVectorDecorator<AllocatedFeatureVector>(std::move(featureVector),
+                                                                     std::move(missingFeatureVector)) {}
 
         /**
          * @param other A reference to an object of type `AbstractBinnedFeatureVectorDecorator` that should be copied
          */
         AbstractBinnedFeatureVectorDecorator(const AbstractBinnedFeatureVectorDecorator& other)
             : AbstractBinnedFeatureVectorDecorator<AllocatedFeatureVector>(
-                AllocatedFeatureVector(other.view.firstView.numBins,
-                                       other.view.firstView.indptr[other.view.firstView.numBins],
-                                       other.view.firstView.majorityValue),
+                AllocatedFeatureVector(other.view.featureVector.numBins,
+                                       other.view.featureVector.indptr[other.view.featureVector.numBins],
+                                       other.view.featureVector.majorityValue),
                 AllocatedMissingFeatureVector()) {}
 
         virtual ~AbstractBinnedFeatureVectorDecorator() override {}

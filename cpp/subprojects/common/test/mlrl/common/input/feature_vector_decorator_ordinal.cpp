@@ -37,7 +37,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, updateCoverageMaskAndStatistics) {
     uint32 indicatorValue = 1;
     decorator.updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
     EXPECT_EQ(coverageMask.indicatorValue, indicatorValue);
-    const OrdinalFeatureVector& ordinalFeatureVector = decorator.getView().firstView;
+    const OrdinalFeatureVector& ordinalFeatureVector = decorator.getView().featureVector;
 
     for (uint32 i = 0; i < interval.start; i++) {
         for (auto it = ordinalFeatureVector.indices_cbegin(i); it != ordinalFeatureVector.indices_cend(i); it++) {
@@ -108,7 +108,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsInverse) 
     uint32 indicatorValue = 1;
     decorator.updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
     EXPECT_EQ(coverageMask.indicatorValue, (uint32) 0);
-    const OrdinalFeatureVector& ordinalFeatureVector = decorator.getView().firstView;
+    const OrdinalFeatureVector& ordinalFeatureVector = decorator.getView().featureVector;
 
     for (uint32 i = 0; i < interval.start; i++) {
         for (auto it = ordinalFeatureVector.indices_cbegin(i); it != ordinalFeatureVector.indices_cend(i); it++) {
@@ -179,7 +179,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsFromView)
     decorator.createFilteredFeatureVector(existing, Interval(0, numValues))
       ->updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
     EXPECT_EQ(coverageMask.indicatorValue, indicatorValue);
-    const OrdinalFeatureVector& ordinalFeatureVector = decorator.getView().firstView;
+    const OrdinalFeatureVector& ordinalFeatureVector = decorator.getView().featureVector;
 
     for (uint32 i = 0; i < interval.start; i++) {
         for (auto it = ordinalFeatureVector.indices_cbegin(i); it != ordinalFeatureVector.indices_cend(i); it++) {
@@ -245,7 +245,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsFromViewI
     decorator.createFilteredFeatureVector(existing, Interval(0, numValues))
       ->updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
     EXPECT_EQ(coverageMask.indicatorValue, (uint32) 0);
-    const OrdinalFeatureVector& ordinalFeatureVector = decorator.getView().firstView;
+    const OrdinalFeatureVector& ordinalFeatureVector = decorator.getView().featureVector;
 
     for (uint32 i = 0; i < interval.start; i++) {
         for (auto it = ordinalFeatureVector.indices_cbegin(i); it != ordinalFeatureVector.indices_cend(i); it++) {
@@ -305,7 +305,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndices) 
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
         EXPECT_EQ(filteredFeatureVector.numBins, interval.end - interval.start);
         auto valuesBegin = filteredFeatureVector.values_cbegin();
 
@@ -352,7 +352,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithI
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
         EXPECT_EQ(filteredFeatureVector.numBins, interval.end - interval.start);
         auto valuesBegin = filteredFeatureVector.values_cbegin();
 
@@ -398,7 +398,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndicesIn
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
         EXPECT_EQ(filteredFeatureVector.numBins, interval.end - interval.start);
         auto valuesBegin = filteredFeatureVector.values_cbegin();
 
@@ -445,7 +445,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithI
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
         EXPECT_EQ(filteredFeatureVector.numBins, interval.end - interval.start);
         auto valuesBegin = filteredFeatureVector.values_cbegin();
 
@@ -503,7 +503,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithC
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
 
         for (uint32 i = 0; i < numValues; i++) {
             auto indicesBegin = filteredFeatureVector.indices_cbegin(i);
@@ -577,7 +577,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
 
         for (uint32 i = 0; i < numValues; i++) {
             auto indicesBegin = filteredFeatureVector.indices_cbegin(i);
@@ -603,7 +603,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
         }
 
         // Check missing indices...
-        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().secondView;
+        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().missingFeatureVector;
 
         for (uint32 i = numMinorityExamples; i < numExamples; i++) {
             if (i % 2 == 0) {
@@ -663,7 +663,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
 
         for (uint32 i = 0; i < numValues; i++) {
             auto indicesBegin = filteredFeatureVector.indices_cbegin(i);
@@ -689,7 +689,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
         }
 
         // Check missing indices...
-        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().secondView;
+        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().missingFeatureVector;
 
         for (uint32 i = numMinorityExamples; i < numExamples; i++) {
             if (i % 2 == 0) {
