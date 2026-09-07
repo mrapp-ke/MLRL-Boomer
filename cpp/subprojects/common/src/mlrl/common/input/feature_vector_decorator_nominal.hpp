@@ -27,9 +27,9 @@ static inline std::unique_ptr<IFeatureVector> createFilteredNominalFeatureVector
         }
 
         // Filter the indices of examples not associated with the majority value...
-        const NominalFeatureVector& featureVector = view.getView().firstView;
+        const NominalFeatureVector& featureVector = view.getView().featureVector;
         auto valueIterator = featureVector.values;
-        AllocatedNominalFeatureVector& filteredFeatureVector = filteredDecoratorPtr->getView().firstView;
+        AllocatedNominalFeatureVector& filteredFeatureVector = filteredDecoratorPtr->getView().featureVector;
         auto filteredIndexIterator = filteredFeatureVector.indices;
         auto filteredIndptrIterator = filteredFeatureVector.indptr;
         auto filteredValueIterator = filteredFeatureVector.values;
@@ -80,13 +80,13 @@ class NominalFeatureVectorDecorator final : public AbstractBinnedFeatureVectorDe
     public:
 
         /**
-         * @param firstView   A reference to an object of type `AllocatedNominalFeatureVector`
-         * @param secondView  A reference to an object of type `AllocatedMissingFeatureVector`
+         * @param featureVector         A reference to an object of type `AllocatedNominalFeatureVector`
+         * @param missingFeatureVector  A reference to an object of type `AllocatedMissingFeatureVector`
          */
-        NominalFeatureVectorDecorator(AllocatedNominalFeatureVector&& firstView,
-                                      AllocatedMissingFeatureVector&& secondView)
-            : AbstractBinnedFeatureVectorDecorator<AllocatedNominalFeatureVector>(std::move(firstView),
-                                                                                  std::move(secondView)) {}
+        NominalFeatureVectorDecorator(AllocatedNominalFeatureVector&& featureVector,
+                                      AllocatedMissingFeatureVector&& missingFeatureVector)
+            : AbstractBinnedFeatureVectorDecorator<AllocatedNominalFeatureVector>(std::move(featureVector),
+                                                                                  std::move(missingFeatureVector)) {}
 
         /**
          * @param other A reference to an object of type `NominalFeatureVectorDecorator` that should be copied
@@ -97,17 +97,17 @@ class NominalFeatureVectorDecorator final : public AbstractBinnedFeatureVectorDe
         void searchForRefinement(SingleRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
                                  uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
-            searchForNominalRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
-                                       outputIndices, numExamplesWithNonZeroWeights, minCoverage, allowNegations,
-                                       refinement);
+            searchForNominalRefinement(this->view.featureVector, this->view.missingFeatureVector, comparator,
+                                       statistics, outputIndices, numExamplesWithNonZeroWeights, minCoverage,
+                                       allowNegations, refinement);
         }
 
         void searchForRefinement(FixedRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
                                  uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
-            searchForNominalRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
-                                       outputIndices, numExamplesWithNonZeroWeights, minCoverage, allowNegations,
-                                       refinement);
+            searchForNominalRefinement(this->view.featureVector, this->view.missingFeatureVector, comparator,
+                                       statistics, outputIndices, numExamplesWithNonZeroWeights, minCoverage,
+                                       allowNegations, refinement);
         }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,

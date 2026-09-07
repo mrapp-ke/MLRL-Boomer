@@ -36,7 +36,7 @@ TEST(NominalFeatureVectorDecoratorTest, updateCoverageMaskAndStatistics) {
     uint32 indicatorValue = 1;
     decorator.updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
     EXPECT_EQ(coverageMask.indicatorValue, indicatorValue);
-    const NominalFeatureVector& nominalFeatureVector = decorator.getView().firstView;
+    const NominalFeatureVector& nominalFeatureVector = decorator.getView().featureVector;
 
     for (uint32 i = 0; i < interval.start; i++) {
         for (auto it = nominalFeatureVector.indices_cbegin(i); it != nominalFeatureVector.indices_cend(i); it++) {
@@ -107,7 +107,7 @@ TEST(NominalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsInverse) 
     uint32 indicatorValue = 1;
     decorator.updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
     EXPECT_EQ(coverageMask.indicatorValue, (uint32) 0);
-    const NominalFeatureVector& nominalFeatureVector = decorator.getView().firstView;
+    const NominalFeatureVector& nominalFeatureVector = decorator.getView().featureVector;
 
     for (uint32 i = 0; i < interval.start; i++) {
         for (auto it = nominalFeatureVector.indices_cbegin(i); it != nominalFeatureVector.indices_cend(i); it++) {
@@ -199,7 +199,7 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndicesIn
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const NominalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const NominalFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
         EXPECT_EQ(filteredFeatureVector.numBins, interval.start + (numValues - interval.end));
         auto valuesBegin = filteredFeatureVector.values_cbegin();
         uint32 n = 0;
@@ -263,7 +263,7 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndicesIn
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const NominalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const NominalFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
         EXPECT_EQ(filteredFeatureVector.numBins, interval.start + (numValues - interval.end));
         auto valuesBegin = filteredFeatureVector.values_cbegin();
         uint32 n = 0;
@@ -345,7 +345,7 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const NominalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const NominalFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
 
         for (uint32 i = 0; i < numValues; i++) {
             auto indicesBegin = filteredFeatureVector.indices_cbegin(i);
@@ -371,7 +371,7 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
         }
 
         // Check missing indices...
-        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().secondView;
+        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().missingFeatureVector;
 
         for (uint32 i = numMinorityExamples; i < numExamples; i++) {
             if (i % 2 == 0) {
@@ -431,7 +431,7 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const NominalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const NominalFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
 
         for (uint32 i = 0; i < numValues; i++) {
             auto indicesBegin = filteredFeatureVector.indices_cbegin(i);
@@ -457,7 +457,7 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
         }
 
         // Check missing indices...
-        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().secondView;
+        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().missingFeatureVector;
 
         for (uint32 i = numMinorityExamples; i < numExamples; i++) {
             if (i % 2 == 0) {

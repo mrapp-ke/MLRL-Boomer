@@ -15,7 +15,7 @@
 template<typename Decorator>
 static inline std::optional<NumericalFeatureVector> createFilteredNumericalFeatureVectorView(
   const Decorator& decorator, std::unique_ptr<IFeatureVector>& existing, const Interval& interval) {
-    const NumericalFeatureVector& featureVector = decorator.getView().firstView;
+    const NumericalFeatureVector& featureVector = decorator.getView().featureVector;
     std::pair<uint32, uint32> pair = getStartAndEndOfOpenInterval(interval, featureVector.numElements);
     uint32 start = pair.first;
     uint32 end = pair.second;
@@ -38,9 +38,9 @@ static inline std::unique_ptr<IFeatureVector> createFilteredNumericalFeatureVect
       createFilteredFeatureVectorDecorator<View, Decorator>(view, existing, coverageMask);
 
     // Filter the indices of examples not associated with the majority value...
-    AllocatedNumericalFeatureVector& filteredFeatureVector = filteredDecoratorPtr->getView().firstView;
+    AllocatedNumericalFeatureVector& filteredFeatureVector = filteredDecoratorPtr->getView().featureVector;
     auto filteredIterator = filteredFeatureVector.begin();
-    auto iterator = view.getView().firstView.cbegin();
+    auto iterator = view.getView().featureVector.cbegin();
     uint32 numFilteredElements = 0;
 
     for (uint32 i = 0; i < filteredFeatureVector.numElements; i++) {
@@ -67,32 +67,36 @@ class AbstractNumericalFeatureVectorDecorator : public AbstractFeatureVectorDeco
     public:
 
         /**
-         * @param firstView   A reference to an object of template type `FeatureVector`
-         * @param secondView  A reference to an object of type `AllocatedMissingFeatureVector`
+         * @param featureVector         A reference to an object of template type `FeatureVector`
+         * @param missingFeatureVector  A reference to an object of type `AllocatedMissingFeatureVector`
          */
-        AbstractNumericalFeatureVectorDecorator(FeatureVector&& firstView, AllocatedMissingFeatureVector&& secondView)
-            : AbstractFeatureVectorDecorator<FeatureVector>(std::move(firstView), std::move(secondView)) {}
+        AbstractNumericalFeatureVectorDecorator(FeatureVector&& featureVector,
+                                                AllocatedMissingFeatureVector&& missingFeatureVector)
+            : AbstractFeatureVectorDecorator<FeatureVector>(std::move(featureVector), std::move(missingFeatureVector)) {
+        }
 
         virtual ~AbstractNumericalFeatureVectorDecorator() override {}
 
         void searchForRefinement(SingleRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
                                  uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
-            searchForNumericalRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
-                                         outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
+            searchForNumericalRefinement(this->view.featureVector, this->view.missingFeatureVector, comparator,
+                                         statistics, outputIndices, numExamplesWithNonZeroWeights, minCoverage,
+                                         refinement);
         }
 
         void searchForRefinement(FixedRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
                                  uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
-            searchForNumericalRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
-                                         outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
+            searchForNumericalRefinement(this->view.featureVector, this->view.missingFeatureVector, comparator,
+                                         statistics, outputIndices, numExamplesWithNonZeroWeights, minCoverage,
+                                         refinement);
         }
 
         void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
                                              uint32 indicatorValue,
                                              IWeightedStatistics& statistics) const override final {
-            const FeatureVector& featureVector = this->view.firstView;
+            const FeatureVector& featureVector = this->view.featureVector;
             auto coverageMaskIterator = coverageMask.begin();
 
             if (interval.inverse) {
@@ -132,10 +136,10 @@ class NumericalFeatureVectorView final : public AbstractNumericalFeatureVectorDe
     public:
 
         /**
-         * @param firstView A reference to an object of type `NumericalFeatureVector`
+         * @param featureVector A reference to an object of type `NumericalFeatureVector`
          */
-        NumericalFeatureVectorView(NumericalFeatureVector&& firstView)
-            : AbstractNumericalFeatureVectorDecorator<NumericalFeatureVector>(std::move(firstView),
+        NumericalFeatureVectorView(NumericalFeatureVector&& featureVector)
+            : AbstractNumericalFeatureVectorDecorator<NumericalFeatureVector>(std::move(featureVector),
                                                                               AllocatedMissingFeatureVector()) {}
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
@@ -173,11 +177,11 @@ class AllocatedNumericalFeatureVectorView final
 
         /**
          * @param allocatedView A reference to an object of type `AllocatedNumericalFeatureVector`
-         * @param firstView     A reference to an object of type `NumericalFeatureVector`
+         * @param featureVector A reference to an object of type `NumericalFeatureVector`
          */
         AllocatedNumericalFeatureVectorView(AllocatedNumericalFeatureVector&& allocatedView,
-                                            NumericalFeatureVector&& firstView)
-            : AbstractNumericalFeatureVectorDecorator<NumericalFeatureVector>(std::move(firstView),
+                                            NumericalFeatureVector&& featureVector)
+            : AbstractNumericalFeatureVectorDecorator<NumericalFeatureVector>(std::move(featureVector),
                                                                               AllocatedMissingFeatureVector()),
               allocatedView(std::move(allocatedView)) {}
 
@@ -218,39 +222,39 @@ class NumericalFeatureVectorDecorator final
     public:
 
         /**
-         * @param firstView   A reference to an object of type `AllocatedNumericalFeatureVector`
-         * @param secondView  A reference to an object of type `AllocatedMissingFeatureVector`
+         * @param featureVector         A reference to an object of type `AllocatedNumericalFeatureVector`
+         * @param missingFeatureVector  A reference to an object of type `AllocatedMissingFeatureVector`
          */
-        NumericalFeatureVectorDecorator(AllocatedNumericalFeatureVector&& firstView,
-                                        AllocatedMissingFeatureVector&& secondView)
-            : AbstractNumericalFeatureVectorDecorator<AllocatedNumericalFeatureVector>(std::move(firstView),
-                                                                                       std::move(secondView)) {}
+        NumericalFeatureVectorDecorator(AllocatedNumericalFeatureVector&& featureVector,
+                                        AllocatedMissingFeatureVector&& missingFeatureVector)
+            : AbstractNumericalFeatureVectorDecorator<AllocatedNumericalFeatureVector>(
+                std::move(featureVector), std::move(missingFeatureVector)) {}
 
         /**
          * @param other A reference to an object of type `NumericalFeatureVectorDecorator` that should be copied
          */
         NumericalFeatureVectorDecorator(const NumericalFeatureVectorDecorator& other)
             : NumericalFeatureVectorDecorator(
-                AllocatedNumericalFeatureVector(other.view.firstView.numElements, other.view.firstView.sparseValue,
-                                                other.view.firstView.sparse),
+                AllocatedNumericalFeatureVector(other.view.featureVector.numElements,
+                                                other.view.featureVector.sparseValue, other.view.featureVector.sparse),
                 AllocatedMissingFeatureVector()) {}
 
         /**
          * @param other A reference to an object of type `NumericalFeatureVectorView` that should be copied
          */
         NumericalFeatureVectorDecorator(const NumericalFeatureVectorView& other)
-            : NumericalFeatureVectorDecorator(AllocatedNumericalFeatureVector(other.getView().firstView.numElements,
-                                                                              other.getView().firstView.sparseValue,
-                                                                              other.getView().firstView.sparse),
+            : NumericalFeatureVectorDecorator(AllocatedNumericalFeatureVector(other.getView().featureVector.numElements,
+                                                                              other.getView().featureVector.sparseValue,
+                                                                              other.getView().featureVector.sparse),
                                               AllocatedMissingFeatureVector()) {}
 
         /**
          * @param other A reference to an object of type `AllocatedNumericalFeatureVectorView` that should be copied
          */
         NumericalFeatureVectorDecorator(const AllocatedNumericalFeatureVectorView& other)
-            : NumericalFeatureVectorDecorator(AllocatedNumericalFeatureVector(other.getView().firstView.numElements,
-                                                                              other.getView().firstView.sparseValue,
-                                                                              other.getView().firstView.sparse),
+            : NumericalFeatureVectorDecorator(AllocatedNumericalFeatureVector(other.getView().featureVector.numElements,
+                                                                              other.getView().featureVector.sparseValue,
+                                                                              other.getView().featureVector.sparse),
                                               AllocatedMissingFeatureVector()) {}
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
@@ -264,7 +268,7 @@ class NumericalFeatureVectorDecorator final
 
                 if (existingDecorator) {
                     return std::make_unique<AllocatedNumericalFeatureVectorView>(
-                      std::move(existingDecorator->view.firstView), std::move(*filteredFeatureVector));
+                      std::move(existingDecorator->view.featureVector), std::move(*filteredFeatureVector));
                 }
 
                 return std::make_unique<NumericalFeatureVectorView>(std::move(*filteredFeatureVector));

@@ -27,7 +27,7 @@ TEST(BinaryFeatureVectorDecoratorTest, updateCoverageMaskAndStatistics) {
     uint32 indicatorValue = 1;
     decorator.updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
     EXPECT_EQ(coverageMask.indicatorValue, indicatorValue);
-    const BinaryFeatureVector& binaryFeatureVector = decorator.getView().firstView;
+    const BinaryFeatureVector& binaryFeatureVector = decorator.getView().featureVector;
 
     for (auto it = binaryFeatureVector.indices_cbegin(0); it != binaryFeatureVector.indices_cend(0); it++) {
         uint32 index = *it;
@@ -70,7 +70,7 @@ TEST(BinaryFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsInverse) {
     uint32 indicatorValue = 1;
     decorator.updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
     EXPECT_EQ(coverageMask.indicatorValue, (uint32) 0);
-    const BinaryFeatureVector& binaryFeatureVector = decorator.getView().firstView;
+    const BinaryFeatureVector& binaryFeatureVector = decorator.getView().featureVector;
 
     for (auto it = binaryFeatureVector.indices_cbegin(0); it != binaryFeatureVector.indices_cend(0); it++) {
         uint32 index = *it;
@@ -134,7 +134,7 @@ TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMa
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const BinaryFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const BinaryFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
         auto indicesBegin = filteredFeatureVector.indices_cbegin(0);
         auto indicesEnd = filteredFeatureVector.indices_cend(0);
         uint32 numIndices = indicesEnd - indicesBegin;
@@ -154,7 +154,7 @@ TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMa
         }
 
         // Check missing indices...
-        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().secondView;
+        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().missingFeatureVector;
 
         for (uint32 i = numMinorityExamples; i < numExamples; i++) {
             if (i % 2 == 0) {
@@ -204,7 +204,7 @@ TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMa
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const BinaryFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const BinaryFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
         auto indicesBegin = filteredFeatureVector.indices_cbegin(0);
         auto indicesEnd = filteredFeatureVector.indices_cend(0);
         uint32 numIndices = indicesEnd - indicesBegin;
@@ -224,7 +224,7 @@ TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMa
         }
 
         // Check missing indices...
-        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().secondView;
+        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().missingFeatureVector;
 
         for (uint32 i = numMinorityExamples; i < numExamples; i++) {
             if (i % 2 == 0) {

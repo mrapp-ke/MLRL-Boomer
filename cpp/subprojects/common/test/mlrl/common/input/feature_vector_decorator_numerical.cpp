@@ -205,7 +205,7 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndices
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const NumericalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const NumericalFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
         EXPECT_EQ(filteredFeatureVector.sparseValue, featureVector.sparseValue);
         EXPECT_EQ(filteredFeatureVector.sparse, featureVector.sparse);
         EXPECT_EQ(filteredFeatureVector.numElements, interval.end - interval.start);
@@ -244,7 +244,7 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWit
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const NumericalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const NumericalFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
         EXPECT_EQ(filteredFeatureVector.sparseValue, featureVector.sparseValue);
         EXPECT_EQ(filteredFeatureVector.sparse, featureVector.sparse);
         EXPECT_EQ(filteredFeatureVector.numElements, interval.end - interval.start);
@@ -281,7 +281,7 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndices
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const NumericalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const NumericalFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
         EXPECT_EQ(filteredFeatureVector.sparseValue, featureVector.sparseValue);
         EXPECT_EQ(filteredFeatureVector.sparse, featureVector.sparse);
         EXPECT_EQ(filteredFeatureVector.numElements, interval.start);
@@ -320,7 +320,7 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWit
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const NumericalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const NumericalFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
         EXPECT_EQ(filteredFeatureVector.sparseValue, featureVector.sparseValue);
         EXPECT_EQ(filteredFeatureVector.sparse, featureVector.sparse);
         EXPECT_EQ(filteredFeatureVector.numElements, interval.start);
@@ -388,7 +388,7 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWit
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const NumericalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const NumericalFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
         EXPECT_EQ(filteredFeatureVector.sparseValue, featureVector.sparseValue);
         EXPECT_EQ(filteredFeatureVector.sparse, featureVector.sparse);
         EXPECT_EQ(filteredFeatureVector.numElements, numDenseExamples / 2);
@@ -448,7 +448,7 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverag
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const NumericalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const NumericalFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
         std::unordered_set<uint32> indices;
 
         for (auto it = filteredFeatureVector.cbegin(); it != filteredFeatureVector.cend(); it++) {
@@ -465,7 +465,7 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverag
         }
 
         // Check missing indices...
-        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().secondView;
+        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().missingFeatureVector;
 
         for (uint32 i = numDenseExamples; i < numExamples; i++) {
             if (i % 2 == 0) {
@@ -517,7 +517,7 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverag
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const NumericalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const NumericalFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
 
         std::unordered_set<uint32> indices;
 
@@ -535,7 +535,7 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverag
         }
 
         // Check missing indices...
-        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().secondView;
+        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().missingFeatureVector;
 
         for (uint32 i = numDenseExamples; i < numExamples; i++) {
             if (i % 2 == 0) {

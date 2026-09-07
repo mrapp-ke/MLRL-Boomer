@@ -15,8 +15,8 @@ static inline std::unique_ptr<IFeatureVector> createFilteredNominalFeatureVector
       createFilteredFeatureVectorDecorator<View, Decorator>(view, existing, coverageMask);
 
     // Filter the indices of examples not associated with the majority value...
-    const NominalFeatureVector& featureVector = view.getView().firstView;
-    AllocatedNominalFeatureVector& filteredFeatureVector = filteredDecoratorPtr->getView().firstView;
+    const NominalFeatureVector& featureVector = view.getView().featureVector;
+    AllocatedNominalFeatureVector& filteredFeatureVector = filteredDecoratorPtr->getView().featureVector;
     auto filteredIndexIterator = filteredFeatureVector.indices;
     auto filteredIndptrIterator = filteredFeatureVector.indptr;
     auto filteredValueIterator = filteredFeatureVector.values;

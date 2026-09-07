@@ -3,7 +3,6 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_matrix_composite.hpp"
 #include "mlrl/common/data/view_matrix_lil.hpp"
 #include "mlrl/seco/util/dll_exports.hpp"
 
@@ -13,8 +12,13 @@ namespace seco {
      * Implements row-wise read and write access to the indices of labels for which a rule predicts correctly or
      * incorrectly, respectively. The label indices are stored in two sparse matrices in the list of lists (LIL) format.
      */
-    class MLRLSECO_API SparseDecomposableStatisticView final
-        : public CompositeMatrix<AllocatedListOfLists<uint32>, AllocatedListOfLists<uint32>> {
+    class MLRLSECO_API SparseDecomposableStatisticView final : public Matrix {
+        private:
+
+            AllocatedListOfLists<uint32> correctIndices_;
+
+            AllocatedListOfLists<uint32> incorrectIndices_;
+
         public:
 
             /**
@@ -157,5 +161,10 @@ namespace seco {
              * @return      A `row`
              */
             row incorrect_indices_row(uint32 row);
+
+            /**
+             * Sets all values stored in the view to zero.
+             */
+            void clear();
     };
 }
