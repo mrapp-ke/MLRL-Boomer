@@ -1,5 +1,0 @@
-File view_composite.hpp
-=======================
-
-.. doxygenfile:: view_composite.hpp
-   :project: common
