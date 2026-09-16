@@ -54,14 +54,14 @@ namespace boosting {
 
                     void invokeVisitor(
                       DenseBinnedVisitor<float32, CompleteIndexVector> visitor,
-                      const DenseBinnedScoreVector<float32, CompleteIndexVector>& scoreVector) const override {
+                      const DenseBinnedScoreVectorView<float32, CompleteIndexVector>& scoreVector) const override {
                         StatisticsUpdateFactory<IStatisticsState<float32>> statisticsUpdateFactory(state_);
                         visitor(scoreVector, statisticsUpdateFactory);
                     }
 
                     void invokeVisitor(
                       DenseBinnedVisitor<float32, PartialIndexVector> visitor,
-                      const DenseBinnedScoreVector<float32, PartialIndexVector>& scoreVector) const override {
+                      const DenseBinnedScoreVectorView<float32, PartialIndexVector>& scoreVector) const override {
                         StatisticsUpdateFactory<IStatisticsState<float32>> statisticsUpdateFactory(state_);
                         visitor(scoreVector, statisticsUpdateFactory);
                     }
@@ -105,14 +105,14 @@ namespace boosting {
 
                     void invokeVisitor(
                       DenseBinnedVisitor<float64, CompleteIndexVector> visitor,
-                      const DenseBinnedScoreVector<float64, CompleteIndexVector>& scoreVector) const override {
+                      const DenseBinnedScoreVectorView<float64, CompleteIndexVector>& scoreVector) const override {
                         StatisticsUpdateFactory<IStatisticsState<float64>> statisticsUpdateFactory(state_);
                         visitor(scoreVector, statisticsUpdateFactory);
                     }
 
                     void invokeVisitor(
                       DenseBinnedVisitor<float64, PartialIndexVector> visitor,
-                      const DenseBinnedScoreVector<float64, PartialIndexVector>& scoreVector) const override {
+                      const DenseBinnedScoreVectorView<float64, PartialIndexVector>& scoreVector) const override {
                         StatisticsUpdateFactory<IStatisticsState<float64>> statisticsUpdateFactory(state_);
                         visitor(scoreVector, statisticsUpdateFactory);
                     }

@@ -187,53 +187,53 @@ class AbstractStatisticsUpdateCandidate : public IStatisticsUpdateCandidate {
 
         /**
          * May be overridden by subclasses in order to invoke a given `DenseBinnedVisitor` for handling objects of type
-         * `DenseBinnedScoreVector<float32, CompleteIndexVector>`.
+         * `DenseBinnedScoreVectorView<float32, CompleteIndexVector>`.
          *
          * @param visitor       The visitor to be invoked
-         * @param scoreVector   A reference to an object of type `DenseBinnedScoreVector<float32, CompleteIndexVector>`
-         *                      to be handled by the visitor
+         * @param scoreVector   A reference to an object of type
+         *                      `DenseBinnedScoreVectorView<float32, CompleteIndexVector>` to be handled by the visitor
          */
         virtual void invokeVisitor(DenseBinnedVisitor<float32, CompleteIndexVector> visitor,
-                                   const DenseBinnedScoreVector<float32, CompleteIndexVector>& scoreVector) const {
+                                   const DenseBinnedScoreVectorView<float32, CompleteIndexVector>& scoreVector) const {
             throw std::runtime_error("not implemented");
         }
 
         /**
          * May be overridden by subclasses in order to invoke a given `DenseBinnedVisitor` for handling objects of type
-         * `DenseBinnedScoreVector<float32, PartialIndexVector>`.
+         * `DenseBinnedScoreVectorView<float32, PartialIndexVector>`.
          *
          * @param visitor       The visitor to be invoked
-         * @param scoreVector   A reference to an object of type `DenseBinnedScoreVector<float32, PartialIndexVector>`
-         *                      to be handled by the visitor
+         * @param scoreVector   A reference to an object of type
+         *                      `DenseBinnedScoreVectorView<float32, PartialIndexVector>` to be handled by the visitor
          */
         virtual void invokeVisitor(DenseBinnedVisitor<float32, PartialIndexVector> visitor,
-                                   const DenseBinnedScoreVector<float32, PartialIndexVector>& scoreVector) const {
+                                   const DenseBinnedScoreVectorView<float32, PartialIndexVector>& scoreVector) const {
             throw std::runtime_error("not implemented");
         }
 
         /**
          * May be overridden by subclasses in order to invoke a given `DenseBinnedVisitor` for handling objects of type
-         * `DenseBinnedScoreVector<float64, CompleteIndexVector>`.
+         * `DenseBinnedScoreVectorView<float64, CompleteIndexVector>`.
          *
          * @param visitor       The visitor to be invoked
-         * @param scoreVector   A reference to an object of type `DenseBinnedScoreVector<float64, CompleteIndexVector>`
-         *                      to be handled by the visitor
+         * @param scoreVector   A reference to an object of type
+         *                      `DenseBinnedScoreVectorView<float64, CompleteIndexVector>` to be handled by the visitor
          */
         virtual void invokeVisitor(DenseBinnedVisitor<float64, CompleteIndexVector> visitor,
-                                   const DenseBinnedScoreVector<float64, CompleteIndexVector>& scoreVector) const {
+                                   const DenseBinnedScoreVectorView<float64, CompleteIndexVector>& scoreVector) const {
             throw std::runtime_error("not implemented");
         }
 
         /**
          * May be overridden by subclasses in order to invoke a given `DenseBinnedVisitor` for handling objects of type
-         * `DenseBinnedScoreVector<float64, PartialIndexVector>`.
+         * `DenseBinnedScoreVectorView<float64, PartialIndexVector>`.
          *
          * @param visitor       The visitor to be invoked
-         * @param scoreVector   A reference to an object of type `DenseBinnedScoreVector<float64, PartialIndexVector>`
-         *                      to be handled by the visitor
+         * @param scoreVector   A reference to an object of type
+         *                      `DenseBinnedScoreVectorView<float64, PartialIndexVector>` to be handled by the visitor
          */
         virtual void invokeVisitor(DenseBinnedVisitor<float64, PartialIndexVector> visitor,
-                                   const DenseBinnedScoreVector<float64, PartialIndexVector>& scoreVector) const {
+                                   const DenseBinnedScoreVectorView<float64, PartialIndexVector>& scoreVector) const {
             throw std::runtime_error("not implemented");
         }
 
@@ -284,22 +284,22 @@ class AbstractStatisticsUpdateCandidate : public IStatisticsUpdateCandidate {
             };
             auto tmpCompleteDenseBinned32BitVisitor =
               [this, completeDenseBinned32BitVisitor](
-                const DenseBinnedScoreVector<float32, CompleteIndexVector>& scoreVector) {
+                const DenseBinnedScoreVectorView<float32, CompleteIndexVector>& scoreVector) {
                 invokeVisitor(completeDenseBinned32BitVisitor, scoreVector);
             };
             auto tmpPartialDenseBinned32BitVisitor =
-              [this,
-               partialDenseBinned32BitVisitor](const DenseBinnedScoreVector<float32, PartialIndexVector>& scoreVector) {
+              [this, partialDenseBinned32BitVisitor](
+                const DenseBinnedScoreVectorView<float32, PartialIndexVector>& scoreVector) {
                 invokeVisitor(partialDenseBinned32BitVisitor, scoreVector);
             };
             auto tmpCompleteDenseBinned64BitVisitor =
               [this, completeDenseBinned64BitVisitor](
-                const DenseBinnedScoreVector<float64, CompleteIndexVector>& scoreVector) {
+                const DenseBinnedScoreVectorView<float64, CompleteIndexVector>& scoreVector) {
                 invokeVisitor(completeDenseBinned64BitVisitor, scoreVector);
             };
             auto tmpPartialDenseBinned64BitVisitor =
-              [this,
-               partialDenseBinned64BitVisitor](const DenseBinnedScoreVector<float64, PartialIndexVector>& scoreVector) {
+              [this, partialDenseBinned64BitVisitor](
+                const DenseBinnedScoreVectorView<float64, PartialIndexVector>& scoreVector) {
                 invokeVisitor(partialDenseBinned64BitVisitor, scoreVector);
             };
             scoreVector_.visit(tmpCompleteBitVisitor, tmpPartialBitVisitor, tmpCompleteDense32BitVisitor,
