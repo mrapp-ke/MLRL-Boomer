@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/common/iterator/iterator_binned.hpp"
-#include "mlrl/common/rule_evaluation/score_vector.hpp"
+#include "mlrl/common/rule_evaluation/score_vector_decorator.hpp"
 #include "mlrl/common/util/quality.hpp"
 
 /**
@@ -338,8 +338,8 @@ class MLRLCOMMON_API DenseBinnedScoreVectorAllocator : public View {
  */
 template<typename ScoreType, typename IndexVector>
 class DenseBinnedScoreVector final
-    : public ViewDecorator<DenseBinnedScoreVectorAllocator<DenseBinnedScoreVectorView<ScoreType, IndexVector>>>,
-      virtual public IScoreVector {
+    : public AbstractScoreVectorViewDecorator<
+        DenseBinnedScoreVectorAllocator<DenseBinnedScoreVectorView<ScoreType, IndexVector>>> {
     public:
 
         /**
@@ -469,13 +469,6 @@ class DenseBinnedScoreVector final
         bin_value_const_iterator bin_values_cend() const;
 
         /**
-         * Returns the number of elements in the vector.
-         *
-         * @return The number of elements
-         */
-        uint32 getNumElements() const;
-
-        /**
          * Sets the number of bins in the vector.
          *
          * @param numBins       The number of bins to be set
@@ -483,38 +476,15 @@ class DenseBinnedScoreVector final
          */
         void setNumBins(uint32 numBins, bool freeMemory);
 
-        /**
-         * Returns whether the rule may only predict for a subset of the available outputs, or not.
-         *
-         * @return True, if the rule may only predict for a subset of the available outputs, false otherwise
-         */
-        bool isPartial() const;
-
-        /**
-         * Returns whether the indices of the outputs for which the rule may predict are sorted in increasing order, or
-         * not.
-         *
-         * @return True, if the indices of the outputs for which the rule may predict are sorted in increasing order,
-         *         false otherwise
-         */
-        bool isSorted() const;
-
-        /**
-         * Sets the quality of the rule.
-         *
-         * @param quality The quality to be set
-         */
-        void setQuality(float64 quality);
-
-        float64 getQuality() const override;
-
-        void visit(BitVisitor<CompleteIndexVector> completeBitVisitor, BitVisitor<PartialIndexVector> partialBitVisitor,
-                   DenseVisitor<float32, CompleteIndexVector> completeDense32BitVisitor,
-                   DenseVisitor<float32, PartialIndexVector> partialDense32BitVisitor,
-                   DenseVisitor<float64, CompleteIndexVector> completeDense64BitVisitor,
-                   DenseVisitor<float64, PartialIndexVector> partialDense64BitVisitor,
-                   DenseBinnedVisitor<float32, CompleteIndexVector> completeDenseBinned32BitVisitor,
-                   DenseBinnedVisitor<float32, PartialIndexVector> partialDenseBinned32BitVisitor,
-                   DenseBinnedVisitor<float64, CompleteIndexVector> completeDenseBinned64BitVisitor,
-                   DenseBinnedVisitor<float64, PartialIndexVector> partialDenseBinned64BitVisitor) const override;
+        void visit(
+          IScoreVector::BitVisitor<CompleteIndexVector> completeBitVisitor,
+          IScoreVector::BitVisitor<PartialIndexVector> partialBitVisitor,
+          IScoreVector::DenseVisitor<float32, CompleteIndexVector> completeDense32BitVisitor,
+          IScoreVector::DenseVisitor<float32, PartialIndexVector> partialDense32BitVisitor,
+          IScoreVector::DenseVisitor<float64, CompleteIndexVector> completeDense64BitVisitor,
+          IScoreVector::DenseVisitor<float64, PartialIndexVector> partialDense64BitVisitor,
+          IScoreVector::DenseBinnedVisitor<float32, CompleteIndexVector> completeDenseBinned32BitVisitor,
+          IScoreVector::DenseBinnedVisitor<float32, PartialIndexVector> partialDenseBinned32BitVisitor,
+          IScoreVector::DenseBinnedVisitor<float64, CompleteIndexVector> completeDenseBinned64BitVisitor,
+          IScoreVector::DenseBinnedVisitor<float64, PartialIndexVector> partialDenseBinned64BitVisitor) const override;
 };

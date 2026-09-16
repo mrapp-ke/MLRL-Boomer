@@ -34,7 +34,7 @@ static inline void visitInternally(const DenseScoreVectorView<float64, PartialIn
 
 template<typename ScoreType, typename IndexVector>
 DenseScoreVector<ScoreType, IndexVector>::DenseScoreVector(const IndexVector& outputIndices, bool sorted)
-    : ViewDecorator<DenseScoreVectorAllocator<DenseScoreVectorView<ScoreType, IndexVector>>>(
+    : AbstractScoreVectorViewDecorator<DenseScoreVectorAllocator<DenseScoreVectorView<ScoreType, IndexVector>>>(
         DenseScoreVectorAllocator<DenseScoreVectorView<ScoreType, IndexVector>>(outputIndices, sorted)) {}
 
 template<typename ScoreType, typename IndexVector>
@@ -74,36 +74,17 @@ typename DenseScoreVector<ScoreType, IndexVector>::value_const_iterator
 }
 
 template<typename ScoreType, typename IndexVector>
-uint32 DenseScoreVector<ScoreType, IndexVector>::getNumElements() const {
-    return this->view.getNumElements();
-}
-
-template<typename ScoreType, typename IndexVector>
-bool DenseScoreVector<ScoreType, IndexVector>::isPartial() const {
-    return this->view.isPartial();
-}
-
-template<typename ScoreType, typename IndexVector>
-void DenseScoreVector<ScoreType, IndexVector>::setQuality(float64 quality) {
-    this->view.quality = quality;
-}
-
-template<typename ScoreType, typename IndexVector>
-float64 DenseScoreVector<ScoreType, IndexVector>::getQuality() const {
-    return this->view.quality;
-}
-
-template<typename ScoreType, typename IndexVector>
 void DenseScoreVector<ScoreType, IndexVector>::visit(
-  BitVisitor<CompleteIndexVector> completeBitVisitor, BitVisitor<PartialIndexVector> partialBitVisitor,
-  DenseVisitor<float32, CompleteIndexVector> completeDense32BitVisitor,
-  DenseVisitor<float32, PartialIndexVector> partialDense32BitVisitor,
-  DenseVisitor<float64, CompleteIndexVector> completeDense64BitVisitor,
-  DenseVisitor<float64, PartialIndexVector> partialDense64BitVisitor,
-  DenseBinnedVisitor<float32, CompleteIndexVector> completeDense32BitBinnedVisitor,
-  DenseBinnedVisitor<float32, PartialIndexVector> partialDense32BitBinnedVisitor,
-  DenseBinnedVisitor<float64, CompleteIndexVector> completeDense64BitBinnedVisitor,
-  DenseBinnedVisitor<float64, PartialIndexVector> partialDense64BitBinnedVisitor) const {
+  IScoreVector::BitVisitor<CompleteIndexVector> completeBitVisitor,
+  IScoreVector::BitVisitor<PartialIndexVector> partialBitVisitor,
+  IScoreVector::DenseVisitor<float32, CompleteIndexVector> completeDense32BitVisitor,
+  IScoreVector::DenseVisitor<float32, PartialIndexVector> partialDense32BitVisitor,
+  IScoreVector::DenseVisitor<float64, CompleteIndexVector> completeDense64BitVisitor,
+  IScoreVector::DenseVisitor<float64, PartialIndexVector> partialDense64BitVisitor,
+  IScoreVector::DenseBinnedVisitor<float32, CompleteIndexVector> completeDense32BitBinnedVisitor,
+  IScoreVector::DenseBinnedVisitor<float32, PartialIndexVector> partialDense32BitBinnedVisitor,
+  IScoreVector::DenseBinnedVisitor<float64, CompleteIndexVector> completeDense64BitBinnedVisitor,
+  IScoreVector::DenseBinnedVisitor<float64, PartialIndexVector> partialDense64BitBinnedVisitor) const {
     visitInternally(this->getView(), completeDense32BitVisitor, partialDense32BitVisitor, completeDense64BitVisitor,
                     partialDense64BitVisitor);
 }

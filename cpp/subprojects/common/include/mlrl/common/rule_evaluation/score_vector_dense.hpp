@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/rule_evaluation/score_vector.hpp"
+#include "mlrl/common/rule_evaluation/score_vector_decorator.hpp"
 #include "mlrl/common/util/quality.hpp"
 
 /**
@@ -183,8 +183,7 @@ class MLRLCOMMON_API DenseScoreVectorAllocator : public View {
  */
 template<typename ScoreType, typename IndexVector>
 class DenseScoreVector final
-    : public ViewDecorator<DenseScoreVectorAllocator<DenseScoreVectorView<ScoreType, IndexVector>>>,
-      virtual public IScoreVector {
+    : public AbstractScoreVectorViewDecorator<DenseScoreVectorAllocator<DenseScoreVectorView<ScoreType, IndexVector>>> {
     public:
 
         /**
@@ -252,36 +251,15 @@ class DenseScoreVector final
          */
         value_const_iterator values_cend() const;
 
-        /**
-         * Returns the number of outputs for which the rule may predict.
-         *
-         * @return The number of outputs
-         */
-        uint32 getNumElements() const;
-
-        /**
-         * Returns whether the rule may only predict for a subset of the available outputs, or not.
-         *
-         * @return True, if the rule may only predict for a subset of the available outputs, false otherwise
-         */
-        bool isPartial() const;
-
-        /**
-         * Sets the quality of the rule.
-         *
-         * @param quality The quality to be set
-         */
-        void setQuality(float64 quality);
-
-        float64 getQuality() const override;
-
-        void visit(BitVisitor<CompleteIndexVector> completeBitVisitor, BitVisitor<PartialIndexVector> partialBitVisitor,
-                   DenseVisitor<float32, CompleteIndexVector> completeDense32BitVisitor,
-                   DenseVisitor<float32, PartialIndexVector> partialDense32BitVisitor,
-                   DenseVisitor<float64, CompleteIndexVector> completeDense64BitVisitor,
-                   DenseVisitor<float64, PartialIndexVector> partialDense64BitVisitor,
-                   DenseBinnedVisitor<float32, CompleteIndexVector> completeDenseBinned32BitVisitor,
-                   DenseBinnedVisitor<float32, PartialIndexVector> partialDenseBinned32BitVisitor,
-                   DenseBinnedVisitor<float64, CompleteIndexVector> completeDenseBinned64BitVisitor,
-                   DenseBinnedVisitor<float64, PartialIndexVector> partialDenseBinned64BitVisitor) const override;
+        void visit(
+          IScoreVector::BitVisitor<CompleteIndexVector> completeBitVisitor,
+          IScoreVector::BitVisitor<PartialIndexVector> partialBitVisitor,
+          IScoreVector::DenseVisitor<float32, CompleteIndexVector> completeDense32BitVisitor,
+          IScoreVector::DenseVisitor<float32, PartialIndexVector> partialDense32BitVisitor,
+          IScoreVector::DenseVisitor<float64, CompleteIndexVector> completeDense64BitVisitor,
+          IScoreVector::DenseVisitor<float64, PartialIndexVector> partialDense64BitVisitor,
+          IScoreVector::DenseBinnedVisitor<float32, CompleteIndexVector> completeDenseBinned32BitVisitor,
+          IScoreVector::DenseBinnedVisitor<float32, PartialIndexVector> partialDenseBinned32BitVisitor,
+          IScoreVector::DenseBinnedVisitor<float64, CompleteIndexVector> completeDenseBinned64BitVisitor,
+          IScoreVector::DenseBinnedVisitor<float64, PartialIndexVector> partialDenseBinned64BitVisitor) const override;
 };
