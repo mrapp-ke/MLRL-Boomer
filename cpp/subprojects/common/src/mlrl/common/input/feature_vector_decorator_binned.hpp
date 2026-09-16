@@ -14,7 +14,7 @@
 template<typename Decorator>
 static inline std::optional<BinnedFeatureVector> createFilteredBinnedFeatureVectorView(
   const Decorator& decorator, std::unique_ptr<IFeatureVector>& existing, const Interval& interval) {
-    const BinnedFeatureVector& featureVector = decorator.getView().firstView;
+    const BinnedFeatureVector& featureVector = decorator.getView().featureVector;
     std::pair<uint32, uint32> pair = getStartAndEndOfOpenInterval(interval, featureVector.numBins);
     uint32 start = pair.first;
     uint32 end = pair.second;
@@ -39,8 +39,8 @@ static inline std::unique_ptr<IFeatureVector> createFilteredBinnedFeatureVectorD
       createFilteredFeatureVectorDecorator<View, Decorator>(view, existing, coverageMask);
 
     // Filter the indices of examples not associated with the majority value...
-    const BinnedFeatureVector& featureVector = view.getView().firstView;
-    AllocatedBinnedFeatureVector& filteredFeatureVector = filteredDecoratorPtr->getView().firstView;
+    const BinnedFeatureVector& featureVector = view.getView().featureVector;
+    AllocatedBinnedFeatureVector& filteredFeatureVector = filteredDecoratorPtr->getView().featureVector;
     auto filteredIndexIterator = filteredFeatureVector.indices;
     auto filteredIndptrIterator = filteredFeatureVector.indptr;
     auto filteredThresholdIterator = filteredFeatureVector.thresholds;
@@ -96,22 +96,22 @@ class BinnedFeatureVectorView final : public AbstractFeatureVectorDecorator<Binn
     public:
 
         /**
-         * @param firstView A reference to an object of type `BinnedFeatureVector`
+         * @param featureVector A reference to an object of type `BinnedFeatureVector`
          */
-        BinnedFeatureVectorView(BinnedFeatureVector&& firstView)
-            : AbstractFeatureVectorDecorator(std::move(firstView), AllocatedMissingFeatureVector()) {}
+        BinnedFeatureVectorView(BinnedFeatureVector&& featureVector)
+            : AbstractFeatureVectorDecorator(std::move(featureVector), AllocatedMissingFeatureVector()) {}
 
         void searchForRefinement(SingleRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
                                  uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
-            searchForBinnedRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
+            searchForBinnedRefinement(this->view.featureVector, this->view.missingFeatureVector, comparator, statistics,
                                       outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }
 
         void searchForRefinement(FixedRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
                                  uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
-            searchForBinnedRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
+            searchForBinnedRefinement(this->view.featureVector, this->view.missingFeatureVector, comparator, statistics,
                                       outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }
 
@@ -155,24 +155,25 @@ class AllocatedBinnedFeatureVectorView final : public AbstractFeatureVectorDecor
 
         /**
          * @param allocatedView A reference to an object of type `AllocatedBinnedFeatureVector`
-         * @param firstView     A reference to an object of type `BinnedFeatureVector`
+         * @param featureVector A reference to an object of type `BinnedFeatureVector`
          */
-        AllocatedBinnedFeatureVectorView(AllocatedBinnedFeatureVector&& allocatedView, BinnedFeatureVector&& firstView)
-            : AbstractFeatureVectorDecorator<BinnedFeatureVector>(std::move(firstView),
+        AllocatedBinnedFeatureVectorView(AllocatedBinnedFeatureVector&& allocatedView,
+                                         BinnedFeatureVector&& featureVector)
+            : AbstractFeatureVectorDecorator<BinnedFeatureVector>(std::move(featureVector),
                                                                   AllocatedMissingFeatureVector()),
               allocatedView(std::move(allocatedView)) {}
 
         void searchForRefinement(SingleRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
                                  uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
-            searchForBinnedRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
+            searchForBinnedRefinement(this->view.featureVector, this->view.missingFeatureVector, comparator, statistics,
                                       outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }
 
         void searchForRefinement(FixedRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
                                  uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
-            searchForBinnedRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
+            searchForBinnedRefinement(this->view.featureVector, this->view.missingFeatureVector, comparator, statistics,
                                       outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }
 
@@ -220,22 +221,22 @@ class BinnedFeatureVectorDecorator final : public AbstractBinnedFeatureVectorDec
     public:
 
         /**
-         * @param firstView   A reference to an object of type `AllocatedBinnedFeatureVector`
-         * @param secondView  A reference to an object of type `AllocatedMissingFeatureVector`
+         * @param featureVector         A reference to an object of type `AllocatedBinnedFeatureVector`
+         * @param missingFeatureVector  A reference to an object of type `AllocatedMissingFeatureVector`
          */
-        BinnedFeatureVectorDecorator(AllocatedBinnedFeatureVector&& firstView,
-                                     AllocatedMissingFeatureVector&& secondView)
-            : AbstractBinnedFeatureVectorDecorator<AllocatedBinnedFeatureVector>(std::move(firstView),
-                                                                                 std::move(secondView)) {}
+        BinnedFeatureVectorDecorator(AllocatedBinnedFeatureVector&& featureVector,
+                                     AllocatedMissingFeatureVector&& missingFeatureVector)
+            : AbstractBinnedFeatureVectorDecorator<AllocatedBinnedFeatureVector>(std::move(featureVector),
+                                                                                 std::move(missingFeatureVector)) {}
 
         /**
          * @param other A reference to an object of type `BinnedFeatureVectorDecorator` that should be copied
          */
         BinnedFeatureVectorDecorator(const BinnedFeatureVectorDecorator& other)
             : BinnedFeatureVectorDecorator(
-                AllocatedBinnedFeatureVector(other.view.firstView.numBins,
-                                             other.view.firstView.indptr[other.view.firstView.numBins],
-                                             other.view.firstView.sparseBinIndex),
+                AllocatedBinnedFeatureVector(other.view.featureVector.numBins,
+                                             other.view.featureVector.indptr[other.view.featureVector.numBins],
+                                             other.view.featureVector.sparseBinIndex),
                 AllocatedMissingFeatureVector()) {}
 
         /**
@@ -243,9 +244,10 @@ class BinnedFeatureVectorDecorator final : public AbstractBinnedFeatureVectorDec
          */
         BinnedFeatureVectorDecorator(const BinnedFeatureVectorView& other)
             : BinnedFeatureVectorDecorator(
-                AllocatedBinnedFeatureVector(other.getView().firstView.numBins,
-                                             other.getView().firstView.indptr[other.getView().firstView.numBins],
-                                             other.getView().firstView.sparseBinIndex),
+                AllocatedBinnedFeatureVector(
+                  other.getView().featureVector.numBins,
+                  other.getView().featureVector.indptr[other.getView().featureVector.numBins],
+                  other.getView().featureVector.sparseBinIndex),
                 AllocatedMissingFeatureVector()) {}
 
         /**
@@ -253,22 +255,23 @@ class BinnedFeatureVectorDecorator final : public AbstractBinnedFeatureVectorDec
          */
         BinnedFeatureVectorDecorator(const AllocatedBinnedFeatureVectorView& other)
             : BinnedFeatureVectorDecorator(
-                AllocatedBinnedFeatureVector(other.getView().firstView.numBins,
-                                             other.getView().firstView.indptr[other.getView().firstView.numBins],
-                                             other.getView().firstView.sparseBinIndex),
+                AllocatedBinnedFeatureVector(
+                  other.getView().featureVector.numBins,
+                  other.getView().featureVector.indptr[other.getView().featureVector.numBins],
+                  other.getView().featureVector.sparseBinIndex),
                 AllocatedMissingFeatureVector()) {}
 
         void searchForRefinement(SingleRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
                                  uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
-            searchForBinnedRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
+            searchForBinnedRefinement(this->view.featureVector, this->view.missingFeatureVector, comparator, statistics,
                                       outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }
 
         void searchForRefinement(FixedRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
                                  uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
-            searchForBinnedRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
+            searchForBinnedRefinement(this->view.featureVector, this->view.missingFeatureVector, comparator, statistics,
                                       outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }
 
@@ -283,7 +286,7 @@ class BinnedFeatureVectorDecorator final : public AbstractBinnedFeatureVectorDec
 
                 if (existingDecorator) {
                     return std::make_unique<AllocatedBinnedFeatureVectorView>(
-                      std::move(existingDecorator->view.firstView), std::move(*filteredFeatureVector));
+                      std::move(existingDecorator->view.featureVector), std::move(*filteredFeatureVector));
                 }
 
                 return std::make_unique<BinnedFeatureVectorView>(std::move(*filteredFeatureVector));

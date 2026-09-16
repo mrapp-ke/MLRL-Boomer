@@ -33,12 +33,12 @@ TEST(NominalFeatureTypeTest, createNominalFeatureVectorFromFortranContiguousView
 
     if (featureVectorDecorator) {
         // Check for missing feature values...
-        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().secondView;
+        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().missingFeatureVector;
         EXPECT_TRUE(missingFeatureVector[2]);
         EXPECT_TRUE(missingFeatureVector[5]);
 
         // Check dimensionality of feature vector...
-        const NominalFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
+        const NominalFeatureVector& featureVector = featureVectorDecorator->getView().featureVector;
         EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
         EXPECT_EQ(featureVector.numBins, (uint32) 2);
 
@@ -97,12 +97,12 @@ TEST(NominalFeatureTypeTest, createBinaryFeatureVectorFromFortranContiguousView)
 
     if (featureVectorDecorator) {
         // Check for missing feature values...
-        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().secondView;
+        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().missingFeatureVector;
         EXPECT_TRUE(missingFeatureVector[2]);
         EXPECT_TRUE(missingFeatureVector[5]);
 
         // Check dimensionality of feature vector...
-        const BinaryFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
+        const BinaryFeatureVector& featureVector = featureVectorDecorator->getView().featureVector;
         EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
         EXPECT_EQ(featureVector.numBins, (uint32) 1);
 
@@ -176,12 +176,12 @@ TEST(NominalFeatureTypeTest, createNominalFeatureVectorFromDenseCscView) {
 
     if (featureVectorDecorator) {
         // Check for missing feature values...
-        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().secondView;
+        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().missingFeatureVector;
         EXPECT_TRUE(missingFeatureVector[2]);
         EXPECT_TRUE(missingFeatureVector[5]);
 
         // Check dimensionality of feature vector...
-        const NominalFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
+        const NominalFeatureVector& featureVector = featureVectorDecorator->getView().featureVector;
         EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
         EXPECT_EQ(featureVector.numBins, (uint32) 2);
 
@@ -254,12 +254,12 @@ TEST(NominalFeatureTypeTest, createBinaryFeatureVectorFromDenseCscView) {
 
     if (featureVectorDecorator) {
         // Check for missing feature values....
-        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().secondView;
+        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().missingFeatureVector;
         EXPECT_TRUE(missingFeatureVector[2]);
         EXPECT_TRUE(missingFeatureVector[5]);
 
         // Check dimensionality of feature vector...
-        const BinaryFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
+        const BinaryFeatureVector& featureVector = featureVectorDecorator->getView().featureVector;
         EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
         EXPECT_EQ(featureVector.numBins, (uint32) 1);
 
@@ -340,12 +340,12 @@ TEST(NominalFeatureTypeTest, createNominalFeatureVectorFromCscView) {
 
     if (featureVectorDecorator) {
         // Check for missing feature values....
-        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().secondView;
+        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().missingFeatureVector;
         EXPECT_TRUE(missingFeatureVector[2]);
         EXPECT_TRUE(missingFeatureVector[5]);
 
         // Check dimensionality of feature vector...
-        const NominalFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
+        const NominalFeatureVector& featureVector = featureVectorDecorator->getView().featureVector;
         EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
         EXPECT_EQ(featureVector.numBins, (uint32) 2);
 
@@ -412,12 +412,12 @@ TEST(NominalFeatureTypeTest, createBinaryFeatureVectorFromCscView) {
 
     if (featureVectorDecorator) {
         // Check for missing feature values....
-        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().secondView;
+        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().missingFeatureVector;
         EXPECT_TRUE(missingFeatureVector[2]);
         EXPECT_TRUE(missingFeatureVector[5]);
 
         // Check dimensionality of feature vector...
-        const BinaryFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
+        const BinaryFeatureVector& featureVector = featureVectorDecorator->getView().featureVector;
         EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
         EXPECT_EQ(featureVector.numBins, (uint32) 1);
 

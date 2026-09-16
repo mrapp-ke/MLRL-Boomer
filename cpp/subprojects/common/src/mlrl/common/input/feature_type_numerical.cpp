@@ -12,7 +12,7 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
       createNumericalFeatureVector(featureIndex, featureMatrix);
 
     // Check if all feature values are equal...
-    const NumericalFeatureVector& numericalFeatureVector = featureVectorDecoratorPtr->getView().firstView;
+    const NumericalFeatureVector& numericalFeatureVector = featureVectorDecoratorPtr->getView().featureVector;
     uint32 numElements = numericalFeatureVector.numElements;
 
     if (numElements > 0 && !isEqual(numericalFeatureVector[0].value, numericalFeatureVector[numElements - 1].value)) {
@@ -28,7 +28,7 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
       createNumericalFeatureVector(featureIndex, featureMatrix);
 
     // Check if all feature values are equal...
-    NumericalFeatureVector& numericalFeatureVector = featureVectorDecoratorPtr->getView().firstView;
+    NumericalFeatureVector& numericalFeatureVector = featureVectorDecoratorPtr->getView().featureVector;
     uint32 numElements = numericalFeatureVector.numElements;
     uint32 numExamples = featureMatrix.numRows;
 

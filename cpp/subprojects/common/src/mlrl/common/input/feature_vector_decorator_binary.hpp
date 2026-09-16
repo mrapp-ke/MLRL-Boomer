@@ -18,13 +18,13 @@ class BinaryFeatureVectorDecorator final : public AbstractBinnedFeatureVectorDec
     public:
 
         /**
-         * @param firstView   A reference to an object of type `AllocatedNominalFeatureVector`
-         * @param secondView  A reference to an object of type `AllocatedMissingFeatureVector`
+         * @param featureVector         A reference to an object of type `AllocatedNominalFeatureVector`
+         * @param missingFeatureVector  A reference to an object of type `AllocatedMissingFeatureVector`
          */
-        BinaryFeatureVectorDecorator(AllocatedNominalFeatureVector&& firstView,
-                                     AllocatedMissingFeatureVector&& secondView)
-            : AbstractBinnedFeatureVectorDecorator<AllocatedNominalFeatureVector>(std::move(firstView),
-                                                                                  std::move(secondView)) {}
+        BinaryFeatureVectorDecorator(AllocatedNominalFeatureVector&& featureVector,
+                                     AllocatedMissingFeatureVector&& missingFeatureVector)
+            : AbstractBinnedFeatureVectorDecorator<AllocatedNominalFeatureVector>(std::move(featureVector),
+                                                                                  std::move(missingFeatureVector)) {}
 
         /**
          * @param other A reference to an object of type `BinaryFeatureVectorDecorator` that should be copied
@@ -35,7 +35,7 @@ class BinaryFeatureVectorDecorator final : public AbstractBinnedFeatureVectorDec
         void searchForRefinement(SingleRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
                                  uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
-            searchForBinaryRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
+            searchForBinaryRefinement(this->view.featureVector, this->view.missingFeatureVector, comparator, statistics,
                                       outputIndices, numExamplesWithNonZeroWeights, minCoverage, allowNegations,
                                       refinement);
         }
@@ -43,7 +43,7 @@ class BinaryFeatureVectorDecorator final : public AbstractBinnedFeatureVectorDec
         void searchForRefinement(FixedRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
                                  uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
-            searchForBinaryRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
+            searchForBinaryRefinement(this->view.featureVector, this->view.missingFeatureVector, comparator, statistics,
                                       outputIndices, numExamplesWithNonZeroWeights, minCoverage, allowNegations,
                                       refinement);
         }

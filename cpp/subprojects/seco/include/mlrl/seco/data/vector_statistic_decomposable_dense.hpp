@@ -4,7 +4,6 @@
 #pragma once
 
 #include "mlrl/common/data/vector_dense.hpp"
-#include "mlrl/common/data/view_vector_composite.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 #include "mlrl/seco/data/view_statistic_decomposable_sparse.hpp"
@@ -19,8 +18,13 @@ namespace seco {
      * @tparam StatisticType The type of the counts stored in the view
      */
     template<typename StatisticType>
-    class MLRLSECO_API DenseDecomposableStatisticVectorView final
-        : public CompositeVector<AllocatedVector<StatisticType>, AllocatedVector<StatisticType>> {
+    class MLRLSECO_API DenseDecomposableStatisticVectorView final {
+        private:
+
+            AllocatedVector<StatisticType> correctCounts_;
+
+            AllocatedVector<StatisticType> incorrectCounts_;
+
         public:
 
             /**
@@ -122,6 +126,11 @@ namespace seco {
              * @return The number of elements
              */
             uint32 getNumElements() const;
+
+            /**
+             * Sets all values stored in the view to zero.
+             */
+            void clear();
     };
 
     /**

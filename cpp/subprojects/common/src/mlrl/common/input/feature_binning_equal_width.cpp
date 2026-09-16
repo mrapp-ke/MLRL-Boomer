@@ -157,14 +157,14 @@ class EqualWidthFeatureBinning final : public IFeatureBinning {
               createNumericalFeatureVector(featureIndex, featureMatrix);
 
             // Check if all feature values are equal...
-            const NumericalFeatureVector& numericalFeatureVector = featureVectorDecoratorPtr->getView().firstView;
+            const NumericalFeatureVector& numericalFeatureVector = featureVectorDecoratorPtr->getView().featureVector;
             uint32 numElements = numericalFeatureVector.numElements;
 
             if (numElements > 0
                 && !isEqual(numericalFeatureVector[0].value, numericalFeatureVector[numElements - 1].value)) {
-                return createFeatureVectorInternally(std::move(featureVectorDecoratorPtr->getView().secondView),
-                                                     numericalFeatureVector, featureMatrix.numRows, binRatio_, minBins_,
-                                                     maxBins_);
+                return createFeatureVectorInternally(
+                  std::move(featureVectorDecoratorPtr->getView().missingFeatureVector), numericalFeatureVector,
+                  featureMatrix.numRows, binRatio_, minBins_, maxBins_);
             }
 
             return std::make_unique<EqualFeatureVector>();
@@ -177,7 +177,7 @@ class EqualWidthFeatureBinning final : public IFeatureBinning {
               createNumericalFeatureVector(featureIndex, featureMatrix);
 
             // Check if all feature values are equal...
-            NumericalFeatureVector& numericalFeatureVector = featureVectorDecoratorPtr->getView().firstView;
+            NumericalFeatureVector& numericalFeatureVector = featureVectorDecoratorPtr->getView().featureVector;
             uint32 numElements = numericalFeatureVector.numElements;
             uint32 numExamples = featureMatrix.numRows;
 
@@ -186,9 +186,9 @@ class EqualWidthFeatureBinning final : public IFeatureBinning {
                     || !isEqual(numericalFeatureVector[0].value, numericalFeatureVector[numElements - 1].value))) {
                 numericalFeatureVector.sparseValue = featureMatrix.sparseValue;
                 numericalFeatureVector.sparse = numElements < numExamples;
-                return createFeatureVectorInternally(std::move(featureVectorDecoratorPtr->getView().secondView),
-                                                     numericalFeatureVector, numExamples, binRatio_, minBins_,
-                                                     maxBins_);
+                return createFeatureVectorInternally(
+                  std::move(featureVectorDecoratorPtr->getView().missingFeatureVector), numericalFeatureVector,
+                  numExamples, binRatio_, minBins_, maxBins_);
             }
 
             return std::make_unique<EqualFeatureVector>();
