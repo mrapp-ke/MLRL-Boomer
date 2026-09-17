@@ -35,12 +35,12 @@ typename BitScoreVector<IndexVector>::index_const_iterator BitScoreVector<IndexV
 
 template<typename IndexVector>
 typename BitScoreVector<IndexVector>::value_const_iterator BitScoreVector<IndexVector>::values_cbegin() const {
-    return this->view.bits_cbegin();
+    return this->view.cbegin();
 }
 
 template<typename IndexVector>
 typename BitScoreVector<IndexVector>::value_const_iterator BitScoreVector<IndexVector>::values_cend() const {
-    return this->view.bits_cend();
+    return this->view.cend();
 }
 
 template<typename IndexVector>

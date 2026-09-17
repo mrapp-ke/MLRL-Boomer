@@ -208,23 +208,23 @@ class MLRLCOMMON_API BitView {
         /**
          * An iterator that provides read-only access to the binary values in the vector.
          */
-        using bit_const_iterator = ConstIterator;
+        using const_iterator = ConstIterator;
 
         /**
-         * Returns a `bit_const_iterator` to the beginning of the binary values in the vector.
+         * Returns a `const_iterator` to the beginning of the binary values in the vector.
          *
-         * @return A `bit_const_iterator` to the beginning
+         * @return A `const_iterator` to the beginning
          */
-        bit_const_iterator bits_cbegin() const {
+        const_iterator cbegin() const {
             return ConstIterator(*this);
         }
 
         /**
-         * Returns a `bit_const_iterator` to the end of the binary values in the vector.
+         * Returns a `const_iterator` to the end of the binary values in the vector.
          *
-         * @return A `bit_const_iterator` to the end
+         * @return A `const_iterator` to the end
          */
-        bit_const_iterator bits_cend() const {
+        const_iterator cend() const {
             return ConstIterator(*this, numBits);
         }
 
