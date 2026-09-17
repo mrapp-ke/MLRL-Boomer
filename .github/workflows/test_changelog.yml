@@ -19,16 +19,6 @@ jobs:
         with:
           sparse-checkout: |
             build_system
-      - name: Determine Python version for workflow
-        id: workflow_python_version
-        run: echo "workflow_python_version=$(sed s/,//g build_system/res/versioning/version-python)" >> $GITHUB_OUTPUT
-      - name: Setup Python
-        uses: actions/setup-python@v7
-        with:
-          python-version: ${{ steps.workflow_python_version.outputs.workflow_python_version }}
-          check-latest: true
-          cache: pip
-          cache-dependency-path: '**/requirements.txt'
       - name: Detect changes
         uses: dorny/paths-filter@v4
         id: filter
@@ -43,15 +33,31 @@ jobs:
               - 'build_system/util/**'
               - 'build_system/targets/*.py'
               - 'build_system/targets/changelog/*'
-            bugfix:
+            bugfix: &bugfix
               - *build_files
               - 'build_system/res/changelog/changelog-bugfix.md'
-            feature:
+            feature: &feature
               - *build_files
               - 'build_system/res/changelog/changelog-feature.md'
-            main:
+            main: &main
               - *build_files
               - 'build_system/res/changelog/changelog-main.md'
+            any:
+              - *bugfix
+              - *feature
+              - *main
+      - name: Determine Python version for workflow
+        id: workflow_python_version
+        if: steps.filter.outputs.any == 'true'
+        run: echo "workflow_python_version=$(sed s/,//g build_system/res/versioning/version-python)" >> $GITHUB_OUTPUT
+      - name: Setup Python
+        if: steps.filter.outputs.any == 'true'
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ steps.workflow_python_version.outputs.workflow_python_version }}
+          check-latest: true
+          cache: pip
+          cache-dependency-path: '**/requirements.txt'
       - name: Validate bugfix changelog
         if: steps.filter.outputs.bugfix == 'true'
         run: ./build validate_changelog_bugfix
