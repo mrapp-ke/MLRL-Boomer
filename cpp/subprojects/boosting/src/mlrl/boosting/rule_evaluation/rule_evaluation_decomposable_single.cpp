@@ -65,9 +65,9 @@ namespace boosting {
                 auto valueIterator = scoreVector_.values_begin();
                 valueIterator[0] = bestScore;
                 indexVector_.begin()[0] = outputIndices_.cbegin()[bestIndex];
-                scoreVector_.quality =
-                  calculateOutputWiseQuality(bestScore, gradientIterator[bestIndex], hessianIterator[bestIndex],
-                                             l1RegularizationWeight_, l2RegularizationWeight_);
+                scoreVector_.setQuality(calculateOutputWiseQuality(bestScore, gradientIterator[bestIndex],
+                                                                   hessianIterator[bestIndex], l1RegularizationWeight_,
+                                                                   l2RegularizationWeight_));
                 return scoreVector_;
             }
     };

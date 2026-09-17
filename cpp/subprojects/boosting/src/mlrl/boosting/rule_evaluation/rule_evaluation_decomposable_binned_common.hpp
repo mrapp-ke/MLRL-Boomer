@@ -136,9 +136,9 @@ namespace boosting {
                 VectorMath::calculateOutputWiseScoresWeighted(aggregatedGradientIterator, aggregatedHessianIterator,
                                                               weightIterator, binValueIterator, numBins,
                                                               l1RegularizationWeight_, l2RegularizationWeight_);
-                scoreVector_.quality = VectorMath::aggregateOutputWiseQualitiesWeighted(
+                scoreVector_.setQuality(VectorMath::aggregateOutputWiseQualitiesWeighted(
                   binValueIterator, aggregatedGradientIterator, aggregatedHessianIterator, weightIterator, numBins,
-                  l1RegularizationWeight_, l2RegularizationWeight_);
+                  l1RegularizationWeight_, l2RegularizationWeight_));
                 return scoreVector_;
             }
     };
