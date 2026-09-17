@@ -1,0 +1,5 @@
+File score_vector_decorator.hpp
+===============================
+
+.. doxygenfile:: score_vector_decorator.hpp
+   :project: common
