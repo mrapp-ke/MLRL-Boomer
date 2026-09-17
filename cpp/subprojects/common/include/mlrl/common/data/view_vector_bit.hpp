@@ -3,15 +3,17 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_vector.hpp"
+#include "mlrl/common/data/view.hpp"
 
+#include <algorithm>
 #include <climits>
+#include <iterator>
 
 /**
- * A one-dimensional view that provides access to binary values stored in a pre-allocated array in a space-efficient way
- * (see https://en.wikipedia.org/wiki/Bit_array).
+ * An one-dimensional view that provides access to binary values stored in a pre-allocated array in a space-efficient
+ * way (see https://en.wikipedia.org/wiki/Bit_array).
  */
-class MLRLCOMMON_API BitView : public Vector<uint32> {
+class MLRLCOMMON_API BitView {
     public:
 
         /**
@@ -86,7 +88,7 @@ class MLRLCOMMON_API BitView : public Vector<uint32> {
                  * @return      True if the bit at the given index is set, false, if it is unset
                  */
                 value_type operator[](uint32 index) const {
-                    return view_.get(index);
+                    return view_[index];
                 }
 
                 /**
@@ -95,7 +97,7 @@ class MLRLCOMMON_API BitView : public Vector<uint32> {
                  * @return The element, the iterator currently refers to
                  */
                 value_type operator*() {
-                    return view_.get(index_);
+                    return view_[index_];
                 }
 
                 /**
@@ -170,6 +172,11 @@ class MLRLCOMMON_API BitView : public Vector<uint32> {
         };
 
         /**
+         * A pointer to the array that stores the values, the view provides access to.
+         */
+        uint32* array;
+
+        /**
          * The number of bits in the view.
          */
         const uint32 numBits;
@@ -179,41 +186,45 @@ class MLRLCOMMON_API BitView : public Vector<uint32> {
          *                  access to
          * @param numBits   The number of bits in the view
          */
-        BitView(uint32* array, uint32 numBits)
-            : Vector<uint32>(array, calculateNumElements(numBits)), numBits(numBits) {}
+        BitView(uint32* array, uint32 numBits) : array(array), numBits(numBits) {}
 
         /**
          * @param other A const reference to an object of type `BitView` that should be copied
          */
-        BitView(const BitView& other) : Vector<uint32>(other), numBits(other.numBits) {}
+        BitView(const BitView& other) : array(other.array), numBits(other.numBits) {}
 
         /**
          * @param other A reference to an object of type `BitView` that should be moved
          */
-        BitView(BitView&& other) : Vector<uint32>(std::move(other)), numBits(other.numBits) {}
+        BitView(BitView&& other) : array(other.array), numBits(other.numBits) {}
 
-        virtual ~BitView() override {}
+        virtual ~BitView() {}
+
+        /**
+         * The type of the array, the view provides access to.
+         */
+        using value_type = uint32;
 
         /**
          * An iterator that provides read-only access to the binary values in the vector.
          */
-        using bit_const_iterator = ConstIterator;
+        using const_iterator = ConstIterator;
 
         /**
-         * Returns a `bit_const_iterator` to the beginning of the binary values in the vector.
+         * Returns a `const_iterator` to the beginning of the binary values in the vector.
          *
-         * @return A `bit_const_iterator` to the beginning
+         * @return A `const_iterator` to the beginning
          */
-        bit_const_iterator bits_cbegin() const {
+        const_iterator cbegin() const {
             return ConstIterator(*this);
         }
 
         /**
-         * Returns a `bit_const_iterator` to the end of the binary values in the vector.
+         * Returns a `const_iterator` to the end of the binary values in the vector.
          *
-         * @return A `bit_const_iterator` to the end
+         * @return A `const_iterator` to the end
          */
-        bit_const_iterator bits_cend() const {
+        const_iterator cend() const {
             return ConstIterator(*this, numBits);
         }
 
@@ -223,7 +234,7 @@ class MLRLCOMMON_API BitView : public Vector<uint32> {
          * @param pos   The position of the bit
          * @return      True, if the bit is set, false, if it is unset
          */
-        bool get(uint32 pos) const {
+        bool operator[](uint32 pos) const {
             return this->array[calculateOffset(pos)] & createBitMask(pos);
         }
 
@@ -239,6 +250,26 @@ class MLRLCOMMON_API BitView : public Vector<uint32> {
             } else {
                 this->array[calculateOffset(pos)] &= ~createBitMask(pos);
             }
+        }
+
+        /**
+         * Sets all values stored in the view to zero.
+         */
+        void clear() {
+            std::fill(array, &array[calculateNumElements(numBits)], (uint32) 0);
+        }
+
+        /**
+         * Releases the ownership of the array that stores the values, the view provides access to. As a result, the
+         * behavior of this view becomes undefined and it should not be used anymore. The caller is responsible for
+         * freeing the memory that is occupied by the array.
+         *
+         * @return A pointer to the array that stores the values, the view provided access to
+         */
+        value_type* release() {
+            value_type* ptr = array;
+            array = nullptr;
+            return ptr;
         }
 };
 
@@ -324,7 +355,7 @@ class MLRLCOMMON_API IndexableBitVectorDecorator : public BitVector {
          * @return      True, if the bit is set, false, if it is unset
          */
         bool operator[](uint32 pos) const {
-            return this->view.get(pos);
+            return this->view[pos];
         }
 
         /**
