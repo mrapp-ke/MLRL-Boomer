@@ -88,7 +88,7 @@ class MLRLCOMMON_API BitView {
                  * @return      True if the bit at the given index is set, false, if it is unset
                  */
                 value_type operator[](uint32 index) const {
-                    return view_.get(index);
+                    return view_[index];
                 }
 
                 /**
@@ -97,7 +97,7 @@ class MLRLCOMMON_API BitView {
                  * @return The element, the iterator currently refers to
                  */
                 value_type operator*() {
-                    return view_.get(index_);
+                    return view_[index_];
                 }
 
                 /**
@@ -234,7 +234,7 @@ class MLRLCOMMON_API BitView {
          * @param pos   The position of the bit
          * @return      True, if the bit is set, false, if it is unset
          */
-        bool get(uint32 pos) const {
+        bool operator[](uint32 pos) const {
             return this->array[calculateOffset(pos)] & createBitMask(pos);
         }
 
@@ -355,7 +355,7 @@ class MLRLCOMMON_API IndexableBitVectorDecorator : public BitVector {
          * @return      True, if the bit is set, false, if it is unset
          */
         bool operator[](uint32 pos) const {
-            return this->view.get(pos);
+            return this->view[pos];
         }
 
         /**
