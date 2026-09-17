@@ -45,7 +45,7 @@ class BitScoreVector final : public IndexableBitVectorDecorator<ViewDecorator<Al
         /**
          * An iterator that provides read-only access to the predicted scores.
          */
-        using value_const_iterator = BitView::bit_const_iterator;
+        using value_const_iterator = BitView::const_iterator;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices.
