@@ -122,7 +122,7 @@ namespace boosting {
                 quality +=
                   calculateRegularizationTerm(valueIterator, n, l1RegularizationWeight_, l2RegularizationWeight_);
 
-                scoreVector_.quality = quality;
+                scoreVector_.setQuality(quality);
                 return scoreVector_;
             }
     };

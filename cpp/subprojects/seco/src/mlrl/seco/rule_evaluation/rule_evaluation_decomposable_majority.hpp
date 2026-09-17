@@ -33,7 +33,7 @@ namespace seco {
              *                     indices of the labels for which the rules may predict
              */
             DecomposableMajorityRuleEvaluation(const IndexVector& labelIndices) : scoreVector_(labelIndices, true) {
-                scoreVector_.quality = 0;
+                scoreVector_.setQuality(0);
             }
 
             const IScoreVector& calculateScores(View<uint32>::const_iterator majorityLabelIndicesBegin,

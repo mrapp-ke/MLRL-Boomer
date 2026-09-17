@@ -52,7 +52,7 @@ namespace boosting {
                                                           l2RegularizationWeight);
                 }
 
-                scoreVector.quality = quality;
+                scoreVector.setQuality(quality);
             }
 
             template<typename StatisticType>
@@ -66,9 +66,9 @@ namespace boosting {
                 auto valueIterator = scoreVector.values_begin();
                 VectorMath::calculateOutputWiseScores(gradientIterator, hessianIterator, valueIterator, numElements,
                                                       l1RegularizationWeight, l2RegularizationWeight);
-                scoreVector.quality =
-                  VectorMath::aggregateOutputWiseQualities(valueIterator, gradientIterator, hessianIterator,
-                                                           numElements, l1RegularizationWeight, l2RegularizationWeight);
+                scoreVector.setQuality(VectorMath::aggregateOutputWiseQualities(
+                  valueIterator, gradientIterator, hessianIterator, numElements, l1RegularizationWeight,
+                  l2RegularizationWeight));
             }
 
         public:

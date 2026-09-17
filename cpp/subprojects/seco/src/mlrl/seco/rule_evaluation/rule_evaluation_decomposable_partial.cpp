@@ -72,7 +72,7 @@ namespace seco {
                     previousIndex = index;
                 }
 
-                scoreVector_.quality = calculateLiftedQuality(sumOfQualities, numElements, *liftFunctionPtr_);
+                scoreVector_.setQuality(calculateLiftedQuality(sumOfQualities, numElements, *liftFunctionPtr_));
                 return scoreVector_;
             }
     };
@@ -176,7 +176,7 @@ namespace seco {
                 }
 
                 indexVector_.setNumElements(bestNumPredictions, false);
-                scoreVector_.quality = bestQuality;
+                scoreVector_.setQuality(bestQuality);
                 auto predictedIndexIterator = indexVector_.begin();
 
                 for (uint32 i = 0; i < bestNumPredictions; i++) {

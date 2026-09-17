@@ -72,7 +72,7 @@ namespace boosting {
                 }
 
                 indexVector.setNumElements(n, false);
-                scoreVector.quality = quality;
+                scoreVector.setQuality(quality);
             }
 
             template<typename StatisticType>
@@ -111,7 +111,7 @@ namespace boosting {
                 }
 
                 indexVector.setNumElements(n, false);
-                scoreVector.quality = quality;
+                scoreVector.setQuality(quality);
             }
 
         public:

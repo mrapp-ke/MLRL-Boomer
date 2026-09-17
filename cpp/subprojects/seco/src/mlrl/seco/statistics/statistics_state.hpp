@@ -36,14 +36,14 @@ namespace seco {
                 protected:
 
                     void invokeVisitor(BitVisitor<CompleteIndexVector> visitor,
-                                       const BitScoreVector<CompleteIndexVector>& scoreVector) const override {
+                                       const BitScoreVectorView<CompleteIndexVector>& scoreVector) const override {
                         StatisticsUpdateFactory<CoverageStatisticsState<StatisticMatrix>> statisticsUpdateFactory(
                           state_);
                         visitor(scoreVector, statisticsUpdateFactory);
                     }
 
                     void invokeVisitor(BitVisitor<PartialIndexVector> visitor,
-                                       const BitScoreVector<PartialIndexVector>& scoreVector) const override {
+                                       const BitScoreVectorView<PartialIndexVector>& scoreVector) const override {
                         StatisticsUpdateFactory<CoverageStatisticsState<StatisticMatrix>> statisticsUpdateFactory(
                           state_);
                         visitor(scoreVector, statisticsUpdateFactory);

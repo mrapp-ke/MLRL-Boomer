@@ -287,8 +287,7 @@ namespace boosting {
 
                     // Apply binning method in order to aggregate the gradients and Hessians that belong to the same
                     // bins...
-                    typename DenseBinnedScoreVector<statistic_type, IndexVector>::bin_index_iterator binIndexIterator =
-                      scoreVector_.bin_indices_begin();
+                    auto binIndexIterator = scoreVector_.bin_indices_begin();
                     auto callback = [=, this](uint32 binIndex, uint32 labelIndex) {
                         numElementsPerBin_[binIndex] += 1;
                         binIndexIterator[labelIndex] = binIndex;
@@ -338,10 +337,10 @@ namespace boosting {
                     quality += calculateRegularizationTerm(binValueIterator, numElementsPerBin_.cbegin(), numBins,
                                                            l1RegularizationWeight_, l2RegularizationWeight_);
 
-                    scoreVector_.quality = quality;
+                    scoreVector_.setQuality(quality);
                 } else {
                     std::fill(scoreVector_.bin_indices_begin(), scoreVector_.bin_indices_end(), maxBins_);
-                    scoreVector_.quality = 0;
+                    scoreVector_.setQuality(0);
                 }
 
                 return scoreVector_;
