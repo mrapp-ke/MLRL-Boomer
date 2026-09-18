@@ -200,9 +200,7 @@ namespace boosting {
             /**
              * @param other A reference to an object of type `DenseStatisticViewAllocator` that should be copied
              */
-            DenseStatisticViewAllocator(const DenseStatisticViewAllocator<View, MemoryAllocator>& other) : View(other) {
-                throw std::runtime_error("Objects of type DenseStatisticViewAllocator cannot be copied");
-            }
+            DenseStatisticViewAllocator(const DenseStatisticViewAllocator<View, MemoryAllocator>& other) = delete;
 
             /**
              * @param other A reference to an object of type `DenseStatisticViewAllocator` that should be moved

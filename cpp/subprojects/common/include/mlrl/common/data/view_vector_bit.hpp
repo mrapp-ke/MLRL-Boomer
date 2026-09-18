@@ -291,7 +291,7 @@ class MLRLCOMMON_API BitVectorAllocator : public Allocator<View> {
         /**
          * @param other A reference to an object of type `BitVectorAllocator` that should be copied
          */
-        BitVectorAllocator(const BitVectorAllocator<View>& other) : Allocator<View>(other) {}
+        BitVectorAllocator(const BitVectorAllocator<View>& other) = delete;
 
         /**
          * @param other A reference to an object of type `BitVectorAllocator` that should be moved

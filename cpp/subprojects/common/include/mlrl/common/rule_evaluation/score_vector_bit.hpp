@@ -140,9 +140,7 @@ class MLRLCOMMON_API BitScoreVectorAllocator : public View {
         /**
          * @param other A reference to an object of type `DenseScoreVectorAllocator` that should be copied
          */
-        BitScoreVectorAllocator(const BitScoreVectorAllocator<View, MemoryAllocator>& other) : View(other) {
-            throw std::runtime_error("Objects of type BitScoreVectorAllocator cannot be copied");
-        }
+        BitScoreVectorAllocator(const BitScoreVectorAllocator<View, MemoryAllocator>& other) = delete;
 
         /**
          * @param other A reference to an object of type `BitScoreVectorAllocator` that should be moved

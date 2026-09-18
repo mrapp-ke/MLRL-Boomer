@@ -145,9 +145,7 @@ class MLRLCOMMON_API BinaryCscViewAllocator : public Matrix {
         /**
          * @param other A reference to an object of type `BinaryCscViewAllocator` that should be copied
          */
-        BinaryCscViewAllocator(const BinaryCscViewAllocator<Matrix, MemoryAllocator>& other) : Matrix(other) {
-            throw std::runtime_error("Objects of type BinaryCscViewAllocator cannot be copied");
-        }
+        BinaryCscViewAllocator(const BinaryCscViewAllocator<Matrix, MemoryAllocator>& other) = delete;
 
         /**
          * @param other A reference to an object of type `BinaryCscViewAllocator` that should be moved
