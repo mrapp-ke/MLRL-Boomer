@@ -30,9 +30,7 @@ class MLRLCOMMON_API AllocatedBinnedFeatureVector : public BinnedFeatureVector {
         /**
          * @param other A reference to an object of type `AllocatedBinnedFeatureVector` that should be copied
          */
-        AllocatedBinnedFeatureVector(const AllocatedBinnedFeatureVector& other) : BinnedFeatureVector(other) {
-            throw std::runtime_error("Objects of type AllocatedBinnedFeatureVector cannot be copied");
-        }
+        AllocatedBinnedFeatureVector(const AllocatedBinnedFeatureVector& other) = delete;
 
         /**
          * @param other A reference to an object of type `AllocatedBinnedFeatureVector` that should be moved

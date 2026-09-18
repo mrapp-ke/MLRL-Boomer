@@ -186,9 +186,7 @@ class MLRLCOMMON_API IndexedVectorAllocator : public View {
         /**
          * @param other A reference to an object of type `IndexedVectorAllocator` that should be copied
          */
-        IndexedVectorAllocator(const IndexedVectorAllocator<View, MemoryAllocator>& other) : View(other) {
-            throw std::runtime_error("Objects of type IndexedVectorAllocator cannot be copied");
-        }
+        IndexedVectorAllocator(const IndexedVectorAllocator<View, MemoryAllocator>& other) = delete;
 
         /**
          * @param other A reference to an object of type `IndexedVectorAllocator` that should be moved

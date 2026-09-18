@@ -96,8 +96,7 @@ class MLRLCOMMON_API FeatureVectorView final {
         /**
          * @param other A reference to an object of type `FeatureVectorView` that should be copied
          */
-        FeatureVectorView(const FeatureVectorView& other)
-            : featureVector(other.featureVector), missingFeatureVector(other.missingFeatureVector) {}
+        FeatureVectorView(const FeatureVectorView& other) = delete;
 
         /**
          * @param other A reference to an object of type `FeatureVectorView` that should be moved

@@ -30,9 +30,7 @@ class MLRLCOMMON_API AllocatedNominalFeatureVector : public NominalFeatureVector
         /**
          * @param other A reference to an object of type `AllocatedNominalFeatureVector` that should be copied
          */
-        AllocatedNominalFeatureVector(const AllocatedNominalFeatureVector& other) : NominalFeatureVector(other) {
-            throw std::runtime_error("Objects of type AllocatedNominalFeatureVector cannot be copied");
-        }
+        AllocatedNominalFeatureVector(const AllocatedNominalFeatureVector& other) = delete;
 
         /**
          * @param other A reference to an object of type `AllocatedNominalFeatureVector` that should be moved
