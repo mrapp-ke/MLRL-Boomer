@@ -43,7 +43,7 @@ An illustration of how the classification algorithms can be fit to exemplary tra
 The `fit` method accepts two inputs, `x` and `y`:
 
 - A two-dimensional feature matrix `x`, where each row corresponds to a training example and each column corresponds to a particular feature.
-- A one- or two-dimensional binary feature matrix `y`, where each row corresponds to a training example and each column corresponds to a label. If an element in the matrix is unlike zero, it indicates that the respective label is relevant to an example. Elements that are equal to zero denote irrelevant labels. In multi-label classification, where each example may be associated with several labels, the label matrix is two-dimensional. However, the algorithms are also capable of dealing with traditional binary classification problems, where a one-dimensional vector of ground truth labels is provided to the learning algorithm.
+- A one- or two-dimensional, binary label matrix `y`, where each row corresponds to a training example and each column corresponds to a label. If an element in the matrix is unlike zero, it indicates that the respective label is relevant to an example. Elements that are equal to zero denote irrelevant labels. In multi-label classification, where each example may be associated with several labels, the label matrix is two-dimensional. However, the algorithms are also capable of dealing with traditional binary classification problems, where a one-dimensional vector of ground truth labels is provided to the learning algorithm.
 
 Both, `x` and `y`, are expected to be [numpy arrays](https://numpy.org/doc/stable/reference/generated/numpy.array.html) or equivalent [array-like](https://scikit-learn.org/stable/glossary.html#term-array-like) data types.
 
