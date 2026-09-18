@@ -124,9 +124,7 @@ class MLRLCOMMON_API BinaryDokVectorAllocator : public Vector {
         /**
          * @param other A reference to an object of type `BinaryDokVectorAllocator` that should be copied
          */
-        BinaryDokVectorAllocator(const BinaryDokVectorAllocator& other) : Vector(other) {
-            throw std::runtime_error("Objects of type BinaryDokVectorAllocator cannot be copied");
-        }
+        BinaryDokVectorAllocator(const BinaryDokVectorAllocator& other) = delete;
 
         /**
          * @param other A reference to an object of type `BinaryDokVectorAllocator` that should be moved

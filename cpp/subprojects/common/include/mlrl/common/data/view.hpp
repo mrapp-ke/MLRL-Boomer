@@ -129,9 +129,7 @@ class MLRLCOMMON_API Allocator : public View {
         /**
          * @param other A reference to an object of type `Allocator` that should be copied
          */
-        Allocator(const Allocator<View, MemoryAllocator>& other) : View(other) {
-            throw std::runtime_error("Objects of type Allocator cannot be copied");
-        }
+        Allocator(const Allocator<View, MemoryAllocator>& other) = delete;
 
         /**
          * @param other A reference to an object of type `Allocator` that should be moved
@@ -201,10 +199,7 @@ class MLRLCOMMON_API ResizableAllocator : public Allocator<View, MemoryAllocator
         /**
          * @param other A reference to an object of type `ResizableAllocator` that should be copied
          */
-        ResizableAllocator(const ResizableAllocator<View, MemoryAllocator>& other)
-            : Allocator<View>(other), maxCapacity(other.maxCapacity) {
-            throw std::runtime_error("Objects of type ResizableAllocator cannot be copied");
-        }
+        ResizableAllocator(const ResizableAllocator<View, MemoryAllocator>& other) = delete;
 
         /**
          * @param other A reference to an object of type `ResizableAllocator` that should be moved

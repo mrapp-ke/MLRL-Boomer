@@ -157,9 +157,7 @@ class MLRLCOMMON_API DenseScoreVectorAllocator : public View {
         /**
          * @param other A reference to an object of type `DenseScoreVectorAllocator` that should be copied
          */
-        DenseScoreVectorAllocator(const DenseScoreVectorAllocator<View, MemoryAllocator>& other) : View(other) {
-            throw std::runtime_error("Objects of type DenseScoreVectorAllocator cannot be copied");
-        }
+        DenseScoreVectorAllocator(const DenseScoreVectorAllocator<View, MemoryAllocator>& other) = delete;
 
         /**
          * @param other A reference to an object of type `DenseScoreVectorAllocator` that should be moved
