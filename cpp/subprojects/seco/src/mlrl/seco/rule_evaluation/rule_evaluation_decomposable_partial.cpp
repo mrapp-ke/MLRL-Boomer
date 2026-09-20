@@ -27,7 +27,7 @@ namespace seco {
     class DecomposableCompleteRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
         private:
 
-            BitScoreVector<PartialIndexVector> scoreVector_;
+            BitScoreVector<PartialIndexVector, DefaultMemoryAllocator> scoreVector_;
 
             const std::unique_ptr<IHeuristic> heuristicPtr_;
 
@@ -94,7 +94,7 @@ namespace seco {
 
             PartialIndexVector indexVector_;
 
-            BitScoreVector<PartialIndexVector> scoreVector_;
+            BitScoreVector<PartialIndexVector, DefaultMemoryAllocator> scoreVector_;
 
             SparseArrayVector<std::pair<float32, bool>> sortedVector_;
 
