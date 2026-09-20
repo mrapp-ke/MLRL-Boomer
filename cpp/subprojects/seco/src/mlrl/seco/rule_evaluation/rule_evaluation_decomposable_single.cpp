@@ -14,8 +14,9 @@ namespace seco {
      * @tparam StatisticVector  The type of the vector that provides access to the confusion matrices
      * @tparam IndexVector      The type of the vector that provides access to the indices of the labels for which
      *                          predictions should be calculated
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
      */
-    template<typename StatisticVector, typename IndexVector>
+    template<typename StatisticVector, typename IndexVector, typename MemoryAllocator>
     class DecomposableSingleOutputRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
         private:
 
@@ -23,7 +24,7 @@ namespace seco {
 
             PartialIndexVector indexVector_;
 
-            BitScoreVector<PartialIndexVector, DefaultMemoryAllocator> scoreVector_;
+            BitScoreVector<PartialIndexVector, MemoryAllocator> scoreVector_;
 
             const std::unique_ptr<IHeuristic> heuristicPtr_;
 
@@ -82,8 +83,8 @@ namespace seco {
         const DenseDecomposableStatisticVectorView<uint32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
-        return std::make_unique<
-          DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVectorView<uint32>, CompleteIndexVector>>(
+        return std::make_unique<DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVectorView<uint32>,
+                                                                       CompleteIndexVector, DefaultMemoryAllocator>>(
           indexVector, std::move(heuristicPtr));
     }
 
@@ -92,8 +93,8 @@ namespace seco {
         const DenseDecomposableStatisticVectorView<uint32>& statisticVector,
         const PartialIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
-        return std::make_unique<
-          DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVectorView<uint32>, PartialIndexVector>>(
+        return std::make_unique<DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVectorView<uint32>,
+                                                                       PartialIndexVector, DefaultMemoryAllocator>>(
           indexVector, std::move(heuristicPtr));
     }
 
@@ -102,8 +103,8 @@ namespace seco {
         const DenseDecomposableStatisticVectorView<float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
-        return std::make_unique<
-          DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVectorView<float32>, CompleteIndexVector>>(
+        return std::make_unique<DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVectorView<float32>,
+                                                                       CompleteIndexVector, DefaultMemoryAllocator>>(
           indexVector, std::move(heuristicPtr));
     }
 
@@ -112,8 +113,8 @@ namespace seco {
         const DenseDecomposableStatisticVectorView<float32>& statisticVector,
         const PartialIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
-        return std::make_unique<
-          DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVectorView<float32>, PartialIndexVector>>(
+        return std::make_unique<DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVectorView<float32>,
+                                                                       PartialIndexVector, DefaultMemoryAllocator>>(
           indexVector, std::move(heuristicPtr));
     }
 
