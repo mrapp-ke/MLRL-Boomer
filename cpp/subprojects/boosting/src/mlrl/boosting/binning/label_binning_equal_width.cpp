@@ -9,6 +9,7 @@
 #include "mlrl/boosting/rule_evaluation/simd/vector_math_decomposable_simd.hpp"
 #include "mlrl/boosting/rule_evaluation/vector_math_decomposable.hpp"
 #include "mlrl/common/math/scalar_math.hpp"
+#include "mlrl/common/simd/memory.hpp"
 #include "mlrl/common/util/validation.hpp"
 
 namespace boosting {
@@ -218,12 +219,14 @@ namespace boosting {
 
 #if SIMD_SUPPORT_ENABLED
         if (simdConfig_.get().isSimdEnabled()) {
-            return std::make_unique<DecomposableCompleteBinnedRuleEvaluationFactory<SimdDecomposableVectorMath>>(
+            return std::make_unique<
+              DecomposableCompleteBinnedRuleEvaluationFactory<SimdDecomposableVectorMath, SimdMemoryAllocator>>(
               l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr));
         }
 #endif
 
-        return std::make_unique<DecomposableCompleteBinnedRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
+        return std::make_unique<
+          DecomposableCompleteBinnedRuleEvaluationFactory<SequentialDecomposableVectorMath, DefaultMemoryAllocator>>(
           l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr));
     }
 
