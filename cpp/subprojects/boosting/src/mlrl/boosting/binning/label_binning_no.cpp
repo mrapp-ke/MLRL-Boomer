@@ -99,7 +99,7 @@ namespace boosting {
         float32 threshold, float32 exponent, const BlasFactory& blasFactory, const LapackFactory& lapackFactory) const {
         float32 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
         float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
-        return std::make_unique<NonDecomposableDynamicPartialRuleEvaluationFactory>(
+        return std::make_unique<NonDecomposableDynamicPartialRuleEvaluationFactory<DefaultMemoryAllocator>>(
           threshold, exponent, l1RegularizationWeight, l2RegularizationWeight, blasFactory, lapackFactory);
     }
 
