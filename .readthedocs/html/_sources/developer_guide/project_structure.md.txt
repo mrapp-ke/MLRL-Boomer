@@ -11,7 +11,7 @@ Currently, this project offers the following software packages:
 
 The implementations of the packages are split into several components. A schematic depiction of the project's structure is shown in the following.
 
-```{image} ../_static/project_structure_light.svg
+```{image} ../_static/developer_guide/project_structure_light.svg
 ---
 align: center
 alt: Structure of the project
@@ -19,7 +19,7 @@ class: only-light
 ---
 ```
 
-```{image} ../_static/project_structure_dark.svg
+```{image} ../_static/developer_guide/project_structure_dark.svg
 ---
 align: center
 alt: Structure of the project
