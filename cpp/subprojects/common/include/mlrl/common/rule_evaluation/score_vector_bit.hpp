@@ -133,8 +133,8 @@ class MLRLCOMMON_API BitScoreVectorAllocator : public View {
          */
         explicit BitScoreVectorAllocator(const typename View::index_vector_type& outputIndices, bool sorted,
                                          bool init = false)
-            : View(MemoryAllocator::template allocateMemory<typename View::value_type>(outputIndices.getNumElements(),
-                                                                                       init),
+            : View(MemoryAllocator::template allocateMemory<typename View::value_type>(
+                     BitView::calculateNumElements(outputIndices.getNumElements()), init),
                    outputIndices, sorted) {}
 
         /**
