@@ -16,8 +16,8 @@ namespace boosting {
       DecomposableCompleteRuleEvaluationFactory<VectorMath>::create(
         const DenseDecomposableStatisticVectorView<float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
-        return std::make_unique<DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVectorView<float32>,
-                                                                   CompleteIndexVector, VectorMath>>(
+        return std::make_unique<DecomposableCompleteRuleEvaluation<
+          DenseDecomposableStatisticVectorView<float32>, CompleteIndexVector, VectorMath, DefaultMemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
@@ -26,8 +26,8 @@ namespace boosting {
       DecomposableCompleteRuleEvaluationFactory<VectorMath>::create(
         const DenseDecomposableStatisticVectorView<float32>& statisticVector,
         const PartialIndexVector& indexVector) const {
-        return std::make_unique<DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVectorView<float32>,
-                                                                   PartialIndexVector, VectorMath>>(
+        return std::make_unique<DecomposableCompleteRuleEvaluation<
+          DenseDecomposableStatisticVectorView<float32>, PartialIndexVector, VectorMath, DefaultMemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
@@ -36,8 +36,8 @@ namespace boosting {
       DecomposableCompleteRuleEvaluationFactory<VectorMath>::create(
         const DenseDecomposableStatisticVectorView<float64>& statisticVector,
         const CompleteIndexVector& indexVector) const {
-        return std::make_unique<DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVectorView<float64>,
-                                                                   CompleteIndexVector, VectorMath>>(
+        return std::make_unique<DecomposableCompleteRuleEvaluation<
+          DenseDecomposableStatisticVectorView<float64>, CompleteIndexVector, VectorMath, DefaultMemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
@@ -46,8 +46,8 @@ namespace boosting {
       DecomposableCompleteRuleEvaluationFactory<VectorMath>::create(
         const DenseDecomposableStatisticVectorView<float64>& statisticVector,
         const PartialIndexVector& indexVector) const {
-        return std::make_unique<DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVectorView<float64>,
-                                                                   PartialIndexVector, VectorMath>>(
+        return std::make_unique<DecomposableCompleteRuleEvaluation<
+          DenseDecomposableStatisticVectorView<float64>, PartialIndexVector, VectorMath, DefaultMemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 

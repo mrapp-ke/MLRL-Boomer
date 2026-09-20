@@ -105,13 +105,14 @@ namespace boosting {
         const DenseDecomposableStatisticVectorView<float32>& statisticVector,
         const PartialIndexVector& indexVector) const {
         if (indexVector.getNumElements() > 1) {
-            return std::make_unique<DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVectorView<float32>,
-                                                                       PartialIndexVector, VectorMath>>(
+            return std::make_unique<DecomposableCompleteRuleEvaluation<
+              DenseDecomposableStatisticVectorView<float32>, PartialIndexVector, VectorMath, DefaultMemoryAllocator>>(
               indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
         }
 
-        return std::make_unique<DecomposableCompleteRuleEvaluation<
-          DenseDecomposableStatisticVectorView<float32>, PartialIndexVector, SequentialDecomposableVectorMath>>(
+        return std::make_unique<
+          DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVectorView<float32>, PartialIndexVector,
+                                             SequentialDecomposableVectorMath, DefaultMemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
@@ -133,13 +134,14 @@ namespace boosting {
         const DenseDecomposableStatisticVectorView<float64>& statisticVector,
         const PartialIndexVector& indexVector) const {
         if (indexVector.getNumElements() > 1) {
-            return std::make_unique<DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVectorView<float64>,
-                                                                       PartialIndexVector, VectorMath>>(
+            return std::make_unique<DecomposableCompleteRuleEvaluation<
+              DenseDecomposableStatisticVectorView<float64>, PartialIndexVector, VectorMath, DefaultMemoryAllocator>>(
               indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
         }
 
-        return std::make_unique<DecomposableCompleteRuleEvaluation<
-          DenseDecomposableStatisticVectorView<float64>, PartialIndexVector, SequentialDecomposableVectorMath>>(
+        return std::make_unique<
+          DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVectorView<float64>, PartialIndexVector,
+                                             SequentialDecomposableVectorMath, DefaultMemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
@@ -161,15 +163,16 @@ namespace boosting {
         const SparseDecomposableStatisticVectorView<float32, uint32>& statisticVector,
         const PartialIndexVector& indexVector) const {
         if (indexVector.getNumElements() > 1) {
-            return std::make_unique<DecomposableCompleteRuleEvaluation<
-              SparseDecomposableStatisticVectorView<float32, uint32>, PartialIndexVector, VectorMath>>(
+            return std::make_unique<
+              DecomposableCompleteRuleEvaluation<SparseDecomposableStatisticVectorView<float32, uint32>,
+                                                 PartialIndexVector, VectorMath, DefaultMemoryAllocator>>(
               indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
         }
 
         return std::make_unique<
           DecomposableCompleteRuleEvaluation<SparseDecomposableStatisticVectorView<float32, uint32>, PartialIndexVector,
-                                             SequentialDecomposableVectorMath>>(indexVector, l1RegularizationWeight_,
-                                                                                l2RegularizationWeight_);
+                                             SequentialDecomposableVectorMath, DefaultMemoryAllocator>>(
+          indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
     template<typename VectorMath>
@@ -190,15 +193,15 @@ namespace boosting {
         const SparseDecomposableStatisticVectorView<float32, float32>& statisticVector,
         const PartialIndexVector& indexVector) const {
         if (indexVector.getNumElements() > 1) {
-            return std::make_unique<DecomposableCompleteRuleEvaluation<
-              SparseDecomposableStatisticVectorView<float32, float32>, PartialIndexVector, VectorMath>>(
+            return std::make_unique<
+              DecomposableCompleteRuleEvaluation<SparseDecomposableStatisticVectorView<float32, float32>,
+                                                 PartialIndexVector, VectorMath, DefaultMemoryAllocator>>(
               indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
         }
 
-        return std::make_unique<
-          DecomposableCompleteRuleEvaluation<SparseDecomposableStatisticVectorView<float32, float32>,
-                                             PartialIndexVector, SequentialDecomposableVectorMath>>(
-          indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
+        return std::make_unique<DecomposableCompleteRuleEvaluation<
+          SparseDecomposableStatisticVectorView<float32, float32>, PartialIndexVector, SequentialDecomposableVectorMath,
+          DefaultMemoryAllocator>>(indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
     template<typename VectorMath>
@@ -219,14 +222,15 @@ namespace boosting {
         const SparseDecomposableStatisticVectorView<float64, uint32>& statisticVector,
         const PartialIndexVector& indexVector) const {
         if (indexVector.getNumElements() > 1) {
-            return std::make_unique<DecomposableCompleteRuleEvaluation<
-              SparseDecomposableStatisticVectorView<float64, uint32>, PartialIndexVector, VectorMath>>(
+            return std::make_unique<
+              DecomposableCompleteRuleEvaluation<SparseDecomposableStatisticVectorView<float64, uint32>,
+                                                 PartialIndexVector, VectorMath, DefaultMemoryAllocator>>(
               indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
         }
         return std::make_unique<
           DecomposableCompleteRuleEvaluation<SparseDecomposableStatisticVectorView<float64, uint32>, PartialIndexVector,
-                                             SequentialDecomposableVectorMath>>(indexVector, l1RegularizationWeight_,
-                                                                                l2RegularizationWeight_);
+                                             SequentialDecomposableVectorMath, DefaultMemoryAllocator>>(
+          indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
     template<typename VectorMath>
@@ -247,15 +251,15 @@ namespace boosting {
         const SparseDecomposableStatisticVectorView<float64, float32>& statisticVector,
         const PartialIndexVector& indexVector) const {
         if (indexVector.getNumElements() > 1) {
-            return std::make_unique<DecomposableCompleteRuleEvaluation<
-              SparseDecomposableStatisticVectorView<float64, float32>, PartialIndexVector, VectorMath>>(
+            return std::make_unique<
+              DecomposableCompleteRuleEvaluation<SparseDecomposableStatisticVectorView<float64, float32>,
+                                                 PartialIndexVector, VectorMath, DefaultMemoryAllocator>>(
               indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
         }
 
-        return std::make_unique<
-          DecomposableCompleteRuleEvaluation<SparseDecomposableStatisticVectorView<float64, float32>,
-                                             PartialIndexVector, SequentialDecomposableVectorMath>>(
-          indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
+        return std::make_unique<DecomposableCompleteRuleEvaluation<
+          SparseDecomposableStatisticVectorView<float64, float32>, PartialIndexVector, SequentialDecomposableVectorMath,
+          DefaultMemoryAllocator>>(indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
     template class DecomposableFixedPartialRuleEvaluationFactory<SequentialDecomposableVectorMath>;
