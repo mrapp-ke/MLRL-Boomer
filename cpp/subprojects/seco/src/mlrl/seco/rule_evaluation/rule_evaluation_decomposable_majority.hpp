@@ -60,15 +60,18 @@ namespace seco {
 
     /**
      * Allows to create instances of the class `DecomposableMajorityRuleEvaluation`.
+     *
+     * @tparam MemoryAllocator The type of the memory allocator to be used
      */
+    template<typename MemoryAllocator>
     class DecomposableMajorityRuleEvaluationFactory final : public IDecomposableRuleEvaluationFactory {
         public:
 
             std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<uint32>>> create(
               const DenseDecomposableStatisticVectorView<uint32>& statisticVector,
               const CompleteIndexVector& indexVector) const override {
-                return std::make_unique<DecomposableMajorityRuleEvaluation<
-                  DenseDecomposableStatisticVectorView<uint32>, CompleteIndexVector, DefaultMemoryAllocator>>(
+                return std::make_unique<DecomposableMajorityRuleEvaluation<DenseDecomposableStatisticVectorView<uint32>,
+                                                                           CompleteIndexVector, MemoryAllocator>>(
                   indexVector);
             }
 
@@ -76,7 +79,7 @@ namespace seco {
               const DenseDecomposableStatisticVectorView<uint32>& statisticVector,
               const PartialIndexVector& indexVector) const override {
                 return std::make_unique<DecomposableMajorityRuleEvaluation<DenseDecomposableStatisticVectorView<uint32>,
-                                                                           PartialIndexVector, DefaultMemoryAllocator>>(
+                                                                           PartialIndexVector, MemoryAllocator>>(
                   indexVector);
             }
 
@@ -84,16 +87,14 @@ namespace seco {
               const DenseDecomposableStatisticVectorView<float32>& statisticVector,
               const CompleteIndexVector& indexVector) const override {
                 return std::make_unique<DecomposableMajorityRuleEvaluation<
-                  DenseDecomposableStatisticVectorView<float32>, CompleteIndexVector, DefaultMemoryAllocator>>(
-                  indexVector);
+                  DenseDecomposableStatisticVectorView<float32>, CompleteIndexVector, MemoryAllocator>>(indexVector);
             }
 
             std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float32>>> create(
               const DenseDecomposableStatisticVectorView<float32>& statisticVector,
               const PartialIndexVector& indexVector) const override {
                 return std::make_unique<DecomposableMajorityRuleEvaluation<
-                  DenseDecomposableStatisticVectorView<float32>, PartialIndexVector, DefaultMemoryAllocator>>(
-                  indexVector);
+                  DenseDecomposableStatisticVectorView<float32>, PartialIndexVector, MemoryAllocator>>(indexVector);
             }
     };
 

@@ -17,7 +17,8 @@ namespace seco {
 
     std::unique_ptr<IClassificationStatisticsProviderFactory> PartialHeadConfig::createStatisticsProviderFactory(
       const IRowWiseLabelMatrix& labelMatrix) const {
-        auto defaultRuleEvaluationFactoryPtr = std::make_unique<DecomposableMajorityRuleEvaluationFactory>();
+        auto defaultRuleEvaluationFactoryPtr =
+          std::make_unique<DecomposableMajorityRuleEvaluationFactory<DefaultMemoryAllocator>>();
         auto regularRuleEvaluationFactoryPtr = std::make_unique<DecomposablePartialRuleEvaluationFactory>(
           heuristicConfig_.get().createHeuristicFactory(),
           liftFunctionConfig_.get().createLiftFunctionFactory(labelMatrix));
