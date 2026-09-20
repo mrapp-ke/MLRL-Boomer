@@ -15,7 +15,10 @@ namespace boosting {
     /**
      * Allows to create instances of the class `INonDecomposableRuleEvaluationFactory` that allow to calculate the
      * predictions of complete rules, which predict for all available labels, using gradient-based label binning.
+     *
+     * @tparam MemoryAllocator The type of the memory allocator to be used
      */
+    template<typename MemoryAllocator>
     class NonDecomposableCompleteBinnedRuleEvaluationFactory final : public INonDecomposableRuleEvaluationFactory {
         private:
 

@@ -281,7 +281,7 @@ namespace boosting {
         float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
         std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr =
           std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
-        return std::make_unique<NonDecomposableCompleteBinnedRuleEvaluationFactory>(
+        return std::make_unique<NonDecomposableCompleteBinnedRuleEvaluationFactory<DefaultMemoryAllocator>>(
           l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr), blasFactory,
           lapackFactory);
     }
