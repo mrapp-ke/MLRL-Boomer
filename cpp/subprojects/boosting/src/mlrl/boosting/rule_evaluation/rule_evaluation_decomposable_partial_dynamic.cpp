@@ -16,8 +16,9 @@ namespace boosting {
      * @tparam IndexVector      The type of the vector that provides access to the indices of the outputs for which
      *                          predictions should be calculated
      * @tparam VectorMath       The type that implements basic operations for calculating with gradients and Hessians
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
      */
-    template<typename StatisticVector, typename IndexVector, typename VectorMath>
+    template<typename StatisticVector, typename IndexVector, typename VectorMath, typename MemoryAllocator>
     class DecomposableDynamicPartialRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
         private:
 
@@ -27,7 +28,7 @@ namespace boosting {
 
             PartialIndexVector indexVector_;
 
-            DenseScoreVector<statistic_type, PartialIndexVector, DefaultMemoryAllocator> scoreVector_;
+            DenseScoreVector<statistic_type, PartialIndexVector, MemoryAllocator> scoreVector_;
 
             const float32 threshold_;
 
@@ -41,7 +42,7 @@ namespace boosting {
             static inline void calculateScoresInternally(
               const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& statisticVector,
               const IndexVector& outputIndices,
-              DenseScoreVector<StatisticType, PartialIndexVector, DefaultMemoryAllocator>& scoreVector,
+              DenseScoreVector<StatisticType, PartialIndexVector, MemoryAllocator>& scoreVector,
               PartialIndexVector& indexVector, float32 l1RegularizationWeight, float32 l2RegularizationWeight,
               float32 threshold, float32 exponent) {
                 uint32 numElements = statisticVector.getNumGradients();
@@ -80,7 +81,7 @@ namespace boosting {
             static inline void calculateScoresInternally(
               const DenseDecomposableStatisticVectorView<StatisticType>& statisticVector,
               const IndexVector& outputIndices,
-              DenseScoreVector<StatisticType, PartialIndexVector, DefaultMemoryAllocator>& scoreVector,
+              DenseScoreVector<StatisticType, PartialIndexVector, MemoryAllocator>& scoreVector,
               PartialIndexVector& indexVector, float32 l1RegularizationWeight, float32 l2RegularizationWeight,
               float32 threshold, float32 exponent) {
                 uint32 numElements = statisticVector.getNumGradients();
@@ -155,8 +156,8 @@ namespace boosting {
       DecomposableDynamicPartialRuleEvaluationFactory<VectorMath>::create(
         const DenseDecomposableStatisticVectorView<float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
-        return std::make_unique<DecomposableDynamicPartialRuleEvaluation<DenseDecomposableStatisticVectorView<float32>,
-                                                                         CompleteIndexVector, VectorMath>>(
+        return std::make_unique<DecomposableDynamicPartialRuleEvaluation<
+          DenseDecomposableStatisticVectorView<float32>, CompleteIndexVector, VectorMath, DefaultMemoryAllocator>>(
           indexVector, threshold_, exponent_, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
@@ -182,8 +183,8 @@ namespace boosting {
       DecomposableDynamicPartialRuleEvaluationFactory<VectorMath>::create(
         const DenseDecomposableStatisticVectorView<float64>& statisticVector,
         const CompleteIndexVector& indexVector) const {
-        return std::make_unique<DecomposableDynamicPartialRuleEvaluation<DenseDecomposableStatisticVectorView<float64>,
-                                                                         CompleteIndexVector, VectorMath>>(
+        return std::make_unique<DecomposableDynamicPartialRuleEvaluation<
+          DenseDecomposableStatisticVectorView<float64>, CompleteIndexVector, VectorMath, DefaultMemoryAllocator>>(
           indexVector, threshold_, exponent_, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
@@ -209,8 +210,9 @@ namespace boosting {
       DecomposableDynamicPartialRuleEvaluationFactory<VectorMath>::create(
         const SparseDecomposableStatisticVectorView<float32, uint32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
-        return std::make_unique<DecomposableDynamicPartialRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float32, uint32>, CompleteIndexVector, VectorMath>>(
+        return std::make_unique<
+          DecomposableDynamicPartialRuleEvaluation<SparseDecomposableStatisticVectorView<float32, uint32>,
+                                                   CompleteIndexVector, VectorMath, DefaultMemoryAllocator>>(
           indexVector, threshold_, exponent_, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
@@ -237,8 +239,9 @@ namespace boosting {
       DecomposableDynamicPartialRuleEvaluationFactory<VectorMath>::create(
         const SparseDecomposableStatisticVectorView<float32, float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
-        return std::make_unique<DecomposableDynamicPartialRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float32, float32>, CompleteIndexVector, VectorMath>>(
+        return std::make_unique<
+          DecomposableDynamicPartialRuleEvaluation<SparseDecomposableStatisticVectorView<float32, float32>,
+                                                   CompleteIndexVector, VectorMath, DefaultMemoryAllocator>>(
           indexVector, threshold_, exponent_, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
@@ -264,8 +267,9 @@ namespace boosting {
       DecomposableDynamicPartialRuleEvaluationFactory<VectorMath>::create(
         const SparseDecomposableStatisticVectorView<float64, uint32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
-        return std::make_unique<DecomposableDynamicPartialRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float64, uint32>, CompleteIndexVector, VectorMath>>(
+        return std::make_unique<
+          DecomposableDynamicPartialRuleEvaluation<SparseDecomposableStatisticVectorView<float64, uint32>,
+                                                   CompleteIndexVector, VectorMath, DefaultMemoryAllocator>>(
           indexVector, threshold_, exponent_, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
@@ -292,8 +296,9 @@ namespace boosting {
       DecomposableDynamicPartialRuleEvaluationFactory<VectorMath>::create(
         const SparseDecomposableStatisticVectorView<float64, float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
-        return std::make_unique<DecomposableDynamicPartialRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float64, float32>, CompleteIndexVector, VectorMath>>(
+        return std::make_unique<
+          DecomposableDynamicPartialRuleEvaluation<SparseDecomposableStatisticVectorView<float64, float32>,
+                                                   CompleteIndexVector, VectorMath, DefaultMemoryAllocator>>(
           indexVector, threshold_, exponent_, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
