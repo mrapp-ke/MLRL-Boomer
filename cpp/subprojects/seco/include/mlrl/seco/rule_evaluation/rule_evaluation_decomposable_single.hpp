@@ -14,7 +14,10 @@ namespace seco {
     /**
      * Allows to create instances of the class `IDecomposableRuleEvaluationFactory` that allow to calculate the
      * predictions of single-output rules, which predict for a single output.
+     *
+     * @tparam MemoryAllocator The type of the memory allocator to be used
      */
+    template<typename MemoryAllocator>
     class DecomposableSingleOutputRuleEvaluationFactory final : public IDecomposableRuleEvaluationFactory {
         private:
 
