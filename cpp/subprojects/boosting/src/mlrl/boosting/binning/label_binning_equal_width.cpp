@@ -261,13 +261,14 @@ namespace boosting {
 
 #if SIMD_SUPPORT_ENABLED
         if (simdConfig_.get().isSimdEnabled()) {
-            return std::make_unique<DecomposableDynamicPartialBinnedRuleEvaluationFactory<SimdDecomposableVectorMath>>(
+            return std::make_unique<
+              DecomposableDynamicPartialBinnedRuleEvaluationFactory<SimdDecomposableVectorMath, SimdMemoryAllocator>>(
               threshold, exponent, l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr));
         }
 #endif
 
-        return std::make_unique<
-          DecomposableDynamicPartialBinnedRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
+        return std::make_unique<DecomposableDynamicPartialBinnedRuleEvaluationFactory<SequentialDecomposableVectorMath,
+                                                                                      DefaultMemoryAllocator>>(
           threshold, exponent, l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr));
     }
 

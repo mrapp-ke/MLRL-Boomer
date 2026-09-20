@@ -15,9 +15,10 @@ namespace boosting {
      * predictions of partial rules, which predict for a subset of the available outputs that is determined dynamically,
      * using gradient-based label binning.
      *
-     * @tparam VectorMath The type that implements basic operations for calculating with gradients and Hessians
+     * @tparam VectorMath       The type that implements basic operations for calculating with gradients and Hessians
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
      */
-    template<typename VectorMath>
+    template<typename VectorMath, typename MemoryAllocator>
     class DecomposableDynamicPartialBinnedRuleEvaluationFactory final
         : public ISparseDecomposableRuleEvaluationFactory {
         private:
