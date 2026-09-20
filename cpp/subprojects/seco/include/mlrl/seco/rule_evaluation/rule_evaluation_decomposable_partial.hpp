@@ -15,7 +15,10 @@ namespace seco {
     /**
      * Allows to create instances of the class `IDecomposableRuleEvaluationFactory` that allow to calculate the
      * predictions of partial rules, which predict for a subset of the available labels.
+     *
+     * @tparam MemoryAllocator The type of the memory allocator to be used
      */
+    template<typename MemoryAllocator>
     class DecomposablePartialRuleEvaluationFactory final : public IDecomposableRuleEvaluationFactory {
         private:
 

@@ -73,116 +73,134 @@ namespace boosting {
             }
     };
 
-    DecomposableSingleOutputRuleEvaluationFactory::DecomposableSingleOutputRuleEvaluationFactory(
+    template<typename MemoryAllocator>
+    DecomposableSingleOutputRuleEvaluationFactory<MemoryAllocator>::DecomposableSingleOutputRuleEvaluationFactory(
       float32 l1RegularizationWeight, float32 l2RegularizationWeight)
         : l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {}
 
+    template<typename MemoryAllocator>
     std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float32>>>
-      DecomposableSingleOutputRuleEvaluationFactory::create(
+      DecomposableSingleOutputRuleEvaluationFactory<MemoryAllocator>::create(
         const DenseDecomposableStatisticVectorView<float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         return std::make_unique<DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVectorView<float32>,
-                                                                       CompleteIndexVector, DefaultMemoryAllocator>>(
+                                                                       CompleteIndexVector, MemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
+    template<typename MemoryAllocator>
     std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float32>>>
-      DecomposableSingleOutputRuleEvaluationFactory::create(
+      DecomposableSingleOutputRuleEvaluationFactory<MemoryAllocator>::create(
         const DenseDecomposableStatisticVectorView<float32>& statisticVector,
         const PartialIndexVector& indexVector) const {
         return std::make_unique<DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVectorView<float32>,
-                                                                       PartialIndexVector, DefaultMemoryAllocator>>(
+                                                                       PartialIndexVector, MemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
+    template<typename MemoryAllocator>
     std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float64>>>
-      DecomposableSingleOutputRuleEvaluationFactory::create(
+      DecomposableSingleOutputRuleEvaluationFactory<MemoryAllocator>::create(
         const DenseDecomposableStatisticVectorView<float64>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         return std::make_unique<DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVectorView<float64>,
-                                                                       CompleteIndexVector, DefaultMemoryAllocator>>(
+                                                                       CompleteIndexVector, MemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
+    template<typename MemoryAllocator>
     std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float64>>>
-      DecomposableSingleOutputRuleEvaluationFactory::create(
+      DecomposableSingleOutputRuleEvaluationFactory<MemoryAllocator>::create(
         const DenseDecomposableStatisticVectorView<float64>& statisticVector,
         const PartialIndexVector& indexVector) const {
         return std::make_unique<DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVectorView<float64>,
-                                                                       PartialIndexVector, DefaultMemoryAllocator>>(
+                                                                       PartialIndexVector, MemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
+    template<typename MemoryAllocator>
     std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVectorView<float32, uint32>>>
-      DecomposableSingleOutputRuleEvaluationFactory::create(
+      DecomposableSingleOutputRuleEvaluationFactory<MemoryAllocator>::create(
         const SparseDecomposableStatisticVectorView<float32, uint32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         return std::make_unique<DecomposableSingleOutputRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float32, uint32>, CompleteIndexVector, DefaultMemoryAllocator>>(
+          SparseDecomposableStatisticVectorView<float32, uint32>, CompleteIndexVector, MemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
+    template<typename MemoryAllocator>
     std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVectorView<float32, uint32>>>
-      DecomposableSingleOutputRuleEvaluationFactory::create(
+      DecomposableSingleOutputRuleEvaluationFactory<MemoryAllocator>::create(
         const SparseDecomposableStatisticVectorView<float32, uint32>& statisticVector,
         const PartialIndexVector& indexVector) const {
         return std::make_unique<DecomposableSingleOutputRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float32, uint32>, PartialIndexVector, DefaultMemoryAllocator>>(
+          SparseDecomposableStatisticVectorView<float32, uint32>, PartialIndexVector, MemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
+    template<typename MemoryAllocator>
     std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVectorView<float32, float32>>>
-      DecomposableSingleOutputRuleEvaluationFactory::create(
+      DecomposableSingleOutputRuleEvaluationFactory<MemoryAllocator>::create(
         const SparseDecomposableStatisticVectorView<float32, float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         return std::make_unique<DecomposableSingleOutputRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float32, float32>, CompleteIndexVector, DefaultMemoryAllocator>>(
+          SparseDecomposableStatisticVectorView<float32, float32>, CompleteIndexVector, MemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
+    template<typename MemoryAllocator>
     std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVectorView<float32, float32>>>
-      DecomposableSingleOutputRuleEvaluationFactory::create(
+      DecomposableSingleOutputRuleEvaluationFactory<MemoryAllocator>::create(
         const SparseDecomposableStatisticVectorView<float32, float32>& statisticVector,
         const PartialIndexVector& indexVector) const {
         return std::make_unique<DecomposableSingleOutputRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float32, float32>, PartialIndexVector, DefaultMemoryAllocator>>(
+          SparseDecomposableStatisticVectorView<float32, float32>, PartialIndexVector, MemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
+    template<typename MemoryAllocator>
     std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVectorView<float64, uint32>>>
-      DecomposableSingleOutputRuleEvaluationFactory::create(
+      DecomposableSingleOutputRuleEvaluationFactory<MemoryAllocator>::create(
         const SparseDecomposableStatisticVectorView<float64, uint32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         return std::make_unique<DecomposableSingleOutputRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float64, uint32>, CompleteIndexVector, DefaultMemoryAllocator>>(
+          SparseDecomposableStatisticVectorView<float64, uint32>, CompleteIndexVector, MemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
+    template<typename MemoryAllocator>
     std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVectorView<float64, uint32>>>
-      DecomposableSingleOutputRuleEvaluationFactory::create(
+      DecomposableSingleOutputRuleEvaluationFactory<MemoryAllocator>::create(
         const SparseDecomposableStatisticVectorView<float64, uint32>& statisticVector,
         const PartialIndexVector& indexVector) const {
         return std::make_unique<DecomposableSingleOutputRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float64, uint32>, PartialIndexVector, DefaultMemoryAllocator>>(
+          SparseDecomposableStatisticVectorView<float64, uint32>, PartialIndexVector, MemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
+    template<typename MemoryAllocator>
     std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVectorView<float64, float32>>>
-      DecomposableSingleOutputRuleEvaluationFactory::create(
+      DecomposableSingleOutputRuleEvaluationFactory<MemoryAllocator>::create(
         const SparseDecomposableStatisticVectorView<float64, float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         return std::make_unique<DecomposableSingleOutputRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float64, float32>, CompleteIndexVector, DefaultMemoryAllocator>>(
+          SparseDecomposableStatisticVectorView<float64, float32>, CompleteIndexVector, MemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
+    template<typename MemoryAllocator>
     std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVectorView<float64, float32>>>
-      DecomposableSingleOutputRuleEvaluationFactory::create(
+      DecomposableSingleOutputRuleEvaluationFactory<MemoryAllocator>::create(
         const SparseDecomposableStatisticVectorView<float64, float32>& statisticVector,
         const PartialIndexVector& indexVector) const {
         return std::make_unique<DecomposableSingleOutputRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float64, float32>, PartialIndexVector, DefaultMemoryAllocator>>(
+          SparseDecomposableStatisticVectorView<float64, float32>, PartialIndexVector, MemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
+    template class DecomposableSingleOutputRuleEvaluationFactory<DefaultMemoryAllocator>;
+
+#if SIMD_SUPPORT_ENABLED
+    template class DecomposableSingleOutputRuleEvaluationFactory<SimdMemoryAllocator>;
+#endif
 }

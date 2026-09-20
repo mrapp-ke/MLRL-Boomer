@@ -13,9 +13,10 @@ namespace boosting {
      * Allows to create instances of the class `ISparseDecomposableRuleEvaluationFactory` that allow to calculate the
      * predictions of partial rules, which predict for a predefined number of outputs.
      *
-     * @tparam VectorMath The type that implements basic operations for calculating with gradients and Hessians
+     * @tparam VectorMath       The type that implements basic operations for calculating with gradients and Hessians
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
      */
-    template<typename VectorMath>
+    template<typename VectorMath, typename MemoryAllocator>
     class DecomposableFixedPartialRuleEvaluationFactory final : public ISparseDecomposableRuleEvaluationFactory {
         private:
 

@@ -14,7 +14,10 @@ namespace boosting {
     /**
      * Allows to create instances of the class `INonDecomposableRuleEvaluationFactory` that allow to calculate the
      * predictions of partial rules, which predict for a predefined number of outputs.
+     *
+     * @tparam MemoryAllocator The type of the memory allocator to be used
      */
+    template<typename MemoryAllocator>
     class NonDecomposableFixedPartialRuleEvaluationFactory final : public INonDecomposableRuleEvaluationFactory {
         private:
 
