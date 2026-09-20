@@ -15,8 +15,9 @@ namespace boosting {
      * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
      * @tparam IndexVector      The type of the vector that provides access to the indices of the outputs for which
      *                          predictions should be calculated
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
      */
-    template<typename StatisticVector, typename IndexVector>
+    template<typename StatisticVector, typename IndexVector, typename MemoryAllocator>
     class DecomposableFixedPartialRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
         private:
 
@@ -26,7 +27,7 @@ namespace boosting {
 
             PartialIndexVector indexVector_;
 
-            DenseScoreVector<statistic_type, PartialIndexVector, DefaultMemoryAllocator> scoreVector_;
+            DenseScoreVector<statistic_type, PartialIndexVector, MemoryAllocator> scoreVector_;
 
             const float32 l1RegularizationWeight_;
 
@@ -94,8 +95,8 @@ namespace boosting {
         const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
           math::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
-        return std::make_unique<
-          DecomposableFixedPartialRuleEvaluation<DenseDecomposableStatisticVectorView<float32>, CompleteIndexVector>>(
+        return std::make_unique<DecomposableFixedPartialRuleEvaluation<DenseDecomposableStatisticVectorView<float32>,
+                                                                       CompleteIndexVector, DefaultMemoryAllocator>>(
           indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
@@ -123,8 +124,8 @@ namespace boosting {
         const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
           math::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
-        return std::make_unique<
-          DecomposableFixedPartialRuleEvaluation<DenseDecomposableStatisticVectorView<float64>, CompleteIndexVector>>(
+        return std::make_unique<DecomposableFixedPartialRuleEvaluation<DenseDecomposableStatisticVectorView<float64>,
+                                                                       CompleteIndexVector, DefaultMemoryAllocator>>(
           indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
@@ -153,7 +154,7 @@ namespace boosting {
         uint32 numPredictions =
           math::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
         return std::make_unique<DecomposableFixedPartialRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float32, uint32>, CompleteIndexVector>>(
+          SparseDecomposableStatisticVectorView<float32, uint32>, CompleteIndexVector, DefaultMemoryAllocator>>(
           indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
@@ -183,7 +184,7 @@ namespace boosting {
         uint32 numPredictions =
           math::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
         return std::make_unique<DecomposableFixedPartialRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float32, float32>, CompleteIndexVector>>(
+          SparseDecomposableStatisticVectorView<float32, float32>, CompleteIndexVector, DefaultMemoryAllocator>>(
           indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
@@ -212,7 +213,7 @@ namespace boosting {
         uint32 numPredictions =
           math::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
         return std::make_unique<DecomposableFixedPartialRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float64, uint32>, CompleteIndexVector>>(
+          SparseDecomposableStatisticVectorView<float64, uint32>, CompleteIndexVector, DefaultMemoryAllocator>>(
           indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
@@ -241,7 +242,7 @@ namespace boosting {
         uint32 numPredictions =
           math::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
         return std::make_unique<DecomposableFixedPartialRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float64, float32>, CompleteIndexVector>>(
+          SparseDecomposableStatisticVectorView<float64, float32>, CompleteIndexVector, DefaultMemoryAllocator>>(
           indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
