@@ -14,7 +14,10 @@ namespace boosting {
     /**
      * Allows to create instances of the class `INonDecomposableRuleEvaluationFactory` that allow to calculate the
      * predictions of complete rules, which predict for all available outputs.
+     *
+     * @tparam MemoryAllocator The type of the memory allocator to be used
      */
+    template<typename MemoryAllocator>
     class NonDecomposableCompleteRuleEvaluationFactory final : public INonDecomposableRuleEvaluationFactory {
         private:
 
