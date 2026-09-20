@@ -12,7 +12,7 @@
  * @tparam T The type of the values stored in the vector
  */
 class BitVector final
-    : public ClearableViewDecorator<IndexableBitVectorDecorator<BitVectorDecorator<AllocatedBitVector>>> {
+    : public ClearableViewDecorator<IndexableBitVectorDecorator<BitVectorDecorator<AllocatedBitVector<>>>> {
     public:
 
         /**
@@ -20,13 +20,13 @@ class BitVector final
          * @param init      True, if all elements in the vector should be value-initialized, false otherwise
          */
         BitVector(uint32 numBits, bool init = false)
-            : ClearableViewDecorator<IndexableBitVectorDecorator<BitVectorDecorator<AllocatedBitVector>>>(
-                AllocatedBitVector(numBits, init)) {}
+            : ClearableViewDecorator<IndexableBitVectorDecorator<BitVectorDecorator<AllocatedBitVector<>>>>(
+                AllocatedBitVector<>(numBits, init)) {}
 
         /**
          * @param other A reference to an object of type `AllocatedBitVector` that should be moved
          */
-        BitVector(AllocatedBitVector&& other)
-            : ClearableViewDecorator<IndexableBitVectorDecorator<BitVectorDecorator<AllocatedBitVector>>>(
-                AllocatedBitVector(std::move(other))) {}
+        BitVector(AllocatedBitVector<>&& other)
+            : ClearableViewDecorator<IndexableBitVectorDecorator<BitVectorDecorator<AllocatedBitVector<>>>>(
+                AllocatedBitVector<>(std::move(other))) {}
 };

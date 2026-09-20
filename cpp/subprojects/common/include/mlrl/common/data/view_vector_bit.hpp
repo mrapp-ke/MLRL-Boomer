@@ -316,8 +316,11 @@ class MLRLCOMMON_API BitVectorAllocator : public View {
 
 /**
  * Allocates the memory, a `BitView` provides access to.
+ *
+ * @tparam MemoryAllocator The type of the memory allocator to be used
  */
-using AllocatedBitVector = BitVectorAllocator<BitView>;
+template<typename MemoryAllocator = DefaultMemoryAllocator>
+using AllocatedBitVector = BitVectorAllocator<BitView, MemoryAllocator>;
 
 /**
  * A vector that stores binary values in a `BitView`.
