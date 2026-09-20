@@ -191,54 +191,64 @@ namespace seco {
             }
     };
 
-    DecomposablePartialRuleEvaluationFactory::DecomposablePartialRuleEvaluationFactory(
+    template<typename MemoryAllocator>
+    DecomposablePartialRuleEvaluationFactory<MemoryAllocator>::DecomposablePartialRuleEvaluationFactory(
       std::unique_ptr<IHeuristicFactory> heuristicFactoryPtr,
       std::unique_ptr<ILiftFunctionFactory> liftFunctionFactoryPtr)
         : heuristicFactoryPtr_(std::move(heuristicFactoryPtr)),
           liftFunctionFactoryPtr_(std::move(liftFunctionFactoryPtr)) {}
 
+    template<typename MemoryAllocator>
     std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<uint32>>>
-      DecomposablePartialRuleEvaluationFactory::create(
+      DecomposablePartialRuleEvaluationFactory<MemoryAllocator>::create(
         const DenseDecomposableStatisticVectorView<uint32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         std::unique_ptr<ILiftFunction> liftFunctionPtr = liftFunctionFactoryPtr_->create();
         return std::make_unique<DecomposablePartialRuleEvaluation<DenseDecomposableStatisticVectorView<uint32>,
-                                                                  CompleteIndexVector, DefaultMemoryAllocator>>(
+                                                                  CompleteIndexVector, MemoryAllocator>>(
           indexVector, std::move(heuristicPtr), std::move(liftFunctionPtr));
     }
 
+    template<typename MemoryAllocator>
     std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<uint32>>>
-      DecomposablePartialRuleEvaluationFactory::create(
+      DecomposablePartialRuleEvaluationFactory<MemoryAllocator>::create(
         const DenseDecomposableStatisticVectorView<uint32>& statisticVector,
         const PartialIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         std::unique_ptr<ILiftFunction> liftFunctionPtr = liftFunctionFactoryPtr_->create();
         return std::make_unique<
-          DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVectorView<uint32>, DefaultMemoryAllocator>>(
+          DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVectorView<uint32>, MemoryAllocator>>(
           indexVector, std::move(heuristicPtr), std::move(liftFunctionPtr));
     }
 
+    template<typename MemoryAllocator>
     std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float32>>>
-      DecomposablePartialRuleEvaluationFactory::create(
+      DecomposablePartialRuleEvaluationFactory<MemoryAllocator>::create(
         const DenseDecomposableStatisticVectorView<float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         std::unique_ptr<ILiftFunction> liftFunctionPtr = liftFunctionFactoryPtr_->create();
         return std::make_unique<DecomposablePartialRuleEvaluation<DenseDecomposableStatisticVectorView<float32>,
-                                                                  CompleteIndexVector, DefaultMemoryAllocator>>(
+                                                                  CompleteIndexVector, MemoryAllocator>>(
           indexVector, std::move(heuristicPtr), std::move(liftFunctionPtr));
     }
 
+    template<typename MemoryAllocator>
     std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float32>>>
-      DecomposablePartialRuleEvaluationFactory::create(
+      DecomposablePartialRuleEvaluationFactory<MemoryAllocator>::create(
         const DenseDecomposableStatisticVectorView<float32>& statisticVector,
         const PartialIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         std::unique_ptr<ILiftFunction> liftFunctionPtr = liftFunctionFactoryPtr_->create();
         return std::make_unique<
-          DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVectorView<float32>, DefaultMemoryAllocator>>(
+          DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVectorView<float32>, MemoryAllocator>>(
           indexVector, std::move(heuristicPtr), std::move(liftFunctionPtr));
     }
 
+    template class DecomposablePartialRuleEvaluationFactory<DefaultMemoryAllocator>;
+
+#if SIMD_SUPPORT_ENABLED
+    template class DecomposablePartialRuleEvaluationFactory<SimdMemoryAllocator>;
+#endif
 }

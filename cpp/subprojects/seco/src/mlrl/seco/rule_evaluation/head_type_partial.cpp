@@ -19,12 +19,14 @@ namespace seco {
       const IRowWiseLabelMatrix& labelMatrix) const {
         auto defaultRuleEvaluationFactoryPtr =
           std::make_unique<DecomposableMajorityRuleEvaluationFactory<DefaultMemoryAllocator>>();
-        auto regularRuleEvaluationFactoryPtr = std::make_unique<DecomposablePartialRuleEvaluationFactory>(
-          heuristicConfig_.get().createHeuristicFactory(),
-          liftFunctionConfig_.get().createLiftFunctionFactory(labelMatrix));
-        auto pruningRuleEvaluationFactoryPtr = std::make_unique<DecomposablePartialRuleEvaluationFactory>(
-          pruningHeuristicConfig_.get().createHeuristicFactory(),
-          liftFunctionConfig_.get().createLiftFunctionFactory(labelMatrix));
+        auto regularRuleEvaluationFactoryPtr =
+          std::make_unique<DecomposablePartialRuleEvaluationFactory<DefaultMemoryAllocator>>(
+            heuristicConfig_.get().createHeuristicFactory(),
+            liftFunctionConfig_.get().createLiftFunctionFactory(labelMatrix));
+        auto pruningRuleEvaluationFactoryPtr =
+          std::make_unique<DecomposablePartialRuleEvaluationFactory<DefaultMemoryAllocator>>(
+            pruningHeuristicConfig_.get().createHeuristicFactory(),
+            liftFunctionConfig_.get().createLiftFunctionFactory(labelMatrix));
 
 #if SIMD_SUPPORT_ENABLED
         if (simdConfig_.get().isSimdRecommended(labelMatrix.getNumOutputs())) {
