@@ -18,14 +18,15 @@ namespace boosting {
      * @tparam IndexVector      The type of the vector that provides access to the indices of the outputs for which
      *                          predictions should be calculated
      * @tparam VectorMath       The type that implements basic operations for calculating with gradients and Hessians
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
      */
-    template<typename StatisticVector, typename IndexVector, typename VectorMath>
+    template<typename StatisticVector, typename IndexVector, typename VectorMath, typename MemoryAllocator>
     class DecomposableCompleteRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
         private:
 
             using statistic_type = StatisticVector::statistic_type;
 
-            DenseScoreVector<statistic_type, IndexVector, DefaultMemoryAllocator> scoreVector_;
+            DenseScoreVector<statistic_type, IndexVector, MemoryAllocator> scoreVector_;
 
             const float32 l1RegularizationWeight_;
 
@@ -34,7 +35,7 @@ namespace boosting {
             template<typename StatisticType, typename WeightType>
             static inline void calculateScoresInternally(
               const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& statisticVector,
-              DenseScoreVector<StatisticType, IndexVector, DefaultMemoryAllocator>& scoreVector,
+              DenseScoreVector<StatisticType, IndexVector, MemoryAllocator>& scoreVector,
               float32 l1RegularizationWeight, float32 l2RegularizationWeight) {
                 uint32 numElements = statisticVector.getNumGradients();
                 auto gradientIterator = statisticVector.gradients_cbegin();
@@ -58,7 +59,7 @@ namespace boosting {
             template<typename StatisticType>
             static inline void calculateScoresInternally(
               const DenseDecomposableStatisticVectorView<StatisticType>& statisticVector,
-              DenseScoreVector<StatisticType, IndexVector, DefaultMemoryAllocator>& scoreVector,
+              DenseScoreVector<StatisticType, IndexVector, MemoryAllocator>& scoreVector,
               float32 l1RegularizationWeight, float32 l2RegularizationWeight) {
                 uint32 numElements = statisticVector.getNumGradients();
                 auto gradientIterator = statisticVector.gradients_cbegin();

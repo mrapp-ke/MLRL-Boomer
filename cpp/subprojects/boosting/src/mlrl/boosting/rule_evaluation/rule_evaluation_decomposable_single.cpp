@@ -12,8 +12,9 @@ namespace boosting {
      * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
      * @tparam IndexVector      The type of the vector that provides access to the indices of the outputs for which
      *                          predictions should be calculated
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
      */
-    template<typename StatisticVector, typename IndexVector>
+    template<typename StatisticVector, typename IndexVector, typename MemoryAllocator>
     class DecomposableSingleOutputRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
         private:
 
@@ -23,7 +24,7 @@ namespace boosting {
 
             PartialIndexVector indexVector_;
 
-            DenseScoreVector<statistic_type, PartialIndexVector, DefaultMemoryAllocator> scoreVector_;
+            DenseScoreVector<statistic_type, PartialIndexVector, MemoryAllocator> scoreVector_;
 
             const float32 l1RegularizationWeight_;
 
@@ -80,8 +81,8 @@ namespace boosting {
       DecomposableSingleOutputRuleEvaluationFactory::create(
         const DenseDecomposableStatisticVectorView<float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
-        return std::make_unique<
-          DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVectorView<float32>, CompleteIndexVector>>(
+        return std::make_unique<DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVectorView<float32>,
+                                                                       CompleteIndexVector, DefaultMemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
@@ -89,8 +90,8 @@ namespace boosting {
       DecomposableSingleOutputRuleEvaluationFactory::create(
         const DenseDecomposableStatisticVectorView<float32>& statisticVector,
         const PartialIndexVector& indexVector) const {
-        return std::make_unique<
-          DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVectorView<float32>, PartialIndexVector>>(
+        return std::make_unique<DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVectorView<float32>,
+                                                                       PartialIndexVector, DefaultMemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
@@ -98,8 +99,8 @@ namespace boosting {
       DecomposableSingleOutputRuleEvaluationFactory::create(
         const DenseDecomposableStatisticVectorView<float64>& statisticVector,
         const CompleteIndexVector& indexVector) const {
-        return std::make_unique<
-          DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVectorView<float64>, CompleteIndexVector>>(
+        return std::make_unique<DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVectorView<float64>,
+                                                                       CompleteIndexVector, DefaultMemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
@@ -107,8 +108,8 @@ namespace boosting {
       DecomposableSingleOutputRuleEvaluationFactory::create(
         const DenseDecomposableStatisticVectorView<float64>& statisticVector,
         const PartialIndexVector& indexVector) const {
-        return std::make_unique<
-          DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVectorView<float64>, PartialIndexVector>>(
+        return std::make_unique<DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVectorView<float64>,
+                                                                       PartialIndexVector, DefaultMemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
@@ -117,7 +118,7 @@ namespace boosting {
         const SparseDecomposableStatisticVectorView<float32, uint32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         return std::make_unique<DecomposableSingleOutputRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float32, uint32>, CompleteIndexVector>>(
+          SparseDecomposableStatisticVectorView<float32, uint32>, CompleteIndexVector, DefaultMemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
@@ -126,7 +127,7 @@ namespace boosting {
         const SparseDecomposableStatisticVectorView<float32, uint32>& statisticVector,
         const PartialIndexVector& indexVector) const {
         return std::make_unique<DecomposableSingleOutputRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float32, uint32>, PartialIndexVector>>(
+          SparseDecomposableStatisticVectorView<float32, uint32>, PartialIndexVector, DefaultMemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
@@ -135,7 +136,7 @@ namespace boosting {
         const SparseDecomposableStatisticVectorView<float32, float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         return std::make_unique<DecomposableSingleOutputRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float32, float32>, CompleteIndexVector>>(
+          SparseDecomposableStatisticVectorView<float32, float32>, CompleteIndexVector, DefaultMemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
@@ -144,7 +145,7 @@ namespace boosting {
         const SparseDecomposableStatisticVectorView<float32, float32>& statisticVector,
         const PartialIndexVector& indexVector) const {
         return std::make_unique<DecomposableSingleOutputRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float32, float32>, PartialIndexVector>>(
+          SparseDecomposableStatisticVectorView<float32, float32>, PartialIndexVector, DefaultMemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
@@ -153,7 +154,7 @@ namespace boosting {
         const SparseDecomposableStatisticVectorView<float64, uint32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         return std::make_unique<DecomposableSingleOutputRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float64, uint32>, CompleteIndexVector>>(
+          SparseDecomposableStatisticVectorView<float64, uint32>, CompleteIndexVector, DefaultMemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
@@ -162,7 +163,7 @@ namespace boosting {
         const SparseDecomposableStatisticVectorView<float64, uint32>& statisticVector,
         const PartialIndexVector& indexVector) const {
         return std::make_unique<DecomposableSingleOutputRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float64, uint32>, PartialIndexVector>>(
+          SparseDecomposableStatisticVectorView<float64, uint32>, PartialIndexVector, DefaultMemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
@@ -171,7 +172,7 @@ namespace boosting {
         const SparseDecomposableStatisticVectorView<float64, float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         return std::make_unique<DecomposableSingleOutputRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float64, float32>, CompleteIndexVector>>(
+          SparseDecomposableStatisticVectorView<float64, float32>, CompleteIndexVector, DefaultMemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
@@ -180,7 +181,7 @@ namespace boosting {
         const SparseDecomposableStatisticVectorView<float64, float32>& statisticVector,
         const PartialIndexVector& indexVector) const {
         return std::make_unique<DecomposableSingleOutputRuleEvaluation<
-          SparseDecomposableStatisticVectorView<float64, float32>, PartialIndexVector>>(
+          SparseDecomposableStatisticVectorView<float64, float32>, PartialIndexVector, DefaultMemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 

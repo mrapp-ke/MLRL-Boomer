@@ -181,8 +181,9 @@ namespace boosting {
      * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
      * @tparam IndexVector      The type of the vector that provides access to the indices of the labels for which
      *                          predictions should be calculated
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
      */
-    template<typename StatisticVector, typename IndexVector>
+    template<typename StatisticVector, typename IndexVector, typename MemoryAllocator>
     class AbstractNonDecomposableBinnedRuleEvaluation
         : public AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector> {
         private:
@@ -191,7 +192,7 @@ namespace boosting {
 
             const uint32 maxBins_;
 
-            DenseBinnedScoreVector<statistic_type, IndexVector, DefaultMemoryAllocator> scoreVector_;
+            DenseBinnedScoreVector<statistic_type, IndexVector, MemoryAllocator> scoreVector_;
 
             Array<statistic_type> aggregatedGradients_;
 
@@ -354,10 +355,11 @@ namespace boosting {
      * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
      * @tparam IndexVector      The type of the vector that provides access to the labels for which predictions should
      *                          be calculated
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
      */
-    template<typename StatisticVector, typename IndexVector>
+    template<typename StatisticVector, typename IndexVector, typename MemoryAllocator>
     class DenseNonDecomposableCompleteBinnedRuleEvaluation final
-        : public AbstractNonDecomposableBinnedRuleEvaluation<StatisticVector, IndexVector> {
+        : public AbstractNonDecomposableBinnedRuleEvaluation<StatisticVector, IndexVector, MemoryAllocator> {
         private:
 
             using statistic_type = StatisticVector::statistic_type;
@@ -402,7 +404,7 @@ namespace boosting {
                                                              std::unique_ptr<ILabelBinning<statistic_type>> binningPtr,
                                                              std::unique_ptr<Blas<statistic_type>> blasPtr,
                                                              std::unique_ptr<Lapack<statistic_type>> lapackPtr)
-                : AbstractNonDecomposableBinnedRuleEvaluation<StatisticVector, IndexVector>(
+                : AbstractNonDecomposableBinnedRuleEvaluation<StatisticVector, IndexVector, MemoryAllocator>(
                     labelIndices, true, maxBins, l1RegularizationWeight, l2RegularizationWeight, std::move(binningPtr),
                     std::move(blasPtr), std::move(lapackPtr)) {}
     };

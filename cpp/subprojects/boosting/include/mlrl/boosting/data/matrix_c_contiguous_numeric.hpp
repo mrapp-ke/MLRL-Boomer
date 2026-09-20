@@ -15,7 +15,7 @@ namespace boosting {
      * @tparam T                The type of the values that are stored in the matrix
      * @tparam MemoryAllocator  The type of the memory allocator to be used
      */
-    template<typename T, typename MemoryAllocator = DefaultMemoryAllocator>
+    template<typename T, typename MemoryAllocator>
     class NumericCContiguousMatrix final
         : public DenseMatrixDecorator<DenseMatrixAllocator<CContiguousView<T>, MemoryAllocator>> {
         public:

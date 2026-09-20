@@ -15,7 +15,7 @@ namespace boosting {
         const DenseNonDecomposableStatisticVectorView<float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         return std::make_unique<DenseNonDecomposableCompleteRuleEvaluation<
-          DenseNonDecomposableStatisticVectorView<float32>, CompleteIndexVector>>(
+          DenseNonDecomposableStatisticVectorView<float32>, CompleteIndexVector, DefaultMemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blasFactory_.create32Bit(),
           lapackFactory_.create32Bit());
     }
@@ -25,7 +25,7 @@ namespace boosting {
         const DenseNonDecomposableStatisticVectorView<float32>& statisticVector,
         const PartialIndexVector& indexVector) const {
         return std::make_unique<DenseNonDecomposableCompleteRuleEvaluation<
-          DenseNonDecomposableStatisticVectorView<float32>, PartialIndexVector>>(
+          DenseNonDecomposableStatisticVectorView<float32>, PartialIndexVector, DefaultMemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blasFactory_.create32Bit(),
           lapackFactory_.create32Bit());
     }
@@ -35,7 +35,7 @@ namespace boosting {
         const DenseNonDecomposableStatisticVectorView<float64>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         return std::make_unique<DenseNonDecomposableCompleteRuleEvaluation<
-          DenseNonDecomposableStatisticVectorView<float64>, CompleteIndexVector>>(
+          DenseNonDecomposableStatisticVectorView<float64>, CompleteIndexVector, DefaultMemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blasFactory_.create64Bit(),
           lapackFactory_.create64Bit());
     }
@@ -45,7 +45,7 @@ namespace boosting {
         const DenseNonDecomposableStatisticVectorView<float64>& statisticVector,
         const PartialIndexVector& indexVector) const {
         return std::make_unique<DenseNonDecomposableCompleteRuleEvaluation<
-          DenseNonDecomposableStatisticVectorView<float64>, PartialIndexVector>>(
+          DenseNonDecomposableStatisticVectorView<float64>, PartialIndexVector, DefaultMemoryAllocator>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blasFactory_.create64Bit(),
           lapackFactory_.create64Bit());
     }
