@@ -21,11 +21,17 @@ class MLRLCOMMON_API BitView {
          */
         static inline constexpr uint32 BITS_PER_ELEMENT = static_cast<uint32>(CHAR_BIT * sizeof(uint32));
 
-    private:
-
+        /**
+         * Calculates and returns the number of elements needed to store a specific number of bits.
+         *
+         * @param numBits   The number of bits
+         * @return          The number of elements needed
+         */
         static inline constexpr uint32 calculateNumElements(uint32 numBits) {
             return numBits / BITS_PER_ELEMENT + (numBits % BITS_PER_ELEMENT != 0);
         }
+
+    private:
 
         static inline constexpr uint32 calculateOffset(uint32 pos) {
             return pos / BitView::BITS_PER_ELEMENT;
@@ -287,7 +293,9 @@ class MLRLCOMMON_API BitVectorAllocator : public View {
          * @param numBits   The number of bits in the vector
          * @param init      True, if all elements in the view should be value-initialized, false otherwise
          */
-        explicit BitVectorAllocator(uint32 numBits, bool init = false) : View(MemoryAllocator::template allocateMemory<uint32>(numBits, init), numBits) {}
+        explicit BitVectorAllocator(uint32 numBits, bool init = false)
+            : View(MemoryAllocator::template allocateMemory<uint32>(BitView::calculateNumElements(numBits), init),
+                   numBits) {}
 
         /**
          * @param other A reference to an object of type `BitVectorAllocator` that should be copied
