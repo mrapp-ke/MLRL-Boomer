@@ -27,7 +27,7 @@ namespace boosting {
 
             PartialIndexVector indexVector_;
 
-            DenseScoreVector<statistic_type, PartialIndexVector> scoreVector_;
+            DenseScoreVector<statistic_type, PartialIndexVector, DefaultMemoryAllocator> scoreVector_;
 
             const float32 threshold_;
 
@@ -40,7 +40,8 @@ namespace boosting {
             template<typename StatisticType, typename WeightType>
             static inline void calculateScoresInternally(
               const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& statisticVector,
-              const IndexVector& outputIndices, DenseScoreVector<StatisticType, PartialIndexVector>& scoreVector,
+              const IndexVector& outputIndices,
+              DenseScoreVector<StatisticType, PartialIndexVector, DefaultMemoryAllocator>& scoreVector,
               PartialIndexVector& indexVector, float32 l1RegularizationWeight, float32 l2RegularizationWeight,
               float32 threshold, float32 exponent) {
                 uint32 numElements = statisticVector.getNumGradients();
@@ -78,7 +79,8 @@ namespace boosting {
             template<typename StatisticType>
             static inline void calculateScoresInternally(
               const DenseDecomposableStatisticVectorView<StatisticType>& statisticVector,
-              const IndexVector& outputIndices, DenseScoreVector<StatisticType, PartialIndexVector>& scoreVector,
+              const IndexVector& outputIndices,
+              DenseScoreVector<StatisticType, PartialIndexVector, DefaultMemoryAllocator>& scoreVector,
               PartialIndexVector& indexVector, float32 l1RegularizationWeight, float32 l2RegularizationWeight,
               float32 threshold, float32 exponent) {
                 uint32 numElements = statisticVector.getNumGradients();

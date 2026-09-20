@@ -23,7 +23,7 @@ namespace boosting {
 
             PartialIndexVector indexVector_;
 
-            DenseScoreVector<statistic_type, PartialIndexVector> scoreVector_;
+            DenseScoreVector<statistic_type, PartialIndexVector, DefaultMemoryAllocator> scoreVector_;
 
             const float32 l1RegularizationWeight_;
 

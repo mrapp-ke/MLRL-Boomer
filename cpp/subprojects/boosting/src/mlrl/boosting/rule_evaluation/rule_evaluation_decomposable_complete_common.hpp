@@ -25,7 +25,7 @@ namespace boosting {
 
             using statistic_type = StatisticVector::statistic_type;
 
-            DenseScoreVector<statistic_type, IndexVector> scoreVector_;
+            DenseScoreVector<statistic_type, IndexVector, DefaultMemoryAllocator> scoreVector_;
 
             const float32 l1RegularizationWeight_;
 
@@ -34,8 +34,8 @@ namespace boosting {
             template<typename StatisticType, typename WeightType>
             static inline void calculateScoresInternally(
               const SparseDecomposableStatisticVectorView<StatisticType, WeightType>& statisticVector,
-              DenseScoreVector<StatisticType, IndexVector>& scoreVector, float32 l1RegularizationWeight,
-              float32 l2RegularizationWeight) {
+              DenseScoreVector<StatisticType, IndexVector, DefaultMemoryAllocator>& scoreVector,
+              float32 l1RegularizationWeight, float32 l2RegularizationWeight) {
                 uint32 numElements = statisticVector.getNumGradients();
                 auto gradientIterator = statisticVector.gradients_cbegin();
                 auto hessianIterator = statisticVector.hessians_cbegin();
@@ -58,8 +58,8 @@ namespace boosting {
             template<typename StatisticType>
             static inline void calculateScoresInternally(
               const DenseDecomposableStatisticVectorView<StatisticType>& statisticVector,
-              DenseScoreVector<StatisticType, IndexVector>& scoreVector, float32 l1RegularizationWeight,
-              float32 l2RegularizationWeight) {
+              DenseScoreVector<StatisticType, IndexVector, DefaultMemoryAllocator>& scoreVector,
+              float32 l1RegularizationWeight, float32 l2RegularizationWeight) {
                 uint32 numElements = statisticVector.getNumGradients();
                 auto gradientIterator = statisticVector.gradients_cbegin();
                 auto hessianIterator = statisticVector.hessians_cbegin();

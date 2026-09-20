@@ -32,7 +32,7 @@ namespace boosting {
 
             const uint32 maxBins_;
 
-            DenseBinnedScoreVector<statistic_type, IndexVector> scoreVector_;
+            DenseBinnedScoreVector<statistic_type, IndexVector, DefaultMemoryAllocator> scoreVector_;
 
             DenseVector<statistic_type> aggregatedGradientVector_;
 

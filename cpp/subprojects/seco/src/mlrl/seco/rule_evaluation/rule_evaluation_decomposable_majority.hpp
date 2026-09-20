@@ -24,7 +24,7 @@ namespace seco {
     class DecomposableMajorityRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
         private:
 
-            BitScoreVector<IndexVector> scoreVector_;
+            BitScoreVector<IndexVector, DefaultMemoryAllocator> scoreVector_;
 
         public:
 

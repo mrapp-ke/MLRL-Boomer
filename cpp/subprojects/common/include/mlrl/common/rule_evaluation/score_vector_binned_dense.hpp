@@ -329,14 +329,15 @@ class MLRLCOMMON_API DenseBinnedScoreVectorAllocator : public View {
  * that assesses the quality of the rule, in C-contiguous arrays. The predicted scores correspond to bins for which the
  * same prediction is made,
  *
- * @tparam ScoreType   The type of the predicted scores
- * @tparam IndexVector The type of the vector that provides access to the indices of the outputs for which the rule may
- *                     predict
+ * @tparam ScoreType        The type of the predicted scores
+ * @tparam IndexVector      The type of the vector that provides access to the indices of the outputs for which the rule
+ *                          may predict
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
  */
-template<typename ScoreType, typename IndexVector>
+template<typename ScoreType, typename IndexVector, typename MemoryAllocator>
 class DenseBinnedScoreVector final
     : public AbstractScoreVectorViewDecorator<
-        DenseBinnedScoreVectorAllocator<DenseBinnedScoreVectorView<ScoreType, IndexVector>>> {
+        DenseBinnedScoreVectorAllocator<DenseBinnedScoreVectorView<ScoreType, IndexVector>, MemoryAllocator>> {
     public:
 
         /**

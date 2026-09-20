@@ -148,7 +148,7 @@ namespace boosting {
 
             using statistic_type = StatisticVector::statistic_type;
 
-            DenseScoreVector<statistic_type, IndexVector> scoreVector_;
+            DenseScoreVector<statistic_type, IndexVector, DefaultMemoryAllocator> scoreVector_;
 
             const float32 l1RegularizationWeight_;
 

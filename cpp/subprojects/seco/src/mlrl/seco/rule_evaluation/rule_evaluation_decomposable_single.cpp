@@ -23,7 +23,7 @@ namespace seco {
 
             PartialIndexVector indexVector_;
 
-            BitScoreVector<PartialIndexVector> scoreVector_;
+            BitScoreVector<PartialIndexVector, DefaultMemoryAllocator> scoreVector_;
 
             const std::unique_ptr<IHeuristic> heuristicPtr_;
 
