@@ -276,29 +276,34 @@ class MLRLCOMMON_API BitView {
 /**
  * Allocates the memory, a `BitView` provides access to.
  *
- * @tparam View The type of the view
+ * @tparam View             The type of the view
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
  */
-template<typename View>
-class MLRLCOMMON_API BitVectorAllocator : public Allocator<View> {
+template<typename View, typename MemoryAllocator = DefaultMemoryAllocator>
+class MLRLCOMMON_API BitVectorAllocator : public View {
     public:
 
         /**
          * @param numBits   The number of bits in the vector
          * @param init      True, if all elements in the view should be value-initialized, false otherwise
          */
-        explicit BitVectorAllocator(uint32 numBits, bool init = false) : Allocator<View>(numBits, init) {}
+        explicit BitVectorAllocator(uint32 numBits, bool init = false) : View(MemoryAllocator::template allocateMemory<uint32>(numBits, init), numBits) {}
 
         /**
          * @param other A reference to an object of type `BitVectorAllocator` that should be copied
          */
-        BitVectorAllocator(const BitVectorAllocator<View>& other) = delete;
+        BitVectorAllocator(const BitVectorAllocator<View, MemoryAllocator>& other) = delete;
 
         /**
          * @param other A reference to an object of type `BitVectorAllocator` that should be moved
          */
-        BitVectorAllocator(BitVectorAllocator<View>&& other) : Allocator<View>(std::move(other)) {}
+        BitVectorAllocator(BitVectorAllocator<View, MemoryAllocator>&& other) : View(std::move(other)) {
+            other.release();
+        }
 
-        virtual ~BitVectorAllocator() override {}
+        virtual ~BitVectorAllocator() override {
+            MemoryAllocator::freeMemory(View::array);
+        }
 };
 
 /**
