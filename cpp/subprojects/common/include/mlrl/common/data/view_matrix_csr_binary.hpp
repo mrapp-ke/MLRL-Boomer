@@ -163,5 +163,8 @@ class MLRLCOMMON_API BinaryCsrViewAllocator : public Matrix {
 
 /**
  * Allocates the memory, a `BinaryCsrView` provides access to
+ *
+ * @tparam MemoryAllocator The type of the memory allocator to be used
  */
-using AllocatedBinaryCsrView = BinaryCsrViewAllocator<BinaryCsrView>;
+template<typename MemoryAllocator = DefaultMemoryAllocator>
+using AllocatedBinaryCsrView = BinaryCsrViewAllocator<BinaryCsrView, MemoryAllocator>;

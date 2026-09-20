@@ -2,7 +2,7 @@
 
 BinarySparsePredictionView::BinarySparsePredictionView(const BinaryLilMatrix& lilMatrix, uint32 numCols,
                                                        uint32 numDenseElements)
-    : AllocatedBinaryCsrView(numDenseElements, lilMatrix.getNumRows(), numCols) {
+    : AllocatedBinaryCsrView<>(numDenseElements, lilMatrix.getNumRows(), numCols) {
     uint32 n = 0;
 
     for (uint32 i = 0; i < Matrix::numRows; i++) {
@@ -16,7 +16,7 @@ BinarySparsePredictionView::BinarySparsePredictionView(const BinaryLilMatrix& li
 }
 
 BinarySparsePredictionView::BinarySparsePredictionView(BinarySparsePredictionView&& other)
-    : AllocatedBinaryCsrView(std::move(other)) {}
+    : AllocatedBinaryCsrView<>(std::move(other)) {}
 
 BinarySparsePredictionMatrix::BinarySparsePredictionMatrix(const BinaryLilMatrix& lilMatrix, uint32 numCols,
                                                            uint32 numDenseElements)
