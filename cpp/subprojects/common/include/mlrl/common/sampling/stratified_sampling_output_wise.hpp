@@ -30,7 +30,7 @@ class LabelWiseStratification final {
 
         const std::unique_ptr<RNG> rngPtr_;
 
-        BinarySparseMatrixDecorator<AllocatedBinaryCscView> stratificationMatrix_;
+        BinarySparseMatrixDecorator<AllocatedBinaryCscView<>> stratificationMatrix_;
 
     public:
 

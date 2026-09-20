@@ -205,10 +205,11 @@ class MLRLCOMMON_API IndexedVectorAllocator : public View {
 /**
  * Allocates the memory, a `IndexedVectorView` provides access to.
  *
- * @tparam T The type of the values stored in the `IndexedVectorView`
+ * @tparam T                The type of the values stored in the `IndexedVectorView`
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
  */
-template<typename T>
-using AllocatedIndexedVector = IndexedVectorAllocator<IndexedVectorView<T>>;
+template<typename T, typename MemoryAllocator = DefaultMemoryAllocator>
+using AllocatedIndexedVector = IndexedVectorAllocator<IndexedVectorView<T>, MemoryAllocator>;
 
 /**
  * A vector that is backed by two one-dimensional views of a specific size, storing indices and corresponding values.

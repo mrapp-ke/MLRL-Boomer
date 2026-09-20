@@ -98,7 +98,7 @@ static inline uint32* copyLabelMatrix(uint32* indices, uint32 numIndices, uint32
  * stored in a matrix in the compressed sparse column (CSC) format that have been copied from a `CContiguousView` or a
  * `BinaryCsrView`.
  */
-class CscLabelMatrix final : public AllocatedBinaryCscView {
+class CscLabelMatrix final : public AllocatedBinaryCscView<> {
     public:
 
         /**
@@ -110,8 +110,8 @@ class CscLabelMatrix final : public AllocatedBinaryCscView {
          */
         CscLabelMatrix(const CContiguousView<const uint8>& labelMatrix,
                        CompleteIndexVector::const_iterator indicesBegin, CompleteIndexVector::const_iterator indicesEnd)
-            : AllocatedBinaryCscView((indicesEnd - indicesBegin) * labelMatrix.numCols, labelMatrix.numRows,
-                                     labelMatrix.numCols) {
+            : AllocatedBinaryCscView<>((indicesEnd - indicesBegin) * labelMatrix.numCols, labelMatrix.numRows,
+                                       labelMatrix.numCols) {
             BinarySparseMatrix::indices =
               copyLabelMatrix(BinarySparseMatrix::indices, this->getNumDenseElements(), BinarySparseMatrix::indptr,
                               labelMatrix, indicesBegin, indicesEnd);
@@ -126,8 +126,8 @@ class CscLabelMatrix final : public AllocatedBinaryCscView {
          */
         CscLabelMatrix(const CContiguousView<const uint8>& labelMatrix, PartialIndexVector::const_iterator indicesBegin,
                        PartialIndexVector::const_iterator indicesEnd)
-            : AllocatedBinaryCscView((indicesEnd - indicesBegin) * labelMatrix.numCols, labelMatrix.numRows,
-                                     labelMatrix.numCols) {
+            : AllocatedBinaryCscView<>((indicesEnd - indicesBegin) * labelMatrix.numCols, labelMatrix.numRows,
+                                       labelMatrix.numCols) {
             BinarySparseMatrix::indices =
               copyLabelMatrix(BinarySparseMatrix::indices, this->getNumDenseElements(), BinarySparseMatrix::indptr,
                               labelMatrix, indicesBegin, indicesEnd);
@@ -142,7 +142,7 @@ class CscLabelMatrix final : public AllocatedBinaryCscView {
          */
         CscLabelMatrix(const BinaryCsrView& labelMatrix, CompleteIndexVector::const_iterator indicesBegin,
                        CompleteIndexVector::const_iterator indicesEnd)
-            : AllocatedBinaryCscView(labelMatrix.getNumDenseElements(), labelMatrix.numRows, labelMatrix.numCols) {
+            : AllocatedBinaryCscView<>(labelMatrix.getNumDenseElements(), labelMatrix.numRows, labelMatrix.numCols) {
             BinarySparseMatrix::indices =
               copyLabelMatrix(BinarySparseMatrix::indices, this->getNumDenseElements(), BinarySparseMatrix::indptr,
                               labelMatrix, indicesBegin, indicesEnd);
@@ -157,7 +157,7 @@ class CscLabelMatrix final : public AllocatedBinaryCscView {
          */
         CscLabelMatrix(const BinaryCsrView& labelMatrix, PartialIndexVector::const_iterator indicesBegin,
                        PartialIndexVector::const_iterator indicesEnd)
-            : AllocatedBinaryCscView(labelMatrix.getNumDenseElements(), labelMatrix.numRows, labelMatrix.numCols) {
+            : AllocatedBinaryCscView<>(labelMatrix.getNumDenseElements(), labelMatrix.numRows, labelMatrix.numCols) {
             BinarySparseMatrix::indices =
               copyLabelMatrix(BinarySparseMatrix::indices, this->getNumDenseElements(), BinarySparseMatrix::indptr,
                               labelMatrix, indicesBegin, indicesEnd);
@@ -166,7 +166,7 @@ class CscLabelMatrix final : public AllocatedBinaryCscView {
         /**
          * @param other A reference to an object of type `CscLabelMatrix` that should be moved
          */
-        CscLabelMatrix(CscLabelMatrix&& other) : AllocatedBinaryCscView(std::move(other)) {}
+        CscLabelMatrix(CscLabelMatrix&& other) : AllocatedBinaryCscView<>(std::move(other)) {}
 };
 
 /**
@@ -229,7 +229,7 @@ static inline void updateNumExamplesPerLabel(const BinaryCsrView& labelMatrix, u
  *                          considered
  */
 template<typename LabelMatrix, typename IndexIterator>
-class StratificationMatrix final : public AllocatedBinaryCscView {
+class StratificationMatrix final : public AllocatedBinaryCscView<> {
     public:
 
         /**
@@ -243,8 +243,8 @@ class StratificationMatrix final : public AllocatedBinaryCscView {
          */
         StratificationMatrix(const LabelMatrix& rowWiseLabelMatrix, const CscLabelMatrix& columnWiseLabelMatrix,
                              IndexIterator indicesBegin, IndexIterator indicesEnd)
-            : AllocatedBinaryCscView(columnWiseLabelMatrix.getNumDenseElements(), indicesEnd - indicesBegin,
-                                     columnWiseLabelMatrix.numCols) {
+            : AllocatedBinaryCscView<>(columnWiseLabelMatrix.getNumDenseElements(), indicesEnd - indicesBegin,
+                                       columnWiseLabelMatrix.numCols) {
             // Create an array that stores for each label the number of examples that are associated with the label, as
             // well as a sorted map that stores all label indices in increasing order of the number of associated
             // examples...
@@ -372,7 +372,7 @@ class StratificationMatrix final : public AllocatedBinaryCscView {
          * @param other A reference to an object of type `StratificationMatrix` that should be moved
          */
         StratificationMatrix(StratificationMatrix<LabelMatrix, IndexIterator>&& other)
-            : AllocatedBinaryCscView(std::move(other)) {}
+            : AllocatedBinaryCscView<>(std::move(other)) {}
 };
 
 template<typename WeightIterator, typename WeightVector, typename StratificationMatrix>
