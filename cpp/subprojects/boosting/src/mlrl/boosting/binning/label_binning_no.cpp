@@ -44,12 +44,14 @@ namespace boosting {
 
 #if SIMD_SUPPORT_ENABLED
         if (simdConfig_.get().isSimdEnabled()) {
-            return std::make_unique<DecomposableFixedPartialRuleEvaluationFactory<SimdDecomposableVectorMath>>(
+            return std::make_unique<
+              DecomposableFixedPartialRuleEvaluationFactory<SimdDecomposableVectorMath, SimdMemoryAllocator>>(
               outputRatio, minOutputs, maxOutputs, l1RegularizationWeight, l2RegularizationWeight);
         }
 #endif
 
-        return std::make_unique<DecomposableFixedPartialRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
+        return std::make_unique<
+          DecomposableFixedPartialRuleEvaluationFactory<SequentialDecomposableVectorMath, DefaultMemoryAllocator>>(
           outputRatio, minOutputs, maxOutputs, l1RegularizationWeight, l2RegularizationWeight);
     }
 
