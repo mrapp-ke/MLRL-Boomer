@@ -8,6 +8,7 @@
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_non_decomposable_partial_fixed.hpp"
 #include "mlrl/boosting/rule_evaluation/simd/vector_math_decomposable_simd.hpp"
 #include "mlrl/boosting/rule_evaluation/vector_math_decomposable.hpp"
+#include "mlrl/common/simd/memory.hpp"
 
 namespace boosting {
 
@@ -24,12 +25,14 @@ namespace boosting {
 
 #if SIMD_SUPPORT_ENABLED
         if (simdConfig_.get().isSimdEnabled()) {
-            return std::make_unique<DecomposableCompleteRuleEvaluationFactory<SimdDecomposableVectorMath>>(
+            return std::make_unique<
+              DecomposableCompleteRuleEvaluationFactory<SimdDecomposableVectorMath, SimdMemoryAllocator>>(
               l1RegularizationWeight, l2RegularizationWeight);
         }
 #endif
 
-        return std::make_unique<DecomposableCompleteRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
+        return std::make_unique<
+          DecomposableCompleteRuleEvaluationFactory<SequentialDecomposableVectorMath, DefaultMemoryAllocator>>(
           l1RegularizationWeight, l2RegularizationWeight);
     }
 
