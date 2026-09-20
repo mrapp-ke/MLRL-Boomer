@@ -47,11 +47,11 @@ namespace boosting {
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
                   labelBinningConfig_.get().createDecomposableCompleteRuleEvaluationFactory();
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-                  std::make_unique<DecomposableSingleOutputRuleEvaluationFactory>(l1RegularizationWeight,
-                                                                                  l2RegularizationWeight);
+                  std::make_unique<DecomposableSingleOutputRuleEvaluationFactory<DefaultMemoryAllocator>>(
+                    l1RegularizationWeight, l2RegularizationWeight);
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-                  std::make_unique<DecomposableSingleOutputRuleEvaluationFactory>(l1RegularizationWeight,
-                                                                                  l2RegularizationWeight);
+                  std::make_unique<DecomposableSingleOutputRuleEvaluationFactory<DefaultMemoryAllocator>>(
+                    l1RegularizationWeight, l2RegularizationWeight);
 
 #if SIMD_SUPPORT_ENABLED
                 if (simdConfig_.get().isSimdRecommended(labelMatrix.getNumOutputs())) {
@@ -80,11 +80,11 @@ namespace boosting {
                 MultiThreadingSettings multiThreadingSettings =
                   multiThreadingConfig_.get().getSettings(featureMatrix, labelMatrix.getNumOutputs());
                 std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-                  std::make_unique<DecomposableSingleOutputRuleEvaluationFactory>(l1RegularizationWeight,
-                                                                                  l2RegularizationWeight);
+                  std::make_unique<DecomposableSingleOutputRuleEvaluationFactory<DefaultMemoryAllocator>>(
+                    l1RegularizationWeight, l2RegularizationWeight);
                 std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-                  std::make_unique<DecomposableSingleOutputRuleEvaluationFactory>(l1RegularizationWeight,
-                                                                                  l2RegularizationWeight);
+                  std::make_unique<DecomposableSingleOutputRuleEvaluationFactory<DefaultMemoryAllocator>>(
+                    l1RegularizationWeight, l2RegularizationWeight);
 
 #if SIMD_SUPPORT_ENABLED
                 if (simdConfig_.get().isSimdRecommended(labelMatrix.getNumOutputs())) {
@@ -116,11 +116,11 @@ namespace boosting {
                   labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blasFactory,
                                                                                                lapackFactory);
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-                  std::make_unique<DecomposableSingleOutputRuleEvaluationFactory>(l1RegularizationWeight,
-                                                                                  l2RegularizationWeight);
+                  std::make_unique<DecomposableSingleOutputRuleEvaluationFactory<DefaultMemoryAllocator>>(
+                    l1RegularizationWeight, l2RegularizationWeight);
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-                  std::make_unique<DecomposableSingleOutputRuleEvaluationFactory>(l1RegularizationWeight,
-                                                                                  l2RegularizationWeight);
+                  std::make_unique<DecomposableSingleOutputRuleEvaluationFactory<DefaultMemoryAllocator>>(
+                    l1RegularizationWeight, l2RegularizationWeight);
 
 #if SIMD_SUPPORT_ENABLED
                 if (simdConfig_.get().isSimdRecommended(labelMatrix.getNumOutputs())) {
@@ -151,11 +151,11 @@ namespace boosting {
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
                   labelBinningConfig_.get().createDecomposableCompleteRuleEvaluationFactory();
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-                  std::make_unique<DecomposableSingleOutputRuleEvaluationFactory>(l1RegularizationWeight,
-                                                                                  l2RegularizationWeight);
+                  std::make_unique<DecomposableSingleOutputRuleEvaluationFactory<DefaultMemoryAllocator>>(
+                    l1RegularizationWeight, l2RegularizationWeight);
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-                  std::make_unique<DecomposableSingleOutputRuleEvaluationFactory>(l1RegularizationWeight,
-                                                                                  l2RegularizationWeight);
+                  std::make_unique<DecomposableSingleOutputRuleEvaluationFactory<DefaultMemoryAllocator>>(
+                    l1RegularizationWeight, l2RegularizationWeight);
 
 #if SIMD_SUPPORT_ENABLED
                 if (simdConfig_.get().isSimdRecommended(regressionMatrix.getNumOutputs())) {
@@ -187,11 +187,11 @@ namespace boosting {
                   labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blasFactory,
                                                                                                lapackFactory);
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-                  std::make_unique<DecomposableSingleOutputRuleEvaluationFactory>(l1RegularizationWeight,
-                                                                                  l2RegularizationWeight);
+                  std::make_unique<DecomposableSingleOutputRuleEvaluationFactory<DefaultMemoryAllocator>>(
+                    l1RegularizationWeight, l2RegularizationWeight);
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-                  std::make_unique<DecomposableSingleOutputRuleEvaluationFactory>(l1RegularizationWeight,
-                                                                                  l2RegularizationWeight);
+                  std::make_unique<DecomposableSingleOutputRuleEvaluationFactory<DefaultMemoryAllocator>>(
+                    l1RegularizationWeight, l2RegularizationWeight);
 
 #if SIMD_SUPPORT_ENABLED
                 if (simdConfig_.get().isSimdRecommended(regressionMatrix.getNumOutputs())) {
