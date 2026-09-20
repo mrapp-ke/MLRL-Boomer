@@ -89,7 +89,7 @@ namespace boosting {
         const LapackFactory& lapackFactory) const {
         float32 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
         float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
-        return std::make_unique<NonDecomposableFixedPartialRuleEvaluationFactory>(
+        return std::make_unique<NonDecomposableFixedPartialRuleEvaluationFactory<DefaultMemoryAllocator>>(
           outputRatio, minOutputs, maxOutputs, l1RegularizationWeight, l2RegularizationWeight, blasFactory,
           lapackFactory);
     }
