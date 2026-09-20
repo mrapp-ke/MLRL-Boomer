@@ -8,6 +8,7 @@
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_non_decomposable_partial_fixed.hpp"
 #include "mlrl/boosting/rule_evaluation/simd/vector_math_decomposable_simd.hpp"
 #include "mlrl/boosting/rule_evaluation/vector_math_decomposable.hpp"
+#include "mlrl/common/simd/memory.hpp"
 
 namespace boosting {
 
@@ -24,12 +25,14 @@ namespace boosting {
 
 #if SIMD_SUPPORT_ENABLED
         if (simdConfig_.get().isSimdEnabled()) {
-            return std::make_unique<DecomposableCompleteRuleEvaluationFactory<SimdDecomposableVectorMath>>(
+            return std::make_unique<
+              DecomposableCompleteRuleEvaluationFactory<SimdDecomposableVectorMath, SimdMemoryAllocator>>(
               l1RegularizationWeight, l2RegularizationWeight);
         }
 #endif
 
-        return std::make_unique<DecomposableCompleteRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
+        return std::make_unique<
+          DecomposableCompleteRuleEvaluationFactory<SequentialDecomposableVectorMath, DefaultMemoryAllocator>>(
           l1RegularizationWeight, l2RegularizationWeight);
     }
 
@@ -41,12 +44,14 @@ namespace boosting {
 
 #if SIMD_SUPPORT_ENABLED
         if (simdConfig_.get().isSimdEnabled()) {
-            return std::make_unique<DecomposableFixedPartialRuleEvaluationFactory<SimdDecomposableVectorMath>>(
+            return std::make_unique<
+              DecomposableFixedPartialRuleEvaluationFactory<SimdDecomposableVectorMath, SimdMemoryAllocator>>(
               outputRatio, minOutputs, maxOutputs, l1RegularizationWeight, l2RegularizationWeight);
         }
 #endif
 
-        return std::make_unique<DecomposableFixedPartialRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
+        return std::make_unique<
+          DecomposableFixedPartialRuleEvaluationFactory<SequentialDecomposableVectorMath, DefaultMemoryAllocator>>(
           outputRatio, minOutputs, maxOutputs, l1RegularizationWeight, l2RegularizationWeight);
     }
 
@@ -58,12 +63,14 @@ namespace boosting {
 
 #if SIMD_SUPPORT_ENABLED
         if (simdConfig_.get().isSimdEnabled()) {
-            return std::make_unique<DecomposableDynamicPartialRuleEvaluationFactory<SimdDecomposableVectorMath>>(
+            return std::make_unique<
+              DecomposableDynamicPartialRuleEvaluationFactory<SimdDecomposableVectorMath, SimdMemoryAllocator>>(
               threshold, exponent, l1RegularizationWeight, l2RegularizationWeight);
         }
 #endif
 
-        return std::make_unique<DecomposableDynamicPartialRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
+        return std::make_unique<
+          DecomposableDynamicPartialRuleEvaluationFactory<SequentialDecomposableVectorMath, DefaultMemoryAllocator>>(
           threshold, exponent, l1RegularizationWeight, l2RegularizationWeight);
     }
 
@@ -72,7 +79,7 @@ namespace boosting {
         const BlasFactory& blasFactory, const LapackFactory& lapackFactory) const {
         float32 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
         float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
-        return std::make_unique<NonDecomposableCompleteRuleEvaluationFactory>(
+        return std::make_unique<NonDecomposableCompleteRuleEvaluationFactory<DefaultMemoryAllocator>>(
           l1RegularizationWeight, l2RegularizationWeight, blasFactory, lapackFactory);
     }
 
@@ -82,7 +89,7 @@ namespace boosting {
         const LapackFactory& lapackFactory) const {
         float32 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
         float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
-        return std::make_unique<NonDecomposableFixedPartialRuleEvaluationFactory>(
+        return std::make_unique<NonDecomposableFixedPartialRuleEvaluationFactory<DefaultMemoryAllocator>>(
           outputRatio, minOutputs, maxOutputs, l1RegularizationWeight, l2RegularizationWeight, blasFactory,
           lapackFactory);
     }
@@ -92,7 +99,7 @@ namespace boosting {
         float32 threshold, float32 exponent, const BlasFactory& blasFactory, const LapackFactory& lapackFactory) const {
         float32 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
         float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
-        return std::make_unique<NonDecomposableDynamicPartialRuleEvaluationFactory>(
+        return std::make_unique<NonDecomposableDynamicPartialRuleEvaluationFactory<DefaultMemoryAllocator>>(
           threshold, exponent, l1RegularizationWeight, l2RegularizationWeight, blasFactory, lapackFactory);
     }
 

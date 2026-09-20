@@ -13,9 +13,10 @@ namespace boosting {
      * Allows to create instances of the class `IDecomposableRuleEvaluationFactory` that allow to calculate the
      * predictions of complete rules, which predict for all available outputs.
      *
-     * @tparam VectorMath The type that implements basic operations for calculating with gradients and Hessians
+     * @tparam VectorMath       The type that implements basic operations for calculating with gradients and Hessians
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
      */
-    template<typename VectorMath>
+    template<typename VectorMath, typename MemoryAllocator>
     class DecomposableCompleteRuleEvaluationFactory final : public IDecomposableRuleEvaluationFactory {
         private:
 

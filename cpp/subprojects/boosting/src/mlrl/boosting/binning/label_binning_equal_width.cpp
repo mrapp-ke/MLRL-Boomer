@@ -9,6 +9,7 @@
 #include "mlrl/boosting/rule_evaluation/simd/vector_math_decomposable_simd.hpp"
 #include "mlrl/boosting/rule_evaluation/vector_math_decomposable.hpp"
 #include "mlrl/common/math/scalar_math.hpp"
+#include "mlrl/common/simd/memory.hpp"
 #include "mlrl/common/util/validation.hpp"
 
 namespace boosting {
@@ -218,12 +219,14 @@ namespace boosting {
 
 #if SIMD_SUPPORT_ENABLED
         if (simdConfig_.get().isSimdEnabled()) {
-            return std::make_unique<DecomposableCompleteBinnedRuleEvaluationFactory<SimdDecomposableVectorMath>>(
+            return std::make_unique<
+              DecomposableCompleteBinnedRuleEvaluationFactory<SimdDecomposableVectorMath, SimdMemoryAllocator>>(
               l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr));
         }
 #endif
 
-        return std::make_unique<DecomposableCompleteBinnedRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
+        return std::make_unique<
+          DecomposableCompleteBinnedRuleEvaluationFactory<SequentialDecomposableVectorMath, DefaultMemoryAllocator>>(
           l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr));
     }
 
@@ -237,13 +240,15 @@ namespace boosting {
           std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
 #if SIMD_SUPPORT_ENABLED
         if (simdConfig_.get().isSimdEnabled()) {
-            return std::make_unique<DecomposableFixedPartialBinnedRuleEvaluationFactory<SimdDecomposableVectorMath>>(
+            return std::make_unique<
+              DecomposableFixedPartialBinnedRuleEvaluationFactory<SimdDecomposableVectorMath, SimdMemoryAllocator>>(
               outputRatio, minOutputs, maxOutputs, l1RegularizationWeight, l2RegularizationWeight,
               std::move(labelBinningFactoryPtr));
         }
 #endif
 
-        return std::make_unique<DecomposableFixedPartialBinnedRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
+        return std::make_unique<DecomposableFixedPartialBinnedRuleEvaluationFactory<SequentialDecomposableVectorMath,
+                                                                                    DefaultMemoryAllocator>>(
           outputRatio, minOutputs, maxOutputs, l1RegularizationWeight, l2RegularizationWeight,
           std::move(labelBinningFactoryPtr));
     }
@@ -258,13 +263,14 @@ namespace boosting {
 
 #if SIMD_SUPPORT_ENABLED
         if (simdConfig_.get().isSimdEnabled()) {
-            return std::make_unique<DecomposableDynamicPartialBinnedRuleEvaluationFactory<SimdDecomposableVectorMath>>(
+            return std::make_unique<
+              DecomposableDynamicPartialBinnedRuleEvaluationFactory<SimdDecomposableVectorMath, SimdMemoryAllocator>>(
               threshold, exponent, l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr));
         }
 #endif
 
-        return std::make_unique<
-          DecomposableDynamicPartialBinnedRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
+        return std::make_unique<DecomposableDynamicPartialBinnedRuleEvaluationFactory<SequentialDecomposableVectorMath,
+                                                                                      DefaultMemoryAllocator>>(
           threshold, exponent, l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr));
     }
 
@@ -275,7 +281,7 @@ namespace boosting {
         float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
         std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr =
           std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
-        return std::make_unique<NonDecomposableCompleteBinnedRuleEvaluationFactory>(
+        return std::make_unique<NonDecomposableCompleteBinnedRuleEvaluationFactory<DefaultMemoryAllocator>>(
           l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr), blasFactory,
           lapackFactory);
     }
@@ -288,7 +294,7 @@ namespace boosting {
         float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
         std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr =
           std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
-        return std::make_unique<NonDecomposableFixedPartialBinnedRuleEvaluationFactory>(
+        return std::make_unique<NonDecomposableFixedPartialBinnedRuleEvaluationFactory<DefaultMemoryAllocator>>(
           outputRatio, minOutputs, maxOutputs, l1RegularizationWeight, l2RegularizationWeight,
           std::move(labelBinningFactoryPtr), blasFactory, lapackFactory);
     }
@@ -300,7 +306,7 @@ namespace boosting {
         float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
         std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr =
           std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
-        return std::make_unique<NonDecomposableDynamicPartialBinnedRuleEvaluationFactory>(
+        return std::make_unique<NonDecomposableDynamicPartialBinnedRuleEvaluationFactory<DefaultMemoryAllocator>>(
           threshold, exponent, l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr),
           blasFactory, lapackFactory);
     }

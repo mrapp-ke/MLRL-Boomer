@@ -74,48 +74,58 @@ namespace seco {
             }
     };
 
-    DecomposableSingleOutputRuleEvaluationFactory::DecomposableSingleOutputRuleEvaluationFactory(
+    template<typename MemoryAllocator>
+    DecomposableSingleOutputRuleEvaluationFactory<MemoryAllocator>::DecomposableSingleOutputRuleEvaluationFactory(
       std::unique_ptr<IHeuristicFactory> heuristicFactoryPtr)
         : heuristicFactoryPtr_(std::move(heuristicFactoryPtr)) {}
 
+    template<typename MemoryAllocator>
     std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<uint32>>>
-      DecomposableSingleOutputRuleEvaluationFactory::create(
+      DecomposableSingleOutputRuleEvaluationFactory<MemoryAllocator>::create(
         const DenseDecomposableStatisticVectorView<uint32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         return std::make_unique<DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVectorView<uint32>,
-                                                                       CompleteIndexVector, DefaultMemoryAllocator>>(
+                                                                       CompleteIndexVector, MemoryAllocator>>(
           indexVector, std::move(heuristicPtr));
     }
 
+    template<typename MemoryAllocator>
     std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<uint32>>>
-      DecomposableSingleOutputRuleEvaluationFactory::create(
+      DecomposableSingleOutputRuleEvaluationFactory<MemoryAllocator>::create(
         const DenseDecomposableStatisticVectorView<uint32>& statisticVector,
         const PartialIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         return std::make_unique<DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVectorView<uint32>,
-                                                                       PartialIndexVector, DefaultMemoryAllocator>>(
+                                                                       PartialIndexVector, MemoryAllocator>>(
           indexVector, std::move(heuristicPtr));
     }
 
+    template<typename MemoryAllocator>
     std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float32>>>
-      DecomposableSingleOutputRuleEvaluationFactory::create(
+      DecomposableSingleOutputRuleEvaluationFactory<MemoryAllocator>::create(
         const DenseDecomposableStatisticVectorView<float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         return std::make_unique<DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVectorView<float32>,
-                                                                       CompleteIndexVector, DefaultMemoryAllocator>>(
+                                                                       CompleteIndexVector, MemoryAllocator>>(
           indexVector, std::move(heuristicPtr));
     }
 
+    template<typename MemoryAllocator>
     std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float32>>>
-      DecomposableSingleOutputRuleEvaluationFactory::create(
+      DecomposableSingleOutputRuleEvaluationFactory<MemoryAllocator>::create(
         const DenseDecomposableStatisticVectorView<float32>& statisticVector,
         const PartialIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         return std::make_unique<DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVectorView<float32>,
-                                                                       PartialIndexVector, DefaultMemoryAllocator>>(
+                                                                       PartialIndexVector, MemoryAllocator>>(
           indexVector, std::move(heuristicPtr));
     }
 
+    template class DecomposableSingleOutputRuleEvaluationFactory<DefaultMemoryAllocator>;
+
+#if SIMD_SUPPORT_ENABLED
+    template class DecomposableSingleOutputRuleEvaluationFactory<SimdMemoryAllocator>;
+#endif
 }
