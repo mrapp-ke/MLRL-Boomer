@@ -158,13 +158,14 @@ class MLRLCOMMON_API BitScoreVectorAllocator : public View {
  * An one-dimensional vector that stores binary scores that may be predicted by a rule, as well as an overall quality
  * score that assesses the overall quality of the rule, in a space efficient way.
  *
- * @tparam IndexVector The type of the vector that provides access to the indices of the outputs for which the rule may
- *                     predict
+ * @tparam IndexVector      The type of the vector that provides access to the indices of the outputs for which the rule
+ *                          may predict
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
  */
-template<typename IndexVector>
+template<typename IndexVector, typename MemoryAllocator>
 class BitScoreVector final
     : public IndexableBitVectorDecorator<
-        AbstractScoreVectorViewDecorator<BitScoreVectorAllocator<BitScoreVectorView<IndexVector>>>> {
+        AbstractScoreVectorViewDecorator<BitScoreVectorAllocator<BitScoreVectorView<IndexVector>, MemoryAllocator>>> {
     public:
 
         /**

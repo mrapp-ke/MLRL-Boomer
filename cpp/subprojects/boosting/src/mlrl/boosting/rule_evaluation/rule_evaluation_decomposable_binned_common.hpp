@@ -23,8 +23,9 @@ namespace boosting {
      * @tparam IndexVector      The type of the vector that provides access to the indices of the labels for which
      *                          predictions should be calculated
      * @tparam VectorMath       The type that implements basic operations for calculating with gradients and Hessians
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
      */
-    template<typename StatisticVector, typename IndexVector, typename VectorMath>
+    template<typename StatisticVector, typename IndexVector, typename VectorMath, typename MemoryAllocator>
     class AbstractDecomposableBinnedRuleEvaluation : public IRuleEvaluation<StatisticVector> {
         private:
 
@@ -32,7 +33,7 @@ namespace boosting {
 
             const uint32 maxBins_;
 
-            DenseBinnedScoreVector<statistic_type, IndexVector> scoreVector_;
+            DenseBinnedScoreVector<statistic_type, IndexVector, MemoryAllocator> scoreVector_;
 
             DenseVector<statistic_type> aggregatedGradientVector_;
 
@@ -152,10 +153,11 @@ namespace boosting {
      * @tparam IndexVector      The type of the vector that provides access to the indices of the labels for which
      *                          predictions should be calculated
      * @tparam VectorMath       The type that implements basic operations for calculating with gradients and Hessians
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
      */
-    template<typename StatisticVector, typename IndexVector, typename VectorMath>
+    template<typename StatisticVector, typename IndexVector, typename VectorMath, typename MemoryAllocator>
     class DecomposableCompleteBinnedRuleEvaluation final
-        : public AbstractDecomposableBinnedRuleEvaluation<StatisticVector, IndexVector, VectorMath> {
+        : public AbstractDecomposableBinnedRuleEvaluation<StatisticVector, IndexVector, VectorMath, MemoryAllocator> {
         private:
 
             using statistic_type = StatisticVector::statistic_type;
@@ -211,7 +213,7 @@ namespace boosting {
             DecomposableCompleteBinnedRuleEvaluation(const IndexVector& labelIndices, float32 l1RegularizationWeight,
                                                      float32 l2RegularizationWeight,
                                                      std::unique_ptr<ILabelBinning<statistic_type>> binningPtr)
-                : AbstractDecomposableBinnedRuleEvaluation<StatisticVector, IndexVector, VectorMath>(
+                : AbstractDecomposableBinnedRuleEvaluation<StatisticVector, IndexVector, VectorMath, MemoryAllocator>(
                     labelIndices, true, l1RegularizationWeight, l2RegularizationWeight, std::move(binningPtr)) {}
     };
 

@@ -1,5 +1,7 @@
 #include "mlrl/common/rule_evaluation/score_vector_dense.hpp"
 
+#include "mlrl/common/simd/memory.hpp"
+
 static inline void visitInternally(const DenseScoreVectorView<float32, CompleteIndexVector>& scoreVector,
                                    IScoreVector::DenseVisitor<float32, CompleteIndexVector> complete32BitVisitor,
                                    IScoreVector::DenseVisitor<float32, PartialIndexVector> partial32BitVisitor,
@@ -32,49 +34,52 @@ static inline void visitInternally(const DenseScoreVectorView<float64, PartialIn
     partial64BitVisitor(scoreVector);
 }
 
-template<typename ScoreType, typename IndexVector>
-DenseScoreVector<ScoreType, IndexVector>::DenseScoreVector(const IndexVector& outputIndices, bool sorted)
-    : AbstractScoreVectorViewDecorator<DenseScoreVectorAllocator<DenseScoreVectorView<ScoreType, IndexVector>>>(
-        DenseScoreVectorAllocator<DenseScoreVectorView<ScoreType, IndexVector>>(outputIndices, sorted)) {}
+template<typename ScoreType, typename IndexVector, typename MemoryAllocator>
+DenseScoreVector<ScoreType, IndexVector, MemoryAllocator>::DenseScoreVector(const IndexVector& outputIndices,
+                                                                            bool sorted)
+    : AbstractScoreVectorViewDecorator<
+        DenseScoreVectorAllocator<DenseScoreVectorView<ScoreType, IndexVector>, MemoryAllocator>>(
+        DenseScoreVectorAllocator<DenseScoreVectorView<ScoreType, IndexVector>, MemoryAllocator>(outputIndices,
+                                                                                                 sorted)) {}
 
-template<typename ScoreType, typename IndexVector>
-typename DenseScoreVector<ScoreType, IndexVector>::index_const_iterator
-  DenseScoreVector<ScoreType, IndexVector>::indices_cbegin() const {
+template<typename ScoreType, typename IndexVector, typename MemoryAllocator>
+typename DenseScoreVector<ScoreType, IndexVector, MemoryAllocator>::index_const_iterator
+  DenseScoreVector<ScoreType, IndexVector, MemoryAllocator>::indices_cbegin() const {
     return this->view.indices_cbegin();
 }
 
-template<typename ScoreType, typename IndexVector>
-typename DenseScoreVector<ScoreType, IndexVector>::index_const_iterator
-  DenseScoreVector<ScoreType, IndexVector>::indices_cend() const {
+template<typename ScoreType, typename IndexVector, typename MemoryAllocator>
+typename DenseScoreVector<ScoreType, IndexVector, MemoryAllocator>::index_const_iterator
+  DenseScoreVector<ScoreType, IndexVector, MemoryAllocator>::indices_cend() const {
     return this->view.indices_cend();
 }
 
-template<typename ScoreType, typename IndexVector>
-typename DenseScoreVector<ScoreType, IndexVector>::value_iterator
-  DenseScoreVector<ScoreType, IndexVector>::values_begin() {
+template<typename ScoreType, typename IndexVector, typename MemoryAllocator>
+typename DenseScoreVector<ScoreType, IndexVector, MemoryAllocator>::value_iterator
+  DenseScoreVector<ScoreType, IndexVector, MemoryAllocator>::values_begin() {
     return this->view.begin();
 }
 
-template<typename ScoreType, typename IndexVector>
-typename DenseScoreVector<ScoreType, IndexVector>::value_iterator
-  DenseScoreVector<ScoreType, IndexVector>::values_end() {
+template<typename ScoreType, typename IndexVector, typename MemoryAllocator>
+typename DenseScoreVector<ScoreType, IndexVector, MemoryAllocator>::value_iterator
+  DenseScoreVector<ScoreType, IndexVector, MemoryAllocator>::values_end() {
     return this->view.end();
 }
 
-template<typename ScoreType, typename IndexVector>
-typename DenseScoreVector<ScoreType, IndexVector>::value_const_iterator
-  DenseScoreVector<ScoreType, IndexVector>::values_cbegin() const {
+template<typename ScoreType, typename IndexVector, typename MemoryAllocator>
+typename DenseScoreVector<ScoreType, IndexVector, MemoryAllocator>::value_const_iterator
+  DenseScoreVector<ScoreType, IndexVector, MemoryAllocator>::values_cbegin() const {
     return this->view.cbegin();
 }
 
-template<typename ScoreType, typename IndexVector>
-typename DenseScoreVector<ScoreType, IndexVector>::value_const_iterator
-  DenseScoreVector<ScoreType, IndexVector>::values_cend() const {
+template<typename ScoreType, typename IndexVector, typename MemoryAllocator>
+typename DenseScoreVector<ScoreType, IndexVector, MemoryAllocator>::value_const_iterator
+  DenseScoreVector<ScoreType, IndexVector, MemoryAllocator>::values_cend() const {
     return this->view.cend();
 }
 
-template<typename ScoreType, typename IndexVector>
-void DenseScoreVector<ScoreType, IndexVector>::visit(
+template<typename ScoreType, typename IndexVector, typename MemoryAllocator>
+void DenseScoreVector<ScoreType, IndexVector, MemoryAllocator>::visit(
   IScoreVector::BitVisitor<CompleteIndexVector> completeBitVisitor,
   IScoreVector::BitVisitor<PartialIndexVector> partialBitVisitor,
   IScoreVector::DenseVisitor<float32, CompleteIndexVector> completeDense32BitVisitor,
@@ -89,7 +94,14 @@ void DenseScoreVector<ScoreType, IndexVector>::visit(
                     partialDense64BitVisitor);
 }
 
-template class DenseScoreVector<float32, PartialIndexVector>;
-template class DenseScoreVector<float64, PartialIndexVector>;
-template class DenseScoreVector<float32, CompleteIndexVector>;
-template class DenseScoreVector<float64, CompleteIndexVector>;
+template class DenseScoreVector<float32, PartialIndexVector, DefaultMemoryAllocator>;
+template class DenseScoreVector<float64, PartialIndexVector, DefaultMemoryAllocator>;
+template class DenseScoreVector<float32, CompleteIndexVector, DefaultMemoryAllocator>;
+template class DenseScoreVector<float64, CompleteIndexVector, DefaultMemoryAllocator>;
+
+#if SIMD_SUPPORT_ENABLED
+template class DenseScoreVector<float32, PartialIndexVector, SimdMemoryAllocator>;
+template class DenseScoreVector<float64, PartialIndexVector, SimdMemoryAllocator>;
+template class DenseScoreVector<float32, CompleteIndexVector, SimdMemoryAllocator>;
+template class DenseScoreVector<float64, CompleteIndexVector, SimdMemoryAllocator>;
+#endif

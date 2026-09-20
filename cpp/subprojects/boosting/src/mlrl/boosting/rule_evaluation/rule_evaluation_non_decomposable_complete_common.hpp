@@ -140,15 +140,16 @@ namespace boosting {
      * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
      * @tparam IndexVector      The type of the vector that provides access to the indices of the outputs for which
      *                          predictions should be calculated
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
      */
-    template<typename StatisticVector, typename IndexVector>
+    template<typename StatisticVector, typename IndexVector, typename MemoryAllocator>
     class DenseNonDecomposableCompleteRuleEvaluation final
         : public AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector> {
         private:
 
             using statistic_type = StatisticVector::statistic_type;
 
-            DenseScoreVector<statistic_type, IndexVector> scoreVector_;
+            DenseScoreVector<statistic_type, IndexVector, MemoryAllocator> scoreVector_;
 
             const float32 l1RegularizationWeight_;
 
