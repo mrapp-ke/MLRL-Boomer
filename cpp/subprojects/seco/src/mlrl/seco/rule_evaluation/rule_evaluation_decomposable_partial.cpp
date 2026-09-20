@@ -21,13 +21,14 @@ namespace seco {
      * matrices, such that they optimize a heuristic that is applied to each output individually and takes into account
      * a specific lift function affecting the quality of rules, depending on how many labels they predict.
      *
-     * @tparam StatisticVector The type of the vector that provides access to the confusion matrices
+     * @tparam StatisticVector  The type of the vector that provides access to the confusion matrices
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
      */
-    template<typename StatisticVector>
+    template<typename StatisticVector, typename MemoryAllocator>
     class DecomposableCompleteRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
         private:
 
-            BitScoreVector<PartialIndexVector, DefaultMemoryAllocator> scoreVector_;
+            BitScoreVector<PartialIndexVector, MemoryAllocator> scoreVector_;
 
             const std::unique_ptr<IHeuristic> heuristicPtr_;
 
@@ -212,7 +213,8 @@ namespace seco {
         const PartialIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         std::unique_ptr<ILiftFunction> liftFunctionPtr = liftFunctionFactoryPtr_->create();
-        return std::make_unique<DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVectorView<uint32>>>(
+        return std::make_unique<
+          DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVectorView<uint32>, DefaultMemoryAllocator>>(
           indexVector, std::move(heuristicPtr), std::move(liftFunctionPtr));
     }
 
@@ -233,7 +235,8 @@ namespace seco {
         const PartialIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         std::unique_ptr<ILiftFunction> liftFunctionPtr = liftFunctionFactoryPtr_->create();
-        return std::make_unique<DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVectorView<float32>>>(
+        return std::make_unique<
+          DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVectorView<float32>, DefaultMemoryAllocator>>(
           indexVector, std::move(heuristicPtr), std::move(liftFunctionPtr));
     }
 
