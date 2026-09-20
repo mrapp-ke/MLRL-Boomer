@@ -240,13 +240,15 @@ namespace boosting {
           std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
 #if SIMD_SUPPORT_ENABLED
         if (simdConfig_.get().isSimdEnabled()) {
-            return std::make_unique<DecomposableFixedPartialBinnedRuleEvaluationFactory<SimdDecomposableVectorMath>>(
+            return std::make_unique<
+              DecomposableFixedPartialBinnedRuleEvaluationFactory<SimdDecomposableVectorMath, SimdMemoryAllocator>>(
               outputRatio, minOutputs, maxOutputs, l1RegularizationWeight, l2RegularizationWeight,
               std::move(labelBinningFactoryPtr));
         }
 #endif
 
-        return std::make_unique<DecomposableFixedPartialBinnedRuleEvaluationFactory<SequentialDecomposableVectorMath>>(
+        return std::make_unique<DecomposableFixedPartialBinnedRuleEvaluationFactory<SequentialDecomposableVectorMath,
+                                                                                    DefaultMemoryAllocator>>(
           outputRatio, minOutputs, maxOutputs, l1RegularizationWeight, l2RegularizationWeight,
           std::move(labelBinningFactoryPtr));
     }
