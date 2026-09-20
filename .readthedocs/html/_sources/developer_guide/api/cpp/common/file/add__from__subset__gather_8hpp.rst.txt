@@ -1,0 +1,5 @@
+File add_from_subset_gather.hpp
+===============================
+
+.. doxygenfile:: add_from_subset_gather.hpp
+   :project: common
