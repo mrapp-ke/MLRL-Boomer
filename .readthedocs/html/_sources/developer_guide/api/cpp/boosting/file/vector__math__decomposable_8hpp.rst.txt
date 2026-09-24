@@ -1,0 +1,5 @@
+File vector_math_decomposable.hpp
+=================================
+
+.. doxygenfile:: vector_math_decomposable.hpp
+   :project: boosting
