@@ -4,23 +4,7 @@ hide-toc: true
 
 (user-guide-seco)=
 
-```{image} ../../_static/logo_seco_light.svg
----
-align: center
-alt: mlrl-seco
-class: only-light
-width: 100%
----
-```
-
-```{image} ../../_static/logo_seco_dark.svg
----
-align: center
-alt: mlrl-seco
-class: only-dark
-width: 100%
----
-```
+# The SeCo Algorithm
 
 ```{include} README.md
 ---
