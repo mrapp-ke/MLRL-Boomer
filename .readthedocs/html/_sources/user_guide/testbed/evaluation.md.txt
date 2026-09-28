@@ -62,14 +62,14 @@ This command results in 75% of the available data to be included in the training
 
 ### Cross Validation
 
-A more elaborate strategy for splitting data into training and test sets, which results in more realistic performance estimates, but also entails greater computational costs, is referred to as [cross validation](<https://en.wikipedia.org/wiki/Cross-validation_(statistics)>) (CV). The basic idea is to split the available data into several, equally-sized, parts. Afterward, several machine learning models are trained and evaluated on different portions of the data using the same learning method. Each of these parts are used for testing exactly once, whereas the remaining ones make up the training set. The performance estimates that are obtained for each of these subsequent runs, referred to as *folds*, are finally averaged to obtain a single score and corresponding [standard deviation](https://en.wikipedia.org/wiki/Standard_deviation). The package mlrl-testbed can be instructed to perform a cross validation using the argument `--data-split cross-validation`:
+A more elaborate strategy for splitting data into training and test sets, which results in more realistic performance estimates, but also entails greater computational costs, is referred to as [cross validation](<https://en.wikipedia.org/wiki/Cross-validation_(statistics)>) (CV). The basic idea is to split the available data into several, equally-sized, parts. Afterward, several machine learning models are trained and evaluated on different portions of the data using the same learning method. Each of these parts are used for testing exactly once, whereas the remaining ones make up the training set. The performance estimates that are obtained for each of these subsequent runs, referred to as *folds*, are finally averaged to obtain a single score and corresponding [standard deviation](https://en.wikipedia.org/wiki/Standard_deviation). The package mlrl-testbed can be instructed to perform a cross validation using the argument `--data-split cv`:
 
 ````{tab} BOOMER
    ```text
    mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --data-split cross-validation
+       --data-split cv
    ```
 ````
 
@@ -78,7 +78,7 @@ A more elaborate strategy for splitting data into training and test sets, which 
    mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --data-split cross-validation
+       --data-split cv
    ```
 ````
 
@@ -89,7 +89,7 @@ By default, a 10-fold cross validation, where ten models are trained and evaluat
    mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --data-split 'cross-validation{num_folds=5}'
+       --data-split 'cv{num_folds=5}'
    ```
 ````
 
@@ -98,7 +98,7 @@ By default, a 10-fold cross validation, where ten models are trained and evaluat
    mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --data-split 'cross-validation{num_folds=5}'
+       --data-split 'cv{num_folds=5}'
    ```
 ````
 
@@ -110,7 +110,7 @@ By providing the options `first_fold` and `last_fold`, a subset of the folds, in
    mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --data-split 'cross-validation{num_folds=5,first_fold=2,last_fold=2}'
+       --data-split 'cv{num_folds=5,first_fold=2,last_fold=2}'
    ```
 ````
 
@@ -119,7 +119,7 @@ By providing the options `first_fold` and `last_fold`, a subset of the folds, in
    mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --data-split 'cross-validation{num_folds=5,first_fold=2,last_fold=2}'
+       --data-split 'cv{num_folds=5,first_fold=2,last_fold=2}'
    ```
 ````
 `````
@@ -160,7 +160,7 @@ If you are interested in obtaining evaluation results for the training data in a
    mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --data-split cross-validation \
+       --data-split cv \
        --predict-for-training-data true
    ```
 ````
@@ -170,7 +170,7 @@ If you are interested in obtaining evaluation results for the training data in a
    mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --data-split cross-validation \
+       --data-split cv \
        --predict-for-training-data true
    ```
 ````
