@@ -6,6 +6,14 @@ tocdepth: 2
 
 # Release Notes
 
+## Version 0.15.6 (Sep. 24th,2026)
+
+A bugfix release that comes with the following changes.
+
+### Quality-of-Life Improvements
+
+- The project's repository https://github.com/mrapp-ke/MLRL-Boomer is now archived on https://zenodo.org.
+
 ## Version 0.15.5 (Aug. 26th,2026)
 
 A bugfix release that comes with the following changes.
