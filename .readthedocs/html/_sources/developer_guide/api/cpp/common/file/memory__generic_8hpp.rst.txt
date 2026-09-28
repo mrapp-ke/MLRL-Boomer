@@ -1,0 +1,5 @@
+File memory_generic.hpp
+=======================
+
+.. doxygenfile:: memory_generic.hpp
+   :project: common

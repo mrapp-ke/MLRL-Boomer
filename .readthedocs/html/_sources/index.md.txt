@@ -123,6 +123,7 @@ maxdepth: 2
 user_guide/foundations/index
 user_guide/boosting/index
 user_guide/seco/index
+user_guide/optimizations/index
 user_guide/testbed/index
 user_guide/references
 ```
