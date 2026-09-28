@@ -304,6 +304,7 @@ util
 whl
 wra
 yml
+zenodo
 Črt
 Štajdohar
 Žagar
