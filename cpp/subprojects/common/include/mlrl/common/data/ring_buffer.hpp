@@ -10,10 +10,11 @@
 /**
  * A ring buffer with fixed capacity.
  *
- * @tparam T The type of the values that are stored in the buffer
+ * @tparam T                The type of the values that are stored in the buffer
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
  */
-template<typename T>
-class RingBuffer final : ViewDecorator<AllocatedVector<T>> {
+template<typename T, typename MemoryAllocator = DefaultMemoryAllocator>
+class RingBuffer final : ViewDecorator<AllocatedVector<T, MemoryAllocator>> {
     private:
 
         uint32 pos_;
@@ -26,7 +27,8 @@ class RingBuffer final : ViewDecorator<AllocatedVector<T>> {
          * @param capacity The maximum capacity of the buffer. Must be at least 1
          */
         RingBuffer(uint32 capacity)
-            : ViewDecorator<AllocatedVector<T>>(AllocatedVector<T>(capacity)), pos_(0), full_(capacity == 0) {}
+            : ViewDecorator<AllocatedVector<T, MemoryAllocator>>(AllocatedVector<T, MemoryAllocator>(capacity)),
+              pos_(0), full_(capacity == 0) {}
 
         /**
          * An iterator that provides read-only access to the elements in the buffer.

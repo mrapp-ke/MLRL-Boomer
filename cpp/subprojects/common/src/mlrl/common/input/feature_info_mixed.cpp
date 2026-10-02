@@ -12,9 +12,9 @@
 class BitFeatureInfo final : public IMixedFeatureInfo {
     private:
 
-        BitVector ordinalBitVector_;
+        BitVector<> ordinalBitVector_;
 
-        BitVector nominalBitVector_;
+        BitVector<> nominalBitVector_;
 
     public:
 

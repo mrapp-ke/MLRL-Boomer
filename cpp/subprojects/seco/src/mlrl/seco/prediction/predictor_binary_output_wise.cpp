@@ -10,7 +10,7 @@
 
 namespace seco {
 
-    static inline void applyHead(const CompleteHead<uint8>& head, View<uint8>::iterator iterator, BitVector& mask) {
+    static inline void applyHead(const CompleteHead<uint8>& head, View<uint8>::iterator iterator, BitVector<>& mask) {
         auto valueIterator = head.values_cbegin();
         uint32 numElements = head.getNumElements();
 
@@ -22,7 +22,7 @@ namespace seco {
         }
     }
 
-    static inline void applyHead(const PartialHead<uint8>& head, View<uint8>::iterator iterator, BitVector& mask) {
+    static inline void applyHead(const PartialHead<uint8>& head, View<uint8>::iterator iterator, BitVector<>& mask) {
         auto valueIterator = head.values_cbegin();
         auto indexIterator = head.indices_cbegin();
         uint32 numElements = head.getNumElements();
@@ -37,7 +37,7 @@ namespace seco {
         }
     }
 
-    static inline void applyHead(const IHead& head, View<uint8>::iterator scoreIterator, BitVector& mask) {
+    static inline void applyHead(const IHead& head, View<uint8>::iterator scoreIterator, BitVector<>& mask) {
         auto completeBinaryHeadVisitor = [&](const CompleteHead<uint8>& head) {
             applyHead(head, scoreIterator, mask);
         };

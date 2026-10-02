@@ -169,10 +169,11 @@ class MLRLCOMMON_API Allocator : public View {
 /**
  * Allocates the memory, a `View` provides access to
  *
- * @tparam T The type of the values stored in the `View`
+ * @tparam T                The type of the values stored in the `View`
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
  */
-template<typename T>
-using AllocatedView = Allocator<View<T>>;
+template<typename T, typename MemoryAllocator = DefaultMemoryAllocator>
+using AllocatedView = Allocator<View<T>, MemoryAllocator>;
 
 /**
  * Allocates the memory, a view provides access to, and allows to resize it afterwards.

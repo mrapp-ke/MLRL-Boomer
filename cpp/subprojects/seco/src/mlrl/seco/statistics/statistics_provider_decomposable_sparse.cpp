@@ -215,7 +215,7 @@ namespace seco {
     }
 
     static inline uint32 initializeMajorityLabelVector(const CContiguousView<const uint8>& labelMatrix,
-                                                       ResizableBinarySparseArrayVector& majorityLabelVector) {
+                                                       ResizableBinarySparseArrayVector<>& majorityLabelVector) {
         uint32 numExamples = labelMatrix.numRows;
         uint32 numLabels = labelMatrix.numCols;
         float64 threshold = numExamples / 2.0;
@@ -245,7 +245,7 @@ namespace seco {
     }
 
     static inline uint32 initializeMajorityLabelVector(const BinaryCsrView& labelMatrix,
-                                                       ResizableBinarySparseArrayVector& majorityLabelVector) {
+                                                       ResizableBinarySparseArrayVector<>& majorityLabelVector) {
         uint32 numExamples = labelMatrix.numRows;
         uint32 numLabels = labelMatrix.numCols;
         auto majorityIterator = majorityLabelVector.begin();
@@ -282,7 +282,7 @@ namespace seco {
     }
 
     static inline void initializeStatisticMatrix(const CContiguousView<const uint8>& labelMatrix,
-                                                 const ResizableBinarySparseArrayVector& majorityLabelVector,
+                                                 const ResizableBinarySparseArrayVector<>& majorityLabelVector,
                                                  SparseDecomposableStatisticView& statisticView) {
         uint32 numExamples = labelMatrix.numRows;
         uint32 numLabels = labelMatrix.numCols;
@@ -311,7 +311,7 @@ namespace seco {
     }
 
     static inline void initializeStatisticMatrix(const BinaryCsrView& labelMatrix,
-                                                 const ResizableBinarySparseArrayVector& majorityLabelVector,
+                                                 const ResizableBinarySparseArrayVector<>& majorityLabelVector,
                                                  SparseDecomposableStatisticView& statisticView) {
         uint32 numExamples = labelMatrix.numRows;
         uint32 numLabels = labelMatrix.numCols;
@@ -353,7 +353,7 @@ namespace seco {
         : public ClearableViewDecorator<MatrixDecorator<SparseDecomposableStatisticView>> {
         private:
 
-            ResizableBinarySparseArrayVector majorityLabelVector_;
+            ResizableBinarySparseArrayVector<> majorityLabelVector_;
 
             CContiguousMatrix<uint32> coverageMatrix_;
 
@@ -424,7 +424,7 @@ namespace seco {
              *
              * @return An `index_const_iterator` to the beginning
              */
-            BinarySparseArrayVector::const_iterator majority_label_indices_cbegin() const {
+            Vector<uint32>::const_iterator majority_label_indices_cbegin() const {
                 return majorityLabelVector_.cbegin();
             }
 
@@ -433,7 +433,7 @@ namespace seco {
              *
              * @return An `index_const_iterator` to the end
              */
-            BinarySparseArrayVector::const_iterator majority_label_indices_cend() const {
+            Vector<uint32>::const_iterator majority_label_indices_cend() const {
                 return majorityLabelVector_.cend();
             }
 
