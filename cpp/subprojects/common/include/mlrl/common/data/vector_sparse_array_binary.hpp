@@ -17,5 +17,8 @@ using BinarySparseArrayVector = DenseVector<uint32, MemoryAllocator>;
 /**
  * A vector that provides random read and write access, as well as read and write access via iterators, to indices
  * stored in a newly allocated array, which can be resized
+ *
+ * @tparam MemoryAllocator The type of the memory allocator to be used
  */
-using ResizableBinarySparseArrayVector = ResizableDenseVector<uint32>;
+template<typename MemoryAllocator = DefaultMemoryAllocator>
+using ResizableBinarySparseArrayVector = ResizableDenseVector<uint32, MemoryAllocator>;
