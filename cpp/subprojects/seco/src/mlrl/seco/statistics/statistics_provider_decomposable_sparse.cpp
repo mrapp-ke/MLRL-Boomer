@@ -424,7 +424,7 @@ namespace seco {
              *
              * @return An `index_const_iterator` to the beginning
              */
-            BinarySparseArrayVector::const_iterator majority_label_indices_cbegin() const {
+            Vector<uint32>::const_iterator majority_label_indices_cbegin() const {
                 return majorityLabelVector_.cbegin();
             }
 
@@ -433,7 +433,7 @@ namespace seco {
              *
              * @return An `index_const_iterator` to the end
              */
-            BinarySparseArrayVector::const_iterator majority_label_indices_cend() const {
+            Vector<uint32>::const_iterator majority_label_indices_cend() const {
                 return majorityLabelVector_.cend();
             }
 
