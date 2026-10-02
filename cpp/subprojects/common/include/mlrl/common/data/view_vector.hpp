@@ -129,10 +129,11 @@ class MLRLCOMMON_API Vector : public View<T> {
 /**
  * Allocates the memory, a `Vector` provides access to.
  *
- * @tparam T The type of the values stored in the `Vector`
+ * @tparam T                The type of the values stored in the `Vector`
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
  */
-template<typename T>
-using AllocatedVector = Allocator<Vector<T>>;
+template<typename T, typename MemoryAllocator = DefaultMemoryAllocator>
+using AllocatedVector = Allocator<Vector<T>, MemoryAllocator>;
 
 /**
  * Allocates the memory, a `Vector` provides access to, and allows to resize it afterwards.
