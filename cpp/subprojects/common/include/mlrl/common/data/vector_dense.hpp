@@ -44,10 +44,12 @@ class DenseVector final : public DenseVectorDecorator<AllocatedVector<T>> {
  * A vector that provides random read and write access, as well as read and write access via iterators, to the values
  * stored in a newly allocated array, which can be resized.
  *
- * @tparam T The type of the values stored in the vector
+ * @tparam T                The type of the values stored in the vector
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
  */
-template<typename T>
-class ResizableDenseVector final : public ResizableVectorDecorator<DenseVectorDecorator<ResizableVector<T>>> {
+template<typename T, typename MemoryAllocator = DefaultMemoryAllocator>
+class ResizableDenseVector final
+    : public ResizableVectorDecorator<DenseVectorDecorator<ResizableVector<T, MemoryAllocator>>> {
     public:
 
         /**
@@ -55,6 +57,6 @@ class ResizableDenseVector final : public ResizableVectorDecorator<DenseVectorDe
          * @param init          True, if all elements in the vector should be value-initialized, false otherwise
          */
         ResizableDenseVector(uint32 numElements, bool init = false)
-            : ResizableVectorDecorator<DenseVectorDecorator<ResizableVector<T>>>(
-                ResizableVector<T>(numElements, init)) {}
+            : ResizableVectorDecorator<DenseVectorDecorator<ResizableVector<T, MemoryAllocator>>>(
+                ResizableVector<T, MemoryAllocator>(numElements, init)) {}
 };
