@@ -138,10 +138,11 @@ using AllocatedVector = Allocator<Vector<T>, MemoryAllocator>;
 /**
  * Allocates the memory, a `Vector` provides access to, and allows to resize it afterwards.
  *
- * @tparam T The type of the values stored in the `Vector`
+ * @tparam T                The type of the values stored in the `Vector`
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
  */
-template<typename T>
-using ResizableVector = ResizableAllocator<Vector<T>>;
+template<typename T, typename MemoryAllocator = DefaultMemoryAllocator>
+using ResizableVector = ResizableAllocator<Vector<T>, MemoryAllocator>;
 
 /**
  * A vector that is backed by a one-dimensional view of a specific size.
