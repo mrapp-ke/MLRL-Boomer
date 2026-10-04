@@ -150,9 +150,12 @@ class MLRLCOMMON_API DenseScoreVectorAllocator : public View {
          */
         explicit DenseScoreVectorAllocator(const typename View::index_vector_type& outputIndices, bool sorted,
                                            bool init = false)
-            : View(MemoryAllocator::template allocateMemory<typename View::value_type>(outputIndices.getNumElements(),
-                                                                                       init),
-                   outputIndices, sorted) {}
+            : View(
+                MemoryAllocator::template allocateMemory<typename View::value_type>(
+                  outputIndices.getNumElements()
+                    + MemoryAllocator::template getPadding<typename View::value_type>(outputIndices.getNumElements()),
+                  init),
+                outputIndices, sorted) {}
 
         /**
          * @param other A reference to an object of type `DenseScoreVectorAllocator` that should be copied
