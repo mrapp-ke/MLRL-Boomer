@@ -179,8 +179,10 @@ class MLRLCOMMON_API IndexedVectorAllocator : public View {
          * @param init          True, if all elements in the view should be value-initialized, false otherwise
          */
         explicit IndexedVectorAllocator(uint32 numElements, bool init = false)
-            : View(MemoryAllocator::template allocateMemory<typename View::index_type>(numElements, init),
-                   MemoryAllocator::template allocateMemory<typename View::value_type>(numElements, init),
+            : View(MemoryAllocator::template allocateMemory<typename View::index_type>(
+                     numElements + MemoryAllocator::template getPadding<typename View::index_type>(numElements), init),
+                   MemoryAllocator::template allocateMemory<typename View::value_type>(
+                     numElements + MemoryAllocator::template getPadding<typename View::value_type>(numElements), init),
                    numElements) {}
 
         /**
