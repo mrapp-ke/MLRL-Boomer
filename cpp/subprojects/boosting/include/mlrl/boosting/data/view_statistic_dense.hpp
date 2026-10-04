@@ -3,7 +3,6 @@
  */
 #pragma once
 
-#include "mlrl/boosting/math/scalar_math.hpp"
 #include "mlrl/boosting/util/dll_exports.hpp"
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 
@@ -21,29 +20,43 @@ namespace boosting {
 
             const uint32 numGradients_;
 
+            const uint32 numHessians_;
+
+            const uint32 numGradientsWithPadding_;
+
         public:
 
             /**
-             * @param array         A pointer to an array of template type `T` that stores the gradients and Hessians
-             * @param numRows       The number of rows in the view
-             * @param numGradients  The number of gradients in each row of the view
-             * @param numHessians   The number of Hessians in each row of the view
+             * @param array             A pointer to an array of template type `T` that stores the gradients and
+             *                          Hessians
+             * @param numRows           The number of rows in the view
+             * @param numGradients      The number of gradients in each row of the view
+             * @param numHessians       The number of Hessians in each row of the view
+             * @param paddingGradients  The number of unused elements inserted after the gradients in each row to ensure
+             *                          aligned iterator access
+             * @param paddingHessians   The number of unused elements inserted after the Hessians in each row to ensure
+             *                          aligned iterator access
              */
-            DenseStatisticView(StatisticType* array, uint32 numRows, uint32 numGradients, uint32 numHessians)
-                : CContiguousView<StatisticType>(array, numRows, numGradients + numHessians),
-                  numGradients_(numGradients) {}
+            DenseStatisticView(StatisticType* array, uint32 numRows, uint32 numGradients, uint32 numHessians,
+                               uint32 paddingGradients = 0, uint32 paddingHessians = 0)
+                : CContiguousView<StatisticType>(array, numRows, numGradients + numHessians,
+                                                 paddingGradients + paddingHessians),
+                  numGradients_(numGradients), numHessians_(numHessians),
+                  numGradientsWithPadding_(numGradients + paddingGradients) {}
 
             /**
              * @param other A reference to an object of type `DenseStatisticView` that should be copied
              */
             DenseStatisticView(const DenseStatisticView<StatisticType>& other)
-                : CContiguousView<StatisticType>(other), numGradients_(other.numGradients_) {}
+                : CContiguousView<StatisticType>(other), numGradients_(other.numGradients_),
+                  numHessians_(other.numHessians_), numGradientsWithPadding_(other.numGradientsWithPadding_) {}
 
             /**
              * @param other A reference to an object of type `DenseStatisticView` that should be moved
              */
             DenseStatisticView(DenseStatisticView<StatisticType>&& other)
-                : CContiguousView<StatisticType>(std::move(other)), numGradients_(other.numGradients_) {}
+                : CContiguousView<StatisticType>(std::move(other)), numGradients_(other.numGradients_),
+                  numHessians_(other.numHessians_), numGradientsWithPadding_(other.numGradientsWithPadding_) {}
 
             virtual ~DenseStatisticView() override {}
 
@@ -114,7 +127,7 @@ namespace boosting {
              * @return      A `hessian_const_iterator` to the beginning of the given row
              */
             hessian_const_iterator hessians_cbegin(uint32 row) const {
-                return &(this->values_cbegin(row))[numGradients_];
+                return &(this->values_cbegin(row))[numGradientsWithPadding_];
             }
 
             /**
@@ -124,7 +137,7 @@ namespace boosting {
              * @return      A `hessian_const_iterator` to the end of the given row
              */
             hessian_const_iterator hessians_cend(uint32 row) const {
-                return &(this->values_cbegin(row))[this->numCols];
+                return &(this->hessians_cbegin(row))[numHessians_];
             }
 
             /**
@@ -134,7 +147,7 @@ namespace boosting {
              * @return      A `hessian_iterator` to the beginning of the given row
              */
             hessian_iterator hessians_begin(uint32 row) {
-                return &(this->values_begin(row))[numGradients_];
+                return &(this->values_begin(row))[numGradientsWithPadding_];
             }
 
             /**
@@ -144,7 +157,7 @@ namespace boosting {
              * @return      A `hessian_iterator` to the end of the given row
              */
             hessian_iterator hessians_end(uint32 row) {
-                return &(this->values_begin(row))[this->numCols];
+                return &(this->hessians_begin(row))[numHessians_];
             }
 
             /**
@@ -171,7 +184,7 @@ namespace boosting {
              * @return The number of Hessians in each row
              */
             uint32 getNumHessians() const {
-                return math::triangularNumber(numGradients_);
+                return numHessians_;
             }
     };
 
@@ -194,8 +207,14 @@ namespace boosting {
             explicit DenseStatisticViewAllocator(uint32 numRows, uint32 numGradients, uint32 numHessians,
                                                  bool init = false)
                 : View(MemoryAllocator::template allocateMemory<typename View::value_type>(
-                         numRows * (numGradients + numHessians), init),
-                       numRows, numGradients, numHessians) {}
+                         numRows
+                           * (numGradients + numHessians
+                              + MemoryAllocator::template getPadding<typename View::value_type>(numGradients)
+                              + MemoryAllocator::template getPadding<typename View::value_type>(numHessians)),
+                         init),
+                       numRows, numGradients, numHessians,
+                       MemoryAllocator::template getPadding<typename View::value_type>(numGradients),
+                       MemoryAllocator::template getPadding<typename View::value_type>(numHessians)) {}
 
             /**
              * @param other A reference to an object of type `DenseStatisticViewAllocator` that should be copied
