@@ -117,10 +117,9 @@ class MLRLCOMMON_API BitScoreVectorView : public BitView,
 /**
  * Allocates the memory, a `BitScoreVectorView` provides access to.
  *
- * @tparam View             The type of the view
- * @tparam MemoryAllocator  The type of the memory allocator to be used
+ * @tparam View The type of the view
  */
-template<typename View, typename MemoryAllocator = DefaultMemoryAllocator>
+template<typename View>
 class MLRLCOMMON_API BitScoreVectorAllocator : public View {
     public:
 
@@ -133,24 +132,24 @@ class MLRLCOMMON_API BitScoreVectorAllocator : public View {
          */
         explicit BitScoreVectorAllocator(const typename View::index_vector_type& outputIndices, bool sorted,
                                          bool init = false)
-            : View(MemoryAllocator::template allocateMemory<typename View::value_type>(
+            : View(DefaultMemoryAllocator::template allocateMemory<typename View::value_type>(
                      BitView::calculateNumElements(outputIndices.getNumElements()), init),
                    outputIndices, sorted) {}
 
         /**
          * @param other A reference to an object of type `DenseScoreVectorAllocator` that should be copied
          */
-        BitScoreVectorAllocator(const BitScoreVectorAllocator<View, MemoryAllocator>& other) = delete;
+        BitScoreVectorAllocator(const BitScoreVectorAllocator<View>& other) = delete;
 
         /**
          * @param other A reference to an object of type `BitScoreVectorAllocator` that should be moved
          */
-        BitScoreVectorAllocator(BitScoreVectorAllocator<View, MemoryAllocator>&& other) : View(std::move(other)) {
+        BitScoreVectorAllocator(BitScoreVectorAllocator<View>&& other) : View(std::move(other)) {
             other.release();
         }
 
         virtual ~BitScoreVectorAllocator() override {
-            MemoryAllocator::freeMemory(View::array);
+            DefaultMemoryAllocator::freeMemory(View::array);
         }
 };
 
@@ -158,14 +157,13 @@ class MLRLCOMMON_API BitScoreVectorAllocator : public View {
  * An one-dimensional vector that stores binary scores that may be predicted by a rule, as well as an overall quality
  * score that assesses the overall quality of the rule, in a space efficient way.
  *
- * @tparam IndexVector      The type of the vector that provides access to the indices of the outputs for which the rule
- *                          may predict
- * @tparam MemoryAllocator  The type of the memory allocator to be used
+ * @tparam IndexVector The type of the vector that provides access to the indices of the outputs for which the rule may
+ *                     predict
  */
-template<typename IndexVector, typename MemoryAllocator>
+template<typename IndexVector>
 class BitScoreVector final
     : public IndexableBitVectorDecorator<
-        AbstractScoreVectorViewDecorator<BitScoreVectorAllocator<BitScoreVectorView<IndexVector>, MemoryAllocator>>> {
+        AbstractScoreVectorViewDecorator<BitScoreVectorAllocator<BitScoreVectorView<IndexVector>>>> {
     public:
 
         /**
