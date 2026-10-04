@@ -1,0 +1,5 @@
+File aggregate_output_wise_qualities.hpp
+========================================
+
+.. doxygenfile:: aggregate_output_wise_qualities.hpp
+   :project: boosting
