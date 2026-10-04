@@ -47,13 +47,6 @@ class MLRLCOMMON_API DenseMatrix : public View<T>,
          * An iterator that provides access to the values in the view and allows to modify them.
          */
         using value_iterator = View<T>::value_type*;
-
-        /**
-         * Sets all values stored in the matrix to zero.
-         */
-        void clear() {
-            std::fill(View<T>::array, View<T>::array + (Matrix::numRows * Matrix::numCols), (T) 0);
-        }
 };
 
 /**
