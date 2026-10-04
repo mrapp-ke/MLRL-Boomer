@@ -109,10 +109,46 @@ class MLRLCOMMON_API CContiguousView : public DenseMatrix<T> {
 };
 
 /**
+ * Allocates the memory, a `CContiguousView` provides access to.
+ *
+ * @tparam Matrix           The type of the view
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
+ */
+template<typename Matrix, typename MemoryAllocator = DefaultMemoryAllocator>
+class MLRLCOMMON_API CContiguousViewAllocator : public Matrix {
+    public:
+
+        /**
+         * @param numRows   The number of rows in the view
+         * @param numCols   The number of columns in the view
+         * @param init      True, if all elements in the view should be value-initialized, false otherwise
+         */
+        CContiguousViewAllocator(uint32 numRows, uint32 numCols, bool init = false)
+            : Matrix(MemoryAllocator::template allocateMemory<typename Matrix::value_type>(numRows * numCols, init),
+                     numRows, numCols) {}
+
+        /**
+         * @param other A reference to an object of type `CContiguousViewAllocator` that should be copied
+         */
+        CContiguousViewAllocator(const CContiguousViewAllocator<Matrix, MemoryAllocator>& other) = delete;
+
+        /**
+         * @param other A reference to an object of type `CContiguousViewAllocator` that should be moved
+         */
+        CContiguousViewAllocator(CContiguousViewAllocator<Matrix, MemoryAllocator>&& other) : Matrix(std::move(other)) {
+            other.release();
+        }
+
+        virtual ~CContiguousViewAllocator() override {
+            MemoryAllocator::freeMemory(Matrix::array);
+        }
+};
+
+/**
  * Allocates the memory, a `CContiguousView` provides access to
  *
  * @tparam T                The type of the values stored in the `CContiguousView`
  * @tparam MemoryAllocator  The type of the memory allocator to be used
  */
 template<typename T, typename MemoryAllocator = DefaultMemoryAllocator>
-using AllocatedCContiguousView = DenseMatrixAllocator<CContiguousView<T>, MemoryAllocator>;
+using AllocatedCContiguousView = CContiguousViewAllocator<CContiguousView<T>, MemoryAllocator>;
