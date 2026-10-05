@@ -14,7 +14,7 @@
 class BitWeightVector final : public IWeightVector {
     private:
 
-        BitVector<> vector_;
+        BitVector vector_;
 
         uint32 numNonZeroWeights_;
 
