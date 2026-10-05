@@ -47,49 +47,6 @@ class MLRLCOMMON_API DenseMatrix : public View<T>,
          * An iterator that provides access to the values in the view and allows to modify them.
          */
         using value_iterator = View<T>::value_type*;
-
-        /**
-         * Sets all values stored in the matrix to zero.
-         */
-        void clear() {
-            std::fill(View<T>::array, View<T>::array + (Matrix::numRows * Matrix::numCols), (T) 0);
-        }
-};
-
-/**
- * Allocates the memory, a two-dimensional dense view provides access to.
- *
- * @tparam Matrix           The type of the view
- * @tparam MemoryAllocator  The type of the memory allocator to be used
- */
-template<typename Matrix, typename MemoryAllocator = DefaultMemoryAllocator>
-class MLRLCOMMON_API DenseMatrixAllocator : public Matrix {
-    public:
-
-        /**
-         * @param numRows   The number of rows in the view
-         * @param numCols   The number of columns in the view
-         * @param init      True, if all elements in the view should be value-initialized, false otherwise
-         */
-        DenseMatrixAllocator(uint32 numRows, uint32 numCols, bool init = false)
-            : Matrix(MemoryAllocator::template allocateMemory<typename Matrix::value_type>(numRows * numCols, init),
-                     numRows, numCols) {}
-
-        /**
-         * @param other A reference to an object of type `DenseMatrixAllocator` that should be copied
-         */
-        DenseMatrixAllocator(const DenseMatrixAllocator<Matrix, MemoryAllocator>& other) = delete;
-
-        /**
-         * @param other A reference to an object of type `DenseMatrixAllocator` that should be moved
-         */
-        DenseMatrixAllocator(DenseMatrixAllocator<Matrix, MemoryAllocator>&& other) : Matrix(std::move(other)) {
-            other.release();
-        }
-
-        virtual ~DenseMatrixAllocator() override {
-            MemoryAllocator::freeMemory(Matrix::array);
-        }
 };
 
 /**

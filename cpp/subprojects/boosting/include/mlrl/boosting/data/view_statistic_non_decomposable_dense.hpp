@@ -19,14 +19,21 @@ namespace boosting {
         public:
 
             /**
-             * @param array         A pointer to an array of template type `T` that stores the gradients and Hessians
-             * @param numRows       The number of rows in the view
-             * @param numGradients  The number of gradients in each row of the view
-             * @param numHessians   The number of Hessians in each row of the view
+             * @param array             A pointer to an array of template type `T` that stores the gradients and
+             *                          Hessians
+             * @param numRows           The number of rows in the view
+             * @param numGradients      The number of gradients in each row of the view
+             * @param numHessians       The number of Hessians in each row of the view
+             * @param paddingGradients  The number of unused elements inserted after the gradients in each row to ensure
+             *                          aligned iterator access
+             * @param paddingHessians   The number of unused elements inserted after the Hessians in each row to ensure
+             *                          aligned iterator access
              */
             DenseNonDecomposableStatisticView(StatisticType* array, uint32 numRows, uint32 numGradients,
-                                              uint32 numHessians)
-                : DenseStatisticView<StatisticType>(array, numRows, numGradients, numHessians) {}
+                                              uint32 numHessians, uint32 paddingGradients = 0,
+                                              uint32 paddingHessians = 0)
+                : DenseStatisticView<StatisticType>(array, numRows, numGradients, numHessians, paddingGradients,
+                                                    paddingHessians) {}
 
             /**
              * @param other A reference to an object of type `DenseNonDecomposableStatisticView` that should be copied
@@ -67,7 +74,7 @@ namespace boosting {
              */
             hessian_diagonal_const_iterator hessians_diagonal_cend(uint32 row) const {
                 return hessian_diagonal_const_iterator(View<const StatisticType>(this->hessians_cbegin(row)),
-                                                       math::triangularNumber(this->numGradients_));
+                                                       this->getNumHessians());
             }
     };
 
