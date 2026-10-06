@@ -282,10 +282,9 @@ class MLRLCOMMON_API BitView {
 /**
  * Allocates the memory, a `BitView` provides access to.
  *
- * @tparam View             The type of the view
- * @tparam MemoryAllocator  The type of the memory allocator to be used
+ * @tparam View The type of the view
  */
-template<typename View, typename MemoryAllocator = DefaultMemoryAllocator>
+template<typename View>
 class MLRLCOMMON_API BitVectorAllocator : public View {
     public:
 
@@ -294,33 +293,30 @@ class MLRLCOMMON_API BitVectorAllocator : public View {
          * @param init      True, if all elements in the view should be value-initialized, false otherwise
          */
         explicit BitVectorAllocator(uint32 numBits, bool init = false)
-            : View(MemoryAllocator::template allocateMemory<uint32>(BitView::calculateNumElements(numBits), init),
+            : View(DefaultMemoryAllocator::allocateMemory<uint32>(BitView::calculateNumElements(numBits), init),
                    numBits) {}
 
         /**
          * @param other A reference to an object of type `BitVectorAllocator` that should be copied
          */
-        BitVectorAllocator(const BitVectorAllocator<View, MemoryAllocator>& other) = delete;
+        BitVectorAllocator(const BitVectorAllocator<View>& other) = delete;
 
         /**
          * @param other A reference to an object of type `BitVectorAllocator` that should be moved
          */
-        BitVectorAllocator(BitVectorAllocator<View, MemoryAllocator>&& other) : View(std::move(other)) {
+        BitVectorAllocator(BitVectorAllocator<View>&& other) : View(std::move(other)) {
             other.release();
         }
 
         virtual ~BitVectorAllocator() override {
-            MemoryAllocator::freeMemory(View::array);
+            DefaultMemoryAllocator::freeMemory(View::array);
         }
 };
 
 /**
  * Allocates the memory, a `BitView` provides access to.
- *
- * @tparam MemoryAllocator The type of the memory allocator to be used
  */
-template<typename MemoryAllocator = DefaultMemoryAllocator>
-using AllocatedBitVector = BitVectorAllocator<BitView, MemoryAllocator>;
+using AllocatedBitVector = BitVectorAllocator<BitView>;
 
 /**
  * A vector that stores binary values in a `BitView`.

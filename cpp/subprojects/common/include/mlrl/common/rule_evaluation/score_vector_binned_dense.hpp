@@ -256,10 +256,9 @@ class MLRLCOMMON_API DenseBinnedScoreVectorView : public Quality {
 /**
  * Allocates the memory, a `DenseBinnedScoreVectorView` provides access to.
  *
- * @tparam View             The type of the view
- * @tparam MemoryAllocator  The type of the memory allocator to be used
+ * @tparam View The type of the view
  */
-template<typename View, typename MemoryAllocator = DefaultMemoryAllocator>
+template<typename View>
 class MLRLCOMMON_API DenseBinnedScoreVectorAllocator : public View {
     private:
 
@@ -277,28 +276,27 @@ class MLRLCOMMON_API DenseBinnedScoreVectorAllocator : public View {
          */
         explicit DenseBinnedScoreVectorAllocator(const typename View::index_vector_type& outputIndices, uint32 numBins,
                                                  bool sorted, bool init = false)
-            : View(MemoryAllocator::template allocateMemory<uint32>(numBins, init),
-                   MemoryAllocator::template allocateMemory<typename View::score_type>(outputIndices.getNumElements(),
-                                                                                       init),
-                   outputIndices, numBins, sorted) {}
+            : View(
+                DefaultMemoryAllocator::allocateMemory<uint32>(numBins, init),
+                DefaultMemoryAllocator::allocateMemory<typename View::score_type>(outputIndices.getNumElements(), init),
+                outputIndices, numBins, sorted) {}
 
         /**
          * @param other A reference to an object of type `DenseBinnedScoreVectorAllocator` that should be copied
          */
-        DenseBinnedScoreVectorAllocator(const DenseBinnedScoreVectorAllocator<View, MemoryAllocator>& other) = delete;
+        DenseBinnedScoreVectorAllocator(const DenseBinnedScoreVectorAllocator<View>& other) = delete;
 
         /**
          * @param other A reference to an object of type `DenseBinnedScoreVectorAllocator` that should be moved
          */
-        DenseBinnedScoreVectorAllocator(DenseBinnedScoreVectorAllocator<View, MemoryAllocator>&& other)
-            : View(std::move(other)) {
+        DenseBinnedScoreVectorAllocator(DenseBinnedScoreVectorAllocator<View>&& other) : View(std::move(other)) {
             other.binIndices_.release();
             other.binValues_.release();
         }
 
         virtual ~DenseBinnedScoreVectorAllocator() override {
-            MemoryAllocator::freeMemory(View::binIndices_.array);
-            MemoryAllocator::freeMemory(View::binValues_.array);
+            DefaultMemoryAllocator::freeMemory(View::binIndices_.array);
+            DefaultMemoryAllocator::freeMemory(View::binValues_.array);
         }
 
         /**
@@ -310,13 +308,13 @@ class MLRLCOMMON_API DenseBinnedScoreVectorAllocator : public View {
         void resize(uint32 numBins, bool freeMemory) {
             if (numBins < maxCapacity_) {
                 if (freeMemory) {
-                    View::binValues_.array =
-                      MemoryAllocator::reallocateMemory(View::binValues_.array, View::binValues_.numElements, numBins);
+                    View::binValues_.array = DefaultMemoryAllocator::reallocateMemory(
+                      View::binValues_.array, View::binValues_.numElements, numBins);
                     maxCapacity_ = numBins;
                 }
             } else if (numBins > maxCapacity_) {
-                View::binValues_.array =
-                  MemoryAllocator::reallocateMemory(View::binValues_.array, View::binValues_.numElements, numBins);
+                View::binValues_.array = DefaultMemoryAllocator::reallocateMemory(
+                  View::binValues_.array, View::binValues_.numElements, numBins);
                 maxCapacity_ = numBins;
             }
 
@@ -329,15 +327,14 @@ class MLRLCOMMON_API DenseBinnedScoreVectorAllocator : public View {
  * that assesses the quality of the rule, in C-contiguous arrays. The predicted scores correspond to bins for which the
  * same prediction is made,
  *
- * @tparam ScoreType        The type of the predicted scores
- * @tparam IndexVector      The type of the vector that provides access to the indices of the outputs for which the rule
- *                          may predict
- * @tparam MemoryAllocator  The type of the memory allocator to be used
+ * @tparam ScoreType    The type of the predicted scores
+ * @tparam IndexVector  The type of the vector that provides access to the indices of the outputs for which the rule may
+ *                      predict
  */
-template<typename ScoreType, typename IndexVector, typename MemoryAllocator>
+template<typename ScoreType, typename IndexVector>
 class DenseBinnedScoreVector final
     : public AbstractScoreVectorViewDecorator<
-        DenseBinnedScoreVectorAllocator<DenseBinnedScoreVectorView<ScoreType, IndexVector>, MemoryAllocator>> {
+        DenseBinnedScoreVectorAllocator<DenseBinnedScoreVectorView<ScoreType, IndexVector>>> {
     public:
 
         /**

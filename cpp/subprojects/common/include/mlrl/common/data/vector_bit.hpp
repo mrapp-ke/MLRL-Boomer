@@ -8,13 +8,9 @@
 /**
  * A vector that provides random read and write access to binary values stored in a newly allocated array in a
  * space-efficient way.
- *
- * @tparam T                The type of the values stored in the vector
- * @tparam MemoryAllocator  The type of the memory allocator to be used
  */
-template<typename MemoryAllocator = DefaultMemoryAllocator>
-class BitVector final : public ClearableViewDecorator<
-                          IndexableBitVectorDecorator<BitVectorDecorator<AllocatedBitVector<MemoryAllocator>>>> {
+class BitVector final
+    : public ClearableViewDecorator<IndexableBitVectorDecorator<BitVectorDecorator<AllocatedBitVector>>> {
     public:
 
         /**
@@ -22,15 +18,13 @@ class BitVector final : public ClearableViewDecorator<
          * @param init      True, if all elements in the vector should be value-initialized, false otherwise
          */
         BitVector(uint32 numBits, bool init = false)
-            : ClearableViewDecorator<
-                IndexableBitVectorDecorator<BitVectorDecorator<AllocatedBitVector<MemoryAllocator>>>>(
-                AllocatedBitVector<MemoryAllocator>(numBits, init)) {}
+            : ClearableViewDecorator<IndexableBitVectorDecorator<BitVectorDecorator<AllocatedBitVector>>>(
+                AllocatedBitVector(numBits, init)) {}
 
         /**
          * @param other A reference to an object of type `AllocatedBitVector` that should be moved
          */
-        BitVector(AllocatedBitVector<MemoryAllocator>&& other)
-            : ClearableViewDecorator<
-                IndexableBitVectorDecorator<BitVectorDecorator<AllocatedBitVector<MemoryAllocator>>>>(
-                AllocatedBitVector<MemoryAllocator>(std::move(other))) {}
+        BitVector(AllocatedBitVector&& other)
+            : ClearableViewDecorator<IndexableBitVectorDecorator<BitVectorDecorator<AllocatedBitVector>>>(
+                AllocatedBitVector(std::move(other))) {}
 };
