@@ -13,11 +13,11 @@ cdef extern from "mlrl/common/sampling/instance_sampling_stratified_example_wise
 
         uint32 getMinSamples() const
 
-        IExampleWiseStratifiedInstanceSamplingConfig& setMinSamples(float32 minSamples)
+        IExampleWiseStratifiedInstanceSamplingConfig& setMinSamples(uint32 minSamples)
 
         uint32 getMaxSamples() const
 
-        IExampleWiseStratifiedInstanceSamplingConfig& setMaxSamples(float32 maxSamples)
+        IExampleWiseStratifiedInstanceSamplingConfig& setMaxSamples(uint32 maxSamples)
 
 
 cdef extern from "mlrl/common/sampling/instance_sampling_stratified_output_wise.hpp" nogil:
@@ -32,11 +32,11 @@ cdef extern from "mlrl/common/sampling/instance_sampling_stratified_output_wise.
 
         uint32 getMinSamples() const
 
-        IExampleWiseStratifiedInstanceSamplingConfig& setMinSamples(float32 minSamples)
+        IExampleWiseStratifiedInstanceSamplingConfig& setMinSamples(uint32 minSamples)
 
         uint32 getMaxSamples() const
 
-        IExampleWiseStratifiedInstanceSamplingConfig& setMaxSamples(float32 maxSamples)
+        IExampleWiseStratifiedInstanceSamplingConfig& setMaxSamples(uint32 maxSamples)
 
 
 cdef extern from "mlrl/common/sampling/instance_sampling_with_replacement.hpp" nogil:
@@ -51,11 +51,11 @@ cdef extern from "mlrl/common/sampling/instance_sampling_with_replacement.hpp" n
 
         uint32 getMinSamples() const
 
-        IExampleWiseStratifiedInstanceSamplingConfig& setMinSamples(float32 minSamples)
+        IExampleWiseStratifiedInstanceSamplingConfig& setMinSamples(uint32 minSamples)
 
         uint32 getMaxSamples() const
 
-        IExampleWiseStratifiedInstanceSamplingConfig& setMaxSamples(float32 maxSamples)
+        IExampleWiseStratifiedInstanceSamplingConfig& setMaxSamples(uint32 maxSamples)
 
 
 cdef extern from "mlrl/common/sampling/instance_sampling_without_replacement.hpp" nogil:
@@ -70,11 +70,11 @@ cdef extern from "mlrl/common/sampling/instance_sampling_without_replacement.hpp
 
         uint32 getMinSamples() const
 
-        IExampleWiseStratifiedInstanceSamplingConfig& setMinSamples(float32 minSamples)
+        IExampleWiseStratifiedInstanceSamplingConfig& setMinSamples(uint32 minSamples)
 
         uint32 getMaxSamples() const
 
-        IExampleWiseStratifiedInstanceSamplingConfig& setMaxSamples(float32 maxSamples)
+        IExampleWiseStratifiedInstanceSamplingConfig& setMaxSamples(uint32 maxSamples)
 
 
 cdef class ExampleWiseStratifiedInstanceSamplingConfig:
