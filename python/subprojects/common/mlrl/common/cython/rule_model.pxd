@@ -39,10 +39,6 @@ cdef extern from "mlrl/common/model/body_conjunctive.hpp" nogil:
 
         ctypedef const uint32* index_const_iterator
 
-        # Constructors:
-
-        ConjunctiveBodyImpl(uint32 numNumericalLeq, uint32 numNumericalGr, uint32 numNominalEq, uint32 numNominalNeq)
-
         # Functions:
 
         uint32 getNumNumericalLeq() const

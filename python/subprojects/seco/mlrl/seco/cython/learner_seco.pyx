@@ -49,7 +49,7 @@ from mlrl.common.cython.learner_classification import ExampleWiseStratifiedBiPar
 from mlrl.seco.cython.learner import AccuracyHeuristicMixin, AccuracyPruningHeuristicMixin, \
     CoverageStoppingCriterionMixin, FMeasureHeuristicMixin, FMeasurePruningHeuristicMixin, KlnLiftFunctionMixin, \
     LaplaceHeuristicMixin, LaplacePruningHeuristicMixin, MEstimateHeuristicMixin, MEstimatePruningHeuristicMixin, \
-    NoLiftFunctionMixin, OutputWiseBinaryPredictionMixin, PartialHeadMixin, PeakLiftFunctionMixin, \
+    NoLiftFunctionMixin, OutputWiseBinaryPredictorMixin, PartialHeadMixin, PeakLiftFunctionMixin, \
     PrecisionHeuristicMixin, PrecisionPruningHeuristicMixin, RecallHeuristicMixin, RecallPruningHeuristicMixin, \
     SingleOutputHeadMixin, WraHeuristicMixin, WraPruningHeuristicMixin
 
@@ -76,7 +76,7 @@ cdef class SeCoClassifierConfig(RuleLearnerConfig,
                                 RecallPruningHeuristicMixin,
                                 WraHeuristicMixin,
                                 WraPruningHeuristicMixin,
-                                OutputWiseBinaryPredictionMixin,
+                                OutputWiseBinaryPredictorMixin,
                                 SequentialRuleModelAssemblageMixin,
                                 DefaultRuleMixin,
                                 GreedyTopDownRuleInductionMixin,
