@@ -32,11 +32,11 @@ cdef extern from "mlrl/common/sampling/instance_sampling_stratified_output_wise.
 
         uint32 getMinSamples() const
 
-        IExampleWiseStratifiedInstanceSamplingConfig& setMinSamples(uint32 minSamples)
+        IOutputWiseStratifiedInstanceSamplingConfig& setMinSamples(uint32 minSamples)
 
         uint32 getMaxSamples() const
 
-        IExampleWiseStratifiedInstanceSamplingConfig& setMaxSamples(uint32 maxSamples)
+        IOutputWiseStratifiedInstanceSamplingConfig& setMaxSamples(uint32 maxSamples)
 
 
 cdef extern from "mlrl/common/sampling/instance_sampling_with_replacement.hpp" nogil:
@@ -51,11 +51,11 @@ cdef extern from "mlrl/common/sampling/instance_sampling_with_replacement.hpp" n
 
         uint32 getMinSamples() const
 
-        IExampleWiseStratifiedInstanceSamplingConfig& setMinSamples(uint32 minSamples)
+        IInstanceSamplingWithReplacementConfig& setMinSamples(uint32 minSamples)
 
         uint32 getMaxSamples() const
 
-        IExampleWiseStratifiedInstanceSamplingConfig& setMaxSamples(uint32 maxSamples)
+        IInstanceSamplingWithReplacementConfig& setMaxSamples(uint32 maxSamples)
 
 
 cdef extern from "mlrl/common/sampling/instance_sampling_without_replacement.hpp" nogil:
@@ -70,11 +70,11 @@ cdef extern from "mlrl/common/sampling/instance_sampling_without_replacement.hpp
 
         uint32 getMinSamples() const
 
-        IExampleWiseStratifiedInstanceSamplingConfig& setMinSamples(uint32 minSamples)
+        IInstanceSamplingWithoutReplacementConfig& setMinSamples(uint32 minSamples)
 
         uint32 getMaxSamples() const
 
-        IExampleWiseStratifiedInstanceSamplingConfig& setMaxSamples(uint32 maxSamples)
+        IInstanceSamplingWithoutReplacementConfig& setMaxSamples(uint32 maxSamples)
 
 
 cdef class ExampleWiseStratifiedInstanceSamplingConfig:

@@ -50,7 +50,7 @@ cdef extern from "mlrl/boosting/prediction/predictor_binary_output_wise.hpp" nam
 
         bool isProbabilityCalibrationModelUsed() const
 
-        IExampleWiseBinaryPredictorConfig& setUseProbabilityCalibrationModel(bool useProbabilityCalibrationModel)
+        IOutputWiseBinaryPredictorConfig& setUseProbabilityCalibrationModel(bool useProbabilityCalibrationModel)
 
 
 cdef extern from "mlrl/boosting/prediction/predictor_binary_gfm.hpp" namespace "boosting" nogil:
