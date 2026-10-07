@@ -219,11 +219,11 @@ class MLRLCOMMON_API ResizableAllocator : public Allocator<View, MemoryAllocator
         void resize(uint32 numElements, bool freeMemory) {
             if (numElements < maxCapacity) {
                 if (freeMemory) {
-                    View::array = MemoryAllocator::reallocateMemory(View::array, View::numElements, numElements);
+                    View::array = MemoryAllocator::reallocateMemory(View::array, maxCapacity, numElements);
                     maxCapacity = numElements;
                 }
             } else if (numElements > maxCapacity) {
-                View::array = MemoryAllocator::reallocateMemory(View::array, View::numElements, numElements);
+                View::array = MemoryAllocator::reallocateMemory(View::array, maxCapacity, numElements);
                 maxCapacity = numElements;
             }
 
