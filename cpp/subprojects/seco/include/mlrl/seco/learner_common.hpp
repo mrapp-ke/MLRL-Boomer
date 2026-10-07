@@ -89,8 +89,7 @@ namespace seco {
 
             /**
              * An unique pointer that stores the configuration of the stopping criterion that stops the induction of
-             * rules as soon as the sum of the weights of the uncovered labels is smaller or equal to a certain
-             * threshold.
+             * rules as soon as enough of the label space is covered.
              */
             std::unique_ptr<IStoppingCriterionConfig> coverageStoppingCriterionConfigPtr_;
 
@@ -119,9 +118,10 @@ namespace seco {
 
             SeCoRuleLearnerConfig()
                 : RuleLearnerConfig(SECO_RULE_COMPARE_FUNCTION),
-                  coverageStoppingCriterionConfigPtr_(std::make_unique<NoStoppingCriterionConfig>()),
+                  coverageStoppingCriterionConfigPtr_(std::make_unique<CoverageStoppingCriterionConfig>()),
                   headConfigPtr_(std::make_unique<SingleOutputHeadConfig>(
-                    util::readableProperty(heuristicConfigPtr_), util::readableProperty(pruningHeuristicConfigPtr_))),
+                    util::readableProperty(heuristicConfigPtr_), util::readableProperty(pruningHeuristicConfigPtr_),
+                    util::readableProperty(simdConfigPtr_))),
                   heuristicConfigPtr_(std::make_unique<PrecisionConfig>()),
                   pruningHeuristicConfigPtr_(std::make_unique<PrecisionConfig>()),
                   liftFunctionConfigPtr_(std::make_unique<NoLiftFunctionConfig>()) {}

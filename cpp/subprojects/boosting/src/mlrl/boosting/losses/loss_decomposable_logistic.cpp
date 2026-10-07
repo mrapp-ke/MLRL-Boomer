@@ -1,9 +1,9 @@
 #include "mlrl/boosting/losses/loss_decomposable_logistic.hpp"
 
 #include "loss_decomposable_common.hpp"
+#include "mlrl/boosting/math/vector_math.hpp"
 #include "mlrl/boosting/prediction/probability_function_chain_rule.hpp"
 #include "mlrl/boosting/prediction/probability_function_logistic.hpp"
-#include "mlrl/boosting/util/math.hpp"
 
 namespace boosting {
 
@@ -55,7 +55,7 @@ namespace boosting {
                                                 StatisticType& hessian) {
         // The gradient computes as `-expectedScore / (1 + exp(expectedScore * predictedScore))`, or as
         // `1 / (1 + exp(-predictedScore)) - 1` if `trueLabel == true`, `1 / (1 + exp(-predictedScore))`, otherwise...
-        StatisticType logistic = util::logisticFunction(predictedScore);
+        StatisticType logistic = math::logisticFunction(predictedScore);
         gradient = trueLabel ? logistic - 1.0 : logistic;
 
         // The Hessian computes as `exp(expectedScore * predictedScore) / (1 + exp(expectedScore * predictedScore))^2`,

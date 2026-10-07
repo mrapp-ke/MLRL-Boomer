@@ -14,7 +14,10 @@ namespace seco {
     /**
      * Allows to create instances of the class `IDecomposableRuleEvaluationFactory` that allow to calculate the
      * predictions of single-output rules, which predict for a single output.
+     *
+     * @tparam MemoryAllocator The type of the memory allocator to be used
      */
+    template<typename MemoryAllocator>
     class DecomposableSingleOutputRuleEvaluationFactory final : public IDecomposableRuleEvaluationFactory {
         private:
 
@@ -28,20 +31,20 @@ namespace seco {
              */
             DecomposableSingleOutputRuleEvaluationFactory(std::unique_ptr<IHeuristicFactory> heuristicFactoryPtr);
 
-            std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVector<uint32>>> create(
-              const DenseConfusionMatrixVector<uint32>& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<uint32>>> create(
+              const DenseDecomposableStatisticVectorView<uint32>& statisticVector,
               const CompleteIndexVector& indexVector) const override;
 
-            std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVector<uint32>>> create(
-              const DenseConfusionMatrixVector<uint32>& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<uint32>>> create(
+              const DenseDecomposableStatisticVectorView<uint32>& statisticVector,
               const PartialIndexVector& indexVector) const override;
 
-            std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVector<float32>>> create(
-              const DenseConfusionMatrixVector<float32>& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float32>>> create(
+              const DenseDecomposableStatisticVectorView<float32>& statisticVector,
               const CompleteIndexVector& indexVector) const override;
 
-            std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVector<float32>>> create(
-              const DenseConfusionMatrixVector<float32>& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVectorView<float32>>> create(
+              const DenseDecomposableStatisticVectorView<float32>& statisticVector,
               const PartialIndexVector& indexVector) const override;
     };
 

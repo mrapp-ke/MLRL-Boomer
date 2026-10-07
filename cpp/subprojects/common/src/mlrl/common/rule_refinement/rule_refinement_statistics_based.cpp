@@ -16,18 +16,19 @@ template<typename RefinementComparator>
 static inline void findRefinementInternally(RefinementComparator& refinementComparator,
                                             const IIndexVector& outputIndices, uint32 featureIndex,
                                             const IWeightedStatistics& statistics, const IFeatureVector& featureVector,
-                                            uint32 numExamplesWithNonZeroWeights, uint32 minCoverage) {
+                                            uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
+                                            bool allowNegations) {
     Refinement refinement;
     refinement.featureIndex = featureIndex;
     featureVector.searchForRefinement(refinementComparator, statistics, outputIndices, numExamplesWithNonZeroWeights,
-                                      minCoverage, refinement);
+                                      minCoverage, allowNegations, refinement);
 }
 
 template<typename RefinementComparator>
 static inline bool findRefinementInternally(RefinementComparator& refinementComparator,
                                             IFeatureSubspace& featureSubspace, const IIndexVector& featureIndices,
                                             const IIndexVector& outputIndices, uint32 minCoverage,
-                                            MultiThreadingSettings multiThreadingSettings) {
+                                            uint32 allowNegations, MultiThreadingSettings multiThreadingSettings) {
     bool foundRefinement = false;
 
     // For each feature, create an object of type `RuleRefinement<RefinementComparator>`...
@@ -55,7 +56,7 @@ static inline bool findRefinementInternally(RefinementComparator& refinementComp
         const IFeatureVector& featureVector = callbackResult.featureVector;
         const IWeightedStatistics& statistics = callbackResult.statistics;
         findRefinementInternally(refinementComparator, outputIndices, featureIndex, statistics, featureVector,
-                                 featureSubspace.getNumCovered(), minCoverage);
+                                 featureSubspace.getNumCovered(), minCoverage, allowNegations);
     }
 
     // Pick the best refinement among the refinements that have been found for the different features...
@@ -79,17 +80,17 @@ class StatisticsBasedRuleRefinement final : public IRuleRefinement {
             : multiThreadingSettings_(multiThreadingSettings) {}
 
         bool findRefinement(SingleRefinementComparator& comparator, IFeatureSubspace& featureSubspace,
-                            const IIndexVector& featureIndices, const IIndexVector& outputIndices,
-                            uint32 minCoverage) const override {
+                            const IIndexVector& featureIndices, const IIndexVector& outputIndices, uint32 minCoverage,
+                            bool allowNegations) const override {
             return findRefinementInternally(comparator, featureSubspace, featureIndices, outputIndices, minCoverage,
-                                            multiThreadingSettings_);
+                                            allowNegations, multiThreadingSettings_);
         }
 
         bool findRefinement(FixedRefinementComparator& comparator, IFeatureSubspace& featureSubspace,
-                            const IIndexVector& featureIndices, const IIndexVector& outputIndices,
-                            uint32 minCoverage) const override {
+                            const IIndexVector& featureIndices, const IIndexVector& outputIndices, uint32 minCoverage,
+                            bool allowNegations) const override {
             return findRefinementInternally(comparator, featureSubspace, featureIndices, outputIndices, minCoverage,
-                                            multiThreadingSettings_);
+                                            allowNegations, multiThreadingSettings_);
         }
 };
 

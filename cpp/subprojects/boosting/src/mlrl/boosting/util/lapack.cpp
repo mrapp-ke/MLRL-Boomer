@@ -1,4 +1,4 @@
-#include "mlrl/boosting/util/lapack.hpp"
+#include "mlrl/boosting/math/lapack.hpp"
 
 #include <stdexcept>
 #include <string>

@@ -134,7 +134,7 @@ namespace boosting {
              * @see `IPredictor::predict`
              */
             std::unique_ptr<DensePredictionMatrix<float64>> predict(uint32 maxRules) const override {
-                std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
+                auto predictionMatrixPtr =
                   std::make_unique<DensePredictionMatrix<float64>>(featureMatrix_.numRows, numLabels_, true);
 
                 if (probabilityTransformationPtr_) {

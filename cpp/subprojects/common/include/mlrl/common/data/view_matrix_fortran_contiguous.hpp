@@ -111,7 +111,8 @@ class MLRLCOMMON_API FortranContiguousView : public DenseMatrix<T> {
 /**
  * Allocates the memory, a `FortranContiguousView` provides access to
  *
- * @tparam T The type of the values stored in the `FortranContiguousView`
+ * @tparam                  T The type of the values stored in the `FortranContiguousView`
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
  */
-template<typename T>
-using AllocatedFortranContiguousView = DenseMatrixAllocator<FortranContiguousView<T>>;
+template<typename T, typename MemoryAllocator = DefaultMemoryAllocator>
+using AllocatedFortranContiguousView = DenseMatrixAllocator<FortranContiguousView<T>, MemoryAllocator>;

@@ -27,19 +27,19 @@ static inline std::unique_ptr<IFeatureVector> createFilteredNominalFeatureVector
         }
 
         // Filter the indices of examples not associated with the majority value...
-        const NominalFeatureVector& featureVector = view.getView().firstView;
-        NominalFeatureVector::value_const_iterator valueIterator = featureVector.values;
-        AllocatedNominalFeatureVector& filteredFeatureVector = filteredDecoratorPtr->getView().firstView;
-        AllocatedNominalFeatureVector::index_iterator filteredIndexIterator = filteredFeatureVector.indices;
-        AllocatedNominalFeatureVector::index_iterator filteredIndptrIterator = filteredFeatureVector.indptr;
-        AllocatedNominalFeatureVector::value_iterator filteredValueIterator = filteredFeatureVector.values;
+        const NominalFeatureVector& featureVector = view.getView().featureVector;
+        auto valueIterator = featureVector.values;
+        AllocatedNominalFeatureVector& filteredFeatureVector = filteredDecoratorPtr->getView().featureVector;
+        auto filteredIndexIterator = filteredFeatureVector.indices;
+        auto filteredIndptrIterator = filteredFeatureVector.indptr;
+        auto filteredValueIterator = filteredFeatureVector.values;
         uint32 numFilteredIndices = 0;
 
         for (uint32 i = 0; i < interval.start; i++) {
             filteredIndptrIterator[i] = numFilteredIndices;
             filteredValueIterator[i] = valueIterator[i];
-            NominalFeatureVector::index_const_iterator indexIterator = featureVector.indices_cbegin(i);
-            NominalFeatureVector::index_const_iterator indicesEnd = featureVector.indices_cend(i);
+            auto indexIterator = featureVector.indices_cbegin(i);
+            auto indicesEnd = featureVector.indices_cend(i);
             uint32 numIndices = indicesEnd - indexIterator;
 
             for (uint32 j = 0; j < numIndices; j++) {
@@ -52,8 +52,8 @@ static inline std::unique_ptr<IFeatureVector> createFilteredNominalFeatureVector
             uint32 n = interval.start + (i - interval.end);
             filteredIndptrIterator[n] = numFilteredIndices;
             filteredValueIterator[n] = valueIterator[i];
-            NominalFeatureVector::index_const_iterator indexIterator = featureVector.indices_cbegin(i);
-            NominalFeatureVector::index_const_iterator indicesEnd = featureVector.indices_cend(i);
+            auto indexIterator = featureVector.indices_cbegin(i);
+            auto indicesEnd = featureVector.indices_cend(i);
             uint32 numIndices = indicesEnd - indexIterator;
 
             for (uint32 j = 0; j < numIndices; j++) {
@@ -80,13 +80,13 @@ class NominalFeatureVectorDecorator final : public AbstractBinnedFeatureVectorDe
     public:
 
         /**
-         * @param firstView   A reference to an object of type `AllocatedNominalFeatureVector`
-         * @param secondView  A reference to an object of type `AllocatedMissingFeatureVector`
+         * @param featureVector         A reference to an object of type `AllocatedNominalFeatureVector`
+         * @param missingFeatureVector  A reference to an object of type `AllocatedMissingFeatureVector`
          */
-        NominalFeatureVectorDecorator(AllocatedNominalFeatureVector&& firstView,
-                                      AllocatedMissingFeatureVector&& secondView)
-            : AbstractBinnedFeatureVectorDecorator<AllocatedNominalFeatureVector>(std::move(firstView),
-                                                                                  std::move(secondView)) {}
+        NominalFeatureVectorDecorator(AllocatedNominalFeatureVector&& featureVector,
+                                      AllocatedMissingFeatureVector&& missingFeatureVector)
+            : AbstractBinnedFeatureVectorDecorator<AllocatedNominalFeatureVector>(std::move(featureVector),
+                                                                                  std::move(missingFeatureVector)) {}
 
         /**
          * @param other A reference to an object of type `NominalFeatureVectorDecorator` that should be copied
@@ -96,16 +96,18 @@ class NominalFeatureVectorDecorator final : public AbstractBinnedFeatureVectorDe
 
         void searchForRefinement(SingleRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
-                                 uint32 minCoverage, Refinement& refinement) const override {
-            searchForNominalRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
-                                       outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
+                                 uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
+            searchForNominalRefinement(this->view.featureVector, this->view.missingFeatureVector, comparator,
+                                       statistics, outputIndices, numExamplesWithNonZeroWeights, minCoverage,
+                                       allowNegations, refinement);
         }
 
         void searchForRefinement(FixedRefinementComparator& comparator, const IWeightedStatistics& statistics,
                                  const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
-                                 uint32 minCoverage, Refinement& refinement) const override {
-            searchForNominalRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
-                                       outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
+                                 uint32 minCoverage, bool allowNegations, Refinement& refinement) const override {
+            searchForNominalRefinement(this->view.featureVector, this->view.missingFeatureVector, comparator,
+                                       statistics, outputIndices, numExamplesWithNonZeroWeights, minCoverage,
+                                       allowNegations, refinement);
         }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,

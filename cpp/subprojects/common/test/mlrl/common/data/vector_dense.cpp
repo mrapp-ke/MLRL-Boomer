@@ -30,11 +30,11 @@ TEST(DenseVectorTest, writeAccess) {
 TEST(DenseVectorTest, iteratorAccess) {
     DenseVector<uint32> vector(10);
 
-    for (DenseVector<uint32>::iterator it = vector.begin(); it != vector.end(); it++) {
+    for (auto it = vector.begin(); it != vector.end(); it++) {
         *it = 0;
     }
 
-    for (DenseVector<uint32>::const_iterator it = vector.cbegin(); it != vector.cend(); it++) {
+    for (auto it = vector.cbegin(); it != vector.cend(); it++) {
         EXPECT_EQ(*it, (uint32) 0);
     }
 }

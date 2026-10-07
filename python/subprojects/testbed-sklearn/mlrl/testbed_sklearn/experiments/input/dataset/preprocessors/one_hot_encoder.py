@@ -12,8 +12,8 @@ from sklearn.preprocessing import OneHotEncoder as SkLearnOneHotEncoder
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.input.dataset.preprocessors.preprocessor import Preprocessor
+from mlrl.testbed.log import Log
 from mlrl.testbed_sklearn.experiments.dataset import AttributeType
-from mlrl.util.log import Log
 
 
 class OneHotEncoder(Preprocessor):
@@ -38,7 +38,8 @@ class OneHotEncoder(Preprocessor):
             num_nominal_features = len(nominal_indices)
             Log.info(
                 f'Dataset contains {num_nominal_features} nominal and {len(dataset.features) - num_nominal_features} '
-                f'numerical features.'
+                f'numerical features.',
+                highlight=True,
             )
 
             if num_nominal_features > 0:

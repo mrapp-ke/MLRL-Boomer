@@ -11,7 +11,7 @@ static inline void sampleInternally(const SinglePartition& partition, EqualWeigh
 
 static inline void sampleInternally(BiPartition& partition, BitWeightVector& weightVector) {
     uint32 numTrainingExamples = partition.getNumFirst();
-    BiPartition::const_iterator indexIterator = partition.first_cbegin();
+    auto indexIterator = partition.first_cbegin();
     weightVector.clear();
 
     for (uint32 i = 0; i < numTrainingExamples; i++) {

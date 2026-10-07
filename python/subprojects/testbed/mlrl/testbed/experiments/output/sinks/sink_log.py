@@ -6,13 +6,15 @@ Provides classes that allow writing output data to the log.
 
 from collections.abc import Callable
 from pathlib import Path
-from typing import override
+from typing import cast, override
+
+from rich.console import ConsoleRenderable
 
 from mlrl.testbed.experiments.input.sources import Source
-from mlrl.testbed.experiments.output.data import OutputData, TextualOutputData
+from mlrl.testbed.experiments.output.data import OutputData, StructuralOutputData, TextualOutputData
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.util.log import Log
+from mlrl.testbed.log import Log
 from mlrl.util.options import Options
 
 
@@ -37,13 +39,28 @@ class LogSink(Sink):
         """
         See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.write_to_sink`
         """
-        if isinstance(output_data, TextualOutputData):
+        text: str | ConsoleRenderable | None = None
+        language: str | None = None
+
+        if isinstance(output_data, StructuralOutputData):
+            text, language = output_data.to_source_code(self.options, **kwargs)
+        elif isinstance(output_data, TextualOutputData):
             text = output_data.to_text(self.options, **kwargs)
 
-            if text:
-                context = output_data.get_context(type(self))
-                title = TextualOutputData.Title(title=output_data.properties.name, context=context)
-                Log.info(f'{title.format(state)}:\n\n{text}\n')
+        if text:
+            context = output_data.get_context(type(self))
+            title = TextualOutputData.Title(
+                title=output_data.properties.name, context=context, symbol=output_data.properties.symbol
+            )
+            box_title = title.format(state)
+            Log.info('')
+
+            if language:
+                Log.source_code(cast(str, text), language=language, box_title=box_title)
+            else:
+                Log.info(text, box=True, box_title=box_title)
+
+            Log.info('')
 
     @override
     def create_source(self, input_directory: Path) -> Source | None:

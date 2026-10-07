@@ -8,8 +8,6 @@
 /**
  * A vector that provides random read and write access to binary values stored in a newly allocated array in a
  * space-efficient way.
- *
- * @tparam T The type of the values stored in the vector
  */
 class BitVector final
     : public ClearableViewDecorator<IndexableBitVectorDecorator<BitVectorDecorator<AllocatedBitVector>>> {

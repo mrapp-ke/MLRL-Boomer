@@ -1,10 +1,14 @@
-mlrl-testbed mlrl.testbed_sklearn --mode batch --log-level debug --base-dir python/tests/res/tmp/<worker-id> --config python/tests/res/config/sklearn/classification/batch_config.yml --save-evaluation true --save-meta-data false --list --n-estimators 1 --estimator RandomForestClassifier
+mlrl-testbed mlrl.testbed_sklearn --mode batch --log-width 120 --log-plain --log-level debug --base-dir python/tests/res/tmp/<worker-id> --config python/tests/res/config/sklearn/classification/batch_config.yml --save-evaluation true --save-meta-data false --list --n-estimators 1 --estimator RandomForestClassifier
+None:
+
 mlrl-testbed mlrl.testbed_sklearn \
     --base-dir python/tests/res/tmp/<worker-id> \
     --data-dir python/tests/res/data \
     --dataset emotions \
     --estimator RandomForestClassifier \
     --log-level debug \
+    --log-plain \
+    --log-width 120 \
     --max-depth 2 \
     --model-save-dir n-estimators_50/max-depth_2/dataset_emotions/models \
     --n-estimators 50 \
@@ -13,12 +17,16 @@ mlrl-testbed mlrl.testbed_sklearn \
     --save-evaluation true \
     --save-meta-data false
 
+None:
+
 mlrl-testbed mlrl.testbed_sklearn \
     --base-dir python/tests/res/tmp/<worker-id> \
     --data-dir python/tests/res/data \
     --dataset emotions \
     --estimator RandomForestClassifier \
     --log-level debug \
+    --log-plain \
+    --log-width 120 \
     --max-depth 4 \
     --max-leaf-nodes 4 \
     --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_emotions/models \
@@ -28,12 +36,16 @@ mlrl-testbed mlrl.testbed_sklearn \
     --save-evaluation true \
     --save-meta-data false
 
+None:
+
 mlrl-testbed mlrl.testbed_sklearn \
     --base-dir python/tests/res/tmp/<worker-id> \
     --data-dir python/tests/res/data \
     --dataset emotions \
     --estimator RandomForestClassifier \
     --log-level debug \
+    --log-plain \
+    --log-width 120 \
     --max-depth 2 \
     --model-save-dir n-estimators_100/max-depth_2/dataset_emotions/models \
     --n-estimators 100 \
@@ -42,12 +54,16 @@ mlrl-testbed mlrl.testbed_sklearn \
     --save-evaluation true \
     --save-meta-data false
 
+None:
+
 mlrl-testbed mlrl.testbed_sklearn \
     --base-dir python/tests/res/tmp/<worker-id> \
     --data-dir python/tests/res/data \
     --dataset emotions \
     --estimator RandomForestClassifier \
     --log-level debug \
+    --log-plain \
+    --log-width 120 \
     --max-depth 4 \
     --max-leaf-nodes 4 \
     --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_emotions/models \
@@ -57,12 +73,16 @@ mlrl-testbed mlrl.testbed_sklearn \
     --save-evaluation true \
     --save-meta-data false
 
+None:
+
 mlrl-testbed mlrl.testbed_sklearn \
     --base-dir python/tests/res/tmp/<worker-id> \
     --data-dir python/tests/res/data \
     --dataset enron \
     --estimator RandomForestClassifier \
     --log-level debug \
+    --log-plain \
+    --log-width 120 \
     --max-depth 2 \
     --model-save-dir n-estimators_50/max-depth_2/dataset_enron/models \
     --n-estimators 50 \
@@ -71,12 +91,16 @@ mlrl-testbed mlrl.testbed_sklearn \
     --save-evaluation true \
     --save-meta-data false
 
+None:
+
 mlrl-testbed mlrl.testbed_sklearn \
     --base-dir python/tests/res/tmp/<worker-id> \
     --data-dir python/tests/res/data \
     --dataset enron \
     --estimator RandomForestClassifier \
     --log-level debug \
+    --log-plain \
+    --log-width 120 \
     --max-depth 4 \
     --max-leaf-nodes 4 \
     --model-save-dir n-estimators_50/max-depth_4/max-leaf-nodes_4/dataset_enron/models \
@@ -86,12 +110,16 @@ mlrl-testbed mlrl.testbed_sklearn \
     --save-evaluation true \
     --save-meta-data false
 
+None:
+
 mlrl-testbed mlrl.testbed_sklearn \
     --base-dir python/tests/res/tmp/<worker-id> \
     --data-dir python/tests/res/data \
     --dataset enron \
     --estimator RandomForestClassifier \
     --log-level debug \
+    --log-plain \
+    --log-width 120 \
     --max-depth 2 \
     --model-save-dir n-estimators_100/max-depth_2/dataset_enron/models \
     --n-estimators 100 \
@@ -100,12 +128,16 @@ mlrl-testbed mlrl.testbed_sklearn \
     --save-evaluation true \
     --save-meta-data false
 
+None:
+
 mlrl-testbed mlrl.testbed_sklearn \
     --base-dir python/tests/res/tmp/<worker-id> \
     --data-dir python/tests/res/data \
     --dataset enron \
     --estimator RandomForestClassifier \
     --log-level debug \
+    --log-plain \
+    --log-width 120 \
     --max-depth 4 \
     --max-leaf-nodes 4 \
     --model-save-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/models \
@@ -114,3 +146,4 @@ mlrl-testbed mlrl.testbed_sklearn \
     --result-dir n-estimators_100/max-depth_4/max-leaf-nodes_4/dataset_enron/results \
     --save-evaluation true \
     --save-meta-data false
+

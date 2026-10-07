@@ -42,17 +42,16 @@ static inline std::unique_ptr<NumericalFeatureVectorDecorator> createNumericalFe
 
 static inline std::unique_ptr<NumericalFeatureVectorDecorator> createNumericalFeatureVector(
   uint32 featureIndex, const FortranContiguousView<const float32>& featureMatrix) {
-    FortranContiguousView<const float32>::value_const_iterator valueIterator =
-      featureMatrix.values_cbegin(featureIndex);
+    auto valueIterator = featureMatrix.values_cbegin(featureIndex);
     uint32 numRows = featureMatrix.numRows;
     return createNumericalFeatureVector(IndexIterator(), valueIterator, numRows);
 }
 
 static inline std::unique_ptr<NumericalFeatureVectorDecorator> createNumericalFeatureVector(
   uint32 featureIndex, const CscView<const float32>& featureMatrix) {
-    CscView<const float32>::index_const_iterator indexIterator = featureMatrix.indices_cbegin(featureIndex);
-    CscView<const float32>::index_const_iterator indicesEnd = featureMatrix.indices_cend(featureIndex);
-    CscView<const float32>::value_const_iterator valueIterator = featureMatrix.values_cbegin(featureIndex);
+    auto indexIterator = featureMatrix.indices_cbegin(featureIndex);
+    auto indicesEnd = featureMatrix.indices_cend(featureIndex);
+    auto valueIterator = featureMatrix.values_cbegin(featureIndex);
     uint32 numIndices = indicesEnd - indexIterator;
     return createNumericalFeatureVector(indexIterator, valueIterator, numIndices);
 }

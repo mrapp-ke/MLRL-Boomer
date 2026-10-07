@@ -20,10 +20,11 @@ using DenseVectorDecorator = IterableVectorDecorator<VectorDecorator<Vector>>;
  * A vector that provides random read and write access, as well as read and write access via iterators, to the values
  * stored in a newly allocated array.
  *
- * @tparam T The type of the values stored in the vector
+ * @tparam T                The type of the values stored in the vector
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
  */
-template<typename T>
-class DenseVector final : public DenseVectorDecorator<AllocatedVector<T>> {
+template<typename T, typename MemoryAllocator = DefaultMemoryAllocator>
+class DenseVector final : public DenseVectorDecorator<AllocatedVector<T, MemoryAllocator>> {
     public:
 
         /**
@@ -31,23 +32,27 @@ class DenseVector final : public DenseVectorDecorator<AllocatedVector<T>> {
          * @param init          True, if all elements in the vector should be value-initialized, false otherwise
          */
         DenseVector(uint32 numElements, bool init = false)
-            : DenseVectorDecorator<AllocatedVector<T>>(AllocatedVector<T>(numElements, init)) {}
+            : DenseVectorDecorator<AllocatedVector<T, MemoryAllocator>>(
+                AllocatedVector<T, MemoryAllocator>(numElements, init)) {}
 
         /**
          * @param other A reference to an object of type `AllocatedVector` that should be moved
          */
         DenseVector(AllocatedVector<T>&& other)
-            : DenseVectorDecorator<AllocatedVector<T>>(AllocatedVector<T>(std::move(other))) {}
+            : DenseVectorDecorator<AllocatedVector<T, MemoryAllocator>>(
+                AllocatedVector<T, MemoryAllocator>(std::move(other))) {}
 };
 
 /**
  * A vector that provides random read and write access, as well as read and write access via iterators, to the values
  * stored in a newly allocated array, which can be resized.
  *
- * @tparam T The type of the values stored in the vector
+ * @tparam T                The type of the values stored in the vector
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
  */
-template<typename T>
-class ResizableDenseVector final : public ResizableVectorDecorator<DenseVectorDecorator<ResizableVector<T>>> {
+template<typename T, typename MemoryAllocator = DefaultMemoryAllocator>
+class ResizableDenseVector final
+    : public ResizableVectorDecorator<DenseVectorDecorator<ResizableVector<T, MemoryAllocator>>> {
     public:
 
         /**
@@ -55,6 +60,6 @@ class ResizableDenseVector final : public ResizableVectorDecorator<DenseVectorDe
          * @param init          True, if all elements in the vector should be value-initialized, false otherwise
          */
         ResizableDenseVector(uint32 numElements, bool init = false)
-            : ResizableVectorDecorator<DenseVectorDecorator<ResizableVector<T>>>(
-                ResizableVector<T>(numElements, init)) {}
+            : ResizableVectorDecorator<DenseVectorDecorator<ResizableVector<T, MemoryAllocator>>>(
+                ResizableVector<T, MemoryAllocator>(numElements, init)) {}
 };

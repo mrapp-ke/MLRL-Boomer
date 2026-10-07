@@ -596,6 +596,11 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
         std::unique_ptr<IMultiThreadingConfig> parallelPredictionConfigPtr_;
 
         /**
+         * An unique pointer that stores the configuration of single instruction, multiple data (SIMD) operations.
+         */
+        std::unique_ptr<ISimdConfig> simdConfigPtr_;
+
+        /**
          * An unique pointer that stores the configuration of the stopping criterion that ensures that the number of
          * rules does not exceed a certain maximum.
          */
@@ -736,6 +741,10 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
 
         Property<IMultiThreadingConfig> getParallelPredictionConfig() override final {
             return util::property(parallelPredictionConfigPtr_);
+        }
+
+        Property<ISimdConfig> getSimdConfig() override final {
+            return util::property(simdConfigPtr_);
         }
 
         Property<IStoppingCriterionConfig> getSizeStoppingCriterionConfig() override final {

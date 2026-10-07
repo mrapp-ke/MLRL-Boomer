@@ -8,7 +8,7 @@
 TEST(BinaryFeatureVectorDecoratorTest, updateCoverageMaskAndStatistics) {
     uint32 numMinorityExamples = 10;
     AllocatedNominalFeatureVector featureVector(1, numMinorityExamples, 1);
-    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numMinorityExamples; i++) {
         indexIterator[i] = i;
@@ -27,7 +27,7 @@ TEST(BinaryFeatureVectorDecoratorTest, updateCoverageMaskAndStatistics) {
     uint32 indicatorValue = 1;
     decorator.updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
     EXPECT_EQ(coverageMask.indicatorValue, indicatorValue);
-    const BinaryFeatureVector& binaryFeatureVector = decorator.getView().firstView;
+    const BinaryFeatureVector& binaryFeatureVector = decorator.getView().featureVector;
 
     for (auto it = binaryFeatureVector.indices_cbegin(0); it != binaryFeatureVector.indices_cend(0); it++) {
         uint32 index = *it;
@@ -44,7 +44,7 @@ TEST(BinaryFeatureVectorDecoratorTest, updateCoverageMaskAndStatistics) {
 TEST(BinaryFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsInverse) {
     uint32 numMinorityExamples = 10;
     AllocatedNominalFeatureVector featureVector(1, numMinorityExamples, 1);
-    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numMinorityExamples; i++) {
         indexIterator[i] = i;
@@ -70,7 +70,7 @@ TEST(BinaryFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsInverse) {
     uint32 indicatorValue = 1;
     decorator.updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
     EXPECT_EQ(coverageMask.indicatorValue, (uint32) 0);
-    const BinaryFeatureVector& binaryFeatureVector = decorator.getView().firstView;
+    const BinaryFeatureVector& binaryFeatureVector = decorator.getView().featureVector;
 
     for (auto it = binaryFeatureVector.indices_cbegin(0); it != binaryFeatureVector.indices_cend(0); it++) {
         uint32 index = *it;
@@ -100,7 +100,7 @@ TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndices) {
 TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMask) {
     uint32 numMinorityExamples = 10;
     AllocatedNominalFeatureVector featureVector(1, numMinorityExamples, 1);
-    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numMinorityExamples; i++) {
         indexIterator[i] = i;
@@ -117,7 +117,7 @@ TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMa
     CoverageMask coverageMask(numExamples);
     uint32 indicatorValue = 1;
     coverageMask.indicatorValue = indicatorValue;
-    CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
+    auto coverageMaskIterator = coverageMask.begin();
 
     for (uint32 i = 0; i < numExamples; i++) {
         if (i % 2 == 0) {
@@ -134,9 +134,9 @@ TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMa
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const BinaryFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
-        BinaryFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(0);
-        BinaryFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(0);
+        const BinaryFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
+        auto indicesBegin = filteredFeatureVector.indices_cbegin(0);
+        auto indicesEnd = filteredFeatureVector.indices_cend(0);
         uint32 numIndices = indicesEnd - indicesBegin;
         EXPECT_EQ(numIndices, numMinorityExamples / 2);
         std::unordered_set<uint32> indices;
@@ -154,7 +154,7 @@ TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMa
         }
 
         // Check missing indices...
-        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().secondView;
+        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().missingFeatureVector;
 
         for (uint32 i = numMinorityExamples; i < numExamples; i++) {
             if (i % 2 == 0) {
@@ -169,7 +169,7 @@ TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMa
 TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMaskUsingExisting) {
     uint32 numMinorityExamples = 10;
     AllocatedNominalFeatureVector featureVector(1, numMinorityExamples, 1);
-    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numMinorityExamples; i++) {
         indexIterator[i] = i;
@@ -186,7 +186,7 @@ TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMa
     CoverageMask coverageMask(numExamples);
     uint32 indicatorValue = 1;
     coverageMask.indicatorValue = indicatorValue;
-    CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
+    auto coverageMaskIterator = coverageMask.begin();
 
     for (uint32 i = 0; i < numExamples; i++) {
         if (i % 2 == 0) {
@@ -204,9 +204,9 @@ TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMa
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const BinaryFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
-        BinaryFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(0);
-        BinaryFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(0);
+        const BinaryFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
+        auto indicesBegin = filteredFeatureVector.indices_cbegin(0);
+        auto indicesEnd = filteredFeatureVector.indices_cend(0);
         uint32 numIndices = indicesEnd - indicesBegin;
         EXPECT_EQ(numIndices, numMinorityExamples / 2);
         std::unordered_set<uint32> indices;
@@ -224,7 +224,7 @@ TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMa
         }
 
         // Check missing indices...
-        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().secondView;
+        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().missingFeatureVector;
 
         for (uint32 i = numMinorityExamples; i < numExamples; i++) {
             if (i % 2 == 0) {
@@ -239,7 +239,7 @@ TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMa
 TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMaskReturnsEqualFeatureVector) {
     uint32 numMinorityExamples = 10;
     AllocatedNominalFeatureVector featureVector(1, numMinorityExamples, 1);
-    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numMinorityExamples; i++) {
         indexIterator[i] = i;

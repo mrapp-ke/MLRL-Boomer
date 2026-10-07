@@ -10,9 +10,9 @@ TEST(OrdinalFeatureVectorDecoratorTest, updateCoverageMaskAndStatistics) {
     uint32 numExamplesPerValue = 10;
     uint32 numMinorityExamples = numValues * numExamplesPerValue;
     AllocatedNominalFeatureVector featureVector(numValues, numMinorityExamples, 0);
-    AllocatedNominalFeatureVector::value_iterator valueIterator = featureVector.values;
-    AllocatedNominalFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto valueIterator = featureVector.values;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numValues; i++) {
         valueIterator[i] = i;
@@ -37,7 +37,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, updateCoverageMaskAndStatistics) {
     uint32 indicatorValue = 1;
     decorator.updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
     EXPECT_EQ(coverageMask.indicatorValue, indicatorValue);
-    const OrdinalFeatureVector& ordinalFeatureVector = decorator.getView().firstView;
+    const OrdinalFeatureVector& ordinalFeatureVector = decorator.getView().featureVector;
 
     for (uint32 i = 0; i < interval.start; i++) {
         for (auto it = ordinalFeatureVector.indices_cbegin(i); it != ordinalFeatureVector.indices_cend(i); it++) {
@@ -74,9 +74,9 @@ TEST(OrdinalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsInverse) 
     uint32 numExamplesPerValue = 10;
     uint32 numMinorityExamples = numValues * numExamplesPerValue;
     AllocatedNominalFeatureVector featureVector(numValues, numMinorityExamples, 0);
-    AllocatedNominalFeatureVector::value_iterator valueIterator = featureVector.values;
-    AllocatedNominalFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto valueIterator = featureVector.values;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numValues; i++) {
         valueIterator[i] = i;
@@ -108,7 +108,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsInverse) 
     uint32 indicatorValue = 1;
     decorator.updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
     EXPECT_EQ(coverageMask.indicatorValue, (uint32) 0);
-    const OrdinalFeatureVector& ordinalFeatureVector = decorator.getView().firstView;
+    const OrdinalFeatureVector& ordinalFeatureVector = decorator.getView().featureVector;
 
     for (uint32 i = 0; i < interval.start; i++) {
         for (auto it = ordinalFeatureVector.indices_cbegin(i); it != ordinalFeatureVector.indices_cend(i); it++) {
@@ -150,9 +150,9 @@ TEST(OrdinalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsFromView)
     uint32 numExamplesPerValue = 10;
     uint32 numMinorityExamples = numValues * numExamplesPerValue;
     AllocatedNominalFeatureVector featureVector(numValues, numMinorityExamples, 0);
-    AllocatedNominalFeatureVector::value_iterator valueIterator = featureVector.values;
-    AllocatedNominalFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto valueIterator = featureVector.values;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numValues; i++) {
         valueIterator[i] = i;
@@ -179,7 +179,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsFromView)
     decorator.createFilteredFeatureVector(existing, Interval(0, numValues))
       ->updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
     EXPECT_EQ(coverageMask.indicatorValue, indicatorValue);
-    const OrdinalFeatureVector& ordinalFeatureVector = decorator.getView().firstView;
+    const OrdinalFeatureVector& ordinalFeatureVector = decorator.getView().featureVector;
 
     for (uint32 i = 0; i < interval.start; i++) {
         for (auto it = ordinalFeatureVector.indices_cbegin(i); it != ordinalFeatureVector.indices_cend(i); it++) {
@@ -216,9 +216,9 @@ TEST(OrdinalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsFromViewI
     uint32 numExamplesPerValue = 10;
     uint32 numMinorityExamples = numValues * numExamplesPerValue;
     AllocatedNominalFeatureVector featureVector(numValues, numMinorityExamples, 0);
-    AllocatedNominalFeatureVector::value_iterator valueIterator = featureVector.values;
-    AllocatedNominalFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto valueIterator = featureVector.values;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numValues; i++) {
         valueIterator[i] = i;
@@ -245,7 +245,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsFromViewI
     decorator.createFilteredFeatureVector(existing, Interval(0, numValues))
       ->updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
     EXPECT_EQ(coverageMask.indicatorValue, (uint32) 0);
-    const OrdinalFeatureVector& ordinalFeatureVector = decorator.getView().firstView;
+    const OrdinalFeatureVector& ordinalFeatureVector = decorator.getView().featureVector;
 
     for (uint32 i = 0; i < interval.start; i++) {
         for (auto it = ordinalFeatureVector.indices_cbegin(i); it != ordinalFeatureVector.indices_cend(i); it++) {
@@ -282,9 +282,9 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndices) 
     uint32 numExamplesPerValue = 10;
     uint32 numMinorityExamples = numValues * numExamplesPerValue;
     AllocatedNominalFeatureVector featureVector(numValues, numMinorityExamples, 0);
-    AllocatedNominalFeatureVector::value_iterator valueIterator = featureVector.values;
-    AllocatedNominalFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto valueIterator = featureVector.values;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numValues; i++) {
         valueIterator[i] = i;
@@ -305,14 +305,14 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndices) 
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
         EXPECT_EQ(filteredFeatureVector.numBins, interval.end - interval.start);
-        OrdinalFeatureVector::value_const_iterator valuesBegin = filteredFeatureVector.values_cbegin();
+        auto valuesBegin = filteredFeatureVector.values_cbegin();
 
         for (uint32 i = 0; i < filteredFeatureVector.numBins; i++) {
             EXPECT_EQ(valuesBegin[i], (int32) (interval.start + i));
-            OrdinalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
-            OrdinalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
+            auto indicesBegin = filteredFeatureVector.indices_cbegin(i);
+            auto indicesEnd = filteredFeatureVector.indices_cend(i);
             uint32 numIndices = indicesEnd - indicesBegin;
             EXPECT_EQ(numIndices, numExamplesPerValue);
 
@@ -328,9 +328,9 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithI
     uint32 numExamplesPerValue = 10;
     uint32 numMinorityExamples = numValues * numExamplesPerValue;
     AllocatedNominalFeatureVector featureVector(numValues, numMinorityExamples, 0);
-    AllocatedNominalFeatureVector::value_iterator valueIterator = featureVector.values;
-    AllocatedNominalFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto valueIterator = featureVector.values;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numValues; i++) {
         valueIterator[i] = i;
@@ -352,14 +352,14 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithI
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
         EXPECT_EQ(filteredFeatureVector.numBins, interval.end - interval.start);
-        OrdinalFeatureVector::value_const_iterator valuesBegin = filteredFeatureVector.values_cbegin();
+        auto valuesBegin = filteredFeatureVector.values_cbegin();
 
         for (uint32 i = 0; i < filteredFeatureVector.numBins; i++) {
             EXPECT_EQ(valuesBegin[i], (int32) (interval.start + i));
-            OrdinalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
-            OrdinalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
+            auto indicesBegin = filteredFeatureVector.indices_cbegin(i);
+            auto indicesEnd = filteredFeatureVector.indices_cend(i);
             uint32 numIndices = indicesEnd - indicesBegin;
             EXPECT_EQ(numIndices, numExamplesPerValue);
 
@@ -375,9 +375,9 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndicesIn
     uint32 numExamplesPerValue = 10;
     uint32 numMinorityExamples = numValues * numExamplesPerValue;
     AllocatedNominalFeatureVector featureVector(numValues, numMinorityExamples, 0);
-    AllocatedNominalFeatureVector::value_iterator valueIterator = featureVector.values;
-    AllocatedNominalFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto valueIterator = featureVector.values;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numValues; i++) {
         valueIterator[i] = i;
@@ -398,14 +398,14 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndicesIn
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
         EXPECT_EQ(filteredFeatureVector.numBins, interval.end - interval.start);
-        OrdinalFeatureVector::value_const_iterator valuesBegin = filteredFeatureVector.values_cbegin();
+        auto valuesBegin = filteredFeatureVector.values_cbegin();
 
         for (uint32 i = 0; i < filteredFeatureVector.numBins; i++) {
             EXPECT_EQ(valuesBegin[i], (int32) i);
-            OrdinalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
-            OrdinalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
+            auto indicesBegin = filteredFeatureVector.indices_cbegin(i);
+            auto indicesEnd = filteredFeatureVector.indices_cend(i);
             uint32 numIndices = indicesEnd - indicesBegin;
             EXPECT_EQ(numIndices, numExamplesPerValue);
 
@@ -421,9 +421,9 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithI
     uint32 numExamplesPerValue = 10;
     uint32 numMinorityExamples = numValues * numExamplesPerValue;
     AllocatedNominalFeatureVector featureVector(numValues, numMinorityExamples, 0);
-    AllocatedNominalFeatureVector::value_iterator valueIterator = featureVector.values;
-    AllocatedNominalFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto valueIterator = featureVector.values;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numValues; i++) {
         valueIterator[i] = i;
@@ -445,14 +445,14 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithI
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
         EXPECT_EQ(filteredFeatureVector.numBins, interval.end - interval.start);
-        OrdinalFeatureVector::value_const_iterator valuesBegin = filteredFeatureVector.values_cbegin();
+        auto valuesBegin = filteredFeatureVector.values_cbegin();
 
         for (uint32 i = 0; i < filteredFeatureVector.numBins; i++) {
             EXPECT_EQ(valuesBegin[i], (int32) i);
-            OrdinalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
-            OrdinalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
+            auto indicesBegin = filteredFeatureVector.indices_cbegin(i);
+            auto indicesEnd = filteredFeatureVector.indices_cend(i);
             uint32 numIndices = indicesEnd - indicesBegin;
             EXPECT_EQ(numIndices, numExamplesPerValue);
 
@@ -468,9 +468,9 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithC
     uint32 numExamplesPerValue = 10;
     uint32 numMinorityExamples = numValues * numExamplesPerValue;
     AllocatedNominalFeatureVector featureVector(numValues, numMinorityExamples, 0);
-    AllocatedNominalFeatureVector::value_iterator valueIterator = featureVector.values;
-    AllocatedNominalFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto valueIterator = featureVector.values;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numValues; i++) {
         valueIterator[i] = i;
@@ -485,7 +485,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithC
     CoverageMask coverageMask(numMinorityExamples);
     uint32 indicatorValue = 1;
     coverageMask.indicatorValue = indicatorValue;
-    CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
+    auto coverageMaskIterator = coverageMask.begin();
 
     for (uint32 i = 0; i < numMinorityExamples; i++) {
         if (i % 2 == 0) {
@@ -503,11 +503,11 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithC
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
 
         for (uint32 i = 0; i < numValues; i++) {
-            OrdinalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
-            OrdinalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
+            auto indicesBegin = filteredFeatureVector.indices_cbegin(i);
+            auto indicesEnd = filteredFeatureVector.indices_cend(i);
             uint32 numIndices = indicesEnd - indicesBegin;
             EXPECT_EQ(numIndices, numExamplesPerValue / 2);
 
@@ -535,9 +535,9 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
     uint32 numExamplesPerValue = 10;
     uint32 numMinorityExamples = numValues * numExamplesPerValue;
     AllocatedNominalFeatureVector featureVector(numValues, numMinorityExamples, 0);
-    AllocatedNominalFeatureVector::value_iterator valueIterator = featureVector.values;
-    AllocatedNominalFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto valueIterator = featureVector.values;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numValues; i++) {
         valueIterator[i] = i;
@@ -560,7 +560,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
     CoverageMask coverageMask(numExamples);
     uint32 indicatorValue = 1;
     coverageMask.indicatorValue = indicatorValue;
-    CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
+    auto coverageMaskIterator = coverageMask.begin();
 
     for (uint32 i = 0; i < numExamples; i++) {
         if (i % 2 == 0) {
@@ -577,11 +577,11 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
 
         for (uint32 i = 0; i < numValues; i++) {
-            OrdinalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
-            OrdinalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
+            auto indicesBegin = filteredFeatureVector.indices_cbegin(i);
+            auto indicesEnd = filteredFeatureVector.indices_cend(i);
             uint32 numIndices = indicesEnd - indicesBegin;
             EXPECT_EQ(numIndices, numExamplesPerValue / 2);
 
@@ -603,7 +603,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
         }
 
         // Check missing indices...
-        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().secondView;
+        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().missingFeatureVector;
 
         for (uint32 i = numMinorityExamples; i < numExamples; i++) {
             if (i % 2 == 0) {
@@ -620,9 +620,9 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
     uint32 numExamplesPerValue = 10;
     uint32 numMinorityExamples = numValues * numExamplesPerValue;
     AllocatedNominalFeatureVector featureVector(numValues, numMinorityExamples, 0);
-    AllocatedNominalFeatureVector::value_iterator valueIterator = featureVector.values;
-    AllocatedNominalFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto valueIterator = featureVector.values;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numValues; i++) {
         valueIterator[i] = i;
@@ -663,11 +663,11 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
 
         for (uint32 i = 0; i < numValues; i++) {
-            OrdinalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
-            OrdinalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
+            auto indicesBegin = filteredFeatureVector.indices_cbegin(i);
+            auto indicesEnd = filteredFeatureVector.indices_cend(i);
             uint32 numIndices = indicesEnd - indicesBegin;
             EXPECT_EQ(numIndices, numExamplesPerValue / 2);
 
@@ -689,7 +689,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
         }
 
         // Check missing indices...
-        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().secondView;
+        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().missingFeatureVector;
 
         for (uint32 i = numMinorityExamples; i < numExamples; i++) {
             if (i % 2 == 0) {
@@ -706,7 +706,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
     uint32 numExamplesPerValue = 10;
     uint32 numMinorityExamples = numValues * numExamplesPerValue;
     AllocatedNominalFeatureVector featureVector(1, numMinorityExamples, 0);
-    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numValues; i++) {
         for (uint32 j = 0; j < numExamplesPerValue; j++) {

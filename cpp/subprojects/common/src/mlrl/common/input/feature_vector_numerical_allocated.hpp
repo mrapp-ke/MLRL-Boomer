@@ -28,10 +28,7 @@ class MLRLCOMMON_API AllocatedNumericalFeatureVector : public ResizableAllocator
         /**
          * @param other A reference to an object of type `AllocatedNumericalFeatureVector` that should be copied
          */
-        AllocatedNumericalFeatureVector(const AllocatedNumericalFeatureVector& other)
-            : ResizableAllocator<NumericalFeatureVector>(other) {
-            throw std::runtime_error("Objects of type AllocatedNumericalFeatureVector cannot be copied");
-        }
+        AllocatedNumericalFeatureVector(const AllocatedNumericalFeatureVector& other) = delete;
 
         /**
          * @param other A reference to an object of type `AllocatedNumericalFeatureVector` that should be moved

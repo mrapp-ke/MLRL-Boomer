@@ -6,10 +6,16 @@ Provides utilities that ease the configuration of separate-and-conquer (SeCo) al
 
 from typing import override
 
-from mlrl.common.config.parameters import RULE_LEARNER_PARAMETERS, FeatureBinningParameter, NominalParameter
+from mlrl.common.config.parameters import (
+    RULE_LEARNER_PARAMETERS,
+    FeatureBinningParameter,
+    FloatParameter,
+    NominalParameter,
+)
 from mlrl.seco.cython.learner import (
     AccuracyHeuristicMixin,
     AccuracyPruningHeuristicMixin,
+    CoverageStoppingCriterionMixin,
     FMeasureHeuristicMixin,
     FMeasurePruningHeuristicMixin,
     KlnLiftFunctionMixin,
@@ -48,6 +54,27 @@ OPTION_BETA = 'beta'
 HEURISTIC_M_ESTIMATE = 'm-estimate'
 
 OPTION_M = 'm'
+
+
+class MinCoverageParameter(FloatParameter):
+    """
+    A parameter that allows to configure the fraction of the available training examples and labels that must be covered
+    before the induction of rules is stopped.
+    """
+
+    def __init__(self):
+        super().__init__(
+            name='min_coverage',
+            description='The fraction of the available training examples and labels that must be covered before the '
+            'induction of rules is stopped. Must be in [0, 1)',
+            mixin=CoverageStoppingCriterionMixin,
+        )
+
+    @override
+    def _configure(self, config, value):
+        if value is not None:
+            c = config.use_coverage_stopping_criterion()
+            c.set_min_coverage(value)
 
 
 class HeadTypeParameter(NominalParameter):
@@ -188,6 +215,7 @@ class PruningHeuristicParameter(NominalParameter):
 
 
 SECO_CLASSIFIER_PARAMETERS = RULE_LEARNER_PARAMETERS | {
+    MinCoverageParameter(),
     FeatureBinningParameter(),
     HeadTypeParameter(),
     LiftFunctionParameter(),

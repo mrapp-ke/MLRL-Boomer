@@ -10,9 +10,9 @@ TEST(BinnedFeatureVectorDecoratorTest, updateCoverageMaskAndStatistics) {
     uint32 numExamplesPerBin = 10;
     uint32 numMinorityExamples = numBins * numExamplesPerBin;
     AllocatedBinnedFeatureVector featureVector(numBins, numMinorityExamples, 0);
-    AllocatedBinnedFeatureVector::threshold_iterator thresholdIterator = featureVector.thresholds;
-    AllocatedBinnedFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedBinnedFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto thresholdIterator = featureVector.thresholds;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numBins; i++) {
         if (i < numBins - 1) {
@@ -40,7 +40,7 @@ TEST(BinnedFeatureVectorDecoratorTest, updateCoverageMaskAndStatistics) {
     uint32 indicatorValue = 1;
     decorator.updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
     EXPECT_EQ(coverageMask.indicatorValue, indicatorValue);
-    const BinnedFeatureVector& binnedFeatureVector = decorator.getView().firstView;
+    const BinnedFeatureVector& binnedFeatureVector = decorator.getView().featureVector;
 
     for (uint32 i = 0; i < interval.start; i++) {
         for (auto it = binnedFeatureVector.indices_cbegin(i); it != binnedFeatureVector.indices_cend(i); it++) {
@@ -77,9 +77,9 @@ TEST(BinnedFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsInverse) {
     uint32 numExamplesPerBin = 10;
     uint32 numMinorityExamples = numBins * numExamplesPerBin;
     AllocatedBinnedFeatureVector featureVector(numBins, numMinorityExamples, 0);
-    AllocatedBinnedFeatureVector::threshold_iterator thresholdIterator = featureVector.thresholds;
-    AllocatedBinnedFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedBinnedFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto thresholdIterator = featureVector.thresholds;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numBins; i++) {
         if (i < numBins - 1) {
@@ -114,7 +114,7 @@ TEST(BinnedFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsInverse) {
     uint32 indicatorValue = 1;
     decorator.updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
     EXPECT_EQ(coverageMask.indicatorValue, (uint32) 0);
-    const BinnedFeatureVector& binnedFeatureVector = decorator.getView().firstView;
+    const BinnedFeatureVector& binnedFeatureVector = decorator.getView().featureVector;
 
     for (uint32 i = 0; i < interval.start; i++) {
         for (auto it = binnedFeatureVector.indices_cbegin(i); it != binnedFeatureVector.indices_cend(i); it++) {
@@ -156,9 +156,9 @@ TEST(BinnedFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsFromView) 
     uint32 numExamplesPerBin = 10;
     uint32 numMinorityExamples = numBins * numExamplesPerBin;
     AllocatedBinnedFeatureVector featureVector(numBins, numMinorityExamples, 0);
-    AllocatedBinnedFeatureVector::threshold_iterator thresholdIterator = featureVector.thresholds;
-    AllocatedBinnedFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedBinnedFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto thresholdIterator = featureVector.thresholds;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numBins; i++) {
         if (i < numBins - 1) {
@@ -188,7 +188,7 @@ TEST(BinnedFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsFromView) 
     decorator.createFilteredFeatureVector(existing, Interval(0, numBins))
       ->updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
     EXPECT_EQ(coverageMask.indicatorValue, indicatorValue);
-    const BinnedFeatureVector& binnedFeatureVector = decorator.getView().firstView;
+    const BinnedFeatureVector& binnedFeatureVector = decorator.getView().featureVector;
 
     for (uint32 i = 0; i < interval.start; i++) {
         for (auto it = binnedFeatureVector.indices_cbegin(i); it != binnedFeatureVector.indices_cend(i); it++) {
@@ -225,9 +225,9 @@ TEST(BinnedFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsFromViewIn
     uint32 numExamplesPerBin = 10;
     uint32 numMinorityExamples = numBins * numExamplesPerBin;
     AllocatedBinnedFeatureVector featureVector(numBins, numMinorityExamples, 0);
-    AllocatedBinnedFeatureVector::threshold_iterator thresholdIterator = featureVector.thresholds;
-    AllocatedBinnedFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedBinnedFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto thresholdIterator = featureVector.thresholds;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numBins; i++) {
         if (i < numBins - 1) {
@@ -257,7 +257,7 @@ TEST(BinnedFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsFromViewIn
     decorator.createFilteredFeatureVector(existing, Interval(0, numBins))
       ->updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
     EXPECT_EQ(coverageMask.indicatorValue, (uint32) 0);
-    const BinnedFeatureVector& binnedFeatureVector = decorator.getView().firstView;
+    const BinnedFeatureVector& binnedFeatureVector = decorator.getView().featureVector;
 
     for (uint32 i = 0; i < interval.start; i++) {
         for (auto it = binnedFeatureVector.indices_cbegin(i); it != binnedFeatureVector.indices_cend(i); it++) {
@@ -294,9 +294,9 @@ TEST(BinnedFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndices) {
     uint32 numExamplesPerBin = 10;
     uint32 numMinorityExamples = numBins * numExamplesPerBin;
     AllocatedBinnedFeatureVector featureVector(numBins, numMinorityExamples, 0);
-    AllocatedBinnedFeatureVector::threshold_iterator thresholdIterator = featureVector.thresholds;
-    AllocatedBinnedFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedBinnedFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto thresholdIterator = featureVector.thresholds;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numBins; i++) {
         if (i < numBins - 1) {
@@ -320,17 +320,17 @@ TEST(BinnedFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndices) {
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const BinnedFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const BinnedFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
         EXPECT_EQ(filteredFeatureVector.numBins, interval.end - interval.start);
-        BinnedFeatureVector::threshold_const_iterator thresholdsBegin = filteredFeatureVector.thresholds_cbegin();
+        auto thresholdsBegin = filteredFeatureVector.thresholds_cbegin();
 
         for (uint32 i = 0; i < filteredFeatureVector.numBins; i++) {
             if (i < filteredFeatureVector.numBins - 1) {
                 EXPECT_EQ(thresholdsBegin[i], (int32) (interval.start + i));
             }
 
-            BinnedFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
-            BinnedFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
+            auto indicesBegin = filteredFeatureVector.indices_cbegin(i);
+            auto indicesEnd = filteredFeatureVector.indices_cend(i);
             uint32 numIndices = indicesEnd - indicesBegin;
             EXPECT_EQ(numIndices, numExamplesPerBin);
 
@@ -346,9 +346,9 @@ TEST(BinnedFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithIn
     uint32 numExamplesPerBin = 10;
     uint32 numMinorityExamples = numBins * numExamplesPerBin;
     AllocatedBinnedFeatureVector featureVector(numBins, numMinorityExamples, 0);
-    AllocatedBinnedFeatureVector::threshold_iterator thresholdIterator = featureVector.thresholds;
-    AllocatedBinnedFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedBinnedFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto thresholdIterator = featureVector.thresholds;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numBins; i++) {
         if (i < numBins - 1) {
@@ -373,17 +373,17 @@ TEST(BinnedFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithIn
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const BinnedFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const BinnedFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
         EXPECT_EQ(filteredFeatureVector.numBins, interval.end - interval.start);
-        BinnedFeatureVector::threshold_const_iterator thresholdsBegin = filteredFeatureVector.thresholds_cbegin();
+        auto thresholdsBegin = filteredFeatureVector.thresholds_cbegin();
 
         for (uint32 i = 0; i < filteredFeatureVector.numBins; i++) {
             if (i < filteredFeatureVector.numBins - 1) {
                 EXPECT_EQ(thresholdsBegin[i], (int32) (interval.start + i));
             }
 
-            BinnedFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
-            BinnedFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
+            auto indicesBegin = filteredFeatureVector.indices_cbegin(i);
+            auto indicesEnd = filteredFeatureVector.indices_cend(i);
             uint32 numIndices = indicesEnd - indicesBegin;
             EXPECT_EQ(numIndices, numExamplesPerBin);
 
@@ -399,9 +399,9 @@ TEST(BinnedFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndicesInv
     uint32 numExamplesPerBin = 10;
     uint32 numMinorityExamples = numBins * numExamplesPerBin;
     AllocatedBinnedFeatureVector featureVector(numBins, numMinorityExamples, 0);
-    AllocatedBinnedFeatureVector::threshold_iterator thresholdIterator = featureVector.thresholds;
-    AllocatedBinnedFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedBinnedFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto thresholdIterator = featureVector.thresholds;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numBins; i++) {
         if (i < numBins - 1) {
@@ -424,14 +424,14 @@ TEST(BinnedFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndicesInv
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const BinnedFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const BinnedFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
         EXPECT_EQ(filteredFeatureVector.numBins, interval.end - interval.start);
-        BinnedFeatureVector::threshold_const_iterator thresholdsBegin = filteredFeatureVector.thresholds_cbegin();
+        auto thresholdsBegin = filteredFeatureVector.thresholds_cbegin();
 
         for (uint32 i = 0; i < filteredFeatureVector.numBins; i++) {
             EXPECT_EQ(thresholdsBegin[i], (int32) i);
-            BinnedFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
-            BinnedFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
+            auto indicesBegin = filteredFeatureVector.indices_cbegin(i);
+            auto indicesEnd = filteredFeatureVector.indices_cend(i);
             uint32 numIndices = indicesEnd - indicesBegin;
             EXPECT_EQ(numIndices, numExamplesPerBin);
 
@@ -447,9 +447,9 @@ TEST(BinnedFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithIn
     uint32 numExamplesPerBin = 10;
     uint32 numMinorityExamples = numBins * numExamplesPerBin;
     AllocatedBinnedFeatureVector featureVector(numBins, numMinorityExamples, 0);
-    AllocatedBinnedFeatureVector::threshold_iterator thresholdIterator = featureVector.thresholds;
-    AllocatedBinnedFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedBinnedFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto thresholdIterator = featureVector.thresholds;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numBins; i++) {
         if (i < numBins - 1) {
@@ -473,14 +473,14 @@ TEST(BinnedFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithIn
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const BinnedFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const BinnedFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
         EXPECT_EQ(filteredFeatureVector.numBins, interval.end - interval.start);
-        BinnedFeatureVector::threshold_const_iterator thresholdsBegin = filteredFeatureVector.thresholds_cbegin();
+        auto thresholdsBegin = filteredFeatureVector.thresholds_cbegin();
 
         for (uint32 i = 0; i < filteredFeatureVector.numBins; i++) {
             EXPECT_EQ(thresholdsBegin[i], (int32) i);
-            BinnedFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
-            BinnedFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
+            auto indicesBegin = filteredFeatureVector.indices_cbegin(i);
+            auto indicesEnd = filteredFeatureVector.indices_cend(i);
             uint32 numIndices = indicesEnd - indicesBegin;
             EXPECT_EQ(numIndices, numExamplesPerBin);
 
@@ -496,9 +496,9 @@ TEST(BinnedFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithCo
     uint32 numExamplesPerBin = 10;
     uint32 numMinorityExamples = numBins * numExamplesPerBin;
     AllocatedBinnedFeatureVector featureVector(numBins, numMinorityExamples, 0);
-    AllocatedBinnedFeatureVector::threshold_iterator thresholdIterator = featureVector.thresholds;
-    AllocatedBinnedFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedBinnedFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto thresholdIterator = featureVector.thresholds;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numBins; i++) {
         if (i < numBins - 1) {
@@ -516,7 +516,7 @@ TEST(BinnedFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithCo
     CoverageMask coverageMask(numMinorityExamples);
     uint32 indicatorValue = 1;
     coverageMask.indicatorValue = indicatorValue;
-    CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
+    auto coverageMaskIterator = coverageMask.begin();
 
     for (uint32 i = 0; i < numMinorityExamples; i++) {
         if (i % 2 == 0) {
@@ -534,11 +534,11 @@ TEST(BinnedFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithCo
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const BinnedFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const BinnedFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
 
         for (uint32 i = 0; i < numBins; i++) {
-            BinnedFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
-            BinnedFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
+            auto indicesBegin = filteredFeatureVector.indices_cbegin(i);
+            auto indicesEnd = filteredFeatureVector.indices_cend(i);
             uint32 numIndices = indicesEnd - indicesBegin;
             EXPECT_EQ(numIndices, numExamplesPerBin / 2);
 
@@ -566,9 +566,9 @@ TEST(BinnedFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMa
     uint32 numExamplesPerBin = 10;
     uint32 numMinorityExamples = numBins * numExamplesPerBin;
     AllocatedBinnedFeatureVector featureVector(numBins, numMinorityExamples, 0);
-    AllocatedBinnedFeatureVector::threshold_iterator thresholdIterator = featureVector.thresholds;
-    AllocatedBinnedFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedBinnedFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto thresholdIterator = featureVector.thresholds;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numBins; i++) {
         if (i < numBins - 1) {
@@ -594,7 +594,7 @@ TEST(BinnedFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMa
     CoverageMask coverageMask(numExamples);
     uint32 indicatorValue = 1;
     coverageMask.indicatorValue = indicatorValue;
-    CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
+    auto coverageMaskIterator = coverageMask.begin();
 
     for (uint32 i = 0; i < numExamples; i++) {
         if (i % 2 == 0) {
@@ -611,11 +611,11 @@ TEST(BinnedFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMa
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const BinnedFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const BinnedFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
 
         for (uint32 i = 0; i < numBins; i++) {
-            BinnedFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
-            BinnedFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
+            auto indicesBegin = filteredFeatureVector.indices_cbegin(i);
+            auto indicesEnd = filteredFeatureVector.indices_cend(i);
             uint32 numIndices = indicesEnd - indicesBegin;
             EXPECT_EQ(numIndices, numExamplesPerBin / 2);
 
@@ -637,7 +637,7 @@ TEST(BinnedFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMa
         }
 
         // Check missing indices...
-        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().secondView;
+        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().missingFeatureVector;
 
         for (uint32 i = numMinorityExamples; i < numExamples; i++) {
             if (i % 2 == 0) {
@@ -654,9 +654,9 @@ TEST(BinnedFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMa
     uint32 numExamplesPerBin = 10;
     uint32 numMinorityExamples = numBins * numExamplesPerBin;
     AllocatedBinnedFeatureVector featureVector(numBins, numMinorityExamples, 0);
-    AllocatedBinnedFeatureVector::threshold_iterator thresholdIterator = featureVector.thresholds;
-    AllocatedBinnedFeatureVector::index_iterator indptrIterator = featureVector.indptr;
-    AllocatedBinnedFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto thresholdIterator = featureVector.thresholds;
+    auto indptrIterator = featureVector.indptr;
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numBins; i++) {
         if (i < numBins - 1) {
@@ -682,7 +682,7 @@ TEST(BinnedFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMa
     CoverageMask coverageMask(numExamples);
     uint32 indicatorValue = 1;
     coverageMask.indicatorValue = indicatorValue;
-    CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
+    auto coverageMaskIterator = coverageMask.begin();
 
     for (uint32 i = 0; i < numExamples; i++) {
         if (i % 2 == 0) {
@@ -700,11 +700,11 @@ TEST(BinnedFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMa
 
     if (filteredDecorator) {
         // Check filtered indices...
-        const BinnedFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        const BinnedFeatureVector& filteredFeatureVector = filteredDecorator->getView().featureVector;
 
         for (uint32 i = 0; i < numBins; i++) {
-            BinnedFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
-            BinnedFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
+            auto indicesBegin = filteredFeatureVector.indices_cbegin(i);
+            auto indicesEnd = filteredFeatureVector.indices_cend(i);
             uint32 numIndices = indicesEnd - indicesBegin;
             EXPECT_EQ(numIndices, numExamplesPerBin / 2);
 
@@ -726,7 +726,7 @@ TEST(BinnedFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMa
         }
 
         // Check missing indices...
-        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().secondView;
+        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().missingFeatureVector;
 
         for (uint32 i = numMinorityExamples; i < numExamples; i++) {
             if (i % 2 == 0) {
@@ -743,7 +743,7 @@ TEST(BinnedFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMa
     uint32 numExamplesPerBin = 10;
     uint32 numMinorityExamples = numBins * numExamplesPerBin;
     AllocatedBinnedFeatureVector featureVector(1, numMinorityExamples, 0);
-    AllocatedBinnedFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+    auto indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numBins; i++) {
         for (uint32 j = 0; j < numExamplesPerBin; j++) {

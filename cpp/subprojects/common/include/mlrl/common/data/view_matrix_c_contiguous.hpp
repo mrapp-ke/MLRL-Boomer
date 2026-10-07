@@ -111,7 +111,8 @@ class MLRLCOMMON_API CContiguousView : public DenseMatrix<T> {
 /**
  * Allocates the memory, a `CContiguousView` provides access to
  *
- * @tparam T The type of the values stored in the `CContiguousView`
+ * @tparam T                The type of the values stored in the `CContiguousView`
+ * @tparam MemoryAllocator  The type of the memory allocator to be used
  */
-template<typename T>
-using AllocatedCContiguousView = DenseMatrixAllocator<CContiguousView<T>>;
+template<typename T, typename MemoryAllocator = DefaultMemoryAllocator>
+using AllocatedCContiguousView = DenseMatrixAllocator<CContiguousView<T>, MemoryAllocator>;

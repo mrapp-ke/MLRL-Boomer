@@ -36,7 +36,7 @@ class Version:
 
             return number
         except ValueError as error:
-            raise ValueError('Version numbers must be non-negative integers, but got: ' + version_number) from error
+            raise ValueError(f'Version numbers must be non-negative integers, but got: {version_number}') from error
 
     @staticmethod
     def parse(version: str, skip_on_error: bool = False) -> 'Version':

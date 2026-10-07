@@ -6,6 +6,8 @@ Provides classes for representing algorithmic parameters that are part of output
 
 from typing import override
 
+from rich.console import ConsoleRenderable
+
 from mlrl.testbed.experiments.input.parameters.parameters import InputParameters
 from mlrl.testbed.experiments.output.data import TabularOutputData
 from mlrl.testbed.experiments.state import ParameterDict
@@ -26,15 +28,16 @@ class OutputParameters(TabularOutputData):
         self.custom_parameters = {key: value for key, value in parameter_dict.items() if value is not None}
 
     @override
-    def to_text(self, options: Options, **kwargs) -> str | None:
+    def to_text(self, options: Options, **kwargs) -> str | ConsoleRenderable | None:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
         table = self.to_table(options, **kwargs)
 
-        if table:
-            return table.to_column_wise_table().sort_by_headers().format()
-        return None
+        if table and table.num_cells > 0:
+            return table.to_column_wise_table().sort_by_headers().to_rich_table()
+
+        return '<No custom parameters used>'
 
     @override
     def to_table(self, options: Options, **_) -> Table | None:

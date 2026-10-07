@@ -4,8 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for running experiments using the scikit-learn framework.
 """
 
-import contextlib
-import os
 import re as regex
 from abc import ABC, abstractmethod
 from argparse import Namespace
@@ -46,9 +44,9 @@ from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
 from mlrl.testbed.experiments.state import ExperimentMode, ExperimentState
 from mlrl.testbed.extensions.extension import Extension
+from mlrl.testbed.log import disable_log
 from mlrl.testbed.modes import BatchMode
 from mlrl.testbed.runnables import Runnable
-from mlrl.testbed.util.io import ENCODING_UTF8
 from mlrl.testbed_sklearn.experiments import SkLearnExperiment
 from mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension import DatasetSplitterExtension
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.extension import TabularDataCharacteristicExtension
@@ -348,7 +346,7 @@ class SklearnEstimator:
                 if all(part2 == 'None' or (part2.startswith('"') and part2.endswith('"')) for part2 in parts2):
                     values = set(filter(lambda part2: part2 != 'None', (part2.strip('"') for part2 in parts2)))
                     arguments.append(SetArgument(argument_name, values=values))
-                    type_hints.append('one of ' + format_set(values))
+                    type_hints.append(f'one of {format_set(values)}')
                 else:
                     for part2 in parts2:
                         if part2.startswith('non-negative'):
@@ -366,7 +364,7 @@ class SklearnEstimator:
                         elif part2.startswith('default='):
                             default_value = part2.lstrip('default=')
                         else:
-                            raise ValueError('Failed to parse type name: ' + part2)
+                            raise ValueError(f'Failed to parse type name: {part2}')
 
             type_hint: str | None = None
 
@@ -434,18 +432,8 @@ class SklearnEstimator:
         return '. '.join(sentences)
 
     def __can_be_instantiated(self, *args, **kwargs) -> bool:
-
-        @contextlib.contextmanager
-        def suppress_output():
-            with (
-                open(os.devnull, mode='w', encoding=ENCODING_UTF8) as devnull,
-                contextlib.redirect_stdout(devnull),
-                contextlib.redirect_stderr(devnull),
-            ):
-                yield
-
         try:
-            with suppress_output():
+            with disable_log():
                 instance = self.instantiate(*args, **kwargs)
                 rng = np.random.default_rng(seed=1)
                 tags = instance.__sklearn_tags__() if hasattr(instance, '__sklearn_tags__') else None
@@ -591,6 +579,9 @@ class SklearnEstimator:
             for param in docstring_parser.parse(apidoc).params:
                 parameter_name = param.arg_name
                 type_name = param.type_name
+
+                if type_name and param.default and 'default=' not in type_name:
+                    type_name = f'{type_name}, default={param.default}'
 
                 if type_name and not parameter_name.startswith('_') and not parameter_name.endswith('_'):
                     argument_name = Argument.key_to_argument_name(prefix + parameter_name)

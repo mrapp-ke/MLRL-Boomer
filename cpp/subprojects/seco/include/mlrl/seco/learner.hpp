@@ -35,12 +35,12 @@ namespace seco {
 
             /**
              * Returns a `Property` that allows to access the `IStoppingCriterionConfig` that stores the configuration
-             * of the stopping criterion that stops the induction of rules as soon as the sum of the weights of the
-             * uncovered labels is smaller or equal to a certain threshold.
+             * of the stopping criterion that stops the induction of rules as soon as enough of the label space is
+             * covered.
              *
              * @return A `Property` that allows to access the `IStoppingCriterionConfig` that stores the configuration
-             *         of the stopping criterion that stops the induction of rules as soon as the sum of the weights of
-             *         the uncovered labels is smaller or equal to a certain threshold
+             *         of the stopping criterion that stops the induction of rules as soon as enough of the label space
+             *         is covered
              */
             virtual Property<IStoppingCriterionConfig> getCoverageStoppingCriterionConfig() = 0;
 
@@ -84,28 +84,9 @@ namespace seco {
     };
 
     /**
-     * Defines an interface for all classes that allow to configure a rule learner to not use any stopping criterion
-     * that stops the induction of rules as soon as the sum of the weights of the uncovered labels is smaller or equal
-     * to a certain threshold.
-     */
-    class MLRLSECO_API INoCoverageStoppingCriterionMixin : virtual public ISeCoRuleLearnerConfig {
-        public:
-
-            virtual ~INoCoverageStoppingCriterionMixin() override {}
-
-            /**
-             * Configures the rule learner to not use any stopping criterion that stops the induction of rules as soon
-             * as the sum of the weights of the uncovered labels is smaller or equal to a certain threshold.
-             */
-            virtual void useNoCoverageStoppingCriterion() {
-                this->getCoverageStoppingCriterionConfig().set(std::make_unique<NoStoppingCriterionConfig>());
-            }
-    };
-
-    /**
      * Defines an interface for all classes that allow to configure a rule learner to use a stopping criterion that
-     * stops the induction of rules as soon as the sum of the weights of the uncovered labels is smaller or equal to a
-     * certain threshold.
+     * stops the induction of rules as soon as a certain fraction of the available training examples and labels is
+     * covered.
      */
     class MLRLSECO_API ICoverageStoppingCriterionMixin : virtual public ISeCoRuleLearnerConfig {
         public:
@@ -113,8 +94,8 @@ namespace seco {
             virtual ~ICoverageStoppingCriterionMixin() override {}
 
             /**
-             * Configures the rule learner to use a stopping criterion that stops the induction of rules as soon as the
-             * sum of the weights of the uncovered labels is smaller or equal to a certain threshold.
+             * Configures the rule learner to use a stopping criterion that stops the induction of rules as soon as a
+             * certain fraction of the available training examples and labels is covered.
              *
              * @return A reference to an object of type `ICoverageStoppingCriterionConfig` that allows further
              *         configuration of the stopping criterion
@@ -140,8 +121,8 @@ namespace seco {
              * Configures the rule learner to induce rules with single-output heads that predict for a single output.
              */
             virtual void useSingleOutputHeads() {
-                this->getHeadConfig().set(std::make_unique<SingleOutputHeadConfig>(this->getHeuristicConfig(),
-                                                                                   this->getPruningHeuristicConfig()));
+                this->getHeadConfig().set(std::make_unique<SingleOutputHeadConfig>(
+                  this->getHeuristicConfig(), this->getPruningHeuristicConfig(), this->getSimdConfig()));
             }
     };
 
@@ -158,8 +139,9 @@ namespace seco {
              * labels.
              */
             virtual void usePartialHeads() {
-                this->getHeadConfig().set(std::make_unique<PartialHeadConfig>(
-                  this->getHeuristicConfig(), this->getPruningHeuristicConfig(), this->getLiftFunctionConfig()));
+                this->getHeadConfig().set(
+                  std::make_unique<PartialHeadConfig>(this->getHeuristicConfig(), this->getPruningHeuristicConfig(),
+                                                      this->getLiftFunctionConfig(), this->getSimdConfig()));
             }
     };
 
@@ -347,7 +329,7 @@ namespace seco {
              *         heuristic
              */
             virtual IMEstimateConfig& useMEstimatePruningHeuristic() {
-                std::unique_ptr<MEstimateConfig> ptr = std::make_unique<MEstimateConfig>();
+                auto ptr = std::make_unique<MEstimateConfig>();
                 IMEstimateConfig& ref = *ptr;
                 this->getPruningHeuristicConfig().set(std::move(ptr));
                 return ref;
@@ -517,7 +499,8 @@ namespace seco {
      * separate-and-conquer (SeCo) paradigm to use a simple default configuration.
      */
     class ISeCoRuleLearnerMixin : virtual public IRuleLearnerMixin,
-                                  virtual public INoCoverageStoppingCriterionMixin,
+                                  virtual public ISimdMixin,
+                                  virtual public ICoverageStoppingCriterionMixin,
                                   virtual public INoLiftFunctionMixin {
         public:
 
@@ -528,7 +511,7 @@ namespace seco {
              */
             virtual void useDefaults() override {
                 IRuleLearnerMixin::useDefaults();
-                this->useNoCoverageStoppingCriterion();
+                this->useSimdOperations();
                 this->useNoLiftFunction();
             }
     };

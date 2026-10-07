@@ -1,7 +1,7 @@
 #include "mlrl/common/sampling/stratified_sampling_example_wise.hpp"
 
+#include "mlrl/common/math/scalar_math.hpp"
 #include "mlrl/common/sampling/partition_single.hpp"
-#include "mlrl/common/util/math.hpp"
 #include "stratified_sampling_common.hpp"
 
 #include <algorithm>
@@ -50,14 +50,14 @@ static inline void sampleWeightsInternally(WeightVector& weightVector, WeightIte
                                            const std::vector<std::unique_ptr<std::vector<uint32>>>& order,
                                            uint32 numTotal, float32 sampleSize, uint32 minSamples, uint32 maxSamples,
                                            RNG& rng) {
-    uint32 numTotalSamples = util::calculateBoundedFraction(numTotal, sampleSize, minSamples, maxSamples);
+    uint32 numTotalSamples = math::calculateBoundedFraction(numTotal, sampleSize, minSamples, maxSamples);
     uint32 numTotalOutOfSamples = numTotal - numTotalSamples;
     uint32 numNonZeroWeights = 0;
     uint32 numZeroWeights = 0;
 
     for (auto it = order.cbegin(); it != order.cend(); it++) {
         const std::unique_ptr<std::vector<uint32>>& exampleIndicesPtr = *it;
-        std::vector<uint32>::iterator indexIterator = exampleIndicesPtr->begin();
+        auto indexIterator = exampleIndicesPtr->begin();
         uint32 numExamples = exampleIndicesPtr->size();
         float32 numSamplesDecimal = sampleSize * numExamples;
         uint32 numDesiredSamples = numTotalSamples - numNonZeroWeights;
@@ -107,14 +107,14 @@ void ExampleWiseStratification<LabelMatrix, IndexIterator>::sampleWeights(
 
 template<typename LabelMatrix, typename IndexIterator>
 void ExampleWiseStratification<LabelMatrix, IndexIterator>::sampleBiPartition(BiPartition& partition) const {
-    BiPartition::iterator firstIterator = partition.first_begin();
-    BiPartition::iterator secondIterator = partition.second_begin();
+    auto firstIterator = partition.first_begin();
+    auto secondIterator = partition.second_begin();
     uint32 numFirst = partition.getNumFirst();
     uint32 numSecond = partition.getNumSecond();
 
     for (auto it = order_.cbegin(); it != order_.cend(); it++) {
         const std::unique_ptr<std::vector<uint32>>& exampleIndicesPtr = *it;
-        std::vector<uint32>::iterator indexIterator = exampleIndicesPtr->begin();
+        auto indexIterator = exampleIndicesPtr->begin();
         uint32 numExamples = exampleIndicesPtr->size();
         float32 sampleSize = (float32) numFirst / (float32) (numFirst + numSecond);
         float32 numSamplesDecimal = sampleSize * numExamples;
