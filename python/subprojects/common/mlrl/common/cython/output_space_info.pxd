@@ -26,10 +26,6 @@ cdef extern from "mlrl/common/input/label_vector.hpp" nogil:
 
         ctypedef uint32* iterator
 
-        # Constructors:
-
-        LabelVector(uint32 numElements)
-
         # Functions:
 
         uint32 getNumElements() const

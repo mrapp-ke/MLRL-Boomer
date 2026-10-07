@@ -478,10 +478,10 @@ namespace seco {
      * rule-based model in the order they have been learned. If a rule covers an example, its prediction is applied to
      * each label individually.
      */
-    class MLRLSECO_API IOutputWiseBinaryPredictionMixin : virtual public ISeCoRuleLearnerConfig {
+    class MLRLSECO_API IOutputWiseBinaryPredictorMixin : virtual public ISeCoRuleLearnerConfig {
         public:
 
-            virtual ~IOutputWiseBinaryPredictionMixin() override {}
+            virtual ~IOutputWiseBinaryPredictorMixin() override {}
 
             /**
              * Configures the rule learner to use a predictor for predicting whether individual labels of given query

@@ -10,17 +10,17 @@ cdef extern from "mlrl/common/library_info.hpp" nogil:
 
     cdef cppclass BuildOption"ILibraryInfo::BuildOption":
 
-        string option
+        const string option
 
-        string description
+        const string description
 
-        string value
+        const string value
 
     cdef cppclass HardwareResource"ILibraryInfo::HardwareResource":
 
-        string resource
+        const string resource
 
-        string info
+        const string info
 
 
 ctypedef void (*BuildOptionVisitor)(const BuildOption&)

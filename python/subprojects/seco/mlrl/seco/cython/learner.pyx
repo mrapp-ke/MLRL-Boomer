@@ -269,7 +269,7 @@ class WraPruningHeuristicMixin(ABC):
         """
 
 
-class OutputWiseBinaryPredictionMixin(ABC):
+class OutputWiseBinaryPredictorMixin(ABC):
     """
     Allows to configure a rule learner to use a predictor for predicting whether individual labels of given query
     examples are relevant or irrelevant by processing rules of an existing rule-based model in the order they have been
