@@ -7,42 +7,6 @@ from mlrl.boosting.cython.probability_calibration cimport IIsotonicJointProbabil
 
 cdef extern from "mlrl/boosting/learner_classification.hpp" namespace "boosting" nogil:
 
-    cdef cppclass IAutomaticPartitionSamplingMixin:
-
-        # Functions:
-
-        void useAutomaticPartitionSampling()
-
-    cdef cppclass INoDefaultRuleMixin:
-
-        # Functions:
-
-        void useNoDefaultRule()
-
-    cdef cppclass IAutomaticDefaultRuleMixin:
-
-        # Functions:
-
-        void useAutomaticDefaultRule()
-
-    cdef cppclass IDenseStatisticsMixin:
-
-        # Functions:
-
-        void useDenseStatistics()
-
-    cdef cppclass ISparseStatisticsMixin:
-
-        # Functions:
-
-        void useSparseStatistics()
-
-    cdef cppclass IAutomaticStatisticsMixin:
-
-        # Functions:
-
-        void useAutomaticStatistics()
-
     cdef cppclass INonDecomposableLogisticLossMixin:
 
         # Functions:
@@ -66,12 +30,6 @@ cdef extern from "mlrl/boosting/learner_classification.hpp" namespace "boosting"
         # Functions:
 
         void useDecomposableSquaredHingeLoss()
-
-    cdef cppclass INoLabelBinningMixin:
-
-        # Functions:
-
-        void useNoLabelBinning()
 
     cdef cppclass IEqualWidthLabelBinningMixin:
 

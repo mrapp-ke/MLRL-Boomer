@@ -2,6 +2,7 @@
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from typing import override
+
 from libcpp.utility cimport move
 from scipy.linalg.cython_blas cimport ddot, dspmv, sdot, sspmv
 from scipy.linalg.cython_lapack cimport dsysv, ssysv
@@ -58,20 +59,19 @@ from mlrl.common.cython.learner_classification import ExampleWiseStratifiedBiPar
     ExampleWiseStratifiedInstanceSamplingMixin, OutputWiseStratifiedBiPartitionSamplingMixin, \
     OutputWiseStratifiedInstanceSamplingMixin
 
-from mlrl.boosting.cython.learner import AutomaticFeatureBinningMixin, AutomaticHeadMixin, \
-    AutomaticParallelRuleRefinementMixin, AutomaticParallelStatisticUpdateMixin, CompleteHeadMixin, \
-    ConstantShrinkageMixin, DecomposableSquaredErrorLossMixin, DynamicPartialHeadMixin, FixedPartialHeadMixin, \
-    Float32StatisticsMixin, Float64StatisticsMixin, L1RegularizationMixin, L2RegularizationMixin, \
-    NoL1RegularizationMixin, NoL2RegularizationMixin, NonDecomposableSquaredErrorLossMixin, \
-    OutputWiseScorePredictorMixin, SingleOutputHeadMixin
-from mlrl.boosting.cython.learner_classification import AutomaticBinaryPredictorMixin, AutomaticDefaultRuleMixin, \
-    AutomaticLabelBinningMixin, AutomaticPartitionSamplingMixin, AutomaticProbabilityPredictorMixin, \
-    AutomaticStatisticsMixin, DecomposableLogisticLossMixin, DecomposableSquaredHingeLossMixin, DenseStatisticsMixin, \
+from mlrl.boosting.cython.learner import AutomaticDefaultRuleMixin, AutomaticFeatureBinningMixin, AutomaticHeadMixin, \
+    AutomaticParallelRuleRefinementMixin, AutomaticParallelStatisticUpdateMixin, AutomaticPartitionSamplingMixin, \
+    AutomaticStatisticsMixin, CompleteHeadMixin, ConstantShrinkageMixin, DecomposableSquaredErrorLossMixin, \
+    DenseStatisticsMixin, DynamicPartialHeadMixin, FixedPartialHeadMixin, Float32StatisticsMixin, \
+    Float64StatisticsMixin, L1RegularizationMixin, L2RegularizationMixin, NoDefaultRuleMixin, NoL1RegularizationMixin, \
+    NoL2RegularizationMixin, NoLabelBinningMixin, NonDecomposableSquaredErrorLossMixin, OutputWiseScorePredictorMixin, \
+    SingleOutputHeadMixin, SparseStatisticsMixin
+from mlrl.boosting.cython.learner_classification import AutomaticBinaryPredictorMixin, AutomaticLabelBinningMixin, \
+    AutomaticProbabilityPredictorMixin, DecomposableLogisticLossMixin, DecomposableSquaredHingeLossMixin, \
     EqualWidthLabelBinningMixin, ExampleWiseBinaryPredictorMixin, GfmBinaryPredictorMixin, \
     IsotonicJointProbabilityCalibrationMixin, IsotonicMarginalProbabilityCalibrationMixin, \
-    MarginalizedProbabilityPredictorMixin, NoDefaultRuleMixin, NoLabelBinningMixin, NonDecomposableLogisticLossMixin, \
-    NonDecomposableSquaredHingeLossMixin, OutputWiseBinaryPredictorMixin, OutputWiseProbabilityPredictorMixin, \
-    SparseStatisticsMixin
+    MarginalizedProbabilityPredictorMixin, NonDecomposableLogisticLossMixin, NonDecomposableSquaredHingeLossMixin, \
+    OutputWiseBinaryPredictorMixin, OutputWiseProbabilityPredictorMixin
 
 
 cdef class BoomerClassifierConfig(RuleLearnerConfig,

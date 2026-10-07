@@ -14,7 +14,7 @@ cdef extern from "mlrl/common/prediction/prediction_matrix_dense.hpp" nogil:
 
         uint32 getNumCols() const
 
-        T* get() const
+        T* get()
 
         T* release()
 

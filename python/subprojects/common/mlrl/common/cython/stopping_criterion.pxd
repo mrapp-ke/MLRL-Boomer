@@ -91,7 +91,7 @@ cdef extern from "mlrl/common/stopping/global_pruning_post.hpp" nogil:
 
         bool isRemoveUnusedRules() const
 
-        IPrePruningConfig& setRemoveUnusedRules(bool removeUnusedRules) except +
+        IPostPruningConfig& setRemoveUnusedRules(bool removeUnusedRules) except +
 
         uint32 getMinRules() const
 

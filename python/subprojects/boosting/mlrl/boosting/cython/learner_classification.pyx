@@ -10,80 +10,6 @@ from mlrl.boosting.cython.probability_calibration import IsotonicJointProbabilit
     IsotonicMarginalProbabilityCalibratorConfig
 
 
-class AutomaticPartitionSamplingMixin(ABC):
-    """
-    Allows to configure a rule learner to automatically decide whether a holdout set should be used or not.
-    """
-
-    @abstractmethod
-    def use_automatic_partition_sampling(self):
-        """
-        Configures the rule learner to automatically decide whether a holdout set should be used or not.
-        """
-
-
-class NoDefaultRuleMixin(ABC):
-    """
-    Allows to configure a rule learner to not induce a default rule.
-    """
-
-    @abstractmethod
-    def use_no_default_rule(self):
-        """
-        Configures the rule learner to not induce a default rule.
-        """
-
-
-class AutomaticDefaultRuleMixin(ABC):
-    """
-    Allows to configure a rule learner to automatically decide whether a default rule should be induced or not.
-    """
-
-    @abstractmethod
-    def use_automatic_default_rule(self):
-        """
-        Configures the rule learner to automatically decide whether a default rule should be induced or not.
-        """
-
-
-class DenseStatisticsMixin(ABC):
-    """
-    Allows to configure a rule learner to use a dense representation of gradients and Hessians.
-    """
-
-    @abstractmethod
-    def use_dense_statistics(self):
-        """
-        Configures the rule learner to use a dense representation of gradients and Hessians.
-        """
-
-
-class SparseStatisticsMixin(ABC):
-    """
-    Allows to configure a rule learner to use a sparse representation of gradients and Hessians, if possible.
-    """
-
-    @abstractmethod
-    def use_sparse_statistics(self):
-        """
-        Configures the rule learner to use a sparse representation of gradients and Hessians, if possible.
-        """
-
-
-class AutomaticStatisticsMixin(ABC):
-    """
-    Allows to configure a rule learner to automatically decide whether a dense or sparse representation of gradients and
-    Hessians should be used.
-    """
-
-    @abstractmethod
-    def use_automatic_statistics(self):
-        """
-        Configures the rule learner to automatically decide whether a dense or sparse representation of gradients and
-        Hessians should be used.
-        """
-
-
 class NonDecomposableLogisticLossMixin(ABC):
     """
     Allows to configure a rule learner to use a loss function that implements a multivariate variant of the logistic
@@ -137,18 +63,6 @@ class DecomposableSquaredHingeLossMixin(ABC):
         """
         Configures the rule learner to use a loss function that implements a multivariate variant of the squared hinge
         loss that is decomposable.
-        """
-
-
-class NoLabelBinningMixin(ABC):
-    """
-    Allows to configure a rule learner to not use any method for the assignment of labels to bins.
-    """
-
-    @abstractmethod
-    def use_no_label_binning(self):
-        """
-        Configures the rule learner to not use any method for the assignment of labels to bins.
         """
 
 
