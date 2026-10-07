@@ -44,7 +44,7 @@ namespace seco {
                             virtual public IRecallPruningHeuristicMixin,
                             virtual public IWraHeuristicMixin,
                             virtual public IWraPruningHeuristicMixin,
-                            virtual public IOutputWiseBinaryPredictionMixin,
+                            virtual public IOutputWiseBinaryPredictorMixin,
                             virtual public ISequentialRuleModelAssemblageMixin,
                             virtual public IDefaultRuleMixin,
                             virtual public IGreedyTopDownRuleInductionMixin,
