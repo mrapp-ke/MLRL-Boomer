@@ -22,6 +22,24 @@ ctypedef void (*DsysvFunction)(char* uplo, int* n, int* nrhs, float64* a, int* l
 
 cdef extern from "mlrl/boosting/learner.hpp" namespace "boosting" nogil:
 
+    cdef cppclass INoDefaultRuleMixin:
+
+        # Functions:
+
+        void useNoDefaultRule()
+
+    cdef cppclass IAutomaticDefaultRuleMixin:
+
+        # Functions:
+
+        void useAutomaticDefaultRule()
+
+    cdef cppclass IAutomaticPartitionSamplingMixin:
+
+        # Functions:
+
+        void useAutomaticPartitionSampling()
+
     cdef cppclass IAutomaticFeatureBinningMixin:
 
         # Functions
@@ -45,6 +63,24 @@ cdef extern from "mlrl/boosting/learner.hpp" namespace "boosting" nogil:
         # Functions:
 
         IConstantShrinkageConfig& useConstantShrinkagePostProcessor()
+
+    cdef cppclass IDenseStatisticsMixin:
+
+        # Functions:
+
+        void useDenseStatistics()
+
+    cdef cppclass ISparseStatisticsMixin:
+
+        # Functions:
+
+        void useSparseStatistics()
+
+    cdef cppclass IAutomaticStatisticsMixin:
+
+        # Functions:
+
+        void useAutomaticStatistics()
 
     cdef cppclass IFloat32StatisticsMixin:
 
@@ -123,6 +159,12 @@ cdef extern from "mlrl/boosting/learner.hpp" namespace "boosting" nogil:
         # Functions:
 
         void useDecomposableSquaredErrorLoss()
+
+    cdef cppclass INoLabelBinningMixin:
+
+        # Functions:
+
+        void useNoLabelBinning()
 
     cdef cppclass IOutputWiseScorePredictorMixin:
 
