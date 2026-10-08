@@ -123,7 +123,8 @@ class MLRLCOMMON_API Allocator : public View {
          * @param init          True, if all elements in the view should be value-initialized, false otherwise
          */
         explicit Allocator(uint32 numElements, bool init = false)
-            : View(MemoryAllocator::template allocateMemory<typename View::value_type>(numElements, init),
+            : View(MemoryAllocator::template allocateMemory<typename View::value_type>(
+                     numElements + MemoryAllocator::template getPadding<typename View::value_type>(numElements), init),
                    numElements) {}
 
         /**
@@ -219,11 +220,17 @@ class MLRLCOMMON_API ResizableAllocator : public Allocator<View, MemoryAllocator
         void resize(uint32 numElements, bool freeMemory) {
             if (numElements < maxCapacity) {
                 if (freeMemory) {
-                    View::array = MemoryAllocator::reallocateMemory(View::array, maxCapacity, numElements);
+                    View::array = MemoryAllocator::reallocateMemory(
+                      View::array,
+                      maxCapacity + MemoryAllocator::template getPadding<typename View::value_type>(maxCapacity),
+                      numElements + MemoryAllocator::template getPadding<typename View::value_type>(numElements));
                     maxCapacity = numElements;
                 }
             } else if (numElements > maxCapacity) {
-                View::array = MemoryAllocator::reallocateMemory(View::array, maxCapacity, numElements);
+                View::array = MemoryAllocator::reallocateMemory(
+                  View::array,
+                  maxCapacity + MemoryAllocator::template getPadding<typename View::value_type>(maxCapacity),
+                  numElements + MemoryAllocator::template getPadding<typename View::value_type>(numElements));
                 maxCapacity = numElements;
             }
 
