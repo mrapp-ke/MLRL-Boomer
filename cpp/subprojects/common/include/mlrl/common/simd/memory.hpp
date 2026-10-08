@@ -14,6 +14,21 @@ struct SimdMemoryAllocator final {
     public:
 
         /**
+         * Returns the padding that needs to be added to an array of a specific size to ensure that the element after it
+         * is properly aligned.
+         *
+         * @param numElements   The number of elements in the array
+         * @return              The padding that is needed
+         */
+        template<typename T>
+        static inline constexpr uint32 getPadding(uint32 numElements) {
+            auto dispatched = xsimd::dispatch<util::simd_architectures>([&](auto arch) {
+                return simd::getPadding<decltype(arch), T>(arch, numElements);
+            });
+            return dispatched();
+        }
+
+        /**
          * Allocates memory to be used by an array of a specific size.
          *
          * @tparam T            The type of the values stored in the array

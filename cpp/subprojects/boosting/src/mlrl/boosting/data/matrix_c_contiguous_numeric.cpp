@@ -6,8 +6,8 @@ namespace boosting {
 
     template<typename T, typename MemoryAllocator>
     NumericCContiguousMatrix<T, MemoryAllocator>::NumericCContiguousMatrix(uint32 numRows, uint32 numCols, bool init)
-        : DenseMatrixDecorator<DenseMatrixAllocator<CContiguousView<T>, MemoryAllocator>>(
-            DenseMatrixAllocator<CContiguousView<T>, MemoryAllocator>(numRows, numCols, init)) {}
+        : DenseMatrixDecorator<AllocatedCContiguousView<T, MemoryAllocator>>(
+            AllocatedCContiguousView<T, MemoryAllocator>(numRows, numCols, init)) {}
 
     template<typename T, typename MemoryAllocator>
     void NumericCContiguousMatrix<T, MemoryAllocator>::addToRowFromSubset(

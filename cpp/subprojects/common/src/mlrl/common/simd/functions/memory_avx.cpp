@@ -3,6 +3,11 @@
 #if SIMD_SUPPORT_ENABLED
 namespace simd {
 
+    template uint32 getPadding<xsimd::avx, float32>(xsimd::avx, uint32);
+    template uint32 getPadding<xsimd::avx, float64>(xsimd::avx, uint32);
+    template uint32 getPadding<xsimd::avx, uint16>(xsimd::avx, uint32);
+    template uint32 getPadding<xsimd::avx, uint32>(xsimd::avx, uint32);
+
     template float32* allocateMemory<xsimd::avx, float32>(xsimd::avx, uint32, bool);
     template float64* allocateMemory<xsimd::avx, float64>(xsimd::avx, uint32, bool);
     template uint16* allocateMemory<xsimd::avx, uint16>(xsimd::avx, uint32, bool);
