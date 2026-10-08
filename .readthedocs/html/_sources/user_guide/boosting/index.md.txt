@@ -9,6 +9,7 @@ hide-toc: true
 align: center
 alt: 'BOOMER: Gradient Boosted Multi-Label Classification Rules'
 class: only-light
+width: 100%
 ---
 ```
 
@@ -17,6 +18,7 @@ class: only-light
 align: center
 alt: 'BOOMER: Gradient Boosted Multi-Label Classification Rules'
 class: only-dark
+width: 100%
 ---
 ```
 
