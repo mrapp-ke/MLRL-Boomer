@@ -10,6 +10,33 @@
 namespace simd {
 
     template<typename Arch, typename T>
+    uint32 getPadding(Arch, uint32 numElements);
+
+    #if defined(__aarch64__) || defined(_M_ARM64)
+    extern template uint32 getPadding<xsimd::neon64, float32>(xsimd::neon64, uint32);
+    extern template uint32 getPadding<xsimd::neon64, float64>(xsimd::neon64, uint32);
+    extern template uint32 getPadding<xsimd::neon64, uint16>(xsimd::neon64, uint32);
+    extern template uint32 getPadding<xsimd::neon64, uint32>(xsimd::neon64, uint32);
+    #else
+    extern template uint32 getPadding<xsimd::sse2, float32>(xsimd::sse2, uint32);
+    extern template uint32 getPadding<xsimd::sse2, float64>(xsimd::sse2, uint32);
+    extern template uint32 getPadding<xsimd::sse2, uint16>(xsimd::sse2, uint32);
+    extern template uint32 getPadding<xsimd::sse2, uint32>(xsimd::sse2, uint32);
+    extern template uint32 getPadding<xsimd::avx, float32>(xsimd::avx, uint32);
+    extern template uint32 getPadding<xsimd::avx, float64>(xsimd::avx, uint32);
+    extern template uint32 getPadding<xsimd::avx, uint16>(xsimd::avx, uint32);
+    extern template uint32 getPadding<xsimd::avx, uint32>(xsimd::avx, uint32);
+    extern template uint32 getPadding<xsimd::avx2, float32>(xsimd::avx2, uint32);
+    extern template uint32 getPadding<xsimd::avx2, float64>(xsimd::avx2, uint32);
+    extern template uint32 getPadding<xsimd::avx2, uint16>(xsimd::avx2, uint32);
+    extern template uint32 getPadding<xsimd::avx2, uint32>(xsimd::avx2, uint32);
+    extern template uint32 getPadding<xsimd::avx512f, float32>(xsimd::avx512f, uint32);
+    extern template uint32 getPadding<xsimd::avx512f, float64>(xsimd::avx512f, uint32);
+    extern template uint32 getPadding<xsimd::avx512f, uint16>(xsimd::avx512f, uint32);
+    extern template uint32 getPadding<xsimd::avx512f, uint32>(xsimd::avx512f, uint32);
+    #endif
+
+    template<typename Arch, typename T>
     T* allocateMemory(Arch, uint32 numElements, bool init);
 
     #if defined(__aarch64__) || defined(_M_ARM64)
