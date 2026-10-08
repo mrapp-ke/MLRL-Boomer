@@ -106,6 +106,13 @@ class MLRLCOMMON_API FortranContiguousView : public DenseMatrix<T> {
         typename DenseMatrix<T>::value_iterator values_end(uint32 column) {
             return &DenseMatrix<T>::array[(column + 1) * Matrix::numRows];
         }
+
+        /**
+         * Sets all values stored in the matrix to zero.
+         */
+        void clear() {
+            std::fill(View<T>::array, View<T>::array + (Matrix::numRows * Matrix::numCols), (T) 0);
+        }
 };
 
 /**

@@ -106,6 +106,13 @@ class MLRLCOMMON_API CContiguousView : public DenseMatrix<T> {
         typename DenseMatrix<T>::value_iterator values_end(uint32 row) {
             return &DenseMatrix<T>::array[(row + 1) * Matrix::numCols];
         }
+
+        /**
+         * Sets all values stored in the matrix to zero.
+         */
+        void clear() {
+            std::fill(View<T>::array, View<T>::array + (Matrix::numRows * Matrix::numCols), (T) 0);
+        }
 };
 
 /**
