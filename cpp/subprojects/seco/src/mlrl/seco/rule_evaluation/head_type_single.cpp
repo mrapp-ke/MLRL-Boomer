@@ -1,6 +1,7 @@
 #include "mlrl/seco/rule_evaluation/head_type_single.hpp"
 
 #include "mlrl/common/math/vector_math.hpp"
+#include "mlrl/common/simd/memory.hpp"
 #include "mlrl/common/simd/vector_math.hpp"
 #include "mlrl/seco/rule_evaluation/rule_evaluation_decomposable_single.hpp"
 #include "mlrl/seco/statistics/statistics_provider_decomposable_sparse.hpp"
@@ -26,13 +27,14 @@ namespace seco {
 
 #if SIMD_SUPPORT_ENABLED
         if (simdConfig_.get().isSimdRecommended(labelMatrix.getNumOutputs())) {
-            return std::make_unique<SparseDecomposableStatisticsProviderFactory<SimdVectorMath>>(
+            return std::make_unique<SparseDecomposableStatisticsProviderFactory<SimdMemoryAllocator, SimdVectorMath>>(
               std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
               std::move(pruningRuleEvaluationFactoryPtr));
         }
 #endif
 
-        return std::make_unique<SparseDecomposableStatisticsProviderFactory<SequentialVectorMath>>(
+        return std::make_unique<
+          SparseDecomposableStatisticsProviderFactory<DefaultMemoryAllocator, SequentialVectorMath>>(
           std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
           std::move(pruningRuleEvaluationFactoryPtr));
     }
