@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/vector_dense.hpp"
+#include "mlrl/common/data/view_vector.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 #include "mlrl/seco/data/view_statistic_decomposable_sparse.hpp"
@@ -18,20 +18,35 @@ namespace seco {
      * @tparam StatisticType The type of the counts stored in the view
      */
     template<typename StatisticType>
-    class MLRLSECO_API DenseDecomposableStatisticVectorView final {
-        private:
-
-            AllocatedVector<StatisticType> correctCounts_;
-
-            AllocatedVector<StatisticType> incorrectCounts_;
-
+    class MLRLSECO_API DenseDecomposableStatisticVectorView : public Vector<StatisticType> {
         public:
 
             /**
-             * @param numElements   The number of elements in the view
-             * @param init          True, if all elements in the view should be value-initialized, false otherwise
+             * The number of counts in the view.
              */
-            DenseDecomposableStatisticVectorView(uint32 numElements, bool init = false);
+            const uint32 numCounts;
+
+            /**
+             * @param array     A pointer to an array of template type `StatisticType` that stores the counts
+             * @param numCounts The number of counts in the view
+             */
+            DenseDecomposableStatisticVectorView(StatisticType* array, uint32 numCounts)
+                : Vector<StatisticType>(array, numCounts * 2), numCounts(numCounts) {}
+
+            /**
+             * @param other A reference to an object of type `DenseDecomposableStatisticVectorView` that should be
+             *              copied
+             */
+            DenseDecomposableStatisticVectorView(const DenseDecomposableStatisticVectorView<StatisticType>& other)
+                : Vector<StatisticType>(other), numCounts(other.numCounts) {}
+
+            /**
+             * @param other A reference to an object of type `DenseDecomposableStatisticVectorView` that should be moved
+             */
+            DenseDecomposableStatisticVectorView(DenseDecomposableStatisticVectorView<StatisticType>&& other)
+                : Vector<StatisticType>(std::move(other)), numCounts(other.numCounts) {}
+
+            virtual ~DenseDecomposableStatisticVectorView() override {}
 
             /**
              * The type of the counts stored in the view.
@@ -55,7 +70,9 @@ namespace seco {
              * @return A `const_iterator` to the beginning of the counts that correspond to examples for which a rule
              *         predicts correctly
              */
-            typename View<StatisticType>::const_iterator correct_counts_cbegin() const;
+            typename View<StatisticType>::const_iterator correct_counts_cbegin() const {
+                return this->cbegin();
+            }
 
             /**
              * Returns a `const_iterator` to the end of the counts that correspond to examples for which a rule predicts
@@ -64,7 +81,9 @@ namespace seco {
              * @return A `const_iterator` to the end of the counts that correspond to examples for which a rule predicts
              *         correctly
              */
-            typename View<StatisticType>::const_iterator correct_counts_cend() const;
+            typename View<StatisticType>::const_iterator correct_counts_cend() const {
+                return &(this->cbegin())[numCounts];
+            }
 
             /**
              * Returns an `iterator` to the beginning of the counts that correspond to examples for which a rule
@@ -73,7 +92,9 @@ namespace seco {
              * @return An `iterator` to the beginning of the counts that correspond to examples for which a rule
              *         predicts correctly
              */
-            typename View<StatisticType>::iterator correct_counts_begin();
+            typename View<StatisticType>::iterator correct_counts_begin() {
+                return this->begin();
+            }
 
             /**
              * Returns an `iterator` to the end of the counts that correspond to examples for which a rule predicts
@@ -82,7 +103,9 @@ namespace seco {
              * @return An `iterator` to the end of the counts that correspond to examples for which a rule predicts
              *         correctly
              */
-            typename View<StatisticType>::iterator correct_counts_end();
+            typename View<StatisticType>::iterator correct_counts_end() {
+                return &(this->begin())[numCounts];
+            }
 
             /**
              * Returns a `const_iterator` to the beginning of the counts that correspond to examples  for which a rule
@@ -91,7 +114,9 @@ namespace seco {
              * @return A `const_iterator` to the beginning of the counts that correspond to examples  for which a rule
              *         predicts incorrectly
              */
-            typename View<StatisticType>::const_iterator incorrect_counts_cbegin() const;
+            typename View<StatisticType>::const_iterator incorrect_counts_cbegin() const {
+                return &(this->cbegin())[numCounts];
+            }
 
             /**
              * Returns a `const_iterator` to the end of the counts that correspond to examples  for which a rule
@@ -100,7 +125,9 @@ namespace seco {
              * @return A `const_iterator` to the end of the counts that correspond to examples  for which a rule
              *         predicts incorrectly
              */
-            typename View<StatisticType>::const_iterator incorrect_counts_cend() const;
+            typename View<StatisticType>::const_iterator incorrect_counts_cend() const {
+                return &(this->cbegin())[this->numElements];
+            }
 
             /**
              * Returns an `iterator` to the beginning of the counts that correspond to examples for which a rule
@@ -109,7 +136,9 @@ namespace seco {
              * @return An `iterator` to the beginning of the counts that correspond to examples for which a rule
              *         predicts incorrectly
              */
-            typename View<StatisticType>::iterator incorrect_counts_begin();
+            typename View<StatisticType>::iterator incorrect_counts_begin() {
+                return &(this->begin())[numCounts];
+            }
 
             /**
              * Returns an `iterator` to the end of the counts that correspond to examples for which a rule predicts
@@ -118,19 +147,72 @@ namespace seco {
              * @return An `iterator` to the end of the counts that correspond to examples for which a rule predicts
              *         incorrectly
              */
-            typename View<StatisticType>::iterator incorrect_counts_end();
+            typename View<StatisticType>::iterator incorrect_counts_end() {
+                return &(this->begin())[this->numElements];
+            }
+    };
+
+    /**
+     * Allocates the memory, a `DenseDecomposableStatisticVectorView` provides access to.
+     *
+     * @tparam View             The type of the view
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
+     */
+    template<typename View, typename MemoryAllocator = DefaultMemoryAllocator>
+    class MLRLSECO_API DenseDecomposableStatisticVectorAllocator : public View {
+        public:
 
             /**
-             * Returns the number of elements in the view.
+             * @param numCounts     The number of counts in the view
+             * @param init          True, if all elements in the view should be value-initialized, false otherwise
+             */
+            explicit DenseDecomposableStatisticVectorAllocator(uint32 numCounts, bool init = false)
+                : View(MemoryAllocator::template allocateMemory<typename View::value_type>(numCounts * 2, init),
+                       numCounts) {}
+
+            /**
+             * @param other A reference to an object of type `DenseDecomposableStatisticVectorAllocator` that should be
+             *              copied
+             */
+            DenseDecomposableStatisticVectorAllocator(
+              const DenseDecomposableStatisticVectorAllocator<View, MemoryAllocator>& other) = delete;
+
+            /**
+             * @param other A reference to an object of type `DenseDecomposableStatisticVectorAllocator` that should be
+             *              moved
+             */
+            DenseDecomposableStatisticVectorAllocator(
+              DenseDecomposableStatisticVectorAllocator<View, MemoryAllocator>&& other)
+                : View(std::move(other)) {
+                other.release();
+            }
+
+            virtual ~DenseDecomposableStatisticVectorAllocator() override {
+                MemoryAllocator::freeMemory(View::array);
+            }
+
+            /**
+             * The type of the view for which this allocator manages memory.
+             */
+            using allocated_view_type = View;
+
+            /**
+             * Returns a const reference to the view for which this allocator manages memory.
              *
-             * @return The number of elements
+             * @return A const reference to an object of template type `View` for which this allocator manages memory
              */
-            uint32 getNumElements() const;
+            const View& getAllocatedView() const {
+                return *this;
+            }
 
             /**
-             * Sets all values stored in the view to zero.
+             * Returns a reference to the view for which this allocator manages memory.
+             *
+             * @return A reference to an object of template type `View` for which this allocator manages memory
              */
-            void clear();
+            View& getAllocatedView() {
+                return *this;
+            }
     };
 
     /**
@@ -138,11 +220,13 @@ namespace seco {
      * correctly or incorrectly, respectively, in two C-contiguous arrays.
      *
      * @tparam StatisticType    The type of the counts stored in the vector
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
      * @tparam VectorMath       The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename StatisticType, typename VectorMath>
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     class DenseDecomposableStatisticVector final
-        : public ClearableViewDecorator<ViewDecorator<DenseDecomposableStatisticVectorView<StatisticType>>> {
+        : public ClearableViewDecorator<ViewDecorator<DenseDecomposableStatisticVectorAllocator<
+            DenseDecomposableStatisticVectorView<StatisticType>, MemoryAllocator>>> {
         public:
 
             /**
@@ -154,7 +238,8 @@ namespace seco {
             /**
              * @param other A reference to an object of type `DenseDecomposableStatisticVector` to be copied
              */
-            DenseDecomposableStatisticVector(const DenseDecomposableStatisticVector<StatisticType, VectorMath>& other);
+            DenseDecomposableStatisticVector(
+              const DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>& other);
 
             /**
              * Returns a `const_iterator` to the beginning of the counts that correspond to examples for which a rule
