@@ -220,12 +220,13 @@ namespace seco {
      * correctly or incorrectly, respectively, in two C-contiguous arrays.
      *
      * @tparam StatisticType    The type of the counts stored in the vector
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
      * @tparam VectorMath       The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename StatisticType, typename VectorMath>
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     class DenseDecomposableStatisticVector final
-        : public ClearableViewDecorator<ViewDecorator<
-            DenseDecomposableStatisticVectorAllocator<DenseDecomposableStatisticVectorView<StatisticType>>>> {
+        : public ClearableViewDecorator<ViewDecorator<DenseDecomposableStatisticVectorAllocator<
+            DenseDecomposableStatisticVectorView<StatisticType>, MemoryAllocator>>> {
         public:
 
             /**
@@ -237,7 +238,8 @@ namespace seco {
             /**
              * @param other A reference to an object of type `DenseDecomposableStatisticVector` to be copied
              */
-            DenseDecomposableStatisticVector(const DenseDecomposableStatisticVector<StatisticType, VectorMath>& other);
+            DenseDecomposableStatisticVector(
+              const DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>& other);
 
             /**
              * Returns a `const_iterator` to the beginning of the counts that correspond to examples for which a rule

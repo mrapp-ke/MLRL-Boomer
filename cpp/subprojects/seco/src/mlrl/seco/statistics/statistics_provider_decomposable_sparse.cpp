@@ -3,6 +3,7 @@
 #include "mlrl/common/data/matrix_c_contiguous.hpp"
 #include "mlrl/common/iterator/iterator_forward_sparse_binary.hpp"
 #include "mlrl/common/math/vector_math.hpp"
+#include "mlrl/common/simd/memory.hpp"
 #include "mlrl/common/simd/vector_math.hpp"
 #include "mlrl/seco/data/vector_statistic_decomposable_dense.hpp"
 #include "mlrl/seco/data/view_statistic_decomposable_sparse.hpp"
@@ -451,10 +452,11 @@ namespace seco {
      * Provides access to the elements of confusion matrices that are computed independently for each output and are
      * stored using sparse data structures.
      *
-     * @tparam LabelMatrix  The type of the matrix that provides access to the labels of the training examples
-     * @tparam VectorMath   The type that implements basic operations for calculating with numerical arrays
+     * @tparam LabelMatrix      The type of the matrix that provides access to the labels of the training examples
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
+     * @tparam VectorMath       The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename LabelMatrix, typename VectorMath>
+    template<typename LabelMatrix, typename MemoryAllocator, typename VectorMath>
     class SparseDecomposableStatistics final
         : public AbstractDecomposableStatistics<SparseDecomposableStatisticMatrix<LabelMatrix, VectorMath>,
                                                 IDecomposableRuleEvaluationFactory> {
@@ -463,7 +465,7 @@ namespace seco {
             using StatisticMatrix = SparseDecomposableStatisticMatrix<LabelMatrix, VectorMath>;
 
             template<typename StatisticType>
-            using StatisticVector = DenseDecomposableStatisticVector<StatisticType, VectorMath>;
+            using StatisticVector = DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>;
 
             template<typename WeightVector, typename IndexVector, typename StatisticType>
             using StatisticsSubset = CoverageStatisticsSubset<
@@ -720,52 +722,58 @@ namespace seco {
             }
     };
 
-    template<typename VectorMath>
+    template<typename MemoryAllocator, typename VectorMath>
     static inline std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> createStatistics(
       const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory, const CContiguousView<const uint8>& labelMatrix,
-      std::type_identity<VectorMath>) {
-        return std::make_unique<SparseDecomposableStatistics<CContiguousView<const uint8>, VectorMath>>(
+      std::type_identity<MemoryAllocator>, std::type_identity<VectorMath>) {
+        return std::make_unique<
+          SparseDecomposableStatistics<CContiguousView<const uint8>, MemoryAllocator, VectorMath>>(
           labelMatrix, ruleEvaluationFactory);
     }
 
-    template<typename VectorMath>
+    template<typename MemoryAllocator, typename VectorMath>
     static inline std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> createStatistics(
       const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory, const BinaryCsrView& labelMatrix,
-      std::type_identity<VectorMath>) {
-        return std::make_unique<SparseDecomposableStatistics<BinaryCsrView, VectorMath>>(labelMatrix,
-                                                                                         ruleEvaluationFactory);
+      std::type_identity<MemoryAllocator>, std::type_identity<VectorMath>) {
+        return std::make_unique<SparseDecomposableStatistics<BinaryCsrView, MemoryAllocator, VectorMath>>(
+          labelMatrix, ruleEvaluationFactory);
     }
 
-    template<typename VectorMath>
-    SparseDecomposableStatisticsProviderFactory<VectorMath>::SparseDecomposableStatisticsProviderFactory(
-      std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
-      std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
-      std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr)
+    template<typename MemoryAllocator, typename VectorMath>
+    SparseDecomposableStatisticsProviderFactory<MemoryAllocator, VectorMath>::
+      SparseDecomposableStatisticsProviderFactory(
+        std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
+        std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
+        std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr)
         : defaultRuleEvaluationFactoryPtr_(std::move(defaultRuleEvaluationFactoryPtr)),
           regularRuleEvaluationFactoryPtr_(std::move(regularRuleEvaluationFactoryPtr)),
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)) {}
 
-    template<typename VectorMath>
-    std::unique_ptr<IStatisticsProvider> SparseDecomposableStatisticsProviderFactory<VectorMath>::create(
-      const CContiguousView<const uint8>& labelMatrix) const {
+    template<typename MemoryAllocator, typename VectorMath>
+    std::unique_ptr<IStatisticsProvider>
+      SparseDecomposableStatisticsProviderFactory<MemoryAllocator, VectorMath>::create(
+        const CContiguousView<const uint8>& labelMatrix) const {
         std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> statisticsPtr =
-          createStatistics(*defaultRuleEvaluationFactoryPtr_, labelMatrix, std::type_identity<VectorMath> {});
+          createStatistics(*defaultRuleEvaluationFactoryPtr_, labelMatrix, std::type_identity<MemoryAllocator> {},
+                           std::type_identity<VectorMath> {});
         return std::make_unique<DecomposableStatisticsProvider<IDecomposableRuleEvaluationFactory>>(
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
-    template<typename VectorMath>
-    std::unique_ptr<IStatisticsProvider> SparseDecomposableStatisticsProviderFactory<VectorMath>::create(
-      const BinaryCsrView& labelMatrix) const {
+    template<typename MemoryAllocator, typename VectorMath>
+    std::unique_ptr<IStatisticsProvider>
+      SparseDecomposableStatisticsProviderFactory<MemoryAllocator, VectorMath>::create(
+        const BinaryCsrView& labelMatrix) const {
         std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> statisticsPtr =
-          createStatistics(*defaultRuleEvaluationFactoryPtr_, labelMatrix, std::type_identity<VectorMath> {});
+          createStatistics(*defaultRuleEvaluationFactoryPtr_, labelMatrix, std::type_identity<MemoryAllocator> {},
+                           std::type_identity<VectorMath> {});
         return std::make_unique<DecomposableStatisticsProvider<IDecomposableRuleEvaluationFactory>>(
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
-    template class SparseDecomposableStatisticsProviderFactory<SequentialVectorMath>;
+    template class SparseDecomposableStatisticsProviderFactory<DefaultMemoryAllocator, SequentialVectorMath>;
 
 #if SIMD_SUPPORT_ENABLED
-    template class SparseDecomposableStatisticsProviderFactory<SimdVectorMath>;
+    template class SparseDecomposableStatisticsProviderFactory<SimdMemoryAllocator, SimdVectorMath>;
 #endif
 }

@@ -2,6 +2,7 @@
 
 #include "mlrl/common/iterator/iterator_forward_sparse_binary.hpp"
 #include "mlrl/common/math/vector_math.hpp"
+#include "mlrl/common/simd/memory.hpp"
 #include "mlrl/common/simd/vector_math.hpp"
 
 namespace seco {
@@ -27,91 +28,91 @@ namespace seco {
         }
     }
 
-    template<typename StatisticType, typename VectorMath>
-    DenseDecomposableStatisticVector<StatisticType, VectorMath>::DenseDecomposableStatisticVector(uint32 numElements,
-                                                                                                  bool init)
-        : ClearableViewDecorator<ViewDecorator<
-            DenseDecomposableStatisticVectorAllocator<DenseDecomposableStatisticVectorView<StatisticType>>>>(
-            DenseDecomposableStatisticVectorAllocator<DenseDecomposableStatisticVectorView<StatisticType>>(numElements,
-                                                                                                           init)) {}
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
+    DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::DenseDecomposableStatisticVector(
+      uint32 numElements, bool init)
+        : ClearableViewDecorator<ViewDecorator<DenseDecomposableStatisticVectorAllocator<
+            DenseDecomposableStatisticVectorView<StatisticType>, MemoryAllocator>>>(
+            DenseDecomposableStatisticVectorAllocator<DenseDecomposableStatisticVectorView<StatisticType>,
+                                                      MemoryAllocator>(numElements, init)) {}
 
-    template<typename StatisticType, typename VectorMath>
-    DenseDecomposableStatisticVector<StatisticType, VectorMath>::DenseDecomposableStatisticVector(
-      const DenseDecomposableStatisticVector<StatisticType, VectorMath>& other)
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
+    DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::DenseDecomposableStatisticVector(
+      const DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>& other)
         : DenseDecomposableStatisticVector(other.getNumElements()) {
         VectorMath::copy(other.view.cbegin(), this->view.begin(), this->view.numElements);
     }
 
-    template<typename StatisticType, typename VectorMath>
-    void DenseDecomposableStatisticVector<StatisticType, VectorMath>::add(
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
+    void DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::add(
       const DenseDecomposableStatisticVectorView<StatisticType>& other) {
         VectorMath::add(this->view.begin(), other.cbegin(), this->view.numElements);
     }
 
-    template<typename StatisticType, typename VectorMath>
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     typename View<StatisticType>::const_iterator
-      DenseDecomposableStatisticVector<StatisticType, VectorMath>::correct_counts_cbegin() const {
+      DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::correct_counts_cbegin() const {
         return this->view.correct_counts_cbegin();
     }
 
-    template<typename StatisticType, typename VectorMath>
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     typename View<StatisticType>::const_iterator
-      DenseDecomposableStatisticVector<StatisticType, VectorMath>::correct_counts_cend() const {
+      DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::correct_counts_cend() const {
         return this->view.correct_counts_cend();
     }
 
-    template<typename StatisticType, typename VectorMath>
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     typename View<StatisticType>::iterator
-      DenseDecomposableStatisticVector<StatisticType, VectorMath>::correct_counts_begin() {
+      DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::correct_counts_begin() {
         return this->view.correct_counts_begin();
     }
 
-    template<typename StatisticType, typename VectorMath>
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     typename View<StatisticType>::iterator
-      DenseDecomposableStatisticVector<StatisticType, VectorMath>::correct_counts_end() {
+      DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::correct_counts_end() {
         return this->view.correct_counts_end();
     }
 
-    template<typename StatisticType, typename VectorMath>
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     typename View<StatisticType>::const_iterator
-      DenseDecomposableStatisticVector<StatisticType, VectorMath>::incorrect_counts_cbegin() const {
+      DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::incorrect_counts_cbegin() const {
         return this->view.incorrect_counts_cbegin();
     }
 
-    template<typename StatisticType, typename VectorMath>
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     typename View<StatisticType>::const_iterator
-      DenseDecomposableStatisticVector<StatisticType, VectorMath>::incorrect_counts_cend() const {
+      DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::incorrect_counts_cend() const {
         return this->view.incorrect_counts_cend();
     }
 
-    template<typename StatisticType, typename VectorMath>
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     typename View<StatisticType>::iterator
-      DenseDecomposableStatisticVector<StatisticType, VectorMath>::incorrect_counts_begin() {
+      DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::incorrect_counts_begin() {
         return this->view.incorrect_counts_begin();
     }
 
-    template<typename StatisticType, typename VectorMath>
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
     typename View<StatisticType>::iterator
-      DenseDecomposableStatisticVector<StatisticType, VectorMath>::incorrect_counts_end() {
+      DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::incorrect_counts_end() {
         return this->view.incorrect_counts_end();
     }
 
-    template<typename StatisticType, typename VectorMath>
-    uint32 DenseDecomposableStatisticVector<StatisticType, VectorMath>::getNumElements() const {
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
+    uint32 DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::getNumElements() const {
         return this->view.numCounts;
     }
 
-    template<typename StatisticType, typename VectorMath>
-    void DenseDecomposableStatisticVector<StatisticType, VectorMath>::add(const SparseDecomposableStatisticView& view,
-                                                                          uint32 row, StatisticType weight) {
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
+    void DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::add(
+      const SparseDecomposableStatisticView& view, uint32 row, StatisticType weight) {
         VectorMath::addConstantToSubset(this->correct_counts_begin(), weight, view.correct_indices_cbegin(row),
                                         view.correct_indices_cend(row) - view.correct_indices_cbegin(row));
         VectorMath::addConstantToSubset(this->incorrect_counts_begin(), weight, view.incorrect_indices_cbegin(row),
                                         view.incorrect_indices_cend(row) - view.incorrect_indices_cbegin(row));
     }
 
-    template<typename StatisticType, typename VectorMath>
-    void DenseDecomposableStatisticVector<StatisticType, VectorMath>::remove(
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
+    void DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::remove(
       const SparseDecomposableStatisticView& view, uint32 row, StatisticType weight) {
         VectorMath::subtractConstantFromSubset(this->correct_counts_begin(), weight, view.correct_indices_cbegin(row),
                                                view.correct_indices_cend(row) - view.correct_indices_cbegin(row));
@@ -120,8 +121,8 @@ namespace seco {
                                                view.incorrect_indices_cend(row) - view.incorrect_indices_cbegin(row));
     }
 
-    template<typename StatisticType, typename VectorMath>
-    void DenseDecomposableStatisticVector<StatisticType, VectorMath>::addToSubset(
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
+    void DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::addToSubset(
       const SparseDecomposableStatisticView& view, uint32 row, const CompleteIndexVector& indices,
       StatisticType weight) {
         VectorMath::addConstantToSubset(this->correct_counts_begin(), weight, view.correct_indices_cbegin(row),
@@ -130,8 +131,8 @@ namespace seco {
                                         view.incorrect_indices_cend(row) - view.incorrect_indices_cbegin(row));
     }
 
-    template<typename StatisticType, typename VectorMath>
-    void DenseDecomposableStatisticVector<StatisticType, VectorMath>::addToSubset(
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
+    void DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::addToSubset(
       const SparseDecomposableStatisticView& view, uint32 row, const PartialIndexVector& indices,
       StatisticType weight) {
         addConstantToSubset(this->correct_counts_begin(), weight, view.correct_indices_cbegin(row),
@@ -140,15 +141,15 @@ namespace seco {
                             view.incorrect_indices_cend(row) - view.incorrect_indices_cbegin(row), indices);
     }
 
-    template<typename StatisticType, typename VectorMath>
-    void DenseDecomposableStatisticVector<StatisticType, VectorMath>::difference(
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
+    void DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::difference(
       const DenseDecomposableStatisticVectorView<StatisticType>& first, const CompleteIndexVector& firstIndices,
       const DenseDecomposableStatisticVectorView<StatisticType>& second) {
         VectorMath::difference(this->view.begin(), first.cbegin(), second.cbegin(), this->view.numElements);
     }
 
-    template<typename StatisticType, typename VectorMath>
-    void DenseDecomposableStatisticVector<StatisticType, VectorMath>::difference(
+    template<typename StatisticType, typename MemoryAllocator, typename VectorMath>
+    void DenseDecomposableStatisticVector<StatisticType, MemoryAllocator, VectorMath>::difference(
       const DenseDecomposableStatisticVectorView<StatisticType>& first, const PartialIndexVector& firstIndices,
       const DenseDecomposableStatisticVectorView<StatisticType>& second) {
         uint32 numElements = this->getNumElements();
@@ -159,11 +160,11 @@ namespace seco {
                                second.incorrect_counts_cbegin(), indexIterator, numElements);
     }
 
-    template class DenseDecomposableStatisticVector<uint32, SequentialVectorMath>;
-    template class DenseDecomposableStatisticVector<float32, SequentialVectorMath>;
+    template class DenseDecomposableStatisticVector<uint32, DefaultMemoryAllocator, SequentialVectorMath>;
+    template class DenseDecomposableStatisticVector<float32, DefaultMemoryAllocator, SequentialVectorMath>;
 
 #if SIMD_SUPPORT_ENABLED
-    template class DenseDecomposableStatisticVector<uint32, SimdVectorMath>;
-    template class DenseDecomposableStatisticVector<float32, SimdVectorMath>;
+    template class DenseDecomposableStatisticVector<uint32, SimdMemoryAllocator, SimdVectorMath>;
+    template class DenseDecomposableStatisticVector<float32, SimdMemoryAllocator, SimdVectorMath>;
 #endif
 }

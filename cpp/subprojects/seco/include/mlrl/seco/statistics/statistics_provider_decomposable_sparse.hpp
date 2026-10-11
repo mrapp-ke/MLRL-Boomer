@@ -14,9 +14,10 @@ namespace seco {
      * Allows to create instances of the class `IStatisticsProvider` that provide access to an object of type
      * `IDecomposableStatistics` using sparse data structures for storing the statistics.
      *
-     * @tparam VectorMath The type that implements basic operations for calculating with numerical arrays
+     * @tparam MemoryAllocator  The type of the memory allocator to be used
+     * @tparam VectorMath       The type that implements basic operations for calculating with numerical arrays
      */
-    template<typename VectorMath>
+    template<typename MemoryAllocator, typename VectorMath>
     class SparseDecomposableStatisticsProviderFactory final : public IClassificationStatisticsProviderFactory {
         private:
 
