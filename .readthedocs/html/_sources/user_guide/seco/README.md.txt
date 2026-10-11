@@ -1,4 +1,10 @@
-# Multi-label Separate-and-Conquer Rule Learning Algorithm
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/mrapp-ke/MLRL-Boomer/raw/main/doc/_static/logo_seco_dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://github.com/mrapp-ke/MLRL-Boomer/raw/main/doc/_static/logo_seco_light.svg">
+    <img alt="mlrl-seco" src="https://github.com/mrapp-ke/MLRL-Boomer/raw/main/.assets/logo_seco_light.svg">
+  </picture>
+</p>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![PyPI version](https://badge.fury.io/py/mlrl-seco.svg)](https://badge.fury.io/py/mlrl-seco) [![Documentation Status](https://readthedocs.org/projects/mlrl-boomer/badge/?version=latest)](https://mlrl-boomer.readthedocs.io/en/latest/?badge=latest)
 
@@ -9,6 +15,10 @@
 This software package provides an implementation of a **Multi-label Separate-and-Conquer (SeCo) Rule Learning Algorithm** that integrates with the popular [scikit-learn](https://scikit-learn.org) machine learning framework.
 
 The goal of [multi-label classification](https://en.wikipedia.org/wiki/Multi-label_classification) is the automatic assignment of sets of labels to individual data points, for example, the annotation of text documents with topics. The algorithm that is provided by this package uses the SeCo paradigm for learning interpretable rule lists.
+
+# The SeCo Algorithm
+
+To provide a versatile tool for different use cases, great emphasis is put on the *efficiency* of the implementation. Moreover, to ensure its *flexibility*, it is designed in a modular fashion and can therefore easily be adjusted to different requirements.
 
 ## 🔧 Functionalities
 
@@ -32,6 +42,7 @@ In addition, the following features that may speed up training or reduce the mem
 - **Sparse label matrices** can be used for training. This may reduce the memory footprint in case of large datasets.
 - **Sparse prediction matrices** can be used to store predicted labels. This may reduce the memory footprint in case of large datasets.
 - **Multi-threading** can be used to parallelize the evaluation of a rule's potential refinements across several features or to obtain predictions for several examples in parallel.
+- **Single instruction, multiple data (SIMD)** operations supported by modern CPUs are used for parallelizing vector calculations.
 
 <!-- documentation-end -->
 
