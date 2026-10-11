@@ -75,7 +75,7 @@ jobs:
         with:
           key: ccache-${{ runner.os }}-${{ runner.arch }}
       - name: Build package
-        uses: pypa/cibuildwheel@v4.2
+        uses: pypa/cibuildwheel@v4.3
         env:
           CIBW_BUILD: ${{ matrix.build_identifier }}
           CIBW_BEFORE_ALL: GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} ./build dependency_libomp && ./build --clean
