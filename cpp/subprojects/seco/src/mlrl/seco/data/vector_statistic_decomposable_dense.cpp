@@ -221,8 +221,8 @@ namespace seco {
     void DenseDecomposableStatisticVector<StatisticType, VectorMath>::difference(
       const DenseDecomposableStatisticVectorView<StatisticType>& first, const PartialIndexVector& firstIndices,
       const DenseDecomposableStatisticVectorView<StatisticType>& second) {
-        PartialIndexVector::const_iterator indexIterator = firstIndices.cbegin();
         uint32 numElements = this->getNumElements();
+        auto indexIterator = firstIndices.cbegin();
         VectorMath::difference(this->correct_counts_begin(), first.correct_counts_cbegin(),
                                second.correct_counts_cbegin(), indexIterator, numElements);
         VectorMath::difference(this->incorrect_counts_begin(), first.incorrect_counts_cbegin(),
