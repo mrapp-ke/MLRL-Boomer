@@ -63,6 +63,8 @@ jobs:
       - name: Install OpenCL
         if: ${{ inputs.gpu_support }}
         run: brew install opencl-clhpp-headers
+      - name: Install HDF5
+        run: ./build dependency_hdf5
       - name: Prepare ccache
         if: ${{ inputs.ccache }}
         uses: hendrikmuhs/ccache-action@v1
@@ -71,12 +73,14 @@ jobs:
       - name: Compile via Clang
         if: ${{ matrix.os == 'macos-26' }}
         env:
-          CPLUS_INCLUDE_PATH: /Users/runner/work/MLRL-Boomer/MLRL-Boomer/libomp/include/:/opt/homebrew/opt/opencl-clhpp-headers/include/
-          LIBRARY_PATH: /Users/runner/work/MLRL-Boomer/MLRL-Boomer/libomp/lib/
+          CPLUS_INCLUDE_PATH: /Users/runner/work/MLRL-Boomer/MLRL-Boomer/libomp/include/:/Users/runner/work/MLRL-Boomer/MLRL-Boomer/hdf5/include/:/opt/homebrew/opt/opencl-clhpp-headers/include/
+          LIBRARY_PATH: /Users/runner/work/MLRL-Boomer/MLRL-Boomer/libomp/lib/:/Users/runner/work/MLRL-Boomer/MLRL-Boomer/hdf5/lib/
+          PKG_CONFIG_PATH: /Users/runner/work/MLRL-Boomer/MLRL-Boomer/hdf5/lib/pkgconfig/
         run: ./build compile
       - name: Compile via Clang
         if: ${{ matrix.os == 'macos-26-intel' }}
         env:
-          CPLUS_INCLUDE_PATH: /Users/runner/work/MLRL-Boomer/MLRL-Boomer/libomp/include/:/usr/local/opt/opencl-clhpp-headers/include/
-          LIBRARY_PATH: /Users/runner/work/MLRL-Boomer/MLRL-Boomer/libomp/lib/
+          CPLUS_INCLUDE_PATH: /Users/runner/work/MLRL-Boomer/MLRL-Boomer/libomp/include/:/Users/runner/work/MLRL-Boomer/MLRL-Boomer/hdf5/include/:/usr/local/opt/opencl-clhpp-headers/include/
+          LIBRARY_PATH: /Users/runner/work/MLRL-Boomer/MLRL-Boomer/libomp/lib/:/Users/runner/work/MLRL-Boomer/MLRL-Boomer/hdf5/lib/
+          PKG_CONFIG_PATH: /Users/runner/work/MLRL-Boomer/MLRL-Boomer/hdf5/lib/pkgconfig/
         run: ./build compile

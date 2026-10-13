@@ -21,3 +21,6 @@
 /experiments/
 /config/
 /sbatch_*.sh
+
+# Native dependencies compiled from source
+/hdf5/

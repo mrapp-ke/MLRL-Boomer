@@ -26,7 +26,7 @@ class PackageManager:
             :param command:     The command to be run, e.g., "install"
             :param arguments:   Optional arguments to be passed to "uv"
             """
-            super().__init__('uv', 'pip', command, *arguments)
+            super().__init__('uv', 'pip', command, *arguments, '--native-tls')
 
     class InstallCommand(Command):
         """

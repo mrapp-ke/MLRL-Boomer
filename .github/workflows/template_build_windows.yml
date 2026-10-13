@@ -73,6 +73,8 @@ jobs:
           pkgs: opencl
           triplet: ${{ steps.arch.outputs.lowercase }}-windows
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install HDF5
+        run: ./build.bat dependency_hdf5
       - name: Prepare ccache
         if: ${{ inputs.ccache }}
         uses: hendrikmuhs/ccache-action@v1
@@ -82,4 +84,7 @@ jobs:
         run: |-
           $env:INCLUDE += ";$($pwd.Path)\vcpkg\packages\opencl_${{ steps.arch.outputs.lowercase }}-windows\include"
           $env:LIB += ";$($pwd.Path)\vcpkg\packages\opencl_${{ steps.arch.outputs.lowercase }}-windows\lib"
+          $env:INCLUDE += ";$($pwd.Path)\hdf5\include"
+          $env:LIB += ";$($pwd.Path)\hdf5\lib"
+          $env:PATH += ";$($pwd.Path)\hdf5\bin"
           ./build.bat compile

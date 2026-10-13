@@ -8,7 +8,7 @@ Unlike pure Python programs, the C++ and Cython source files must be compiled fo
 
 ## Prerequisites
 
-As a prerequisite, a supported version of Python, a suitable C++ compiler, as well as optional libraries for multi-threading and GPU support, must be available on the host system. The installation of these software components depends on the operating system at hand. In the following, we provide installation instructions for the supported platforms.
+As a prerequisite, a supported version of Python, a suitable C++ compiler, the library HDF5, as well as optional libraries for multi-threading and GPU support, must be available on the host system. The installation of these software components depends on the operating system at hand. In the following, we provide installation instructions for the supported platforms.
 
 ```{tip}
 This project uses [Meson](https://mesonbuild.com/) as a build system for compiling C++ code. If available on the system, Meson automatically utilizes [Ccache](https://ccache.dev/) for caching previous compilations and detecting when the same compilation is being done again. Compared to the runtime without Ccache, where changes are only detected at the level of entire files, usage of this compiler cache can significantly speed up recompilation and therefore is strongly advised.
@@ -28,6 +28,9 @@ This project uses [Meson](https://mesonbuild.com/) as a build system for compili
    * - **C++ compiler**
      - No
      - Most Linux distributions provide the [GNU Compiler Collection](https://gcc.gnu.org/) (GCC), which includes a C++ compiler, as part of their software repositories. If this is the case, it can be installed via the distribution's package manager.
+   * - **HDF5**
+     - No
+     - The [HDF5](https://www.hdfgroup.org/solutions/hdf5/) library is used for saving and loading models. It should be installable via your Linux distribution's package manager, e.g., as the package `libhdf5-dev` on Debian/Ubuntu or `hdf5-devel` on Fedora/RHEL.
    * - **GoogleTest**
      - Yes
      - The [GoogleTest](https://github.com/google/googletest) framework must optionally be available in order to compile the project with {ref}`testing support <testing-support>` enabled. It should be possible to install it via the package manager of your Linux distribution.
@@ -57,6 +60,9 @@ This project uses [Meson](https://mesonbuild.com/) as a build system for compili
    * - **C++ compiler**
      - No
      - macOS relies on the [Clang](https://en.wikipedia.org/wiki/Clang) compiler for building C++ code. It is part of the [Xcode](https://developer.apple.com/support/xcode/) developer toolset.
+   * - **HDF5**
+     - No
+     - The [HDF5](https://www.hdfgroup.org/solutions/hdf5/) library is used for saving and loading models. For local development, it can be installed via [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) by running the command `brew install hdf5`. Alternatively, the command `./build dependency_hdf5` compiles it from source and installs it into the directory `hdf5/`.
    * - **GoogleTest**
      - Yes
      - The [GoogleTest](https://github.com/google/googletest) framework must optionally be installed in order to compile the project with {ref}`testing support <testing-support>` enabled. It can easily be installed via [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) by running the command `brew install googletest`.
@@ -86,6 +92,9 @@ This project uses [Meson](https://mesonbuild.com/) as a build system for compili
    * - **C++ compiler**
      - No
      - For the compilation of the project's source code, the MSVC compiler must be used. It is included in [Visual Studio](https://visualstudio.microsoft.com/downloads/).
+   * - **HDF5**
+     - No
+     - The [HDF5](https://www.hdfgroup.org/solutions/hdf5/) library is used for saving and loading models. We recommend to install the package `hdf5` via the package manager [vcpkg](https://github.com/microsoft/vcpkg). Alternatively, the command `build.bat dependency_hdf5` compiles it from source and installs it into the directory `hdf5/`.
    * - **GoogleTest**
      - Yes
      - The [GoogleTest](https://github.com/google/googletest) framework must optionally be available on your system to compile the project with {ref}`testing support <testing-support>` enabled. It should already be included in recent versions of [Visual Studio](https://learn.microsoft.com/en-us/visualstudio/test/how-to-use-google-test-for-cpp).

@@ -14,9 +14,9 @@ from util.io import create_directories
 from util.log import Log
 from util.pygithub import GithubApi
 
-from targets.dependencies.macos.cmake import Cmake
-from targets.dependencies.macos.curl import CurlDownload
-from targets.dependencies.macos.tar import TarExtract
+from targets.dependencies.native.cmake import Cmake
+from targets.dependencies.native.curl import CurlDownload
+from targets.dependencies.native.tar import TarExtract
 
 SUFFIX_SRC = '.src'
 
