@@ -386,7 +386,7 @@ namespace boosting {
                                                                          labelMatrix.values_cend(exampleIndex));
                 float64 trueProbability = areLabelVectorsEqual(labelIndicesBegin, labelIndicesEnd, labelVector) ? 1 : 0;
                 auto scoresBegin = scoreMatrix.values_cbegin(exampleIndex);
-                auto scoresEnd = scoreMatrix.values_cend(exampleIndex);
+                auto scoresEnd = &scoresBegin[scoreMatrix.numCols];
                 float64 jointProbability =
                   jointProbabilityFunction.transformScoresIntoJointProbability(i, labelVector, scoresBegin, scoresEnd);
                 bins.emplace_back(jointProbability, trueProbability);
