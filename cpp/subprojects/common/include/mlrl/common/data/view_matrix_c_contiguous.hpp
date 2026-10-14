@@ -26,8 +26,8 @@ class MLRLCOMMON_API CContiguousView : public DenseMatrix<T> {
          *                      provide access to
          * @param numRows       The number of rows in the view
          * @param numCols       The number of columns in the view
-         * @param paddingPerRow The number of unused elements inserted after each row to ensure aligned access to
-         *                      individual rows when using SIMD operations
+         * @param paddingPerRow The number of unused elements added to each row to ensure aligned access to individual
+         *                      rows when using SIMD operations
          */
         CContiguousView(T* array, uint32 numRows, uint32 numCols, uint32 paddingPerRow = 0)
             : DenseMatrix<T>(array, numRows, numCols), numColsWithPadding_(numCols + paddingPerRow) {}
@@ -93,7 +93,7 @@ class MLRLCOMMON_API CContiguousView : public DenseMatrix<T> {
          * @return      A `value_const_iterator` to the end of the row
          */
         typename DenseMatrix<T>::value_const_iterator values_cend(uint32 row) const {
-            return &DenseMatrix<T>::array[(row * numColsWithPadding_) + Matrix::numCols];
+            return &DenseMatrix<T>::array[(row * numColsWithPadding_) + numColsWithPadding_];
         }
 
         /**
@@ -113,7 +113,7 @@ class MLRLCOMMON_API CContiguousView : public DenseMatrix<T> {
          * @return      A `value_iterator` to the end of the row
          */
         typename DenseMatrix<T>::value_iterator values_end(uint32 row) {
-            return &DenseMatrix<T>::array[(row * numColsWithPadding_) + Matrix::numCols];
+            return &DenseMatrix<T>::array[(row * numColsWithPadding_) + numColsWithPadding_];
         }
 
         /**
